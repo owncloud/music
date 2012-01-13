@@ -1,12 +1,12 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Musikk",
-"Play" => "Spill",
+"Play" => "Spel",
 "Pause" => "Pause",
-"Previous" => "Forrige",
+"Previous" => "Førre",
 "Next" => "Neste",
 "Mute" => "Demp",
 "Unmute" => "Skru på lyd",
-"Rescan Collection" => "Skan samling på nytt",
+"Rescan Collection" => "Skann samlinga på nytt",
 "Artist" => "Artist",
 "Album" => "Album",
 "Title" => "Tittel"

@@ -27,6 +27,8 @@ OCP\JSON::checkAppEnabled('media');
 
 error_reporting(E_ALL); //no script error reporting because of getID3
 
+session_write_close();
+
 $arguments=$_POST;
 
 if(!isset($_POST['action']) and isset($_GET['action'])){

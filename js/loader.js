@@ -45,8 +45,8 @@ $(document).ready(function() {
 // 	FileActions.register('application/ogg','Add to playlist','',addAudio);
 
 	if(typeof FileActions!=='undefined'){
-		FileActions.register('audio','Play', FileActions.PERMISSION_READ, '',playAudio);
-		FileActions.register('application/ogg', FileActions.PERMISSION_READ, '','Play',playAudio);
+		FileActions.register('audio','Play', OC.PERMISSION_READ, '',playAudio);
+		FileActions.register('application/ogg', OC.PERMISSION_READ, '','Play',playAudio);
 		FileActions.setDefault('audio','Play');
 		FileActions.setDefault('application/ogg','Play');
 	}

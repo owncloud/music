@@ -35,6 +35,13 @@ $(document).ready(function(){
 			PlayList.play(0);
 		}
 	});
+
+	$('.jp-progress').hover(function(){
+		$('.jp-current-time').stop().fadeToggle();
+	});
+	$('.jp-current-time').mouseenter(function(){
+		$('.jp-current-time').hide();
+	});
 });
 
 function getUrlVars(){

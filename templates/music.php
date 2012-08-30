@@ -11,8 +11,8 @@
 		<div class="jp-seek-bar">
 			<div class="jp-play-bar"></div>
 		</div>
+		<div class="jp-current-time"></div>
 	</div>
-	<div class="jp-current-time"></div>
 	<div class="jp-duration"></div>
 	<div class="jp-volume-bar">
 		<div class="jp-volume-bar-value"></div>

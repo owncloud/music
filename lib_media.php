@@ -72,7 +72,7 @@ class OC_MEDIA{
 
 class OC_MediaSearchProvider extends OC_Search_Provider{
 	function search($query){
-		require_once('lib_collection.php');
+		require_once 'lib_collection.php';
 		$artists=OC_MEDIA_COLLECTION::getArtists($query);
 		$albums=OC_MEDIA_COLLECTION::getAlbums(0,$query);
 		$songs=OC_MEDIA_COLLECTION::getSongs(0,0,$query);

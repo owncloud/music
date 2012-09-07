@@ -1,5 +1,5 @@
 <?php
-if(!isset($_)){//allow the template to be loaded standalone
+if(!isset($_)) {//allow the template to be loaded standalone
 	$tmpl = new OCP\Template( 'media', 'player');
 	$tmpl->printPage();
 	exit;

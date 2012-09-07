@@ -26,17 +26,17 @@ OCP\App::checkAppEnabled('media');
  require_once OC_App::getAppPath('media').'/lib_ampache.php' ;
 
 $arguments=$_POST;
-if(!isset($_POST['action']) and isset($_GET['action'])){
+if(!isset($_POST['action']) and isset($_GET['action'])) {
 	$arguments=$_GET;
 }
 
-foreach($arguments as &$argument){
+foreach($arguments as &$argument) {
 	$argument=stripslashes($argument);
 }
 @ob_clean();
-if(isset($arguments['action'])){
+if(isset($arguments['action'])) {
 	OCP\Util::writeLog('media','ampache '.$arguments['action'].' request', OCP\Util::DEBUG);
-	switch($arguments['action']){
+	switch($arguments['action']) {
 		case 'songs':
 			OC_MEDIA_AMPACHE::songs($arguments);
 			break;

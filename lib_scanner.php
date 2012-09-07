@@ -36,20 +36,20 @@ class OC_MEDIA_SCANNER{
 	 * @param OC_EventSource eventSource (optional)
 	 * @return int the number of songs found
 	 */
-	public static function scanCollection($eventSource=null){
+	public static function scanCollection($eventSource=null) {
 		$music=OC_FileCache::searchByMime('audio');
 		$ogg=OC_FileCache::searchByMime('application','ogg');
 		$music=array_merge($music,$ogg);
 		$eventSource->send('count',count($music));
 		$songs=0;
-		foreach($music as $file){
+		foreach($music as $file) {
 			self::scanFile($file);
 			$songs++;
-			if($eventSource){
+			if($eventSource) {
 				$eventSource->send('scanned',array('file'=>$file,'count'=>$songs));
 			}
 		}
-		if($eventSource){
+		if($eventSource) {
 			$eventSource->send('done',$songs);
 		}
 		return $songs;
@@ -60,34 +60,34 @@ class OC_MEDIA_SCANNER{
 	 * @param string $path
 	 * @return boolean
 	 */
-	public static function scanFile($path){
-		if(!self::isMusic($path)){
+	public static function scanFile($path) {
+		if(!self::isMusic($path)) {
 			return;
 		}
-		if(!self::$getID3){
+		if(!self::$getID3) {
 			self::$getID3=@new getID3();
 			self::$getID3->encoding='UTF-8';
 		}
 		$file=OC_Filesystem::getLocalFile($path);
 		$data=@self::$getID3->analyze($file);
 		getid3_lib::CopyTagsToComments($data);
-		if(!isset($data['comments'])){
+		if(!isset($data['comments'])) {
 			OCP\Util::writeLog('media',"error reading id3 tags in '$file'",OCP\Util::WARN);
 			return;
 		}
-		if(!isset($data['comments']['artist'])){
+		if(!isset($data['comments']['artist'])) {
 			OCP\Util::writeLog('media',"error reading artist tag in '$file'",OCP\Util::WARN);
 			$artist='unknown';
 		}else{
 			$artist=OCP\Util::sanitizeHTML(stripslashes($data['comments']['artist'][0]));
 		}
-		if(!isset($data['comments']['album'])){
+		if(!isset($data['comments']['album'])) {
 			OCP\Util::writeLog('media',"error reading album tag in '$file'",OCP\Util::WARN);
 			$album='unknown';
 		}else{
 			$album=OCP\Util::sanitizeHTML(stripslashes($data['comments']['album'][0]));
 		}
-		if(!isset($data['comments']['title'])){
+		if(!isset($data['comments']['title'])) {
 			OCP\Util::writeLog('media',"error reading title tag in '$file'",OCP\Util::WARN);
 			$title='unknown';
 		}else{
@@ -110,13 +110,13 @@ class OC_MEDIA_SCANNER{
 		}
 		$length=isset($data['playtime_seconds'])?round($data['playtime_seconds']):0;
 
-		if(!isset(self::$artists[$artist])){
+		if(!isset(self::$artists[$artist])) {
 			$artistId=OC_MEDIA_COLLECTION::addArtist($artist);
 			self::$artists[$artist]=$artistId;
 		}else{
 			$artistId=self::$artists[$artist];
 		}
-		if(!isset(self::$albums[$artist.'/'.$album])){
+		if(!isset(self::$albums[$artist.'/'.$album])) {
 			$albumId=OC_MEDIA_COLLECTION::addAlbum($album,$artistId);
 			self::$albums[$artist.'/'.$album]=$albumId;
 		}else{
@@ -131,7 +131,7 @@ class OC_MEDIA_SCANNER{
 	 * @param string $filename
 	 * @return bool
 	 */
-	public static function isMusic($filename){
+	public static function isMusic($filename) {
 		$ext=strtolower(substr($filename,strrpos($filename,'.')+1));
 		return $ext=='mp3' || $ext=='flac' || $ext=='m4a' || $ext=='ogg' || $ext=='oga';
 	}

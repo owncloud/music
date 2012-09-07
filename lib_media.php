@@ -94,4 +94,3 @@ class OC_MediaSearchProvider extends OC_Search_Provider{
 		return $results;
 	}
 }
-

@@ -152,7 +152,7 @@
 			}
 		});
 	};
-	
+
 	$.jPlayer.timeFormat = {
 		showHour: false,
 		showMin: true,
@@ -248,7 +248,7 @@
 			preload: 'metadata',  // HTML5 Spec values: none, metadata, auto.
 			volume: 0.8, // The volume. Number 0 to 1.
 			muted: false,
-			wmode: "opaque", // Valid wmode: window, transparent, opaque, direct, gpu. 
+			wmode: "opaque", // Valid wmode: window, transparent, opaque, direct, gpu.
 			backgroundColor: "#000000", // To define the jPlayer div and Flash background color.
 			cssSelectorAncestor: "#jp_container_1",
 			cssSelector: { // * denotes properties that should only be required when video media type required. _cssSelector() would require changes to enable splitting these into Audio and Video defaults.
@@ -446,9 +446,9 @@
 		},
 		_init: function() {
 			var self = this;
-			
+
 			this.element.empty();
-			
+
 			this.status = $.extend({}, this.status); // Copy static to unique instance.
 			this.internal = $.extend({}, this.internal); // Copy static to unique instance.
 
@@ -457,13 +457,13 @@
 			this.formats = []; // Array based on supplied string option. Order defines priority.
 			this.solutions = []; // Array based on solution string option. Order defines priority.
 			this.require = {}; // Which media types are required: video, audio.
-			
+
 			this.htmlElement = {}; // DOM elements created by jPlayer
 			this.html = {}; // In _init()'s this.desired code and setmedia(): Accessed via this[solution], where solution from this.solutions array.
 			this.html.audio = {};
 			this.html.video = {};
 			this.flash = {}; // In _init()'s this.desired code and setmedia(): Accessed via this[solution], where solution from this.solutions array.
-			
+
 			this.css = {};
 			this.css.cs = {}; // Holds the css selector strings
 			this.css.jq = {}; // Holds jQuery selectors. ie., $(css.cs.method)
@@ -588,7 +588,7 @@
 			this.internal.poster.jq.bind("click.jPlayer", function() {
 				self._trigger($.jPlayer.event.click);
 			});
-			
+
 			// Generate the required media elements
 			this.html.audio.available = false;
 			if(this.require.audio) { // If a supplied format is audio
@@ -656,11 +656,11 @@
 
 			// Set up the css selectors for the control and feedback entities.
 			this._cssSelectorAncestor(this.options.cssSelectorAncestor);
-			
+
 			// If neither html nor flash are being used by this browser, then media playback is not possible. Trigger an error event.
 			if(!(this.html.used || this.flash.used)) {
 				this._error( {
-					type: $.jPlayer.error.NO_SOLUTION, 
+					type: $.jPlayer.error.NO_SOLUTION,
 					context: "{solution:'" + this.options.solution + "', supplied:'" + this.options.supplied + "'}",
 					message: $.jPlayer.errorMsg.NO_SOLUTION,
 					hint: $.jPlayer.errorHint.NO_SOLUTION
@@ -680,7 +680,7 @@
 				flashVars = 'jQuery=' + encodeURI(this.options.noConflict) + '&id=' + encodeURI(this.internal.self.id) + '&vol=' + this.options.volume + '&muted=' + this.options.muted;
 
 				// Code influenced by SWFObject 2.2: http://code.google.com/p/swfobject/
-				// Non IE browsers have an initial Flash size of 1 by 1 otherwise the wmode affected the Flash ready event. 
+				// Non IE browsers have an initial Flash size of 1 by 1 otherwise the wmode affected the Flash ready event.
 
 				if($.browser.msie && Number($.browser.version) <= 8) {
 					var objStr = '<object id="' + this.internal.flash.id + '" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="0" height="0"></object>';
@@ -700,7 +700,7 @@
 				} else {
 					var createParam = function(el, n, v) {
 						var p = document.createElement("param");
-						p.setAttribute("name", n);	
+						p.setAttribute("name", n);
 						p.setAttribute("value", v);
 						el.appendChild(p);
 					};
@@ -720,7 +720,7 @@
 				this.element.append(htmlObj);
 				this.internal.flash.jq = $(htmlObj);
 			}
-			
+
 			// Add the HTML solution if being used.
 			if(this.html.used) {
 
@@ -808,7 +808,7 @@
 			this.element.removeData("jPlayer"); // Remove jPlayer data
 			this.element.unbind(".jPlayer"); // Remove all event handlers created by the jPlayer constructor
 			this.element.empty(); // Remove the inserted child elements
-			
+
 			delete this.instances[this.internal.instance]; // Clear the instance on the static instance object
 		},
 		enable: function() { // Plan to implement
@@ -874,7 +874,7 @@
 			// Create the event listeners
 			// Only want the active entity to affect jPlayer and bubble events.
 			// Using entity.gate so that object is referenced and gate property always current
-			
+
 			mediaElement.addEventListener("progress", function() {
 				if(entity.gate) {
 					self._getHtmlStatus(mediaElement);
@@ -1016,7 +1016,7 @@
 				sp = 100;
 				cpr = cpa;
 			}
-			
+
 			if(override) {
 				ct = 0;
 				cpr = 0;
@@ -1081,7 +1081,7 @@
 
 							// Need to read original status before issuing the setMedia command.
 							var	currentTime = this.status.currentTime,
-								paused = this.status.paused; 
+								paused = this.status.paused;
 
 							this.setMedia(this.status.media);
 							if(currentTime > 0) {
@@ -1249,7 +1249,7 @@
 			this.flash.active = false;
 		},
 		setMedia: function(media) {
-		
+
 			/*	media[format] = String: URL of format. Must contain all of the supplied option's video or audio formats.
 			 *	media.poster = String: Video poster URL.
 			 *	media.subtitles = String: * NOT IMPLEMENTED * URL of subtitles SRT file
@@ -1300,7 +1300,7 @@
 							}
 							self.status.video = false;
 						}
-						
+
 						supported = true;
 						return false; // Exit $.each
 					}
@@ -1580,7 +1580,7 @@
 					if(cssSel) { // Checks for empty string
 						this.css.jq[fn] = $(this.css.cs[fn]);
 					} else {
-						this.css.jq[fn] = []; // To comply with the css.jq[fn].length check before its use. As of jQuery 1.4 could have used $() for an empty set. 
+						this.css.jq[fn] = []; // To comply with the css.jq[fn].length check before its use. As of jQuery 1.4 could have used $() for an empty set.
 					}
 
 					if(this.css.jq[fn].length) {
@@ -1977,7 +1977,7 @@
 		},
 		_html_pause: function(time) {
 			var self = this;
-			
+
 			if(time > 0) { // We do not want the stop() command, which does pause(0), causing a load operation.
 				this._html_load(); // Loads if required and clears any delayed commands.
 			} else {
@@ -2178,7 +2178,7 @@
 					flashIsInstalled = true;
 				}
 				catch(e){
-					// Throws an error if the version isn't available			
+					// Throws an error if the version isn't available
 				}
 			}
 			else if(navigator.plugins && navigator.mimeTypes.length > 0){

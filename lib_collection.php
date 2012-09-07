@@ -5,20 +5,20 @@
 *
 * @author Robin Appelman
 * @copyright 2010 Robin Appelman icewind1991@gmail.com
-* 
+*
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either 
+* License as published by the Free Software Foundation; either
 * version 3 of the License, or any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*  
-* You should have received a copy of the GNU Lesser General Public 
+*
+* You should have received a copy of the GNU Lesser General Public
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-* 
+*
 */
 
 
@@ -28,7 +28,7 @@ class OC_MEDIA_COLLECTION{
 	private static $artistIdCache=array();
 	private static $albumIdCache=array();
 	private static $queries=array();
-	
+
 	/**
 	* get the id of an artist (case-insensitive)
 	* @param string name
@@ -113,7 +113,7 @@ class OC_MEDIA_COLLECTION{
 			}
 		}
 	}
-	
+
 	/**
 	* Get the list of artists that (optionally) match a search string
 	* @param string search optional
@@ -134,7 +134,7 @@ class OC_MEDIA_COLLECTION{
 		$result=$query->execute(array($search,self::$uid));
 		return $result->fetchAll();
 	}
-	
+
 	/**
 	* Add an artists to the database
 	* @param string name
@@ -155,7 +155,7 @@ class OC_MEDIA_COLLECTION{
 			return self::getArtistId($name);;
 		}
 	}
-	
+
 	/**
 	* Get the list of albums that (optionally) match an artist and/or search string
 	* @param integer artist optional
@@ -185,7 +185,7 @@ class OC_MEDIA_COLLECTION{
 		$query=OCP\DB::prepare($cmd);
 		return $query->execute($params)->fetchAll();
 	}
-	
+
 	/**
 	* Add an album to the database
 	* @param string name
@@ -207,7 +207,7 @@ class OC_MEDIA_COLLECTION{
 			return self::getAlbumId($name,$artist);
 		}
 	}
-	
+
 	/**
 	* Get the list of songs that (optionally) match an artist and/or album and/or search string
 	* @param integer artist optional
@@ -245,7 +245,7 @@ class OC_MEDIA_COLLECTION{
 		$query=OCP\DB::prepare("SELECT * FROM `*PREFIX*media_songs` WHERE `song_user`=? $artistString $albumString $searchString ORDER BY `song_track`, `song_name`, `song_path`");
 		return $query->execute($params)->fetchAll();
 	}
-	
+
 	/**
 	* Add an song to the database
 	* @param string name
@@ -281,25 +281,25 @@ class OC_MEDIA_COLLECTION{
 			return self::getSongId($name,$artist,$album);
 		}
 	}
-	
+
 	public static function getSongCount(){
 		$query=OCP\DB::prepare("SELECT COUNT(`song_id`) AS `count` FROM `*PREFIX*media_songs`");
 		$result=$query->execute()->fetchAll();
 		return $result[0]['count'];
 	}
-	
+
 	public static function getArtistCount(){
 		$query=OCP\DB::prepare("SELECT COUNT(`artist_id`) AS `count` FROM `*PREFIX*media_artists`");
 		$result=$query->execute()->fetchAll();
 		return $result[0]['count'];
 	}
-	
+
 	public static function getAlbumCount(){
 		$query=OCP\DB::prepare("SELECT COUNT(`album_id`) AS `count` FROM `*PREFIX*media_albums`");
 		$result=$query->execute()->fetchAll();
 		return $result[0]['count'];
 	}
-	
+
 	public static function getArtistName($artistId){
 		$query=OCP\DB::prepare("SELECT `artist_name` FROM `*PREFIX*media_artists` WHERE `artist_id`=?");
 		$artist=$query->execute(array($artistId))->fetchAll();
@@ -309,7 +309,7 @@ class OC_MEDIA_COLLECTION{
 			return '';
 		}
 	}
-	
+
 	public static function getAlbumName($albumId){
 		$query=OCP\DB::prepare("SELECT `album_name` FROM `*PREFIX*media_albums` WHERE `album_id`=?");
 		$album=$query->execute(array($albumId))->fetchAll();
@@ -319,7 +319,7 @@ class OC_MEDIA_COLLECTION{
 			return '';
 		}
 	}
-	
+
 	public static function getSong($id){
 		$query=OCP\DB::prepare("SELECT * FROM `*PREFIX*media_songs` WHERE `song_id`=?");
 		$song=$query->execute(array($id))->fetchAll();
@@ -329,7 +329,7 @@ class OC_MEDIA_COLLECTION{
 			return '';
 		}
 	}
-	
+
 	/**
 	 * get the number of songs in a directory
 	 * @param string $path
@@ -375,7 +375,7 @@ class OC_MEDIA_COLLECTION{
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * set the path of a song
 	 * @param string $oldPath

@@ -62,14 +62,14 @@ Collection={
 							Collection.albumsById[song.song_album].songs.push(songData);
 						}
 					}
-					
+
 					Collection.artists.sort(function(a,b){
 						if(!a.name){
 							return -1;
 						}
 						return a.name.localeCompare(b.name);
 					});
-					
+
 					Collection.loaded=true;
 					Collection.loading=false;
 					for(var i=0;i<Collection.loadedListeners.length;i++){

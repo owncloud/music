@@ -198,7 +198,7 @@
 				$(this.cssSelector.playlist + " ul").slideUp(displayTime, function() {
 					var $this = $(this);
 					$(this).empty();
-					
+
 					$.each(self.playlist, function(i,v) {
 						$this.append(self._createListItem(self.playlist[i]));
 					});

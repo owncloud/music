@@ -5,31 +5,31 @@
 *
 * @author Robin Appelman
 * @copyright 2010 Robin Appelman icewind1991@gmail.com
-* 
+*
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either 
+* License as published by the Free Software Foundation; either
 * version 3 of the License, or any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*  
-* You should have received a copy of the GNU Lesser General Public 
+*
+* You should have received a copy of the GNU Lesser General Public
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-* 
+*
 */
 
 //implementation of ampache's xml api
 class OC_MEDIA_AMPACHE{
-	
+
 	/**
 	* fix the string to be XML compatible
 	* @param string name
 	* @return string
 	*/
-	
+
 	/* this is an ugly hack(tm), this should be: */
 	/* htmlentities($name, ENT_XML1, 'UTF-8');   */
 	/* with PHP 5.4 and later		     */
@@ -48,7 +48,7 @@ class OC_MEDIA_AMPACHE{
        	       $result=str_replace("ß", "&#223;", $result);
 	       return $result;
 	}
-	
+
 	/**
 	* do the initial handshake
 	* @param array params
@@ -109,7 +109,7 @@ class OC_MEDIA_AMPACHE{
 </root>");
 		}
 	}
-	
+
 	public static function ping($params){
 		if(isset($params['auth'])){
 			if(self::checkAuth($params['auth'])){
@@ -127,7 +127,7 @@ class OC_MEDIA_AMPACHE{
 		echo('<version>350001</version>');
 		echo('</root>');
 	}
-	
+
 	public static function checkAuth($auth){
 		if(is_array($auth)){
 			if(isset($auth['auth'])){
@@ -145,7 +145,7 @@ class OC_MEDIA_AMPACHE{
 		//remove old sessions
 		$query=OCP\DB::prepare("DELETE FROM `*PREFIX*media_sessions` WHERE `start`<(NOW() - ".$interval.")");
 		$query->execute();
-		
+
 		$query=OCP\DB::prepare("SELECT `user_id` FROM `*PREFIX*media_sessions` WHERE `token`=?");
 		$users=$query->execute(array($auth))->fetchAll();
 		if(count($users)>0){
@@ -156,12 +156,12 @@ class OC_MEDIA_AMPACHE{
 			return false;
 		}
 	}
-	
+
 	public static function updateAuth($auth){
 		$query=OCP\DB::prepare("UPDATE `*PREFIX*media_sessions` SET `start`=CURRENT_TIMESTAMP WHERE `token`=?");
 		$query->execute(array($auth));
 	}
-	
+
 	private static function printArtist($artist){
 		$albums=count(OC_MEDIA_COLLECTION::getAlbums($artist['artist_id']));
 		$songs=count(OC_MEDIA_COLLECTION::getSongs($artist['artist_id']));
@@ -175,7 +175,7 @@ class OC_MEDIA_AMPACHE{
 		echo("\t\t<preciserating>0</preciserating>\n");
 		echo("\t</artist>\n");
 	}
-	
+
 	private static function printAlbum($album,$artistName=false){
 		if(!$artistName){
 			$artistName=OC_MEDIA_COLLECTION::getArtistName($album['album_artist']);
@@ -196,7 +196,7 @@ class OC_MEDIA_AMPACHE{
 		echo("\t\t<preciserating>0</preciserating>\n");
 		echo("\t</album>\n");
 	}
-	
+
 	private static function printSong($song,$artistName=false,$albumName=false){
 		if(!$artistName){
 			$artistName=OC_MEDIA_COLLECTION::getArtistName($song['song_artist']);
@@ -225,7 +225,7 @@ class OC_MEDIA_AMPACHE{
 		echo("\t\t<preciserating>0</preciserating>\n");
 		echo("\t</song>\n");
 	}
-	
+
 	public static function artists($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -244,7 +244,7 @@ class OC_MEDIA_AMPACHE{
 		}
 		echo('</root>');
 	}
-	
+
 	public static function artist_songs($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -263,7 +263,7 @@ class OC_MEDIA_AMPACHE{
 		}
 		echo('</root>');
 	}
-	
+
 	public static function artist_albums($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -282,7 +282,7 @@ class OC_MEDIA_AMPACHE{
 		}
 		echo('</root>');
 	}
-	
+
 	public static function albums($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -294,14 +294,14 @@ class OC_MEDIA_AMPACHE{
 		$filter=isset($params['filter'])?$params['filter']:'';
 		$exact=isset($params['exact'])?($params['exact']=='true'):false;
 		$albums=OC_MEDIA_COLLECTION::getAlbums(0,$filter,$exact);
-		echo('<?xml version="1.0" encoding="UTF-8"?>');	
+		echo('<?xml version="1.0" encoding="UTF-8"?>');
 		echo('<root>');
 		foreach($albums as $album){
 			self::printAlbum($album,false);
 		}
 		echo('</root>');
 	}
-	
+
 	public static function album_songs($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -321,7 +321,7 @@ class OC_MEDIA_AMPACHE{
 		}
 		echo('</root>');
 	}
-	
+
 	public static function songs($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -340,7 +340,7 @@ class OC_MEDIA_AMPACHE{
 		}
 		echo('</root>');
 	}
-	
+
 	public static function song($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -356,7 +356,7 @@ class OC_MEDIA_AMPACHE{
 			echo('</root>');
 		}
 	}
-	
+
 	public static function play($params){
 		$username=!self::checkAuth($params);
 		if($username){
@@ -374,7 +374,7 @@ class OC_MEDIA_AMPACHE{
 			OC_Filesystem::readfile($song['song_path']);
 		}
 	}
-	
+
 	public static function url_to_song($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');
@@ -392,7 +392,7 @@ class OC_MEDIA_AMPACHE{
 			echo('</root>');
 		}
 	}
-	
+
 	public static function search_songs($params){
 		if(!self::checkAuth($params)){
 			echo('<?xml version="1.0" encoding="UTF-8"?>');

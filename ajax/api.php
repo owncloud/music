@@ -5,20 +5,20 @@
 *
 * @author Robin Appelman
 * @copyright 2010 Robin Appelman icewind1991@gmail.com
-* 
+*
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either 
+* License as published by the Free Software Foundation; either
 * version 3 of the License, or any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*  
-* You should have received a copy of the GNU Lesser General Public 
+*
+* You should have received a copy of the GNU Lesser General Public
 * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-* 
+*
 */
 
 header('Content-type: text/html; charset=UTF-8') ;
@@ -106,23 +106,23 @@ if($arguments['action']){
 			break;
 		case 'play':
 			@ob_end_clean();
-			
+
 			$ftype=OC_Filesystem::getMimeType( $arguments['path'] );
 			if(substr($ftype,0,5)!='audio' and $ftype!='application/ogg'){
 				echo 'Not an audio file';
 				exit();
 			}
-			
+
 			$songId=OC_MEDIA_COLLECTION::getSongByPath($arguments['path']);
 			OC_MEDIA_COLLECTION::registerPlay($songId);
-			
+
 			header('Content-Type:'.$ftype);
 			OCP\Response::enableCaching(3600 * 24); // 24 hour
 			header('Accept-Ranges: bytes');
 			header('Content-Length: '.OC_Filesystem::filesize($arguments['path']));
 			$mtime = OC_Filesystem::filemtime($arguments['path']);
 			OCP\Response::setLastModifiedHeader($mtime);
-			
+
 			OC_Filesystem::readfile($arguments['path']);
 			exit;
 		case 'find_music':

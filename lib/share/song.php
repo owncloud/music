@@ -62,4 +62,3 @@ class OC_Share_Backend_Song extends OCP\Share_Backend {
 
 }
 
-?>

@@ -75,5 +75,3 @@ if(isset($arguments['action'])) {
 			break;
 	}
 }
-
-?>

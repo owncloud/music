@@ -41,8 +41,6 @@
    <field>
     <name>album_art</name>
     <type>text</type>
-    <default></default>
-    <notnull>true</notnull>
     <length>200</length>
    </field>
    

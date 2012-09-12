@@ -202,8 +202,15 @@ class OC_MEDIA_COLLECTION{
 		if($albumId!=0) {
 			return $albumId;
 		}else{
-			$query=OCP\DB::prepare("INSERT INTO  `*PREFIX*media_albums` (`album_name` ,`album_artist`) VALUES ( ?, ?)");
-			$query->execute(array($name,$artist));
+			$stmt=OCP\DB::prepare('INSERT INTO `*PREFIX*media_albums` (`album_name` ,`album_artist`) VALUES ( ?, ?)');
+			if ( ! OCP\DB::isError($stmt) ) {
+				$result=$stmt->execute(array($name,$artist));
+				if ( OCP\DB::isError($result) ) {
+					OC_Log::write('OC_MEDIA_COLLECTION', 'could not add album: '. OC_DB::getErrorMessage($result), OC_Log::ERROR);
+				}
+			} else {
+				OC_Log::write('OC_MEDIA_COLLECTION', 'could not add album: '. OC_DB::getErrorMessage($stmt), OC_Log::ERROR);
+			}
 			return self::getAlbumId($name,$artist);
 		}
 	}

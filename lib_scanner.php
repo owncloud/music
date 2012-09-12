@@ -123,7 +123,7 @@ class OC_MEDIA_SCANNER{
 			$albumId=self::$albums[$artist.'/'.$album];
 		}
 		$songId=OC_MEDIA_COLLECTION::addSong($title,$path,$artistId,$albumId,$length,$track,$size);
-		return (!($title=='unkown' && $artist=='unkown' && $album=='unkown'))?$songId:0;
+		return (!($title=='unknown' && $artist=='unknown' && $album=='unknown'))?$songId:0;
 	}
 
 	/**

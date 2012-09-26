@@ -1,5 +1,6 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Muzika",
+"Add album to playlist" => "Pridėti albumą į grojaraštį",
 "Play" => "Groti",
 "Pause" => "Pristabdyti",
 "Previous" => "Atgal",

@@ -1,5 +1,6 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Zene",
+"Add album to playlist" => "Hozzáadás listához",
 "Play" => "Lejátszás",
 "Pause" => "Szünet",
 "Previous" => "Előző",

@@ -1,5 +1,6 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Muusika",
+"Add album to playlist" => "Lisa album esitusnimekirja",
 "Play" => "Esita",
 "Pause" => "Paus",
 "Previous" => "Eelmine",

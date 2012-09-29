@@ -1,5 +1,7 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Μουσική",
+"songs" => "τραγούδια",
+"albums" => "άλμπουμ",
 "Add album to playlist" => "Προσθήκη άλμπουμ στην λίστα αναπαραγωγής",
 "Play" => "Αναπαραγωγή",
 "Pause" => "Παύση",

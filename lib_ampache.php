@@ -369,9 +369,9 @@ class OC_MEDIA_AMPACHE{
 		if($song=OC_MEDIA_COLLECTION::getSong($params['song'])) {
 			OC_Util::setupFS($song["song_user"]);
 
-			header('Content-type: '.OC_Filesystem::getMimeType($song['song_path']));
+			header('Content-type: '.\OC\Files\Filesystem::getMimeType($song['song_path']));
 			header('Content-Length: '.$song['song_size']);
-			OC_Filesystem::readfile($song['song_path']);
+			\OC\Files\Filesystem::readfile($song['song_path']);
 		}
 	}
 

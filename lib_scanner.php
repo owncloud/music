@@ -68,7 +68,7 @@ class OC_MEDIA_SCANNER{
 			self::$getID3=@new getID3();
 			self::$getID3->encoding='UTF-8';
 		}
-		$file=OC_Filesystem::getLocalFile($path);
+		$file=\OC\Files\Filesystem::getLocalFile($path);
 		$data=@self::$getID3->analyze($file);
 		getid3_lib::CopyTagsToComments($data);
 		if(!isset($data['comments'])) {

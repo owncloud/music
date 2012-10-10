@@ -90,7 +90,7 @@ if($arguments['action']) {
 			OCP\JSON::encodedPrint(OC_MEDIA_COLLECTION::getSongs($arguments['artist'],$arguments['album'],$arguments['search']));
 			break;
 		case 'get_path_info':
-			if(OC_Filesystem::file_exists($arguments['path'])) {
+			if(\OC\Files\Filesystem::file_exists($arguments['path'])) {
 				$songId=OC_MEDIA_COLLECTION::getSongByPath($arguments['path']);
 				if($songId==0) {
 					unset($_SESSION['collection']);
@@ -107,7 +107,7 @@ if($arguments['action']) {
 		case 'play':
 			@ob_end_clean();
 
-			$ftype=OC_Filesystem::getMimeType( $arguments['path'] );
+			$ftype=\OC\Files\Filesystem::getMimeType( $arguments['path'] );
 			if(substr($ftype,0,5)!='audio' and $ftype!='application/ogg') {
 				echo 'Not an audio file';
 				exit();
@@ -119,11 +119,11 @@ if($arguments['action']) {
 			header('Content-Type:'.$ftype);
 			OCP\Response::enableCaching(3600 * 24); // 24 hour
 			header('Accept-Ranges: bytes');
-			header('Content-Length: '.OC_Filesystem::filesize($arguments['path']));
-			$mtime = OC_Filesystem::filemtime($arguments['path']);
+			header('Content-Length: '.\OC\Files\Filesystem::filesize($arguments['path']));
+			$mtime = \OC\Files\Filesystem::filemtime($arguments['path']);
 			OCP\Response::setLastModifiedHeader($mtime);
 
-			OC_Filesystem::readfile($arguments['path']);
+			\OC\Files\Filesystem::readfile($arguments['path']);
 			exit;
 		case 'find_music':
 			$music=OC_Files::searchByMime('audio');

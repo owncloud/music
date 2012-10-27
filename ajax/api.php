@@ -126,8 +126,8 @@ if($arguments['action']) {
 			\OC\Files\Filesystem::readfile($arguments['path']);
 			exit;
 		case 'find_music':
-			$music=OC_Files::searchByMime('audio');
-			$ogg=OC_Files::searchByMime('application/ogg');
+			$music=\OC\Files\Filesystem::searchByMime('audio');
+			$ogg=\OC\Files\Filesystem::searchByMime('application/ogg');
 			$music=array_merge($music,$ogg);
 			OCP\JSON::encodedPrint($music);
 			exit;

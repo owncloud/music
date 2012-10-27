@@ -1,5 +1,7 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Âm nhạc",
+"songs" => "Bài hát",
+"albums" => "album",
 "Add album to playlist" => "Thêm album vào playlist",
 "Play" => "Play",
 "Pause" => "Tạm dừng",

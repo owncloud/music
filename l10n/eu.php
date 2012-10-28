@@ -1,5 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Musika",
+"songs" => "abestiak",
+"albums" => "albumak",
+"Add album to playlist" => "Gehitu albuma erreprodukzio zerrendara",
 "Play" => "Erreproduzitu",
 "Pause" => "Pausarazi",
 "Previous" => "Aurrekoa",

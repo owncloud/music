@@ -1,5 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "เพลง",
+"songs" => "เพลง",
+"albums" => "อัลบั้ม",
+"Add album to playlist" => "เพิ่มอัลบั้มเข้าไปยังเพลย์ลิสต์",
 "Play" => "เล่น",
 "Pause" => "หยุดชั่วคราว",
 "Previous" => "ก่อนหน้า",

@@ -1,8 +1,11 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Glasba",
+"songs" => "skladbe",
+"albums" => "albumi",
+"Add album to playlist" => "Dodaj album na seznam predvajanja",
 "Play" => "Predvajaj",
 "Pause" => "Premor",
-"Previous" => "Prejšnja",
+"Previous" => "Predhodna",
 "Next" => "Naslednja",
 "Mute" => "Utišaj",
 "Unmute" => "Povrni glasnost",

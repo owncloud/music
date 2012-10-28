@@ -1,5 +1,6 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Música",
+"Add album to playlist" => "Engadir álbume a lista de reprodución",
 "Play" => "Reproducir",
 "Pause" => "Pausar",
 "Previous" => "Anterior",
@@ -8,6 +9,6 @@
 "Unmute" => "Restaurar volume",
 "Rescan Collection" => "Analizar a colección de novo",
 "Artist" => "Artista",
-"Album" => "Álbun",
+"Album" => "Álbume",
 "Title" => "Título"
 );

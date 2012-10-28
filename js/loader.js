@@ -1,5 +1,5 @@
 function musicTypeFromFile(file){
-	var extension=file.substr(file.indexOf('.')+1).toLowerCase();
+	var extension=file.substr(file.lastIndexOf('.')+1).toLowerCase();
 	if(extension=='ogg'){
 		return 'oga';
 	}

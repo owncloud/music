@@ -1,5 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Musiikki",
+"songs" => "kappaletta",
+"albums" => "levyä",
+"Add album to playlist" => "Lisää albumi soittolistalle",
 "Play" => "Toista",
 "Pause" => "Tauko",
 "Previous" => "Edellinen",

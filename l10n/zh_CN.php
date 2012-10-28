@@ -1,5 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "音乐",
+"songs" => "歌曲",
+"albums" => "专辑",
+"Add album to playlist" => "专辑加入到播放列表",
 "Play" => "播放",
 "Pause" => "暂停",
 "Previous" => "前一首",

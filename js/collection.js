@@ -279,7 +279,7 @@ Collection={
 	addButtons:function(parent,data){
 		buttons = parent.find('.buttons');
 		if(buttons.find('.add').length<=0) {
-			buttons.prepend('<img class="add action" src="'+OC.imagePath('core','actions/play-add')+'" title="Add to playlist" />');
+			buttons.prepend('<img class="add action" src="'+OC.imagePath('core','actions/play-add')+'" title="'+t('media','Add to playlist')+'" />');
 		}
 		buttons.find('.add').unbind('click');
 		buttons.find('.add').click(function(event){

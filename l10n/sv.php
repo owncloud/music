@@ -2,6 +2,7 @@
 "Music" => "Musik",
 "songs" => "låtar",
 "albums" => "album",
+"Add to playlist" => "Lägg till i spellista",
 "Add album to playlist" => "Lägg till album till spellistan",
 "Play" => "Spela",
 "Pause" => "Paus",

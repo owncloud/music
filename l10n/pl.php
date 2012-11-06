@@ -2,6 +2,7 @@
 "Music" => "Muzyka",
 "songs" => "piosenki",
 "albums" => "albumy",
+"Add to playlist" => "Dodaj do playlisty",
 "Add album to playlist" => "Dodaj album do playlisty",
 "Play" => "Odtwarzaj",
 "Pause" => "Wstrzymaj",

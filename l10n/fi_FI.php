@@ -2,6 +2,7 @@
 "Music" => "Musiikki",
 "songs" => "kappaletta",
 "albums" => "levyä",
+"Add to playlist" => "Lisää soittolistaan",
 "Add album to playlist" => "Lisää albumi soittolistalle",
 "Play" => "Toista",
 "Pause" => "Tauko",

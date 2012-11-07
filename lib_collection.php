@@ -274,19 +274,22 @@ class OC_MEDIA_COLLECTION{
 			$songInfo=self::getSong($songId);
 			self::moveSong($songInfo['song_path'],$path);
 			return $songId;
-		}else{
-			if(!isset(self::$queries['addsong'])) {
-				$query=OCP\DB::prepare("INSERT INTO  `*PREFIX*media_songs` (`song_name` ,`song_artist` ,`song_album` ,`song_path` ,`song_user`,`song_length`,`song_track`,`song_size`,`song_playcount`,`song_lastplayed`)
-				VALUES (?, ?, ?, ?,?,?,?,?,0,0)");
-				self::$queries['addsong']=$query;
-			}else{
-				$query=self::$queries['addsong'];
-			}
-			$query->execute(array($name,$artist,$album,$path,$uid,$length,$track,$size));
-			$songId=OCP\DB::insertid('*PREFIX*media_songs_song');
-// 			self::setLastUpdated();
-			return self::getSongId($name,$artist,$album);
 		}
+
+		if(self::getSongCountByPath($path) !== 0) {
+			self::deleteSongByPath($path);
+		}
+		if(!isset(self::$queries['addsong'])) {
+			$query=OCP\DB::prepare("INSERT INTO  `*PREFIX*media_songs` (`song_name` ,`song_artist` ,`song_album` ,`song_path` ,`song_user`,`song_length`,`song_track`,`song_size`,`song_playcount`,`song_lastplayed`)
+			VALUES (?, ?, ?, ?,?,?,?,?,0,0)");
+			self::$queries['addsong']=$query;
+		}else{
+			$query=self::$queries['addsong'];
+		}
+		$query->execute(array($name,$artist,$album,$path,$uid,$length,$track,$size));
+		$songId=OCP\DB::insertid('*PREFIX*media_songs_song');
+// 			self::setLastUpdated();
+		return self::getSongId($name,$artist,$album);
 	}
 
 	public static function getSongCount() {

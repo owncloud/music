@@ -2,6 +2,7 @@
 "Music" => "音乐",
 "songs" => "歌曲",
 "albums" => "专辑",
+"Add to playlist" => "添加到播放列表",
 "Add album to playlist" => "添加专辑到播放列表",
 "Play" => "播放",
 "Pause" => "暂停",

@@ -2,6 +2,7 @@
 "Music" => "Muziek",
 "songs" => "Nummers",
 "albums" => "Albums",
+"Add to playlist" => "Voeg aan de afspeellijst toe",
 "Add album to playlist" => "Voeg album toe aan afspeellijst",
 "Play" => "Afspelen",
 "Pause" => "Pauzeer",

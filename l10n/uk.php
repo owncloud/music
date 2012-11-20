@@ -1,5 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Музика",
+"songs" => "пісні",
+"albums" => "альбоми",
+"Add to playlist" => "Додати плейлист",
 "Add album to playlist" => "Додати альбом до плейлиста",
 "Play" => "Грати",
 "Pause" => "Пауза",

@@ -2,6 +2,7 @@
 "Music" => "Muziko",
 "songs" => "kanzonoj",
 "albums" => "albumoj",
+"Add to playlist" => "Aldoni al ludlisto",
 "Add album to playlist" => "Aldoni albumon al ludlisto",
 "Play" => "Ludi",
 "Pause" => "Paŭzigi",

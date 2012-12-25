@@ -20,28 +20,30 @@
  *
  */
 
-$l=OC_L10N::get('media');
+$l = OC_L10N::get('media');
 
-OC::$CLASSPATH['OC_MEDIA'] = 'media/lib_media.php';
-OC::$CLASSPATH['OC_MediaSearchProvider'] = 'media/lib_media.php';
-OC::$CLASSPATH['OC_MEDIA_COLLECTION'] = 'media/lib_collection.php';
-OC::$CLASSPATH['OC_MEDIA_SCANNER'] = 'media/lib_scanner.php';
+OC::$CLASSPATH['OCA\Media\Media'] = 'media/lib/media.php';
+OC::$CLASSPATH['OCA\Media\SearchProvider'] = 'media/lib/media.php';
+OC::$CLASSPATH['OCA\Media\Collection'] = 'media/lib/collection.php';
+OC::$CLASSPATH['OCA\Media\Scanner'] = 'media/lib/scanner.php';
+OC::$CLASSPATH['OCA\Media\Extractor'] = 'media/lib/extractor.php';
+OC::$CLASSPATH['OCA\Media\Extractor_GetID3'] = 'media/lib/extractor.php';
 
 //we need to have the sha256 hash of passwords for ampache
-OCP\Util::connectHook('OC_User','post_login','OC_MEDIA','loginListener');
+OCP\Util::connectHook('OC_User', 'post_login', 'OCA\Media\Media', 'loginListener');
 
 //connect to the filesystem for auto updating
-OCP\Util::connectHook('OC_Filesystem','post_write','OC_MEDIA','updateFile');
+OCP\Util::connectHook('OC_Filesystem', 'post_write', 'OCA\Media\Media', 'updateFile');
 
 //listen for file deletions to clean the database if a song is deleted
-OCP\Util::connectHook('OC_Filesystem','post_delete','OC_MEDIA','deleteFile');
+OCP\Util::connectHook('OC_Filesystem', 'post_delete', 'OCA\Media\Media', 'deleteFile');
 
 //list for file moves to update the database
-OCP\Util::connectHook('OC_Filesystem','post_rename','OC_MEDIA','moveFile');
+OCP\Util::connectHook('OC_Filesystem', 'post_rename', 'OCA\Media\Media', 'moveFile');
 
-OCP\Util::addscript('media','loader');
-OCP\App::registerPersonal('media','settings');
+OCP\Util::addscript('media', 'loader');
+OCP\App::registerPersonal('media', 'settings');
 
 OCP\App::addNavigationEntry(array('id' => 'media_index', 'order' => 2, 'href' => OCP\Util::linkTo('media', 'index.php'), 'icon' => OCP\Util::imagePath('core', 'places/music.svg'), 'name' => $l->t('Music')));
 
-OC_Search::registerProvider('OC_MediaSearchProvider');
+OC_Search::registerProvider('OCA\Media\SearchProvider');

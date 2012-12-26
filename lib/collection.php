@@ -203,13 +203,13 @@ class Collection {
 	}
 
 	/**
-	 * Get the list of songs that (optionally) match an artist and/or album and/or search string
+	 * Get the songs that (optionally) match an artist and/or album and/or search string
 	 *
 	 * @param integer $artist (optional)
 	 * @param integer $album (optional)
 	 * @param string $search (optional)
 	 * @param bool $exact (optional)
-	 * @return array the list of songs found
+	 * @return array
 	 */
 	public function getSongs($artist = 0, $album = 0, $search = '', $exact = false) {
 		$params = array($this->uid);
@@ -276,20 +276,22 @@ class Collection {
 	}
 
 	public function getSongCount() {
-		$query = \OCP\DB::prepare("SELECT COUNT(`song_id`) AS `count` FROM `*PREFIX*media_songs`");
-		$row = $query->execute()->fetchRow();
+		$query = \OCP\DB::prepare("SELECT COUNT(`song_id`) AS `count` FROM `*PREFIX*media_songs` WHERE `song_user` = ?");
+		$row = $query->execute(array($this->uid))->fetchRow();
 		return $row['count'];
 	}
 
 	public function getArtistCount() {
-		$query = \OCP\DB::prepare("SELECT COUNT(`artist_id`) AS `count` FROM `*PREFIX*media_artists`");
-		$row = $query->execute()->fetchRow();
+		$query = \OCP\DB::prepare('SELECT COUNT(DISTINCT `artist_id`) AS `count` FROM `*PREFIX*media_artists`
+			INNER JOIN `*PREFIX*media_songs` ON `artist_id`=`song_artist` WHERE `song_user` = ?');
+		$row = $query->execute(array($this->uid))->fetchRow();
 		return $row['count'];
 	}
 
 	public function getAlbumCount() {
-		$query = \OCP\DB::prepare("SELECT COUNT(`album_id`) AS `count` FROM `*PREFIX*media_albums`");
-		$row = $query->execute()->fetchRow();
+		$query = \OCP\DB::prepare("SELECT COUNT(`album_id`) AS `count` FROM `*PREFIX*media_albums`
+			INNER JOIN `*PREFIX*media_songs` ON `album_id`=`song_album` WHERE `song_user` = ?");
+		$row = $query->execute(array($this->uid))->fetchRow();
 		return $row['count'];
 	}
 

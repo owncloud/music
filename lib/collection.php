@@ -349,8 +349,8 @@ class Collection {
 	 * if a path of a folder is passed, all songs stored in the folder will be removed from the database
 	 */
 	public function deleteSongByPath($path) {
-		$query = \OCP\DB::prepare("DELETE FROM `*PREFIX*media_songs` WHERE `song_path` LIKE ?");
-		$query->execute(array("$path%"));
+		$query = \OCP\DB::prepare("DELETE FROM `*PREFIX*media_songs` WHERE `song_path` LIKE ? AND `song_user` = ?");
+		$query->execute(array("$path%", $this->uid));
 	}
 
 	/**

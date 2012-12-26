@@ -289,7 +289,7 @@ class Collection {
 	}
 
 	public function getAlbumCount() {
-		$query = \OCP\DB::prepare("SELECT COUNT(`album_id`) AS `count` FROM `*PREFIX*media_albums`
+		$query = \OCP\DB::prepare("SELECT COUNT(DISTINCT `album_id`) AS `count` FROM `*PREFIX*media_albums`
 			INNER JOIN `*PREFIX*media_songs` ON `album_id`=`song_album` WHERE `song_user` = ?");
 		$row = $query->execute(array($this->uid))->fetchRow();
 		return $row['count'];

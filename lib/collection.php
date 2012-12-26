@@ -397,5 +397,25 @@ class Collection {
 	public function clear() {
 		$query = \OCP\DB::prepare("DELETE FROM `*PREFIX*media_songs` WHERE `song_user` = ?");
 		$query->execute(array($this->uid));
+
+		//delete all artists with no associated songs
+		$query = \OCP\DB::prepare('SELECT `artist_id` FROM `*PREFIX*media_artists`
+			WHERE (SELECT COUNT(`song_artist`) FROM `*PREFIX*media_songs` WHERE `song_artist` = `artist_id`) = 0 ');
+		$result = $query->execute(array($this->uid));
+
+		$deleteQuery = \OCP\DB::prepare('DELETE FROM `*PREFIX*media_artists` WHERE `artist_id` = ?');
+		while ($row = $result->fetchRow()) {
+			$deleteQuery->execute(array($row['artist_id']));
+		}
+
+		//delete all albums with no associated songs
+		$query = \OCP\DB::prepare('SELECT `album_id` FROM `*PREFIX*media_albums`
+			WHERE (SELECT COUNT(`song_album`) FROM `*PREFIX*media_songs` WHERE `song_album` = `album_id`) = 0 ');
+		$result = $query->execute(array($this->uid));
+
+		$deleteQuery = \OCP\DB::prepare('DELETE FROM `*PREFIX*media_albums` WHERE `album_id` = ?');
+		while ($row = $result->fetchRow()) {
+			$deleteQuery->execute(array($row['album_id']));
+		}
 	}
 }

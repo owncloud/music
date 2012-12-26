@@ -23,6 +23,7 @@
 $l = OC_L10N::get('media');
 
 OC::$CLASSPATH['OCA\Media\Media'] = 'media/lib/media.php';
+OC::$CLASSPATH['OCA\Media\Ampache'] = 'media/lib/ampache.php';
 OC::$CLASSPATH['OCA\Media\SearchProvider'] = 'media/lib/media.php';
 OC::$CLASSPATH['OCA\Media\Collection'] = 'media/lib/collection.php';
 OC::$CLASSPATH['OCA\Media\Scanner'] = 'media/lib/scanner.php';

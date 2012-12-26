@@ -8,7 +8,7 @@
 			<rating>0</rating>
 			<year>0</year>
 			<disk>1</disk>
-			<art></art>
+			<art> </art>
 			<preciserating>0</preciserating>
 		</album>
 	<?php endforeach;?>

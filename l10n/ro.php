@@ -2,6 +2,7 @@
 "Music" => "Muzică",
 "songs" => "melodii",
 "albums" => "albume",
+"Add to playlist" => "Adauga la lista de redare",
 "Add album to playlist" => "Adaugă albumul la lista de redare",
 "Play" => "Redă",
 "Pause" => "Pauză",

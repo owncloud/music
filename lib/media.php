@@ -29,6 +29,20 @@ class Media {
 	}
 
 	/**
+	 * get the sha256 hash of the password needed for ampache
+	 *
+	 * @param array $params, parameters passed from OC_Hook
+	 */
+	public static function passwordChangeListener($params) {
+		if (isset($params['uid']) and $params['password']) {
+			$name = $params['uid'];
+			$password = hash('sha256', $params['password']);
+			$query = \OCP\DB::prepare("UPDATE `*PREFIX*media_users` SET `user_password_sha256` = ? WHERE `user_id` = ?");
+			$query->execute(array($password, $name));
+		}
+	}
+
+	/**
 	 *
 	 */
 	public static function updateFile($params) {

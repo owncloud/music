@@ -25,32 +25,6 @@ class Ampache {
 	}
 
 	/**
-	 * fix the string to be XML compatible
-	 *
-	 * @param string $text
-	 * @return string
-	 *
-	 * this is an ugly hack(tm), this should be:
-	 * htmlentities($name, ENT_XML1, 'UTF-8');
-	 * with PHP 5.4 and later
-	 */
-	public static function fixXmlString($text) {
-		$result = str_replace("&", "&amp;", $text);
-		$result = str_replace("'", "&apos;", $result);
-		$result = str_replace("<", "&lt;", $result);
-		$result = str_replace(">", "&gt;", $result);
-		$result = str_replace("\"", "&quot;", $result);
-		$result = str_replace("Ä", "&#196;", $result);
-		$result = str_replace("Ö", "&#214;", $result);
-		$result = str_replace("Ü", "&#220;", $result);
-		$result = str_replace("ä", "&#228;", $result);
-		$result = str_replace("ö", "&#246;", $result);
-		$result = str_replace("ü", "&#252;", $result);
-		$result = str_replace("ß", "&#223;", $result);
-		return $result;
-	}
-
-	/**
 	 * do the initial handshake
 	 *
 	 * @param array $params
@@ -151,7 +125,7 @@ class Ampache {
 			$artistData['albums'] = count($this->collection->getAlbums($artist['artist_id']));
 			$artistData['songs'] = count($this->collection->getSongs($artist['artist_id']));
 			$artistData['id'] = $artist['artist_id'];
-			$artistData['name'] = self::fixXmlString($artist['artist_name']);
+			$artistData['name'] = xmlentities($artist['artist_name']);
 			$tmpl->append('artists', $artistData);
 		}
 		$tmpl->printPage();
@@ -162,13 +136,13 @@ class Ampache {
 		foreach ($albums as $album) {
 			$albumData = array();
 			if ($artistName) {
-				$albumData['artist_name'] = self::fixXmlString($artistName);
+				$albumData['artist_name'] = xmlentities($artistName);
 			} else {
-				$albumData['artist_name'] = self::fixXmlString($this->collection->getArtistName($album['album_artist']));
+				$albumData['artist_name'] = xmlentities($this->collection->getArtistName($album['album_artist']));
 			}
 			$albumData['songs'] = count($this->collection->getSongs($album['album_artist'], $album['album_id']));
 			$albumData['id'] = $album['album_id'];
-			$albumData['name'] = self::fixXmlString($album['album_name']);
+			$albumData['name'] = xmlentities($album['album_name']);
 			$albumData['artist'] = $album['album_artist'];
 			$tmpl->append('albums', $albumData);
 		}
@@ -181,24 +155,24 @@ class Ampache {
 		foreach ($songs as $song) {
 			$songData = array();
 			if ($artistName) {
-				$songData['artist_name'] = self::fixXmlString($artistName);
+				$songData['artist_name'] = xmlentities($artistName);
 			} else {
-				$songData['artist_name'] = self::fixXmlString($this->collection->getArtistName($song['song_artist']));
+				$songData['artist_name'] = xmlentities($this->collection->getArtistName($song['song_artist']));
 			}
 			if ($albumName) {
-				$songData['album_name'] = self::fixXmlString($albumName);
+				$songData['album_name'] = xmlentities($albumName);
 			} else {
-				$songData['album_name'] = self::fixXmlString($this->collection->getAlbumName($song['song_album']));
+				$songData['album_name'] = xmlentities($this->collection->getAlbumName($song['song_album']));
 			}
 			$songData['id'] = $song['song_id'];
-			$songData['name'] = self::fixXmlString($song['song_name']);
+			$songData['name'] = xmlentities($song['song_name']);
 			$songData['artist'] = $song['song_artist'];
 			$songData['album'] = $song['song_album'];
 			$songData['length'] = $song['song_length'];
 			$songData['track'] = $song['song_track'];
 			$songData['size'] = $song['song_size'];
 			$url = \OCP\Util::linkToRemote('ampache') . 'server/xml.server.php/?action=play&song=' . $songData['id'] . '&auth=' . $_GET['auth'];
-			$songData['url'] = self::fixXmlString($url);
+			$songData['url'] = xmlentities($url);
 			$tmpl->append('songs', $songData);
 		}
 		$tmpl->printPage();
@@ -315,5 +289,37 @@ class Ampache {
 			$songs = array_merge($songs, $this->collection->getSongs($album['album_artist'], $album['album_id']));
 		}
 		$this->printSongs($songs);
+	}
+}
+
+/**
+ * From http://dk1.php.net/manual/en/function.htmlentities.php#106535
+ */
+if (!function_exists('xmlentities')) {
+	function xmlentities($string) {
+		$not_in_list = "A-Z0-9a-z\s_-";
+		return preg_replace_callback("/[^{$not_in_list}]/", 'get_xml_entity_at_index_0', $string);
+	}
+
+	function get_xml_entity_at_index_0($CHAR) {
+		if (!is_string($CHAR[0]) || (strlen($CHAR[0]) > 1)) {
+			die("function: 'get_xml_entity_at_index_0' requires data type: 'char' (single character). '{$CHAR[0]}' does not match this type.");
+		}
+		switch ($CHAR[0]) {
+			case "'":
+			case '"':
+			case '&':
+			case '<':
+			case '>':
+				return htmlspecialchars($CHAR[0], ENT_QUOTES);
+				break;
+			default:
+				return numeric_entity_4_char($CHAR[0]);
+				break;
+		}
+	}
+
+	function numeric_entity_4_char($char) {
+		return "&#" . str_pad(ord($char), 3, '0', STR_PAD_LEFT) . ";";
 	}
 }

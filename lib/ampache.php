@@ -118,6 +118,7 @@ class Ampache {
 	}
 
 	private function printArtists($artists) {
+		header('Content-Type:  text/xml');
 		$tmpl = new \OC_Template('media', 'ampache/artists');
 
 		foreach ($artists as $artist) {
@@ -132,6 +133,7 @@ class Ampache {
 	}
 
 	private function printAlbums($albums, $artistName = false) {
+		header('Content-Type:  text/xml');
 		$tmpl = new \OC_Template('media', 'ampache/albums');
 		foreach ($albums as $album) {
 			$albumData = array();
@@ -150,6 +152,7 @@ class Ampache {
 	}
 
 	private function printSongs($songs, $artistName = false, $albumName = false) {
+		header('Content-Type:  text/xml');
 		$tmpl = new \OC_Template('media', 'ampache/songs');
 
 		foreach ($songs as $song) {

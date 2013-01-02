@@ -21,9 +21,6 @@
 *
 */
 
-
-
-
 // Check if we are a user
 OCP\User::checkLoggedIn();
 OCP\App::checkAppEnabled('media');

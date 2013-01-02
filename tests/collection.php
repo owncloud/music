@@ -8,6 +8,10 @@
 
 namespace Test\Media;
 
+// get absolute path of file directory
+$path = realpath( dirname( __FILE__ ) ) . '/';
+require_once($path . "../lib/collection.php");
+
 class Collection extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @var \OCA\Media\Collection $collection

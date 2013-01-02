@@ -1,135 +1,144 @@
 <?php
-
 /**
-* ownCloud - media plugin
-*
-* @author Robin Appelman
-* @copyright 2010 Robin Appelman icewind1991@gmail.com
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either
-* version 3 of the License, or any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ * Copyright (c) 2012 Robin Appelman <icewind@owncloud.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later.
+ * See the COPYING-README file.
+ */
 
-header('Content-type: text/html; charset=UTF-8') ;
+namespace OCA\Media;
 
-OCP\JSON::checkAppEnabled('media');
+\OCP\JSON::checkAppEnabled('media');
 
 error_reporting(E_ALL); //no script error reporting because of getID3
 
 session_write_close();
 
-$arguments=$_POST;
+$arguments = $_POST;
 
-if(!isset($_POST['action']) and isset($_GET['action'])) {
-	$arguments=$_GET;
-}
-
-foreach($arguments as &$argument) {
-	$argument=stripslashes($argument);
-}
-@ob_clean();
-if(!isset($arguments['artist'])) {
-	$arguments['artist']=0;
-}
-if(!isset($arguments['album'])) {
-	$arguments['album']=0;
-}
-if(!isset($arguments['search'])) {
-	$arguments['search']='';
+if (!isset($_POST['action']) and isset($_GET['action'])) {
+	$arguments = $_GET;
 }
 
-session_write_close();
+foreach ($arguments as &$argument) {
+	$argument = stripslashes($argument);
+}
 
-OC_MEDIA_COLLECTION::$uid=OCP\USER::getUser();
-if($arguments['action']) {
-	switch($arguments['action']) {
+\OC_Util::obEnd();
+
+if (!isset($arguments['artist'])) {
+	$arguments['artist'] = 0;
+}
+if (!isset($arguments['album'])) {
+	$arguments['album'] = 0;
+}
+if (!isset($arguments['search'])) {
+	$arguments['search'] = '';
+}
+
+$collection = new Collection(\OCP\USER::getUser());
+
+if ($arguments['action']) {
+	switch ($arguments['action']) {
 		case 'delete':
-			$path=$arguments['path'];
-			OC_MEDIA_COLLECTION::deleteSongByPath($path);
-			$paths=explode(PATH_SEPARATOR,OCP\Config::getUserValue(OCP\USER::getUser(),'media','paths',''));
-			if(array_search($path,$paths)!==false) {
-				unset($paths[array_search($path,$paths)]);
-				OCP\Config::setUserValue(OCP\USER::getUser(),'media','paths',implode(PATH_SEPARATOR,$paths));
+			$path = $arguments['path'];
+			$collection->deleteSongByPath($path);
+			$paths = explode(PATH_SEPARATOR, \OCP\Config::getUserValue(\OCP\USER::getUser(), 'media', 'paths', ''));
+			if (array_search($path, $paths) !== false) {
+				unset($paths[array_search($path, $paths)]);
+				\OCP\Config::setUserValue(\OCP\USER::getUser(), 'media', 'paths', implode(PATH_SEPARATOR, $paths));
 			}
+			break;
 		case 'get_collection':
-			$data=array();
-			$data['artists']=OC_MEDIA_COLLECTION::getArtists();
-			$data['albums']=OC_MEDIA_COLLECTION::getAlbums();
-			$data['songs']=OC_MEDIA_COLLECTION::getSongs();
-			OCP\JSON::encodedPrint($data);
+			$data = array();
+			$data['artists'] = $collection->getArtists();
+			$data['albums'] = $collection->getAlbums();
+			$data['songs'] = $collection->getSongs();
+			\OCP\JSON::encodedPrint($data);
 			break;
 		case 'scan':
-			OCP\DB::beginTransaction();
+			\OCP\DB::beginTransaction();
 			set_time_limit(0); //recursive scan can take a while
-			$eventSource=new OC_EventSource();
-			OC_MEDIA_SCANNER::scanCollection($eventSource);
+			$eventSource = new \OC_EventSource();
+			$watcher = new ScanWatcher($eventSource);
+			$scanner = new Scanner($collection);
+			\OC_Hook::connect('media', 'song_count', $watcher, 'count');
+			\OC_Hook::connect('media', 'song_scanned', $watcher, 'scanned');
+			$scanner->scanCollection();
 			$eventSource->close();
-			OCP\DB::commit();
+			\OCP\DB::commit();
 			break;
 		case 'scanFile':
-			echo (OC_MEDIA_SCANNER::scanFile($arguments['path']))?'true':'false';
+			$scanner = new Scanner($collection);
+			echo ($scanner->scanFile($arguments['path'])) ? 'true' : 'false';
 			break;
 		case 'get_artists':
-			OCP\JSON::encodedPrint(OC_MEDIA_COLLECTION::getArtists($arguments['search']));
+			\OCP\JSON::encodedPrint($collection->getArtists($arguments['search']));
 			break;
 		case 'get_albums':
-			OCP\JSON::encodedPrint(OC_MEDIA_COLLECTION::getAlbums($arguments['artist'],$arguments['search']));
+			\OCP\JSON::encodedPrint($collection->getAlbums($arguments['artist'], $arguments['search']));
 			break;
 		case 'get_songs':
-			OCP\JSON::encodedPrint(OC_MEDIA_COLLECTION::getSongs($arguments['artist'],$arguments['album'],$arguments['search']));
+			\OCP\JSON::encodedPrint($collection->getSongs($arguments['artist'], $arguments['album'], $arguments['search']));
 			break;
 		case 'get_path_info':
-			if(OC_Filesystem::file_exists($arguments['path'])) {
-				$songId=OC_MEDIA_COLLECTION::getSongByPath($arguments['path']);
-				if($songId==0) {
+			if (\OC_Filesystem::file_exists($arguments['path'])) {
+				$songId = $collection->getSongByPath($arguments['path']);
+				if ($songId == 0) {
 					unset($_SESSION['collection']);
-					$songId= OC_MEDIA_SCANNER::scanFile($arguments['path']);
+					$scanner = new Scanner($collection);
+					$songId = $scanner->scanFile($arguments['path']);
 				}
-				if($songId>0) {
-					$song=OC_MEDIA_COLLECTION::getSong($songId);
-					$song['artist']=OC_MEDIA_COLLECTION::getArtistName($song['song_artist']);
-					$song['album']=OC_MEDIA_COLLECTION::getAlbumName($song['song_album']);
-					OCP\JSON::encodedPrint($song);
+				if ($songId > 0) {
+					$song = $collection->getSong($songId);
+					$song['artist'] = $collection->getArtistName($song['song_artist']);
+					$song['album'] = $collection->getAlbumName($song['song_album']);
+					\OCP\JSON::encodedPrint($song);
 				}
 			}
 			break;
 		case 'play':
-			@ob_end_clean();
-
-			$ftype=OC_Filesystem::getMimeType( $arguments['path'] );
-			if(substr($ftype,0,5)!='audio' and $ftype!='application/ogg') {
+			$type = \OC_Filesystem::getMimeType($arguments['path']);
+			if (substr($type, 0, 5) != 'audio' and $type != 'application/ogg') {
 				echo 'Not an audio file';
 				exit();
 			}
 
-			$songId=OC_MEDIA_COLLECTION::getSongByPath($arguments['path']);
-			OC_MEDIA_COLLECTION::registerPlay($songId);
+			$songId = $collection->getSongByPath($arguments['path']);
+			$collection->registerPlay($songId);
 
-			header('Content-Type:'.$ftype);
-			OCP\Response::enableCaching(3600 * 24); // 24 hour
+			header('Content-Type:' . $type);
+			\OCP\Response::enableCaching(3600 * 24); // 24 hour
 			header('Accept-Ranges: bytes');
-			header('Content-Length: '.OC_Filesystem::filesize($arguments['path']));
-			$mtime = OC_Filesystem::filemtime($arguments['path']);
-			OCP\Response::setLastModifiedHeader($mtime);
+			header('Content-Length: ' . \OC_Filesystem::filesize($arguments['path']));
+			$mtime = \OC_Filesystem::filemtime($arguments['path']);
+			\OCP\Response::setLastModifiedHeader($mtime);
 
-			OC_Filesystem::readfile($arguments['path']);
+			\OC_Filesystem::readfile($arguments['path']);
 			exit;
 		case 'find_music':
-			$music=OC_Files::searchByMime('audio');
-			$ogg=OC_Files::searchByMime('application/ogg');
-			$music=array_merge($music,$ogg);
-			OCP\JSON::encodedPrint($music);
+			$scanner = new Scanner($collection);
+			$music = $scanner->getMusic();
+			\OCP\JSON::encodedPrint($music);
 			exit;
+	}
+}
+
+class ScanWatcher {
+	/**
+	 * @var \OC_EventSource $eventSource;
+	 */
+	private $eventSource;
+
+	public function __construct($eventSource) {
+		$this->eventSource = $eventSource;
+	}
+
+	public function count($params) {
+		$this->eventSource->send('count', $params['count']);
+	}
+
+	public function scanned($params) {
+		$this->eventSource->send('scanned', array('file' => $params['path'], 'count' => $params['count']));
 	}
 }

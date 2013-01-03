@@ -1,4 +1,7 @@
-<?xml version = "1.0" encoding = "UTF-8"?>
+<?php
+header('Content-Type: text/xml');
+print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+?>
 <root>
 	<?php foreach ($_['artists'] as $artist): ?>
 		<artist id='<?php echo $artist['id'];?>'>

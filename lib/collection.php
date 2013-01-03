@@ -399,9 +399,9 @@ class Collection {
 		$query->execute(array($this->uid));
 
 		//delete all artists with no associated songs
-		$query = \OCP\DB::prepare('SELECT `artist_id` FROM `*PREFIX*media_artists`
-			WHERE (SELECT COUNT(`song_artist`) FROM `*PREFIX*media_songs` WHERE `song_artist` = `artist_id`) = 0 ');
-		$result = $query->execute(array($this->uid));
+		$query=\OCP\DB::prepare('SELECT `artist_id` FROM `*PREFIX*media_artists` LEFT OUTER JOIN `*PREFIX*media_songs` ON
+			`artist_id` = `song_artist` WHERE `song_artist` IS NULL');
+		$result = $query->execute();
 
 		$deleteQuery = \OCP\DB::prepare('DELETE FROM `*PREFIX*media_artists` WHERE `artist_id` = ?');
 		while ($row = $result->fetchRow()) {
@@ -409,9 +409,9 @@ class Collection {
 		}
 
 		//delete all albums with no associated songs
-		$query = \OCP\DB::prepare('SELECT `album_id` FROM `*PREFIX*media_albums`
-			WHERE (SELECT COUNT(`song_album`) FROM `*PREFIX*media_songs` WHERE `song_album` = `album_id`) = 0 ');
-		$result = $query->execute(array($this->uid));
+		$query=\OCP\DB::prepare('SELECT `album_id` FROM `*PREFIX*media_albums` LEFT OUTER JOIN `*PREFIX*media_songs` ON
+			`album_id` = `song_album` WHERE `song_album` IS NULL');
+		$result = $query->execute();
 
 		$deleteQuery = \OCP\DB::prepare('DELETE FROM `*PREFIX*media_albums` WHERE `album_id` = ?');
 		while ($row = $result->fetchRow()) {

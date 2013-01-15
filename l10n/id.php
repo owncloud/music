@@ -2,6 +2,7 @@
 "Music" => "Musik",
 "songs" => "lagu lagu",
 "albums" => "album album",
+"Add to playlist" => "Tambahkan ke Daftar Main",
 "Add album to playlist" => "tambahkan album ke daftar putar",
 "Play" => "putar",
 "Pause" => "Jeda",

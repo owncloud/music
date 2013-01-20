@@ -1,3 +1,4 @@
 <?php $TRANSLATIONS = array(
-"Music" => "Музика"
+"Music" => "Музика",
+"Title" => "Заглавие"
 );

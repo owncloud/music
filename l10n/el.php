@@ -13,5 +13,7 @@
 "Rescan Collection" => "Επανασάρωση συλλογής",
 "Artist" => "Καλλιτέχνης",
 "Album" => "Άλμπουμ",
-"Title" => "Τίτλος"
+"Title" => "Τίτλος",
+"Media" => "Πολυμέσα",
+"Ampache address:" => "Διεύθυνση Ampache:"
 );

@@ -13,5 +13,7 @@
 "Rescan Collection" => "Rescanează colecția",
 "Artist" => "Artist",
 "Album" => "Album",
-"Title" => "Titlu"
+"Title" => "Titlu",
+"Media" => "Media",
+"Ampache address:" => "Adresa Ampache"
 );

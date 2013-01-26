@@ -13,5 +13,7 @@
 "Rescan Collection" => "Znovu prohledat",
 "Artist" => "Umělec",
 "Album" => "Album",
-"Title" => "Název"
+"Title" => "Název",
+"Media" => "Média",
+"Ampache address:" => "Adresa ampache:"
 );

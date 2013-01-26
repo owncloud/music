@@ -13,5 +13,7 @@
 "Rescan Collection" => "دوباره بازرسی مجموعه ها",
 "Artist" => "هنرمند",
 "Album" => "آلبوم",
-"Title" => "عنوان"
+"Title" => "عنوان",
+"Media" => "رسانه ها",
+"Ampache address:" => "آدرس Ampache "
 );

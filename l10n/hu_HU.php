@@ -1,17 +1,19 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Zene",
-"songs" => "dalok",
-"albums" => "albumok",
-"Add to playlist" => "Hozzáadás lejátszási listához",
-"Add album to playlist" => "Hozzáadás listához",
+"songs" => "szám",
+"albums" => "album",
+"Add to playlist" => "Hozzáadás a lejátszási listához",
+"Add album to playlist" => "Az album hozzáadása a lejátszási listához",
 "Play" => "Lejátszás",
 "Pause" => "Szünet",
 "Previous" => "Előző",
 "Next" => "Következő",
 "Mute" => "Némítás",
-"Unmute" => "Némítás megszüntetése",
-"Rescan Collection" => "Gyűjtemény újraolvasása",
+"Unmute" => "A némítás megszüntetése",
+"Rescan Collection" => "A gyűjtemény újraolvasása",
 "Artist" => "Előadó",
 "Album" => "Album",
-"Title" => "Cím"
+"Title" => "Cím",
+"Media" => "Média",
+"Ampache address:" => "Ampache cím:"
 );

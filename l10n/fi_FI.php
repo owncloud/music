@@ -13,5 +13,7 @@
 "Rescan Collection" => "Etsi uusia kappaleita",
 "Artist" => "Esittäjä",
 "Album" => "Albumi",
-"Title" => "Nimi"
+"Title" => "Nimi",
+"Media" => "Media",
+"Ampache address:" => "Ampache-osoite:"
 );

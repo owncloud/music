@@ -13,5 +13,7 @@
 "Rescan Collection" => "Bireskaneatu Bilduma",
 "Artist" => "Artista",
 "Album" => "Albuma",
-"Title" => "Izenburua"
+"Title" => "Izenburua",
+"Media" => "Medioa",
+"Ampache address:" => "Ampache helbidea:"
 );

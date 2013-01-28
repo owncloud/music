@@ -13,5 +13,7 @@
 "Rescan Collection" => "Explora de nou la col·lecció",
 "Artist" => "Artista",
 "Album" => "Àlbum",
-"Title" => "Títol"
+"Title" => "Títol",
+"Media" => "Suport",
+"Ampache address:" => "Adreça Ampache:"
 );

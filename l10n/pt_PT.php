@@ -13,5 +13,7 @@
 "Rescan Collection" => "Reverificar coleção",
 "Artist" => "Artista",
 "Album" => "Álbum",
-"Title" => "Título"
+"Title" => "Título",
+"Media" => "Media",
+"Ampache address:" => "Endereço Ampache:"
 );

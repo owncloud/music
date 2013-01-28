@@ -13,5 +13,7 @@
 "Rescan Collection" => "コレクションの再スキャン",
 "Artist" => "アーティスト",
 "Album" => "アルバム",
-"Title" => "曲名"
+"Title" => "曲名",
+"Media" => "メディア",
+"Ampache address:" => "Ampache アドレス:"
 );

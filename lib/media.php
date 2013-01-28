@@ -91,10 +91,10 @@ class SearchProvider extends \OC_Search_Provider {
 		}
 		foreach ($songs as $song) {
 			$minutes = floor($song['song_length'] / 60);
-			$secconds = $song['song_length'] % 60;
+			$seconds = $song['song_length'] % 60;
 			$artist = $collection->getArtistName($song['song_artist']);
 			$album = $collection->getalbumName($song['song_album']);
-			$results[] = new \OC_Search_Result($song['song_name'], "by $artist, in $album $minutes:$secconds", \OCP\Util::linkTo('media', 'index.php') . '#artist=' . urlencode($artist) . '&album=' . urlencode($album) . '&song=' . urlencode($song['song_name']), $app_name);
+			$results[] = new \OC_Search_Result($song['song_name'], "by $artist, in $album $minutes:$seconds", \OCP\Util::linkTo('media', 'index.php') . '#artist=' . urlencode($artist) . '&album=' . urlencode($album) . '&song=' . urlencode($song['song_name']), $app_name);
 		}
 		return $results;
 	}

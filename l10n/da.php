@@ -13,5 +13,7 @@
 "Rescan Collection" => "Genskan Samling",
 "Artist" => "Kunstner",
 "Album" => "Album",
-"Title" => "Titel"
+"Title" => "Titel",
+"Media" => "Medier",
+"Ampache address:" => "Ampache-adresse:"
 );

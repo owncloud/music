@@ -13,5 +13,7 @@
 "Rescan Collection" => "ตรวจสอบไฟล์ที่เก็บไว้อีกครั้ง",
 "Artist" => "ศิลปิน",
 "Album" => "อัลบั้ม",
-"Title" => "ชื่อ"
+"Title" => "ชื่อ",
+"Media" => "ไฟล์มีเดีย",
+"Ampache address:" => "ที่อยู่ Ampache:"
 );

@@ -13,5 +13,7 @@
 "Rescan Collection" => "Znovu skenovať zbierku",
 "Artist" => "Umelec",
 "Album" => "Album",
-"Title" => "Názov"
+"Title" => "Názov",
+"Media" => "Média",
+"Ampache address:" => "Adresa ampache:"
 );

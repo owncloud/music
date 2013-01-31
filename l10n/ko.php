@@ -13,5 +13,7 @@
 "Rescan Collection" => "모음집 재검색",
 "Artist" => "음악가",
 "Album" => "앨범",
-"Title" => "제목"
+"Title" => "제목",
+"Media" => "미디어",
+"Ampache address:" => "Ampache 주소:"
 );

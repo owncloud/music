@@ -15,5 +15,5 @@
 "Album" => "Album",
 "Title" => "Titel",
 "Media" => "Medien",
-"Ampache address:" => "Ampache Adresse:"
+"Ampache address:" => "Ampache-Adresse:"
 );

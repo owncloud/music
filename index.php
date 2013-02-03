@@ -35,5 +35,8 @@ OCP\Util::addStyle('media', 'music');
 
 OCP\App::setActiveNavigationEntry('media_index');
 
+$info = \OC\Files\Filesystem::getFileInfo('/');
+
 $tmpl = new OCP\Template('media', 'music', 'user');
+$tmpl->assign('etag', $info['etag']);
 $tmpl->printPage();

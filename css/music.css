@@ -2,47 +2,226 @@
  This file is licensed under the Affero General Public License version 3 or later.
  See the COPYING-README file. */
 
-#controls ul.jp-controls { padding:0; }
-#controls ul.jp-controls li { display:inline; }
-#controls ul.jp-controls li a { position:absolute; padding:.8em 1em .8em 0; }
-a.jp-play, a.jp-pause { left:2.5em; }
-a.jp-pause { display:none; }
-a.jp-next { left:5em; }
+#controls .jp-controls * {
+	display: inline-block;
+}
 
-div.jp-progress { position:absolute; overflow:hidden; top:.5em; left:8em; width:15em; height:1.2em; padding:0; }
-div.jp-seek-bar { background:#eee; width:0; height:100%; cursor:pointer; }
-div.jp-play-bar { background:#ccc; width:0; height:100%; }
-div.jp-current-time,div.jp-duration { position:absolute; font-size:.64em; font-style:oblique; top:-0.2em; left:0.2em; }
-div.jp-duration { display: none }
-div.jp-current-song { left: 33em; position: absolute; top: 0.9em; }
-div.jp-duration { text-align:right; }
+#controls .jp-controls {
+	vertical-align: middle;
+	padding: 0.3em;
+}
 
-a.jp-mute,a.jp-unmute { left:24em; }
-div.jp-volume-bar { position:absolute; overflow:hidden; background:#eee; width:4em; height:0.4em; cursor:pointer; top:1.3em; left:27em; }
-div.jp-volume-bar-value { background:#ccc; width:0; height:0.4em; }
+#controls .jp-controls > a {
+	display: inline;
+	margin: 1em 1em .8em 0;
+	vertical-align: middle;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: .5;
+	-webkit-transition: opacity 200ms;
+	-moz-transition: opacity 200ms;
+	-o-transition: opacity 200ms;
+	transition: opacity 200ms;
+}
 
-#collection { position:relative; width:100%; float:left; table-layout:fixed; }
-#collection td { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-#leftcontent img.remove { display:none; float:right; cursor:pointer; opacity: 0; }
-#leftcontent li:hover img.remove { display:inline; opacity: .3; }
-#leftcontent li div.label { float: left; width: 200px; overflow: hidden; text-overflow: ellipsis; }
-#rightcontent { overflow: auto; }
-#playlist li { list-style-type:none; }
-.template { display:none; }
-.collection_playing { background:#eee; font-weight: bold; }
+#controls .jp-controls > a:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
 
-#searchresults input.play, #searchresults input.add { float:left; height:1em; width:1em; }
-#collection tr.collapsed td.album, #collection tr.collapsed td.title { color:#ddd; }
-#collection td.artist-expander, #collection td.album-expander { width:2em; text-align:center; }
-td.artist a.expander, td.album a.expander { float:right; padding:0 1em; }
-tr.active td { background-color:#eee; font-weight:bold; }
-tr td { border-bottom:1px solid #eee; height:2.2em; }
-tr .artist img { vertical-align:middle; }
-tr.album td.artist { padding-left:1em; }
-tr.song td.artist { padding-left:2em; }
-.add {margin: 0 0.5em 0 0; }
+/*a.jp-play, a.jp-pause { left:2.5em; }*/
+a.jp-pause {
+	display: none;
+}
 
-#scan { position:absolute; right:13.5em; top:0em; }
-#scan .start { position:relative; display:inline; float:right; }
-#scan .stop { position:relative; display:inline; float:right; }
-#scan #scanprogressbar { position:relative; display:inline-block; width:10em; height:1.5em; top:.4em; }
+a.jp-next {
+	left: 5em;
+}
+
+div.jp-progress {
+	overflow: hidden;
+	width: 15em;
+	height: 1.2em;
+	padding: 0;
+}
+
+div.jp-seek-bar {
+	background: #eee;
+	width: 0;
+	height: 100%;
+	cursor: pointer;
+}
+
+div.jp-play-bar {
+	background: #ccc;
+	width: 0;
+	height: 100%;
+}
+
+div.jp-current-time, div.jp-duration {
+	font-size: .64em;
+	font-style: oblique;
+	top: 0.7em;
+	margin-left: 1em;
+	position: absolute;
+}
+
+div.jp-duration {
+	display: none
+}
+
+div.jp-current-song {
+	padding-left: 1em;
+}
+
+div.jp-duration {
+	text-align: right;
+	position: relative;
+}
+
+a.jp-mute, a.jp-unmute {
+	left: 24em;
+}
+
+div.jp-volume-bar {
+	overflow: hidden;
+	background: #eee;
+	width: 4em;
+	position: relative;
+	top: -0.3em;
+	height: 0.4em;
+	cursor: pointer;
+}
+
+div.jp-volume-bar-value {
+	background: #ccc;
+	height: 0.4em;
+	position: absolute;
+	top: 0;
+}
+
+#collection {
+	position: relative;
+	width: 100%;
+	float: left;
+	table-layout: fixed;
+}
+
+#collection td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#leftcontent img.remove {
+	display: none;
+	float: right;
+	cursor: pointer;
+	opacity: 0;
+}
+
+#leftcontent li:hover img.remove {
+	display: inline;
+	opacity: .3;
+}
+
+#leftcontent li div.label {
+	float: left;
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#rightcontent {
+	overflow: auto;
+	width: 100%;
+	left: 0;
+	margin-left: 25em;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#playlist li {
+	list-style-type: none;
+}
+
+.template {
+	display: none;
+}
+
+.collection_playing {
+	background: #eee;
+	font-weight: bold;
+}
+
+#searchresults input.play, #searchresults input.add {
+	float: left;
+	height: 1em;
+	width: 1em;
+}
+
+#collection tr.collapsed td.album, #collection tr.collapsed td.title {
+	color: #ddd;
+}
+
+#collection td.artist-expander, #collection td.album-expander {
+	width: 2em;
+	text-align: center;
+}
+
+td.artist a.expander, td.album a.expander {
+	float: right;
+	padding: 0 1em;
+}
+
+tr.active td {
+	background-color: #eee;
+	font-weight: bold;
+}
+
+tr td {
+	border-bottom: 1px solid #eee;
+	height: 2.2em;
+}
+
+tr .artist img {
+	vertical-align: middle;
+}
+
+tr.album td.artist {
+	padding-left: 1em;
+}
+
+tr.song td.artist {
+	padding-left: 2em;
+}
+
+.add {
+	margin: 0 0.5em 0 0;
+}
+
+#scan {
+	float: right;
+	margin-top: -0.3em;
+}
+
+#scan .start {
+	position: relative;
+	display: inline;
+	float: right;
+}
+
+#scan .stop {
+	position: relative;
+	display: inline;
+	float: right;
+}
+
+#scan #scanprogressbar {
+	position: relative;
+	display: inline-block;
+	width: 10em;
+	height: 1.5em;
+	top: .4em;
+}

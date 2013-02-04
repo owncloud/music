@@ -28,7 +28,7 @@
 	<div class="player" id="jp-player"></div>
 </div>
 
-<ul id="leftcontent"></ul>
+<ul id="leftcontent" class="hascontrols"></ul>
 
 <div id="rightcontent">
 <table id="collection" data-etag="<?php echo $_['etag']; ?>">

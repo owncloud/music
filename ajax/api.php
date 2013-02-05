@@ -107,7 +107,7 @@ if ($arguments['action']) {
 			$songId = $collection->getSongByPath($arguments['path']);
 			$collection->registerPlay($songId);
 
-			header('Content-Type:' . $type);
+			header('Content-Type:' . $ftype);
 			\OCP\Response::enableCaching(3600 * 24); // 24 hour
 			header('Accept-Ranges: bytes');
 			header('Content-Length: '.\OC\Files\Filesystem::filesize($arguments['path']));

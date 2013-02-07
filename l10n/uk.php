@@ -4,14 +4,16 @@
 "albums" => "альбоми",
 "Add to playlist" => "Додати плейлист",
 "Add album to playlist" => "Додати альбом до плейлиста",
+"Previous" => "Попередній",
 "Play" => "Грати",
 "Pause" => "Пауза",
-"Previous" => "Попередній",
 "Next" => "Наступний",
 "Mute" => "Звук вкл.",
 "Unmute" => "Звук викл.",
 "Rescan Collection" => "Повторне сканування колекції",
 "Artist" => "Виконавець",
 "Album" => "Альбом",
-"Title" => "Заголовок"
+"Title" => "Заголовок",
+"Media" => "Медіа",
+"Ampache address:" => "Адреса Ampache:"
 );

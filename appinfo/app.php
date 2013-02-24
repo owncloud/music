@@ -43,7 +43,6 @@ OCP\Util::connectHook('OC_Filesystem', 'post_delete', 'OCA\Media\Media', 'delete
 //list for file moves to update the database
 OCP\Util::connectHook('OC_Filesystem', 'post_rename', 'OCA\Media\Media', 'moveFile');
 
-OCP\Util::addscript('media', 'loader');
 OCP\App::registerPersonal('media', 'settings');
 
 OCP\App::addNavigationEntry(array('id' => 'media_index', 'order' => 2, 'href' => OCP\Util::linkTo('media', 'index.php'), 'icon' => OCP\Util::imagePath('core', 'places/music.svg'), 'name' => $l->t('Music')));

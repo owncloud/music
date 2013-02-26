@@ -37,7 +37,11 @@ class Scanner {
 	public function getMusic() {
 		$music = \OC\Files\Filesystem::searchByMime('audio');
 		$ogg = \OC\Files\Filesystem::searchByMime('application/ogg');
-		return array_merge($music, $ogg);
+		$music = array_merge($music, $ogg);
+		foreach ($music as &$file) {
+			$file = $file['path'];
+		}
+		return $music;
 	}
 
 	/**

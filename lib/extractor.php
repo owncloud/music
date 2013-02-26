@@ -41,8 +41,8 @@ class Extractor_GetID3 implements Extractor {
 	 * @return array
 	 */
 	public function extract($path) {
-		$file = \OC_Filesystem::getLocalFile($path);
-		$data = @$this->getID3->analyze($file);
+		$file = \OC\Files\Filesystem::getView()->getAbsolutePath($path);
+		$data = @$this->getID3->analyze('oc://' . $file);
 		\getid3_lib::CopyTagsToComments($data);
 
 		if (!isset($data['comments'])) {
@@ -50,9 +50,9 @@ class Extractor_GetID3 implements Extractor {
 		}
 		$meta = array();
 
-		$meta['artist'] = stripslashes($data['comments']['artist'][0]);
-		$meta['album'] = stripslashes($data['comments']['album'][0]);
-		$meta['title'] = stripslashes($data['comments']['title'][0]);
+		$meta['artist'] = (isset($data['comments']['artist'])) ? stripslashes($data['comments']['artist'][0]) : '';
+		$meta['album'] = (isset($data['comments']['album'])) ? stripslashes($data['comments']['album'][0]) : '';
+		$meta['title'] = (isset($data['comments']['title'])) ? stripslashes($data['comments']['title'][0]) : '';
 		$meta['size'] = (int)($data['filesize']);
 		if (isset($data['comments']['track'])) {
 			$meta['track'] = $data['comments']['track'][0];

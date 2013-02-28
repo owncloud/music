@@ -31,7 +31,7 @@
 <ul id="leftcontent" class="hascontrols"></ul>
 
 <div id="rightcontent">
-<table id="collection" data-etag="<?php echo $_['etag']; ?>">
+<table id="collection" data-etag="<?php p($_['etag']); ?>">
 	<thead>
 		<tr>
 			<th><?php p($l->t('Artist'))?></th>

@@ -1,17 +1,17 @@
 <div class='player-controls' id="controls">
 	<div class="jp-controls">
-		<a href="#" class="jp-previous action"><img class="svg" alt="<?php p($l->t('Previous'));?>" src="<?php echo OCP\image_path('core', 'actions/play-previous.svg'); ?>" /></a>
-		<a href="#" class="jp-play action"><img class="svg" alt="<?php p($l->t('Play'));?>" src="<?php echo OCP\image_path('core', 'actions/play-big.svg'); ?>" /></a>
-		<a href="#" class="jp-pause action"><img class="svg" alt="<?php p($l->t('Pause'));?>" src="<?php echo OCP\image_path('core', 'actions/pause-big.svg'); ?>" /></a>
-		<a href="#" class="jp-next action"><img class="svg" alt="<?php p($l->t('Next'));?>" src="<?php echo OCP\image_path('core', 'actions/play-next.svg'); ?>" /></a>
+		<a href="#" class="jp-previous action"><img class="svg" alt="<?php p($l->t('Previous'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/play-previous.svg')); ?>" /></a>
+		<a href="#" class="jp-play action"><img class="svg" alt="<?php p($l->t('Play'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/play-big.svg')); ?>" /></a>
+		<a href="#" class="jp-pause action"><img class="svg" alt="<?php p($l->t('Pause'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/pause-big.svg')); ?>" /></a>
+		<a href="#" class="jp-next action"><img class="svg" alt="<?php p($l->t('Next'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/play-next.svg')); ?>" /></a>
 		<div class="jp-progress">
 			<div class="jp-seek-bar">
 				<div class="jp-play-bar"></div>
 			</div>
 			<div class="jp-current-time"></div>
 		</div>
-		<a href="#" class="jp-mute action"><img class="svg" alt="<?php p($l->t('Mute'));?>" src="<?php echo OCP\image_path('core', 'actions/sound.svg'); ?>" /></a>
-		<a href="#" class="jp-unmute action"><img class="svg" alt="<?php p($l->t('Unmute'));?>" src="<?php echo OCP\image_path('core', 'actions/sound-off.svg'); ?>" /></a>
+		<a href="#" class="jp-mute action"><img class="svg" alt="<?php p($l->t('Mute'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/sound.svg')); ?>" /></a>
+		<a href="#" class="jp-unmute action"><img class="svg" alt="<?php p($l->t('Unmute'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/sound-off.svg')); ?>" /></a>
 		<div class="jp-volume-bar">
 			<div class="jp-volume-bar-value"></div>
 		</div>

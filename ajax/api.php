@@ -9,6 +9,8 @@
 namespace OCA\Media;
 
 \OCP\JSON::checkAppEnabled('media');
+\OCP\JSON::checkLoggedIn();
+\OCP\JSON::callCheck();
 
 error_reporting(E_ALL); //no script error reporting because of getID3
 

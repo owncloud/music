@@ -24,6 +24,8 @@
 header('Content-type: text/html; charset=UTF-8') ;
 
 OCP\JSON::checkAppEnabled('media');
+\OCP\JSON::checkLoggedIn();
+\OCP\JSON::callCheck();
 
 $autoUpdate=(isset($_GET['autoupdate']) and $_GET['autoupdate']=='true');
 

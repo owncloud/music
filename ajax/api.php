@@ -10,7 +10,6 @@ namespace OCA\Media;
 
 \OCP\JSON::checkAppEnabled('media');
 \OCP\JSON::checkLoggedIn();
-\OCP\JSON::callCheck();
 
 error_reporting(E_ALL); //no script error reporting because of getID3
 
@@ -43,6 +42,7 @@ $collection = new Collection(\OCP\USER::getUser());
 if ($arguments['action']) {
 	switch ($arguments['action']) {
 		case 'delete':
+			\OCP\JSON::callCheck();
 			$path = $arguments['path'];
 			$collection->deleteSongByPath($path);
 			$paths = explode(PATH_SEPARATOR, \OCP\Config::getUserValue(\OCP\USER::getUser(), 'media', 'paths', ''));

@@ -114,6 +114,10 @@ div.jp-volume-bar-value {
 	white-space: nowrap;
 }
 
+#leftcontent {
+	z-index: 50;
+}
+
 #leftcontent img.remove {
 	display: none;
 	float: right;

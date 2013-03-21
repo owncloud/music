@@ -25,9 +25,9 @@ interface Extractor {
  */
 class Extractor_GetID3 implements Extractor {
 	/**
-	 * @var \getID3 $id3;
+	 * @var \getID3 $getID3;
 	 */
-	private $id3;
+	private $getID3;
 
 	public function __construct() {
 		$this->getID3 = @new \getID3();

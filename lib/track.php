@@ -39,7 +39,7 @@ class Track implements Extractable {
 	protected $tagType = 'id3v2';
 	
 	/**
-	 * Get all tags as array
+	 * Constructor
 	 *
 	 * @param $trackData array
 	 * @param $trackPath string

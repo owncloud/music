@@ -82,7 +82,7 @@ class Track implements Extractable {
 		if (!$value) {
 			$value = 'Unknown';
 		}
-		return $value;
+		return stripslashes($value);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ class Track implements Extractable {
 		if (!$value) {
 			$value = 'Unknown';
 		}
-		return $value;
+		return stripslashes($value);
 	}
 	
 	/**
@@ -116,7 +116,7 @@ class Track implements Extractable {
 		if (!$value) {
 			$value = basename($this->trackPath);
 		}
-		return $value;
+		return stripslashes($value);
 	}
 	
 	/**

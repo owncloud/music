@@ -86,6 +86,12 @@ var PlayList={
 				PlayList.render();
 				return false;
 			});
+			$(".jp-clear").click(function() {
+				PlayList.clear();
+				$(this).blur();
+				PlayList.render();
+				return false;
+			});
 			PlayList.player=$('#jp-player');
 		}
 		$(PlayList.player).jPlayer({
@@ -146,6 +152,12 @@ var PlayList={
 		});
 		item[type]=PlayList.urlBase+encodeURIComponent(path);
 		PlayList.items.push(item);
+	},
+	clear:function(){
+		PlayList.items.length=0;
+		PlayList.player.jPlayer("stop");
+		PlayList.save();
+		PlayList.render();
 	},
 	remove:function(index){
 		PlayList.items.splice(index,1);
@@ -211,4 +223,6 @@ $(document).ready(function(){
 
 	$('jp-previous').tipsy({gravity:'n', fade:true, live:true});
 	$('jp-next').tipsy({gravity:'n', fade:true, live:true});
+	$('.jp-clear').attr('title', 'Empty playlist');
+	$('jp-clear').tipsy({gravity:'n', fade:true, live:true});
 })

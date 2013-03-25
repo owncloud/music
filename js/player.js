@@ -1,5 +1,5 @@
 var PlayList={
-	urlBase:OC.linkTo('media','ajax/api.php')+'?action=play&path=',
+	urlBase:OC.linkTo('media','ajax/api.php')+'?action=play&requesttoken=' + oc_requesttoken + '&path=',
 	current:-1,
 	items:[],
 	player:null,
@@ -25,7 +25,7 @@ var PlayList={
 	},
 	play:function(index,time,ready){
 		var items=PlayList.items;
-		if(index==null){
+		if(index===null){
 			index=PlayList.current;
 		}
 		PlayList.save();
@@ -36,22 +36,23 @@ var PlayList={
 					PlayList.player.jPlayer("play",time);
 					OC.localStorage.setItem('playlist_time',time);
 					PlayList.player.jPlayer("destroy");
-// 					PlayList.save(); // so that the init don't lose the playlist
+//					PlayList.save(); // so that the init don't lose the playlist
 					PlayList.init(items[index].type,null); // init calls load that calls play
 				}else{
 					PlayList.player.jPlayer("setMedia", items[PlayList.current]);
 					$(".jp-current-song").html(items[PlayList.current].name);
 					items[index].playcount++;
 					PlayList.player.jPlayer("play",time);
+                    var previous, next;
 					if(index>0){
-						var previous=index-1;
+						previous=index-1;
 					}else{
-						var previous=items.length-1;
+						previous=items.length-1;
 					}
 					if(index+1<items.length){
-						var next=index+1;
+						next=index+1;
 					}else{
-						var next=0;
+						next=0;
 					}
 					$('.jp-next').attr('title',items[next].name);
 					$('.jp-previous').attr('title',items[previous].name);
@@ -113,7 +114,7 @@ var PlayList={
 			},
 			volume:PlayList.volume,
 			cssSelectorAncestor:'.player-controls',
-			swfPath:OC.linkTo('media','js'),
+			swfPath:OC.linkTo('media','js')
 		});
 	},
 	add:function(song,dontReset){
@@ -211,7 +212,7 @@ var PlayList={
 			}
 		}
 	}
-}
+};
 
 $(document).ready(function(){
 	$(window).bind('beforeunload', function (){
@@ -225,4 +226,4 @@ $(document).ready(function(){
 	$('jp-next').tipsy({gravity:'n', fade:true, live:true});
 	$('.jp-clear').attr('title', 'Empty playlist');
 	$('jp-clear').tipsy({gravity:'n', fade:true, live:true});
-})
+});

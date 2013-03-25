@@ -45,8 +45,7 @@ class Extractor_GetID3 implements Extractor {
 		$data = @$this->getID3->analyze('oc://' . $file);
 		\getid3_lib::CopyTagsToComments($data);
 		
-		$track = new Track($data, $path);
-		return $track->getTags();
+		return $data;
 	}
 
 }

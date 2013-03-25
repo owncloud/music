@@ -44,9 +44,10 @@ class Track implements Extractable {
 	 * @param $trackData array
 	 * @param $trackPath string
 	 */
-	public function __construct($trackData, $trackPath) {
+	public function __construct($trackPath) {
 		$this->trackPath = $trackPath;
-		$this->trackData = $trackData;
+		$extractor = new Extractor_GetID3();
+		$this->trackData = $extractor->extract($trackPath);
 	}
 	
 	/**

@@ -1,9 +1,9 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Muzik",
 "Add album to playlist" => "tambah album dalam senarai main",
+"Previous" => "Sebelum",
 "Play" => "Main",
 "Pause" => "Jeda",
-"Previous" => "Sebelum",
 "Next" => "Seterus",
 "Mute" => "Bisu",
 "Unmute" => "Nyahbisu",

@@ -1,8 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Muzika",
+"Previous" => "Prethodna",
 "Play" => "Pusti",
 "Pause" => "Pauziraj",
-"Previous" => "Prethodna",
 "Next" => "Sledeća",
 "Mute" => "Isključi zvuk",
 "Unmute" => "Uključi zvuk",

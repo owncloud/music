@@ -1,9 +1,9 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Musek",
 "Add album to playlist" => "Setz den Album bei d'Playlist bäi",
+"Previous" => "Zeréck",
 "Play" => "Ofspillen",
 "Pause" => "Paus",
-"Previous" => "Zeréck",
 "Next" => "Weider",
 "Mute" => "Toun ausmaachen",
 "Unmute" => "Toun umaachen",

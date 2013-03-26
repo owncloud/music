@@ -1,8 +1,8 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Musikk",
+"Previous" => "Førre",
 "Play" => "Spel",
 "Pause" => "Pause",
-"Previous" => "Førre",
 "Next" => "Neste",
 "Mute" => "Demp",
 "Unmute" => "Skru på lyd",

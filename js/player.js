@@ -222,8 +222,8 @@ $(document).ready(function(){
 		}
 	});
 
-	$('jp-previous').tipsy({gravity:'n', fade:true, live:true});
-	$('jp-next').tipsy({gravity:'n', fade:true, live:true});
+	$('.jp-previous').tipsy({gravity:'n', fade:true, live:true});
+	$('.jp-next').tipsy({gravity:'n', fade:true, live:true});
 	$('.jp-clear').attr('title', 'Empty playlist');
-	$('jp-clear').tipsy({gravity:'n', fade:true, live:true});
+	$('.jp-clear').tipsy({gravity:'n', fade:true, live:true});
 });

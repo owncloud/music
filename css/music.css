@@ -73,6 +73,9 @@ div.jp-duration {
 
 div.jp-current-song {
 	padding-left: 1em;
+	color: #777777;
+	font-weight: bold;
+	font-size: 160%;
 }
 
 div.jp-duration {

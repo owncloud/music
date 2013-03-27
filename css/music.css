@@ -117,23 +117,27 @@ div.jp-volume-bar-value {
 	white-space: nowrap;
 }
 
-#leftcontent {
-	z-index: 50;
+#content .hascontrols{
+	padding-bottom: 2.9em;
 }
 
-#leftcontent img.remove {
+#leftcontent {
+	z-index: 49;
+}
+
+#playlist img.remove {
 	display: none;
 	float: right;
 	cursor: pointer;
 	opacity: 0;
 }
 
-#leftcontent li:hover img.remove {
+#playlist li:hover img.remove {
 	display: inline;
 	opacity: .3;
 }
 
-#leftcontent li div.label {
+#playlist li div.label {
 	float: left;
 	width: 200px;
 	overflow: hidden;
@@ -235,3 +239,67 @@ tr.song td.artist {
 	height: 1.5em;
 	top: .4em;
 }
+
+#media-settings .settings { 
+	height:1.4em;
+	background-repeat: no-repeat;
+	background-position:0px 4px;
+	background-origin: content-box;
+	background-image:url('%webroot%/core/img/actions/settings.svg'); 
+}
+#media-settings .settings:hover { 
+	font-weight: normal;
+	color: #666666;
+}
+#media-settings.open {
+	height: auto;
+}
+#media-settings {
+-webkit-box-sizing: border-box; 
+-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background: none repeat scroll 0 0 #EEEEEE;
+	border-right: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	bottom: 0;
+	height: 2.8em;
+	margin: 0;
+	overflow: visible;
+	padding: 0;
+	position: fixed;
+	width: 20em;
+	z-index: 2;
+}
+
+#media-settings h2 {
+	text-indent: .5em;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+#media-settings h3 { 
+	cursor: pointer; 
+	-moz-transition: background 300ms ease 0s; 
+	background: none no-repeat scroll 1em center #eee; 
+	border-bottom: 1px solid #ddd; border-top: 1px solid #fff;
+	display: block; 
+	max-width: 100%; 
+	height: 2em;
+	padding: 0.5em 0.8em; 
+	color: #666; 
+	text-shadow: 0 1px 0 #f8f8f8; 
+	font-size: 1.2em; 
+}
+#media-settings h3:hover, #media-settings h3:active, #media-settings h3.active { 
+	background-color: #DBDBDB; 
+	border-bottom: 1px solid #CCCCCC; border-top: 1px solid #D4D4D4; 
+	color: #333333; font-weight: bold; 
+}
+.action{
+	cursor: pointer;
+	background-repeat: no-repeat;
+}
+
+.ampache-link {padding:0 10px 0 7px}
+.ampache-link input{width:100%}
+

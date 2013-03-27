@@ -41,17 +41,17 @@ PlayList.hide=function(){
 };
 
 $(document).ready(function(){
-	PlayList.parent=$('#leftcontent');
+	PlayList.parent=$('#playlist');
 	PlayList.init();
 	$('#selectAll').click(function(){
 		if($(this).attr('checked')){
 			// Check all
-			$('#leftcontent li.song input:checkbox').attr('checked', true);
-			$('#leftcontent li.song input:checkbox').parent().addClass('selected');
+			$('#playlist li.song input:checkbox').attr('checked', true);
+			$('#playlist li.song input:checkbox').parent().addClass('selected');
 		}else{
 			// Uncheck all
-			$('#leftcontent li.song input:checkbox').attr('checked', false);
-			$('#leftcontent li.song input:checkbox').parent().removeClass('selected');
+			$('#playlist li.song input:checkbox').attr('checked', false);
+			$('#playlist li.song input:checkbox').parent().removeClass('selected');
 		}
 	});
 });

@@ -29,7 +29,14 @@
 	<div class="player" id="jp-player"></div>
 </div>
 
-<ul id="leftcontent" class="hascontrols"></ul>
+<div id="leftcontent">
+	<ul id="playlist" class="hascontrols"></ul>
+	<div id="media-settings">
+		<h3 class="settings action text" tabindex="0" role="button" title="<?php p($l->t('Settings')); ?>"></h3>
+	    <h2><?php p($l->t('Ampache address:')); ?></h2>
+	    <div class="ampache-link"><input disabled="disabled" value="<?php print_unescaped(OCP\Util::linkToRemote('ampache')); ?>" /></div>
+	</div>
+</div>
 
 <div id="rightcontent">
 <table id="collection" data-etag="<?php p($_['etag']); ?>">

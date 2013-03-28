@@ -43,7 +43,7 @@ var PlayList={
 					$(".jp-current-song").html(items[PlayList.current].name);
 					items[index].playcount++;
 					PlayList.player.jPlayer("play",time);
-                    var previous, next;
+					var previous, next;
 					if(index>0){
 						previous=index-1;
 					}else{
@@ -157,6 +157,7 @@ var PlayList={
 	clear:function(){
 		PlayList.items.length=0;
 		PlayList.player.jPlayer("stop");
+		PlayList.player.jPlayer("clearMedia");
 		PlayList.save();
 		PlayList.render();
 	},

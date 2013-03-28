@@ -31,7 +31,7 @@ PlayList.render=function(){
 		li.addClass('song');
 		PlayList.parent.append(li);
 	}
-        $(".jp-playlist-" + PlayList.current).addClass("collection_playing");
+	$(".jp-playlist-" + PlayList.current).addClass("collection_playing");
 };
 PlayList.getSelected=function(){
 	return $('tbody td.name input:checkbox:checked').parent().parent();

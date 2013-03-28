@@ -157,6 +157,7 @@ var PlayList={
 	clear:function(){
 		PlayList.items.length=0;
 		PlayList.player.jPlayer("stop");
+        PlayList.player.jPlayer("clearMedia");
 		PlayList.save();
 		PlayList.render();
 	},

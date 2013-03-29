@@ -29,6 +29,8 @@ OC::$CLASSPATH['OCA\Media\Collection'] = 'media/lib/collection.php';
 OC::$CLASSPATH['OCA\Media\Scanner'] = 'media/lib/scanner.php';
 OC::$CLASSPATH['OCA\Media\Extractor'] = 'media/lib/extractor.php';
 OC::$CLASSPATH['OCA\Media\Extractor_GetID3'] = 'media/lib/extractor.php';
+OC::$CLASSPATH['OCA\Media\Extractable'] = 'media/lib/track.php';
+OC::$CLASSPATH['OCA\Media\Track'] = 'media/lib/track.php';
 
 //we need to have the sha256 hash of passwords for ampache
 OCP\Util::connectHook('OC_User', 'post_login', 'OCA\Media\Media', 'loginListener');

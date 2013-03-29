@@ -32,6 +32,12 @@ class Extractor_GetID3 implements Extractor {
 	public function __construct() {
 		$this->getID3 = @new \getID3();
 		$this->getID3->encoding = 'UTF-8';
+		
+		// Trying to enable stream support
+		if(ini_get('allow_url_fopen') != 1) {
+			\OCP\Util::writeLog('Media', 'allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', \OCP\Util::WARN);
+			@ini_set('allow_url_fopen', '1');
+		}
 	}
 
 	/**
@@ -41,30 +47,16 @@ class Extractor_GetID3 implements Extractor {
 	 * @return array
 	 */
 	public function extract($path) {
-		$file = \OC\Files\Filesystem::getView()->getAbsolutePath($path);
-		$data = @$this->getID3->analyze('oc://' . $file);
-		\getid3_lib::CopyTagsToComments($data);
-
-		if (!isset($data['comments'])) {
-			return array();
-		}
-		$meta = array();
-
-		$meta['artist'] = (isset($data['comments']['artist'])) ? stripslashes($data['comments']['artist'][0]) : '';
-		$meta['album'] = (isset($data['comments']['album'])) ? stripslashes($data['comments']['album'][0]) : '';
-		$meta['title'] = (isset($data['comments']['title'])) ? stripslashes($data['comments']['title'][0]) : '';
-		$meta['size'] = (int)($data['filesize']);
-		if (isset($data['comments']['track'])) {
-			$meta['track'] = $data['comments']['track'][0];
-		} else if (isset($data['comments']['track_number'])) {
-			$track = $data['comments']['track_number'][0];
-			$track = explode('/', $track);
-			$meta['track'] = (int)$track[0];
+		if(ini_get('allow_url_fopen')) {
+			$file = \OC\Files\Filesystem::getView()->getAbsolutePath($path);
+			$data = @$this->getID3->analyze('oc://' . $file);
 		} else {
-			$meta['track'] = 0;
+			// Fallback to the local FS
+			$file = \OC\Files\Filesystem::getLocalFile($path);
 		}
-		$meta['length'] = isset($data['playtime_seconds']) ? round($data['playtime_seconds']) : 0;
-
-		return $meta;
+		\getid3_lib::CopyTagsToComments($data);
+		
+		return $data;
 	}
+
 }

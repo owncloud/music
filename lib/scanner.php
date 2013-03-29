@@ -12,11 +12,6 @@ namespace OCA\Media;
 //class for scanning directories for music
 class Scanner {
 	/**
-	 * @var Extractor $extractor
-	 */
-	private $extractor;
-
-	/**
 	 * @var Collection $collection
 	 */
 	private $collection;
@@ -26,7 +21,6 @@ class Scanner {
 	 */
 	public function __construct($collection) {
 		$this->collection = $collection;
-		$this->extractor = new Extractor_GetID3();
 	}
 
 	/**
@@ -70,7 +64,8 @@ class Scanner {
 	public function scanFile($path) {
 		$mimeType = \OC\Files\Filesystem::getMimeType($path);
 		if ($mimeType === 'application/ogg' or substr($mimeType, 0, 5) === 'audio') {
-			$data = $this->extractor->extract($path);
+			$track = new Track($path);
+			$data = $track->getTags();
 			if (!empty($data)) {
 				$artistId = $this->collection->addArtist($data['artist']);
 				$albumId = $this->collection->addAlbum($data['album'], $artistId);

@@ -32,6 +32,11 @@ class Extractor_GetID3 implements Extractor {
 	public function __construct() {
 		$this->getID3 = @new \getID3();
 		$this->getID3->encoding = 'UTF-8';
+		
+		// Trying to enable stream support
+		if(ini_get('allow_url_fopen') != 1) {
+			@ini_set('allow_url_fopen', '1');
+		}
 	}
 
 	/**
@@ -41,8 +46,13 @@ class Extractor_GetID3 implements Extractor {
 	 * @return array
 	 */
 	public function extract($path) {
-		$file = \OC\Files\Filesystem::getView()->getAbsolutePath($path);
-		$data = @$this->getID3->analyze('oc://' . $file);
+		if(ini_get('allow_url_fopen')) {
+			$file = \OC\Files\Filesystem::getView()->getAbsolutePath($path);
+			$data = @$this->getID3->analyze('oc://' . $file);
+		} else {
+			// Fallback to the local FS
+			$file = \OC\Files\Filesystem::getLocalFile($path);
+		}
 		\getid3_lib::CopyTagsToComments($data);
 		
 		return $data;

@@ -28,13 +28,14 @@ class Extractor_GetID3 implements Extractor {
 	 * @var \getID3 $getID3;
 	 */
 	private $getID3;
-	
+
 	public function __construct() {
 		$this->getID3 = @new \getID3();
 		$this->getID3->encoding = 'UTF-8';
 		
 		// Trying to enable stream support
 		if(ini_get('allow_url_fopen') != 1) {
+			\OCP\Util::writeLog('Media', 'allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', \OCP\Util::WARN);
 			@ini_set('allow_url_fopen', '1');
 		}
 	}

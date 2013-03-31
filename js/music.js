@@ -42,6 +42,30 @@ $(document).ready(function(){
 	$('.jp-current-time').mouseenter(function(){
 		$('.jp-current-time').hide();
 	});
+
+	$('.ampache-link').click(function() {
+		$(this).find('input').select();
+	});
+	$('#media-settings').find('.settings').on('click keydown',function(event) {
+			if((event.type === 'keydown' || event.type === 'keypress') 
+				&& (event.keyCode !== 32 && event.keyCode !== 13)
+			) {
+				return;
+			}
+			var bodyListener = function(e) {
+				if($('#media-settings').find($(e.target)).length == 0) {
+					$('#media-settings').switchClass('open', '');
+				}
+			};
+			if($('#media-settings').hasClass('open')) {
+				$('#media-settings').switchClass('open', '');
+				$('body').unbind('click', bodyListener);
+			} else {
+				$('#media-settings').find('h2').trigger('click');
+				$('#media-settings').switchClass('', 'open');
+				$('body').bind('click', bodyListener);
+			}
+		});
 });
 
 function getUrlVars(){

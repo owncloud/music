@@ -1,6 +1,5 @@
 <div class='player-controls' id="controls">
 	<div class="jp-controls">
-		<a href="#" class="jp-clear action"><img class="svg" alt="<?php p($l->t('Clear'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/delete.svg')); ?>" /></a>
 		<a href="#" class="jp-previous action"><img class="svg" alt="<?php p($l->t('Previous'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/play-previous.svg')); ?>" /></a>
 		<a href="#" class="jp-play action"><img class="svg" alt="<?php p($l->t('Play'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/play-big.svg')); ?>" /></a>
 		<a href="#" class="jp-pause action"><img class="svg" alt="<?php p($l->t('Pause'));?>" src="<?php print_unescaped(OCP\image_path('core', 'actions/pause-big.svg')); ?>" /></a>

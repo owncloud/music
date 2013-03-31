@@ -31,6 +31,16 @@ PlayList.render=function(){
 		li.addClass('song');
 		PlayList.parent.append(li);
 	}
+	PlayList.parent.append('<li class="jp-clear"><img src="'+OC.imagePath('core','actions/delete')+'"/> Clear playlist</li>');
+	if (PlayList.items.length === 0) {
+	   $('.jp-clear').hide();
+	}
+	$(".jp-clear").click(function() {
+		PlayList.clear();
+		$(this).blur();
+		PlayList.render();
+		return false;
+	});
 	$(".jp-playlist-" + PlayList.current).addClass("collection_playing");
 };
 PlayList.getSelected=function(){
@@ -54,4 +64,6 @@ $(document).ready(function(){
 			$('#playlist li.song input:checkbox').parent().removeClass('selected');
 		}
 	});
+	$('.jp-clear').attr('title', 'Empty playlist');
+	$('.jp-clear').tipsy({gravity:'n', fade:true, live:true});
 });

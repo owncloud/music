@@ -302,4 +302,5 @@ tr.song td.artist {
 
 .ampache-link {padding:0 10px 0 7px}
 .ampache-link input{width:100%}
-
+.jp-clear {color:#888888;font-size:80%;}
+.jp-clear img {width:12px;margin-bottom:-2px;}

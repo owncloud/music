@@ -87,12 +87,6 @@ var PlayList={
 				PlayList.render();
 				return false;
 			});
-			$(".jp-clear").click(function() {
-				PlayList.clear();
-				$(this).blur();
-				PlayList.render();
-				return false;
-			});
 			PlayList.player=$('#jp-player');
 		}
 		$(PlayList.player).jPlayer({
@@ -141,6 +135,7 @@ var PlayList={
 			var item={name:song.name,type:type,artist:song.artist,album:song.album,length:song.length,playcount:song.playCount};
 			item[type]=PlayList.urlBase+encodeURIComponent(song.path);
 			PlayList.items.push(item);
+			$('.jp-clear:hidden').show();
 		}
 	},
 	addFile:function(path){
@@ -153,6 +148,7 @@ var PlayList={
 		});
 		item[type]=PlayList.urlBase+encodeURIComponent(path);
 		PlayList.items.push(item);
+		$('.jp-clear:hidden').show();
 	},
 	clear:function(){
 		PlayList.items.length=0;
@@ -160,10 +156,14 @@ var PlayList={
 		PlayList.player.jPlayer("clearMedia");
 		PlayList.save();
 		PlayList.render();
+		$('.jp-clear:visible').hide();
 	},
 	remove:function(index){
 		PlayList.items.splice(index,1);
 		PlayList.render();
+		if (PlayList.items.length === 0 ) {
+			$('.jp-clear:visible').hide();
+		}
 	},
 	render:function(){},
 	playing:function(){
@@ -225,6 +225,4 @@ $(document).ready(function(){
 
 	$('.jp-previous').tipsy({gravity:'n', fade:true, live:true});
 	$('.jp-next').tipsy({gravity:'n', fade:true, live:true});
-	$('.jp-clear').attr('title', 'Empty playlist');
-	$('.jp-clear').tipsy({gravity:'n', fade:true, live:true});
 });

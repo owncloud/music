@@ -32,9 +32,6 @@ class Scanner {
 		$music = \OC\Files\Filesystem::searchByMime('audio');
 		$ogg = \OC\Files\Filesystem::searchByMime('application/ogg');
 		$music = array_merge($music, $ogg);
-		foreach ($music as &$file) {
-			$file = $file['path'];
-		}
 		return $music;
 	}
 
@@ -50,7 +47,7 @@ class Scanner {
 		foreach ($music as $file) {
 			$this->scanFile($file);
 			$songs++;
-			\OC_Hook::emit('media', 'song_scanned', array('path' => $file, 'count' => $songs));
+			\OC_Hook::emit('media', 'song_scanned', array('path' => $file['path'], 'count' => $songs));
 		}
 		return $songs;
 	}
@@ -61,8 +58,16 @@ class Scanner {
 	 * @param string $path
 	 * @return boolean
 	 */
-	public function scanFile($path) {
-		$mimeType = \OC\Files\Filesystem::getMimeType($path);
+	public function scanFile($file) {
+		if (is_array($file)) {
+			$path = $file['path'];
+			$mimeType = $file['mimetype'];
+		} else {
+			$path = $file;
+		}
+		if (!$mimeType) {
+			$mimeType = \OC\Files\Filesystem::getMimeType($path);
+		}
 		if ($mimeType === 'application/ogg' or substr($mimeType, 0, 5) === 'audio') {
 			$track = new Track($path);
 			$data = $track->getTags();

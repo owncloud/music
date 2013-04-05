@@ -122,6 +122,9 @@ if ($arguments['action']) {
 		case 'find_music':
 			$scanner = new Scanner($collection);
 			$music = $scanner->getMusic();
+			foreach ($music as &$file) {
+				$file = $file['path'];
+			}
 			\OCP\JSON::encodedPrint($music);
 			exit;
 	}

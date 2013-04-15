@@ -65,7 +65,7 @@ class Scanner {
 		} else {
 			$path = $file;
 		}
-		if (!$mimeType) {
+		if (!isset($mimeType)) {
 			$mimeType = \OC\Files\Filesystem::getMimeType($path);
 		}
 		if ($mimeType === 'application/ogg' or substr($mimeType, 0, 5) === 'audio') {

@@ -1,0 +1,19 @@
+<?php $TRANSLATIONS = array(
+"Music" => "Muzikë",
+"songs" => "këngë",
+"albums" => "albume",
+"Add to playlist" => "Shto tek lista e ekzekutimit",
+"Add album to playlist" => "Shto albumin tek lista e ekzekutimit",
+"Previous" => "Mëparshëm",
+"Play" => "Luaj",
+"Pause" => "Pauzë",
+"Next" => "Mëpasshëm",
+"Mute" => "Pa zë",
+"Unmute" => "Me zë",
+"Rescan Collection" => "Azhurno koleksionin",
+"Settings" => "Parametrat",
+"Ampache address:" => "Adresa ampache:",
+"Artist" => "Artisti",
+"Album" => "Albumi",
+"Title" => "Titulli"
+);

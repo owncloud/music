@@ -11,9 +11,9 @@
 "Mute" => "خفه کردن",
 "Unmute" => "باز گشایی صدا",
 "Rescan Collection" => "دوباره بازرسی مجموعه ها",
+"Settings" => "تنظیمات",
+"Ampache address:" => "آدرس Ampache ",
 "Artist" => "هنرمند",
 "Album" => "آلبوم",
-"Title" => "عنوان",
-"Media" => "رسانه ها",
-"Ampache address:" => "آدرس Ampache "
+"Title" => "عنوان"
 );

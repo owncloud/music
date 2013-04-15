@@ -8,6 +8,7 @@
 "Mute" => "Toun ausmaachen",
 "Unmute" => "Toun umaachen",
 "Rescan Collection" => "Kollektioun nei scannen",
+"Settings" => "Astellungen",
 "Artist" => "Artist",
 "Album" => "Album",
 "Title" => "Titel"

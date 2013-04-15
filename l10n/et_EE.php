@@ -11,6 +11,8 @@
 "Mute" => "Vaikseks",
 "Unmute" => "Hääl tagasi",
 "Rescan Collection" => "Skänni kollekttsiooni uuesti",
+"Settings" => "Seaded",
+"Ampache address:" => "Ampache aadress:",
 "Artist" => "Esitaja",
 "Album" => "Album",
 "Title" => "Pealkiri"

@@ -10,6 +10,7 @@
 "Mute" => "Mut",
 "Unmute" => "Desmut",
 "Rescan Collection" => "Torna explorar la colleccion",
+"Settings" => "Configuracion",
 "Artist" => "Artista",
 "Album" => "Album",
 "Title" => "Títol"

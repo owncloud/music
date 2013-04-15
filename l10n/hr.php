@@ -10,6 +10,7 @@
 "Mute" => "Utišaj zvuk",
 "Unmute" => "Uključi zvuk",
 "Rescan Collection" => "Ponovi skeniranje kolekcije",
+"Settings" => "Postavke",
 "Artist" => "Izvođač",
 "Album" => "Album",
 "Title" => "Naslov"

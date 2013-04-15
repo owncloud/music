@@ -11,9 +11,9 @@
 "Mute" => "Dempen",
 "Unmute" => "Dempen uit",
 "Rescan Collection" => "Collectie opnieuw scannen",
+"Settings" => "Instellingen",
+"Ampache address:" => "Ampache adres:",
 "Artist" => "Artiest",
 "Album" => "Album",
-"Title" => "Titel",
-"Media" => "Media",
-"Ampache address:" => "Ampache adres:"
+"Title" => "Titel"
 );

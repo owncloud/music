@@ -11,9 +11,9 @@
 "Mute" => "Mudo",
 "Unmute" => "Som",
 "Rescan Collection" => "Reverificar coleção",
+"Settings" => "Configurações",
+"Ampache address:" => "Endereço Ampache:",
 "Artist" => "Artista",
 "Album" => "Álbum",
-"Title" => "Título",
-"Media" => "Media",
-"Ampache address:" => "Endereço Ampache:"
+"Title" => "Título"
 );

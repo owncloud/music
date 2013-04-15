@@ -11,9 +11,9 @@
 "Mute" => "Stlmiť",
 "Unmute" => "Nahlas",
 "Rescan Collection" => "Znovu skenovať zbierku",
+"Settings" => "Nastavenia",
+"Ampache address:" => "Adresa ampache:",
 "Artist" => "Umelec",
 "Album" => "Album",
-"Title" => "Názov",
-"Media" => "Média",
-"Ampache address:" => "Adresa ampache:"
+"Title" => "Názov"
 );

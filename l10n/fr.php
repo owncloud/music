@@ -11,9 +11,9 @@
 "Mute" => "Muet",
 "Unmute" => "Audible",
 "Rescan Collection" => "Réanalyser la Collection",
+"Settings" => "Paramètres",
+"Ampache address:" => "Adresse du serveur ampache :",
 "Artist" => "Artiste",
 "Album" => "Album",
-"Title" => "Titre",
-"Media" => "Média",
-"Ampache address:" => "Adresse du serveur ampache :"
+"Title" => "Titre"
 );

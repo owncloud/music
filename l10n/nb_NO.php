@@ -11,9 +11,9 @@
 "Mute" => "Demp",
 "Unmute" => "Skru på lyd",
 "Rescan Collection" => "Søk gjennom samling på nytt",
+"Settings" => "Innstillinger",
+"Ampache address:" => "Ampache-adresse:",
 "Artist" => "Artist",
 "Album" => "Album",
-"Title" => "Tittel",
-"Media" => "Media",
-"Ampache address:" => "Ampache-adresse:"
+"Title" => "Tittel"
 );

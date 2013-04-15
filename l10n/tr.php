@@ -11,9 +11,9 @@
 "Mute" => "Sesi kapat",
 "Unmute" => "Sesi aç",
 "Rescan Collection" => "Koleksiyonu Tara",
+"Settings" => "Ayarlar",
+"Ampache address:" => "Ampache adresi:",
 "Artist" => "Sanatç",
 "Album" => "Albüm",
-"Title" => "Başlık",
-"Media" => "Ortam",
-"Ampache address:" => "Ampache adresi:"
+"Title" => "Başlık"
 );

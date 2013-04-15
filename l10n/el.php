@@ -11,9 +11,9 @@
 "Mute" => "Σίγαση",
 "Unmute" => "Επαναφορά ήχου",
 "Rescan Collection" => "Επανασάρωση συλλογής",
+"Settings" => "Ρυθμίσεις",
+"Ampache address:" => "Διεύθυνση Ampache:",
 "Artist" => "Καλλιτέχνης",
 "Album" => "Άλμπουμ",
-"Title" => "Τίτλος",
-"Media" => "Πολυμέσα",
-"Ampache address:" => "Διεύθυνση Ampache:"
+"Title" => "Τίτλος"
 );

@@ -11,9 +11,9 @@
 "Mute" => "Звук вкл.",
 "Unmute" => "Звук викл.",
 "Rescan Collection" => "Повторне сканування колекції",
+"Settings" => "Налаштування",
+"Ampache address:" => "Адреса Ampache:",
 "Artist" => "Виконавець",
 "Album" => "Альбом",
-"Title" => "Заголовок",
-"Media" => "Медіа",
-"Ampache address:" => "Адреса Ampache:"
+"Title" => "Заголовок"
 );

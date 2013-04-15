@@ -11,6 +11,7 @@
 "Mute" => "Mute",
 "Unmute" => "Con sono",
 "Rescan Collection" => "Rescannar collection",
+"Settings" => "Configurationes",
 "Artist" => "Artista",
 "Album" => "Album",
 "Title" => "Titulo"

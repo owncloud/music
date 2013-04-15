@@ -11,9 +11,9 @@
 "Mute" => "Mututu",
 "Unmute" => "Ez Mututu",
 "Rescan Collection" => "Bireskaneatu Bilduma",
+"Settings" => "Ezarpenak",
+"Ampache address:" => "Ampache helbidea:",
 "Artist" => "Artista",
 "Album" => "Albuma",
-"Title" => "Izenburua",
-"Media" => "Medioa",
-"Ampache address:" => "Ampache helbidea:"
+"Title" => "Izenburua"
 );

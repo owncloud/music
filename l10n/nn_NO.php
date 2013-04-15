@@ -7,6 +7,7 @@
 "Mute" => "Demp",
 "Unmute" => "Skru på lyd",
 "Rescan Collection" => "Skann samlinga på nytt",
+"Settings" => "Innstillingar",
 "Artist" => "Artist",
 "Album" => "Album",
 "Title" => "Tittel"

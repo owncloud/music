@@ -11,9 +11,9 @@
 "Mute" => "Utišaj",
 "Unmute" => "Povrni glasnost",
 "Rescan Collection" => "Ponovno preišči zbirko",
+"Settings" => "Nastavitve",
+"Ampache address:" => "Naslov Ampache:",
 "Artist" => "Izvajalec",
 "Album" => "Album",
-"Title" => "Naslov",
-"Media" => "Predstavne datoteke",
-"Ampache address:" => "Naslov Ampache:"
+"Title" => "Naslov"
 );

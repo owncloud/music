@@ -11,6 +11,7 @@
 "Mute" => "Hljóð af",
 "Unmute" => "Hljóð á",
 "Rescan Collection" => "Endurlesa safn",
+"Settings" => "Stillingar",
 "Artist" => "Listamaður",
 "Album" => "Albúm",
 "Title" => "Titill"

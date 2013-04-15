@@ -11,9 +11,9 @@
 "Mute" => "Fără sonor",
 "Unmute" => "Cu sonor",
 "Rescan Collection" => "Rescanează colecția",
+"Settings" => "Setări",
+"Ampache address:" => "Adresa Ampache",
 "Artist" => "Artist",
 "Album" => "Album",
-"Title" => "Titlu",
-"Media" => "Media",
-"Ampache address:" => "Adresa Ampache"
+"Title" => "Titlu"
 );

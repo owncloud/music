@@ -11,9 +11,9 @@
 "Mute" => "ミュート",
 "Unmute" => "ミュート解除",
 "Rescan Collection" => "コレクションの再スキャン",
+"Settings" => "設定",
+"Ampache address:" => "Ampache アドレス:",
 "Artist" => "アーティスト",
 "Album" => "アルバム",
-"Title" => "曲名",
-"Media" => "メディア",
-"Ampache address:" => "Ampache アドレス:"
+"Title" => "曲名"
 );

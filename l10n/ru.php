@@ -11,9 +11,9 @@
 "Mute" => "Отключить звук",
 "Unmute" => "Включить звук",
 "Rescan Collection" => "Пересканировать коллекцию",
+"Settings" => "Конфигурация",
+"Ampache address:" => "адрес Ampache:",
 "Artist" => "Исполнитель",
 "Album" => "Альбом",
-"Title" => "Название",
-"Media" => "Медиа",
-"Ampache address:" => "адрес Ampache:"
+"Title" => "Название"
 );

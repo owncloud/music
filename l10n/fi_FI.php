@@ -11,9 +11,9 @@
 "Mute" => "Mykistä",
 "Unmute" => "Palauta äänet",
 "Rescan Collection" => "Etsi uusia kappaleita",
+"Settings" => "Asetukset",
+"Ampache address:" => "Ampache-osoite:",
 "Artist" => "Esittäjä",
 "Album" => "Albumi",
-"Title" => "Nimi",
-"Media" => "Media",
-"Ampache address:" => "Ampache-osoite:"
+"Title" => "Nimi"
 );

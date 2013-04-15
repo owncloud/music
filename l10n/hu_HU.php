@@ -11,9 +11,9 @@
 "Mute" => "Némítás",
 "Unmute" => "A némítás megszüntetése",
 "Rescan Collection" => "A gyűjtemény újraolvasása",
+"Settings" => "Beállítások",
+"Ampache address:" => "Ampache cím:",
 "Artist" => "Előadó",
 "Album" => "Album",
-"Title" => "Cím",
-"Media" => "Média",
-"Ampache address:" => "Ampache cím:"
+"Title" => "Cím"
 );

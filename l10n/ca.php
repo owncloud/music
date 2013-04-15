@@ -11,9 +11,9 @@
 "Mute" => "Mut",
 "Unmute" => "Activa el so",
 "Rescan Collection" => "Explora de nou la col·lecció",
+"Settings" => "Configuració",
+"Ampache address:" => "Adreça Ampache:",
 "Artist" => "Artista",
 "Album" => "Àlbum",
-"Title" => "Títol",
-"Media" => "Suport",
-"Ampache address:" => "Adreça Ampache:"
+"Title" => "Títol"
 );

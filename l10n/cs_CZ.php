@@ -11,9 +11,9 @@
 "Mute" => "Ztlumit",
 "Unmute" => "Obnovit",
 "Rescan Collection" => "Znovu prohledat",
+"Settings" => "Nastavení",
+"Ampache address:" => "Adresa ampache:",
 "Artist" => "Umělec",
 "Album" => "Album",
-"Title" => "Název",
-"Media" => "Média",
-"Ampache address:" => "Adresa ampache:"
+"Title" => "Název"
 );

@@ -11,9 +11,9 @@
 "Mute" => "Tắt",
 "Unmute" => "Bật",
 "Rescan Collection" => "Quét lại bộ sưu tập",
+"Settings" => "Cài đặt",
+"Ampache address:" => "Địa chỉ Ampache:",
 "Artist" => "Nghệ sỹ",
 "Album" => "Album",
-"Title" => "Tiêu đề",
-"Media" => "Đa phương tiện",
-"Ampache address:" => "Địa chỉ Ampache:"
+"Title" => "Tiêu đề"
 );

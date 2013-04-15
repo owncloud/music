@@ -11,9 +11,9 @@
 "Mute" => "Disattiva audio",
 "Unmute" => "Riattiva audio",
 "Rescan Collection" => "Nuova scansione collezione",
+"Settings" => "Impostazioni",
+"Ampache address:" => "Indirizzo Ampache:",
 "Artist" => "Artista",
 "Album" => "Album",
-"Title" => "Titolo",
-"Media" => "Media",
-"Ampache address:" => "Indirizzo Ampache:"
+"Title" => "Titolo"
 );

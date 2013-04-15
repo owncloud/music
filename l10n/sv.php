@@ -11,9 +11,9 @@
 "Mute" => "Ljudlös",
 "Unmute" => "Ljud på",
 "Rescan Collection" => "Sök igenom samlingen",
+"Settings" => "Inställningar",
+"Ampache address:" => "Ampache adress:",
 "Artist" => "Artist",
 "Album" => "Album",
-"Title" => "Titel",
-"Media" => "Media",
-"Ampache address:" => "Ampache adress:"
+"Title" => "Titel"
 );

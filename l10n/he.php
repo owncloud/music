@@ -11,6 +11,7 @@
 "Mute" => "השתק",
 "Unmute" => "בטל השתקה",
 "Rescan Collection" => "סריקת אוסף מחדש",
+"Settings" => "הגדרות",
 "Artist" => "מבצע",
 "Album" => "אלבום",
 "Title" => "כותרת"

@@ -11,9 +11,9 @@
 "Mute" => "إلغاء الصوت",
 "Unmute" => "تشغيل الصوت",
 "Rescan Collection" => "إعادة البحث عن ملفات الموسيقى",
+"Settings" => "إعدادات",
+"Ampache address:" => "عنوان خادم ال Ampache",
 "Artist" => "الفنان",
 "Album" => "الألبوم",
-"Title" => "العنوان",
-"Media" => "الوسائط",
-"Ampache address:" => "عنوان خادم ال Ampache"
+"Title" => "العنوان"
 );

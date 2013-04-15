@@ -11,9 +11,9 @@
 "Mute" => "靜音",
 "Unmute" => "關閉靜音",
 "Rescan Collection" => "重新掃描",
+"Settings" => "設定",
+"Ampache address:" => "Ampache 地址:",
 "Artist" => "演奏家",
 "Album" => "唱片",
-"Title" => "標題",
-"Media" => "媒體",
-"Ampache address:" => "Ampache 地址:"
+"Title" => "標題"
 );

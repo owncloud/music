@@ -11,6 +11,7 @@
 "Mute" => "Silentigi",
 "Unmute" => "Malsilentigi",
 "Rescan Collection" => "Reskani la aron",
+"Settings" => "Agordo",
 "Artist" => "Artisto",
 "Album" => "Albumo",
 "Title" => "Titolo"

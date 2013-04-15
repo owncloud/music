@@ -11,9 +11,9 @@
 "Mute" => "ปิดเสียง",
 "Unmute" => "เปิดเสียง",
 "Rescan Collection" => "ตรวจสอบไฟล์ที่เก็บไว้อีกครั้ง",
+"Settings" => "ตั้งค่า",
+"Ampache address:" => "ที่อยู่ Ampache:",
 "Artist" => "ศิลปิน",
 "Album" => "อัลบั้ม",
-"Title" => "ชื่อ",
-"Media" => "ไฟล์มีเดีย",
-"Ampache address:" => "ที่อยู่ Ampache:"
+"Title" => "ชื่อ"
 );

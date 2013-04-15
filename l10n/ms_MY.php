@@ -8,6 +8,7 @@
 "Mute" => "Bisu",
 "Unmute" => "Nyahbisu",
 "Rescan Collection" => "Imbas semula koleksi",
+"Settings" => "Tetapan",
 "Artist" => "Artis",
 "Album" => "Album",
 "Title" => "Judul"

@@ -11,9 +11,9 @@
 "Mute" => "음소거",
 "Unmute" => "음소거 해제",
 "Rescan Collection" => "모음집 재검색",
+"Settings" => "설정",
+"Ampache address:" => "Ampache 주소:",
 "Artist" => "음악가",
 "Album" => "앨범",
-"Title" => "제목",
-"Media" => "미디어",
-"Ampache address:" => "Ampache 주소:"
+"Title" => "제목"
 );

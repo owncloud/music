@@ -11,9 +11,9 @@
 "Mute" => "Apklusināt",
 "Unmute" => "Neapklusināt",
 "Rescan Collection" => "Vēlreiz caurskatīt kolekciju",
+"Settings" => "Iestatījumi",
+"Ampache address:" => "Ampache adrese:",
 "Artist" => "Izpildītājs",
 "Album" => "Albums",
-"Title" => "Nosaukums",
-"Media" => "Medijs",
-"Ampache address:" => "Ampache adrese:"
+"Title" => "Nosaukums"
 );

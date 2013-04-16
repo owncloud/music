@@ -97,7 +97,7 @@ var PlayList={
 			},
 			play:function(event){
 				OC.localStorage.setItem('playlist_playing',true);
-				document.title = "\u25b8 " + event.jPlayer.status.media.name + " - " + event.jPlayer.status.media.artist + " - ownCloud";
+				document.title = "\u25b8 " + $("<div/>").html(event.jPlayer.status.media.name + " - " + event.jPlayer.status.media.artist).text() + " - ownCloud";
 			},
 			supplied:type,
 			ready:function(){

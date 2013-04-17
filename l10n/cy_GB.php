@@ -1,3 +1,4 @@
 <?php $TRANSLATIONS = array(
-"Settings" => "Gosodiadau"
+"Settings" => "Gosodiadau",
+"Title" => "Teitl"
 );

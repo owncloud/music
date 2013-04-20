@@ -10,7 +10,7 @@
 "Next" => "Επόμενο",
 "Mute" => "Σίγαση",
 "Unmute" => "Επαναφορά ήχου",
-"Rescan Collection" => "Επανασάρωση συλλογής",
+"Rescan Collection" => "Επανασάρωση συλλογής ",
 "Settings" => "Ρυθμίσεις",
 "Ampache address:" => "Διεύθυνση Ampache:",
 "Artist" => "Καλλιτέχνης",

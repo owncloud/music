@@ -1,4 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Cerddoriaeth",
+"songs" => "caneuon",
+"albums" => "albymau",
+"Add to playlist" => "Ychwanegu i'r rhestr chwarae",
+"Add album to playlist" => "Ychwanegu albwm i'r rhestr chwarae",
+"Previous" => "Blaenorol",
+"Play" => "Chwarae",
+"Pause" => "Seibio",
+"Next" => "Nesaf",
+"Mute" => "Distewi",
+"Unmute" => "Dad-ddistewi",
+"Rescan Collection" => "Ailsganio Casgliad",
 "Settings" => "Gosodiadau",
+"Ampache address:" => "Cyfeiriad Ampache:",
+"Artist" => "Artist",
+"Album" => "Albwm",
 "Title" => "Teitl"
 );

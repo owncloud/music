@@ -40,7 +40,7 @@ var PlayList={
 					PlayList.init(items[index].type,null); // init calls load that calls play
 				}else{
 					PlayList.player.jPlayer("setMedia", items[PlayList.current]);
-					$(".jp-current-song").html(items[PlayList.current].name);
+					$(".jp-current-song").text(items[PlayList.current].name);
 					items[index].playcount++;
 					PlayList.player.jPlayer("play",time);
 					var previous, next;
@@ -54,8 +54,8 @@ var PlayList={
 					}else{
 						next=0;
 					}
-					$('.jp-next').attr('title',items[next].name);
-					$('.jp-previous').attr('title',items[previous].name);
+					$('.jp-next').attr('title',escapeHTML(items[next].name));
+					$('.jp-previous').attr('title',escapeHTML(items[previous].name));
 					if (typeof Collection !== 'undefined') {
 						Collection.registerPlay();
 					}
@@ -97,7 +97,7 @@ var PlayList={
 			},
 			play:function(event){
 				OC.localStorage.setItem('playlist_playing',true);
-				document.title = "\u25b8 " + $("<div/>").html(event.jPlayer.status.media.name + " - " + event.jPlayer.status.media.artist).text() + " - ownCloud";
+				document.title = "\u25b8 " + $("<div/>").html(escapeHTML(event.jPlayer.status.media.name) + " - " + escapeHTML(event.jPlayer.status.media.artist)).text() + " - ownCloud";
 			},
 			supplied:type,
 			ready:function(){

@@ -1,6 +1,6 @@
 <?php $TRANSLATIONS = array(
 "Music" => "Muusika",
-"songs" => "lugusid",
+"songs" => "lugu",
 "albums" => "albumeid",
 "Add to playlist" => "Lisa esitusloendisse",
 "Add album to playlist" => "Lisa album esitusnimekirja",
@@ -10,7 +10,7 @@
 "Next" => "Järgmine",
 "Mute" => "Vaikseks",
 "Unmute" => "Hääl tagasi",
-"Rescan Collection" => "Skänni kollekttsiooni uuesti",
+"Rescan Collection" => "Skänni kollektsiooni uuesti",
 "Settings" => "Seaded",
 "Ampache address:" => "Ampache aadress:",
 "Artist" => "Esitaja",

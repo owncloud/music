@@ -1,19 +1,3 @@
 <?php $TRANSLATIONS = array(
-"Music" => "Muzika",
-"songs" => "dainos",
-"albums" => "albumai",
-"Add to playlist" => "Pridėti į grojaraštį",
-"Add album to playlist" => "Pridėti albumą į grojaraštį",
-"Previous" => "Atgal",
-"Play" => "Groti",
-"Pause" => "Pristabdyti",
-"Next" => "Kitas",
-"Mute" => "Nutildyti",
-"Unmute" => "Įjungti garsą",
-"Rescan Collection" => "Atnaujinti kolekciją",
-"Settings" => "Nustatymai",
-"Ampache address:" => "Ampache adresas:",
-"Artist" => "Atlikėjas",
-"Album" => "Albumas",
 "Title" => "Pavadinimas"
 );

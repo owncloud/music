@@ -1,0 +1,111 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# goeck <admin@s-goecker.de>, 2012
+# Mirodin <blobbyjj@ymail.com>, 2012
+# arkascha <foss@christian-reiner.info>, 2013
+# driz <driz@i2pmail.org>, 2012
+# CBiX <fh@cbix.de>, 2012
+# javex <florian.ruechel.transifex@inexplicity.de>, 2012
+# george <social@georgehrke.com>, 2011
+# hebbet <pascal.herbert@gmail.com>, 2012
+# I Robot <owncloud-bot@tmit.eu>, 2013
+# I Robot <thomas.mueller@tmit.eu>, 2012
+# Jan-Christoph Borchardt <JanCBorchardt@fsfe.org>, 2011
+# Jan-Christoph Borchardt <jan@unhosted.org>, 2011
+# Marcel Kühlhorn <susefan93@gmx.de>, 2012-2013
+# Melvin Gundlach <mail@melvin-gundlach.de>, 2012
+# Michael Krell, 2012
+# LittleBuddha <mi.sc@gmx.net>, 2012
+# piccobello <nelsonfritsch@gmail.com>, 2012
+# JamFX <niko@nik-o-mat.de>, 2012
+# Phi Lieb <>, 2012
+# Susi <>, 2012
+#   <thomas.mueller@tmit.eu>, 2012
+# Thomas Müller <>, 2012
+#   <transifex.3.mensaje@spamgourmet.com>, 2012
+# Linutux <transifex.com@mail.simonzoellner.de>, 2013
+# kabum <uu.kabum@gmail.com>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: ownCloud\n"
+"Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
+"POT-Creation-Date: 2013-05-23 23:36+0200\n"
+"PO-Revision-Date: 2013-05-23 21:37+0000\n"
+"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"Language-Team: German <translations@owncloud.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
+msgid "Music"
+msgstr ""
+
+#: js/collection.js:100 js/collection.js:210 js/collection.js:257
+msgid "songs"
+msgstr ""
+
+#: js/collection.js:101 js/collection.js:208
+msgid "albums"
+msgstr ""
+
+#: js/collection.js:282
+msgid "Add to playlist"
+msgstr ""
+
+#: js/music.js:18
+msgid "Add album to playlist"
+msgstr ""
+
+#: templates/music.php:3
+msgid "Previous"
+msgstr ""
+
+#: templates/music.php:4 templates/player.php:12
+msgid "Play"
+msgstr ""
+
+#: templates/music.php:5 templates/music.php:23 templates/player.php:13
+msgid "Pause"
+msgstr ""
+
+#: templates/music.php:6 templates/player.php:14
+msgid "Next"
+msgstr ""
+
+#: templates/music.php:13
+msgid "Mute"
+msgstr ""
+
+#: templates/music.php:14
+msgid "Unmute"
+msgstr ""
+
+#: templates/music.php:22
+msgid "Rescan Collection"
+msgstr ""
+
+#: templates/music.php:34
+msgid "Settings"
+msgstr ""
+
+#: templates/music.php:35
+msgid "Ampache address:"
+msgstr ""
+
+#: templates/music.php:44
+msgid "Artist"
+msgstr ""
+
+#: templates/music.php:45
+msgid "Album"
+msgstr ""
+
+#: templates/music.php:46
+msgid "Title"
+msgstr "Titel"

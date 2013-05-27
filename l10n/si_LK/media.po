@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-05-27 01:42+0200\n"
-"PO-Revision-Date: 2013-05-26 23:42+0000\n"
+"POT-Creation-Date: 2013-05-28 01:49+0200\n"
+"PO-Revision-Date: 2013-05-27 23:50+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Sinhala (Sri Lanka) (http://www.transifex.com/projects/p/owncloud/language/si_LK/)\n"
 "MIME-Version: 1.0\n"
@@ -22,55 +22,55 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "සංගීතය"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr ""
+msgstr "ගීත"
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr ""
+msgstr "ගීත එකතු"
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr ""
+msgstr "ධාවන ලැයිස්තුවට එක් කරන්න"
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr ""
+msgstr "වාදනය සඳහා ගීත එකතුව එක් කරන්න"
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "පෙර"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "ධාවනය"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "විරාමය"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "ඊලඟ"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "නිහඬ කරන්න"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "හඬ සක්‍රිය කරන්න"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "එකතුව යලි පිරික්සන්න"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "සිටුවම්"
 
 #: templates/music.php:35
 msgid "Ampache address:"
@@ -78,11 +78,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "කලාකරු"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "ගීත එකතුව"
 
 #: templates/music.php:46
 msgid "Title"

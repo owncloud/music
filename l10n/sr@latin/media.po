@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-05-27 01:42+0200\n"
-"PO-Revision-Date: 2013-05-26 23:42+0000\n"
+"POT-Creation-Date: 2013-05-28 01:49+0200\n"
+"PO-Revision-Date: 2013-05-27 23:50+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/projects/p/owncloud/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "Muzika"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
@@ -40,35 +40,35 @@ msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "Prethodna"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "Pusti"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "Pauziraj"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "Sledeća"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "Isključi zvuk"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "Uključi zvuk"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "Ponovo pretraži zbirku"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "Podešavanja"
 
 #: templates/music.php:35
 msgid "Ampache address:"
@@ -76,11 +76,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "Izvođač"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 #: templates/music.php:46
 msgid "Title"

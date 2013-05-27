@@ -1,3 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Hudba",
+"songs" => "skladby",
+"albums" => "alba",
+"Add to playlist" => "Přidat do seznamu skladeb",
+"Add album to playlist" => "Přidat album do seznamu skladeb",
+"Previous" => "Předchozí",
+"Play" => "Přehrát",
+"Pause" => "Pozastavit",
+"Next" => "Následující",
+"Mute" => "Ztlumit",
+"Unmute" => "Obnovit",
+"Rescan Collection" => "Znovu prohledat",
+"Settings" => "Nastavení",
+"Ampache address:" => "Adresa ampache:",
+"Artist" => "Umělec",
+"Album" => "Album",
 "Title" => "Název"
 );

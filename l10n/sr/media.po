@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-05-28 01:49+0200\n"
-"PO-Revision-Date: 2013-05-27 23:50+0000\n"
+"POT-Creation-Date: 2013-05-29 01:42+0200\n"
+"PO-Revision-Date: 2013-05-28 23:42+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/owncloud/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -21,55 +21,55 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "Музика"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "нумере"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr "албуми"
+msgstr ""
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr "Додај на листу"
+msgstr ""
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr "Додај албум на листу"
+msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "Претходна"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr "Пусти"
+msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr "Паузирај"
+msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "Следећа"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr "Искључи звук"
+msgstr ""
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr "Укључи звук"
+msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr "Поново претражи збирку"
+msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "Поставке"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"
@@ -77,11 +77,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr "Извођач"
+msgstr ""
 
 #: templates/music.php:45
 msgid "Album"
-msgstr "Албум"
+msgstr ""
 
 #: templates/music.php:46
 msgid "Title"

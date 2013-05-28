@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-05-28 01:49+0200\n"
-"PO-Revision-Date: 2013-05-27 23:50+0000\n"
+"POT-Creation-Date: 2013-05-29 01:42+0200\n"
+"PO-Revision-Date: 2013-05-28 23:42+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Persian (http://www.transifex.com/projects/p/owncloud/language/fa/)\n"
 "MIME-Version: 1.0\n"
@@ -23,67 +23,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "موزیک"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "آهنگ ها"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr "آلبوم ها"
+msgstr ""
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr "افزودن به لیست اجرا"
+msgstr ""
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr "یک آلبوم به لیست پخش شونده ها اضافه کن"
+msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "قبلی"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr "پخش کردن"
+msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr "توقف کردن"
+msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "بعدی"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr "خفه کردن"
+msgstr ""
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr "باز گشایی صدا"
+msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr "دوباره بازرسی مجموعه ها"
+msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "تنظیمات"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr "آدرس Ampache "
+msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr "هنرمند"
+msgstr ""
 
 #: templates/music.php:45
 msgid "Album"
-msgstr "آلبوم"
+msgstr ""
 
 #: templates/music.php:46
 msgid "Title"

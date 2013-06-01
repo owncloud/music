@@ -31,8 +31,42 @@ class Scanner {
 	public function getMusic() {
 		$music = \OC\Files\Filesystem::searchByMime('audio');
 		$ogg = \OC\Files\Filesystem::searchByMime('application/ogg');
-		$music = array_merge($music, $ogg);
+		$shared = $this->getSharedMusic("//Shared");
+		$music = array_merge($music, $ogg,$shared);
+		foreach ($music as &$file) {
+				$file = $file['path'];
+		}
 		return $music;
+	}
+	
+	/**
+	 * get a list of all shared music files 
+	 * @param path to Shared Folder $sharedFolder
+	 * @return array
+	 */
+	public function getSharedMusic($sharedFolderPath) {
+	    $sharedFolder = \OC\Files\Filesystem::getDirectoryContent($sharedFolderPath);
+	    $files = array();
+		$this->getSharedMusicREK($sharedFolder,$sharedFolderPath,$files);
+   	    return $files;
+	}
+	
+	/**
+	 *  helper function for getSharedMusic
+	 *
+	 * @return void
+	 */
+	private function getSharedMusicREK($array,$path,&$files) {
+    	foreach($array as $key => $value) {
+        	if($value["mimepart"] == 'audio') {
+				$value["path"] = $path."/".$value["name"];
+				$files[] = $value;
+				continue;
+			} elseif($value["type"] == 'dir') {
+				$this->getSharedMusicREK(\OC\Files\Filesystem::getDirectoryContent($path."/".$value["name"]),$path."/".$value["name"],$files);
+				continue;
+			}
+		}
 	}
 
 	/**

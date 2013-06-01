@@ -33,4 +33,3 @@ acceptance-tests:
 
 javascript-tests:
 	cd js; make test
-	

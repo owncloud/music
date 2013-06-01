@@ -6,7 +6,7 @@
 
 angular.module('Test', ['OC']).
 	config(
-		['$routeProvider', '$interpolateProvider', 
+		['$routeProvider', '$interpolateProvider',
 		function ($routeProvider, $interpolateProvider) {
 
 	$routeProvider.when('/', {

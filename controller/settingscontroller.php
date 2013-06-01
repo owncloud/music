@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 
@@ -28,7 +28,7 @@ use OCA\AppFramework\Controller\Controller;
 
 
 class SettingsController extends Controller {
-	
+
 
 	/**
 	 * @param Request $request: an instance of the request
@@ -44,7 +44,7 @@ class SettingsController extends Controller {
 	 * The following comment turns off security checks
 	 * Please look up their meaning in the documentation!
 	 *
-	 * @CSRFExemption 
+	 * @CSRFExemption
 	 */
 	public function index(){
 		return $this->render('admin/settings');

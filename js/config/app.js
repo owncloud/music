@@ -17,13 +17,13 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 
 angular.module('Media', ['OC']).
 	config(
-		['$routeProvider', '$interpolateProvider', 
+		['$routeProvider', '$interpolateProvider',
 		function ($routeProvider, $interpolateProvider) {
 
 	$routeProvider.when('/', {

@@ -7,7 +7,7 @@ You will need node.js version >= 0.8
 To build the JavaScript file run::
 
     make
-    
+
 If you want to autocompile on change run:
 
     make watch
@@ -34,6 +34,6 @@ To clear the build/ folder run:
     make clean
 
 ## Run js unittests
-To run js unittests with the ci server, use 
+To run js unittests with the ci server, use
 
 	make test

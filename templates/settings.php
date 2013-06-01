@@ -1,5 +1,5 @@
 <div id="app-settings-header">
-<button name="app settings" 
+<button name="app settings"
 		class="settings-button"
 		oc-click-slide-toggle="{
 			selector: '#app-settings-content',

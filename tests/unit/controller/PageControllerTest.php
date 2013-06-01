@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 
@@ -49,7 +49,7 @@ class PageControllerTest extends ControllerTestUtility {
 
 
 	public function testIndexAnnotations(){
-		$annotations = array('IsAdminExemption', 'IsSubAdminExemption', 
+		$annotations = array('IsAdminExemption', 'IsSubAdminExemption',
 			'CSRFExemption');
 		$this->assertAnnotations($this->controller, 'index', $annotations);
 	}

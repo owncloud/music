@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 
@@ -37,4 +37,4 @@ App::main('SettingsController', 'index', array(), new DIContainer());
 $content = ob_get_contents();
 ob_clean();
 
-return $content; 
+return $content;

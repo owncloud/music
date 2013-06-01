@@ -19,13 +19,13 @@ watch: build
 karma: deps
 	export CHROME_BIN=$(chrome_bin) && export FIREFOX_BIN=$(firefox_bin) && \
 	$(grunt) --config $(CURDIR)/Gruntfile.js testjs
-	
+
 test: deps
 	export PHANTOMJS_BIN=$(phantomjs) && \
 	$(grunt) --config $(CURDIR)/Gruntfile.js ci
 
 phpunit: deps
-	$(grunt) --config $(CURDIR)/Gruntfile.coffee testphp	
+	$(grunt) --config $(CURDIR)/Gruntfile.coffee testphp
 
 clean:
 	rm -rf $(CURDIR)/node_modules/

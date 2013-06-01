@@ -1,0 +1,26 @@
+{
+	"name": "media",
+	"description": "Media player and server for ownCloud",
+	"version": "0.0.1",
+	"private": true,
+	"homepage": "https://github.com/owncloud/media",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:owncloud/media.git"
+	},
+	"bugs": "https://github.com/owncloud/media/issues",
+	"dependencies": {},
+	"devDependencies": {
+		"grunt": "*",
+		"grunt-cli": "*",
+		"grunt-contrib-concat": "*",
+		"grunt-contrib-jshint": "*",
+		"grunt-contrib-watch": "*",
+		"karma": "*",
+		"grunt-karma": "*",
+		"grunt-wrap": "*",
+		"phantomjs": "*",
+		"grunt-phpunit": "*"
+	},
+	"engine": "node >= 0.8"
+}

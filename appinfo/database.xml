@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<database>
+	<name>*dbname*</name>
+	<create>true</create>
+	<overwrite>false</overwrite>
+	<charset>utf8</charset>
+	<!-- adjust this to your needs
+	<table>
+		<name>*dbprefix*table_name</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+		</declaration>
+	</table>
+	-->
+</database>

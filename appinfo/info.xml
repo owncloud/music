@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<info>
+	<id>media</id>
+	<name>Media</name>
+	<description>Media player and server for ownCloud</description>
+	<licence>AGPLv3</licence>
+	<author>Morris Jobke</author>
+	<version>0.001</version>
+	<require>5.0.0</require>
+</info>

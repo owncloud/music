@@ -9,6 +9,7 @@
 # Mirodin <blobbyjj@ymail.com>, 2012
 # nIerSify <chris.schuette86@googlemail.com>, 2012
 # arkascha <foss@christian-reiner.info>, 2013
+# Christoph Sczigiol <christoph.sczigiol@gmail.com>, 2013
 # deh3nne, 2012
 # driz <driz@i2pmail.org>, 2012
 # CBiX <fh@cbix.de>, 2012
@@ -25,6 +26,7 @@
 # piccobello <nelsonfritsch@gmail.com>, 2012
 # JamFX <niko@nik-o-mat.de>, 2012
 # Phi Lieb <>, 2012
+# Susi <>, 2013
 # Susi  <>, 2012
 # I Robot <owncloud-bot@tmit.eu>, 2012
 # Thomas Müller <>, 2012
@@ -35,8 +37,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-04 02:10+0200\n"
-"PO-Revision-Date: 2013-06-04 00:10+0000\n"
+"POT-Creation-Date: 2013-06-05 01:42+0200\n"
+"PO-Revision-Date: 2013-06-04 23:42+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: German (Germany) <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"

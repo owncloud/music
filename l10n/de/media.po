@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# iLennart21 <a12s34d56f78@live.com>, 2013
 # goeck <admin@s-goecker.de>, 2012
 # Mirodin <blobbyjj@ymail.com>, 2012
 # arkascha <foss@christian-reiner.info>, 2013
@@ -26,14 +27,15 @@
 #   <thomas.mueller@tmit.eu>, 2012
 # Thomas Müller <>, 2012
 #   <transifex.3.mensaje@spamgourmet.com>, 2012
+# noxin <transifex.com@davidmainzer.com>, 2013
 # Linutux <transifex.com@mail.simonzoellner.de>, 2013
 # kabum <uu.kabum@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-04 02:10+0200\n"
-"PO-Revision-Date: 2013-06-04 00:10+0000\n"
+"POT-Creation-Date: 2013-06-05 01:42+0200\n"
+"PO-Revision-Date: 2013-06-04 23:42+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: German <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"

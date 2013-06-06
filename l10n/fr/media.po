@@ -12,6 +12,7 @@
 # guiguidu31300 <guiguidu31300@gmail.com>, 2012
 # Guillaume Paumier <guillom.pom@gmail.com>, 2013
 # Jan-Christoph Borchardt <JanCBorchardt@fsfe.org>, 2011
+# lyly95, 2013
 # msoko <sokolovitch@yahoo.com>, 2013
 # MathieuP <mathieu.payrol@gmail.com>, 2012
 # mishka <mishka.lazzlo@gmail.com>, 2012
@@ -27,8 +28,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-05 01:42+0200\n"
-"PO-Revision-Date: 2013-06-04 23:42+0000\n"
+"POT-Creation-Date: 2013-06-06 02:10+0200\n"
+"PO-Revision-Date: 2013-06-06 00:10+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "MIME-Version: 1.0\n"

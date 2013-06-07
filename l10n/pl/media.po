@@ -8,6 +8,7 @@
 # Cyryl Sochacki <cyrylsochacki@gmail.com>, 2012
 # Cyryl Sochacki <cyrylsochacki@gmail.com>, 2012-2013
 # czarnystokrotek <czarnystokrotek@mailoo.org>, 2012
+# orcio6 <orcio6@o2.pl>, 2013
 # Maciej Tarmas <maciej@tarmas.pl>, 2013
 # Marcin Małecki <gerber@tkdami.net>, 2011-2012
 # emc <mplichta@gmail.com>, 2013
@@ -19,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/owncloud/language/pl/)\n"
 "MIME-Version: 1.0\n"

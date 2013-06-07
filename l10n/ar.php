@@ -1,3 +1,3 @@
 <?php $TRANSLATIONS = array(
-"Title" => "العنوان"
+"Title" => "عنوان"
 );

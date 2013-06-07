@@ -6,9 +6,10 @@
 # Lokal_Profil <lokal_profil@hotmail.com>, 2013
 # Christer Eriksson <post@hc3web.com>, 2012
 # Daniel Sandman <revoltism@gmail.com>, 2012
+# medialabs <medialabs@gmail.com>, 2013
 # Magnus Höglund <magnus@linux.com>, 2012-2013
 # Magnus Höglund <magnus@linux.com>, 2012
-# medialabs, 2013
+# medialabs <medialabs@gmail.com>, 2013
 # Daniel Sandman <revoltism@gmail.com>, 2011, 2012
 # tsarkon <tg@osswriter.com>, 2013
 # tscooter <tscooter@hotmail.com>, 2012
@@ -16,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/owncloud/language/sv/)\n"
 "MIME-Version: 1.0\n"

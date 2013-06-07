@@ -4,25 +4,32 @@
 # 
 # Translators:
 # AnAstAsiA <anastasia2501@hotmail.com>, 2012
+# AnAstAsiA <anastasia2501@hotmail.com>, 2012
 # axil Pι <axilleas@archlinux.gr>, 2013
+# axil Pι <axilleas@archlinux.gr>, 2013
+# christosvas <christosvas@in.gr>, 2011
 # christosvas <christosvas@in.gr>, 2011
 # Dimitris M. <monopatis@gmail.com>, 2012
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2012
-# Efstathios Iosifidis <iefstathios@gmail.com>, 2013
+# Efstathios Iosifidis <iefstathios@gmail.com>, 2012-2013
 # Efstathios Iosifidis <iosifidis@opensuse.org>, 2012
+# KAT.RAT12 <spanish.katerina@gmail.com>, 2013
 # Marios Bekatoros <>, 2012
 # Nisok Kosin <nikos.efthimiou@gmail.com>, 2012
 # Petros Kyladitis <petros.kyladitis@gmail.com>, 2011-2012
+# Serenata <pamponiros@yahoo.com>, 2013
 # xneo1 <vagelis@cyberdest.com>, 2013
 # xneo1 <vagelis@cyberdest.com>, 2012
 # Wasilis <inactive+Wasilis@transifex.com>, 2013
+# Wasilis <inactive+Wasilis@transifex.com>, 2013
+# xneo1 <vagelis@cyberdest.com>, 2012-2013
 # KAT.RAT12 <spanish.katerina@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "MIME-Version: 1.0\n"

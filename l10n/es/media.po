@@ -19,14 +19,15 @@
 # Raul Fernandez Garcia <raulfg3@gmail.com>, 2012-2013
 # rodrigo.calvo <rodrigo.calvo@gmail.com>, 2012
 # Rubén Trujillo <rubentrf@gmail.com>, 2012
+# saskarip, 2013
 # xsergiolpx <sergioballesterossolanas@gmail.com>, 2011-2012
 # scambra <sergio@programatica.es>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "MIME-Version: 1.0\n"

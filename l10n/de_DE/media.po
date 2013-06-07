@@ -17,6 +17,7 @@
 # javex <florian.ruechel.transifex@inexplicity.de>, 2012
 # george <social@georgehrke.com>, 2011
 # hebbet <pascal.herbert@gmail.com>, 2012
+# toolking, 2013
 # I Robot <owncloud-bot@tmit.eu>, 2012
 # Jan-Christoph Borchardt <JanCBorchardt@fsfe.org>, 2011
 # Jan-Christoph Borchardt <jan@unhosted.org>, 2011
@@ -38,8 +39,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: German (Germany) <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"

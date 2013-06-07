@@ -16,6 +16,7 @@
 # I Robot <thomas.mueller@tmit.eu>, 2012
 # Jan-Christoph Borchardt <JanCBorchardt@fsfe.org>, 2011
 # Jan-Christoph Borchardt <jan@unhosted.org>, 2011
+# Manfred Löbling, 2013
 # Marcel Kühlhorn <susefan93@gmx.de>, 2012-2013
 # Melvin Gundlach <mail@melvin-gundlach.de>, 2012
 # Michael Krell, 2012
@@ -24,6 +25,7 @@
 # JamFX <niko@nik-o-mat.de>, 2012
 # Phi Lieb <>, 2012
 # Susi <>, 2012
+# thillux, 2013
 #   <thomas.mueller@tmit.eu>, 2012
 # Thomas Müller <>, 2012
 #   <transifex.3.mensaje@spamgourmet.com>, 2012
@@ -34,8 +36,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-06 02:10+0200\n"
-"PO-Revision-Date: 2013-06-06 00:10+0000\n"
+"POT-Creation-Date: 2013-06-07 02:06+0200\n"
+"PO-Revision-Date: 2013-06-07 00:06+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: German <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"

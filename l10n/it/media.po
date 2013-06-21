@@ -4,7 +4,7 @@
 # 
 # Translators:
 # formalist <formalist@email.it>, 2012
-# Francesco Apruzzese <cescoap@gmail.com>, 2011
+# Francesco Apruzzese <cescoap@gmail.com>, 2011,2013
 # ufic <marco@carnazzo.it>, 2011, 2012
 # idetao <marcxosm@gmail.com>, 2013
 # pgcloud <pgcloud@imballaggi.net>, 2013
@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-20 02:31+0200\n"
-"PO-Revision-Date: 2013-06-20 00:31+0000\n"
+"POT-Creation-Date: 2013-06-21 08:41+0200\n"
+"PO-Revision-Date: 2013-06-21 06:42+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "MIME-Version: 1.0\n"

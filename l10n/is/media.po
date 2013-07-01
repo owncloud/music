@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-30 01:44+0200\n"
-"PO-Revision-Date: 2013-06-29 23:44+0000\n"
+"POT-Creation-Date: 2013-07-01 02:59+0200\n"
+"PO-Revision-Date: 2013-07-01 01:00+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Icelandic (http://www.transifex.com/projects/p/owncloud/language/is/)\n"
 "MIME-Version: 1.0\n"
@@ -20,55 +20,55 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "Tónlist"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr ""
+msgstr "lög"
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr ""
+msgstr "albúm"
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr ""
+msgstr "Bæta við afspilunarlista"
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr ""
+msgstr "Bæta albúmi við afspilunarlista"
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "Fyrra"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "Spila"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "Pása"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "Næst"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "Hljóð af"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "Hljóð á"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "Endurlesa safn"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "Stillingar"
 
 #: templates/music.php:35
 msgid "Ampache address:"
@@ -76,11 +76,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "Listamaður"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "Albúm"
 
 #: templates/music.php:46
 msgid "Title"

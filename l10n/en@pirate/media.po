@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-30 01:44+0200\n"
-"PO-Revision-Date: 2013-06-29 23:44+0000\n"
+"POT-Creation-Date: 2013-07-01 02:59+0200\n"
+"PO-Revision-Date: 2013-07-01 01:00+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Pirate English (http://www.transifex.com/projects/p/owncloud/language/en@pirate/)\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "Music"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "Rescan Collection"
 
 #: templates/music.php:34
 msgid "Settings"
@@ -76,11 +76,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "Artist"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 #: templates/music.php:46
 msgid "Title"

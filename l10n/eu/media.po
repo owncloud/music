@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-06-30 01:44+0200\n"
-"PO-Revision-Date: 2013-06-29 23:44+0000\n"
+"POT-Creation-Date: 2013-07-01 02:59+0200\n"
+"PO-Revision-Date: 2013-07-01 01:00+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Basque (http://www.transifex.com/projects/p/owncloud/language/eu/)\n"
 "MIME-Version: 1.0\n"
@@ -23,67 +23,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "Musika"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr ""
+msgstr "abestiak"
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr ""
+msgstr "albumak"
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr ""
+msgstr "Gehitu erreprodukzio zerrendara"
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr ""
+msgstr "Gehitu albuma erreprodukzio zerrendara"
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "Aurrekoa"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "Erreproduzitu"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "Pausarazi"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "Hurrengoa"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "Mututu"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "Ez Mututu"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "Bireskaneatu Bilduma"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "Ezarpenak"
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr ""
+msgstr "Ampache helbidea:"
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "Artista"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "Albuma"
 
 #: templates/music.php:46
 msgid "Title"

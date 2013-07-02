@@ -1,3 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "เพลง",
+"songs" => "เพลง",
+"albums" => "อัลบั้ม",
+"Add to playlist" => "เพิ่มเข้าไปยังรายการเปิดเล่น",
+"Add album to playlist" => "เพิ่มอัลบั้มเข้าไปยังเพลย์ลิสต์",
+"Previous" => "ก่อนหน้า",
+"Play" => "เล่น",
+"Pause" => "หยุดชั่วคราว",
+"Next" => "ถัดไป",
+"Mute" => "ปิดเสียง",
+"Unmute" => "เปิดเสียง",
+"Rescan Collection" => "ตรวจสอบไฟล์ที่เก็บไว้อีกครั้ง",
+"Settings" => "ตั้งค่า",
+"Ampache address:" => "ที่อยู่ Ampache:",
+"Artist" => "ศิลปิน",
+"Album" => "อัลบั้ม",
 "Title" => "ชื่อ"
 );

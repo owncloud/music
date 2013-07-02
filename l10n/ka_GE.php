@@ -1,19 +1,3 @@
 <?php $TRANSLATIONS = array(
-"Music" => "მუსიკა",
-"songs" => "სიმღერები",
-"albums" => "ალბომები",
-"Add to playlist" => "ალბომის პლეილისტში დამატება",
-"Add album to playlist" => "ალბომის პლეილისტში დამატება",
-"Previous" => "წინა",
-"Play" => "დაკვრა",
-"Pause" => "პაუზა",
-"Next" => "შემდეგი",
-"Mute" => "გაჩუმება",
-"Unmute" => "გაძუმების მოხსნა",
-"Rescan Collection" => "კოლექციის რესკანირება",
-"Settings" => "პარამეტრები",
-"Ampache address:" => "მისამართი",
-"Artist" => "არტისტი",
-"Album" => "ალბომი",
 "Title" => "სახელი"
 );

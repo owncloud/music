@@ -1,19 +1,3 @@
 <?php $TRANSLATIONS = array(
-"Music" => "Μουσική",
-"songs" => "τραγούδια",
-"albums" => "άλμπουμ",
-"Add to playlist" => "Προσθήκη στην λίστα αναπαραγωγής",
-"Add album to playlist" => "Προσθήκη άλμπουμ στην λίστα αναπαραγωγής",
-"Previous" => "Προηγούμενη",
-"Play" => "Αναπαραγωγή",
-"Pause" => "Παύση",
-"Next" => "Επόμενη",
-"Mute" => "Σίγαση",
-"Unmute" => "Επαναφορά ήχου",
-"Rescan Collection" => "Επανασάρωση συλλογής ",
-"Settings" => "Ρυθμίσεις",
-"Ampache address:" => "Διεύθυνση Ampache:",
-"Artist" => "Καλλιτέχνης",
-"Album" => "Άλμπουμ",
 "Title" => "Τίτλος"
 );

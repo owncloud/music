@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-02 15:37+0200\n"
-"PO-Revision-Date: 2013-07-01 01:10+0000\n"
+"POT-Creation-Date: 2013-07-03 01:43+0200\n"
+"PO-Revision-Date: 2013-07-02 23:43+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/owncloud/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -23,67 +23,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "الموسيقى"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "أغانى"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr "ألبومات"
+msgstr ""
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr "اضف الى قائمة الأغاني"
+msgstr ""
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr "أضف الالبوم الى القائمه"
+msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "السابق"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr "إلعب"
+msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr "تجميد"
+msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "التالي"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr "إلغاء الصوت"
+msgstr ""
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr "تشغيل الصوت"
+msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr "إعادة البحث عن ملفات الموسيقى"
+msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "إعدادات"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr "عنوان خادم ال Ampache"
+msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr "الفنان"
+msgstr ""
 
 #: templates/music.php:45
 msgid "Album"
-msgstr "الألبوم"
+msgstr ""
 
 #: templates/music.php:46
 msgid "Title"

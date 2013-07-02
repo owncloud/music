@@ -1,19 +1,3 @@
 <?php $TRANSLATIONS = array(
-"Music" => "نەغمە",
-"songs" => "ناخشىلار",
-"albums" => "ناخشا توپلىمى",
-"Add to playlist" => "چالىدىغان تىزىمغا قوش",
-"Add album to playlist" => "ئالبۇمنى چالىدىغان تىزىمغا قوش",
-"Previous" => "ئالدىنقى",
-"Play" => "چال",
-"Pause" => "ۋاقىتلىق توختا",
-"Next" => "كېيىنكى",
-"Mute" => "ئۈنسىز",
-"Unmute" => "ئۈنلۈك",
-"Rescan Collection" => "توپلامنى قايتا تەكشۈر",
-"Settings" => "تەڭشەكلەر",
-"Ampache address:" => "Ampache ئادرېس:",
-"Artist" => "سەنئەتكار",
-"Album" => "ناخشا توپلىمى",
 "Title" => "ماۋزۇ"
 );

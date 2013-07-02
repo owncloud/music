@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-02 15:37+0200\n"
-"PO-Revision-Date: 2013-07-01 01:10+0000\n"
+"POT-Creation-Date: 2013-07-03 01:43+0200\n"
+"PO-Revision-Date: 2013-07-02 23:43+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Urdu (Pakistan) (http://www.transifex.com/projects/p/owncloud/language/ur_PK/)\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "سیٹینگز"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"

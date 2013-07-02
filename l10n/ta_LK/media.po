@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-02 15:37+0200\n"
-"PO-Revision-Date: 2013-07-01 01:10+0000\n"
+"POT-Creation-Date: 2013-07-03 01:43+0200\n"
+"PO-Revision-Date: 2013-07-02 23:43+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Tamil (Sri-Lanka) (http://www.transifex.com/projects/p/owncloud/language/ta_LK/)\n"
 "MIME-Version: 1.0\n"
@@ -20,55 +20,55 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "இசை"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "பாடல்கள்"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr "தொகுப்புகள்"
+msgstr ""
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr "playlist இல் சேர்க்க "
+msgstr ""
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr "பாடல் தொகுப்பை playlist இல் சேர்க்க"
+msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "முன்தைய"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr "Play"
+msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr "இடைநிறுத்துக"
+msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "அடுத்த"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr "ஒலி நிறுத்தம்"
+msgstr ""
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr "ஒலி நிறுத்தவில்லை"
+msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr "தொகுப்புகளை மீள் வருடுக"
+msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "அமைப்புகள்"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"
@@ -76,11 +76,11 @@ msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr "கலைஞர்"
+msgstr ""
 
 #: templates/music.php:45
 msgid "Album"
-msgstr "தொகுப்பு"
+msgstr ""
 
 #: templates/music.php:46
 msgid "Title"

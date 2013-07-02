@@ -37,8 +37,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-02 15:37+0200\n"
-"PO-Revision-Date: 2013-07-01 01:10+0000\n"
+"POT-Creation-Date: 2013-07-03 01:43+0200\n"
+"PO-Revision-Date: 2013-07-02 23:43+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: German <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,67 +49,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "Musik"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "Lieder"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr "Alben"
+msgstr ""
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr "Zur Wiedergabeliste hinzufügen"
+msgstr ""
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr "Album zur Wiedergabeliste hinzufügen"
+msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "Zurück"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr "Abspielen"
+msgstr ""
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr "Anhalten"
+msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "Weiter"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr "Ton aus"
+msgstr ""
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr "Ton an"
+msgstr ""
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr "Sammlung erneut scannen"
+msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "Einstellungen"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr "Ampache-Adresse:"
+msgstr ""
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr "Künstler"
+msgstr ""
 
 #: templates/music.php:45
 msgid "Album"
-msgstr "Album"
+msgstr ""
 
 #: templates/music.php:46
 msgid "Title"

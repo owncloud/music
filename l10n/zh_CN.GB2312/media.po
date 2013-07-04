@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-03 01:43+0200\n"
-"PO-Revision-Date: 2013-07-02 23:43+0000\n"
+"POT-Creation-Date: 2013-07-04 09:35+0200\n"
+"PO-Revision-Date: 2013-07-03 00:01+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Chinese (China) (GB2312) (http://www.transifex.com/projects/p/owncloud/language/zh_CN.GB2312/)\n"
 "MIME-Version: 1.0\n"
@@ -20,67 +20,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "音乐"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr ""
+msgstr "歌曲"
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr ""
+msgstr "专辑"
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr ""
+msgstr "添加到播放列表"
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr ""
+msgstr "添加专辑到播放列表"
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "前一个"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "播放"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "暂停"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "后一个"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "静音"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "取消静音"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "重新扫描收藏"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr ""
+msgstr "Ampache地址："
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "艺术家"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "专辑"
 
 #: templates/music.php:46
 msgid "Title"

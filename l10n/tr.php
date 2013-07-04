@@ -1,3 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Müzik",
+"songs" => "şarkılar",
+"albums" => "albümler",
+"Add to playlist" => "Çalma listesine ekle",
+"Add album to playlist" => "Albümü çalma listesine ekle",
+"Previous" => "Önceki",
+"Play" => "Oynat",
+"Pause" => "Beklet",
+"Next" => "Sonraki",
+"Mute" => "Sesi kapat",
+"Unmute" => "Sesi aç",
+"Rescan Collection" => "Koleksiyonu Tara",
+"Settings" => "Ayarlar",
+"Ampache address:" => "Ampache adresi:",
+"Artist" => "Sanatç",
+"Album" => "Albüm",
 "Title" => "Başlık"
 );

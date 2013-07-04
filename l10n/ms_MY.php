@@ -1,3 +1,15 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Muzik",
+"Add album to playlist" => "tambah album dalam senarai main",
+"Previous" => "Sebelum",
+"Play" => "Main",
+"Pause" => "Jeda",
+"Next" => "Seterus",
+"Mute" => "Jeda",
+"Unmute" => "Nyahbisu",
+"Rescan Collection" => "Imbas semula koleksi",
+"Settings" => "Tetapan",
+"Artist" => "Artis",
+"Album" => "Album",
 "Title" => "Judul"
 );

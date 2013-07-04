@@ -1,3 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Musiikki",
+"songs" => "kappaletta",
+"albums" => "levyä",
+"Add to playlist" => "Lisää soittolistaan",
+"Add album to playlist" => "Lisää albumi soittolistalle",
+"Previous" => "Edellinen",
+"Play" => "Toista",
+"Pause" => "Keskeytä",
+"Next" => "Seuraava",
+"Mute" => "Mykistä",
+"Unmute" => "Palauta äänet",
+"Rescan Collection" => "Etsi uusia kappaleita",
+"Settings" => "Asetukset",
+"Ampache address:" => "Ampache-osoite:",
+"Artist" => "Esittäjä",
+"Album" => "Albumi",
 "Title" => "Otsikko"
 );

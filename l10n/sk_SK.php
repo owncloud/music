@@ -1,3 +1,19 @@
 <?php $TRANSLATIONS = array(
+"Music" => "Hudba",
+"songs" => "skladby",
+"albums" => "albumy",
+"Add to playlist" => "Pridať do playlistu",
+"Add album to playlist" => "Pridať album do playlistu",
+"Previous" => "Predošlá",
+"Play" => "Prehrať",
+"Pause" => "Pauza",
+"Next" => "Ďalšia",
+"Mute" => "Stlmiť",
+"Unmute" => "Nahlas",
+"Rescan Collection" => "Znovu skenovať zbierku",
+"Settings" => "Nastavenia",
+"Ampache address:" => "Adresa ampache:",
+"Artist" => "Umelec",
+"Album" => "Album",
 "Title" => "Nadpis"
 );

@@ -5,6 +5,7 @@
 # Translators:
 # iLennart21 <a12s34d56f78@live.com>, 2013
 # goeck <admin@s-goecker.de>, 2012
+# HansCarlsen <aufsees@yahoo.de>, 2013
 # Mirodin <blobbyjj@ymail.com>, 2012
 # arkascha <foss@christian-reiner.info>, 2013
 # driz <driz@i2pmail.org>, 2012
@@ -37,9 +38,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-03 01:43+0200\n"
-"PO-Revision-Date: 2013-07-02 23:43+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-07-04 09:35+0200\n"
+"PO-Revision-Date: 2013-07-03 17:00+0000\n"
+"Last-Translator: HansCarlsen <aufsees@yahoo.de>\n"
 "Language-Team: German <translations@owncloud.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,67 +50,67 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr ""
+msgstr "Musik"
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr ""
+msgstr "Lieder"
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
-msgstr ""
+msgstr "Alben"
 
 #: js/collection.js:282
 msgid "Add to playlist"
-msgstr ""
+msgstr "Zur Wiedergabeliste hinzufügen"
 
 #: js/music.js:18
 msgid "Add album to playlist"
-msgstr ""
+msgstr "Album zur Wiedergabeliste hinzufügen"
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr ""
+msgstr "Zurück"
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
-msgstr ""
+msgstr "Abspielen"
 
 #: templates/music.php:5 templates/music.php:23 templates/player.php:13
 msgid "Pause"
-msgstr ""
+msgstr "Anhalten"
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr ""
+msgstr "Weiter"
 
 #: templates/music.php:13
 msgid "Mute"
-msgstr ""
+msgstr "Ton aus"
 
 #: templates/music.php:14
 msgid "Unmute"
-msgstr ""
+msgstr "Ton an"
 
 #: templates/music.php:22
 msgid "Rescan Collection"
-msgstr ""
+msgstr "Sammlung erneut scannen"
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #: templates/music.php:35
 msgid "Ampache address:"
-msgstr ""
+msgstr "Ampache-Adresse:"
 
 #: templates/music.php:44
 msgid "Artist"
-msgstr ""
+msgstr "Künstler"
 
 #: templates/music.php:45
 msgid "Album"
-msgstr ""
+msgstr "Alben"
 
 #: templates/music.php:46
 msgid "Title"

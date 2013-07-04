@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-04 09:35+0200\n"
-"PO-Revision-Date: 2013-07-03 00:01+0000\n"
+"POT-Creation-Date: 2013-07-05 01:50+0200\n"
+"PO-Revision-Date: 2013-07-04 23:50+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/owncloud/language/te/)\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: appinfo/app.php:48 lib/media.php:80 templates/player.php:8
 msgid "Music"
-msgstr "సంగీతం"
+msgstr ""
 
 #: js/collection.js:100 js/collection.js:210 js/collection.js:257
 msgid "songs"
-msgstr "పాటలు"
+msgstr ""
 
 #: js/collection.js:101 js/collection.js:208
 msgid "albums"
@@ -39,7 +39,7 @@ msgstr ""
 
 #: templates/music.php:3
 msgid "Previous"
-msgstr "గత"
+msgstr ""
 
 #: templates/music.php:4 templates/player.php:12
 msgid "Play"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: templates/music.php:6 templates/player.php:14
 msgid "Next"
-msgstr "తదుపరి"
+msgstr ""
 
 #: templates/music.php:13
 msgid "Mute"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: templates/music.php:34
 msgid "Settings"
-msgstr "అమరికలు"
+msgstr ""
 
 #: templates/music.php:35
 msgid "Ampache address:"

@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# minion, 2013
 # elmakong <mr.pige_ina@yahoo.co.id>, 2012
 # rodin <romihardiyanto@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-07-07 01:43+0200\n"
-"PO-Revision-Date: 2013-07-06 23:43+0000\n"
+"POT-Creation-Date: 2013-07-08 01:44+0200\n"
+"PO-Revision-Date: 2013-07-07 23:44+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/owncloud/language/id/)\n"
 "MIME-Version: 1.0\n"
@@ -85,4 +86,4 @@ msgstr ""
 
 #: templates/music.php:46
 msgid "Title"
-msgstr "Gelar"
+msgstr "Judul"

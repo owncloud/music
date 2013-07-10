@@ -1,0 +1,4 @@
+# blacklist this branch
+branches:
+  except:
+    - master

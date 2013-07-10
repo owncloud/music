@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -21,33 +21,34 @@
  *
  */
 
+namespace OCA\Music\BusinessLayer;
 
-namespace OCA\Media\Controller;
-
-use OCA\AppFramework\Controller\Controller;
-
-
-class SettingsController extends Controller {
+use \OCA\Music\Db\TrackMapper;
 
 
-	/**
-	 * @param Request $request: an instance of the request
-	 * @param API $api: an api wrapper instance
-	 */
-	public function __construct($api, $request){
-		parent::__construct($api, $request);
+class TrackBusinessLayer extends BusinessLayer {
+
+	public function __construct(TrackMapper $trackMapper){
+		parent::__construct($trackMapper);
 	}
 
-
 	/**
-	 * ATTENTION!!!
-	 * The following comment turns off security checks
-	 * Please look up their meaning in the documentation!
-	 *
-	 * @CSRFExemption
+	 * Returns all tracks filtered by artist
+	 * @param string $artistId the id of the artist
+	 * @param string $userId the name of the user
+	 * @return array of tracks
 	 */
-	public function index(){
-		return $this->render('admin/settings');
+	public function findAllByArtist($artistId, $userId){
+		return $this->mapper->findAllByArtist($artistId, $userId);
 	}
 
+	/**
+	 * Returns all tracks filtered by album
+	 * @param string $albumId the id of the artist
+	 * @param string $userId the name of the user
+	 * @return array of tracks
+	 */
+	public function findAllByAlbum($albumId, $userId){
+		return $this->mapper->findAllByAlbum($albumId, $userId);
+	}
 }

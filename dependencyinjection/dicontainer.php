@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -22,7 +22,7 @@
  */
 
 
-namespace OCA\Media\DependencyInjection;
+namespace OCA\Music\DependencyInjection;
 
 use \OCA\AppFramework\DependencyInjection\DIContainer as BaseContainer;
 
@@ -31,7 +31,7 @@ class DIContainer extends BaseContainer {
 
 
 	public function __construct(){
-		parent::__construct('media');
+		parent::__construct('music');
 		require_once __DIR__ . '/diconfig.php';
 	}
 

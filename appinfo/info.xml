@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <info>
-	<id>media</id>
-	<name>Media</name>
-	<description>Media player and server for ownCloud</description>
+	<id>music</id>
+	<name>Music</name>
+	<description>Music player and server for ownCloud</description>
 	<licence>AGPLv3</licence>
 	<author>Morris Jobke</author>
 	<version>0.001</version>

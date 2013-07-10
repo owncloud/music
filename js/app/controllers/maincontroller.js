@@ -1,6 +1,6 @@
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -21,7 +21,7 @@
  */
 
 
-angular.module('Media').controller('MainController',
+angular.module('Music').controller('MainController',
 	['$scope', '$routeParams', function ($scope, $routeParams) {
 
 	$scope.id = $routeParams.id;

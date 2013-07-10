@@ -1,8 +1,13 @@
+<?php
 
 /**
  * ownCloud - Music app
  *
+ * @author Alessandro Cosentino
+ * @author Bernhard Posselt
  * @author Morris Jobke
+ * @copyright 2012 Alessandro Cosentino <cosenal@gmail.com>
+ * @copyright 2012 Bernhard Posselt <nukeawhale@gmail.com>
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -20,23 +25,17 @@
  *
  */
 
+namespace OCA\Music\BusinessLayer;
 
-angular.module('Music', ['OC']).
-	config(
-		['$routeProvider', '$interpolateProvider',
-		function ($routeProvider, $interpolateProvider) {
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).when('/:id', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).otherwise({
-		redirectTo: '/'
-	});
+class BusinessLayerException extends \Exception {
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-}]);
+	/**
+	 * Constructor
+	 * @param string $msg the error message
+	 */
+	public function __construct($msg){
+		parent::__construct($msg);
+	}
+
+}

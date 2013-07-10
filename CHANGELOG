@@ -1,2 +1,10 @@
-ownCloud-media (0.001)
+ownCloud-music (next)
+* Shiva API
+ * supported resources (see https://github.com/tooxie/shiva-server#resources)
+  * tracks, track, albums, album, artists, artist
+ * fulltree parameter for album(s) and artist(s) resources
+ * artist and album parameter for tracks resource
+ * NOT INCLUDED: lyrics, shows
+
+ownCloud-music (0.001)
 * Created app

@@ -5,7 +5,7 @@
 {{ style('style') }}
 
 
-<div id="app" ng-app="Media" ng-cloak>
+<div id="app" ng-app="Music" ng-cloak>
 
 
 <script type="text/ng-template" id="main.html">
@@ -17,10 +17,6 @@
 		<ul class="with-icon">
 			{% include 'nav.php' %}
 		</ul>
-
-		<div id="app-settings">
-			{% include 'settings.php' %}
-		</div>
 
 	</div>
 

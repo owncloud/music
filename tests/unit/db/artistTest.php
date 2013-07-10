@@ -1,3 +1,4 @@
+<?php
 
 /**
  * ownCloud - Music app
@@ -21,22 +22,35 @@
  */
 
 
-angular.module('Music', ['OC']).
-	config(
-		['$routeProvider', '$interpolateProvider',
-		function ($routeProvider, $interpolateProvider) {
+namespace OCA\Music\Db;
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).when('/:id', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).otherwise({
-		redirectTo: '/'
-	});
+require_once(__DIR__ . "/../../classloader.php");
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-}]);
+
+class ArtistTest extends \PHPUnit_Framework_TestCase {
+
+	private $api;
+
+	protected function setUp() {
+		$this->api = $this->getMockBuilder(
+			'\OCA\AppFramework\Core\API')
+			->disableOriginalConstructor()
+			->getMock();
+	}
+
+	public function testToAPI() {
+		$artist = new Artist();
+		$artist->setId(3);
+		$artist->setName('The name');
+		$artist->setImage('The image url');
+
+		$this->assertEquals(array(
+			'id' => 3,
+			'name' => 'The name',
+			'image' => 'The image url',
+			'slug' => $artist->getId() . '-the-name',
+			'uri' => ''
+			), $artist->toAPI($this->api));
+	}
+
+}

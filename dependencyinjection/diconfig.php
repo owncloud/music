@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -23,10 +23,16 @@
 
 
 
-namespace OCA\Media\DependencyInjection;
+namespace OCA\Music\DependencyInjection;
 
-use \OCA\Media\Controller\PageController;
-use \OCA\Media\Controller\SettingsController;
+use \OCA\Music\Controller\ApiController;
+use \OCA\Music\Controller\PageController;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\Db\TrackMapper;
+use \OCA\Music\Db\ArtistMapper;
+use \OCA\Music\Db\AlbumMapper;
 
 /**
  * Delete the following twig config to use ownClouds default templates
@@ -38,10 +44,35 @@ $this['TwigTemplateDirectory'] = __DIR__ . '/../templates';
 /**
  * CONTROLLERS
  */
+$this['ApiController'] = $this->share(function($c){
+	return new ApiController($c['API'], $c['Request'],
+		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer']);
+});
+
 $this['PageController'] = $this->share(function($c){
 	return new PageController($c['API'], $c['Request']);
 });
 
-$this['SettingsController'] = $this->share(function($c){
-	return new SettingsController($c['API'], $c['Request']);
+$this['TrackMapper'] = $this->share(function($c){
+	return new TrackMapper($c['API']);
+});
+
+$this['TrackBusinessLayer'] = $this->share(function($c){
+	return new TrackBusinessLayer($c['TrackMapper']);
+});
+
+$this['ArtistMapper'] = $this->share(function($c){
+	return new ArtistMapper($c['API']);
+});
+
+$this['ArtistBusinessLayer'] = $this->share(function($c){
+	return new ArtistBusinessLayer($c['ArtistMapper']);
+});
+
+$this['AlbumMapper'] = $this->share(function($c){
+	return new AlbumMapper($c['API']);
+});
+
+$this['AlbumBusinessLayer'] = $this->share(function($c){
+	return new AlbumBusinessLayer($c['AlbumMapper']);
 });

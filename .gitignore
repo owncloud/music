@@ -47,3 +47,6 @@ nbproject
 
 # Mac OS
 .DS_Store
+
+# Clover code coverage
+coverage-html

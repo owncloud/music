@@ -1,4 +1,4 @@
-app_name=media
+app_name=music
 build_directory=build/
 package_name=$(build_directory)$(app_name)
 
@@ -20,7 +20,7 @@ dist: clean
 test: javascript-tests unit-tests integration-tests acceptance-tests
 
 unit-tests:
-	phpunit tests/unit
+	phpunit --coverage-html coverage-html tests/unit
 
 
 integration-tests:

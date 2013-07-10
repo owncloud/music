@@ -1,14 +1,14 @@
 {
-	"name": "media",
-	"description": "Media player and server for ownCloud",
+	"name": "music",
+	"description": "Music player and server for ownCloud",
 	"version": "0.0.1",
 	"private": true,
-	"homepage": "https://github.com/owncloud/media",
+	"homepage": "https://github.com/owncloud/music",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:owncloud/media.git"
+		"url": "git@github.com:owncloud/music.git"
 	},
-	"bugs": "https://github.com/owncloud/media/issues",
+	"bugs": "https://github.com/owncloud/music/issues",
 	"dependencies": {},
 	"devDependencies": {
 		"grunt": "*",

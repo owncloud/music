@@ -24,11 +24,13 @@
 
 namespace OCA\Music\Controller;
 
+use \OCA\AppFramework\Controller\Controller as BaseController;
 use \OCA\AppFramework\Core\API;
 use \OCA\AppFramework\Http\Request;
+use \OCA\AppFramework\Http\JSONResponse;
 
 
-class PageController extends Controller {
+class Controller extends BaseController {
 
 
 	public function __construct(API $api, Request $request){
@@ -37,15 +39,27 @@ class PageController extends Controller {
 
 
 	/**
-	 * ATTENTION!!!
-	 * The following comment turns off security checks
-	 * Please look up their meaning in the documentation!
-	 *
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @CSRFExemption
+	 * Shortcut for rendering a JSON response with just the data
+	 * @param object $data the PHP object that will be converted to JSON
+	 * empty array by default
+	 * @return \OCA\AppFramework\Http\PlainJSONResponse containing the values
 	 */
-	public function index() {
-		return $this->render('main');
+	public function renderPlainJSON($data=array()){
+		$response = new JSONResponse();
+		$response->setData($data);
+
+		return $response;
+	}
+
+
+	/**
+	 * Extracts the id from an unique slug (id-slug)
+	 * @param string $slug the slug
+	 * @return string the id
+	 */
+	protected function getIdFromSlug($slug){
+		$split = explode('-', $slug, 2);
+
+		return $split[0];
 	}
 }

@@ -22,20 +22,42 @@
  */
 
 
-namespace OCA\Music;
+namespace OCA\Music\Db;
 
-use \OCA\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+require_once(__DIR__ . "/../../classloader.php");
 
 
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+class AlbumTest extends \PHPUnit_Framework_TestCase {
+
+	private $api;
+
+	protected function setUp() {
+		$this->api = $this->getMockBuilder(
+			'\OCA\AppFramework\Core\API')
+			->disableOriginalConstructor()
+			->getMock();
 	}
-);
 
-// include external API
-require_once __DIR__ . '/api.php';
+	public function testToAPI() {
+		$album = new Album();
+		$album->setId(3);
+		$album->setName('The name');
+		$album->setYear(2013);
+		$album->setCover('The url');
+		$album->setArtistIds(array(1,2));
+
+		$this->assertEquals(array(
+			'id' => 3,
+			'name' => 'The name',
+			'year' => 2013,
+			'cover' => 'The url',
+			'slug' => '3-the-name',
+			'artists' => array(
+				array('id' => 1, 'uri' => null),
+				array('id' => 2, 'uri' => null)
+			),
+			'uri' => null
+			), $album->toAPI($this->api));
+	}
+
+}

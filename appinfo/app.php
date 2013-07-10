@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -22,7 +22,7 @@
  */
 
 
-namespace OCA\Media;
+namespace OCA\Music;
 
 use \OCA\AppFramework\Core\API;
 
@@ -30,7 +30,7 @@ use \OCA\AppFramework\Core\API;
 // dont break owncloud when the appframework is not enabled
 if(\OCP\App::isEnabled('appframework')){
 
-	$api = new API('media');
+	$api = new API('music');
 
 	// uncomment the next line to activate the admin interface
 	//$api->registerAdmin('admin/settings');
@@ -39,14 +39,14 @@ if(\OCP\App::isEnabled('appframework')){
 	$api->addNavigationEntry(array(
 
 		// the string under which your app will be referenced in owncloud
-		'id' => $api->getAppName('media'),
+		'id' => $api->getAppName('music'),
 
 		// sorting weight for the navigation. The higher the number, the higher
 		// will it be listed in the navigation
 		'order' => 10,
 
 		// the route that will be shown on startup
-		'href' => $api->linkToRoute('media_index'),
+		'href' => $api->linkToRoute('music_index'),
 
 		// the icon that will be shown in the navigation
 		// this file needs to exist in img/example.png
@@ -54,11 +54,11 @@ if(\OCP\App::isEnabled('appframework')){
 
 		// the title of your application. This will be used in the
 		// navigation or on the settings page of your app
-		'name' => $api->getTrans()->t('Media')
+		'name' => $api->getTrans()->t('Music')
 
 	));
 
 } else {
 	$msg = 'Can not enable the  app because the App Framework App is disabled';
-	\OCP\Util::writeLog('media', $msg, \OCP\Util::ERROR);
+	\OCP\Util::writeLog('music', $msg, \OCP\Util::ERROR);
 }

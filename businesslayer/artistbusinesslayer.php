@@ -1,3 +1,4 @@
+<?php
 
 /**
  * ownCloud - Music app
@@ -20,23 +21,24 @@
  *
  */
 
+namespace OCA\Music\BusinessLayer;
 
-angular.module('Music', ['OC']).
-	config(
-		['$routeProvider', '$interpolateProvider',
-		function ($routeProvider, $interpolateProvider) {
+use \OCA\Music\Db\ArtistMapper;
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).when('/:id', {
-		templateUrl: 'main.html',
-		controller: 'MainController'
-	}).otherwise({
-		redirectTo: '/'
-	});
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-}]);
+class ArtistBusinessLayer extends BusinessLayer {
+
+	public function __construct(ArtistMapper $artistMapper){
+		parent::__construct($artistMapper);
+	}
+
+	/**
+	 * Returns all artists with the given ids
+	 * @param array $artistIds the ids of the artists
+	 * @param string $userId the name of the user
+	 * @return array of artists
+	 */
+	public function findMultipleById($artistIds, $userId){
+		return $this->mapper->findMultipleById($artistIds, $userId);
+	}
+}

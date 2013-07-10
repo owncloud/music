@@ -4,9 +4,9 @@
 	<create>true</create>
 	<overwrite>false</overwrite>
 	<charset>utf8</charset>
-	<!-- adjust this to your needs
+
 	<table>
-		<name>*dbprefix*table_name</name>
+		<name>*dbprefix*music_artists</name>
 		<declaration>
 			<field>
 				<name>id</name>
@@ -16,7 +16,186 @@
 				<unsigned>true</unsigned>
 				<primary>true</primary>
 			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<default></default>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>image</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<name>music_artists_user_id_name_index</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>name</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
-	-->
+
+	<table>
+		<name>*dbprefix*music_albums</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<default></default>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>year</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>cover</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<name>music_albums_user_id_name_index</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>name</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_album_artists</name>
+		<declaration>
+			<field>
+				<name>artist_id</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>album_id</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+
+			<index>
+				<name>music_album_artists_artist_id_album_id_index</name>
+				<unique>true</unique>
+				<field>
+					<name>artist_id</name>
+				</field>
+				<field>
+					<name>album_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_tracks</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<default></default>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>title</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>number</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>artist_id</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>album_id</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>length</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>file</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>bitrate</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>mimetype</name>
+				<type>clob</type>
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<name>music_tracks_artist_id_index</name>
+				<field>
+					<name>artist_id</name>
+				</field>
+			</index>
+			<index>
+				<name>music_tracks_album_id_index</name>
+				<field>
+					<name>album_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
 </database>

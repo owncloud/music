@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ownCloud - Media app
+ * ownCloud - Music app
  *
  * @author Morris Jobke
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
@@ -22,19 +22,31 @@
  */
 
 
-namespace OCA\Media\Admin;
+namespace OCA\Music\Db;
 
-use OCA\AppFramework\App;
+use \OCA\AppFramework\Db\Entity;
+use \OCA\AppFramework\Core\API;
 
-use OCA\Media\DependencyInjection\DIContainer;
 
+class Artist extends Entity {
 
-// we need to fetch the output and return it for the admin page. Dont ask why
-ob_start();
+	public $name;
+	public $image; // URL
 
-App::main('SettingsController', 'index', array(), new DIContainer());
+	public function getUri(API $api) {
+		return $api->linkToRoute(
+			'music_artist',
+			array('artistIdOrSlug' => $this->id)
+		);
+	}
 
-$content = ob_get_contents();
-ob_clean();
-
-return $content;
+	public function toAPI(API $api) {
+		return array(
+			'id' => $this->getId(),
+			'name' => $this->getName(),
+			'image' => $this->getImage(),
+			'slug' => $this->getId() . '-' . $this->slugify('name'),
+			'uri' => $this->getUri($api)
+		);
+	}
+}

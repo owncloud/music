@@ -63,7 +63,7 @@ class Scanner {
 		$metadata = $this->api->getFileInfo($path);
 
 		if(ini_get('allow_url_fopen')) {
-			$fileInfo = $this->extractor->extract('oc://' . $this->api->getAbsolutePath($path));
+			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
 
 			if(!array_key_exists('comments', $fileInfo)) {
 				return;
@@ -139,4 +139,15 @@ class Scanner {
 			'], artists: [' . implode(',', $remaining['artistIds']) . ']' , 'debug');
 	}
 
+	/**
+	 * Rescan the whole file base for new files
+	 */
+	public function rescan() {
+		$music = $this->api->searchByMime('audio');
+		$ogg = $this->api->searchByMime('application/ogg');
+		$music = array_merge($music, $ogg);
+		foreach ($music as $file) {
+			$this->update($file['path']);
+		}
+	}
 }

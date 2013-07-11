@@ -21,27 +21,9 @@
  */
 
 
-angular.module('Music', ['OC', 'restangular']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
+angular.module('Music').controller('PlaylistController',
+	['$scope', '$routeParams', 'playlists', function ($scope, $routeParams, playlists) {
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
-	}).otherwise({
-		redirectTo: '/'
-	});
+	$scope.playlists = playlists;
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
 }]);

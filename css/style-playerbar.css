@@ -1,0 +1,114 @@
+#playerbar {
+	position: fixed;
+	height: 66px;
+	left: 64px;
+	right: 0;
+	padding: 0 20px 0 20px;
+	background: #eee;
+	border-bottom: 1px solid #e7e7e7;
+	z-index: 50;
+	-moz-box-shadow: 0 -3px 7px #000;
+	-webkit-box-shadow: 0 -3px 7px #000;
+	box-shadow: 0 -3px 7px #000;
+}
+
+#playerbar > img.right {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+#playerbar .control {
+	height: 52px;
+	width: 52px;
+	padding: 10px;
+	margin: 9px 2px 5px;
+	cursor: pointer;
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: .5;
+
+	/* transistion */
+	-webkit-transition: opacity 200ms;
+	-moz-transition: opacity 200ms;
+	-o-transition: opacity 200ms;
+	transition: opacity 200ms;
+}
+
+#play-controls {
+	margin-left: 50px;
+}
+
+#playerbar .control.small {
+	height: 44px;
+	width: 44px;
+	padding: 10px;
+	margin: 13px 2px 9px;
+}
+
+#playerbar .control:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+#playerbar .albumart {
+	position: absolute;
+	left: 300px;
+	top: 0;
+	height: 50px;
+	width: 50px;
+	margin: 8px 12px 8px 46px;
+	line-height: 50px;
+	font-size: 25px;
+}
+
+#playerbar .song-info {
+	height: 58px;
+	margin: 4px;
+	padding: 8px;
+	max-width: 400px;
+	position: absolute;
+	top: 0;
+	left: 400px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#playerbar .title {
+	font-weight: bold;
+	font-size: 21px;
+}
+
+#playerbar .progress-info {
+	width: 300px;
+	position: absolute;
+	top: 14px;
+	left: 830px;
+	text-align: center;
+}
+
+#playerbar .jp-progress, #playerbar .jp-seek-bar, #playerbar .jp-play-bar {
+	width: 100%;
+	height: 10px;
+	background-color: #ccc;
+}
+
+#playerbar .jp-play-bar {
+	width: 0%;
+	background-color: #1d2d44;
+}
+
+#shuffle, #repeat {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+#shuffle {
+	right: 35px;
+}

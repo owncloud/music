@@ -55,21 +55,24 @@ class ApiController extends Controller {
 	 */
 	public function artists() {
 		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
+		$includeAlbums = filter_var($this->params('albums'), FILTER_VALIDATE_BOOLEAN);
 		$userId = $this->api->getUserId();
 		$artists = $this->artistBusinessLayer->findAll($userId);
 		foreach($artists as &$artist) {
 			$artist = $artist->toAPI($this->api);
-			if($fulltree) {
+			if($fulltree || $includeAlbums) {
 				$artistId = $artist['id'];
 				$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $userId);
 				foreach($albums as &$album) {
 					$album = $album->toAPI($this->api);
-					$albumId = $album['id'];
-					$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-					foreach($tracks as &$track) {
-						$track = $track->toAPI($this->api);
+					if($fulltree) {
+						$albumId = $album['id'];
+						$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+						foreach($tracks as &$track) {
+							$track = $track->toAPI($this->api);
+						}
+						$album['tracks'] = $tracks;
 					}
-					$album['tracks'] = $tracks;
 				}
 				$artist['albums'] = $albums;
 			}
@@ -178,6 +181,7 @@ class ApiController extends Controller {
 	 * @API
 	 */
 	public function tracks() {
+		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 		$userId = $this->api->getUserId();
 		if($artistId = $this->params('artist')) {
 			$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
@@ -187,7 +191,15 @@ class ApiController extends Controller {
 			$tracks = $this->trackBusinessLayer->findAll($userId);
 		}
 		foreach($tracks as &$track) {
+			$artistId = $track->getArtistId();
+			$albumId = $track->getAlbumId();
 			$track = $track->toAPI($this->api);
+			if($fulltree) {
+				$artist = $this->artistBusinessLayer->find($artistId, $userId);
+				$track['artist'] = $artist->toAPI($this->api);
+				$album = $this->albumBusinessLayer->find($albumId, $userId);
+				$track['album'] = $album->toAPI($this->api);
+			}
 		}
 		return $this->renderPlainJSON($tracks);
 	}

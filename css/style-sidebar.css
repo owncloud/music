@@ -1,0 +1,13 @@
+#app-navigation {
+	padding-top: 66px;
+}
+
+#app-navigation li > img {
+	float: right;
+	height: 21px;
+	display: none;
+}
+
+#app-navigation li:hover > img {
+	/*display: inline;*/
+}

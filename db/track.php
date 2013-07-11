@@ -86,7 +86,10 @@ class Track extends Entity {
 			'artist' => $this->getArtist($api),
 			'album' => $this->getAlbum($api),
 			'length' => $this->getLength(),
-			'files' => array($this->getMimetype() => $this->getFileId()), // todo ... fetch correct path
+			'files' => array($this->getMimetype() => $api->linkToRoute(
+				'download',
+				array('file' => $api->getView()->getPath($this->getFileId()))
+			)),
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),
 			'slug' => $this->getId() . '-' . $this->slugify('title'),

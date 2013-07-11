@@ -1,3 +1,4 @@
+<?php
 
 /**
  * ownCloud - Music app
@@ -21,27 +22,39 @@
  */
 
 
-angular.module('Music', ['OC', 'restangular']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
+namespace OCA\Music\Db;
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
-	}).otherwise({
-		redirectTo: '/'
-	});
+class AlbumTest extends \PHPUnit_Framework_TestCase {
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
+	private $api;
 
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
-}]);
+	protected function setUp() {
+		$this->api = $this->getMockBuilder(
+			'\OCA\AppFramework\Core\API')
+			->disableOriginalConstructor()
+			->getMock();
+	}
+
+	public function testToAPI() {
+		$album = new Album();
+		$album->setId(3);
+		$album->setName('The name');
+		$album->setYear(2013);
+		$album->setCover('The url');
+		$album->setArtistIds(array(1,2));
+
+		$this->assertEquals(array(
+			'id' => 3,
+			'name' => 'The name',
+			'year' => 2013,
+			'cover' => 'The url',
+			'slug' => '3-the-name',
+			'artists' => array(
+				array('id' => 1, 'uri' => null),
+				array('id' => 2, 'uri' => null)
+			),
+			'uri' => null
+			), $album->toAPI($this->api));
+	}
+
+}

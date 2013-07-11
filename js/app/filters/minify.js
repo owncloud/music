@@ -1,4 +1,3 @@
-
 /**
  * ownCloud - Music app
  *
@@ -20,28 +19,11 @@
  *
  */
 
-
-angular.module('Music', ['OC', 'restangular']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
-
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
+angular.module('Music').filter('minify', function() {
+	return function(input) {
+		if(input !== null && input.length) {
+			return input[0];
 		}
-	}).otherwise({
-		redirectTo: '/'
-	});
-
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
-}]);
+		return '';
+	};
+});

@@ -11,10 +11,4 @@
 		<!-- update metadata cache when create/update/delete a file -->
 		<filesystem/>
 	</types>
-	<dependencies>
-		<dependency>
-			<id>appframework</id>
-			<version>0.102</version><!-- TODO b9c4617 on master -->
-		</dependency>
-	</dependencies>
 </info>

@@ -1,7 +1,6 @@
 node_modules/
 *.log
-build/
-js/*.xml
+build/artifacts
 .rvm
 
 # just sane ignores

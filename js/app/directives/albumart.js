@@ -1,9 +1,8 @@
-
 /**
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ 10:01:07 <mjob> Hab Zeit* @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -20,28 +19,20 @@
  *
  */
 
-
-angular.module('Music', ['OC', 'restangular']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
-
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
-	}).otherwise({
-		redirectTo: '/'
-	});
-
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
-}]);
+angular.module('Music').directive('albumart', function() {
+	return function(scope, element, attrs, ctrl) {
+		attrs.$observe('albumart',function(){
+			// TODO fix dependency on md5
+			var hash = md5(attrs.albumart),
+				maxRange = parseInt('ffffffffff', 16),
+				red = parseInt(hash.substr(0,10), 16)/maxRange,
+				green = parseInt(hash.substr(10,10), 16)/maxRange,
+				blue = parseInt(hash.substr(20,10), 16)/maxRange;
+			red *= 256;
+			green *= 256;
+			blue *= 256;
+			rgb = [Math.floor(red), Math.floor(green), Math.floor(blue)];
+			element.css('background-color', 'rgb(' + rgb.join(',') + ')');
+		});
+	};
+});

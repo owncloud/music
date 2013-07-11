@@ -1,0 +1,110 @@
+#app-content {
+	padding-top: 66px;
+	overflow-y:auto;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.play {
+	display: none;
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	filter: alpha(opacity = 70);
+	opacity: .7;
+}
+
+.artist-area {
+	padding: 28px 0;
+	clear: both;
+}
+
+.artist-area > h1 {
+	font-size: 42px;
+	height: 32px;
+	margin-left: 28px;
+}
+
+.artist-area > h1:hover {
+	cursor: pointer;
+}
+
+.artist-area > h1:hover > .play {
+	display: inline;
+	margin-bottom: 2px;
+	cursor: pointer;
+}
+
+.album-area {
+	padding: 28px;
+	width: 480px;
+	float: left;
+}
+
+.album-area > h2 {
+	font-size: 21px;
+	padding-bottom: 21px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.album-area > h2:hover {
+	cursor: pointer;
+}
+
+.album-area > .albumart, .album-area > img {
+	float: left;
+	width: 182px;
+	height: 182px;
+}
+
+.albumart {
+	background-color: #ccc;
+	color: #fff;
+	font-weight: bold;
+	text-align: center;
+}
+
+#app-content .albumart {
+	line-height: 180px;
+	font-size: 100px;
+}
+
+.album-area > img.overlay {
+	margin-left: -140px;
+	margin-top: 42px;
+	width: 98px;
+	height: 98px;
+}
+
+.album-area:hover > img.overlay {
+	display: inline;
+	cursor: pointer;
+}
+
+.track-list {
+	margin-left: 195px;
+}
+
+.track-list > li {
+	padding-left: 21px;
+	padding-bottom: 11px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.track-list > li:hover > .play {
+	display: inline;
+	height: 10px;
+	margin-left: -20px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
+.muted {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: .5;
+}

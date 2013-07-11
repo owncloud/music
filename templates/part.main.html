@@ -1,0 +1,24 @@
+<div class="artist-area" ng-repeat="artist in artists | orderBy:'name'">
+	<h1 ng-click="playArtist(artist)">[[ artist.name ]] <img class="play" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" /></h1>
+	<div class="album-area" ng-repeat="album in artist.albums | orderBy:'name'">
+		<h2 ng-click="playAlbum(album)" title="[[ album.name ]] ([[ album.year]])">[[ album.name ]]
+			<span class="muted">([[ album.year ]])</span>
+		</h2>
+		<div ng-click="playAlbum(album)" class="albumart" albumart="[[ album.name ]]">[[ album.name | minify ]]</div>
+		<img ng-click="playAlbum(album)" class="play overlay" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
+		<!-- variable "limit" toogles length of track list for each album -->
+		<ul class="track-list" ng-init="limit = 5">
+			<li ng-click="playTrack(track)"
+				ng-repeat="track in album.tracks | limitTo:limit" title="[[ track.title ]]">
+				<img class="play" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
+				[[ track.title ]]
+			</li>
+			<li class="muted"
+				ng-click="limit = album.tracks.length"
+				ng-hide="album.tracks.length <= limit || limit != 5">{{ trans('Show all ...') }}</li>
+			<li class="muted"
+				ng-click="limit = 5"
+				ng-hide="limit == 5">{{ trans('Show less ...') }}</li>
+		</ul>
+	</div>
+</div>

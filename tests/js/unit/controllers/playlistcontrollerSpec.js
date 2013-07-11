@@ -3,6 +3,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
+ *
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -21,27 +22,23 @@
  */
 
 
-angular.module('Music', ['OC', 'restangular']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
+describe('PlaylistController', function() {
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
-	}).otherwise({
-		redirectTo: '/'
+	var controller;
+
+	// use the Music container
+	beforeEach(module('Music'));
+
+	beforeEach(inject(function ($controller, $rootScope) {
+		controller = $controller('PlaylistController', {
+			$scope: $rootScope.$new()
+		});
+	}));
+
+
+	it('should work', function () {
+		expect(2+2).toBe(4);
 	});
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
 
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
-}]);
+});

@@ -7,4 +7,10 @@
 	<author>Morris Jobke</author>
 	<version>0.001</version>
 	<require>5.0.0</require>
+	<dependencies>
+		<dependency>
+			<id>appframework</id>
+			<version>0.102</version>
+		</dependency>
+	</dependencies>
 </info>

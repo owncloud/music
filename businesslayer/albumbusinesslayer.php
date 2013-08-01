@@ -24,12 +24,17 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Db\Album;
+
+use \OCA\AppFramework\Core\API;
+use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 
 class AlbumBusinessLayer extends BusinessLayer {
 
-	public function __construct(AlbumMapper $albumMapper){
-		parent::__construct($albumMapper);
+	public function __construct(AlbumMapper $albumMapper, API $api){
+		parent::__construct($albumMapper, $api);
 	}
 
 	/**
@@ -75,5 +80,38 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$albums[$key]->setArtistIds($albumArtists[$album->getId()]);
 		}
 		return $albums;
+	}
+
+	/**
+	 * Adds an album (if it does not exist already) and returns the new album
+	 * @param string $name the name of the album
+	 * @param string $year the year of the release
+	 * @return \OCA\Music\Db\Album
+	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 */
+	public function addAlbumIfNotExist($name, $year, $artistId, $userId){
+		try {
+			$album = $this->mapper->findByNameAndYear($name, $year, $userId);
+			$this->api->log('addAlbumIfNotExist - exists - ID: ' . $album->getId());
+		} catch(DoesNotExistException $ex){
+			$album = new Album();
+			$album->setName($name);
+			$album->setYear($year);
+			$album->setUserId($userId);
+			$album = $this->mapper->insert($album);
+			$this->api->log('addAlbumIfNotExist - added - ID: ' . $album->getId());
+		} catch(MultipleObjectsReturnedException $ex){
+			throw new BusinessLayerException($ex->getMessage());
+		}
+		$this->mapper->addAlbumArtistRelationIfNotExist($album->getId(), $artistId);
+		return $album;
+	}
+
+	/**
+	 * Deletes albums
+	 * @param array $albumIds the ids of the albums which should be deleted
+	 */
+	public function deleteById($albumIds){
+		$this->mapper->deleteById($albumIds);
 	}
 }

@@ -46,7 +46,7 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 		$track->setAlbumId(1);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -57,7 +57,7 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 			'artist' => array('id' => 3, 'uri' => null),
 			'album' => array('id' => 1, 'uri' => null),
 			'length' => 123,
-			'files' => array('audio/mp3' => 'path/to/file.ogg'),
+			'files' => array('audio/mp3' => 3),
 			'bitrate' => 123,
 			'slug' => '1-the-title',
 			'uri' => null

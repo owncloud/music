@@ -58,16 +58,19 @@ class TrackMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 			array('id' => $this->tracks[0]->getId(), 'title' => 'Test title'),
 			array('id' => $this->tracks[1]->getId()),
 		);
-
 	}
 
 
-	private function makeSelectQuery($condition=null){
+	private function makeSelectQueryWithoutUserId($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
-			'`track`.`file`, `track`.`bitrate`, `track`.`mimetype` '.
+			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
 			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? ' . $condition;
+			'WHERE ' . $condition;
+	}
+
+	private function makeSelectQuery($condition=null){
+		return $this->makeSelectQueryWithOutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
 	public function testFind(){
@@ -96,5 +99,31 @@ class TrackMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		$this->setMapperResult($sql, array($this->userId, $this->albumId), $this->rows);
 		$result = $this->mapper->findAllByAlbum($this->albumId, $this->userId);
 		$this->assertEquals($this->tracks, $result);
+	}
+
+	public function testFindAllByFileId(){
+		$fileId = 1;
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
+		$this->setMapperResult($sql, array($fileId), $this->rows);
+		$result = $this->mapper->findAllByFileId($fileId);
+		$this->assertEquals($this->tracks, $result);
+	}
+
+	public function testCountByArtist(){
+		$artistId = 1;
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
+		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('count' => 1)));
+		$result = $this->mapper->countByArtist($artistId, $this->userId);
+		$this->assertEquals(array('count' => 1), $result);
+	}
+
+	public function testCountByAlbum(){
+		$albumId = 1;
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
+		$this->setMapperResult($sql, array($this->userId, $albumId), array(array('count' => 1)));
+		$result = $this->mapper->countByAlbum($albumId, $this->userId);
+		$this->assertEquals(array('count' => 1), $result);
 	}
 }

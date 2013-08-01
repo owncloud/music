@@ -26,6 +26,7 @@ namespace OCA\Music\BusinessLayer;
 require_once(__DIR__ . "/../../classloader.php");
 
 use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Track;
 
@@ -45,7 +46,7 @@ class TrackBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\TrackMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper);
+		$this->trackBusinessLayer = new TrackBusinessLayer($this->mapper, $this->api);
 		$this->userId = 'jack';
 		$this->artistId = 3;
 		$this->albumId = 3;
@@ -77,6 +78,157 @@ class TrackBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 			$this->albumId,
 			$this->userId);
 		$this->assertEquals($response, $result);
+	}
+
+	public function testAddTrackIfNotExistAdd(){
+		$title = 'test';
+		$fileId = 2;
+
+		$track = new Track();
+		$track->setTitle($title);
+		$track->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('find')
+			->with($this->equalTo($fileId),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new DoesNotExistException('bla')));
+
+		$this->mapper->expects($this->once())
+			->method('insert')
+			->will($this->returnValue($track));
+
+		$result = $this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
+		$this->assertEquals($track, $result);
+	}
+
+	public function testAddTrackIfNotExistNoAdd(){
+		$title = 'test';
+		$fileId = 2;
+
+		$track = new Track();
+		$track->setTitle($title);
+		$track->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('find')
+			->with($this->equalTo($fileId),
+				$this->equalTo($this->userId))
+			->will($this->returnValue($track));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$this->mapper->expects($this->once())
+			->method('update')
+			->will($this->returnValue($track));
+
+		$result = $this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
+		$this->assertEquals($track, $result);
+	}
+
+	public function testAddTrackIfNotExistException(){
+		$title = 'test';
+		$fileId = 2;
+
+		$this->mapper->expects($this->once())
+			->method('find')
+			->with($this->equalTo($fileId),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
+	}
+
+	public function testDeleteTrackEmpty(){
+		$fileId = 2;
+
+		$this->mapper->expects($this->once())
+			->method('findAllByFileId')
+			->with($this->equalTo($fileId))
+			->will($this->returnValue(array()));
+
+		$this->mapper->expects($this->never())
+			->method('delete');
+
+		$this->mapper->expects($this->never())
+			->method('countByArtist');
+
+		$this->mapper->expects($this->never())
+			->method('countByAlbum');
+
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
+		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array()), $result);
+	}
+
+	public function testDeleteTrackDeleteArtist(){
+		$fileId = 2;
+
+		$track = new Track();
+		$track->setArtistId(2);
+		$track->setAlbumId(3);
+		$track->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('findAllByFileId')
+			->with($this->equalTo($fileId))
+			->will($this->returnValue(array($track)));
+
+		$this->mapper->expects($this->once())
+			->method('delete')
+			->with($this->equalTo($track));
+
+		$this->mapper->expects($this->once())
+			->method('countByArtist')
+			->with($this->equalTo(2),
+				$this->equalTo($this->userId))
+			->will($this->returnValue(array('count' => 0)));
+
+		$this->mapper->expects($this->once())
+			->method('countByAlbum')
+			->with($this->equalTo(3),
+				$this->equalTo($this->userId))
+			->will($this->returnValue(array('count' => 1)));
+
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
+		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array(2)), $result);
+	}
+
+	public function testDeleteTrackDeleteAlbum(){
+		$fileId = 2;
+
+		$track = new Track();
+		$track->setArtistId(2);
+		$track->setAlbumId(3);
+		$track->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('findAllByFileId')
+			->with($this->equalTo($fileId))
+			->will($this->returnValue(array($track)));
+
+		$this->mapper->expects($this->once())
+			->method('delete')
+			->with($this->equalTo($track));
+
+		$this->mapper->expects($this->once())
+			->method('countByArtist')
+			->with($this->equalTo(2),
+				$this->equalTo($this->userId))
+			->will($this->returnValue(array('count' => 1)));
+
+		$this->mapper->expects($this->once())
+			->method('countByAlbum')
+			->with($this->equalTo(3),
+				$this->equalTo($this->userId))
+			->will($this->returnValue(array('count' => 0)));
+
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
+		$this->assertEquals(array('albumIds'=>array(3), 'artistIds' => array()), $result);
 	}
 }
 

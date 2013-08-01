@@ -32,12 +32,16 @@ class TrackMapper extends Mapper {
 		parent::__construct($api, 'music_tracks');
 	}
 
-	private function makeSelectQuery($condition=null){
+	private function makeSelectQueryWithoutUserId($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
-			'`track`.`file`, `track`.`bitrate`, `track`.`mimetype` '.
+			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
 			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? ' . $condition;
+			'WHERE ' . $condition;
+	}
+
+	private function makeSelectQuery($condition=null){
+		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
 	public function findAll($userId){
@@ -62,5 +66,25 @@ class TrackMapper extends Mapper {
 		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
 		$params = array($userId, $id);
 		return $this->findEntity($sql, $params);
+	}
+
+	public function findAllByFileId($fileId){
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
+		$params = array($fileId);
+		return $this->findEntities($sql, $params);
+	}
+
+	public function countByArtist($artistId, $userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
+		$params = array($userId, $artistId);
+		return $this->findOneQuery($sql, $params);
+	}
+
+	public function countByAlbum($albumId, $userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
+		$params = array($userId, $albumId);
+		return $this->findOneQuery($sql, $params);
 	}
 }

@@ -26,6 +26,7 @@ namespace OCA\Music\BusinessLayer;
 require_once(__DIR__ . "/../../classloader.php");
 
 use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Album;
 
@@ -45,7 +46,7 @@ class AlbumBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper);
+		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->api);
 		$this->userId = 'jack';
 		$album1 = new Album();
 		$album2 = new Album();
@@ -116,6 +117,74 @@ class AlbumBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 
 		$result = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 		$this->assertEquals($this->responseByArtist3, $result);
+	}
+
+	public function testDeleteById(){
+		$albumIds = array(1, 2, 3);
+
+		$this->mapper->expects($this->once())
+			->method('deleteById')
+			->with($this->equalTo($albumIds));
+
+		$this->albumBusinessLayer->deleteById($albumIds);
+	}
+
+	public function testAddAlbumIfNotExistAdd(){
+		$name = 'test';
+		$year = 2002;
+		$artistId = 1;
+
+		$this->mapper->expects($this->once())
+			->method('findByNameAndYear')
+			->with($this->equalTo($name),
+				$this->equalTo($year),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new DoesNotExistException('bla')));
+
+		$this->mapper->expects($this->once())
+			->method('insert')
+			->will($this->returnValue($this->albums[0]));
+
+		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$this->assertEquals($this->albums[0], $album);
+	}
+
+	public function testAddAlbumIfNotExistNoAdd(){
+		$name = 'test';
+		$year = 2002;
+		$artistId = 1;
+
+		$this->mapper->expects($this->once())
+			->method('findByNameAndYear')
+			->with($this->equalTo($name),
+				$this->equalTo($year),
+				$this->equalTo($this->userId))
+			->will($this->returnValue($this->albums[0]));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$this->assertEquals($this->albums[0], $album);
+	}
+
+	public function testAddAlbumIfNotExistException(){
+		$name = 'test';
+		$year = 2002;
+		$artistId = 1;
+
+		$this->mapper->expects($this->once())
+			->method('findByNameAndYear')
+			->with($this->equalTo($name),
+				$this->equalTo($year),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
 	}
 }
 

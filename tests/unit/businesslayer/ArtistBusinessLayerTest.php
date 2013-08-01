@@ -26,6 +26,7 @@ namespace OCA\Music\BusinessLayer;
 require_once(__DIR__ . "/../../classloader.php");
 
 use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Artist;
 
@@ -42,7 +43,7 @@ class ArtistBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\ArtistMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->artistBusinessLayer = new ArtistBusinessLayer($this->mapper);
+		$this->artistBusinessLayer = new ArtistBusinessLayer($this->mapper, $this->api);
 		$this->userId = 'john';
 	}
 
@@ -59,6 +60,73 @@ class ArtistBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 			$artistIds,
 			$this->userId);
 		$this->assertEquals($response, $result);
+	}
+
+	public function testDeleteById(){
+		$artistIds = array(1, 2, 3);
+
+		$this->mapper->expects($this->once())
+			->method('deleteById')
+			->with($this->equalTo($artistIds));
+
+		$this->artistBusinessLayer->deleteById($artistIds);
+	}
+
+	public function testAddArtistIfNotExistAdd(){
+		$name = 'test';
+
+		$artist = new Artist();
+		$artist->setName($name);
+		$artist->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('findByName')
+			->with($this->equalTo($name),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new DoesNotExistException('bla')));
+
+		$this->mapper->expects($this->once())
+			->method('insert')
+			->will($this->returnValue($artist));
+
+		$result = $this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
+		$this->assertEquals($artist, $result);
+	}
+
+	public function testAddArtistIfNotExistNoAdd(){
+		$name = 'test';
+
+		$artist = new Artist();
+		$artist->setName($name);
+		$artist->setId(1);
+
+		$this->mapper->expects($this->once())
+			->method('findByName')
+			->with($this->equalTo($name),
+				$this->equalTo($this->userId))
+			->will($this->returnValue($artist));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$result = $this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
+		$this->assertEquals($artist, $result);
+	}
+
+	public function testAddArtistIfNotExistException(){
+		$name = 'test';
+
+		$this->mapper->expects($this->once())
+			->method('findByName')
+			->with($this->equalTo($name),
+				$this->equalTo($this->userId))
+			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
+
+		$this->mapper->expects($this->never())
+			->method('insert');
+
+		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
 	}
 }
 

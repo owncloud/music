@@ -23,13 +23,17 @@
 
 namespace OCA\Music\BusinessLayer;
 
+use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
 
+use \OCA\AppFramework\Core\API;
+use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 class ArtistBusinessLayer extends BusinessLayer {
 
-	public function __construct(ArtistMapper $artistMapper){
-		parent::__construct($artistMapper);
+	public function __construct(ArtistMapper $artistMapper, API $api){
+		parent::__construct($artistMapper, $api);
 	}
 
 	/**
@@ -40,5 +44,35 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function findMultipleById($artistIds, $userId){
 		return $this->mapper->findMultipleById($artistIds, $userId);
+	}
+
+	/**
+	 * Adds an artist (if it does not exist already) and returns the new artist
+	 * @param string $name the name of the artist
+	 * @return \OCA\Music\Db\Artist
+	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 */
+	public function addArtistIfNotExist($name, $userId){
+		try {
+			$artist = $this->mapper->findByName($name, $userId);
+			$this->api->log('addArtistIfNotExist - exists - ID: ' . $artist->getId());
+		} catch(DoesNotExistException $ex){
+			$artist = new Artist();
+			$artist->setName($name);
+			$artist->setUserId($userId);
+			$artist = $this->mapper->insert($artist);
+			$this->api->log('addArtistIfNotExist - added - ID: ' . $artist->getId());
+		} catch(MultipleObjectsReturnedException $ex){
+			throw new BusinessLayerException($ex->getMessage());
+		}
+		return $artist;
+	}
+
+	/**
+	 * Deletes artists
+	 * @param array $artistIds the ids of the artist which should be deleted
+	 */
+	public function deleteById($artistIds){
+		$this->mapper->deleteById($artistIds);
 	}
 }

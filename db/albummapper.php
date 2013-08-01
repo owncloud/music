@@ -26,10 +26,12 @@ namespace OCA\Music\Db;
 use \OCA\AppFramework\Db\Mapper;
 use \OCA\AppFramework\Core\API;
 
+use \OCA\AppFramework\Db\DoesNotExistException;
+
 class AlbumMapper extends Mapper {
 
 	public function __construct(API $api){
-		parent::__construct($api, 'music_artists');
+		parent::__construct($api, 'music_albums');
 	}
 
 	private function makeSelectQuery($condition=null){
@@ -79,5 +81,39 @@ class AlbumMapper extends Mapper {
 			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
 		$params = array($userId, $artistId);
 		return $this->findEntities($sql, $params);
+	}
+
+	public function findByNameAndYear($albumName, $albumYear, $userId){
+		$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` = ?');
+		$params = array($userId, $albumName, $albumYear);
+		return $this->findEntity($sql, $params);
+	}
+
+	public function addAlbumArtistRelationIfNotExist($albumId, $artistId){
+		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
+			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';
+		$params = array($albumId, $artistId);
+		try {
+			$this->findOneQuery($sql, $params);
+			// relation already exists
+		} catch(DoesNotExistException $ex){
+			$sql = 'INSERT INTO `*PREFIX*music_album_artists` (`album_id`, `artist_id`) '.
+				'VALUES (?, ?)';
+			$params = array($albumId, $artistId);
+			$this->execute($sql, $params);
+		}
+	}
+
+	public function deleteById($albumIds){
+		if(count($albumIds) === 0)
+			return;
+		$questionMarks = array();
+		for($i = 0; $i < count($albumIds); $i++){
+			$questionMarks[] = '?';
+		}
+		$sql = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN ('. implode(',', $questionMarks) . ')';
+		$this->execute($sql, $albumIds);
+		$sql = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
+		$this->execute($sql, $albumIds);
 	}
 }

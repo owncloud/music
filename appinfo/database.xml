@@ -19,7 +19,6 @@
 			<field>
 				<name>user_id</name>
 				<type>text</type>
-				<default></default>
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
@@ -31,7 +30,7 @@
 			<field>
 				<name>image</name>
 				<type>clob</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 			</field>
 
 			<index>
@@ -61,7 +60,6 @@
 			<field>
 				<name>user_id</name>
 				<type>text</type>
-				<default></default>
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
@@ -79,17 +77,20 @@
 			<field>
 				<name>cover</name>
 				<type>clob</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 			</field>
 
 			<index>
-				<name>music_albums_user_id_name_index</name>
+				<name>music_albums_user_id_name_year_index</name>
 				<unique>true</unique>
 				<field>
 					<name>user_id</name>
 				</field>
 				<field>
 					<name>name</name>
+				</field>
+				<field>
+					<name>year</name>
 				</field>
 			</index>
 		</declaration>
@@ -136,7 +137,6 @@
 			<field>
 				<name>user_id</name>
 				<type>text</type>
-				<default></default>
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
@@ -164,18 +164,19 @@
 			<field>
 				<name>length</name>
 				<type>integer</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<unsigned>true</unsigned>
 			</field>
 			<field>
-				<name>file</name>
-				<type>clob</type>
+				<name>file_id</name>
+				<type>integer</type>
 				<notnull>true</notnull>
+				<length>4</length>
 			</field>
 			<field>
 				<name>bitrate</name>
 				<type>integer</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<unsigned>true</unsigned>
 			</field>
 			<field>
@@ -194,6 +195,14 @@
 				<name>music_tracks_album_id_index</name>
 				<field>
 					<name>album_id</name>
+				</field>
+			</index>
+
+			<index>
+				<name>music_tracks_file_id_index</name>
+				<unique>true</unique>
+				<field>
+					<name>file_id</name>
 				</field>
 			</index>
 		</declaration>

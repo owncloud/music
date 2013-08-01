@@ -33,6 +33,10 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Db\ArtistMapper;
 use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\ExtractorGetID3;
+
+require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 
 /**
  * Delete the following twig config to use ownClouds default templates
@@ -58,7 +62,7 @@ $this['TrackMapper'] = $this->share(function($c){
 });
 
 $this['TrackBusinessLayer'] = $this->share(function($c){
-	return new TrackBusinessLayer($c['TrackMapper']);
+	return new TrackBusinessLayer($c['TrackMapper'], $c['API']);
 });
 
 $this['ArtistMapper'] = $this->share(function($c){
@@ -66,7 +70,7 @@ $this['ArtistMapper'] = $this->share(function($c){
 });
 
 $this['ArtistBusinessLayer'] = $this->share(function($c){
-	return new ArtistBusinessLayer($c['ArtistMapper']);
+	return new ArtistBusinessLayer($c['ArtistMapper'], $c['API']);
 });
 
 $this['AlbumMapper'] = $this->share(function($c){
@@ -74,5 +78,20 @@ $this['AlbumMapper'] = $this->share(function($c){
 });
 
 $this['AlbumBusinessLayer'] = $this->share(function($c){
-	return new AlbumBusinessLayer($c['AlbumMapper']);
+	return new AlbumBusinessLayer($c['AlbumMapper'], $c['API']);
+});
+
+$this['Scanner'] = $this->share(function($c){
+	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
+		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
+});
+
+$this['getID3'] = $this->share(function($c){
+	$getID3 = new \getID3();
+	$getID3->encoding = 'UTF-8';
+	return $getID3;
+});
+
+$this['ExtractorGetID3'] = $this->share(function($c){
+	return new ExtractorGetID3($c['API'], $c['getID3']);
 });

@@ -32,6 +32,7 @@ class Artist extends Entity {
 
 	public $name;
 	public $image; // URL
+	public $userId;
 
 	public function getUri(API $api) {
 		return $api->linkToRoute(

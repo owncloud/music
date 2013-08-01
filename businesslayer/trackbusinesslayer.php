@@ -24,12 +24,17 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\Db\TrackMapper;
+use \OCA\Music\Db\Track;
+
+use \OCA\AppFramework\Core\API;
+use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 
 class TrackBusinessLayer extends BusinessLayer {
 
-	public function __construct(TrackMapper $trackMapper){
-		parent::__construct($trackMapper);
+	public function __construct(TrackMapper $trackMapper, API $api){
+		parent::__construct($trackMapper, $api);
 	}
 
 	/**
@@ -50,5 +55,84 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByAlbum($albumId, $userId){
 		return $this->mapper->findAllByAlbum($albumId, $userId);
+	}
+
+	/**
+	 * Adds a track (if it does not exist already) and returns the new track
+	 * @param string $name the name of the track
+	 * @param string $number the number of the track
+	 * @param string $artistId the artist id of the track
+	 * @param string $albumId the album id of the track
+	 * @param string $fileId the file id of the track
+	 * @param string $mimetype the mimetype of the track
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track
+	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 */
+	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
+		try {
+			$track = $this->mapper->find($fileId, $userId);
+			$track->setTitle($title);
+			$track->setNumber($number);
+			$track->setArtistId($artistId);
+			$track->setAlbumId($albumId);
+			$track->setMimetype($mimetype);
+			$track->setUserId($userId);
+			$track = $this->mapper->update($track);
+			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId());
+		} catch(DoesNotExistException $ex){
+			$track = new Track();
+			$track->setTitle($title);
+			$track->setNumber($number);
+			$track->setArtistId($artistId);
+			$track->setAlbumId($albumId);
+			$track->setFileId($fileId);
+			$track->setMimetype($mimetype);
+			$track->setUserId($userId);
+			$track = $this->mapper->insert($track);
+			$this->api->log('addTrackIfNotExist - added - ID: ' . $track->getId());
+		} catch(MultipleObjectsReturnedException $ex){
+			throw new BusinessLayerException($ex->getMessage());
+		}
+		return $track;
+	}
+
+	/**
+	 * Deletes a track
+	 * @param string $fileId the file id of the track
+	 * @param string $userId the name of the user
+	 * @return array of two arrays (named 'albumIds', 'artistIds') containing all album ids
+	 *		   and artist ids of the deleted track(s)
+	 */
+	public function deleteTrack($fileId, $userId){
+		$tracks = $this->mapper->findAllByFileId($fileId);
+
+		$remaining = array(
+			'albumIds' => array(),
+			'artistIds' => array()
+		);
+
+		foreach($tracks as $track) {
+			$artistId = $track->getArtistId();
+			$albumId = $track->getAlbumId();
+			$this->mapper->delete($track);
+			if(!in_array($artistId, $remaining['artistIds'])){
+				// only add artists which have no tracks left
+				$result = $this->mapper->countByArtist($artistId, $userId);
+				if($result['count'] === 0) {
+					$remaining['artistIds'][] = $artistId;
+				}
+			}
+			if(!in_array($albumId, $remaining['albumIds'])){
+				// only add albums which have no tracks left
+				$result = $this->mapper->countByAlbum($albumId, $userId);
+				if($result['count'] === 0) {
+					$remaining['albumIds'][] = $albumId;
+				}
+
+			}
+		}
+
+		return $remaining;
 	}
 }

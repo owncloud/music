@@ -27,6 +27,9 @@
 
 namespace OCA\Music\BusinessLayer;
 
+
+use \OCA\AppFramework\Core\API;
+use \OCA\AppFramework\Db\Mapper;
 use \OCA\AppFramework\Db\DoesNotExistException;
 use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
@@ -34,9 +37,11 @@ use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 abstract class BusinessLayer {
 
 	protected $mapper;
+	protected $api;
 
-	public function __construct($mapper){
+	public function __construct(Mapper $mapper, API $api){
 		$this->mapper = $mapper;
+		$this->api = $api;
 	}
 
 	/**

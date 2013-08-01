@@ -186,7 +186,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setAlbumId(4);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -246,7 +246,7 @@ class APIControllerTest extends ControllerTestUtility {
 								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 								'album' => array('id' => 4, 'uri' => '/api/album/4'),
 								'files' => array(
-									'audio/mp3' => 'path/to/file.ogg'
+									'audio/mp3' => 3
 								)
 							)
 						)
@@ -282,7 +282,7 @@ class APIControllerTest extends ControllerTestUtility {
 								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 								'album' => array('id' => 4, 'uri' => '/api/album/4'),
 								'files' => array(
-									'audio/mp3' => 'path/to/file.ogg'
+									'audio/mp3' => 3
 								)
 							)
 						)
@@ -355,7 +355,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setAlbumId(1);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -411,7 +411,7 @@ class APIControllerTest extends ControllerTestUtility {
 							'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 							'album' => array('id' => 1, 'uri' => '/api/album/1'),
 							'files' => array(
-								'audio/mp3' => 'path/to/file.ogg'
+								'audio/mp3' => 3
 							)
 						)
 					)
@@ -518,7 +518,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setAlbumId(4);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -579,7 +579,7 @@ class APIControllerTest extends ControllerTestUtility {
 						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 						'album' => array('id' => 4, 'uri' => '/api/album/4'),
 						'files' => array(
-							'audio/mp3' => 'path/to/file.ogg'
+							'audio/mp3' => 3
 						)
 					)
 				)
@@ -619,7 +619,7 @@ class APIControllerTest extends ControllerTestUtility {
 						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 						'album' => array('id' => 4, 'uri' => '/api/album/4'),
 						'files' => array(
-							'audio/mp3' => 'path/to/file.ogg'
+							'audio/mp3' => 3
 						)
 					)
 				)
@@ -653,7 +653,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setAlbumId(4);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -707,7 +707,7 @@ class APIControllerTest extends ControllerTestUtility {
 					'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 					'album' => array('id' => 4, 'uri' => '/api/album/4'),
 					'files' => array(
-						'audio/mp3' => 'path/to/file.ogg'
+						'audio/mp3' => 3
 					)
 				)
 			)
@@ -773,7 +773,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track1->setAlbumId(1);
 		$track1->setNumber(4);
 		$track1->setLength(123);
-		$track1->setFile('path/to/file.ogg');
+		$track1->setFileId(3);
 		$track1->setMimetype('audio/mp3');
 		$track1->setBitrate(123);
 		$track2 = new Track();
@@ -783,7 +783,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track2->setAlbumId(3);
 		$track2->setNumber(5);
 		$track2->setLength(103);
-		$track2->setFile('path/to/file2.ogg');
+		$track2->setFileId(3);
 		$track2->setMimetype('audio/mp3');
 		$track2->setBitrate(123);
 
@@ -811,7 +811,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file.ogg'
+					'audio/mp3' => 3
 				)
 			),
 			array(
@@ -825,7 +825,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
 				'album' => array('id' => 3, 'uri' => '/api/album/3'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file2.ogg'
+					'audio/mp3' => 3
 				)
 			)
 		);
@@ -848,7 +848,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setAlbumId(1);
 		$track->setNumber(4);
 		$track->setLength(123);
-		$track->setFile('path/to/file.ogg');
+		$track->setFileId(3);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
@@ -877,7 +877,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 			'album' => array('id' => 1, 'uri' => '/api/album/1'),
 			'files' => array(
-				'audio/mp3' => 'path/to/file.ogg'
+				'audio/mp3' => 3
 			)
 		);
 
@@ -902,7 +902,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track1->setAlbumId(1);
 		$track1->setNumber(4);
 		$track1->setLength(123);
-		$track1->setFile('path/to/file.ogg');
+		$track1->setFileId(3);
 		$track1->setMimetype('audio/mp3');
 		$track1->setBitrate(123);
 		$track2 = new Track();
@@ -912,7 +912,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track2->setAlbumId(3);
 		$track2->setNumber(5);
 		$track2->setLength(103);
-		$track2->setFile('path/to/file2.ogg');
+		$track2->setFileId(3);
 		$track2->setMimetype('audio/mp3');
 		$track2->setBitrate(123);
 
@@ -942,7 +942,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file.ogg'
+					'audio/mp3' => 3
 				)
 			),
 			array(
@@ -956,7 +956,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 3, 'uri' => '/api/album/3'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file2.ogg'
+					'audio/mp3' => 3
 				)
 			)
 		);
@@ -978,7 +978,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track1->setAlbumId(1);
 		$track1->setNumber(4);
 		$track1->setLength(123);
-		$track1->setFile('path/to/file.ogg');
+		$track1->setFileId(3);
 		$track1->setMimetype('audio/mp3');
 		$track1->setBitrate(123);
 		$track2 = new Track();
@@ -988,7 +988,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track2->setAlbumId(1);
 		$track2->setNumber(5);
 		$track2->setLength(103);
-		$track2->setFile('path/to/file2.ogg');
+		$track2->setFileId(3);
 		$track2->setMimetype('audio/mp3');
 		$track2->setBitrate(123);
 
@@ -1018,7 +1018,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file.ogg'
+					'audio/mp3' => 3
 				)
 			),
 			array(
@@ -1032,7 +1032,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 'path/to/file2.ogg'
+					'audio/mp3' => 3
 				)
 			)
 		);

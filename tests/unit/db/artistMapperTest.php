@@ -91,4 +91,30 @@ class ArtistMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		$result = $this->mapper->findMultipleById($artistIds, $this->userId);
 		$this->assertEquals($this->artists, $result);
 	}
+
+	public function testFindByName(){
+		$artistName = 'test';
+		$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+		$this->setMapperResult($sql, array($this->userId, $artistName), array($this->rows[0]));
+		$result = $this->mapper->findByName($artistName, $this->userId);
+		$this->assertEquals($this->artists[0], $result);
+	}
+
+	public function testDeleteByIdNone(){
+		$artistIds = array();
+
+		$this->api->expects($this->never())
+			->method('prepareQuery');
+
+		$this->mapper->deleteById($artistIds);
+	}
+
+	public function testDeleteById(){
+		$artistIds = array(1, 2);
+
+		$sql = 'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN (?,?)';
+		$this->setMapperResult($sql, $artistIds, array());
+
+		$this->mapper->deleteById($artistIds);
+	}
 }

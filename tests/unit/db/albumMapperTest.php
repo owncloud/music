@@ -121,4 +121,106 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		$result = $this->mapper->findAllByArtist($artistId, $this->userId);
 		$this->assertEquals($this->albums, $result);
 	}
+
+	public function testFindByNameAndYear(){
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+			'`album`.`cover` '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'WHERE `album`.`user_id` = ? AND `album`.`name` = ? AND `album`.`year` = ?';
+		$albumName = 'test';
+		$albumYear = 2005;
+		$this->setMapperResult($sql, array($this->userId, $albumName, $albumYear), array($this->rows[0]));
+		$result = $this->mapper->findByNameAndYear($albumName, $albumYear, $this->userId);
+		$this->assertEquals($this->albums[0], $result);
+	}
+
+	public function testAddAlbumArtistRelationIfNotExistNoAdd(){
+		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
+			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';
+		$albumId = 1;
+		$artistId = 2;
+		$this->setMapperResult($sql, array($albumId, $artistId), array(array('select' => '1')));
+		$this->mapper->addAlbumArtistRelationIfNotExist($albumId, $artistId);
+	}
+
+	public function testAddAlbumArtistRelationIfNotExistAdd(){
+		$albumId = 1;
+		$artistId = 2;
+		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
+			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';
+		$arguments = array($albumId, $artistId);
+		$sql2 = 'INSERT INTO `*PREFIX*music_album_artists` (`album_id`, `artist_id`) '.
+			'VALUES (?, ?)';
+
+		$pdoResult = $this->getMock('Result',
+			array('fetchRow'));
+		$pdoResult->expects($this->any())
+			->method('fetchRow');
+
+		$query = $this->getMock('Query',
+			array('execute'));
+		$query->expects($this->at(0))
+			->method('execute')
+			->with($this->equalTo($arguments))
+			->will($this->returnValue($pdoResult));
+		$this->api->expects($this->at(0))
+			->method('prepareQuery')
+			->with($this->equalTo($sql))
+			->will(($this->returnValue($query)));
+
+		$query->expects($this->at(1))
+			->method('execute')
+			->with($this->equalTo($arguments))
+			->will($this->returnValue($pdoResult));
+		$this->api->expects($this->at(1))
+			->method('prepareQuery')
+			->with($this->equalTo($sql2))
+			->will(($this->returnValue($query)));
+
+		$this->mapper->addAlbumArtistRelationIfNotExist($albumId, $artistId);
+	}
+
+	public function testDeleteByIdNone(){
+		$albumIds = array();
+
+		$this->api->expects($this->never())
+			->method('prepareQuery');
+
+		$this->mapper->deleteById($albumIds);
+	}
+
+	public function testDeleteById(){
+		$albumIds = array(1, 2);
+
+		$sql = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN (?,?)';
+		$arguments = $albumIds;
+		$sql2 = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN (?,?)';
+
+		$pdoResult = $this->getMock('Result',
+			array('fetchRow'));
+		$pdoResult->expects($this->any())
+			->method('fetchRow');
+
+		$query = $this->getMock('Query',
+			array('execute'));
+		$query->expects($this->at(0))
+			->method('execute')
+			->with($this->equalTo($arguments))
+			->will($this->returnValue($pdoResult));
+		$this->api->expects($this->at(0))
+			->method('prepareQuery')
+			->with($this->equalTo($sql))
+			->will(($this->returnValue($query)));
+
+		$query->expects($this->at(1))
+			->method('execute')
+			->with($this->equalTo($arguments))
+			->will($this->returnValue($pdoResult));
+		$this->api->expects($this->at(1))
+			->method('prepareQuery')
+			->with($this->equalTo($sql2))
+			->will(($this->returnValue($query)));
+
+		$this->mapper->deleteById($albumIds);
+	}
 }

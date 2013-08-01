@@ -61,4 +61,21 @@ class ArtistMapper extends Mapper {
 		$params = array($userId, $artistId);
 		return $this->findEntity($sql, $params);
 	}
+
+	public function findByName($artistName, $userId){
+		$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+		$params = array($userId, $artistName);
+		return $this->findEntity($sql, $params);
+	}
+
+	public function deleteById($artistIds){
+		if(count($artistIds) === 0)
+			return;
+		$questionMarks = array();
+		for($i = 0; $i < count($artistIds); $i++){
+			$questionMarks[] = '?';
+		}
+		$sql = 'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
+		$this->execute($sql, $artistIds);
+	}
 }

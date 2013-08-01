@@ -37,10 +37,11 @@ class Track extends Entity {
 	public $albumId;
 	public $album;
 	public $length;
-	public $file;
+	public $fileId;
 	public $bitrate;
 	public $uri;
 	public $mimetype;
+	public $userId;
 
 	public function __construct(){
 		$this->addType('number', 'int');
@@ -85,7 +86,7 @@ class Track extends Entity {
 			'artist' => $this->getArtist($api),
 			'album' => $this->getAlbum($api),
 			'length' => $this->getLength(),
-			'files' => array($this->getMimetype() => $this->getFile()),
+			'files' => array($this->getMimetype() => $this->getFileId()), // todo ... fetch correct path
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),
 			'slug' => $this->getId() . '-' . $this->slugify('title'),

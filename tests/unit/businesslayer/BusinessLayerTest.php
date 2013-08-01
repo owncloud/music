@@ -34,10 +34,11 @@ use \OCA\AppFramework\Db\DoesNotExistException;
 use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
 
 class TestBusinessLayer extends BusinessLayer {
-	public function __construct($mapper){
-		parent::__construct($mapper);
+	public function __construct($mapper, $api){
+		parent::__construct($mapper, $api);
 	}
 }
+
 
 class BusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 
@@ -50,7 +51,7 @@ class BusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\TrackMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->musicBusinessLayer = new TestBusinessLayer($this->mapper);
+		$this->musicBusinessLayer = new TestBusinessLayer($this->mapper, $this->api);
 	}
 
 	public function testFind(){

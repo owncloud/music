@@ -3,6 +3,8 @@ README
 
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 
+**This is undy heavy development and isn't supposed to be deployed to a production server!**
+
 I want to see it live - but how?
 --------------------------------
 

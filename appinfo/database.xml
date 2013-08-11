@@ -32,17 +32,6 @@
 				<type>clob</type>
 				<notnull>false</notnull>
 			</field>
-
-			<index>
-				<name>music_artists_user_id_name_index</name>
-				<unique>true</unique>
-				<field>
-					<name>user_id</name>
-				</field>
-				<field>
-					<name>name</name>
-				</field>
-			</index>
 		</declaration>
 	</table>
 
@@ -79,20 +68,6 @@
 				<type>clob</type>
 				<notnull>false</notnull>
 			</field>
-
-			<index>
-				<name>music_albums_user_id_name_year_index</name>
-				<unique>true</unique>
-				<field>
-					<name>user_id</name>
-				</field>
-				<field>
-					<name>name</name>
-				</field>
-				<field>
-					<name>year</name>
-				</field>
-			</index>
 		</declaration>
 	</table>
 

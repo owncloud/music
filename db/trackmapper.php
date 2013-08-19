@@ -68,6 +68,12 @@ class TrackMapper extends Mapper {
 		return $this->findEntity($sql, $params);
 	}
 
+	public function findByFileId($fileId, $userId){
+		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
+		$params = array($userId, $fileId);
+		return $this->findEntity($sql, $params);
+	}
+
 	public function findAllByFileId($fileId){
 		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
 		$params = array($fileId);

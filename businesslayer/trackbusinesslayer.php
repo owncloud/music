@@ -71,14 +71,14 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
 		try {
-			$track = $this->mapper->find($fileId, $userId);
+			$track = $this->mapper->findByFileId($fileId, $userId);
 			$track->setTitle($title);
 			$track->setNumber($number);
 			$track->setArtistId($artistId);
 			$track->setAlbumId($albumId);
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
-			$track = $this->mapper->update($track);
+			$this->mapper->update($track);
 			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId());
 		} catch(DoesNotExistException $ex){
 			$track = new Track();

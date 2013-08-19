@@ -87,7 +87,7 @@ class TrackBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$track->setId(1);
 
 		$this->mapper->expects($this->once())
-			->method('find')
+			->method('findByFileId')
 			->with($this->equalTo($fileId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new DoesNotExistException('bla')));
@@ -109,7 +109,7 @@ class TrackBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$track->setId(1);
 
 		$this->mapper->expects($this->once())
-			->method('find')
+			->method('findByFileId')
 			->with($this->equalTo($fileId),
 				$this->equalTo($this->userId))
 			->will($this->returnValue($track));
@@ -130,7 +130,7 @@ class TrackBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
 		$fileId = 2;
 
 		$this->mapper->expects($this->once())
-			->method('find')
+			->method('findByFileId')
 			->with($this->equalTo($fileId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new MultipleObjectsReturnedException('bla')));

@@ -9,13 +9,13 @@
 {{ style('style-sidebar') }}
 {{ style('style') }}
 
-<div id="app" ng-app="Music" ng-cloak>
+<div id="app" ng-app="Music" ng-cloak ng-init="started = false">
 
 	<script type="text/ng-template" id="main.html">
 		{{ include('part.main.html') }}
 	</script>
 
-	<div id="playerbar" ng-controller="PlayerController">
+	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
 			<img class="control small" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
 			<img ng-click="toggle()" ng-hide="playing" class="control" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
@@ -43,17 +43,17 @@
 		<img id="repeat" class="control small" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}" />
 	</div>
 
-	<div id="app-navigation">
+	<!--<div id="app-navigation">
 		<ul ng-controller="PlaylistController">
 			<li><a href="#/">{{ trans('All') }}</a></li>
-			<li class="separator-element"><a href="#/">{{ trans('Favorites') }}</a></li>
-			<li><a href="#/">{{ trans('New Playlist') }}</a></li>
+			<li class="app-navigation-separator"><a href="#/">{{ trans('Favorites') }}</a></li>
+			<li><a href="#/">+ {{ trans('New Playlist') }}</a></li>
 			<li ng-repeat="playlist in playlists">
 				<a href="#/playlist/[[playlist.id]]">[[playlist.name]]</a>
 				<img alt="{{ trans('Delete') }}" 	src="{{ image_path('actions/close.svg', 'core') }}" />
 			</li>
 		</ul>
-	</div>
+	</div>-->
 
-	<div id="app-content" ng-view></div>
+	<div id="app-content" ng-view ng-class="{started: started}"></div>
 </div>

@@ -1,8 +1,17 @@
 #app-content {
-	padding-top: 66px;
 	overflow-y:auto;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+
+	/* transistion to move down*/
+	-webkit-transition: padding 500ms;
+	-moz-transition: padding 500ms;
+	-o-transition: padding 500ms;
+	transition: padding 500ms;
+}
+
+#app-content.started {
+	padding-top: 66px;
 }
 
 .play {

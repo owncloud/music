@@ -108,6 +108,9 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	playerService.subscribe('play', function(event, parameters){
+		// switch initial state
+		$scope.$parent.started = true;
+
 		$scope.currentTrack = parameters.track;
 		$scope.currentArtist = parameters.artist;
 		$scope.currentAlbum = parameters.album;

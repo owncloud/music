@@ -26,6 +26,7 @@ namespace OCA\Music\Controller;
 
 use \OCA\AppFramework\Core\API;
 use \OCA\AppFramework\Http\Request;
+use \OCA\AppFramework\Db\Mapper;
 use \OCA\Music\Utility\Scanner;
 
 

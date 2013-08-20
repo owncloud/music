@@ -46,7 +46,7 @@ class Scanner {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 
 		// Trying to enable stream support
-		if(ini_get('allow_url_fopen') !== 1) {
+		if(ini_get('allow_url_fopen') !== '1') {
 			$this->api->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
 			@ini_set('allow_url_fopen', '1');
 		}
@@ -105,6 +105,10 @@ class Scanner {
 				$albumId = $album->getId();
 			}
 
+			if($title === null || $title === ''){
+				// fallback to file name
+				$title = $metadata['name'];
+			}
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId);

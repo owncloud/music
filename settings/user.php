@@ -21,6 +21,8 @@
  *
  */
 
+// TODO move to AppFramework style
+
 namespace OCA\Music;
 
 use \OCA\Music\DependencyInjection\DIContainer;
@@ -31,5 +33,9 @@ $c['API']->addScript('public/settings-user');
 $c['API']->addStyle('settings-user');
 
 $tmpl = new \OCP\Template($c['API']->getAppName(), 'settings-user');
+
 $tmpl->assign('path', $c['API']->getUserValue('path'));
+
+$tmpl->assign('ampacheKeys', $c['AmpacheUserMapper']->getAll($c['API']->getUserId()));
+
 return $tmpl->fetchPage();

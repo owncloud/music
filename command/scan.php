@@ -51,7 +51,6 @@ class Scan extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$scanner = $this->container['Scanner'];
-		$status = $this->container['ScanStatusMapper'];
 
 		$scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 			$output->writeln("Scanning <info>$path</info>");
@@ -71,7 +70,6 @@ class Scan extends Command {
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
 			$scanner->rescan($user, true);
-			if(!$status->isScanned($user)) $status->setScanned($user);
 		}
 	}
 }

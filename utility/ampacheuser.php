@@ -4,7 +4,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -21,24 +21,21 @@
  *
  */
 
-namespace OCA\Music\Backgroundjob;
+namespace OCA\Music\Utility;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+/**
+ * This class is used to share data about the user between the AmpacheMiddleware and
+ * the AmpacheController
+ */
+class AmpacheUser {
 
-class CleanUp {
+	private $userId;
 
-	/**
-	 * Calls the cleanup method of the scanner
-	 */
-	public static function run() {
-		$container = new DIContainer();
+	public function getUserId() {
+		return $this->userId;
+	}
 
-		// remove orphaned entities
-		$container['Scanner']->cleanUp();
-		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container['AlbumBusinessLayer']->findCovers();
-
-		// remove expired sessions
-		$container['AmpacheSessionMapper']->cleanUp();
+	public function setUserId($id) {
+		$this->userId = $id;
 	}
 }

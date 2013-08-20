@@ -25,6 +25,7 @@
 
 namespace OCA\Music\DependencyInjection;
 
+use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
@@ -69,6 +70,10 @@ $this['PageController'] = $this->share(function($c){
 
 $this['LogController'] = $this->share(function($c){
 	return new LogController($c['API'], $c['Request']);
+});
+
+$this['AmpacheController'] = $this->share(function($c){
+	return new AmpacheController($c['API'], $c['Request']);
 });
 
 $this['TrackMapper'] = $this->share(function($c){

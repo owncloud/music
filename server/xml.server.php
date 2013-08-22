@@ -1,10 +1,10 @@
 <?php
 
 /**
- * ownCloud - media plugin
+ * ownCloud - Music app
  *
- * @author Robin Appelman
- * @copyright 2010 Robin Appelman icewind1991@gmail.com
+ * @author Morris Jobke
+ * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -16,12 +16,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
+ * You should have received a copy of the GNU Affero General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
-OCP\App::checkAppEnabled('media');
+
+namespace OCA\Music;
+
+use \OCA\AppFramework\App;
+use \OCA\Music\DependencyInjection\DIContainer;
+
+// check if music app is enabled
+\OCP\App::checkAppEnabled('music');
+
+// kickstart controller
+App::main('AmpacheController', 'index', $_GET, new DIContainer());
+
+/*
 
 $arguments = $_POST;
 if (!isset($_POST['action']) and isset($_GET['action'])) {
@@ -75,4 +87,4 @@ if (isset($arguments['action'])) {
 			$ampache->song($arguments);
 			break;
 	}
-}
+}*/

@@ -117,3 +117,12 @@
 	filter: alpha(opacity = 50);
 	opacity: .5;
 }
+
+#emptystate {
+	position: absolute;
+	margin: 10em 0 0 10em;
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #888;
+	text-shadow: #fff 0 1px 0;
+}

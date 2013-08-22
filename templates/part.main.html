@@ -1,3 +1,5 @@
+<div ng-hide="artists" id="emptystate">{{ trans('Nothing in here. Upload your music!') }}</div>
+
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'">
 	<h1 ng-click="playArtist(artist)">[[ artist.name ]] <img class="play" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" /></h1>
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:'name'">

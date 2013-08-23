@@ -21,7 +21,7 @@
  */
 
 
-angular.module('Music', ['OC', 'restangular']).
+angular.module('Music', ['restangular']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {

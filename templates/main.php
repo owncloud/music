@@ -1,9 +1,9 @@
 
 {{ script('vendor/underscore/underscore.min', 'music') }}
 {{ script('vendor/angular/angular.min', 'music') }}
+{{ script('vendor/audio5/audio5.min', 'music') }}
 {{ script('vendor/restangular/restangular.min', 'music') }}
 {{ script('vendor/md5/md5', 'music') }}
-{{ script('public/app', 'appframework') }}
 {{ script('public/app') }}
 {{ style('style-playerbar') }}
 {{ style('style-sidebar') }}
@@ -30,17 +30,18 @@
 			<span class="artist" title="[[ currentArtist.name ]]">[[ currentArtist.name ]]</span>
 		</div>
 		<div ng-show="currentTrack.title" class="progress-info">
-			<span class="muted">[[ currentTime | playTime ]] / [[ duration | playTime ]]</span>
-			<div class="jp-progress">
-				<div class="jp-seek-bar">
-					<div class="jp-play-bar" style="width: [[ currentTime / duration * 100 ]]%;"></div>
+			<span class="muted">[[ position | playTime ]] / [[ duration | playTime ]]</span>
+			<div class="progress">
+				<div class="seek-bar">
+					<div class="play-bar" style="width: [[ position / duration * 100 ]]%;"></div>
 				</div>
 			</div>
 		</div>
-		<div id="player"></div>
 
-		<img id="shuffle" class="control small" alt="{{ trans('Shuffle') }}" src="{{ image_path('shuffle.svg', 'music') }}" />
-		<img id="repeat" class="control small" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}" />
+		<img id="shuffle" class="control small" alt="{{ trans('Shuffle') }}" src="{{ image_path('shuffle.svg', 'music') }}"
+			ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
+		<img id="repeat" class="control small" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}"
+			ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 	</div>
 
 	<!--<div id="app-navigation">

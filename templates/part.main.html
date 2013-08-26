@@ -4,7 +4,7 @@
 	<h1 ng-click="playArtist(artist)">[[ artist.name ]] <img class="play" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" /></h1>
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:'name'">
 		<h2 ng-click="playAlbum(album)" title="[[ album.name ]] ([[ album.year]])">[[ album.name ]]
-			<span class="muted">([[ album.year ]])</span>
+			<span ng-show="album.year" class="muted">([[ album.year ]])</span>
 		</h2>
 		<div ng-click="playAlbum(album)" class="albumart" albumart="[[ album.name ]]">[[ album.name | minify ]]</div>
 		<img ng-click="playAlbum(album)" class="play overlay" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />

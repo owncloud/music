@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playerService', 'AudioService',
-	function ($scope, $routeParams, playerService, AudioService) {
+	['$scope', '$routeParams', 'playlistService', 'AudioService',
+	function ($scope, $routeParams, playlistService, AudioService) {
 
 	$scope.playing = false;
 	$scope.player = AudioService;
@@ -60,6 +60,8 @@ angular.module('Music').controller('PlayerController',
 			console.log('ended');
 			$scope.player.seek(0);
 			$scope.playing = false;
+			// play the next in the playlist
+			$scope.next();
 		});
 	});
 
@@ -72,13 +74,13 @@ angular.module('Music').controller('PlayerController',
 	$scope.toggle = function(forcePlay) {
 		forcePlay = forcePlay || false;
 		if($scope.currentTrack === null) {
-			// don't toggle if there isn't any track
-			return;
+			// nothing to do
+			return null;
 		}
-		if(!$scope.playing || forcePlay) {
+		if(forcePlay) {
 			$scope.player.play();
 		} else {
-			$scope.player.pause();
+			$scope.player.playPause();
 		}
 	};
 
@@ -108,19 +110,23 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
+		$scope.currentTrack = playlistService.getNextTrack();
+		while($scope.currentTrack !== null &&
+			!('audio/mpeg' in $scope.currentTrack.files)) {
+			$scope.currentTrack = playlistService.getNextTrack();
+		}
+		if($scope.currentTrack !== null) {
+			$scope.player.load($scope.currentTrack.files['audio/mpeg']);
+			$scope.toggle(true);
+		}
 	};
 
-	playerService.subscribe('play', function(event, parameters){
+	playlistService.subscribe('play', function(){
 		// switch initial state
 		$scope.$parent.started = true;
 
-		$scope.player.load(parameters.track.files['audio/mpeg']);
-
-		$scope.currentTrack = parameters.track;
-		$scope.currentArtist = parameters.artist;
-		$scope.currentAlbum = parameters.album;
-		// play this track
-		$scope.toggle(true);
+		// fetch track and start playing
+		$scope.next();
 
 	});
 }]);

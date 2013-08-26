@@ -24,40 +24,36 @@ angular.module('Music', ['restangular']).
 	RestangularProvider.setBaseUrl('api');
 }]);
 angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'artists', 'playerService', function ($scope, $routeParams, artists, playerService) {
+	['$scope', '$routeParams', 'artists', 'playlistService', function ($scope, $routeParams, artists, playlistService) {
 
 	$scope.artists = artists;
 
 	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists,
-			function(artist){
-				return artist.id === track.artist.id;
-			}),
-			album = _.find(artist.albums,
-			function(album){
-				return album.id === track.album.id;
-			});
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		playlistService.setPlaylist([track]);
+		playlistService.publish('play');
 	};
 
 	$scope.playAlbum = function(album) {
-		var track = album.tracks[0],
-			artist = _.find($scope.artists,
-			function(artist){
-				return artist.id === track.artist.id;
-			});
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		playlistService.setPlaylist(album.tracks);
+		playlistService.publish('play');
 	};
 
 	$scope.playArtist = function(artist) {
-		var album = artist.albums[0],
-			track = album.tracks[0];
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		var playlist = _.union(
+				_.map(
+					artist.albums,
+					function(album){
+						return album.tracks;
+					}
+				)
+			);
+		playlistService.setPlaylist(playlist);
+		playlistService.publish('play');
 	};
 }]);
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playerService', 'AudioService',
-	function ($scope, $routeParams, playerService, AudioService) {
+	['$scope', '$routeParams', 'playlistService', 'AudioService',
+	function ($scope, $routeParams, playlistService, AudioService) {
 
 	$scope.playing = false;
 	$scope.player = AudioService;
@@ -95,6 +91,8 @@ angular.module('Music').controller('PlayerController',
 			console.log('ended');
 			$scope.player.seek(0);
 			$scope.playing = false;
+			// play the next in the playlist
+			$scope.next();
 		});
 	});
 
@@ -107,13 +105,13 @@ angular.module('Music').controller('PlayerController',
 	$scope.toggle = function(forcePlay) {
 		forcePlay = forcePlay || false;
 		if($scope.currentTrack === null) {
-			// don't toggle if there isn't any track
-			return;
+			// nothing to do
+			return null;
 		}
-		if(!$scope.playing || forcePlay) {
+		if(forcePlay) {
 			$scope.player.play();
 		} else {
-			$scope.player.pause();
+			$scope.player.playPause();
 		}
 	};
 
@@ -143,19 +141,23 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
+		$scope.currentTrack = playlistService.getNextTrack();
+		while($scope.currentTrack !== null &&
+			!('audio/mpeg' in $scope.currentTrack.files)) {
+			$scope.currentTrack = playlistService.getNextTrack();
+		}
+		if($scope.currentTrack !== null) {
+			$scope.player.load($scope.currentTrack.files['audio/mpeg']);
+			$scope.toggle(true);
+		}
 	};
 
-	playerService.subscribe('play', function(event, parameters){
+	playlistService.subscribe('play', function(){
 		// switch initial state
 		$scope.$parent.started = true;
 
-		$scope.player.load(parameters.track.files['audio/mpeg']);
-
-		$scope.currentTrack = parameters.track;
-		$scope.currentArtist = parameters.artist;
-		$scope.currentAlbum = parameters.album;
-		// play this track
-		$scope.toggle(true);
+		// fetch track and start playing
+		$scope.next();
 
 	});
 }]);
@@ -219,13 +221,43 @@ angular.module('Music').filter('playTime', function() {
 		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	};
 });
-angular.module('Music').service('playerService', ['$rootScope', function($rootScope) {
-    return {
+angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
+	var playlist = null;
+	var currentTrackId = null;
+	var played = [];
+	return {
+		getCurrentTrack: function() {
+			if(currentTrackId !== null && playlist !== null) {
+				return playlist[currentTrackId];
+			}
+			return null;
+		},
+		getNextTrack: function(repeat) {
+			if(playlist === null) {
+				return null;
+			}
+			if(currentTrackId === null ||
+				currentTrackId === (playlist.length - 1) && repeat === true) {
+				currentTrackId = 0;
+			} else {
+				currentTrackId++;
+			}
+			// repeat is disabled and the end of the playlist is reached
+			// -> abort
+			if(currentTrackId >= playlist.length) {
+				currentTrackId = null;
+				return null;
+			}
+			return playlist[currentTrackId];
+		},
+		setPlaylist: function(pl) {
+			playlist = pl;
+		},
         publish: function(name, parameters) {
             $rootScope.$emit(name, parameters);
         },
         subscribe: function(name, listener) {
             $rootScope.$on(name, listener);
         }
-    };
+	};
 }]);

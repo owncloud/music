@@ -1,4 +1,3 @@
-
 /**
  * ownCloud - Music app
  *
@@ -22,34 +21,30 @@
 
 
 angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'artists', 'playerService', function ($scope, $routeParams, artists, playerService) {
+	['$scope', '$routeParams', 'artists', 'playlistService', function ($scope, $routeParams, artists, playlistService) {
 
 	$scope.artists = artists;
 
 	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists,
-			function(artist){
-				return artist.id === track.artist.id;
-			}),
-			album = _.find(artist.albums,
-			function(album){
-				return album.id === track.album.id;
-			});
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		playlistService.setPlaylist([track]);
+		playlistService.publish('play');
 	};
 
 	$scope.playAlbum = function(album) {
-		var track = album.tracks[0],
-			artist = _.find($scope.artists,
-			function(artist){
-				return artist.id === track.artist.id;
-			});
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		playlistService.setPlaylist(album.tracks);
+		playlistService.publish('play');
 	};
 
 	$scope.playArtist = function(artist) {
-		var album = artist.albums[0],
-			track = album.tracks[0];
-		playerService.publish('play', {track: track, artist: artist, album: album});
+		var playlist = _.union(
+				_.map(
+					artist.albums,
+					function(album){
+						return album.tracks;
+					}
+				)
+			);
+		playlistService.setPlaylist(playlist);
+		playlistService.publish('play');
 	};
 }]);

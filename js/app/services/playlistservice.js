@@ -19,13 +19,43 @@
  *
  */
 
- angular.module('Music').service('playerService', ['$rootScope', function($rootScope) {
-    return {
+angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
+	var playlist = null;
+	var currentTrackId = null;
+	var played = [];
+	return {
+		getCurrentTrack: function() {
+			if(currentTrackId !== null && playlist !== null) {
+				return playlist[currentTrackId];
+			}
+			return null;
+		},
+		getNextTrack: function(repeat) {
+			if(playlist === null) {
+				return null;
+			}
+			if(currentTrackId === null ||
+				currentTrackId === (playlist.length - 1) && repeat === true) {
+				currentTrackId = 0;
+			} else {
+				currentTrackId++;
+			}
+			// repeat is disabled and the end of the playlist is reached
+			// -> abort
+			if(currentTrackId >= playlist.length) {
+				currentTrackId = null;
+				return null;
+			}
+			return playlist[currentTrackId];
+		},
+		setPlaylist: function(pl) {
+			playlist = pl;
+		},
         publish: function(name, parameters) {
             $rootScope.$emit(name, parameters);
         },
         subscribe: function(name, listener) {
             $rootScope.$on(name, listener);
         }
-    };
+	};
 }]);

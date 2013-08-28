@@ -3,7 +3,7 @@
 {{ script('md5/md5.min', '3rdparty') }}
 {{ script('vendor/underscore/underscore.min', 'music') }}
 {{ script('vendor/angular/angular.min', 'music') }}
-{{ script('vendor/audio5/audio5.min', 'music') }}
+{{ script('vendor/soundmanager/soundmanager2', 'music') }}
 {{ script('vendor/restangular/restangular.min', 'music') }}
 {{ script('public/app') }}
 {{ style('style-playerbar') }}

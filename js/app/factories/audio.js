@@ -19,32 +19,12 @@
  *
  */
 
+ angular.module('Music').factory('Audio', function () {
+	soundManager.setup({
+		url: OC.linkTo('music', '3rdparty/soundmanager'),
+		flashVersion: 9,
+		preferFlash: false
+	});
 
-angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'Artists', 'playlistService', function ($scope, $routeParams, Artists, playlistService) {
-
-	$scope.artists = Artists;
-
-	$scope.playTrack = function(track) {
-		playlistService.setPlaylist([track]);
-		playlistService.publish('play');
-	};
-
-	$scope.playAlbum = function(album) {
-		playlistService.setPlaylist(album.tracks);
-		playlistService.publish('play');
-	};
-
-	$scope.playArtist = function(artist) {
-		var playlist = _.union(
-				_.map(
-					artist.albums,
-					function(album){
-						return album.tracks;
-					}
-				)
-			);
-		playlistService.setPlaylist(playlist);
-		playlistService.publish('play');
-	};
-}]);
+	return soundManager;
+});

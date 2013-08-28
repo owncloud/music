@@ -6,12 +6,7 @@ angular.module('Music', ['restangular']).
 
 	$routeProvider.when('/', {
 		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
+		controller: 'MainController'
 	}).otherwise({
 		redirectTo: '/'
 	});
@@ -24,9 +19,9 @@ angular.module('Music', ['restangular']).
 	RestangularProvider.setBaseUrl('api');
 }]);
 angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'artists', 'playlistService', function ($scope, $routeParams, artists, playlistService) {
+	['$scope', '$routeParams', 'Artists', 'playlistService', function ($scope, $routeParams, Artists, playlistService) {
 
-	$scope.artists = artists;
+	$scope.artists = Artists;
 
 	$scope.playTrack = function(track) {
 		playlistService.setPlaylist([track]);
@@ -52,11 +47,13 @@ angular.module('Music').controller('MainController',
 	};
 }]);
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playlistService', 'AudioService',
-	function ($scope, $routeParams, playlistService, AudioService) {
+	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists',
+	function ($scope, $routeParams, playlistService, Audio, Artists) {
+
+	$scope.artists = Artists;
 
 	$scope.playing = false;
-	$scope.player = AudioService;
+	$scope.player = Audio;
 	$scope.position = 0.0;
 	$scope.duration = 0.0;
 	$scope.currentTrack = null;
@@ -66,41 +63,89 @@ angular.module('Music').controller('PlayerController',
 	$scope.repeat = false;
 	$scope.shuffle = false;
 
-	// propagate play position and duration
-	$scope.player.on('timeupdate',function(time, duration){
-		$scope.$apply(function(){
-			$scope.position = time;
+	$scope.$watch('currentTrack', function(newValue, oldValue) {
+		$scope.player.stopAll();
+		$scope.player.destroySound('ownCloudSound');
+		if(newValue !== null) {
+			// find artist
+			$scope.currentArtist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+										function(artist){
+											return artist.id === newValue.artist.id;
+										});
+			// find album
+			$scope.currentAlbum = _.find($scope.currentArtist.albums,
+										function(album){
+											return album.id === newValue.album.id;
+										});
+			$scope.player.createSound({
+				id: 'ownCloudSound',
+				url: $scope.currentTrack.files['audio/mpeg'],
+				autoLoad: true,
+				whileplaying: function() {
+					$scope.setTime(this.position/1000, this.duration/1000);
+				},
+				onstop: function() {
+					$scope.setPlay(false);
+				},
+				onfinish: function() {
+					$scope.setPlay(false);
+					// determine if already inside of an $apply or $digest
+					// see http://stackoverflow.com/a/12859093
+					if($scope.$$phase) {
+						$scope.next();
+					} else {
+						$scope.$apply(function(){
+							$scope.next();
+						});
+					}
+				},
+				onresume: function() {
+					$scope.setPlay(true);
+				},
+				onplay: function() {
+					$scope.setPlay(true);
+				},
+				onpause: function() {
+					$scope.setPlay(false);
+				},
+				volume: 50
+			});
+			$scope.player.play('ownCloudSound');
+		} else {
+			$scope.currentArtist = null;
+			$scope.currentAlbum = null;
+			// switch initial state
+			$scope.$parent.started = false;
+		}
+	});
+
+	// only call from external script
+	$scope.setPlay = function(playing) {
+		// determine if already inside of an $apply or $digest
+		// see http://stackoverflow.com/a/12859093
+		if($scope.$$phase) {
+			$scope.playing = playing;
+		} else {
+			$scope.$apply(function(){
+				$scope.playing = playing;
+			});
+		}
+	};
+
+	// only call from external script
+	$scope.setTime = function(position, duration) {
+		// determine if already inside of an $apply or $digest
+		// see http://stackoverflow.com/a/12859093
+		if($scope.$$phase) {
 			$scope.duration = duration;
-		});
-	});
-
-	$scope.player.on('play',function(){
-		$scope.$apply(function(){
-			$scope.playing = true;
-		});
-	});
-
-	$scope.player.on('pause',function(){
-		$scope.$apply(function(){
-			$scope.playing = false;
-		});
-	});
-
-	$scope.player.on('ended',function(){
-		$scope.$apply(function(){
-			console.log('ended');
-			$scope.player.seek(0);
-			$scope.playing = false;
-			// play the next in the playlist
-			$scope.next();
-		});
-	});
-
-	$scope.player.on('error',function(){
-		$scope.$apply(function(){
-			console.error('An error occured');
-		});
-	});
+			$scope.position = position;
+		} else {
+			$scope.$apply(function(){
+				$scope.duration = duration;
+				$scope.position = position;
+			});
+		}
+	};
 
 	$scope.toggle = function(forcePlay) {
 		forcePlay = forcePlay || false;
@@ -109,47 +154,20 @@ angular.module('Music').controller('PlayerController',
 			return null;
 		}
 		if(forcePlay) {
-			$scope.player.play();
+			$scope.player.play('ownCloudSound');
 		} else {
-			$scope.player.playPause();
-		}
-	};
-
-	$scope.updatePlayTime = function(playtime) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.currentTime = playtime;
-		} else {
-			$scope.$apply(function(){
-				$scope.currentTime = playtime;
-			});
-		}
-	};
-
-
-	$scope.updateDuration = function(duration) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.duration = duration;
-		} else {
-			$scope.$apply(function(){
-				$scope.duration = duration;
-			});
+			$scope.player.togglePause('ownCloudSound');
 		}
 	};
 
 	$scope.next = function() {
-		$scope.currentTrack = playlistService.getNextTrack();
-		while($scope.currentTrack !== null &&
-			!('audio/mpeg' in $scope.currentTrack.files)) {
-			$scope.currentTrack = playlistService.getNextTrack();
+		var track = playlistService.getNextTrack();
+		while(track !== null &&
+			!('audio/mpeg' in track.files)) {
+			track = playlistService.getNextTrack();
 		}
-		if($scope.currentTrack !== null) {
-			$scope.player.load($scope.currentTrack.files['audio/mpeg']);
-			$scope.toggle(true);
-		}
+
+		$scope.currentTrack = track;
 	};
 
 	playlistService.subscribe('play', function(){
@@ -158,7 +176,6 @@ angular.module('Music').controller('PlayerController',
 
 		// fetch track and start playing
 		$scope.next();
-
 	});
 }]);
 angular.module('Music').controller('PlaylistController',
@@ -174,18 +191,18 @@ angular.module('Music').directive('albumart', function() {
 		});
 	};
 });
-// based on a demo from https://github.com/zohararad/audio5js
-angular.module('Music').factory('AudioService', function () {
-	"use strict";
+angular.module('Music').factory('Artists', ['Restangular', function (Restangular) {
+	return Restangular.all('artists').getList({fulltree: true});
+}]);
 
-	var params = {
-		swf_path:OC.linkTo('music', '3rdparty/audio5/swf/audio5js.swf'),
-		format_time:false
-	};
+angular.module('Music').factory('Audio', function () {
+	soundManager.setup({
+		url: OC.linkTo('music', '3rdparty/soundmanager'),
+		flashVersion: 9,
+		preferFlash: false
+	});
 
-	var audio5js = new Audio5js(params);
-
-	return audio5js;
+	return soundManager;
 });
 
 angular.module('Music').factory('playlists', function(){

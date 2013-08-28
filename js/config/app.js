@@ -28,12 +28,7 @@ angular.module('Music', ['restangular']).
 
 	$routeProvider.when('/', {
 		templateUrl: 'main.html',
-		controller: 'MainController',
-		resolve: {
-			artists: function(Restangular) {
-				return Restangular.all('artists').getList({fulltree: true});
-			}
-		}
+		controller: 'MainController'
 	}).otherwise({
 		redirectTo: '/'
 	});

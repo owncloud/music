@@ -170,17 +170,7 @@ angular.module('Music').controller('PlaylistController',
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
 		attrs.$observe('albumart',function(){
-			// TODO fix dependency on md5
-			var hash = md5(attrs.albumart),
-				maxRange = parseInt('ffffffffff', 16),
-				red = parseInt(hash.substr(0,10), 16)/maxRange,
-				green = parseInt(hash.substr(10,10), 16)/maxRange,
-				blue = parseInt(hash.substr(20,10), 16)/maxRange;
-			red *= 256;
-			green *= 256;
-			blue *= 256;
-			rgb = [Math.floor(red), Math.floor(green), Math.floor(blue)];
-			element.css('background-color', 'rgb(' + rgb.join(',') + ')');
+			element.placeholder(attrs.albumart);
 		});
 	};
 });

@@ -1,9 +1,10 @@
 
+{{ script('placeholder', 'core') }}
+{{ script('md5/md5.min', '3rdparty') }}
 {{ script('vendor/underscore/underscore.min', 'music') }}
 {{ script('vendor/angular/angular.min', 'music') }}
 {{ script('vendor/audio5/audio5.min', 'music') }}
 {{ script('vendor/restangular/restangular.min', 'music') }}
-{{ script('vendor/md5/md5', 'music') }}
 {{ script('public/app') }}
 {{ style('style-playerbar') }}
 {{ style('style-sidebar') }}
@@ -23,7 +24,7 @@
 			<img ng-click="next()" class="control small" alt="{{ trans('Next') }}" src="{{ image_path('actions/play-next.svg', 'core') }}" />
 		</div>
 
-		<div ng-show="currentAlbum" class="albumart" albumart="[[ currentAlbum.name ]]">[[ currentAlbum.name | minify ]]</div>
+		<div ng-show="currentAlbum" class="albumart" albumart="[[ currentAlbum.name ]]"></div>
 
 		<div class="song-info">
 			<span class="title" title="[[ currentTrack.title ]]">[[ currentTrack.title ]]</span><br />

@@ -2,7 +2,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- 10:01:07 <mjob> Hab Zeit* @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -22,17 +22,7 @@
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
 		attrs.$observe('albumart',function(){
-			// TODO fix dependency on md5
-			var hash = md5(attrs.albumart),
-				maxRange = parseInt('ffffffffff', 16),
-				red = parseInt(hash.substr(0,10), 16)/maxRange,
-				green = parseInt(hash.substr(10,10), 16)/maxRange,
-				blue = parseInt(hash.substr(20,10), 16)/maxRange;
-			red *= 256;
-			green *= 256;
-			blue *= 256;
-			rgb = [Math.floor(red), Math.floor(green), Math.floor(blue)];
-			element.css('background-color', 'rgb(' + rgb.join(',') + ')');
+			element.placeholder(attrs.albumart);
 		});
 	};
 });

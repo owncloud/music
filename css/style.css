@@ -67,16 +67,11 @@
 	height: 182px;
 }
 
-#app-content .albumart {
-	line-height: 180px;
-	font-size: 100px;
-}
-
 .album-area > img.overlay {
-	margin-left: -140px;
-	margin-top: 42px;
-	width: 98px;
-	height: 98px;
+	margin-left: -182px;
+	width: 182px;
+	height: 182px;
+	padding: 42px;
 }
 
 .album-area:hover > img.overlay {

@@ -54,7 +54,7 @@
 }
 
 #play-controls {
-	margin-left: 50px;
+	/*margin-left: 50px; first release fix*/
 }
 
 #playerbar .control.small {
@@ -73,7 +73,8 @@
 
 #playerbar .albumart {
 	position: absolute;
-	left: 300px;
+	/*left: 300px; first release fix*/
+	left: 150px;
 	top: 0;
 	height: 50px;
 	width: 50px;
@@ -89,10 +90,17 @@
 	max-width: 400px;
 	position: absolute;
 	top: 0;
-	left: 400px;
+	/*left: 400px; first release fix*/
+	left: 250px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	/* if the progress bar overlays the artist - the artist stays visible */
+	text-shadow:
+		 1px  1px 2px #eee,
+		-1px -1px 2px #eee,
+		-1px  1px 2px #eee,
+		 1px -1px 2px #eee;
 }
 
 #playerbar .title {
@@ -104,7 +112,8 @@
 	width: 300px;
 	position: absolute;
 	top: 10px;
-	left: 830px;
+	/*left: 830px; first release fix*/
+	right: 140px;
 	text-align: center;
 }
 

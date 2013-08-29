@@ -1,4 +1,16 @@
 
+// fix SVGs in IE8
+if(!SVGSupport()) {
+	var replaceSVGs = function() {
+		replaceSVG();
+		// call them periodically to keep track of possible changes in the artist view
+		setTimeout(replaceSVG, 10000);
+	};
+	replaceSVG();
+	setTimeout(replaceSVG, 1000);
+	setTimeout(replaceSVGs, 5000);
+}
+
 angular.module('Music', ['restangular']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
@@ -17,6 +29,7 @@ angular.module('Music', ['restangular']).
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
+
 }]);
 angular.module('Music').controller('MainController',
 	['$scope', '$routeParams', 'Artists', 'playlistService', function ($scope, $routeParams, Artists, playlistService) {

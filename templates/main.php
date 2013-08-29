@@ -18,10 +18,10 @@
 
 	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
-			<img class="control small" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
-			<img ng-click="toggle()" ng-hide="playing" class="control" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
-			<img ng-click="toggle()" ng-show="playing" class="control" alt="{{ trans('Pause') }}" src="{{ image_path('actions/pause-big.svg', 'core') }}" />
-			<img ng-click="next()" class="control small" alt="{{ trans('Next') }}" src="{{ image_path('actions/play-next.svg', 'core') }}" />
+			<img class="control small svg" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
+			<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
+			<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ trans('Pause') }}" src="{{ image_path('actions/pause-big.svg', 'core') }}" />
+			<img ng-click="next()" class="control small svg" alt="{{ trans('Next') }}" src="{{ image_path('actions/play-next.svg', 'core') }}" />
 		</div>
 
 		<div ng-show="currentAlbum" class="albumart" albumart="[[ currentAlbum.name ]]"></div>
@@ -39,9 +39,9 @@
 			</div>
 		</div>
 
-		<img id="shuffle" class="control small" alt="{{ trans('Shuffle') }}" src="{{ image_path('shuffle.svg', 'music') }}"
+		<img id="shuffle" class="control small svg" alt="{{ trans('Shuffle') }}" src="{{ image_path('shuffle.svg', 'music') }}"
 			ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
-		<img id="repeat" class="control small" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}"
+		<img id="repeat" class="control small svg" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}"
 			ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 	</div>
 

@@ -8,19 +8,22 @@ README
 I want to see it live - but how?
 --------------------------------
 
-As this branch doesn't do any metadata scanning yet, you will need to import some dummy data. I use [these sql insert statements](https://gist.github.com/kabum/f6d0ac1a8d1e6e6162f5) to add this. Keep in mind to change the `user_id` (`mjob`) to your used one in the ownCloud instance. This should be your login name.
+Requirements:
 
-Currently there is no ownCloud implementation. Therefore we use the [shiva client prototype](https://github.com/tooxie/shiva-client).
+ * appframework 0.103
 
-    $ git clone git@github.com:tooxie/shiva-client.git
+Your ownCloud version:
 
-Adjust `API_URL` in `shiva-client/shiva/server.py` to
+ * ownCloud 6 (current developement) - grap the `master` branch
+ * ownCloud 5 (current stable) - grap the `stable5` branch
 
-    https://user:password@server/path/to/index.php/apps/music/api
+Known bugs:
 
-Start the shiva client server (sounds weird, but that prototype proxies the traffic) with
+ * ugly play icons in IE8 #62
+ * Ampache not working yet #62
+ * shuffle/repeat buttons without functionality #62
+ * maybe slow for large music collections #62
+ * tracks without artist or album are not listed (but in the database) #62
 
-    $ cd shiva-client/shiva
-    $ python2 server.py
-
-Go to `localhost:9001` and browse the dummy data.
+Happy testing!
+--------------

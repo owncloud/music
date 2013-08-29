@@ -19,11 +19,11 @@ Your ownCloud version:
 
 Known bugs:
 
- * ugly play icons in IE8 [#62](https://github.com/owncloud/music/issue/62)
- * Ampache not working yet [#62](https://github.com/owncloud/music/issue/62)
- * shuffle/repeat buttons without functionality [#62](https://github.com/owncloud/music/issue/62)
- * maybe slow for large music collections [#62](https://github.com/owncloud/music/issue/62)
- * tracks without artist or album are not listed (but in the database) [#62](https://github.com/owncloud/music/issue/62)
+ * ugly play icons in IE8 [#62](https://github.com/owncloud/music/issues/62)
+ * Ampache not working yet [#62](https://github.com/owncloud/music/issues/62)
+ * shuffle/repeat buttons without functionality [#62](https://github.com/owncloud/music/issues/62)
+ * maybe slow for large music collections [#62](https://github.com/owncloud/music/issues/62)
+ * tracks without artist or album are not listed (but in the database) [#62](https://github.com/owncloud/music/issues/62)
 
 Happy testing!
 --------------

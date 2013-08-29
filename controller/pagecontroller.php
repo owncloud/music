@@ -60,6 +60,12 @@ class PageController extends Controller {
 			$this->status->setScanned($userId);
 			$this->api->log('Rescan finished', 'debug');
 		}
-		return $this->render('main');
+		// during 5.80.05 the placeholder script was outsourced to core
+		$version = join('.', $this->api->getVersion());
+		if(version_compare($version, '5.80.05', '>')){
+			return $this->render('stable6+');
+		} else {
+			return $this->render('stable5');
+		}
 	}
 }

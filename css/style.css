@@ -108,8 +108,10 @@
 
 #emptystate {
 	position: absolute;
-	margin: 10em 0 0 10em;
-	font-size: 1.5em;
+	padding: 140px 0 0 140px;
+	height: 100%;
+	width: 100%;
+	font-size: 21px;
 	font-weight: bold;
 	color: #888;
 	text-shadow: #fff 0 1px 0;

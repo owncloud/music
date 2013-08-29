@@ -36,6 +36,7 @@ use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\ScanStatusMapper;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\ExtractorGetID3;
+use \OCA\Music\Core\API;
 
 require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 
@@ -45,6 +46,10 @@ require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 // use this to specify the template directory
 $this['TwigTemplateDirectory'] = __DIR__ . '/../templates';
 
+
+$this['API'] = $this->share(function($c){
+	return new API($c['AppName']);
+});
 
 /**
  * CONTROLLERS

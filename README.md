@@ -11,11 +11,7 @@ I want to see it live - but how?
 Requirements:
 
  * appframework 0.103
-
-Your ownCloud version:
-
- * ownCloud 6 (current developement) - grap the `master` branch
- * ownCloud 5 (current stable) - grap the `stable5` branch
+ * ownCloud 5 or 6
 
 Known bugs:
 

@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ownCloud - Music app
  *
@@ -19,11 +21,29 @@
  *
  */
 
-angular.module('Music').filter('minify', function() {
-	return function(input) {
-		if(input !== null && input.length) {
-			return input[0];
-		}
-		return '';
-	};
-});
+
+namespace OCA\Music\Controller;
+
+use \OCA\AppFramework\Core\API;
+use \OCA\AppFramework\Http\Request;
+
+
+class LogController extends Controller {
+
+	public function __construct(API $api, Request $request){
+		parent::__construct($api, $request);
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function log() {
+		$message = $this->params('message');
+		$this->api->log('JS: ' . $message, 'debug');
+		return $this->renderPlainJSON(array('success' => true));
+	}
+}

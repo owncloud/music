@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists',
-	function ($scope, $routeParams, playlistService, Audio, Artists) {
+	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists', 'Restangular',
+	function ($scope, $routeParams, playlistService, Audio, Artists, Restangular) {
 
 	$scope.artists = Artists;
 
@@ -81,6 +81,21 @@ angular.module('Music').controller('PlayerController',
 				},
 				onpause: function() {
 					$scope.setPlay(false);
+				},
+				onload: function(success) {
+					if(!success) {
+						$scope.setPlay(false);
+						Restangular.all('log').post({message: JSON.stringify($scope.currentTrack)});
+						// determine if already inside of an $apply or $digest
+						// see http://stackoverflow.com/a/12859093
+						if($scope.$$phase) {
+							$scope.next();
+						} else {
+							$scope.$apply(function(){
+								$scope.next();
+							});
+						}
+					}
 				},
 				volume: 50
 			});

@@ -71,6 +71,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	private function injectArtists($albums){
+		if(count($albums) === 0) {
+			return array();
+		}
 		$albumIds = array();
 		foreach ($albums as $album) {
 			$albumIds[] = $album->getId();

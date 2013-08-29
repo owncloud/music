@@ -63,15 +63,15 @@
 
 .album-area > .albumart, .album-area > img {
 	float: left;
-	width: 182px;
-	height: 182px;
+	width: 190px;
+	height: 190px;
 }
 
 .album-area > img.overlay {
-	margin-left: -182px;
-	width: 182px;
-	height: 182px;
-	padding: 42px;
+	margin-left: -190px;
+	width: 190px;
+	height: 190px;
+	padding: 46px;
 }
 
 .album-area:hover > img.overlay {

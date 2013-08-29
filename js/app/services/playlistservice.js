@@ -50,6 +50,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		},
 		setPlaylist: function(pl) {
 			playlist = pl;
+			currentTrackId = null;
+			player = [];
 		},
         publish: function(name, parameters) {
             $rootScope.$emit(name, parameters);

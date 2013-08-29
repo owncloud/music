@@ -37,5 +37,14 @@ $this->create('music_index', '/')->get()->action(
 	}
 );
 
+/**
+ * Log
+ */
+$this->create('music_log', '/api/log')->post()->action(
+	function($params){
+		App::main('LogController', 'log', $params, new DIContainer());
+	}
+);
+
 // include external API
 require_once __DIR__ . '/api.php';

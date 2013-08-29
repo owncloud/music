@@ -36,7 +36,7 @@ angular.module('Music').controller('MainController',
 	};
 
 	$scope.playArtist = function(artist) {
-		var playlist = _.union(
+		var playlist = _.union.apply(null,
 				_.map(
 					artist.albums,
 					function(album){

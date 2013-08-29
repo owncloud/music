@@ -47,7 +47,7 @@ angular.module('Music').controller('MainController',
 	};
 
 	$scope.playArtist = function(artist) {
-		var playlist = _.union(
+		var playlist = _.union.apply(null,
 				_.map(
 					artist.albums,
 					function(album){
@@ -60,8 +60,8 @@ angular.module('Music').controller('MainController',
 	};
 }]);
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists',
-	function ($scope, $routeParams, playlistService, Audio, Artists) {
+	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists', 'Restangular',
+	function ($scope, $routeParams, playlistService, Audio, Artists, Restangular) {
 
 	$scope.artists = Artists;
 
@@ -120,6 +120,21 @@ angular.module('Music').controller('PlayerController',
 				},
 				onpause: function() {
 					$scope.setPlay(false);
+				},
+				onload: function(success) {
+					if(!success) {
+						$scope.setPlay(false);
+						Restangular.all('log').post({message: JSON.stringify($scope.currentTrack)});
+						// determine if already inside of an $apply or $digest
+						// see http://stackoverflow.com/a/12859093
+						if($scope.$$phase) {
+							$scope.next();
+						} else {
+							$scope.$apply(function(){
+								$scope.next();
+							});
+						}
+					}
 				},
 				volume: 50
 			});
@@ -226,14 +241,6 @@ angular.module('Music').factory('playlists', function(){
 		{name: 'test playlist 4', id: 4},
 	];
 });
-angular.module('Music').filter('minify', function() {
-	return function(input) {
-		if(input !== null && input.length) {
-			return input[0];
-		}
-		return '';
-	};
-});
 angular.module('Music').filter('playTime', function() {
 	return function(input) {
 		minutes = Math.floor(input/60);
@@ -272,6 +279,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		},
 		setPlaylist: function(pl) {
 			playlist = pl;
+			currentTrackId = null;
+			player = [];
 		},
         publish: function(name, parameters) {
             $rootScope.$emit(name, parameters);

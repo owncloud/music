@@ -1,3 +1,9 @@
+/* stable5 fixes */
+* {
+	box-sizing: border-box;
+}
+/* end stable5 fixes */
+
 #app-content {
 	overflow-y:auto;
 	-moz-box-sizing: border-box;

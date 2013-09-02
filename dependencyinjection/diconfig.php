@@ -39,7 +39,10 @@ use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Core\API;
 
-require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+// in stable5 getid3 is already loaded
+if(!class_exists('getid3_exception')) {
+	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+}
 
 /**
  * Delete the following twig config to use ownClouds default templates

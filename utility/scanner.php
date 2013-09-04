@@ -62,22 +62,56 @@ class Scanner {
 
 		$metadata = $this->api->getFileInfo($path);
 
+		if($metadata === false) {
+			$this->api->log('cannot determine metadata for path ' . $path, 'debug');
+			return;
+		}
+
 		if(ini_get('allow_url_fopen')) {
 			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
 
-			if(!array_key_exists('comments', $fileInfo)) {
+			/*if(!array_key_exists('comments', $fileInfo)) {
+				$this->api->log('"comments" is empty ' . $path . ' # ' . $this->api->getView()->getAbsolutePath($path), 'debug');
 				return;
-			}
+			}*/
 
 			$userId = $this->api->getUserId();
 
-			// TODO make it more robust against missing tags
-
+			// artist
 			$artist = array_key_exists('artist', $fileInfo['comments']) ? $fileInfo['comments']['artist'][0] : null;
-			$title = array_key_exists('title', $fileInfo['comments']) ? $fileInfo['comments']['title'][0] : null;
-			$album = array_key_exists('album', $fileInfo['comments']) ? $fileInfo['comments']['album'][0] : null;
-			$trackNumber = array_key_exists('track_number', $fileInfo['comments']) ? $fileInfo['comments']['track_number'][0] : null;
+			if($artist === null || $artist === ''){
+				// fallback to "ownCloud unknown artist"
+				$artist = 'ownCloud unknown artist';
+			}
 
+			$alternativeTrackNumber = null;
+			// title
+			$title = array_key_exists('title', $fileInfo['comments']) ? $fileInfo['comments']['title'][0] : null;
+			if($title === null || $title === ''){
+				// fallback to file name
+				$title = $metadata['name'];
+				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
+					$alternativeTrackNumber = $matches[1];
+					if(preg_match('/(.*)(\.(mp3|ogg))$/', $matches[2], $titleMatches) === 1) {
+						$title = $titleMatches[1];
+					} else {
+						$title = $matches[2];
+					}
+				}
+			}
+
+			// album
+			$album = array_key_exists('album', $fileInfo['comments']) ? $fileInfo['comments']['album'][0] : null;
+			if($album === null || $album === ''){
+				// fallback to "ownCloud unknown album"
+				$album = 'ownCloud unknown album';
+			}
+
+			// track number
+			$trackNumber = array_key_exists('track_number', $fileInfo['comments']) ? $fileInfo['comments']['track_number'][0] : null;
+			if($trackNumber === null && $alternativeTrackNumber !== null) {
+				$trackNumber = $alternativeTrackNumber;
+			}
 			// convert track number '1/10' to '1'
 			$tmp = explode('/', $trackNumber);
 			$trackNumber = $tmp[0];
@@ -91,24 +125,14 @@ class Scanner {
 				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i',
 					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId), 'debug');
 
-			$artistId = null;
-			if($artist !== null && $artist !== ''){
-				// add artist and get artist entity
-				$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
-				$artistId = $artist->getId();
-			}
+			// add artist and get artist entity
+			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
+			$artistId = $artist->getId();
 
-			$albumId = null;
-			if($album !== null && $album !== ''){
-				// add album and get album entity
-				$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
-				$albumId = $album->getId();
-			}
+			// add album and get album entity
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
+			$albumId = $album->getId();
 
-			if($title === null || $title === ''){
-				// fallback to file name
-				$title = $metadata['name'];
-			}
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId);

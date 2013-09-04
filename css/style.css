@@ -1,5 +1,5 @@
 /* stable5 fixes */
-* {
+#content * {
 	box-sizing: border-box;
 }
 /* end stable5 fixes */

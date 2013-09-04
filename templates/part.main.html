@@ -13,12 +13,12 @@
 			<li ng-click="playTrack(track)"
 				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit" title="[[ track.title ]]">
 				<img class="play svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
-				<span ng-show="track.number" class="muted">[[ track.number ]]. </span>
+				<span ng-show="track.number" class="muted">[[ track.number ]].</span>
 				[[ track.title ]]
 			</li>
 			<li class="muted"
 				ng-click="limit = album.tracks.length"
-				ng-hide="album.tracks.length <= limit || limit != 5">{{ trans('Show all ...') }}</li>
+				ng-hide="album.tracks.length <= limit || limit != 5">{{ trans('Show all') }} [[ album.tracks.length ]] {{ trans('songs ...') }}</li>
 			<li class="muted"
 				ng-click="limit = 5"
 				ng-hide="limit == 5">{{ trans('Show less ...') }}</li>

@@ -1,6 +1,7 @@
 node_modules/
 *.log
 build/artifacts
+build/music.zip
 .rvm
 
 # just sane ignores

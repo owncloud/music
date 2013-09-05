@@ -1,10 +1,61 @@
-ownCloud-music (next)
-* Shiva API
- * supported resources (see https://github.com/tooxie/shiva-server#resources)
-  * tracks, track, albums, album, artists, artist
- * fulltree parameter for album(s) and artist(s) resources
- * artist and album parameter for tracks resource
- * NOT INCLUDED: lyrics, shows
+v0.1.4-alpha 2013-09-05
 
-ownCloud-music (0.001)
-* Created app
+  * show track number in track list
+  * fix icon glitches in Firefox
+  * show playing status icon (fixes #82)
+  * previous button (fixes #72)
+  * shuffle/repeat button (fixes #77)
+  * correct sorting order for playlist
+  * show loading state
+  * sort albums by year
+  * visualize loading state
+  * make scanner more robust and fix PHP errors
+  * disable execution time for rescan
+  * realign playerbar content and adding whitespace (ref #80)
+
+ Known issues
+  * clicking a song the first song of the album is played instead of the actual clicked song
+
+v0.1.3-alpha 2013-09-04
+
+  * cliched icons (fixes #70)
+  * database is cleaned after update to this version
+  * first fixes for undetected metadata (extracts track number and title from filename)
+  * fix album without year issue (albums were duplicated)
+  * sort tracks by tracknumber and show them if available
+
+v0.1.2-alpha 2013-09-02
+
+ stable5 fixes
+
+  * loading of getid3
+  * CSS
+
+v0.1.1-alpha 2013-08-29
+
+ Fixes, clean-ups and logging from JS to the backend
+  * log API (for javascript logging to backend)
+  * fix empty artists (backend)
+  * album view fixed
+  * log errors in frontend to backend
+  * fix playback for artist
+  * remove minify directive
+  * reset played songs and current song for playlist
+
+v0.1-alpha 2013-08-29
+
+ First release of the new music app
+  * useable with OC5+
+  * shiva API
+  * metadata extraction for artist, album and track
+  * single page frontend
+  * multimedia playback in all browsers trough HTML5 and flash fallback
+  * testing of the backend code
+
+ Known bugs:
+
+  * shuffle, repeat and previous button are out of functionality
+  * non-high-resolution icons in IE8
+  * no Ampache support
+  * slow for large music collections
+  * tracks without artist or album are not listed in the frontend (but already in the database)

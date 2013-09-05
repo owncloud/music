@@ -19,6 +19,10 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', function (Restangular) {
-	return Restangular.all('artists').getList({fulltree: true});
+angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return Restangular.all('artists').getList({fulltree: true}).then(
+		function(result){
+			$rootScope.$emit('artistsLoaded');
+			return result;
+		});
 }]);

@@ -21,8 +21,15 @@
 
 
 angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'Artists', 'playlistService', function ($scope, $routeParams, Artists, playlistService) {
+	['$rootScope', '$scope', '$routeParams', 'Artists', 'playlistService',
+	function ($rootScope, $scope, $routeParams, Artists, playlistService) {
 
+	// will be invoked by the artist factory
+	$rootScope.$on('artistsLoaded', function() {
+		$scope.loading = false;
+	});
+
+	$scope.loading = true;
 	$scope.artists = Artists;
 
 	$scope.playTrack = function(track) {

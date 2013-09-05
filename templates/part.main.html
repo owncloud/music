@@ -1,4 +1,7 @@
-<div ng-hide="artists" id="emptystate">{{ trans('Nothing in here. Upload your music!') }}</div>
+<div ng-hide="artists" id="emptystate">
+	<span ng-hide="loading">{{ trans('Nothing in here. Upload your music!') }}</span>
+	<span ng-show="loading">{{ trans('Loading ...') }}</span>
+</div>
 
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'">
 	<h1 ng-click="playArtist(artist)">[[ artist.name ]] <img class="play svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" /></h1>

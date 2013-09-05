@@ -32,8 +32,15 @@ angular.module('Music', ['restangular']).
 
 }]);
 angular.module('Music').controller('MainController',
-	['$scope', '$routeParams', 'Artists', 'playlistService', function ($scope, $routeParams, Artists, playlistService) {
+	['$rootScope', '$scope', '$routeParams', 'Artists', 'playlistService',
+	function ($rootScope, $scope, $routeParams, Artists, playlistService) {
 
+	// will be invoked by the artist factory
+	$rootScope.$on('artistsLoaded', function() {
+		$scope.loading = false;
+	});
+
+	$scope.loading = true;
 	$scope.artists = Artists;
 
 	$scope.playTrack = function(track) {
@@ -282,8 +289,12 @@ angular.module('Music').directive('albumart', function() {
 		});
 	};
 });
-angular.module('Music').factory('Artists', ['Restangular', function (Restangular) {
-	return Restangular.all('artists').getList({fulltree: true});
+angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return Restangular.all('artists').getList({fulltree: true}).then(
+		function(result){
+			$rootScope.$emit('artistsLoaded');
+			return result;
+		});
 }]);
 
 angular.module('Music').factory('Audio', function () {

@@ -54,7 +54,7 @@
 }
 
 #play-controls {
-	/*margin-left: 50px; first release fix*/
+	margin-left: 40px; /* with sidebar 50px */
 }
 
 #playerbar .control.small {
@@ -73,8 +73,7 @@
 
 #playerbar .albumart {
 	position: absolute;
-	/*left: 300px; first release fix*/
-	left: 150px;
+	left: 213px; /* with sidebar 300px */
 	top: 0;
 	height: 50px;
 	width: 50px;
@@ -90,8 +89,7 @@
 	max-width: 400px;
 	position: absolute;
 	top: 0;
-	/*left: 400px; first release fix*/
-	left: 250px;
+	left: 313px; /* with sidebar 400px */
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
@@ -111,9 +109,8 @@
 #playerbar .progress-info {
 	width: 300px;
 	position: absolute;
-	top: 10px;
-	/*left: 830px; first release fix*/
-	right: 140px;
+	top: 7px;
+	left: 620px; /* with sidebar 830px */
 	text-align: center;
 }
 

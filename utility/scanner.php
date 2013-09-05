@@ -70,7 +70,8 @@ class Scanner {
 		if(ini_get('allow_url_fopen')) {
 			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
 
-			/*if(!array_key_exists('comments', $fileInfo)) {
+			$hasComments = array_key_exists('comments', $fileInfo);
+			/*if(!$hasComments) {
 				$this->api->log('"comments" is empty ' . $path . ' # ' . $this->api->getView()->getAbsolutePath($path), 'debug');
 				return;
 			}*/
@@ -78,7 +79,10 @@ class Scanner {
 			$userId = $this->api->getUserId();
 
 			// artist
-			$artist = array_key_exists('artist', $fileInfo['comments']) ? $fileInfo['comments']['artist'][0] : null;
+			$artist = null;
+			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
+				$artist = $fileInfo['comments']['artist'][0];
+			}
 			if($artist === null || $artist === ''){
 				// fallback to "ownCloud unknown artist"
 				$artist = 'ownCloud unknown artist';
@@ -86,7 +90,10 @@ class Scanner {
 
 			$alternativeTrackNumber = null;
 			// title
-			$title = array_key_exists('title', $fileInfo['comments']) ? $fileInfo['comments']['title'][0] : null;
+			$title = null;
+			if($hasComments && array_key_exists('title', $fileInfo['comments'])){
+				$title = $fileInfo['comments']['title'][0];
+			}
 			if($title === null || $title === ''){
 				// fallback to file name
 				$title = $metadata['name'];
@@ -101,14 +108,20 @@ class Scanner {
 			}
 
 			// album
-			$album = array_key_exists('album', $fileInfo['comments']) ? $fileInfo['comments']['album'][0] : null;
+			$album = null;
+			if($hasComments && array_key_exists('album', $fileInfo['comments'])){
+				$album = $fileInfo['comments']['album'][0];
+			}
 			if($album === null || $album === ''){
 				// fallback to "ownCloud unknown album"
 				$album = 'ownCloud unknown album';
 			}
 
 			// track number
-			$trackNumber = array_key_exists('track_number', $fileInfo['comments']) ? $fileInfo['comments']['track_number'][0] : null;
+			$trackNumber = null;
+			if($hasComments && array_key_exists('track_number', $fileInfo['comments'])){
+				$trackNumber = $fileInfo['comments']['track_number'][0];
+			}
 			if($trackNumber === null && $alternativeTrackNumber !== null) {
 				$trackNumber = $alternativeTrackNumber;
 			}
@@ -116,7 +129,10 @@ class Scanner {
 			$tmp = explode('/', $trackNumber);
 			$trackNumber = $tmp[0];
 
-			$year = array_key_exists('year', $fileInfo['comments']) ? $fileInfo['comments']['year'][0] : null;
+			$year = null;
+			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
+				$year = $fileInfo['comments']['year'][0];
+			}
 			$mimetype = $metadata['mimetype'];
 			$fileId = $metadata['fileid'];
 
@@ -171,11 +187,18 @@ class Scanner {
 	 * Rescan the whole file base for new files
 	 */
 	public function rescan() {
+		// get execution time limit
+		$executionTime = intval(ini_get('max_execution_time'));
+		// set execution time limit to unlimited
+		set_time_limit(0);
+
 		$music = $this->api->searchByMime('audio');
 		$ogg = $this->api->searchByMime('application/ogg');
 		$music = array_merge($music, $ogg);
 		foreach ($music as $file) {
 			$this->update($file['path']);
 		}
+		// reset execution time limit
+		set_time_limit($executionTime);
 	}
 }

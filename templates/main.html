@@ -16,7 +16,7 @@
 
 	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
-			<img class="control small svg" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
+			<img  ng-click="prev()"class="control small svg" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
 			<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
 			<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ trans('Pause') }}" src="{{ image_path('actions/pause-big.svg', 'core') }}" />
 			<img ng-click="next()" class="control small svg" alt="{{ trans('Next') }}" src="{{ image_path('actions/play-next.svg', 'core') }}" />
@@ -29,7 +29,8 @@
 			<span class="artist" title="[[ currentArtist.name ]]">[[ currentArtist.name ]]</span>
 		</div>
 		<div ng-show="currentTrack.title" class="progress-info">
-			<span class="muted">[[ position | playTime ]] / [[ duration | playTime ]]</span>
+			<span ng-hide="loading" class="muted">[[ position | playTime ]] / [[ duration | playTime ]]</span>
+			<span ng-show="loading" class="muted">{{ trans('Loading ...') }}</span>
 			<div class="progress">
 				<div class="seek-bar">
 					<div class="play-bar" style="width: [[ position / duration * 100 ]]%;"></div>

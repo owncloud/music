@@ -26,21 +26,48 @@ angular.module('Music').controller('MainController',
 	$scope.artists = Artists;
 
 	$scope.playTrack = function(track) {
-		playlistService.setPlaylist([track]);
+		var artist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+			function(artist) {
+				return artist.id === track.artist.id;
+			}),
+			album = _.find(artist.albums,
+			function(album) {
+				return album.id === track.album.id;
+			}),
+			tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		playlistService.setPlaylist(tracks);
 		playlistService.publish('play');
 	};
 
 	$scope.playAlbum = function(album) {
-		playlistService.setPlaylist(album.tracks);
+		var tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		playlistService.setPlaylist(tracks);
 		playlistService.publish('play');
 	};
 
 	$scope.playArtist = function(artist) {
-		var playlist = _.union.apply(null,
+		var albums = _.sortBy(artist.albums,
+			function(album) {
+				return album.year;
+			}),
+			playlist = _.union.apply(null,
 				_.map(
-					artist.albums,
+					albums,
 					function(album){
-						return album.tracks;
+						var tracks = _.sortBy(album.tracks,
+							function(track) {
+								return track.number;
+							}
+						);
+						return tracks;
 					}
 				)
 			);

@@ -27,6 +27,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.artists = Artists;
 
 	$scope.playing = false;
+	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.position = 0.0;
 	$scope.duration = 0.0;
@@ -36,6 +37,18 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
+
+	// display a play icon in the title if a song is playing
+	$scope.$watch('playing', function(newValue) {
+		var title = $('title').html().trim();
+		if(newValue) {
+			$('title').html('▶ ' + title);
+		} else {
+			if(title.substr(0, 1) === '▶') {
+				$('title').html(title.substr(1).trim());
+			}
+		}
+	});
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		$scope.player.stopAll();
@@ -97,6 +110,9 @@ angular.module('Music').controller('PlayerController',
 						}
 					}
 				},
+				onbufferchange: function() {
+					$scope.setLoading(this.isBuffering);
+				},
 				volume: 50
 			});
 			$scope.player.play('ownCloudSound');
@@ -117,6 +133,19 @@ angular.module('Music').controller('PlayerController',
 		} else {
 			$scope.$apply(function(){
 				$scope.playing = playing;
+			});
+		}
+	};
+
+	// only call from external script
+	$scope.setLoading = function(loading) {
+		// determine if already inside of an $apply or $digest
+		// see http://stackoverflow.com/a/12859093
+		if($scope.$$phase) {
+			$scope.loading = loading;
+		} else {
+			$scope.$apply(function(){
+				$scope.loading = loading;
 			});
 		}
 	};
@@ -150,13 +179,20 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack();
+		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		while(track !== null &&
 			!('audio/mpeg' in track.files)) {
-			track = playlistService.getNextTrack();
+			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		}
 
 		$scope.currentTrack = track;
+	};
+
+	$scope.prev = function() {
+		var track = playlistService.getPrevTrack();
+		if(track !== null) {
+			$scope.currentTrack = track;
+		}
 	};
 
 	playlistService.subscribe('play', function(){

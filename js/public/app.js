@@ -37,21 +37,48 @@ angular.module('Music').controller('MainController',
 	$scope.artists = Artists;
 
 	$scope.playTrack = function(track) {
-		playlistService.setPlaylist([track]);
+		var artist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+			function(artist) {
+				return artist.id === track.artist.id;
+			}),
+			album = _.find(artist.albums,
+			function(album) {
+				return album.id === track.album.id;
+			}),
+			tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		playlistService.setPlaylist(tracks);
 		playlistService.publish('play');
 	};
 
 	$scope.playAlbum = function(album) {
-		playlistService.setPlaylist(album.tracks);
+		var tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		playlistService.setPlaylist(tracks);
 		playlistService.publish('play');
 	};
 
 	$scope.playArtist = function(artist) {
-		var playlist = _.union.apply(null,
+		var albums = _.sortBy(artist.albums,
+			function(album) {
+				return album.year;
+			}),
+			playlist = _.union.apply(null,
 				_.map(
-					artist.albums,
+					albums,
 					function(album){
-						return album.tracks;
+						var tracks = _.sortBy(album.tracks,
+							function(track) {
+								return track.number;
+							}
+						);
+						return tracks;
 					}
 				)
 			);
@@ -66,6 +93,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.artists = Artists;
 
 	$scope.playing = false;
+	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.position = 0.0;
 	$scope.duration = 0.0;
@@ -75,6 +103,18 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
+
+	// display a play icon in the title if a song is playing
+	$scope.$watch('playing', function(newValue) {
+		var title = $('title').html().trim();
+		if(newValue) {
+			$('title').html('▶ ' + title);
+		} else {
+			if(title.substr(0, 1) === '▶') {
+				$('title').html(title.substr(1).trim());
+			}
+		}
+	});
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		$scope.player.stopAll();
@@ -136,6 +176,9 @@ angular.module('Music').controller('PlayerController',
 						}
 					}
 				},
+				onbufferchange: function() {
+					$scope.setLoading(this.isBuffering);
+				},
 				volume: 50
 			});
 			$scope.player.play('ownCloudSound');
@@ -156,6 +199,19 @@ angular.module('Music').controller('PlayerController',
 		} else {
 			$scope.$apply(function(){
 				$scope.playing = playing;
+			});
+		}
+	};
+
+	// only call from external script
+	$scope.setLoading = function(loading) {
+		// determine if already inside of an $apply or $digest
+		// see http://stackoverflow.com/a/12859093
+		if($scope.$$phase) {
+			$scope.loading = loading;
+		} else {
+			$scope.$apply(function(){
+				$scope.loading = loading;
 			});
 		}
 	};
@@ -189,13 +245,20 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack();
+		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		while(track !== null &&
 			!('audio/mpeg' in track.files)) {
-			track = playlistService.getNextTrack();
+			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		}
 
 		$scope.currentTrack = track;
+	};
+
+	$scope.prev = function() {
+		var track = playlistService.getPrevTrack();
+		if(track !== null) {
+			$scope.currentTrack = track;
+		}
 	};
 
 	playlistService.subscribe('play', function(){
@@ -259,15 +322,46 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			return null;
 		},
-		getNextTrack: function(repeat) {
+		getPrevTrack: function() {
+			if(played.length > 0) {
+				currentTrackId = played.pop();
+				return playlist[currentTrackId];
+			}
+			return null;
+		},
+		getNextTrack: function(repeat, shuffle) {
 			if(playlist === null) {
 				return null;
 			}
-			if(currentTrackId === null ||
-				currentTrackId === (playlist.length - 1) && repeat === true) {
-				currentTrackId = 0;
+			if(currentTrackId !== null) {
+				// add previous track id to the played list
+				played.push(currentTrackId);
+			}
+			if(shuffle === true) {
+				if(playlist.length === played.length) {
+					if(repeat === true) {
+						played = [];
+					} else {
+						currentTrackId = null;
+						return null;
+					}
+				}
+				// generate a list with all integers between 0 and playlist.length
+				var all = [];
+				for(var i = 0; i < playlist.length; i++) {
+					all.push(i);
+				}
+				// remove the already played track ids
+				all = _.difference(all, played);
+				// determine a random integer out of this set
+				currentTrackId = all[Math.round(Math.random() * (all.length - 1))];
 			} else {
-				currentTrackId++;
+				if(currentTrackId === null ||
+					currentTrackId === (playlist.length - 1) && repeat === true) {
+					currentTrackId = 0;
+				} else {
+					currentTrackId++;
+				}
 			}
 			// repeat is disabled and the end of the playlist is reached
 			// -> abort

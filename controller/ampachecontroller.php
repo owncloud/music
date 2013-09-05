@@ -42,9 +42,16 @@ class AmpacheController extends Controller {
 	 *
 	 * @IsAdminExemption
 	 * @IsSubAdminExemption
+	 * @IsLoggedInExemption
 	 * @CSRFExemption
+	 * @AmpacheAPI
 	 */
-	public function index() {
-		return $this->render('main');
+	public function ampache() {
+		return $this->render(
+			'ampache/handshake',
+			array(),
+			'blank',
+			array('Content-Type' => 'text/xml')
+		);
 	}
 }

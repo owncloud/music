@@ -193,7 +193,6 @@
 		</declaration>
 	</table>
 
-
 	<table>
 		<name>*dbprefix*music_scanned_users</name>
 		<declaration>
@@ -213,4 +212,66 @@
 			</index>
 		</declaration>
 	</table>
+
+	<table>
+		<name>*dbprefix*music_ampache_sessions</name>
+		<declaration>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>start</name>
+				<type>timestamp</type>
+				<default>2013-01-01 00:00:00</default><!-- TODO -->
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<name>music_ampache_sessions_index</name>
+				<unique>true</unique>
+				<field>
+					<name>token</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_ampache_users</name>
+		<declaration>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>user_password_sha256</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<index>
+				<name>music_ampache_users_index</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
 </database>

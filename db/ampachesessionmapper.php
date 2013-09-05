@@ -21,32 +21,28 @@
  *
  */
 
+namespace OCA\Music\Db;
 
-namespace OCA\Music;
+use \OCA\AppFramework\Db\Mapper;
+use \OCA\AppFramework\Core\API;
 
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\AppFramework\Db\DoesNotExistException;
 
+class AmpacheSessionMapper extends Mapper {
 
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+	public function __construct(API $api){
+		parent::__construct($api, 'music_ampache_sessions');
 	}
-);
 
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
+	public function find($token){
+		$sql = 'SELECT `session`.`user_id` '.
+			'FROM `*PREFIX*music_ampache_sessions` `session` '.
+			'WHERE `session`.`token` = ?';
+		$params = array($token);
+
+		$result = $this->execute($sql, $params);
+
+		// false if no row could be fetched
+		return $result->fetchRow();
 	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+}

@@ -22,31 +22,8 @@
  */
 
 
-namespace OCA\Music;
+namespace OCA\Music\Middleware;
 
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+class AmpacheException extends \Exception {
 
-
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+}

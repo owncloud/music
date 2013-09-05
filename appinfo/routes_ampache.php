@@ -24,29 +24,16 @@
 
 namespace OCA\Music;
 
-use \OCA\Music\AppFramework\App;
+use \OCA\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
 
 /**
- * Webinterface
+ * Ampache API http://ampache.org/wiki/dev:xmlapi
  */
-$this->create('music_index', '/')->get()->action(
+
+$this->create('music_ampache', '/ampache/server/xml.server.php')->get()->action(
 	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
 	}
 );
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';

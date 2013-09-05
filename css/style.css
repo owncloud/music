@@ -1,5 +1,6 @@
 /* stable5 fixes */
 #content * {
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 /* end stable5 fixes */

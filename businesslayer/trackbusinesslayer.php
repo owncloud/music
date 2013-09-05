@@ -79,7 +79,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$this->mapper->update($track);
-			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId());
+			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();
 			$track->setTitle($title);
@@ -90,7 +90,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$track = $this->mapper->insert($track);
-			$this->api->log('addTrackIfNotExist - added - ID: ' . $track->getId());
+			$this->api->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

@@ -95,14 +95,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	public function addAlbumIfNotExist($name, $year, $artistId, $userId){
 		try {
 			$album = $this->mapper->findByNameAndYear($name, $year, $userId);
-			$this->api->log('addAlbumIfNotExist - exists - ID: ' . $album->getId());
+			$this->api->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$album = new Album();
 			$album->setName($name);
 			$album->setYear($year);
 			$album->setUserId($userId);
 			$album = $this->mapper->insert($album);
-			$this->api->log('addAlbumIfNotExist - added - ID: ' . $album->getId());
+			$this->api->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

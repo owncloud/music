@@ -55,13 +55,13 @@ class ArtistBusinessLayer extends BusinessLayer {
 	public function addArtistIfNotExist($name, $userId){
 		try {
 			$artist = $this->mapper->findByName($name, $userId);
-			$this->api->log('addArtistIfNotExist - exists - ID: ' . $artist->getId());
+			$this->api->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$artist = new Artist();
 			$artist->setName($name);
 			$artist->setUserId($userId);
 			$artist = $this->mapper->insert($artist);
-			$this->api->log('addArtistIfNotExist - added - ID: ' . $artist->getId());
+			$this->api->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

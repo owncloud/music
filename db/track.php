@@ -50,6 +50,7 @@ class Track extends Entity {
 		$this->addType('fileSize', 'int');
 		$this->addType('length', 'int');
 		$this->addType('bitrate', 'int');
+		$this->addType('fileId', 'int');
 	}
 
 	public function getUri(API $api) {
@@ -96,4 +97,5 @@ class Track extends Entity {
 			'uri' => $this->getUri($api)
 		);
 	}
+
 }

@@ -131,6 +131,18 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		$this->assertEquals($this->albums[0], $result);
 	}
 
+	public function testFindByNameAndYearYearIsNull(){
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+			'`album`.`cover` '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'WHERE `album`.`user_id` = ? AND `album`.`name` = ? AND `album`.`year` IS NULL';
+		$albumName = 'test';
+		$albumYear = null;
+		$this->setMapperResult($sql, array($this->userId, $albumName), array($this->rows[0]));
+		$result = $this->mapper->findByNameAndYear($albumName, $albumYear, $this->userId);
+		$this->assertEquals($this->albums[0], $result);
+	}
+
 	public function testAddAlbumArtistRelationIfNotExistNoAdd(){
 		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
 			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';

@@ -85,11 +85,12 @@ class AlbumMapper extends Mapper {
 
 	public function findByNameAndYear($albumName, $albumYear, $userId){
 		if($albumYear === null) {
-			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` IS ?');
+			$params = array($userId, $albumName);
+			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` IS NULL');
 		} else {
+			$params = array($userId, $albumName, $albumYear);
 			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` = ?');
 		}
-		$params = array($userId, $albumName, $albumYear);
 		return $this->findEntity($sql, $params);
 	}
 

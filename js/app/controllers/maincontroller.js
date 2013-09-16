@@ -46,6 +46,14 @@ angular.module('Music').controller('MainController',
 					return track.number;
 				}
 			);
+		// determine index of clicked track
+		var index = tracks.indexOf(track);
+		if(index > 0) {
+			// slice array in two parts and interchange them
+			var begin = tracks.slice(0, index);
+			var end = tracks.slice(index);
+			tracks = end.concat(begin);
+		}
 		playlistService.setPlaylist(tracks);
 		playlistService.publish('play');
 	};

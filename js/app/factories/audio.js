@@ -22,7 +22,7 @@
  angular.module('Music').factory('Audio', function () {
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
-		flashVersion: 9,
+		flashVersion: 8,
 		preferFlash: false
 	});
 

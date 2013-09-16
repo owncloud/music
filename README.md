@@ -10,7 +10,7 @@ I want to see it live - but how?
 
 Requirements:
 
- * appframework 0.103
+ * appframework > 0.103
  * ownCloud 5 or 6
 
 Known bugs:

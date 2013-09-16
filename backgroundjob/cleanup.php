@@ -21,28 +21,18 @@
  *
  */
 
+namespace OCA\Music\Backgroundjob;
 
-namespace OCA\Music\Core;
+use \OCA\Music\DependencyInjection\DIContainer;
 
-use \OCA\AppFramework\Core\API as BaseAPI;
-
-class API extends BaseAPI {
-	/**
-	 * get version of ownCloud instance
-	 *
-	 * @return string version of ownCloud
-	 */
-	public function getVersion() {
-		return \OCP\Util::getVersion();
-	}
+class cleanUp {
 
 	/**
-	 * Register a backgroundjob
-	 * @param \OC\BackgroundJob\Job|string $job the job instance
-	 * @param mixed $argument the argument passed to the run() method of the job
-	 * called
+	 * Calls the cleanup method of the scanner
 	 */
-	public function registerJob($job, $argument = null) {
-		\OCP\Backgroundjob::registerJob($job, $argument);
+	public static function run() {
+		$container = new DIContainer();
+		// remove orphaned entities
+		$container['Scanner']->cleanUp();
 	}
 }

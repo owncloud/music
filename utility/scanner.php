@@ -201,4 +201,17 @@ class Scanner {
 		// reset execution time limit
 		set_time_limit($executionTime);
 	}
+
+	/**
+	 * Removes orphaned data from the database
+	 */
+	public function cleanUp() {
+		$sql =
+			'DELETE FROM *PREFIX*music_tracks WHERE file_id NOT IN (SELECT fileid FROM *PREFIX*filecache);'.
+			'DELETE FROM *PREFIX*music_albums WHERE id NOT IN (SELECT album_id FROM *PREFIX*music_tracks GROUP BY album_id);'.
+			'DELETE FROM *PREFIX*music_album_artists WHERE album_id NOT IN (SELECT id FROM *PREFIX*music_albums GROUP BY id);'.
+			'DELETE FROM *PREFIX*music_artists WHERE id NOT IN (SELECT artist_id FROM *PREFIX*music_album_artists GROUP BY artist_id);';
+		$query = $this->api->prepareQuery($sql);
+		$query->execute(array());
+	}
 }

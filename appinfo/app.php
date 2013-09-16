@@ -24,18 +24,13 @@
 
 namespace OCA\Music;
 
-use \OCA\AppFramework\Core\API;
-
+use \OCA\Music\Core\API;
 
 // dont break owncloud when the appframework is not enabled
 if(\OCP\App::isEnabled('appframework')){
 	// check appframework version
 	if(version_compare(\OCP\App::getAppVersion('appframework'), '0.103', '>=')) {
 		$api = new API('music');
-
-		// uncomment the next line to activate the admin interface
-		//$api->registerAdmin('admin/settings');
-
 
 		$api->addNavigationEntry(array(
 
@@ -67,6 +62,8 @@ if(\OCP\App::isEnabled('appframework')){
 			\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_delete,
 			'OCA\Music\Utility\HookHandler', 'fileDeleted'
 		);
+
+		$api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 
 	} else {
 		$msg = 'Can not enable the music app because the App Framework App is outdated';

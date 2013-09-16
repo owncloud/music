@@ -50,6 +50,16 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
+	$scope.getPlayableFileURL = function (track) {
+		for(var mimeType in track.files) {
+			if(Audio.canPlayMIME(mimeType)) {
+				return track.files[mimeType];
+			}
+		}
+
+		return null;
+	};
+
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		$scope.player.stopAll();
 		$scope.player.destroySound('ownCloudSound');
@@ -64,10 +74,10 @@ angular.module('Music').controller('PlayerController',
 										function(album){
 											return album.id === newValue.album.id;
 										});
+
 			$scope.player.createSound({
 				id: 'ownCloudSound',
-				url: $scope.currentTrack.files['audio/mpeg'],
-				autoLoad: true,
+				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
 					$scope.setTime(this.position/1000, this.duration/1000);
 				},
@@ -180,11 +190,12 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.next = function() {
 		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
-		while(track !== null &&
-			!('audio/mpeg' in track.files)) {
+
+		// get the next track as long as the current one contains no playable
+		// audio mimetype
+		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		}
-
 		$scope.currentTrack = track;
 	};
 

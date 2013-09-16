@@ -25,13 +25,14 @@ namespace OCA\Music\Backgroundjob;
 
 use \OCA\Music\DependencyInjection\DIContainer;
 
-class cleanUp {
+class CleanUp {
 
 	/**
 	 * Calls the cleanup method of the scanner
 	 */
 	public static function run() {
 		$container = new DIContainer();
+
 		// remove orphaned entities
 		$container['Scanner']->cleanUp();
 	}

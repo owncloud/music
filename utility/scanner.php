@@ -67,14 +67,14 @@ class Scanner {
 			return;
 		}
 
+		if(substr($metadata['mimetype'], 0, 5) !== 'audio' && substr($metadata['mimetype'], 0, 15) !== 'application/ogg' ) {
+			return;
+		}
+
 		if(ini_get('allow_url_fopen')) {
 			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
 
 			$hasComments = array_key_exists('comments', $fileInfo);
-			/*if(!$hasComments) {
-				$this->api->log('"comments" is empty ' . $path . ' # ' . $this->api->getView()->getAbsolutePath($path), 'debug');
-				return;
-			}*/
 
 			$userId = $this->api->getUserId();
 

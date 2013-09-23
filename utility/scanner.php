@@ -66,6 +66,12 @@ class Scanner {
 			$this->api->log('cannot determine metadata for path ' . $path, 'debug');
 			return;
 		}
+		if(substr($metadata['mimetype'], 0, 5) === 'image') {
+			$coverFileId = $metadata['fileid'];
+			$parentFolderId = $metadata['parent'];
+			$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
+			return;
+		}
 
 		if(substr($metadata['mimetype'], 0, 5) !== 'audio' && substr($metadata['mimetype'], 0, 15) !== 'application/ogg' ) {
 			return;
@@ -181,6 +187,8 @@ class Scanner {
 		// debug logging
 		$this->api->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
 			'], artists: [' . implode(',', $remaining['artistIds']) . ']' , 'debug');
+
+		$this->albumBusinessLayer->removeCover($fileId);
 	}
 
 	/**

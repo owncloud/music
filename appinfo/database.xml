@@ -64,9 +64,10 @@
 				<unsigned>true</unsigned>
 			</field>
 			<field>
-				<name>cover</name>
-				<type>clob</type>
+				<name>cover_file_id</name>
+				<type>integer</type>
 				<notnull>false</notnull>
+				<length>4</length>
 			</field>
 		</declaration>
 	</table>

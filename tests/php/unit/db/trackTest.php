@@ -25,7 +25,7 @@
 namespace OCA\Music\Db;
 
 /* FIXME: dirty hack to mock object */
-class TestView {
+class TrackTestView {
 	public function getPath($fileId) {
 		return $fileId;
 	}
@@ -44,7 +44,7 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 		/* FIXME: dirty hack to mock object */
 		$this->api->expects($this->any())
 			->method('getView')
-			->will($this->returnValue(new TestView()));
+			->will($this->returnValue(new TrackTestView()));
 	}
 
 	public function testToAPI() {

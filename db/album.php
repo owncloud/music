@@ -32,13 +32,14 @@ class Album extends Entity {
 
 	public $name;
 	public $year;
-	public $cover;
+	public $coverFileId;
 	public $artistIds;
 	public $artists;
 	public $userId;
 
 	public function __construct(){
 		$this->addType('year', 'int');
+		$this->addType('coverFileId', 'int');
 	}
 
 	public function getUri(API $api) {
@@ -63,10 +64,15 @@ class Album extends Entity {
 	}
 
 	public function toAPI(API $api) {
+		$coverUrl = null;
+		if($this->getCoverFileId() > 0) {
+			$coverUrl = $api->linkToRoute('download',
+				array('file' => $api->getView()->getPath($this->getCoverFileId())));
+		}
 		return array(
 			'name' => $this->getName(),
 			'year' => $this->getYear(),
-			'cover' => $this->getCover(),
+			'cover' => $coverUrl,
 			'uri' => $this->getUri($api),
 			'slug' => $this->getid() . '-' .$this->slugify('name'),
 			'id' => $this->getId(),

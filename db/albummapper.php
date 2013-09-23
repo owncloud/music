@@ -36,7 +36,7 @@ class AlbumMapper extends Mapper {
 
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
@@ -74,7 +74,7 @@ class AlbumMapper extends Mapper {
 
 	public function findAllByArtist($artistId, $userId){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
@@ -120,5 +120,26 @@ class AlbumMapper extends Mapper {
 		$this->execute($sql, $albumIds);
 		$sql = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
 		$this->execute($sql, $albumIds);
+	}
+
+	public function updateCover($coverFileId, $parentFolderId){
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ?
+				WHERE `cover_file_id` = 0 AND `id` IN (
+					SELECT DISTINCT `tracks`.`album_id`
+					FROM `*PREFIX*music_tracks` `tracks`
+					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
+					WHERE `files`.`parent` = ?
+				);';
+		$params = array($coverFileId, $parentFolderId);
+		$this->execute($sql, $params);
+	}
+
+	public function removeCover($coverFileId){
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = 0
+				WHERE `cover_file_id` = ?;';
+		$params = array($coverFileId);
+		$this->execute($sql, $params);
 	}
 }

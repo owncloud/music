@@ -188,7 +188,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(4);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(3));
 		$track = new Track();
 		$track->setId(1);
@@ -203,7 +203,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 4;
 
-		$this->api->expects($this->exactly(14))
+		$this->api->expects($this->exactly(16))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -237,7 +237,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 'The url',
+						'cover' => 5,
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -273,7 +273,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 'The url',
+						'cover' => 5,
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -324,12 +324,12 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(4);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(3));
 
 		$albumId = 4;
 
-		$this->api->expects($this->exactly(6))
+		$this->api->expects($this->exactly(8))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -361,7 +361,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 'The url',
+						'cover' => 5,
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -381,7 +381,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 'The url',
+						'cover' => 5,
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -449,7 +449,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(3));
 		$track = new Track();
 		$track->setId(1);
@@ -465,7 +465,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$artistId = 3;
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(7))
+		$this->api->expects($this->exactly(8))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -494,7 +494,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'albums' => array(
 				array(
 					'name' => 'The name',
-					'cover' => 'The url',
+					'cover' => 5,
 					'uri' => '/api/album/3',
 					'slug' => '3-the-name',
 					'id' => 3,
@@ -536,16 +536,16 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1->setId(3);
 		$album1->setName('The name');
 		$album1->setYear(2013);
-		$album1->setCover('The url');
+		$album1->setCoverFileId(5);
 		$album1->setArtistIds(array(1));
 		$album2 = new Album();
 		$album2->setId(4);
 		$album2->setName('The album name');
 		$album2->setYear(2003);
-		$album2->setCover('The other url');
+		$album2->setCoverFileId(7);
 		$album2->setArtistIds(array(3,5));
 
-		$this->api->expects($this->exactly(5))
+		$this->api->expects($this->exactly(7))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -560,7 +560,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => 'The url',
+				'cover' => 5,
 				'uri' => '/api/album/3',
 				'slug' => '3-the-name',
 				'id' => 3,
@@ -571,7 +571,7 @@ class APIControllerTest extends ControllerTestUtility {
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => 'The other url',
+				'cover' => 7,
 				'uri' => '/api/album/4',
 				'slug' => '4-the-album-name',
 				'id' => 4,
@@ -594,13 +594,13 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1->setId(3);
 		$album1->setName('The name');
 		$album1->setYear(2013);
-		$album1->setCover('The url');
+		$album1->setCoverFileId(5);
 		$album1->setArtistIds(array(1));
 		$album2 = new Album();
 		$album2->setId(4);
 		$album2->setName('The album name');
 		$album2->setYear(2003);
-		$album2->setCover('The other url');
+		$album2->setCoverFileId(7);
 		$album2->setArtistIds(array(3,5));
 		$artist1 = new Artist();
 		$artist1->setId(1);
@@ -625,7 +625,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
-		$this->api->expects($this->exactly(16)) // artists uris will be fetched twice
+		$this->api->expects($this->exactly(18)) // artists uris will be fetched twice
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -656,7 +656,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => 'The url',
+				'cover' => 5,
 				'uri' => '/api/album/3',
 				'slug' => '3-the-name',
 				'id' => 3,
@@ -689,7 +689,7 @@ class APIControllerTest extends ControllerTestUtility {
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => 'The other url',
+				'cover' => 7,
 				'uri' => '/api/album/4',
 				'slug' => '4-the-album-name',
 				'id' => 4,
@@ -743,7 +743,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1));
 		$artist = new Artist();
 		$artist->setId(1);
@@ -762,7 +762,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(7)) // artists uris will be fetched twice
+		$this->api->expects($this->exactly(8)) // artists uris will be fetched twice
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -784,7 +784,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => 'The url',
+			'cover' => 5,
 			'uri' => '/api/album/3',
 			'slug' => '3-the-name',
 			'id' => 3,
@@ -830,12 +830,12 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1));
 
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(2))
+		$this->api->expects($this->exactly(3))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -849,7 +849,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => 'The url',
+			'cover' => 5,
 			'uri' => '/api/album/3',
 			'slug' => '3-the-name',
 			'id' => 3,
@@ -954,14 +954,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1));
 		$artist = new Artist();
 		$artist->setId(1);
 		$artist->setName('The artist name');
 		$artist->setImage('The image url');
 
-		$this->api->expects($this->exactly(7))
+		$this->api->expects($this->exactly(8))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));
 
@@ -999,7 +999,7 @@ class APIControllerTest extends ControllerTestUtility {
 				),
 				'album' => array(
 					'name' => 'The name',
-					'cover' => 'The url',
+					'cover' => 5,
 					'uri' => '/api/album/3',
 					'slug' => '3-the-name',
 					'id' => 3,

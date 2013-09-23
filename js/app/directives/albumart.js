@@ -21,8 +21,13 @@
 
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
-		attrs.$observe('albumart',function(){
-			element.placeholder(attrs.albumart);
+		attrs.$observe('albumart',function() {
+			if(attrs.cover) {
+				element.css('background-image', 'url(' + attrs.cover + ')');
+				element.css('background-size', 'contain');
+			} else {
+				element.placeholder(attrs.albumart);
+			}
 		});
 	};
 });

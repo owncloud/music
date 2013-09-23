@@ -24,6 +24,15 @@
 
 namespace OCA\Music\Db;
 
+
+/* FIXME: dirty hack to mock object */
+class AlbumTestView {
+	public function getPath($fileId) {
+		return $fileId;
+	}
+}
+
+
 class AlbumTest extends \PHPUnit_Framework_TestCase {
 
 	private $api;
@@ -33,6 +42,11 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 			'\OCA\AppFramework\Core\API')
 			->disableOriginalConstructor()
 			->getMock();
+
+		/* FIXME: dirty hack to mock object */
+		$this->api->expects($this->any())
+			->method('getView')
+			->will($this->returnValue(new AlbumTestView()));
 	}
 
 	public function testToAPI() {
@@ -40,14 +54,14 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYear(2013);
-		$album->setCover('The url');
+		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1,2));
 
 		$this->assertEquals(array(
 			'id' => 3,
 			'name' => 'The name',
 			'year' => 2013,
-			'cover' => 'The url',
+			'cover' => null,
 			'slug' => '3-the-name',
 			'artists' => array(
 				array('id' => 1, 'uri' => null),

@@ -42,12 +42,12 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		$album1 = new Album();
 		$album1->setName('Test name');
 		$album1->setYear(2013);
-		$album1->setCover('http://example.org');
+		$album1->setCoverFileId(3);
 		$album1->resetUpdatedFields();
 		$album2 = new Album();
 		$album2->setName('Test name2');
 		$album2->setYear(2012);
-		$album2->setCover('http://example.org/1');
+		$album2->setCoverFileId(4);
 		$album2->resetUpdatedFields();
 
 		$this->albums = array(
@@ -56,8 +56,8 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 		);
 
 		$this->rows = array(
-			array('id' => $this->albums[0]->getId(), 'name' => 'Test name', 'year' => 2013, 'cover' => 'http://example.org'),
-			array('id' => $this->albums[1]->getId(), 'name' => 'Test name2', 'year' => 2012, 'cover' => 'http://example.org/1'),
+			array('id' => $this->albums[0]->getId(), 'name' => 'Test name', 'year' => 2013, 'cover_file_id' => 3),
+			array('id' => $this->albums[1]->getId(), 'name' => 'Test name2', 'year' => 2012, 'cover_file_id' => 4),
 		);
 
 	}
@@ -65,7 +65,7 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
@@ -108,7 +108,7 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 
 	public function testFindAllByArtist(){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
@@ -121,7 +121,7 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 
 	public function testFindByNameAndYear(){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? AND `album`.`name` = ? AND `album`.`year` = ?';
 		$albumName = 'test';
@@ -133,7 +133,7 @@ class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
 
 	public function testFindByNameAndYearYearIsNull(){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover` '.
+			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? AND `album`.`name` = ? AND `album`.`year` IS NULL';
 		$albumName = 'test';

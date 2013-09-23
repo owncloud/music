@@ -117,4 +117,21 @@ class AlbumBusinessLayer extends BusinessLayer {
 	public function deleteById($albumIds){
 		$this->mapper->deleteById($albumIds);
 	}
+
+	/**
+	 * updates the cover for albums without cover
+	 * @param integer $coverFileId the file id of the cover image
+	 * @param integer $parentFolderId the file id of the parent of this image
+	 */
+	public function updateCover($coverFileId, $parentFolderId){
+		$this->mapper->updateCover($coverFileId, $parentFolderId);
+	}
+
+	/**
+	 * removes the cover from albums
+	 * @param integer $coverFileId the file id of the cover image
+	 */
+	public function removeCover($coverFileId){
+		$this->mapper->removeCover($coverFileId);
+	}
 }

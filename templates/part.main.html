@@ -10,7 +10,7 @@
 		<h2 ng-click="playAlbum(album)" title="[[ album.name ]] ([[ album.year]])">[[ album.name ]]
 			<span ng-show="album.year" class="muted">([[ album.year ]])</span>
 		</h2>
-		<div ng-click="playAlbum(album)" class="albumart" albumart="[[ album.name ]]"></div>
+		<div ng-click="playAlbum(album)" class="albumart" cover="[[ album.cover ]]" albumart="[[ album.name ]]"></div>
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
 		<!-- variable "limit" toogles length of track list for each album -->
 		<ul class="track-list" ng-init="limit = 5">

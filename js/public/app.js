@@ -32,8 +32,8 @@ angular.module('Music', ['restangular']).
 
 }]);
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$routeParams', 'Artists', 'playlistService',
-	function ($rootScope, $scope, $routeParams, Artists, playlistService) {
+	['$rootScope', '$scope', 'Artists', 'playlistService',
+	function ($rootScope, $scope, Artists, playlistService) {
 
 	// will be invoked by the artist factory
 	$rootScope.$on('artistsLoaded', function() {

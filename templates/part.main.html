@@ -3,7 +3,8 @@
 	<span ng-show="loading">{{ trans('Loading ...') }}</span>
 </div>
 
-<div class="artist-area" ng-repeat="artist in artists | orderBy:'name'">
+<div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
+	<span id="[[ letter ]]" ng-show="letterAvailable[letter]"></span> <!-- TODO: use ng-if - introduced in 1.1.5 -->
 	<h1 ng-click="playArtist(artist)">[[ artist.name ]] <img class="play svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" /></h1>
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:'year'">
 		<h2 ng-click="playAlbum(album)" title="[[ album.name ]] ([[ album.year]])">[[ album.name ]]
@@ -28,3 +29,9 @@
 		</ul>
 	</div>
 </div>
+
+
+<div class="alphabet-navigation" ng-init="letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']">
+	<a scroll-to="[[ letter ]]" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">[[ letter ]]</a>
+</div>
+

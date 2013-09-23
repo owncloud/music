@@ -123,3 +123,37 @@
 	color: #888;
 	text-shadow: #fff 0 1px 0;
 }
+
+.alphabet-navigation {
+	z-index: 5;
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 50px;
+	text-align: center;
+	padding-top: 80px;
+}
+
+.alphabet-navigation a {
+	display: block;
+	font-weight: bold;
+	line-height: 230%;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
+	filter: alpha(opacity = 10);
+	opacity: .1;
+}
+
+.alphabet-navigation a.available {
+	display: block;
+	line-height: 236%;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 40);
+	opacity: .4;
+}
+
+.alphabet-navigation a:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity = 80);
+	opacity: .8;
+}

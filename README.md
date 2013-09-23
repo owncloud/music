@@ -18,7 +18,6 @@ Known bugs:
  * ugly play icons in IE8 [#62](https://github.com/owncloud/music/issues/62)
  * Ampache not working yet [#62](https://github.com/owncloud/music/issues/62)
  * maybe slow for large music collections [#62](https://github.com/owncloud/music/issues/62)
- * clicking a song the first song of the album is played instead of the actual clicked song [#83](https://github.com/owncloud/music/issues/83)
 
 Happy testing!
 --------------

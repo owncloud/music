@@ -29,8 +29,53 @@ angular.module('Music').controller('MainController',
 		$scope.loading = false;
 	});
 
+	$scope.letterAvailable = {
+		'A': false,
+		'B': false,
+		'C': false,
+		'D': false,
+		'E': false,
+		'F': false,
+		'G': false,
+		'H': false,
+		'I': false,
+		'J': false,
+		'K': false,
+		'L': false,
+		'M': false,
+		'N': false,
+		'O': false,
+		'P': false,
+		'Q': false,
+		'R': false,
+		'S': false,
+		'T': false,
+		'U': false,
+		'V': false,
+		'W': false,
+		'X': false,
+		'Y': false,
+		'Z': false
+	};
+
+	$scope.anchorArtists = [];
+
 	$scope.loading = true;
 	$scope.artists = Artists;
+
+	$scope.$watch('artists', function(artists) {
+		if(artists) {
+			_.each(artists, function(artist) {
+				var letter = artist.name.substr(0,1).toUpperCase();
+				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
+					if($scope.letterAvailable[letter] === false) {
+						$scope.anchorArtists.push(artist.name);
+					}
+					$scope.letterAvailable[letter] = true;
+				}
+			});
+		}
+	});
 
 	$scope.playTrack = function(track) {
 		var artist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?

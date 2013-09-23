@@ -68,6 +68,7 @@
 				<type>integer</type>
 				<notnull>false</notnull>
 				<length>4</length>
+				<default></default>
 			</field>
 		</declaration>
 	</table>

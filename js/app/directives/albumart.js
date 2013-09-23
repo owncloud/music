@@ -23,9 +23,17 @@ angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
 		attrs.$observe('albumart',function() {
 			if(attrs.cover) {
+				// remove placeholder stuff
+				element.html('');
+				element.css('background-color', '');
+				// add background image
+				element.css('-ms-filter', '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'' + attrs.cover + '\', sizingMethod=\'scale\')"');
 				element.css('background-image', 'url(' + attrs.cover + ')');
-				element.css('background-size', 'contain');
 			} else {
+				// remove background image
+				element.css('-ms-filter', '');
+				element.css('background-image', '');
+				// add placeholder stuff
 				element.placeholder(attrs.albumart);
 			}
 		});

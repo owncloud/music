@@ -68,6 +68,12 @@
 	cursor: pointer;
 }
 
+.albumart {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
 .album-area > .albumart, .album-area > img {
 	float: left;
 	width: 190px;
@@ -138,7 +144,7 @@
 .alphabet-navigation a {
 	display: block;
 	font-weight: bold;
-	line-height: 230%;
+	line-height: 210%;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
 	filter: alpha(opacity = 10);
 	opacity: .1;

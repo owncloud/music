@@ -1,3 +1,30 @@
+v0.1.5-alpha 2013-09-24
+
+  * use images in album folders as album art
+    * first uploaded image to a folder is used as album art
+    * addition and deletion of covers is detected
+  * alphabet navigation bar to the left
+    * highlight available letters (of the artists)
+  * use flash 8 for fallback player
+  * fix ogg playback
+  * play the clicked song of an album and not the first song of the album - fixes #83
+  * limit metadatascan to audio files
+  * Adds clean up background job
+    * find covers for albums without cover
+    * remove tracks without files, albums without tracks and artists without albums and tracks
+  * AngularJS 1.0.8
+  * Various fixes and improvements - especially PostgreSQL
+    * various fixes, also for PostgreSQL
+    * cast number to int
+    * use correct sql statement for checking for albums
+    * unit test for case when album is null
+    * move casting to appframework entity
+    * remove blank lines
+
+ Known bugs:
+  * does not scroll perfect
+  * non-dynamic creating of the navigation bar
+
 v0.1.4-alpha 2013-09-05
 
   * show track number in track list
@@ -13,7 +40,7 @@ v0.1.4-alpha 2013-09-05
   * disable execution time for rescan
   * realign playerbar content and adding whitespace (ref #80)
 
- Known issues
+ Known bugs:
   * clicking a song the first song of the album is played instead of the actual clicked song
 
 v0.1.3-alpha 2013-09-04

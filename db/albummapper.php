@@ -125,7 +125,7 @@ class AlbumMapper extends Mapper {
 	public function updateCover($coverFileId, $parentFolderId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = ?
-				WHERE `cover_file_id` = 0 AND `id` IN (
+				WHERE `cover_file_id` IS NULL AND `id` IN (
 					SELECT DISTINCT `tracks`.`album_id`
 					FROM `*PREFIX*music_tracks` `tracks`
 					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
@@ -137,9 +137,35 @@ class AlbumMapper extends Mapper {
 
 	public function removeCover($coverFileId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = 0
+				SET `cover_file_id` = NULL
 				WHERE `cover_file_id` = ?;';
 		$params = array($coverFileId);
+		$this->execute($sql, $params);
+	}
+
+	public function getAlbumsWithoutCover(){
+		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
+				FROM `*PREFIX*music_albums` `albums`
+				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
+				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
+				WHERE `albums`.`cover_file_id` IS NULL;';
+		$result = $this->execute($sql);
+		$return = Array();
+		while($row = $result->fetchRow()){
+			array_push($return, Array('albumId' => $row['id'], 'parentFolderId' => $row['parent']));
+		}
+		return $return;
+	}
+
+	public function findAlbumCover($albumId, $parentFolderId){
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = (
+					SELECT `fileid`
+					FROM `*PREFIX*filecache`
+					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
+					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE "image%" LIMIT 1
+				) WHERE `id` = ?;';
+		$params = array($parentFolderId, $albumId);
 		$this->execute($sql, $params);
 	}
 }

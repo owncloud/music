@@ -50,6 +50,13 @@ class ExtractorGetID3 implements Extractor {
 		// TODO make non static
 		\getid3_lib::CopyTagsToComments($metadata);
 
+		if(array_key_exists('error', $metadata)) {
+			foreach ($metadata['error'] as $error) {
+				// TODO $error is base64 encoded but it wasn't possible to add the decoded part to the log message
+				$this->api->log('getID3 error occured', 'debug');
+			}
+		}
+
 		return $metadata;
 	}
 }

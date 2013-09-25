@@ -23,7 +23,7 @@
 
 $installedVersion = \OCP\Config::getAppValue('music', 'installed_version');
 
-if (version_compare($installedVersion, '0.1.3-alpha', '<')) {
+if (version_compare($installedVersion, '0.1.6-alpha', '<')) {
 	$sqls = array(
 		'DELETE FROM *PREFIX*music_artists;',
 		'DELETE FROM *PREFIX*music_albums;',

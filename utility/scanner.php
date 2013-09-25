@@ -82,6 +82,14 @@ class Scanner {
 
 			$hasComments = array_key_exists('comments', $fileInfo);
 
+			if(!$hasComments) {
+				// TODO: fix this dirty fallback
+				// fallback to local file path
+				$this->api->log('fallback metadata extraction', 'debug');
+				$fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
+				$hasComments = array_key_exists('comments', $fileInfo);
+			}
+
 			$userId = $this->api->getUserId();
 
 			// artist

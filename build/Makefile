@@ -100,3 +100,9 @@ appstore: clean
 	--exclude=$(project_dir)/build/node_modules #\
 	# --exclude=$(project_dir)/tests \
 	#--exclude=$(project_dir)/.travis.yml
+
+l10n-extract: deps
+	$(grunt_dir) --config $(gruntfile_dir) nggettext_extract
+
+l10n-compile: deps
+	$(grunt_dir) --config $(gruntfile_dir) nggettext_compile

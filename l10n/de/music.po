@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: l 10n\n"
+"PO-Revision-Date: 2013-09-29 16:58+0200\n"
+"Last-Translator: Morris Jobke <mjob@rigur>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/main.html ../templates/part.main.html
+msgid "Loading ..."
+msgstr "Lade ..."
+
+#: ../templates/main.html
+msgid "Previous"
+msgstr "Vorheriges"
+
+#: ../templates/main.html ../templates/part.main.html
+msgid "Play"
+msgstr "Wiedergeben"
+
+#: ../templates/main.html
+msgid "Pause"
+msgstr "Pausieren"
+
+#: ../templates/main.html
+msgid "Next"
+msgstr "Nächstes"
+
+#: ../templates/main.html
+msgid "Shuffle"
+msgstr "Zufallswiedergabe"
+
+#: ../templates/main.html
+msgid "Repeat"
+msgstr "Wiederholen"
+
+#: ../templates/main.html
+msgid "Delete"
+msgstr "Löschen"
+
+#: ../templates/part.main.html
+msgid "Nothing in here. Upload your music!"
+msgstr "Nichts da. Lade deine Musik hoch!"
+
+#: ../templates/part.main.html
+msgid "Show less ..."
+msgstr "Zeige weniger ..."
+
+#: ../templates/part.main.html
+msgid "Show all [[ trackcount ]] songs ..."
+msgid_plural "Show all [[ trackcount ]] songs ..."
+msgstr[0] "Zeige alle [[ trackcount ]] Titel ..."
+msgstr[1] "Zeige alle [[ trackcount ]] Titel ..."

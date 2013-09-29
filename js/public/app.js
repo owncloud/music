@@ -11,7 +11,7 @@ if(!SVGSupport()) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular']).
+angular.module('Music', ['restangular', 'gettext']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {
@@ -30,6 +30,9 @@ angular.module('Music', ['restangular']).
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 
+}]).run(['gettextCatalog', function (gettextCatalog) {
+	// TODO retrieve language from backend
+	// gettextCatalog.currentLanguage = 'de';
 }]);
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', 'Artists', 'playlistService',
@@ -501,4 +504,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
             $rootScope.$on(name, listener);
         }
 	};
+}]);
+angular.module("Music").run(['gettextCatalog', function (gettextCatalog) {
+    gettextCatalog.setStrings('de', {"Loading ...":"Lade ...","Previous":"Vorheriges","Play":"Wiedergeben","Pause":"Pausieren","Next":"Nächstes","Shuffle":"Zufallswiedergabe","Repeat":"Wiederholen","Delete":"Löschen","Nothing in here. Upload your music!":"Nichts da. Lade deine Musik hoch!","Show less ...":"Zeige weniger ...","Show all [[ trackcount ]] songs ...":["Zeige alle [[ trackcount ]] Titel ...","Zeige alle [[ trackcount ]] Titel ..."]});
+
 }]);

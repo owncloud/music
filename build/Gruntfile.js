@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-phpunit');
+	grunt.loadNpmTasks('grunt-angular-gettext');
 
 
 	grunt.initConfig({
@@ -48,7 +49,8 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					'../js/config/app.js',
-					'../js/app/**/*.js'
+					'../js/app/**/*.js',
+					'../js/l10n/*.js'
 				],
 				dest: '<%= meta.production %>app.js'
 			}
@@ -70,6 +72,7 @@ module.exports = function(grunt) {
 				'Gruntfile.js',
 				'../js/app/**/*.js',
 				'../js/config/*.js',
+				'../js/l10n/*.js',
 				'../tests/js/unit/**/*.js'
 			],
 			options: {
@@ -87,7 +90,8 @@ module.exports = function(grunt) {
 			concat: {
 				files: [
 					'../js/app/**/*.js',
-					'../js/config/*.js'
+					'../js/config/*.js',
+					'../js/l10n/*.js'
 				],
 				tasks: ['build']
 			},
@@ -116,6 +120,25 @@ module.exports = function(grunt) {
 				browsers: ['PhantomJS'],
 				reporters: ['progress']
 			}
+		},
+
+		nggettext_extract: {
+			pot: {
+				files: {
+					'../l10n/template.pot': ['../templates/*.html']
+				}
+			},
+		},
+
+		nggettext_compile: {
+			all: {
+				options: {
+					module: 'Music'
+				},
+				files: {
+					'../js/l10n/translations.js': ['../l10n/**/music.po']
+				}
+			},
 		}
 
 	});

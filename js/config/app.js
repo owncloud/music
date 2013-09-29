@@ -32,7 +32,7 @@ if(!SVGSupport()) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular']).
+angular.module('Music', ['restangular', 'gettext']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {
@@ -51,4 +51,7 @@ angular.module('Music', ['restangular']).
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 
+}]).run(['gettextCatalog', function (gettextCatalog) {
+	// TODO retrieve language from backend
+	// gettextCatalog.currentLanguage = 'de';
 }]);

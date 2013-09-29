@@ -50,3 +50,6 @@ nbproject
 
 # Clover code coverage
 coverage-html
+
+# L10n
+l10n/template.pot

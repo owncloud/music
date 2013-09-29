@@ -3,6 +3,7 @@
 {{ script('vendor/angular/angular.min', 'music') }}
 {{ script('vendor/soundmanager/soundmanager2', 'music') }}
 {{ script('vendor/restangular/restangular.min', 'music') }}
+{{ script('vendor/angular-gettext/angular-gettext.min', 'music') }}
 {{ script('public/app') }}
 {{ style('style-playerbar') }}
 {{ style('style-sidebar') }}
@@ -16,10 +17,10 @@
 
 	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
-			<img  ng-click="prev()"class="control small svg" alt="{{ trans('Previous') }}" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
-			<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ trans('Play') }}" src="{{ image_path('actions/play-big.svg', 'core') }}" />
-			<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ trans('Pause') }}" src="{{ image_path('actions/pause-big.svg', 'core') }}" />
-			<img ng-click="next()" class="control small svg" alt="{{ trans('Next') }}" src="{{ image_path('actions/play-next.svg', 'core') }}" />
+			<img  ng-click="prev()"class="control small svg" alt="[['Previous' | translate ]]" src="{{ image_path('actions/play-previous.svg', 'core') }}" />
+			<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="[['Play' | translate ]]" src="{{ image_path('actions/play-big.svg', 'core') }}" />
+			<img ng-click="toggle()" ng-show="playing" class="control svg" alt="[['Pause' | translate ]]" src="{{ image_path('actions/pause-big.svg', 'core') }}" />
+			<img ng-click="next()" class="control small svg" alt="[['Next' | translate ]]" src="{{ image_path('actions/play-next.svg', 'core') }}" />
 		</div>
 
 		<div ng-show="currentAlbum" class="albumart" cover="[[ currentAlbum.cover ]]" albumart="[[ currentAlbum.name ]]" title="[[ currentAlbum.name ]]" ></div>
@@ -30,7 +31,7 @@
 		</div>
 		<div ng-show="currentTrack.title" class="progress-info">
 			<span ng-hide="loading" class="muted">[[ position | playTime ]] / [[ duration | playTime ]]</span>
-			<span ng-show="loading" class="muted">{{ trans('Loading ...') }}</span>
+			<span ng-show="loading" class="muted" translate>Loading ...</span>
 			<div class="progress">
 				<div class="seek-bar">
 					<div class="play-bar" style="width: [[ position / duration * 100 ]]%;"></div>
@@ -38,20 +39,20 @@
 			</div>
 		</div>
 
-		<img id="shuffle" class="control small svg" alt="{{ trans('Shuffle') }}" src="{{ image_path('shuffle.svg', 'music') }}"
+		<img id="shuffle" class="control small svg" alt="[['Shuffle' | translate ]]" src="{{ image_path('shuffle.svg', 'music') }}"
 			ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
-		<img id="repeat" class="control small svg" alt="{{ trans('Repeat') }}" src="{{ image_path('repeat.svg', 'music') }}"
+		<img id="repeat" class="control small svg" alt="[['Repeat' | translate ]]" src="{{ image_path('repeat.svg', 'music') }}"
 			ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 	</div>
 
 	<!--<div id="app-navigation">
 		<ul ng-controller="PlaylistController">
-			<li><a href="#/">{{ trans('All') }}</a></li>
-			<li class="app-navigation-separator"><a href="#/">{{ trans('Favorites') }}</a></li>
-			<li><a href="#/">+ {{ trans('New Playlist') }}</a></li>
+			<li><a href="#/" translate>All</a></li>
+			<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
+			<li><a href="#/" translate>+ New Playlist</a></li>
 			<li ng-repeat="playlist in playlists">
 				<a href="#/playlist/[[playlist.id]]">[[playlist.name]]</a>
-				<img alt="{{ trans('Delete') }}" 	src="{{ image_path('actions/close.svg', 'core') }}" />
+				<img alt="[[ 'Delete' | translate ]]" 	src="{{ image_path('actions/close.svg', 'core') }}" />
 			</li>
 		</ul>
 	</div>-->

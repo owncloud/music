@@ -52,4 +52,4 @@ nbproject
 coverage-html
 
 # L10n
-l10n/template.pot
+templates/music.pot

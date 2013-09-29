@@ -86,8 +86,8 @@ php-acceptance-tests: deps
 deps:
 	npm install --deps
 	# fix wrong angular js delimiter from '{{' and '}}' to '[[' and ']]'
-	sed -i 's/{{/\\[\\[/g' $(CURDIR)/node_modules/grunt-angular-gettext/tasks/extract.js
-	sed -i 's/}}/\\]\\]/g' $(CURDIR)/node_modules/grunt-angular-gettext/tasks/extract.js
+	# fix wrong plural extraction
+	-patch -uN -d $(CURDIR)/node_modules/grunt-angular-gettext/tasks < $(CURDIR)/patch-extract.js.diff
 
 clean:
 	rm -rf $(CURDIR)/node_modules

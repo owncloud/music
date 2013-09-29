@@ -1,0 +1,21 @@
+--- extract.js		2013-09-29 23:24:38.916787811 +0200
++++ new-extract.js	2013-09-29 23:27:42.656791729 +0200
+@@ -9,7 +9,7 @@
+ 
+ $ = jquery.create();
+ 
+-attrRegex = /{{\s*('|"|&quot;)(.*?)\1\s*\|\s*translate\s*}}/g;
++attrRegex = /\[\[\s*('|"|&quot;)(.*?)\1\s*\|\s*translate\s*\]\]/g;
+ 
+ module.exports = function(grunt) {
+   return grunt.registerMultiTask('nggettext_extract', 'Extract strings from views', function() {
+@@ -28,6 +28,9 @@
+         if (plural == null) {
+           plural = null;
+         }
++        if (string.length === 0) {
++          string = plural;
++        }
+         string = string.trim();
+         if (!strings[string]) {
+           strings[string] = new po.Item();

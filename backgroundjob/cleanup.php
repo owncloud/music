@@ -35,5 +35,7 @@ class CleanUp {
 
 		// remove orphaned entities
 		$container['Scanner']->cleanUp();
+		// find covers - TODO performance stuff - maybe just call this once in an hour
+		$container['AlbumBusinessLayer']->findCovers();
 	}
 }

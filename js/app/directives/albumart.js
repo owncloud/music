@@ -31,20 +31,17 @@ angular.module('Music').directive('albumart', function() {
 				element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
 				element.css('background-image', 'url(' + attrs.cover + ')');
 			} else {
-				// remove background image
-				element.css('-ms-filter', '');
-				element.css('background-image', '');
-				// add placeholder stuff
-				element.placeholder(attrs.albumart);
+				if(attrs.albumart) {
+					// remove background image
+					element.css('-ms-filter', '');
+					element.css('background-image', '');
+					// add placeholder stuff
+					element.placeholder(attrs.albumart);
+				}
 			}
 		};
 
-		attrs.$observe('albumart',function() {
-			setAlbumart();
-		});
-
-		attrs.$observe('cover', function() {
-			setAlbumart();
-		});
+		attrs.$observe('albumart', setAlbumart);
+		attrs.$observe('cover', setAlbumart);
 	};
 });

@@ -30,13 +30,13 @@ angular.module('Music', ['restangular', 'gettext']).
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 
-}]).run(['gettextCatalog', function (gettextCatalog) {
-	// TODO retrieve language from backend
-	// gettextCatalog.currentLanguage = 'de';
 }]);
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artists', 'playlistService',
-	function ($rootScope, $scope, Artists, playlistService) {
+	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
+	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
+
+	// retrieve language from backend - is set in ng-app HTML element
+	gettextCatalog.currentLanguage = $rootScope.lang;
 
 	// will be invoked by the artist factory
 	$rootScope.$on('artistsLoaded', function() {

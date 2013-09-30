@@ -9,7 +9,7 @@
 {{ style('style-sidebar') }}
 {{ style('style') }}
 
-<div id="app" ng-app="Music" ng-cloak ng-init="started = false">
+<div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '{{ lang }}'">
 
 	<script type="text/ng-template" id="main.html">
 		{{ include('part.main.html') }}

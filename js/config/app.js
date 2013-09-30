@@ -51,7 +51,4 @@ angular.module('Music', ['restangular', 'gettext']).
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 
-}]).run(['gettextCatalog', function (gettextCatalog) {
-	// TODO retrieve language from backend
-	// gettextCatalog.currentLanguage = 'de';
 }]);

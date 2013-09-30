@@ -60,12 +60,13 @@ class PageController extends Controller {
 			$this->status->setScanned($userId);
 			$this->api->log('Rescan finished', 'debug');
 		}
+		$userLang = $this->api->getTrans()->findLanguage();
 		// during 5.80.05 the placeholder script was outsourced to core
 		$version = join('.', $this->api->getVersion());
 		if(version_compare($version, '5.80.05', '>')){
-			return $this->render('stable6+');
+			return $this->render('stable6+', array('lang' => $userLang));
 		} else {
-			return $this->render('stable5');
+			return $this->render('stable5', array('lang' => $userLang));
 		}
 	}
 }

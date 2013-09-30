@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Vincenzo Reale <vinx.reale@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-09-30 12:27:31+0400\n"
+"PO-Revision-Date: 2013-09-30 12:12+0000\n"
+"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,46 +16,46 @@ msgstr ""
 
 #: ../templates/main.html ../templates/part.main.html
 msgid "Loading ..."
-msgstr ""
+msgstr "Caricamento in corso..."
 
 #: ../templates/main.html
 msgid "Previous"
-msgstr ""
+msgstr "Precedente"
 
 #: ../templates/main.html ../templates/part.main.html
 msgid "Play"
-msgstr ""
+msgstr "Riproduci"
 
 #: ../templates/main.html
 msgid "Pause"
-msgstr ""
+msgstr "Pausa"
 
 #: ../templates/main.html
 msgid "Next"
-msgstr ""
+msgstr "Successivo"
 
 #: ../templates/main.html
 msgid "Shuffle"
-msgstr ""
+msgstr "Mescola"
 
 #: ../templates/main.html
 msgid "Repeat"
-msgstr ""
+msgstr "Ripeti"
 
 #: ../templates/main.html
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: ../templates/part.main.html
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Non c'è niente qui. Carica la tua musica!"
 
 #: ../templates/part.main.html
 msgid "Show all [[ trackcount ]] songs ..."
 msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mostra tutti i [[ trackcount ]] brani..."
+msgstr[1] "Mostra tutti i [[ trackcount ]] brani..."
 
 #: ../templates/part.main.html
 msgid "Show less ..."
-msgstr ""
+msgstr "Mostra meno..."

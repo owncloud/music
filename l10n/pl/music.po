@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Cyryl Sochacki <cyrylsochacki@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-09-30 12:27:31+0400\n"
+"PO-Revision-Date: 2013-09-30 12:02+0000\n"
+"Last-Translator: Cyryl Sochacki <cyrylsochacki@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/owncloud/language/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,47 +16,47 @@ msgstr ""
 
 #: ../templates/main.html ../templates/part.main.html
 msgid "Loading ..."
-msgstr ""
+msgstr "Wczytuję ..."
 
 #: ../templates/main.html
 msgid "Previous"
-msgstr ""
+msgstr "Poprzedni"
 
 #: ../templates/main.html ../templates/part.main.html
 msgid "Play"
-msgstr ""
+msgstr "Odtwarzaj"
 
 #: ../templates/main.html
 msgid "Pause"
-msgstr ""
+msgstr "Wstrzymaj"
 
 #: ../templates/main.html
 msgid "Next"
-msgstr ""
+msgstr "Następny"
 
 #: ../templates/main.html
 msgid "Shuffle"
-msgstr ""
+msgstr "Losowo"
 
 #: ../templates/main.html
 msgid "Repeat"
-msgstr ""
+msgstr "Powtarzanie"
 
 #: ../templates/main.html
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
 #: ../templates/part.main.html
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Brak zawartości. Proszę wysłać muzykę!"
 
 #: ../templates/part.main.html
 msgid "Show all [[ trackcount ]] songs ..."
 msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pokaż wszystkie [[ trackcount ]] piosenek ..."
+msgstr[1] "Pokaż wszystkie [[ trackcount ]] piosenek ..."
+msgstr[2] "Pokaż wszystkie [[ trackcount ]] piosenek ..."
 
 #: ../templates/part.main.html
 msgid "Show less ..."
-msgstr ""
+msgstr "Pokaz mniej ..."

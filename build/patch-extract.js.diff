@@ -1,5 +1,5 @@
---- extract.js		2013-09-29 23:24:38.916787811 +0200
-+++ new-extract.js	2013-09-29 23:27:42.656791729 +0200
+--- extract.js  2013-09-30 13:30:22.352177143 +0200
++++ new-extract.js 2013-09-30 13:29:17.806506065 +0200
 @@ -9,7 +9,7 @@
  
  $ = jquery.create();
@@ -19,3 +19,26 @@
          string = string.trim();
          if (!strings[string]) {
            strings[string] = new po.Item();
+@@ -106,6 +109,22 @@
+         string = strings[key];
+         catalog.items.push(string);
+       }
++      function DateString(d){
++        function pad(n){return n<10 ? '0'+n : n}
++        return d.getUTCFullYear()+'-'
++            + pad(d.getUTCMonth()+1)+'-'
++            + pad(d.getUTCDate())+' '
++            + pad(d.getUTCHours())+':'
++            + pad(d.getUTCMinutes())+':'
++            + pad(d.getUTCSeconds())+''
++            + (d.getTimezoneOffset() < 0 ? '-' : '+')
++            + pad(Math.floor(d.getTimezoneOffset() / 60) * (d.getTimezoneOffset() < 0 ? -1 : 1))
++            + pad(d.getTimezoneOffset() % 60)
++      }
++      catalog.headers['POT-Creation-Date'] = DateString(new Date());
++      catalog.headers['Content-Type'] = 'text/plain; charset=UTF-8';
++      catalog.headers['Plural-Forms'] = 'nplurals=INTEGER; plural=EXPRESSION;';
++      catalog.headers['Content-Transfer-Encoding'] = '8bit';
+       if (!failed) {
+         return grunt.file.write(file.dest, catalog.toString());
+       }

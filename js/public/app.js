@@ -411,7 +411,10 @@ angular.module('Music').factory('Audio', function () {
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
 		flashVersion: 8,
-		preferFlash: false
+		// this fixes a bug with HTML5 playback in Chrome
+		// TODO fix this in another way
+		useHTML5Audio: false,
+		preferFlash: true
 	});
 
 	return soundManager;

@@ -21,13 +21,14 @@
 
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
-		attrs.$observe('albumart',function() {
+		var setAlbumart = function() {
 			if(attrs.cover) {
 				// remove placeholder stuff
 				element.html('');
 				element.css('background-color', '');
 				// add background image
-				element.css('-ms-filter', '"progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'' + attrs.cover + '\', sizingMethod=\'scale\')"');
+				element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
+				element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
 				element.css('background-image', 'url(' + attrs.cover + ')');
 			} else {
 				// remove background image
@@ -36,6 +37,14 @@ angular.module('Music').directive('albumart', function() {
 				// add placeholder stuff
 				element.placeholder(attrs.albumart);
 			}
+		};
+
+		attrs.$observe('albumart',function() {
+			setAlbumart();
+		});
+
+		attrs.$observe('cover', function() {
+			setAlbumart();
 		});
 	};
 });

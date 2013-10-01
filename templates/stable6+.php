@@ -1,4 +1,6 @@
-{{ script('placeholder', 'core') }}
-{{ script('md5/md5.min', '3rdparty') }}
+<?php
+\OCP\Util::addScript('core', 'placeholder');
+\OCP\Util::addScript('3rdparty', 'md5/md5.min');
 
-{{ include('main.html') }}
+print_unescaped($this->inc('main'));
+?>

@@ -23,13 +23,13 @@
 
 namespace OCA\Music\Utility;
 
-class ScannerTest extends \OCA\AppFramework\Utility\TestUtility {
+class ScannerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
 
 	private $api;
 
 	public function setUp(){
 		$this->api = $this->getMockBuilder(
-			'\OCA\AppFramework\Core\API')
+			'\OCA\Music\AppFramework\Core\API')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->extractor = $this->getMockBuilder(

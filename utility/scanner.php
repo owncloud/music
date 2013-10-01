@@ -27,7 +27,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Core\API;
 
 class Scanner {
 

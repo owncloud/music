@@ -23,7 +23,7 @@
 
 namespace OCA\Music\Db;
 
-class AlbumMapperTest extends \OCA\AppFramework\Utility\MapperTestUtility {
+class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility {
 
 	private $mapper;
 	private $albums;

@@ -23,10 +23,6 @@ angular.module('Music', ['restangular', 'gettext']).
 		redirectTo: '/'
 	});
 
-	// because twig already uses {{}}
-	$interpolateProvider.startSymbol('[[');
-	$interpolateProvider.endSymbol(']]');
-
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 

@@ -23,13 +23,13 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\AppFramework\Db\DoesNotExistException;
-use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Album;
 
 
-class AlbumBusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
+class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
 
 	private $api;
 	private $mapper;

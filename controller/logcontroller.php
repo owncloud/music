@@ -24,8 +24,8 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Http\Request;
 
 
 class LogController extends Controller {

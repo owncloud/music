@@ -26,51 +26,37 @@ namespace OCA\Music;
 
 use \OCA\Music\Core\API;
 
-// dont break owncloud when the appframework is not enabled
-if(\OCP\App::isEnabled('appframework')){
-	// check appframework version
-	if(version_compare(\OCP\App::getAppVersion('appframework'), '0.103', '>=')) {
-		$api = new API('music');
+$api = new API('music');
 
-		$api->addNavigationEntry(array(
+$api->addNavigationEntry(array(
 
-			// the string under which your app will be referenced in owncloud
-			'id' => $api->getAppName('music'),
+	// the string under which your app will be referenced in owncloud
+	'id' => $api->getAppName('music'),
 
-			// sorting weight for the navigation. The higher the number, the higher
-			// will it be listed in the navigation
-			'order' => 10,
+	// sorting weight for the navigation. The higher the number, the higher
+	// will it be listed in the navigation
+	'order' => 10,
 
-			// the route that will be shown on startup
-			'href' => $api->linkToRoute('music_index'),
+	// the route that will be shown on startup
+	'href' => $api->linkToRoute('music_index'),
 
-			// the icon that will be shown in the navigation
-			// this file needs to exist in img/example.png
-			'icon' => $api->imagePath('music.svg', 'music'),
+	// the icon that will be shown in the navigation
+	// this file needs to exist in img/example.png
+	'icon' => $api->imagePath('music.svg', 'music'),
 
-			// the title of your application. This will be used in the
-			// navigation or on the settings page of your app
-			'name' => $api->getTrans()->t('Music')
+	// the title of your application. This will be used in the
+	// navigation or on the settings page of your app
+	'name' => $api->getTrans()->t('Music')
 
-		));
+));
 
-		$api->connectHook( // also called after file creation
-			\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_post_write,
-			'OCA\Music\Utility\HookHandler', 'fileUpdated'
-		);
-		$api->connectHook(
-			\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_delete,
-			'OCA\Music\Utility\HookHandler', 'fileDeleted'
-		);
+$api->connectHook( // also called after file creation
+	\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_post_write,
+	'OCA\Music\Utility\HookHandler', 'fileUpdated'
+);
+$api->connectHook(
+	\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_delete,
+	'OCA\Music\Utility\HookHandler', 'fileDeleted'
+);
 
-		$api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
-
-	} else {
-		$msg = 'Can not enable the music app because the App Framework App is outdated';
-		\OCP\Util::writeLog('music', $msg, \OCP\Util::ERROR);
-	}
-
-} else {
-	$msg = 'Can not enable the music app because the App Framework App is disabled';
-	\OCP\Util::writeLog('music', $msg, \OCP\Util::ERROR);
-}
+$api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');

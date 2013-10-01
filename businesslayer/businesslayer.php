@@ -28,10 +28,10 @@
 namespace OCA\Music\BusinessLayer;
 
 
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Db\Mapper;
-use \OCA\AppFramework\Db\DoesNotExistException;
-use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 
 abstract class BusinessLayer {

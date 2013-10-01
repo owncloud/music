@@ -1,4 +1,6 @@
-{{ script('vendor/placeholder', 'music') }}
-{{ script('vendor/md5/md5.min', 'music') }}
+<?php
+\OCP\Util::addScript('music', 'vendor/placeholder');
+\OCP\Util::addScript('music', 'vendor/md5/md5.min');
 
-{{ include('main.html') }}
+print_unescaped($this->inc('main'));
+?>

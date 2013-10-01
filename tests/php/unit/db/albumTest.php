@@ -39,7 +39,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 
 	protected function setUp() {
 		$this->api = $this->getMockBuilder(
-			'\OCA\AppFramework\Core\API')
+			'\OCA\Music\AppFramework\Core\API')
 			->disableOriginalConstructor()
 			->getMock();
 

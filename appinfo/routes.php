@@ -24,7 +24,7 @@
 
 namespace OCA\Music;
 
-use \OCA\AppFramework\App;
+use \OCA\Music\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
 

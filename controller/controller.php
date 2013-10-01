@@ -24,10 +24,10 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\AppFramework\Controller\Controller as BaseController;
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
-use \OCA\AppFramework\Http\JSONResponse;
+use \OCA\Music\AppFramework\Controller\Controller as BaseController;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\AppFramework\Http\JSONResponse;
 
 
 class Controller extends BaseController {

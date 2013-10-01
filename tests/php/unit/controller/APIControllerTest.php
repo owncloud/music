@@ -23,10 +23,10 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\AppFramework\Utility\ControllerTestUtility;
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
-use \OCA\AppFramework\Http\JSONResponse;
+use \OCA\Music\AppFramework\Utility\ControllerTestUtility;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Artist;
 use OCA\Music\DB\Album;

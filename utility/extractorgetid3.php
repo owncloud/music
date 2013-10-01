@@ -23,7 +23,7 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Core\API;
 
 /**
  * an extractor class for getID3

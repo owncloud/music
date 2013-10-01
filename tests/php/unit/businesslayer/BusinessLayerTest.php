@@ -27,8 +27,8 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\AppFramework\Db\DoesNotExistException;
-use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 class TestBusinessLayer extends BusinessLayer {
 	public function __construct($mapper, $api){
@@ -37,7 +37,7 @@ class TestBusinessLayer extends BusinessLayer {
 }
 
 
-class BusinessLayerTest extends \OCA\AppFramework\Utility\TestUtility {
+class BusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
 
 	protected $api;
 	protected $mapper;

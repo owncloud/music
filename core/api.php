@@ -24,7 +24,7 @@
 
 namespace OCA\Music\Core;
 
-use \OCA\AppFramework\Core\API as BaseAPI;
+use \OCA\Music\AppFramework\Core\API as BaseAPI;
 
 class API extends BaseAPI {
 	/**

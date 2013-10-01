@@ -26,9 +26,9 @@ namespace OCA\Music\BusinessLayer;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
 
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Db\DoesNotExistException;
-use \OCA\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 class ArtistBusinessLayer extends BusinessLayer {
 

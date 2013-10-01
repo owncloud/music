@@ -23,8 +23,8 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\AppFramework\Db\Mapper;
-use \OCA\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
+use \OCA\Music\AppFramework\Core\API;
 
 class TrackMapper extends Mapper {
 

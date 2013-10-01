@@ -10,8 +10,7 @@ I want to see it live - but how?
 
 Requirements:
 
- * appframework > 0.103
- * ownCloud 5 or 6
+ * ownCloud 5+
 
 Known bugs:
 
@@ -25,13 +24,5 @@ Happy testing!
 L10n hints
 ----------
 
-You need to patch the extract regex to extract the strings, because this app
-uses other delimiters (`[[` and `]]`) than a native AngularJS app (`{{` and `}}`).
-
-File: `build/node_modules/grunt-angular-gettext/tasks/extract.js`
-
 Sometimes translatable strings aren't detected. Try to move the `translate` attribute
 more to the beginning of the HTML element.
-
-For each translation the msgid has to be set (not set for plural translations by the
-script).

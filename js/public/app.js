@@ -146,8 +146,8 @@ angular.module('Music').controller('MainController',
 	};
 }]);
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists', 'Restangular',
-	function ($scope, $routeParams, playlistService, Audio, Artists, Restangular) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular) {
 
 	$scope.artists = Artists;
 
@@ -162,6 +162,16 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
+
+	// will be invoked by the audio factory
+	$rootScope.$on('SoundManagerReady', function() {
+		if($scope.$parent.started) {
+			// invoke play after the flash gets unblocked
+			$scope.$apply(function(){
+				$scope.next();
+			});
+		}
+	});
 
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
@@ -409,18 +419,22 @@ angular.module('Music').factory('Artists', ['Restangular', '$rootScope', functio
 		});
 }]);
 
-angular.module('Music').factory('Audio', function () {
+angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
 		flashVersion: 8,
 		// this fixes a bug with HTML5 playback in Chrome
 		// TODO fix this in another way
 		useHTML5Audio: false,
-		preferFlash: true
+		preferFlash: true,
+		useFlashBlock: true,
+		onready: function() {
+			$rootScope.$emit('SoundManagerReady');
+		}
 	});
 
 	return soundManager;
-});
+}]);
 
 angular.module('Music').factory('playlists', function(){
 	return [

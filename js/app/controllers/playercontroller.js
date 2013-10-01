@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', 'playlistService', 'Audio', 'Artists', 'Restangular',
-	function ($scope, $routeParams, playlistService, Audio, Artists, Restangular) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular) {
 
 	$scope.artists = Artists;
 
@@ -37,6 +37,16 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
+
+	// will be invoked by the audio factory
+	$rootScope.$on('SoundManagerReady', function() {
+		if($scope.$parent.started) {
+			// invoke play after the flash gets unblocked
+			$scope.$apply(function(){
+				$scope.next();
+			});
+		}
+	});
 
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {

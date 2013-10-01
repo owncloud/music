@@ -42,9 +42,9 @@
 	cursor: pointer;
 
 	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity = 50);
-	opacity: .5;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 40);
+	opacity: .4;
 
 	/* transistion */
 	-webkit-transition: opacity 200ms;
@@ -69,6 +69,29 @@
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);
 	opacity: 1;
+}
+
+#sm2-container embed, #sm2-container object {
+	position: absolute;
+	left: 259px; /* with sidebar 300px */
+	top: 8px;
+	/**
+	 * the actual SWF movie bit.
+	 * important: The SWF needs to be able to be moved off-screen without display: or position: changes.
+	 * changing display: or position: or overflow: here or on parent can cause SWF reload or other weird issues after unblock
+	 * e.g., SM2 starts but strange errors, no whileplaying() etc.
+	 */
+	width: 50px;
+	height: 50px;
+	/* some flash blockers may also respect this rule */
+	max-width: 50px;
+	max-height: 50px;
+}
+
+#sm2-container.swf_loaded, #sm2-container.swf_unblocked {
+	/* hide containe if flash is loaded or unblocked */
+	width: 1px;
+	height: 1px;
 }
 
 #playerbar .albumart {
@@ -140,5 +163,7 @@
 }
 
 #playerbar .active {
-	background-color: #d8d8d8;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
 }

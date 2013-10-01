@@ -19,15 +19,19 @@
  *
  */
 
- angular.module('Music').factory('Audio', function () {
+ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
 		flashVersion: 8,
 		// this fixes a bug with HTML5 playback in Chrome
 		// TODO fix this in another way
 		useHTML5Audio: false,
-		preferFlash: true
+		preferFlash: true,
+		useFlashBlock: true,
+		onready: function() {
+			$rootScope.$emit('SoundManagerReady');
+		}
 	});
 
 	return soundManager;
-});
+}]);

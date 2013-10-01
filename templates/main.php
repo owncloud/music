@@ -29,6 +29,9 @@
 				src="<?php p(OCP\image_path('core', 'actions/play-next.svg')) ?>" />
 		</div>
 
+		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
+		<div id="sm2-container"></div>
+
 		<div ng-show="currentAlbum" class="albumart" cover="{{ currentAlbum.cover }}"
 			albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
 

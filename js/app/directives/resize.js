@@ -19,13 +19,32 @@
  *
  */
 
-angular.module('Music').directive('alphabet-navigation', function($window) {
+angular.module('Music').directive('resize', ['$window', '$rootScope', function($window, $rootScope) {
 	return function(scope, element, attrs, ctrl) {
+		var resizeNavigation = function() {
+			var height = $window.innerHeight;
+			// top and button padding of 5px each
+			height = height - 10;
+			// remove playerbar height if started
+			if(scope.started) {
+				height = height - 65;
+			}
+			// remove header height
+			height = height - 45;
+			element.css('height', height);
+			element.css('line-height', height/26 + 'px');
+		};
+
+		// trigger resize on window resize
 		$($window).resize(function() {
-			console.warn('muh');
+			resizeNavigation();
 		});
 
-		element.resize(function(){
+		// trigger resize on player status changes
+		$rootScope.$watch('started', function() {
+			resizeNavigation();
 		});
+
+		resizeNavigation();
 	};
-});
+}]);

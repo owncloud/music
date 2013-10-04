@@ -66,6 +66,10 @@ class Scanner {
 			$this->api->log('cannot determine metadata for path ' . $path, 'debug');
 			return;
 		}
+
+		// debug logging
+		$this->api->log('update - mimetype '. $metadata['mimetype'] , 'debug');
+
 		if(substr($metadata['mimetype'], 0, 5) === 'image') {
 			$coverFileId = $metadata['fileid'];
 			$parentFolderId = $metadata['parent'];

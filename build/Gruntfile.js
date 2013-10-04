@@ -125,7 +125,7 @@ module.exports = function(grunt) {
 		nggettext_extract: {
 			pot: {
 				files: {
-					'../l10n/templates/music.pot': ['../templates/*.html']
+					'../l10n/templates/music.pot': ['../templates/*.php']
 				}
 			},
 		},

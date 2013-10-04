@@ -1,16 +1,15 @@
---- extract.js  2013-09-30 13:30:22.352177143 +0200
-+++ new-extract.js 2013-09-30 13:29:17.806506065 +0200
-@@ -28,6 +28,9 @@
-         if (plural == null) {
-           plural = null;
+--- extract.js      2013-10-04 14:54:23.097745289 +0200
++++ new-extract.js  2013-10-04 14:55:42.109821844 +0200
+@@ -108,7 +108,7 @@
+         });
+       };
+       file.src.forEach(function(input) {
+-        if (input.match(/\.htm(|l)$/)) {
++        if (input.match(/\.(htm(|l)|php)$/)) {
+           extractHtml(input);
          }
-+        if (string.length === 0) {
-+          string = plural;
-+        }
-         string = string.trim();
-         if (!strings[string]) {
-           strings[string] = new po.Item();
-@@ -106,6 +109,22 @@
+         if (input.match(/\.js$/)) {
+@@ -119,6 +119,22 @@
          string = strings[key];
          catalog.items.push(string);
        }

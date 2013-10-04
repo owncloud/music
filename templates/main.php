@@ -20,13 +20,13 @@
 	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
 			<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
-				src="<?php p(OCP\image_path('core', 'actions/play-previous.svg')) ?>" />
+				src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
 			<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
-				src="<?php p(OCP\image_path('core', 'actions/play-big.svg')) ?>" />
+				src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
 			<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{'Pause' | translate }}"
-				src="<?php p(OCP\image_path('core', 'actions/pause-big.svg')) ?>" />
+				src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
 			<img ng-click="next()" class="control small svg" alt="{{'Next' | translate }}"
-				src="<?php p(OCP\image_path('core', 'actions/play-next.svg')) ?>" />
+				src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
 		</div>
 
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->

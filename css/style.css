@@ -48,6 +48,8 @@
 	display: inline;
 	margin-bottom: 2px;
 	cursor: pointer;
+	width: 16px;
+	height: 16px;
 }
 
 .album-area {

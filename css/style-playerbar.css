@@ -71,7 +71,8 @@
 	opacity: 1;
 }
 
-#sm2-container embed, #sm2-container object {
+#sm2-container embed, #sm2-container object,
+#playerbar.started #sm2-container embed, #playerbar.started #sm2-container object {
 	position: absolute;
 	left: 259px; /* with sidebar 300px */
 	top: 8px;
@@ -88,8 +89,9 @@
 	max-height: 50px;
 }
 
-#sm2-container.swf_loaded, #sm2-container.swf_unblocked {
-	/* hide containe if flash is loaded or unblocked */
+#sm2-container.swf_loaded, #sm2-container.swf_unblocked,
+#playerbar #sm2-container embed, #playerbar #sm2-container object {
+	/* hide container if flash is loaded, unblocked or player isn't started yet */
 	width: 1px;
 	height: 1px;
 }

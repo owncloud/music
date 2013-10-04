@@ -14,9 +14,8 @@ Requirements:
 
 Known bugs:
 
- * ugly play icons in IE8 [#62](https://github.com/owncloud/music/issues/62)
- * Ampache not working yet [#62](https://github.com/owncloud/music/issues/62)
- * maybe slow for large music collections [#62](https://github.com/owncloud/music/issues/62)
+ * Ampache not working yet [#91](https://github.com/owncloud/music/issues/91) [#60](https://github.com/owncloud/music/issues/60)
+ * maybe slow for large music collections [#90](https://github.com/owncloud/music/issues/90)
 
 Happy testing!
 --------------

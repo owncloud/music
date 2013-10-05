@@ -198,6 +198,8 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.stopAll();
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
+			// switch initial state
+			$scope.$parent.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
 										function(artist){
@@ -341,9 +343,6 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	playlistService.subscribe('play', function(){
-		// switch initial state
-		$scope.$parent.started = true;
-
 		// fetch track and start playing
 		$scope.next();
 	});
@@ -438,13 +437,19 @@ angular.module('Music').factory('Artists', ['Restangular', '$rootScope', functio
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
+	var isChrome = (navigator && navigator.userAgent &&
+		navigator.userAgent.indexOf('Chrome') !== -1) ?
+			true : false;
+
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
 		flashVersion: 8,
-		// this fixes a bug with HTML5 playback in Chrome
-		// TODO fix this in another way
-		useHTML5Audio: false,
-		preferFlash: true,
+		// this fixes a bug with HTML5 playback in Chrome - Chrome has to use flash
+		// Chrome stalls sometimes for several seconds after changing a track
+		// drawback: OGG files can't played in Chrome
+		// https://code.google.com/p/chromium/issues/detail?id=111281
+		useHTML5Audio: isChrome ? false : true,
+		preferFlash: isChrome ? true : false,
 		useFlashBlock: true,
 		onready: function() {
 			$rootScope.$emit('SoundManagerReady');

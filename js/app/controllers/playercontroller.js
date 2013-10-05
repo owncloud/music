@@ -74,6 +74,8 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.stopAll();
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
+			// switch initial state
+			$scope.$parent.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
 										function(artist){
@@ -217,9 +219,6 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	playlistService.subscribe('play', function(){
-		// switch initial state
-		$scope.$parent.started = true;
-
 		// fetch track and start playing
 		$scope.next();
 	});

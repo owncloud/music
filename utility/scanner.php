@@ -100,6 +100,16 @@ class Scanner {
 			$artist = null;
 			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
 				$artist = $fileInfo['comments']['artist'][0];
+				if(count($fileInfo['comments']['artist']) > 1) {
+					$this->api->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
+					// determine shortest, because the longer names are just concatenations of all artists
+					for($i=0; $i < count($fileInfo['comments']['artist']); $i++){
+						if(strlen($fileInfo['comments']['artist'][$i]) < strlen($artist)) {
+							$artist = $fileInfo['comments']['artist'][$i];
+						}
+					}
+
+				}
 			}
 			if($artist === null || $artist === ''){
 				// fallback to "ownCloud unknown artist"

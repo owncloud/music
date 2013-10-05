@@ -56,9 +56,13 @@ class TrackMapper extends Mapper {
 		return $this->findEntities($sql, $params);
 	}
 
-	public function findAllByAlbum($albumId, $userId){
+	public function findAllByAlbum($albumId, $userId, $artistId = null){
 		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ?');
 		$params = array($userId, $albumId);
+		if($artistId !== null) {
+			$sql .= ' AND `track`.`artist_id` = ?';
+			array_push($params, $artistId);
+		}
 		return $this->findEntities($sql, $params);
 	}
 

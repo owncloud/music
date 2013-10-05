@@ -53,8 +53,8 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return array of tracks
 	 */
-	public function findAllByAlbum($albumId, $userId){
-		return $this->mapper->findAllByAlbum($albumId, $userId);
+	public function findAllByAlbum($albumId, $userId, $artistId = null){
+		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
 	}
 
 	/**

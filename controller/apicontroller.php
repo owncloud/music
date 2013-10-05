@@ -67,7 +67,7 @@ class ApiController extends Controller {
 					$album = $album->toAPI($this->api);
 					if($fulltree) {
 						$albumId = $album['id'];
-						$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+						$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId, $artistId);
 						foreach($tracks as &$track) {
 							$track = $track->toAPI($this->api);
 						}
@@ -99,7 +99,7 @@ class ApiController extends Controller {
 			foreach($albums as &$album) {
 				$album = $album->toAPI($this->api);
 				$albumId = $album['id'];
-				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId, $artistId);
 				foreach($tracks as &$track) {
 					$track = $track->toAPI($this->api);
 				}

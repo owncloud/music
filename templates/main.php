@@ -17,6 +17,9 @@
 		<?php print_unescaped($this->inc('part.main')) ?>
 	</script>
 
+	<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
+	<div id="sm2-container" ng-class="{started: started}"></div>
+
 	<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 		<div id="play-controls">
 			<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
@@ -29,8 +32,6 @@
 				src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
 		</div>
 
-		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
-		<div id="sm2-container"></div>
 
 		<div ng-show="currentAlbum" class="albumart" cover="{{ currentAlbum.cover }}"
 			albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
@@ -68,4 +69,8 @@
 	</div>-->
 
 	<div id="app-content" ng-view ng-class="{started: started}"></div>
+
+	<div ng-show="artists" class="alphabet-navigation" ng-init="letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']" ng-class="{started: started}" resize>
+		<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>
+	</div>
 </div>

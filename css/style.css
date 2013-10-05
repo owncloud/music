@@ -5,20 +5,23 @@
 }
 /* end stable5 fixes */
 
+#notification a {
+	text-decoration: underline;
+}
+
 #app-content {
 	overflow-y:auto;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 
-	/* transistion to move down*/
-	-webkit-transition: padding 500ms;
-	-moz-transition: padding 500ms;
-	-o-transition: padding 500ms;
-	transition: padding 500ms;
+	height: auto;
+	top: 0;
+	bottom: 0;
+	position: absolute;
 }
 
 #app-content.started {
-	padding-top: 50px;
+	top: 65px;
 }
 
 .play {

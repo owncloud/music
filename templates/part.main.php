@@ -34,8 +34,3 @@
 	</div>
 </div>
 
-
-<div ng-show="artists" class="alphabet-navigation" ng-init="letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']" ng-class="{started: started}" resize>
-	<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>
-</div>
-

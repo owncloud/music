@@ -145,8 +145,8 @@ angular.module('Music').controller('MainController',
 	};
 }]);
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
 	$scope.artists = Artists;
 
@@ -185,7 +185,16 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$scope.getPlayableFileURL = function (track) {
+		var isChrome = (navigator && navigator.userAgent &&
+			navigator.userAgent.indexOf('Chrome') !== -1) ?
+				true : false;
 		for(var mimeType in track.files) {
+			if(mimeType === 'audio/ogg' && isChrome) {
+				// TODO inject this
+				OC.Notification.showHtml(gettext(
+					'Chrome is just able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
+				));
+			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];
 			}

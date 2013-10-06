@@ -1,3 +1,23 @@
+v0.1.6-alpha 2013-10-05
+
+  * L10n support
+  * OGG metadata extraction - just works for local files - not for external ones refs #73
+  * proper deletion of database cache
+  * metadata extraction fix - disable 2GB filesize check in getID3
+  * use Flash fallback in Chrome - drawback: just MP3 playback - there is a notification if this is the case
+  * fix album art/placeholder race condition
+  * no more appframework dependency
+  * Flash unblock element
+  * alphabet navigation resizes with window height
+  * hide alphabet navigation if there is no music
+  * proper IE8 PNGs
+  * fulltree for artists only return tracks of the artist - #99
+  * scanner uses the shortest artist name if multiple artists are detected
+  * scrollbar fix - was overlaped by player bar #102
+
+ Known bugs:
+  * in IE 9 and 10 the play icons haven't the correct width/height
+
 v0.1.5-alpha 2013-09-24
 
   * use images in album folders as album art

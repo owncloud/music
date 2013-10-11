@@ -1,60 +1,70 @@
 # 
 # Translators:
+# Art O. Pal <artopal@fastmail.fm>, 2013
+# japaol <japaol@gmail.com>, 2013
+# Korrosivo <yo@rubendelcampo.es>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-10-11 02:20:33+0400\n"
+"PO-Revision-Date: 2013-10-08 22:50+0000\n"
+"Last-Translator: japaol <japaol@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Cargando..."
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "Reproducir"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "Pausa"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Mezclar"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Aquí no hay nada. ¡Sube tu música!"
 
-#: ../templates/part.main.html
-msgid "Show all [[ trackcount ]] songs ..."
-msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
-msgstr[1] ""
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "Mostrar todas {{ trackcount}} canción ..."
+msgstr[1] "Mostrar todas {{ trackcount}} canciones ..."
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Mostrar menos..."
+
+#: ../js/public/app.js
+msgid ""
+"Chrome is just able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome puede reproducir directamente archivos MP3 - ver <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"

@@ -24,7 +24,9 @@ angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
 	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
-	$scope.artists = Artists;
+	Artists.then(function(result){
+		$scope.artists = result;
+	});
 
 	$scope.playing = false;
 	$scope.loading = false;
@@ -86,7 +88,7 @@ angular.module('Music').controller('PlayerController',
 			// switch initial state
 			$scope.$parent.started = true;
 			// find artist
-			$scope.currentArtist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
 											return artist.id === newValue.artist.id;
 										});

@@ -38,7 +38,7 @@ angular.module('Music').controller('MainController',
 		$scope.loading = false;
 	});
 
-	$scope.letterAvailable = {
+	$rootScope.letterAvailable = {
 		'A': false,
 		'B': false,
 		'C': false,
@@ -67,27 +67,33 @@ angular.module('Music').controller('MainController',
 		'Z': false
 	};
 
-	$scope.anchorArtists = [];
+	$rootScope.anchorArtists = [];
 
 	$scope.loading = true;
-	$scope.artists = Artists;
+	Artists.then(function(result){
+		$scope.artists = result;
+		$rootScope.artists = result; // TODO dirty hack
+	});
 
 	$scope.$watch('artists', function(artists) {
 		if(artists) {
-			_.each(artists, function(artist) {
-				var letter = artist.name.substr(0,1).toUpperCase();
-				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-					if($scope.letterAvailable[letter] === false) {
-						$scope.anchorArtists.push(artist.name);
+			for(var i=0; i < artists.length; i++) {
+				var artist = artists[i],
+					letter = artist.name.substr(0,1).toUpperCase();
+
+				if($rootScope.letterAvailable.hasOwnProperty(letter) === true) {
+					if($rootScope.letterAvailable[letter] === false) {
+						$rootScope.anchorArtists.push(artist.name);
 					}
-					$scope.letterAvailable[letter] = true;
+					$rootScope.letterAvailable[letter] = true;
 				}
-			});
+
+			}
 		}
 	});
 
 	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+		var artist = _.find($scope.artists,
 			function(artist) {
 				return artist.id === track.artist.id;
 			}),
@@ -148,7 +154,9 @@ angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
 	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
-	$scope.artists = Artists;
+	Artists.then(function(result){
+		$scope.artists = result;
+	});
 
 	$scope.playing = false;
 	$scope.loading = false;
@@ -210,7 +218,7 @@ angular.module('Music').controller('PlayerController',
 			// switch initial state
 			$scope.$parent.started = true;
 			// find artist
-			$scope.currentArtist = _.find($scope.artists.$$v, // TODO Why do I have to use $$v?
+			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
 											return artist.id === newValue.artist.id;
 										});

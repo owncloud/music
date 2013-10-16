@@ -1,14 +1,5 @@
 --- extract.js      2013-10-04 14:54:23.097745289 +0200
 +++ new-extract.js  2013-10-04 14:55:42.109821844 +0200
-@@ -108,7 +108,7 @@
-         });
-       };
-       file.src.forEach(function(input) {
--        if (input.match(/\.htm(|l)$/)) {
-+        if (input.match(/\.(htm(|l)|php)$/)) {
-           extractHtml(input);
-         }
-         if (input.match(/\.js$/)) {
 @@ -119,6 +119,22 @@
          string = strings[key];
          catalog.items.push(string);

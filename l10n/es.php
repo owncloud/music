@@ -1,4 +1,5 @@
-<?php $TRANSLATIONS = array(
+<?php
+$TRANSLATIONS = array(
 "Loading ..." => "Cargando...",
 "Previous" => "Anterior",
 "Play" => "Reproducir",
@@ -8,7 +9,8 @@
 "Repeat" => "Repetir",
 "Delete" => "Eliminar",
 "Nothing in here. Upload your music!" => "Aquí no hay nada. ¡Sube tu música!",
-"Show all {{ trackcount }} songs ..." => ,
+"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostrar todas {{ trackcount}} canción ...","Mostrar todas {{ trackcount}} canciones ..."),
 "Show less ..." => "Mostrar menos...",
 "Chrome is just able to playback MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome puede reproducir directamente archivos MP3 - ver <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 );
+$PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

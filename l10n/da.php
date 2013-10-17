@@ -1,4 +1,5 @@
-<?php $TRANSLATIONS = array(
+<?php
+$TRANSLATIONS = array(
 "Loading ..." => "Indlæser...",
 "Previous" => "Forrige",
 "Play" => "Afspil",
@@ -8,6 +9,7 @@
 "Repeat" => "Gentag",
 "Delete" => "Slet",
 "Nothing in here. Upload your music!" => "Her er tomt. Upload din musik!",
-"Show all [[ trackcount ]] songs ..." => ,
+"_Show all [[ trackcount ]] songs ..._::_Show all [[ trackcount ]] songs ..._" => array("Vis alle [[ trackcount ]] sange ...","Vis alle [[ trackcount ]] sange ..."),
 "Show less ..." => "Vis færre ..."
 );
+$PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

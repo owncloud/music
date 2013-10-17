@@ -109,3 +109,4 @@ l10n-extract: deps
 
 l10n-compile: deps
 	$(grunt_dir) --config $(gruntfile_dir) nggettext_compile
+	cd ../l10n; ./l10n.pl music write

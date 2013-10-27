@@ -1,61 +1,75 @@
 # 
 # Translators:
+# Dmitry <linuxsquirrel.dev@gmail.com>, 2013
+# jekader <jekader@gmail.com>, 2013
+# not_your_conscience <hex.void@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
+"PO-Revision-Date: 2013-10-25 09:50+0000\n"
+"Last-Translator: not_your_conscience <hex.void@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Музыка"
+
+#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Загружается..."
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "Предыдущий"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "Проиграть"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "Пауза"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Перемешать"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Повтор"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Здесь ничего нет. Загрузите вашу музыку!"
 
-#: ../templates/part.main.html
-msgid "Show all [[ trackcount ]] songs ..."
-msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "Показать {{ trackcount }} песню..."
+msgstr[1] "Показать все {{ trackcount }} песни..."
+msgstr[2] "Показать все {{ trackcount }} песен..."
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Показать меньше..."
+
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome может воспроизводить только MP3 файлы - смотрите <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">вики</a>"

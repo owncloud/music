@@ -1,59 +1,71 @@
 # 
 # Translators:
+# smallsnail <bjh13579@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
+"PO-Revision-Date: 2013-10-23 14:20+0000\n"
+"Last-Translator: smallsnail <bjh13579@gmail.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "음악"
+
+#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "불러오는 중..."
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "이전"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "재생"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "일시 정지"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "다음"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "임의 재생"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "반복"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "삭제"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "아무것도 들어있지 않아요! 업로드 해주세요!"
 
-#: ../templates/part.main.html
-msgid "Show all [[ trackcount ]] songs ..."
-msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "전체 {{ trackcount }} 곡 보이기"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "그외 곡들 보여주기..."
+
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "구글 크롬만이 MP3 파일을 재생할수 잇습니다 - <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>를 보세요"

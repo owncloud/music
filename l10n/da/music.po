@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 12:27:31+0400\n"
-"PO-Revision-Date: 2013-09-30 12:15+0000\n"
+"POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
+"PO-Revision-Date: 2013-10-23 10:50+0000\n"
 "Last-Translator: Sappe\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,48 +14,59 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Musik"
+
+#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Indlæser..."
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Previous"
 msgstr "Forrige"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Afspil"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Next"
 msgstr "Næste"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Shuffle"
 msgstr "Bland"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Repeat"
 msgstr "Gentag"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Delete"
 msgstr "Slet"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Her er tomt. Upload din musik!"
 
-#: ../templates/part.main.html
-msgid "Show all [[ trackcount ]] songs ..."
-msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] "Vis alle [[ trackcount ]] sange ..."
-msgstr[1] "Vis alle [[ trackcount ]] sange ..."
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "Vis alle {{ trackcount }} sange ..."
+msgstr[1] "Vis alle {{ trackcount }} sange ..."
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Show less ..."
 msgstr "Vis færre ..."
+
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome kan kun afspille MP3 filer se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki'en</a> for yderligere information."

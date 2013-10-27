@@ -1,73 +1,71 @@
 # 
 # Translators:
-# Gustav Smedberg <shadow.elf@hotmail.com>, 2013
-# medialabs, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
 "POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
-"PO-Revision-Date: 2013-10-21 21:10+0000\n"
-"Last-Translator: Gustav Smedberg <shadow.elf@hotmail.com>\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/owncloud/language/sv/)\n"
+"PO-Revision-Date: 2013-10-24 10:48+0000\n"
+"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"Language-Team: Low German (http://www.transifex.com/projects/p/owncloud/language/nds/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sv\n"
+"Language: nds\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "Musik"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr "Laddar  ..."
+msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "Föregående"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr "Spela"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "Paus"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "Nästa"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "Blanda"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Upprepa"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "Radera"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr "Det finns inget här. Ladda upp din musik!"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Visa alla {{ trackcount }} låtar ..."
-msgstr[1] "Visa alla {{ trackcount }} låtar ..."
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr "Visa mindre ..."
+msgstr ""
 
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome har bara möjligheten att spela upp MP3 filer - se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr ""

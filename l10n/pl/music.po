@@ -5,14 +5,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-10-11 02:20:33+0400\n"
-"PO-Revision-Date: 2013-10-10 11:20+0000\n"
+"POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
+"PO-Revision-Date: 2013-10-23 10:50+0000\n"
 "Last-Translator: Cyryl Sochacki <cyrylsochacki@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/owncloud/language/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Muzyka"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -63,7 +67,7 @@ msgstr "Pokaz mniej ..."
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is just able to playback MP3 files - see <a "
+"Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 msgstr "W Chrome jest tylko możliwość odtwarzania muzyki MP3 - zobacz <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"

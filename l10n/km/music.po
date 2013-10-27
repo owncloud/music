@@ -1,59 +1,71 @@
 # 
 # Translators:
+# Pongsametrey SOK <metreysk@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-09-30 11:39:48+0400\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-10-27 05:29:40+0400\n"
+"PO-Revision-Date: 2013-10-23 21:30+0000\n"
+"Last-Translator: Pongsametrey SOK <metreysk@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: km\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "តន្ត្រី"
+
+#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "កំពុងផ្ទុក ..."
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "មុន"
 
-#: ../templates/main.html ../templates/part.main.html
+#: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "លេង"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "ផ្អាក"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "បន្ទាប់"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "បង្អូស"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "ធ្វើម្ដងទៀត"
 
-#: ../templates/main.html
+#: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "លុប"
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "គ្មាន​អ្វីទេ​នៅទីនេះ។ ដាក់តន្ត្រី​របស់​អ្នកឡើង!"
 
-#: ../templates/part.main.html
-msgid "Show all [[ trackcount ]] songs ..."
-msgid_plural "Show all [[ trackcount ]] songs ..."
-msgstr[0] ""
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "បង្ហាញ​ទាំង {{ trackcount }} ចម្រៀង ..."
 
-#: ../templates/part.main.html
+#: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "បង្ហាញ​តិច ..."
+
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome គ្រាន់​តែអាច​ចាក់ឡើងវិញនូវឯកសារ MP3​ ប៉ុណ្ណោះ - សូម​អាននៅ <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">វីគី</a>"

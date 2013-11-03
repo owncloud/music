@@ -387,7 +387,7 @@ angular.module('Music').directive('albumart', function() {
 					element.css('-ms-filter', '');
 					element.css('background-image', '');
 					// add placeholder stuff
-					element.placeholder(attrs.albumart);
+					element.imageplaceholder(attrs.albumart);
 				}
 			}
 		};

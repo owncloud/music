@@ -24,12 +24,8 @@ angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
 	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
-	Artists.then(function(result){
-		$scope.artists = result;
-	});
-
 	$scope.playing = false;
-	$scope.loading = false;
+	$scope.buffering = false;
 	$scope.player = Audio;
 	$scope.position = 0.0;
 	$scope.duration = 0.0;
@@ -82,6 +78,7 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
+		playlistService.publish('playing', newValue);
 		$scope.player.stopAll();
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
@@ -144,7 +141,7 @@ angular.module('Music').controller('PlayerController',
 					}
 				},
 				onbufferchange: function() {
-					$scope.setLoading(this.isBuffering);
+					$scope.setBuffering(this.isBuffering);
 				},
 				volume: 50
 			});
@@ -171,14 +168,14 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	// only call from external script
-	$scope.setLoading = function(loading) {
+	$scope.setBuffering = function(buffering) {
 		// determine if already inside of an $apply or $digest
 		// see http://stackoverflow.com/a/12859093
 		if($scope.$$phase) {
-			$scope.loading = loading;
+			$scope.buffering = buffering;
 		} else {
 			$scope.$apply(function(){
-				$scope.loading = loading;
+				$scope.buffering = buffering;
 			});
 		}
 	};

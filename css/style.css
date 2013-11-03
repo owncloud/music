@@ -111,6 +111,7 @@
 	white-space: nowrap;
 }
 
+.track-list > li > .play.playing,
 .track-list > li:hover > .play {
 	display: inline;
 	height: 10px;

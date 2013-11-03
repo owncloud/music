@@ -27,62 +27,52 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
+	$scope.loading = true;
+
 	// will be invoked by the artist factory
 	$rootScope.$on('artistsLoaded', function() {
 		$scope.loading = false;
 	});
 
-	$rootScope.letterAvailable = {
-		'A': false,
-		'B': false,
-		'C': false,
-		'D': false,
-		'E': false,
-		'F': false,
-		'G': false,
-		'H': false,
-		'I': false,
-		'J': false,
-		'K': false,
-		'L': false,
-		'M': false,
-		'N': false,
-		'O': false,
-		'P': false,
-		'Q': false,
-		'R': false,
-		'S': false,
-		'T': false,
-		'U': false,
-		'V': false,
-		'W': false,
-		'X': false,
-		'Y': false,
-		'Z': false
-	};
-
-	$rootScope.anchorArtists = [];
-
-	$scope.loading = true;
-	Artists.then(function(result){
-		$scope.artists = result;
-		$rootScope.artists = result; // TODO dirty hack
+	$scope.currentTrack = null;
+	playlistService.subscribe('playing', function(e, track){
+		// determine if already inside of an $apply or $digest
+		// see http://stackoverflow.com/a/12859093
+		if($scope.$$phase) {
+			$scope.currentTrack = track;
+		} else {
+			$scope.$apply(function(){
+				$scope.currentTrack = track;
+			});
+		}
 	});
 
-	$scope.$watch('artists', function(artists) {
-		if(artists) {
-			for(var i=0; i < artists.length; i++) {
-				var artist = artists[i],
-					letter = artist.name.substr(0,1).toUpperCase();
+	$scope.anchorArtists = [];
 
-				if($rootScope.letterAvailable.hasOwnProperty(letter) === true) {
-					if($rootScope.letterAvailable[letter] === false) {
-						$rootScope.anchorArtists.push(artist.name);
-					}
-					$rootScope.letterAvailable[letter] = true;
+	$scope.letters = [
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+		'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+		'U', 'V', 'W', 'X', 'Y', 'Z'
+	];
+
+	$scope.letterAvailable = {};
+	for(var i in $scope.letters){
+		$scope.letterAvailable[$scope.letters[i]] = false;
+	}
+
+	Artists.then(function(artists){
+		$scope.artists = artists;
+		for(var i=0; i < artists.length; i++) {
+			var artist = artists[i],
+				letter = artist.name.substr(0,1).toUpperCase();
+
+			if($scope.letterAvailable.hasOwnProperty(letter) === true) {
+				if($scope.letterAvailable[letter] === false) {
+					$scope.anchorArtists.push(artist.name);
 				}
-
+				$scope.letterAvailable[letter] = true;
 			}
+
 		}
 	});
 

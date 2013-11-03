@@ -39,7 +39,7 @@
  */
 
 (function ($) {
-	$.fn.placeholder = function(seed) {
+	$.fn.imageplaceholder = function(seed) {
 		var hash = md5(seed),
 			maxRange = parseInt('ffffffffff', 16),
 			red = parseInt(hash.substr(0,10), 16) / maxRange * 256,

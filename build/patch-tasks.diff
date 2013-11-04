@@ -1,6 +1,19 @@
---- extract.js      2013-10-04 14:54:23.097745289 +0200
-+++ new-extract.js  2013-10-04 14:55:42.109821844 +0200
-@@ -119,6 +119,22 @@
+diff -ub compile.js new-compile.js
+--- compile.js	2013-10-09 16:17:40.257875241 +0200
++++ new-compile.js	2013-11-04 10:50:04.039919981 +0100
+@@ -3,7 +3,7 @@
+ po = require('node-po');
+
+ template = function(module, body) {
+-  return "angular.module(\"" + module + "\").run(['gettextCatalog', function (gettextCatalog) {\n" + body + "\n}]);";
++  return "/* jshint -W100 */\nangular.module(\"" + module + "\").run(['gettextCatalog', function (gettextCatalog) {\n" + body + "\n}]);\n/* jshint +W100 */";
+ };
+
+ langTemplate = function(language, strings) {
+diff -ub extract.js new-extract.js
+--- extract.js	2013-11-04 10:48:16.571666811 +0100
++++ new-extract.js	2013-11-04 10:49:47.770184495 +0100
+@@ -106,6 +106,22 @@
          string = strings[key];
          catalog.items.push(string);
        }

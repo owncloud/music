@@ -5,15 +5,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-10-11 02:20:33+0400\n"
-"PO-Revision-Date: 2013-10-09 11:20+0000\n"
-"Last-Translator: pisike.sipelgas <pisike.sipelgas@gmail.com>\n"
+"POT-Creation-Date: 2013-11-04 10:09:06+0500\n"
+"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Muusika"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -63,7 +66,7 @@ msgstr "Näita vähem ..."
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is just able to playback MP3 files - see <a "
+"Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chromega saab lihtsalt MP3 faile mängida - vaata seda <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a> lehte."
+msgstr "Chrome suudab esitada ainult MP3 faile - vaata lisa <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wikist</a>"

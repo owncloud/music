@@ -42,19 +42,12 @@ use \OCA\Music\Middleware\AmpacheMiddleware;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
 
-use \OCA\AppFramework\Middleware\MiddlewareDispatcher;
+use \OCA\Music\AppFramework\Middleware\MiddlewareDispatcher;
 
 // in stable5 getid3 is already loaded
 if(!class_exists('getid3_exception')) {
 	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 }
-
-/**
- * Delete the following twig config to use ownClouds default templates
- */
-// use this to specify the template directory
-$this['TwigTemplateDirectory'] = __DIR__ . '/../templates';
-
 
 $this['API'] = $this->share(function($c){
 	return new API($c['AppName']);
@@ -158,11 +151,6 @@ $this['MiddlewareDispatcher'] = $this->share(function($c){
 	$dispatcher->registerMiddleware($c['AmpacheMiddleware']);
 	$dispatcher->registerMiddleware($c['HttpMiddleware']);
 	$dispatcher->registerMiddleware($c['SecurityMiddleware']);
-
-	// only add twigmiddleware if the user set the template directory
-	if($c['TwigTemplateDirectory'] !== null){
-		$dispatcher->registerMiddleware($c['TwigMiddleware']);
-	}
 
 	return $dispatcher;
 });

@@ -23,10 +23,10 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\AppFramework\Db\Mapper;
-use \OCA\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
+use \OCA\Music\Core\API;
 
-use \OCA\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
 
 class AmpacheSessionMapper extends Mapper {
 

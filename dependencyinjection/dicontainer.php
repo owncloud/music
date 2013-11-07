@@ -29,7 +29,7 @@ namespace OCA\Music\DependencyInjection;
 use OCA\Music\AppFramework\Http\Http;
 use OCA\Music\AppFramework\Http\Request;
 use OCA\Music\AppFramework\Http\Dispatcher;
-use OCA\Music\AppFramework\Core\API;
+use OCA\Music\Core\API;
 use OCA\Music\AppFramework\Middleware\MiddlewareDispatcher;
 use OCA\Music\AppFramework\Middleware\Http\HttpMiddleware;
 use OCA\Music\AppFramework\Middleware\Security\SecurityMiddleware;

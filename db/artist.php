@@ -25,7 +25,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 
 class Artist extends Entity {

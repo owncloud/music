@@ -24,12 +24,12 @@
 
 namespace OCA\Music\Middleware;
 
-use \OCA\AppFramework\Utility\MethodAnnotationReader;
-use \OCA\AppFramework\DB\Mapper;
-use \OCA\AppFramework\Http\Request;
-use \OCA\AppFramework\Http\TemplateResponse;
-use \OCA\AppFramework\Middleware\Middleware;
-use \OCA\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use \OCA\Music\AppFramework\DB\Mapper;
+use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\AppFramework\Http\TemplateResponse;
+use \OCA\Music\AppFramework\Middleware\Middleware;
+use \OCA\Music\Core\API;
 
 /**
  * Used to do the authentication and checking stuff for an ampache controller method

@@ -29,6 +29,11 @@ use \OCA\Music\DependencyInjection\DIContainer;
 
 $c = new DIContainer();
 
+if($c['API']->getAppValue('ampacheEnabled') === '') { // defaults to '' if not found
+	// don't show the config option in the user settings if ampache is disabled by the admin
+	return '';
+}
+
 $c['API']->addScript('public/settings-user');
 
 $tmpl = new \OCP\Template('music', 'settings-user');

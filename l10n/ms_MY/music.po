@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Puretech <terjemah.puretech@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-09 05:45:44+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-11-11 09:47:27+0500\n"
+"PO-Revision-Date: 2013-11-09 12:50+0000\n"
+"Last-Translator: Puretech <terjemah.puretech@gmail.com>\n"
 "Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/owncloud/language/ms_MY/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgstr "Muzik"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Memuatkan ..."
 
 #: ../templates/main.php
 msgid "Previous"
@@ -38,7 +39,7 @@ msgstr "Seterus"
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Kocok"
 
 #: ../templates/main.php
 msgid "Repeat"
@@ -50,20 +51,20 @@ msgstr "Padam"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Tiada apa-apa di sini. Muat naik muzik anda!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
+msgstr[0] "Paparkan semua {{ trackcount }} lagu ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Kurangkan paparan ..."
 
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chrome hanya boleh memainkan fail MP3 - lihat <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"

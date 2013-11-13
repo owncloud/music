@@ -37,6 +37,7 @@
 			<?php if($_['ampacheEnabled']){ ?>
 				checked="checked"
 			<?php } ?> />
-		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label>
+		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label><br />
+		<em><?php p($l->t('Ampache will only function after logout and login.')); ?></em>
 	</div>
 </fieldset>

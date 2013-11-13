@@ -24,14 +24,35 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\AppFramework\Core\API;
-use \OCA\AppFramework\Http\Request;
+use \OCA\Music\Core\API;
+use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\Middleware\AmpacheException;
+use \OCA\Music\DB\AmpacheUserMapper;
+use \OCA\Music\DB\AmpacheSession;
+use \OCA\Music\DB\AmpacheSessionMapper;
+use \OCA\Music\DB\AlbumMapper;
+use \OCA\Music\DB\ArtistMapper;
+use \OCA\Music\DB\TrackMapper;
 
 
 class AmpacheController extends Controller {
 
-	public function __construct(API $api, Request $request){
+	private $ampacheUserMapper;
+	private $ampacheSessionMapper;
+	private $albumMapper;
+	private $artistMapper;
+	private $trackMapper;
+
+	public function __construct(API $api, Request $request, AmpacheUserMapper $ampacheUserMapper,
+		AmpacheSessionMapper $ampacheSessionMapper, AlbumMapper $albumMapper, ArtistMapper $artistMapper,
+		TrackMapper $trackMapper){
 		parent::__construct($api, $request);
+
+		$this->ampacheUserMapper = $ampacheUserMapper;
+		$this->ampacheSessionMapper = $ampacheSessionMapper;
+		$this->albumMapper = $albumMapper;
+		$this->artistMapper = $artistMapper;
+		$this->trackMapper = $trackMapper;
 	}
 
 
@@ -47,9 +68,67 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	public function ampache() {
+		switch($this->params('action')) {
+			case 'handshake':
+				return $this->handshake();
+		}
+		throw new AmpacheException('TODO', 999);
+	}
+
+	public function handshake() {
+		$sessionExpiryTime = 6000;
+
+		$userId = $this->params('user');
+
+		// prepare hash check
+		$hash = $this->ampacheUserMapper->getPasswordHash($userId);
+		$expectedHash = hash('sha256', $this->params('timestamp') . $hash);
+
+		// prepare time check
+		$currentTime = time();
+		$providedTime = \DateTime::createFromFormat(\DateTime::ISO8601, $this->params('timestamp'));
+
+		if($providedTime === false) {
+			throw new AmpacheException('Invalid Login - cannot parse time', 401);
+		}
+		if($providedTime->getTimestamp() < ($currentTime - $sessionExpiryTime)) {
+			throw new AmpacheException('Invalid Login - session is outdated', 401);
+		}
+		if($providedTime->getTimestamp() > $currentTime) {
+			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
+		}
+		if($expectedHash !== $this->params('auth')) {
+			throw new AmpacheException('Invalid Login - passphrase does not match', 401);
+		}
+
+		// this can cause collision, but it's just a temporary token
+		$token = md5(uniqid(rand(), true));
+		$expiryDate = $currentTime + $sessionExpiryTime;
+
+		$session = new AmpacheSession();
+		$session->setUserId($userId);
+		$session->setToken($token);
+		$session->setExpiry($expiryDate);
+
+		$this->ampacheSessionMapper->insert($session);
+
+		$artistCount = $this->artistMapper->count($userId);
+		$albumCount = $this->albumMapper->count($userId);
+		$trackCount = $this->trackMapper->count($userId);
+
 		return $this->render(
 			'ampache/handshake',
-			array(),
+			array(
+				'token' => $token,
+				'songCount' => $trackCount,
+				'artistCount' => $artistCount,
+				'albumCount' => $albumCount,
+				'playlistCount' => 0,
+				'updateDate' => $currentTime,
+				'cleanDate' => $currentTime,
+				'addDate' => $currentTime,
+				'expireDate' => $expiryDate
+			),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);

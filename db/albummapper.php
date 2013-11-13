@@ -168,4 +168,13 @@ class AlbumMapper extends Mapper {
 		$params = array($parentFolderId, $albumId);
 		$this->execute($sql, $params);
 	}
+
+	public function count($userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_albums` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
 }

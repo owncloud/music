@@ -78,4 +78,13 @@ class ArtistMapper extends Mapper {
 		$sql = 'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
 		$this->execute($sql, $artistIds);
 	}
+
+	public function count($userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_artists` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
 }

@@ -44,4 +44,20 @@ class HookHandler {
 		$container = new DIContainer();
 		$container['Scanner']->update($params['path']);
 	}
+
+	/**
+	 * Invoke auto update of music database after file update or file creation
+	 * @param array $params contains a key value pair for user and password
+	 */
+	static public function login($params){
+		$container = new DIContainer();
+		$api = $container['API'];
+		// check if ampache is enabled
+		if($api->getAppValue('ampacheEnabled') !== '') {
+			// check if user has enabled ampache
+			if($container['AmpacheUserStatusMapper']->isAmpacheUser($params['uid'])) {
+				$container['AmpacheUserMapper']->updatePassphrase($params['uid'], $params['password']);
+			}
+		}
+	}
 }

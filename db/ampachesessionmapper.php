@@ -37,12 +37,19 @@ class AmpacheSessionMapper extends Mapper {
 	public function find($token){
 		$sql = 'SELECT `session`.`user_id` '.
 			'FROM `*PREFIX*music_ampache_sessions` `session` '.
-			'WHERE `session`.`token` = ?';
-		$params = array($token);
+			'WHERE `session`.`token` = ? AND `session`.`expiry` > ?';
+		$params = array($token, time());
 
 		$result = $this->execute($sql, $params);
 
 		// false if no row could be fetched
 		return $result->fetchRow();
+	}
+
+	public function cleanUp(){
+		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions` '.
+			'WHERE `expiry` < ?';
+		$params = array(time());
+		$this->execute($sql, $params);
 	}
 }

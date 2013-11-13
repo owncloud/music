@@ -32,10 +32,13 @@ use \OCA\Music\AppFramework\Http\Request;
 class SettingController extends Controller {
 
 	private $ampacheUserStatusMapper;
+	private $ampacheUserMapper;
 
-	public function __construct(API $api, Request $request, Mapper $ampacheUserStatusMapper){
+	public function __construct(API $api, Request $request, Mapper $ampacheUserStatusMapper, Mapper $ampacheUserMapper){
 		parent::__construct($api, $request);
+
 		$this->ampacheUserStatusMapper = $ampacheUserStatusMapper;
+		$this->ampacheUserMapper = $ampacheUserMapper;
 	}
 
 	/**
@@ -46,7 +49,11 @@ class SettingController extends Controller {
 		$success = false;
 		$ampacheEnabled = $this->params('ampacheEnabled');
 		if($ampacheEnabled !== null) {
-			$this->api->setAppValue('ampacheEnabled', filter_var($ampacheEnabled, FILTER_VALIDATE_BOOLEAN));
+			$ampacheEnabled = filter_var($ampacheEnabled, FILTER_VALIDATE_BOOLEAN);
+			$this->api->setAppValue('ampacheEnabled', $ampacheEnabled);
+			if($ampacheEnabled === false){
+				$this->ampacheUserMapper->removeAllUser();
+			}
 			$success = true;
 		}
 		return $this->renderPlainJSON(array('success' => $success));
@@ -67,6 +74,7 @@ class SettingController extends Controller {
 				$this->ampacheUserStatusMapper->addAmpacheUser($userId);
 			} else {
 				$this->ampacheUserStatusMapper->removeAmpacheUser($userId);
+				$this->ampacheUserMapper->removeUser($userId);
 			}
 			$success = true;
 		}

@@ -251,10 +251,10 @@
 			</field>
 
 			<field>
-				<name>start</name>
-				<type>timestamp</type>
-				<default>2013-01-01 00:00:00</default><!-- TODO -->
+				<name>expiry</name>
+				<type>integer</type>
 				<notnull>true</notnull>
+				<unsigned>true</unsigned>
 			</field>
 
 			<index>
@@ -278,7 +278,7 @@
 			</field>
 
 			<field>
-				<name>user_password_sha256</name>
+				<name>hash</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>64</length>

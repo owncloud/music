@@ -22,18 +22,19 @@
  */
 
 
-namespace OCA\Music;
+namespace OCA\Music\Db;
 
-use \OCA\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\AppFramework\Db\Entity;
+use \OCA\Music\Core\API;
 
 
-/**
- * Ampache API http://ampache.org/wiki/dev:xmlapi
- */
+class AmpacheSession extends Entity {
 
-$this->create('music_ampache', '/ampache/server/xml.server.php')->get()->action(
-	function($params){
-		App::main('AmpacheController', 'ampache', $params, new DIContainer());
+	public $userId;
+	public $token;
+	public $expiry;
+
+	public function __construct(){
+		$this->addType('expiry', 'int');
 	}
-);
+}

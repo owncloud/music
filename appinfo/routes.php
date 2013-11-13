@@ -63,5 +63,13 @@ create('music_user_settings_post', '/api/user/settings')->post()->action(
 
 // include external API
 require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+
+/**
+ * Ampache API http://ampache.org/wiki/dev:xmlapi
+ */
+
+$this->create('music_ampache', '/ampache')->get()->action(
+	function($params){
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
+	}
+);

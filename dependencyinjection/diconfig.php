@@ -36,6 +36,7 @@ use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
+use \OCA\Music\DB\AmpacheUserMapper;
 use \OCA\Music\DB\AmpacheUserStatusMapper;
 use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\TrackMapper;
@@ -73,11 +74,12 @@ $this['LogController'] = $this->share(function($c){
 });
 
 $this['AmpacheController'] = $this->share(function($c){
-	return new AmpacheController($c['API'], $c['Request']);
+	return new AmpacheController($c['API'], $c['Request'], $c['AmpacheUserMapper'], $c['AmpacheSessionMapper'],
+		$c['AlbumMapper'], $c['ArtistMapper'], $c['TrackMapper']);
 });
 
 $this['SettingController'] = $this->share(function($c){
-	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserStatusMapper']);
+	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserStatusMapper'], $c['AmpacheUserMapper']);
 });
 
 /**
@@ -90,6 +92,10 @@ $this['AlbumMapper'] = $this->share(function($c){
 
 $this['AmpacheSessionMapper'] = $this->share(function($c){
 	return new AmpacheSessionMapper($c['API']);
+});
+
+$this['AmpacheUserMapper'] = $this->share(function($c){
+	return new AmpacheUserMapper($c['API']);
 });
 
 $this['AmpacheUserStatusMapper'] = $this->share(function($c){

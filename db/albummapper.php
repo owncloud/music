@@ -130,7 +130,7 @@ class AlbumMapper extends Mapper {
 					FROM `*PREFIX*music_tracks` `tracks`
 					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
 					WHERE `files`.`parent` = ?
-				);';
+				)';
 		$params = array($coverFileId, $parentFolderId);
 		$this->execute($sql, $params);
 	}
@@ -138,7 +138,7 @@ class AlbumMapper extends Mapper {
 	public function removeCover($coverFileId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = NULL
-				WHERE `cover_file_id` = ?;';
+				WHERE `cover_file_id` = ?';
 		$params = array($coverFileId);
 		$this->execute($sql, $params);
 	}
@@ -148,7 +148,7 @@ class AlbumMapper extends Mapper {
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
-				WHERE `albums`.`cover_file_id` IS NULL;';
+				WHERE `albums`.`cover_file_id` IS NULL';
 		$result = $this->execute($sql);
 		$return = Array();
 		while($row = $result->fetchRow()){
@@ -164,7 +164,7 @@ class AlbumMapper extends Mapper {
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
 					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE "image%" LIMIT 1
-				) WHERE `id` = ?;';
+				) WHERE `id` = ?';
 		$params = array($parentFolderId, $albumId);
 		$this->execute($sql, $params);
 	}

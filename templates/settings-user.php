@@ -30,14 +30,18 @@
 
 ?>
 
-<fieldset class="personalblock" id="music-admin">
+<fieldset class="personalblock" id="music-user">
 	<h2><?php p($l->t('Music')); ?></h2>
-	<div>
+	<div class="more-bottom-margin">
 		<input type="checkbox" id="music-enable-ampache"
 			<?php if($_['ampacheEnabled']){ ?>
 				checked="checked"
 			<?php } ?> />
 		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label><br />
 		<em><?php p($l->t('Ampache will only function after logout and login.')); ?></em>
+	</div>
+	<div>
+		<code><?php p(\OC_Helper::makeURLAbsolute(\OC_Helper::linkToRoute('music_ampache')));?></code><br />
+		<em><?php p($l->t('Use this address to browse your music collection from any Ampache compatible player.')); ?></em>
 	</div>
 </fieldset>

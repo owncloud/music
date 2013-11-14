@@ -5,3 +5,4 @@ appinfo/app.php, templates/settings-admin.php -->
 <span translate>Enable Ampache support</span>
 <span translate>This weakens your ownCloud instance because it generates unsalted hashes of the user passwords. (Just for users who have enabled this feature.</span>
 <span translate>Ampache will only function after logout and login.</span>
+<span translate>Use this address to browse your music collection from any Ampache compatible player.</span>

@@ -36,6 +36,7 @@ if($c['API']->getAppValue('ampacheEnabled') === '') { // defaults to '' if not f
 
 $c['API']->addScript('public/settings-user');
 
+\OCP\Util::addStyle('music', 'settings-user');
 $tmpl = new \OCP\Template('music', 'settings-user');
 
 $ampacheEnabled = $c['AmpacheUserStatusMapper']->isAmpacheUser($c['API']->getUserId());

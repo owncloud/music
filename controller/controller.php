@@ -42,7 +42,7 @@ class Controller extends BaseController {
 	 * Shortcut for rendering a JSON response with just the data
 	 * @param object $data the PHP object that will be converted to JSON
 	 * empty array by default
-	 * @return \OCA\AppFramework\Http\PlainJSONResponse containing the values
+	 * @return \OCA\Music\AppFramework\Http\PlainJSONResponse containing the values
 	 */
 	public function renderPlainJSON($data=array()){
 		$response = new JSONResponse();

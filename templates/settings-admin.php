@@ -25,7 +25,7 @@
  * TODO: Proper extractor
  *
  * Translation note: Keep in mind to update the fake-template.php with the string which
- * has to be translated, because just that file is scanned by the exctrator
+ * has to be translated, because just that file is scanned by the extractor
  */
 
 ?>
@@ -39,6 +39,6 @@
 			<?php } ?> />
 		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label><br />
 		<em><?php p($l->t('This weakens your ownCloud instance because it generates unsalted hashes
-		of the user passwords. (Just for users who has enabled this feature.)')); ?></em>
+		of the user passwords. (Just for users who have enabled this feature.)')); ?></em>
 	</div>
 </fieldset>

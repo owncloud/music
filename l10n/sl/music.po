@@ -1,11 +1,12 @@
 # 
 # Translators:
+# mateju <>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-11 09:47:27+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
+"PO-Revision-Date: 2013-11-15 21:11+0000\n"
+"Last-Translator: mateju <>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgstr "Glasba"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Nalaganje ..."
 
 #: ../templates/main.php
 msgid "Previous"
@@ -38,7 +39,7 @@ msgstr "Naslednja"
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Premešaj"
 
 #: ../templates/main.php
 msgid "Repeat"
@@ -50,23 +51,23 @@ msgstr "Izbriši"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "V mapi ni glasbenih datotek. Dodajte skladbe!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Pokaži {{ trackcount }} posnetek ..."
+msgstr[1] "Pokaži {{ trackcount }} posnetka ..."
+msgstr[2] "Pokaži {{ trackcount }} posnetke ..."
+msgstr[3] "Pokaži {{ trackcount }} posnetkov ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Pokaži manj ..."
 
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Brskalnik Chrome lahko predvaja le datoteke MP3 - več podrobnosti je na straneh <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>."

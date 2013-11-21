@@ -243,7 +243,7 @@ abstract class Mapper {
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
 
-		if($row === false){
+		if($row === false || $row === null){
 			throw new DoesNotExistException('No matching entry found');
 		}
 		$row2 = $result->fetchRow();

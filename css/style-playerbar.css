@@ -81,7 +81,7 @@
 #sm2-container.swf_loaded, #sm2-container.swf_unblocked,
 #playerbar #sm2-container embed, #playerbar #sm2-container object,
 #sm2-container.started.swf_loaded embed, #sm2-container.started.swf_unblocked embed,
-#sm2-container.started.swf_loaded object, #sm2-container.started.swf_unblocked object, {
+#sm2-container.started.swf_loaded object, #sm2-container.started.swf_unblocked object {
 	/* hide container if flash is loaded, unblocked or player isn't started yet */
 	width: 1px;
 	height: 1px;

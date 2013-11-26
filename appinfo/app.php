@@ -60,3 +60,6 @@ $api->connectHook(
 );
 
 $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
+
+// load fileactions
+$api->addScript('public/fileactions');

@@ -78,6 +78,11 @@ $this->create('music_track', '/api/track/{trackIdOrSlug}')->get()->action(
 		App::main('ApiController', 'track', $params, new DIContainer());
 	}
 );
+$this->create('music_file', '/api/file/{fileId}')->get()->action(
+	function($params){
+		App::main('ApiController', 'trackByFileId', $params, new DIContainer());
+	}
+);
 /*$this->create('music_track_shows', '/api/track/{id}/shows')->get()->action(
 	function($params){
 		App::main('ApiController', 'track-lyrics', $params, new DIContainer());

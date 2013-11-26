@@ -38,6 +38,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
+		$scope.playFile($routeParams.id);
 		if($scope.$parent.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
@@ -45,6 +46,20 @@ angular.module('Music').controller('PlayerController',
 			});
 		}
 	});
+
+	$rootScope.$on('$routeChangeSuccess', function() {
+		$scope.playFile($routeParams.id);
+	});
+
+	$scope.playFile = function (fileid) {
+		if (fileid) {
+			Restangular.one('file', fileid).get()
+				.then(function(result){
+					playlistService.setPlaylist([result]);
+					playlistService.publish('play');
+				});
+		}
+	};
 
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {

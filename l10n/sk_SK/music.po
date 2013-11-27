@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-11-13 16:38+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: mhh <marian.hvolka@stuba.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: sk_SK\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Hudba"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome je schopný prehrávať len MP3 súbory - pozri <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Zmazať"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Nahrávam..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Hudba"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Predošlá"
+msgid "Next"
+msgstr "Ďalšia"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Pauza"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Prehrať"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Pauza"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Ďalšia"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Zamiešať"
+msgid "Previous"
+msgstr "Predošlá"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Opakovať"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Zmazať"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -64,9 +67,6 @@ msgstr[2] "Zobraziť {{ trackcount }} skladieb ..."
 msgid "Show less ..."
 msgstr "Zobraziť menej ..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome je schopný prehrávať len MP3 súbory - pozri <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Zamiešať"

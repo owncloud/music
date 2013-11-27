@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
 "PO-Revision-Date: 2013-10-17 17:34+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/owncloud/language/my_MM/)\n"
@@ -12,16 +12,35 @@ msgstr ""
 "Language: my_MM\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Delete"
 msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr ""
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr ""
+
 #: ../templates/main.php
-msgid "Previous"
+msgid "Next"
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Pause"
 msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
@@ -29,27 +48,11 @@ msgid "Play"
 msgstr ""
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Next"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Shuffle"
+msgid "Previous"
 msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
 msgstr ""
 
 #: ../templates/part.main.php
@@ -61,9 +64,6 @@ msgstr[0] ""
 msgid "Show less ..."
 msgstr ""
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+#: ../templates/main.php
+msgid "Shuffle"
 msgstr ""

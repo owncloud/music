@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 23:10+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: zubr139 <zubr139@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/owncloud/language/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Музика"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Видалити"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Завантаження ..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Музика"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Попередній"
+msgid "Next"
+msgstr "Наступний"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Пауза"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Грати"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Пауза"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Наступний"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr ""
+msgid "Previous"
+msgstr "Попередній"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Повторювати"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Видалити"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -64,9 +67,6 @@ msgstr[2] ""
 msgid "Show less ..."
 msgstr ""
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+#: ../templates/main.php
+msgid "Shuffle"
 msgstr ""

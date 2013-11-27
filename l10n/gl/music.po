@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: mbouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/owncloud/language/gl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Música"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome só pode de reproducir ficheiros MP3 - vexa o <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Eliminar"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Cargando ..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Música"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Anterior"
+msgid "Next"
+msgstr "Seguinte"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Aquí non hai nada. Envíe a súa música!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Pausa"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Reproducir"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Pausa"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Seguinte"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Ao chou"
+msgid "Previous"
+msgstr "Anterior"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Repetir"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Eliminar"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Aquí non hai nada. Envíe a súa música!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -63,9 +66,6 @@ msgstr[1] "Amosar todas as {{ trackcount }} cancións ..."
 msgid "Show less ..."
 msgstr "Amosar menos ..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome só pode de reproducir ficheiros MP3 - vexa o <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Ao chou"

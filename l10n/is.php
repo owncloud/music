@@ -1,11 +1,11 @@
 <?php
 $TRANSLATIONS = array(
-"Music" => "Tónlist",
-"Previous" => "Fyrra",
-"Play" => "Spila",
-"Pause" => "Pása",
-"Next" => "Næst",
 "Delete" => "Eyða",
+"Music" => "Tónlist",
+"Next" => "Næst",
+"Pause" => "Pása",
+"Play" => "Spila",
+"Previous" => "Fyrra",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

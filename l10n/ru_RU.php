@@ -1,5 +1,6 @@
 <?php
 $TRANSLATIONS = array(
+"Delete" => "Удалить",
 "Music" => "Музыка",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","","")
 );

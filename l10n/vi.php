@@ -1,12 +1,12 @@
 <?php
 $TRANSLATIONS = array(
-"Music" => "Âm nhạc",
-"Previous" => "Lùi lại",
-"Play" => "Play",
-"Pause" => "Tạm dừng",
-"Next" => "Kế tiếp",
-"Repeat" => "Lặp lại",
 "Delete" => "Xóa",
+"Music" => "Âm nhạc",
+"Next" => "Kế tiếp",
+"Pause" => "Tạm dừng",
+"Play" => "Play",
+"Previous" => "Lùi lại",
+"Repeat" => "Lặp lại",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("")
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

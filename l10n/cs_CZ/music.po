@@ -1,57 +1,61 @@
 # 
 # Translators:
+# liska_, 2013
 # pstast <petr@stastny.eu>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-26 14:25+0000\n"
+"Last-Translator: liska_\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Hudba"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome umí přehrát pouze soubory MP3 - více informací na <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Smazat"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Načítám ..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Hudba"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Předchozí"
+msgid "Next"
+msgstr "Následující"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Zde nic není. Nahrajte vaši hudbu!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Pozastavit"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Přehrát"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Pozastavit"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Následující"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Promíchat"
+msgid "Previous"
+msgstr "Předchozí"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Opakovat"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Smazat"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Zde nic není. Nahrajte vaši hudbu!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -64,9 +68,6 @@ msgstr[2] "Zobrazit {{ trackcount }} písniček ..."
 msgid "Show less ..."
 msgstr "Zobrazit méně ..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Promíchat"

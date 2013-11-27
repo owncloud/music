@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: Sappe\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Musik"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome kan kun afspille MP3 filer se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki'en</a> for yderligere information."
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Slet"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Indlæser..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Musik"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Forrige"
+msgid "Next"
+msgstr "Næste"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Her er tomt. Upload din musik!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Pause"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Afspil"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Pause"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Næste"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Bland"
+msgid "Previous"
+msgstr "Forrige"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Gentag"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Slet"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Her er tomt. Upload din musik!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -63,9 +66,6 @@ msgstr[1] "Vis alle {{ trackcount }} sange ..."
 msgid "Show less ..."
 msgstr "Vis færre ..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome kan kun afspille MP3 filer se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki'en</a> for yderligere information."
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Bland"

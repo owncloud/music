@@ -1,12 +1,12 @@
 <?php
 $TRANSLATIONS = array(
-"Music" => "Musik",
-"Previous" => "Vorheriges",
-"Play" => "Abspielen",
-"Pause" => "Anhalten",
-"Next" => "Weiter",
-"Repeat" => "Wiederholen",
 "Delete" => "Löschen",
+"Music" => "Musik",
+"Next" => "Weiter",
+"Pause" => "Anhalten",
+"Play" => "Abspielen",
+"Previous" => "Vorheriges",
+"Repeat" => "Wiederholen",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

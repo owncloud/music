@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: volkangezer <volkangezer@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Müzik"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "Chrome, sadece MP3 dosyalarını oynatabilir - bkz. <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">viki</a>"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Sil"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Yükleniyor"
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Müzik"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "Önceki"
+msgid "Next"
+msgstr "Sonraki"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Burada hiçbir şey yok. Müziğinizi yükleyin!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Beklet"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "Oynat"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "Beklet"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Sonraki"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Karıştır"
+msgid "Previous"
+msgstr "Önceki"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Tekrar"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Sil"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Burada hiçbir şey yok. Müziğinizi yükleyin!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -63,9 +66,6 @@ msgstr[1] "Tüm {{ trackcount }} şarkıyı göster ..."
 msgid "Show less ..."
 msgstr "Daha az göster ..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome, sadece MP3 dosyalarını oynatabilir - bkz. <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">viki</a>"
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Karıştır"

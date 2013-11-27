@@ -1,67 +1,18 @@
 # 
 # Translators:
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2013
+# Marios Bekatoros <>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
-"Last-Translator: Efstathios Iosifidis <iefstathios@gmail.com>\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-19 10:00+0000\n"
+"Last-Translator: Marios Bekatoros <>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "Μουσική"
-
-#: ../templates/main.php ../templates/part.main.php
-msgid "Loading ..."
-msgstr "Φόρτωση ..."
-
-#: ../templates/main.php
-msgid "Previous"
-msgstr "Προηγούμενη"
-
-#: ../templates/main.php ../templates/part.main.php
-msgid "Play"
-msgstr "Αναπαραγωγή"
-
-#: ../templates/main.php
-msgid "Pause"
-msgstr "Παύση"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "Επόμενη"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "Ανακάτεμα"
-
-#: ../templates/main.php
-msgid "Repeat"
-msgstr "Επαναλαμβανόμενο"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Διαγραφή"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Δεν υπάρχει τίποτα εδώ. Ανεβάστε την μουσική σας!"
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Προβολή λιγότερων..."
 
 #: ../js/public/app.js
 msgid ""
@@ -69,3 +20,53 @@ msgid ""
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 msgstr "Το Chrome αναπαράγει μόνο αρχεία MP3 - δείτε στο <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Loading ..."
+msgstr "Φόρτωση ..."
+
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Μουσική"
+
+#: ../templates/main.php
+msgid "Next"
+msgstr "Επόμενη"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "Δεν υπάρχει τίποτα εδώ. Ανεβάστε την μουσική σας!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "Παύση"
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Play"
+msgstr "Αναπαραγωγή"
+
+#: ../templates/main.php
+msgid "Previous"
+msgstr "Προηγούμενη"
+
+#: ../templates/main.php
+msgid "Repeat"
+msgstr "Επαναλαμβανόμενο"
+
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] "Εμφάνιση του τραγουδιού"
+msgstr[1] "Εμφάνιση όλων των {{ trackcount }} τραγουδιών ..."
+
+#: ../templates/part.main.php
+msgid "Show less ..."
+msgstr "Προβολή λιγότερων..."
+
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "Ανακάτεμα"

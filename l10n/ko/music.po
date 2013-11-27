@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-16 02:57:35+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
+"PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: 책읽는달팽 <bjh13579@gmail.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,45 +13,48 @@ msgstr ""
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php
-msgid "Music"
-msgstr "음악"
+#: ../js/public/app.js
+msgid ""
+"Chrome is only able to playback MP3 files - see <a "
+"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
+"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr "구글 크롬만이 MP3 파일을 재생할수 잇습니다 - <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>를 보세요"
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr "삭제"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "불러오는 중..."
 
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "음악"
+
 #: ../templates/main.php
-msgid "Previous"
-msgstr "이전"
+msgid "Next"
+msgstr "다음"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr "아무것도 들어있지 않아요! 업로드 해주세요!"
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr "일시 정지"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
 msgstr "재생"
 
 #: ../templates/main.php
-msgid "Pause"
-msgstr "일시 정지"
-
-#: ../templates/main.php
-msgid "Next"
-msgstr "다음"
-
-#: ../templates/main.php
-msgid "Shuffle"
-msgstr "임의 재생"
+msgid "Previous"
+msgstr "이전"
 
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "반복"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "삭제"
-
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "아무것도 들어있지 않아요! 업로드 해주세요!"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -62,9 +65,6 @@ msgstr[0] "전체 {{ trackcount }} 곡 보이기"
 msgid "Show less ..."
 msgstr "그외 곡들 보여주기..."
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "구글 크롬만이 MP3 파일을 재생할수 잇습니다 - <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>를 보세요"
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr "임의 재생"

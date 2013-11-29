@@ -1,12 +1,13 @@
 # 
 # Translators:
 # zubr139 <zubr139@ukr.net>, 2013
+# volodya327 <volodya327@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-11-27 16:21:34+0500\n"
-"PO-Revision-Date: 2013-11-16 07:45+0000\n"
-"Last-Translator: zubr139 <zubr139@ukr.net>\n"
+"POT-Creation-Date: 2013-11-29 18:15:25+0500\n"
+"PO-Revision-Date: 2013-11-28 14:00+0000\n"
+"Last-Translator: volodya327 <volodya327@gmail.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/owncloud/language/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chrome може програвати лише MP3 файли - дивись <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -38,7 +39,7 @@ msgstr "Наступний"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Тут зараз нічого немає. Завантажте свою музику!"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -59,14 +60,14 @@ msgstr "Повторювати"
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Показати {{ trackcount }} пісню ..."
+msgstr[1] "Показати всі {{ trackcount }} пісні ..."
+msgstr[2] "Показати всі {{ trackcount }} пісні ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Показати меньше ..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Перемішати"

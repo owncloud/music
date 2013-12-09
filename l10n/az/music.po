@@ -4,13 +4,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: 2013-12-09 11:40:09+0500\n"
-"PO-Revision-Date: 2013-10-28 10:46+0000\n"
+"PO-Revision-Date: 2013-12-09 11:10+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
-"Language-Team: Kurdish (Iraq) (http://www.transifex.com/projects/p/owncloud/language/ku_IQ/)\n"
+"Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ku_IQ\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: az\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../js/public/app.js
 msgid ""
@@ -29,11 +29,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "مۆسیقا"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "دوواتر"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
@@ -41,15 +41,15 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "وه‌ستان"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr "لێدان"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "پێشووتر"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
@@ -59,7 +59,6 @@ msgstr ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."

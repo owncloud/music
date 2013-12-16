@@ -160,6 +160,10 @@ class Scanner {
 			$year = null;
 			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
 				$year = $fileInfo['comments']['year'][0];
+				if(!ctype_digit($year)) {
+					$year = null;
+				}
+
 			}
 			$mimetype = $metadata['mimetype'];
 			$fileId = $metadata['fileid'];

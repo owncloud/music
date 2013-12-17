@@ -1,18 +1,15 @@
 # 
 # Translators:
-# I Robot <owncloud-bot@tmit.eu>, 2013
-# Mario Siegmann <mario_siegmann@web.de>, 2013
-# kabum <uu.kabum@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: 2013-12-17 10:48:32+0500\n"
-"PO-Revision-Date: 2013-11-30 23:08+0000\n"
-"Last-Translator: traductor <transifex-3.7.mensaje@spamgourmet.com>\n"
-"Language-Team: German (Germany) (http://www.transifex.com/projects/p/owncloud/language/de_DE/)\n"
+"PO-Revision-Date: 2013-12-16 14:34+0000\n"
+"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/owncloud/language/es_CL/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
+"Language: es_CL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../js/public/app.js
@@ -20,54 +17,54 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome ist nur in der Lage, MP3-Dateien wiederzugeben - siehe <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">Wiki</a>"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "Löschen"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr "Lade …"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "Musik"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "Weiter"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr "Alles leer. Laden Sie Ihre Musik hoch!"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "Anhalten"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr "Abspielen"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "Zurück"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Wiederholen"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "{{ trackcount }} Lied anzeigen  ..."
-msgstr[1] "Alle {{ trackcount }} Lieder anzeigen  ..."
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr "Weniger anzeigen ..."
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "Zufallswiedergabe"
+msgstr ""

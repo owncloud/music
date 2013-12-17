@@ -1,11 +1,12 @@
 # 
 # Translators:
+# ebela <bela@dandre.hu>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-12-13 19:31:24+0500\n"
-"PO-Revision-Date: 2013-11-16 07:45+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2013-12-17 10:48:32+0500\n"
+"PO-Revision-Date: 2013-12-15 10:50+0000\n"
+"Last-Translator: ebela <bela@dandre.hu>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +18,7 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Csak a Chrome képes lejátszani MP3 fileokat - nézd meg a <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki-t</a>"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -25,7 +26,7 @@ msgstr "Törlés"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Betöltés ..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -37,7 +38,7 @@ msgstr "Következő"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Nincs itt semmi. Töltsd fel a zenédet!"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -58,13 +59,13 @@ msgstr "Ismétlés"
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mutasd mind a {{ trackcount }} zenét ..."
+msgstr[1] "Mutasd mind a {{ trackcount }} zenét ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Mutass kevesebbet..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Keverés"

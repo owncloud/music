@@ -217,4 +217,18 @@ class ApiController extends Controller {
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 		return $this->renderPlainJSON($track->toAPI($this->api));
 	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function trackByFileId() {
+		$fileId = $this->params('fileId');
+		$userId = $this->api->getUserId();
+		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+		return $this->renderPlainJSON($track->toAPI($this->api));
+	}
 }

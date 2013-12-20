@@ -21,8 +21,8 @@
 
 angular.module('Music').filter('playTime', function() {
 	return function(input) {
-		minutes = Math.floor(input/60);
-		seconds = Math.floor(input - (minutes * 60));
+		var minutes = Math.floor(input/60),
+			seconds = Math.floor(input - (minutes * 60));
 		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	};
 });

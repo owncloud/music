@@ -1,3 +1,38 @@
+v0.1.7-beta 2013-12-21
+
+ Merry Christmas release
+
+  * increase polling interval for whileplaying - fixes #131
+  * fix play icon bug in IE - SVGs are replaced by PNGs in IE - fixes #126
+  * FileAction for music files
+    * add api call to resolve track by fileid
+    * AngularJS route 'file/:id'
+    * PlayerController.playFile(id)
+    * load fileactions script on every page to register FileAction
+  * added input validation for year - fixes some crashes of the scanner
+  * fix OC5 issues with MDB2 and Oracle DB
+  * fix database restrictions for oracle (#120, #119)
+  * fix l10n-compile for non-latin languages - remove jslint warning
+  * fix [[ to {{ transition in translations
+  * removes second scrollbar
+  * fix angular scope issues and css issues
+
+ Internal
+  * fix CSS style - remove comma
+  * RestAngular 1.2.1
+  * fix some global variables
+  * fix l10n issues
+  * whitespace fix in SQL statement
+  * fix some leftovers of the OCA\AppFramework -> OCA\Music\AppFramework change
+  * $.placeholder() was renamed to $.imageplaceholder() in master
+  * Play indicator beside the track in the album view
+  * move MainController to top, so every children can use it's variables
+  * make alphabet navigation more dynamic
+  * add l10n for PHP
+
+ Known bugs:
+  * doesn't play mp3/ogg in IE8
+
 v0.1.6-alpha 2013-10-05
 
   * L10n support
@@ -16,7 +51,7 @@ v0.1.6-alpha 2013-10-05
   * scrollbar fix - was overlaped by player bar #102
 
  Known bugs:
-  * in IE 9 and 10 the play icons haven't the correct width/height
+  * in IE 9 and 10 the play icons haven't the correct width/height (fixed in v0.1.7-beta)
 
 v0.1.5-alpha 2013-09-24
 

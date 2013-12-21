@@ -473,6 +473,8 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 		useHTML5Audio: isChrome ? false : true,
 		preferFlash: isChrome ? true : false,
 		useFlashBlock: true,
+		flashPollingInterval: 200,
+		html5PollingInterval: 200,
 		onready: function() {
 			$rootScope.$emit('SoundManagerReady');
 		}

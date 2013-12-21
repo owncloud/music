@@ -81,7 +81,8 @@
 	background-repeat: no-repeat;
 }
 
-.album-area > .albumart, .album-area > img {
+.album-area > .albumart,
+.album-area > img {
 	float: left;
 	width: 190px;
 	height: 190px;
@@ -89,8 +90,6 @@
 
 .album-area > img.overlay {
 	margin-left: -190px;
-	width: 190px;
-	height: 190px;
 	padding: 46px;
 }
 

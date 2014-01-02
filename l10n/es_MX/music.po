@@ -3,9 +3,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2013-12-31 06:30:06+0500\n"
-"PO-Revision-Date: 2013-10-17 17:34+0000\n"
-"Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
+"POT-Creation-Date: 2014-01-02 06:30:55+0500\n"
+"PO-Revision-Date: 2014-01-02 01:23+0000\n"
+"Last-Translator: byoship\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/owncloud/language/es_MX/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,54 +17,54 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chrome únicamente puede reproducir archivos MP3 - ver <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Cargando ..."
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr ""
+msgstr "Música"
 
 #: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Aquí no hay nada. ¡Sube tu música!"
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "Pausa"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "Reproducir"
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mostrar todas las {{ trackcount}} canciones ..."
+msgstr[1] "Mostrar todas las {{ trackcount }} canciones ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Mostrar menos ..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Mezclar"

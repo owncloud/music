@@ -181,10 +181,13 @@
 			</index>
 
 			<index>
-				<name>music_tracks_file_id_index</name>
+				<name>music_tracks_file_user_id_index</name>
 				<unique>true</unique>
 				<field>
 					<name>file_id</name>
+				</field>
+				<field>
+					<name>user_id</name>
 				</field>
 			</index>
 		</declaration>

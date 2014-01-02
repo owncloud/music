@@ -36,6 +36,7 @@ use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
+use \OCA\Music\DB\AmpacheUserStatusMapper;
 use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\TrackMapper;
 use \OCA\Music\DB\ScanStatusMapper;
@@ -76,7 +77,7 @@ $this['AmpacheController'] = $this->share(function($c){
 });
 
 $this['SettingController'] = $this->share(function($c){
-	return new SettingController($c['API'], $c['Request']);
+	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserStatusMapper']);
 });
 
 /**
@@ -89,6 +90,10 @@ $this['AlbumMapper'] = $this->share(function($c){
 
 $this['AmpacheSessionMapper'] = $this->share(function($c){
 	return new AmpacheSessionMapper($c['API']);
+});
+
+$this['AmpacheUserStatusMapper'] = $this->share(function($c){
+	return new AmpacheUserStatusMapper($c['API']);
 });
 
 $this['ArtistMapper'] = $this->share(function($c){

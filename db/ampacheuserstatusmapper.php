@@ -26,14 +26,14 @@ namespace OCA\Music\Db;
 use \OCA\Music\AppFramework\Db\Mapper;
 use \OCA\Music\Core\API;
 
-class ScanStatusMapper extends Mapper {
+class AmpacheUserStatusMapper extends Mapper {
 
 	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
+		parent::__construct($api, 'music_ampache_user_status');
 	}
 
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
+	public function isAmpacheUser($userId){
+		$sql = 'SELECT * FROM `*PREFIX*music_ampache_user_status` `user` '.
 			'WHERE `user`.`user_id` = ? LIMIT 1';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
@@ -46,9 +46,16 @@ class ScanStatusMapper extends Mapper {
 		}
 	}
 
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
+	public function addAmpacheUser($userId){
+		$sql = 'INSERT INTO `*PREFIX*music_ampache_user_status` (`user_id`) '.
 			'VALUES (?)';
+		$params = array($userId);
+		$this->execute($sql, $params);
+	}
+
+	public function removeAmpacheUser($userId){
+		$sql = 'DELETE FROM `*PREFIX*music_ampache_user_status` '.
+			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$this->execute($sql, $params);
 	}

@@ -27,11 +27,18 @@ $(document).ready(function(){
 					ampacheEnabled: $('#music-enable-ampache').attr('checked') === "checked"
 				},
 				// dirty route creation, but there is no JS function that provide this URL format
-				route = OC.webroot + '/index.php/apps/music/api/settings';
+				route = OC.webroot + '/index.php/apps/music/api/admin/settings';
 			$.post(route, data, musicSettings.afterSave);
 		},
-		afterSave: function() {
-			// TODO: error handling
+		afterSave: function(result) {
+			if(result.success !== true) {
+				// revert changes on failure
+				if($('#music-enable-ampache').attr('checked') === 'checked') {
+					$('#music-enable-ampache').removeAttr('checked');
+				} else {
+					$('#music-enable-ampache').attr('checked', 'checked');
+				}
+			}
 		}
 	}
 	$('#music-enable-ampache').change(musicSettings.save);

@@ -21,35 +21,22 @@
  *
  */
 
-namespace OCA\Music\Db;
+/**
+ * TODO: Proper extractor
+ *
+ * Translation note: Keep in mind to update the fake-template.php with the string which
+ * has to be translated, because just that file is scanned by the exctrator
+ */
 
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
+?>
 
-class ScanStatusMapper extends Mapper {
-
-	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
-	}
-
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
-			'WHERE `user`.`user_id` = ? LIMIT 1';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
-
-		if($row === false || $row === null){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
-			'VALUES (?)';
-		$params = array($userId);
-		$this->execute($sql, $params);
-	}
-}
+<fieldset class="personalblock" id="music-admin">
+	<h2><?php p($l->t('Music')); ?></h2>
+	<div>
+		<input type="checkbox" id="music-enable-ampache"
+			<?php if($_['ampacheEnabled']){ ?>
+				checked="checked"
+			<?php } ?> />
+		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label>
+	</div>
+</fieldset>

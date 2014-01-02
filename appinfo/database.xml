@@ -214,6 +214,26 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*music_ampache_user_status</name>
+		<declaration>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<index>
+				<name>music_ampache_users_index</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
 		<name>*dbprefix*music_ampache_sessions</name>
 		<declaration>
 			<field>

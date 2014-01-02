@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ownCloud - Music app
  *
@@ -21,35 +19,27 @@
  *
  */
 
-namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
-
-class ScanStatusMapper extends Mapper {
-
-	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
-	}
-
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
-			'WHERE `user`.`user_id` = ? LIMIT 1';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
-
-		if($row === false || $row === null){
-			return false;
-		}else{
-			return true;
+$(document).ready(function(){
+	var musicSettings = {
+		save: function() {
+			var data = {
+					ampacheEnabled: $('#music-enable-ampache').attr('checked') === "checked"
+				},
+				// dirty route creation, but there is no JS function that provide this URL format
+				route = OC.webroot + '/index.php/apps/music/api/user/settings';
+			$.post(route, data, musicSettings.afterSave);
+		},
+		afterSave: function(result) {
+			if(result.success !== true) {
+				// revert changes on failure
+				if($('#music-enable-ampache').attr('checked') === 'checked') {
+					$('#music-enable-ampache').removeAttr('checked');
+				} else {
+					$('#music-enable-ampache').attr('checked', 'checked');
+				}
+			}
 		}
 	}
-
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
-			'VALUES (?)';
-		$params = array($userId);
-		$this->execute($sql, $params);
-	}
-}
+	$('#music-enable-ampache').change(musicSettings.save);
+});

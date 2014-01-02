@@ -45,4 +45,18 @@ class API extends BaseAPI {
 	public function registerJob($job, $argument = null) {
 		\OCP\Backgroundjob::registerJob($job, $argument);
 	}
+
+	/**
+	 * Tells ownCloud to include a template in the personal overview
+	 * @param string $mainPath the path to the main php file without the php
+	 * suffix, relative to your apps directory! not the template directory
+	 * @param string $appName the name of the app, defaults to the current one
+	 */
+	public function registerPersonal($mainPath, $appName=null) {
+		if($appName === null){
+			$appName = $this->appName;
+		}
+
+		\OCP\App::registerPersonal($appName, $mainPath);
+	}
 }

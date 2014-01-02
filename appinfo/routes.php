@@ -49,9 +49,15 @@ $this->create('music_log', '/api/log')->post()->action(
 /**
  * AJAX
  */
-$this->create('music_settings_post', '/api/settings')->post()->action(
+$this->create('music_admin_settings_post', '/api/admin/settings')->post()->action(
 	function($params){
 		App::main('SettingController', 'adminSetting', $params, new DIContainer());
+	}
+);
+$this->
+create('music_user_settings_post', '/api/user/settings')->post()->action(
+	function($params){
+		App::main('SettingController', 'userSetting', $params, new DIContainer());
 	}
 );
 

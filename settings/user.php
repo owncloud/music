@@ -21,35 +21,19 @@
  *
  */
 
-namespace OCA\Music\Db;
+// TODO move to AppFramework style
 
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
+namespace OCA\Music;
 
-class ScanStatusMapper extends Mapper {
+use \OCA\Music\DependencyInjection\DIContainer;
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
-	}
+$c = new DIContainer();
 
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
-			'WHERE `user`.`user_id` = ? LIMIT 1';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+$c['API']->addScript('public/settings-user');
 
-		if($row === false || $row === null){
-			return false;
-		}else{
-			return true;
-		}
-	}
+$tmpl = new \OCP\Template('music', 'settings-user');
 
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
-			'VALUES (?)';
-		$params = array($userId);
-		$this->execute($sql, $params);
-	}
-}
+$ampacheEnabled = $c['AmpacheUserStatusMapper']->isAmpacheUser($c['API']->getUserId());
+$tmpl->assign('ampacheEnabled', $ampacheEnabled);
+
+return $tmpl->fetchPage();

@@ -25,13 +25,17 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
 use \OCA\Music\AppFramework\Http\Request;
 
 
 class SettingController extends Controller {
 
-	public function __construct(API $api, Request $request){
+	private $ampacheUserStatusMapper;
+
+	public function __construct(API $api, Request $request, Mapper $ampacheUserStatusMapper){
 		parent::__construct($api, $request);
+		$this->ampacheUserStatusMapper = $ampacheUserStatusMapper;
 	}
 
 	/**
@@ -43,6 +47,27 @@ class SettingController extends Controller {
 		$ampacheEnabled = $this->params('ampacheEnabled');
 		if($ampacheEnabled !== null) {
 			$this->api->setAppValue('ampacheEnabled', filter_var($ampacheEnabled, FILTER_VALIDATE_BOOLEAN));
+			$success = true;
+		}
+		return $this->renderPlainJSON(array('success' => $success));
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
+	public function userSetting() {
+		$userId = $this->api->getUserId();
+		$success = false;
+		$ampacheEnabled = $this->params('ampacheEnabled');
+		if($ampacheEnabled !== null) {
+			if(filter_var($ampacheEnabled, FILTER_VALIDATE_BOOLEAN)) {
+				$this->ampacheUserStatusMapper->addAmpacheUser($userId);
+			} else {
+				$this->ampacheUserStatusMapper->removeAmpacheUser($userId);
+			}
 			$success = true;
 		}
 		return $this->renderPlainJSON(array('success' => $success));

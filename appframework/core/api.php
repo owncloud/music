@@ -34,7 +34,7 @@ namespace OCA\Music\AppFramework\Core;
  */
 class API {
 
-	private $appName;
+	protected $appName;
 
 	/**
 	 * constructor

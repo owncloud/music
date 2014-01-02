@@ -163,7 +163,7 @@ class AlbumMapper extends Mapper {
 					SELECT `fileid`
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
-					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE "image%" LIMIT 1
+					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\' LIMIT 1
 				) WHERE `id` = ?';
 		$params = array($parentFolderId, $albumId);
 		$this->execute($sql, $params);

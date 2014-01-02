@@ -32,6 +32,7 @@ use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
+use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
@@ -72,6 +73,10 @@ $this['LogController'] = $this->share(function($c){
 
 $this['AmpacheController'] = $this->share(function($c){
 	return new AmpacheController($c['API'], $c['Request']);
+});
+
+$this['SettingController'] = $this->share(function($c){
+	return new SettingController($c['API'], $c['Request']);
 });
 
 /**

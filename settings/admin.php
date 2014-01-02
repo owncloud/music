@@ -21,41 +21,14 @@
  *
  */
 
+// TODO move to AppFramework style
 
 namespace OCA\Music;
 
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+\OCP\Util::addScript('music', 'public/settings-admin');
 
+$tmpl = new \OCP\Template('music', 'settings-admin');
+$ampacheEnabled = \OCP\Config::getAppValue('music', 'ampacheEnabled', '') !== '';
+$tmpl->assign('ampacheEnabled', $ampacheEnabled);
 
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-/**
- * AJAX
- */
-$this->create('music_settings_post', '/api/settings')->post()->action(
-	function($params){
-		App::main('SettingController', 'adminSetting', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+return $tmpl->fetchPage();

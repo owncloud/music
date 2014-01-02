@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ownCloud - Music app
  *
@@ -22,40 +20,19 @@
  */
 
 
-namespace OCA\Music;
-
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
-
-
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+$(document).ready(function(){
+	var musicSettings = {
+		save: function() {
+			var data = {
+					ampacheEnabled: $('#music-enable-ampache').attr('checked') === "checked"
+				},
+				// dirty route creation, but there is no JS function that provide this URL format
+				route = OC.webroot + '/index.php/apps/music/api/settings';
+			$.post(route, data, musicSettings.afterSave);
+		},
+		afterSave: function() {
+			// TODO: error handling
+		}
 	}
-);
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-/**
- * AJAX
- */
-$this->create('music_settings_post', '/api/settings')->post()->action(
-	function($params){
-		App::main('SettingController', 'adminSetting', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+	$('#music-enable-ampache').change(musicSettings.save);
+});

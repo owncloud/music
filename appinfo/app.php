@@ -63,3 +63,6 @@ $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 
 // load fileactions
 $api->addScript('public/fileactions');
+
+// register admin settings
+$api->registerAdmin('settings/admin');

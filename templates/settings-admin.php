@@ -21,41 +21,24 @@
  *
  */
 
-
-namespace OCA\Music;
-
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
-
-
 /**
- * Webinterface
+ * TODO: Proper extractor
+ *
+ * Translation note: Keep in mind to update the fake-template.php with the string which
+ * has to be translated, because just that file is scanned by the exctrator
  */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
 
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
+?>
 
-/**
- * AJAX
- */
-$this->create('music_settings_post', '/api/settings')->post()->action(
-	function($params){
-		App::main('SettingController', 'adminSetting', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-// include Ampache API
-require_once __DIR__ . '/routes_ampache.php';
+<fieldset class="personalblock" id="music-admin">
+	<h2><?php p($l->t('Music')); ?></h2>
+	<div>
+		<input type="checkbox" id="music-enable-ampache"
+			<?php if($_['ampacheEnabled']){ ?>
+				checked="checked"
+			<?php } ?> />
+		<label for="music-enable-ampache"><?php p($l->t('Enable Ampache support')) ?></label><br />
+		<em><?php p($l->t('This weakens your ownCloud instance because it generates unsalted hashes
+		of the user passwords. (Just for users who has enabled this feature.)')); ?></em>
+	</div>
+</fieldset>

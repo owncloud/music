@@ -86,15 +86,19 @@ class AmpacheController extends Controller {
 
 		// prepare time check
 		$currentTime = time();
-		$providedTime = \DateTime::createFromFormat(\DateTime::ISO8601, $this->params('timestamp'));
+		$providedTime = intval($this->params('timestamp'));
 
-		if($providedTime === false) {
+		if($hash === null) {
+			throw new AmpacheException('Invalid Login - not an ampache user', 401);
+		}
+		if($providedTime === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
-		if($providedTime->getTimestamp() < ($currentTime - $sessionExpiryTime)) {
+		if($providedTime < ($currentTime - $sessionExpiryTime)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
-		if($providedTime->getTimestamp() > $currentTime) {
+		// TODO - while testing with tomahawk it sometimes is $currenttime+1 ... needs further investigation
+		if($providedTime > $currentTime + 100) {
 			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
 		}
 		if($expectedHash !== $this->params('auth')) {

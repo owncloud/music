@@ -73,3 +73,9 @@ $this->create('music_ampache', '/ampache')->get()->action(
 		App::main('AmpacheController', 'ampache', $params, new DIContainer());
 	}
 );
+
+$this->create('music_ampache_alternative', '/ampache/server/xml.server.php')->get()->action(
+	function($params){
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
+	}
+);

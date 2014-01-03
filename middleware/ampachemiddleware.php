@@ -42,15 +42,19 @@ class AmpacheMiddleware extends Middleware {
 	private $request;
 	private $mapper;
 	private $isAmpacheCall;
+	private $ampacheUser;
 
 	/**
 	 * @param API $api an instance of the api
 	 * @param Request $request an instance of the request
 	 */
-	public function __construct(API $api, Request $request, Mapper $mapper){
+	public function __construct(API $api, Request $request, Mapper $mapper, $ampacheUser){
 		$this->api = $api;
 		$this->request = $request;
 		$this->mapper = $mapper;
+
+		// used to share user info with controller
+		$this->ampacheUser = $ampacheUser;
 	}
 
 
@@ -73,9 +77,16 @@ class AmpacheMiddleware extends Middleware {
 		if($this->isAmpacheCall && $this->request['action'] !== 'handshake'){
 			$token = $this->request['auth'];
 			if($token !== null && $token !== '') {
-				$userId = $this->mapper->find($token);
-				if($userId !== false) {
-					// TODO login
+				$user = $this->mapper->find($token);
+				if($user !== false && array_key_exists('user_id', $user)) {
+					// setup the filesystem for the user - actual login isn't really needed
+					\OC_Util::setupFS($user['user_id']);
+					$this->ampacheUser->setUserId($user['user_id']);
+					return;
+				}
+			} else {
+				// for ping action without token the version information is provided
+				if($this->request['action'] === 'ping') {
 					return;
 				}
 			}
@@ -83,10 +94,9 @@ class AmpacheMiddleware extends Middleware {
 		}
 	}
 
-
 	/**
 	 * If an AmpacheException is being caught, the appropiate ampache
-	 * exepction response is rendered
+	 * exception response is rendered
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method that will be called on
 	 *                           the controller
@@ -95,7 +105,7 @@ class AmpacheMiddleware extends Middleware {
 	 * @return Response a Response object or null in case that the exception could not be handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception){
-		if($exception instanceof AmpacheException and $this->isAmpacheCall){
+		if($exception instanceof AmpacheException && $this->isAmpacheCall){
 			$response = new TemplateResponse($this->api, 'ampache/error');
 			$response->renderAs('blank');
 			$response->addHeader('Content-Type', 'text/xml; charset=UTF-8');

@@ -46,6 +46,14 @@ class AmpacheSessionMapper extends Mapper {
 		return $result->fetchRow();
 	}
 
+	public function extend($token, $expiry){
+		$sql = 'UPDATE `*PREFIX*music_ampache_sessions` `session` '.
+			'SET `session`.`expiry` = ? '.
+			'WHERE `session`.`token` = ?';
+		$params = array($expiry, $token);
+		$this->execute($sql, $params);
+	}
+
 	public function cleanUp(){
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions` '.
 			'WHERE `expiry` < ?';

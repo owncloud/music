@@ -88,14 +88,18 @@ class TrackMapper extends Mapper {
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
 		$params = array($userId, $artistId);
-		return $this->findOneQuery($sql, $params);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
 	}
 
 	public function countByAlbum($albumId, $userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
 		$params = array($userId, $albumId);
-		return $this->findOneQuery($sql, $params);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
 	}
 
 	public function count($userId){

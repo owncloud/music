@@ -42,6 +42,7 @@ use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\TrackMapper;
 use \OCA\Music\DB\ScanStatusMapper;
 use \OCA\Music\Middleware\AmpacheMiddleware;
+use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
 
@@ -75,7 +76,7 @@ $this['LogController'] = $this->share(function($c){
 
 $this['AmpacheController'] = $this->share(function($c){
 	return new AmpacheController($c['API'], $c['Request'], $c['AmpacheUserMapper'], $c['AmpacheSessionMapper'],
-		$c['AlbumMapper'], $c['ArtistMapper'], $c['TrackMapper']);
+		$c['AlbumMapper'], $c['ArtistMapper'], $c['TrackMapper'], $c['AmpacheUser']);
 });
 
 $this['SettingController'] = $this->share(function($c){
@@ -130,6 +131,10 @@ $this['AlbumBusinessLayer'] = $this->share(function($c){
  * Utilities
  */
 
+$this['AmpacheUser'] = $this->share(function($c){
+	return new AmpacheUser();
+});
+
 $this['Scanner'] = $this->share(function($c){
 	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
 		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
@@ -159,7 +164,7 @@ $this['ExtractorGetID3'] = $this->share(function($c){
  */
 
 $this['AmpacheMiddleware'] = $this->share(function($c){
-	return new AmpacheMiddleware($c['API'], $c['Request'], $c['AmpacheSessionMapper']);
+	return new AmpacheMiddleware($c['API'], $c['Request'], $c['AmpacheSessionMapper'], $c['AmpacheUser']);
 });
 
 $this['MiddlewareDispatcher'] = $this->share(function($c){

@@ -110,17 +110,17 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 		$artistId = 1;
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
-		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('count' => 1)));
+		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('COUNT(*)' => 1)));
 		$result = $this->mapper->countByArtist($artistId, $this->userId);
-		$this->assertEquals(array('count' => 1), $result);
+		$this->assertEquals(1, $result);
 	}
 
 	public function testCountByAlbum(){
 		$albumId = 1;
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
-		$this->setMapperResult($sql, array($this->userId, $albumId), array(array('count' => 1)));
+		$this->setMapperResult($sql, array($this->userId, $albumId), array(array('COUNT(*)' => 1)));
 		$result = $this->mapper->countByAlbum($albumId, $this->userId);
-		$this->assertEquals(array('count' => 1), $result);
+		$this->assertEquals(1, $result);
 	}
 }

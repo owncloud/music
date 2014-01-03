@@ -4,7 +4,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -21,37 +21,21 @@
  *
  */
 
+namespace OCA\Music\Utility;
 
-namespace OCA\Music\Db;
+/**
+ * This class is used to share data about the user between the AmpacheMiddleware and
+ * the AmpacheController
+ */
+class AmpacheUser {
 
-use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\Core\API;
+	private $userId;
 
-
-class Artist extends Entity {
-
-	public $name;
-	public $image; // URL
-	public $userId;
-
-	// the following attributes aren't filled automatically
-	public $albumCount;
-	public $trackCount;
-
-	public function getUri(API $api) {
-		return $api->linkToRoute(
-			'music_artist',
-			array('artistIdOrSlug' => $this->id)
-		);
+	public function getUserId() {
+		return $this->$userId;
 	}
 
-	public function toAPI(API $api) {
-		return array(
-			'id' => $this->getId(),
-			'name' => $this->getName(),
-			'image' => $this->getImage(),
-			'slug' => $this->getId() . '-' . $this->slugify('name'),
-			'uri' => $this->getUri($api)
-		);
+	public function setUserId($id) {
+		$this->userId = $id;
 	}
 }

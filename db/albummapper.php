@@ -177,4 +177,16 @@ class AlbumMapper extends Mapper {
 		$row = $result->fetchRow();
 		return $row['COUNT(*)'];
 	}
+
+	public function countByArtist($artistId, $userId){
+		$sql = 'SELECT COUNT(*) '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'JOIN `*PREFIX*music_album_artists` `artists` '.
+			'ON `album`.`id` = `artists`.`album_id` '.
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+		$params = array($userId, $artistId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
 }

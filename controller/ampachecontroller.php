@@ -42,10 +42,13 @@ class AmpacheController extends Controller {
 	private $albumMapper;
 	private $artistMapper;
 	private $trackMapper;
+	private $ampacheUser;
+
+	private $sessionExpiryTime = 6000;
 
 	public function __construct(API $api, Request $request, AmpacheUserMapper $ampacheUserMapper,
 		AmpacheSessionMapper $ampacheSessionMapper, AlbumMapper $albumMapper, ArtistMapper $artistMapper,
-		TrackMapper $trackMapper){
+		TrackMapper $trackMapper, $ampacheUser){
 		parent::__construct($api, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
@@ -53,6 +56,9 @@ class AmpacheController extends Controller {
 		$this->albumMapper = $albumMapper;
 		$this->artistMapper = $artistMapper;
 		$this->trackMapper = $trackMapper;
+
+		// used to share user info with middleware
+		$this->ampacheUser = $ampacheUser;
 	}
 
 
@@ -71,13 +77,15 @@ class AmpacheController extends Controller {
 		switch($this->params('action')) {
 			case 'handshake':
 				return $this->handshake();
+			case 'ping':
+				return $this->ping();
+			case 'artists':
+				return $this->artists();
 		}
 		throw new AmpacheException('TODO', 999);
 	}
 
-	public function handshake() {
-		$sessionExpiryTime = 6000;
-
+	protected function handshake() {
 		$userId = $this->params('user');
 
 		// prepare hash check
@@ -94,7 +102,7 @@ class AmpacheController extends Controller {
 		if($providedTime === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
-		if($providedTime < ($currentTime - $sessionExpiryTime)) {
+		if($providedTime < ($currentTime - $this->sessionExpiryTime)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
 		// TODO - while testing with tomahawk it sometimes is $currenttime+1 ... needs further investigation
@@ -107,15 +115,18 @@ class AmpacheController extends Controller {
 
 		// this can cause collision, but it's just a temporary token
 		$token = md5(uniqid(rand(), true));
-		$expiryDate = $currentTime + $sessionExpiryTime;
+		$expiryDate = $currentTime + $this->sessionExpiryTime;
 
+		// create new session
 		$session = new AmpacheSession();
 		$session->setUserId($userId);
 		$session->setToken($token);
 		$session->setExpiry($expiryDate);
 
+		// save session
 		$this->ampacheSessionMapper->insert($session);
 
+		// return counts
 		$artistCount = $this->artistMapper->count($userId);
 		$albumCount = $this->albumMapper->count($userId);
 		$trackCount = $this->trackMapper->count($userId);
@@ -136,5 +147,40 @@ class AmpacheController extends Controller {
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
+	}
+
+	protected function ping() {
+		$token = $this->params('auth');
+
+		if($token !== null && $token !== '') {
+			$this->ampacheSessionMapper->extend($token, time() + $this->sessionExpiryTime);
+		}
+
+		return $this->render(
+			'ampache/ping',
+			array(),
+			'blank',
+			array('Content-Type' => 'text/xml')
+		);
+	}
+
+	protected function artists() {
+		$userId = $this->ampacheUser->getUserId();
+
+		$artists = $this->artistMapper->findAll($userId);
+
+		// set album and track count for artists
+		foreach($artists as &$artist) {
+			$artist->setAlbumCount($this->albumMapper->countByArtist($artist->getId(), $userId));
+			$artist->setTrackCount($this->trackMapper->countByArtist($artist->getId(), $userId));
+		}
+
+		return $this->render(
+			'ampache/artists',
+			array('artists' => $artists),
+			'blank',
+			array('Content-Type' => 'text/xml')
+		);
+
 	}
 }

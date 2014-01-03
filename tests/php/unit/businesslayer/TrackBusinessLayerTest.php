@@ -184,13 +184,13 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 			->method('countByArtist')
 			->with($this->equalTo(2),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '0')));
+			->will($this->returnValue('0'));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '1')));
+			->will($this->returnValue('1'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
 		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array(2)), $result);
@@ -217,13 +217,13 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 			->method('countByArtist')
 			->with($this->equalTo(2),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '1')));
+			->will($this->returnValue('1'));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '0')));
+			->will($this->returnValue('0'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
 		$this->assertEquals(array('albumIds'=>array(3), 'artistIds' => array()), $result);

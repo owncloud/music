@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-04 06:30:21+0500\n"
-"PO-Revision-Date: 2013-10-17 17:34+0000\n"
+"POT-Creation-Date: 2014-01-05 06:30:21+0500\n"
+"PO-Revision-Date: 2014-01-04 15:20+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/owncloud/language/sk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "Odstrániť"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -53,7 +53,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Opakovať"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."

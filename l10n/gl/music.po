@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-05 06:30:21+0500\n"
+"POT-Creation-Date: 2014-01-06 06:30:20+0500\n"
 "PO-Revision-Date: 2013-11-16 07:45+0000\n"
 "Last-Translator: mbouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/owncloud/language/gl/)\n"

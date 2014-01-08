@@ -2,12 +2,13 @@
 # Translators:
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2013
 # Marios Bekatoros <>, 2013
+# vkehayas <vkehayas@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-07 06:30:21+0500\n"
-"PO-Revision-Date: 2013-12-30 16:00+0000\n"
-"Last-Translator: Marios Bekatoros <>\n"
+"POT-Creation-Date: 2014-01-08 06:30:59+0500\n"
+"PO-Revision-Date: 2014-01-07 15:21+0000\n"
+"Last-Translator: vkehayas <vkehayas@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,11 +36,11 @@ msgstr "Μουσική"
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "Επόμενη"
+msgstr "Επόμενο"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr "Δεν υπάρχει τίποτα εδώ. Ανεβάστε την μουσική σας!"
+msgstr "Δεν υπάρχει τίποτα εδώ. Μεταφορτώστε την μουσική σας!"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -51,11 +52,11 @@ msgstr "Αναπαραγωγή"
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "Προηγούμενη"
+msgstr "Προηγούμενο"
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Επαναλαμβανόμενο"
+msgstr "Επανάληψη"
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -69,4 +70,4 @@ msgstr "Προβολή λιγότερων..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "Ανακάτεμα"
+msgstr "Τυχαία αναπαραγωγή"

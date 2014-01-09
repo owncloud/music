@@ -63,8 +63,13 @@ class ArtistMapper extends Mapper {
 	}
 
 	public function findByName($artistName, $userId){
-		$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
-		$params = array($userId, $artistName);
+		if ($artistName === null) {
+			$sql = $this->makeSelectQuery('AND `artist`.`name` IS NULL');
+			$params = array($userId);
+		} else {
+			$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+			$params = array($userId, $artistName);
+		}
 		return $this->findEntity($sql, $params);
 	}
 

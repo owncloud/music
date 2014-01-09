@@ -49,15 +49,20 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 		$album2->setYear(2012);
 		$album2->setCoverFileId(4);
 		$album2->resetUpdatedFields();
+		$albumNull = new Album();
+		$albumNull->setName(null);
+		$albumNull->resetUpdatedFields();
 
 		$this->albums = array(
 			$album1,
-			$album2
+			$album2,
+			$albumNull
 		);
 
 		$this->rows = array(
 			array('id' => $this->albums[0]->getId(), 'name' => 'Test name', 'year' => 2013, 'cover_file_id' => 3),
 			array('id' => $this->albums[1]->getId(), 'name' => 'Test name2', 'year' => 2012, 'cover_file_id' => 4),
+			array('id' => $this->albums[2]->getId(), 'name' => null),
 		);
 
 	}

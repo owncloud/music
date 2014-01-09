@@ -111,9 +111,9 @@ class Scanner {
 
 				}
 			}
-			if($artist === null || $artist === ''){
-				// fallback to "ownCloud unknown artist"
-				$artist = 'ownCloud unknown artist';
+			if($artist === ''){
+				// assume artist is not set
+				$artist = null;
 			}
 
 			$alternativeTrackNumber = null;
@@ -140,9 +140,9 @@ class Scanner {
 			if($hasComments && array_key_exists('album', $fileInfo['comments'])){
 				$album = $fileInfo['comments']['album'][0];
 			}
-			if($album === null || $album === ''){
-				// fallback to "ownCloud unknown album"
-				$album = 'ownCloud unknown album';
+			if($album === ''){
+				// assume album is not set
+				$album = null;
 			}
 
 			// track number

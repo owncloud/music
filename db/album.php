@@ -69,8 +69,12 @@ class Album extends Entity {
 			$coverUrl = $api->linkToRoute('download',
 				array('file' => $api->getView()->getPath($this->getCoverFileId())));
 		}
+		$name = $this->getName();
+		if ($name === null) {
+			$name = $api->getTrans()->t('Unknown album')->__toString();
+		}
 		return array(
-			'name' => $this->getName(),
+			'name' => $name,
 			'year' => $this->getYear(),
 			'cover' => $coverUrl,
 			'uri' => $this->getUri($api),

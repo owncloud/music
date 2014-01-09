@@ -25,7 +25,7 @@
 			<field>
 				<name>name</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>256</length>
 			</field>
 			<field>
@@ -57,7 +57,7 @@
 			<field>
 				<name>name</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>256</length>
 			</field>
 			<field>

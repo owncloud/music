@@ -112,8 +112,8 @@ class Scanner {
 				}
 			}
 			if($artist === null || $artist === ''){
-				// fallback to "ownCloud unknown artist"
-				$artist = 'ownCloud unknown artist';
+				// fallback to localized version of "unknown artist"
+				$artist = $this->api->getTrans()->t('Unknown artist');
 			}
 
 			$alternativeTrackNumber = null;
@@ -141,8 +141,8 @@ class Scanner {
 				$album = $fileInfo['comments']['album'][0];
 			}
 			if($album === null || $album === ''){
-				// fallback to "ownCloud unknown album"
-				$album = 'ownCloud unknown album';
+				// fallback to localized version of "unknown album"
+				$album = $this->api->getTrans()->t('Unknown album');
 			}
 
 			// track number

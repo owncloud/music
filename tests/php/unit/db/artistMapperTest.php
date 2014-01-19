@@ -47,15 +47,20 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 		$artist2->setName('Test name2');
 		$artist2->setImage('http://example.org/1');
 		$artist2->resetUpdatedFields();
+		$artistNull = new Artist();
+		$artistNull->setName(null);
+		$artistNull->resetUpdatedFields();
 
 		$this->artists = array(
 			$artist1,
-			$artist2
+			$artist2,
+			$artistNull
 		);
 
 		$this->rows = array(
 			array('id' => $this->artists[0]->getId(), 'name' => 'Test name', 'image' => 'http://example.org'),
 			array('id' => $this->artists[1]->getId(), 'name' => 'Test name2', 'image' => 'http://example.org/1'),
+			array('id' => $this->artists[2]->getId(), 'name' => null),
 		);
 
 	}

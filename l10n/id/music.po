@@ -3,9 +3,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-19 06:30:07+0500\n"
-"PO-Revision-Date: 2013-12-31 03:50+0000\n"
-"Last-Translator: arifpedia <arifpedia@gmail.com>\n"
+"POT-Creation-Date: 2014-01-20 06:30:10+0500\n"
+"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/owncloud/language/id/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -67,3 +67,11 @@ msgstr "Menampilkan ringkas ..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Acak"
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown artist"
+msgstr ""

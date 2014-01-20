@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-19 06:30:07+0500\n"
-"PO-Revision-Date: 2013-11-16 07:45+0000\n"
-"Last-Translator: pellaeon <nfsmwlin@gmail.com>\n"
+"POT-Creation-Date: 2014-01-20 06:30:10+0500\n"
+"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/owncloud/language/zh_TW/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -68,3 +68,11 @@ msgstr "顯示更少"
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "隨機播放"
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown artist"
+msgstr ""

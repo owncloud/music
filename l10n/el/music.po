@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-19 06:30:07+0500\n"
-"PO-Revision-Date: 2014-01-07 15:21+0000\n"
-"Last-Translator: vkehayas <vkehayas@gmail.com>\n"
+"POT-Creation-Date: 2014-01-20 06:30:10+0500\n"
+"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -71,3 +71,11 @@ msgstr "Προβολή λιγότερων..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Τυχαία αναπαραγωγή"
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown artist"
+msgstr ""

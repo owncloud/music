@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Kertaa",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näytä {{ trackcount }} kappale...","Näytä kaikki {{ trackcount }} kappaletta..."),
 "Show less ..." => "Näytä vähemmän...",
-"Shuffle" => "Sekoita"
+"Shuffle" => "Sekoita",
+"Unknown album" => "Tuntematon levy",
+"Unknown artist" => "Tuntematon esittäjä"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

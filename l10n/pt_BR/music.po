@@ -1,12 +1,12 @@
 # 
 # Translators:
-# Flávio Veras <flaviove@gmail.com>, 2013
+# Flávio Veras <flaviove@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-20 06:30:10+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"POT-Creation-Date: 2014-01-21 06:30:08+0500\n"
+"PO-Revision-Date: 2014-01-20 12:20+0000\n"
+"Last-Translator: Flávio Veras <flaviove@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/owncloud/language/pt_BR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -72,8 +72,8 @@ msgstr "Embaralhar"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Album desconhecido"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Artista desconhecido"

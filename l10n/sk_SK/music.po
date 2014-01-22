@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-21 06:30:08+0500\n"
+"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
 "PO-Revision-Date: 2014-01-20 06:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../js/public/app.js
+msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -21,42 +22,52 @@ msgid ""
 msgstr "Chrome je schopný prehrávať len MP3 súbory - pozri <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Delete"
 msgstr "Zmazať"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Loading ..."
 msgstr "Nahrávam..."
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Music"
 msgstr "Hudba"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Next"
 msgstr "Ďalšia"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Pause"
 msgstr "Pauza"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Play"
 msgstr "Prehrať"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Previous"
 msgstr "Predošlá"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Repeat"
 msgstr "Opakovať"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] "Zobraziť {{ trackcount }} skladieb ..."
@@ -64,17 +75,21 @@ msgstr[1] "Zobraziť {{ trackcount }} skladieb ..."
 msgstr[2] "Zobraziť všetky {{ trackcount }} skladieb ..."
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show less ..."
 msgstr "Zobraziť menej ..."
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Shuffle"
 msgstr "Zamiešať"
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown album"
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown artist"
 msgstr ""

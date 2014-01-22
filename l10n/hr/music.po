@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-21 06:30:08+0500\n"
+"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
 "PO-Revision-Date: 2014-01-20 06:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/owncloud/language/hr/)\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #: ../js/public/app.js
+msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -20,42 +21,52 @@ msgid ""
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Delete"
 msgstr "Obriši"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Loading ..."
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Music"
 msgstr "Muzika"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Next"
 msgstr "Sljedeća"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Pause"
 msgstr "Pauza"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Play"
 msgstr "Reprodukcija"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Previous"
 msgstr "Prethodna"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Repeat"
 msgstr "Ponavljanje"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] ""
@@ -63,17 +74,21 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show less ..."
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Shuffle"
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown album"
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown artist"
 msgstr ""

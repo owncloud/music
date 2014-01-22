@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-21 06:30:08+0500\n"
+"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
 "PO-Revision-Date: 2014-01-20 06:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Tamil (Sri-Lanka) (http://www.transifex.com/projects/p/owncloud/language/ta_LK/)\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../js/public/app.js
+msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -20,59 +21,73 @@ msgid ""
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Delete"
 msgstr "நீக்குக"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Loading ..."
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Music"
 msgstr "இசை"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Next"
 msgstr "அடுத்த"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Pause"
 msgstr "இடைநிறுத்துக"
 
 #: ../templates/main.php ../templates/part.main.php
+msgctxt ""
 msgid "Play"
 msgstr "Play"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Previous"
 msgstr "முன்தைய"
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Repeat"
 msgstr "மீண்டும்"
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../templates/part.main.php
+msgctxt ""
 msgid "Show less ..."
 msgstr ""
 
 #: ../templates/main.php
+msgctxt ""
 msgid "Shuffle"
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown album"
 msgstr ""
 
 #: ../templates/fake-template.php
+msgctxt ""
 msgid "Unknown artist"
 msgstr ""

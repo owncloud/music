@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Gentag",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Vis alle {{ trackcount }} sange ...","Vis alle {{ trackcount }} sange ..."),
 "Show less ..." => "Vis færre ...",
-"Shuffle" => "Bland"
+"Shuffle" => "Bland",
+"Unknown album" => "Ukendt album",
+"Unknown artist" => "Ukendt artist"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

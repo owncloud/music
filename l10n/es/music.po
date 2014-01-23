@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
+"POT-Creation-Date: 2014-01-23 06:30:06+0500\n"
 "PO-Revision-Date: 2014-01-20 15:20+0000\n"
 "Last-Translator: Art O. Pal <artopal@fastmail.fm>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../js/public/app.js
-msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -25,73 +24,59 @@ msgid ""
 msgstr "Chrome únicamente puede reproducir archivos MP3 - ver <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Delete"
 msgstr "Eliminar"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Loading ..."
 msgstr "Cargando..."
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Music"
 msgstr "Música"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Next"
 msgstr "Siguiente"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr "Aquí no hay nada. ¡Sube tu música!"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Pause"
 msgstr "Pausa"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Play"
 msgstr "Reproducir"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Previous"
 msgstr "Anterior"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Repeat"
 msgstr "Repetir"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] "Mostrar todas las {{ trackcount}} canciones..."
 msgstr[1] "Mostrar todas las {{ trackcount }} canciones..."
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show less ..."
 msgstr "Mostrar menos..."
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Shuffle"
 msgstr "Mezclar"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown album"
 msgstr "Álbum desconocido"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown artist"
 msgstr "Artista desconocido"

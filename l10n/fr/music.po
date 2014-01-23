@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
+"POT-Creation-Date: 2014-01-23 06:30:06+0500\n"
 "PO-Revision-Date: 2014-01-20 06:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
@@ -18,7 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../js/public/app.js
-msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -26,73 +25,59 @@ msgid ""
 msgstr "Chrome  n'est capable de jouer que les fichiers MP3 uniquement - voir le <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Delete"
 msgstr "Supprimer"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Loading ..."
 msgstr "Chargement…"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Music"
 msgstr "Musique"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Next"
 msgstr "Suivant"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr "Il n'y a rien ici ! Envoyez donc votre musique :)"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Pause"
 msgstr "Pause"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Play"
 msgstr "Lire"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Previous"
 msgstr "Précédent"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Repeat"
 msgstr "Répéter"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] "Afficher le morceau {{ trackcount }}..."
 msgstr[1] "Afficher les {{ trackcount }} morceaux..."
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show less ..."
 msgstr "Afficher moins…"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Shuffle"
 msgstr "Lecture aléatoire"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown album"
 msgstr ""
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown artist"
 msgstr ""

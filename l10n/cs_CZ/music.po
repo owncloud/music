@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
+"POT-Creation-Date: 2014-01-23 06:30:06+0500\n"
 "PO-Revision-Date: 2014-01-20 19:50+0000\n"
 "Last-Translator: liska_\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
@@ -15,7 +15,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../js/public/app.js
-msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -23,52 +22,42 @@ msgid ""
 msgstr "Chrome umí přehrát pouze soubory MP3 - více informací na <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Delete"
 msgstr "Smazat"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Loading ..."
 msgstr "Načítám ..."
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Music"
 msgstr "Hudba"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Next"
 msgstr "Následující"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr "Zde nic není. Nahrajte vaši hudbu!"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Pause"
 msgstr "Pozastavit"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Play"
 msgstr "Přehrát"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Previous"
 msgstr "Předchozí"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Repeat"
 msgstr "Opakovat"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] "Zobrazit {{ trackcount }} písničku ..."
@@ -76,21 +65,17 @@ msgstr[1] "Zobrazit {{ trackcount }} písničky ..."
 msgstr[2] "Zobrazit {{ trackcount }} písniček ..."
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show less ..."
 msgstr "Zobrazit méně ..."
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Shuffle"
 msgstr "Promíchat"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown album"
 msgstr "Neznámé album"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown artist"
 msgstr "Neznámý umělec"

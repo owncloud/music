@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-22 06:30:13+0500\n"
+"POT-Creation-Date: 2014-01-23 06:30:06+0500\n"
 "PO-Revision-Date: 2014-01-20 06:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
@@ -14,7 +14,6 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../js/public/app.js
-msgctxt ""
 msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
@@ -22,52 +21,42 @@ msgid ""
 msgstr "Brskalnik Chrome lahko predvaja le datoteke MP3 - več podrobnosti je na straneh <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>."
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Delete"
 msgstr "Izbriši"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Loading ..."
 msgstr "Nalaganje ..."
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Music"
 msgstr "Glasba"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Next"
 msgstr "Naslednja"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Nothing in here. Upload your music!"
 msgstr "V mapi ni glasbenih datotek. Dodajte skladbe!"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Pause"
 msgstr "Premor"
 
 #: ../templates/main.php ../templates/part.main.php
-msgctxt ""
 msgid "Play"
 msgstr "Predvajaj"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Previous"
 msgstr "Predhodna"
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Repeat"
 msgstr "Ponovi"
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] "Pokaži {{ trackcount }} posnetek ..."
@@ -76,21 +65,17 @@ msgstr[2] "Pokaži {{ trackcount }} posnetke ..."
 msgstr[3] "Pokaži {{ trackcount }} posnetkov ..."
 
 #: ../templates/part.main.php
-msgctxt ""
 msgid "Show less ..."
 msgstr "Pokaži manj ..."
 
 #: ../templates/main.php
-msgctxt ""
 msgid "Shuffle"
 msgstr "Premešaj"
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown album"
 msgstr ""
 
 #: ../templates/fake-template.php
-msgctxt ""
 msgid "Unknown artist"
 msgstr ""

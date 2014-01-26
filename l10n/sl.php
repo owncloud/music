@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Ponovi",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Pokaži {{ trackcount }} posnetek ...","Pokaži {{ trackcount }} posnetka ...","Pokaži {{ trackcount }} posnetke ...","Pokaži {{ trackcount }} posnetkov ..."),
 "Show less ..." => "Pokaži manj ...",
-"Shuffle" => "Premešaj"
+"Shuffle" => "Premešaj",
+"Unknown album" => "Neznan album",
+"Unknown artist" => "Neznan izvajalec"
 );
 $PLURAL_FORMS = "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);";

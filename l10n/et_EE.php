@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Korda",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näita {{ trackcount }} lugu ...","Näita kõiki {{ trackcount }} lugu ..."),
 "Show less ..." => "Näita vähem ...",
-"Shuffle" => "Juhuslik esitus"
+"Shuffle" => "Juhuslik esitus",
+"Unknown album" => "Tundmatu album",
+"Unknown artist" => "Tundmatu esitaja"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

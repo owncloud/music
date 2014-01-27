@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Errepikatu",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Bistaratu {{ trackcount}} abesti guztiak ...","Bistaratu {{ trackcount}} abesti guztiak ..."),
 "Show less ..." => "Bistaratu gutxiago...",
-"Shuffle" => "Nahastu"
+"Shuffle" => "Nahastu",
+"Unknown album" => "Diska ezezaguna",
+"Unknown artist" => "Artista ezezaguna"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

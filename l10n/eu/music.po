@@ -1,12 +1,12 @@
 # 
 # Translators:
-# asieriko <asieriko@gmail.com>, 2013
+# asieriko <asieriko@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-26 07:15:56+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"POT-Creation-Date: 2014-01-27 07:21:46+0500\n"
+"PO-Revision-Date: 2014-01-26 21:30+0000\n"
+"Last-Translator: asieriko <asieriko@gmail.com>\n"
 "Language-Team: Basque (http://www.transifex.com/projects/p/owncloud/language/eu/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -72,8 +72,8 @@ msgstr "Nahastu"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Diska ezezaguna"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Artista ezezaguna"

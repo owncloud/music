@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "Repeteix",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostra totes les {{ trackcount }} peces...","Mostra totes les {{ trackcount }} peces..."),
 "Show less ..." => "Mostra'n menys...",
-"Shuffle" => "Aleatori"
+"Shuffle" => "Aleatori",
+"Unknown album" => "Àlbum desconegut",
+"Unknown artist" => "Artista desconegut"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

@@ -92,7 +92,7 @@ class AlbumMapper extends Mapper {
 			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` IS NULL');
 		} else if($albumName === null) {
 			$params = array($userId, $albumYear);
-			$sql = $this->makeSelectQuery('AND `album`.`name` = IS NULL AND `album`.`year` ?');
+			$sql = $this->makeSelectQuery('AND `album`.`name` IS NULL AND `album`.`year` = ?');
 		} else {
 			$params = array($userId, $albumName, $albumYear);
 			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` = ?');

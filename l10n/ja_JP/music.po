@@ -1,12 +1,13 @@
 # 
 # Translators:
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
+# tt yn <tetuyano+transi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-01-30 06:30:22+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
+"PO-Revision-Date: 2014-02-01 14:50+0000\n"
+"Last-Translator: tt yn <tetuyano+transi@gmail.com>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -71,8 +72,8 @@ msgstr "シャッフル"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "不明なアルバム"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "不明なアーティスト"

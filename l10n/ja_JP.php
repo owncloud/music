@@ -12,6 +12,8 @@ $TRANSLATIONS = array(
 "Repeat" => "繰り返し",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("すべての {{ trackcount }} 曲を表示 ..."),
 "Show less ..." => "簡略表示 ...",
-"Shuffle" => "シャッフル"
+"Shuffle" => "シャッフル",
+"Unknown album" => "不明なアルバム",
+"Unknown artist" => "不明なアーティスト"
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

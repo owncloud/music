@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
+"POT-Creation-Date: 2014-02-03 06:30:53+0500\n"
 "PO-Revision-Date: 2014-01-20 19:50+0000\n"
 "Last-Translator: liska_\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"

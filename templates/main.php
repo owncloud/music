@@ -4,6 +4,8 @@
 \OCP\Util::addScript('music', 'vendor/soundmanager/soundmanager2');
 \OCP\Util::addScript('music', 'vendor/restangular/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/angular-gettext.min');
+\OCP\Util::addScript('music', 'vendor/aurora/aurora');
+\OCP\Util::addScript('music', 'vendor/aurora/flac');
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-playerbar');

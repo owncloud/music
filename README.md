@@ -5,6 +5,11 @@ README
 
 **This is under heavy development and isn't supposed to be deployed to a production server!**
 
+FLAC & AAC support in progress
+------------------------------
+
+Using Aurora.js
+
 I want to see it live - but how?
 --------------------------------
 

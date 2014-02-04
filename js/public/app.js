@@ -216,6 +216,8 @@ angular.module('Music').controller('PlayerController',
 			$scope.player.stop();
 		}
 		$scope.setPlay(false);
+		// Reset position
+		$scope.position=0.0;
 		//$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state

@@ -210,7 +210,11 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		$scope.player.stop();
+		if($scope.player.asset != undefined) {
+			// check if player's constructor has been called,
+			// if so, stop() will be available
+			$scope.player.stop();
+		}
 		$scope.setPlay(false);
 		//$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {

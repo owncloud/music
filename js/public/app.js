@@ -289,7 +289,17 @@ angular.module('Music').controller('PlayerController',
 						$scope.position = position;
 					});
 				}
-			})
+			});
+			$scope.player.on('end', function() {
+				$scope.setPlay(false);
+				if($scope.$$phase) {
+					$scope.next();
+				} else {
+					$scope.$apply(function(){
+						$scope.next();
+					});
+				}
+			});
 		} else {
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;

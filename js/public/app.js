@@ -339,8 +339,14 @@ angular.module('Music').controller('PlayerController',
 		}
 		if(forcePlay) {
 			$scope.player.play();
+			$scope.setPlay(true);
 		} else {
 			$scope.player.togglePlayback();
+			if($scope.playing) {
+				$scope.playing=false;
+			} else {
+				$scope.playing=true;
+			}
 		}
 	};
 

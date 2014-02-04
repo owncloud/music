@@ -287,6 +287,7 @@ angular.module('Music').controller('PlayerController',
 			});
 			$scope.player.play('ownCloudSound');*/
 			$scope.player=AV.Player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.setBuffering(false);
 			$scope.player.play();
 			$scope.setPlay(true);
 			$scope.player.on("buffer", function (percent) {

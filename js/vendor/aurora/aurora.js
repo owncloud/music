@@ -1,4 +1,3 @@
-
 (function() {
   var global;
   global = this;
@@ -20,7 +19,6 @@ AV.Base = (function() {
   Base.extend = function(prop) {
     var Class, fn, key, keys, _ref, _super;
     Class = (function(_super) {
-
       __extends(Class, _super);
 
       function Class() {
@@ -67,19 +65,29 @@ AV.Base = (function() {
 
 })();
 
-
 AV.Buffer = (function() {
   var BlobBuilder, URL;
 
-  function Buffer(data) {
-    this.data = data;
+  function Buffer(input) {
+    var _ref;
+    if (input instanceof Uint8Array) {
+      this.data = input;
+    } else if (input instanceof ArrayBuffer || Array.isArray(input) || typeof input === 'number' || AV.isNode && ((_ref = global.Buffer) != null ? _ref.isBuffer(input) : void 0)) {
+      this.data = new Uint8Array(input);
+    } else if (input.buffer instanceof ArrayBuffer) {
+      this.data = new Uint8Array(input.buffer, input.byteOffset, input.length * input.BYTES_PER_ELEMENT);
+    } else if (input instanceof AV.Buffer) {
+      this.data = input.data;
+    } else {
+      throw new Error("Constructing buffer with unknown type.");
+    }
     this.length = this.data.length;
     this.next = null;
     this.prev = null;
   }
 
   Buffer.allocate = function(size) {
-    return new AV.Buffer(new Uint8Array(size));
+    return new AV.Buffer(size);
   };
 
   Buffer.prototype.copy = function() {
@@ -87,6 +95,9 @@ AV.Buffer = (function() {
   };
 
   Buffer.prototype.slice = function(position, length) {
+    if (length == null) {
+      length = this.length;
+    }
     if (position === 0 && length >= this.length) {
       return new AV.Buffer(this.data);
     } else {
@@ -136,12 +147,11 @@ AV.Buffer = (function() {
 
 })();
 
-
 AV.BufferList = (function() {
-
   function BufferList() {
     this.first = null;
     this.last = null;
+    this.numBuffers = 0;
     this.availableBytes = 0;
     this.availableBuffers = 0;
   }
@@ -151,43 +161,57 @@ AV.BufferList = (function() {
     result = new AV.BufferList;
     result.first = this.first;
     result.last = this.last;
+    result.numBuffers = this.numBuffers;
     result.availableBytes = this.availableBytes;
     result.availableBuffers = this.availableBuffers;
     return result;
   };
 
   BufferList.prototype.append = function(buffer) {
-    var _ref, _ref1;
+    var _ref;
     buffer.prev = this.last;
     if ((_ref = this.last) != null) {
       _ref.next = buffer;
     }
     this.last = buffer;
-    if ((_ref1 = this.first) == null) {
+    if (this.first == null) {
       this.first = buffer;
     }
     this.availableBytes += buffer.length;
-    return this.availableBuffers++;
+    this.availableBuffers++;
+    return this.numBuffers++;
   };
 
   BufferList.prototype.advance = function() {
     if (this.first) {
       this.availableBytes -= this.first.length;
       this.availableBuffers--;
-      return this.first = this.first.next;
+      this.first = this.first.next;
+      return this.first != null;
     }
+    return false;
   };
 
   BufferList.prototype.rewind = function() {
     var _ref;
     if (this.first && !this.first.prev) {
-      return;
+      return false;
     }
     this.first = ((_ref = this.first) != null ? _ref.prev : void 0) || this.last;
     if (this.first) {
       this.availableBytes += this.first.length;
-      return this.availableBuffers++;
+      this.availableBuffers++;
     }
+    return this.first != null;
+  };
+
+  BufferList.prototype.reset = function() {
+    var _results;
+    _results = [];
+    while (this.rewind()) {
+      continue;
+    }
+    return _results;
   };
 
   return BufferList;
@@ -223,7 +247,6 @@ AV.Stream = (function() {
   nativeEndian = new Uint16Array(new Uint8Array([0x12, 0x34]).buffer)[0] === 0x3412;
 
   AV.UnderflowError = (function(_super) {
-
     __extends(UnderflowError, _super);
 
     function UnderflowError() {
@@ -710,9 +733,7 @@ AV.Stream = (function() {
 
 })();
 
-
 AV.Bitstream = (function() {
-
   function Bitstream(stream) {
     this.stream = stream;
     this.bitPosition = 0;
@@ -937,7 +958,6 @@ var __hasProp = {}.hasOwnProperty,
   __slice = [].slice;
 
 AV.EventEmitter = (function(_super) {
-
   __extends(EventEmitter, _super);
 
   function EventEmitter() {
@@ -945,11 +965,11 @@ AV.EventEmitter = (function(_super) {
   }
 
   EventEmitter.prototype.on = function(event, fn) {
-    var _base, _ref, _ref1;
-    if ((_ref = this.events) == null) {
+    var _base;
+    if (this.events == null) {
       this.events = {};
     }
-    if ((_ref1 = (_base = this.events)[event]) == null) {
+    if ((_base = this.events)[event] == null) {
       _base[event] = [];
     }
     return this.events[event].push(fn);
@@ -991,6 +1011,63 @@ AV.EventEmitter = (function(_super) {
 
 })(AV.Base);
 
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+AV.BufferSource = (function(_super) {
+  var clearImmediate, setImmediate;
+
+  __extends(BufferSource, _super);
+
+  function BufferSource(input) {
+    this.loop = __bind(this.loop, this);
+    if (input instanceof AV.BufferList) {
+      this.list = input;
+    } else {
+      this.list = new AV.BufferList;
+      this.list.append(new AV.Buffer(input));
+    }
+    this.paused = true;
+  }
+
+  setImmediate = global.setImmediate || function(fn) {
+    return global.setTimeout(fn, 0);
+  };
+
+  clearImmediate = global.clearImmediate || function(timer) {
+    return global.clearTimeout(timer);
+  };
+
+  BufferSource.prototype.start = function() {
+    this.paused = false;
+    return this._timer = setImmediate(this.loop);
+  };
+
+  BufferSource.prototype.loop = function() {
+    this.emit('progress', (this.list.numBuffers - this.list.availableBuffers + 1) / this.list.numBuffers * 100 | 0);
+    this.emit('data', this.list.first);
+    if (this.list.advance()) {
+      return setImmediate(this.loop);
+    } else {
+      return this.emit('end');
+    }
+  };
+
+  BufferSource.prototype.pause = function() {
+    clearImmediate(this._timer);
+    return this.paused = true;
+  };
+
+  BufferSource.prototype.reset = function() {
+    this.pause();
+    return this.list.rewind();
+  };
+
+  return BufferSource;
+
+})(AV.EventEmitter);
+
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1004,26 +1081,31 @@ AV.Demuxer = (function(_super) {
   };
 
   function Demuxer(source, chunk) {
-    var list, received,
-      _this = this;
+    var list, received;
     list = new AV.BufferList;
     list.append(chunk);
     this.stream = new AV.Stream(list);
     received = false;
-    source.on('data', function(chunk) {
-      received = true;
-      list.append(chunk);
-      return _this.readChunk(chunk);
-    });
-    source.on('error', function(err) {
-      return _this.emit('error', err);
-    });
-    source.on('end', function() {
-      if (!received) {
-        _this.readChunk(chunk);
-      }
-      return _this.emit('end');
-    });
+    source.on('data', (function(_this) {
+      return function(chunk) {
+        received = true;
+        list.append(chunk);
+        return _this.readChunk(chunk);
+      };
+    })(this));
+    source.on('error', (function(_this) {
+      return function(err) {
+        return _this.emit('error', err);
+      };
+    })(this));
+    source.on('end', (function(_this) {
+      return function() {
+        if (!received) {
+          _this.readChunk(chunk);
+        }
+        return _this.emit('end');
+      };
+    })(this));
     this.seekPoints = [];
     this.init();
   }
@@ -1108,8 +1190,7 @@ AV.Decoder = (function(_super) {
   __extends(Decoder, _super);
 
   function Decoder(demuxer, format) {
-    var list,
-      _this = this;
+    var list;
     this.demuxer = demuxer;
     this.format = format;
     list = new AV.BufferList;
@@ -1117,25 +1198,33 @@ AV.Decoder = (function(_super) {
     this.bitstream = new AV.Bitstream(this.stream);
     this.receivedFinalBuffer = false;
     this.waiting = false;
-    this.demuxer.on('cookie', function(cookie) {
-      try {
-        return _this.setCookie(cookie);
-      } catch (error) {
-        return _this.emit('error', error);
-      }
-    });
-    this.demuxer.on('data', function(chunk) {
-      list.append(chunk);
-      if (_this.waiting) {
-        return _this.decode();
-      }
-    });
-    this.demuxer.on('end', function() {
-      _this.receivedFinalBuffer = true;
-      if (_this.waiting) {
-        return _this.decode();
-      }
-    });
+    this.demuxer.on('cookie', (function(_this) {
+      return function(cookie) {
+        var error;
+        try {
+          return _this.setCookie(cookie);
+        } catch (_error) {
+          error = _error;
+          return _this.emit('error', error);
+        }
+      };
+    })(this));
+    this.demuxer.on('data', (function(_this) {
+      return function(chunk) {
+        list.append(chunk);
+        if (_this.waiting) {
+          return _this.decode();
+        }
+      };
+    })(this));
+    this.demuxer.on('end', (function(_this) {
+      return function() {
+        _this.receivedFinalBuffer = true;
+        if (_this.waiting) {
+          return _this.decode();
+        }
+      };
+    })(this));
     this.init();
   }
 
@@ -1146,12 +1235,13 @@ AV.Decoder = (function(_super) {
   Decoder.prototype.readChunk = function() {};
 
   Decoder.prototype.decode = function() {
-    var offset, packet;
+    var error, offset, packet;
     this.waiting = false;
     offset = this.bitstream.offset();
     try {
       packet = this.readChunk();
-    } catch (error) {
+    } catch (_error) {
+      error = _error;
       if (!(error instanceof AV.UnderflowError)) {
         this.emit('error', error);
         return false;
@@ -1190,29 +1280,27 @@ AV.Decoder = (function(_super) {
 
 })(AV.EventEmitter);
 
-var _this = this,
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.Queue = (function(_super) {
-
   __extends(Queue, _super);
 
   function Queue(asset) {
-    var _this = this;
     this.asset = asset;
-    this.write = function(buffer) {
-      return Queue.prototype.write.apply(_this, arguments);
-    };
+    this.write = __bind(this.write, this);
     this.readyMark = 64;
     this.finished = false;
     this.buffering = true;
     this.ended = false;
     this.buffers = [];
     this.asset.on('data', this.write);
-    this.asset.on('end', function() {
-      return _this.ended = true;
-    });
+    this.asset.on('end', (function(_this) {
+      return function() {
+        return _this.ended = true;
+      };
+    })(this));
     this.asset.decodePacket();
   }
 
@@ -1248,7 +1336,7 @@ AV.Queue = (function(_super) {
 
 })(AV.EventEmitter);
 
-var _this = this,
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1258,32 +1346,32 @@ AV.AudioDevice = (function(_super) {
   __extends(AudioDevice, _super);
 
   function AudioDevice(sampleRate, channels) {
-    var _this = this;
     this.sampleRate = sampleRate;
     this.channels = channels;
-    this.updateTime = function() {
-      return AudioDevice.prototype.updateTime.apply(_this, arguments);
-    };
+    this.updateTime = __bind(this.updateTime, this);
     this.playing = false;
     this.currentTime = 0;
     this._lastTime = 0;
   }
 
   AudioDevice.prototype.start = function() {
-    var _ref,
-      _this = this;
     if (this.playing) {
       return;
     }
     this.playing = true;
-    if ((_ref = this.device) == null) {
+    if (this.device == null) {
       this.device = AV.AudioDevice.create(this.sampleRate, this.channels);
+    }
+    if (!this.device) {
+      throw new Error("No supported audio device found.");
     }
     this._lastTime = this.device.getDeviceTime();
     this._timer = setInterval(this.updateTime, 200);
-    return this.device.on('refill', this.refill = function(buffer) {
-      return _this.emit('refill', buffer);
-    });
+    return this.device.on('refill', this.refill = (function(_this) {
+      return function(buffer) {
+        return _this.emit('refill', buffer);
+      };
+    })(this));
   };
 
   AudioDevice.prototype.stop = function() {
@@ -1337,27 +1425,18 @@ AV.AudioDevice = (function(_super) {
 
 })(AV.EventEmitter);
 
-var _this = this,
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.Asset = (function(_super) {
-
   __extends(Asset, _super);
 
   function Asset(source) {
-    var _this = this;
     this.source = source;
-    this._decode = function() {
-      return Asset.prototype._decode.apply(_this, arguments);
-    };
-    this.findDecoder = function(format) {
-      _this.format = format;
-      return Asset.prototype.findDecoder.apply(_this, arguments);
-    };
-    this.probe = function(chunk) {
-      return Asset.prototype.probe.apply(_this, arguments);
-    };
+    this._decode = __bind(this._decode, this);
+    this.findDecoder = __bind(this.findDecoder, this);
+    this.probe = __bind(this.probe, this);
     this.buffered = 0;
     this.duration = null;
     this.format = null;
@@ -1366,37 +1445,40 @@ AV.Asset = (function(_super) {
     this.demuxer = null;
     this.decoder = null;
     this.source.once('data', this.probe);
-    this.source.on('error', function(err) {
-      _this.emit('error', err);
-      return _this.stop();
-    });
-    this.source.on('progress', function(buffered) {
-      _this.buffered = buffered;
-      return _this.emit('buffer', _this.buffered);
-    });
+    this.source.on('error', (function(_this) {
+      return function(err) {
+        _this.emit('error', err);
+        return _this.stop();
+      };
+    })(this));
+    this.source.on('progress', (function(_this) {
+      return function(buffered) {
+        _this.buffered = buffered;
+        return _this.emit('buffer', _this.buffered);
+      };
+    })(this));
   }
 
   Asset.fromURL = function(url) {
-    var source;
-    source = new AV.HTTPSource(url);
-    return new AV.Asset(source);
+    return new AV.Asset(new AV.HTTPSource(url));
   };
 
   Asset.fromFile = function(file) {
-    var source;
-    source = new AV.FileSource(file);
-    return new AV.Asset(source);
+    return new AV.Asset(new AV.FileSource(file));
+  };
+
+  Asset.fromBuffer = function(buffer) {
+    return new AV.Asset(new AV.BufferSource(buffer));
   };
 
   Asset.prototype.start = function(decode) {
-    var _ref;
     if (this.active) {
       return;
     }
     if (decode != null) {
       this.shouldDecode = decode;
     }
-    if ((_ref = this.shouldDecode) == null) {
+    if (this.shouldDecode == null) {
       this.shouldDecode = true;
     }
     this.active = true;
@@ -1415,17 +1497,18 @@ AV.Asset = (function(_super) {
   };
 
   Asset.prototype.get = function(event, callback) {
-    var _this = this;
     if (event !== 'format' && event !== 'duration' && event !== 'metadata') {
       return;
     }
     if (this[event] != null) {
       return callback(this[event]);
     } else {
-      this.once(event, function(value) {
-        _this.stop();
-        return callback(value);
-      });
+      this.once(event, (function(_this) {
+        return function(value) {
+          _this.stop();
+          return callback(value);
+        };
+      })(this));
       return this.start();
     }
   };
@@ -1434,9 +1517,31 @@ AV.Asset = (function(_super) {
     return this.decoder.decode();
   };
 
+  Asset.prototype.decodeToBuffer = function(callback) {
+    var chunks, dataHandler, length;
+    length = 0;
+    chunks = [];
+    this.on('data', dataHandler = function(chunk) {
+      length += chunk.length;
+      return chunks.push(chunk);
+    });
+    this.once('end', function() {
+      var buf, chunk, offset, _i, _len;
+      buf = new Float32Array(length);
+      offset = 0;
+      for (_i = 0, _len = chunks.length; _i < _len; _i++) {
+        chunk = chunks[_i];
+        buf.set(chunk, offset);
+        offset += chunk.length;
+      }
+      this.off('data', dataHandler);
+      return callback(buf);
+    });
+    return this.start();
+  };
+
   Asset.prototype.probe = function(chunk) {
-    var demuxer,
-      _this = this;
+    var demuxer;
     if (!this.active) {
       return;
     }
@@ -1446,23 +1551,28 @@ AV.Asset = (function(_super) {
     }
     this.demuxer = new demuxer(this.source, chunk);
     this.demuxer.on('format', this.findDecoder);
-    this.demuxer.on('duration', function(duration) {
-      _this.duration = duration;
-      return _this.emit('duration', _this.duration);
-    });
-    this.demuxer.on('metadata', function(metadata) {
-      _this.metadata = metadata;
-      return _this.emit('metadata', _this.metadata);
-    });
-    return this.demuxer.on('error', function(err) {
-      _this.emit('error', err);
-      return _this.stop();
-    });
+    this.demuxer.on('duration', (function(_this) {
+      return function(duration) {
+        _this.duration = duration;
+        return _this.emit('duration', _this.duration);
+      };
+    })(this));
+    this.demuxer.on('metadata', (function(_this) {
+      return function(metadata) {
+        _this.metadata = metadata;
+        return _this.emit('metadata', _this.metadata);
+      };
+    })(this));
+    return this.demuxer.on('error', (function(_this) {
+      return function(err) {
+        _this.emit('error', err);
+        return _this.stop();
+      };
+    })(this));
   };
 
   Asset.prototype.findDecoder = function(format) {
-    var decoder,
-      _this = this;
+    var decoder, div;
     this.format = format;
     if (!this.active) {
       return;
@@ -1473,16 +1583,37 @@ AV.Asset = (function(_super) {
       return this.emit('error', "A decoder for " + this.format.formatID + " was not found.");
     }
     this.decoder = new decoder(this.demuxer, this.format);
-    this.decoder.on('data', function(buffer) {
-      return _this.emit('data', buffer);
-    });
-    this.decoder.on('error', function(err) {
-      _this.emit('error', err);
-      return _this.stop();
-    });
-    this.decoder.on('end', function() {
-      return _this.emit('end');
-    });
+    if (this.format.floatingPoint) {
+      this.decoder.on('data', (function(_this) {
+        return function(buffer) {
+          return _this.emit('data', buffer);
+        };
+      })(this));
+    } else {
+      div = Math.pow(2, this.format.bitsPerChannel - 1);
+      this.decoder.on('data', (function(_this) {
+        return function(buffer) {
+          var buf, i, sample, _i, _len;
+          buf = new Float32Array(buffer.length);
+          for (i = _i = 0, _len = buffer.length; _i < _len; i = ++_i) {
+            sample = buffer[i];
+            buf[i] = sample / div;
+          }
+          return _this.emit('data', buf);
+        };
+      })(this));
+    }
+    this.decoder.on('error', (function(_this) {
+      return function(err) {
+        _this.emit('error', err);
+        return _this.stop();
+      };
+    })(this));
+    this.decoder.on('end', (function(_this) {
+      return function() {
+        return _this.emit('end');
+      };
+    })(this));
     this.emit('decodeStart');
     if (this.shouldDecode) {
       return this._decode();
@@ -1502,20 +1633,16 @@ AV.Asset = (function(_super) {
 
 })(AV.EventEmitter);
 
-var _this = this,
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.Player = (function(_super) {
-
   __extends(Player, _super);
 
   function Player(asset) {
-    var _this = this;
     this.asset = asset;
-    this.startPlaying = function() {
-      return Player.prototype.startPlaying.apply(_this, arguments);
-    };
+    this.startPlaying = __bind(this.startPlaying, this);
     this.playing = false;
     this.buffered = 0;
     this.currentTime = 0;
@@ -1524,42 +1651,53 @@ AV.Player = (function(_super) {
     this.pan = 0;
     this.metadata = {};
     this.filters = [new AV.VolumeFilter(this, 'volume'), new AV.BalanceFilter(this, 'pan')];
-    this.asset.on('buffer', function(buffered) {
-      _this.buffered = buffered;
-      return _this.emit('buffer', _this.buffered);
-    });
-    this.asset.on('decodeStart', function() {
-      _this.queue = new AV.Queue(_this.asset);
-      return _this.queue.once('ready', _this.startPlaying);
-    });
-    this.asset.on('format', function(format) {
-      _this.format = format;
-      return _this.emit('format', _this.format);
-    });
-    this.asset.on('metadata', function(metadata) {
-      _this.metadata = metadata;
-      return _this.emit('metadata', _this.metadata);
-    });
-    this.asset.on('duration', function(duration) {
-      _this.duration = duration;
-      return _this.emit('duration', _this.duration);
-    });
-    this.asset.on('error', function(error) {
-      return _this.emit('error', error);
-    });
+    this.asset.on('buffer', (function(_this) {
+      return function(buffered) {
+        _this.buffered = buffered;
+        return _this.emit('buffer', _this.buffered);
+      };
+    })(this));
+    this.asset.on('decodeStart', (function(_this) {
+      return function() {
+        _this.queue = new AV.Queue(_this.asset);
+        return _this.queue.once('ready', _this.startPlaying);
+      };
+    })(this));
+    this.asset.on('format', (function(_this) {
+      return function(format) {
+        _this.format = format;
+        return _this.emit('format', _this.format);
+      };
+    })(this));
+    this.asset.on('metadata', (function(_this) {
+      return function(metadata) {
+        _this.metadata = metadata;
+        return _this.emit('metadata', _this.metadata);
+      };
+    })(this));
+    this.asset.on('duration', (function(_this) {
+      return function(duration) {
+        _this.duration = duration;
+        return _this.emit('duration', _this.duration);
+      };
+    })(this));
+    this.asset.on('error', (function(_this) {
+      return function(error) {
+        return _this.emit('error', error);
+      };
+    })(this));
   }
 
   Player.fromURL = function(url) {
-    var asset;
-	alert('Player loaded, URL: '+url);
-    asset = AV.Asset.fromURL(url);
-    return new AV.Player(asset);
+    return new AV.Player(AV.Asset.fromURL(url));
   };
 
   Player.fromFile = function(file) {
-    var asset;
-    asset = AV.Asset.fromFile(file);
-    return new AV.Player(asset);
+    return new AV.Player(AV.Asset.fromFile(file));
+  };
+
+  Player.fromBuffer = function(buffer) {
+    return new AV.Player(AV.Asset.fromBuffer(buffer));
   };
 
   Player.prototype.preload = function() {
@@ -1607,20 +1745,21 @@ AV.Player = (function(_super) {
   };
 
   Player.prototype.seek = function(timestamp) {
-    var _ref,
-      _this = this;
+    var _ref;
     if ((_ref = this.device) != null) {
       _ref.stop();
     }
-    this.queue.once('ready', function() {
-      var _ref1, _ref2;
-      if ((_ref1 = _this.device) != null) {
-        _ref1.seek(_this.currentTime);
-      }
-      if (_this.playing) {
-        return (_ref2 = _this.device) != null ? _ref2.start() : void 0;
-      }
-    });
+    this.queue.once('ready', (function(_this) {
+      return function() {
+        var _ref1, _ref2;
+        if ((_ref1 = _this.device) != null) {
+          _ref1.seek(_this.currentTime);
+        }
+        if (_this.playing) {
+          return (_ref2 = _this.device) != null ? _ref2.start() : void 0;
+        }
+      };
+    })(this));
     timestamp = (timestamp / 1000) * this.format.sampleRate;
     timestamp = this.asset.decoder.seek(timestamp);
     this.currentTime = timestamp / this.format.sampleRate * 1000 | 0;
@@ -1629,52 +1768,54 @@ AV.Player = (function(_super) {
   };
 
   Player.prototype.startPlaying = function() {
-    var div, frame, frameOffset,
-      _this = this;
+    var frame, frameOffset;
     frame = this.queue.read();
     frameOffset = 0;
-    div = this.format.floatingPoint ? 1 : Math.pow(2, this.format.bitsPerChannel - 1);
     this.device = new AV.AudioDevice(this.format.sampleRate, this.format.channelsPerFrame);
-    this.device.on('timeUpdate', function(currentTime) {
-      _this.currentTime = currentTime;
-      return _this.emit('progress', _this.currentTime);
-    });
-    this.refill = function(buffer) {
-      var bufferOffset, filter, i, max, _i, _j, _len, _ref;
-      if (!_this.playing) {
-        return;
-      }
-      if (!frame) {
-        frame = _this.queue.read();
-        frameOffset = 0;
-      }
-      bufferOffset = 0;
-      while (frame && bufferOffset < buffer.length) {
-        max = Math.min(frame.length - frameOffset, buffer.length - bufferOffset);
-        for (i = _i = 0; _i < max; i = _i += 1) {
-          buffer[bufferOffset++] = frame[frameOffset++] / div;
+    this.device.on('timeUpdate', (function(_this) {
+      return function(currentTime) {
+        _this.currentTime = currentTime;
+        return _this.emit('progress', _this.currentTime);
+      };
+    })(this));
+    this.refill = (function(_this) {
+      return function(buffer) {
+        var bufferOffset, filter, i, max, _i, _j, _len, _ref;
+        if (!_this.playing) {
+          return;
         }
-        if (frameOffset === frame.length) {
+        if (!frame) {
           frame = _this.queue.read();
           frameOffset = 0;
         }
-      }
-      _ref = _this.filters;
-      for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-        filter = _ref[_j];
-        filter.process(buffer);
-      }
-      if (!frame) {
-        if (_this.asset.ended) {
-          _this.currentTime = _this.duration;
-          _this.emit('progress', _this.currentTime);
-          _this.emit('end');
-          _this.stop();
-        } else {
-          _this.device.stop();
+        bufferOffset = 0;
+        while (frame && bufferOffset < buffer.length) {
+          max = Math.min(frame.length - frameOffset, buffer.length - bufferOffset);
+          for (i = _i = 0; _i < max; i = _i += 1) {
+            buffer[bufferOffset++] = frame[frameOffset++];
+          }
+          if (frameOffset === frame.length) {
+            frame = _this.queue.read();
+            frameOffset = 0;
+          }
         }
-      }
-    };
+        _ref = _this.filters;
+        for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+          filter = _ref[_j];
+          filter.process(buffer);
+        }
+        if (!frame) {
+          if (_this.queue.ended) {
+            _this.currentTime = _this.duration;
+            _this.emit('progress', _this.currentTime);
+            _this.emit('end');
+            _this.stop();
+          } else {
+            _this.device.stop();
+          }
+        }
+      };
+    })(this);
     this.device.on('refill', this.refill);
     if (this.playing) {
       this.device.start();
@@ -1686,382 +1827,7 @@ AV.Player = (function(_super) {
 
 })(AV.EventEmitter);
 
-/*
- * This resampler is from XAudioJS: https://github.com/grantgalitz/XAudioJS
- * Planned to be replaced with src.js, eventually: https://github.com/jussi-kalliokoski/src.js
- */
-
-//JavaScript Audio Resampler (c) 2011 - Grant Galitz
-function Resampler(fromSampleRate, toSampleRate, channels, outputBufferSize, noReturn) {
-	this.fromSampleRate = fromSampleRate;
-	this.toSampleRate = toSampleRate;
-	this.channels = channels | 0;
-	this.outputBufferSize = outputBufferSize;
-	this.noReturn = !!noReturn;
-	this.initialize();
-}
-
-Resampler.prototype.initialize = function () {
-	//Perform some checks:
-	if (this.fromSampleRate > 0 && this.toSampleRate > 0 && this.channels > 0) {
-		if (this.fromSampleRate == this.toSampleRate) {
-			//Setup a resampler bypass:
-			this.resampler = this.bypassResampler;		//Resampler just returns what was passed through.
-			this.ratioWeight = 1;
-		}
-		else {
-			if (this.fromSampleRate < this.toSampleRate) {
-				/*
-					Use generic linear interpolation if upsampling,
-					as linear interpolation produces a gradient that we want
-					and works fine with two input sample points per output in this case.
-				*/
-				this.compileLinearInterpolationFunction();
-				this.lastWeight = 1;
-			}
-			else {
-				/*
-					Custom resampler I wrote that doesn't skip samples
-					like standard linear interpolation in high downsampling.
-					This is more accurate than linear interpolation on downsampling.
-				*/
-				this.compileMultiTapFunction();
-				this.tailExists = false;
-				this.lastWeight = 0;
-			}
-			this.ratioWeight = this.fromSampleRate / this.toSampleRate;
-			this.initializeBuffers();
-		}
-	}
-	else {
-		throw(new Error("Invalid settings specified for the resampler."));
-	}
-};
-
-Resampler.prototype.compileLinearInterpolationFunction = function () {
-	var toCompile = "var bufferLength = buffer.length;\
-	var outLength = this.outputBufferSize;\
-	if ((bufferLength % " + this.channels + ") == 0) {\
-		if (bufferLength > 0) {\
-			var ratioWeight = this.ratioWeight;\
-			var weight = this.lastWeight;\
-			var firstWeight = 0;\
-			var secondWeight = 0;\
-			var sourceOffset = 0;\
-			var outputOffset = 0;\
-			var outputBuffer = this.outputBuffer;\
-			for (; weight < 1; weight += ratioWeight) {\
-				secondWeight = weight % 1;\
-				firstWeight = 1 - secondWeight;";
-	for (var channel = 0; channel < this.channels; ++channel) {
-		toCompile += "outputBuffer[outputOffset++] = (this.lastOutput[" + channel + "] * firstWeight) + (buffer[" + channel + "] * secondWeight);";
-	}
-	toCompile += "}\
-			weight -= 1;\
-			for (bufferLength -= " + this.channels + ", sourceOffset = Math.floor(weight) * " + this.channels + "; outputOffset < outLength && sourceOffset < bufferLength;) {\
-				secondWeight = weight % 1;\
-				firstWeight = 1 - secondWeight;";
-	for (var channel = 0; channel < this.channels; ++channel) {
-		toCompile += "outputBuffer[outputOffset++] = (buffer[sourceOffset" + ((channel > 0) ? (" + " + channel) : "") + "] * firstWeight) + (buffer[sourceOffset + " + (this.channels + channel) + "] * secondWeight);";
-	}
-	toCompile += "weight += ratioWeight;\
-				sourceOffset = Math.floor(weight) * " + this.channels + ";\
-			}";
-	for (var channel = 0; channel < this.channels; ++channel) {
-		toCompile += "this.lastOutput[" + channel + "] = buffer[sourceOffset++];";
-	}
-	toCompile += "this.lastWeight = weight % 1;\
-			return this.bufferSlice(outputOffset);\
-		}\
-		else {\
-			return (this.noReturn) ? 0 : [];\
-		}\
-	}\
-	else {\
-		throw(new Error(\"Buffer was of incorrect sample length.\"));\
-	}";
-	this.resampler = Function("buffer", toCompile);
-};
-
-Resampler.prototype.compileMultiTapFunction = function () {
-	var toCompile = "var bufferLength = buffer.length;\
-	var outLength = this.outputBufferSize;\
-	if ((bufferLength % " + this.channels + ") == 0) {\
-		if (bufferLength > 0) {\
-			var ratioWeight = this.ratioWeight;\
-			var weight = 0;";
-	for (var channel = 0; channel < this.channels; ++channel) {
-		toCompile += "var output" + channel + " = 0;"
-	}
-	toCompile += "var actualPosition = 0;\
-			var amountToNext = 0;\
-			var alreadyProcessedTail = !this.tailExists;\
-			this.tailExists = false;\
-			var outputBuffer = this.outputBuffer;\
-			var outputOffset = 0;\
-			var currentPosition = 0;\
-			do {\
-				if (alreadyProcessedTail) {\
-					weight = ratioWeight;";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "output" + channel + " = 0;"
-	}
-	toCompile += "}\
-				else {\
-					weight = this.lastWeight;";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "output" + channel + " = this.lastOutput[" + channel + "];"
-	}
-	toCompile += "alreadyProcessedTail = true;\
-				}\
-				while (weight > 0 && actualPosition < bufferLength) {\
-					amountToNext = 1 + actualPosition - currentPosition;\
-					if (weight >= amountToNext) {";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "output" + channel + " += buffer[actualPosition++] * amountToNext;"
-	}
-	toCompile += "currentPosition = actualPosition;\
-						weight -= amountToNext;\
-					}\
-					else {";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "output" + channel + " += buffer[actualPosition" + ((channel > 0) ? (" + " + channel) : "") + "] * weight;"
-	}
-	toCompile += "currentPosition += weight;\
-						weight = 0;\
-						break;\
-					}\
-				}\
-				if (weight == 0) {";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "outputBuffer[outputOffset++] = output" + channel + " / ratioWeight;"
-	}
-	toCompile += "}\
-				else {\
-					this.lastWeight = weight;";
-	for (channel = 0; channel < this.channels; ++channel) {
-		toCompile += "this.lastOutput[" + channel + "] = output" + channel + ";"
-	}
-	toCompile += "this.tailExists = true;\
-					break;\
-				}\
-			} while (actualPosition < bufferLength && outputOffset < outLength);\
-			return this.bufferSlice(outputOffset);\
-		}\
-		else {\
-			return (this.noReturn) ? 0 : [];\
-		}\
-	}\
-	else {\
-		throw(new Error(\"Buffer was of incorrect sample length.\"));\
-	}";
-	this.resampler = Function("buffer", toCompile);
-};
-
-Resampler.prototype.bypassResampler = function (buffer) {
-	if (this.noReturn) {
-		//Set the buffer passed as our own, as we don't need to resample it:
-		this.outputBuffer = buffer;
-		return buffer.length;
-	}
-	else {
-		//Just return the buffer passsed:
-		return buffer;
-	}
-};
-
-Resampler.prototype.bufferSlice = function (sliceAmount) {
-	if (this.noReturn) {
-		//If we're going to access the properties directly from this object:
-		return sliceAmount;
-	}
-	else {
-		//Typed array and normal array buffer section referencing:
-		try {
-			return this.outputBuffer.subarray(0, sliceAmount);
-		}
-		catch (error) {
-			try {
-				//Regular array pass:
-				this.outputBuffer.length = sliceAmount;
-				return this.outputBuffer;
-			}
-			catch (error) {
-				//Nightly Firefox 4 used to have the subarray function named as slice:
-				return this.outputBuffer.slice(0, sliceAmount);
-			}
-		}
-	}
-};
-
-Resampler.prototype.initializeBuffers = function () {
-	//Initialize the internal buffer:
-	try {
-		this.outputBuffer = new Float32Array(this.outputBufferSize);
-		this.lastOutput = new Float32Array(this.channels);
-	}
-	catch (error) {
-		this.outputBuffer = [];
-		this.lastOutput = [];
-	}
-};var WebKitAudioDevice,
-  _this = this,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-WebKitAudioDevice = (function(_super) {
-  var AudioContext, sharedContext;
-
-  __extends(WebKitAudioDevice, _super);
-
-  AV.AudioDevice.register(WebKitAudioDevice);
-
-  AudioContext = global.AudioContext || global.webkitAudioContext;
-
-  WebKitAudioDevice.supported = typeof (AudioContext != null ? AudioContext.prototype.createJavaScriptNode : void 0) === 'function';
-
-  sharedContext = null;
-
-  function WebKitAudioDevice(sampleRate, channels) {
-    var _this = this;
-    this.sampleRate = sampleRate;
-    this.channels = channels;
-    this.refill = function(event) {
-      return WebKitAudioDevice.prototype.refill.apply(_this, arguments);
-    };
-    this.context = sharedContext != null ? sharedContext : sharedContext = new AudioContext;
-    this.deviceSampleRate = this.context.sampleRate;
-    this.bufferSize = Math.ceil(4096 / (this.deviceSampleRate / this.sampleRate) * this.channels);
-    this.bufferSize += this.bufferSize % this.channels;
-    if (this.deviceSampleRate !== this.sampleRate) {
-      this.resampler = new Resampler(this.sampleRate, this.deviceSampleRate, this.channels, 4096 * this.channels);
-    }
-    this.node = this.context.createJavaScriptNode(4096, this.channels, this.channels);
-    this.node.onaudioprocess = this.refill;
-    this.node.connect(this.context.destination);
-  }
-
-  WebKitAudioDevice.prototype.refill = function(event) {
-    var channelCount, channels, data, i, n, outputBuffer, _i, _j, _k, _ref;
-    outputBuffer = event.outputBuffer;
-    channelCount = outputBuffer.numberOfChannels;
-    channels = new Array(channelCount);
-    for (i = _i = 0; _i < channelCount; i = _i += 1) {
-      channels[i] = outputBuffer.getChannelData(i);
-    }
-    data = new Float32Array(this.bufferSize);
-    this.emit('refill', data);
-    if (this.resampler) {
-      data = this.resampler.resampler(data);
-    }
-    for (i = _j = 0, _ref = outputBuffer.length; _j < _ref; i = _j += 1) {
-      for (n = _k = 0; _k < channelCount; n = _k += 1) {
-        channels[n][i] = data[i * channelCount + n];
-      }
-    }
-  };
-
-  WebKitAudioDevice.prototype.destroy = function() {
-    return this.node.disconnect(0);
-  };
-
-  WebKitAudioDevice.prototype.getDeviceTime = function() {
-    return this.context.currentTime * this.sampleRate;
-  };
-
-  return WebKitAudioDevice;
-
-})(AV.EventEmitter);
-
-var MozillaAudioDevice,
-  _this = this,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-MozillaAudioDevice = (function(_super) {
-  var createTimer, destroyTimer;
-
-  __extends(MozillaAudioDevice, _super);
-
-  AV.AudioDevice.register(MozillaAudioDevice);
-
-  MozillaAudioDevice.supported = (typeof Audio !== "undefined" && Audio !== null) && 'mozWriteAudio' in new Audio;
-
-  function MozillaAudioDevice(sampleRate, channels) {
-    var _this = this;
-    this.sampleRate = sampleRate;
-    this.channels = channels;
-    this.refill = function() {
-      return MozillaAudioDevice.prototype.refill.apply(_this, arguments);
-    };
-    this.audio = new Audio;
-    this.audio.mozSetup(this.channels, this.sampleRate);
-    this.writePosition = 0;
-    this.prebufferSize = this.sampleRate / 2;
-    this.tail = null;
-    this.timer = createTimer(this.refill, 100);
-  }
-
-  MozillaAudioDevice.prototype.refill = function() {
-    var available, buffer, currentPosition, written;
-    if (this.tail) {
-      written = this.audio.mozWriteAudio(this.tail);
-      this.writePosition += written;
-      if (this.writePosition < this.tail.length) {
-        this.tail = this.tail.subarray(written);
-      } else {
-        this.tail = null;
-      }
-    }
-    currentPosition = this.audio.mozCurrentSampleOffset();
-    available = currentPosition + this.prebufferSize - this.writePosition;
-    if (available > 0) {
-      buffer = new Float32Array(available);
-      this.emit('refill', buffer);
-      written = this.audio.mozWriteAudio(buffer);
-      if (written < buffer.length) {
-        this.tail = buffer.subarray(written);
-      }
-      this.writePosition += written;
-    }
-  };
-
-  MozillaAudioDevice.prototype.destroy = function() {
-    return destroyTimer(this.timer);
-  };
-
-  MozillaAudioDevice.prototype.getDeviceTime = function() {
-    return this.audio.mozCurrentSampleOffset() / this.channels;
-  };
-
-  createTimer = function(fn, interval) {
-    var url, worker;
-    url = AV.Buffer.makeBlobURL("setInterval(function() { postMessage('ping'); }, " + interval + ");");
-    if (url == null) {
-      return setInterval(fn, interval);
-    }
-    worker = new Worker(url);
-    worker.onmessage = fn;
-    worker.url = url;
-    return worker;
-  };
-
-  destroyTimer = function(timer) {
-    if (timer.terminate) {
-      timer.terminate();
-      return URL.revokeObjectURL(timer.url);
-    } else {
-      return clearInterval(timer);
-    }
-  };
-
-  return MozillaAudioDevice;
-
-})(AV.EventEmitter);
-
-
 AV.Filter = (function() {
-
   function Filter(context, key) {
     if (context && key) {
       Object.defineProperty(this, 'value', {
@@ -2082,7 +1848,6 @@ var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.VolumeFilter = (function(_super) {
-
   __extends(VolumeFilter, _super);
 
   function VolumeFilter() {
@@ -2108,7 +1873,6 @@ var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.BalanceFilter = (function(_super) {
-
   __extends(BalanceFilter, _super);
 
   function BalanceFilter() {
@@ -2136,7 +1900,6 @@ var CAFDemuxer,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 CAFDemuxer = (function(_super) {
-
   __extends(CAFDemuxer, _super);
 
   function CAFDemuxer() {
@@ -2303,7 +2066,7 @@ M4ADemuxer = (function(_super) {
   containers = {};
 
   atom = function(name, fn) {
-    var c, container, _i, _len, _ref, _ref1;
+    var c, container, _i, _len, _ref;
     c = [];
     _ref = name.split('.').slice(0, -1);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2311,15 +2074,14 @@ M4ADemuxer = (function(_super) {
       c.push(container);
       containers[c.join('.')] = true;
     }
-    if ((_ref1 = atoms[name]) == null) {
+    if (atoms[name] == null) {
       atoms[name] = {};
     }
     return atoms[name].fn = fn;
   };
 
   after = function(name, fn) {
-    var _ref;
-    if ((_ref = atoms[name]) == null) {
+    if (atoms[name] == null) {
       atoms[name] = {};
     }
     return atoms[name].after = fn;
@@ -2655,9 +2417,9 @@ M4ADemuxer = (function(_super) {
   });
 
   atom('mdat', function() {
-    var bytes, chunkSize, length, numSamples, offset, sample, size, _i, _ref;
+    var bytes, chunkSize, length, numSamples, offset, sample, size, _i;
     if (!this.startedData) {
-      if ((_ref = this.mdatOffset) == null) {
+      if (this.mdatOffset == null) {
         this.mdatOffset = this.stream.offset;
       }
       if (this.tracks.length === 0) {
@@ -2724,7 +2486,7 @@ M4ADemuxer = (function(_super) {
   });
 
   M4ADemuxer.prototype.parseChapters = function() {
-    var bom, id, len, nextTimestamp, point, title, track, _i, _len, _ref, _ref1, _ref2, _ref3, _ref4;
+    var bom, id, len, nextTimestamp, point, title, track, _i, _len, _ref, _ref1, _ref2, _ref3;
     if (!(((_ref = this.track.chapterTracks) != null ? _ref.length : void 0) > 0)) {
       return true;
     }
@@ -2739,7 +2501,7 @@ M4ADemuxer = (function(_super) {
     if (track.id !== id) {
       this.emit('error', 'Chapter track does not exist.');
     }
-    if ((_ref2 = this.chapters) == null) {
+    if (this.chapters == null) {
       this.chapters = [];
     }
     while (this.chapters.length < track.seekPoints.length) {
@@ -2762,7 +2524,7 @@ M4ADemuxer = (function(_super) {
       if (title == null) {
         title = this.stream.readString(len, 'utf8');
       }
-      nextTimestamp = (_ref3 = (_ref4 = track.seekPoints[this.chapters.length + 1]) != null ? _ref4.timestamp : void 0) != null ? _ref3 : track.duration;
+      nextTimestamp = (_ref2 = (_ref3 = track.seekPoints[this.chapters.length + 1]) != null ? _ref3.timestamp : void 0) != null ? _ref2 : track.duration;
       this.chapters.push({
         title: title,
         timestamp: point.timestamp / track.timeScale * 1000 | 0,
@@ -2899,7 +2661,6 @@ var AIFFDemuxer,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AIFFDemuxer = (function(_super) {
-
   __extends(AIFFDemuxer, _super);
 
   function AIFFDemuxer() {
@@ -3051,6 +2812,7 @@ WAVEDemuxer = (function(_super) {
           this.format.bitsPerChannel = this.stream.readUInt16(true);
           this.format.bytesPerPacket = (this.format.bitsPerChannel / 8) * this.format.channelsPerFrame;
           this.emit('format', this.format);
+          this.stream.advance(this.len - 16);
           break;
         case 'data':
           if (!this.sentDuration) {
@@ -3148,19 +2910,15 @@ AUDemuxer = (function(_super) {
 })(AV.Demuxer);
 
 var LPCMDecoder,
-  _this = this,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 LPCMDecoder = (function(_super) {
-
   __extends(LPCMDecoder, _super);
 
   function LPCMDecoder() {
-    var _this = this;
-    this.readChunk = function() {
-      return LPCMDecoder.prototype.readChunk.apply(_this, arguments);
-    };
+    this.readChunk = __bind(this.readChunk, this);
     return LPCMDecoder.__super__.constructor.apply(this, arguments);
   }
 
@@ -3230,7 +2988,7 @@ LPCMDecoder = (function(_super) {
 })(AV.Decoder);
 
 var XLAWDecoder,
-  _this = this,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -3240,10 +2998,7 @@ XLAWDecoder = (function(_super) {
   __extends(XLAWDecoder, _super);
 
   function XLAWDecoder() {
-    var _this = this;
-    this.readChunk = function() {
-      return XLAWDecoder.prototype.readChunk.apply(_this, arguments);
-    };
+    this.readChunk = __bind(this.readChunk, this);
     return XLAWDecoder.__super__.constructor.apply(this, arguments);
   }
 
@@ -3308,7 +3063,6 @@ XLAWDecoder = (function(_super) {
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.HTTPSource = (function(_super) {
-
   __extends(HTTPSource, _super);
 
   function HTTPSource(url) {
@@ -3319,7 +3073,6 @@ AV.HTTPSource = (function(_super) {
   }
 
   HTTPSource.prototype.start = function() {
-    var _this = this;
     if (this.length) {
       if (!this.inflight) {
         return this.loop();
@@ -3327,62 +3080,75 @@ AV.HTTPSource = (function(_super) {
     }
     this.inflight = true;
     this.xhr = new XMLHttpRequest();
-    this.xhr.onload = function(event) {
-      _this.length = parseInt(_this.xhr.getResponseHeader("Content-Length"));
-      _this.inflight = false;
-      return _this.loop();
-    };
-    this.xhr.onerror = function(err) {
-      _this.pause();
-      return _this.emit('error', err);
-    };
-    this.xhr.onabort = function(event) {
-      return _this.inflight = false;
-    };
+    this.xhr.onload = (function(_this) {
+      return function(event) {
+        _this.length = parseInt(_this.xhr.getResponseHeader("Content-Length"));
+        _this.inflight = false;
+        return _this.loop();
+      };
+    })(this);
+    this.xhr.onerror = (function(_this) {
+      return function(err) {
+        _this.pause();
+        return _this.emit('error', err);
+      };
+    })(this);
+    this.xhr.onabort = (function(_this) {
+      return function(event) {
+        return _this.inflight = false;
+      };
+    })(this);
     this.xhr.open("HEAD", this.url, true);
     return this.xhr.send(null);
   };
 
   HTTPSource.prototype.loop = function() {
-    var endPos,
-      _this = this;
+    var endPos;
     if (this.inflight || !this.length) {
       return this.emit('error', 'Something is wrong in HTTPSource.loop');
     }
     this.inflight = true;
     this.xhr = new XMLHttpRequest();
-    this.xhr.onload = function(event) {
-      var buf, buffer, i, txt, _i, _ref;
-      if (_this.xhr.response) {
-        buf = new Uint8Array(_this.xhr.response);
-      } else {
-        txt = _this.xhr.responseText;
-        buf = new Uint8Array(txt.length);
-        for (i = _i = 0, _ref = txt.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          buf[i] = txt.charCodeAt(i) & 0xff;
+    this.xhr.onload = (function(_this) {
+      return function(event) {
+        var buf, buffer, i, txt, _i, _ref;
+        if (_this.xhr.response) {
+          buf = new Uint8Array(_this.xhr.response);
+        } else {
+          txt = _this.xhr.responseText;
+          buf = new Uint8Array(txt.length);
+          for (i = _i = 0, _ref = txt.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+            buf[i] = txt.charCodeAt(i) & 0xff;
+          }
         }
-      }
-      buffer = new AV.Buffer(buf);
-      _this.offset += buffer.length;
-      _this.emit('data', buffer);
-      if (_this.offset >= _this.length) {
-        _this.emit('end');
-      }
-      _this.inflight = false;
-      if (!(_this.offset >= _this.length)) {
-        return _this.loop();
-      }
-    };
-    this.xhr.onprogress = function(event) {
-      return _this.emit('progress', (_this.offset + event.loaded) / _this.length * 100);
-    };
-    this.xhr.onerror = function(err) {
-      _this.emit('error', err);
-      return _this.pause();
-    };
-    this.xhr.onabort = function(event) {
-      return _this.inflight = false;
-    };
+        buffer = new AV.Buffer(buf);
+        _this.offset += buffer.length;
+        _this.emit('data', buffer);
+        if (_this.offset >= _this.length) {
+          _this.emit('end');
+        }
+        _this.inflight = false;
+        if (!(_this.offset >= _this.length)) {
+          return _this.loop();
+        }
+      };
+    })(this);
+    this.xhr.onprogress = (function(_this) {
+      return function(event) {
+        return _this.emit('progress', (_this.offset + event.loaded) / _this.length * 100);
+      };
+    })(this);
+    this.xhr.onerror = (function(_this) {
+      return function(err) {
+        _this.emit('error', err);
+        return _this.pause();
+      };
+    })(this);
+    this.xhr.onabort = (function(_this) {
+      return function(event) {
+        return _this.inflight = false;
+      };
+    })(this);
     this.xhr.open("GET", this.url, true);
     this.xhr.responseType = "arraybuffer";
     endPos = Math.min(this.offset + this.chunkSize, this.length);
@@ -3409,7 +3175,6 @@ AV.HTTPSource = (function(_super) {
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 AV.FileSource = (function(_super) {
-
   __extends(FileSource, _super);
 
   function FileSource(file) {
@@ -3420,10 +3185,10 @@ AV.FileSource = (function(_super) {
     this.offset = 0;
     this.length = this.file.size;
     this.chunkSize = 1 << 20;
+    this.file[this.slice = 'slice'] || this.file[this.slice = 'webkitSlice'] || this.file[this.slice = 'mozSlice'];
   }
 
   FileSource.prototype.start = function() {
-    var _this = this;
     if (this.reader) {
       if (!this.active) {
         return this.loop();
@@ -3431,37 +3196,44 @@ AV.FileSource = (function(_super) {
     }
     this.reader = new FileReader;
     this.active = true;
-    this.reader.onload = function(e) {
-      var buf;
-      buf = new AV.Buffer(new Uint8Array(e.target.result));
-      _this.offset += buf.length;
-      _this.emit('data', buf);
-      _this.active = false;
-      if (_this.offset < _this.length) {
-        return _this.loop();
-      }
-    };
-    this.reader.onloadend = function() {
-      if (_this.offset === _this.length) {
-        _this.emit('end');
-        return _this.reader = null;
-      }
-    };
-    this.reader.onerror = function(e) {
-      return _this.emit('error', e);
-    };
-    this.reader.onprogress = function(e) {
-      return _this.emit('progress', (_this.offset + e.loaded) / _this.length * 100);
-    };
+    this.reader.onload = (function(_this) {
+      return function(e) {
+        var buf;
+        buf = new AV.Buffer(new Uint8Array(e.target.result));
+        _this.offset += buf.length;
+        _this.emit('data', buf);
+        _this.active = false;
+        if (_this.offset < _this.length) {
+          return _this.loop();
+        }
+      };
+    })(this);
+    this.reader.onloadend = (function(_this) {
+      return function() {
+        if (_this.offset === _this.length) {
+          _this.emit('end');
+          return _this.reader = null;
+        }
+      };
+    })(this);
+    this.reader.onerror = (function(_this) {
+      return function(e) {
+        return _this.emit('error', e);
+      };
+    })(this);
+    this.reader.onprogress = (function(_this) {
+      return function(e) {
+        return _this.emit('progress', (_this.offset + e.loaded) / _this.length * 100);
+      };
+    })(this);
     return this.loop();
   };
 
   FileSource.prototype.loop = function() {
-    var blob, endPos, slice;
+    var blob, endPos;
     this.active = true;
-    this.file[slice = 'slice'] || this.file[slice = 'webkitSlice'] || this.file[slice = 'mozSlice'];
     endPos = Math.min(this.offset + this.chunkSize, this.length);
-    blob = this.file[slice](this.offset, endPos);
+    blob = this.file[this.slice](this.offset, endPos);
     return this.reader.readAsArrayBuffer(blob);
   };
 
@@ -3477,6 +3249,371 @@ AV.FileSource = (function(_super) {
   };
 
   return FileSource;
+
+})(AV.EventEmitter);
+  /*
+ * This resampler is from XAudioJS: https://github.com/grantgalitz/XAudioJS
+ * Planned to be replaced with src.js, eventually: https://github.com/jussi-kalliokoski/src.js
+ */
+
+//JavaScript Audio Resampler (c) 2011 - Grant Galitz
+function Resampler(fromSampleRate, toSampleRate, channels, outputBufferSize, noReturn) {
+	this.fromSampleRate = fromSampleRate;
+	this.toSampleRate = toSampleRate;
+	this.channels = channels | 0;
+	this.outputBufferSize = outputBufferSize;
+	this.noReturn = !!noReturn;
+	this.initialize();
+}
+
+Resampler.prototype.initialize = function () {
+	//Perform some checks:
+	if (this.fromSampleRate > 0 && this.toSampleRate > 0 && this.channels > 0) {
+		if (this.fromSampleRate == this.toSampleRate) {
+			//Setup a resampler bypass:
+			this.resampler = this.bypassResampler;		//Resampler just returns what was passed through.
+			this.ratioWeight = 1;
+		}
+		else {
+			if (this.fromSampleRate < this.toSampleRate) {
+				/*
+					Use generic linear interpolation if upsampling,
+					as linear interpolation produces a gradient that we want
+					and works fine with two input sample points per output in this case.
+				*/
+				this.compileLinearInterpolationFunction();
+				this.lastWeight = 1;
+			}
+			else {
+				/*
+					Custom resampler I wrote that doesn't skip samples
+					like standard linear interpolation in high downsampling.
+					This is more accurate than linear interpolation on downsampling.
+				*/
+				this.compileMultiTapFunction();
+				this.tailExists = false;
+				this.lastWeight = 0;
+			}
+			this.ratioWeight = this.fromSampleRate / this.toSampleRate;
+			this.initializeBuffers();
+		}
+	}
+	else {
+		throw(new Error("Invalid settings specified for the resampler."));
+	}
+};
+
+Resampler.prototype.compileLinearInterpolationFunction = function () {
+	var toCompile = "var bufferLength = buffer.length;\
+	var outLength = this.outputBufferSize;\
+	if ((bufferLength % " + this.channels + ") == 0) {\
+		if (bufferLength > 0) {\
+			var ratioWeight = this.ratioWeight;\
+			var weight = this.lastWeight;\
+			var firstWeight = 0;\
+			var secondWeight = 0;\
+			var sourceOffset = 0;\
+			var outputOffset = 0;\
+			var outputBuffer = this.outputBuffer;\
+			for (; weight < 1; weight += ratioWeight) {\
+				secondWeight = weight % 1;\
+				firstWeight = 1 - secondWeight;";
+	for (var channel = 0; channel < this.channels; ++channel) {
+		toCompile += "outputBuffer[outputOffset++] = (this.lastOutput[" + channel + "] * firstWeight) + (buffer[" + channel + "] * secondWeight);";
+	}
+	toCompile += "}\
+			weight -= 1;\
+			for (bufferLength -= " + this.channels + ", sourceOffset = Math.floor(weight) * " + this.channels + "; outputOffset < outLength && sourceOffset < bufferLength;) {\
+				secondWeight = weight % 1;\
+				firstWeight = 1 - secondWeight;";
+	for (var channel = 0; channel < this.channels; ++channel) {
+		toCompile += "outputBuffer[outputOffset++] = (buffer[sourceOffset" + ((channel > 0) ? (" + " + channel) : "") + "] * firstWeight) + (buffer[sourceOffset + " + (this.channels + channel) + "] * secondWeight);";
+	}
+	toCompile += "weight += ratioWeight;\
+				sourceOffset = Math.floor(weight) * " + this.channels + ";\
+			}";
+	for (var channel = 0; channel < this.channels; ++channel) {
+		toCompile += "this.lastOutput[" + channel + "] = buffer[sourceOffset++];";
+	}
+	toCompile += "this.lastWeight = weight % 1;\
+			return this.bufferSlice(outputOffset);\
+		}\
+		else {\
+			return (this.noReturn) ? 0 : [];\
+		}\
+	}\
+	else {\
+		throw(new Error(\"Buffer was of incorrect sample length.\"));\
+	}";
+	this.resampler = Function("buffer", toCompile);
+};
+
+Resampler.prototype.compileMultiTapFunction = function () {
+	var toCompile = "var bufferLength = buffer.length;\
+	var outLength = this.outputBufferSize;\
+	if ((bufferLength % " + this.channels + ") == 0) {\
+		if (bufferLength > 0) {\
+			var ratioWeight = this.ratioWeight;\
+			var weight = 0;";
+	for (var channel = 0; channel < this.channels; ++channel) {
+		toCompile += "var output" + channel + " = 0;"
+	}
+	toCompile += "var actualPosition = 0;\
+			var amountToNext = 0;\
+			var alreadyProcessedTail = !this.tailExists;\
+			this.tailExists = false;\
+			var outputBuffer = this.outputBuffer;\
+			var outputOffset = 0;\
+			var currentPosition = 0;\
+			do {\
+				if (alreadyProcessedTail) {\
+					weight = ratioWeight;";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "output" + channel + " = 0;"
+	}
+	toCompile += "}\
+				else {\
+					weight = this.lastWeight;";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "output" + channel + " = this.lastOutput[" + channel + "];"
+	}
+	toCompile += "alreadyProcessedTail = true;\
+				}\
+				while (weight > 0 && actualPosition < bufferLength) {\
+					amountToNext = 1 + actualPosition - currentPosition;\
+					if (weight >= amountToNext) {";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "output" + channel + " += buffer[actualPosition++] * amountToNext;"
+	}
+	toCompile += "currentPosition = actualPosition;\
+						weight -= amountToNext;\
+					}\
+					else {";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "output" + channel + " += buffer[actualPosition" + ((channel > 0) ? (" + " + channel) : "") + "] * weight;"
+	}
+	toCompile += "currentPosition += weight;\
+						weight = 0;\
+						break;\
+					}\
+				}\
+				if (weight == 0) {";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "outputBuffer[outputOffset++] = output" + channel + " / ratioWeight;"
+	}
+	toCompile += "}\
+				else {\
+					this.lastWeight = weight;";
+	for (channel = 0; channel < this.channels; ++channel) {
+		toCompile += "this.lastOutput[" + channel + "] = output" + channel + ";"
+	}
+	toCompile += "this.tailExists = true;\
+					break;\
+				}\
+			} while (actualPosition < bufferLength && outputOffset < outLength);\
+			return this.bufferSlice(outputOffset);\
+		}\
+		else {\
+			return (this.noReturn) ? 0 : [];\
+		}\
+	}\
+	else {\
+		throw(new Error(\"Buffer was of incorrect sample length.\"));\
+	}";
+	this.resampler = Function("buffer", toCompile);
+};
+
+Resampler.prototype.bypassResampler = function (buffer) {
+	if (this.noReturn) {
+		//Set the buffer passed as our own, as we don't need to resample it:
+		this.outputBuffer = buffer;
+		return buffer.length;
+	}
+	else {
+		//Just return the buffer passsed:
+		return buffer;
+	}
+};
+
+Resampler.prototype.bufferSlice = function (sliceAmount) {
+	if (this.noReturn) {
+		//If we're going to access the properties directly from this object:
+		return sliceAmount;
+	}
+	else {
+		//Typed array and normal array buffer section referencing:
+		try {
+			return this.outputBuffer.subarray(0, sliceAmount);
+		}
+		catch (error) {
+			try {
+				//Regular array pass:
+				this.outputBuffer.length = sliceAmount;
+				return this.outputBuffer;
+			}
+			catch (error) {
+				//Nightly Firefox 4 used to have the subarray function named as slice:
+				return this.outputBuffer.slice(0, sliceAmount);
+			}
+		}
+	}
+};
+
+Resampler.prototype.initializeBuffers = function () {
+	//Initialize the internal buffer:
+	try {
+		this.outputBuffer = new Float32Array(this.outputBufferSize);
+		this.lastOutput = new Float32Array(this.channels);
+	}
+	catch (error) {
+		this.outputBuffer = [];
+		this.lastOutput = [];
+	}
+};var WebAudioDevice,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+WebAudioDevice = (function(_super) {
+  var AudioContext, createProcessor, sharedContext;
+
+  __extends(WebAudioDevice, _super);
+
+  AV.AudioDevice.register(WebAudioDevice);
+
+  AudioContext = global.AudioContext || global.webkitAudioContext;
+
+  WebAudioDevice.supported = AudioContext && (typeof AudioContext.prototype[createProcessor = 'createScriptProcessor'] === 'function' || typeof AudioContext.prototype[createProcessor = 'createJavaScriptNode'] === 'function');
+
+  sharedContext = null;
+
+  function WebAudioDevice(sampleRate, channels) {
+    this.sampleRate = sampleRate;
+    this.channels = channels;
+    this.refill = __bind(this.refill, this);
+    this.context = sharedContext != null ? sharedContext : sharedContext = new AudioContext;
+    this.deviceSampleRate = this.context.sampleRate;
+    this.bufferSize = Math.ceil(4096 / (this.deviceSampleRate / this.sampleRate) * this.channels);
+    this.bufferSize += this.bufferSize % this.channels;
+    if (this.deviceSampleRate !== this.sampleRate) {
+      this.resampler = new Resampler(this.sampleRate, this.deviceSampleRate, this.channels, 4096 * this.channels);
+    }
+    this.node = this.context[createProcessor](4096, this.channels, this.channels);
+    this.node.onaudioprocess = this.refill;
+    this.node.connect(this.context.destination);
+  }
+
+  WebAudioDevice.prototype.refill = function(event) {
+    var channelCount, channels, data, i, n, outputBuffer, _i, _j, _k, _ref;
+    outputBuffer = event.outputBuffer;
+    channelCount = outputBuffer.numberOfChannels;
+    channels = new Array(channelCount);
+    for (i = _i = 0; _i < channelCount; i = _i += 1) {
+      channels[i] = outputBuffer.getChannelData(i);
+    }
+    data = new Float32Array(this.bufferSize);
+    this.emit('refill', data);
+    if (this.resampler) {
+      data = this.resampler.resampler(data);
+    }
+    for (i = _j = 0, _ref = outputBuffer.length; _j < _ref; i = _j += 1) {
+      for (n = _k = 0; _k < channelCount; n = _k += 1) {
+        channels[n][i] = data[i * channelCount + n];
+      }
+    }
+  };
+
+  WebAudioDevice.prototype.destroy = function() {
+    return this.node.disconnect(0);
+  };
+
+  WebAudioDevice.prototype.getDeviceTime = function() {
+    return this.context.currentTime * this.sampleRate;
+  };
+
+  return WebAudioDevice;
+
+})(AV.EventEmitter);
+  var MozillaAudioDevice,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+MozillaAudioDevice = (function(_super) {
+  var createTimer, destroyTimer;
+
+  __extends(MozillaAudioDevice, _super);
+
+  AV.AudioDevice.register(MozillaAudioDevice);
+
+  MozillaAudioDevice.supported = (typeof Audio !== "undefined" && Audio !== null) && 'mozWriteAudio' in new Audio;
+
+  function MozillaAudioDevice(sampleRate, channels) {
+    this.sampleRate = sampleRate;
+    this.channels = channels;
+    this.refill = __bind(this.refill, this);
+    this.audio = new Audio;
+    this.audio.mozSetup(this.channels, this.sampleRate);
+    this.writePosition = 0;
+    this.prebufferSize = this.sampleRate / 2;
+    this.tail = null;
+    this.timer = createTimer(this.refill, 100);
+  }
+
+  MozillaAudioDevice.prototype.refill = function() {
+    var available, buffer, currentPosition, written;
+    if (this.tail) {
+      written = this.audio.mozWriteAudio(this.tail);
+      this.writePosition += written;
+      if (this.writePosition < this.tail.length) {
+        this.tail = this.tail.subarray(written);
+      } else {
+        this.tail = null;
+      }
+    }
+    currentPosition = this.audio.mozCurrentSampleOffset();
+    available = currentPosition + this.prebufferSize - this.writePosition;
+    if (available > 0) {
+      buffer = new Float32Array(available);
+      this.emit('refill', buffer);
+      written = this.audio.mozWriteAudio(buffer);
+      if (written < buffer.length) {
+        this.tail = buffer.subarray(written);
+      }
+      this.writePosition += written;
+    }
+  };
+
+  MozillaAudioDevice.prototype.destroy = function() {
+    return destroyTimer(this.timer);
+  };
+
+  MozillaAudioDevice.prototype.getDeviceTime = function() {
+    return this.audio.mozCurrentSampleOffset() / this.channels;
+  };
+
+  createTimer = function(fn, interval) {
+    var url, worker;
+    url = AV.Buffer.makeBlobURL("setInterval(function() { postMessage('ping'); }, " + interval + ");");
+    if (url == null) {
+      return setInterval(fn, interval);
+    }
+    worker = new Worker(url);
+    worker.onmessage = fn;
+    worker.url = url;
+    return worker;
+  };
+
+  destroyTimer = function(timer) {
+    if (timer.terminate) {
+      timer.terminate();
+      return URL.revokeObjectURL(timer.url);
+    } else {
+      return clearInterval(timer);
+    }
+  };
+
+  return MozillaAudioDevice;
 
 })(AV.EventEmitter);
   return global.AV = AV;

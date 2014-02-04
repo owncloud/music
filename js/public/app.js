@@ -277,6 +277,7 @@ angular.module('Music').controller('PlayerController',
 				volume: 50
 			});
 			$scope.player.play('ownCloudSound');*/
+			console.log('Load file and play');
 			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.player.play();
 		} else {
@@ -329,6 +330,7 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.toggle = function(forcePlay) {
+		console.log('toggle triggered');
 		forcePlay = forcePlay || false;
 		if($scope.currentTrack === null) {
 			// nothing to do

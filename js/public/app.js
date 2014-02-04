@@ -287,6 +287,33 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
+	
+	$scope.$watch(function () {
+		return $scope.player.currentTime;
+	}, function (newValue, oldValue) {
+		var position = newValue/1000;
+		if($scope.$$phase) {
+			$scope.position = position;
+		} else {
+			$scope.$apply(function(){
+				$scope.position = position;
+			});
+		}
+	})
+
+	$scope.$watch(function () {
+		return $scope.player.duration;
+	}, function (newValue, oldValue) {
+		var duration = newValue/1000;
+		if($scope.$$phase) {
+			$scope.duration = duration;
+		} else {
+			$scope.$apply(function(){
+				$scope.duration = duration;
+			});
+		}
+	})
+
 	// only call from external script
 	$scope.setPlay = function(playing) {
 		// determine if already inside of an $apply or $digest

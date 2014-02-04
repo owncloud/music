@@ -46,7 +46,7 @@
 			</div>
 			<div ng-show="currentTrack.title" class="progress-info">
 				<span ng-hide="buffering" class="muted">{{ position | playTime }} / {{ duration | playTime }}</span>
-				<span ng-show="buffering" class="muted" translate>Loading ... {{ bufferPercent }}% completed</span>
+				<span ng-show="buffering" class="muted" translate>Loading ... {{ bufferPercent | number:0 }}% completed</span>
 				<div class="progress">
 					<div class="seek-bar">
 						<div class="play-bar" style="width: {{ position / duration * 100 }}%;"></div>

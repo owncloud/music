@@ -210,7 +210,8 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		//$scope.player.stop();
+		$scope.player.stop();
+		$scope.setPlay(false);
 		//$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state

@@ -1551,6 +1551,7 @@ AV.Player = (function(_super) {
 
   Player.fromURL = function(url) {
     var asset;
+	alert('Player loaded, URL: '+url);
     asset = AV.Asset.fromURL(url);
     return new AV.Player(asset);
   };

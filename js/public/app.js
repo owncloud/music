@@ -280,6 +280,16 @@ angular.module('Music').controller('PlayerController',
 			$scope.player=$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.player.play();
 			$scope.setPlay(true);
+			$scope.player.on("progress", function (currentTime) {
+				var position = currentTime/1000;
+				if($scope.$$phase) {
+					$scope.position = position;
+				} else {
+					$scope.$apply(function(){
+						$scope.position = position;
+					});
+				}
+			})
 		} else {
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
@@ -288,7 +298,7 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
-	
+/*	
 	$scope.$watch(function () {
 		return $scope.player.currentTime;
 	}, function (newValue, oldValue) {
@@ -301,7 +311,7 @@ angular.module('Music').controller('PlayerController',
 			});
 		}
 	})
-
+*/
 	$scope.$watch(function () {
 		return $scope.player.duration;
 	}, function (newValue, oldValue) {

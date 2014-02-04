@@ -480,6 +480,7 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	*/
 
 	$rootScope.$emit('SoundManagerReady');
+	console.log(AV.Player);
 	return AV.Player;
 }]);
 

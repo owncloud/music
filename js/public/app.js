@@ -289,8 +289,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.player=AV.Player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.setBuffering(true);
 			
-			$scope.player.preload();
-			$scope.player.startPlaying();
+			$scope.player.play();
 
 			$scope.setPlay(true);
 			$scope.player.on("buffer", function (percent) {

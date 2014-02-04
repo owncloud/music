@@ -1709,6 +1709,7 @@ AV.Player = (function(_super) {
   };
 
   Player.prototype.play = function() {
+	alert("call me in aurola.js#1712")
     var _ref;
     if (this.playing) {
       return;

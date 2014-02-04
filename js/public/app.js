@@ -298,20 +298,6 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
-/*	
-	$scope.$watch(function () {
-		return $scope.player.currentTime;
-	}, function (newValue, oldValue) {
-		var position = newValue/1000;
-		if($scope.$$phase) {
-			$scope.position = position;
-		} else {
-			$scope.$apply(function(){
-				$scope.position = position;
-			});
-		}
-	})
-*/
 	$scope.$watch(function () {
 		return $scope.player.duration;
 	}, function (newValue, oldValue) {

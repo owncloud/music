@@ -200,13 +200,7 @@ angular.module('Music').controller('PlayerController',
 			navigator.userAgent.indexOf('Chrome') !== -1) ?
 				true : false;
 		for(var mimeType in track.files) {
-			if(mimeType === 'audio/ogg' && isChrome) {
-				// TODO inject this
-				OC.Notification.showHtml(gettext(
-					'Chrome is only able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				));
-			}
-			if(Audio.canPlayMIME(mimeType)) {
+			if(mimeType=='audio/flac') {
 				return track.files[mimeType];
 			}
 		}
@@ -216,8 +210,8 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		$scope.player.stopAll();
-		$scope.player.destroySound('ownCloudSound');
+		//$scope.player.stopAll();
+		//$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state
 			$scope.$parent.started = true;
@@ -232,7 +226,7 @@ angular.module('Music').controller('PlayerController',
 											return album.id === newValue.album.id;
 										});
 
-			$scope.player.createSound({
+			/*$scope.player.createSound({
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
@@ -282,7 +276,9 @@ angular.module('Music').controller('PlayerController',
 				},
 				volume: 50
 			});
-			$scope.player.play('ownCloudSound');
+			$scope.player.play('ownCloudSound');*/
+			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.play();
 		} else {
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
@@ -339,9 +335,9 @@ angular.module('Music').controller('PlayerController',
 			return null;
 		}
 		if(forcePlay) {
-			$scope.player.play('ownCloudSound');
+			$scope.player.play();
 		} else {
-			$scope.player.togglePause('ownCloudSound');
+			$scope.player.togglePlayback();
 		}
 	};
 
@@ -459,7 +455,7 @@ angular.module('Music').factory('Artists', ['Restangular', '$rootScope', functio
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	var isChrome = (navigator && navigator.userAgent &&
+	/*var isChrome = (navigator && navigator.userAgent &&
 		navigator.userAgent.indexOf('Chrome') !== -1) ?
 			true : false;
 
@@ -476,11 +472,12 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 		flashPollingInterval: 200,
 		html5PollingInterval: 200,
 		onready: function() {
-			$rootScope.$emit('SoundManagerReady');
+		XXX: May cause problem $rootScope.$emit('SoundManagerReady');
 		}
 	});
+	*/
 
-	return soundManager;
+	return AV.Player;
 }]);
 
 angular.module('Music').factory('playlists', function(){

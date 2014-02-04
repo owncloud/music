@@ -202,7 +202,7 @@ angular.module('Music').controller('PlayerController',
 			navigator.userAgent.indexOf('Chrome') !== -1) ?
 				true : false;
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mp3') {
+			if(mimeType=='audio/flac' || mimeType=='audio/mpeg') {
 				return track.files[mimeType];
 			}
 		}

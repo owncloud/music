@@ -155,6 +155,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 
+	$scope.bufferPercent = 0;
+
 	$scope.repeat = false;
 	$scope.shuffle = false;
 
@@ -284,11 +286,22 @@ angular.module('Music').controller('PlayerController',
 				volume: 50
 			});
 			$scope.player.play('ownCloudSound');*/
-			$scope.setBuffering(true);
 			$scope.player=AV.Player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
-			$scope.setBuffering(false);
 			$scope.player.play();
 			$scope.setPlay(true);
+			$scope.player.on("buffer", function (percent) {
+				// update percent
+				if($scope.$$phase) {
+					$scope.bufferPercent = percent;
+				} else {
+					$scope.$apply(function(){
+						$scope.bufferPercent = percent;
+					});
+				}
+				if (percent == 100) {
+					$scope.setBuffering(false);
+				}
+			})
 			$scope.player.on("progress", function (currentTime) {
 				var position = currentTime/1000;
 				if($scope.$$phase) {

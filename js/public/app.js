@@ -481,7 +481,7 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	*/
 
 	$rootScope.$emit('SoundManagerReady');
-	return new AV.Player();
+	return AV.Player;
 }]);
 
 angular.module('Music').factory('playlists', function(){

@@ -171,6 +171,34 @@
 	top: 31px;
 }
 
-#playerbar .volume-control input {
+#playerbar .volume-control input[type=range] {
 	width: 80px;
+    -webkit-appearance: none;
+    background-color: silver;
+    width: 80px;
+    height:3px;
+}
+
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #666;
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+}
+
+:hover::-webkit-slider-thumb {
+    cursor: pointer;
+}
+
+::-moz-range-thumb {
+    -moz-appearance: none;
+    background-color: #666;
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+}
+
+:hover::-moz-range-thumb {
+    cursor: pointer;
 }

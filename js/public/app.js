@@ -376,8 +376,8 @@ angular.module('Music').controller('PlayerController',
 
 
 	$scope.$watch("volume", function (newValue, oldValue) {
-		//alert("newValue", newValue);
-		console.log(newValue)
+		var volume = parseInt(newValue);
+		$scope.player.volume = volume;
 	})
 
 

@@ -167,15 +167,15 @@
 
 #playerbar .volume-control {
 	position: absolute;
-	left: 925px;
-	top: 31px;
+	left: 1000px;
+	top: 22px;
 }
 
 #playerbar .volume-control input[type=range] {
 	width: 80px;
     -webkit-appearance: none;
     background-color: silver;
-    width: 80px;
+    width: 100px;
     height:3px;
 }
 

@@ -164,3 +164,13 @@
 	filter: alpha(opacity = 100);
 	opacity: 1;
 }
+
+#playerbar .progress-info .volume-control {
+	position: absolute;
+	left: 925px;
+	top: 31px;
+}
+
+#playerbar .progress-info .volume-control input {
+	width: 80px;
+}

@@ -57,17 +57,6 @@
 			<div class="volume-control">
 				<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
 			</div>
-			<style>
-.volume-control {
-	position: absolute;
-	left: 925px;
-	top: 31px;
-}
-
-.volume-control input {
-	width: 80px;
-}
-			</style>
 			<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
 				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 			<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"

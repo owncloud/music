@@ -156,6 +156,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentAlbum = null;
 
 	$scope.bufferPercent = 0;
+	$scope.volume = 80;  // volume can be 0~100
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
@@ -372,6 +373,12 @@ angular.module('Music').controller('PlayerController',
 			});
 		}
 	};
+
+
+	$scope.$watch("volume", function (newValue, oldValue) {
+		alert("newValue", newValue);
+	})
+
 
 	// only call from external script
 	$scope.setTime = function(position, duration) {

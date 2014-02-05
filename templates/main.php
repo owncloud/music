@@ -55,7 +55,7 @@
 				</div>
 			</div>
 			<div class="volume-control">
-				<input type="range" class="volume-slider" min="0" max="100">
+				<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
 			</div>
 			<style>
 .volume-control {

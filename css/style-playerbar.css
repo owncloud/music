@@ -165,12 +165,12 @@
 	opacity: 1;
 }
 
-#playerbar .progress-info .volume-control {
+#playerbar .volume-control {
 	position: absolute;
 	left: 925px;
 	top: 31px;
 }
 
-#playerbar .progress-info .volume-control input {
+#playerbar .volume-control input {
 	width: 80px;
 }

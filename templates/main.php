@@ -55,9 +55,9 @@
 				</div>
 			</div>
 			<div class="volume-control">
+				<img id="volume-icon" alt="Volume" src="<?php p(OCP\image_path('music', 'volume_icon.png')) ?>">
 				<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
 			</div>
-			<img id="volume-icon" alt="Volume" src="<?php p(OCP\image_path('music', 'volume_icon.png')) ?>">
 			<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
 				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 			<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"

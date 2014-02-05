@@ -202,3 +202,9 @@
 :hover::-moz-range-thumb {
     cursor: pointer;
 }
+
+#volume-icon {
+	opacity: .4;
+	position: absolute;
+	left: -24px;
+}

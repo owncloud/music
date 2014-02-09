@@ -4,13 +4,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: 2014-02-09 09:21:22+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-02-08 16:07+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Telugu (http://www.transifex.com/projects/p/owncloud/language/te/)\n"
+"Language-Team: Sundanese (http://www.transifex.com/projects/p/owncloud/language/su/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: te\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: su\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../js/public/app.js
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "తొలగించు"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -29,11 +29,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "సంగీతం"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "తదుపరి"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
@@ -49,7 +49,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "గత"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
@@ -59,7 +59,6 @@ msgstr ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] ""
-msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."

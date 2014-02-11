@@ -1,11 +1,12 @@
 # 
 # Translators:
+# pinzerbib <pinzerbib@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-10 11:26:22+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"POT-Creation-Date: 2014-02-11 06:30:34+0500\n"
+"PO-Revision-Date: 2014-02-10 18:00+0000\n"
+"Last-Translator: pinzerbib <pinzerbib@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/owncloud/language/he/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +18,7 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "MP3 - ראה כרום היא רק מסוגל להשמעת קבצי<a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">וויקי</a> "
 
 #: ../templates/main.php
 msgid "Delete"
@@ -25,7 +26,7 @@ msgstr "מחיקה"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "טוען..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -37,7 +38,7 @@ msgstr "הבא"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "אין כאן שום דבר. אולי ברצונך להעלות משהו?"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -58,21 +59,21 @@ msgstr "חזרה"
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "הצג את כל {{trackcount}} שירים"
+msgstr[1] "הצג את כל {{trackcount}} שירים..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "הצג פחות..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "ערבב"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "אלבום לא ידוע"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "אמן לא ידוע"

@@ -1,11 +1,12 @@
 # 
 # Translators:
+# pointhi, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-16 06:31:24+0500\n"
-"PO-Revision-Date: 2014-02-15 11:00+0000\n"
-"Last-Translator: I Robot\n"
+"POT-Creation-Date: 2014-02-17 08:15:37+0500\n"
+"PO-Revision-Date: 2014-02-16 13:40+0000\n"
+"Last-Translator: pointhi\n"
 "Language-Team: German (Austria) (http://www.transifex.com/projects/p/owncloud/language/de_AT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +18,7 @@ msgid ""
 "Chrome is only able to playback MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chrome ist nur in der Lage, MP3-Dateien wiederzugeben - siehe <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>\nChrome is just able to playback MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a> "
 
 #: ../templates/main.php
 msgid "Delete"
@@ -25,7 +26,7 @@ msgstr "Löschen"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Lade ..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -37,7 +38,7 @@ msgstr "Nächstes"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Alles leer. Lade deine Musik hoch!"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -58,21 +59,21 @@ msgstr "Wiederholen"
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{{ trackcount }} Lied anzeigen ..."
+msgstr[1] "Alle {{ trackcount }} Lieder anzeigen ..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Weniger anzeigen ..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Zufallswiedergabe"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Unbekanntes Album"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Unbekannter Künstler"

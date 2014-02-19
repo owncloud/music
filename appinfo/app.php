@@ -63,3 +63,6 @@ $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 
 // load fileactions
 $api->addScript('public/fileactions');
+
+// load file for public sharing page
+$api->addScript('public/musicFilePlayer');

@@ -488,7 +488,7 @@ angular.module('Music').factory('playlists', function(){
 		{name: 'test playlist 1', id: 1},
 		{name: 'test playlist 2', id: 2},
 		{name: 'test playlist 3', id: 3},
-		{name: 'test playlist 4', id: 4},
+		{name: 'test playlist 4', id: 4}
 	];
 });
 angular.module('Music').filter('playTime', function() {

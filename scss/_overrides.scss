@@ -1,0 +1,53 @@
+//Animation-goes-left
+
+.animation-goes-left.ng-enter, .animation-goes-left.ng-leave {
+  -webkit-transition:all linear 0.3s;
+  position: absolute;
+}
+
+.animation-goes-left.ng-enter {
+  left: 100% !important;
+  right: auto !important;
+
+  &.ng-enter-active {
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
+.animation-goes-left.ng-leave {
+  left: 0 !important;
+  right: auto !important;
+  
+  &.ng-leave-active {
+    left: -100% !important;
+    right: auto !important;
+  }
+}
+
+//Animation-goes-right
+
+.animation-goes-right.ng-enter, .animation-goes-right.ng-leave {
+  -webkit-transition:all linear 0.3s;
+  position: absolute;
+}
+
+.animation-goes-right.ng-enter {
+  left: -100% !important;
+  right: auto !important;
+
+  &.ng-enter-active {
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
+.animation-goes-right.ng-leave {
+  left: 0 !important;
+  right: auto !important;
+  
+  &.ng-leave-active {
+    left: 100% !important;
+    right: auto !important;
+  }
+}

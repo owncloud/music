@@ -92,7 +92,8 @@ module.exports = function(grunt) {
 				files: [
 					'../js/app/**/*.js',
 					'../js/config/*.js',
-					'../js/l10n/*.js'
+					'../js/l10n/*.js',
+					'../scss/**/*.scss'
 				],
 				tasks: ['build']
 			},

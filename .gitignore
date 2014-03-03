@@ -2,6 +2,7 @@ node_modules/
 *.log
 build/artifacts
 build/music.zip
+build/.sass-cache
 .rvm
 
 # just sane ignores

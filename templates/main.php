@@ -71,11 +71,11 @@
 <!-- 
 		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
-				<li><a href="#/" translate>All</a></li>
-				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
-				<li><a href="#/" translate>+ New Playlist</a></li>
+				<li><a href="/" translate>All</a></li>
+				<li class="app-navigation-separator"><a href="/" translate>Favorites</a></li>
+				<li><a href="/" translate>+ New Playlist</a></li>
 				<li ng-repeat="playlist in playlists">
-					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
+					<a href="/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<img alt="{{ 'Delete' | translate }}" 	src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
 				</li>
 			</ul>
@@ -84,7 +84,7 @@
 
 		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 
-<!-- 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
+		<!-- <div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
 			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>
 		</div> -->
 

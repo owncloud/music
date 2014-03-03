@@ -14,25 +14,28 @@ if($('html').hasClass('ie')) {
 
 angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']).
 	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
+		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider',
+		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider) {
 
-	$routeProvider.when('/', {
-		templateUrl: 'main.html'
-	}).when('/file/:fileid', {
-		templateUrl: 'main.html'
-	}).when('/artist/:id', {
-		templateUrl: 'artist-detail.html',
-	}).otherwise({
-		redirectTo: '/'
-	});
+		var path = window.location.pathname;
+		
+		$routeProvider.when(path, {
+			templateUrl: 'main.html'
+		}).when(path + 'file/:fileid', {
+			templateUrl: 'main.html'
+		}).when(path + 'artist/:id', {
+			templateUrl: 'artist-detail.html',
+		}).otherwise({
+			redirectTo: path
+		});
 
+		if(window.history && window.history.pushState){
+			$locationProvider.html5Mode(true);
+		}
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
-}]).run(function($rootScope) {
-  $rootScope.animationType = "animation-goes-left";
-	});
+}]).run();
 angular.module('Music').controller('ArtistController', ['$scope', '$routeParams', 'Artists', function($scope, $routeParams, Artists) {
   Artists.then(function(artists){
     for( var i = 0; i < artists.length; i++ ) {

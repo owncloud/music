@@ -1,8 +1,18 @@
 
 <div ng-controller="ArtistController">
-  <div class="subnav">
-    <a class="button left back" href="#/" ng-click="switchAnimationType('animation-goes-right')">Back</a>
-    <h1 class="left">{{artist.name}}</h1>
+
+  <div class="navbar navbar-default navbar-fixed-top interpret">
+    <div class="row">
+      <div class="col-xs-4">
+          <a class="btn btn-default navbar-btn btn-info" href="#/artists" ng-click="switchAnimationType('animation-goes-right')">
+            - Interpreten
+            <span class="glyphicon glyphicon-search"></span>
+          </a>
+      </div>
+      <div class="col-xs-8">
+          <p class="navbar-text">{{artist.name}}</p>
+      </div>
+    </div>
   </div>
 
   <div ng-repeat="album in artist.albums | orderBy:'year'">

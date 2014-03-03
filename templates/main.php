@@ -32,7 +32,7 @@
 
 
 		<div id="playerbar" ng-if="started === started" ng-controller="PlayerController" ng-class="{started: started}">
-			<div id="play-controls">
+			<!-- <div id="play-controls">
 				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
 					src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
 				<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
@@ -45,7 +45,7 @@
 				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
 				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
-			</div>
+			</div> -->
 		</div>
 
 <!-- 
@@ -80,6 +80,7 @@
 				</li>
 			</ul>
 		</div> -->
+
 
 		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 

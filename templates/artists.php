@@ -3,10 +3,20 @@
 	<span ng-show="loading" translate>Loading ...</span>
 </div>
 
+  <div class="navbar navbar-default navbar-fixed-top interpret">
+    <div class="row">
+      <div class="col-xs-4">
+          <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
+            - home 
+            <span class="glyphicon glyphicon-search"></span>
+          </a>
+      </div>
+      <div class="col-xs-8">
+          <p class="navbar-text push-left">Interpreten</p>
+      </div>
+    </div>
+  </div>
 
-  <nav class="navbar navbar-default" role="navigation">
-    <p>Interpreten</p>
-  </nav>
 
 <!-- <ul class="artists">
 	<li ng-repeat="artist in artists | orderBy:'name'">

@@ -3,11 +3,12 @@
 	<span ng-show="loading" translate>Loading ...</span>
 </div>
 
-<div class="subnav">
-  <p>choose an interpret</p>
-</div>
 
-<ul class="artists">
+  <nav class="navbar navbar-default" role="navigation">
+    <p>Interpreten</p>
+  </nav>
+
+<!-- <ul class="artists">
 	<li ng-repeat="artist in artists | orderBy:'name'">
     <a class='button interpret expand' href='#/artist/{{artist.id}}' ng-click="switchAnimationType('animation-goes-left')" ng-swipe-left="swipeTest = 'left'">
       <div class='artist-entry'>
@@ -18,3 +19,15 @@
     </a>
   </li>
 </ul>
+ -->
+
+ <div class="list-group">
+
+  <a ng-repeat="artist in artists | orderBy:'name'" 
+      href='#/artist/{{artist.id}}' 
+      ng-click="switchAnimationType('animation-goes-left')" 
+      class="list-group-item">
+    <span class='left'>{{artist.name}}</span>
+  </a>
+
+</div>

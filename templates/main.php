@@ -30,6 +30,7 @@
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<!-- <div id="sm2-container" ng-class="{started: started}"></div> -->
 
+
 		<div id="playerbar" ng-if="started === started" ng-controller="PlayerController" ng-class="{started: started}">
 			<div id="play-controls">
 				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"

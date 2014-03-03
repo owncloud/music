@@ -6,18 +6,12 @@
   </div>
 
   <div ng-repeat="album in artist.albums | orderBy:'year'">
-    <div class="album-area"> 
-    <div ng-show="album" class="albumart" cover="{{ artist.album.cover }}"
-        albumart="{{ album.name }}" title="{{ album.name }}" ></div> 
-      <h2 ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year}})">{{ album.name }}
-        <span ng-show="album.year" class="muted">({{ album.year }})</span>
-        <div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
-      </h2>
-    </div>
-
-    <ul>
-      <li class="tracks-area" ng-repeat="track in album.tracks | orderBy:'number'" ng-click="playTrack(track)"> 
-        <span class="button expand">
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-info" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year}})">
+        <strong class="list-group-item-heading">{{ album.name }}</strong>
+      </li>
+      <li class="list-group-item" ng-repeat="track in album.tracks | orderBy:'number'" ng-click="playTrack(track)"> 
+        <span>
           {{track.number}}. {{ track.title }}
         </span>
       </li>

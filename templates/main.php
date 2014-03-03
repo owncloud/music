@@ -1,14 +1,18 @@
 <?php
-\OCP\Util::addScript('music', 'vendor/underscore/underscore.min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
+\OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
+\OCP\Util::addScript('music', 'vendor/angular-animate/angular-animate.min');
+\OCP\Util::addScript('music', 'vendor/angular-touch/angular-touch.min');
+\OCP\Util::addScript('music', 'vendor/underscore/underscore.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/soundmanager2');
 \OCP\Util::addScript('music', 'vendor/restangular/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/angular-gettext.min');
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-playerbar');
-\OCP\Util::addStyle('music', 'style-sidebar');
-\OCP\Util::addStyle('music', 'style');
+// \OCP\Util::addStyle('music', 'style-sidebar');
+// \OCP\Util::addStyle('music', 'style');
+\OCP\Util::addStyle('music', 'app');
 ?>
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
@@ -16,13 +20,17 @@
 	<div ng-controller="MainController">
 
 		<script type="text/ng-template" id="main.html">
-			<?php print_unescaped($this->inc('part.main')) ?>
+			<?php print_unescaped($this->inc('artists')) ?>
+		</script>
+
+		<script type="text/ng-template" id="artist-detail.html">
+			<?php print_unescaped($this->inc('artist-detail')) ?>
 		</script>
 
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
-		<div id="sm2-container" ng-class="{started: started}"></div>
+		<!-- <div id="sm2-container" ng-class="{started: started}"></div> -->
 
-		<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
+		<div id="playerbar" ng-if="started === started" ng-controller="PlayerController" ng-class="{started: started}">
 			<div id="play-controls">
 				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
 					src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
@@ -32,13 +40,18 @@
 					src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
 				<img ng-click="next()" class="control small svg" alt="{{'Next' | translate }}"
 					src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
+				<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
+				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
+				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
+				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 			</div>
+		</div>
 
-
+<!-- 
 			<div ng-show="currentAlbum" class="albumart" cover="{{ currentAlbum.cover }}"
-				albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
+				albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div> -->
 
-			<div class="song-info">
+<!-- 			<div class="song-info">
 				<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
 				<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
 			</div>
@@ -50,15 +63,12 @@
 						<div class="play-bar" style="width: {{ position / duration * 100 }}%;"></div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
-			<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
-				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
-			<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
-				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
-		</div>
 
-		<!--<div id="app-navigation">
+
+<!-- 
+		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
@@ -68,13 +78,13 @@
 					<img alt="{{ 'Delete' | translate }}" 	src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
 				</li>
 			</ul>
-		</div>-->
+		</div> -->
 
-		<div id="app-content" ng-view ng-class="{started: started}"></div>
+		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 
-		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
+<!-- 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
 			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>
-		</div>
+		</div> -->
 
 	</div>
 

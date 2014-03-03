@@ -1,27 +1,28 @@
 {
-	"name": "music",
-	"description": "Music player and server for ownCloud",
-	"version": "0.0.1",
-	"private": true,
-	"homepage": "https://github.com/owncloud/music",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:owncloud/music.git"
-	},
-	"bugs": "https://github.com/owncloud/music/issues",
-	"dependencies": {},
-	"devDependencies": {
-		"grunt": "*",
-		"grunt-cli": "*",
-		"grunt-contrib-concat": "*",
-		"grunt-contrib-jshint": "*",
-		"grunt-contrib-watch": "*",
-		"karma": "*",
-		"grunt-karma": "*",
-		"grunt-wrap": "*",
-		"phantomjs": "*",
-		"grunt-phpunit": "*",
-		"grunt-angular-gettext": "*"
-	},
-	"engine": "node >= 0.8"
+  "name": "music",
+  "description": "Music player and server for ownCloud",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": "https://github.com/owncloud/music",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:owncloud/music.git"
+  },
+  "bugs": "https://github.com/owncloud/music/issues",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-watch": "*",
+    "karma": "*",
+    "grunt-karma": "*",
+    "grunt-wrap": "*",
+    "phantomjs": "*",
+    "grunt-phpunit": "*",
+    "grunt-angular-gettext": "*",
+    "grunt-contrib-compass": "^0.7.2"
+  },
+  "engine": "node >= 0.8"
 }

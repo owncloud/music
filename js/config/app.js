@@ -33,19 +33,24 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext']).
+angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {
 
 	$routeProvider.when('/', {
 		templateUrl: 'main.html'
-	}).when('/file/:id', {
+	}).when('/file/:fileid', {
 		templateUrl: 'main.html'
+	}).when('/artist/:id', {
+		templateUrl: 'artist-detail.html',
 	}).otherwise({
 		redirectTo: '/'
 	});
 
+
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
-}]);
+}]).run(function($rootScope) {
+  $rootScope.animationType = "animation-goes-left";
+	});

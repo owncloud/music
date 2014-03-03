@@ -27,6 +27,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-compass');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-phpunit');
@@ -122,6 +123,22 @@ module.exports = function(grunt) {
 			}
 		},
 
+		compass: {									// Task
+			dist: {										// Target
+				options: {							// Target options
+					sassDir: '../scss',
+					cssDir: '../css',
+					environment: 'production'
+				}
+			},
+			dev: {										// Another target
+				options: {
+					sassDir: '../scss',
+					cssDir: '../css'
+				}
+			}
+		},
+
 		nggettext_extract: {
 			pot: {
 				files: {
@@ -144,6 +161,6 @@ module.exports = function(grunt) {
 	});
 
 	// make tasks available under simpler commands
-	grunt.registerTask('build', ['jshint', 'concat', 'wrap']);
+	grunt.registerTask('build', ['jshint', 'concat', 'wrap', 'compass']);
 
 };

@@ -133,4 +133,7 @@ angular.module('Music').controller('MainController',
 		playlistService.setPlaylist(playlist);
 		playlistService.publish('play');
 	};
+	$scope.switchAnimationType = function(type) {
+    $rootScope.animationType = type;
+  };
 }]);

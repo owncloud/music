@@ -12,21 +12,36 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext']).
+angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {
 
 	$routeProvider.when('/', {
 		templateUrl: 'main.html'
-	}).when('/file/:id', {
+	}).when('/file/:fileid', {
 		templateUrl: 'main.html'
+	}).when('/artist/:id', {
+		templateUrl: 'artist-detail.html',
 	}).otherwise({
 		redirectTo: '/'
 	});
 
+
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
+}]).run(function($rootScope) {
+  $rootScope.animationType = "animation-goes-left";
+	});
+angular.module('Music').controller('ArtistController', ['$scope', '$routeParams', 'Artists', function($scope, $routeParams, Artists) {
+  Artists.then(function(artists){
+    for( var i = 0; i < artists.length; i++ ) {
+      if ( artists[i].id == $routeParams.id ) {
+        $scope.artist = artists[i];
+        break;
+      }
+    }
+  });
 }]);
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
@@ -141,6 +156,9 @@ angular.module('Music').controller('MainController',
 		playlistService.setPlaylist(playlist);
 		playlistService.publish('play');
 	};
+	$scope.switchAnimationType = function(type) {
+    $rootScope.animationType = type;
+  };
 }]);
 angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
@@ -160,7 +178,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		$scope.playFile($routeParams.id);
+		$scope.playFile($routeParams.fileid);
 		if($scope.$parent.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
@@ -169,9 +187,9 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
-	$rootScope.$on('$routeChangeSuccess', function() {
-		$scope.playFile($routeParams.id);
-	});
+	// $rootScope.$on('$routeChangeSuccess', function() {
+	//  $scope.playFile($routeParams.id);
+	// });
 
 	$scope.playFile = function (fileid) {
 		if (fileid) {
@@ -491,6 +509,7 @@ angular.module('Music').factory('playlists', function(){
 		{name: 'test playlist 4', id: 4}
 	];
 });
+
 angular.module('Music').filter('playTime', function() {
 	return function(input) {
 		var minutes = Math.floor(input/60),

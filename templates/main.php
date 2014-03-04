@@ -19,83 +19,18 @@
 
 	<div ng-controller="MainController">
 
-		<script type="text/ng-template" id="main.html">
-			<?php print_unescaped($this->inc('artists')) ?>
+		<script type="text/ng-template" id="list.html">
+			<?php print_unescaped($this->inc('list')) ?>
 		</script>
 
 		<script type="text/ng-template" id="artist-detail.html">
 			<?php print_unescaped($this->inc('artist-detail')) ?>
 		</script>
 
-		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
-		<!-- <div id="sm2-container" ng-class="{started: started}"></div> -->
-
-
-		<div id="playerbar" ng-if="started === started" ng-controller="PlayerController" ng-class="{started: started}">
-			<!-- <div id="play-controls">
-				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
-				<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
-				<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{'Pause' | translate }}"
-					src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
-				<img ng-click="next()" class="control small svg" alt="{{'Next' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
-				<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
-				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
-				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
-				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
-			</div> -->
+		<div ng-controller="PlayerController">
 		</div>
-
-<!-- 
-			<div ng-show="currentAlbum" class="albumart" cover="{{ currentAlbum.cover }}"
-				albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div> -->
-
-<!-- 			<div class="song-info">
-				<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
-				<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
-			</div>
-			<div ng-show="currentTrack.title" class="progress-info">
-				<span ng-hide="buffering" class="muted">{{ position | playTime }} / {{ duration | playTime }}</span>
-				<span ng-show="buffering" class="muted" translate>Loading ...</span>
-				<div class="progress">
-					<div class="seek-bar">
-						<div class="play-bar" style="width: {{ position / duration * 100 }}%;"></div>
-					</div>
-				</div>
-			</div> -->
-
-
-
-<!-- 
-		<div id="app-navigation">
-			<ul ng-controller="PlaylistController">
-				<li><a href="/" translate>All</a></li>
-				<li class="app-navigation-separator"><a href="/" translate>Favorites</a></li>
-				<li><a href="/" translate>+ New Playlist</a></li>
-				<li ng-repeat="playlist in playlists">
-					<a href="/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<img alt="{{ 'Delete' | translate }}" 	src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
-				</li>
-			</ul>
-		</div> -->
-
-
+		
 		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
-
-		<div class="navbar navbar-default navbar-fixed-bottom interpret">
-	    <div class="row">
-	      <div class="col-xs-4">
-	          <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
-	            &lsaquo; home 
-	          </a>
-	      </div>
-	      <div class="col-xs-8">
-	          <p class="navbar-text push-left">Interpreten</p>
-	      </div>
-	    </div>
-	  </div>
 
 		<!-- <div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
 			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>

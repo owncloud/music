@@ -23,9 +23,9 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
 
 		$routeProvider.when(app_path, {
-			templateUrl: 'main.html'
+			templateUrl: 'list.html'
 		}).when(app_path + 'file/:fileid', {
-			templateUrl: 'main.html'
+			templateUrl: 'list.html'
 		}).when(app_path + 'artist/:id', {
 			templateUrl: 'artist-detail.html',
 		}).otherwise({
@@ -45,20 +45,13 @@ angular.module('Music').controller('ArtistController', ['$scope', '$routeParams'
   });
 }]);
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artist', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artist, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog',
+	function ($rootScope, $scope, Artist, Album, Track, playlistService, gettextCatalog) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
 	$scope.loading = true;
-	$scope.artists = null;
-
-	$scope.$watch('artists', function() {
-		if ( $scope.artists !== null ) {
-			$scope.loading = false;
-		}
-	});
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
@@ -87,6 +80,7 @@ angular.module('Music').controller('MainController',
 	}
 
 	Artist.query().then(function(artists){
+		$scope.loading = false;
 		$scope.artists = artists;
 		for(var i=0; i < artists.length; i++) {
 			var artist = artists[i],
@@ -160,8 +154,38 @@ angular.module('Music').controller('MainController',
 		playlistService.publish('play');
 	};
 	$scope.switchAnimationType = function(type) {
-    $rootScope.animationType = type;
-  };
+		$rootScope.animationType = type;
+	};
+
+
+
+
+
+
+
+
+
+	// default filter value
+	$scope.filter = 'artist';
+	$scope.artistFilterClicked = function() {
+		$scope.filter = 'artist';
+	};
+	$scope.albumFilterClicked = function() {
+		$scope.filter = 'album';
+		if ( !$scope.albums ) {
+			Album.queryWithoutTree().then(function(albums) {
+				$scope.albums = albums;
+			});
+		}
+	};
+	$scope.trackFilterClicked = function() {
+		$scope.filter = 'track';
+		if ( !$scope.tracks ) {
+			Track.query().then(function(tracks) {
+				$scope.tracks = tracks;
+			});
+		}
+	};
 }]);
 angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext',
@@ -479,10 +503,10 @@ angular.module('Music').factory('Album', ['Restangular', '$rootScope', function 
     get: function(id) {
       return Restangular.one('album', id).get({fulltree: true});
     },
-    getWithTree: function() {
+    queryWithTree: function() {
       return all(true);
     },
-    getWithoutTree: function() {
+    queryWithoutTree: function() {
       return all(false);
     }
   };

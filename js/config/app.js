@@ -44,9 +44,9 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
 
 		$routeProvider.when(app_path, {
-			templateUrl: 'main.html'
+			templateUrl: 'list.html'
 		}).when(app_path + 'file/:fileid', {
-			templateUrl: 'main.html'
+			templateUrl: 'list.html'
 		}).when(app_path + 'artist/:id', {
 			templateUrl: 'artist-detail.html',
 		}).otherwise({

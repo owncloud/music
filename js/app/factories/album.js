@@ -27,10 +27,10 @@ angular.module('Music').factory('Album', ['Restangular', '$rootScope', function 
     get: function(id) {
       return Restangular.one('album', id).get({fulltree: true});
     },
-    getWithTree: function() {
+    queryWithTree: function() {
       return all(true);
     },
-    getWithoutTree: function() {
+    queryWithoutTree: function() {
       return all(false);
     }
   };

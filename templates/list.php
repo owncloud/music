@@ -17,7 +17,7 @@
 </div>
 
 <div ng-show="filter == 'artist'" class="list-group interpret-list">
-  <a ng-repeat="artist in artists | orderBy:'name'" 
+  <a ng-repeat="artist in artists" 
     ng-click="artistClicked(artist)" 
     class="list-group-item">
     <span class='left'>{{artist.name}}</span>
@@ -25,7 +25,7 @@
 </div>
 
 <div ng-show="filter == 'album'" class="list-group interpret-list">
-  <a ng-repeat="album in albums | orderBy:'name'" 
+  <a ng-repeat="album in albums" 
     ng-click="albumClicked(album)" 
     class="list-group-item">
     <span class='left'>{{album.name}}</span>
@@ -33,10 +33,10 @@
 </div>
 
 <div ng-show="filter == 'track'" class="list-group interpret-list">
-  <a ng-repeat="track in tracks | orderBy:'title'" 
-    ng-click="trackClicked(track)" 
+  <a ng-repeat="track in tracks" 
+    ng-click="trackClicked(track, tracks)" 
     class="list-group-item">
-    <span class='left'>{{track.title}}</span>
+    <span class='left'>{{track.id}} - {{track.title}}</span>
   </a>
 </div>
 

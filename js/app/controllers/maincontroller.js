@@ -21,8 +21,13 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artist, Album, Track, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog) {
+
+	var parts = window.location.pathname.split("/");
+	var apps_index = parts.lastIndexOf("apps");
+	var app_name = parts[apps_index + 1];
+	var appPath = parts.slice(0, apps_index + 2).join("/");
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -70,6 +75,19 @@ angular.module('Music').controller('MainController',
 			}
 
 		}
+	});
+
+	$scope.$watch('currentArtist', function(newArtist, oldArtist){
+		//location-changing in success callback of get-function for timing reasons
+		if(newArtist !== oldArtist){
+			Artist.get(newArtist.id).then(function(artist){
+				$scope.artist = artist;
+				$location.path(appPath + "/artist/" + $scope.currentArtist.id);
+			});
+		}else{
+			$location.path(appPath + "/artist/" + $scope.currentArtist.id);
+		}
+		
 	});
 
 	$scope.playTrack = function(track) {
@@ -129,17 +147,10 @@ angular.module('Music').controller('MainController',
 		playlistService.setPlaylist(playlist);
 		playlistService.publish('play');
 	};
+
 	$scope.switchAnimationType = function(type) {
 		$rootScope.animationType = type;
 	};
-
-
-
-
-
-
-
-
 
 	// default filter value
 	$scope.filter = 'artist';
@@ -162,4 +173,37 @@ angular.module('Music').controller('MainController',
 			});
 		}
 	};
+
+	$scope.artistClicked = function(clickedArtist) {
+		$scope.currentArtist = clickedArtist;
+	};
+
+	$scope.albumClicked = function(album) {
+		alert('clicked Album: '+ album.id);
+		$location.path(appPath + "/album/" + album.id);
+	};
+
+	$scope.trackClicked = function(track, context) {
+		//copy the context tracks in a tracks array
+		tracks = context;
+		var index = tracks.indexOf(track);
+		if(index > 0) {
+			// slice array in two parts and interchange them
+			var begin = tracks.slice(0, index);
+			var end = tracks.slice(index);
+			tracks = end.concat(begin);
+		}
+		playlist = tracks;
+		//calling setPlaylist method to play the defined tracks
+		playlistService.setPlaylist(playlist);
+		//playlistService.setCurrentTrack(track);
+		playlistService.publish('play');
+		//switch to the playing view
+		$location.path(appPath + "/playing");
+	};
+
+	$scope.showArtists = function (){
+		$location.path(appPath);
+	};
+
 }]);

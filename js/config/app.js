@@ -42,15 +42,15 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 		var apps_index = parts.lastIndexOf("apps");
 		var app_name = parts[apps_index + 1];
 		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
-
+		
 		$routeProvider.when(app_path, {
 			templateUrl: 'list.html'
 		}).when(app_path + 'file/:fileid', {
 			templateUrl: 'list.html'
-		}).when(app_path + 'artist/:id', {
+		}).when(app_path + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
 		}).otherwise({
-			redirectTo: app_path
+			//redirectTo: app_path
 		});
 
 		if(window.history && window.history.pushState){

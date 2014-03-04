@@ -6,9 +6,59 @@
   padding-top: 45px;
 }
 
-.interpret
+.navbar.interpret
 {
+  color: $navbar-text-color;
 
+  background-color: transparentize($oc-primary-color, 0.1);
+  border: none;
+
+  height: $navbar-height;
+
+  .btn
+  {
+    line-height: $navbar-height;
+    
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    height: $navbar-height;
+    padding-bottom: 0;
+    padding-top: 0;
+    margin: 0;
+  }
+
+  .navbar-text
+  {
+    color: $navbar-text-color;
+  }
+}
+
+.list-group.interpret-list
+{
+  margin: 0;
+
+  .list-group-item
+  {
+    border-left: none;
+    border-right: none;
+
+    &:first-child
+    {
+      border-top: none;
+    }
+
+    &:last-child
+    {
+      border-bottom: none;
+    }
+  }
+}
+
+.list-group.interpret-detail-list
+{
+  margin: 0;
 }
 
 //// animation //////////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-xs-4">
           <a class="btn btn-default navbar-btn btn-info" href="/artists" ng-click="switchAnimationType('animation-goes-right')">
-            << Interpreten
+            &lsaquo; Interpreten
           </a>
       </div>
       <div class="col-xs-8">
@@ -15,7 +15,7 @@
   </div>
 
   <div ng-repeat="album in artist.albums | orderBy:'year'">
-    <ul class="list-group">
+    <ul class="list-group interpret-detail-list">
       <li class="list-group-item list-group-item-info" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year}})">
         <strong class="list-group-item-heading">{{ album.name }}</strong>
       </li>

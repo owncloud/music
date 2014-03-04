@@ -88,7 +88,7 @@
 	    <div class="row">
 	      <div class="col-xs-4">
 	          <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
-	            << home 
+	            &lsaquo; home 
 	          </a>
 	      </div>
 	      <div class="col-xs-8">

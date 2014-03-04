@@ -14,6 +14,7 @@
   border: none;
 
   height: $navbar-height;
+  margin: 0;
 
   .btn
   {
@@ -79,11 +80,6 @@
       border-bottom: none;
     }
   }
-}
-
-.muuuh:before
-{
-  content: '#{$icon-font-path}#{$icon-font-name}.eot';
 }
 
 //// animation //////////////////////////////////////////////////////////////////////////////

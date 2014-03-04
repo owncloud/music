@@ -16,6 +16,28 @@
   height: $navbar-height;
   margin: 0;
 
+  .btn.playing-btn
+  {
+    line-height: 13px;
+    font-size: 10px;
+    text-align: right;
+
+    height: 25px;
+
+    img
+    {
+      vertical-align: middle;
+      float: left;  
+    }
+
+    span
+    { 
+      padding-right: 3px;
+      margin-top: 13px;
+      float: left;
+    }
+  }
+
   .btn
   {
     line-height: $navbar-height;
@@ -72,6 +94,8 @@
   {
     border-width: 0 0 1px 0;
 
+    max-width: 100%;
+
     padding-left: 30px;
     margin-bottom: 0;
 
@@ -81,6 +105,35 @@
     }
   }
 }
+
+//// playing ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+.playingtools img 
+{
+  line-height: 50px;
+  text-align: center;
+
+  opacity: 0.3;
+  height: 40px;
+  width: auto;
+
+  padding-top: 10px;
+
+  &.active
+  {
+    opacity: 1;
+  }
+}
+
+.playinginfo
+{
+  color: $oc-primary-color;
+}
+
+path { fill: yellow; }
+
 
 //// animation //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,8 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 			templateUrl: 'list.html'
 		}).when(app_path + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
+		}).when(app_path + 'playing/', {
+			templateUrl: 'playing.html',
 		}).otherwise({
 			//redirectTo: app_path
 		});

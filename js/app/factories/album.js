@@ -1,8 +1,8 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @author Webhippie United
+ * @copyright 2014 Webhippie <team@webhippie.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -19,10 +19,19 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('artists').getList({fulltree: true}).then(
-		function(result){
-			$rootScope.$emit('artistsLoaded');
-			return result;
-		});
+angular.module('Music').factory('Album', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+  var all = function(tree) {
+    return Restangular.all('albums').getList({fulltree: tree});
+  };
+  return {
+    get: function(id) {
+      return Restangular.one('album', id).get({fulltree: true});
+    },
+    getWithTree: function() {
+      return all(true);
+    },
+    getWithoutTree: function() {
+      return all(false);
+    }
+  };
 }]);

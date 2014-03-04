@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Restangular, gettext) {
 
 	$scope.playing = false;
 	$scope.buffering = false;

@@ -1,10 +1,5 @@
-angular.module('Music').controller('ArtistController', ['$scope', '$routeParams', 'Artists', function($scope, $routeParams, Artists) {
-  Artists.then(function(artists){
-    for( var i = 0; i < artists.length; i++ ) {
-      if ( artists[i].id == $routeParams.id ) {
-        $scope.artist = artists[i];
-        break;
-      }
-    }
+angular.module('Music').controller('ArtistController', ['$scope', '$routeParams', 'Artist', function($scope, $routeParams, Artist) {
+  Artist.get($routeParams.id).then(function(artist){
+    $scope.artist = artist;
   });
 }]);

@@ -38,16 +38,19 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider) {
 
-		var path = window.location.pathname;
-		
-		$routeProvider.when(path, {
+		var parts = window.location.pathname.split("/");
+		var apps_index = parts.lastIndexOf("apps");
+		var app_name = parts[apps_index + 1];
+		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
+
+		$routeProvider.when(app_path, {
 			templateUrl: 'main.html'
-		}).when(path + 'file/:fileid', {
+		}).when(app_path + 'file/:fileid', {
 			templateUrl: 'main.html'
-		}).when(path + 'artist/:id', {
+		}).when(app_path + 'artist/:id', {
 			templateUrl: 'artist-detail.html',
 		}).otherwise({
-			redirectTo: path
+			redirectTo: app_path
 		});
 
 		if(window.history && window.history.pushState){
@@ -55,5 +58,5 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 		}
 
 	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
+	RestangularProvider.setBaseUrl(app_path + 'api');
 }]).run();

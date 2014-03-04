@@ -212,10 +212,20 @@ class ApiController extends Controller {
 	 * @API
 	 */
 	public function track() {
+		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 		$userId = $this->api->getUserId();
 		$trackId = $this->getIdFromSlug($this->params('trackIdOrSlug'));
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
-		return $this->renderPlainJSON($track->toAPI($this->api));
+		$artistId = $track->getArtistId();
+		$albumId = $track->getAlbumId();
+		$track = $track->toAPI($this->api);
+		if($fulltree) {
+			$artist = $this->artistBusinessLayer->find($artistId, $userId);
+			$track['artist'] = $artist->toAPI($this->api);
+			$album = $this->albumBusinessLayer->find($albumId, $userId);
+			$track['album'] = $album->toAPI($this->api);
+		}
+		return $this->renderPlainJSON($track);
 	}
 
 	/**

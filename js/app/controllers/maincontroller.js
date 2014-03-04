@@ -21,17 +21,19 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', 'Artist', 'playlistService', 'gettextCatalog',
+	function ($rootScope, $scope, Artist, playlistService, gettextCatalog) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
 	$scope.loading = true;
+	$scope.artists = null;
 
-	// will be invoked by the artist factory
-	$rootScope.$on('artistsLoaded', function() {
-		$scope.loading = false;
+	$scope.$watch('artists', function() {
+		if ( $scope.artists !== null ) {
+			$scope.loading = false;
+		}
 	});
 
 	$scope.currentTrack = null;
@@ -60,7 +62,7 @@ angular.module('Music').controller('MainController',
 		$scope.letterAvailable[$scope.letters[i]] = false;
 	}
 
-	Artists.then(function(artists){
+	Artist.query().then(function(artists){
 		$scope.artists = artists;
 		for(var i=0; i < artists.length; i++) {
 			var artist = artists[i],

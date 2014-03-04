@@ -19,7 +19,7 @@
  <div class="list-group interpret-list">
 
   <a ng-repeat="artist in artists | orderBy:'name'" 
-      href='#/artist/{{artist.id}}' 
+      href='artist/{{artist.id}}' 
       ng-click="switchAnimationType('animation-goes-left')" 
       class="list-group-item">
     <span class='left'>{{artist.name}}</span>

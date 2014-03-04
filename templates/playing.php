@@ -13,13 +13,24 @@
   </div>
 
   <div class="row">    
-    <img src="http://placehold.it/500x500" class="img-responsive playing-cover center-block"  alt="album art" />
+    <img src="http://placehold.it/500x500" class="img-responsive playing-cover center-block img-thumbnail"  alt="album art" />
+    <span>
+      <p class="playinginfo text-center"><strong>Interpret</strong></p>
+      <p class="playinginfo text-center">Track</p>
+    </span>
   </div>
 
 
 
+
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+      <span class="sr-only">60% Complete</span>
+    </div>
+  </div>
+
   <div class="navbar navbar-default navbar-fixed-bottom interpret">
-   <div class="row playerbar">
+   <div class="row playingtools">
       <div class="col-xs-2 text-center">
         <img alt="backward icon"
               src="<?php p(OCP\image_path('music', 'new/backward.svg')) ?>"

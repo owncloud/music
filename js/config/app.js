@@ -49,6 +49,8 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 			templateUrl: 'list.html'
 		}).when(app_path + 'artist/:id', {
 			templateUrl: 'artist-detail.html',
+		}).when(path + 'playing/', {
+			templateUrl: 'playing.html',
 		}).otherwise({
 			redirectTo: app_path
 		});

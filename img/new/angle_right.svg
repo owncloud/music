@@ -3,5 +3,8 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="18.667px" height="50px" viewBox="0 0 18.667 50" enable-background="new 0 0 18.667 50" xml:space="preserve">
-<text transform="matrix(1 0 0 1 0 43)" font-family="'FontAwesome'" font-size="48.8239"></text>
+<path fill="#FFFFFF" d="M16.21,27.307c0,0.236-0.09,0.445-0.271,0.627L3.242,40.63c-0.182,0.182-0.391,0.272-0.626,0.272
+	c-0.236,0-0.445-0.091-0.627-0.272l-1.362-1.362c-0.182-0.182-0.272-0.391-0.272-0.627c0-0.235,0.091-0.444,0.272-0.627
+	l10.707-10.707L0.626,16.599c-0.182-0.181-0.272-0.39-0.272-0.626c0-0.236,0.091-0.445,0.272-0.627l1.362-1.362
+	c0.182-0.181,0.391-0.272,0.627-0.272c0.236,0,0.445,0.091,0.626,0.272L15.939,26.68C16.121,26.861,16.21,27.07,16.21,27.307z"/>
 </svg>

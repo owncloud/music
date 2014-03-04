@@ -16,6 +16,28 @@
   height: $navbar-height;
   margin: 0;
 
+  .btn.playing-btn
+  {
+    line-height: 13px;
+    font-size: 10px;
+    text-align: left;
+
+    height: 25px;
+
+    img
+    {
+      vertical-align: middle;
+      float: left;  
+    }
+
+    span
+    { 
+      padding-right: 3px;
+      margin-top: 13px;
+      float: left;
+    }
+  }
+
   .btn
   {
     line-height: $navbar-height;

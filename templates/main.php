@@ -29,7 +29,7 @@
 			<?php print_unescaped($this->inc('playing')) ?>
 		</script>
 
-		<div id="playerbar" ng-if="started === started" ng-controller="PlayerController" ng-class="{started: started}">
+		<div id="playerbar" ng-controller="PlayerController">
 		</div>
 
 		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>

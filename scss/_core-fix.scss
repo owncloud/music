@@ -1,4 +1,4 @@
 body > header { display: none !important; }
 #notification-container { display: none !important; }
 nav { display: none !important; } /* removes left app icon bar */
-#content-wrapper { padding-left: 0 !important; } /* removes space for app icon bar */
+#content-wrapper { padding-top: 0 !important; padding-left: 0 !important; } /* removes space for app icon bar */

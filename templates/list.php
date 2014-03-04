@@ -7,8 +7,8 @@
   <div class="row">
     <div class="col-xs-4">
       <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
-        <img class="control small svg" alt="{{'Previous' | translate }}"
-        src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
+        <img alt="{{'Previous' | translate }}"
+              src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
         home
       </a>
     </div>
@@ -20,8 +20,8 @@
         <span> Now <br/> 
           Playing
         </span>  
-        <img class="control small svg" alt="{{'Previous' | translate }}"
-        src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
+        <img alt="{{'Previous' | translate }}"
+              src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
       </a>
     </div>
   </div>

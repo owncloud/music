@@ -7,8 +7,7 @@
     <div class="row">
       <div class="col-xs-4">
           <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
-            - home 
-            <span class="glyphicon glyphicon-search"></span>
+            << home 
           </a>
       </div>
       <div class="col-xs-8">
@@ -20,7 +19,7 @@
 
 <!-- <ul class="artists">
 	<li ng-repeat="artist in artists | orderBy:'name'">
-    <a class='button interpret expand' href='#/artist/{{artist.id}}' ng-click="switchAnimationType('animation-goes-left')" ng-swipe-left="swipeTest = 'left'">
+    <a class='button interpret expand' href='/artist/{{artist.id}}' ng-click="switchAnimationType('animation-goes-left')" ng-swipe-left="swipeTest = 'left'">
       <div class='artist-entry'>
         <img class='left' src='http://placehold.it/80x80&amp;text=x'>
         <span class='left'>{{artist.name}}</span>
@@ -34,7 +33,7 @@
  <div class="list-group">
 
   <a ng-repeat="artist in artists | orderBy:'name'" 
-      href='#/artist/{{artist.id}}' 
+      href='artist/{{artist.id}}' 
       ng-click="switchAnimationType('animation-goes-left')" 
       class="list-group-item">
     <span class='left'>{{artist.name}}</span>

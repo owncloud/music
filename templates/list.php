@@ -6,7 +6,7 @@
 <div class="navbar navbar-default navbar-fixed-top interpret">
   <div class="row">
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info" href="../files" ng-click="switchAnimationType('animation-goes-right')">
+      <a class="btn btn-default navbar-btn btn-info" ng-click="showOwncloud()">
         <img alt="{{'Previous' | translate }}"
               src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
         home
@@ -16,7 +16,7 @@
       <p class="navbar-text push-left">Interpreten</p>
     </div>
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info playing-btn" href="playing">
+      <a class="btn btn-default navbar-btn btn-info playing-btn" ng-click="showPlayer()">
         <span> Now <br/> 
           Playing
         </span>  

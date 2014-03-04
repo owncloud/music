@@ -206,4 +206,13 @@ angular.module('Music').controller('MainController',
 		$location.path(appPath);
 	};
 
+	$scope.showPlayer = function (){
+		$location.path(appPath + "/playing");
+	};
+
+	$scope.showOwncloud = function (){
+		$location.path("/");
+	};
+
+
 }]);

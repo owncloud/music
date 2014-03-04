@@ -227,6 +227,15 @@ angular.module('Music').controller('MainController',
 		$location.path(appPath);
 	};
 
+	$scope.showPlayer = function (){
+		$location.path(appPath + "/playing");
+	};
+
+	$scope.showOwncloud = function (){
+		$location.path("/");
+	};
+
+
 }]);
 angular.module('Music').controller('PlayerController',
 	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext',

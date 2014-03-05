@@ -32,30 +32,30 @@
   </div>
 
   <div class="navbar navbar-default navbar-fixed-bottom interpret">
-   <div class="row playingtools">
+   <div class="row">
       <div class="col-xs-2 text-center">
-        <img alt="backward icon"
+        <img alt="backward icon" class="toggle-btn" 
               src="<?php p(OCP\image_path('music', 'new/backward.svg')) ?>"
               ng-click="prev()" />
       </div>
       <div class="col-xs-2 text-center">
-        <img alt="play icon"
+        <img alt="play icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/play.svg')) ?>"
               ng-click="toggle()" />
       </div>
       <div class="col-xs-2 text-center">
-        <img alt="forward icon"
+        <img alt="forward icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/forward.svg')) ?>"
               ng-click="next()" />
       </div>
       <div class="col-xs-2 col-xs-offset-2 text-center">
-        <img alt="random icon"
+        <img alt="random icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/random.svg')) ?>"
               ng-click="shuffle=!shuffle"
               ng-class="{active: shuffle}" />
       </div>
       <div class="col-xs-2 text-center">
-        <img alt="repeat icon"
+        <img alt="repeat icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/repeat.svg')) ?>"
               ng-click="repeat=!repeat"
               ng-class="{active: repeat}" />

@@ -4,7 +4,7 @@
       <div class="col-xs-4">
           <a class="btn btn-default navbar-btn btn-info" ng-click="showArtists()">
             <img alt="{{'Previous' | translate }}" src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
-            Interprets
+            Albums
           </a>
       </div>
       <div class="col-xs-4">
@@ -33,13 +33,10 @@
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
     <div class="col-xs-4">
-        {{activeAlbum.name}}
+        
     </div>
-    <div class="col-xs-4 text-center">
-        {{activeAlbum.artists.0.name}}
+    <div class="col-xs-12 text-center">
+        <span class="navbar-text"> {{activeAlbum.name}} | <small>{{activeAlbum.artists.0.name}}</small></span>
     </div>
-    <div class="col-xs-4 text-right">
-        {{activeAlbum.year}}
     </div>
-  </div>
 </div>

@@ -34,17 +34,22 @@
   <div class="navbar navbar-default navbar-fixed-bottom interpret">
    <div class="row">
       <div class="col-xs-2 text-center">
-        <img alt="backward icon" class="toggle-btn" 
+        <img alt="backward icon" class="playing-btn" 
               src="<?php p(OCP\image_path('music', 'new/backward.svg')) ?>"
               ng-click="prev()" />
       </div>
-      <div class="col-xs-2 text-center">
-        <img alt="play icon" class="toggle-btn"
+      <div class="col-xs-2 text-center" ng-if="!playing">
+        <img alt="play icon" class="playing-btn"
               src="<?php p(OCP\image_path('music', 'new/play.svg')) ?>"
               ng-click="toggle()" />
       </div>
+      <div class="col-xs-2 text-center" ng-if="playing">
+        <img alt="pause icon" class="playing-btn"
+              src="<?php p(OCP\image_path('music', 'new/pause.svg')) ?>"
+              ng-click="toggle()" />
+      </div>
       <div class="col-xs-2 text-center">
-        <img alt="forward icon" class="toggle-btn"
+        <img alt="forward icon" class="playing-btn"
               src="<?php p(OCP\image_path('music', 'new/forward.svg')) ?>"
               ng-click="next()" />
       </div>

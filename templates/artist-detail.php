@@ -38,12 +38,12 @@
 
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
-    <div class="col-xs-4">
+    <div class="col-xs-4 text-center">
     </div>
     <div class="col-xs-4 text-center">
-        <p class="navbar-text text-center">{{activeArtist.name}}</p>
+      <p class="navbar-text text-center">{{activeArtist.name}}</p>
     </div>
-    <div class="col-xs-4 text-right">
+    <div class="col-xs-4 text-center">
     </div>
   </div>
 </div>

@@ -33,39 +33,38 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch'])
+var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']);
 
-.config(function($provide){
+Application.config(function($provide){
 	//getting the current app_path and define this path as global variable "app_path"
 	var parts = window.location.pathname.split('/');
 	var apps_index = parts.lastIndexOf('apps');
 	var app_name = parts[apps_index + 1];
 	var app_prefix = parts.slice(0, apps_index + 2).join('/') + '/';
 	
+	var isHTML5 = window.history && window.history.pushState;
+	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppBasePath', app_prefix);
-})
-
-.config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath',
-		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath) {
+	$provide.constant('AppRoot', isHTML5 ? app_prefix : '/');
+}).config(
+		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath', 'isHTML5', 'AppRoot',
+		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath, isHTML5, AppRoot) {
 		
-		$routeProvider.when(AppBasePath, {
+		$routeProvider.when(AppRoot, {
 			templateUrl: 'list.html'
-		}).when(AppBasePath + 'file/:fileid', {
+		}).when(AppRoot + 'file/:fileid', {
 			templateUrl: 'list.html'
-		}).when(AppBasePath + 'artist/:artistId', {
+		}).when(AppRoot + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
-		}).when(AppBasePath + 'playing', {
+		}).when(AppRoot + 'playing', {
 			templateUrl: 'playing.html',
 		}).when(AppBasePath + 'album/:albumId', {
 			templateUrl: 'album-detail.html',
 		}).otherwise({
-			redirectTo: AppBasePath
+			redirectTo: AppRoot
 		});
 		
-		if(window.history && window.history.pushState){
-			$locationProvider.html5Mode(true);
-		}
+		$locationProvider.html5Mode(isHTML5);
 		// configure RESTAngular path
 		RestangularProvider.setBaseUrl(AppBasePath + 'api');
 }]).run();

@@ -36,7 +36,7 @@ class ArtistMapper extends Mapper {
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition .
-			' ORDER BY `artist`.`name` ASC';
+			' ORDER BY `artist`.`name` COLLATE NOCASE ASC';
 	}
 
 	public function findAll($userId){

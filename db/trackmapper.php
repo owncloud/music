@@ -40,7 +40,7 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition . ' ' . $ordering;
 	}
 
-	private function makeSelectQuery($condition=null, $ordering='ORDER BY `track`.`title` ASC'){
+	private function makeSelectQuery($condition=null, $ordering='ORDER BY `track`.`title` COLLATE NOCASE ASC'){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition, $ordering);
 	}
 

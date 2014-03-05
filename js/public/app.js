@@ -39,6 +39,8 @@ Application.config(function($provide){
 			templateUrl: 'artist-detail.html',
 		}).when(AppRoot + 'playing', {
 			templateUrl: 'playing.html',
+		}).when(AppBasePath + 'album/:albumId', {
+			templateUrl: 'album-detail.html',
 		}).otherwise({
 			redirectTo: AppRoot
 		});
@@ -104,10 +106,18 @@ angular.module('Music').controller('MainController',
 		}
 	});
 
-	$scope.$watch('currentArtist', function(newArtist, oldArtist){
+	$scope.$watch('artist', function(newArtist, oldArtist){
 		if(newArtist !== oldArtist){
 			Artist.get(newArtist.id).then(function(artist){
-				$scope.artist = artist;
+				$scope.activeArtist = artist;
+			});
+		}
+	});
+
+	$scope.$watch('album', function(newAlbum, oldAlbum){
+		if(newAlbum !== oldAlbum){
+			Album.get(newAlbum.id).then(function(album){
+				$scope.activeAlbum = album;
 			});
 		}
 	});
@@ -196,13 +206,13 @@ angular.module('Music').controller('MainController',
 		}
 	};
 
-	$scope.artistClicked = function(clickedArtist) {
-		$scope.currentArtist = clickedArtist;
-		$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
+	$scope.artistClicked = function(artist) {
+		$scope.artist = artist;
+		$location.path($scope.appBasePath("artist/" + artist.id));
 	};
 
 	$scope.albumClicked = function(album) {
-		alert('clicked Album: '+ album.id);
+		$scope.album = album;
 		$location.path($scope.appBasePath("album/" + album.id));
 	};
 

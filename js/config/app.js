@@ -60,6 +60,8 @@ Application.config(function($provide){
 			templateUrl: 'artist-detail.html',
 		}).when(AppRoot + 'playing', {
 			templateUrl: 'playing.html',
+		}).when(AppBasePath + 'album/:albumId', {
+			templateUrl: 'album-detail.html',
 		}).otherwise({
 			redirectTo: AppRoot
 		});

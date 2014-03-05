@@ -17,7 +17,7 @@
       <li class="list-group-item list-group-item-info" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year}})">
         <strong class="list-group-item-heading">{{ album.name }}</strong>
       </li>
-      <li class="list-group-item" ng-repeat="track in album.tracks | orderBy:'number'" ng-click="playTrack(track)"> 
+      <li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 
         <span>
           {{track.number}}. {{ track.title }}
         </span>

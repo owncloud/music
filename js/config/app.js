@@ -40,33 +40,38 @@ Application.config(function($provide){
 	var isHTML5 = window.history && window.history.pushState;
 
 	var path = window.location.pathname;
-	var match = path.match('^.*/index.php/apps/([^/]+)');
-	var app_name = match[1];
-	var app_prefix = match[0] + '/';
+	var match = path.match('^(.*)/index.php/apps/([^/]+)');
+	var app_name = match[2];
+	var app_root = match[0] + '/';
+	path  = window.location.href;
+	match = path.match('^(.*)/index.php/apps/[^/]+');
+	var web_root = match[1];
+	
 
 	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppName', app_name);
-	$provide.constant('AppBasePath', app_prefix);
-	$provide.constant('AppRoot', isHTML5 ? app_prefix : '/');
+	$provide.constant('WebRoot', web_root);
+	$provide.constant('AppRoot', app_root);
 }).config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath', 'isHTML5', 'AppRoot',
-		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath, isHTML5, AppRoot) {
+		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'isHTML5', 'AppRoot',
+		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, isHTML5, AppRoot) {
 		
-		$routeProvider.when(AppRoot, {
+		var base_path = isHTML5 ? AppRoot : '/';
+		$routeProvider.when(base_path, {
 			templateUrl: 'list.html'
-		}).when(AppRoot + 'file/:fileid', {
+		}).when(base_path + 'file/:fileid', {
 			templateUrl: 'list.html'
-		}).when(AppRoot + 'artist/:artistId', {
+		}).when(base_path + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
-		}).when(AppRoot + 'playing', {
+		}).when(base_path + 'playing', {
 			templateUrl: 'playing.html',
-		}).when(AppBasePath + 'album/:albumId', {
+		}).when(base_path + 'album/:albumId', {
 			templateUrl: 'album-detail.html',
 		}).otherwise({
-			redirectTo: AppRoot
+			// redirectTo: base_path
 		});
 		
 		$locationProvider.html5Mode(isHTML5);
 		// configure RESTAngular path
-		RestangularProvider.setBaseUrl(AppBasePath + 'api');
+		RestangularProvider.setBaseUrl(AppRoot + 'api');
 }]).run();

@@ -35,7 +35,8 @@ class ArtistMapper extends Mapper {
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.
-			'WHERE `artist`.`user_id` = ? ' . $condition;
+			'WHERE `artist`.`user_id` = ? ' . $condition .
+			' ORDER BY `artist`.`name` ASC';
 	}
 
 	public function findAll($userId){

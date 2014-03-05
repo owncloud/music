@@ -38,7 +38,8 @@ class AlbumMapper extends Mapper {
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
-			'WHERE `album`.`user_id` = ? ' . $condition;
+			'WHERE `album`.`user_id` = ? ' . $condition .
+			' ORDER BY `album`.`name` ASC';
 	}
 
 	public function findAll($userId){
@@ -78,7 +79,8 @@ class AlbumMapper extends Mapper {
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
-			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? '.
+			'ORDER BY `album`.`year` ASC';
 		$params = array($userId, $artistId);
 		return $this->findEntities($sql, $params);
 	}

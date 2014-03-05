@@ -21,15 +21,15 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppBasePath',
-	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppBasePath) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppBasePath', 'isHTML5',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppBasePath, isHTML5) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 	
 	$scope.appBasePath = function(rel_path) {
 		if(typeof(rel_path) === 'undefined') rel_path = "";
-		return AppBasePath + rel_path;
+		return (isHTML5 ? AppBasePath : '') + rel_path;
 	};
 
 	$scope.loading = true;

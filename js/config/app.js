@@ -40,7 +40,7 @@ Application.config(function($provide){
 	var isHTML5 = window.history && window.history.pushState;
 
 	var path = window.location.pathname;
-	var match = path.match('/index.php/apps/([^/]+)');
+	var match = path.match('^.*/index.php/apps/([^/]+)');
 	var app_name = match[1];
 	var app_prefix = match[0] + '/';
 

@@ -6,90 +6,6 @@
   padding-bottom: $navbar-height;
 }
 
-.navbar.interpret
-{
-  color: $navbar-text-color;
-
-  background-color: transparentize($oc-primary-color, 0.1);
-  border: none;
-
-  height: $navbar-height;
-  margin: 0;
-
-  .btn.playing-btn
-  {
-    display: block;
-    line-height: 13px;
-    font-size: 10px;
-    text-align: right;
-
-
-    height: 25px;
-
-    img
-    {
-      vertical-align: middle;
-      float: right;
-    }
-
-    span
-    { 
-      padding-right: 3px;
-      margin-top: 13px;
-      float: right;
-    }
-  }
-
-  .btn
-  {
-    line-height: $navbar-height;
-    
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-
-    height: $navbar-height;
-    padding-bottom: 0;
-    padding-top: 0;
-    margin: 0;
-  }
-
-  .navbar-text
-  {
-    color: $navbar-text-color;
-    display: block;
-    text-align: center;
-    float: none !important;
-  }
-}
-
-.list-group.interpret-list
-{
-  margin: 0;
-
-  .list-group-item
-  {
-    border-left: none;
-    border-right: none;
-
-    cursor: pointer;
-
-    &:hover
-    {
-      background-color: lighten($secondary-color, 40%);
-    }
-
-    &:first-child
-    {
-      border-top: none;
-    }
-
-    &:last-child
-    {
-      border-bottom: none;
-    }
-  }
-}
 
 
 //// details ////////////////////////////////////////////////////////////////////////////////
@@ -148,15 +64,134 @@
 }
 
 
-//// navbar ////////////////////////////////////////////////////////////////////////////////
+//// navbar shared //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+.navbar.interpret
+{
+  color: $navbar-text-color;
+
+  background-color: transparentize($oc-primary-color, 0.1);
+  border: none;
+
+  height: $navbar-height;
+  margin: 0;
+
+  .playing-btn
+  {
+    .btn-label
+    {
+      display: block;
+      float: left;
+      line-height: 15px;
+      padding-top: 9px;
+    }
+
+    .glyphicon
+    {
+      line-height: 21px;
+      float: left;
+      padding-top: 13px !important;
+    } 
+  }
+
+  /*.btn.playing-btn
+  {
+    display: block;
+    line-height: 13px;
+    font-size: 10px;
+    text-align: right;
+
+    height: 25px;
+
+    img
+    {
+      vertical-align: middle;
+      float: right;
+    }
+
+    span
+    { 
+      padding-right: 3px;
+      margin-top: 13px;
+      float: right;
+    }
+  }*/
+
+  .btn
+  {
+    line-height: $navbar-height;
+    white-space: nowrap;
+
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    height: $navbar-height;
+    padding-bottom: 0;
+    padding-top: 0;
+    margin: 0;
+
+    .glyphicon
+    {
+      font-size: 35px;
+      float: left;
+      padding-top: 7px;
+    }
+
+    &.left-btn
+    {
+      float: left;
+    }
+
+    &.right-btn
+    {
+      float: right;
+    }
+  }
+
+  .navbar-text
+  {
+    color: $navbar-text-color;
+    display: block;
+    text-align: center;
+    float: none !important;
+  }
+}
+
+.list-group.interpret-list
+{
+  margin: 0;
+
+  .list-group-item
+  {
+    border-left: none;
+    border-right: none;
+
+    cursor: pointer;
+
+    &:hover
+    {
+      background-color: lighten($secondary-color, 40%);
+    }
+
+    &:first-child
+    {
+      border-top: none;
+    }
+
+    &:last-child
+    {
+      border-bottom: none;
+    }
+  }
+}
 
 //// playing ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 
-.playing-btn
+/*.playing-btn
 {
   line-height: 50px;
   text-align: center;
@@ -165,7 +200,8 @@
   width: auto;
 
   padding-top: 10px;
-}
+}*/
+
 
 .toggle-btn
 {

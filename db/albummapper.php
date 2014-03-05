@@ -39,7 +39,7 @@ class AlbumMapper extends Mapper {
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ' . $condition .
-			' ORDER BY `album`.`name` ASC';
+			' ORDER BY `album`.`name` COLLATE NOCASE ASC';
 	}
 
 	public function findAll($userId){

@@ -18,23 +18,25 @@
 
   .btn.playing-btn
   {
+    display: block;
     line-height: 13px;
     font-size: 10px;
     text-align: right;
+
 
     height: 25px;
 
     img
     {
       vertical-align: middle;
-      float: left;  
+      float: right;
     }
 
     span
     { 
       padding-right: 3px;
       margin-top: 13px;
-      float: left;
+      float: right;
     }
   }
 
@@ -67,6 +69,13 @@
     border-left: none;
     border-right: none;
 
+    cursor: pointer;
+
+    &:hover
+    {
+      background-color: lighten($secondary-color, 40%);
+    }
+
     &:first-child
     {
       border-top: none;
@@ -79,15 +88,33 @@
   }
 }
 
+
+//// details ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 .list-group.interpret-detail-list
 {
   margin: 0;
 
   .list-group-item.list-group-item-info
   {
-    border: none;
+    color: #fff;
+
+    background-color: darken($secondary-color, 20%);
+    cursor: default;
 
     padding: 5px 15px;
+    border: none;
+
+    &:hover
+    {
+      background-color: darken($secondary-color, 20%);
+    }
+
+    .list-group-item-heading
+    {
+      margin-bottom: 0;
+    }
   }
 
   .list-group-item
@@ -95,9 +122,20 @@
     border-width: 0 0 1px 0;
 
     max-width: 100%;
+    cursor: pointer;
 
     padding-left: 30px;
     margin-bottom: 0;
+
+    span
+    {
+      cursor: pointer;
+    }
+
+    &:hover
+    {
+      background-color: lighten($secondary-color, 40%);
+    }
 
     &:last-child
     {

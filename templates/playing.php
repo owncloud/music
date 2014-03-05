@@ -1,12 +1,11 @@
   <div class="navbar navbar-default navbar-fixed-top interpret">
     <div class="row">
-      <div class="col-xs-4">
+      <div class="col-xs-2">
           <a class="btn btn-default navbar-btn btn-info" ng-click="showArtists()">
-            <img alt="{{'Previous' | translate }}"
-                src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
+            <img alt="{{'Previous' | translate }}" src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
           </a>
       </div>
-      <div class="col-xs-8">
+      <div class="col-xs-8 text-center">
           <p class="navbar-text">Now Playing</p>
       </div>
     </div>

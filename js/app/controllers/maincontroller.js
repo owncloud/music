@@ -171,7 +171,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.artistClicked = function(clickedArtist) {
 		$scope.currentArtist = clickedArtist;
-		$location.path(app_path + "artist/" + $scope.currentArtist.id);
+		$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
 	};
 
 	$scope.albumClicked = function(album) {

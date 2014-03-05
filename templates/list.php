@@ -6,22 +6,22 @@
 <div class="navbar navbar-default navbar-fixed-top interpret">
   <div class="row">
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info" ng-click="showOwncloud()">
+      <a class="btn btn-default navbar-btn btn-info left-block" ng-click="showOwncloud()">
         <img alt="{{'Previous' | translate }}"
               src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
-        home
+        Home
       </a>
     </div>
     <div class="col-xs-4">
-      <p class="navbar-text push-left">Interpreten</p>
+      <p class="navbar-text text-center">Interprets</p>
     </div>
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info playing-btn" ng-click="showPlayer()">
+      <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()" ng-show="currentTrack">
+        <img alt="{{'Previous' | translate }}"
+              src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
         <span> Now <br/> 
           Playing
         </span>  
-        <img alt="{{'Previous' | translate }}"
-              src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
       </a>
     </div>
   </div>
@@ -47,24 +47,24 @@
   <a ng-repeat="track in tracks" 
     ng-click="trackClicked(track, tracks)" 
     class="list-group-item">
-    <span class='left'>{{track.id}} - {{track.title}}</span>
+    <span class='left'>{{track.title}}</span>
   </a>
 </div>
 
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
     <div class="col-xs-4">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="artistFilterClicked()">
-          Interpreten
+        <a class="btn btn-default navbar-btn btn-info" ng-click="artistFilterClicked()" ng-class="(filter == 'artist') ? 'active' : ''">
+          Interprets
         </a>
     </div>
-    <div class="col-xs-4">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="albumFilterClicked()">
-          Alben
+    <div class="col-xs-4 text-center">
+        <a class="btn btn-default navbar-btn btn-info" ng-click="albumFilterClicked()" ng-class="(filter == 'album') ? 'active' : ''">
+          Albums
         </a>
     </div>
-    <div class="col-xs-4">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="trackFilterClicked()">
+    <div class="col-xs-4 text-right">
+        <a class="btn btn-default navbar-btn btn-info" ng-click="trackFilterClicked()" ng-class="(filter == 'track') ? 'active' : ''">
           Tracks 
         </a>
     </div>

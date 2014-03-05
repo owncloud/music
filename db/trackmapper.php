@@ -32,13 +32,12 @@ class TrackMapper extends Mapper {
 		parent::__construct($api, 'music_tracks');
 	}
 
-	private function makeSelectQueryWithoutUserId($condition){
+	private function makeSelectQueryWithoutUserId($condition, $odering='ORDER BY `track`.`title` ASC'){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
 			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
 			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE ' . $condition .
-			' ORDER BY `track`.`title` ASC';
+			'WHERE ' . $condition . ' ' . $ordering;
 	}
 
 	private function makeSelectQuery($condition=null){
@@ -64,7 +63,7 @@ class TrackMapper extends Mapper {
 			$condition .= ' AND `track`.`artist_id` = ?';
 			array_push($params, $artistId);
 		}
-		$sql = $this->makeSelectQuery($condition);
+		$sql = $this->makeSelectQuery($condition, 'ORDER BY `track`.`number` ASC');
 		return $this->findEntities($sql, $params);
 	}
 

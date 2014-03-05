@@ -29,9 +29,9 @@
 			<?php print_unescaped($this->inc('playing')) ?>
 		</script>
 
-		<div id="playerbar" ng-controller="PlayerController">
+		<div ng-controller="PlayerController">
+			<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 		</div>
 
-		<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 
 </div>

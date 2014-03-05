@@ -15,8 +15,10 @@
   <div class="row">    
     <img src="http://placehold.it/500x500" class="img-responsive playing-cover center-block img-thumbnail"  alt="album art" />
     <span>
-      <p class="playinginfo text-center"><strong>Interpret</strong></p>
-      <p class="playinginfo text-center">Track</p>
+      <p class="playinginfo text-center"><strong>{{currentTrack.artist.name}}</strong></p>
+      <p class="playinginfo text-center">{{currentTrack.title}}</p>
+      <p class="playinginfo text-center">{{position}} / {{duration}}</p>
+      
     </span>
   </div>
 
@@ -24,8 +26,9 @@
 
 
   <div class="progress">
-    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-      <span class="sr-only">60% Complete</span>
+    <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{(position/duration)*100}}%;">
+      
+      <span class="sr-only">{{(position/duration)*100}}% Complete</span>
     </div>
   </div>
 

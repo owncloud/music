@@ -8,7 +8,6 @@
           </a>
       </div>
       <div class="col-xs-4">
-          <p class="navbar-text text-center">{{activeArtist.name}}</p>
       </div>
       <div class="col-xs-4">
         <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()" ng-show="currentTrack">
@@ -22,28 +21,26 @@
     </div>
   </div>
 
-  <div ng-repeat="album in activeArtist.albums | orderBy:'year'">
-    <ul class="list-group interpret-detail-list">
-      <li class="list-group-item list-group-item-info" title="{{ album.name }} ({{ album.year}})">
-        <p class="list-group-item-heading">{{ album.name }}</p>
-      </li>
+  <ul class="list-group interpret-detail-list">
 
-      <li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 
-        <span>
-          {{track.number}}. {{ track.title }}
-        </span>
-      </li>
-    </ul> 
-  </div>
+    <li class="list-group-item" ng-repeat="track in activeAlbum.tracks" ng-click="trackClicked(track, album.tracks)"> 
+      <span>
+        {{track.number}}. {{ track.title }}
+      </span>
+    </li>
+  </ul> 
+
 
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
     <div class="col-xs-4">
+        {{activeAlbum.name}}
     </div>
     <div class="col-xs-4 text-center">
-        <p class="navbar-text text-center">{{activeArtist.name}}</p>
+        {{activeAlbum.artists.0.name}}
     </div>
     <div class="col-xs-4 text-right">
+        {{activeAlbum.year}}
     </div>
   </div>
 </div>

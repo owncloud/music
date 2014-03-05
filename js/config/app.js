@@ -57,6 +57,8 @@ var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 
 			templateUrl: 'artist-detail.html',
 		}).when(AppBasePath + 'playing', {
 			templateUrl: 'playing.html',
+		}).when(AppBasePath + 'album/:albumId', {
+			templateUrl: 'album-detail.html',
 		}).otherwise({
 			redirectTo: AppBasePath
 		});

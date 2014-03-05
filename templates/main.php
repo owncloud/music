@@ -29,6 +29,10 @@
 			<?php print_unescaped($this->inc('playing')) ?>
 		</script>
 
+		<script type="text/ng-template" id="album-detail.html">
+			<?php print_unescaped($this->inc('album-detail')) ?>
+		</script>
+
 		<div ng-controller="PlayerController">
 			<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 		</div>

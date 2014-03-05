@@ -37,7 +37,8 @@ class TrackMapper extends Mapper {
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
 			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
 			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE ' . $condition;
+			'WHERE ' . $condition .
+			' ORDER BY `track`.`title` ASC';
 	}
 
 	private function makeSelectQuery($condition=null){

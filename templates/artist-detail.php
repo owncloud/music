@@ -22,7 +22,7 @@
   <div ng-repeat="album in activeArtist.albums | orderBy:'year'">
     <ul class="list-group interpret-detail-list">
       <li class="list-group-item list-group-item-info" title="{{ album.name }} ({{ album.year}})">
-        <p class="list-group-item-heading">{{ album.name }}</p>
+        <p class="list-group-item-heading">{{ album.name }} ({{ album.year}})</p>
       </li>
 
       <li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 

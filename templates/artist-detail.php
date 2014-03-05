@@ -37,7 +37,7 @@
 
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
-    <div class="col-xs-4">
+    <div class="col-xs-4 text-center">
         <a class="btn btn-default navbar-btn btn-info" ng-click="artistFilterClicked()">
           Interprets
         </a>
@@ -47,7 +47,7 @@
           Albums
         </a>
     </div>
-    <div class="col-xs-4 text-right">
+    <div class="col-xs-4 text-center">
         <a class="btn btn-default navbar-btn btn-info" ng-click="trackFilterClicked()">
           Tracks 
         </a>

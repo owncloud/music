@@ -12,46 +12,51 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']);
+var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch'])
 
-(function(){
+.config(function($provide){
 	//getting the current app_path and define this path as global variable "app_path"
 	var parts = window.location.pathname.split('/');
 	var apps_index = parts.lastIndexOf('apps');
 	var app_name = parts[apps_index + 1];
 	var app_prefix = parts.slice(0, apps_index + 2).join('/') + '/';
+	
+	$provide.constant('AppBasePath', app_prefix);
+})
 
-	Application.constant('Prefix', window.history && window.history.pushState ? app_prefix : '');
-}).call(this);
-
-Application.config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'Prefix',
-		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, Prefix) {
+.config(
+		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath',
+		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath) {
 		
-		$routeProvider.when(Prefix, {
+		$routeProvider.when(AppBasePath, {
 			templateUrl: 'list.html'
-		}).when(Prefix + 'file/:fileid', {
+		}).when(AppBasePath + 'file/:fileid', {
 			templateUrl: 'list.html'
-		}).when(Prefix + 'artist/:artistId', {
+		}).when(AppBasePath + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
-		}).when(Prefix + 'playing', {
+		}).when(AppBasePath + 'playing', {
 			templateUrl: 'playing.html',
 		}).otherwise({
-			redirectTo: Prefix
+			redirectTo: AppBasePath
 		});
 		
 		if(window.history && window.history.pushState){
 			$locationProvider.html5Mode(true);
 		}
 		// configure RESTAngular path
-		RestangularProvider.setBaseUrl(Prefix + 'api');
+		RestangularProvider.setBaseUrl(AppBasePath + 'api');
 }]).run();
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'Prefix',
-	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, Prefix) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppBasePath',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppBasePath) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
+	
+	$scope.appBasePath = function(rel_path) {
+		if(typeof(rel_path) === 'undefined') rel_path = "";
+		return AppBasePath + rel_path;
+	};
 
 	$scope.loading = true;
 
@@ -104,10 +109,10 @@ angular.module('Music').controller('MainController',
 		if(newArtist !== oldArtist){
 			Artist.get(newArtist.id).then(function(artist){
 				$scope.artist = artist;
-				$location.path(Prefix + "artist/" + $scope.currentArtist.id);
+				$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
 			});
 		}else{
-			$location.path(Prefix + "artist/" + $scope.currentArtist.id);
+			$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
 		}
 		
 	});
@@ -202,7 +207,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.albumClicked = function(album) {
 		alert('clicked Album: '+ album.id);
-		$location.path(Prefix + "album/" + album.id);
+		$location.path($scope.appBasePath("album/" + album.id));
 	};
 
 	$scope.trackClicked = function(track, context) {
@@ -221,21 +226,20 @@ angular.module('Music').controller('MainController',
 		//playlistService.setCurrentTrack(track);
 		playlistService.publish('play');
 		//switch to the playing view
-		$location.path(Prefix + "playing");
+		$location.path($scope.appBasePath("playing"));
 	};
 
 	$scope.showArtists = function (){
-		$location.path(Prefix);
+		$location.path($scope.appBasePath());
 	};
 
 	$scope.showPlayer = function (){
-		$location.path(Prefix + "playing");
+		$location.path($scope.appBasePath("playing"));
 	};
 
 	$scope.showOwncloud = function (){
-		$location.path("/");
+		$location.path($scope.appBasePath("/"));
 	};
-
 
 }]);
 angular.module('Music').controller('PlayerController',

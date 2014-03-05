@@ -27,15 +27,8 @@ namespace OCA\Music;
 use \OCA\Music\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
-
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
+// include external API
+require_once __DIR__ . '/api.php';
 
 /**
  * Log
@@ -46,5 +39,17 @@ $this->create('music_log', '/api/log')->post()->action(
 	}
 );
 
-// include external API
-require_once __DIR__ . '/api.php';
+/**
+ * Webinterface
+ * CATCH-ALL route (has to be the last route)
+ * Delegate all routes to angular-app
+ */
+$this->create('music_index', '{path}')
+	->defaults(array('path' => '/'))
+	->requirements(array('path' => '.*(?<!\.css|\.js)$'))
+	->get()->action(
+	function($params){
+		App::main('PageController', 'index', $params, new DIContainer());
+	}
+);
+

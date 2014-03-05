@@ -33,33 +33,37 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-//getting the current app_path and define this path as global variable "app_path"
-var parts = window.location.pathname.split("/");
-var apps_index = parts.lastIndexOf("apps");
-var app_name = parts[apps_index + 1];
-var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
+var Application = angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch'])
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider) {
+.config(function($provide){
+	//getting the current app_path and define this path as global variable "app_path"
+	var parts = window.location.pathname.split('/');
+	var apps_index = parts.lastIndexOf('apps');
+	var app_name = parts[apps_index + 1];
+	var app_prefix = parts.slice(0, apps_index + 2).join('/') + '/';
+	
+	$provide.constant('AppBasePath', app_prefix);
+})
+
+.config(
+		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath',
+		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath) {
 		
-		$routeProvider.when(app_path, {
+		$routeProvider.when(AppBasePath, {
 			templateUrl: 'list.html'
-		}).when(app_path + 'file/:fileid', {
+		}).when(AppBasePath + 'file/:fileid', {
 			templateUrl: 'list.html'
-		}).when(app_path + 'artist/:artistId', {
+		}).when(AppBasePath + 'artist/:artistId', {
 			templateUrl: 'artist-detail.html',
-		}).when(app_path + 'playing/', {
+		}).when(AppBasePath + 'playing', {
 			templateUrl: 'playing.html',
 		}).otherwise({
-			//redirectTo: app_path
+			redirectTo: AppBasePath
 		});
-
+		
 		if(window.history && window.history.pushState){
 			$locationProvider.html5Mode(true);
 		}
-
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl(app_path + 'api');
+		// configure RESTAngular path
+		RestangularProvider.setBaseUrl(AppBasePath + 'api');
 }]).run();

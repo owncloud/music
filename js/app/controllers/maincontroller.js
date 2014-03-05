@@ -21,11 +21,16 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppBasePath',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppBasePath) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
+	
+	$scope.appBasePath = function(rel_path) {
+		if(typeof(rel_path) === 'undefined') rel_path = "";
+		return AppBasePath + rel_path;
+	};
 
 	$scope.loading = true;
 
@@ -73,16 +78,11 @@ angular.module('Music').controller('MainController',
 	});
 
 	$scope.$watch('currentArtist', function(newArtist, oldArtist){
-		//location-changing in success callback of get-function for timing reasons
 		if(newArtist !== oldArtist){
 			Artist.get(newArtist.id).then(function(artist){
 				$scope.artist = artist;
-				$location.path(app_path + "artist/" + $scope.currentArtist.id);
 			});
-		}else{
-			$location.path(app_path + "artist/" + $scope.currentArtist.id);
 		}
-		
 	});
 
 	$scope.playTrack = function(track) {
@@ -171,11 +171,12 @@ angular.module('Music').controller('MainController',
 
 	$scope.artistClicked = function(clickedArtist) {
 		$scope.currentArtist = clickedArtist;
+		$location.path(app_path + "artist/" + $scope.currentArtist.id);
 	};
 
 	$scope.albumClicked = function(album) {
 		alert('clicked Album: '+ album.id);
-		$location.path(app_path + "album/" + album.id);
+		$location.path($scope.appBasePath("album/" + album.id));
 	};
 
 	$scope.trackClicked = function(track, context) {
@@ -194,20 +195,19 @@ angular.module('Music').controller('MainController',
 		//playlistService.setCurrentTrack(track);
 		playlistService.publish('play');
 		//switch to the playing view
-		$location.path(app_path + "playing");
+		$location.path($scope.appBasePath("playing"));
 	};
 
 	$scope.showArtists = function (){
-		$location.path(app_path);
+		$location.path($scope.appBasePath());
 	};
 
 	$scope.showPlayer = function (){
-		$location.path(app_path + "playing");
+		$location.path($scope.appBasePath("playing"));
 	};
 
 	$scope.showOwncloud = function (){
-		$location.path("/");
+		$location.path($scope.appBasePath("/"));
 	};
-
 
 }]);

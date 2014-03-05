@@ -104,17 +104,11 @@ angular.module('Music').controller('MainController',
 	});
 
 	$scope.$watch('currentArtist', function(newArtist, oldArtist){
-		alert(newArtist.name);
-		//location-changing in success callback of get-function for timing reasons
 		if(newArtist !== oldArtist){
 			Artist.get(newArtist.id).then(function(artist){
 				$scope.artist = artist;
-				$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
 			});
-		}else{
-			$location.path($scope.appBasePath("artist/" + $scope.currentArtist.id));
 		}
-		
 	});
 
 	$scope.playTrack = function(track) {
@@ -203,6 +197,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.artistClicked = function(clickedArtist) {
 		$scope.currentArtist = clickedArtist;
+		$location.path(app_path + "artist/" + $scope.currentArtist.id);
 	};
 
 	$scope.albumClicked = function(album) {

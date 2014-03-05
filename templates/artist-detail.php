@@ -4,7 +4,7 @@
       <div class="col-xs-4">
           <a class="btn btn-default navbar-btn btn-info" ng-click="showArtists()">
             <img alt="{{'Previous' | translate }}" src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
-            Interprets
+            Artists
           </a>
       </div>
       <div class="col-xs-4 col-xs-offset-4">

@@ -32,7 +32,7 @@ class TrackMapper extends Mapper {
 		parent::__construct($api, 'music_tracks');
 	}
 
-	private function makeSelectQueryWithoutUserId($condition, $odering='ORDER BY `track`.`title` ASC'){
+	private function makeSelectQueryWithoutUserId($condition, $ordering){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
 			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
@@ -40,8 +40,8 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition . ' ' . $ordering;
 	}
 
-	private function makeSelectQuery($condition=null){
-		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
+	private function makeSelectQuery($condition=null, $ordering='ORDER BY `track`.`title` ASC'){
+		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition, $ordering);
 	}
 
 	public function findAll($userId){

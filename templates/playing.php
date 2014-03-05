@@ -38,9 +38,14 @@
               src="<?php p(OCP\image_path('music', 'new/backward.svg')) ?>"
               ng-click="prev()" />
       </div>
-      <div class="col-xs-2 text-center">
+      <div class="col-xs-2 text-center" ng-if="!playing">
         <img alt="play icon" class="playing-btn"
               src="<?php p(OCP\image_path('music', 'new/play.svg')) ?>"
+              ng-click="toggle()" />
+      </div>
+      <div class="col-xs-2 text-center" ng-if="playing">
+        <img alt="pause icon" class="playing-btn"
+              src="<?php p(OCP\image_path('music', 'new/pause.svg')) ?>"
               ng-click="toggle()" />
       </div>
       <div class="col-xs-2 text-center">

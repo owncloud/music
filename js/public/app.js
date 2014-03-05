@@ -12,15 +12,15 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
+var parts = window.location.pathname.split("/");
+var apps_index = parts.lastIndexOf("apps");
+var app_name = parts[apps_index + 1];
+var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
+
 angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider) {
-
-		var parts = window.location.pathname.split("/");
-		var apps_index = parts.lastIndexOf("apps");
-		var app_name = parts[apps_index + 1];
-		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
 		
 		$routeProvider.when(app_path, {
 			templateUrl: 'list.html'
@@ -44,11 +44,6 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTo
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog',
 	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog) {
-
-	var parts = window.location.pathname.split("/");
-	var apps_index = parts.lastIndexOf("apps");
-	var app_name = parts[apps_index + 1];
-	var appPath = parts.slice(0, apps_index + 2).join("/");
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -103,10 +98,10 @@ angular.module('Music').controller('MainController',
 		if(newArtist !== oldArtist){
 			Artist.get(newArtist.id).then(function(artist){
 				$scope.artist = artist;
-				$location.path(appPath + "/artist/" + $scope.currentArtist.id);
+				$location.path(app_path + "artist/" + $scope.currentArtist.id);
 			});
 		}else{
-			$location.path(appPath + "/artist/" + $scope.currentArtist.id);
+			$location.path(app_path + "artist/" + $scope.currentArtist.id);
 		}
 		
 	});
@@ -201,7 +196,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.albumClicked = function(album) {
 		alert('clicked Album: '+ album.id);
-		$location.path(appPath + "/album/" + album.id);
+		$location.path(app_path + "album/" + album.id);
 	};
 
 	$scope.trackClicked = function(track, context) {
@@ -220,15 +215,15 @@ angular.module('Music').controller('MainController',
 		//playlistService.setCurrentTrack(track);
 		playlistService.publish('play');
 		//switch to the playing view
-		$location.path(appPath + "/playing");
+		$location.path(app_path + "playing");
 	};
 
 	$scope.showArtists = function (){
-		$location.path(appPath);
+		$location.path(app_path);
 	};
 
 	$scope.showPlayer = function (){
-		$location.path(appPath + "/playing");
+		$location.path(app_path + "playing");
 	};
 
 	$scope.showOwncloud = function (){

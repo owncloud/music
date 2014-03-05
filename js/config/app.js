@@ -33,15 +33,15 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
+var parts = window.location.pathname.split("/");
+var apps_index = parts.lastIndexOf("apps");
+var app_name = parts[apps_index + 1];
+var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
+
 angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngAnimate', 'ngTouch']).
 	config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider) {
-
-		var parts = window.location.pathname.split("/");
-		var apps_index = parts.lastIndexOf("apps");
-		var app_name = parts[apps_index + 1];
-		var app_path = parts.slice(0, apps_index + 2).join("/") + "/";
 		
 		$routeProvider.when(app_path, {
 			templateUrl: 'list.html'

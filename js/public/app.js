@@ -21,10 +21,14 @@ Application.config(function($provide){
 	var app_name = parts[apps_index + 1];
 	var app_prefix = parts.slice(0, apps_index + 2).join('/') + '/';
 	
-	var isHTML5 = window.history && window.history.pushState;
+	var isHTML5 = false; // window.history && window.history.pushState;
 	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppBasePath', app_prefix);
 	$provide.constant('AppRoot', isHTML5 ? app_prefix : '/');
+	if ( isHTML5 )
+		alert("Your browser supports HTML5!!!");
+	else
+		alert(":( No HTML5 on this browser...");
 }).config(
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider', '$locationProvider', 'AppBasePath', 'isHTML5', 'AppRoot',
 		function ($routeProvider, $interpolateProvider, RestangularProvider, $locationProvider, AppBasePath, isHTML5, AppRoot) {
@@ -41,9 +45,7 @@ Application.config(function($provide){
 			redirectTo: AppRoot
 		});
 		
-		if(isHTML5){
-			$locationProvider.html5Mode(true);
-		}
+		$locationProvider.html5Mode(isHTML5);
 		// configure RESTAngular path
 		RestangularProvider.setBaseUrl(AppBasePath + 'api');
 }]).run();

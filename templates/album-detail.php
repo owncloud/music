@@ -22,8 +22,7 @@
   </div>
 
   <ul class="list-group interpret-detail-list">
-
-    <li class="list-group-item" ng-repeat="track in activeAlbum.tracks" ng-click="trackClicked(track, album.tracks)"> 
+    <li class="list-group-item" ng-repeat="track in activeAlbum.tracks" ng-click="trackClicked(track, activeAlbum.tracks)"> 
       <span>
         {{track.number}}. {{ track.title }}
       </span>

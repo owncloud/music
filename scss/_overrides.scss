@@ -178,6 +178,11 @@
   color: $oc-primary-color;
 }
 
+img.img-responsive.playing-cover
+{
+  max-height: 400px;
+}
+
 path { fill: yellow; }
 
 

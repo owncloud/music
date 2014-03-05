@@ -16,7 +16,7 @@
       <p class="navbar-text text-center">Interprets</p>
     </div>
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()">
+      <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()" ng-show="currentTrack">
         <img alt="{{'Previous' | translate }}"
               src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
         <span> Now <br/> 
@@ -47,24 +47,24 @@
   <a ng-repeat="track in tracks" 
     ng-click="trackClicked(track, tracks)" 
     class="list-group-item">
-    <span class='left'>{{track.id}} - {{track.title}}</span>
+    <span class='left'>{{track.title}}</span>
   </a>
 </div>
 
 <div class="navbar navbar-default navbar-fixed-bottom interpret">
   <div class="row">
     <div class="col-xs-4">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="artistFilterClicked()">
+        <a class="btn btn-default navbar-btn btn-info" ng-click="artistFilterClicked()" ng-class="(filter == 'artist') ? 'active' : ''">
           Interprets
         </a>
     </div>
     <div class="col-xs-4 text-center">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="albumFilterClicked()">
+        <a class="btn btn-default navbar-btn btn-info" ng-click="albumFilterClicked()" ng-class="(filter == 'album') ? 'active' : ''">
           Albums
         </a>
     </div>
     <div class="col-xs-4 text-right">
-        <a class="btn btn-default navbar-btn btn-info" ng-click="trackFilterClicked()">
+        <a class="btn btn-default navbar-btn btn-info" ng-click="trackFilterClicked()" ng-class="(filter == 'track') ? 'active' : ''">
           Tracks 
         </a>
     </div>

@@ -11,7 +11,7 @@
           <p class="navbar-text text-center">{{artist.name}}</p>
       </div>
       <div class="col-xs-4">
-        <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()">
+        <a class="btn btn-default navbar-btn btn-info playing-btn right-block" ng-click="showPlayer()" ng-show="currentTrack">
           <img alt="{{'Previous' | translate }}"
                 src="<?php p(OCP\image_path('music', 'new/angle_right.svg')) ?>" />
           <span> Now <br/> 

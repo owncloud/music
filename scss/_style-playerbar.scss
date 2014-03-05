@@ -63,19 +63,19 @@
 #sm2-container embed, #sm2-container object,
 #sm2-container.started embed, #sm2-container.started object {
 	position: absolute;
-	left: 259px; /* with sidebar 300px */
-	top: 8px;
+	left: -999px; /* with sidebar 300px */
+	top: -999px;
 	/**
 	 * the actual SWF movie bit.
 	 * important: The SWF needs to be able to be moved off-screen without display: or position: changes.
 	 * changing display: or position: or overflow: here or on parent can cause SWF reload or other weird issues after unblock
 	 * e.g., SM2 starts but strange errors, no whileplaying() etc.
 	 */
-	width: 50px;
-	height: 50px;
+	width: 1px;
+	height: 1px;
 	/* some flash blockers may also respect this rule */
-	max-width: 50px;
-	max-height: 50px;
+	max-width: 1px;
+	max-height: 1px;
 }
 
 #sm2-container.swf_loaded, #sm2-container.swf_unblocked,

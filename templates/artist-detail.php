@@ -1,4 +1,5 @@
 <div>
+
   <div class="navbar navbar-default navbar-fixed-top interpret">
     <!--div class="row">
       <div class="col-xs-4"-->
@@ -30,24 +31,28 @@
     </div>
   </div>
 
-  <div ng-repeat="album in activeArtist.albums | orderBy:'year'">
-    <ul class="list-group interpret-detail-list">
-      <li class="list-group-item list-group-item-info" title="{{ album.name }} ({{ album.year}})">
-        <p class="list-group-item-heading">{{ album.name }}</p>
-      </li>
 
-      <li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 
-        <span>
-          {{track.number}}. {{ track.title }}
-        </span>
-      </li>
-    </ul> 
-  </div>
+	<div ng-repeat="album in activeArtist.albums | orderBy:'year'">
+		<ul class="list-group interpret-detail-list">
+			<li class="list-group-item list-group-item-info" title="{{ album.name }} ({{ album.year}})">
+				<p class="list-group-item-heading">
+					{{ album.name }} 
+				</p>
+			</li>
 
-<div class="navbar navbar-default navbar-fixed-bottom interpret">
-  <div class="row">
-    <div class="col-xs-12 text-center">
-      <p class="navbar-text text-center">{{activeArtist.name}}</p>
-    </div>
-  </div>
+			<li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 
+				<span>
+					{{track.number}}. {{ track.title }}
+				</span>
+			</li>
+		</ul> 
+	</div>
+
+	<div class="navbar navbar-default navbar-fixed-bottom interpret">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<p class="navbar-text text-center">{{activeArtist.name}}</p>
+			</div>
+		</div>
+	</div>
 </div>

@@ -21,7 +21,7 @@ Application.config(function($provide){
 	var app_name = parts[apps_index + 1];
 	var app_prefix = parts.slice(0, apps_index + 2).join('/') + '/';
 	
-	var isHTML5 = false; // window.history && window.history.pushState;
+	var isHTML5 = window.history && window.history.pushState;
 	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppBasePath', app_prefix);
 	$provide.constant('AppRoot', isHTML5 ? app_prefix : '/');

@@ -40,7 +40,9 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition . ' ' . $ordering;
 	}
 
-	private function makeSelectQuery($condition=null, $ordering='ORDER BY `track`.`title` COLLATE NOCASE ASC'){
+	private function makeSelectQuery($condition=null, $ordering=null){
+		$collate = $CONFIG['dbtype'] == 'sqlite' ? 'COLLATE NOCASE' : '';
+		$ordering = $ordering == null ? 'ORDER BY `track`.`title` ' . $collate . ' ASC' : $ordering;
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition, $ordering);
 	}
 

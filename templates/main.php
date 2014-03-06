@@ -1,4 +1,5 @@
 <?php
+\OCP\Util::addScript('music', 'vendor/momentjs/moment.min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-animate/angular-animate.min');
@@ -36,6 +37,4 @@
 		<div ng-controller="PlayerController">
 			<div id="app-content" class='{{animationType}}' ng-view ng-class="{started: started}"></div>
 		</div>
-
-
 </div>

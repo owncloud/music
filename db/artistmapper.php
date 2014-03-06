@@ -33,10 +33,11 @@ class ArtistMapper extends Mapper {
 	}
 
 	private function makeSelectQuery($condition=null){
+		$collate = $CONFIG['dbtype'] == 'sqlite' ? 'COLLATE NOCASE' : '';
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition .
-			' ORDER BY `artist`.`name` COLLATE NOCASE ASC';
+			' ORDER BY `artist`.`name` ' . $collate . ' ASC';
 	}
 
 	public function findAll($userId){

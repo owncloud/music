@@ -347,7 +347,8 @@ angular.module('Music').controller('PlayerController',
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
-					$scope.setTime(this.position/1000, this.duration/1000);
+					console.log("pos: ", this.position, "dur:", this.duration, "est:", this.durationEstimate, "bytesTotal:", this.bytesTotal, "bytesLoaded", this.bytesLoaded);
+					$scope.setTime(this.position, this.duration);
 				},
 				onstop: function() {
 					$scope.setPlay(false);
@@ -428,17 +429,22 @@ angular.module('Music').controller('PlayerController',
 		}
 	};
 
+	var pretty = function(time) {
+		var duration = moment.utc(time);
+		return duration.format('HH:mm:ss');
+	};
+
 	// only call from external script
 	$scope.setTime = function(position, duration) {
 		// determine if already inside of an $apply or $digest
 		// see http://stackoverflow.com/a/12859093
 		if($scope.$$phase) {
-			$scope.duration = duration;
-			$scope.position = position;
+			$scope.position = pretty(position);
+			$scope.duration = pretty(duration);
 		} else {
 			$scope.$apply(function(){
-				$scope.duration = duration;
-				$scope.position = position;
+				$scope.position = pretty(position);
+				$scope.duration = pretty(duration);
 			});
 		}
 	};

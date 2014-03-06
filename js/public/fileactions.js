@@ -6,9 +6,7 @@ $(document).ready(function() {
 
 	var openInMusic = function (filename) {
 		var id = $('#fileList').find('[data-file="'+filename+'"]').data('id');
-		// TODO needs to be fixed once a proper solution for https://github.com/owncloud/core/issues/7307 is found
-		// https://github.com/owncloud/core/pull/7494
-		window.location = OC.webroot + '/index.php/apps/music/#/file/' + id;
+		window.location = OC.generateUrl('apps/music/#/file/{id}', {id: id});
 	};
 
 	if(typeof FileActions !== 'undefined') {

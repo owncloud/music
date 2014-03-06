@@ -196,22 +196,17 @@ angular.module('Music').controller('PlayerController',
 		}
 	};
 
-	var pretty = function(time) {
-		var duration = moment.utc(time);
-		return duration.format('HH:mm:ss');
-	};
-
 	// only call from external script
 	$scope.setTime = function(position, duration) {
 		// determine if already inside of an $apply or $digest
 		// see http://stackoverflow.com/a/12859093
 		if($scope.$$phase) {
-			$scope.position = pretty(position);
-			$scope.duration = pretty(duration);
+			$scope.position = position;
+			$scope.duration = duration;
 		} else {
 			$scope.$apply(function(){
-				$scope.position = pretty(position);
-				$scope.duration = pretty(duration);
+				$scope.position = position;
+				$scope.duration = duration;
 			});
 		}
 	};

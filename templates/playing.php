@@ -16,7 +16,7 @@
     <span>
       <p class="playinginfo text-center"><strong>{{currentTrack.artist.name}}</strong></p>
       <p class="playinginfo text-center">{{currentTrack.title}}</p>
-      <p class="playinginfo text-center">{{position}} / {{duration}}</p>
+      <p class="playinginfo text-center">{{position | format:'HH:mm:ss'}} / {{duration | format:'HH:mm:ss'}}</p>
       
     </span>
   </div>

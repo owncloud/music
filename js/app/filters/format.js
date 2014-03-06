@@ -19,10 +19,9 @@
  *
  */
 
-angular.module('Music').filter('playTime', function() {
-	return function(input) {
-		var minutes = Math.floor(input/60),
-			seconds = Math.floor(input - (minutes * 60));
-		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+angular.module('Music').filter('format', function() {
+	return function(time) {
+    var duration = moment.utc(time);
+    return duration.format('HH:mm:ss');
 	};
 });

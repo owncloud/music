@@ -124,7 +124,6 @@ angular.module('Music').controller('PlayerController',
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
-					console.log("pos:", this.position, "dur:", this.duration, "est:", this.durationEstimate, "bytesTotal:", this.bytesTotal, "bytesLoaded", this.bytesLoaded);
 					$scope.setTime(this.position, this.durationEstimate || this.duration || 0);
 				},
 				onstop: function() {

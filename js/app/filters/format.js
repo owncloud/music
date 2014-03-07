@@ -20,8 +20,8 @@
  */
 
 angular.module('Music').filter('format', function() {
-	return function(time) {
+	return function(time, format) {
     var duration = moment.utc(time);
-    return duration.format('HH:mm:ss');
+    return duration.format(format);
 	};
 });

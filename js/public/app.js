@@ -675,9 +675,9 @@ angular.module('Music').factory('Track', ['Restangular', '$rootScope', function 
   };
 }]);
 angular.module('Music').filter('format', function() {
-	return function(time) {
+	return function(time, format) {
     var duration = moment.utc(time);
-    return duration.format('HH:mm:ss');
+    return duration.format(format);
 	};
 });
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {

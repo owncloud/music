@@ -33,7 +33,7 @@ class ArtistMapper extends Mapper {
 	}
 
 	private function makeSelectQuery($condition=null){
-		$collate = $CONFIG['dbtype'] == 'sqlite' ? 'COLLATE NOCASE' : '';
+		$collate = \OC_CONFIG::getValue('dbtype') === 'sqlite' ? 'COLLATE NOCASE' : '';
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition .

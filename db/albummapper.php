@@ -35,7 +35,7 @@ class AlbumMapper extends Mapper {
 	}
 
 	private function makeSelectQuery($condition=null){
-		$collate = $CONFIG['dbtype'] == 'sqlite' ? 'COLLATE NOCASE' : '';
+		$collate = \OC_CONFIG::getValue('dbtype') === 'sqlite' ? 'COLLATE NOCASE' : '';
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.

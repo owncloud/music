@@ -41,7 +41,7 @@ class TrackMapper extends Mapper {
 	}
 
 	private function makeSelectQuery($condition=null, $ordering=null){
-		$collate = $CONFIG['dbtype'] == 'sqlite' ? 'COLLATE NOCASE' : '';
+		$collate = \OC_CONFIG::getValue('dbtype') === 'sqlite' ? 'COLLATE NOCASE' : '';
 		$ordering = $ordering == null ? 'ORDER BY `track`.`title` ' . $collate . ' ASC' : $ordering;
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition, $ordering);
 	}

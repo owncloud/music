@@ -487,12 +487,17 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.prev = function() {
-		// play previous track or, if we're at first track, replay it.
-		var track = playlistService.getPrevTrack();
-		if ( track )
-			resonateTrack(track);
-		else
+		// replay track if we're past the first 5 seconds.
+		if ( $scope.position > 5 * 1000 ) {
 			replayTrack();
+		} else {
+			// play previous track or, if we're at first track, replay it.
+			var track = playlistService.getPrevTrack();
+			if ( track )
+				resonateTrack(track);
+			else
+				replayTrack();
+		}
 	};
 
 	var offset = function (event) {

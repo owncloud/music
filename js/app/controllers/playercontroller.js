@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -79,10 +79,11 @@ angular.module('Music').controller('PlayerController',
 				true : false;
 		for(var mimeType in track.files) {
 			if(mimeType === 'audio/ogg' && isChrome) {
+				var str = gettext(
+					'Chrome is only able to play MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
+				);
 				// TODO inject this
-				OC.Notification.showHtml(gettext(
-					'Chrome is only able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				));
+				OC.Notification.showHtml(gettextCatalog.getString(str));
 			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];

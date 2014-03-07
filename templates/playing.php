@@ -52,13 +52,13 @@
       <div class="col-xs-2 col-xs-offset-2 text-center">
         <img alt="random icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/random.svg')) ?>"
-              ng-click="shuffle=!shuffle"
+              ng-click="toggleShuffle()"
               ng-class="{active: shuffle}" />
       </div>
       <div class="col-xs-2 text-center">
         <img alt="repeat icon" class="toggle-btn"
               src="<?php p(OCP\image_path('music', 'new/repeat.svg')) ?>"
-              ng-click="repeat=!repeat"
+              ng-click="toggleRepeat()"
               ng-class="{active: repeat}" />
       </div>
   </div>

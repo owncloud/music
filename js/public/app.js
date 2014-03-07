@@ -501,6 +501,9 @@ angular.module('Music').controller('PlayerController',
 		}
 	};
 
+	$scope.toggleShuffle = function() { $scope.shuffle = !$scope.shuffle; };
+	$scope.toggleRepeat = function() { $scope.repeat = !$scope.repeat; };
+
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
 		$scope.next();

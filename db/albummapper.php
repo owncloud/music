@@ -35,12 +35,11 @@ class AlbumMapper extends Mapper {
 	}
 
 	private function makeSelectQuery($condition=null){
-		$collate = \OC_CONFIG::getValue('dbtype') === 'sqlite' ? 'COLLATE NOCASE' : '';
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ' . $condition .
-			' ORDER BY `album`.`name` ' . $collate . ' ASC';
+			' ORDER BY `album`.`name` ' . $this->collate . ' ASC';
 	}
 
 	public function findAll($userId){

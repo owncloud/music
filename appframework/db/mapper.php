@@ -45,6 +45,7 @@ abstract class Mapper {
 	public function __construct(API $api, $tableName){
 		$this->api = $api;
 		$this->tableName = '*PREFIX*' . $tableName;
+		$this->collate = in_array(\OC_CONFIG::getValue('dbtype'), ['sqlite', 'sqlite3']) ? 'COLLATE NOCASE' : '';
 	}
 
 

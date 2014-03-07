@@ -28,8 +28,9 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\AppFramework\Core\API;
+use OC\Hooks\PublicEmitter;
 
-class Scanner {
+class Scanner extends PublicEmitter {
 
 	private $api;
 	private $extractor;
@@ -69,6 +70,7 @@ class Scanner {
 
 		// debug logging
 		$this->api->log('update - mimetype '. $metadata['mimetype'] , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($path));
 
 		if(substr($metadata['mimetype'], 0, 5) === 'image') {
 			$coverFileId = $metadata['fileid'];
@@ -200,7 +202,8 @@ class Scanner {
 	public function delete($path){
 		// debug logging
 		$this->api->log('delete - '. $path , 'debug');
-
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($path));
+		
 		$metadata = $this->api->getFileInfo($path);
 		$fileId = $metadata['fileid'];
 		$userId = $this->api->getUserId();

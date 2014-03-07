@@ -21,11 +21,13 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppRoot', 'isHTML5',
-	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppRoot, isHTML5) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'OwnCloudPath', 'AppRoot', 'isHTML5',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, OwnCloudPath, AppRoot, isHTML5) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
+
+	$rootScope.pathToOwnCloud = OwnCloudPath;
 
 	$scope.appBasePath = function(rel_path) {
 		if(typeof(rel_path) === 'undefined') rel_path = "";

@@ -6,7 +6,7 @@
 <div class="navbar navbar-default navbar-fixed-top interpret">
   <div class="row">
     <div class="col-xs-4">
-      <a class="btn btn-default navbar-btn btn-info left-block" href="../.." target="_self">
+      <a class="btn btn-default navbar-btn btn-info left-block" href="{{ pathToOwnCloud }}" target="_self">
         <img alt="{{'Previous' | translate }}"
               src="<?php p(OCP\image_path('music', 'new/angle_left.svg')) ?>" />
         Home

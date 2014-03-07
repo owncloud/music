@@ -21,14 +21,15 @@ Application.config(function($provide){
 	var path = window.location.pathname;
 	var match = path.match('^(.*)/index.php/apps/([^/]+)');
 	var app_name = match[2];
+	var oc_path = match[1] || '/'; // path to owncloud or / (root)
 	var app_root = match[0] + '/';
 	path  = window.location.href;
 	match = path.match('^(.*)/index.php/apps/[^/]+');
 	var web_root = match[1];
-	
 
 	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppName', app_name);
+	$provide.constant('OwnCloudPath', oc_path);
 	$provide.constant('WebRoot', web_root);
 	$provide.constant('AppRoot', app_root);
 }).config(
@@ -55,11 +56,13 @@ Application.config(function($provide){
 		RestangularProvider.setBaseUrl(AppRoot + 'api');
 }]).run();
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'AppRoot', 'isHTML5',
-	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, AppRoot, isHTML5) {
+	['$rootScope', '$scope', '$location', 'Artist', 'Album', 'Track', 'playlistService', 'gettextCatalog', 'OwnCloudPath', 'AppRoot', 'isHTML5',
+	function ($rootScope, $scope, $location, Artist, Album, Track, playlistService, gettextCatalog, OwnCloudPath, AppRoot, isHTML5) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
+
+	$rootScope.pathToOwnCloud = OwnCloudPath;
 
 	$scope.appBasePath = function(rel_path) {
 		if(typeof(rel_path) === 'undefined') rel_path = "";

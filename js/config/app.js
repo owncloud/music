@@ -42,14 +42,15 @@ Application.config(function($provide){
 	var path = window.location.pathname;
 	var match = path.match('^(.*)/index.php/apps/([^/]+)');
 	var app_name = match[2];
+	var oc_path = match[1] || '/'; // path to owncloud or / (root)
 	var app_root = match[0] + '/';
 	path  = window.location.href;
 	match = path.match('^(.*)/index.php/apps/[^/]+');
 	var web_root = match[1];
-	
 
 	$provide.constant('isHTML5', isHTML5);
 	$provide.constant('AppName', app_name);
+	$provide.constant('OwnCloudPath', oc_path);
 	$provide.constant('WebRoot', web_root);
 	$provide.constant('AppRoot', app_root);
 }).config(

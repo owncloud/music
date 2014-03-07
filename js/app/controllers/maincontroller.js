@@ -160,14 +160,16 @@ angular.module('Music').controller('MainController',
 	$scope.artistFilterClicked = function() {
 		$scope.filter = 'artist';
 	};
+
 	$scope.albumFilterClicked = function() {
 		$scope.filter = 'album';
 		if ( !$scope.albums ) {
-			Album.queryWithoutTree().then(function(albums) {
+			Album.queryWithTree().then(function(albums) {
 				$scope.albums = albums;
 			});
 		}
 	};
+
 	$scope.trackFilterClicked = function() {
 		$scope.filter = 'track';
 		if ( !$scope.tracks ) {
@@ -179,17 +181,17 @@ angular.module('Music').controller('MainController',
 
 	$scope.artistClicked = function(artist) {
 		$scope.artist = artist;
-		$location.path($scope.appBasePath("artist/" + artist.id));
+		$location.path($scope.appBasePath(["artist", artist.id].join("/")));
 	};
 
 	$scope.albumClicked = function(album) {
 		$scope.album = album;
-		$location.path($scope.appBasePath("album/" + album.id));
+		$location.path($scope.appBasePath(["album", album.id].join("/")));
 	};
 
 	$scope.trackClicked = function(track, context) {
 		//copy the context tracks in a tracks array
-		tracks = context;
+		var tracks = context;
 		var index = tracks.indexOf(track);
 		if(index > 0) {
 			// slice array in two parts and interchange them
@@ -197,7 +199,7 @@ angular.module('Music').controller('MainController',
 			var end = tracks.slice(index);
 			tracks = end.concat(begin);
 		}
-		playlist = tracks;
+		var playlist = tracks;
 		//calling setPlaylist method to play the defined tracks
 		playlistService.setPlaylist(playlist);
 		//playlistService.setCurrentTrack(track);

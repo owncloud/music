@@ -70,6 +70,8 @@ class ApiController extends Controller {
 						$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId, $artistId);
 						foreach($tracks as &$track) {
 							$track = $track->toAPI($this->api);
+							$track['artist'] = $artist;
+							$track['album'] = $album;
 						}
 						$album['tracks'] = $tracks;
 					}
@@ -102,6 +104,8 @@ class ApiController extends Controller {
 				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId, $artistId);
 				foreach($tracks as &$track) {
 					$track = $track->toAPI($this->api);
+					$track['artist'] = $artist;
+					$track['album'] = $album;
 				}
 				$album['tracks'] = $tracks;
 			}
@@ -126,16 +130,25 @@ class ApiController extends Controller {
 			$album = $album->toAPI($this->api);
 			if($fulltree) {
 				$albumId = $album['id'];
-				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-				foreach($tracks as &$track) {
-					$track = $track->toAPI($this->api);
-				}
-				$album['tracks'] = $tracks;
 				$artists = $this->artistBusinessLayer->findMultipleById($artistIds, $userId);
 				foreach($artists as &$artist) {
 					$artist = $artist->toAPI($this->api);
 				}
 				$album['artists'] = $artists;
+				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+				foreach($tracks as &$track) {
+					$artistId = $track->getArtistId();
+					$trackArtist = null;
+					foreach($artists as $artist) {
+						if ( $artist['id'] == $artistId ) {
+							$trackArtist = $artist;
+						}
+					}
+					$track = $track->toAPI($this->api);
+					$track['artist'] = $trackArtist;
+					$track['album'] = $album;
+				}
+				$album['tracks'] = $tracks;
 			}
 		}
 		return $this->renderPlainJSON($albums);

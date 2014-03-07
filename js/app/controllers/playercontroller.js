@@ -53,11 +53,10 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.playFile = function (fileid) {
 		if (fileid) {
-			Restangular.one('file', fileid).get()
-				.then(function(result){
-					playlistService.setPlaylist([result]);
-					playlistService.publish('play');
-				});
+			Restangular.one('file', fileid).get().then(function(result) {
+				playlistService.setPlaylist([result]);
+				playlistService.publish('play');
+			});
 		}
 	};
 
@@ -92,30 +91,41 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	$scope.$watch('currentTrack', function(newValue, oldValue) {
-		playlistService.publish('playing', newValue);
+	var replayTrack = function() {
+		$scope.player.setPosition('ownCloudSound', 0);
+	};
+
+	var muteTrack = function() {
+		$scope.player.toggleMute('ownCloudSound');
+	};
+
+	var resonateTrack = function(track) {
+		// $watch won't trigger if newValue == oldValue, so no endless loop here
+		$scope.currentTrack = track;
+
+		playlistService.publish('playing', track);
 		$scope.player.stopAll();
 		$scope.player.destroySound('ownCloudSound');
-		if(newValue !== null) {
+		if(track !== null) {
 			// switch initial state
 			$scope.$parent.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.artist.id;
+											return artist.id === track.artist.id;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.album.id;
+											return album.id === track.album.id;
 										});
 
 			$scope.player.createSound({
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
-					console.log("pos: ", this.position, "dur:", this.duration, "est:", this.durationEstimate, "bytesTotal:", this.bytesTotal, "bytesLoaded", this.bytesLoaded);
-					$scope.setTime(this.position, this.duration);
+					console.log("pos:", this.position, "dur:", this.duration, "est:", this.durationEstimate, "bytesTotal:", this.bytesTotal, "bytesLoaded", this.bytesLoaded);
+					$scope.setTime(this.position, this.duration || 0);
 				},
 				onstop: function() {
 					$scope.setPlay(false);
@@ -168,6 +178,10 @@ angular.module('Music').controller('PlayerController',
 			// switch initial state
 			$scope.$parent.started = false;
 		}
+	};
+
+	$scope.$watch('currentTrack', function(newValue) {
+		resonateTrack(newValue);
 	});
 
 	// only call from external script
@@ -190,7 +204,7 @@ angular.module('Music').controller('PlayerController',
 		if($scope.$$phase) {
 			$scope.buffering = buffering;
 		} else {
-			$scope.$apply(function(){
+			$scope.$apply(function() {
 				$scope.buffering = buffering;
 			});
 		}
@@ -204,7 +218,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.position = position;
 			$scope.duration = duration;
 		} else {
-			$scope.$apply(function(){
+			$scope.$apply(function() {
 				$scope.position = position;
 				$scope.duration = duration;
 			});
@@ -232,13 +246,23 @@ angular.module('Music').controller('PlayerController',
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
 		}
-		$scope.currentTrack = track;
+		resonateTrack(track);
 	};
 
 	$scope.prev = function() {
+		// play previous track or, if we're at first track, replay it.
 		var track = playlistService.getPrevTrack();
-		if(track !== null) {
-			$scope.currentTrack = track;
+		if ( track )
+			resonateTrack(track);
+		else
+			replayTrack();
+	};
+
+	$scope.progressBarClicked = function(event) {
+		if ( $scope.duration ) {
+			var progress = event.offsetX / document.getElementById('player-progress-bar').offsetWidth;
+			var position = $scope.duration * progress;
+			$scope.player.setPosition('ownCloudSound', position);
 		}
 	};
 

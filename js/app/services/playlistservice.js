@@ -55,12 +55,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 					}
 				}
 				// generate a list with all integers between 0 and playlist.length
-				var all = [];
-				for(var i = 0; i < playlist.length; i++) {
-					all.push(i);
-				}
-				// remove the already played track ids
-				all = _.difference(all, played);
+				var all = _.difference(_.range(0, playlist.length), played);
+
 				// determine a random integer out of this set
 				currentTrackId = all[Math.round(Math.random() * (all.length - 1))];
 			} else {

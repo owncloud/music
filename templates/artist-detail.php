@@ -42,7 +42,7 @@
 
 			<li class="list-group-item" ng-repeat="track in album.tracks" ng-click="trackClicked(track, album.tracks)"> 
 				<span>
-					{{track.number}}. {{ track.title }}
+					{{ track.number }}. {{ track.title }}
 				</span>
 			</li>
 		</ul> 
@@ -51,7 +51,7 @@
 	<div class="navbar navbar-default navbar-fixed-bottom interpret">
 		<div class="row">
 			<div class="col-xs-12 text-center">
-				<p class="navbar-text text-center">{{activeArtist.name}}</p>
+				<p class="navbar-text text-center">{{ activeArtist.name }}</p>
 			</div>
 		</div>
 	</div>

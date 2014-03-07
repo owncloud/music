@@ -11,23 +11,19 @@
     </div>
   </div>
 
-  <div class="row">    
+  <div class="row">
     <img src="http://placehold.it/500x500" class="img-responsive playing-cover center-block img-thumbnail"  alt="album art" />
     <span>
-      <p class="playinginfo text-center"><strong>{{currentTrack.artist.name}}</strong></p>
-      <p class="playinginfo text-center">{{currentTrack.title}}</p>
-      <p class="playinginfo text-center">{{position | format:'HH:mm:ss'}} / {{duration | format:'HH:mm:ss'}}</p>
+      <p class="playinginfo text-center"><strong>{{ currentTrack.artist.name }}</strong></p>
+      <p class="playinginfo text-center">{{ currentTrack.title }}</p>
+      <p class="playinginfo text-center">{{ position | format:'HH:mm:ss' }} / {{ duration | format:'HH:mm:ss' }}</p>
       
     </span>
   </div>
 
-
-
-
-  <div class="progress">
-    <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{(position/duration)*100}}%;">
-      
-      <span class="sr-only">{{(position/duration)*100}}% Complete</span>
+  <div id="player-progress-bar" class="progress" ng-click="progressBarClicked($event)">
+    <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: {{ ( position / duration ) * 100}}%;">
+      <!-- <span class="sr-only">{{(position/duration)*100}}% Complete</span> -->
     </div>
   </div>
 

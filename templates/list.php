@@ -47,7 +47,7 @@
 
 <div ng-show="filter == 'track'" class="list-group interpret-list">
   <a ng-repeat="track in tracks" 
-    ng-click="trackClicked(track, tracks)" 
+    ng-click="trackClicked(track, [track])" 
     class="list-group-item">
     <span class='left'>{{track.title}} <small>| {{ artist.name }}</small></span>
   </a>

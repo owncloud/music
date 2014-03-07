@@ -257,9 +257,20 @@ angular.module('Music').controller('PlayerController',
 			replayTrack();
 	};
 
+	var offset = function (event) {
+		var totalOffsetX = 0;
+    var currentElement = event.target;
+
+    do {
+        totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+    } while( (currentElement = currentElement.offsetParent) );
+
+    return event.pageX - totalOffsetX;
+	};
+
 	$scope.progressBarClicked = function(event) {
 		if ( $scope.duration ) {
-			var progress = event.offsetX / document.getElementById('player-progress-bar').offsetWidth;
+			var progress = offset(event) / document.getElementById('player-progress-bar').offsetWidth;
 			var position = $scope.duration * progress;
 			$scope.player.setPosition('ownCloudSound', position);
 		}

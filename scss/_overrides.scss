@@ -290,3 +290,20 @@ path { fill: yellow; }
     right: auto !important;
   }
 }
+
+
+
+// Editor information of albums / tracks
+
+.side-info {
+  background-color: #e0eaf1;
+  border-bottom: 1px solid #b3cee1;
+  border-right: 1px solid #b3cee1;
+  padding: 3px 4px 3px 4px;
+  margin: 2px 2px 2px 0;
+  text-decoration: none;
+  font-size: 70%;
+  line-height: 1.4;
+  white-space: nowrap;
+  display: inline-block;
+}

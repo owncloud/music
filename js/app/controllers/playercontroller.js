@@ -38,7 +38,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
+		$scope.playFile($routeParams.id);
 		if($scope.$parent.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
@@ -48,7 +48,7 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$rootScope.$on('$routeChangeSuccess', function() {
-		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
+		$scope.playFile($routeParams.id);
 	});
 
 	$scope.playFile = function (fileid) {

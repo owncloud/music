@@ -38,9 +38,9 @@ angular.module('Music', ['restangular', 'gettext']).
 		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
 		function ($routeProvider, $interpolateProvider, RestangularProvider) {
 
-	$routeProvider.when('/', {
+	$routeProvider.when('/:type/:id', {
 		templateUrl: 'main.html'
-	}).when('/file/:id', {
+	}).when('/', {
 		templateUrl: 'main.html'
 	}).otherwise({
 		redirectTo: '/'

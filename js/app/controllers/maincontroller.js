@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', '$routeParams', '$location', 'Artists', 'playlistService', 'gettextCatalog',
+	function ($rootScope, $scope, $routeParams, $location, Artists, playlistService, gettextCatalog) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -74,7 +74,58 @@ angular.module('Music').controller('MainController',
 			}
 
 		}
+
+		$scope.handlePlayRequest();
 	});
+	
+	$rootScope.$on('$routeChangeSuccess', function() {
+		$scope.handlePlayRequest();
+	});
+	
+	$scope.play = function (type, object) {
+		$scope.playRequest = {
+			type: type,
+			object: object
+		};
+		$location.path('/' + type + '/' + object.id);
+	};
+	
+	$scope.handlePlayRequest = function() {
+		if (!$scope.artists) return;
+		
+		var type, object;
+		
+		if ($scope.playRequest) {
+			type = $scope.playRequest.type;
+			object = $scope.playRequest.object;
+			$scope.playRequest = null;
+		} else if ($routeParams.type) {
+			type = $routeParams.type;
+			if (type == 'artist') {
+				object = _.find($scope.artists, function(artist) {
+					return artist.id == $routeParams.id;
+				});
+			} else {
+				var albums = _.flatten(_.pluck($scope.artists, 'albums'));
+				if (type == 'album') {
+					object = _.find(albums, function(album) {
+						return album.id == $routeParams.id;
+					});
+				} else if (type == 'track') {
+					var tracks = _.flatten(_.pluck(albums, 'tracks'));
+					object = _.find(tracks, function(track) {
+						return track.id == $routeParams.id;
+					});
+				}
+			}
+		}
+		
+		if (type && object) {
+			if (type == 'artist') $scope.playArtist(object);
+			else if (type == 'album') $scope.playAlbum(object);
+			else if (type == 'track') $scope.playTrack(object);
+		}
+	};
 
 	$scope.playTrack = function(track) {
 		var artist = _.find($scope.artists,

@@ -51,6 +51,8 @@ class Scan extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$scanner = $this->container['Scanner'];
+		$status = $this->container['ScanStatusMapper'];
+		
 		$scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 			$output->writeln("Scanning <info>$path</info>");
 		});
@@ -68,7 +70,7 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$scanner->rescan();
-			$this->container['ScanStatusMapper']->setScanned($user);
+			if(!$status->isScanned($user)) $status->setScanned($user);
 		}
 	}
 }

@@ -99,6 +99,13 @@ class AlbumMapper extends Mapper {
 		}
 		return $this->findEntity($sql, $params);
 	}
+	
+	public function findByNameLike($pattern, $userId){
+		$pattern = \OC_Util::normalizeUnicode($pattern);
+		$sql = $this->makeSelectQuery('AND `album`.`name` LIKE ?');
+		$params = array($userId, $pattern);
+		return $this->findEntities($sql, $params);
+	}
 
 	public function addAlbumArtistRelationIfNotExist($albumId, $artistId){
 		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.

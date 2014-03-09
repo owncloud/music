@@ -83,6 +83,13 @@ class TrackMapper extends Mapper {
 		$params = array($fileId);
 		return $this->findEntities($sql, $params);
 	}
+	
+	public function findByTitleLike($pattern, $userId){
+		$pattern = \OC_Util::normalizeUnicode($pattern);
+		$sql = $this->makeSelectQuery('AND `track`.`title` LIKE ?');
+		$params = array($userId, $pattern);
+		return $this->findEntities($sql, $params);
+	}
 
 	public function countByArtist($artistId, $userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.

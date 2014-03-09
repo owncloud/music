@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog) {
+	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
+	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -38,7 +38,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		$scope.playFile($routeParams.id);
+		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
 		if($scope.$parent.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
@@ -48,7 +48,7 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$rootScope.$on('$routeChangeSuccess', function() {
-		$scope.playFile($routeParams.id);
+		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
 	});
 
 	$scope.playFile = function (fileid) {
@@ -79,11 +79,10 @@ angular.module('Music').controller('PlayerController',
 				true : false;
 		for(var mimeType in track.files) {
 			if(mimeType === 'audio/ogg' && isChrome) {
-				var str = gettext(
-					'Chrome is only able to play MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				);
 				// TODO inject this
-				OC.Notification.showHtml(gettextCatalog.getString(str));
+				OC.Notification.showHtml(gettext(
+					'Chrome is only able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
+				));
 			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];

@@ -13,21 +13,12 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'gettext']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
-
-	$routeProvider.when('/', {
-		templateUrl: 'main.html'
-	}).when('/file/:id', {
-		templateUrl: 'main.html'
-	}).otherwise({
-		redirectTo: '/'
-	});
+	config(['RestangularProvider', function (RestangularProvider) {
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
 }]);
+
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
 	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
@@ -82,10 +73,102 @@ angular.module('Music').controller('MainController',
 			}
 
 		}
+
+		$rootScope.$emit('artistsLoaded');
 	});
 
+	$scope.play = function (type, object) {
+		$scope.playRequest = {
+			type: type,
+			object: object
+		};
+		window.location.hash = '#/' + type + '/' + object.id;
+	};
+}]);
+angular.module('Music').controller('PlayerController',
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
+	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
+
+	$scope.playing = false;
+	$scope.buffering = false;
+	$scope.player = Audio;
+	$scope.position = 0.0;
+	$scope.duration = 0.0;
+	$scope.currentTrack = null;
+	$scope.currentArtist = null;
+	$scope.currentAlbum = null;
+
+	$scope.repeat = false;
+	$scope.shuffle = false;
+
+	$scope.eventsBeforePlaying = 2;
+
+	// will be invoked by the audio factory
+	$rootScope.$on('SoundManagerReady', function() {
+		if($scope.$parent.started) {
+			// invoke play after the flash gets unblocked
+			$scope.$apply(function(){
+				$scope.next();
+			});
+		}
+		if (!--$scope.eventsBeforePlaying) $scope.handlePlayRequest();
+	});
+	
+	$rootScope.$on('artistsLoaded', function () {
+		if (!--$scope.eventsBeforePlaying) $scope.handlePlayRequest();
+	});
+	
+	$(window).on('hashchange', function() {
+		$scope.handlePlayRequest();
+		$scope.$apply();
+	});
+
+	$scope.handlePlayRequest = function() {
+		if (!$scope.$parent.artists) return;
+		
+		var type, object;
+		
+		var playRequest = $scope.$parent.playRequest;
+		if (playRequest) {
+			type = playRequest.type;
+			object = playRequest.object;
+			$scope.$parent.playRequest = null;
+		} else {
+			var hashParts = window.location.hash.substr(1).split('/'); 
+			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
+				type = hashParts[1];
+				var id = hashParts[2];
+				
+				if (type == 'file') object = id;
+				else if (type == 'artist') {
+					object = _.find($scope.$parent.artists, function(artist) {
+						return artist.id == id;
+					});
+				} else {
+					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
+					if (type == 'album') {
+						object = _.find(albums, function(album) {
+							return album.id == id;
+						});
+					} else if (type == 'track') {
+						var tracks = _.flatten(_.pluck(albums, 'tracks'));
+						object = _.find(tracks, function(track) {
+							return track.id == id;
+						});
+					}
+				}
+			}
+		}
+		if (type && object) {
+			if (type == 'artist') $scope.playArtist(object);
+			else if (type == 'album') $scope.playAlbum(object);
+			else if (type == 'track') $scope.playTrack(object);
+			else if (type == 'file') $scope.playFile(object);
+		}
+	};
+	
 	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists,
+		var artist = _.find($scope.$parent.artists,
 			function(artist) {
 				return artist.id === track.artist.id;
 			}),
@@ -141,37 +224,6 @@ angular.module('Music').controller('MainController',
 		playlistService.setPlaylist(playlist);
 		playlistService.publish('play');
 	};
-}]);
-angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog) {
-
-	$scope.playing = false;
-	$scope.buffering = false;
-	$scope.player = Audio;
-	$scope.position = 0.0;
-	$scope.duration = 0.0;
-	$scope.currentTrack = null;
-	$scope.currentArtist = null;
-	$scope.currentAlbum = null;
-
-	$scope.repeat = false;
-	$scope.shuffle = false;
-
-	// will be invoked by the audio factory
-	$rootScope.$on('SoundManagerReady', function() {
-		$scope.playFile($routeParams.id);
-		if($scope.$parent.started) {
-			// invoke play after the flash gets unblocked
-			$scope.$apply(function(){
-				$scope.next();
-			});
-		}
-	});
-
-	$rootScope.$on('$routeChangeSuccess', function() {
-		$scope.playFile($routeParams.id);
-	});
 
 	$scope.playFile = function (fileid) {
 		if (fileid) {
@@ -201,11 +253,10 @@ angular.module('Music').controller('PlayerController',
 				true : false;
 		for(var mimeType in track.files) {
 			if(mimeType === 'audio/ogg' && isChrome) {
-				var str = gettext(
-					'Chrome is only able to play MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				);
 				// TODO inject this
-				OC.Notification.showHtml(gettextCatalog.getString(str));
+				OC.Notification.showHtml(gettext(
+					'Chrome is only able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
+				));
 			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];
@@ -290,7 +341,7 @@ angular.module('Music').controller('PlayerController',
 			// switch initial state
 			$scope.$parent.started = false;
 		}
-	});
+	}, true);
 
 	// only call from external script
 	$scope.setPlay = function(playing) {
@@ -369,9 +420,8 @@ angular.module('Music').controller('PlayerController',
 		$scope.next();
 	});
 }]);
-
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'playlists', function ($scope, $routeParams, playlists) {
+	['$scope', 'playlists', function ($scope, playlists) {
 
 	$scope.playlists = playlists;
 
@@ -456,11 +506,7 @@ angular.module('Music').directive('scrollTo', ['$window', function($window) {
 	};
 }]);
 angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('artists').getList({fulltree: true}).then(
-		function(result){
-			$rootScope.$emit('artistsLoaded');
-			return result;
-		});
+	return Restangular.all('artists').getList({fulltree: true});
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {

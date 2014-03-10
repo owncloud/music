@@ -24,7 +24,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 class ArtistMapper extends Mapper {
 
@@ -62,15 +62,32 @@ class ArtistMapper extends Mapper {
 		return $this->findEntity($sql, $params);
 	}
 
-	public function findByName($artistName, $userId){
+	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false) {
 		if ($artistName === null) {
-			$sql = $this->makeSelectQuery('AND `artist`.`name` IS NULL');
+			$condition = 'AND `artist`.`name` IS NULL';
 			$params = array($userId);
+		} elseif($fuzzy) {
+			$condition = 'AND LOWER(`artist`.`name`) LIKE LOWER(?)';
+			$params = array($userId, '%' . $artistName . '%');
 		} else {
-			$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+			$condition = 'AND `artist`.`name` = ?';
 			$params = array($userId, $artistName);
 		}
-		return $this->findEntity($sql, $params);
+		$sql = $this->makeSelectQuery($condition);
+		return array(
+			'sql' => $sql,
+			'params' => $params,
+		);
+	}
+
+	public function findByName($artistName, $userId, $fuzzy = false){
+		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
+		return $this->findEntity($sqlAndParams['sql'], $sqlAndParams['params']);
+	}
+
+	public function findAllByName($artistName, $userId, $fuzzy = false){
+		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
+		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
 	}
 
 	public function deleteById($artistIds){
@@ -83,4 +100,14 @@ class ArtistMapper extends Mapper {
 		$sql = 'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
 		$this->execute($sql, $artistIds);
 	}
+
+	public function count($userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_artists` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
+
 }

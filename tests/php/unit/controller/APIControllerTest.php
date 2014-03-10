@@ -1073,6 +1073,57 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
+	public function testTrackById(){
+		$trackId = 1;
+		$fileId = 3;
+
+		$track = new Track();
+		$track->setId($trackId);
+		$track->setTitle('The title');
+		$track->setArtistId(3);
+		$track->setAlbumId(1);
+		$track->setNumber(4);
+		$track->setLength(123);
+		$track->setFileId($fileId);
+		$track->setMimetype('audio/mp3');
+		$track->setBitrate(123);
+
+		$this->api->expects($this->exactly(4))
+			->method('linkToRoute')
+			->will($this->returnCallback($this->getLinkToRouteFunction()));
+
+		$this->api->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue($this->user));
+		$this->trackBusinessLayer->expects($this->once())
+			->method('findByFileId')
+			->with($this->equalTo($fileId), $this->equalTo($this->user))
+			->will($this->returnValue($track));
+
+		$result = array(
+			'title' => 'The title',
+			'uri' => '/api/track/1',
+			'slug' => '1-the-title',
+			'id' => 1,
+			'number' => 4,
+			'bitrate' => 123,
+			'length' => 123,
+			'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
+			'album' => array('id' => 1, 'uri' => '/api/album/1'),
+			'files' => array(
+				'audio/mp3' => 3
+			)
+		);
+
+		$urlParams = array('fileId' => $fileId);
+		$this->controller = $this->getController($urlParams);
+
+		$response = $this->controller->trackByFileId();
+
+		$this->assertEquals($result, $response->getData());
+		$this->assertTrue($response instanceof JSONResponse);
+	}
+
 	public function testTrackFulltree(){
 		$this->markTestSkipped();
 	}

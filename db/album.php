@@ -25,7 +25,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 
 class Album extends Entity {
@@ -36,6 +36,10 @@ class Album extends Entity {
 	public $artistIds;
 	public $artists;
 	public $userId;
+
+	// the following attributes aren't filled automatically
+	public $trackCount;
+	public $artist; // just used for Ampache as this supports just one artist
 
 	public function __construct(){
 		$this->addType('year', 'int');
@@ -63,18 +67,22 @@ class Album extends Entity {
 		return $artists;
 	}
 
+	public function getNameString(API $api) {
+		$name = $this->getName();
+		if ($name === null) {
+			$name = $api->getTrans()->t('Unknown album')->__toString();
+		}
+		return $name;
+	}
+
 	public function toAPI(API $api) {
 		$coverUrl = null;
 		if($this->getCoverFileId() > 0) {
 			$coverUrl = $api->linkToRoute('download',
 				array('file' => $api->getView()->getPath($this->getCoverFileId())));
 		}
-		$name = $this->getName();
-		if ($name === null) {
-			$name = $api->getTrans()->t('Unknown album')->__toString();
-		}
 		return array(
-			'name' => $name,
+			'name' => $this->getNameString($api),
 			'year' => $this->getYear(),
 			'cover' => $coverUrl,
 			'uri' => $this->getUri($api),

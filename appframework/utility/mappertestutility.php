@@ -42,7 +42,7 @@ abstract class MapperTestUtility extends TestUtility {
 	 * @param \OCA\Music\AppFramework\Core\API $api the api mock
 	 */
 	protected function beforeEach(){
-		$this->api = $this->getMock('\OCA\Music\AppFramework\Core\API',
+		$this->api = $this->getMock('\OCA\Music\Core\API',
 			array('prepareQuery', 'getInsertId'),
 			array('a'));
 	}

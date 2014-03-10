@@ -36,7 +36,7 @@ abstract class TestUtility extends \PHPUnit_Framework_TestCase {
 	 *                          want to use
 	 * @param array $constructor constructor parameters of the api class
 	 */
-	protected function getAPIMock($apiClass='OCA\Music\AppFramework\Core\API',
+	protected function getAPIMock($apiClass='OCA\Music\Core\API',
 									array $constructor=array('appname')){
 		$methods = get_class_methods($apiClass);
 		return $this->getMock($apiClass, $methods, $constructor);

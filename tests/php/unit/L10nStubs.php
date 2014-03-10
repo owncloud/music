@@ -21,35 +21,15 @@
  *
  */
 
-namespace OCA\Music\Db;
-
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
-
-class ScanStatusMapper extends Mapper {
-
-	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
-	}
-
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
-			'WHERE `user`.`user_id` = ?';
-		$params = array($userId);
-		$result = $this->execute($sql, $params, 1);
-		$row = $result->fetchRow();
-
-		if($row === false || $row === null){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
-			'VALUES (?)';
-		$params = array($userId);
-		$this->execute($sql, $params);
+// dirty fix because the mocked class needs to be available but is in the core repo
+class OC_L10N {
+	public function t($a) {
+		return $a;
 	}
 }
+class OC_L10N_String {
+	public function __toString() {
+		return '';
+	}
+}
+

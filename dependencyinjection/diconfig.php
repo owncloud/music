@@ -25,39 +25,33 @@
 
 namespace OCA\Music\DependencyInjection;
 
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\Db\TrackMapper;
-use \OCA\Music\Db\ArtistMapper;
-use \OCA\Music\Db\AlbumMapper;
-use \OCA\Music\Db\ScanStatusMapper;
-use \OCA\Music\Utility\Scanner;
-use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Core\API;
+use \OCA\Music\DB\AlbumMapper;
+use \OCA\Music\DB\ArtistMapper;
+use \OCA\Music\DB\TrackMapper;
+use \OCA\Music\DB\ScanStatusMapper;
+use \OCA\Music\Utility\ExtractorGetID3;
+use \OCA\Music\Utility\Scanner;
 
 // in stable5 getid3 is already loaded
 if(!class_exists('getid3_exception')) {
 	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 }
 
-/**
- * Delete the following twig config to use ownClouds default templates
- */
-// use this to specify the template directory
-$this['TwigTemplateDirectory'] = __DIR__ . '/../templates';
-
-
 $this['API'] = $this->share(function($c){
 	return new API($c['AppName']);
 });
 
 /**
- * CONTROLLERS
+ * Controllers
  */
+
 $this['ApiController'] = $this->share(function($c){
 	return new ApiController($c['API'], $c['Request'],
 		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer']);
@@ -71,29 +65,41 @@ $this['LogController'] = $this->share(function($c){
 	return new LogController($c['API'], $c['Request']);
 });
 
-$this['TrackMapper'] = $this->share(function($c){
-	return new TrackMapper($c['API']);
-});
+/**
+ * Mappers
+ */
 
-$this['TrackBusinessLayer'] = $this->share(function($c){
-	return new TrackBusinessLayer($c['TrackMapper'], $c['API']);
+$this['AlbumMapper'] = $this->share(function($c){
+	return new AlbumMapper($c['API']);
 });
 
 $this['ArtistMapper'] = $this->share(function($c){
 	return new ArtistMapper($c['API']);
 });
 
-$this['ArtistBusinessLayer'] = $this->share(function($c){
-	return new ArtistBusinessLayer($c['ArtistMapper'], $c['API']);
+$this['TrackMapper'] = $this->share(function($c){
+	return new TrackMapper($c['API']);
 });
 
-$this['AlbumMapper'] = $this->share(function($c){
-	return new AlbumMapper($c['API']);
+/**
+ * Business Layer
+ */
+
+$this['TrackBusinessLayer'] = $this->share(function($c){
+	return new TrackBusinessLayer($c['TrackMapper'], $c['API']);
+});
+
+$this['ArtistBusinessLayer'] = $this->share(function($c){
+	return new ArtistBusinessLayer($c['ArtistMapper'], $c['API']);
 });
 
 $this['AlbumBusinessLayer'] = $this->share(function($c){
 	return new AlbumBusinessLayer($c['AlbumMapper'], $c['API']);
 });
+
+/**
+ * Utilities
+ */
 
 $this['Scanner'] = $this->share(function($c){
 	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],

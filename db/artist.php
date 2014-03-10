@@ -25,7 +25,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 
 class Artist extends Entity {
@@ -34,6 +34,10 @@ class Artist extends Entity {
 	public $image; // URL
 	public $userId;
 
+	// the following attributes aren't filled automatically
+	public $albumCount;
+	public $trackCount;
+
 	public function getUri(API $api) {
 		return $api->linkToRoute(
 			'music_artist',
@@ -41,14 +45,18 @@ class Artist extends Entity {
 		);
 	}
 
-	public function toAPI(API $api) {
+	public function getNameString(API $api) {
 		$name = $this->getName();
 		if ($name === null) {
 			$name = $api->getTrans()->t('Unknown artist')->__toString();
 		}
+		return $name;
+	}
+
+	public function toAPI(API $api) {
 		return array(
 			'id' => $this->getId(),
-			'name' => $name,
+			'name' => $this->getNameString($api),
 			'image' => $this->getImage(),
 			'slug' => $this->getId() . '-' . $this->slugify('name'),
 			'uri' => $this->getUri($api)

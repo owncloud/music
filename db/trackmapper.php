@@ -111,25 +111,25 @@ class TrackMapper extends Mapper {
 		return $row['COUNT(*)'];
 	}
 
-	public function findAllByName($searchTerm, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false){
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
-			$searchTerm = '%' . $searchTerm . '%';
+			$name = '%' . $name . '%';
 		} else {
 			$condition = 'AND `track`.`title` = ? ';
 		}
 		$sql = $this->makeSelectQuery($condition);
-		$params = array($userId, $searchTerm);
+		$params = array($userId, $name);
 		return $this->findEntities($sql, $params);
 	}
 
-	public function findAllByNameRecursive($searchTerm, $userId){
+	public function findAllByNameRecursive($name, $userId){
 		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' LOWER(`track`.`title`) LIKE LOWER(?) )';
 		$sql = $this->makeSelectQuery($condition);
-		$searchTerm = '%' . $searchTerm . '%';
-		$params = array($userId, $searchTerm, $searchTerm, $searchTerm);
+		$name = '%' . $name . '%';
+		$params = array($userId, $name, $name, $name);
 		return $this->findEntities($sql, $params);
 	}
 }

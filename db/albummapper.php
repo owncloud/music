@@ -196,15 +196,15 @@ class AlbumMapper extends Mapper {
 		return $row['COUNT(*)'];
 	}
 
-	public function findAllByName($searchTerm, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false){
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
-			$searchTerm = '%' . $searchTerm . '%';
+			$name = '%' . $name . '%';
 		} else {
 			$condition = 'AND `album`.`name` = ? ';
 		}
 		$sql = $this->makeSelectQuery($condition);
-		$params = array($userId, $searchTerm);
+		$params = array($userId, $name);
 		return $this->findEntities($sql, $params);
 	}
 }

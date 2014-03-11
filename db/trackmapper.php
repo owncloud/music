@@ -24,7 +24,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 class TrackMapper extends Mapper {
 
@@ -95,13 +95,48 @@ class TrackMapper extends Mapper {
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
 		$params = array($userId, $artistId);
-		return $this->findOneQuery($sql, $params);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
 	}
 
 	public function countByAlbum($albumId, $userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
 		$params = array($userId, $albumId);
-		return $this->findOneQuery($sql, $params);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
+
+	public function count($userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
+
+	public function findAllByName($name, $userId, $fuzzy = false){
+		if ($fuzzy) {
+			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
+			$name = '%' . $name . '%';
+		} else {
+			$condition = 'AND `track`.`title` = ? ';
+		}
+		$sql = $this->makeSelectQuery($condition);
+		$params = array($userId, $name);
+		return $this->findEntities($sql, $params);
+	}
+
+	public function findAllByNameRecursive($name, $userId){
+		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
+						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
+						' LOWER(`track`.`title`) LIKE LOWER(?) )';
+		$sql = $this->makeSelectQuery($condition);
+		$name = '%' . $name . '%';
+		$params = array($userId, $name, $name, $name);
+		return $this->findEntities($sql, $params);
 	}
 }

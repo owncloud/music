@@ -24,7 +24,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 
@@ -180,5 +180,38 @@ class AlbumMapper extends Mapper {
 				) WHERE `id` = ?';
 		$params = array($parentFolderId, $albumId);
 		$this->execute($sql, $params);
+	}
+
+	public function count($userId){
+		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_albums` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
+
+	public function countByArtist($artistId, $userId){
+		$sql = 'SELECT COUNT(*) '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'JOIN `*PREFIX*music_album_artists` `artists` '.
+			'ON `album`.`id` = `artists`.`album_id` '.
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+		$params = array($userId, $artistId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetchRow();
+		return $row['COUNT(*)'];
+	}
+
+	public function findAllByName($name, $userId, $fuzzy = false){
+		if ($fuzzy) {
+			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
+			$name = '%' . $name . '%';
+		} else {
+			$condition = 'AND `album`.`name` = ? ';
+		}
+		$sql = $this->makeSelectQuery($condition);
+		$params = array($userId, $name);
+		return $this->findEntities($sql, $params);
 	}
 }

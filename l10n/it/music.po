@@ -1,13 +1,12 @@
 # 
 # Translators:
 # Paolo Velati <paolo.velati@gmail.com>, 2014
-# Vincenzo Reale <vinx.reale@gmail.com>, 2013
+# Vincenzo Reale <vinx.reale@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-18 09:27:59+0500\n"
-"PO-Revision-Date: 2014-01-25 06:55+0000\n"
-"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
+"PO-Revision-Date: 2014-03-11 10:50+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,10 +15,10 @@ msgstr ""
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
+"Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome è in grado di riprodurre solo file MP3 - vedi il <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"

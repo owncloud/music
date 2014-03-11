@@ -3,8 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-18 09:27:59+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-03-11 10:50+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Adyghe (http://www.transifex.com/projects/p/owncloud/language/ady/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,7 +13,7 @@ msgstr ""
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
+"Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 msgstr ""

@@ -26,7 +26,7 @@
 
 namespace OCA\Music\AppFramework\Db;
 
-use OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 
 /**

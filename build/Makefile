@@ -72,6 +72,9 @@ watch-js-unit-tests: deps
 php-unit-tests: deps
 	phpunit $(php_unit_tests_dir)
 
+php-unit-tests-coverage: deps
+	phpunit --coverage-html coverage-html $(php_unit_tests_dir)
+
 watch-php-unit-tests: deps
 	$(grunt_dir) --config $(gruntfile_dir) watch:phpunit
 
@@ -85,8 +88,6 @@ php-acceptance-tests: deps
 # general
 deps:
 	npm install --deps
-	# fix pot file header
-	-patch -uN -d $(CURDIR)/node_modules/grunt-angular-gettext/tasks < $(CURDIR)/patch-tasks.diff
 
 clean:
 	rm -rf $(CURDIR)/node_modules

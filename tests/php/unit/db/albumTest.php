@@ -21,9 +21,9 @@
  *
  */
 
-
 namespace OCA\Music\Db;
 
+require_once __DIR__ . '/../L10nStubs.php';
 
 /* FIXME: dirty hack to mock object */
 class AlbumTestView {
@@ -38,8 +38,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 	private $api;
 
 	protected function setUp() {
-		$this->api = $this->getMockBuilder(
-			'\OCA\Music\AppFramework\Core\API')
+		$this->api = $this->getMockBuilder('\OCA\Music\Core\API')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -69,6 +68,31 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 			),
 			'uri' => null
 			), $album->toAPI($this->api));
+	}
+
+	public function testNullNameLocalisation() {
+		$album = new Album();
+		$album->setName(null);
+
+		$l10nString = $this->getMockBuilder('OC_L10N_String')
+			->disableOriginalConstructor()
+			->getMock();
+		$l10nString->expects($this->once())
+			->method('__toString')
+			->will($this->returnValue('Unknown album'));
+
+		$l10n = $this->getMockBuilder('OC_L10N')
+			->disableOriginalConstructor()
+			->getMock();
+		$l10n->expects($this->once())
+			->method('t')
+			->with($this->equalTo('Unknown album'))
+			->will($this->returnValue($l10nString));
+
+		$this->api->expects($this->once())
+			->method('getTrans')
+			->will($this->returnValue($l10n));
+		$this->assertEquals('Unknown album', $album->getNameString($this->api));
 	}
 
 }

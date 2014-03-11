@@ -89,13 +89,6 @@ class ArtistMapper extends Mapper {
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
 	}
-	
-	public function findByNameLike($pattern, $userId){
-		$pattern = \OC_Util::normalizeUnicode($pattern);
-		$sql = $this->makeSelectQuery('AND `artist`.`name` LIKE ?');
-		$params = array($userId, $pattern);
-		return $this->findEntities($sql, $params);
-	}
 
 	public function deleteById($artistIds){
 		if(count($artistIds) === 0)

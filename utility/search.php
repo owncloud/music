@@ -35,13 +35,13 @@ class Search extends \OC_Search_Provider {
 		$trackMapper = $c['TrackMapper'];
 		$userId = $api->getUserId();
 		$pattern = '%' . $query . '%';
-		
+
 		$results=array();
-		$artists = $artistMapper->findByNameLike($pattern, $userId);
-		
+		$artists = $artistMapper->findAllByName($pattern, $userId, true);
+
 		$container = '';
 		$text = '';
-		
+
 		foreach($artists as $artist) {
 			$name = $artist->name;
 			$link = $api->linkToRoute('music_index') . '#/artist/' . $artist->id;
@@ -49,15 +49,15 @@ class Search extends \OC_Search_Provider {
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
 
-		$albums = $albumMapper->findByNameLike($pattern, $userId);
+		$albums = $albumMapper->findAllByName($pattern, $userId, true);
 		foreach($albums as $album) {
 			$name = $album->name;
 			$link = $api->linkToRoute('music_index') . '#/album/' . $album->id;
 			$type = (string)$l->t('Albums');
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
-		
-		$tracks = $trackMapper->findByTitleLike($pattern, $userId);
+
+		$tracks = $trackMapper->findAllByName($pattern, $userId, true);
 		foreach($tracks as $track) {
 			$name = $track->title;
 			$link = $api->linkToRoute('music_index') . '#/track/' . $track->id;

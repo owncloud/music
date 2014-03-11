@@ -88,8 +88,6 @@ php-acceptance-tests: deps
 # general
 deps:
 	npm install --deps
-	# fix pot file header
-	-patch -uN -d $(CURDIR)/node_modules/grunt-angular-gettext/tasks < $(CURDIR)/patch-tasks.diff
 
 clean:
 	rm -rf $(CURDIR)/node_modules

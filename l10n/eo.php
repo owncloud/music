@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Chrome is only able to playback MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome nur kapablas reprodukti MP3-dosierojn – vidu <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">la vikion</a>",
 "Delete" => "Forigi",
 "Loading ..." => "Ŝargante...",
 "Music" => "Muziko",

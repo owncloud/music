@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Christophe Lherieau <skimpax@gmail.com>, 2013
+# Christophe Lherieau <skimpax@gmail.com>, 2013-2014
 # etiess <etiess@gmail.com>, 2013
 # ogre_sympathique <ogre.sympathique@speed.1s.fr>, 2013
 # Romain DEP. <rom1dep@gmail.com>, 2013
@@ -9,9 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-18 09:27:59+0500\n"
-"PO-Revision-Date: 2014-01-23 17:20+0000\n"
-"Last-Translator: tcit <thomas.citharet@gmail.com>\n"
+"PO-Revision-Date: 2014-03-11 10:50+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,10 +19,10 @@ msgstr ""
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
+"Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome  n'est capable de jouer que les fichiers MP3 uniquement - voir le <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"

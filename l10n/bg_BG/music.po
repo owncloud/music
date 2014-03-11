@@ -1,10 +1,10 @@
 # 
 # Translators:
+# cybertorture <cybertorture@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-18 09:27:59+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-03-11 10:50+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Bulgarian (Bulgaria) (http://www.transifex.com/projects/p/owncloud/language/bg_BG/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
+"Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 msgstr ""
@@ -25,7 +25,7 @@ msgstr "Изтриване"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Зареждане ..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -37,7 +37,7 @@ msgstr "Следваща"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Няма нищо тук. Качете си музиката!"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -63,16 +63,16 @@ msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Покажи по-малко ..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Разбъркване"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Непознат албум"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Непознат изпълнител"

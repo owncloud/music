@@ -2,12 +2,11 @@
 # Translators:
 # 책읽는달팽 <bjh13579@gmail.com>, 2013
 # Shinjo Park <kde@peremen.name>, 2013
-# 책읽는달팽 <bjh13579@gmail.com>, 2013
+# 책읽는달팽 <bjh13579@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-18 09:27:59+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-03-11 10:50+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,10 +16,10 @@ msgstr ""
 
 #: ../js/public/app.js
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
+"Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "구글 Chrome에서만 MP3 파일을 재생할 수 있습니다. 자세한 정보는<a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">위키</a>를 참고하십시오."
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
@@ -73,8 +72,8 @@ msgstr "임의 재생"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "알려지지 않은 앨범"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "알려지지 않은 아티스트"

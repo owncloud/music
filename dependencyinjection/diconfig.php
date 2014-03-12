@@ -101,11 +101,6 @@ $this['AlbumBusinessLayer'] = $this->share(function($c){
  * Utilities
  */
 
-$this['Scanner'] = $this->share(function($c){
-	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
-		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
-});
-
 $this['ScanStatusMapper'] = $this->share(function($c){
 	return new ScanStatusMapper($c['API']);
 });
@@ -123,4 +118,9 @@ $this['getID3'] = $this->share(function($c){
 
 $this['ExtractorGetID3'] = $this->share(function($c){
 	return new ExtractorGetID3($c['API'], $c['getID3']);
+});
+
+$this['Scanner'] = $this->share(function($c){
+	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
+		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
 });

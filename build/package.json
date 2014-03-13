@@ -16,11 +16,7 @@
 		"grunt-contrib-concat": "*",
 		"grunt-contrib-jshint": "*",
 		"grunt-contrib-watch": "*",
-		"karma": "~0.10.0",
-		"karma-coffee-preprocessor": "~0.1",
-		"grunt-karma": "*",
 		"grunt-wrap": "*",
-		"phantomjs": "*",
 		"grunt-phpunit": "*",
 		"grunt-angular-gettext": "*"
 	},

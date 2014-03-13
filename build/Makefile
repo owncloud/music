@@ -24,11 +24,6 @@ build_dir=$(CURDIR)/artifacts
 appstore_dir=$(build_dir)/appstore
 package_name=$(app_name)
 
-# binary directories for running the CI tests
-firefox_bin=/usr/bin/firefox
-chrome_bin=/usr/bin/chromium
-phantomjs_bin=/usr/bin/phantomjs
-
 # common directories
 grunt_dir=$(CURDIR)/node_modules/grunt-cli/bin/grunt
 gruntfile_dir=$(CURDIR)/Gruntfile.js
@@ -53,20 +48,9 @@ watch: build
 	$(grunt_dir) --config $(gruntfile_dir) watch:concat
 
 # testing
-tests: js-unit-tests php-unit-tests php-integration-tests php-acceptance-tests
+tests: php-unit-tests php-integration-tests php-acceptance-tests
 
-unit-tests: js-unit-tests php-unit-tests
-
-
-# testing js
-js-unit-tests: deps
-	export PHANTOMJS_BIN=$(phantomjs_bin) && \
-	$(grunt_dir) --config $(gruntfile_dir) karma:continuous
-
-watch-js-unit-tests: deps
-	export CHROME_BIN=$(chrome_bin) && export FIREFOX_BIN=$(firefox_bin) && \
-	$(grunt_dir) --config $(gruntfile_dir) karma:unit
-
+unit-tests: php-unit-tests
 
 # testing php
 php-unit-tests: deps

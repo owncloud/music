@@ -11,7 +11,7 @@ before_install:
 
 install:
   - sudo apt-get -y install nodejs
-  - cd build && make deps
+  - cd build && make deps && cd ..
 
 script:
   - cd build && make unit-tests

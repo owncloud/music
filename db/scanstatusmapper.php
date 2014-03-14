@@ -24,7 +24,7 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\Core\API;
 
 class ScanStatusMapper extends Mapper {
 
@@ -36,7 +36,7 @@ class ScanStatusMapper extends Mapper {
 		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
 			'WHERE `user`.`user_id` = ?';
 		$params = array($userId);
-		$result = $this->execute($sql, $params);
+		$result = $this->execute($sql, $params, 1);
 		$row = $result->fetchRow();
 
 		if($row === false || $row === null){

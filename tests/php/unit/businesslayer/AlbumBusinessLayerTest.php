@@ -68,7 +68,6 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 	}
 
 	public function testFindAll(){
-
 		$this->mapper->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
@@ -80,6 +79,16 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
 		$this->assertEquals($this->response, $result);
+	}
+
+	public function testFindAllWithoutResult(){
+		$this->mapper->expects($this->once())
+			->method('findAll')
+			->with($this->equalTo($this->userId))
+			->will($this->returnValue(array()));
+
+		$result = $this->albumBusinessLayer->findAll($this->userId);
+		$this->assertEquals(array(), $result);
 	}
 
 	public function testFind(){
@@ -125,6 +134,17 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 			->with($this->equalTo($albumIds));
 
 		$this->albumBusinessLayer->deleteById($albumIds);
+	}
+
+	public function testUpdateCover(){
+		$coverFileId = 1;
+		$parentFolderId = 2;
+
+		$this->mapper->expects($this->once())
+			->method('updateCover')
+			->with($this->equalTo($coverFileId), $this->equalTo($parentFolderId));
+
+		$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
 	}
 
 	public function testAddAlbumIfNotExistAdd(){
@@ -183,5 +203,24 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
 		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+	}
+
+	public function testRemoveAndFindCovers(){
+		$fileId = 1;
+
+		$this->mapper->expects($this->once())
+			->method('removeCover')
+			->with($this->equalTo($fileId));
+
+		$this->mapper->expects($this->once())
+			->method('getAlbumsWithoutCover')
+			->will($this->returnValue(array(array('albumId' => 2, 'parentFolderId' => 3))));
+
+		$this->mapper->expects($this->once())
+			->method('findAlbumCover')
+			->with($this->equalTo(2), $this->equalTo(3));
+
+		$this->albumBusinessLayer->removeCover($fileId);
+
 	}
 }

@@ -129,14 +129,14 @@ class TrackBusinessLayer extends BusinessLayer {
 			if(!in_array($artistId, $remaining['artistIds'])){
 				// only add artists which have no tracks left
 				$result = $this->mapper->countByArtist($artistId, $userId);
-				if($result['COUNT(*)'] === '0') {
+				if($result === '0') {
 					$remaining['artistIds'][] = $artistId;
 				}
 			}
 			if(!in_array($albumId, $remaining['albumIds'])){
 				// only add albums which have no tracks left
 				$result = $this->mapper->countByAlbum($albumId, $userId);
-				if($result['COUNT(*)'] === '0') {
+				if($result === '0') {
 					$remaining['albumIds'][] = $albumId;
 				}
 

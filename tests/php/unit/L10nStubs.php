@@ -1,9 +1,9 @@
+<?php
 
 /**
  * ownCloud - Music app
  *
  * @author Morris Jobke
- *
  * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -21,5 +21,15 @@
  *
  */
 
+// dirty fix because the mocked class needs to be available but is in the core repo
+class OC_L10N {
+	public function t($a) {
+		return $a;
+	}
+}
+class OC_L10N_String {
+	public function __toString() {
+		return '';
+	}
+}
 
-angular.module('Music', ['ngMock']);

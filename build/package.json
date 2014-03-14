@@ -16,10 +16,7 @@
 		"grunt-contrib-concat": "*",
 		"grunt-contrib-jshint": "*",
 		"grunt-contrib-watch": "*",
-		"karma": "*",
-		"grunt-karma": "*",
 		"grunt-wrap": "*",
-		"phantomjs": "*",
 		"grunt-phpunit": "*",
 		"grunt-angular-gettext": "*"
 	},

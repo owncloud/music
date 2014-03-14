@@ -48,6 +48,7 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$this->userId = 'jack';
 		$this->artistId = 3;
 		$this->albumId = 3;
+		$this->fileId = 2;
 	}
 
 	public function testFindAllByArtist(){
@@ -74,6 +75,20 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 		$result = $this->trackBusinessLayer->findAllByAlbum(
 			$this->albumId,
+			$this->userId);
+		$this->assertEquals($response, $result);
+	}
+
+	public function testFindByFileId(){
+		$response = '';
+		$this->mapper->expects($this->once())
+			->method('findByFileId')
+			->with($this->equalTo($this->fileId),
+					$this->equalTo($this->userId))
+			->will($this->returnValue($response));
+
+		$result = $this->trackBusinessLayer->findByFileId(
+			$this->fileId,
 			$this->userId);
 		$this->assertEquals($response, $result);
 	}
@@ -184,13 +199,13 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 			->method('countByArtist')
 			->with($this->equalTo(2),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '0')));
+			->will($this->returnValue('0'));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '1')));
+			->will($this->returnValue('1'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
 		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array(2)), $result);
@@ -217,13 +232,13 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 			->method('countByArtist')
 			->with($this->equalTo(2),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '1')));
+			->will($this->returnValue('1'));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3),
 				$this->equalTo($this->userId))
-			->will($this->returnValue(array('COUNT(*)' => '0')));
+			->will($this->returnValue('0'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
 		$this->assertEquals(array('albumIds'=>array(3), 'artistIds' => array()), $result);

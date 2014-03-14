@@ -57,7 +57,7 @@ class Scanner extends PublicEmitter {
 	 * Get called by 'post_write' hook (file creation, file update)
 	 * @param string $path the path of the file
 	 */
-	public function update($path){
+	public function update($path, $userId = NULL){
 		// debug logging
 		$this->api->log('update - '. $path , 'debug');
 
@@ -96,7 +96,7 @@ class Scanner extends PublicEmitter {
 				$hasComments = array_key_exists('comments', $fileInfo);
 			}
 
-			$userId = $this->api->getUserId();
+			if (!$userId) $userId = $this->api->getUserId();
 
 			// artist
 			$artist = null;
@@ -203,7 +203,7 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->api->log('delete - '. $path , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($path));
-		
+
 		$metadata = $this->api->getFileInfo($path);
 		$fileId = $metadata['fileid'];
 		$userId = $this->api->getUserId();
@@ -223,7 +223,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan() {
+	public function rescan($userId = NULL) {
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
@@ -233,7 +233,7 @@ class Scanner extends PublicEmitter {
 		$ogg = $this->api->searchByMime('application/ogg');
 		$music = array_merge($music, $ogg);
 		foreach ($music as $file) {
-			$this->update($file['path']);
+			$this->update($file['path'], $userId);
 		}
 		// find album covers
 		$this->albumBusinessLayer->findCovers();

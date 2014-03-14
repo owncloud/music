@@ -24,13 +24,13 @@ class Scan extends Command {
 	 */
 	private $userManager;
 	private $container;
-	
+
 	public function __construct(\OC\User\Manager $userManager) {
 		$this->userManager = $userManager;
 		$this->container = new DIContainer();
 		parent::__construct();
 	}
-	
+
 	protected function configure() {
 		$this
 			->setName('music:scan')
@@ -52,24 +52,24 @@ class Scan extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$scanner = $this->container['Scanner'];
 		$status = $this->container['ScanStatusMapper'];
-		
+
 		$scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 			$output->writeln("Scanning <info>$path</info>");
 		});
-		
+
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
 		} else {
 			$users = $input->getArgument('user_id');
 		}
-		
+
 		foreach ($users as $user) {
 			if (is_object($user)) {
 				$user = $user->getUID();
 			}
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
-			$scanner->rescan();
+			$scanner->rescan($user);
 			if(!$status->isScanned($user)) $status->setScanned($user);
 		}
 	}

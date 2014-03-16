@@ -29,26 +29,10 @@ use \OCA\Music\DependencyInjection\DIContainer;
 
 
 /**
- * Webinterface
+ * Path of the music collection
  */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
+$this->create('music_settings_user_path', '/settings/user/path')->post()->action(
+        function($params){
+                App::main('SettingController', 'userPath', $params, new DIContainer());
+        }
 );
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-

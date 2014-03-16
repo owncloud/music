@@ -21,34 +21,17 @@
  *
  */
 
-
-namespace OCA\Music;
-
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
-
-
 /**
- * Webinterface
+ * TODO: Proper extractor
+ *
+ * Translation note: Keep in mind to update the fake-template.php with the string which
+ * has to be translated, because just that file is scanned by the exctrator
  */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
 
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
+?>
 
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-
+<fieldset class="personalblock" id="music-user">
+	<h2><?php p($l->t('Music')); ?></h2>
+	<label for="music_path"><?php p($l -> t('Path to your music collection')); ?></label>
+	<input type="text" id="music-path" value="<?php p($_['path']); ?>" />
+</fieldset>

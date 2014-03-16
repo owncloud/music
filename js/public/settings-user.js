@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ownCloud - Music app
  *
@@ -21,34 +19,31 @@
  *
  */
 
+$(document).ready(function() {
 
-namespace OCA\Music;
-
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
-
-
-/**
- * Webinterface
+/*
+ * Collection path
  */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
+var $path = $('#music-path');
+$path.on('click', function() {
+	$path.prop('disabled', true);
+	OC.dialogs.filepicker(
+		t('music', 'Path to your music collection'),
+		function (path) {
+			if ($path.val() == path) $path.prop('disabled', false);
+			else {
+				$path.val(path);
+				$.post(OC.Router.generate('music_settings_user_path'), { value: path }, function(data) {
+					if (!data.success) $path[0].setCustomValidity(t('music', 'Invalid path'));
+					else $path[0].setCustomValidity('');
+					$path.prop('disabled', false);
+				});
+			}
+		},
+		false,
+		'httpd/unix-directory',
+		true
+	);
+});
 
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-
+});

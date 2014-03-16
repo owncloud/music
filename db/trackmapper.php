@@ -40,13 +40,34 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition;
 	}
 
+	private function makeSelectQueryWithFileInfoWithoutUserId($condition){
+		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
+				'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
+				'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype`, '.
+				'`file`.`path` as `filePath`, `file`.`size` as `fileSize` '.
+				'FROM `*PREFIX*music_tracks` `track` '.
+				'INNER JOIN `*PREFIX*filecache` `file` '.
+				'ON `track`.`file_id` = `file`.`fileid` '.
+				'WHERE ' . $condition;
+	}
+
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
+	}
+
+	private function makeSelectQueryWithFileInfo($condition=null){
+		return $this->makeSelectQueryWithFileInfoWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
 	public function findAll($userId){
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
+		return $this->findEntities($sql, $params);
+	}
+
+	public function findAllByPath($path, $userId){
+		$sql = $this->makeSelectQueryWithFileInfo('AND `file`.`path` LIKE ?');
+		$params = array($userId, $path . '%');
 		return $this->findEntities($sql, $params);
 	}
 

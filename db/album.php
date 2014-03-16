@@ -33,6 +33,7 @@ class Album extends Entity {
 	public $name;
 	public $year;
 	public $coverFileId;
+	public $coverFilePath;
 	public $artistIds;
 	public $artists;
 	public $userId;
@@ -73,6 +74,20 @@ class Album extends Entity {
 			$name = $api->getTrans()->t('Unknown album')->__toString();
 		}
 		return $name;
+	}
+
+	public function toCollection(API $api) {
+		$coverUrl = null;
+		if($this->getCoverFilePath()) {
+			$coverUrl = $api->linkToRoute('download',
+					array('file' => strstr($this->getCoverFilePath(),'/')));
+		}
+		return array(
+				'name' => $this->getNameString($api),
+				'year' => $this->getYear(),
+				'cover' => $coverUrl,
+				'id' => $this->getId(),
+		);
 	}
 
 	public function toAPI(API $api) {

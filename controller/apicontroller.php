@@ -53,6 +53,48 @@ class ApiController extends Controller {
 	 * @Ajax
 	 * @API
 	 */
+	public function collection() {
+		$userId = $this->api->getUserId();
+		$path = $this->api->getUserValue('path');
+		if (!$path) $path = "/";
+		$path = 'files'.$path;
+
+		$allArtists = $this->artistBusinessLayer->findAll($userId);
+		$allArtistsById = array();
+		foreach ($allArtists as &$artist) $allArtistsById[$artist->id] = $artist->toCollection($this->api);
+
+		$allAlbums = $this->albumBusinessLayer->findAllWithFileInfo($userId);
+		$allAlbumsById = array();
+		foreach ($allAlbums as &$album) $allAlbumsById[$album->id] = $album->toCollection($this->api);
+
+		$allTracks = $this->trackBusinessLayer->findAllByPath($path, $userId);
+
+		$artists = array();
+		foreach ($allTracks as $track) {
+			$artist = &$allArtistsById[$track->artistId];
+			if (!isset($artist['albums'])) {
+				$artist['albums'] = array();
+				$artists[] = &$artist;
+			}
+			$album = &$allAlbumsById[$track->albumId];
+			if (!isset($album['tracks'])) {
+				$album['tracks'] = array();
+				$artist['albums'][] = &$album;
+			}
+
+			$album['tracks'][] = $track->toCollection($this->api);
+		}
+
+		return $this->renderPlainJSON($artists);
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
 	public function artists() {
 		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = filter_var($this->params('albums'), FILTER_VALIDATE_BOOLEAN);

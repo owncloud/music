@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ownCloud - Music app
  *
@@ -20,35 +18,3 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-
-namespace OCA\Music;
-
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
-
-
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-

@@ -28,6 +28,12 @@ use \OCA\Music\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
 
+$this->create('music_collection', '/api/collection')->get()->action(
+		function($params){
+			App::main('ApiController', 'collection', $params, new DIContainer());
+		}
+);
+
 /**
  * Shiva api https://github.com/tooxie/shiva-server#resources
  */

@@ -53,6 +53,13 @@ class Artist extends Entity {
 		return $name;
 	}
 
+	public function toCollection(API $api) {
+		return array(
+			'id' => $this->getId(),
+			'name' => $this->getNameString($api)
+		);
+	}
+
 	public function toAPI(API $api) {
 		return array(
 			'id' => $this->getId(),

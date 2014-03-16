@@ -22,33 +22,32 @@
  */
 
 
-namespace OCA\Music;
+namespace OCA\Music\Controller;
 
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
+use \OCA\Music\AppFramework\Http\Request;
 
 
-/**
- * Webinterface
- */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+class SettingController extends Controller {
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
+	public function userPath() {
+		$success = false;
+		$path = $this->params('value');
+		$pathInfo = $this->api->getFileInfo($path);
+		if ($pathInfo && $pathInfo[mimetype] == 'httpd/unix-directory') {
+			if ($path[0] != '/') $path = ('/' . $path);
+			if ($path[strlen($path)-1] != '/') $path .= '/';
+			$this->api->setUserValue('path', $path);
+			$success = true;
+		}
+		return $this->renderPlainJSON(array('success' => $success));
 	}
-);
 
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-
+}

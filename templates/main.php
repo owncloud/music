@@ -9,6 +9,7 @@
 \OCP\Util::addStyle('music', 'style-playerbar');
 \OCP\Util::addStyle('music', 'style-sidebar');
 \OCP\Util::addStyle('music', 'style');
+\OCP\Util::addStyle('music', 'mobile');
 ?>
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">

@@ -14,11 +14,6 @@
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
 
 	<div ng-controller="MainController">
-
-		<script type="text/ng-template" id="main.html">
-			<?php print_unescaped($this->inc('part.main')) ?>
-		</script>
-
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
 
@@ -70,7 +65,9 @@
 			</ul>
 		</div>-->
 
-		<div id="app-content" ng-view ng-class="{started: started}"></div>
+		<div id="app-content" ng-class="{started: started}">
+			<?php print_unescaped($this->inc('part.main')) ?>
+		</div>
 
 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
 			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>

@@ -34,17 +34,7 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'gettext']).
-	config(
-		['$routeProvider', '$interpolateProvider', 'RestangularProvider',
-		function ($routeProvider, $interpolateProvider, RestangularProvider) {
-
-	$routeProvider.when('/:type/:id', {
-		templateUrl: 'main.html'
-	}).when('/', {
-		templateUrl: 'main.html'
-	}).otherwise({
-		redirectTo: '/'
-	});
+	config(['RestangularProvider', function (RestangularProvider) {
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');

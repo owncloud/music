@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
+	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -36,20 +36,129 @@ angular.module('Music').controller('PlayerController',
 	$scope.repeat = false;
 	$scope.shuffle = false;
 
+	$scope.eventsBeforePlaying = 2;
+
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
 		if($scope.$parent.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
 				$scope.next();
 			});
 		}
+		if (!--$scope.eventsBeforePlaying) $scope.handlePlayRequest();
+	});
+	
+	$rootScope.$on('artistsLoaded', function () {
+		if (!--$scope.eventsBeforePlaying) $scope.handlePlayRequest();
+	});
+	
+	$(window).on('hashchange', function() {
+		$scope.handlePlayRequest();
+		$scope.$apply();
 	});
 
-	$rootScope.$on('$routeChangeSuccess', function() {
-		if ($routeParams.type == 'file') $scope.playFile($routeParams.id);
-	});
+	$scope.handlePlayRequest = function() {
+		if (!$scope.$parent.artists) return;
+		
+		var type, object;
+		
+		var playRequest = $scope.$parent.playRequest;
+		if (playRequest) {
+			type = playRequest.type;
+			object = playRequest.object;
+			$scope.$parent.playRequest = null;
+		} else {
+			var hashParts = window.location.hash.substr(1).split('/'); 
+			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
+				type = hashParts[1];
+				var id = hashParts[2];
+				
+				if (type == 'file') object = id;
+				else if (type == 'artist') {
+					object = _.find($scope.$parent.artists, function(artist) {
+						return artist.id == id;
+					});
+				} else {
+					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
+					if (type == 'album') {
+						object = _.find(albums, function(album) {
+							return album.id == id;
+						});
+					} else if (type == 'track') {
+						var tracks = _.flatten(_.pluck(albums, 'tracks'));
+						object = _.find(tracks, function(track) {
+							return track.id == id;
+						});
+					}
+				}
+			}
+		}
+		if (type && object) {
+			if (type == 'artist') $scope.playArtist(object);
+			else if (type == 'album') $scope.playAlbum(object);
+			else if (type == 'track') $scope.playTrack(object);
+			else if (type == 'file') $scope.playFile(object);
+		}
+	};
+	
+	$scope.playTrack = function(track) {
+		var artist = _.find($scope.$parent.artists,
+			function(artist) {
+				return artist.id === track.artist.id;
+			}),
+			album = _.find(artist.albums,
+			function(album) {
+				return album.id === track.album.id;
+			}),
+			tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		// determine index of clicked track
+		var index = tracks.indexOf(track);
+		if(index > 0) {
+			// slice array in two parts and interchange them
+			var begin = tracks.slice(0, index);
+			var end = tracks.slice(index);
+			tracks = end.concat(begin);
+		}
+		playlistService.setPlaylist(tracks);
+		playlistService.publish('play');
+	};
+
+	$scope.playAlbum = function(album) {
+		var tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				}
+			);
+		playlistService.setPlaylist(tracks);
+		playlistService.publish('play');
+	};
+
+	$scope.playArtist = function(artist) {
+		var albums = _.sortBy(artist.albums,
+			function(album) {
+				return album.year;
+			}),
+			playlist = _.union.apply(null,
+				_.map(
+					albums,
+					function(album){
+						var tracks = _.sortBy(album.tracks,
+							function(track) {
+								return track.number;
+							}
+						);
+						return tracks;
+					}
+				)
+			);
+		playlistService.setPlaylist(playlist);
+		playlistService.publish('play');
+	};
 
 	$scope.playFile = function (fileid) {
 		if (fileid) {
@@ -167,7 +276,7 @@ angular.module('Music').controller('PlayerController',
 			// switch initial state
 			$scope.$parent.started = false;
 		}
-	});
+	}, true);
 
 	// only call from external script
 	$scope.setPlay = function(playing) {

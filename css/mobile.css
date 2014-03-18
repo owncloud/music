@@ -25,8 +25,9 @@
 }
 /* also adjust the overlay */
 .album-area > img.overlay {
-	margin-left: -50px;
+	margin-left: -37px;
 	padding: 0;
+	width: 25px;
 	height: 25px;
 	margin-top: 13px;
 }

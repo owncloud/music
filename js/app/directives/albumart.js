@@ -37,6 +37,9 @@ angular.module('Music').directive('albumart', function() {
 					element.css('background-image', '');
 					// add placeholder stuff
 					element.imageplaceholder(attrs.albumart);
+					// remove style of the placeholder to allow mobile styling
+					element.css('line-height', '');
+					element.css('font-size', '');
 				}
 			}
 		};

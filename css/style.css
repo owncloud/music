@@ -86,6 +86,8 @@
 	float: left;
 	width: 190px;
 	height: 190px;
+	line-height: 190px;
+	font-size: 105px;
 }
 
 .album-area > img.overlay {

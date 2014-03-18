@@ -1,0 +1,79 @@
+/* Copyright (c) 2014, Jan-Christoph Borchardt, http://jancborchardt.net
+ This file is licensed under the Affero General Public License version 3
+ or later. See the COPYING-README file. */
+
+@media only screen and (max-width: 600px) {
+
+.artist-area > h1 {
+	margin-left: 14px;
+}
+
+/* adjust album area to screen width */
+.album-area {
+	width: 100%;
+	padding-left: 14px;
+}
+
+/* smaller album art */
+.album-area > .albumart,
+.album-area > img {
+	line-height: 50px;
+	font-size: 30px;
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+/* also adjust the overlay */
+.album-area > img.overlay {
+	margin-left: -37px;
+	padding: 0;
+	width: 25px;
+	height: 25px;
+	margin-top: 13px;
+}
+
+/* nicely display album name next to cover */
+.album-area h2 {
+	padding: 15px;
+	position: absolute;
+	left: 56px;
+	max-width: 75%;
+}
+
+/* move track list to the left so it’s visible on small screens */
+.track-list {
+	margin-left: 0;
+	padding-top: 15px;
+	clear: both;
+}
+/* align track title to the left with album title */
+.track-list > li {
+	padding-left: 42px;
+}
+
+/* layout the play bar elements for less space */
+#play-controls {
+	margin-left: 0;
+}
+#play-controls img:first-child {
+	display: none;
+}
+#playerbar .albumart {
+	left: 135px;
+	margin-left: 0;
+}
+#playerbar .song-info {
+	left: 180px;
+	max-width: 45%;
+}
+
+/* hide repeat, save space */
+#playerbar #repeat {
+	display: none;
+}
+#playerbar #shuffle {
+	right: 8px;
+}
+
+
+}

@@ -74,63 +74,15 @@ angular.module('Music').controller('MainController',
 			}
 
 		}
+
+		$rootScope.$emit('artistsLoaded');
 	});
 
-	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists,
-			function(artist) {
-				return artist.id === track.artist.id;
-			}),
-			album = _.find(artist.albums,
-			function(album) {
-				return album.id === track.album.id;
-			}),
-			tracks = _.sortBy(album.tracks,
-				function(track) {
-					return track.number;
-				}
-			);
-		// determine index of clicked track
-		var index = tracks.indexOf(track);
-		if(index > 0) {
-			// slice array in two parts and interchange them
-			var begin = tracks.slice(0, index);
-			var end = tracks.slice(index);
-			tracks = end.concat(begin);
-		}
-		playlistService.setPlaylist(tracks);
-		playlistService.publish('play');
-	};
-
-	$scope.playAlbum = function(album) {
-		var tracks = _.sortBy(album.tracks,
-				function(track) {
-					return track.number;
-				}
-			);
-		playlistService.setPlaylist(tracks);
-		playlistService.publish('play');
-	};
-
-	$scope.playArtist = function(artist) {
-		var albums = _.sortBy(artist.albums,
-			function(album) {
-				return album.year;
-			}),
-			playlist = _.union.apply(null,
-				_.map(
-					albums,
-					function(album){
-						var tracks = _.sortBy(album.tracks,
-							function(track) {
-								return track.number;
-							}
-						);
-						return tracks;
-					}
-				)
-			);
-		playlistService.setPlaylist(playlist);
-		playlistService.publish('play');
+	$scope.play = function (type, object) {
+		$scope.playRequest = {
+			type: type,
+			object: object
+		};
+		window.location.hash = '#/' + type + '/' + object.id;
 	};
 }]);

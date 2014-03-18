@@ -22,7 +22,7 @@
 
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'playlists', function ($scope, $routeParams, playlists) {
+	['$scope', 'playlists', function ($scope, playlists) {
 
 	$scope.playlists = playlists;
 

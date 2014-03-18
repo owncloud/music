@@ -103,8 +103,9 @@ angular.module('Music').controller('PlayerController',
 	$scope.shuffle = false;
 
 	$scope.eventsBeforePlaying = 2;
+	$scope.$playPosition = $('.play-position');
+	$scope.$bufferBar = $('.buffer-bar');
 	$scope.$playBar = $('.play-bar');
-	$scope.$buffer = $('.buffer');
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
@@ -306,6 +307,12 @@ angular.module('Music').controller('PlayerController',
 				whileplaying: function() {
 					$scope.setTime(this.position/1000, this.durationEstimate/1000);
 				},
+				whileloading: function() {
+					var position = this.buffered.reduce(function(prevBufferEnd, buffer) {
+						return buffer.end > prevBufferEnd ? buffer.end : prevBuffer.end;
+					}, 0);
+					$scope.setBuffer(position/1000, this.durationEstimate/1000);
+				},
 				onstop: function() {
 					$scope.setPlay(false);
 				},
@@ -387,8 +394,12 @@ angular.module('Music').controller('PlayerController',
 
 	// only call from external script
 	$scope.setTime = function(position, duration) {
+		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
-		$scope.$buffer.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
+	};
+	
+	$scope.setBuffer = function(position, duration) {
+		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
 	};
 
 	$scope.toggle = function(forcePlay) {
@@ -422,6 +433,11 @@ angular.module('Music').controller('PlayerController',
 		}
 	};
 
+	$scope.seek = function($event) {
+		var sound = $scope.player.sounds.ownCloudSound;
+		sound.setPosition($event.offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
+	};
+	
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
 		$scope.next();

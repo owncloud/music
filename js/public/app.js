@@ -302,7 +302,7 @@ angular.module('Music').controller('PlayerController',
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
-					$scope.setTime(this.position/1000, this.duration/1000);
+					$scope.setTime(this.position/1000, this.durationEstimate/1000);
 				},
 				onstop: function() {
 					$scope.setPlay(false);

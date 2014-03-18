@@ -179,14 +179,33 @@ class AlbumMapper extends Mapper {
 	}
 
 	public function findAlbumCover($albumId, $parentFolderId){
-		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = (
-					SELECT `fileid`
+		$coverNames = array("front", "cover");
+		$imagesSql = 'SELECT `fileid`, `name`
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
-					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\' LIMIT 1
-				) WHERE `id` = ?';
-		$params = array($parentFolderId, $albumId);
+					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\'';
+		$params = array($parentFolderId);
+		$result = $this->execute($imagesSql, $params);
+		$images = $result->fetchAll();
+		$imageId = null;
+		if (count($images)) {
+			usort($images, function ($imageA, $imageB) use ($coverNames) {
+				$nameA = strtolower($imageA['name']);
+				$nameB = strtolower($imageB['name']);
+				$indexA = PHP_INT_MAX;
+				$indexB = PHP_INT_MAX;
+				foreach ($coverNames as $i => $coverName) {
+					if ($indexA == PHP_INT_MAX && strpos($nameA, $coverName) === 0) $indexA = $i;
+					if ($indexB == PHP_INT_MAX && strpos($nameB, $coverName) === 0) $indexB = $i;
+					if ($indexA != PHP_INT_MAX  && $indexB != PHP_INT_MAX) break;
+				}
+				return $indexA > $indexB;
+			});
+			$imageId = $images[0]['fileid'];
+		};
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ? WHERE `id` = ?';
+		$params = array($imageId, $albumId);
 		$this->execute($sql, $params);
 	}
 

@@ -4,3 +4,6 @@ appinfo/app.php -->
 <span translate>Music</span>
 <span translate>Unknown album</span>
 <span translate>Unknown artist</span>
+<span translate>Artists</span>
+<span translate>Albums</span>
+<span translate>Tracks</span>

@@ -34,7 +34,7 @@ class Search extends \OC_Search_Provider {
 		$albumMapper = $c['AlbumMapper'];
 		$trackMapper = $c['TrackMapper'];
 		$userId = $api->getUserId();
-		$pattern = '%' . $query . '%';
+		$pattern = $query;
 
 		$results=array();
 		$artists = $artistMapper->findAllByName($pattern, $userId, true);

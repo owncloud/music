@@ -368,9 +368,10 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.seek = function($event) {
-		var sound = $scope.player.sounds.ownCloudSound;
-		sound.setPosition($event.offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
-	};
+		var sound = $scope.player.sounds.ownCloudSound,
+			offsetX = $event.offsetX || $event.originalEvent.layerX;
+		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
+        };
 	
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing

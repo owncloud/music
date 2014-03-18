@@ -28,8 +28,9 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\AppFramework\Core\API;
+use OC\Hooks\PublicEmitter;
 
-class Scanner {
+class Scanner extends PublicEmitter {
 
 	private $api;
 	private $extractor;
@@ -56,7 +57,7 @@ class Scanner {
 	 * Get called by 'post_write' hook (file creation, file update)
 	 * @param string $path the path of the file
 	 */
-	public function update($path){
+	public function update($path, $userId = NULL){
 		// debug logging
 		$this->api->log('update - '. $path , 'debug');
 
@@ -69,6 +70,7 @@ class Scanner {
 
 		// debug logging
 		$this->api->log('update - mimetype '. $metadata['mimetype'] , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($path));
 
 		if(substr($metadata['mimetype'], 0, 5) === 'image') {
 			$coverFileId = $metadata['fileid'];
@@ -94,7 +96,7 @@ class Scanner {
 				$hasComments = array_key_exists('comments', $fileInfo);
 			}
 
-			$userId = $this->api->getUserId();
+			if (!$userId) $userId = $this->api->getUserId();
 
 			// artist
 			$artist = null;
@@ -200,6 +202,7 @@ class Scanner {
 	public function delete($path){
 		// debug logging
 		$this->api->log('delete - '. $path , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($path));
 
 		$metadata = $this->api->getFileInfo($path);
 		$fileId = $metadata['fileid'];
@@ -220,7 +223,7 @@ class Scanner {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan() {
+	public function rescan($userId = NULL) {
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
@@ -230,7 +233,7 @@ class Scanner {
 		$ogg = $this->api->searchByMime('application/ogg');
 		$music = array_merge($music, $ogg);
 		foreach ($music as $file) {
-			$this->update($file['path']);
+			$this->update($file['path'], $userId);
 		}
 		// find album covers
 		$this->albumBusinessLayer->findCovers();

@@ -87,8 +87,8 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
+	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog, $filter) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -103,6 +103,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.shuffle = false;
 
 	$scope.eventsBeforePlaying = 2;
+	$scope.$playBar = $('.play-bar');
+	$scope.$buffer = $('.buffer');
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
@@ -385,17 +387,8 @@ angular.module('Music').controller('PlayerController',
 
 	// only call from external script
 	$scope.setTime = function(position, duration) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.duration = duration;
-			$scope.position = position;
-		} else {
-			$scope.$apply(function(){
-				$scope.duration = duration;
-				$scope.position = position;
-			});
-		}
+		$scope.$playBar.css('width', (position / duration * 100) + '%');
+		$scope.$buffer.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
 	};
 
 	$scope.toggle = function(forcePlay) {

@@ -40,11 +40,11 @@
 				<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
 			</div>
 			<div ng-show="currentTrack.title" class="progress-info">
-				<span ng-hide="buffering" class="muted">{{ position | playTime }} / {{ duration | playTime }}</span>
+				<span ng-hide="buffering" class="buffer" muted"></span>
 				<span ng-show="buffering" class="muted" translate>Loading ...</span>
 				<div class="progress">
 					<div class="seek-bar">
-						<div class="play-bar" style="width: {{ position / duration * 100 }}%;"></div>
+						<div class="play-bar"></div>
 					</div>
 				</div>
 			</div>

@@ -43,7 +43,7 @@ class AlbumMapper extends Mapper {
 
 	private function makeSelectQueryWithFileInfo($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-				'`album`.`cover_file_id`, `file`.`path` as `coverFilePath`'.
+				'`album`.`cover_file_id`, `file`.`path` as `coverFilePath` '.
 				'FROM `*PREFIX*music_albums` `album` '.
 				'LEFT OUTER JOIN `*PREFIX*filecache` `file` '.
 				'ON `album`.`cover_file_id` = `file`.`fileid` ' .

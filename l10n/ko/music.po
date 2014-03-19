@@ -6,13 +6,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-11 10:50+0000\n"
+"PO-Revision-Date: 2014-03-19 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
 
 #: ../js/public/app.js
 msgid ""
@@ -69,6 +77,10 @@ msgstr "덜 보기..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "임의 재생"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

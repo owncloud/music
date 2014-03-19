@@ -5,13 +5,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-11 22:52+0000\n"
-"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
+"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
 
 #: ../js/public/app.js
 msgid ""
@@ -69,6 +77,10 @@ msgstr "Mostra meno..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Mescola"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

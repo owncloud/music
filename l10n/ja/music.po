@@ -6,13 +6,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-11 13:31+0000\n"
-"Last-Translator: plazmism <gomidori@live.jp>\n"
+"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
 
 #: ../js/public/app.js
 msgid ""
@@ -69,6 +77,10 @@ msgstr "簡略表示 ..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "シャッフル"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

@@ -1,11 +1,12 @@
 # 
 # Translators:
 # liska_, 2013-2014
+# m23 <black23@gmail.com>, 2014
 # pstast <petr@stastny.eu>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-11 10:50+0000\n"
+"PO-Revision-Date: 2014-03-19 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,12 +14,20 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
+
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chrome umí přehrávat pouze soubory MP3  - více informací anglicky <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -70,6 +79,10 @@ msgstr "Zobrazit méně ..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Promíchat"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

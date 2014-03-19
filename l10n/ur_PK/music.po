@@ -3,13 +3,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-11 10:50+0000\n"
+"PO-Revision-Date: 2014-03-19 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Urdu (Pakistan) (http://www.transifex.com/projects/p/owncloud/language/ur_PK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ur_PK\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
 
 #: ../js/public/app.js
 msgid ""
@@ -66,6 +74,10 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
 msgstr ""
 
 #: ../templates/fake-template.php

@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ownCloud - Music app
  *
@@ -19,6 +21,18 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
-}]);
+
+namespace OCA\Music;
+
+use \OCA\Music\AppFramework\App;
+use \OCA\Music\DependencyInjection\DIContainer;
+
+
+/**
+ * Path of the music collection
+ */
+$this->create('music_settings_user_path', '/settings/user/path')->post()->action(
+        function($params){
+                App::main('SettingController', 'userPath', $params, new DIContainer());
+        }
+);

@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ownCloud - Music app
  *
@@ -19,6 +21,15 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
-}]);
+/**
+ * TODO: Proper extractor
+ *
+ * Translation note: Keep in mind to update the fake-template.php with the string which
+ * has to be translated, because just that file is scanned by the extractor
+ */
+
+?>
+
+<fieldset class="personalblock" id="music-admin">
+	<h2><?php p($l->t('Music')); ?></h2>
+</fieldset>

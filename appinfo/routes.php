@@ -48,3 +48,7 @@ $this->create('music_log', '/api/log')->post()->action(
 
 // include external API
 require_once __DIR__ . '/api.php';
+
+// include settings routes
+require_once __DIR__ . '/settings.php';
+

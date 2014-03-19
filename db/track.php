@@ -39,6 +39,7 @@ class Track extends Entity {
 	public $length;
 	public $fileSize;
 	public $fileId;
+	public $filePath;
 	public $bitrate;
 	public $uri;
 	public $mimetype;
@@ -78,6 +79,20 @@ class Track extends Entity {
 				'music_album',
 				array('albumIdOrSlug' => $this->albumId)
 			)
+		);
+	}
+
+	public function toCollection(API $api) {
+		return array(
+			'title' => $this->getTitle(),
+			'number' => $this->getNumber(),
+			'artistId' => $this->getArtistId(),
+			'albumId' => $this->getAlbumId(),
+			'files' => array($this->getMimetype() => $api->linkToRoute(
+				'download',
+				array('file' => strstr($this->getFilePath(),'/'))
+			)),
+			'id' => $this->getId(),
 		);
 	}
 

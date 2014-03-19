@@ -31,6 +31,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
+use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\ArtistMapper;
@@ -63,6 +64,10 @@ $this['PageController'] = $this->share(function($c){
 
 $this['LogController'] = $this->share(function($c){
 	return new LogController($c['API'], $c['Request']);
+});
+
+$this['SettingController'] = $this->share(function($c){
+	return new SettingController($c['API'], $c['Request']);
 });
 
 /**

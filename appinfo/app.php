@@ -67,4 +67,9 @@ $api->addScript('public/fileactions');
 // load file for public sharing page
 $api->addScript('public/musicFilePlayer');
 
+// register search provider
 \OC_Search::registerProvider('OCA\Music\Utility\Search');
+
+// register settings
+$api->registerAdmin('settings/admin');
+$api->registerPersonal('settings/user');

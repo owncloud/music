@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ownCloud - Music app
  *
@@ -19,6 +21,15 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
-}]);
+namespace OCA\Music;
+
+use \OCA\Music\DependencyInjection\DIContainer;
+
+$c = new DIContainer();
+
+$c['API']->addScript('public/settings-user');
+$c['API']->addStyle('settings-user');
+
+$tmpl = new \OCP\Template($c['API']->getAppName(), 'settings-user');
+$tmpl->assign('path', $c['API']->getUserValue('path'));
+return $tmpl->fetchPage();

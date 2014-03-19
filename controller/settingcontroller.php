@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ownCloud - Music app
  *
@@ -19,6 +21,37 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
-}]);
+
+namespace OCA\Music\Controller;
+
+use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\Db\Mapper;
+use \OCA\Music\AppFramework\Http\Request;
+
+
+class SettingController extends Controller {
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
+	public function userPath() {
+		$success = false;
+		$path = $this->params('value');
+		$pathInfo = $this->api->getFileInfo($path);
+		if ($pathInfo && $pathInfo['mimetype'] === 'httpd/unix-directory') {
+			if ($path[0] != '/') {
+				$path = '/' . $path;
+			}
+			if ($path[strlen($path)-1] !== '/') {
+				$path .= '/';
+			}
+			$this->api->setUserValue('path', $path);
+			$success = true;
+		}
+		return $this->renderPlainJSON(array('success' => $success));
+	}
+
+}

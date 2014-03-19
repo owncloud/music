@@ -290,6 +290,13 @@ angular.module('Music').controller('PlayerController',
 		if(newValue !== null) {
 			// switch initial state
 			$scope.$parent.started = true;
+			// hack to allow newValue with artist.id instead of artistId
+			if (typeof newValue.artistId === 'undefined' && typeof newValue.artist.id !== 'undefined') {
+					newValue.artistId = newValue.artist.id;
+			}
+			if (typeof newValue.albumId === 'undefined' && typeof newValue.album.id !== 'undefined') {
+					newValue.albumId = newValue.album.id;
+			}
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){

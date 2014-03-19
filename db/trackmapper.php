@@ -90,7 +90,7 @@ class TrackMapper extends Mapper {
 	}
 
 	public function findByFileId($fileId, $userId){
-		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
+		$sql = $this->makeSelectQueryWithFileInfo('AND `track`.`file_id` = ?');
 		$params = array($userId, $fileId);
 		return $this->findEntity($sql, $params);
 	}

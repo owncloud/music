@@ -277,6 +277,6 @@ class ApiController extends Controller {
 		$fileId = $this->params('fileId');
 		$userId = $this->api->getUserId();
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
-		return $this->renderPlainJSON($track->toAPI($this->api));
+		return $this->renderPlainJSON($track->toCollection($this->api));
 	}
 }

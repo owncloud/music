@@ -307,19 +307,28 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 
 	public function testFindAlbumCover(){
 		$albumId = 9;
-		$parentFileId = 7;
-		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = (
-					SELECT `fileid`
+		$parentFileId = 3;
+		$imageFileId = 7;
+		$sql = 'SELECT `fileid`, `name`
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
-					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\' LIMIT 1
-				) WHERE `id` = ?';
-		$this->setMapperResult($sql, array($parentFileId, $albumId), array());
+					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\'';
+		$expected = array(
+			array('fileid' => 5, 'name' => '1123213.jpg'),
+			array('fileid' => $imageFileId, 'name' => 'coverasd.jpg'),
+			array('fileid' => 4, 'name' => 'albumart.jpg'),
+			array('fileid' => 6, 'name' => 'folder.jpg'),
+			array('fileid' => 8, 'name' => 'front.jpg'),
+		);
+		$this->setMapperResult($sql, array($parentFileId), $expected, null, null, 0);
+
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ? WHERE `id` = ?';
+		$this->setMapperResult($sql, array($imageFileId, $albumId), array(), null, null, 1);
 		$this->mapper->findAlbumCover($albumId, $parentFileId);
 	}
 
-	public function testgetAlbumsWithoutCover() {
+	public function testGetAlbumsWithoutCover() {
 		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`

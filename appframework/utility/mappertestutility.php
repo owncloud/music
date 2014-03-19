@@ -58,10 +58,16 @@ abstract class MapperTestUtility extends TestUtility {
 	 * will be called on the result
 	 */
 	protected function setMapperResult($sql, $arguments=array(), $returnRows=array(),
-		$limit=null, $offset=null){
+		$limit=null, $offset=null, $atPosition=null){
+
+		if($atPosition !== null && is_int($atPosition)) {
+			$position = $this->at($atPosition);
+		} else {
+			$position = $this->once();
+		}
 
 		$pdoResult = $this->getMock('Result',
-			array('fetchRow'));
+			array('fetchRow', 'fetchAll'));
 
 		$iterator = new ArgumentIterator($returnRows);
 		$pdoResult->expects($this->any())
@@ -71,6 +77,9 @@ abstract class MapperTestUtility extends TestUtility {
 					return $iterator->next();
 			  	}
 			));
+		$pdoResult->expects($this->any())
+			->method('fetchAll')
+			->will($this->returnValue($returnRows));
 
 		$query = $this->getMock('Query',
 			array('execute'));
@@ -80,24 +89,24 @@ abstract class MapperTestUtility extends TestUtility {
 			->will($this->returnValue($pdoResult));
 
 		if($limit === null && $offset === null) {
-			$this->api->expects($this->once())
+			$this->api->expects($position)
 				->method('prepareQuery')
 				->with($this->equalTo($sql))
 				->will(($this->returnValue($query)));
 		} elseif($limit !== null && $offset === null) {
-			$this->api->expects($this->once())
+			$this->api->expects($position)
 				->method('prepareQuery')
 				->with($this->equalTo($sql), $this->equalTo($limit))
 				->will(($this->returnValue($query)));
 		} elseif($limit === null && $offset !== null) {
-			$this->api->expects($this->once())
+			$this->api->expects($position)
 				->method('prepareQuery')
 				->with($this->equalTo($sql),
 					$this->equalTo(null),
 					$this->equalTo($offset))
 				->will(($this->returnValue($query)));
 		} else  {
-			$this->api->expects($this->once())
+			$this->api->expects($position)
 				->method('prepareQuery')
 				->with($this->equalTo($sql),
 					$this->equalTo($limit),

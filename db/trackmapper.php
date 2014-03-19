@@ -40,7 +40,7 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition;
 	}
 
-	private function makeSelectQueryWithFileInfoWithoutUserId($condition){
+	private function makeSelectQueryWithFileInfo($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 				'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
 				'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype`, '.
@@ -48,15 +48,11 @@ class TrackMapper extends Mapper {
 				'FROM `*PREFIX*music_tracks` `track` '.
 				'INNER JOIN `*PREFIX*filecache` `file` '.
 				'ON `track`.`file_id` = `file`.`fileid` '.
-				'WHERE ' . $condition;
+				'WHERE `track`.`user_id` = ? ' . $condition;
 	}
 
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
-	}
-
-	private function makeSelectQueryWithFileInfo($condition=null){
-		return $this->makeSelectQueryWithFileInfoWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
 	public function findAll($userId){

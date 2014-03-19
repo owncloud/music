@@ -85,6 +85,7 @@ angular.module('Music').controller('MainController',
 		window.location.hash = '#/' + type + '/' + object.id;
 	};
 }]);
+
 angular.module('Music').controller('PlayerController',
 	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog) {
@@ -520,11 +521,7 @@ angular.module('Music').directive('scrollTo', ['$window', function($window) {
 	};
 }]);
 angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList().then(
-		function(result){
-			$rootScope.$emit('artistsLoaded');
-			return result;
-		});
+	return Restangular.all('collection').getList();
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {

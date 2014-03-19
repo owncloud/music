@@ -41,9 +41,13 @@ class SettingController extends Controller {
 		$success = false;
 		$path = $this->params('value');
 		$pathInfo = $this->api->getFileInfo($path);
-		if ($pathInfo && $pathInfo[mimetype] == 'httpd/unix-directory') {
-			if ($path[0] != '/') $path = ('/' . $path);
-			if ($path[strlen($path)-1] != '/') $path .= '/';
+		if ($pathInfo && $pathInfo['mimetype'] === 'httpd/unix-directory') {
+			if ($path[0] != '/') {
+				$path = '/' . $path;
+			}
+			if ($path[strlen($path)-1] !== '/') {
+				$path .= '/';
+			}
 			$this->api->setUserValue('path', $path);
 			$success = true;
 		}

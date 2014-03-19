@@ -56,27 +56,33 @@ class ApiController extends Controller {
 	public function collection() {
 		$userId = $this->api->getUserId();
 		$path = $this->api->getUserValue('path');
-		if (!$path) $path = "/";
-		$path = 'files'.$path;
+		if (!$path) {
+			$path = '/';
+		}
+		$path = 'files' . $path;
 
 		$allArtists = $this->artistBusinessLayer->findAll($userId);
 		$allArtistsById = array();
-		foreach ($allArtists as &$artist) $allArtistsById[$artist->id] = $artist->toCollection($this->api);
+		foreach ($allArtists as &$artist) {
+			$allArtistsById[$artist->getId()] = $artist->toCollection($this->api);
+		}
 
 		$allAlbums = $this->albumBusinessLayer->findAllWithFileInfo($userId);
 		$allAlbumsById = array();
-		foreach ($allAlbums as &$album) $allAlbumsById[$album->id] = $album->toCollection($this->api);
+		foreach ($allAlbums as &$album) {
+			$allAlbumsById[$album->getId()] = $album->toCollection($this->api);
+		}
 
 		$allTracks = $this->trackBusinessLayer->findAllByPath($path, $userId);
 
 		$artists = array();
 		foreach ($allTracks as $track) {
-			$artist = &$allArtistsById[$track->artistId];
+			$artist = &$allArtistsById[$track->getArtistId()];
 			if (!isset($artist['albums'])) {
 				$artist['albums'] = array();
 				$artists[] = &$artist;
 			}
-			$album = &$allAlbumsById[$track->albumId];
+			$album = &$allAlbumsById[$track->getAlbumId()];
 			if (!isset($album['tracks'])) {
 				$album['tracks'] = array();
 				$artist['albums'][] = &$album;

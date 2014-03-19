@@ -179,7 +179,7 @@ class AlbumMapper extends Mapper {
 	}
 
 	public function findAlbumCover($albumId, $parentFolderId){
-		$coverNames = array("front", "cover");
+		$coverNames = array('cover', 'albumart', 'front', 'folder');
 		$imagesSql = 'SELECT `fileid`, `name`
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
@@ -195,9 +195,15 @@ class AlbumMapper extends Mapper {
 				$indexA = PHP_INT_MAX;
 				$indexB = PHP_INT_MAX;
 				foreach ($coverNames as $i => $coverName) {
-					if ($indexA == PHP_INT_MAX && strpos($nameA, $coverName) === 0) $indexA = $i;
-					if ($indexB == PHP_INT_MAX && strpos($nameB, $coverName) === 0) $indexB = $i;
-					if ($indexA != PHP_INT_MAX  && $indexB != PHP_INT_MAX) break;
+					if ($indexA === PHP_INT_MAX && strpos($nameA, $coverName) === 0) {
+						$indexA = $i;
+					}
+					if ($indexB === PHP_INT_MAX && strpos($nameB, $coverName) === 0) {
+						$indexB = $i;
+					}
+					if ($indexA !== PHP_INT_MAX  && $indexB !== PHP_INT_MAX) {
+						break;
+					}
 				}
 				return $indexA > $indexB;
 			});

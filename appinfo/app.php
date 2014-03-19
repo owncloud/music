@@ -64,6 +64,11 @@ $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 // load fileactions
 $api->addScript('public/fileactions');
 
+$version = join('.', $api->getVersion());
+if(version_compare($version, '5.80.05', '<')){
+	$api->addScript('public/oc5fixes');
+}
+
 // load file for public sharing page
 $api->addScript('public/musicFilePlayer');
 

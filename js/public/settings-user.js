@@ -21,33 +21,33 @@
 
 $(document).ready(function() {
 
-/*
- * Collection path
- */
-var $path = $('#music-path');
-$path.on('click focus', function() {
-	$path.prop('disabled', true);
-	OC.dialogs.filepicker(
-		t('music', 'Path to your music collection'),
-		function (path) {
-			if ($path.val() === path) {
-				$path.prop('disabled', false);
-			} else {
-				$path.val(path);
-				$.post(OC.generateUrl('apps/music/settings/user/path'), { value: path }, function(data) {
-					if (!data.success) {
-						$path[0].setCustomValidity(t('music', 'Invalid path'));
-					} else {
-						$path[0].setCustomValidity('');
-					}
+	/*
+	 * Collection path
+	 */
+	var $path = $('#music-path');
+	$path.on('click focus', function() {
+		$path.prop('disabled', true);
+		OC.dialogs.filepicker(
+			t('music', 'Path to your music collection'),
+			function (path) {
+				if ($path.val() === path) {
 					$path.prop('disabled', false);
-				});
-			}
-		},
-		false,
-		'httpd/unix-directory',
-		true
-	);
-});
+				} else {
+					$path.val(path);
+					$.post(OC.generateUrl('apps/music/settings/user/path'), { value: path }, function(data) {
+						if (!data.success) {
+							$path[0].setCustomValidity(t('music', 'Invalid path'));
+						} else {
+							$path[0].setCustomValidity('');
+						}
+						$path.prop('disabled', false);
+					});
+				}
+			},
+			false,
+			'httpd/unix-directory',
+			true
+		);
+	});
 
 });

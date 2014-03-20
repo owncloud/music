@@ -25,10 +25,14 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Core\API;
+use OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\Db\Track;
+use OCA\Music\Utility\Scanner;
+use OCA\Sharing_Freenet\Share;
 
 
 class ApiController extends Controller {
@@ -36,14 +40,16 @@ class ApiController extends Controller {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
+	private $scanner;
 
 	public function __construct(API $api, Request $request,
 		TrackBusinessLayer $trackbusinesslayer, ArtistBusinessLayer $artistbusinesslayer,
-		AlbumBusinessLayer $albumbusinesslayer){
+		AlbumBusinessLayer $albumbusinesslayer, Scanner $scanner){
 		parent::__construct($api, $request);
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
+		$this->scanner = $scanner;
 	}
 
 	/**
@@ -276,7 +282,27 @@ class ApiController extends Controller {
 	public function trackByFileId() {
 		$fileId = $this->params('fileId');
 		$userId = $this->api->getUserId();
-		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+		$track = $this->loadTrack($fileId, $userId);
 		return $this->renderPlainJSON($track->toCollection($this->api));
+	}
+
+	/**
+	 * @param $fileId
+	 * @param $userId
+	 * @return Track
+	 */
+	private function loadTrack($fileId, $userId, $scanIfNotFound = true) {
+		try {
+			return $this->trackBusinessLayer->findByFileId($fileId, $userId);
+		} catch (DoesNotExistException $ex) {
+
+			if ($scanIfNotFound) {
+				$this->scanner->rescan();
+
+				return $this->loadTrack($fileId, $userId, false);
+			}
+
+			throw $ex;
+		}
 	}
 }

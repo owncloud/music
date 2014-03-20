@@ -55,7 +55,7 @@ $this['API'] = $this->share(function($c){
 
 $this['ApiController'] = $this->share(function($c){
 	return new ApiController($c['API'], $c['Request'],
-		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer']);
+		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer'], $c['Scanner']);
 });
 
 $this['PageController'] = $this->share(function($c){

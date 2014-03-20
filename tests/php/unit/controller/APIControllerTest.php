@@ -49,12 +49,14 @@ class APIControllerTest extends ControllerTestUtility {
 	private $request;
 	private $controller;
 	private $user = 'john';
+	private $scanner;
 
 	protected function getController($urlParams){
 		return new ApiController($this->api, new Request(array('urlParams' => $urlParams)),
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
-			$this->albumBusinessLayer);
+			$this->albumBusinessLayer,
+			$this->scanner);
 	}
 
 	protected function setUp(){
@@ -73,11 +75,15 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->request = new Request();
 		$this->controller = new ApiController($this->api, $this->request,
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
-			$this->albumBusinessLayer);
+			$this->albumBusinessLayer,
+			$this->scanner);
 	}
 
 	private function assertAPIControllerAnnotations($methodName){

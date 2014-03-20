@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/owncloud/language/gl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,11 +15,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albumes"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Interpretes"
 
 #: ../js/public/app.js
 msgid ""
@@ -31,6 +31,10 @@ msgstr "Chrome só é quen de reproducir ficheiros MP3 - vexa o <a href=\"https:
 #: ../templates/main.php
 msgid "Delete"
 msgstr "Eliminar"
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -47,6 +51,10 @@ msgstr "Seguinte"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Aquí non hai nada. Envíe a súa música!"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -79,12 +87,18 @@ msgid "Shuffle"
 msgstr "Ao chou"
 
 #: ../templates/fake-template.php
-msgid "Tracks"
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
 msgstr ""
 
 #: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Pistas"
+
+#: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr "Album descoñecido"
+msgstr "Álbum descoñecido"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"

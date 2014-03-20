@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/owncloud/language/vi/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,6 +32,10 @@ msgstr ""
 msgid "Delete"
 msgstr "Xóa"
 
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Đang tải ..."
@@ -47,6 +51,10 @@ msgstr "Kế tiếp"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Không có gì ở đây. Hãy tải nhạc của bạn lên!"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -76,6 +84,12 @@ msgstr "Hiển thị ít hơn ..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Ngẫu nhiên"
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

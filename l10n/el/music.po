@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,6 +33,10 @@ msgstr "Ο Chrome μπορεί να αναπαράγει μόνο αρχεία M
 msgid "Delete"
 msgstr "Διαγραφή"
 
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Φόρτωση ..."
@@ -48,6 +52,10 @@ msgstr "Επόμενο"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Δεν υπάρχει τίποτα εδώ. Μεταφορτώστε την μουσική σας!"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -78,6 +86,12 @@ msgstr "Προβολή λιγότερων..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Τυχαία αναπαραγωγή"
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

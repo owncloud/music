@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: az\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../templates/fake-template.php
 msgid "Albums"
@@ -30,6 +30,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr ""
@@ -44,6 +48,10 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
 msgstr ""
 
 #: ../templates/main.php
@@ -66,6 +74,7 @@ msgstr ""
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
 msgstr[0] ""
+msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."
@@ -73,6 +82,12 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
 msgstr ""
 
 #: ../templates/fake-template.php

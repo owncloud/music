@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Sappe, 2013
+# Sappe, 2013-2014
 # lodahl <leiflodahl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,22 +15,26 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Album"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Kunstnere"
 
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "Chromekan kun afspille MP3 filer - se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
 
 #: ../templates/main.php
 msgid "Delete"
 msgstr "Slet"
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -47,6 +51,10 @@ msgstr "Næste"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Her er tomt. Upload din musik!"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -79,8 +87,14 @@ msgid "Shuffle"
 msgstr "Bland"
 
 #: ../templates/fake-template.php
-msgid "Tracks"
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
 msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Spor"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

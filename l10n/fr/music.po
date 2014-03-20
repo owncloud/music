@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,6 +36,10 @@ msgstr "Chrome n'est capable de jouer que des fichiers MP3 uniquement - voir le 
 msgid "Delete"
 msgstr "Supprimer"
 
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Chargement…"
@@ -51,6 +55,10 @@ msgstr "Suivant"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "Il n'y a rien ici ! Envoyez donc votre musique :)"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -81,6 +89,12 @@ msgstr "Afficher moins…"
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Lecture aléatoire"
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

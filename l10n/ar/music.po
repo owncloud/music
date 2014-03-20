@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Abderraouf Mehdi Bouhali <armbouhali@gmail.com>, 2014
 # suliman <291101251@std.qu.edu.sa>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/owncloud/language/ar/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,22 +15,26 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "الألبومات"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "الفنانون"
 
 #: ../js/public/app.js
 msgid ""
 "Chrome is only able to play MP3 files - see <a "
 "href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
 "#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+msgstr "متصفح كروم يمكنه تشغيل ملفات MP3 فقط - الرجاء الاطلاع على  <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">الويكي</a>"
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "إلغاء"
+msgstr "حذف"
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -45,15 +50,19 @@ msgstr "التالي"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr "لا يوجد شيء هنا. إرفع بعض الموسيقى!"
+msgstr "لا شيء موجود هنا. إرفع بعض الموسيقى !"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "تجميد"
+msgstr "إيقاف"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr "إلعب"
+msgstr "تشغيل"
 
 #: ../templates/main.php
 msgid "Previous"
@@ -66,28 +75,34 @@ msgstr "إعادة"
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "."
+msgstr[1] "إظهار المقطع"
+msgstr[2] "إظهار المقطعين"
+msgstr[3] "إظهار كافة المقاطع الـ {{ trackcount }}"
+msgstr[4] "إظهار كافة المقاطع الـ {{ trackcount }}"
+msgstr[5] "إظهار كافة المقاطع الـ {{ trackcount }}"
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr "اعرض اقل ..."
+msgstr "إظهار أقل ..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "عشوائي"
+msgstr "اختيار عشوائي"
 
 #: ../templates/fake-template.php
-msgid "Tracks"
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
 msgstr ""
 
 #: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "المقاطع"
+
+#: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr "البوم غير معروف"
+msgstr "ألبوم غير معروف"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"

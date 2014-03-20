@@ -1,5 +1,7 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albums",
+"Artists" => "Artiesten",
 "Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome kan alleen MP3 bestanden - zie <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>",
 "Delete" => "Verwijder",
 "Loading ..." => "Laden ...",
@@ -13,6 +15,7 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Toon elk {{ trackcount }} nummer ...","Toon alle {{ trackcount }} nummers ..."),
 "Show less ..." => "Toon minder ...",
 "Shuffle" => "Shuffle",
+"Tracks" => "Nummers",
 "Unknown album" => "Onbekend album",
 "Unknown artist" => "Onbekende artiest"
 );

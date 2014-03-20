@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-19 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/owncloud/language/zh_TW/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,6 +31,10 @@ msgstr ""
 msgid "Delete"
 msgstr "刪除"
 
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "載入中…"
@@ -46,6 +50,10 @@ msgstr "下一個"
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
 msgstr "這裡沒有東西，上傳你的音樂！"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
@@ -75,6 +83,12 @@ msgstr "顯示更少"
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "隨機播放"
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

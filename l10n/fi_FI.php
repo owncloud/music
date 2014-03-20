@@ -1,5 +1,7 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Levyt",
+"Artists" => "Esittäjät",
 "Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome kykenee toistamaan vain MP3-tiedostoja - lue lisää <a href=\\\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\\\">wikistä</a>",
 "Delete" => "Poista",
 "Loading ..." => "Ladataan...",
@@ -13,6 +15,7 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näytä {{ trackcount }} kappale...","Näytä kaikki {{ trackcount }} kappaletta..."),
 "Show less ..." => "Näytä vähemmän...",
 "Shuffle" => "Sekoita",
+"Tracks" => "Kappaleet",
 "Unknown album" => "Tuntematon levy",
 "Unknown artist" => "Tuntematon esittäjä"
 );

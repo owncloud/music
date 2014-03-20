@@ -59,7 +59,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by album
-	 * @param string $albumId the id of the artist
+	 * @param string $albumId the id of the track
 	 * @param string $userId the name of the user
 	 * @return array of tracks
 	 */
@@ -154,5 +154,15 @@ class TrackBusinessLayer extends BusinessLayer {
 		}
 
 		return $remaining;
+	}
+
+	/**
+	 * Returns all tracks filtered by name (of track/album/artist)
+	 * @param string $name the name of the track/album/artist
+	 * @param string $userId the name of the user
+	 * @return array of tracks
+	 */
+	public function findAllByNameRecursive($name, $userId){
+		return $this->mapper->findAllByNameRecursive($name, $userId);
 	}
 }

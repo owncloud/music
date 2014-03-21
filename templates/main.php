@@ -40,7 +40,7 @@
 				<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
 			</div>
 			<div ng-show="currentTrack.title" class="progress-info">
-				<span ng-hide="buffering" class="play-position muted" muted">&nbsp;</span>
+				<span ng-hide="buffering" class="play-position muted">&nbsp;</span>
 				<span ng-show="buffering" class="muted" translate>Loading ...</span>
 				<div class="progress">
 					<div class="seek-bar" ng-click="seek($event)">

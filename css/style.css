@@ -36,7 +36,6 @@
 
 .artist-area {
 	padding-top: 50px;
-	clear: both;
 }
 
 .artist-area > h1 {
@@ -45,7 +44,7 @@
 	margin-left: 28px;
 }
 
-.artist-area > h1:hover {
+.artist-area > h1:hover > span {
 	cursor: pointer;
 }
 
@@ -55,12 +54,73 @@
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
+	-webkit-transition: ease-in 250ms;
+	-moz-transition: ease-in 250ms;
+	-o-transition: ease-in 250ms;
+	transition: ease-in 250ms;
+}
+
+.artist-area > h1:hover > .play {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+
+.artist-area > h1:hover > .play.opened {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+.artist-area > h1:hover > .play:hover {
+	-webkit-transform: rotate(0);
+	-moz-transform: rotate(0);
+	-ms-transform: rotate(0);
+	-o-transform: rotate(0);
+	transform: rotate(0);
+}
+
+.albums-area {
+	-webkit-transition: ease-in 250ms;
+	-moz-transition: ease-in 250ms;
+	-o-transition: ease-in 250ms;
+	transition: ease-in 250ms;
+}
+
+.albums-area.ng-hide-add, .albums-area.ng-hide-remove {
+	display: block !important;
+}
+
+.albums-area.ng-hide-remove, .albums-area.ng-hide-add.ng-hide-add-active{
+	opacity: 0;
+	height: 0;
+	overflow: hidden;
+	-webkit-transform: scale(0.1);
+	-moz-transform: scale(0.1);
+	-ms-transform: scale(0.1);
+	-o-transform: scale(0.1);
+	transform: scale(0.1);
+}
+
+.albums-area.ng-hide-remove.ng-hide-remove-active, .albums-area.ng-hide-add {
+	opacity: 1;
+	height: 260px;
+	-webkit-transform: scale(1);
+	-moz-transform: scale(1);
+	-ms-transform: scale(1);
+	-o-transform: scale(1);
+	transform: scale(1);
 }
 
 .album-area {
 	padding: 14px 28px;
 	width: 480px;
-	float: left;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .album-area > h2 {

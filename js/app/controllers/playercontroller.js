@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
-	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog, $filter) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -331,7 +331,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
 	};
-	
+
 	$scope.setBuffer = function(position, duration) {
 		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
 	};
@@ -372,7 +372,7 @@ angular.module('Music').controller('PlayerController',
 			offsetX = $event.offsetX || $event.originalEvent.layerX;
 		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
         };
-	
+
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
 		$scope.next();

@@ -29,6 +29,7 @@ use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\Utility\Scanner;
 
 
 class ApiController extends Controller {
@@ -36,14 +37,16 @@ class ApiController extends Controller {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
+	private $scanner;
 
 	public function __construct(API $api, Request $request,
 		TrackBusinessLayer $trackbusinesslayer, ArtistBusinessLayer $artistbusinesslayer,
-		AlbumBusinessLayer $albumbusinesslayer){
+		AlbumBusinessLayer $albumbusinesslayer, Scanner $scanner){
 		parent::__construct($api, $request);
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
+		$this->scanner = $scanner;
 	}
 
 	/**
@@ -278,5 +281,26 @@ class ApiController extends Controller {
 		$userId = $this->api->getUserId();
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
 		return $this->renderPlainJSON($track->toCollection($this->api));
+	}
+
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function scan() {
+		$userId = $this->api->getUserId();
+		$dry = (boolean) $this->params('dry');
+		if($dry) {
+			$result = array(
+				'processed' => count($this->scanner->getScannedFiles($userId)),
+				'scanned' => 0,
+				'total' => count($this->scanner->getMusicFiles())
+			);
+		} else {
+			$result = $this->scanner->rescan($userId);
+		}
+		return $this->renderPlainJSON($result);
 	}
 }

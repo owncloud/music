@@ -192,25 +192,4 @@
 			</index>
 		</declaration>
 	</table>
-
-
-	<table>
-		<name>*dbprefix*music_scanned_users</name>
-		<declaration>
-			<field>
-				<name>user_id</name>
-				<type>text</type>
-				<notnull>true</notnull>
-				<length>64</length>
-			</field>
-
-			<index>
-				<name>music_scanned_users_idx</name>
-				<unique>true</unique>
-				<field>
-					<name>user_id</name>
-				</field>
-			</index>
-		</declaration>
-	</table>
 </database>

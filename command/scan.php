@@ -70,7 +70,7 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$scanner->rescan($user);
+			$scanner->rescan($user, true);
 			if(!$status->isScanned($user)) $status->setScanned($user);
 		}
 	}

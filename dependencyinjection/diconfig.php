@@ -36,7 +36,6 @@ use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\TrackMapper;
-use \OCA\Music\DB\ScanStatusMapper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
 
@@ -55,11 +54,11 @@ $this['API'] = $this->share(function($c){
 
 $this['ApiController'] = $this->share(function($c){
 	return new ApiController($c['API'], $c['Request'],
-		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer']);
+		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer'], $c['Scanner']);
 });
 
 $this['PageController'] = $this->share(function($c){
-	return new PageController($c['API'], $c['Request'], $c['Scanner'], $c['ScanStatusMapper']);
+	return new PageController($c['API'], $c['Request'], $c['Scanner']);
 });
 
 $this['LogController'] = $this->share(function($c){
@@ -105,10 +104,6 @@ $this['AlbumBusinessLayer'] = $this->share(function($c){
 /**
  * Utilities
  */
-
-$this['ScanStatusMapper'] = $this->share(function($c){
-	return new ScanStatusMapper($c['API']);
-});
 
 $this['getID3'] = $this->share(function($c){
 	$getID3 = new \getID3();

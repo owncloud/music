@@ -26,7 +26,6 @@ namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Core\API;
 use \OCA\Music\AppFramework\Http\Request;
-use \OCA\Music\AppFramework\Db\Mapper;
 use \OCA\Music\Utility\Scanner;
 
 
@@ -35,11 +34,10 @@ class PageController extends Controller {
 	private $scanner;
 	private $status;
 
-	public function __construct(API $api, Request $request, Scanner $scanner, Mapper $status){
+	public function __construct(API $api, Request $request, Scanner $scanner){
 		parent::__construct($api, $request);
 
 		$this->scanner = $scanner;
-		$this->status = $status;
 	}
 
 
@@ -53,13 +51,6 @@ class PageController extends Controller {
 	 * @CSRFExemption
 	 */
 	public function index() {
-		$userId = $this->api->getUserId();
-		if(!$this->status->isScanned($userId)) {
-			$this->api->log('Rescan triggered', 'debug');
-			$this->scanner->rescan();
-			$this->status->setScanned($userId);
-			$this->api->log('Rescan finished', 'debug');
-		}
 		$userLang = $this->api->getTrans()->findLanguage();
 		// during 5.80.05 the placeholder script was outsourced to core
 		$version = join('.', $this->api->getVersion());

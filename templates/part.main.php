@@ -3,6 +3,10 @@
 	<span ng-show="loading" translate>Loading ...</span>
 </div>
 
+<div id="scanning" ng-show="scanning">
+	<span translate>Scanning ... </span> {{ scanningScanned }}/{{ scanningTotal }}
+</div>
+
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
 	<span id="{{ letter }}" ng-show="letterAvailable[letter]"></span> <!-- TODO: use ng-if - introduced in 1.1.5 -->
 	<h1 ng-click="play('artist', artist)">{{ artist.name }} <img class="play svg" alt="{{ 'Play' | translate }}"

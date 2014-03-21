@@ -5,7 +5,7 @@
 	<description>Music player and server for ownCloud</description>
 	<licence>AGPLv3</licence>
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
-	<version>0.1.8.2-beta</version>
+	<version>0.1.8.3-beta</version>
 	<require>5</require>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

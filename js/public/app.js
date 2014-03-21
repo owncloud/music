@@ -26,8 +26,8 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
 });
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -65,23 +65,50 @@ angular.module('Music').controller('MainController',
 		$scope.letterAvailable[$scope.letters[i]] = false;
 	}
 
-	Artists.then(function(artists){
-		$scope.artists = artists;
-		for(var i=0; i < artists.length; i++) {
-			var artist = artists[i],
-				letter = artist.name.substr(0,1).toUpperCase();
+	$scope.update = function() {
+		ArtistFactory.getArtists().then(function(artists){
+			$scope.artists = artists;
+			for(var i=0; i < artists.length; i++) {
+				var artist = artists[i],
+					letter = artist.name.substr(0,1).toUpperCase();
 
-			if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-				if($scope.letterAvailable[letter] === false) {
-					$scope.anchorArtists.push(artist.name);
+				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
+					if($scope.letterAvailable[letter] === false) {
+						$scope.anchorArtists.push(artist.name);
+					}
+					$scope.letterAvailable[letter] = true;
 				}
-				$scope.letterAvailable[letter] = true;
+
 			}
 
-		}
+			$rootScope.$emit('artistsLoaded');
+		});
+	};
 
-		$rootScope.$emit('artistsLoaded');
-	});
+	// initial loading of artists
+	$scope.update();
+
+
+	var scanLoopFunction = function(dry) {
+		Restangular.all('scan').getList({dry: dry}).then(function(scan){
+			$scope.scanningScanned = scan.processed;
+			$scope.scanningTotal = scan.total;
+			$scope.update();
+			if(scan.processed !== scan.total) {
+				$scope.scanning = true;
+				scanLoopFunction(0);
+			} else {
+				$scope.scanning = false;
+			}
+		});
+	};
+
+	scanLoopFunction(1);
+
+	$scope.scanning = false;
+	$scope.scanningScanned = 0;
+	$scope.scanningTotal = 0;
+
 
 	$scope.play = function (type, object) {
 		$scope.playRequest = {
@@ -93,8 +120,8 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
-	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog, $filter) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -403,7 +430,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
 	};
-	
+
 	$scope.setBuffer = function(position, duration) {
 		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
 	};
@@ -444,7 +471,7 @@ angular.module('Music').controller('PlayerController',
 			offsetX = $event.offsetX || $event.originalEvent.layerX;
 		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
         };
-	
+
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
 		$scope.next();
@@ -536,8 +563,10 @@ angular.module('Music').directive('scrollTo', ['$window', function($window) {
 		});
 	};
 }]);
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
+angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return {
+		getArtists: function() { return Restangular.all('collection').getList(); }
+	};
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {

@@ -8,8 +8,10 @@
 	<h1 ng-click="play('artist', artist)">{{ artist.name }} <img class="play svg" alt="{{ 'Play' | translate }}"
 		src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" /></h1>
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:'year'">
-		<h2 ng-click="play('album', album)" title="{{ album.name }} ({{ album.year}})">{{ album.name }}
-			<span ng-show="album.year" class="muted">({{ album.year }})</span>
+		<h2 ng-click="play('album', album)" title="{{ album.name }} ({{ album.year}})">
+			<span class="album-name-large">{{ album.name}}</span>
+			<span class="album-name-small">{{ album.name | limitTo:50 }}</span>
+			<span ng-show="album.year" class="muted album-year">({{ album.year }})</span>
 		</h2>
 		<div ng-click="play('album', album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 		<img ng-click="play('album', album)" class="play overlay svg" alt="{{ 'Play' | translate }}"

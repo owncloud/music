@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-20 11:12+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/projects/p/owncloud/language/fi_FI/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr "Poista"
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Virheellinen polku"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -53,7 +53,7 @@ msgstr "Täällä ei ole mitään. Lähetä musiikkia tänne!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Musiikkikokoelman polku"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -89,7 +89,7 @@ msgstr "Sekoita"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Tämä asetus rajoittaa näytettävää musiikkia musiikkisovelluksen verkkokäyttöliittymässä."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

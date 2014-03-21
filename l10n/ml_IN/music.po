@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
+"PO-Revision-Date: 2014-03-20 17:21+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Malayalam (India) (http://www.transifex.com/projects/p/owncloud/language/ml_IN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +44,7 @@ msgstr "സംഗീതം"
 
 #: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "അടുത്തത്"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
@@ -56,15 +56,15 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr " നിറുത്ത്"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "തുടങ്ങുക"
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "മുന്‍പത്തേത്"
 
 #: ../templates/main.php
 msgid "Repeat"

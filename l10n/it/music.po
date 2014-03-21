@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-20 21:10+0000\n"
+"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,7 +34,7 @@ msgstr "Elimina"
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Percorso non valido"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -54,7 +54,7 @@ msgstr "Non c'è niente qui. Carica la tua musica!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Percorso alla tua collezione musicale"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -90,7 +90,7 @@ msgstr "Mescola"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Questa impostazione filtra la musica mostrata nell'interfaccia web dell'applicazione musicale."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

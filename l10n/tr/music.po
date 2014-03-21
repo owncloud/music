@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-20 09:00+0000\n"
+"Last-Translator: volkangezer <volkangezer@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr "Sil"
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Geçersiz yol"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -53,7 +53,7 @@ msgstr "Burada hiçbir şey yok. Müziğinizi yükleyin!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Müzik koleksiyonunuzun yolu"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -89,7 +89,7 @@ msgstr "Karıştır"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Bu ayar, müzik uygulamasının web arayüzünde gösterilen müziği kısıtlar."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

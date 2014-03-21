@@ -1,5 +1,5 @@
 <?php
-\OCP\Util::addScript('music', 'vendor/underscore/underscore.min');
+\OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/soundmanager2');

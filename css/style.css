@@ -128,20 +128,10 @@
 	opacity: .5;
 }
 
-#emptystate {
-	padding: 140px 0 0 140px;
-	height: 100%;
-	width: 100%;
-	font-size: 21px;
-	font-weight: bold;
-	color: #888;
-	text-shadow: #fff 0 1px 0;
-
-}
 .alphabet-navigation {
 	z-index: 5;
 	position: absolute;
-	right: 0;
+	right: 10px;
 	bottom: 0;
 	width: 50px;
 	text-align: center;

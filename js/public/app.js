@@ -17,7 +17,13 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
-}]);
+}]).
+	run(function(Token, Restangular){
+
+	// add CSRF token
+	Restangular.setDefaultHeaders({requesttoken: Token});
+
+});
 
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
@@ -567,6 +573,10 @@ angular.module('Music').factory('playlists', function(){
 		{name: 'test playlist 4', id: 4}
 	];
 });
+
+angular.module('Music').factory('Token', [function () {
+	return document.getElementsByTagName('head')[0].getAttribute('data-requesttoken');
+}]);
 
 angular.module('Music').filter('playTime', function() {
 	return function(input) {

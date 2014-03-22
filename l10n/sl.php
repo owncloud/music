@@ -1,11 +1,15 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albumi",
+"Artists" => "Izvajalci",
 "Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Brskalnik Chrome lahko predvaja le datoteke MP3 - več podrobnosti je na <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">straneh wiki</a>.",
 "Delete" => "Izbriši",
+"Invalid path" => "Neveljavna pot",
 "Loading ..." => "Nalaganje ...",
 "Music" => "Glasba",
 "Next" => "Naslednja",
 "Nothing in here. Upload your music!" => "V mapi ni glasbenih datotek. Dodajte skladbe!",
+"Path to your music collection" => "Pot do zbirke glasbe",
 "Pause" => "Premor",
 "Play" => "Predvajaj",
 "Previous" => "Predhodna",
@@ -13,6 +17,8 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Pokaži {{ trackcount }} posnetek ...","Pokaži {{ trackcount }} posnetka ...","Pokaži {{ trackcount }} posnetke ...","Pokaži {{ trackcount }} posnetkov ..."),
 "Show less ..." => "Pokaži manj ...",
 "Shuffle" => "Premešaj",
+"This setting restricts the shown music in the web interface of the music app." => "Nastavitev omeji prikaz glasbe v spletnem vmesniku programa glasbe.",
+"Tracks" => "Sledi",
 "Unknown album" => "Neznan album",
 "Unknown artist" => "Neznan izvajalec"
 );

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
+"PO-Revision-Date: 2014-03-22 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albumi"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Izvajalci"
 
 #: ../js/public/app.js
 msgid ""
@@ -33,7 +33,7 @@ msgstr "Izbriši"
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Neveljavna pot"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -53,7 +53,7 @@ msgstr "V mapi ni glasbenih datotek. Dodajte skladbe!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Pot do zbirke glasbe"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -70,6 +70,10 @@ msgstr "Predhodna"
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Ponovi"
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -91,11 +95,11 @@ msgstr "Premešaj"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Nastavitev omeji prikaz glasbe v spletnem vmesniku programa glasbe."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Sledi"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

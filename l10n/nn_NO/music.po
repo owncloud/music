@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
+"PO-Revision-Date: 2014-03-22 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Norwegian Nynorsk (Norway) (http://www.transifex.com/projects/p/owncloud/language/nn_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,6 +69,10 @@ msgstr "Førre"
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Gjenta"
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."

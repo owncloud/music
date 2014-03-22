@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
+"PO-Revision-Date: 2014-03-22 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/owncloud/language/my_MM/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,6 +68,10 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
 msgstr ""
 
 #: ../templates/part.main.php

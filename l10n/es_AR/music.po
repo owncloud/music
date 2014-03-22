@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-20 05:30+0000\n"
+"PO-Revision-Date: 2014-03-22 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/owncloud/language/es_AR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -70,6 +70,10 @@ msgstr "Previo"
 #: ../templates/main.php
 msgid "Repeat"
 msgstr "Repetir"
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."

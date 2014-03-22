@@ -32,6 +32,8 @@ use OCA\Music\DB\Artist;
 use OCA\Music\DB\Album;
 use OCA\Music\DB\Track;
 
+require_once __DIR__ . '/../HooksStubs.php';
+
 /* FIXME: dirty hack to mock object */
 class TestView {
 	public function getPath($fileId) {
@@ -54,7 +56,8 @@ class APIControllerTest extends ControllerTestUtility {
 		return new ApiController($this->api, new Request(array('urlParams' => $urlParams)),
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
-			$this->albumBusinessLayer);
+			$this->albumBusinessLayer,
+			$this->scanner);
 	}
 
 	protected function setUp(){
@@ -73,11 +76,15 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->request = new Request();
 		$this->controller = new ApiController($this->api, $this->request,
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
-			$this->albumBusinessLayer);
+			$this->albumBusinessLayer,
+			$this->scanner);
 	}
 
 	private function assertAPIControllerAnnotations($methodName){

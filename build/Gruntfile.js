@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-phpunit');
 	grunt.loadNpmTasks('grunt-angular-gettext');
 	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-connect-proxy');
 
 
 	grunt.initConfig({
@@ -137,8 +138,14 @@ module.exports = function(grunt) {
 			e2e: {
 				configFile: '../tests/js/config/karma.e2e.js'
 			}
+		},
+		connect: {
+			options: {
+				port: 9000,
+				// Change this to '0.0.0.0' to access the server from outside.
+				//hostname: '0.0.0.0'
+			}
 		}
-
 	});
 
 	// make tasks available under simpler commands

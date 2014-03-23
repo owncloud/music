@@ -14,6 +14,10 @@ module.exports = function(config) {
 			'../e2e/**/*.js'
 		],
 
+		proxies: {
+			'/': 'http://localhost:9000/'
+		},
+
 		urlRoot: '_karma_',
 
 

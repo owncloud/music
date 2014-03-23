@@ -3,7 +3,7 @@
 describe('E2E: Testing Routes', function() {
 
 	beforeEach(function() {
-		browser().navigateTo('/#/');
+		browser().navigateTo('index.html/#/');
 	});
 
 	it('should show root', function() {

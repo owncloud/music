@@ -1,5 +1,4 @@
 imports:
-    - javascript
     - php
 
 filter:

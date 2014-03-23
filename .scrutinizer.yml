@@ -1,6 +1,6 @@
 imports:
-	- javascript
-	- php
+    - javascript
+    - php
 
 filter:
     excluded_paths: [3rdparty/*]

@@ -142,7 +142,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		if($scope.$parent.started) {
+		if($rootScope.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
 				$scope.next();
@@ -322,7 +322,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state
-			$scope.$parent.started = true;
+			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
@@ -395,7 +395,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
 			// switch initial state
-			$scope.$parent.started = false;
+			$rootScope.started = false;
 		}
 	}, true);
 

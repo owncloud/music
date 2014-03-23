@@ -18,7 +18,12 @@
 		"grunt-contrib-watch": "*",
 		"grunt-wrap": "*",
 		"grunt-phpunit": "*",
-		"grunt-angular-gettext": "*"
+		"grunt-angular-gettext": "*",
+		"karma": "*",
+		"grunt-karma": "*",
+		"karma-jasmine": "~0.2.1",
+		"karma-ng-scenario": "~0.1.0",
+		"karma-chrome-launcher": "~0.1.2"
 	},
 	"engine": "node >= 0.8"
 }

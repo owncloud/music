@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-phpunit');
 	grunt.loadNpmTasks('grunt-angular-gettext');
+	grunt.loadNpmTasks('grunt-karma');
 
 
 	grunt.initConfig({
@@ -97,7 +98,11 @@ module.exports = function(grunt) {
 			phpunit: {
 				files: '../**/*.php',
 				tasks: ['phpunit']
-			}
+			},
+			jsTestE2E: {
+				files: ['../tests/js/**/*.js'],
+				tasks: ['karma:e2e']
+			},
 		},
 
 		phpunit: {
@@ -126,6 +131,12 @@ module.exports = function(grunt) {
 					'../js/l10n/translations.js': ['../l10n/**/music.po']
 				}
 			},
+		},
+
+		karma: {
+			e2e: {
+				configFile: '../tests/js/config/karma.e2e.js'
+			}
 		}
 
 	});

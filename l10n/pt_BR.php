@@ -14,6 +14,7 @@ $TRANSLATIONS = array(
 "Play" => "Reproduzir",
 "Previous" => "Anterior",
 "Repeat" => "Repatir",
+"Scanning ..." => "Escaneando ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostrar todas as {{ trackcount }} músicas ...","Mostrar todas as {{ trackcount }} músicas ..."),
 "Show less ..." => "Exibição mais simples...",
 "Shuffle" => "Embaralhar",

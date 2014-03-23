@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-22 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-22 11:00+0000\n"
+"Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/owncloud/language/de_DE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,7 +76,7 @@ msgstr "Wiederholen"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Untersuche ..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."

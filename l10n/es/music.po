@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-22 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-22 18:50+0000\n"
+"Last-Translator: Art O. Pal <artopal@fastmail.fm>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,7 +76,7 @@ msgstr "Repetir"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Escaneando..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -96,11 +96,11 @@ msgstr "Mezclar"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Esta configuración restringe la música mostrada en la interfaz web de la aplicación de música."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Canciones"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

@@ -53,7 +53,7 @@ $(document).ready(function() {
 	/**
 	 * Add API key
 	 */
-	$('#music-ampache-form').find('button').click(function(){
+	 var addAPIKey = function(){
 		var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6),
 			description = $('#music-ampache-description').val(),
 			templateRow = $('#music-ampache-template-row').clone(true); // clone with events
@@ -79,6 +79,14 @@ $(document).ready(function() {
 				}
 			}
 		});
+	};
+
+	$('#music-ampache-form').find('button').click(addAPIKey);
+	$('#music-ampache-form').find('input').keypress(function(event){
+		if(event.which === 13) {
+			event.preventDefault();
+			addAPIKey();
+		}
 	});
 
 	var removeAPIKey = function(event) {

@@ -1,0 +1,49 @@
+/* Copyright (c) 2014, Jan-Christoph Borchardt, http://jancborchardt.net
+ This file is licensed under the Affero General Public License version 3
+ or later. See the COPYING-README file. */
+
+@media only screen and (min-width: 768px) and (max-width: 1100px) {
+
+.album-area {
+	width: 100%;
+}
+
+#play-controls {
+	margin-left: 0;
+}
+
+#playerbar .albumart {
+	left: 25%; /* with sidebar 300px */
+	top: 0;
+	height: 50px;
+	width: 50px;
+	margin: 8px 12px 8px 0;
+	line-height: 50px;
+	font-size: 28px;
+}
+
+#playerbar .song-info {
+	height: 58px;
+	margin: 4px;
+	padding: 8px;
+	max-width: 25%;
+	position: absolute;
+	top: 0;
+	left: calc(25% + 50px);
+	/* if the progress bar overlays the artist - the artist stays visible */
+	text-shadow:
+		 1px  1px 2px #eee,
+		-1px -1px 2px #eee,
+		-1px  1px 2px #eee,
+		 1px -1px 2px #eee;
+}
+
+#playerbar .title {
+	font-size: 14px;
+	display: inline;
+}
+
+#playerbar .progress-info {
+	width: 25%;
+	left: calc(50% + 70px);
+}

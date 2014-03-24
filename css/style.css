@@ -71,10 +71,6 @@
 	white-space: nowrap;
 }
 
-.album-name-small {
-	display: none;
-}
-
 .album-area > h2:hover {
 	cursor: pointer;
 }

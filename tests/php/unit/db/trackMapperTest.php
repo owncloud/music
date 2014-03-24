@@ -175,7 +175,7 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' LOWER(`track`.`title`) LIKE LOWER(?) )');
 		$this->setMapperResult($sql, array($this->userId, '%test123test%', '%test123test%', '%test123test%'), array($this->rows[0]));
-		$result = $this->mapper->findAllByNameRecursive('test123test', $this->userId, true);
+		$result = $this->mapper->findAllByNameRecursive('test123test', $this->userId);
 		$this->assertEquals(array($this->tracks[0]), $result);
 	}
 }

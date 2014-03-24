@@ -62,7 +62,6 @@ class Search extends \OC_Search_Provider {
 			$name = $track->title;
 			$link = $api->linkToRoute('music_index') . '#/track/' . $track->id;
 			$type = (string)$l->t('Tracks');
-			$album = $albumMapper->find($track->albumId, $userId);
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
 		return $results;

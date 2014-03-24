@@ -162,15 +162,12 @@ class Request implements \ArrayAccess, \Countable {
 				return isset($this->items[$name])
 					? $this->items[$name]
 					: null;
-				break;
 			case 'method':
 				return $this->items['method'];
-				break;
 			default;
 				return isset($this[$name])
 					? $this[$name]
 					: null;
-				break;
 		}
 	}
 

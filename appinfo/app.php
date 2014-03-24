@@ -64,7 +64,7 @@ $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 // load fileactions
 $api->addScript('public/fileactions');
 
-if(version_compare(join('.', $api->getVersion()), '5.80.05', '<')){
+if(version_compare(join('.', $api->getVersion()), '6.0.3', '<')){
 	$api->addScript('public/stable5-fixes');
 }
 

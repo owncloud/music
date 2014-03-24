@@ -32,8 +32,10 @@ $c = new DIContainer();
 $c['API']->addScript('public/settings-user');
 $c['API']->addStyle('settings-user');
 
-if(version_compare(join('.', $c['API']->getVersion()), '6.0.0', '<')){
+if(version_compare(join('.', $c['API']->getVersion()), '6.0.3', '<')){
 	$c['API']->addScript('public/stable5-fixes');
+}
+if(version_compare(join('.', $c['API']->getVersion()), '6.0.0', '<')){
 	$c['API']->addStyle('settings-user-stable5-fixes');
 }
 

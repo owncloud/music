@@ -65,7 +65,7 @@
 		<?php } ?>
 		<tr id="music-ampache-template-row" class="hidden">
 			<td></td>
-			<td class="key-action"><a href="#" class="icon-loading" data-id=""></a></td>
+			<td class="key-action"><a href="#" class="icon-loading-small" data-id=""></a></td>
 		</tr>
 	</table>
 	<div id="music-ampache-form">

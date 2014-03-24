@@ -70,7 +70,7 @@ $(document).ready(function() {
 		$.post(OC.generateUrl('apps/music/settings/userkey/add'), { password: password, description: description }, function(data) {
 			if (data.success) {
 				templateRow.find('a').data('id', data.id);
-				templateRow.find('a').removeClass('icon-loading').addClass('icon-delete');
+				templateRow.find('a').removeClass('icon-loading-small').addClass('icon-delete');
 				$('#music-password-info').removeClass('hidden').find('span').text(password);
 			} else {
 				templateRow.remove();
@@ -96,7 +96,7 @@ $(document).ready(function() {
 		if(id === '' || me.hasClass('icon-loading')) {
 			return;
 		}
-		me.removeClass('icon-delete').addClass('icon-loading');
+		me.removeClass('icon-delete').addClass('icon-loading-small');
 
 		$.post(OC.generateUrl('apps/music/settings/userkey/remove'), { id: me.data('id') }, function(data) {
 			if (data.success) {
@@ -105,7 +105,7 @@ $(document).ready(function() {
 					$('#music-ampache-keys').addClass('hidden');
 				}
 			} else {
-				me.removeClass('icon-loading').addClass('icon-delete');
+				me.removeClass('icon-loading-small').addClass('icon-delete');
 			}
 		});
 	};

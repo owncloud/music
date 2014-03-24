@@ -29,19 +29,12 @@ $(document).ready(function () {
 
 	$.getScript(OC.linkTo('music', 'js/vendor/soundmanager/soundmanager2-jsmin.js'))
 		.done(function(){
-			var isChrome = (navigator && navigator.userAgent &&
-				navigator.userAgent.indexOf('Chrome') !== -1) ?
-					true : false;
 
 			soundManager.setup({
 				url: OC.linkTo('music', '3rdparty/soundmanager'),
 				flashVersion: 8,
-				// this fixes a bug with HTML5 playback in Chrome - Chrome has to use flash
-				// Chrome stalls sometimes for several seconds after changing a track
-				// drawback: OGG files can't played in Chrome
-				// https://code.google.com/p/chromium/issues/detail?id=111281
-				useHTML5Audio: isChrome ? false : true,
-				preferFlash: isChrome ? true : false,
+				useHTML5Audio: true,
+				preferFlash: false,
 				useFlashBlock: true,
 				onready: function() {
 					// maybe set a INITIALIZED variable to check against for failure prevention if you have a fast user

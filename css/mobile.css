@@ -139,6 +139,10 @@ height: 60px;
 	display: none;
 }
 
+#playerbar .progress-info {
+	display: none;
+}
+
 /* hide repeat, save space */
 #playerbar #repeat {
 	right: 0;

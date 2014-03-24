@@ -14,6 +14,7 @@ $TRANSLATIONS = array(
 "Play" => "Play",
 "Previous" => "Previous",
 "Repeat" => "Repeat",
+"Scanning ..." => "Scanning ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Show all {{ trackcount }} songs...","Show all {{ trackcount }} songs..."),
 "Show less ..." => "Show less...",
 "Shuffle" => "Shuffle",

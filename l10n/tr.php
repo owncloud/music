@@ -14,6 +14,7 @@ $TRANSLATIONS = array(
 "Play" => "Oynat",
 "Previous" => "Önceki",
 "Repeat" => "Tekrar",
+"Scanning ..." => "Taranıyor...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Tüm {{ trackcount }} şarkıyı göster ...","Tüm {{ trackcount }} şarkıyı göster ..."),
 "Show less ..." => "Daha az göster ...",
 "Shuffle" => "Karıştır",

@@ -4,7 +4,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -27,30 +27,34 @@ namespace OCA\Music;
 use \OCA\Music\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
-
 /**
- * Webinterface
+ * Ampache API http://ampache.org/wiki/dev:xmlapi
  */
-$this->create('music_index', '/')->get()->action(
+
+$this->create('music_ampache', '/ampache')->get()->action(
 	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
+	}
+);
+
+$this->create('music_ampache_alternative', '/ampache/server/xml.server.php')->get()->action(
+	function($params){
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
 	}
 );
 
 /**
- * Log
+ * Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
  */
-$this->create('music_log', '/api/log')->post()->action(
+
+$this->create('music_ampache_post', '/ampache')->post()->action(
 	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
 	}
 );
 
-// include external API
-require_once __DIR__ . '/api.php';
-
-// include settings routes
-require_once __DIR__ . '/settings.php';
-
-// include ampache routes
-require_once __DIR__ . '/routes_ampache.php';
+$this->create('music_ampache_alternative_post', '/ampache/server/xml.server.php')->post()->action(
+	function($params){
+		App::main('AmpacheController', 'ampache', $params, new DIContainer());
+	}
+);

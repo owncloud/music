@@ -21,24 +21,20 @@
  *
  */
 
-namespace OCA\Music\Backgroundjob;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+namespace OCA\Music\Db;
 
-class CleanUp {
+use \OCA\Music\AppFramework\Db\Entity;
+use \OCA\Music\Core\API;
 
-	/**
-	 * Calls the cleanup method of the scanner
-	 */
-	public static function run() {
-		$container = new DIContainer();
 
-		// remove orphaned entities
-		$container['Scanner']->cleanUp();
-		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container['AlbumBusinessLayer']->findCovers();
+class AmpacheSession extends Entity {
 
-		// remove expired sessions
-		$container['AmpacheSessionMapper']->cleanUp();
+	public $userId;
+	public $token;
+	public $expiry;
+
+	public function __construct(){
+		$this->addType('expiry', 'int');
 	}
 }

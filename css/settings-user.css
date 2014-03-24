@@ -2,3 +2,68 @@
 	box-shadow: #F00 0px 0px 1.5px 1px;
 	outline: 0;
 }
+
+#music-user div {
+	margin: 10px 0;
+}
+
+/* TABLE FIXES */
+#music-user table tr.head:hover, #music-user table tr.head:active {
+	background-color: inherit;
+}
+
+#music-user table {
+	max-width: 600px;
+}
+
+#music-user table td {
+	padding: 10px;
+}
+
+#music-user table th.key-action {
+	padding-right: 15px;
+}
+
+#music-user table td.key-action, #music-user table th.key-action {
+	text-align: right;
+}
+
+#music-user table td.key-action a {
+	padding: 10px 16px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+}
+
+#music-user .info, #music-user .warning {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	max-width: 600px;
+	text-align: center;
+	padding: 10px;
+	border-radius: 3px;
+}
+
+#music-user .info {
+	color: rgb(255, 255, 255);
+	background-color: rgb(71, 164, 71);
+}
+
+#music-user .warning {
+	color: rgb(49, 49, 49);
+	background-color: rgb(237, 156, 40);
+}
+
+#music-user .warning a {
+	color: rgb(0, 0, 0) !important;
+}
+
+#music-password-info > span {
+	font-weight: bold;
+	font-size: 22px;
+}
+
+#music-ampache-description {
+	width: 300px;
+}

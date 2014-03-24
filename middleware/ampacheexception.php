@@ -21,15 +21,9 @@
  *
  */
 
-/**
- * TODO: Proper extractor
- *
- * Translation note: Keep in mind to update the fake-template.php with the string which
- * has to be translated, because just that file is scanned by the extractor
- */
 
-?>
+namespace OCA\Music\Middleware;
 
-<fieldset class="personalblock" id="music-admin">
-	<h2><?php p($l->t('Music')); ?></h2>
-</fieldset>
+class AmpacheException extends \Exception {
+
+}

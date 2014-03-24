@@ -14,7 +14,7 @@
 }
 
 #playerbar.started, #playerbar.started * {
-	display: inline;
+	display: inline-block;
 }
 
 #playerbar > img.right {

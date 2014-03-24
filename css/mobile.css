@@ -2,17 +2,41 @@
  This file is licensed under the Affero General Public License version 3
  or later. See the COPYING-README file. */
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
+
+#app-content.started {
+	top: 60px;
+}
+
+.artist-area {
+	padding-top: 50px;
+	clear: both;
+}
 
 .artist-area > h1 {
-	margin-left: 14px;
+	font-size: 24px;
+	line-height: 26px;
+	margin: 0 27px 0 10px;
+}
+
+
+/* hide hover */
+.artist-area > h1:hover {
+	font-size: 24px;
+	line-height: 26px;
+	cursor: pointer;
+}
+
+.artist-area > h1:hover > .play {
+	display: none;
 }
 
 /* adjust album area to screen width */
 .album-area {
 	width: 100%;
-	padding-left: 14px;
+	padding: 10px 30px 0 10px;
 }
+
 
 /* smaller album art */
 .album-area > .albumart,
@@ -23,57 +47,108 @@
 	height: 50px;
 	float: left;
 }
-/* also adjust the overlay */
-.album-area > img.overlay {
-	margin-left: -37px;
-	padding: 0;
-	width: 25px;
-	height: 25px;
-	margin-top: 13px;
+
+.album-area:hover > img.overlay {
+	display: none;
 }
+
 
 /* nicely display album name next to cover */
 .album-area h2 {
-	padding: 15px;
+	padding: 5px 28px 5px 10px;
+	line-height: 20px;
 	position: absolute;
-	left: 56px;
-	max-width: 75%;
+	left: 60px;
+	max-width: 80%;
+	max-height: 48px;
+	font-size: 16px;
+	white-space: normal;
+	overflow: hidden;
+}
+
+.album-year {
+	font-size: 12px;
 }
 
 /* move track list to the left so it’s visible on small screens */
 .track-list {
 	margin-left: 0;
-	padding-top: 15px;
+	padding: 10px 0 20px;
 	clear: both;
 }
 /* align track title to the left with album title */
 .track-list > li {
-	padding-left: 42px;
+	padding-left: 20px;
+	font-size: 12px;
 }
 
-/* layout the play bar elements for less space */
-#play-controls {
-	margin-left: 0;
-}
-#play-controls img:first-child {
+.track-list > li:hover > .play {
 	display: none;
 }
+.track-list > li > .play.playing {
+	display: inline;
+	height: 10px;
+	margin-left: -20px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
+
+/* layout the play bar elements for mobiledevice */
+#playerbar {
+width: 100%;
+left: 0;
+padding: 0 14px;
+height: 60px;
+}
+#playerbar .control {
+	height: 60px;
+	width: 44px;
+	padding: 0 10px;
+	margin: 0;
+}
+#playerbar .control.small {
+	height: 44px;
+	width: 44px;
+	padding: 10px;
+	margin: 13px 2px 9px;
+}
+#playerbar .control:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: 0.4;
+}
+#playerbar .control.active:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+#play-controls {
+	margin-left: 50px;
+	height: 60px;
+}
 #playerbar .albumart {
-	left: 135px;
-	margin-left: 0;
+	left: 0;
+	margin-left: 14px;
+	height: 44px;
+	width: 44px;
 }
 #playerbar .song-info {
-	left: 180px;
-	max-width: 45%;
+	display: none;
+}
+
+#playerbar .progress-info {
+	display: none;
 }
 
 /* hide repeat, save space */
 #playerbar #repeat {
-	display: none;
+	right: 0;
 }
 #playerbar #shuffle {
-	right: 8px;
+	right: 40px;
 }
-
 
 }

@@ -2,16 +2,26 @@
  This file is licensed under the Affero General Public License version 3
  or later. See the COPYING-README file. */
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
+
+#app-content.started {
+	top: 50px;
+}
+
+.artist-area {
+	padding-top: 15px;
+}
 
 .artist-area > h1 {
 	margin-left: 14px;
+	font-size: 34px;
+	line-height: 36px;
 }
 
 /* adjust album area to screen width */
 .album-area {
 	width: 100%;
-	padding-left: 14px;
+	padding: 10px 30px 0 10px;
 }
 
 /* smaller album art */
@@ -34,12 +44,20 @@
 
 /* nicely display album name next to cover */
 .album-area h2 {
-	padding: 15px;
+	padding: 0px 15px;
 	position: absolute;
 	left: 56px;
 	max-width: 75%;
+	white-space: normal;
+	height: 50px;
+	line-height: 50px;
 }
 
+.album-area > h2 > div {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
+}
 /* move track list to the left so it’s visible on small screens */
 .track-list {
 	margin-left: 0;
@@ -48,8 +66,17 @@
 }
 /* align track title to the left with album title */
 .track-list > li {
-	padding-left: 42px;
+	padding-left: 25px;
 }
+
+.track-list > li > .play.playing {
+	display: inline;
+	height: 10px;
+	margin-left: -20px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
 
 /* layout the play bar elements for less space */
 #play-controls {

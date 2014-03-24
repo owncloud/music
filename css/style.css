@@ -35,14 +35,14 @@
 }
 
 .artist-area {
-	padding-top: 50px;
 	clear: both;
 }
 
 .artist-area > h1 {
 	font-size: 42px;
-	height: 32px;
+	line-height: 42px;
 	margin-left: 28px;
+	padding-top: 10px;
 }
 
 .artist-area > h1:hover {
@@ -57,6 +57,7 @@
 	height: 16px;
 }
 
+
 .album-area {
 	padding: 14px 28px;
 	width: 480px;
@@ -69,6 +70,10 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+.album-area > h2 > div {
+	display: inline-block;
 }
 
 .album-area > h2:hover {

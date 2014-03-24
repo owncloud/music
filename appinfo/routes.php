@@ -52,3 +52,5 @@ require_once __DIR__ . '/api.php';
 // include settings routes
 require_once __DIR__ . '/settings.php';
 
+// include ampache routes
+require_once __DIR__ . '/routes_ampache.php';

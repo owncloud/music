@@ -28,22 +28,32 @@ namespace OCA\Music\DependencyInjection;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Core\API;
 use \OCA\Music\DB\AlbumMapper;
+use \OCA\Music\DB\AmpacheSessionMapper;
+use \OCA\Music\DB\AmpacheUserMapper;
 use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\TrackMapper;
-use \OCA\Music\DB\ScanStatusMapper;
+use \OCA\Music\Middleware\AmpacheMiddleware;
+use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
+
+use \OCA\Music\AppFramework\Middleware\MiddlewareDispatcher;
 
 // in stable5 getid3 is already loaded
 if(!class_exists('getid3_exception')) {
 	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 }
+
+$this['Server'] = $this->share(function($c){
+	return \OC::$server;
+});
 
 $this['API'] = $this->share(function($c){
 	return new API($c['AppName']);
@@ -53,13 +63,18 @@ $this['API'] = $this->share(function($c){
  * Controllers
  */
 
+$this['AmpacheController'] = $this->share(function($c){
+	return new AmpacheController($c['API'], $c['Request'], $c['AmpacheUserMapper'], $c['AmpacheSessionMapper'],
+		$c['AlbumMapper'], $c['ArtistMapper'], $c['TrackMapper'], $c['AmpacheUser'], $c['Server']);
+});
+
 $this['ApiController'] = $this->share(function($c){
 	return new ApiController($c['API'], $c['Request'],
-		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer']);
+		$c['TrackBusinessLayer'], $c['ArtistBusinessLayer'], $c['AlbumBusinessLayer'], $c['Scanner']);
 });
 
 $this['PageController'] = $this->share(function($c){
-	return new PageController($c['API'], $c['Request'], $c['Scanner'], $c['ScanStatusMapper']);
+	return new PageController($c['API'], $c['Request'], $c['Scanner']);
 });
 
 $this['LogController'] = $this->share(function($c){
@@ -67,7 +82,7 @@ $this['LogController'] = $this->share(function($c){
 });
 
 $this['SettingController'] = $this->share(function($c){
-	return new SettingController($c['API'], $c['Request']);
+	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserMapper']);
 });
 
 /**
@@ -76,6 +91,14 @@ $this['SettingController'] = $this->share(function($c){
 
 $this['AlbumMapper'] = $this->share(function($c){
 	return new AlbumMapper($c['API']);
+});
+
+$this['AmpacheSessionMapper'] = $this->share(function($c){
+	return new AmpacheSessionMapper($c['API']);
+});
+
+$this['AmpacheUserMapper'] = $this->share(function($c){
+	return new AmpacheUserMapper($c['API']);
 });
 
 $this['ArtistMapper'] = $this->share(function($c){
@@ -106,8 +129,13 @@ $this['AlbumBusinessLayer'] = $this->share(function($c){
  * Utilities
  */
 
-$this['ScanStatusMapper'] = $this->share(function($c){
-	return new ScanStatusMapper($c['API']);
+$this['AmpacheUser'] = $this->share(function($c){
+	return new AmpacheUser();
+});
+
+$this['Scanner'] = $this->share(function($c){
+	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
+		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
 });
 
 $this['getID3'] = $this->share(function($c){
@@ -128,4 +156,21 @@ $this['ExtractorGetID3'] = $this->share(function($c){
 $this['Scanner'] = $this->share(function($c){
 	return new Scanner($c['API'], $c['ExtractorGetID3'], $c['ArtistBusinessLayer'],
 		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
+});
+
+/**
+ * Middleware
+ */
+
+$this['AmpacheMiddleware'] = $this->share(function($c){
+	return new AmpacheMiddleware($c['API'], $c['Request'], $c['AmpacheSessionMapper'], $c['AmpacheUser']);
+});
+
+$this['MiddlewareDispatcher'] = $this->share(function($c){
+	$dispatcher = new MiddlewareDispatcher();
+	$dispatcher->registerMiddleware($c['AmpacheMiddleware']);
+	$dispatcher->registerMiddleware($c['HttpMiddleware']);
+	$dispatcher->registerMiddleware($c['SecurityMiddleware']);
+
+	return $dispatcher;
 });

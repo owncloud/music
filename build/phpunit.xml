@@ -4,6 +4,7 @@
 			<directory suffix=".php">../appframework</directory>
 			<file>../core/api.php</file>
 			<file>../tests/php/unit/L10nStubs.php</file>
+			<file>../tests/php/unit/HooksStubs.php</file>
 		</blacklist>
 	</filter>
 </phpunit>

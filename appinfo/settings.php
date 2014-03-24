@@ -36,3 +36,21 @@ $this->create('music_settings_user_path', '/settings/user/path')->post()->action
                 App::main('SettingController', 'userPath', $params, new DIContainer());
         }
 );
+
+/**
+ * Add API key
+ */
+$this->create('music_settings_user_add', '/settings/userkey/add')->post()->action(
+	function($params){
+		App::main('SettingController', 'addUserKey', $params, new DIContainer());
+	}
+);
+
+/**
+ * Remove API key
+ */
+$this->create('music_settings_user_remove', '/settings/userkey/remove')->post()->action(
+	function($params){
+		App::main('SettingController', 'removeUserKey', $params, new DIContainer());
+	}
+);

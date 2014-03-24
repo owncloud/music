@@ -50,4 +50,66 @@ $(document).ready(function() {
 		);
 	});
 
+	/**
+	 * Add API key
+	 */
+	 var addAPIKey = function(){
+		var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6),
+			description = $('#music-ampache-description').val(),
+			templateRow = $('#music-ampache-template-row').clone(true); // clone with events
+
+		$('#music-ampache-description').val('');
+		templateRow.removeClass('hidden');
+		templateRow.find('td:first').text(description);
+		templateRow.appendTo('#music-ampache-keys');
+
+		if($('#music-ampache-keys').hasClass('hidden')) {
+			$('#music-ampache-keys').removeClass('hidden');
+		}
+
+		$.post(OC.generateUrl('apps/music/settings/userkey/add'), { password: password, description: description }, function(data) {
+			if (data.success) {
+				templateRow.find('a').data('id', data.id);
+				templateRow.find('a').removeClass('icon-loading-small').addClass('icon-delete');
+				$('#music-password-info').removeClass('hidden').find('span').text(password);
+			} else {
+				templateRow.remove();
+				if($('#music-ampache-keys tr').length === 2) {
+					$('#music-ampache-keys').addClass('hidden');
+				}
+			}
+		});
+	};
+
+	$('#music-ampache-form').find('button').click(addAPIKey);
+	$('#music-ampache-form').find('input').keypress(function(event){
+		if(event.which === 13) {
+			event.preventDefault();
+			addAPIKey();
+		}
+	});
+
+	var removeAPIKey = function(event) {
+		event.preventDefault();
+		var me = $(this),
+			id = me.data('id');
+		if(id === '' || me.hasClass('icon-loading')) {
+			return;
+		}
+		me.removeClass('icon-delete').addClass('icon-loading-small');
+
+		$.post(OC.generateUrl('apps/music/settings/userkey/remove'), { id: me.data('id') }, function(data) {
+			if (data.success) {
+				me.closest('tr').remove();
+				if($('#music-ampache-keys tr').length === 2) {
+					$('#music-ampache-keys').addClass('hidden');
+				}
+			} else {
+				me.removeClass('icon-loading-small').addClass('icon-delete');
+			}
+		});
+	};
+
+	$('#music-ampache-keys').find('a').click(removeAPIKey);
+
 });

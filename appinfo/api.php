@@ -94,3 +94,12 @@ $this->create('music_file', '/api/file/{fileId}')->get()->action(
 		App::main('ApiController', 'track-lyrics', $params, new DIContainer());
 	}
 );*/
+
+/**
+ * Scan
+ */
+$this->create('music_scan', '/api/scan')->get()->action(
+		function($params){
+			App::main('ApiController', 'scan', $params, new DIContainer());
+		}
+);

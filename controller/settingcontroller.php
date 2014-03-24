@@ -68,7 +68,6 @@ class SettingController extends Controller {
 	 */
 	public function addUserKey() {
 		$userId = $this->api->getUserId();
-		$id = 0;
 		$success = false;
 		$description = $this->params('description');
 		$password = $this->params('password');

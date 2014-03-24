@@ -51,7 +51,7 @@ if(!class_exists('getid3_exception')) {
 	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 }
 
-$this['Server'] = $this->share(function($c){
+$this['Server'] = $this->share(function(){
 	return \OC::$server;
 });
 
@@ -129,7 +129,7 @@ $this['AlbumBusinessLayer'] = $this->share(function($c){
  * Utilities
  */
 
-$this['AmpacheUser'] = $this->share(function($c){
+$this['AmpacheUser'] = $this->share(function(){
 	return new AmpacheUser();
 });
 
@@ -138,7 +138,7 @@ $this['Scanner'] = $this->share(function($c){
 		$c['AlbumBusinessLayer'], $c['TrackBusinessLayer']);
 });
 
-$this['getID3'] = $this->share(function($c){
+$this['getID3'] = $this->share(function(){
 	$getID3 = new \getID3();
 	$getID3->encoding = 'UTF-8';
 	// On 32-bit systems, getid3 tries to make a 2GB size check,

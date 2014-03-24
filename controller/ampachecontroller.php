@@ -392,7 +392,7 @@ class AmpacheController extends Controller {
 			$albumIds[] = $album->getId();
 		}
 
-		$albumWithArtistIds = $this->albumMapper->getAlbumArtistsByAlbumId($albumIds, $userId);
+		$albumWithArtistIds = $this->albumMapper->getAlbumArtistsByAlbumId($albumIds);
 
 		// this function is used to extract the first artistId of each album
 		$mapFunction = function($value) {
@@ -437,7 +437,9 @@ class AmpacheController extends Controller {
 		try {
 			$track = $this->trackMapper->find($trackId, $userId);
 		} catch(DoesNotExistException $e) {
-			return new Response(Http::STATUS_NOT_FOUND);
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
 		}
 
 		$files = $this->server->getRootFolder()->getById($track->getFileId());
@@ -445,7 +447,9 @@ class AmpacheController extends Controller {
 		if(count($files) === 1) {
 			return new FileResponse($files[0]);
 		} else {
-			return new Response(Http::STATUS_NOT_FOUND);
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
 		}
 	}
 }

@@ -59,7 +59,7 @@ class BusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
 			->method('find')
 			->with($this->equalTo($id), $this->equalTo($user));
 
-		$result = $this->musicBusinessLayer->find($id, $user);
+		$this->musicBusinessLayer->find($id, $user);
 	}
 
 

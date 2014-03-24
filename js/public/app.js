@@ -1,4 +1,3 @@
-
 // fix SVGs in IE because the scaling is a real PITA
 // https://github.com/owncloud/music/issues/126
 if($('html').hasClass('ie')) {

@@ -334,8 +334,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setCoverFileId(5);
 		$album->setArtistIds(array(3));
 
-		$albumId = 4;
-
 		$this->api->expects($this->exactly(8))
 			->method('linkToRoute')
 			->will($this->returnCallback($this->getLinkToRouteFunction()));

@@ -84,7 +84,7 @@ class DIContainer extends \Pimple {
 			);
 		});
 
-		$this['Protocol'] = $this->share(function($c){
+		$this['Protocol'] = $this->share(function(){
 			if(isset($_SERVER['SERVER_PROTOCOL'])) {
 				return new Http($_SERVER, $_SERVER['SERVER_PROTOCOL']);
 			} else {

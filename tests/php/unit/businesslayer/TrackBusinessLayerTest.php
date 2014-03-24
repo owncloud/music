@@ -141,7 +141,6 @@ class TrackBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 	}
 
 	public function testAddTrackIfNotExistException(){
-		$title = 'test';
 		$fileId = 2;
 
 		$this->mapper->expects($this->once())

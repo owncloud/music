@@ -1,6 +1,10 @@
-<div ng-hide="artists" id="emptystate">
+<div ng-hide="artists" id="emptycontent">
 	<span ng-hide="loading" translate>Nothing in here. Upload your music!</span>
 	<span ng-show="loading" translate>Loading ...</span>
+</div>
+
+<div id="scanning" ng-show="scanning">
+	<span translate>Scanning ... </span> {{ scanningScanned }}/{{ scanningTotal }}
 </div>
 
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">

@@ -55,10 +55,10 @@ class TrackMapper extends Mapper {
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
-	public function findAll($userId){
+	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	public function findAllByPath($path, $userId){

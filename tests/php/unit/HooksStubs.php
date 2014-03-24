@@ -4,7 +4,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -21,15 +21,9 @@
  *
  */
 
-/**
- * TODO: Proper extractor
- *
- * Translation note: Keep in mind to update the fake-template.php with the string which
- * has to be translated, because just that file is scanned by the extractor
- */
+namespace OC\Hooks;
 
-?>
+// dirty fix because the mocked class needs to be available but is in the core repo
+class PublicEmitter{
+}
 
-<fieldset class="personalblock" id="music-admin">
-	<h2><?php p($l->t('Music')); ?></h2>
-</fieldset>

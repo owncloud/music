@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
-	function ($scope, $rootScope, playlistService, Audio, Artists, Restangular, gettext, gettextCatalog, $filter) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -43,7 +43,7 @@ angular.module('Music').controller('PlayerController',
 
 	// will be invoked by the audio factory
 	$rootScope.$on('SoundManagerReady', function() {
-		if($scope.$parent.started) {
+		if($rootScope.started) {
 			// invoke play after the flash gets unblocked
 			$scope.$apply(function(){
 				$scope.next();
@@ -198,17 +198,7 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$scope.getPlayableFileURL = function (track) {
-		var isChrome = (navigator && navigator.userAgent &&
-			navigator.userAgent.indexOf('Chrome') !== -1) ?
-				true : false;
 		for(var mimeType in track.files) {
-			if(mimeType === 'audio/ogg' && isChrome) {
-				var str = gettext(
-					'Chrome is only able to play MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				);
-				// TODO inject this
-				OC.Notification.showHtml(gettextCatalog.getString(str));
-			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];
 			}
@@ -223,7 +213,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state
-			$scope.$parent.started = true;
+			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
@@ -296,7 +286,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
 			// switch initial state
-			$scope.$parent.started = false;
+			$rootScope.started = false;
 		}
 	}, true);
 
@@ -331,7 +321,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
 	};
-	
+
 	$scope.setBuffer = function(position, duration) {
 		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
 	};
@@ -372,7 +362,7 @@ angular.module('Music').controller('PlayerController',
 			offsetX = $event.offsetX || $event.originalEvent.layerX;
 		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
         };
-	
+
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
 		$scope.next();

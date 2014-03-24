@@ -21,35 +21,9 @@
  *
  */
 
-namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
+namespace OCA\Music\Middleware;
 
-class ScanStatusMapper extends Mapper {
+class AmpacheException extends \Exception {
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_scanned_users');
-	}
-
-	public function isScanned($userId){
-		$sql = 'SELECT * FROM `*PREFIX*music_scanned_users` `user` '.
-			'WHERE `user`.`user_id` = ?';
-		$params = array($userId);
-		$result = $this->execute($sql, $params, 1);
-		$row = $result->fetchRow();
-
-		if($row === false || $row === null){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-	public function setScanned($userId){
-		$sql = 'INSERT INTO `*PREFIX*music_scanned_users` (`user_id`) '.
-			'VALUES (?)';
-		$params = array($userId);
-		$this->execute($sql, $params);
-	}
 }

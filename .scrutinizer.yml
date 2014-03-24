@@ -1,0 +1,6 @@
+imports:
+    - javascript
+    - php
+
+filter:
+    excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js]

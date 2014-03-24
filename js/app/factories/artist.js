@@ -19,6 +19,8 @@
  *
  */
 
-angular.module('Music').factory('Artists', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return Restangular.all('collection').getList();
+angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return {
+		getArtists: function() { return Restangular.all('collection').getList(); }
+	};
 }]);

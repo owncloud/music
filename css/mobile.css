@@ -4,29 +4,14 @@
 
 @media only screen and (max-width: 768px) {
 
-/*temporary solutions*/
-
-/*hide left owncloud-sidebar*/
-#navigation {
-	display: none;
-}
-
-/*hide owncloud-searchbox*/
-#searchbox {
-	display: none;
-}
-
-/*deleat left padding and sets content to the left*/
-#content-wrapper {
-	padding-left: 0;
-}
-
-/*top position adjustment -> smaller playerbar*/
 #app-content.started {
 	top: 60px;
 }
 
-
+#app-content div:firstchild {
+	padding-top: 0px;
+	clear: both;
+}
 
 .artist-area {
 	padding-top: 50px;
@@ -34,29 +19,27 @@
 }
 
 .artist-area > h1 {
-	font-size: 24px;
+	font-size: 7vw;
 	line-height: 26px;
-	margin: 0 27px 0 10px;
+	margin: 0 27px 0 14px;
 }
 
 
 /* hide hover */
 .artist-area > h1:hover {
-	font-size: 24px;
+	font-size: 7vw;
 	line-height: 26px;
-	cursor: pointer;
+	cursor: default;
 }
 
 .artist-area > h1:hover > .play {
 	display: none;
 }
 
-
-
 /* adjust album area to screen width */
 .album-area {
 	width: 100%;
-	padding: 10px 28px 0 10px;
+	padding-left: 14px;
 }
 
 
@@ -68,6 +51,83 @@
 	width: 50px;
 	height: 50px;
 	float: left;
+}
+/* hide hover*/
+.album-area > img.overlay {
+	display: none;
+	cursor: pointer;
+}
+
+/* nicely display album name next to cover */
+.album-area h2 {
+	padding: 0 0 0 15px;
+	line-height: 25px;
+	position: absolute;
+	left: 56px;
+	max-width: 75%;
+	font-size: 5vw;
+	white-space: normal;
+}
+
+/* move track list to the left so it’s visible on small screens */
+.track-list {
+	margin-left: 0;
+	padding-top: 15px;
+	clear: both;
+}
+/* align track title to the left with album title */
+.track-list > li {
+	padding-left: 42px;
+}
+
+
+/* layout the play bar elements for mobiledevice */
+#playerbar {
+	width: 100%;
+	left: 0;
+	padding: 0 14px;
+	height: 60px;
+}
+#playerbar .control {
+	/*height: 60px;*/
+	width: 44px;
+	height: 44px;
+	/*padding: 0 10px;*/
+	margin: 0 0 9px 0;
+}
+#playerbar .control.small {
+	height: 44px;
+	width: 44px;
+	padding: 10px;
+	margin: 10px 2px 9px;
+}
+#playerbar .control:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+#play-controls {
+	margin-left: 50px;
+	height: 60px;
+}
+#playerbar .albumart {
+	left: 0;
+	margin-left: 14px;
+	height: 44px;
+	width: 44px;
+}
+#playerbar .song-info {
+	display: none;
+}
+
+/* hide repeat, save space */
+#playerbar #repeat {
+	right: 0;
+}
+#playerbar #shuffle {
+	right: 40px;
+}
 }
 /* hide hover*/
 .album-area:hover > img.overlay {

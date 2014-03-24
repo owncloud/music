@@ -220,26 +220,68 @@ class Scanner extends PublicEmitter {
 		$this->albumBusinessLayer->removeCover($fileId);
 	}
 
+	public function getMusicFiles() {
+		$music = $this->api->searchByMime('audio');
+		$ogg = $this->api->searchByMime('application/ogg');
+		$music = array_merge($music, $ogg);
+
+		return $music;
+	}
+
+	public function getScannedFiles($userId = NULL) {
+		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks`';
+		$params = array();
+		if($userId) {
+			$sql .= ' WHERE `user_id` = ?';
+			$params = array($userId);
+		}
+		$query = $this->api->prepareQuery($sql);
+		$result = $query->execute($params);
+		$fileIds = array_map(function($i) { return $i['file_id']; }, $result->fetchAll());
+
+		return $fileIds;
+	}
+
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan($userId = NULL) {
+	public function rescan($userId = NULL, $batch = false) {
+		$this->api->log('Rescan triggered', 'info');
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
 		set_time_limit(0);
 
-		$music = $this->api->searchByMime('audio');
-		$ogg = $this->api->searchByMime('application/ogg');
-		$music = array_merge($music, $ogg);
+		$fileIds = $this->getScannedFiles($userId);
+		$music = $this->getMusicFiles();
+
+		$count = 0;
 		foreach ($music as $file) {
+			if(!$batch && $count >= 50) {
+				// break scan - 50 files are already scanned
+				break;
+			}
+			if(!$batch && in_array($file['fileid'], $fileIds)) {
+				// skip this file as it's already scanned
+				continue;
+			}
 			$this->update($file['path'], $userId);
+			$count++;
 		}
 		// find album covers
 		$this->albumBusinessLayer->findCovers();
 
 		// reset execution time limit
 		set_time_limit($executionTime);
+
+		$totalCount = count($music);
+		$processedCount = $count;
+		if(!$batch) {
+			$processedCount += count($fileIds);
+		}
+		$this->api->log(sprintf('Rescan finished (%d/%d)', $processedCount, $totalCount), 'info');
+
+		return array('processed' => $processedCount, 'scanned' => $count, 'total' => $totalCount);
 	}
 
 	/**

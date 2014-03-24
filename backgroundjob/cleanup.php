@@ -37,5 +37,8 @@ class CleanUp {
 		$container['Scanner']->cleanUp();
 		// find covers - TODO performance stuff - maybe just call this once in an hour
 		$container['AlbumBusinessLayer']->findCovers();
+
+		// remove expired sessions
+		$container['AmpacheSessionMapper']->cleanUp();
 	}
 }

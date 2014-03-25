@@ -75,5 +75,4 @@ $api->addScript('public/musicFilePlayer');
 \OC_Search::registerProvider('OCA\Music\Utility\Search');
 
 // register settings
-$api->registerAdmin('settings/admin');
 $api->registerPersonal('settings/user');

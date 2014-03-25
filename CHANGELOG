@@ -1,3 +1,80 @@
+v0.1.9-rc 2014-03-25
+
+  * allow public share music playback #124
+    * start/stop implementation, filelist is playlist, no repeat
+  * mobile styles for phone & tablet
+  * search provider for artist, album & track
+  * command to rescan the music files from ownCloud console.php
+    * Thanks to @leizh
+    * music:scan
+    * all users or a specific user
+  * improved performance on loading of artists (a lot less SQL statements)
+  * seek in progressbar
+  * redirect from music file in files app to music app (autoplay) on click
+  * album art priority (cover, albumart, front, folder, others)
+  * step by step scanning (50 on each step)
+    * display of scanning progress
+  * Chrome now uses HTML5 audio instead of flash fallback
+
+  * Ampache API (unstable)
+    * security
+      * user can generate passwords to use with the Ampache API
+      * ability to revoke those passwords
+    * new DB tables:
+      * ampache_sessions - session tokens
+      * ampache_users - generated passwords
+    * Ampache API (ADD and UPDATE parameters are unsupported yet):
+      * handshake
+      * ping
+      * artists
+      * artist_albums
+      * album_songs
+      * albums
+      * artist_songs (also supports offset & limit)
+      * songs
+      * song
+      * search_song
+    * delivery of music file with ampache token
+    * middleware to authenticate user with ampache token
+
+  * fix cover detection - double to single quotes - fixes #134
+  * fix integrity constraint violation for shared files - fix #127
+  * shorten index names for oracle (max 30 chars)
+  * fix SQL statements
+  * fix error while fileUpdated hook handling - fix #154
+  * Unknown artists, albums & titles now localizable
+    * allow and use NULL instead of fixed artist or album name
+    * add localized string to represent these albums and artists
+    * migration: convert existing 'owncloud unnknown ...' placeholders to NULL
+
+ Internal
+  * new URL generation inside the Javascript
+  * DB Mapper & Entities:
+    * Album added attributes: trackCount, artist (both not filled by default)
+    * Album added methods: getNameString (returns an translated string for unknown artists)
+    * AlbumMapper added methods: count, countByArtist, findAllByName
+    * Artist added attributes: trackCount, albumCount (both not filled by default)
+    * Artist added methods: getNameString (returns an translated string for unknown artists)
+    * ArtistMapper added methods: count, findAllByName
+    * Track added attributes: fileSize
+    * TrackMapper: count methods now return actual count and not an array with 'COUNT(*)'
+    * TrackMapper added methods: count, findAllByName, findAllByNameRecursive
+    * add limit ScanStatus SQL
+  * Tests:
+    * add L10nStub to properly mock the L10n class of ownCloud core
+    * push test coverage to 100%
+  * Build:
+    * add Makefile command to do PHP unit tests and create the test coverage
+    * exclude external PHP files from test coverage
+  * Core API:
+    * add call to register components to personal settings page
+    * fix typos
+  * merged l10n extraction to upstream - removed patchfiles
+  * minimalized travis-ci footprint
+  * CSRF token used for restangular queries
+  * AngularJS 1.2.14
+  * Underscore 1.6.0
+
 v0.1.7-beta 2013-12-21
 
  Merry Christmas release

@@ -75,6 +75,7 @@ deps:
 
 clean:
 	rm -rf $(CURDIR)/node_modules
+	rm -rf $(CURDIR)/coverage-html
 	rm -rf $(build_dir)
 
 dist: appstore
@@ -85,6 +86,7 @@ appstore: clean
 	--exclude-vcs \
 	--exclude=$(project_dir)/build/artifacts \
 	--exclude=$(project_dir)/build/node_modules \
+	--exclude=$(project_dir)/build/coverage-html \
 	--exclude=$(project_dir)/tests \
 	--exclude=$(project_dir)/.travis.yml
 

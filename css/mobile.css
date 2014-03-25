@@ -77,7 +77,6 @@
 	cursor: pointer;
 }
 
-
 /* layout the play bar elements for less space */
 #play-controls {
 	margin-left: 0;
@@ -93,14 +92,19 @@
 	left: 180px;
 	max-width: 45%;
 }
+#playerbar .title {
+	font-size: 14px;
+}
+#playerbar .progress-info {
+	display: none;
+}
 
 /* hide repeat, save space */
 #playerbar #repeat {
-	display: none;
+	right: 0;
 }
 #playerbar #shuffle {
-	right: 8px;
+	right: 40px;
 }
-
 
 }

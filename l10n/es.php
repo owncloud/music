@@ -2,9 +2,13 @@
 $TRANSLATIONS = array(
 "Albums" => "Álbumes",
 "Artists" => "Artistas",
-"Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome sólo puede reproducir archivos MP3 - vea el <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>",
 "Delete" => "Eliminar",
+"Description" => "Descripción",
+"Description (e.g. App name)" => "Descripción (p.ej., nombre de la aplicación)",
+"Generate API password" => "Generar contraseña para la API",
+"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Aquí uno puede crear contraseñas para usarlas con la API de Ampache, pues no pueden ser almacenadas de forma segura debido al diseño de la API de Ampache. Puede crear todas las contraseñas que quiera y revocarlas en cualquier momento.",
 "Invalid path" => "Ruta inválida",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Recuerde que la API de Ampache solo es un prototipo y es inestable. Sírvase reportar su experiencia con esta nueva característica en el <a href=\"https://github.com/owncloud/music/issues/60\">informe de error</a> correspondiente. También quisiera tener una lista de clientes con qué probarla. Gracias.",
 "Loading ..." => "Cargando...",
 "Music" => "Música",
 "Next" => "Siguiente",
@@ -14,6 +18,7 @@ $TRANSLATIONS = array(
 "Play" => "Reproducir",
 "Previous" => "Anterior",
 "Repeat" => "Repetir",
+"Revoke API password" => "Revocar contraseña para la API",
 "Scanning ..." => "Escaneando...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostrar todas las {{ trackcount}} canciones...","Mostrar todas las {{ trackcount }} canciones..."),
 "Show less ..." => "Mostrar menos...",
@@ -21,6 +26,7 @@ $TRANSLATIONS = array(
 "This setting restricts the shown music in the web interface of the music app." => "Esta configuración restringe la música mostrada en la interfaz web de la aplicación de música.",
 "Tracks" => "Canciones",
 "Unknown album" => "Álbum desconocido",
-"Unknown artist" => "Artista desconocido"
+"Unknown artist" => "Artista desconocido",
+"Use your username and following password to connect to this Ampache instance:" => "Use su nombre de usuario y la siguiente contraseña para conectarse con esta instancia de Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

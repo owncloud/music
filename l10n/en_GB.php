@@ -2,8 +2,8 @@
 $TRANSLATIONS = array(
 "Albums" => "Albums",
 "Artists" => "Artists",
-"Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>",
 "Delete" => "Delete",
+"Description" => "Description",
 "Invalid path" => "Invalid path",
 "Loading ..." => "Loading...",
 "Music" => "Music",

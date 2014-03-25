@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Odstrániť",
+"Description" => "Popis",
 "Repeat" => "Opakovať",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","","")
 );

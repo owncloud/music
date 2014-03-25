@@ -2,8 +2,8 @@
 $TRANSLATIONS = array(
 "Albums" => "الألبومات",
 "Artists" => "الفنانون",
-"Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "متصفح كروم يمكنه تشغيل ملفات MP3 فقط - الرجاء الاطلاع على  <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">الويكي</a>",
 "Delete" => "حذف",
+"Description" => "وصف",
 "Loading ..." => "تحميل ...",
 "Music" => "الموسيقى",
 "Next" => "التالي",

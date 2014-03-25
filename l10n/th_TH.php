@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "ลบ",
+"Description" => "คำอธิบาย",
 "Music" => "เพลง",
 "Next" => "ถัดไป",
 "Pause" => "หยุดชั่วคราว",

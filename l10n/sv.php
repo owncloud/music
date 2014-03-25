@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Radera",
+"Description" => "Beskrivning",
 "Loading ..." => "Laddar  ...",
 "Music" => "Musik",
 "Next" => "Nästa",

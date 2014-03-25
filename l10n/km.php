@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "លុប",
+"Description" => "ការ​អធិប្បាយ",
 "Loading ..." => "កំពុងផ្ទុក ...",
 "Music" => "តន្ត្រី",
 "Next" => "បន្ទាប់",

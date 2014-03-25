@@ -2,8 +2,8 @@
 $TRANSLATIONS = array(
 "Albums" => "Albumi",
 "Artists" => "Izvajalci",
-"Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Brskalnik Chrome lahko predvaja le datoteke MP3 - več podrobnosti je na <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">straneh wiki</a>.",
 "Delete" => "Izbriši",
+"Description" => "Opis",
 "Invalid path" => "Neveljavna pot",
 "Loading ..." => "Nalaganje ...",
 "Music" => "Glasba",

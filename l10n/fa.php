@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "حذف",
+"Description" => "توضیحات",
 "Music" => "موزیک",
 "Next" => "بعدی",
 "Pause" => "توقف کردن",

@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Ištrinti",
+"Description" => "Aprašymas",
 "Loading ..." => "Įkeliama ...",
 "Music" => "Muzika",
 "Next" => "Kitas",

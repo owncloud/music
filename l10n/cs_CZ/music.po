@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-24 05:30+0000\n"
+"PO-Revision-Date: 2014-03-25 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,28 +22,21 @@ msgstr "Alba"
 msgid "Artists"
 msgstr "Umělci"
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to play MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome umí přehrávat pouze soubory MP3  - více informací anglicky <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-
 #: ../templates/main.php
 msgid "Delete"
 msgstr "Smazat"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Popis (např. Jméno aplikace)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Generovat heslo API"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -102,7 +95,7 @@ msgstr "Opakovat"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Odvolat heslo API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."

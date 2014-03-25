@@ -1,5 +1,6 @@
 <?php
 $TRANSLATIONS = array(
+"Description" => "پێناسه",
 "Music" => "مۆسیقا",
 "Next" => "دوواتر",
 "Pause" => "وه‌ستان",

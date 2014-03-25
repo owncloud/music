@@ -2,9 +2,13 @@
 $TRANSLATIONS = array(
 "Albums" => "Albums",
 "Artists" => "Artiesten",
-"Chrome is only able to play MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome kan alleen MP3 bestanden - zie <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>",
 "Delete" => "Verwijder",
+"Description" => "Beschrijving",
+"Description (e.g. App name)" => "Beschrijving (bijv. appnaam)",
+"Generate API password" => "Genereren API wachtwoord",
+"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Hier kunt u wachtwoorden genereren voor gebruik met de Ampacht API, omdat ze door het ontwerp van de Ampache API niet op een echt veilige manier kunnen worden bewaard. U kunt zoveel wachtwoorden genereren als u wilt en ze op elk moment weer intrekken.",
 "Invalid path" => "Ongeldig pad",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Vergeet niet dat de Ampache API volop in ontwikkeling is en dus instabiel is. Rapporteer gerust uw ervaringen met deze functionaliteit in deze <a href=\"https://github.com/owncloud/music/issues/60\">melding</a>. Ik zou ook graag een lijst met clients hebben om te kunnen testen. Bij voorbaat dank!",
 "Loading ..." => "Laden ...",
 "Music" => "Muziek",
 "Next" => "Volgende",
@@ -14,6 +18,7 @@ $TRANSLATIONS = array(
 "Play" => "Afspelen",
 "Previous" => "Vorige",
 "Repeat" => "Herhaling",
+"Revoke API password" => "Intrekken API wachtwoord",
 "Scanning ..." => "Scannen ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Toon elk {{ trackcount }} nummer ...","Toon alle {{ trackcount }} nummers ..."),
 "Show less ..." => "Toon minder ...",
@@ -21,6 +26,7 @@ $TRANSLATIONS = array(
 "This setting restricts the shown music in the web interface of the music app." => "Deze instelling beperkt de in de webinterface van de muziek app te tonen muziek.",
 "Tracks" => "Nummers",
 "Unknown album" => "Onbekend album",
-"Unknown artist" => "Onbekende artiest"
+"Unknown artist" => "Onbekende artiest",
+"Use your username and following password to connect to this Ampache instance:" => "Gebruik uw gebruikersnaam en het volgende wachtwoord om te verbinden met deze Ampache installatie:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "ئۆچۈر",
+"Description" => "چۈشەندۈرۈش",
 "Music" => "نەغمە",
 "Next" => "كېيىنكى",
 "Pause" => "ۋاقىتلىق توختا",

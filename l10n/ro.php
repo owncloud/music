@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Șterge",
+"Description" => "Descriere",
 "Music" => "Muzică",
 "Next" => "Următor",
 "Pause" => "Pauză",

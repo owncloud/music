@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "நீக்குக",
+"Description" => "விவரிப்பு",
 "Music" => "இசை",
 "Next" => "அடுத்த",
 "Pause" => "இடைநிறுத்துக",

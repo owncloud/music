@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "মুছে",
+"Description" => "বিবরণ",
 "Music" => "গানবাজনা",
 "Next" => "পরবর্তী",
 "Pause" => "বিরতি",

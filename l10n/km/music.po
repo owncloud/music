@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-24 05:30+0000\n"
+"PO-Revision-Date: 2014-03-25 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,20 +20,13 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to play MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
-
 #: ../templates/main.php
 msgid "Delete"
 msgstr "លុប"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "ការ​អធិប្បាយ"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"

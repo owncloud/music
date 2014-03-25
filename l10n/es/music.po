@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-24 05:30+0000\n"
+"PO-Revision-Date: 2014-03-25 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,35 +23,28 @@ msgstr "Álbumes"
 msgid "Artists"
 msgstr "Artistas"
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to play MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome sólo puede reproducir archivos MP3 - vea el <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-
 #: ../templates/main.php
 msgid "Delete"
 msgstr "Eliminar"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descripción (p.ej., nombre de la aplicación)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Generar contraseña para la API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Aquí uno puede crear contraseñas para usarlas con la API de Ampache, pues no pueden ser almacenadas de forma segura debido al diseño de la API de Ampache. Puede crear todas las contraseñas que quiera y revocarlas en cualquier momento."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -63,7 +56,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Recuerde que la API de Ampache solo es un prototipo y es inestable. Sírvase reportar su experiencia con esta nueva característica en el <a href=\"https://github.com/owncloud/music/issues/60\">informe de error</a> correspondiente. También quisiera tener una lista de clientes con qué probarla. Gracias."
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -103,7 +96,7 @@ msgstr "Repetir"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Revocar contraseña para la API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
@@ -145,4 +138,4 @@ msgstr "Artista desconocido"
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Use su nombre de usuario y la siguiente contraseña para conectarse con esta instancia de Ampache:"

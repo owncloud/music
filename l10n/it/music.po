@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Jessica Di Maria <dimariaj87@gmail.com>, 2014
 # Paolo Velati <paolo.velati@gmail.com>, 2014
 # Vincenzo Reale <vinx.reale@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-24 05:30+0000\n"
+"PO-Revision-Date: 2014-03-25 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,35 +22,28 @@ msgstr "Album"
 msgid "Artists"
 msgstr "Artisti"
 
-#: ../js/public/app.js
-msgid ""
-"Chrome is only able to play MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome è in grado di riprodurre solo file MP3 - vedi il <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-
 #: ../templates/main.php
 msgid "Delete"
 msgstr "Elimina"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descrizione (ad es. Nome applicazione)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Genera una password API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Qui puoi creare le password da usare con l'API di Ampache, perché esse non possono essere memorizzare in maniera sicura a causa della forma dell'API di Ampache. Puoi generare tutte le password che vuoi e puoi riprenderle quando vuoi."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -61,7 +55,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Ricorda, l'API di Ampache è solo un'anteprima e non è stabile. Sentiti libero nel riportare la tua esperienza con questa funzione nel corrispondente <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. Preferirei anche avere una lista di clienti da testare. Grazie."
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -101,7 +95,7 @@ msgstr "Ripeti"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Riprendi la password API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
@@ -143,4 +137,4 @@ msgstr "Artista sconosciuto"
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Usa il tuo username e la password per entrare in questo caso in Ampache:"

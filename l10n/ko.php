@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "삭제",
+"Description" => "종류",
 "Loading ..." => "불러오는 중...",
 "Music" => "음악",
 "Next" => "다음",

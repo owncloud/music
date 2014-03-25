@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Törlés",
+"Description" => "Leírás",
 "Loading ..." => "Betöltés ...",
 "Music" => "Zene",
 "Next" => "Következő",

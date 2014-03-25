@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "წაშლა",
+"Description" => "გვერდის დახასიათება",
 "Music" => "მუსიკა",
 "Next" => "შემდეგი",
 "Pause" => "პაუზა",

@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Delete" => "Zmazať",
+"Description" => "Popis",
 "Loading ..." => "Nahrávam...",
 "Music" => "Hudba",
 "Next" => "Ďalšia",

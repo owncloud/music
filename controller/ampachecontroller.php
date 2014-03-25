@@ -396,7 +396,7 @@ class AmpacheController extends Controller {
 
 		// this function is used to extract the first artistId of each album
 		$mapFunction = function($value) {
-			if (count($array)) {
+			if (count($value)) {
 				// as Ampache only supports one artist per album
 				// we only return the first one
 				return $value[0];
@@ -406,7 +406,7 @@ class AmpacheController extends Controller {
 		// map this array to retrieve all artist ids and make it unique it
 		$artistIds = array_unique(array_map($mapFunction, $albumWithArtistIds));
 
-		$artists = $this->artistMapper->findMultipleById($artistIds, $user);
+		$artists = $this->artistMapper->findMultipleById($artistIds, $userId);
 
 		$mappedArtists = array();
 		foreach ($artists as $artist) {

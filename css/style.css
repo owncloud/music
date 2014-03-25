@@ -163,6 +163,21 @@
 	opacity: .8;
 }
 
+.alphabet-navigation a.filler.dotted:before
+{
+	content: "\00b7";
+}
+
+.alphabet-navigation a.filler.dotted > span.letter-content
+{
+	display: none;
+}
+
+.alphabet-navigation a.filler.stripped
+{
+	display: none;
+}
+
 #scanning {
 	font-size: 21px;
 	font-weight: bold;

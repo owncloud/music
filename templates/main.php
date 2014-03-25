@@ -74,7 +74,9 @@
 		</div>
 
 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
-			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter]}">{{ letter }}</a>
+			<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
+				<span class="letter-content">{{ letter }}</span>
+			</a>
 		</div>
 
 	</div>

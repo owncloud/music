@@ -28,12 +28,28 @@ use \OCA\Music\DependencyInjection\DIContainer;
 class HookHandler {
 
 	/**
+	 * Invoke auto update of music database after file unshare
+	 * @param array $params contains a key value pair for the path of the file/dir
+	 */
+	static public function fileUnshared($params){
+		$container = new DIContainer();
+		if ($params['itemType'] === 'folder') {
+			$backend = new \OC_Share_Backend_Folder();
+			foreach ($backend->getChildren($params['itemSource']) as $child) {
+				$container['Scanner']->delete((int)$child['source'], $params['shareWith']);
+			}
+		} else if ($params['itemType'] === 'file') {
+			$container['Scanner']->delete((int)$params['itemSource'], $params['shareWith']);
+		}
+	}
+
+	/**
 	 * Invoke auto update of music database after file deletion
 	 * @param array $params contains a key value pair for the path of the file/dir
 	 */
 	static public function fileDeleted($params){
 		$container = new DIContainer();
-		$container['Scanner']->delete($params['path']);
+		$container['Scanner']->deleteByPath($params['path']);
 	}
 
 	/**

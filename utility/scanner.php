@@ -199,14 +199,23 @@ class Scanner extends PublicEmitter {
 	 * Get called by 'delete' hook (file deletion)
 	 * @param string $path the path of the file
 	 */
-	public function delete($path){
+	public function deleteByPath($path){
+		$fileId = $this->api->getFileInfo($path)->getId();
+		$this->delete($fileId);
+	}
+	/**
+	 * Get called by 'unshare' hook and 'deleteByPath'
+	 * @param int $fileId the file id of the track
+	 * @param string $userId the user id of the user to delete the track from
+	 */
+	public function delete($fileId, $userId = null){
 		// debug logging
-		$this->api->log('delete - '. $path , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($path));
+		$this->api->log('delete - '. $fileId , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
 
-		$metadata = $this->api->getFileInfo($path);
-		$fileId = $metadata['fileid'];
-		$userId = $this->api->getUserId();
+		if ($userId === null) {
+			$userId = $this->api->getUserId();
+		}
 
 		$remaining = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 

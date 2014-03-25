@@ -58,6 +58,10 @@ $api->connectHook(
 	\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_delete,
 	'OCA\Music\Utility\HookHandler', 'fileDeleted'
 );
+$api->connectHook(
+	'\OCP\Share', 'post_unshare',
+	'OCA\Music\Utility\HookHandler', 'fileUnshared'
+);
 
 $api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 

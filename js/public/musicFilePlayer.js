@@ -41,6 +41,9 @@ $(document).ready(function () {
 				}
 			});
 
+			// http://www.ckut.ca/soundmanagerv297a-20101010/demo/template/deferred-example.html
+			soundManager.beginDelayedInit();
+
 			var playFile = function (filename) {
 				// trigger event for play/pause on click
 				var filerow = $('#fileList').find('tr[data-file="'+filename+'"]');

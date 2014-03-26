@@ -5,7 +5,7 @@
 	<description>Music player and server for ownCloud</description>
 	<licence>AGPLv3</licence>
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
-	<version>0.1.9-rc</version>
+	<version>0.1.9.1-rc</version>
 	<require>5</require>
 	<shipped>true</shipped>
 	<types>

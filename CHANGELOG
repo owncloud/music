@@ -1,3 +1,12 @@
+v0.1.9.1-rc 2014-03-26
+
+  * navigation bar on left is now thinned out for small screen sizes #185
+
+  * fix empty music app #184
+  * fix broken play for public shared music files #186
+  * fix rendering issues in IE10+ #188
+  * fix broken album request in Ampache API #189
+
 v0.1.9-rc 2014-03-25
 
   * allow public share music playback #124

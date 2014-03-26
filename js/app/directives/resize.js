@@ -23,15 +23,6 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 	return function(scope, element, attrs, ctrl) {
 		var resizeNavigation = function() {
 			var height = $window.innerHeight;
-			var initialHeight = height;
-
-			// Hide or replace every second letter on short screens
-			if(height < 300)
-				$(".alphabet-navigation a").removeClass("dotted").addClass("stripped");
-			else if(height < 500)
-				$(".alphabet-navigation a").removeClass("stripped").addClass("dotted");
-			else
-				$(".alphabet-navigation a").removeClass("dotted stripped");
 
 			// top and button padding of 5px each
 			height = height - 10;
@@ -44,10 +35,20 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 
 			element.css('height', height);
 
-			if(initialHeight < 300)
-				element.css('line-height', height/13 + 'px');
-			else
-				element.css('line-height', height/26 + 'px');
+			// Hide or replace every second letter on short screens
+			if(height < 300) {
+				$(".alphabet-navigation a").removeClass("dotted").addClass("stripped");
+			} else if(height < 500) {
+				$(".alphabet-navigation a").removeClass("stripped").addClass("dotted");
+			} else {
+				$(".alphabet-navigation a").removeClass("dotted stripped");
+			}
+
+			if(height < 300) {
+				element.css('line-height', Math.floor(height/13) + 'px');
+			} else {
+				element.css('line-height', Math.floor(height/26) + 'px');
+			}
 		};
 
 		// trigger resize on window resize

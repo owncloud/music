@@ -4,7 +4,11 @@ $TRANSLATIONS = array(
 "Artists" => "Artistas",
 "Delete" => "Eliminar",
 "Description" => "Descrição",
+"Description (e.g. App name)" => "Descrição (por exemplo, nome do App)",
+"Generate API password" => "Gerar senha API",
+"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Aqui você pode gerar senhas para usar com a API Ampache, porque eles não podem ser armazenados de uma forma muito segura devido ao design da API Ampache. Você pode gerar o maior número de senhas que você quiser e revogá-las a qualquer hora.",
 "Invalid path" => "Caminho inválido",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Tenha em mente, que a API Ampache é apenas uma pré-visualização e é instável. Sinta-se livre para relatar sua experiência com esse recurso na questão correspondente <a href=\"https://github.com/owncloud/music/issues/60\">assunto</a>. Eu também gostaria de ter uma lista de clientes para testar. obrigado",
 "Loading ..." => "Carregando...",
 "Music" => "Música",
 "Next" => "Próxima",
@@ -14,6 +18,7 @@ $TRANSLATIONS = array(
 "Play" => "Reproduzir",
 "Previous" => "Anterior",
 "Repeat" => "Repatir",
+"Revoke API password" => "Revogar senha API",
 "Scanning ..." => "Escaneando ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostrar todas as {{ trackcount }} músicas ...","Mostrar todas as {{ trackcount }} músicas ..."),
 "Show less ..." => "Exibição mais simples...",
@@ -21,6 +26,7 @@ $TRANSLATIONS = array(
 "This setting restricts the shown music in the web interface of the music app." => "Essa configuração restringe-se  a mostrar a música na interface web do aplicativo de música.",
 "Tracks" => "Trilhas",
 "Unknown album" => "Album desconhecido",
-"Unknown artist" => "Artista desconhecido"
+"Unknown artist" => "Artista desconhecido",
+"Use your username and following password to connect to this Ampache instance:" => "Use o seu nome de usuário e senha a seguir para se conectar a essa instância Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n > 1);";

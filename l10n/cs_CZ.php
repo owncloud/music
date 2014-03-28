@@ -7,6 +7,7 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Popis (např. Jméno aplikace)",
 "Generate API password" => "Generovat heslo API",
 "Invalid path" => "Chybná cesta",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Mějte na paměti, že Ampache API je stále vevývoji a není stabilní. s just a preview and is unstable. Můžete nás bez obav informovat o zkušenostech s touto funkcí odesláním hlášení na <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. Chtěl bych také sestavit seznam zájemců o testování. Díky",
 "Loading ..." => "Načítám ...",
 "Music" => "Hudba",
 "Next" => "Následující",
@@ -21,8 +22,10 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Zobrazit {{ trackcount }} písničku ...","Zobrazit {{ trackcount }} písničky ...","Zobrazit {{ trackcount }} písniček ..."),
 "Show less ..." => "Zobrazit méně ...",
 "Shuffle" => "Promíchat",
+"This setting restricts the shown music in the web interface of the music app." => "Toto nastavení zamezí zobrazení hudby ve webovém rozhraní hudební aplikace.",
 "Tracks" => "Stopy",
 "Unknown album" => "Neznámé album",
-"Unknown artist" => "Neznámý umělec"
+"Unknown artist" => "Neznámý umělec",
+"Use your username and following password to connect to this Ampache instance:" => "Použijte Vaše uživatelské jméno a následující heslo pro připojení k této instanci Ampache:"
 );
 $PLURAL_FORMS = "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;";

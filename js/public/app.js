@@ -686,7 +686,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
         }
 	};
 }]);
-angular.module("Music").run(['gettextCatalog', function (gettextCatalog) {
+angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
 /* jshint -W100 */
     gettextCatalog.setStrings('ach', {});
     gettextCatalog.setStrings('ady', {});
@@ -787,6 +787,5 @@ angular.module("Music").run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('zh_CN', {"Delete":"删除","Description":"描述","Loading ...":"加载中...","Music":"音乐","Next":"下一个","Nothing in here. Upload your music!":"这里还什么都没有。上传你的音乐吧！","Pause":"暂停","Play":"播放","Previous":"前一首","Repeat":"重复","Show all {{ trackcount }} songs ...":"显示所有 {{ trackcount }} 首歌曲 ...","Show less ...":"显示概要","Shuffle":"随机","Unknown album":"未知专辑","Unknown artist":"未知艺术家"});
     gettextCatalog.setStrings('zh_HK', {"Delete":"刪除","Music":"音樂","Next":"下一首","Pause":"暫停","Play":"播放","Previous":"上一首"});
     gettextCatalog.setStrings('zh_TW', {"Delete":"刪除","Description":"描述","Loading ...":"載入中…","Music":"音樂","Next":"下一個","Nothing in here. Upload your music!":"這裡沒有東西，上傳你的音樂！","Pause":"暫停","Play":"播放","Previous":"上一個","Repeat":"重覆","Show all {{ trackcount }} songs ...":"顯示全部 {{ trackcount }} 首歌曲","Show less ...":"顯示更少","Shuffle":"隨機播放"});
-
 /* jshint +W100 */
 }]);

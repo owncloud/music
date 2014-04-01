@@ -1,5 +1,6 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albumy",
 "Delete" => "Zmazať",
 "Description" => "Popis",
 "Loading ..." => "Nahrávam...",
@@ -10,6 +11,7 @@ $TRANSLATIONS = array(
 "Play" => "Prehrať",
 "Previous" => "Predošlá",
 "Repeat" => "Opakovať",
+"Scanning ..." => "Skenujem...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Zobraziť {{ trackcount }} skladieb ...","Zobraziť {{ trackcount }} skladieb ...","Zobraziť všetky {{ trackcount }} skladieb ..."),
 "Show less ..." => "Zobraziť menej ...",
 "Shuffle" => "Zamiešať",

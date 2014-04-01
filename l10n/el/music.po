@@ -2,12 +2,13 @@
 # Translators:
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014
 # Marios Bekatoros <>, 2013
+# pe_ppe <peppe@cs.uoi.gr>, 2014
 # vkehayas <vkehayas@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-03-31 17:11+0000\n"
+"Last-Translator: pe_ppe <peppe@cs.uoi.gr>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,11 +17,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Δίσκοι"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Καλλιτέχνες"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -32,22 +33,22 @@ msgstr "Περιγραφή"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Περιγραφή (π.χ. όνομα εφαρμογής)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Δημιουργία συνθηματικού API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Εδώ μπορείτε να δημιουργήσετε συνθηματικά για χρήση με το API Ampache, γιατί δεν είναι δυνατό να αποθηκευτούν με πραγματικά ασφαλή τρόπο, λόγω της σχεδίασης του API Ampache. Μπορείτε να δημιουργήσετε όσα συνθηματικά θέλετε και να τα ανακαλέσετε οποτεδήποτε."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Άκυρη διαδρομή"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -55,7 +56,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Θυμηθείτε ότι το API Ampache είναι απλά μια επισκόπηση και είναι ασταθές. Παρακαλούμε αναφέρετε την εμπειρία σας με αυτή την λειτουργία στην αντίστοιχη <a href=\"https://github.com/owncloud/music/issues/60\">αναφορά</a>. Θα ήταν καλό να υπάρχει επίσης μια λίστα με εφαρμογές για δοκιμή. Ευχαριστώ!"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -75,7 +76,7 @@ msgstr "Δεν υπάρχει τίποτα εδώ. Μεταφορτώστε τη
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Διαδρομή για την μουσική σας συλλογή"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -95,11 +96,11 @@ msgstr "Επανάληψη"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Ανάκληση συνθηματικού API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Σάρωση..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -119,11 +120,11 @@ msgstr "Τυχαία αναπαραγωγή"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Αυτή η ρύθμιση περιορίζει την μουσική που εμφανίζεται στην διεπαφή ιστού της εφαρμογής μουσικής."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Κομμάτια"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -137,4 +138,4 @@ msgstr "Άγνωστος καλλιτέχνης"
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Χρησιμοποιήστε το όνομα χρήστη σας και το παρακάτω συνθηματικό για να συνδεθείτε σε αυτή την εκτέλεση του Ampache:"

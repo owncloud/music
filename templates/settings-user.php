@@ -30,7 +30,7 @@
 
 ?>
 
-<fieldset class="personalblock" id="music-user">
+<div class="section" id="music-user">
 	<h2><?php p($l->t('Music')); ?></h2>
 	<div>
 		<label for="music-path"><?php p($l->t('Path to your music collection')); ?></label>
@@ -76,4 +76,4 @@
 			<span></span>
 		</div>
 	</div>
-</fieldset>
+</div>

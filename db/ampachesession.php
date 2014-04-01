@@ -28,6 +28,14 @@ use \OCA\Music\AppFramework\Db\Entity;
 use \OCA\Music\Core\API;
 
 
+/**
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ * @method string getToken()
+ * @method setToken(string $token)
+ * @method int getExpiry()
+ * @method setExpiry(int $expiry)
+ */
 class AmpacheSession extends Entity {
 
 	public $userId;

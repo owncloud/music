@@ -28,6 +28,34 @@ use \OCA\Music\AppFramework\Db\Entity;
 use \OCA\Music\Core\API;
 
 
+/**
+ * @method string getTitle()
+ * @method setTitle(string $title)
+ * @method int getNumber()
+ * @method setNumber(int $number)
+ * @method int getArtistId()
+ * @method setArtistId(int $artistId)
+ * @method string getArtist()
+ * @method setArtist(string $artist)
+ * @method int getAlbumId()
+ * @method setAlbumId(int $albumId)
+ * @method string getAlbum()
+ * @method setAlbum(string $album)
+ * @method int getLength()
+ * @method setLength(int $length)
+ * @method int getFileSize()
+ * @method setFileSize(int $fileSize)
+ * @method int getFileId()
+ * @method setFileId(int $fileId)
+ * @method string getFilePath()
+ * @method setFilePath(string $filePath)
+ * @method int getBitrate()
+ * @method setBitrate(int $bitrate)
+ * @method string getMimetype()
+ * @method setMimetype(string $mimetype)
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ */
 class Track extends Entity {
 
 	public $title;

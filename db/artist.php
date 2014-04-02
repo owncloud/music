@@ -28,6 +28,18 @@ use \OCA\Music\AppFramework\Db\Entity;
 use \OCA\Music\Core\API;
 
 
+/**
+ * @method string getName()
+ * @method setName(string $name)
+ * @method string getImage()
+ * @method setImage(string $image)
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ * @method int getAlbumCount()
+ * @method setAlbumCount(int $albumCount)
+ * @method int getTrackCount()
+ * @method setTrackCount(int $trackCount)
+ */
 class Artist extends Entity {
 
 	public $name;

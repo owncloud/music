@@ -28,6 +28,24 @@ use \OCA\Music\AppFramework\Db\Entity;
 use \OCA\Music\Core\API;
 
 
+/**
+ * @method string getName()
+ * @method setName(string $name)
+ * @method int getYear()
+ * @method setYear(int $year)
+ * @method int getCoverFileId()
+ * @method setCoverFileId(int $coverFileId)
+ * @method string getCoverFilePath()
+ * @method setCoverFilePath(string $coverFilePath)
+ * @method array getArtistIds()
+ * @method setArtistIds(array $artistIds)
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ * @method int getTrackCount()
+ * @method setTrackCount(int $trackCount)
+ * @method string getArtist()
+ * @method setArtist(string $artist)
+ */
 class Album extends Entity {
 
 	public $name;
@@ -54,6 +72,10 @@ class Album extends Entity {
 		);
 	}
 
+	/**
+	 * @param \OCA\Music\Core\API $api
+	 * @return array
+	 */
 	public function getArtists(API $api) {
 		$artists = array();
 		foreach($this->artistIds as $artistId) {
@@ -68,6 +90,10 @@ class Album extends Entity {
 		return $artists;
 	}
 
+	/**
+	 * @param \OCA\Music\Core\API $api
+	 * @return string
+	 */
 	public function getNameString(API $api) {
 		$name = $this->getName();
 		if ($name === null) {

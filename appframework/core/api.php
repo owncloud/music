@@ -502,27 +502,10 @@ class API {
 	 * get the filesystem info
 	 *
 	 * @param string $path
-	 * @return array with the following keys:
-	 * - size
-	 * - mtime
-	 * - mimetype
-	 * - encrypted
-	 * - versioned
+	 * @return \OCP\Files\FileInfo
 	 */
 	public function getFileInfo($path) {
 		return \OC\Files\Filesystem::getFileInfo($path);
-	}
-
-	/**
-	 * get the absolute path of an file
-	 * @deprecated
-	 * @see getView
-	 *
-	 * @param string $path the path inside ownCloud
-	 * @return string the absolute path (with fakeRoot)
-	 */
-	public function getAbsolutePath($path) {
-		return \OC\Files\Filesystem::getView()->getAbsolutePath($path);
 	}
 
 	/**

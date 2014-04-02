@@ -1,19 +1,32 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albumid",
+"Artists" => "Artistid",
 "Delete" => "Kustuta",
 "Description" => "Kirjeldus",
+"Description (e.g. App name)" => "Kirjeldus (nt. rakendi nimi)",
+"Generate API password" => "Tekita API parool",
+"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Siin sa saad tekitada parooli, mida kasutada Ampache API-ga, kuid neid ei ole võimalik talletada turvalisel moel Ampache API olemuse tõttu. Sa saad genereerida nii palju paroole kui soovid ning tühistada neid igal ajal.",
+"Invalid path" => "Vigane tee",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Pea meeles, et Ampache APi ei ole küps ning on ebastabiilne. Anna teada oma kogemustest selle funktsionaalsusega vastavalt <a href=\"https://github.com/owncloud/music/issues/60\">teemaarendusele</a>. Ühtlasi soovin nimistut klientidest, mida testida. Tänan.",
 "Loading ..." => "Laadimine ...",
 "Music" => "Muusika",
 "Next" => "Järgmine",
 "Nothing in here. Upload your music!" => "Siin pole midagi. Laadi oma muusikat üles!",
+"Path to your music collection" => "Tee sinu muusikakoguni",
 "Pause" => "Paus",
 "Play" => "Esita",
 "Previous" => "Eelmine",
 "Repeat" => "Korda",
+"Revoke API password" => "Keeldu API paroolist",
+"Scanning ..." => "Skaneerin ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näita {{ trackcount }} lugu ...","Näita kõiki {{ trackcount }} lugu ..."),
 "Show less ..." => "Näita vähem ...",
 "Shuffle" => "Juhuslik esitus",
+"This setting restricts the shown music in the web interface of the music app." => "See määrang piirab muusika rakendi veebiliideses muusika kuvamise.",
+"Tracks" => "Rajad",
 "Unknown album" => "Tundmatu album",
-"Unknown artist" => "Tundmatu esitaja"
+"Unknown artist" => "Tundmatu esitaja",
+"Use your username and following password to connect to this Ampache instance:" => "Kasuta oma kasutajatunnust ja järgmist parooli ühendumaks selle Ampache instantsiga:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

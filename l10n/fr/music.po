@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-06 20:00+0000\n"
+"Last-Translator: Christophe Lherieau <skimpax@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albums"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistes"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Chemin invalide"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -78,7 +78,7 @@ msgstr "Il n'y a rien ici ! Envoyez donc votre musique :)"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Chemin vers votre collection de musique"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -126,7 +126,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Pistes"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

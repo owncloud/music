@@ -10,6 +10,7 @@ $TRANSLATIONS = array(
 "Play" => "Spill",
 "Previous" => "Forrige",
 "Repeat" => "Gjenta",
+"Scanning ..." => "Skanner...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Vis alle {{ trackcount }} sanger ...","Vis alle {{ trackcount }} sanger ..."),
 "Show less ..." => "Vis mindre ...",
 "Shuffle" => "Tilfeldig",

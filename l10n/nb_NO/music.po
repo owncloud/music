@@ -1,11 +1,12 @@
 # 
 # Translators:
+# espenbye <espenbye@me.com>, 2014
 # vidaren <news@vidartysse.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-06 16:30+0000\n"
+"Last-Translator: espenbye <espenbye@me.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -97,7 +98,7 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Skanner..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."

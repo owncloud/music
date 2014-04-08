@@ -5,7 +5,7 @@
 @media only screen and (max-width: 768px) {
 
 #app-content.started {
-	top: 50px;
+	top: 65px;
 }
 
 .artist-area {
@@ -14,8 +14,6 @@
 
 .artist-area > h1 {
 	margin-left: 14px;
-	font-size: 34px;
-	line-height: 36px;
 }
 
 /* adjust album area to screen width */

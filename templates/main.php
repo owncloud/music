@@ -22,7 +22,7 @@
 
 		<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
 			<div id="play-controls">
-				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
+				<img ng-click="prev()" class="control small svg" alt="{{'Previous' | translate }}"
 					src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
 				<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
 					src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />

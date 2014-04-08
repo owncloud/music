@@ -1,0 +1,35 @@
+/* Copyright (c) 2014, Jan-Christoph Borchardt, http://jancborchardt.net
+ This file is licensed under the Affero General Public License version 3
+ or later. See the COPYING-README file. */
+
+@media only screen and (min-width: 769px) and (max-width: 1100px) {
+
+.album-area {
+	width: 100%;
+}
+
+#play-controls {
+	margin-left: 0;
+}
+
+#playerbar .albumart {
+	left: 180px;
+	margin-left: 0;
+}
+
+#playerbar .song-info {
+	max-width: 25%;
+	left: 230px;
+}
+
+#playerbar .title {
+	font-size: 14px;
+}
+
+#playerbar .progress-info {
+	width: 25%;
+	left: initial;
+	right: 125px;
+}
+
+}

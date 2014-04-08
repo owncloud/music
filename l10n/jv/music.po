@@ -1,0 +1,137 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: ownCloud\n"
+"PO-Revision-Date: 2014-04-07 17:00+0000\n"
+"Last-Translator: I Robot\n"
+"Language-Team: Javanese (http://www.transifex.com/projects/p/owncloud/language/jv/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: jv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr ""
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Loading ..."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Gamelan"
+
+#: ../templates/main.php
+msgid "Next"
+msgstr "Sak bare"
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr ""
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Play"
+msgstr "Puter"
+
+#: ../templates/main.php
+msgid "Previous"
+msgstr "Sak durunge"
+
+#: ../templates/main.php
+msgid "Repeat"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../templates/part.main.php
+msgid "Show less ..."
+msgstr ""
+
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"This setting restricts the shown music in the web interface of the music "
+"app."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown artist"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr ""

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-31 10:40+0000\n"
+"PO-Revision-Date: 2014-04-08 06:50+0000\n"
 "Last-Translator: mhh <marian.hvolka@stuba.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgstr "Albumy"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Interpreti"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -31,11 +31,11 @@ msgstr "Popis"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Popis (napr. App name)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Vygenerovanie hesla API"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -46,7 +46,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Neplatná cesta"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -74,7 +74,7 @@ msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Cesta k vašej hudobnej zbierke"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -94,7 +94,7 @@ msgstr "Opakovať"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Zneplatniť heslo API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
@@ -119,11 +119,11 @@ msgstr "Zamiešať"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Toto nastavenie obmedzuje zobrazenie hudby vo webovom rozhraní hudobnej aplikácie."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Skladby"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -137,4 +137,4 @@ msgstr "Neznámy umelec"
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Použite svoje používateľské meno a heslo pre pripojenie k tejto inštancii Ampache:"

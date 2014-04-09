@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Iñigo Varela <ivarela@softastur.org>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-07 19:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-08 18:50+0000\n"
+"Last-Translator: Iñigo Varela <ivarela@softastur.org>\n"
 "Language-Team: Asturian (http://www.transifex.com/projects/p/owncloud/language/ast/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Álbumes"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistes"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -29,22 +30,22 @@ msgstr "Descripción"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descripción (p.ex, nome de l'aplicación)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Xenerar contraseña pa la API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Equí pues xenerar contraseñes pa usales cola API d'Ampache, yá que nun puen almacenase de mou seguru pol diseñu de la API d'Ampache. Pues crear toles contraseñes que quieras y revocales en cualquier momentu."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Camín inválidu"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -52,39 +53,39 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Recuerda que la API d'Ampache namái ye un prototipu y ye inestable. Informa de la to esperiencia con esta nueva carauterística nel <a href=\"https://github.com/owncloud/music/issues/60\">informe de fallu</a> correspondiente. Prestábame tener una llista de veceros cola que probala. Gracies."
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Cargando..."
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr ""
+msgstr "Música"
 
 #: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "Equí nun hai un res. ¡Xubi la to música!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Camín a la to coleición de música"
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr ""
+msgstr "Posa"
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr ""
+msgstr "Reproducir"
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: ../templates/main.php
 msgid "Repeat"
@@ -92,46 +93,46 @@ msgstr "Repitir"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Revocar contraseña pa la API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Escaniando..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Amosar toles {{ trackcount}} canciones..."
+msgstr[1] "Amosar toles {{ trackcount }} canciones..."
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr ""
+msgstr "Amosar menos..."
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Mecer"
 
 #: ../templates/fake-template.php
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Estos axustes restrinxen la música amosada na interfaz web de l'aplicación de música."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Canciones"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Álbum desconocíu"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Artista desconocíu"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Usa'l to nome d'usuariu y la siguiente contraseña pa coneutate con esta instancia d'Ampache:"

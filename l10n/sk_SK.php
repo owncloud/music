@@ -1,21 +1,30 @@
 <?php
 $TRANSLATIONS = array(
 "Albums" => "Albumy",
+"Artists" => "Interpreti",
 "Delete" => "Zmazať",
 "Description" => "Popis",
+"Description (e.g. App name)" => "Popis (napr. App name)",
+"Generate API password" => "Vygenerovanie hesla API",
+"Invalid path" => "Neplatná cesta",
 "Loading ..." => "Nahrávam...",
 "Music" => "Hudba",
 "Next" => "Ďalšia",
 "Nothing in here. Upload your music!" => "Nič tu nie je. Nahrajte si vašu hudbu!",
+"Path to your music collection" => "Cesta k vašej hudobnej zbierke",
 "Pause" => "Pauza",
 "Play" => "Prehrať",
 "Previous" => "Predošlá",
 "Repeat" => "Opakovať",
+"Revoke API password" => "Zneplatniť heslo API",
 "Scanning ..." => "Skenujem...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Zobraziť {{ trackcount }} skladieb ...","Zobraziť {{ trackcount }} skladieb ...","Zobraziť všetky {{ trackcount }} skladieb ..."),
 "Show less ..." => "Zobraziť menej ...",
 "Shuffle" => "Zamiešať",
+"This setting restricts the shown music in the web interface of the music app." => "Toto nastavenie obmedzuje zobrazenie hudby vo webovom rozhraní hudobnej aplikácie.",
+"Tracks" => "Skladby",
 "Unknown album" => "Neznámy album",
-"Unknown artist" => "Neznámy umelec"
+"Unknown artist" => "Neznámy umelec",
+"Use your username and following password to connect to this Ampache instance:" => "Použite svoje používateľské meno a heslo pre pripojenie k tejto inštancii Ampache:"
 );
 $PLURAL_FORMS = "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;";

@@ -47,10 +47,10 @@ $this->create('music_log', '/api/log')->post()->action(
 );
 
 // include external API
-require_once __DIR__ . '/api.php';
+require_once __DIR__ . '/routes_api.php';
 
 // include settings routes
-require_once __DIR__ . '/settings.php';
+require_once __DIR__ . '/routes_settings.php';
 
 // include ampache routes
 require_once __DIR__ . '/routes_ampache.php';

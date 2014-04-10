@@ -89,10 +89,13 @@ angular.module('Music').controller('MainController',
 			$scope.scanningScanned = scan.processed;
 			$scope.scanningTotal = scan.total;
 			$scope.update();
-			if(scan.processed <= scan.total) {
+			if(scan.processed < scan.total) {
 				$scope.scanning = true;
 				scanLoopFunction(0);
 			} else {
+				if(scan.processed !== scan.total) {
+					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
+				}
 				$scope.scanning = false;
 			}
 		});

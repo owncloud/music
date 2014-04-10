@@ -132,8 +132,8 @@ class Track extends Entity {
 			'album' => $this->getAlbumWithUri($api),
 			'length' => $this->getLength(),
 			'files' => array($this->getMimetype() => $api->linkToRoute(
-				'download',
-				array('file' => $api->getView()->getPath($this->getFileId()))
+				'music_file_download',
+				array('fileId' => $this->getFileId())
 			)),
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),

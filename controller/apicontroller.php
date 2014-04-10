@@ -71,7 +71,7 @@ class ApiController extends Controller {
 			$allArtistsById[$artist->getId()] = $artist->toCollection($this->api);
 		}
 
-		$allAlbums = $this->albumBusinessLayer->findAllWithFileInfo($userId);
+		$allAlbums = $this->albumBusinessLayer->findAll($userId);
 		$allAlbumsById = array();
 		foreach ($allAlbums as &$album) {
 			$allAlbumsById[$album->getId()] = $album->toCollection($this->api);
@@ -323,7 +323,7 @@ class ApiController extends Controller {
 		$mime = $view->getMimeType($path);
 		$content = $view->file_get_contents($path);
 
-		return new FileResponse(array('mime' => $mime, 'content' => $content));
+		return new FileResponse(array('mimetype' => $mime, 'content' => $content));
 	}
 
 	/**
@@ -345,6 +345,6 @@ class ApiController extends Controller {
 		$mime = $view->getMimeType($path);
 		$content = $view->file_get_contents($path);
 
-		return new FileResponse(array('mime' => $mime, 'content' => $content));
+		return new FileResponse(array('mimetype' => $mime, 'content' => $content));
 	}
 }

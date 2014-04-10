@@ -115,6 +115,36 @@ class AlbumMapper extends Mapper {
 		return $this->findEntity($sql, $params);
 	}
 
+	public function findAlbum($albumName, $albumYear, $artistId, $userId) {
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+			'`album`.`cover_file_id` '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'JOIN `*PREFIX*music_album_artists` `artists` '.
+			'ON `album`.`id` = `artists`.`album_id` '.
+			'WHERE `album`.`user_id` = ? ';
+		$params = array($userId);
+
+		if ($artistId === null) {
+			$sql .= 'AND `artists`.`artist_id` IS NULL ';
+		} else {
+			$sql .= 'AND `artists`.`artist_id` = ? ';
+			array_push($params, $artistId);
+		}
+		if($albumName === null && $albumYear === null) {
+			$sql .= 'AND `album`.`name` IS NULL AND `album`.`year` IS NULL';
+		} else if($albumYear === null) {
+			$sql .= 'AND `album`.`name` = ? AND `album`.`year` IS NULL';
+			array_push($params, $albumName);
+		} else if($albumName === null) {
+			$sql .= 'AND `album`.`name` IS NULL AND `album`.`year` = ?';
+			array_push($params, $albumYear);
+		} else {
+			$sql .= 'AND `album`.`name` = ? AND `album`.`year` = ?';
+			array_push($params, $albumName, $albumYear);
+		}
+		return $this->findEntity($sql, $params);
+	}
+
 	public function addAlbumArtistRelationIfNotExist($albumId, $artistId){
 		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
 			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';

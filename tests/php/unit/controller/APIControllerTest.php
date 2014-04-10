@@ -131,6 +131,10 @@ class APIControllerTest extends ControllerTestUtility {
 					return '/api/album/' . $arguments['albumIdOrSlug'];
 				case 'music_track':
 					return '/api/track/' . $arguments['trackIdOrSlug'];
+				case 'music_album_cover':
+					return '/api/album/' . $arguments['albumIdOrSlug'] . '/cover';
+				case 'music_file_download':
+					return '/api/file/' . $arguments['fileId'] . '/download';
 				default:
 					return $arguments['file'];
 			}
@@ -1081,7 +1085,7 @@ class APIControllerTest extends ControllerTestUtility {
 	public function testTrackById(){
 		$trackId = 1;
 		$fileId = 3;
-		$filePath = '/test/123.mp3';
+		$filePath = '/api/file/' . $fileId . '/download';
 
 		$track = new Track();
 		$track->setId($trackId);

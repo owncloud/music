@@ -124,24 +124,30 @@ class AlbumMapper extends Mapper {
 			'WHERE `album`.`user_id` = ? ';
 		$params = array($userId);
 
+		// add artist id check
 		if ($artistId === null) {
 			$sql .= 'AND `artists`.`artist_id` IS NULL ';
 		} else {
 			$sql .= 'AND `artists`.`artist_id` = ? ';
 			array_push($params, $artistId);
 		}
-		if($albumName === null && $albumYear === null) {
-			$sql .= 'AND `album`.`name` IS NULL AND `album`.`year` IS NULL';
-		} else if($albumYear === null) {
-			$sql .= 'AND `album`.`name` = ? AND `album`.`year` IS NULL';
-			array_push($params, $albumName);
-		} else if($albumName === null) {
-			$sql .= 'AND `album`.`name` IS NULL AND `album`.`year` = ?';
-			array_push($params, $albumYear);
+
+		// add album name check
+		if ($albumName === null) {
+			$sql .= 'AND `album`.`name` IS NULL ';
 		} else {
-			$sql .= 'AND `album`.`name` = ? AND `album`.`year` = ?';
-			array_push($params, $albumName, $albumYear);
+			$sql .= 'AND `album`.`name` = ? ';
+			array_push($params, $albumName);
 		}
+
+		// add album year check
+		if ($albumYear === null) {
+			$sql .= 'AND `album`.`year` IS NULL ';
+		} else {
+			$sql .= 'AND `album`.`year` = ? ';
+			array_push($params, $albumYear);
+		}
+
 		return $this->findEntity($sql, $params);
 	}
 

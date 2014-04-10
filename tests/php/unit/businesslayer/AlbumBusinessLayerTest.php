@@ -153,9 +153,10 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new DoesNotExistException('bla')));
 
@@ -173,9 +174,10 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->returnValue($this->albums[0]));
 
@@ -192,9 +194,10 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
 

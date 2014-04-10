@@ -320,7 +320,6 @@ class ApiController extends Controller {
 		/** @var $view \OC\Files\View */
 		$view = $this->api->getView();
 		$path = $view->getPath($track->getFileId());
-		list(, $path) = $view->resolvePath($path);
 		$mime = $view->getMimeType($path);
 		$content = $view->file_get_contents($path);
 
@@ -343,7 +342,6 @@ class ApiController extends Controller {
 		/** @var $view \OC\Files\View */
 		$view = $this->api->getView();
 		$path = $view->getPath($album->getCoverFileId());
-		list(, $path) = $view->resolvePath($path);
 		$mime = $view->getMimeType($path);
 		$content = $view->file_get_contents($path);
 

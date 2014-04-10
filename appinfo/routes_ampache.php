@@ -31,6 +31,7 @@ use \OCA\Music\DependencyInjection\DIContainer;
  * Ampache API http://ampache.org/wiki/dev:xmlapi
  */
 
+/** @var $this \OC_Router */
 $this->create('music_ampache', '/ampache')->get()->action(
 	function($params){
 		App::main('AmpacheController', 'ampache', $params, new DIContainer());

@@ -29,6 +29,7 @@ use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\Scanner;
 
 
@@ -302,5 +303,50 @@ class ApiController extends Controller {
 			$result = $this->scanner->rescan($userId);
 		}
 		return $this->renderPlainJSON($result);
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function download() {
+		$fileId = $this->params('fileId');
+		$userId = $this->api->getUserId();
+		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+
+		/** @var $view \OC\Files\View */
+		$view = $this->api->getView();
+		$path = $view->getPath($track->getFileId());
+		list(, $path) = $view->resolvePath($path);
+		$mime = $view->getMimeType($path);
+		$content = $view->file_get_contents($path);
+
+		return new FileResponse(array('mime' => $mime, 'content' => $content));
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function cover() {
+		$userId = $this->api->getUserId();
+
+		$albumId = $this->getIdFromSlug($this->params('albumIdOrSlug'));
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+
+		/** @var $view \OC\Files\View */
+		$view = $this->api->getView();
+		$path = $view->getPath($album->getCoverFileId());
+		list(, $path) = $view->resolvePath($path);
+		$mime = $view->getMimeType($path);
+		$content = $view->file_get_contents($path);
+
+		return new FileResponse(array('mime' => $mime, 'content' => $content));
 	}
 }

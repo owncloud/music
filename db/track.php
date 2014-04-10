@@ -117,8 +117,8 @@ class Track extends Entity {
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
 			'files' => array($this->getMimetype() => $api->linkToRoute(
-				'download',
-				array('file' => strstr($this->getFilePath(),'/'))
+				'music_file_download',
+				array('fileId' => $this->getFileId())
 			)),
 			'id' => $this->getId(),
 		);

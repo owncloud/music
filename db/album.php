@@ -104,9 +104,9 @@ class Album extends Entity {
 
 	public function toCollection(API $api) {
 		$coverUrl = null;
-		if($this->getCoverFilePath()) {
-			$coverUrl = $api->linkToRoute('download',
-					array('file' => strstr($this->getCoverFilePath(),'/')));
+		if($this->getCoverFileId()) {
+			$coverUrl = $api->linkToRoute('music_album_cover',
+					array('albumIdOrSlug' => $this->getId()));
 		}
 		return array(
 				'name' => $this->getNameString($api),

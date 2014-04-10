@@ -29,6 +29,8 @@ use \OCA\Music\Core\API;
 
 
 /**
+ * @method int getId()
+ * @method setId(int $id)
  * @method string getTitle()
  * @method setTitle(string $title)
  * @method int getNumber()

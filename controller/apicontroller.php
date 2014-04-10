@@ -313,6 +313,9 @@ class ApiController extends Controller {
 	 * @API
 	 */
 	public function download() {
+		// we no longer need the session to be kept open
+		session_write_close();
+
 		$fileId = $this->params('fileId');
 		$userId = $this->api->getUserId();
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
@@ -334,6 +337,9 @@ class ApiController extends Controller {
 	 * @API
 	 */
 	public function cover() {
+		// we no longer need the session to be kept open
+		session_write_close();
+
 		$userId = $this->api->getUserId();
 
 		$albumId = $this->getIdFromSlug($this->params('albumIdOrSlug'));

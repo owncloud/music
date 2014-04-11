@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-10 22:50+0000\n"
+"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,7 +43,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr "Qui puoi creare le password da usare con l'API di Ampache, perché esse non possono essere memorizzare in maniera sicura a causa della forma dell'API di Ampache. Puoi generare tutte le password che vuoi e puoi riprenderle quando vuoi."
+msgstr "Qui puoi generare le password da utilizzare con l'API di Ampache, perché esse non possono essere memorizzate in maniera sicura a causa della forma dell'API di Ampache. Puoi generare tutte le password che vuoi e revocarle quando vuoi."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -55,7 +55,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr "Ricorda, l'API di Ampache è solo un'anteprima e non è stabile. Sentiti libero nel riportare la tua esperienza con questa funzione nel corrispondente <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. Preferirei anche avere una lista di clienti da testare. Grazie."
+msgstr "Ricorda, l'API di Ampache è solo un'anteprima e non è stabile. Sentiti libero di segnalare la tua esperienza con questa funzionalità nel corrispondente <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. Preferirei inoltre avere un elenco di client da provare. Grazie."
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -95,7 +95,7 @@ msgstr "Ripeti"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr "Riprendi la password API"
+msgstr "Revoca la password API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
@@ -137,4 +137,4 @@ msgstr "Artista sconosciuto"
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Usa il tuo username e la password per entrare in questo caso in Ampache:"
+msgstr "Utilizza il tuo nome utente e la password per collegarti a questa istanza di Ampache:"

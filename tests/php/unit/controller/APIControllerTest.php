@@ -131,6 +131,10 @@ class APIControllerTest extends ControllerTestUtility {
 					return '/api/album/' . $arguments['albumIdOrSlug'];
 				case 'music_track':
 					return '/api/track/' . $arguments['trackIdOrSlug'];
+				case 'music_album_cover':
+					return '/api/album/' . $arguments['albumIdOrSlug'] . '/cover';
+				case 'music_file_download':
+					return '/api/file/' . $arguments['fileId'] . '/download';
 				default:
 					return $arguments['file'];
 			}
@@ -244,7 +248,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 5,
+						'cover' => '/api/album/4/cover',
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -264,7 +268,7 @@ class APIControllerTest extends ControllerTestUtility {
 								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 								'album' => array('id' => 4, 'uri' => '/api/album/4'),
 								'files' => array(
-									'audio/mp3' => 3
+									'audio/mp3' => '/api/file/3/download'
 								)
 							)
 						)
@@ -280,7 +284,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 5,
+						'cover' => '/api/album/4/cover',
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -300,7 +304,7 @@ class APIControllerTest extends ControllerTestUtility {
 								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 								'album' => array('id' => 4, 'uri' => '/api/album/4'),
 								'files' => array(
-									'audio/mp3' => 3
+									'audio/mp3' => '/api/file/3/download'
 								)
 							)
 						)
@@ -366,7 +370,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 5,
+						'cover' => '/api/album/4/cover',
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -386,7 +390,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => 5,
+						'cover' => '/api/album/4/cover',
 						'uri' => '/api/album/4',
 						'slug' => '4-the-name',
 						'id' => 4,
@@ -499,7 +503,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'albums' => array(
 				array(
 					'name' => 'The name',
-					'cover' => 5,
+					'cover' => '/api/album/3/cover',
 					'uri' => '/api/album/3',
 					'slug' => '3-the-name',
 					'id' => 3,
@@ -519,7 +523,7 @@ class APIControllerTest extends ControllerTestUtility {
 							'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 							'album' => array('id' => 1, 'uri' => '/api/album/1'),
 							'files' => array(
-								'audio/mp3' => 3
+								'audio/mp3' => '/api/file/3/download'
 							)
 						)
 					)
@@ -565,7 +569,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => 5,
+				'cover' => '/api/album/3/cover',
 				'uri' => '/api/album/3',
 				'slug' => '3-the-name',
 				'id' => 3,
@@ -576,7 +580,7 @@ class APIControllerTest extends ControllerTestUtility {
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => 7,
+				'cover' => '/api/album/4/cover',
 				'uri' => '/api/album/4',
 				'slug' => '4-the-album-name',
 				'id' => 4,
@@ -661,7 +665,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => 5,
+				'cover' => '/api/album/3/cover',
 				'uri' => '/api/album/3',
 				'slug' => '3-the-name',
 				'id' => 3,
@@ -687,14 +691,14 @@ class APIControllerTest extends ControllerTestUtility {
 						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 						'album' => array('id' => 4, 'uri' => '/api/album/4'),
 						'files' => array(
-							'audio/mp3' => 3
+							'audio/mp3' => '/api/file/3/download'
 						)
 					)
 				)
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => 7,
+				'cover' => '/api/album/4/cover',
 				'uri' => '/api/album/4',
 				'slug' => '4-the-album-name',
 				'id' => 4,
@@ -727,7 +731,7 @@ class APIControllerTest extends ControllerTestUtility {
 						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 						'album' => array('id' => 4, 'uri' => '/api/album/4'),
 						'files' => array(
-							'audio/mp3' => 3
+							'audio/mp3' => '/api/file/3/download'
 						)
 					)
 				)
@@ -789,7 +793,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => 5,
+			'cover' => '/api/album/3/cover',
 			'uri' => '/api/album/3',
 			'slug' => '3-the-name',
 			'id' => 3,
@@ -815,7 +819,7 @@ class APIControllerTest extends ControllerTestUtility {
 					'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 					'album' => array('id' => 4, 'uri' => '/api/album/4'),
 					'files' => array(
-						'audio/mp3' => 3
+						'audio/mp3' => '/api/file/3/download'
 					)
 				)
 			)
@@ -854,7 +858,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => 5,
+			'cover' => '/api/album/3/cover',
 			'uri' => '/api/album/3',
 			'slug' => '3-the-name',
 			'id' => 3,
@@ -919,7 +923,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			),
 			array(
@@ -933,7 +937,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
 				'album' => array('id' => 3, 'uri' => '/api/album/3'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			)
 		);
@@ -1004,7 +1008,7 @@ class APIControllerTest extends ControllerTestUtility {
 				),
 				'album' => array(
 					'name' => 'The name',
-					'cover' => 5,
+					'cover' => '/api/album/3/cover',
 					'uri' => '/api/album/3',
 					'slug' => '3-the-name',
 					'id' => 3,
@@ -1014,7 +1018,7 @@ class APIControllerTest extends ControllerTestUtility {
 					)
 				),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			)
 		);
@@ -1065,7 +1069,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 			'album' => array('id' => 1, 'uri' => '/api/album/1'),
 			'files' => array(
-				'audio/mp3' => 3
+				'audio/mp3' => '/api/file/3/download'
 			)
 		);
 
@@ -1081,7 +1085,7 @@ class APIControllerTest extends ControllerTestUtility {
 	public function testTrackById(){
 		$trackId = 1;
 		$fileId = 3;
-		$filePath = '/test/123.mp3';
+		$filePath = '/api/file/' . $fileId . '/download';
 
 		$track = new Track();
 		$track->setId($trackId);
@@ -1179,7 +1183,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			),
 			array(
@@ -1193,7 +1197,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 3, 'uri' => '/api/album/3'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			)
 		);
@@ -1255,7 +1259,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			),
 			array(
@@ -1269,7 +1273,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
 				'album' => array('id' => 1, 'uri' => '/api/album/1'),
 				'files' => array(
-					'audio/mp3' => 3
+					'audio/mp3' => '/api/file/3/download'
 				)
 			)
 		);

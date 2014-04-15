@@ -31,6 +31,7 @@ use \OCA\Music\DependencyInjection\DIContainer;
 /**
  * Webinterface
  */
+/** @var $this \OC_Router */
 $this->create('music_index', '/')->get()->action(
 	function($params){
 		App::main('PageController', 'index', $params, new DIContainer());

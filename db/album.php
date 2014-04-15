@@ -29,14 +29,14 @@ use \OCA\Music\Core\API;
 
 
 /**
+ * @method int getId()
+ * @method setId(int $id)
  * @method string getName()
  * @method setName(string $name)
  * @method int getYear()
  * @method setYear(int $year)
  * @method int getCoverFileId()
  * @method setCoverFileId(int $coverFileId)
- * @method string getCoverFilePath()
- * @method setCoverFilePath(string $coverFilePath)
  * @method array getArtistIds()
  * @method setArtistIds(array $artistIds)
  * @method string getUserId()
@@ -51,7 +51,6 @@ class Album extends Entity {
 	public $name;
 	public $year;
 	public $coverFileId;
-	public $coverFilePath;
 	public $artistIds;
 	public $artists;
 	public $userId;
@@ -104,9 +103,9 @@ class Album extends Entity {
 
 	public function toCollection(API $api) {
 		$coverUrl = null;
-		if($this->getCoverFilePath()) {
-			$coverUrl = $api->linkToRoute('download',
-					array('file' => strstr($this->getCoverFilePath(),'/')));
+		if($this->getCoverFileId()) {
+			$coverUrl = $api->linkToRoute('music_album_cover',
+					array('albumIdOrSlug' => $this->getId()));
 		}
 		return array(
 				'name' => $this->getNameString($api),
@@ -119,8 +118,8 @@ class Album extends Entity {
 	public function toAPI(API $api) {
 		$coverUrl = null;
 		if($this->getCoverFileId() > 0) {
-			$coverUrl = $api->linkToRoute('download',
-				array('file' => $api->getView()->getPath($this->getCoverFileId())));
+			$coverUrl = $api->linkToRoute('music_album_cover',
+					array('albumIdOrSlug' => $this->getId()));
 		}
 		return array(
 			'name' => $this->getNameString($api),

@@ -27,7 +27,7 @@ namespace OCA\Music;
 use \OCA\Music\AppFramework\App;
 use \OCA\Music\DependencyInjection\DIContainer;
 
-
+/** @var $this \OC_Router */
 $this->create('music_collection', '/api/collection')->get()->action(
 		function($params){
 			App::main('ApiController', 'collection', $params, new DIContainer());
@@ -70,6 +70,11 @@ $this->create('music_album', '/api/album/{albumIdOrSlug}')->get()->action(
 		App::main('ApiController', 'album', $params, new DIContainer());
 	}
 );
+$this->create('music_album_cover', '/api/album/{albumIdOrSlug}/cover')->get()->action(
+	function($params){
+		App::main('ApiController', 'cover', $params, new DIContainer());
+	}
+);
 
 /**
  * Track(s)
@@ -87,6 +92,11 @@ $this->create('music_track', '/api/track/{trackIdOrSlug}')->get()->action(
 $this->create('music_file', '/api/file/{fileId}')->get()->action(
 	function($params){
 		App::main('ApiController', 'trackByFileId', $params, new DIContainer());
+	}
+);
+$this->create('music_file_download', '/api/file/{fileId}/download')->get()->action(
+	function($params){
+		App::main('ApiController', 'download', $params, new DIContainer());
 	}
 );
 /*$this->create('music_track_shows', '/api/track/{id}/shows')->get()->action(

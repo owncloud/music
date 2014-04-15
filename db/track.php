@@ -29,6 +29,8 @@ use \OCA\Music\Core\API;
 
 
 /**
+ * @method int getId()
+ * @method setId(int $id)
  * @method string getTitle()
  * @method setTitle(string $title)
  * @method int getNumber()
@@ -117,8 +119,8 @@ class Track extends Entity {
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
 			'files' => array($this->getMimetype() => $api->linkToRoute(
-				'download',
-				array('file' => strstr($this->getFilePath(),'/'))
+				'music_file_download',
+				array('fileId' => $this->getFileId())
 			)),
 			'id' => $this->getId(),
 		);
@@ -132,8 +134,8 @@ class Track extends Entity {
 			'album' => $this->getAlbumWithUri($api),
 			'length' => $this->getLength(),
 			'files' => array($this->getMimetype() => $api->linkToRoute(
-				'download',
-				array('file' => $api->getView()->getPath($this->getFileId()))
+				'music_file_download',
+				array('fileId' => $this->getFileId())
 			)),
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),

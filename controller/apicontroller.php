@@ -29,6 +29,7 @@ use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\Scanner;
 
 
@@ -70,7 +71,7 @@ class ApiController extends Controller {
 			$allArtistsById[$artist->getId()] = $artist->toCollection($this->api);
 		}
 
-		$allAlbums = $this->albumBusinessLayer->findAllWithFileInfo($userId);
+		$allAlbums = $this->albumBusinessLayer->findAll($userId);
 		$allAlbumsById = array();
 		foreach ($allAlbums as &$album) {
 			$allAlbumsById[$album->getId()] = $album->toCollection($this->api);
@@ -302,5 +303,54 @@ class ApiController extends Controller {
 			$result = $this->scanner->rescan($userId);
 		}
 		return $this->renderPlainJSON($result);
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function download() {
+		// we no longer need the session to be kept open
+		session_write_close();
+
+		$fileId = $this->params('fileId');
+		$userId = $this->api->getUserId();
+		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+
+		/** @var $view \OC\Files\View */
+		$view = $this->api->getView();
+		$path = $view->getPath($track->getFileId());
+		$mime = $view->getMimeType($path);
+		$content = $view->file_get_contents($path);
+
+		return new FileResponse(array('mimetype' => $mime, 'content' => $content));
+	}
+
+	/**
+	 * @CSRFExemption
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 * @API
+	 */
+	public function cover() {
+		// we no longer need the session to be kept open
+		session_write_close();
+
+		$userId = $this->api->getUserId();
+
+		$albumId = $this->getIdFromSlug($this->params('albumIdOrSlug'));
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+
+		/** @var $view \OC\Files\View */
+		$view = $this->api->getView();
+		$path = $view->getPath($album->getCoverFileId());
+		$mime = $view->getMimeType($path);
+		$content = $view->file_get_contents($path);
+
+		return new FileResponse(array('mimetype' => $mime, 'content' => $content));
 	}
 }

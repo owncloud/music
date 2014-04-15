@@ -13,7 +13,7 @@
 }
 
 .artist-area > h1 {
-	margin-left: 14px;
+	margin-left: 8px;
 }
 
 /* adjust album area to screen width */
@@ -64,7 +64,7 @@
 }
 /* align track title to the left with album title */
 .track-list > li {
-	padding-left: 25px;
+	padding-left: 60px;
 }
 
 .track-list > li > .play.playing {

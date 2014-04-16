@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-10 22:50+0000\n"
-"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
+"PO-Revision-Date: 2014-04-16 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -132,6 +132,12 @@ msgstr "Album sconosciuto"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Artista sconosciuto"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

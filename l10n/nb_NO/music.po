@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-06 16:30+0000\n"
-"Last-Translator: espenbye <espenbye@me.com>\n"
+"PO-Revision-Date: 2014-04-16 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -131,6 +131,12 @@ msgstr "Ukjent album"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Ukjent artist"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

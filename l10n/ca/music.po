@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
+"PO-Revision-Date: 2014-04-16 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/owncloud/language/ca/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Àlbums"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistes"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,22 +30,22 @@ msgstr "Descripció"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descripció (per exemple nom de l'aplicació)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Genera contrasenya API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Aquí podeu generar contrasenyes per usar amb l'API d'Ampache,ja que no es poden desar de forma segura degut al diseny de l'API d'Ampache. Podeu generar tantes contrasenyes com volgueu i revocar-les en qualsevol moment."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "El camí no és vàlid"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -53,7 +53,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Recordeu que l'API d'Ampache és només una previsualització i que és inestable. Sou lliures d'informar de la vostra experiència amb aquesta característica en el <a href=\"https://github.com/owncloud/music/issues/60\">fil</a> corresponent. També voldríem tenir una llista de clients per fer proves. Gràcies."
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
@@ -73,7 +73,7 @@ msgstr "Res per aquí. Pugeu la vostra música!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Camí a la col·lecció de música"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -93,11 +93,11 @@ msgstr "Repeteix"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Revoca la cotrasenya de l'API"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Escanejant ..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -117,11 +117,11 @@ msgstr "Aleatori"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Aquesta configuració restringeix la música que es mostra a la interfície web de l'aplicació de música."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Peces"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -133,6 +133,12 @@ msgstr "Artista desconegut"
 
 #: ../templates/fake-template.php
 msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Useu el vostre nom d'usuari i contrasenya per connectar amb la instància Ampache:"

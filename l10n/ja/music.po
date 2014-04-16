@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-03-25 05:30+0000\n"
+"PO-Revision-Date: 2014-04-16 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -131,6 +131,12 @@ msgstr "不明なアルバム"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "不明なアーティスト"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

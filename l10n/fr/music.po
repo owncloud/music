@@ -1,5 +1,6 @@
 # 
 # Translators:
+# timelord <bruno@timelord.fr>, 2014
 # Christophe Lherieau <skimpax@gmail.com>, 2013-2014
 # etiess <etiess@gmail.com>, 2013
 # ogre_sympathique <ogre.sympathique@speed.1s.fr>, 2013
@@ -9,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-17 05:49+0000\n"
+"Last-Translator: timelord <bruno@timelord.fr>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -140,7 +141,7 @@ msgstr "Artiste inconnu"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Utilisez cette adresse pour naviguer dans votre collection musicale avec un player compatible Ampache."
 
 #: ../templates/fake-template.php
 msgid ""

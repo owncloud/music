@@ -1,6 +1,6 @@
 # 
 # Translators:
-# zubr139 <zubr139@ukr.net>, 2013
+# zubr139, 2013
 # volodya327 <volodya327@gmail.com>, 2013
 msgid ""
 msgstr ""

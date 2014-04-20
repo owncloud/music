@@ -27,6 +27,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Canciones",
 "Unknown album" => "Álbum desconocido",
 "Unknown artist" => "Artista desconocido",
+"Use this address to browse your music collection from any Ampache compatible player." => "Use esta dirección para explorar su colección de música desde cualquier reproductor compatible con Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Use su nombre de usuario y la siguiente contraseña para conectarse con esta instancia de Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

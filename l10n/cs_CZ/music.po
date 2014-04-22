@@ -1,13 +1,14 @@
 # 
 # Translators:
 # liska_, 2013-2014
+# svetlemodry <jaroslav@lichtblau.cz>, 2014
 # m23 <black23@gmail.com>, 2014
 # pstast <petr@stastny.eu>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-21 17:45+0000\n"
+"Last-Translator: svetlemodry <jaroslav@lichtblau.cz>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -138,7 +139,7 @@ msgstr "Neznámý umělec"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Použijte tuto adresu pro přístup k hudební sbírce z jakéhokoliv přehrávače podporujícího Ampache."
 
 #: ../templates/fake-template.php
 msgid ""

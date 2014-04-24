@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Helder Meneses <helder.meneses@gmail.com>, 2013-2014
+# rtbfreitas, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-23 08:20+0000\n"
+"Last-Translator: rtbfreitas\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +15,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Álbuns"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistas"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,7 +31,7 @@ msgstr "Descrição"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descrição (ex: Nome da App)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"

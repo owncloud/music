@@ -27,6 +27,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Rajad",
 "Unknown album" => "Tundmatu album",
 "Unknown artist" => "Tundmatu esitaja",
+"Use this address to browse your music collection from any Ampache compatible player." => "Kasuta seda aadressi sirvimaks oma muusikakogu suvalisest Ampache-ga ühilduvast muusikapleierist.",
 "Use your username and following password to connect to this Ampache instance:" => "Kasuta oma kasutajatunnust ja järgmist parooli ühendumaks selle Ampache instantsiga:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

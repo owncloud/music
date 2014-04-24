@@ -1,7 +1,10 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Álbuns",
+"Artists" => "Artistas",
 "Delete" => "Eliminar",
 "Description" => "Descrição",
+"Description (e.g. App name)" => "Descrição (ex: Nome da App)",
 "Loading ..." => "A carregar...",
 "Music" => "Musica",
 "Next" => "Próxima",

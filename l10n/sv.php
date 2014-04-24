@@ -27,6 +27,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Spår",
 "Unknown album" => "Okänt album",
 "Unknown artist" => "Okänd artist",
+"Use this address to browse your music collection from any Ampache compatible player." => "Använd denna adress för att bläddra igenom din musiksamling från valfri Ampache-kompatibel enhet.",
 "Use your username and following password to connect to this Ampache instance:" => "Använd ditt användarnamn och följande lösenord för att ansluta mot denna Ampache instansen:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

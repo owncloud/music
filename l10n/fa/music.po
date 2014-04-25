@@ -1,10 +1,11 @@
 # 
 # Translators:
+# hajibaba <majid.hajibaba@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-24 16:20+0000\n"
+"Last-Translator: hajibaba <majid.hajibaba@gmail.com>\n"
 "Language-Team: Persian (http://www.transifex.com/projects/p/owncloud/language/fa/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "آلبوم ها"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "هنرمندان"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -44,7 +45,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "مسیر اشتباه"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -56,7 +57,7 @@ msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "درحال بارگذاری..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -68,7 +69,7 @@ msgstr "بعدی"
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr ""
+msgstr "اینجا چیزی نیست. موزیک خود را بارگذاری کنید."
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
@@ -96,7 +97,7 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "در حال بررسی..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -109,7 +110,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "درهم"
 
 #: ../templates/fake-template.php
 msgid ""

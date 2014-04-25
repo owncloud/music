@@ -7,6 +7,7 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Opis (na primer ime programa)",
 "Generate API password" => "Ustvari geslo API",
 "Invalid path" => "Neveljavna pot",
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Imejte v mislih, da je Ampache API namenjen le predogledu in ni povsem stabilna programska oprema. Vaših odzivov in izkušenj o uporabi bomo zelo veseli. Objavite jih preko <a href=\"https://github.com/owncloud/music/issues/60\">spletnega obrazca</a>. Priporočljivo je dodati tudi seznam odjemalcev. Za sodelovanje se vam vnaprej najlepše zahvaljujemo.",
 "Loading ..." => "Nalaganje ...",
 "Music" => "Glasba",
 "Next" => "Naslednja",

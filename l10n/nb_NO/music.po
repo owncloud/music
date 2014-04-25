@@ -1,12 +1,13 @@
 # 
 # Translators:
 # espenbye <espenbye@me.com>, 2014
+# Jukselapp <ingemundskalnes@gmail.com>, 2014
 # vidaren <news@vidartysse.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-24 12:33+0000\n"
+"Last-Translator: Jukselapp <ingemundskalnes@gmail.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,11 +16,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Album"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artister"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -31,11 +32,11 @@ msgstr "Beskrivelse"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Beskrivelse (f.eks. applikasjonsnavn)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Generer API-passord"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -46,7 +47,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Individuell sti"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -74,7 +75,7 @@ msgstr "Ingenting her. Last opp musikken din!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Sti til din musikksamling"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -94,7 +95,7 @@ msgstr "Gjenta"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Tilbakestill API-passord"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
@@ -118,11 +119,11 @@ msgstr "Tilfeldig"
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Denne innstillingen begrenser den viste musikken i web-grensesnittet til musikkapplikasjonen."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Spor"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -136,10 +137,10 @@ msgstr "Ukjent artist"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Bruk denne adressen til å bla gjennom din musikksamling fra hvilket som helst Ampache-kompitabelt lag."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Benytt ditt brukernavn og følgende passord for å koble til denne Ampache-forekomsten:"

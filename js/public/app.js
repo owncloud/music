@@ -463,7 +463,7 @@ angular.module('Music').controller('PlayerController',
 		var sound = $scope.player.sounds.ownCloudSound,
 			offsetX = $event.offsetX || $event.originalEvent.layerX;
 		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
-        };
+	};
 
 	playlistService.subscribe('play', function(){
 		// fetch track and start playing
@@ -583,8 +583,6 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	soundManager.setup({
 		url: OC.linkTo('music', '3rdparty/soundmanager'),
 		flashVersion: 8,
-		useHTML5Audio: true,
-		preferFlash: false,
 		useFlashBlock: true,
 		flashPollingInterval: 200,
 		html5PollingInterval: 200,

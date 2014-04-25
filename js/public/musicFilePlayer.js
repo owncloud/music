@@ -33,8 +33,6 @@ $(document).ready(function () {
 			soundManager.setup({
 				url: OC.linkTo('music', '3rdparty/soundmanager'),
 				flashVersion: 8,
-				useHTML5Audio: true,
-				preferFlash: false,
 				useFlashBlock: true,
 				onready: function() {
 					var playFile = function (filename) {

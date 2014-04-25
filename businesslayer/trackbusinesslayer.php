@@ -109,7 +109,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Deletes a track
-	 * @param string $fileId the file id of the track
+	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user
 	 * @return array of two arrays (named 'albumIds', 'artistIds') containing all album ids
 	 *		   and artist ids of the deleted track(s)

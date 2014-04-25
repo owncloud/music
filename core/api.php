@@ -59,4 +59,16 @@ class API extends BaseAPI {
 
 		\OCP\App::registerPersonal($appName, $mainPath);
 	}
+
+	/**
+	 * Get the path of a file by id
+	 *
+	 * Note that the resulting path is not guaranteed to be unique for the id, multiple paths can point to the same file
+	 *
+	 * @param int $fileId
+	 * @return string
+	 */
+	public function getPath($fileId) {
+		return \OC\Files\Filesystem::getPath($fileId);
+	}
 }

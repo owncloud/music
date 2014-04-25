@@ -123,8 +123,8 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter',
-	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter', '$timeout',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter, $timeout) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -442,12 +442,18 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+			tracksSkipped = true;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
+			tracksSkipped = true;
 			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+		}
+		if(tracksSkipped === true) {
+			OC.Notification.show(gettextCatalog.getString(gettext("Some not playable tracks were skipped.")));
+			$timeout(OC.Notification.hide, 10000);
 		}
 		$scope.currentTrack = track;
 	};

@@ -1095,7 +1095,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setNumber(4);
 		$track->setLength(123);
 		$track->setFileId($fileId);
-		$track->setFilePath($filePath);
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 

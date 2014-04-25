@@ -40,17 +40,6 @@ class TrackMapper extends Mapper {
 			'WHERE ' . $condition;
 	}
 
-	private function makeSelectQueryWithFileInfo($condition){
-		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
-				'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
-				'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype`, '.
-				'`file`.`path` as `filePath`, `file`.`size` as `fileSize` '.
-				'FROM `*PREFIX*music_tracks` `track` '.
-				'INNER JOIN `*PREFIX*filecache` `file` '.
-				'ON `track`.`file_id` = `file`.`fileid` '.
-				'WHERE `track`.`user_id` = ? ' . $condition;
-	}
-
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
@@ -59,12 +48,6 @@ class TrackMapper extends Mapper {
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
-	}
-
-	public function findAllByPath($path, $userId){
-		$sql = $this->makeSelectQueryWithFileInfo('AND `file`.`path` LIKE ?');
-		$params = array($userId, $path . '%');
-		return $this->findEntities($sql, $params);
 	}
 
 	public function findAllByArtist($artistId, $userId){
@@ -90,7 +73,7 @@ class TrackMapper extends Mapper {
 	}
 
 	public function findByFileId($fileId, $userId){
-		$sql = $this->makeSelectQueryWithFileInfo('AND `track`.`file_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
 		$params = array($userId, $fileId);
 		return $this->findEntity($sql, $params);
 	}

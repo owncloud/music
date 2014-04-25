@@ -38,16 +38,6 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all tracks filtered by path
-	 * @param string $path the path used as filter
-	 * @param string $userId the name of the user
-	 * @return array of tracks
-	 */
-	public function findAllByPath($path, $userId){
-		return $this->mapper->findAllByPath($path, $userId);
-	}
-
-	/**
 	 * Returns all tracks filtered by artist
 	 * @param string $artistId the id of the artist
 	 * @param string $userId the name of the user

@@ -45,12 +45,8 @@ use \OCA\Music\Core\API;
  * @method setAlbum(string $album)
  * @method int getLength()
  * @method setLength(int $length)
- * @method int getFileSize()
- * @method setFileSize(int $fileSize)
  * @method int getFileId()
  * @method setFileId(int $fileId)
- * @method string getFilePath()
- * @method setFilePath(string $filePath)
  * @method int getBitrate()
  * @method setBitrate(int $bitrate)
  * @method string getMimetype()
@@ -67,9 +63,7 @@ class Track extends Entity {
 	public $albumId;
 	public $album;
 	public $length;
-	public $fileSize;
 	public $fileId;
-	public $filePath;
 	public $bitrate;
 	public $uri;
 	public $mimetype;
@@ -79,7 +73,6 @@ class Track extends Entity {
 		$this->addType('number', 'int');
 		$this->addType('artistId', 'int');
 		$this->addType('albumId', 'int');
-		$this->addType('fileSize', 'int');
 		$this->addType('length', 'int');
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');

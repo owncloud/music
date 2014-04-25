@@ -59,11 +59,6 @@ class ApiController extends Controller {
 	 */
 	public function collection() {
 		$userId = $this->api->getUserId();
-		$path = $this->api->getUserValue('path');
-		if (!$path) {
-			$path = '/';
-		}
-		$path = 'files' . $path;
 
 		$allArtists = $this->artistBusinessLayer->findAll($userId);
 		$allArtistsById = array();
@@ -77,7 +72,7 @@ class ApiController extends Controller {
 			$allAlbumsById[$album->getId()] = $album->toCollection($this->api);
 		}
 
-		$allTracks = $this->trackBusinessLayer->findAllByPath($path, $userId);
+		$allTracks = $this->trackBusinessLayer->findAll($userId);
 
 		$artists = array();
 		foreach ($allTracks as $track) {

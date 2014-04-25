@@ -28,10 +28,10 @@ use \OCA\Music\DependencyInjection\DIContainer;
 class HookHandler {
 
 	/**
-	 * Invoke auto update of music database after file unshare
-	 * @param array $params contains a key value pair for the path of the file/dir
+	 * Invoke auto update of music database after item gets unshared
+	 * @param array $params contains the params of the removed share
 	 */
-	static public function fileUnshared($params){
+	static public function itemUnshared($params){
 		$container = new DIContainer();
 		if ($params['itemType'] === 'folder') {
 			$backend = new \OC_Share_Backend_Folder();
@@ -59,5 +59,23 @@ class HookHandler {
 	static public function fileUpdated($params){
 		$container = new DIContainer();
 		$container['Scanner']->update($params['path']);
+	}
+
+	/**
+	 * Invoke auto update of music database after item gets shared
+	 * @param array $params contains the params of the added share
+	 */
+	static public function itemShared($params){
+		$container = new DIContainer();
+		if ($params['itemType'] === 'folder') {
+			$backend = new \OC_Share_Backend_Folder();
+			foreach ($backend->getChildren($params['itemSource']) as $child) {
+				$filePath = $container['API']->getPath((int)$child['source']);
+				$container['Scanner']->update($filePath, $params['shareWith']);
+			}
+		} else if ($params['itemType'] === 'file') {
+			$filePath = $container['API']->getPath((int)$params['itemSource']);
+			$container['Scanner']->update($filePath, $params['shareWith']);
+		}
 	}
 }

@@ -25,11 +25,14 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\DB\DoesNotExistException;
+use \OCA\Music\AppFramework\Http\Http;
 use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\AppFramework\Http\Response;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\Scanner;
 
 
@@ -313,7 +316,15 @@ class ApiController extends Controller {
 
 		$fileId = $this->params('fileId');
 		$userId = $this->api->getUserId();
-		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+
+		try {
+			$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+		} catch(DoesNotExistException $e) {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
+		}
+
 
 		/** @var $view \OC\Files\View */
 		$view = $this->api->getView();

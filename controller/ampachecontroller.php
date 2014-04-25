@@ -25,6 +25,7 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\Core\API;
+use \OCA\Music\AppFramework\DB\DoesNotExistException;
 use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\Middleware\AmpacheException;
 use \OCA\Music\DB\AmpacheUserMapper;
@@ -32,7 +33,6 @@ use \OCA\Music\DB\AmpacheSession;
 use \OCA\Music\DB\AmpacheSessionMapper;
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\ArtistMapper;
-use \OCA\Music\DB\DoesNotExistException;
 use \OCA\Music\DB\TrackMapper;
 use \OCA\Music\AppFramework\Http\Http;
 use \OCA\Music\AppFramework\Http\Response;

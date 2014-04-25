@@ -32,11 +32,14 @@ $c = new DIContainer();
 $c['API']->addScript('public/settings-user');
 $c['API']->addStyle('settings-user');
 
+$isStable5 = false;
+
 if(version_compare(join('.', $c['API']->getVersion()), '6.0.3', '<')){
 	$c['API']->addScript('public/stable5-fixes');
 }
 if(version_compare(join('.', $c['API']->getVersion()), '6.0.0', '<')){
 	$c['API']->addStyle('settings-user-stable5-fixes');
+	$isStable5 = true;
 }
 
 $tmpl = new \OCP\Template($c['API']->getAppName(), 'settings-user');
@@ -44,5 +47,7 @@ $tmpl = new \OCP\Template($c['API']->getAppName(), 'settings-user');
 $tmpl->assign('path', $c['API']->getUserValue('path'));
 
 $tmpl->assign('ampacheKeys', $c['AmpacheUserMapper']->getAll($c['API']->getUserId()));
+
+$tmpl->assign('isStable5', $isStable5);
 
 return $tmpl->fetchPage();

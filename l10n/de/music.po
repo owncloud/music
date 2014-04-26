@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-16 08:00+0000\n"
-"Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
+"PO-Revision-Date: 2014-04-26 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: German (http://www.transifex.com/projects/p/owncloud/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,6 +115,10 @@ msgstr "Weniger anzeigen ..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Zufallswiedergabe"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-21 23:00+0000\n"
-"Last-Translator: duub\n"
+"PO-Revision-Date: 2014-04-26 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/owncloud/language/ca/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -113,6 +113,10 @@ msgstr "Mostra'n menys..."
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Aleatori"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

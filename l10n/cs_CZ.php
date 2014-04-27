@@ -23,6 +23,7 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Zobrazit {{ trackcount }} písničku ...","Zobrazit {{ trackcount }} písničky ...","Zobrazit {{ trackcount }} písniček ..."),
 "Show less ..." => "Zobrazit méně ...",
 "Shuffle" => "Promíchat",
+"Some not playable tracks were skipped." => "Některé stopy byly přeskočeny, protože se nedají přehrát.",
 "This setting restricts the shown music in the web interface of the music app." => "Toto nastavení zamezí zobrazení hudby ve webovém rozhraní hudební aplikace.",
 "Tracks" => "Stopy",
 "Unknown album" => "Neznámé album",

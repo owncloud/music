@@ -23,6 +23,7 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mostrar todas as {{ trackcount }} músicas ...","Mostrar todas as {{ trackcount }} músicas ..."),
 "Show less ..." => "Exibição mais simples...",
 "Shuffle" => "Embaralhar",
+"Some not playable tracks were skipped." => "Algumas faixas não reproduzíveis ​​foram ignoradas.",
 "This setting restricts the shown music in the web interface of the music app." => "Essa configuração restringe-se  a mostrar a música na interface web do aplicativo de música.",
 "Tracks" => "Trilhas",
 "Unknown album" => "Album desconhecido",

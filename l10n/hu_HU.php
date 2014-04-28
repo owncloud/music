@@ -1,19 +1,32 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albumok",
+"Artists" => "Művészek",
 "Delete" => "Törlés",
 "Description" => "Leírás",
+"Description (e.g. App name)" => "Leírás (például Alkalmazás neve)",
+"Generate API password" => "API-jelszó előállítása",
+"Invalid path" => "Érvénytelen útvonal",
 "Loading ..." => "Betöltés ...",
 "Music" => "Zene",
 "Next" => "Következő",
 "Nothing in here. Upload your music!" => "Nincs itt semmi. Töltsd fel a zenédet!",
+"Path to your music collection" => "A zenegyűjtemény útvonala",
 "Pause" => "Szünet",
 "Play" => "Lejátszás",
 "Previous" => "Előző",
 "Repeat" => "Ismétlés",
+"Revoke API password" => "API-jelszó visszavonása",
+"Scanning ..." => "Átnézés ...",
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Mutasd mind a {{ trackcount }} zenét ...","Mutasd mind a {{ trackcount }} zenét ..."),
 "Show less ..." => "Mutass kevesebbet...",
 "Shuffle" => "Keverés",
+"Some not playable tracks were skipped." => "Néhány le nem játszható szám ki lett hagyva.",
+"This setting restricts the shown music in the web interface of the music app." => "Ez a beállítás korlátozza a zenék megjelenítését a zenealkalmazás webes felületén.",
+"Tracks" => "Számok",
 "Unknown album" => "Ismeretlen album",
-"Unknown artist" => "Ismeretlen előadó"
+"Unknown artist" => "Ismeretlen előadó",
+"Use this address to browse your music collection from any Ampache compatible player." => "Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis lejátszóval böngészhető.",
+"Use your username and following password to connect to this Ampache instance:" => "Felhasználónév és jelszó használatával lehet csatlakozni ehhez az Ampache-hez:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

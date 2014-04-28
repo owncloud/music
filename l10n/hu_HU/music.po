@@ -1,12 +1,13 @@
 # 
 # Translators:
 # ebela <bela@dandre.hu>, 2013
+# aries1980 <feher.janos@mindworks.hu>, 2014
 # pty <peti@szladovics.hu>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-26 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-27 08:00+0000\n"
+"Last-Translator: aries1980 <feher.janos@mindworks.hu>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,11 +16,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albumok"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Művészek"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -31,11 +32,11 @@ msgstr "Leírás"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Leírás (például Alkalmazás neve)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "API-jelszó előállítása"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -46,7 +47,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Érvénytelen útvonal"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -74,7 +75,7 @@ msgstr "Nincs itt semmi. Töltsd fel a zenédet!"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "A zenegyűjtemény útvonala"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -94,11 +95,11 @@ msgstr "Ismétlés"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "API-jelszó visszavonása"
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "Átnézés ..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -116,17 +117,17 @@ msgstr "Keverés"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Néhány le nem játszható szám ki lett hagyva."
 
 #: ../templates/fake-template.php
 msgid ""
 "This setting restricts the shown music in the web interface of the music "
 "app."
-msgstr ""
+msgstr "Ez a beállítás korlátozza a zenék megjelenítését a zenealkalmazás webes felületén."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Számok"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -140,10 +141,10 @@ msgstr "Ismeretlen előadó"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis lejátszóval böngészhető."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Felhasználónév és jelszó használatával lehet csatlakozni ehhez az Ampache-hez:"

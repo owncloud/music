@@ -1,11 +1,12 @@
 # 
 # Translators:
 # phy <transifex@phy25.com>, 2014
+# 攀 张 <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-26 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-27 06:20+0000\n"
+"Last-Translator: 攀 张 <zhangguangpan@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +15,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "专辑页"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "艺术家"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -97,7 +98,7 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "扫描中 ..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -124,7 +125,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "音轨"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

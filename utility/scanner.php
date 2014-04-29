@@ -96,7 +96,9 @@ class Scanner extends PublicEmitter {
 				$hasComments = array_key_exists('comments', $fileInfo);
 			}
 
-			if (!$userId) $userId = $this->api->getUserId();
+			if (!$userId) {
+				$userId = $this->api->getUserId();
+			}
 
 			// artist
 			$artist = null;
@@ -254,7 +256,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan($userId = NULL, $batch = false) {
+	public function rescan($userId = null, $batch = false) {
 		$this->api->log('Rescan triggered', 'info');
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));

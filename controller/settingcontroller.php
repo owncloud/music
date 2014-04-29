@@ -49,7 +49,7 @@ class SettingController extends Controller {
 		$path = $this->params('value');
 		$pathInfo = $this->api->getFileInfo($path);
 		if ($pathInfo && $pathInfo['mimetype'] === 'httpd/unix-directory') {
-			if ($path[0] != '/') {
+			if ($path[0] !== '/') {
 				$path = '/' . $path;
 			}
 			if ($path[strlen($path)-1] !== '/') {

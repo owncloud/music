@@ -26,13 +26,10 @@ $(document).ready(function() {
 	 */
 	var $path = $('#music-path');
 	$path.on('click focus', function() {
-		$path.prop('disabled', true);
 		OC.dialogs.filepicker(
 			t('music', 'Path to your music collection'),
 			function (path) {
-				if ($path.val() === path) {
-					$path.prop('disabled', false);
-				} else {
+				if ($path.val() !== path) {
 					$path.val(path);
 					$.post(OC.generateUrl('apps/music/settings/user/path'), { value: path }, function(data) {
 						if (!data.success) {
@@ -40,7 +37,6 @@ $(document).ready(function() {
 						} else {
 							$path[0].setCustomValidity('');
 						}
-						$path.prop('disabled', false);
 					});
 				}
 			},

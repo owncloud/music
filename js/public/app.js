@@ -443,7 +443,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.next = function() {
 		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
-			tracksSkipped = true;
+			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype

@@ -27,16 +27,19 @@ namespace OCA\Music\Controller;
 use \OCA\Music\AppFramework\Core\API;
 use \OCA\Music\AppFramework\Db\Mapper;
 use \OCA\Music\AppFramework\Http\Request;
+use \OCA\Music\Utility\Scanner;
 
 
 class SettingController extends Controller {
 
 	private $ampacheUserMapper;
+	private $scanner;
 
-	public function __construct(API $api, Request $request, Mapper $ampacheUserMapper){
+	public function __construct(API $api, Request $request, Mapper $ampacheUserMapper, Scanner $scanner){
 		parent::__construct($api, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
+		$this->scanner = $scanner;
 	}
 
 	/**
@@ -57,6 +60,7 @@ class SettingController extends Controller {
 			}
 			$this->api->setUserValue('path', $path);
 			$success = true;
+			$this->scanner->updatePath($path);
 		}
 		return $this->renderPlainJSON(array('success' => $success));
 	}

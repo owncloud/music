@@ -82,7 +82,7 @@ $this['LogController'] = $this->share(function($c){
 });
 
 $this['SettingController'] = $this->share(function($c){
-	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserMapper']);
+	return new SettingController($c['API'], $c['Request'], $c['AmpacheUserMapper'], $c['Scanner']);
 });
 
 /**

@@ -84,6 +84,19 @@ class Scanner extends PublicEmitter {
 		}
 
 		if(ini_get('allow_url_fopen')) {
+			$view = $this->api->getView();
+			$absolutePath = $view->getAbsolutePath($path);
+			$musicPath = $this->api->getUserValue('path');
+			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
+				$musicPath = $view->getAbsolutePath($musicPath);
+				// skip files that aren't inside the user specified path
+				if(substr($absolutePath, 0, strlen($musicPath)) !== $musicPath) {
+					$this->api->log('skipped - outside of specified path' , 'debug');
+					return;
+				}
+			}
+
+
 			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
 
 			$hasComments = array_key_exists('comments', $fileInfo);
@@ -236,7 +249,21 @@ class Scanner extends PublicEmitter {
 		$ogg = $this->api->searchByMime('application/ogg');
 		$music = array_merge($music, $ogg);
 
-		return $music;
+		$musicPath = $this->api->getUserValue('path');
+
+		if($musicPath === null || $musicPath === '/' || $musicPath === '') {
+			return $music;
+		}
+
+		// skip files that aren't inside the user specified path
+		$result = array();
+		foreach ($music as $file) {
+			if(substr($file['path'], 0, strlen($musicPath)) === $musicPath) {
+				$result[] = $file;
+			}
+		}
+
+		return $result;
 	}
 
 	public function getScannedFiles($userId = NULL) {
@@ -311,5 +338,30 @@ class Scanner extends PublicEmitter {
 			$query = $this->api->prepareQuery($sql);
 			$query->execute();
 		}
+	}
+
+	/**
+	 * Update music path
+	 */
+	public function updatePath($path, $userId = null) {
+		// TODO currently this function is quite dumb
+		// it just drops all entries of an user from the tables
+		if ($userId === null) {
+			$userId = $this->api->getUserId();
+		}
+
+		$sqls = array(
+			'DELETE FROM `*PREFIX*music_tracks` WHERE `user_id` = ?;',
+			'DELETE FROM `*PREFIX*music_albums` WHERE `user_id` = ?;',
+			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;'
+		);
+
+		foreach ($sqls as $sql) {
+			$query = $this->api->prepareQuery($sql);
+			$query->execute(array($userId));
+		}
+
+		$query = $this->api->prepareQuery('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
+		$query->execute();
 	}
 }

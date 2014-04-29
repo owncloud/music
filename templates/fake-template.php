@@ -8,7 +8,7 @@ while extraction, because this string is located in PHP code -->
 <span translate>Tracks</span>
 <span translate>Path to your music collection</span>
 <span translate>Invalid path</span>
-<span translate>This setting restricts the shown music in the web interface of the music app.</span>
+<span translate>This setting specifies the folder which will be scanned for music.</span>
 <span translate>Use this address to browse your music collection from any Ampache compatible player.</span>
 <span translate>Description</span>
 <span translate>Description (e.g. App name)</span>

@@ -99,7 +99,9 @@ class Music extends App {
 			return new PlaylistApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('URLGenerator'),
 				$c->query('PlaylistMapper'),
+				$c->query('TrackMapper'),
 				$c->query('UserId')
 			);
 		});

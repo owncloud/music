@@ -16,25 +16,33 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
+use \OCP\IURLGenerator;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
 
 	private $playlistMapper;
 	private $userId;
+	private $trackMapper;
+	private $urlGenerator;
 
 	public function __construct($appname,
 								IRequest $request,
+								IURLGenerator $urlGenerator,
 								PlaylistMapper $playlistMapper,
+								TrackMapper $trackMapper,
 								$userId){
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
+		$this->urlGenerator = $urlGenerator;
 		$this->playlistMapper = $playlistMapper;
+		$this->trackMapper = $trackMapper;
 
 	}
 
@@ -111,7 +119,15 @@ class PlaylistApiController extends Controller {
 
 			// set trackIds in model
 			$tracks = $this->playlistMapper->getTracks($id);
-			$playlist->setTrackIds($tracks);
+
+			// Get all track information after finding them by their IDs
+			foreach($tracks as $track) {
+				$song = $this->trackMapper->find($track, $this->userId);
+				$songs[] = $song->toCollection($this->urlGenerator);
+			}
+
+
+			$playlist->setTrackIds($songs);
 
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
@@ -188,6 +204,8 @@ class PlaylistApiController extends Controller {
 
 		try {
 			$this->playlistMapper->removeTracks($id, $trackIds);
+
+			// TODO what should be returned here - the state of the playlist after the removal?
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);

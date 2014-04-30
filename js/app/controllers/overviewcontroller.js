@@ -21,6 +21,9 @@ angular.module('Music').controller('OverviewController',
 
 		$scope.playTrack = function(track) {
 			// update URL hash
+			console.log(track);
+			console.log("track yazdım");
+
 			window.location.hash = '#/track/' + track.id;
 
 			var artist = _.find($scope.$parent.artists,
@@ -36,6 +39,8 @@ angular.module('Music').controller('OverviewController',
 						return track.number;
 					}
 				);
+				console.log(artist);
+				console.log(album);
 			// determine index of clicked track
 			var index = -1;
 			for (var i = 0; i < tracks.length; i++) {
@@ -44,7 +49,7 @@ angular.module('Music').controller('OverviewController',
 					break;
 				}
 			}
-
+			console.log(tracks);
 			if(index > 0) {
 				// slice array in two parts and interchange them
 				var begin = tracks.slice(0, index);
@@ -52,6 +57,8 @@ angular.module('Music').controller('OverviewController',
 				tracks = end.concat(begin);
 			}
 			playlistService.setPlaylist(tracks);
+			console.log("bunlar tracks: ");
+			console.log(tracks);
 			playlistService.publish('play');
 		};
 

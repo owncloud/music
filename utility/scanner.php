@@ -302,8 +302,8 @@ class Scanner extends PublicEmitter {
 
 		$count = 0;
 		foreach ($music as $file) {
-			if(!$batch && $count >= 50) {
-				// break scan - 50 files are already scanned
+			if(!$batch && $count >= 20) {
+				// break scan - 20 files are already scanned
 				break;
 			}
 			if(!$batch && in_array($file['fileid'], $fileIds)) {

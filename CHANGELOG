@@ -1,3 +1,22 @@
+v0.2 2014-04-30
+
+  * handle shared files properly (also fixes mounted storage)
+  * albums with same name but different artists or years are now different albums by @leizh
+  * cover and track download moved to music app from files app
+  * stop scan loop if processed count is greater than total count
+  * close the session to enable parallel requests to be processed
+  * add notification for skipped tracks
+  * the music in the database is now restricted to the user specified path
+
+  * update Sounmanager to V2.97a.20131201
+
+  * fix mobile styles by @jbtbnl and @wakeup
+  * fix left alignment issues of artist name and tracks on mobile
+  * remove unused code
+
+ Known bugs:
+  * seeking in Chromium doesn't work
+
 v0.1.9.1-rc 2014-03-26
 
   * navigation bar on left is now thinned out for small screen sizes #185

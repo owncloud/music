@@ -23,6 +23,12 @@
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
+	<script type="text/ng-template" id="details.html">
+		<?php print_unescaped($this->inc('partials/details')) ?>
+	</script>
+	<script type="text/ng-template" id="plsongs.html">
+		<?php print_unescaped($this->inc('partials/plsongs')) ?>
+	</script>
 
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
@@ -65,17 +71,17 @@
 				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 		</div>
 
-		<!--<div id="app-navigation">
+		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
-				<li><a href="#/" translate>+ New Playlist</a></li>
+				<li><a href="#/new" translate>+ New Playlist</a></li>
 				<li ng-repeat="playlist in playlists">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<img alt="{{ 'Delete' | translate }}" 	src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
+					<img alt="{{ 'Delete' | translate }}" src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
 				</li>
 			</ul>
-		</div>-->
+		</div>
 
 		<div id="app-content" ng-view ng-class="{started: started, 'icon-loading': loading}">
 		</div>

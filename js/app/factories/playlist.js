@@ -20,11 +20,16 @@
  */
 
 
-angular.module('Music').factory('playlists', function(){
-	return [
-		{name: 'test playlist 1', id: 1},
-		{name: 'test playlist 2', id: 2},
-		{name: 'test playlist 3', id: 3},
-		{name: 'test playlist 4', id: 4}
-	];
-});
+angular.module('Music').factory('PlaylistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return {
+
+	  getPlaylists: function() { return [
+		{name: 'test playlist 1', id: 1, songs: [1, 2, 35]},
+		{name: 'test playlist 2', id: 2, songs: [35]},
+		{name: 'test playlist 3', id: 3, songs: [36]},
+		{name: 'test playlist 4', id: 4, songs: [40]}
+	  ];
+	  }
+
+	};
+}]);

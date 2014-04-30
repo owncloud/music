@@ -22,8 +22,46 @@
 
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', 'playlists', function ($scope, playlists) {
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular) {
 
-	$scope.playlists = playlists;
+	$scope.currentPlaylist = $routeParams.playlistId;
+	$scope.playlistSongs = [];
+	$scope.playlists = [];
+	$scope.list = function(playlistId) {
+		$scope.playlists = PlaylistFactory.getPlaylists();
+	};
+
+	$scope.getListSongs = function() {
+
+
+	};
+
+	$scope.playlistIndex = function() {
+	  for(var i=0; i < $scope.playlists.length; i++) {
+	    if($scope.playlists[i].id == $scope.currentPlaylist) {
+	      return i;
+
+	    }
+	  }
+	    return 0;
+	};
+
+	$scope.getRawSongs = function() {
+		Restangular.all('fulllist').getList().then(function(fulllist){
+		    var song;
+		    for(var i=0; i < fulllist.length; i++) {
+			song = fulllist[i];
+			for(var j=0; j < $scope.playlists[$scope.playlistIndex()].songs.length; j++) {
+			  if($scope.playlists[$scope.playlistIndex()].songs[j]==song.id)
+					$scope.playlistSongs.push(song);
+			}
+		    }
+		});
+		return $scope.playlistSongs;
+	};
+
+	$scope.list();
+	$scope.getRawSongs();
 
 }]);

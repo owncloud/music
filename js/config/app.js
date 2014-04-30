@@ -50,7 +50,15 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/artist/:id',	overviewControllerConfig)
 				.when('/album/:id',		overviewControllerConfig)
 				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/file/:id',		overviewControllerConfig)
+				.when('/new', {
+					controller:'PlaylistController',
+					templateUrl:'details.html'
+				})
+				.when('/playlist/:playlistId', {
+					controller:'PlaylistController',
+					templateUrl:'plsongs.html'
+				});
 		}
 	])
 	.run(function(Token, Restangular){

@@ -29,7 +29,15 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/artist/:id',	overviewControllerConfig)
 				.when('/album/:id',		overviewControllerConfig)
 				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/file/:id',		overviewControllerConfig)
+				.when('/new', {
+					controller:'PlaylistController',
+					templateUrl:'details.html'
+				})
+				.when('/playlist/:playlistId', {
+					controller:'PlaylistController',
+					templateUrl:'plsongs.html'
+				});
 		}
 	])
 	.run(function(Token, Restangular){
@@ -495,11 +503,50 @@ angular.module('Music').controller('PlayerController',
 }]);
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', 'playlists', function ($scope, playlists) {
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular) {
 
-	$scope.playlists = playlists;
+	$scope.currentPlaylist = $routeParams.playlistId;
+	$scope.playlistSongs = [];
+	$scope.playlists = [];
+	$scope.list = function(playlistId) {
+		$scope.playlists = PlaylistFactory.getPlaylists();
+	};
+
+	$scope.getListSongs = function() {
+
+
+	};
+
+	$scope.playlistIndex = function() {
+	  for(var i=0; i < $scope.playlists.length; i++) {
+	    if($scope.playlists[i].id == $scope.currentPlaylist) {
+	      return i;
+
+	    }
+	  }
+	    return 0;
+	};
+
+	$scope.getRawSongs = function() {
+		Restangular.all('fulllist').getList().then(function(fulllist){
+		    var song;
+		    for(var i=0; i < fulllist.length; i++) {
+			song = fulllist[i];
+			for(var j=0; j < $scope.playlists[$scope.playlistIndex()].songs.length; j++) {
+			  if($scope.playlists[$scope.playlistIndex()].songs[j]==song.id)
+					$scope.playlistSongs.push(song);
+			}
+		    }
+		});
+		return $scope.playlistSongs;
+	};
+
+	$scope.list();
+	$scope.getRawSongs();
 
 }]);
+
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
 		var setAlbumart = function() {
@@ -617,14 +664,19 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	return soundManager;
 }]);
 
-angular.module('Music').factory('playlists', function(){
-	return [
-		{name: 'test playlist 1', id: 1},
-		{name: 'test playlist 2', id: 2},
-		{name: 'test playlist 3', id: 3},
-		{name: 'test playlist 4', id: 4}
-	];
-});
+angular.module('Music').factory('PlaylistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+	return {
+
+	  getPlaylists: function() { return [
+		{name: 'test playlist 1', id: 1, songs: [1, 2, 35]},
+		{name: 'test playlist 2', id: 2, songs: [35]},
+		{name: 'test playlist 3', id: 3, songs: [36]},
+		{name: 'test playlist 4', id: 4, songs: [40]}
+	  ];
+	  }
+
+	};
+}]);
 
 angular.module('Music').factory('Token', [function () {
 	return document.getElementsByTagName('head')[0].getAttribute('data-requesttoken');

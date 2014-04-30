@@ -9,7 +9,8 @@
  */
 
 #app-navigation {
-	padding-top: 66px;
+/* 	padding-top: 66px; */
+	position: fixed;
 }
 
 #app-navigation li > img {

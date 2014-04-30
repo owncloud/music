@@ -1,8 +1,8 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @author Volkan Gezer
+ * @copyright 2014 Volkan Gezer <volkangezer@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -19,17 +19,15 @@
  *
  */
 
-
-angular.module('Music').factory('PlaylistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
-	return {
-
-	  getPlaylists: function() { return [
-		{name: 'test playlist 1', id: 1, songs: [1, 2, 35]},
-		{name: 'test playlist 2', id: 2, songs: [35]},
-		{name: 'test playlist 3', id: 3, songs: [36]},
-		{name: 'test playlist 4', id: 4, songs: [40]}
-	  ];
-	  }
-
+angular.module('Music').directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if(event.which === 13) {
+				scope.$apply(function (){
+				scope.$eval(attrs.ngEnter);
+			});
+				event.preventDefault();
+			}
+		});
 	};
-}]);
+});

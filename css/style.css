@@ -20,11 +20,22 @@
 
 #app-view {
 	height: 100%;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 250px;
+	position: absolute;
 	padding-right: 50px;
 }
 
 #app-view.started {
 	padding-top: 65px;
+}
+
+#app-content .action {
+	float: right;
+	margin-right: 800px;
+
 }
 
 .play {

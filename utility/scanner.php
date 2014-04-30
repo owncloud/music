@@ -215,8 +215,15 @@ class Scanner extends PublicEmitter {
 	 * @param string $path the path of the file
 	 */
 	public function deleteByPath($path){
-		$fileId = $this->api->getFileInfo($path)->getId();
-		$this->delete($fileId);
+		$fileInfo = $this->api->getFileInfo($path);
+		if(!empty($fileInfo)) {
+			if(is_array($fileInfo)) {
+				$fileId = $fileInfo['fileid'];
+			} else {
+				$fileId = $fileInfo->getId();
+			}
+			$this->delete($fileId);
+		}
 	}
 	/**
 	 * Get called by 'unshare' hook and 'deleteByPath'

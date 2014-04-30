@@ -24,7 +24,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Daha az göster ...",
 "Shuffle" => "Karıştır",
 "Some not playable tracks were skipped." => "Bazı oynatılamayan parçalar atlandı.",
-"This setting restricts the shown music in the web interface of the music app." => "Bu ayar, müzik uygulamasının web arayüzünde gösterdiği müziği kısıtlar.",
 "Tracks" => "Parçalar",
 "Unknown album" => "Bilinmeyen albüm",
 "Unknown artist" => "Bilinmeyen sanatçı",

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-28 02:33+0000\n"
-"Last-Translator: pstast <petr@stastny.eu>\n"
+"PO-Revision-Date: 2014-04-30 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -122,10 +122,8 @@ msgid "Some not playable tracks were skipped."
 msgstr "Některé stopy byly přeskočeny, protože se nedají přehrát."
 
 #: ../templates/fake-template.php
-msgid ""
-"This setting restricts the shown music in the web interface of the music "
-"app."
-msgstr "Toto nastavení zamezí zobrazení hudby ve webovém rozhraní hudební aplikace."
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

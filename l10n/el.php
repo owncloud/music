@@ -23,7 +23,6 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Εμφάνιση του τραγουδιού","Εμφάνιση όλων των {{ trackcount }} τραγουδιών ..."),
 "Show less ..." => "Προβολή λιγότερων...",
 "Shuffle" => "Τυχαία αναπαραγωγή",
-"This setting restricts the shown music in the web interface of the music app." => "Αυτή η ρύθμιση περιορίζει την μουσική που εμφανίζεται στην διεπαφή ιστού της εφαρμογής μουσικής.",
 "Tracks" => "Κομμάτια",
 "Unknown album" => "Άγνωστο άλμπουμ",
 "Unknown artist" => "Άγνωστος καλλιτέχνης",

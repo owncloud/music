@@ -24,7 +24,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Amosar menos ...",
 "Shuffle" => "Ao chou",
 "Some not playable tracks were skipped." => "Omitíronse algunhas pistas non reproducíbeis.",
-"This setting restricts the shown music in the web interface of the music app." => "Este axuste restrinxe que a música sexa amosada na interface web do aplicativo de música.",
 "Tracks" => "Pistas",
 "Unknown album" => "Álbum descoñecido",
 "Unknown artist" => "Interprete descoñecido",

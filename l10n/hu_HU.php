@@ -22,7 +22,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Mutass kevesebbet...",
 "Shuffle" => "Keverés",
 "Some not playable tracks were skipped." => "Néhány le nem játszható szám ki lett hagyva.",
-"This setting restricts the shown music in the web interface of the music app." => "Ez a beállítás korlátozza a zenék megjelenítését a zenealkalmazás webes felületén.",
 "Tracks" => "Számok",
 "Unknown album" => "Ismeretlen album",
 "Unknown artist" => "Ismeretlen előadó",

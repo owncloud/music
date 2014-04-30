@@ -1,17 +1,15 @@
 # 
 # Translators:
-# zubr139, 2013
-# volodya327 <volodya327@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "PO-Revision-Date: 2014-04-30 05:30+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/owncloud/language/uk/)\n"
+"Language-Team: Hindi (India) (http://www.transifex.com/projects/p/owncloud/language/hi_IN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: hi_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../templates/fake-template.php
 msgid "Albums"
@@ -23,11 +21,11 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "Видалити"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr "Опис"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
@@ -58,19 +56,19 @@ msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr "Завантаження ..."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "Музика"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "Наступний"
+msgstr ""
 
 #: ../templates/part.main.php
 msgid "Nothing in here. Upload your music!"
-msgstr "Тут зараз нічого немає. Завантажте свою музику!"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
@@ -78,19 +76,19 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "Пауза"
+msgstr ""
 
 #: ../templates/main.php ../templates/part.main.php
 msgid "Play"
-msgstr "Грати"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "Попередній"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Повторювати"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
@@ -103,17 +101,16 @@ msgstr ""
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
 msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Показати {{ trackcount }} пісню ..."
-msgstr[1] "Показати всі {{ trackcount }} пісні ..."
-msgstr[2] "Показати всі {{ trackcount }} пісні ..."
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../templates/part.main.php
 msgid "Show less ..."
-msgstr "Показати меньше ..."
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "Перемішати"
+msgstr ""
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."

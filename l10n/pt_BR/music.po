@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-27 14:10+0000\n"
-"Last-Translator: Flávio Veras <flaviove@gmail.com>\n"
+"PO-Revision-Date: 2014-04-30 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/owncloud/language/pt_BR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,10 +118,8 @@ msgid "Some not playable tracks were skipped."
 msgstr "Algumas faixas não reproduzíveis ​​foram ignoradas."
 
 #: ../templates/fake-template.php
-msgid ""
-"This setting restricts the shown music in the web interface of the music "
-"app."
-msgstr "Essa configuração restringe-se  a mostrar a música na interface web do aplicativo de música."
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

@@ -22,7 +22,6 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Pokaži {{ trackcount }} posnetek ...","Pokaži {{ trackcount }} posnetka ...","Pokaži {{ trackcount }} posnetke ...","Pokaži {{ trackcount }} posnetkov ..."),
 "Show less ..." => "Pokaži manj ...",
 "Shuffle" => "Premešaj",
-"This setting restricts the shown music in the web interface of the music app." => "Nastavitev omeji prikaz glasbe v spletnem vmesniku programa glasbe.",
 "Tracks" => "Sledi",
 "Unknown album" => "Neznan album",
 "Unknown artist" => "Neznan izvajalec",

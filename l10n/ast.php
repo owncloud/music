@@ -23,7 +23,6 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Amosar toles {{ trackcount}} canciones...","Amosar toles {{ trackcount }} canciones..."),
 "Show less ..." => "Amosar menos...",
 "Shuffle" => "Mecer",
-"This setting restricts the shown music in the web interface of the music app." => "Estos axustes restrinxen la música amosada na interfaz web de l'aplicación de música.",
 "Tracks" => "Canciones",
 "Unknown album" => "Álbum desconocíu",
 "Unknown artist" => "Artista desconocíu",

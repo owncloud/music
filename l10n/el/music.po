@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-26 05:29+0000\n"
+"PO-Revision-Date: 2014-04-30 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -121,10 +121,8 @@ msgid "Some not playable tracks were skipped."
 msgstr ""
 
 #: ../templates/fake-template.php
-msgid ""
-"This setting restricts the shown music in the web interface of the music "
-"app."
-msgstr "Αυτή η ρύθμιση περιορίζει την μουσική που εμφανίζεται στην διεπαφή ιστού της εφαρμογής μουσικής."
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

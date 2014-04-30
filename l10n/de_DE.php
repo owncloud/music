@@ -24,7 +24,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Weniger anzeigen ...",
 "Shuffle" => "Zufallswiedergabe",
 "Some not playable tracks were skipped." => "Einige nicht abspielbare Titel wurden übersprungen.",
-"This setting restricts the shown music in the web interface of the music app." => "Diese Einstellung beschränkt die angezeigte Musik im Webinterface der Musik-Applikation",
 "Tracks" => "Titel",
 "Unknown album" => "Unbekanntes Album",
 "Unknown artist" => "Unbekannter Künstler",

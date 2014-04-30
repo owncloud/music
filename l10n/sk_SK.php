@@ -23,7 +23,6 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Zobraziť {{ trackcount }} skladieb ...","Zobraziť {{ trackcount }} skladieb ...","Zobraziť všetky {{ trackcount }} skladieb ..."),
 "Show less ..." => "Zobraziť menej ...",
 "Shuffle" => "Zamiešať",
-"This setting restricts the shown music in the web interface of the music app." => "Toto nastavenie obmedzuje zobrazenie hudby vo webovom rozhraní hudobnej aplikácie.",
 "Tracks" => "Skladby",
 "Unknown album" => "Neznámy album",
 "Unknown artist" => "Neznámy umelec",

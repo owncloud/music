@@ -22,7 +22,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Näytä vähemmän...",
 "Shuffle" => "Sekoita",
 "Some not playable tracks were skipped." => "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa.",
-"This setting restricts the shown music in the web interface of the music app." => "Tämä asetus rajoittaa näytettävää musiikkia musiikkisovelluksen verkkokäyttöliittymässä.",
 "Tracks" => "Kappaleet",
 "Unknown album" => "Tuntematon levy",
 "Unknown artist" => "Tuntematon esittäjä",

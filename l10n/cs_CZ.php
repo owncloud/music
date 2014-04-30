@@ -24,7 +24,6 @@ $TRANSLATIONS = array(
 "Show less ..." => "Zobrazit méně ...",
 "Shuffle" => "Promíchat",
 "Some not playable tracks were skipped." => "Některé stopy byly přeskočeny, protože se nedají přehrát.",
-"This setting restricts the shown music in the web interface of the music app." => "Toto nastavení zamezí zobrazení hudby ve webovém rozhraní hudební aplikace.",
 "Tracks" => "Stopy",
 "Unknown album" => "Neznámé album",
 "Unknown artist" => "Neznámý umělec",

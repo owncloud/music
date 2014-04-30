@@ -3,6 +3,7 @@
 # timelord <bruno@timelord.fr>, 2014
 # Christophe Lherieau <skimpax@gmail.com>, 2013-2014
 # etiess <etiess@gmail.com>, 2013
+# ptit_boogy <ptit.boogy@gmail.com>, 2014
 # ogre_sympathique <ogre.sympathique@speed.1s.fr>, 2013
 # Romain DEP. <rom1dep@gmail.com>, 2013
 # themen <themen2004@gmail.com>, 2014
@@ -10,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-26 05:29+0000\n"
+"PO-Revision-Date: 2014-04-30 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -121,13 +122,11 @@ msgstr "Lecture aléatoire"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Certaines pistes non jouables ont été ignorées."
 
 #: ../templates/fake-template.php
-msgid ""
-"This setting restricts the shown music in the web interface of the music "
-"app."
-msgstr "Ce paramètre restreint les musiques affichées dans l'interface web de l'application de musique."
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"

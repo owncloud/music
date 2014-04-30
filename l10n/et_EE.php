@@ -23,7 +23,6 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näita {{ trackcount }} lugu ...","Näita kõiki {{ trackcount }} lugu ..."),
 "Show less ..." => "Näita vähem ...",
 "Shuffle" => "Juhuslik esitus",
-"This setting restricts the shown music in the web interface of the music app." => "See määrang piirab muusika rakendi veebiliideses muusika kuvamise.",
 "Tracks" => "Rajad",
 "Unknown album" => "Tundmatu album",
 "Unknown artist" => "Tundmatu esitaja",

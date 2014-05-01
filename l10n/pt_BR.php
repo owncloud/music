@@ -24,6 +24,7 @@ $TRANSLATIONS = array(
 "Show less ..." => "Exibição mais simples...",
 "Shuffle" => "Embaralhar",
 "Some not playable tracks were skipped." => "Algumas faixas não reproduzíveis ​​foram ignoradas.",
+"This setting specifies the folder which will be scanned for music." => "Esta configuração especifica a pasta que será escaneada por músicas.",
 "Tracks" => "Trilhas",
 "Unknown album" => "Album desconhecido",
 "Unknown artist" => "Artista desconhecido",

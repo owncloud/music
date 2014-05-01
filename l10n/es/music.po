@@ -3,12 +3,13 @@
 # Art O. Pal <artopal@fastmail.fm>, 2013-2014
 # japaol <japaol@gmail.com>, 2013
 # Maenso <balero_arana@hotmail.com>, 2013
+# mreyesca <mreyesca@luthcueit.onmicrosoft.com>, 2014
 # Rubén del Campo <yo@rubendelcampo.es>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-30 11:20+0000\n"
+"Last-Translator: mreyesca <mreyesca@luthcueit.onmicrosoft.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -122,7 +123,7 @@ msgstr "No se pudieron reproducir algunas canciones."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Esta configuración especifica la carpeta en la cuál se escaneará la música"
 
 #: ../templates/fake-template.php
 msgid "Tracks"

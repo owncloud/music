@@ -2,12 +2,13 @@
 # Translators:
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
 # plazmism <gomidori@live.jp>, 2014
+# mikako, 2014
 # tt yn <tetuyano+transi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-30 18:50+0000\n"
+"Last-Translator: mikako\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,11 +17,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "アルバム"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "アーティスト"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -32,11 +33,11 @@ msgstr "説明"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "説明 (例えばアプリケーション名)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "APIパスワードの生成"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -47,7 +48,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "パスが無効"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -75,7 +76,7 @@ msgstr "ここには何もありません。ミュージックをアップロー
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "音楽コレクションのパス"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -99,7 +100,7 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "スキャン中..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -116,15 +117,15 @@ msgstr "シャッフル"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "いくつかの再生不可能なトラックを飛ばしました。"
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "この設定では、音楽ファイルをスキャンするフォルダを指定します。"
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "トラック"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

@@ -24,6 +24,7 @@ $TRANSLATIONS = array(
 "Show less ..." => "Show less...",
 "Shuffle" => "Shuffle",
 "Some not playable tracks were skipped." => "Some unplayable tracks were skipped.",
+"This setting specifies the folder which will be scanned for music." => "This setting specifies the folder which will be scanned for music.",
 "Tracks" => "Tracks",
 "Unknown album" => "Unknown album",
 "Unknown artist" => "Unknown artist",

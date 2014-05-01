@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-04-30 06:40+0000\n"
+"Last-Translator: ptit_boogy <ptit.boogy@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -126,7 +126,7 @@ msgstr "Certaines pistes non jouables ont été ignorées."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Ce paramètre spécifie quel dossier sera balayé pour trouver de la musique."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

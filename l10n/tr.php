@@ -24,6 +24,7 @@ $TRANSLATIONS = array(
 "Show less ..." => "Daha az göster ...",
 "Shuffle" => "Karıştır",
 "Some not playable tracks were skipped." => "Bazı oynatılamayan parçalar atlandı.",
+"This setting specifies the folder which will be scanned for music." => "Bu ayar, müzik için taranacak klasörü belirtir.",
 "Tracks" => "Parçalar",
 "Unknown album" => "Bilinmeyen albüm",
 "Unknown artist" => "Bilinmeyen sanatçı",

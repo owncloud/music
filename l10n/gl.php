@@ -24,6 +24,7 @@ $TRANSLATIONS = array(
 "Show less ..." => "Amosar menos ...",
 "Shuffle" => "Ao chou",
 "Some not playable tracks were skipped." => "Omitíronse algunhas pistas non reproducíbeis.",
+"This setting specifies the folder which will be scanned for music." => "Este axuste especifica o cartafol que será analizado na busca de música.",
 "Tracks" => "Pistas",
 "Unknown album" => "Álbum descoñecido",
 "Unknown artist" => "Interprete descoñecido",

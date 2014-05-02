@@ -190,4 +190,5 @@
 	height: 40px;
 	line-height: 40px;
 	background-color: rgba(255,255,255,0.5);
+	z-index: 100;
 }

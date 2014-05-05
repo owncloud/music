@@ -25,8 +25,6 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\Core\API;
-
 
 /**
  * @method string getUserId()

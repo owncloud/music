@@ -25,29 +25,19 @@
 
 namespace OCA\Music;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
 
-$c = new DIContainer();
+$app = new Music();
 
-$c['API']->addScript('public/settings-user');
-$c['API']->addStyle('settings-user');
+$c = $app->getContainer();
 
-$isStable5 = false;
+$c->query('API')->addScript('public/settings-user');
+$c->query('API')->addStyle('settings-user');
 
-if(version_compare(join('.', $c['API']->getVersion()), '6.0.3', '<')){
-	$c['API']->addScript('public/stable5-fixes');
-}
-if(version_compare(join('.', $c['API']->getVersion()), '6.0.0', '<')){
-	$c['API']->addStyle('settings-user-stable5-fixes');
-	$isStable5 = true;
-}
+$tmpl = new \OCP\Template($c->query('AppName'), 'settings-user');
 
-$tmpl = new \OCP\Template($c['API']->getAppName(), 'settings-user');
+$tmpl->assign('path', $c->query('Config')->getUserValue($c->query('UserId'), $c->query('AppName'), 'path'));
 
-$tmpl->assign('path', $c['API']->getUserValue('path'));
-
-$tmpl->assign('ampacheKeys', $c['AmpacheUserMapper']->getAll($c['API']->getUserId()));
-
-$tmpl->assign('isStable5', $isStable5);
+$tmpl->assign('ampacheKeys', $c->query('AmpacheUserMapper')->getAll($c->query('UserId')));
 
 return $tmpl->fetchPage();

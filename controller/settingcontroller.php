@@ -24,75 +24,85 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\AppFramework\Core\API;
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\AppFramework\Http\Request;
-use \OCA\Music\Utility\Scanner;
+use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\Files\Folder;
+use \OCP\IConfig;
+use \OCP\IRequest;
 
+use \OCA\Music\Db\AmpacheUserMapper;
+use \OCA\Music\Utility\Scanner;
 
 class SettingController extends Controller {
 
+	private $appname;
 	private $ampacheUserMapper;
 	private $scanner;
+	private $userId;
+	private $userFolder;
+	private $configManager;
 
-	public function __construct(API $api, Request $request, Mapper $ampacheUserMapper, Scanner $scanner){
-		parent::__construct($api, $request);
+	public function __construct($appname,
+								IRequest $request,
+								AmpacheUserMapper $ampacheUserMapper,
+								Scanner $scanner,
+								$userId,
+								Folder $userFolder,
+								IConfig $configManager){
+		parent::__construct($appname, $request);
 
+		$this->appname = $appname;
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->scanner = $scanner;
+		$this->userId = $userId;
+		$this->userFolder = $userFolder;
+		$this->configManager = $configManager;
 	}
 
 	/**
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @Ajax
+	 * @NoAdminRequired
 	 */
 	public function userPath() {
 		$success = false;
 		$path = $this->params('value');
-		$pathInfo = $this->api->getFileInfo($path);
-		if ($pathInfo && $pathInfo['mimetype'] === 'httpd/unix-directory') {
+		// TODO check for validity
+		$element = $this->userFolder->get($path);
+		if ($element instanceof \OCP\Files\Folder) {
 			if ($path[0] !== '/') {
 				$path = '/' . $path;
 			}
 			if ($path[strlen($path)-1] !== '/') {
 				$path .= '/';
 			}
-			$this->api->setUserValue('path', $path);
+			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
 			$success = true;
 			$this->scanner->updatePath($path);
 		}
-		return $this->renderPlainJSON(array('success' => $success));
+		return new JSONResponse(array('success' => $success));
 	}
 
 	/**
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @Ajax
+	 * @NoAdminRequired
 	 */
 	public function addUserKey() {
-		$userId = $this->api->getUserId();
 		$success = false;
 		$description = $this->params('description');
 		$password = $this->params('password');
 
 		$hash = hash('sha256', $password);
-		$id = $this->ampacheUserMapper->addUserKey($userId, $hash, $description);
+		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 		if($id !== null) {
 			$success = true;
 		}
-		return $this->renderPlainJSON(array('success' => $success, 'id' => $id));
+		return new JSONResponse(array('success' => $success, 'id' => $id));
 	}
 
 	/**
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @Ajax
+	 * @NoAdminRequired
 	 */
 	public function removeUserKey() {
-		$userId = $this->api->getUserId();
 		$id = $this->params('id');
-		$this->ampacheUserMapper->removeUserKey($userId, $id);
-		return $this->renderPlainJSON(array('success' => true));
+		$this->ampacheUserMapper->removeUserKey($this->userId, $id);
+		return new JSONResponse(array('success' => true));
 	}
 }

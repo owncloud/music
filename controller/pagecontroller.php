@@ -24,40 +24,35 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\AppFramework\Core\API;
-use \OCA\Music\AppFramework\Http\Request;
+use \OCP\AppFramework\Controller;
+use \OCP\IRequest;
+
 use \OCA\Music\Utility\Scanner;
 
 
 class PageController extends Controller {
 
+	private $l10n;
 	private $scanner;
 	private $status;
 
-	public function __construct(API $api, Request $request, Scanner $scanner){
-		parent::__construct($api, $request);
+	public function __construct($appname,
+								IRequest $request,
+								$l10n,
+								Scanner $scanner){
+		parent::__construct($appname, $request);
 
+		$this->l10n = $l10n;
 		$this->scanner = $scanner;
 	}
 
 
 	/**
-	 * ATTENTION!!!
-	 * The following comment turns off security checks
-	 * Please look up their meaning in the documentation!
-	 *
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @CSRFExemption
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function index() {
-		$userLang = $this->api->getTrans()->findLanguage();
-		// during 5.80.05 the placeholder script was outsourced to core
-		$version = join('.', $this->api->getVersion());
-		if(version_compare($version, '5.80.05', '>')){
-			return $this->render('stable6+', array('lang' => $userLang));
-		} else {
-			return $this->render('stable5', array('lang' => $userLang));
-		}
+		$userLang = $this->l10n->findLanguage();
+		return $this->render('main', array('lang' => $userLang));
 	}
 }

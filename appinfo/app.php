@@ -21,66 +21,70 @@
  *
  */
 
+namespace OCA\Music\App;
 
-namespace OCA\Music;
+$app = new Music();
 
-use \OCA\Music\Core\API;
+$c = $app->getContainer();
 
-$api = new API('music');
-
-$api->addNavigationEntry(array(
-
-	// the string under which your app will be referenced in owncloud
-	'id' => $api->getAppName(),
-
-	// sorting weight for the navigation. The higher the number, the higher
-	// will it be listed in the navigation
+/**
+ * add navigation
+ */
+$navConfig = array(
+	'id' => $c->query('AppName'),
 	'order' => 10,
+	'name' => $c->query('L10N')->t('Music'),
+	'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
+	'icon' => $c->query('URLGenerator')->imagePath($c->query('AppName'), 'music.svg')
+);
 
-	// the route that will be shown on startup
-	'href' => $api->linkToRoute('music_index'),
+$c->query('ServerContainer')->getNavigationManager()->add($navConfig);
 
-	// the icon that will be shown in the navigation
-	// this file needs to exist in img/example.png
-	'icon' => $api->imagePath('music.svg', 'music'),
+/**
+ * register regular task
+ */
 
-	// the title of your application. This will be used in the
-	// navigation or on the settings page of your app
-	'name' => $api->getTrans()->t('Music')
+// TODO: this is temporarily static because core jobs are not public
+// yet, therefore legacy code
+\OCP\Backgroundjob::addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
 
-));
+/**
+ * register hooks
+ */
 
-$api->connectHook( // also called after file creation
+// FIXME: this is temporarily static because core emitters are not future
+// proof, therefore legacy code in here
+\OCP\Util::connectHook( // also called after file creation
 	\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_post_write,
-	'OCA\Music\Utility\HookHandler', 'fileUpdated'
+	'OCA\Music\Hooks\File', 'updated'
 );
-$api->connectHook(
+\OCP\Util::connectHook(
 	\OC\Files\Filesystem::CLASSNAME, \OC\Files\Filesystem::signal_delete,
-	'OCA\Music\Utility\HookHandler', 'fileDeleted'
+	'OCA\Music\Hooks\File', 'deleted'
 );
-$api->connectHook(
+\OCP\Util::connectHook(
 	'OCP\Share', 'post_unshare',
-	'OCA\Music\Utility\HookHandler', 'itemUnshared'
+	'OCA\Music\Hooks\Share', 'itemUnshared'
 );
-$api->connectHook(
+\OCP\Util::connectHook(
 	'OCP\Share', 'post_shared',
-	'OCA\Music\Utility\HookHandler', 'itemShared'
+	'OCA\Music\Hooks\Share', 'itemShared'
 );
 
-$api->addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
-
-// load fileactions
-$api->addScript('public/fileactions');
-
-if(version_compare(join('.', $api->getVersion()), '6.0.3', '<')){
-	$api->addScript('public/stable5-fixes');
-}
-
-// load file for public sharing page
-$api->addScript('public/musicFilePlayer');
-
-// register search provider
+/**
+ * register search provider
+ */
 \OC_Search::registerProvider('OCA\Music\Utility\Search');
 
-// register settings
-$api->registerPersonal('settings/user');
+/**
+ * register settings
+ */
+\OCP\App::registerPersonal($c->query('AppName'), 'settings/user');
+
+/**
+ * load styles and scripts
+ */
+// fileactions
+$c->query('API')->addScript('public/fileactions', $c->query('AppName'));
+// file player for public sharing page
+$c->query('API')->addScript('public/musicFilePlayer', $c->query('AppName'));

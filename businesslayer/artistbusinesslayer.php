@@ -23,17 +23,23 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\ArtistMapper;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
+use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\ArtistMapper;
+
+
 class ArtistBusinessLayer extends BusinessLayer {
 
-	public function __construct(ArtistMapper $artistMapper, API $api){
-		parent::__construct($artistMapper, $api);
+	private $logger;
+
+	public function __construct(ArtistMapper $artistMapper, Logger $logger){
+		parent::__construct($artistMapper);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -50,18 +56,18 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Adds an artist (if it does not exist already) and returns the new artist
 	 * @param string $name the name of the artist
 	 * @return \OCA\Music\Db\Artist
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addArtistIfNotExist($name, $userId){
 		try {
 			$artist = $this->mapper->findByName($name, $userId);
-			$this->api->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
+			$this->logger->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$artist = new Artist();
 			$artist->setName($name);
 			$artist->setUserId($userId);
 			$artist = $this->mapper->insert($artist);
-			$this->api->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
+			$this->logger->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

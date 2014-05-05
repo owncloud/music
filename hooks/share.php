@@ -4,7 +4,7 @@
  * ownCloud - Music app
  *
  * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -21,44 +21,28 @@
  *
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Hooks;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
 
-class HookHandler {
+class Share {
 
 	/**
 	 * Invoke auto update of music database after item gets unshared
 	 * @param array $params contains the params of the removed share
 	 */
 	static public function itemUnshared($params){
-		$container = new DIContainer();
+		$app = new Music();
+
+		$container = $app->getContainer();
 		if ($params['itemType'] === 'folder') {
 			$backend = new \OC_Share_Backend_Folder();
 			foreach ($backend->getChildren($params['itemSource']) as $child) {
-				$container['Scanner']->delete((int)$child['source'], $params['shareWith']);
+				$container->query('Scanner')->delete((int)$child['source'], $params['shareWith']);
 			}
 		} else if ($params['itemType'] === 'file') {
-			$container['Scanner']->delete((int)$params['itemSource'], $params['shareWith']);
+			$container->query('Scanner')->delete((int)$params['itemSource'], $params['shareWith']);
 		}
-	}
-
-	/**
-	 * Invoke auto update of music database after file deletion
-	 * @param array $params contains a key value pair for the path of the file/dir
-	 */
-	static public function fileDeleted($params){
-		$container = new DIContainer();
-		$container['Scanner']->deleteByPath($params['path']);
-	}
-
-	/**
-	 * Invoke auto update of music database after file update or file creation
-	 * @param array $params contains a key value pair for the path of the file/dir
-	 */
-	static public function fileUpdated($params){
-		$container = new DIContainer();
-		$container['Scanner']->update($params['path']);
 	}
 
 	/**
@@ -66,16 +50,16 @@ class HookHandler {
 	 * @param array $params contains the params of the added share
 	 */
 	static public function itemShared($params){
-		$container = new DIContainer();
+		$app = new Music();
+
+		$container = $app->getContainer();
 		if ($params['itemType'] === 'folder') {
 			$backend = new \OC_Share_Backend_Folder();
 			foreach ($backend->getChildren($params['itemSource']) as $child) {
-				$filePath = $container['API']->getPath((int)$child['source']);
-				$container['Scanner']->update($filePath, $params['shareWith']);
+				$container->query('Scanner')->updateById((int)$child['source'], $params['shareWith']);
 			}
 		} else if ($params['itemType'] === 'file') {
-			$filePath = $container['API']->getPath((int)$params['itemSource']);
-			$container['Scanner']->update($filePath, $params['shareWith']);
+			$container->query('Scanner')->updateById((int)$params['itemSource'], $params['shareWith']);
 		}
 	}
 }

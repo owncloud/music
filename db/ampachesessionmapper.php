@@ -23,18 +23,17 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\AppFramework\Core\Db;
+use \OCA\Music\AppFramework\Db\IMapper;
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
-
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
 
 class AmpacheSessionMapper extends Mapper {
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_ampache_sessions');
+	public function __construct(db $db){
+		parent::__construct($db, 'music_ampache_sessions', '\OCA\Music\Db\AmpacheSession');
 	}
 
-	public function find($token){
+	public function findByToken($token){
 		$sql = 'SELECT `user_id` '.
 			'FROM `*PREFIX*music_ampache_sessions` '.
 			'WHERE `token` = ? AND `expiry` > ?';

@@ -23,13 +23,15 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\AppFramework\Core\Db;
+use \OCA\Music\AppFramework\Db\IMapper;
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
 
-class AmpacheUserMapper extends Mapper {
+class AmpacheUserMapper extends Mapper implements IMapper {
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_ampache_users');
+	public function __construct(Db $db){
+		// there is no entity for this mapper -> '' as entity class name
+		parent::__construct($db, 'music_ampache_users', '');
 	}
 
 	public function getPasswordHashes($userId){

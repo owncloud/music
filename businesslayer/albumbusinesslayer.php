@@ -23,18 +23,23 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\AlbumMapper;
-use \OCA\Music\Db\Album;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 
+use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Db\Album;
+
 class AlbumBusinessLayer extends BusinessLayer {
 
-	public function __construct(AlbumMapper $albumMapper, API $api){
-		parent::__construct($albumMapper, $api);
+	private $logger;
+
+	public function __construct(AlbumMapper $albumMapper, Logger $logger){
+		parent::__construct($albumMapper);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -90,19 +95,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $name the name of the album
 	 * @param string $year the year of the release
 	 * @return \OCA\Music\Db\Album
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addAlbumIfNotExist($name, $year, $artistId, $userId){
 		try {
 			$album = $this->mapper->findAlbum($name, $year, $artistId, $userId);
-			$this->api->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
+			$this->logger->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$album = new Album();
 			$album->setName($name);
 			$album->setYear($year);
 			$album->setUserId($userId);
 			$album = $this->mapper->insert($album);
-			$this->api->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
+			$this->logger->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

@@ -1,50 +1,52 @@
 <?php
-
 /**
- * ownCloud - App Framework
+ * ownCloud
  *
- * @author Bernhard Posselt
- * @copyright 2012 Bernhard Posselt dev@bernhard-posselt.com
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Alessandro Cosentino <cosenal@gmail.com>
+ * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @copyright Alessandro Cosentino 2012
+ * @copyright Bernhard Posselt 2012, 2014
  */
-
 
 namespace OCA\Music\AppFramework\Utility;
 
-use OCA\Music\AppFramework\Core\Api;
+use OCA\Music\AppFramework\Core\Db;
 
 
 /**
  * Simple utility class for testing mappers
  */
-abstract class MapperTestUtility extends TestUtility {
+abstract class MapperTestUtility extends \PHPUnit_Framework_TestCase {
 
 
-	protected $api;
+	protected $db;
+	private $query;
+	private $pdoResult;
+	private $queryAt;
+	private $prepareAt;
+	private $fetchAt;
+	private $iterators;
 
 
 	/**
 	 * Run this function before the actual test to either set or initialize the
-	 * api. After this the api can be accessed by using $this->api
-	 * @param \OCA\Music\AppFramework\Core\API $api the api mock
+	 * db. After this the db can be accessed by using $this->db
 	 */
 	protected function beforeEach(){
-		$this->api = $this->getMock('\OCA\Music\Core\API',
-			array('prepareQuery', 'getInsertId'),
-			array('a'));
+		$this->db = $this->getMockBuilder(
+			'\OCA\Music\AppFramework\Core\Db')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->query = $this->getMock('Query', array('execute', 'bindValue'));
+		$this->pdoResult = $this->getMock('Result', array('fetchRow', 'fetchAll'));
+		$this->queryAt = 0;
+		$this->prepareAt = 0;
+		$this->iterators = array();
+		$this->fetchAt = 0;
 	}
 
 
@@ -58,63 +60,96 @@ abstract class MapperTestUtility extends TestUtility {
 	 * will be called on the result
 	 */
 	protected function setMapperResult($sql, $arguments=array(), $returnRows=array(),
-		$limit=null, $offset=null, $atPosition=null){
+		$limit=null, $offset=null){
 
-		if($atPosition !== null && is_int($atPosition)) {
-			$position = $this->at($atPosition);
-		} else {
-			$position = $this->once();
-		}
+		$this->iterators[] = new ArgumentIterator($returnRows);
 
-		$pdoResult = $this->getMock('Result',
-			array('fetchRow', 'fetchAll'));
+		$iterators = $this->iterators;
+		$fetchAt = $this->fetchAt;
 
-		$iterator = new ArgumentIterator($returnRows);
-		$pdoResult->expects($this->any())
+		$this->pdoResult->expects($this->any())
 			->method('fetchRow')
 			->will($this->returnCallback(
-				function() use ($iterator){
-					return $iterator->next();
-			  	}
+				function() use ($iterators, $fetchAt){
+					$iterator = $iterators[$fetchAt];
+					$result = $iterator->next();
+
+					if($result === false) {
+						$fetchAt++;
+					}
+
+					return $result;
+				}
 			));
-		$pdoResult->expects($this->any())
+
+		$this->pdoResult->expects($this->any())
 			->method('fetchAll')
 			->will($this->returnValue($returnRows));
 
-		$query = $this->getMock('Query',
-			array('execute'));
-		$query->expects($this->once())
+		$index = 1;
+		foreach($arguments as $argument) {
+			switch (gettype($argument)) {
+				case 'integer':
+					$pdoConstant = \PDO::PARAM_INT;
+					break;
+
+				case 'NULL':
+					$pdoConstant = \PDO::PARAM_NULL;
+					break;
+
+				case 'boolean':
+					$pdoConstant = \PDO::PARAM_BOOL;
+					break;
+
+				default:
+					$pdoConstant = \PDO::PARAM_STR;
+					break;
+			}
+			$this->query->expects($this->at($this->queryAt))
+				->method('bindValue')
+				->with($this->equalTo($index),
+					$this->equalTo($argument),
+					$this->equalTo($pdoConstant));
+			$index++;
+			$this->queryAt++;
+		}
+
+		$this->query->expects($this->at($this->queryAt))
 			->method('execute')
-			->with($this->equalTo($arguments))
-			->will($this->returnValue($pdoResult));
+			->with()
+			->will($this->returnValue($this->pdoResult));
+		$this->queryAt++;
 
 		if($limit === null && $offset === null) {
-			$this->api->expects($position)
+			$this->db->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} elseif($limit !== null && $offset === null) {
-			$this->api->expects($position)
+			$this->db->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql), $this->equalTo($limit))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} elseif($limit === null && $offset !== null) {
-			$this->api->expects($position)
+			$this->db->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql),
 					$this->equalTo(null),
 					$this->equalTo($offset))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		} else  {
-			$this->api->expects($position)
+			$this->db->expects($this->at($this->prepareAt))
 				->method('prepareQuery')
 				->with($this->equalTo($sql),
 					$this->equalTo($limit),
 					$this->equalTo($offset))
-				->will(($this->returnValue($query)));
+				->will(($this->returnValue($this->query)));
 		}
+		$this->prepareAt++;
+		$this->fetchAt++;
 
 	}
+
 
 }
 

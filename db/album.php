@@ -24,9 +24,11 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\Core\API;
+use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\Db\Entity;
+
+use \OCA\Music\Core\API;
 
 /**
  * @method int getId()
@@ -64,24 +66,28 @@ class Album extends Entity {
 		$this->addType('coverFileId', 'int');
 	}
 
-	public function getUri(API $api) {
-		return $api->linkToRoute(
-			'music_album',
+	/**
+	 * @param \OCP\IURLGenerator $urlGenerator
+	 * @return string the url
+	 */
+	public function getUri(IURLGenerator $urlGenerator) {
+		return $urlGenerator->linkToRoute(
+			'music.api.album',
 			array('albumIdOrSlug' => $this->id)
 		);
 	}
 
 	/**
-	 * @param \OCA\Music\Core\API $api
+	 * @param \OCP\IURLGenerator $urlGenerator
 	 * @return array
 	 */
-	public function getArtists(API $api) {
+	public function getArtists(IURLGenerator $urlGenerator) {
 		$artists = array();
 		foreach($this->artistIds as $artistId) {
 			$artists[] = array(
 				'id' => $artistId,
-				'uri' => $api->linkToRoute(
-					'music_artist',
+				'uri' => $urlGenerator->linkToRoute(
+					'music.api.artist',
 					array('artistIdOrSlug' => $artistId)
 				)
 			);
@@ -90,45 +96,45 @@ class Album extends Entity {
 	}
 
 	/**
-	 * @param \OCA\Music\Core\API $api
+	 * @param object $l10n
 	 * @return string
 	 */
-	public function getNameString(API $api) {
+	public function getNameString($l10n) {
 		$name = $this->getName();
 		if ($name === null) {
-			$name = $api->getTrans()->t('Unknown album')->__toString();
+			$name = $l10n->t('Unknown album')->__toString();
 		}
 		return $name;
 	}
 
-	public function toCollection(API $api) {
+	public function toCollection(IURLGenerator $urlGenerator, $l10n) {
 		$coverUrl = null;
 		if($this->getCoverFileId()) {
-			$coverUrl = $api->linkToRoute('music_album_cover',
+			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
 					array('albumIdOrSlug' => $this->getId()));
 		}
 		return array(
-				'name' => $this->getNameString($api),
+				'name' => $this->getNameString($l10n),
 				'year' => $this->getYear(),
 				'cover' => $coverUrl,
 				'id' => $this->getId(),
 		);
 	}
 
-	public function toAPI(API $api) {
+	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
 		$coverUrl = null;
 		if($this->getCoverFileId() > 0) {
-			$coverUrl = $api->linkToRoute('music_album_cover',
+			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
 					array('albumIdOrSlug' => $this->getId()));
 		}
 		return array(
-			'name' => $this->getNameString($api),
+			'name' => $this->getNameString($l10n),
 			'year' => $this->getYear(),
 			'cover' => $coverUrl,
-			'uri' => $this->getUri($api),
+			'uri' => $this->getUri($urlGenerator),
 			'slug' => $this->getid() . '-' .$this->slugify('name'),
 			'id' => $this->getId(),
-			'artists' => $this->getArtists($api)
+			'artists' => $this->getArtists($urlGenerator)
 		);
 	}
 }

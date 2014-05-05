@@ -24,49 +24,55 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Utility\ControllerTestUtility;
-use \OCA\Music\AppFramework\Core\API;
-use \OCA\Music\AppFramework\Http\Request;
-use \OCA\Music\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Http\Request;
+use \OCP\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Artist;
 use OCA\Music\DB\Album;
 use OCA\Music\DB\Track;
 
-require_once __DIR__ . '/../HooksStubs.php';
-
-/* FIXME: dirty hack to mock object */
-class TestView {
-	public function getPath($fileId) {
-		return $fileId;
-	}
-}
-
 class APIControllerTest extends ControllerTestUtility {
 
-	private $api;
 	private $mapper;
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $request;
 	private $controller;
-	private $user = 'john';
+	private $userId = 'john';
+	private $appname = 'music';
+	private $urlGenerator;
+	private $l10n;
 
 	protected function getController($urlParams){
-		return new ApiController($this->api, new Request(array('urlParams' => $urlParams)),
+		return new ApiController(
+			$this->appname,
+			$this->getRequest(array('urlParams' => $urlParams)),
+			$this->urlGenerator,
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
-			$this->scanner);
+			$this->scanner,
+			$this->userId,
+			$this->l10n,
+			$this->userFolder);
 	}
 
 	protected function setUp(){
-		$this->api = $this->getAPIMock();
+		$this->request = $this->getMockBuilder(
+			'\OCP\IRequest')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
+			->disableOriginalConstructor()
+			->getMock();
 
-		/* FIXME: dirty hack to mock object */
-		$this->api->expects($this->any())
-			->method('getView')
-			->will($this->returnValue(new TestView()));
 		$this->trackBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\TrackBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
@@ -79,66 +85,31 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->request = new Request();
-		$this->controller = new ApiController($this->api, $this->request,
+		$this->controller = new ApiController(
+			$this->appname,
+			$this->request,
+			$this->urlGenerator,
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
-			$this->scanner);
+			$this->scanner,
+			$this->userId,
+			$this->l10n,
+			$this->userFolder);
 	}
 
 	private function assertAPIControllerAnnotations($methodName){
-		$annotations = array('CSRFExemption', 'IsAdminExemption', 'IsSubAdminExemption', 'Ajax', 'API');
+		$annotations = array('NoAdminRequired', 'NoCSRFRequired');
 		$this->assertAnnotations($this->controller, $methodName, $annotations);
 	}
 
-	public function testArtistsAnnotations(){
+	public function testAnnotations(){
 		$this->assertAPIControllerAnnotations('artists');
-	}
-
-	public function testArtistAnnotations(){
 		$this->assertAPIControllerAnnotations('artist');
-	}
-
-	public function testAlbumsAnnotations(){
 		$this->assertAPIControllerAnnotations('albums');
-	}
-
-	public function testAlbumAnnotations(){
 		$this->assertAPIControllerAnnotations('album');
-	}
-
-	public function testTracksAnnotations(){
 		$this->assertAPIControllerAnnotations('tracks');
-	}
-
-	public function testTrackAnnotations(){
 		$this->assertAPIControllerAnnotations('track');
-	}
-
-	private function getLinkToRouteFunction(){
-		return function($routeName, $arguments) {
-			switch($routeName){
-				case 'music_artists':
-					return '/api/artists';
-				case 'music_albums':
-					return '/api/albums';
-				case 'music_tracks':
-					return '/api/tracks';
-				case 'music_artist':
-					return '/api/artist/' . $arguments['artistIdOrSlug'];
-				case 'music_album':
-					return '/api/album/' . $arguments['albumIdOrSlug'];
-				case 'music_track':
-					return '/api/track/' . $arguments['trackIdOrSlug'];
-				case 'music_album_cover':
-					return '/api/album/' . $arguments['albumIdOrSlug'] . '/cover';
-				case 'music_file_download':
-					return '/api/file/' . $arguments['fileId'] . '/download';
-				default:
-					return $arguments['file'];
-			}
-		};
 	}
 
 	public function testArtists(){
@@ -151,30 +122,23 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist2->setName('The other artist name');
 		$artist2->setImage('The image url number 2');
 
-		$this->api->expects($this->exactly(2))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($artist1, $artist2)));
 
 		$result = array(
 			array(
 				'name' => 'The artist name',
 				'image' => 'The image url',
-				'uri' => '/api/artist/3',
+				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3
 			),
 			array(
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
-				'uri' => '/api/artist/4',
+				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4
 			)
@@ -214,24 +178,17 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 4;
 
-		$this->api->expects($this->exactly(16))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($artist1, $artist2)));
 		$this->albumBusinessLayer->expects($this->at(0))
 			->method('findAllByArtist')
-			->with($this->equalTo(3), $this->equalTo($this->user))
+			->with($this->equalTo(3), $this->equalTo($this->userId))
 			->will($this->returnValue(array($album)));
 		$this->albumBusinessLayer->expects($this->at(1))
 			->method('findAllByArtist')
-			->with($this->equalTo(4), $this->equalTo($this->user))
+			->with($this->equalTo(4), $this->equalTo($this->userId))
 			->will($this->returnValue(array($album)));
 		$this->trackBusinessLayer->expects($this->exactly(2))
 			->method('findAllByAlbum')
@@ -242,33 +199,33 @@ class APIControllerTest extends ControllerTestUtility {
 			array(
 				'name' => 'The artist name',
 				'image' => 'The image url',
-				'uri' => '/api/artist/3',
+				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => '/api/album/4/cover',
-						'uri' => '/api/album/4',
+						'cover' => null,
+						'uri' => null,
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => array(
-							array('id' => 3, 'uri' => '/api/artist/3')
+							array('id' => 3, 'uri' => null)
 						),
 						'tracks' => array(
 							array(
 								'title' => 'The title',
-								'uri' => '/api/track/1',
+								'uri' => null,
 								'slug' => '1-the-title',
 								'id' => 1,
 								'number' => 4,
 								'bitrate' => 123,
 								'length' => 123,
-								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-								'album' => array('id' => 4, 'uri' => '/api/album/4'),
+								'artist' => array('id' => 3, 'uri' => null),
+								'album' => array('id' => 4, 'uri' => null),
 								'files' => array(
-									'audio/mp3' => '/api/file/3/download'
+									'audio/mp3' => null
 								)
 							)
 						)
@@ -278,33 +235,33 @@ class APIControllerTest extends ControllerTestUtility {
 			array(
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
-				'uri' => '/api/artist/4',
+				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => '/api/album/4/cover',
-						'uri' => '/api/album/4',
+						'cover' => null,
+						'uri' => null,
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => array(
-							array('id' => 3, 'uri' => '/api/artist/3')
+							array('id' => 3, 'uri' => null)
 						),
 						'tracks' => array(
 							array(
 								'title' => 'The title',
-								'uri' => '/api/track/1',
+								'uri' => null,
 								'slug' => '1-the-title',
 								'id' => 1,
 								'number' => 4,
 								'bitrate' => 123,
 								'length' => 123,
-								'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-								'album' => array('id' => 4, 'uri' => '/api/album/4'),
+								'artist' => array('id' => 3, 'uri' => null),
+								'album' => array('id' => 4, 'uri' => null),
 								'files' => array(
-									'audio/mp3' => '/api/file/3/download'
+									'audio/mp3' => null
 								)
 							)
 						)
@@ -338,24 +295,17 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setCoverFileId(5);
 		$album->setArtistIds(array(3));
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($artist1, $artist2)));
 		$this->albumBusinessLayer->expects($this->at(0))
 			->method('findAllByArtist')
-			->with($this->equalTo(3), $this->equalTo($this->user))
+			->with($this->equalTo(3), $this->equalTo($this->userId))
 			->will($this->returnValue(array($album)));
 		$this->albumBusinessLayer->expects($this->at(1))
 			->method('findAllByArtist')
-			->with($this->equalTo(4), $this->equalTo($this->user))
+			->with($this->equalTo(4), $this->equalTo($this->userId))
 			->will($this->returnValue(array($album)));
 		$this->trackBusinessLayer->expects($this->never())
 			->method('findAllByAlbum');
@@ -364,19 +314,19 @@ class APIControllerTest extends ControllerTestUtility {
 			array(
 				'name' => 'The artist name',
 				'image' => 'The image url',
-				'uri' => '/api/artist/3',
+				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => '/api/album/4/cover',
-						'uri' => '/api/album/4',
+						'cover' => null,
+						'uri' => null,
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => array(
-							array('id' => 3, 'uri' => '/api/artist/3')
+							array('id' => 3, 'uri' => null)
 						)
 					)
 				)
@@ -384,19 +334,19 @@ class APIControllerTest extends ControllerTestUtility {
 			array(
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
-				'uri' => '/api/artist/4',
+				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
 				'albums' => array(
 					array(
 						'name' => 'The name',
-						'cover' => '/api/album/4/cover',
-						'uri' => '/api/album/4',
+						'cover' => null,
+						'uri' => null,
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => array(
-							array('id' => 3, 'uri' => '/api/artist/3')
+							array('id' => 3, 'uri' => null)
 						)
 					)
 				)
@@ -420,22 +370,15 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$artistId = 3;
 
-		$this->api->expects($this->exactly(1))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo($artistId), $this->equalTo($this->user))
+			->with($this->equalTo($artistId), $this->equalTo($this->userId))
 			->will($this->returnValue($artist));
 
 		$result = array(
 			'name' => 'The artist name',
 			'image' => 'The image url',
-			'uri' => '/api/artist/3',
+			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3
 		);
@@ -474,20 +417,13 @@ class APIControllerTest extends ControllerTestUtility {
 		$artistId = 3;
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo($artistId), $this->equalTo($this->user))
+			->with($this->equalTo($artistId), $this->equalTo($this->userId))
 			->will($this->returnValue($artist));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAllByArtist')
-			->with($this->equalTo($artistId), $this->equalTo($this->user))
+			->with($this->equalTo($artistId), $this->equalTo($this->userId))
 			->will($this->returnValue(array($album)));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
@@ -497,33 +433,33 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			'name' => 'The artist name',
 			'image' => 'The image url',
-			'uri' => '/api/artist/3',
+			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3,
 			'albums' => array(
 				array(
 					'name' => 'The name',
-					'cover' => '/api/album/3/cover',
-					'uri' => '/api/album/3',
+					'cover' => null,
+					'uri' => null,
 					'slug' => '3-the-name',
 					'id' => 3,
 					'year' => 2013,
 					'artists' => array(
-						array('id' => 3, 'uri' => '/api/artist/3')
+						array('id' => 3, 'uri' => null)
 					),
 					'tracks' => array(
 						array(
 							'title' => 'The title',
-							'uri' => '/api/track/1',
+							'uri' => null,
 							'slug' => '1-the-title',
 							'id' => 1,
 							'number' => 4,
 							'bitrate' => 123,
 							'length' => 123,
-							'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-							'album' => array('id' => 1, 'uri' => '/api/album/1'),
+							'artist' => array('id' => 3, 'uri' => null),
+							'album' => array('id' => 1, 'uri' => null),
 							'files' => array(
-								'audio/mp3' => '/api/file/3/download'
+								'audio/mp3' => null
 							)
 						)
 					)
@@ -554,40 +490,33 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2->setCoverFileId(7);
 		$album2->setArtistIds(array(3,5));
 
-		$this->api->expects($this->exactly(7))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($album1, $album2)));
 
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => '/api/album/3/cover',
-				'uri' => '/api/album/3',
+				'cover' => null,
+				'uri' => null,
 				'slug' => '3-the-name',
 				'id' => 3,
 				'year' => 2013,
 				'artists' => array(
-					array('id' => 1, 'uri' => '/api/artist/1')
+					array('id' => 1, 'uri' => null)
 				)
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => '/api/album/4/cover',
-				'uri' => '/api/album/4',
+				'cover' => null,
+				'uri' => null,
 				'slug' => '4-the-album-name',
 				'id' => 4,
 				'year' => 2003,
 				'artists' => array(
-					array('id' => 3, 'uri' => '/api/artist/3'),
-					array('id' => 5, 'uri' => '/api/artist/5')
+					array('id' => 3, 'uri' => null),
+					array('id' => 5, 'uri' => null)
 				)
 			)
 		);
@@ -634,24 +563,17 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
-		$this->api->expects($this->exactly(18)) // artists uris will be fetched twice
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($album1, $album2)));
 		$this->artistBusinessLayer->expects($this->at(0))
 			->method('findMultipleById')
-			->with($this->equalTo(array(1)), $this->equalTo($this->user))
+			->with($this->equalTo(array(1)), $this->equalTo($this->userId))
 			->will($this->returnValue(array($artist1)));
 		$this->artistBusinessLayer->expects($this->at(1))
 			->method('findMultipleById')
-			->with($this->equalTo(array(3,5)), $this->equalTo($this->user))
+			->with($this->equalTo(array(3,5)), $this->equalTo($this->userId))
 			->will($this->returnValue(array($artist2, $artist3)));
 		$this->trackBusinessLayer->expects($this->at(0))
 			->method('findAllByAlbum')
@@ -665,8 +587,8 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = array(
 			array(
 				'name' => 'The name',
-				'cover' => '/api/album/3/cover',
-				'uri' => '/api/album/3',
+				'cover' => null,
+				'uri' => null,
 				'slug' => '3-the-name',
 				'id' => 3,
 				'year' => 2013,
@@ -674,7 +596,7 @@ class APIControllerTest extends ControllerTestUtility {
 					array(
 						'name' => 'The artist name',
 						'image' => 'The image url',
-						'uri' => '/api/artist/1',
+						'uri' => null,
 						'slug' => '1-the-artist-name',
 						'id' => 1
 					)
@@ -682,24 +604,24 @@ class APIControllerTest extends ControllerTestUtility {
 				'tracks' => array(
 					array(
 						'title' => 'The title',
-						'uri' => '/api/track/1',
+						'uri' => null,
 						'slug' => '1-the-title',
 						'id' => 1,
 						'number' => 4,
 						'bitrate' => 123,
 						'length' => 123,
-						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-						'album' => array('id' => 4, 'uri' => '/api/album/4'),
+						'artist' => array('id' => 3, 'uri' => null),
+						'album' => array('id' => 4, 'uri' => null),
 						'files' => array(
-							'audio/mp3' => '/api/file/3/download'
+							'audio/mp3' => null
 						)
 					)
 				)
 			),
 			array(
 				'name' => 'The album name',
-				'cover' => '/api/album/4/cover',
-				'uri' => '/api/album/4',
+				'cover' => null,
+				'uri' => null,
 				'slug' => '4-the-album-name',
 				'id' => 4,
 				'year' => 2003,
@@ -707,14 +629,14 @@ class APIControllerTest extends ControllerTestUtility {
 					array(
 						'name' => 'The artist name3',
 						'image' => 'The image url3',
-						'uri' => '/api/artist/3',
+						'uri' => null,
 						'slug' => '3-the-artist-name3',
 						'id' => 3
 					),
 					array(
 						'name' => 'The artist name5',
 						'image' => 'The image url5',
-						'uri' => '/api/artist/5',
+						'uri' => null,
 						'slug' => '5-the-artist-name5',
 						'id' => 5
 					)
@@ -722,16 +644,16 @@ class APIControllerTest extends ControllerTestUtility {
 				'tracks' => array(
 					array(
 						'title' => 'The title',
-						'uri' => '/api/track/1',
+						'uri' => null,
 						'slug' => '1-the-title',
 						'id' => 1,
 						'number' => 4,
 						'bitrate' => 123,
 						'length' => 123,
-						'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-						'album' => array('id' => 4, 'uri' => '/api/album/4'),
+						'artist' => array('id' => 3, 'uri' => null),
+						'album' => array('id' => 4, 'uri' => null),
 						'files' => array(
-							'audio/mp3' => '/api/file/3/download'
+							'audio/mp3' => null
 						)
 					)
 				)
@@ -771,20 +693,13 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(8)) // artists uris will be fetched twice
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo($albumId), $this->equalTo($this->user))
+			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findMultipleById')
-			->with($this->equalTo(array(1)), $this->equalTo($this->user))
+			->with($this->equalTo(array(1)), $this->equalTo($this->userId))
 			->will($this->returnValue(array($artist)));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
@@ -793,8 +708,8 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => '/api/album/3/cover',
-			'uri' => '/api/album/3',
+			'cover' => null,
+			'uri' => null,
 			'slug' => '3-the-name',
 			'id' => 3,
 			'year' => 2013,
@@ -802,7 +717,7 @@ class APIControllerTest extends ControllerTestUtility {
 				array(
 					'name' => 'The artist name',
 					'image' => 'The image url',
-					'uri' => '/api/artist/1',
+					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1
 				)
@@ -810,16 +725,16 @@ class APIControllerTest extends ControllerTestUtility {
 			'tracks' => array(
 				array(
 					'title' => 'The title',
-					'uri' => '/api/track/1',
+					'uri' => null,
 					'slug' => '1-the-title',
 					'id' => 1,
 					'number' => 4,
 					'bitrate' => 123,
 					'length' => 123,
-					'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-					'album' => array('id' => 4, 'uri' => '/api/album/4'),
+					'artist' => array('id' => 3, 'uri' => null),
+					'album' => array('id' => 4, 'uri' => null),
 					'files' => array(
-						'audio/mp3' => '/api/file/3/download'
+						'audio/mp3' => null
 					)
 				)
 			)
@@ -844,27 +759,20 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 3;
 
-		$this->api->expects($this->exactly(3))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo($albumId), $this->equalTo($this->user))
+			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
 
 		$result = array(
 			'name' => 'The name',
-			'cover' => '/api/album/3/cover',
-			'uri' => '/api/album/3',
+			'cover' => null,
+			'uri' => null,
 			'slug' => '3-the-name',
 			'id' => 3,
 			'year' => 2013,
 			'artists' => array(
-				array('id' => 1, 'uri' => '/api/artist/1')
+				array('id' => 1, 'uri' => null)
 			)
 		);
 
@@ -899,45 +807,38 @@ class APIControllerTest extends ControllerTestUtility {
 		$track2->setMimetype('audio/mp3');
 		$track2->setBitrate(123);
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($track1, $track2)));
 
 		$result = array(
 			array(
 				'title' => 'The title',
-				'uri' => '/api/track/1',
+				'uri' => null,
 				'slug' => '1-the-title',
 				'id' => 1,
 				'number' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-				'album' => array('id' => 1, 'uri' => '/api/album/1'),
+				'artist' => array('id' => 3, 'uri' => null),
+				'album' => array('id' => 1, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			),
 			array(
 				'title' => 'The second title',
-				'uri' => '/api/track/2',
+				'uri' => null,
 				'slug' => '2-the-second-title',
 				'id' => 2,
 				'number' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
-				'album' => array('id' => 3, 'uri' => '/api/album/3'),
+				'artist' => array('id' => 2, 'uri' => null),
+				'album' => array('id' => 3, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			)
 		);
@@ -970,30 +871,23 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist->setName('The artist name');
 		$artist->setImage('The image url');
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')
-			->with($this->equalTo($this->user))
+			->with($this->equalTo($this->userId))
 			->will($this->returnValue(array($track1)));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo(3), $this->equalTo($this->user))
+			->with($this->equalTo(3), $this->equalTo($this->userId))
 			->will($this->returnValue($artist));
 		$this->albumBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo(1), $this->equalTo($this->user))
+			->with($this->equalTo(1), $this->equalTo($this->userId))
 			->will($this->returnValue($album ));
 
 		$result = array(
 			array(
 				'title' => 'The title',
-				'uri' => '/api/track/1',
+				'uri' => null,
 				'slug' => '1-the-title',
 				'id' => 1,
 				'number' => 4,
@@ -1002,23 +896,23 @@ class APIControllerTest extends ControllerTestUtility {
 				'artist' => array(
 					'name' => 'The artist name',
 					'image' => 'The image url',
-					'uri' => '/api/artist/1',
+					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1
 				),
 				'album' => array(
 					'name' => 'The name',
-					'cover' => '/api/album/3/cover',
-					'uri' => '/api/album/3',
+					'cover' => null,
+					'uri' => null,
 					'slug' => '3-the-name',
 					'id' => 3,
 					'year' => 2013,
 					'artists' => array(
-						array('id' => 1, 'uri' => '/api/artist/1')
+						array('id' => 1, 'uri' => null)
 					)
 				),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			)
 		);
@@ -1046,30 +940,23 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$trackId = 1;
 
-		$this->api->expects($this->exactly(4))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('find')
-			->with($this->equalTo($trackId), $this->equalTo($this->user))
+			->with($this->equalTo($trackId), $this->equalTo($this->userId))
 			->will($this->returnValue($track));
 
 		$result = array(
 			'title' => 'The title',
-			'uri' => '/api/track/1',
+			'uri' => null,
 			'slug' => '1-the-title',
 			'id' => 1,
 			'number' => 4,
 			'bitrate' => 123,
 			'length' => 123,
-			'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-			'album' => array('id' => 1, 'uri' => '/api/album/1'),
+			'artist' => array('id' => 3, 'uri' => null),
+			'album' => array('id' => 1, 'uri' => null),
 			'files' => array(
-				'audio/mp3' => '/api/file/3/download'
+				'audio/mp3' => null
 			)
 		);
 
@@ -1085,7 +972,7 @@ class APIControllerTest extends ControllerTestUtility {
 	public function testTrackById(){
 		$trackId = 1;
 		$fileId = 3;
-		$filePath = '/api/file/' . $fileId . '/download';
+		$filePath = null;
 
 		$track = new Track();
 		$track->setId($trackId);
@@ -1098,16 +985,9 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
-		$this->api->expects($this->exactly(1))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findByFileId')
-			->with($this->equalTo($fileId), $this->equalTo($this->user))
+			->with($this->equalTo($fileId), $this->equalTo($this->userId))
 			->will($this->returnValue($track));
 
 		$result = array(
@@ -1158,45 +1038,38 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$artistId = 3;
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByArtist')
-			->with($this->equalTo($artistId), $this->equalTo($this->user))
+			->with($this->equalTo($artistId), $this->equalTo($this->userId))
 			->will($this->returnValue(array($track1, $track2)));
 
 		$result = array(
 			array(
 				'title' => 'The title',
-				'uri' => '/api/track/1',
+				'uri' => null,
 				'slug' => '1-the-title',
 				'id' => 1,
 				'number' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-				'album' => array('id' => 1, 'uri' => '/api/album/1'),
+				'artist' => array('id' => 3, 'uri' => null),
+				'album' => array('id' => 1, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			),
 			array(
 				'title' => 'The second title',
-				'uri' => '/api/track/2',
+				'uri' => null,
 				'slug' => '2-the-second-title',
 				'id' => 2,
 				'number' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-				'album' => array('id' => 3, 'uri' => '/api/album/3'),
+				'artist' => array('id' => 3, 'uri' => null),
+				'album' => array('id' => 3, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			)
 		);
@@ -1234,45 +1107,38 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$albumId = 1;
 
-		$this->api->expects($this->exactly(8))
-			->method('linkToRoute')
-			->will($this->returnCallback($this->getLinkToRouteFunction()));
-
-		$this->api->expects($this->once())
-			->method('getUserId')
-			->will($this->returnValue($this->user));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
-			->with($this->equalTo($albumId), $this->equalTo($this->user))
+			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue(array($track1, $track2)));
 
 		$result = array(
 			array(
 				'title' => 'The title',
-				'uri' => '/api/track/1',
+				'uri' => null,
 				'slug' => '1-the-title',
 				'id' => 1,
 				'number' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => '/api/artist/3'),
-				'album' => array('id' => 1, 'uri' => '/api/album/1'),
+				'artist' => array('id' => 3, 'uri' => null),
+				'album' => array('id' => 1, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			),
 			array(
 				'title' => 'The second title',
-				'uri' => '/api/track/2',
+				'uri' => null,
 				'slug' => '2-the-second-title',
 				'id' => 2,
 				'number' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 2, 'uri' => '/api/artist/2'),
-				'album' => array('id' => 1, 'uri' => '/api/album/1'),
+				'artist' => array('id' => 2, 'uri' => null),
+				'album' => array('id' => 1, 'uri' => null),
 				'files' => array(
-					'audio/mp3' => '/api/file/3/download'
+					'audio/mp3' => null
 				)
 			)
 		);

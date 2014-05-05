@@ -30,7 +30,7 @@
 
 ?>
 
-<div class="section<?php if($_['isStable5']) { ?> personalblock<?php } ?>" id="music-user">
+<div class="section" id="music-user">
 	<h2><?php p($l->t('Music')); ?></h2>
 	<div>
 		<label for="music-path"><?php p($l->t('Path to your music collection')); ?></label>
@@ -44,7 +44,7 @@
 		'I would also like to have a list of clients to test with. Thanks')); ?>
 	</div>
 	<div>
-		<code><?php p(\OC_Helper::makeURLAbsolute(\OC_Helper::linkToRoute('music_ampache')));?></code><br />
+		<code><?php p(\OC_Helper::makeURLAbsolute(\OC_Helper::linkToRoute('music.ampache.ampache')));?></code><br />
 		<em><?php p($l->t('Use this address to browse your music collection from any Ampache compatible player.')); ?></em>
 	</div>
 	<div>

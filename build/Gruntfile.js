@@ -28,7 +28,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-wrap');
-	grunt.loadNpmTasks('grunt-phpunit');
 	grunt.loadNpmTasks('grunt-angular-gettext');
 
 
@@ -98,19 +97,6 @@ module.exports = function(grunt) {
 				],
 				tasks: ['build']
 			},
-			phpunit: {
-				files: '../**/*.php',
-				tasks: ['phpunit']
-			}
-		},
-
-		phpunit: {
-			classes: {
-				dir: '../tests/php/unit'
-			},
-			options: {
-				colors: true
-			}
 		},
 
 		nggettext_extract: {

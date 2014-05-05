@@ -24,26 +24,30 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\AppFramework\Core\API;
-use \OCA\Music\AppFramework\Http\Request;
+use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\IRequest;
 
+use \OCA\Music\AppFramework\Core\Logger;
 
 class LogController extends Controller {
 
-	public function __construct(API $api, Request $request){
-		parent::__construct($api, $request);
+	private $logger;
+
+	public function __construct($appname,
+								IRequest $request,
+								Logger $logger){
+		parent::__construct($appname, $request);
+		$this->logger = $logger;
 	}
 
 	/**
-	 * @CSRFExemption
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @Ajax
-	 * @API
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function log() {
 		$message = $this->params('message');
-		$this->api->log('JS: ' . $message, 'debug');
-		return $this->renderPlainJSON(array('success' => true));
+		$this->logger->log('JS: ' . $message, 'debug');
+		return new JSONResponse(array('success' => true));
 	}
 }

@@ -21,30 +21,17 @@
  *
  */
 
-
 namespace OCA\Music\Db;
 
-/* FIXME: dirty hack to mock object */
-class TrackTestView {
-	public function getPath($fileId) {
-		return $fileId;
-	}
-}
 
 class TrackTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
+	private $urlGenerator;
 
 	protected function setUp() {
-		$this->api = $this->getMockBuilder(
-			'\OCA\Music\Core\API')
+		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
-
-		/* FIXME: dirty hack to mock object */
-		$this->api->expects($this->any())
-			->method('getView')
-			->will($this->returnValue(new TrackTestView()));
 	}
 
 	public function testToAPI() {
@@ -70,7 +57,7 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 			'bitrate' => 123,
 			'slug' => '1-the-title',
 			'uri' => null
-			), $track->toAPI($this->api));
+			), $track->toAPI($this->urlGenerator));
 	}
 
 }

@@ -36,7 +36,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 	{
 		$this->beforeEach();
 
-		$this->mapper = new ArtistMapper($this->api);
+		$this->mapper = new ArtistMapper($this->db);
 
 		// create mock items
 		$artist1 = new Artist();
@@ -113,7 +113,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 	public function testDeleteByIdNone(){
 		$artistIds = array();
 
-		$this->api->expects($this->never())
+		$this->db->expects($this->never())
 			->method('prepareQuery');
 
 		$this->mapper->deleteById($artistIds);

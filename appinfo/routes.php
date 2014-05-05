@@ -24,34 +24,45 @@
 
 namespace OCA\Music;
 
-use \OCA\Music\AppFramework\App;
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
+
+$app = new Music();
+
+$app->registerRoutes($this, array('routes' => array(
+	// page
+	array('name' => 'page#index', 'url' => '/', 'verb' => 'GET'),
+
+	// log
+	array('name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'),
+
+	// api
+	array('name' => 'api#collection', 'url' => '/api/collection', 'verb' => 'GET'),
+
+	// Shiva api https://github.com/tooxie/shiva-server#resources
+	array('name' => 'api#artists', 'url' => '/api/artists', 'verb' => 'GET'),
+	array('name' => 'api#artist', 'url' => '/api/artist/{artistIdOrSlug}', 'verb' => 'GET'),
+	// array('name' => 'api#artistShows', 'url' => '/api/artist/{artistIdOrSlug}/shows', 'verb' => 'GET'),
+	array('name' => 'api#albums', 'url' => '/api/albums', 'verb' => 'GET'),
+	array('name' => 'api#album', 'url' => '/api/album/{albumIdOrSlug', 'verb' => 'GET'),
+	array('name' => 'api#cover', 'url' => '/api/album/{albumIdOrSlug}/cover', 'verb' => 'GET'),
+	array('name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'),
+	array('name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'),
+	// array('name' => 'api#trackLyrics', 'url' => '/api/track/{trackIdOrSlug}/lyrics', 'verb' => 'GET'),
+	array('name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'),
+	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
+	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'GET'),
+
+	// settings
+	array('name' => 'settings#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
+	array('name' => 'settings#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),
+	array('name' => 'settings#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
+
+	// ampache
+	array('name' => 'ampache#ampache', 'url' => '/ampache', 'verb' => 'GET'),
+	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'),
+	// Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
+	array('name' => 'ampache#ampache', 'url' => '/ampache', 'verb' => 'POST'),
+	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST')
 
 
-/**
- * Webinterface
- */
-/** @var $this \OC_Router */
-$this->create('music_index', '/')->get()->action(
-	function($params){
-		App::main('PageController', 'index', $params, new DIContainer());
-	}
-);
-
-/**
- * Log
- */
-$this->create('music_log', '/api/log')->post()->action(
-	function($params){
-		App::main('LogController', 'log', $params, new DIContainer());
-	}
-);
-
-// include external API
-require_once __DIR__ . '/routes_api.php';
-
-// include settings routes
-require_once __DIR__ . '/routes_settings.php';
-
-// include ampache routes
-require_once __DIR__ . '/routes_ampache.php';
+)));

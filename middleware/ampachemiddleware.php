@@ -24,12 +24,13 @@
 
 namespace OCA\Music\Middleware;
 
+use \OCP\IRequest;
+use \OCP\AppFramework\Http\TemplateResponse;
+use \OCP\AppFramework\Middleware;
+
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
-use \OCA\Music\AppFramework\DB\Mapper;
-use \OCA\Music\AppFramework\Http\Request;
-use \OCA\Music\AppFramework\Http\TemplateResponse;
-use \OCA\Music\AppFramework\Middleware\Middleware;
-use \OCA\Music\Core\API;
+
+use \OCA\Music\Db\AmpacheSessionMapper;
 
 /**
  * Used to do the authentication and checking stuff for an ampache controller method
@@ -38,20 +39,19 @@ use \OCA\Music\Core\API;
  */
 class AmpacheMiddleware extends Middleware {
 
-	private $api;
+	private $appname;
 	private $request;
-	private $mapper;
+	private $ampacheSessionMapper;
 	private $isAmpacheCall;
 	private $ampacheUser;
 
 	/**
-	 * @param API $api an instance of the api
 	 * @param Request $request an instance of the request
 	 */
-	public function __construct(API $api, Request $request, Mapper $mapper, $ampacheUser){
-		$this->api = $api;
+	public function __construct($appname, IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, $ampacheUser){
+		$this->appname = $appname;
 		$this->request = $request;
-		$this->mapper = $mapper;
+		$this->ampacheSessionMapper = $ampacheSessionMapper;
 
 		// used to share user info with controller
 		$this->ampacheUser = $ampacheUser;
@@ -77,7 +77,7 @@ class AmpacheMiddleware extends Middleware {
 		if($this->isAmpacheCall && $this->request['action'] !== 'handshake'){
 			$token = $this->request['auth'];
 			if($token !== null && $token !== '') {
-				$user = $this->mapper->find($token);
+				$user = $this->ampacheSessionMapper->findByToken($token);
 				if($user !== false && array_key_exists('user_id', $user)) {
 					// setup the filesystem for the user - actual login isn't really needed
 					\OC_Util::setupFS($user['user_id']);
@@ -106,10 +106,10 @@ class AmpacheMiddleware extends Middleware {
 	 */
 	public function afterException($controller, $methodName, \Exception $exception){
 		if($exception instanceof AmpacheException && $this->isAmpacheCall){
-			$response = new TemplateResponse($this->api, 'ampache/error');
+			$response = new TemplateResponse($this->appname, 'ampache/error');
 			$response->renderAs('blank');
 			$response->addHeader('Content-Type', 'text/xml; charset=UTF-8');
-			$response->setparams(array(
+			$response->setParams(array(
 				'code' => $exception->getCode(),
 				'message' => $exception->getMessage()
 			));

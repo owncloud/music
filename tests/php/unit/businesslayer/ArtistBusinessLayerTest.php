@@ -23,25 +23,28 @@
 
 namespace OCA\Music\BusinessLayer;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Artist;
 
 
-class ArtistBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
+class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
 	private $mapper;
+	private $logger;
 	private $artistBusinessLayer;
 
 
 	protected function setUp(){
-		$this->api = $this->getAPIMock();
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\ArtistMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->artistBusinessLayer = new ArtistBusinessLayer($this->mapper, $this->api);
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->artistBusinessLayer = new ArtistBusinessLayer($this->mapper, $this->logger);
 		$this->userId = 'john';
 	}
 
@@ -123,7 +126,7 @@ class ArtistBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtilit
 		$this->mapper->expects($this->never())
 			->method('insert');
 
-		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
 		$this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
 	}
 }

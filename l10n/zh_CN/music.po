@@ -1,12 +1,13 @@
 # 
 # Translators:
 # phy <transifex@phy25.com>, 2014
+# Xuetian Weng <wengxt@gmail.com>, 2014
 # 攀 张 <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-05 18:46+0000\n"
+"Last-Translator: Xuetian Weng <wengxt@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,11 +32,11 @@ msgstr "描述"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "描述 (例如 App 名称)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "生成 API 密码"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -46,7 +47,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "无效路径"
 
 #: ../templates/fake-template.php
 msgid ""

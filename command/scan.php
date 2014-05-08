@@ -1,11 +1,17 @@
 <?php
+
 /**
- * Copyright (c) 2013 Thomas Müller <thomas.mueller@tmit.eu>
- * Copyright (c) 2013 Bart Visscher <bartv@thisnet.nl>
- * Copyright (c) 2014 Leizh <leizh@free.fr>
+ * ownCloud - Music app
+ *
  * This file is licensed under the Affero General Public License version 3 or
- * later.
- * See the COPYING-README file.
+ * later. See the COPYING file.
+ *
+ * @author Thomas Müller <thomas.mueller@tmit.eu>
+ * @author Bart Visscher <bartv@thisnet.nl>
+ * @author Leizh <leizh@free.fr>
+ * @copyright Thomas Müller 2013
+ * @copyright Bart Visscher 2013
+ * @copyright Leizh 2014
  */
 
 namespace OCA\Music\Command;

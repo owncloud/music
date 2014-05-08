@@ -16,7 +16,7 @@ use \OCA\Music\AppFramework\Core\Db;
 use \OCA\Music\AppFramework\Db\IMapper;
 use \OCA\Music\AppFramework\Db\Mapper;
 
-class AmpacheUserMapper extends Mapper implements IMapper {
+class AmpacheUserMapper extends Mapper {
 
 	public function __construct(Db $db){
 		// there is no entity for this mapper -> '' as entity class name

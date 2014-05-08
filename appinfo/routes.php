@@ -41,9 +41,9 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'GET'),
 
 	// settings
-	array('name' => 'settings#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
-	array('name' => 'settings#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),
-	array('name' => 'settings#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
+	array('name' => 'setting#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
+	array('name' => 'setting#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),
+	array('name' => 'setting#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
 
 	// ampache
 	array('name' => 'ampache#ampache', 'url' => '/ampache', 'verb' => 'GET'),

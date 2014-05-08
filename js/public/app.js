@@ -587,7 +587,7 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	soundManager.setup({
-		url: OC.linkTo('music', '3rdparty/soundmanager'),
+		url: OC.linkTo('music', 'js/vendor/soundmanager/swf'),
 		flashVersion: 8,
 		useFlashBlock: true,
 		flashPollingInterval: 200,

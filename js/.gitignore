@@ -1,0 +1,18 @@
+# unused dependencies
+vendor/lodash
+vendor/jquery/src
+vendor/restangular/src
+vendor/soundmanager/demo
+vendor/soundmanager/doc
+vendor/soundmanager/src
+vendor/soundmanager/troubleshoot
+
+vendor/angular/angular-csp.css
+vendor/angular/angular.min.js.gzip
+vendor/restangular/dist/restangular.zip
+vendor/restangular/Gruntfile.js
+vendor/restangular/karma.conf.js
+vendor/restangular/karma.underscore.conf.js
+vendor/restangular/test
+vendor/soundmanager/build.xml
+vendor/soundmanager/index.html

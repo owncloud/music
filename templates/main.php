@@ -3,10 +3,10 @@
 \OCP\Util::addScript('3rdparty', 'md5/md5.min');
 \OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
-\OCP\Util::addScript('music', 'vendor/angular/angular-route.min');
-\OCP\Util::addScript('music', 'vendor/soundmanager/soundmanager2');
-\OCP\Util::addScript('music', 'vendor/restangular/restangular.min');
-\OCP\Util::addScript('music', 'vendor/angular-gettext/angular-gettext.min');
+\OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
+\OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
+\OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
+\OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-playerbar');

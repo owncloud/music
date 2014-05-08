@@ -1,0 +1,12 @@
+{
+  "name": "ownCloud music",
+  "version": "0.2",
+  "dependencies": {
+    "angular" : "",
+    "angular-route" : "",
+    "angular-gettext" : "",
+    "restangular" : "",
+    "soundmanager": "",
+    "underscore" : "32216a4afe97c0c3665897b58be73409d5571dcf"
+  }
+}

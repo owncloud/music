@@ -17,7 +17,6 @@
 		"grunt-contrib-jshint": "*",
 		"grunt-contrib-watch": "*",
 		"grunt-wrap": "*",
-		"grunt-phpunit": "*",
 		"grunt-angular-gettext": "*"
 	},
 	"engine": "node >= 0.8"

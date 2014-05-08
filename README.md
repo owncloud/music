@@ -19,3 +19,10 @@ PHP tests
 
 	phpunit tests/php
 	phpunit --coverage-html coverage-html tests/php
+
+## 3rdparty libs
+
+update JavaScript libraries
+
+	cd js
+	bower update

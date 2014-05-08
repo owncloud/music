@@ -281,7 +281,7 @@ class ApiController extends Controller {
 		} else {
 			$result = $this->scanner->rescan($this->userId);
 		}
-		return new JSONResponse($result);
+		return new JSONResponse(array($result));
 	}
 
 	/**

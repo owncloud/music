@@ -172,7 +172,7 @@ class Scanner extends PublicEmitter {
 			}
 			if($title === null || $title === ''){
 				// fallback to file name
-				$title = $metadata['name'];
+				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
 					$alternativeTrackNumber = $matches[1];
 					if(preg_match('/(.*)(\.(mp3|ogg))$/', $matches[2], $titleMatches) === 1) {

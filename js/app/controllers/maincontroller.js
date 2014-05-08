@@ -73,7 +73,8 @@ angular.module('Music').controller('MainController',
 
 
 	var scanLoopFunction = function(dry) {
-		Restangular.all('scan').getList({dry: dry}).then(function(scan){
+		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
+			var scan = scanItems[0];
 			$scope.scanningScanned = scan.processed;
 			$scope.scanningTotal = scan.total;
 			$scope.update();

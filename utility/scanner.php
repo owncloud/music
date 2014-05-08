@@ -23,94 +23,136 @@
 
 namespace OCA\Music\Utility;
 
+use OC\Hooks\PublicEmitter;
+
+use \OCP\Files\Folder;
+use \OCP\IConfig;
+
+use \OCA\Music\AppFramework\Core\Db;
+use \OCA\Music\AppFramework\Core\Logger;
+
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\Music\AppFramework\Core\API;
-use OC\Hooks\PublicEmitter;
+
 
 class Scanner extends PublicEmitter {
 
-	private $api;
 	private $extractor;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
+	private $logger;
+	private $db;
+	private $userId;
+	private $configManager;
+	private $appName;
+	private $userFolder;
 
-	public function __construct(API $api, Extractor $extractor, ArtistBusinessLayer $artistBusinessLayer,
-		AlbumBusinessLayer $albumBusinessLayer, TrackBusinessLayer $trackBusinessLayer){
-		$this->api = $api;
+	public function __construct(Extractor $extractor,
+								ArtistBusinessLayer $artistBusinessLayer,
+								AlbumBusinessLayer $albumBusinessLayer,
+								TrackBusinessLayer $trackBusinessLayer,
+								Logger $logger,
+								Db $db,
+								$userId,
+								IConfig $configManager,
+								$appName,
+								Folder $userFolder){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->logger = $logger;
+		$this->db = $db;
+		$this->userId = $userId;
+		$this->configManager = $configManager;
+		$this->appName = $appName;
+		$this->userFolder = $userFolder;
 
 		// Trying to enable stream support
 		if(ini_get('allow_url_fopen') !== '1') {
-			$this->api->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
+			$this->logger->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
 			@ini_set('allow_url_fopen', '1');
+		}
+	}
+
+	public function updateById($fileId, $userId = null) {
+		try {
+			$file = $this->userFolder->get($path);
+			$this->update($file, $userId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('updateById - file not found - '. $fileId , 'debug');
+		}
+	}
+
+	public function updateByPath($filePath, $userId = null) {
+		try {
+			$files = $this->userFolder->getById($filePath);
+			if(count($files) > 0) {
+				// use first result
+				$this->update($files[0], $userId);
+			}
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('updateByPath - file not found - '. $filePath , 'debug');
 		}
 	}
 
 	/**
 	 * Get called by 'post_write' hook (file creation, file update)
-	 * @param string $path the path of the file
+	 * @param \OCP\Files\Node $file the file
 	 */
-	public function update($path, $userId = NULL){
+	public function update($file){
 		// debug logging
-		$this->api->log('update - '. $path , 'debug');
+		$this->logger->log('update - '. $file->getPath() , 'debug');
 
-		$metadata = $this->api->getFileInfo($path);
-
-		if($metadata === false) {
-			$this->api->log('cannot determine metadata for path ' . $path, 'debug');
+		if(!($file instanceof \OCP\Files\File)) {
 			return;
 		}
 
-		// debug logging
-		$this->api->log('update - mimetype '. $metadata['mimetype'] , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($path));
+		$mimetype = $file->getMimeType();
 
-		if(substr($metadata['mimetype'], 0, 5) === 'image') {
-			$coverFileId = $metadata['fileid'];
-			$parentFolderId = $metadata['parent'];
+		// debug logging
+		$this->logger->log('update - mimetype '. $mimetype , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($file->getPath()));
+
+		if(substr($mimetype, 0, 5) === 'image') {
+			$coverFileId = $file->getId();
+			$parentFolderId = $file->getParent()->getId();
 			$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
 			return;
 		}
 
-		if(substr($metadata['mimetype'], 0, 5) !== 'audio' && substr($metadata['mimetype'], 0, 15) !== 'application/ogg' ) {
+		if(substr($mimetype, 0, 5) !== 'audio' && substr($mimetype, 0, 15) !== 'application/ogg' ) {
 			return;
 		}
 
 		if(ini_get('allow_url_fopen')) {
-			$view = $this->api->getView();
-			$absolutePath = $view->getAbsolutePath($path);
-			$musicPath = $this->api->getUserValue('path');
+			$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
 			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
-				$musicPath = $view->getAbsolutePath($musicPath);
+				// TODO verify
+				$musicPath = $this->userFolder->get($musicPath)->getPath();
 				// skip files that aren't inside the user specified path
-				if(substr($absolutePath, 0, strlen($musicPath)) !== $musicPath) {
-					$this->api->log('skipped - outside of specified path' , 'debug');
+				if(substr($file->getPath(), 0, strlen($musicPath)) !== $musicPath) {
+					$this->logger->log('skipped - outside of specified path' , 'debug');
 					return;
 				}
 			}
 
 
-			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
+			$fileInfo = $this->extractor->extract('oc://' . $file->getPath());
 
 			$hasComments = array_key_exists('comments', $fileInfo);
 
 			if(!$hasComments) {
 				// TODO: fix this dirty fallback
-				// fallback to local file path
-				$this->api->log('fallback metadata extraction', 'debug');
-				$fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
-				$hasComments = array_key_exists('comments', $fileInfo);
-			}
-
-			if (!$userId) {
-				$userId = $this->api->getUserId();
+				// fallback to local file path removed
+				$this->logger->log('fallback metadata extraction - removed code', 'debug');
+				// $fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
+				// $hasComments = array_key_exists('comments', $fileInfo);
 			}
 
 			// artist
@@ -118,7 +160,7 @@ class Scanner extends PublicEmitter {
 			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
 				$artist = $fileInfo['comments']['artist'][0];
 				if(count($fileInfo['comments']['artist']) > 1) {
-					$this->api->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
+					$this->logger->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
 					// determine shortest, because the longer names are just concatenations of all artists
 					for($i=0; $i < count($fileInfo['comments']['artist']); $i++){
 						if(strlen($fileInfo['comments']['artist'][$i]) < strlen($artist)) {
@@ -182,28 +224,27 @@ class Scanner extends PublicEmitter {
 				}
 
 			}
-			$mimetype = $metadata['mimetype'];
-			$fileId = $metadata['fileid'];
+			$fileId = $file->getId();
 
 			// debug logging
-			$this->api->log('extracted metadata - ' .
+			$this->logger->log('extracted metadata - ' .
 				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i',
 					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId), 'debug');
 
 			// add artist and get artist entity
-			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
+			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $this->userId);
 			$artistId = $artist->getId();
 
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $this->userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
-				$albumId, $fileId, $mimetype, $userId);
+				$albumId, $fileId, $mimetype, $this->userId);
 
 			// debug logging
-			$this->api->log('imported entities - ' .
+			$this->logger->log('imported entities - ' .
 				sprintf('artist: %d, album: %d, track: %d', $artistId, $albumId, $track->getId()),
 				'debug');
 		}
@@ -215,14 +256,12 @@ class Scanner extends PublicEmitter {
 	 * @param string $path the path of the file
 	 */
 	public function deleteByPath($path){
-		$fileInfo = $this->api->getFileInfo($path);
-		if(!empty($fileInfo)) {
-			if(is_array($fileInfo)) {
-				$fileId = $fileInfo['fileid'];
-			} else {
-				$fileId = $fileInfo->getId();
-			}
+		try {
+			$fileId = $this->userFolder->get($path)->getId();
 			$this->delete($fileId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('delete - file not found - '. $path , 'debug');
 		}
 	}
 	/**
@@ -232,11 +271,11 @@ class Scanner extends PublicEmitter {
 	 */
 	public function delete($fileId, $userId = null){
 		// debug logging
-		$this->api->log('delete - '. $fileId , 'debug');
+		$this->logger->log('delete - '. $fileId , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
 
 		if ($userId === null) {
-			$userId = $this->api->getUserId();
+			$userId = $this->userId;
 		}
 
 		$remaining = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
@@ -245,32 +284,33 @@ class Scanner extends PublicEmitter {
 		$this->artistBusinessLayer->deleteById($remaining['artistIds']);
 
 		// debug logging
-		$this->api->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
+		$this->logger->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
 			'], artists: [' . implode(',', $remaining['artistIds']) . ']' , 'debug');
 
 		$this->albumBusinessLayer->removeCover($fileId);
 	}
 
+	/**
+	 * search for files by mimetype inside an optional user specified path
+	 *
+	 * @return \OCP\Files\Node[]
+	 */
 	public function getMusicFiles() {
-		$music = $this->api->searchByMime('audio');
-		$ogg = $this->api->searchByMime('application/ogg');
-		$music = array_merge($music, $ogg);
+		$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
 
-		$musicPath = $this->api->getUserValue('path');
-
-		if($musicPath === null || $musicPath === '/' || $musicPath === '') {
-			return $music;
-		}
-
-		// skip files that aren't inside the user specified path
-		$result = array();
-		foreach ($music as $file) {
-			if(substr($file['path'], 0, strlen($musicPath)) === $musicPath) {
-				$result[] = $file;
+		$folder = $this->userFolder;
+		if($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
+			try {
+				$folder = $this->userFolder->get($musicPath);
+			} catch (\OCP\Files\NotFoundException $e) {
+				return array();
 			}
 		}
 
-		return $result;
+		$audio = $folder->searchByMime('audio');
+		$ogg = $folder->searchByMime('application/ogg');
+
+		return array_merge($audio, $ogg);
 	}
 
 	public function getScannedFiles($userId = NULL) {
@@ -280,7 +320,7 @@ class Scanner extends PublicEmitter {
 			$sql .= ' WHERE `user_id` = ?';
 			$params = array($userId);
 		}
-		$query = $this->api->prepareQuery($sql);
+		$query = $this->db->prepareQuery($sql);
 		$result = $query->execute($params);
 		$fileIds = array_map(function($i) { return $i['file_id']; }, $result->fetchAll());
 
@@ -291,7 +331,7 @@ class Scanner extends PublicEmitter {
 	 * Rescan the whole file base for new files
 	 */
 	public function rescan($userId = null, $batch = false) {
-		$this->api->log('Rescan triggered', 'info');
+		$this->logger->log('Rescan triggered', 'info');
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
@@ -306,11 +346,11 @@ class Scanner extends PublicEmitter {
 				// break scan - 20 files are already scanned
 				break;
 			}
-			if(!$batch && in_array($file['fileid'], $fileIds)) {
+			if(!$batch && in_array($file->getId(), $fileIds)) {
 				// skip this file as it's already scanned
 				continue;
 			}
-			$this->update($file['path'], $userId);
+			$this->update($file);
 			$count++;
 		}
 		// find album covers
@@ -324,7 +364,7 @@ class Scanner extends PublicEmitter {
 		if(!$batch) {
 			$processedCount += count($fileIds);
 		}
-		$this->api->log(sprintf('Rescan finished (%d/%d)', $processedCount, $totalCount), 'info');
+		$this->logger->log(sprintf('Rescan finished (%d/%d)', $processedCount, $totalCount), 'info');
 
 		return array('processed' => $processedCount, 'scanned' => $count, 'total' => $totalCount);
 	}
@@ -342,7 +382,7 @@ class Scanner extends PublicEmitter {
 		);
 
 		foreach ($sqls as $sql) {
-			$query = $this->api->prepareQuery($sql);
+			$query = $this->db->prepareQuery($sql);
 			$query->execute();
 		}
 	}
@@ -354,7 +394,7 @@ class Scanner extends PublicEmitter {
 		// TODO currently this function is quite dumb
 		// it just drops all entries of an user from the tables
 		if ($userId === null) {
-			$userId = $this->api->getUserId();
+			$userId = $this->userId;
 		}
 
 		$sqls = array(
@@ -364,11 +404,11 @@ class Scanner extends PublicEmitter {
 		);
 
 		foreach ($sqls as $sql) {
-			$query = $this->api->prepareQuery($sql);
+			$query = $this->db->prepareQuery($sql);
 			$query->execute(array($userId));
 		}
 
-		$query = $this->api->prepareQuery('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
+		$query = $this->db->prepareQuery('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
 		$query->execute();
 	}
 }

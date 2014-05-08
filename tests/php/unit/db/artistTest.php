@@ -21,16 +21,15 @@
  *
  */
 
-
 namespace OCA\Music\Db;
+
 
 class ArtistTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
+	private $urlGenerator;
 
 	protected function setUp() {
-		$this->api = $this->getMockBuilder(
-			'\OCA\Music\Core\API')
+		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
 	}
@@ -41,38 +40,35 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist->setName('The name');
 		$artist->setImage('The image url');
 
+		$l10n = $this->getMockBuilder('\OCP\IL10N')
+			->disableOriginalConstructor()
+			->getMock();
+
 		$this->assertEquals(array(
 			'id' => 3,
 			'name' => 'The name',
 			'image' => 'The image url',
 			'slug' => $artist->getId() . '-the-name',
 			'uri' => ''
-			), $artist->toAPI($this->api));
+			), $artist->toAPI($this->urlGenerator, $l10n));
 	}
 
 	public function testNullNameLocalisation() {
 		$artist = new Artist();
 		$artist->setName(null);
 
-		$l10nString = $this->getMockBuilder('OC_L10N_String')
-			->disableOriginalConstructor()
-			->getMock();
-		$l10nString->expects($this->once())
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l'));
+		$l10nString = $this->getMock('\OC\L10N\String', array('__toString'));
+		$l10nString->expects($this->any())
 			->method('__toString')
 			->will($this->returnValue('Unknown artist'));
-
-		$l10n = $this->getMockBuilder('OC_L10N')
-			->disableOriginalConstructor()
-			->getMock();
-		$l10n->expects($this->once())
+		$l10n->expects($this->any())
 			->method('t')
-			->with($this->equalTo('Unknown artist'))
 			->will($this->returnValue($l10nString));
 
-		$this->api->expects($this->once())
-			->method('getTrans')
-			->will($this->returnValue($l10n));
-		$this->assertEquals('Unknown artist', $artist->getNameString($this->api));
+		$this->assertEquals('Unknown artist', $artist->getNameString($l10n));
+		$artist->setName('Artist name');
+		$this->assertEquals('Artist name', $artist->getNameString($l10n));
 	}
 
 }

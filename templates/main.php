@@ -1,4 +1,6 @@
 <?php
+\OCP\Util::addScript('core', 'placeholder');
+\OCP\Util::addScript('3rdparty', 'md5/md5.min');
 \OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular/angular-route.min');
@@ -12,6 +14,7 @@
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');
 \OCP\Util::addStyle('music', 'tablet');
+\OCP\Util::addStyle('music', 'stable6+-fixes');
 ?>
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">

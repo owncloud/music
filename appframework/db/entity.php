@@ -1,25 +1,15 @@
 <?php
-
 /**
-* ownCloud - App Framework
-*
-* @author Bernhard Posselt
-* @copyright 2012 Bernhard Posselt dev@bernhard-posselt.com
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
-* License as published by the Free Software Foundation; either
-* version 3 of the License, or any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU AFFERO GENERAL PUBLIC LICENSE for more details.
-*
-* You should have received a copy of the GNU Affero General Public
-* License along with this library.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ * ownCloud
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Alessandro Cosentino <cosenal@gmail.com>
+ * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @copyright Alessandro Cosentino 2012
+ * @copyright Bernhard Posselt 2012, 2014
+ */
 
 namespace OCA\Music\AppFramework\Db;
 
@@ -28,8 +18,8 @@ abstract class Entity {
 
 	public $id;
 
-	private $updatedFields = array();
-	private $fieldTypes = array('id' => 'int');
+	private $_updatedFields = array();
+	private $_fieldTypes = array('id' => 'integer');
 
 
 	/**
@@ -54,15 +44,26 @@ abstract class Entity {
 	 * Maps the keys of the row array to the attributes
 	 * @param array $row the row to map onto the entity
 	 */
-	public function fromRow(array $row){
+	public static function fromRow(array $row){
+		$instance = new static();
+
 		foreach($row as $key => $value){
-			$prop = $this->columnToProperty($key);
-			if($value !== null && array_key_exists($prop, $this->fieldTypes)){
-				settype($value, $this->fieldTypes[$prop]);
-			}
-			$this->$prop = $value;
+			$prop = ucfirst($instance->columnToProperty($key));
+			$setter = 'set' . $prop;
+			$instance->$setter($value);
 		}
-		return $this;
+
+		$instance->resetUpdatedFields();
+
+		return $instance;
+	}
+
+
+	/**
+	 * @return an array with attribute and type
+	 */
+	public function getFieldTypes() {
+		return $this->_fieldTypes;
 	}
 
 
@@ -70,7 +71,7 @@ abstract class Entity {
 	 * Marks the entity as clean needed for setting the id after the insertion
 	 */
 	public function resetUpdatedFields(){
-		$this->updatedFields = array();
+		$this->_updatedFields = array();
 	}
 
 
@@ -80,8 +81,8 @@ abstract class Entity {
 			$this->markFieldUpdated($name);
 
 			// if type definition exists, cast to correct type
-			if($args[0] !== null && array_key_exists($name, $this->fieldTypes)) {
-				settype($args[0], $this->fieldTypes[$name]);
+			if($args[0] !== null && array_key_exists($name, $this->_fieldTypes)) {
+				settype($args[0], $this->_fieldTypes[$name]);
 			}
 			$this->$name = $args[0];
 
@@ -129,7 +130,7 @@ abstract class Entity {
 	 * @param string $attribute the name of the attribute
 	 */
 	protected function markFieldUpdated($attribute){
-		$this->updatedFields[$attribute] = true;
+		$this->_updatedFields[$attribute] = true;
 	}
 
 
@@ -179,7 +180,7 @@ abstract class Entity {
 	 * @return array array of updated fields for update query
 	 */
 	public function getUpdatedFields(){
-		return $this->updatedFields;
+		return $this->_updatedFields;
 	}
 
 
@@ -190,7 +191,7 @@ abstract class Entity {
 	 * @param string $type the type which will be used to call settype()
 	 */
 	protected function addType($fieldName, $type){
-		$this->fieldTypes[$fieldName] = $type;
+		$this->_fieldTypes[$fieldName] = $type;
 	}
 
 

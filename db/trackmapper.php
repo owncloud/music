@@ -23,13 +23,14 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\AppFramework\Core\Db;
+use \OCA\Music\AppFramework\Db\IMapper;
 use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
 
-class TrackMapper extends Mapper {
+class TrackMapper extends Mapper implements IMapper {
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_tracks');
+	public function __construct(DB $db){
+		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
 	}
 
 	private function makeSelectQueryWithoutUserId($condition){

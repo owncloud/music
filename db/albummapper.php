@@ -23,15 +23,15 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Db\Mapper;
-use \OCA\Music\Core\API;
-
+use \OCA\Music\AppFramework\Core\Db;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCA\Music\AppFramework\Db\IMapper;
+use \OCA\Music\AppFramework\Db\Mapper;
 
-class AlbumMapper extends Mapper {
+class AlbumMapper extends Mapper implements IMapper {
 
-	public function __construct(API $api){
-		parent::__construct($api, 'music_albums');
+	public function __construct(Db $db){
+		parent::__construct($db, 'music_albums', '\OCA\Music\Db\Album');
 	}
 
 	private function makeSelectQuery($condition=null){

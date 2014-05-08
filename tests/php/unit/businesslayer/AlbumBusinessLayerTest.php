@@ -29,10 +29,10 @@ use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCA\Music\Db\Album;
 
 
-class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
+class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
 	private $mapper;
+	private $logger;
 	private $albumBusinessLayer;
 	private $userId;
 	private $albums;
@@ -40,11 +40,13 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 
 	protected function setUp(){
-		$this->api = $this->getAPIMock();
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->api);
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->logger);
 		$this->userId = 'jack';
 		$album1 = new Album();
 		$album2 = new Album();
@@ -204,7 +206,7 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$this->mapper->expects($this->never())
 			->method('insert');
 
-		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
 		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
 	}
 

@@ -4,7 +4,9 @@
  * ownCloud - Music app
  *
  * @author Leizh
+ * @author Morris Jobke
  * @copyright 2013 Leizh <leizh@free.fr>
+ * @copyright 2014 Morris Jobke <morris.jobke@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -23,17 +25,18 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
 
 class Search extends \OC_Search_Provider {
-	function search($query) {
-		$l = \OC_L10N::get('lib');
-		$c = new DIContainer();
-		$api = $c['API'];
-		$artistMapper = $c['ArtistMapper'];
-		$albumMapper = $c['AlbumMapper'];
-		$trackMapper = $c['TrackMapper'];
-		$userId = $api->getUserId();
+	public function search($query) {
+		$app = new Music();
+		$c = $app->getContainer();
+		$artistMapper = $c->query('ArtistMapper');
+		$albumMapper = $c->query('AlbumMapper');
+		$trackMapper = $c->query('TrackMapper');
+		$urlGenerator = $c->getServer()->getURLGenerator();
+		$userId = $c->query('UserId');
+		$l10n = $c->query('L10N');
 		$pattern = $query;
 
 		$results=array();
@@ -44,24 +47,24 @@ class Search extends \OC_Search_Provider {
 
 		foreach($artists as $artist) {
 			$name = $artist->name;
-			$link = $api->linkToRoute('music_index') . '#/artist/' . $artist->id;
-			$type = (string)$l->t('Artists');
+			$link = $urlGenerator->linkToRoute('music.page.index') . '#/artist/' . $artist->id;
+			$type = (string)$l10n->t('Artists');
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
 
 		$albums = $albumMapper->findAllByName($pattern, $userId, true);
 		foreach($albums as $album) {
 			$name = $album->name;
-			$link = $api->linkToRoute('music_index') . '#/album/' . $album->id;
-			$type = (string)$l->t('Albums');
+			$link = $urlGenerator->linkToRoute('music.page.index') . '#/album/' . $album->id;
+			$type = (string)$l10n->t('Albums');
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
 
 		$tracks = $trackMapper->findAllByName($pattern, $userId, true);
 		foreach($tracks as $track) {
 			$name = $track->title;
-			$link = $api->linkToRoute('music_index') . '#/track/' . $track->id;
-			$type = (string)$l->t('Tracks');
+			$link = $urlGenerator->linkToRoute('music.page.index') . '#/track/' . $track->id;
+			$type = (string)$l10n->t('Tracks');
 			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
 		}
 		return $results;

@@ -1,37 +1,26 @@
 <?php
-
 /**
- * ownCloud - App Framework
+ * ownCloud
  *
- * @author Bernhard Posselt
- * @copyright 2012 Bernhard Posselt dev@bernhard-posselt.com
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Alessandro Cosentino <cosenal@gmail.com>
+ * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @copyright Alessandro Cosentino 2012
+ * @copyright Bernhard Posselt 2012, 2014
  */
-
 
 namespace OCA\Music\AppFramework\Utility;
 
-use OCA\Music\AppFramework\Http\Response;
-use OCA\Music\AppFramework\Http\Request;
+use OCP\IRequest;
+use OCP\AppFramework\Http\Response;
 
 
 /**
  * Simple utility class for testing controllers
  */
-abstract class ControllerTestUtility extends TestUtility {
+abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 
 
 	/**
@@ -43,11 +32,9 @@ abstract class ControllerTestUtility extends TestUtility {
 	protected function assertAnnotations($controller, $method, array $expected,
 										array $valid=array()){
 		$standard = array(
-			'Ajax',
-			'CSRFExemption',
-			'IsAdminExemption',
-			'IsSubAdminExemption',
-			'IsLoggedInExemption',
+			'PublicPage',
+			'NoAdminRequired',
+			'NoCSRFRequired',
 			'API'
 		);
 
@@ -84,8 +71,32 @@ abstract class ControllerTestUtility extends TestUtility {
 	 * @param array $params a hashmap with the parameters for request
 	 * @return Request a request instance
 	 */
-	protected function getRequest(array $params) {
-		return new Request($params);
+	protected function getRequest(array $params=array()) {
+		$mock = $this->getMockBuilder('\OCP\IRequest')
+			->getMock();
+
+		$merged = array();
+
+		foreach ($params as $key => $value) {
+			$merged = array_merge($value, $merged);
+		}
+
+		$mock->expects($this->any())
+			->method('getParam')
+			->will($this->returnCallback(function($index, $default) use ($merged) {
+				if (array_key_exists($index, $merged)) {
+					return $merged[$index];
+				} else {
+					return $default;
+				}
+			}));
+
+		// attribute access
+		if(array_key_exists('server', $params)) {
+			$mock->server = $params['server'];
+		}
+
+		return $mock;
 	}
 
 }

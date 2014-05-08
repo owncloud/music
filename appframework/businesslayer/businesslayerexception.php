@@ -11,14 +11,10 @@
  * @copyright Bernhard Posselt 2012, 2014
  */
 
-namespace OCA\Music\AppFramework\Db;
+namespace OCA\Music\AppFramework\BusinessLayer;
 
 
-/**
- * This is returned or should be returned when a find request does not find an
- * entry in the database
- */
-class DoesNotExistException extends \Exception {
+class BusinessLayerException extends \Exception {
 
 	/**
 	 * Constructor

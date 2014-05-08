@@ -26,8 +26,8 @@ namespace OCA\Music\Http;
 
 
 use OC\Files\View;
-use OCA\Music\AppFramework\HTTP\Response;
-use OCA\Music\AppFramework\HTTP\Http;
+use OCP\AppFramework\Http\Response;
+use OCP\AppFramework\Http;
 
 /**
  * A renderer for files

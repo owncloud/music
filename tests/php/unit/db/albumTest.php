@@ -23,29 +23,15 @@
 
 namespace OCA\Music\Db;
 
-require_once __DIR__ . '/../L10nStubs.php';
-
-/* FIXME: dirty hack to mock object */
-class AlbumTestView {
-	public function getPath($fileId) {
-		return $fileId;
-	}
-}
-
 
 class AlbumTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
+	private $urlGenerator;
 
 	protected function setUp() {
-		$this->api = $this->getMockBuilder('\OCA\Music\Core\API')
+		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
-
-		/* FIXME: dirty hack to mock object */
-		$this->api->expects($this->any())
-			->method('getView')
-			->will($this->returnValue(new AlbumTestView()));
 	}
 
 	public function testToAPI() {
@@ -55,6 +41,10 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setYear(2013);
 		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1,2));
+
+		$l10n = $this->getMockBuilder('\OCP\IL10N')
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->assertEquals(array(
 			'id' => 3,
@@ -67,32 +57,25 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 				array('id' => 2, 'uri' => null)
 			),
 			'uri' => null
-			), $album->toAPI($this->api));
+			), $album->toAPI($this->urlGenerator, $l10n));
 	}
 
-	public function testNullNameLocalisation() {
+	public function testNameLocalisation() {
 		$album = new Album();
 		$album->setName(null);
 
-		$l10nString = $this->getMockBuilder('OC_L10N_String')
-			->disableOriginalConstructor()
-			->getMock();
-		$l10nString->expects($this->once())
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l'));
+		$l10nString = $this->getMock('\OC\L10N\String', array('__toString'));
+		$l10nString->expects($this->any())
 			->method('__toString')
 			->will($this->returnValue('Unknown album'));
-
-		$l10n = $this->getMockBuilder('OC_L10N')
-			->disableOriginalConstructor()
-			->getMock();
-		$l10n->expects($this->once())
+		$l10n->expects($this->any())
 			->method('t')
-			->with($this->equalTo('Unknown album'))
 			->will($this->returnValue($l10nString));
 
-		$this->api->expects($this->once())
-			->method('getTrans')
-			->will($this->returnValue($l10n));
-		$this->assertEquals('Unknown album', $album->getNameString($this->api));
+		$this->assertEquals('Unknown album', $album->getNameString($l10n));
+		$album->setName('Album name');
+		$this->assertEquals('Album name', $album->getNameString($l10n));
 	}
 
 }

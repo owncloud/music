@@ -16,18 +16,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
 
 class Scan extends Command {
 	/**
 	 * @var \OC\User\Manager $userManager
 	 */
 	private $userManager;
-	private $container;
+	private $scanner;
 
 	public function __construct(\OC\User\Manager $userManager) {
 		$this->userManager = $userManager;
-		$this->container = new DIContainer();
+
+		$app = new Music();
+		$this->scanner = $app->getContainer()->query('Scanner');
 		parent::__construct();
 	}
 
@@ -52,7 +54,7 @@ class Scan extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$scanner = $this->container['Scanner'];
 
-		$scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
+		$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 			$output->writeln("Scanning <info>$path</info>");
 		});
 
@@ -69,7 +71,7 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$scanner->rescan($user, true);
+			$this->scanner->rescan($user, true);
 		}
 	}
 }

@@ -23,18 +23,24 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\TrackMapper;
-use \OCA\Music\Db\Track;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 
+use \OCA\Music\Db\TrackMapper;
+use \OCA\Music\Db\Track;
+
+
 class TrackBusinessLayer extends BusinessLayer {
 
-	public function __construct(TrackMapper $trackMapper, API $api){
-		parent::__construct($trackMapper, $api);
+	private $logger;
+
+	public function __construct(TrackMapper $trackMapper, Logger $logger){
+		parent::__construct($trackMapper);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -77,7 +83,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
 		try {
@@ -89,7 +95,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$this->mapper->update($track);
-			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
+			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();
 			$track->setTitle($title);
@@ -100,7 +106,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$track = $this->mapper->insert($track);
-			$this->api->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
+			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

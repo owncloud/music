@@ -38,7 +38,7 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	{
 		$this->beforeEach();
 
-		$this->mapper = new TrackMapper($this->api);
+		$this->mapper = new TrackMapper($this->db);
 
 		// create mock items
 		$track1 = new Track();

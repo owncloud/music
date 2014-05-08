@@ -23,7 +23,7 @@
 
 namespace OCA\Music\Backgroundjob;
 
-use \OCA\Music\DependencyInjection\DIContainer;
+use \OCA\Music\App\Music;
 
 class CleanUp {
 
@@ -31,14 +31,16 @@ class CleanUp {
 	 * Calls the cleanup method of the scanner
 	 */
 	public static function run() {
-		$container = new DIContainer();
+		$app = new Music();
+
+		$container = $app->getContainer();
 
 		// remove orphaned entities
-		$container['Scanner']->cleanUp();
+		$container->query('Scanner')->cleanUp();
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container['AlbumBusinessLayer']->findCovers();
+		$container->query('AlbumBusinessLayer')->findCovers();
 
 		// remove expired sessions
-		$container['AmpacheSessionMapper']->cleanUp();
+		$container->query('AmpacheSessionMapper')->cleanUp();
 	}
 }

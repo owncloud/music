@@ -24,9 +24,11 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\Core\API;
+use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\Db\Entity;
+
+use \OCA\Music\Core\API;
 
 /**
  * @method int getId()
@@ -52,35 +54,35 @@ class Artist extends Entity {
 	public $albumCount;
 	public $trackCount;
 
-	public function getUri(API $api) {
-		return $api->linkToRoute(
-			'music_artist',
+	public function getUri(IURLGenerator $urlGenerator) {
+		return $urlGenerator->linkToRoute(
+			'music.api.artist',
 			array('artistIdOrSlug' => $this->id)
 		);
 	}
 
-	public function getNameString(API $api) {
+	public function getNameString($l10n) {
 		$name = $this->getName();
 		if ($name === null) {
-			$name = $api->getTrans()->t('Unknown artist')->__toString();
+			$name = $l10n->t('Unknown artist')->__toString();
 		}
 		return $name;
 	}
 
-	public function toCollection(API $api) {
+	public function toCollection($l10n) {
 		return array(
 			'id' => $this->getId(),
-			'name' => $this->getNameString($api)
+			'name' => $this->getNameString($l10n)
 		);
 	}
 
-	public function toAPI(API $api) {
+	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
 		return array(
 			'id' => $this->getId(),
-			'name' => $this->getNameString($api),
+			'name' => $this->getNameString($l10n),
 			'image' => $this->getImage(),
 			'slug' => $this->getId() . '-' . $this->slugify('name'),
-			'uri' => $this->getUri($api)
+			'uri' => $this->getUri($urlGenerator)
 		);
 	}
 }

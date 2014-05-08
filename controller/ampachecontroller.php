@@ -24,19 +24,28 @@
 
 namespace OCA\Music\Controller;
 
+use \OCP\IRequest;
+use \OCP\IURLGenerator;
+
 use \OCA\Music\Core\API;
-use \OCA\Music\AppFramework\DB\DoesNotExistException;
+
 use \OCA\Music\AppFramework\Http\Request;
-use \OCA\Music\Middleware\AmpacheException;
-use \OCA\Music\DB\AmpacheUserMapper;
-use \OCA\Music\DB\AmpacheSession;
-use \OCA\Music\DB\AmpacheSessionMapper;
-use \OCA\Music\DB\AlbumMapper;
-use \OCA\Music\DB\ArtistMapper;
-use \OCA\Music\DB\TrackMapper;
 use \OCA\Music\AppFramework\Http\Http;
 use \OCA\Music\AppFramework\Http\Response;
+
+use \OCA\Music\Middleware\AmpacheException;
+
+use \OCA\Music\Db\AmpacheUserMapper;
+use \OCA\Music\Db\AmpacheSession;
+use \OCA\Music\Db\AmpacheSessionMapper;
+use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Db\ArtistMapper;
+use \OCA\Music\Db\DoesNotExistException;
+use \OCA\Music\Db\TrackMapper;
+
+
 use \OCA\Music\Http\FileResponse;
+
 use \OCA\Music\Utility\AmpacheUser;
 
 
@@ -48,19 +57,29 @@ class AmpacheController extends Controller {
 	private $artistMapper;
 	private $trackMapper;
 	private $ampacheUser;
+	private $urlGenerator;
 
 	private $sessionExpiryTime = 6000;
 
-	public function __construct(API $api, Request $request, AmpacheUserMapper $ampacheUserMapper,
-		AmpacheSessionMapper $ampacheSessionMapper, AlbumMapper $albumMapper, ArtistMapper $artistMapper,
-		TrackMapper $trackMapper, AmpacheUser $ampacheUser, $server){
-		parent::__construct($api, $request);
+	public function __construct($appname,
+								IRequest $request,
+								$l10n,
+								IURLGenerator $urlGenerator,
+								AmpacheUserMapper $ampacheUserMapper,
+								AmpacheSessionMapper $ampacheSessionMapper,
+								AlbumMapper $albumMapper,
+								ArtistMapper $artistMapper,
+								TrackMapper $trackMapper,
+								AmpacheUser $ampacheUser,
+								$server){
+		parent::__construct($appname, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->albumMapper = $albumMapper;
 		$this->artistMapper = $artistMapper;
 		$this->trackMapper = $trackMapper;
+		$this->urlGenerator = $urlGenerator;
 
 		// used to share user info with middleware
 		$this->ampacheUser = $ampacheUser;
@@ -71,14 +90,9 @@ class AmpacheController extends Controller {
 
 
 	/**
-	 * ATTENTION!!!
-	 * The following comment turns off security checks
-	 * Please look up their meaning in the documentation!
-	 *
-	 * @IsAdminExemption
-	 * @IsSubAdminExemption
-	 * @IsLoggedInExemption
-	 * @CSRFExemption
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
 	 * @AmpacheAPI
 	 */
 	public function ampache() {
@@ -244,7 +258,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'api' => $this->api),
+			array('albums' => $albums, 'l10n' => $this->l10n),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -267,7 +281,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'api' => $this->api, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -290,7 +304,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'api' => $this->api, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -309,7 +323,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => array($track), 'api' => $this->api, 'authtoken' => $this->params('auth')),
+			array('songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -341,7 +355,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'api' => $this->api, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -363,7 +377,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'api' => $this->api, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -424,7 +438,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'api' => $this->api),
+			array('albums' => $albums, 'l10n' => $this->l10n),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);

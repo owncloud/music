@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-08 19:30+0000\n"
+"Last-Translator: mateju <>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -117,11 +117,11 @@ msgstr "Premešaj"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Nekateri posnetki, ki jih ni mogoče predvajati, so bili preskočeni."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Nastavitev določa mapo, ki bo preiskana za glasbo."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

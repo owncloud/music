@@ -13,10 +13,20 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
-	config(['RestangularProvider', function (RestangularProvider) {
+	config(['RestangularProvider', '$routeProvider',
+		function (RestangularProvider, $routeProvider) {
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
+
+	$routeProvider
+		.when('/new', {
+			controller:'PlaylistController',
+			templateUrl:'new-playlist.html'
+		})
+		.otherwise({
+			redirectTo:'/'
+		});
 }]).
 	run(function(Token, Restangular){
 

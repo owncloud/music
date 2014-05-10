@@ -1,0 +1,144 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: ownCloud\n"
+"PO-Revision-Date: 2013-09-30 11:39+0000\n"
+"Language-Team: Spanish (Peru) (http://www.transifex.com/projects/p/owncloud/language/es_PE/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_PE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Delete"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr ""
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Loading ..."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Next"
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Nothing in here. Upload your music!"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Pause"
+msgstr ""
+
+#: ../templates/main.php ../templates/part.main.php
+msgid "Play"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Previous"
+msgstr ""
+
+#: ../templates/main.php
+msgid "Repeat"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Scanning ..."
+msgstr ""
+
+#: ../templates/part.main.php
+msgid "Show all {{ trackcount }} songs ..."
+msgid_plural "Show all {{ trackcount }} songs ..."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../templates/part.main.php
+msgid "Show less ..."
+msgstr ""
+
+#: ../templates/main.php
+msgid "Shuffle"
+msgstr ""
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Unknown artist"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr ""

@@ -23,9 +23,12 @@ $TRANSLATIONS = array(
 "_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Εμφάνιση του τραγουδιού","Εμφάνιση όλων των {{ trackcount }} τραγουδιών ..."),
 "Show less ..." => "Προβολή λιγότερων...",
 "Shuffle" => "Τυχαία αναπαραγωγή",
+"Some not playable tracks were skipped." => "Μερικά μη αναγνώσιμα τραγούδια έχουν παρακαμφθεί.",
+"This setting specifies the folder which will be scanned for music." => "Αυτή η ρύθμιση αναφέρεται στο φάκελο,στον οποίο θα γίνει σάρωση για να βρεθούν τραγούδια.",
 "Tracks" => "Κομμάτια",
 "Unknown album" => "Άγνωστο άλμπουμ",
 "Unknown artist" => "Άγνωστος καλλιτέχνης",
+"Use this address to browse your music collection from any Ampache compatible player." => "Χρησιμοποιήστε αυτή τη διεύθυνση για να περιηγηθείτε στη μουσική σας συλλογή από οποιοδήποτε μέσο,συμβατό με το Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Χρησιμοποιήστε το όνομα χρήστη σας και το παρακάτω συνθηματικό για να συνδεθείτε σε αυτή την εκτέλεση του Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

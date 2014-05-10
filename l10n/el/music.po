@@ -1,14 +1,15 @@
 # 
 # Translators:
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014
+# thea_rad <happy.thea@hotmail.com>, 2014
 # Marios Bekatoros <>, 2013
 # pe_ppe <peppe@cs.uoi.gr>, 2014
 # vkehayas <vkehayas@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-09 07:10+0000\n"
+"Last-Translator: thea_rad <happy.thea@hotmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,11 +119,11 @@ msgstr "Τυχαία αναπαραγωγή"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Μερικά μη αναγνώσιμα τραγούδια έχουν παρακαμφθεί."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Αυτή η ρύθμιση αναφέρεται στο φάκελο,στον οποίο θα γίνει σάρωση για να βρεθούν τραγούδια."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -140,7 +141,7 @@ msgstr "Άγνωστος καλλιτέχνης"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Χρησιμοποιήστε αυτή τη διεύθυνση για να περιηγηθείτε στη μουσική σας συλλογή από οποιοδήποτε μέσο,συμβατό με το Ampache."
 
 #: ../templates/fake-template.php
 msgid ""

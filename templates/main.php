@@ -17,7 +17,12 @@
 \OCP\Util::addStyle('music', 'stable6+-fixes');
 ?>
 
+
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
+
+	<script type="text/ng-template" id="overview.html">
+		<?php print_unescaped($this->inc('partials/overview')) ?>
+	</script>
 
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
@@ -72,8 +77,7 @@
 			</ul>
 		</div>-->
 
-		<div id="app-content" ng-class="{started: started}">
-			<?php print_unescaped($this->inc('part.main')) ?>
+		<div id="app-content" ng-view ng-class="{started: started}">
 		</div>
 
 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>

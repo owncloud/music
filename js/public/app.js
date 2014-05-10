@@ -13,10 +13,20 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
-	config(['RestangularProvider', function (RestangularProvider) {
+	config(['RestangularProvider', '$routeProvider',
+		function (RestangularProvider, $routeProvider) {
 
 	// configure RESTAngular path
 	RestangularProvider.setBaseUrl('api');
+
+	$routeProvider
+		.when('/', {
+			controller:'OverviewController',
+			templateUrl:'overview.html'
+		})
+		.otherwise({
+			redirectTo:'/'
+		});
 }]).
 	run(function(Token, Restangular){
 
@@ -121,6 +131,14 @@ angular.module('Music').controller('MainController',
 		};
 		window.location.hash = '#/' + type + '/' + object.id;
 	};
+}]);
+
+angular.module('Music').controller('OverviewController',
+	['$scope',
+	function ($scope) {
+
+		// TODO move overview relevant code from MainController to this one here.
+
 }]);
 
 angular.module('Music').controller('PlayerController',

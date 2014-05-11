@@ -17,6 +17,10 @@
 \OCP\Util::addStyle('music', 'stable6+-fixes');
 ?>
 
+<script type="text/ng-template" id="main.html">
+	<?php print_unescaped($this->inc('partials/main')) ?>
+</script>
+
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
 
 	<div ng-controller="MainController">
@@ -72,8 +76,7 @@
 			</ul>
 		</div>-->
 
-		<div id="app-content" ng-class="{started: started}">
-			<?php print_unescaped($this->inc('part.main')) ?>
+		<div id="app-content" ng-view ng-class="{started: started}">
 		</div>
 
 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>

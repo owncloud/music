@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Pongsametrey SOK <metreysk@gmail.com>, 2013-2014
+# សុវិចិត្រ Sovichet ទេព Tep, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-11 05:50+0000\n"
+"Last-Translator: សុវិចិត្រ Sovichet ទេព Tep\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +15,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "អាល់ប៊ុម"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "សិល្បករ"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,11 +31,11 @@ msgstr "ការ​អធិប្បាយ"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "ការ​អធិប្បាយ (ឧ. ឈ្មោះ​កម្មវិធី)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "បង្កើត​ពាក្យ​សម្ងាត់ API"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -45,7 +46,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "ទីតាំង​មិន​ត្រឹម​ត្រូវ"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -97,7 +98,7 @@ msgstr ""
 
 #: ../templates/part.main.php
 msgid "Scanning ..."
-msgstr ""
+msgstr "កំពុង​វិភាគ​រក ..."
 
 #: ../templates/part.main.php
 msgid "Show all {{ trackcount }} songs ..."
@@ -122,7 +123,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "បទ"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

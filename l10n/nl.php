@@ -24,6 +24,7 @@ $TRANSLATIONS = array(
 "Show less ..." => "Toon minder ...",
 "Shuffle" => "Shuffle",
 "Some not playable tracks were skipped." => "Sommige niet af te spelen nummers werden overgeslagen.",
+"This setting specifies the folder which will be scanned for music." => "De instelling bepaalt de map die wordt gescand op muziek.",
 "Tracks" => "Nummers",
 "Unknown album" => "Onbekend album",
 "Unknown artist" => "Onbekende artiest",

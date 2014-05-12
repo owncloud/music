@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-11 16:00+0000\n"
+"Last-Translator: Iñigo Varela <ivarela@softastur.org>\n"
 "Language-Team: Asturian (http://www.transifex.com/projects/p/owncloud/language/ast/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,11 +115,11 @@ msgstr "Mecer"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Nun pudieron reproducise dalgunes canciones."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Esta configuración especifica la carpeta na que va escanease la música"
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -137,7 +137,7 @@ msgstr "Artista desconocíu"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Usa esta direición pa esplorar la to coleición de música dende cualquier reproductor compatible con Ampache."
 
 #: ../templates/fake-template.php
 msgid ""

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/owncloud/language/de_DE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,7 +58,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Bitte bedenken Sie, dass die Ampache-API derzeit eine Vorschau und instabil ist. Sie können gerne Ihre Erfahrungen mit dieser Funktion im entsprechenden <a href=\"https://github.com/owncloud/music/issues/60\">Fehlerbericht</a> melden. Ich würde ebenfalls eine Liste von Anwendung zu Testzwecken sammeln. Dankeschön"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Lade …"
 
@@ -70,10 +70,6 @@ msgstr "Musik"
 msgid "Next"
 msgstr "Weiter"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Alles leer. Laden Sie Ihre Musik hoch!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Pfad zu Ihrer Musiksammlung"
@@ -82,7 +78,7 @@ msgstr "Pfad zu Ihrer Musiksammlung"
 msgid "Pause"
 msgstr "Anhalten"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Abspielen"
 
@@ -97,20 +93,6 @@ msgstr "Wiederholen"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "API-Passwort verwerfen"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Untersuche ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "{{ trackcount }} Lied anzeigen  ..."
-msgstr[1] "Alle {{ trackcount }} Lieder anzeigen  ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Weniger anzeigen ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

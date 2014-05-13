@@ -7,7 +7,6 @@ $TRANSLATIONS = array(
 "Pause" => "ۋاقىتلىق توختا",
 "Play" => "چال",
 "Previous" => "ئالدىنقى",
-"Repeat" => "قايتىلا",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("")
+"Repeat" => "قايتىلا"
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

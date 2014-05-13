@@ -5,7 +5,6 @@ $TRANSLATIONS = array(
 "Next" => "Næst",
 "Pause" => "Pása",
 "Play" => "Spila",
-"Previous" => "Fyrra",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Previous" => "Fyrra"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

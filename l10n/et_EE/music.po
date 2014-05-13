@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Pea meeles, et Ampache APi ei ole küps ning on ebastabiilne. Anna teada oma kogemustest selle funktsionaalsusega vastavalt <a href=\"https://github.com/owncloud/music/issues/60\">teemaarendusele</a>. Ühtlasi soovin nimistut klientidest, mida testida. Tänan."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Laadimine ..."
 
@@ -68,10 +68,6 @@ msgstr "Muusika"
 msgid "Next"
 msgstr "Järgmine"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Siin pole midagi. Laadi oma muusikat üles!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Tee sinu muusikakoguni"
@@ -80,7 +76,7 @@ msgstr "Tee sinu muusikakoguni"
 msgid "Pause"
 msgstr "Paus"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Esita"
 
@@ -95,20 +91,6 @@ msgstr "Korda"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Keeldu API paroolist"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Skaneerin ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Näita {{ trackcount }} lugu ..."
-msgstr[1] "Näita kõiki {{ trackcount }} lugu ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Näita vähem ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

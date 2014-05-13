@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-04-30 05:30+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Mongolian (http://www.transifex.com/projects/p/owncloud/language/mn/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,7 +54,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr ""
 
@@ -66,10 +66,6 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr ""
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -78,7 +74,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr ""
 
@@ -92,20 +88,6 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
 msgstr ""
 
 #: ../templates/main.php

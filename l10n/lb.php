@@ -7,7 +7,6 @@ $TRANSLATIONS = array(
 "Pause" => "Paus",
 "Play" => "Ofspillen",
 "Previous" => "Zeréck",
-"Repeat" => "Widderhuelen",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Repeat" => "Widderhuelen"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

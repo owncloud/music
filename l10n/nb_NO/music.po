@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,7 +57,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Laster ..."
 
@@ -69,10 +69,6 @@ msgstr "Musikk"
 msgid "Next"
 msgstr "Neste"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Ingenting her. Last opp musikken din!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Sti til din musikksamling"
@@ -81,7 +77,7 @@ msgstr "Sti til din musikksamling"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Spill"
 
@@ -96,20 +92,6 @@ msgstr "Gjenta"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Tilbakestill API-passord"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Skanner..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Vis alle {{ trackcount }} sanger ..."
-msgstr[1] "Vis alle {{ trackcount }} sanger ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Vis mindre ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

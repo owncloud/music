@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Persian (http://www.transifex.com/projects/p/owncloud/language/fa/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,7 +55,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "درحال بارگذاری..."
 
@@ -67,10 +67,6 @@ msgstr "موزیک"
 msgid "Next"
 msgstr "بعدی"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "اینجا چیزی نیست. موزیک خود را بارگذاری کنید."
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -79,7 +75,7 @@ msgstr ""
 msgid "Pause"
 msgstr "توقف کردن"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "پخش کردن"
 
@@ -93,19 +89,6 @@ msgstr "تکرار"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "در حال بررسی..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
 msgstr ""
 
 #: ../templates/main.php

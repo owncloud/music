@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:50+0000\n"
-"Last-Translator: សុវិចិត្រ Sovichet ទេព Tep\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "កំពុងផ្ទុក ..."
 
@@ -68,10 +68,6 @@ msgstr "តន្ត្រី"
 msgid "Next"
 msgstr "បន្ទាប់"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "គ្មាន​អ្វីទេ​នៅទីនេះ។ ដាក់តន្ត្រី​របស់​អ្នកឡើង!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -80,7 +76,7 @@ msgstr ""
 msgid "Pause"
 msgstr "ផ្អាក"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "លេង"
 
@@ -95,19 +91,6 @@ msgstr "ធ្វើម្ដងទៀត"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "កំពុង​វិភាគ​រក ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "បង្ហាញ​ទាំង {{ trackcount }} ចម្រៀង ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "បង្ហាញ​តិច ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

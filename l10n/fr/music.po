@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: ptit_boogy <ptit.boogy@gmail.com>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,7 +62,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Gardez en mémoire que l'API Ampache est une avant-première et n'est pas encore stable. N'hésitez pas à donner un retour d'expérience de cette fonctionnalité dans l'<a href=\"https://github.com/owncloud/music/issues/60\">item</a> dédié. On aimerait également obtenir une liste des clients avec lesquels tester. Merci."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Chargement…"
 
@@ -74,10 +74,6 @@ msgstr "Musique"
 msgid "Next"
 msgstr "Suivant"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Il n'y a rien ici ! Envoyez donc votre musique :)"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Chemin vers votre collection de musique"
@@ -86,7 +82,7 @@ msgstr "Chemin vers votre collection de musique"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Lire"
 
@@ -101,20 +97,6 @@ msgstr "Répéter"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Révoquer le mot de passe de l'API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Analyse..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Afficher le morceau {{ trackcount }}..."
-msgstr[1] "Afficher les {{ trackcount }} morceaux..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Afficher moins…"
 
 #: ../templates/main.php
 msgid "Shuffle"

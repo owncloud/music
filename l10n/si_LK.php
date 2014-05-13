@@ -7,7 +7,6 @@ $TRANSLATIONS = array(
 "Pause" => "විරාමය",
 "Play" => "ධාවනය",
 "Previous" => "පෙර",
-"Repeat" => "පුනරාවර්ථන",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Repeat" => "පුනරාවර්ථන"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Myslite na to, že Ampache API je stále vo vývoji a nie je stabilné. Môžete nás informovať o skúsenostiach s touto funkciou odoslaním hlásenia v príslušnom <a href=\"https://github.com/owncloud/music/issues/60\">tikete</a>. Chcel by som tiež zostaviť zoznam záujemcov o testovanie. Vďaka"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Nahrávam..."
 
@@ -68,10 +68,6 @@ msgstr "Hudba"
 msgid "Next"
 msgstr "Ďalšia"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Cesta k vašej hudobnej zbierke"
@@ -80,7 +76,7 @@ msgstr "Cesta k vašej hudobnej zbierke"
 msgid "Pause"
 msgstr "Pauza"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Prehrať"
 
@@ -95,21 +91,6 @@ msgstr "Opakovať"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Zneplatniť heslo API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Skenujem..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Zobraziť {{ trackcount }} skladieb ..."
-msgstr[1] "Zobraziť {{ trackcount }} skladieb ..."
-msgstr[2] "Zobraziť všetky {{ trackcount }} skladieb ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Zobraziť menej ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

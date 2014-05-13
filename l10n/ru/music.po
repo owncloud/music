@@ -3,12 +3,13 @@
 # Alexander Savchenko <>, 2014
 # Dmitry <linuxsquirrel.dev@gmail.com>, 2013
 # jekader <jekader@gmail.com>, 2013
+# tukos <kalyuzhniy@gmail.com>, 2014
 # not_your_conscience <hex.void@gmail.com>, 2013
 # CatWhoCode <me@imthecat.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +35,7 @@ msgstr "Описание"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Описание (например Название приложения)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
@@ -45,7 +46,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Здесь вы можете генерировать пароли для использования с API Ampache, в связи с тем что, они не могут быть сохранены в действительно безопасным способом из-за конструкции API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -57,9 +58,9 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Следует помнить, что API Ampache только демо и неустойчиво. Мы будем презнательны если вы поделитесь опытом работы с этой функцией в разделе <a href=\"https://github.com/owncloud/music/issues/60\"> </ A>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Загружается..."
 
@@ -71,10 +72,6 @@ msgstr "Музыка"
 msgid "Next"
 msgstr "Следующий"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Здесь ничего нет. Загрузите вашу музыку!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Путь до вашей музыкальной коллекции"
@@ -83,7 +80,7 @@ msgstr "Путь до вашей музыкальной коллекции"
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Проиграть"
 
@@ -99,32 +96,17 @@ msgstr "Повтор"
 msgid "Revoke API password"
 msgstr "Отозвать пароль для API"
 
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Поиск ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Показать {{ trackcount }} песню..."
-msgstr[1] "Показать все {{ trackcount }} песни..."
-msgstr[2] "Показать все {{ trackcount }} песен..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Показать меньше..."
-
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Перемешать"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Некоторые не проигрываемые композиции были пропущены."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Эта настройка определяет папку, в которой будет проведено сканирование музыки."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -142,10 +124,10 @@ msgstr "Неизвестный исполнитель"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Используйте этот адрес, чтобы просмотреть вашу музыкальную коллекцию с любого плеера совместимого с Ampache."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Используйте свой логин и ниже следующий пароль для подключения к данному экземпляру Ampache:"

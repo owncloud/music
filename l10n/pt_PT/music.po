@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,7 +57,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Lembre-se que a API do Ampache é apenas provisória e instável. Esteja à vontade para relatar a sua experiência com esta característica na <a href=\"https://github.com/owncloud/music/issues/60\">questão</a> correspondente. Também gostaria de ter uma lista de clientes para testar. Obrigado"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "A carregar..."
 
@@ -69,10 +69,6 @@ msgstr "Musica"
 msgid "Next"
 msgstr "Próxima"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Não existe nada aqui. Carregue a sua musica!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Caminho para a sua colecção de música"
@@ -81,7 +77,7 @@ msgstr "Caminho para a sua colecção de música"
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Reproduzir"
 
@@ -96,20 +92,6 @@ msgstr "Repetir"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Revogar palavra-passe da API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "A pesquisar..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Mostrar todas as {{ trackcount }} músicas ..."
-msgstr[1] "Mostrar todas as {{ trackcount }} músicas ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Mostrar menos..."
 
 #: ../templates/main.php
 msgid "Shuffle"

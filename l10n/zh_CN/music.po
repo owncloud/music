@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: Xuetian Weng <wengxt@gmail.com>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +57,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "加载中..."
 
@@ -69,10 +69,6 @@ msgstr "音乐"
 msgid "Next"
 msgstr "下一个"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "这里还什么都没有。上传你的音乐吧！"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -81,7 +77,7 @@ msgstr ""
 msgid "Pause"
 msgstr "暂停"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "播放"
 
@@ -96,19 +92,6 @@ msgstr "重复"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "扫描中 ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "显示所有 {{ trackcount }} 首歌曲 ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "显示概要"
 
 #: ../templates/main.php
 msgid "Shuffle"

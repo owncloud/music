@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Lithuanian (Lithuania) (http://www.transifex.com/projects/p/owncloud/language/lt_LT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Įkeliama ..."
 
@@ -68,10 +68,6 @@ msgstr "Muzika"
 msgid "Next"
 msgstr "Kitas"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nieko nėra. Įkelkite sava muziką!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -80,7 +76,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Pristabdyti"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Groti"
 
@@ -95,21 +91,6 @@ msgstr "Kartoti"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Rodyti visas {{ trackcount }} dainas ..."
-msgstr[1] "Rodyti visas {{ trackcount }} dainas ..."
-msgstr[2] "Rodyti visas {{ trackcount }} dainas ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Rodyti mažiau ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

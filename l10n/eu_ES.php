@@ -7,7 +7,6 @@ $TRANSLATIONS = array(
 "Pause" => "geldi",
 "Play" => "jolastu",
 "Previous" => "Atzera",
-"Repeat" => "Errepikatu",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Repeat" => "Errepikatu"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

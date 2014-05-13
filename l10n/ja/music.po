@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: mikako\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,7 +58,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "読込中 ..."
 
@@ -70,10 +70,6 @@ msgstr "ミュージック"
 msgid "Next"
 msgstr "次"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "ここには何もありません。ミュージックをアップロードしてください！"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "音楽コレクションのパス"
@@ -82,7 +78,7 @@ msgstr "音楽コレクションのパス"
 msgid "Pause"
 msgstr "一時停止"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "再生"
 
@@ -97,19 +93,6 @@ msgstr "繰り返し"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "スキャン中..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "すべての {{ trackcount }} 曲を表示 ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "簡略表示 ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

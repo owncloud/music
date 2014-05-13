@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: bobie <maciej.przybecki@gmail.com>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/owncloud/language/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Miej na uwadze, że API Ampache jest tylko poglądowe i niestabilne. Możesz swobodnie raportować swoje doświadczenia z tą funkcją w odpowiednim <a href=\"https://github.com/owncloud/music/issues/60\">dokumencie</a>. Chciałbym mieć również listę klientów z którymi będę przeprowadzać testy. Dzięki"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Wczytuję ..."
 
@@ -68,10 +68,6 @@ msgstr "Muzyka"
 msgid "Next"
 msgstr "Następny"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Brak zawartości. Proszę wysłać muzykę!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Ścieżka do Twojej kolekcji muzyki"
@@ -80,7 +76,7 @@ msgstr "Ścieżka do Twojej kolekcji muzyki"
 msgid "Pause"
 msgstr "Wstrzymaj"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Odtwarzaj"
 
@@ -95,21 +91,6 @@ msgstr "Powtarzanie"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Odwołaj hasło API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Skanowanie..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Pokaż wszystkie {{ trackcount }} piosenek ..."
-msgstr[1] "Pokaż wszystkie {{ trackcount }} piosenek ..."
-msgstr[2] "Pokaż wszystkie {{ trackcount }} piosenek ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Pokaz mniej ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: mreyesca <mreyesca@luthcueit.onmicrosoft.com>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -59,7 +59,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Recuerde que la API de Ampache solo es un prototipo y es inestable. Sírvase reportar su experiencia con esta nueva característica en el <a href=\"https://github.com/owncloud/music/issues/60\">informe de error</a> correspondiente. También quisiera tener una lista de clientes con qué probarla. Gracias."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Cargando..."
 
@@ -71,10 +71,6 @@ msgstr "Música"
 msgid "Next"
 msgstr "Siguiente"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Aquí no hay nada. ¡Sube tu música!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Ruta a su colección de música"
@@ -83,7 +79,7 @@ msgstr "Ruta a su colección de música"
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Reproducir"
 
@@ -98,20 +94,6 @@ msgstr "Repetir"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Revocar contraseña para la API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Escaneando..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Mostrar todas las {{ trackcount}} canciones..."
-msgstr[1] "Mostrar todas las {{ trackcount }} canciones..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Mostrar menos..."
 
 #: ../templates/main.php
 msgid "Shuffle"

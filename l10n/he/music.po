@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/owncloud/language/he/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,7 +55,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "טוען..."
 
@@ -67,10 +67,6 @@ msgstr "מוזיקה"
 msgid "Next"
 msgstr "הבא"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "אין כאן שום דבר. אולי ברצונך להעלות משהו?"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr ""
@@ -79,7 +75,7 @@ msgstr ""
 msgid "Pause"
 msgstr "השהה"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "נגן"
 
@@ -94,20 +90,6 @@ msgstr "חזרה"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr ""
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr ""
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "הצג את כל {{trackcount}} שירים"
-msgstr[1] "הצג את כל {{trackcount}} שירים..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "הצג פחות..."
 
 #: ../templates/main.php
 msgid "Shuffle"

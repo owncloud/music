@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: volkangezer <volkangezer@gmail.com>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,7 +56,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Unutmayın, Ampache API'si henüz bir önizleme olup, kararlı sürüm değildir. Bu özellikle ilgili deneyiminizi ilgili <a href=\"https://github.com/owncloud/music/issues/60\">sorunlar</a> kısmında bildirmekten çekinmeyin. Ayrıca test edilmesi gereken istemcilerin listesini de edinmek isterim. Teşekkürler."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Yükleniyor..."
 
@@ -68,10 +68,6 @@ msgstr "Müzik"
 msgid "Next"
 msgstr "Sonraki"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Burada hiçbir şey yok. Müziğinizi yükleyin!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Müzik koleksiyonunuzun yolu"
@@ -80,7 +76,7 @@ msgstr "Müzik koleksiyonunuzun yolu"
 msgid "Pause"
 msgstr "Beklet"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Oynat"
 
@@ -95,20 +91,6 @@ msgstr "Tekrar"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "API parolasını geçersiz kıl"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Taranıyor..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Tüm {{ trackcount }} şarkıyı göster ..."
-msgstr[1] "Tüm {{ trackcount }} şarkıyı göster ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Daha az göster ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

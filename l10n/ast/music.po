@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 16:00+0000\n"
-"Last-Translator: Iñigo Varela <ivarela@softastur.org>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Asturian (http://www.transifex.com/projects/p/owncloud/language/ast/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +55,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Recuerda que la API d'Ampache namái ye un prototipu y ye inestable. Informa de la to esperiencia con esta nueva carauterística nel <a href=\"https://github.com/owncloud/music/issues/60\">informe de fallu</a> correspondiente. Prestábame tener una llista de veceros cola que probala. Gracies."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Cargando..."
 
@@ -67,10 +67,6 @@ msgstr "Música"
 msgid "Next"
 msgstr "Siguiente"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Equí nun hai un res. ¡Xubi la to música!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Camín a la to coleición de música"
@@ -79,7 +75,7 @@ msgstr "Camín a la to coleición de música"
 msgid "Pause"
 msgstr "Posa"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Reproducir"
 
@@ -94,20 +90,6 @@ msgstr "Repitir"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Revocar contraseña pa la API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Escaniando..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Amosar toles {{ trackcount}} canciones..."
-msgstr[1] "Amosar toles {{ trackcount }} canciones..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Amosar menos..."
 
 #: ../templates/main.php
 msgid "Shuffle"

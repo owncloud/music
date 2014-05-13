@@ -7,7 +7,6 @@ $TRANSLATIONS = array(
 "Pause" => "Pause",
 "Play" => "Spel",
 "Previous" => "Førre",
-"Repeat" => "Gjenta",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Repeat" => "Gjenta"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

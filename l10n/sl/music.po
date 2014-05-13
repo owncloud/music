@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: mateju <>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +55,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Imejte v mislih, da je Ampache API namenjen le predogledu in ni povsem stabilna programska oprema. Vaših odzivov in izkušenj o uporabi bomo zelo veseli. Objavite jih preko <a href=\"https://github.com/owncloud/music/issues/60\">spletnega obrazca</a>. Priporočljivo je dodati tudi seznam odjemalcev. Za sodelovanje se vam vnaprej najlepše zahvaljujemo."
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Nalaganje ..."
 
@@ -67,10 +67,6 @@ msgstr "Glasba"
 msgid "Next"
 msgstr "Naslednja"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "V mapi ni glasbenih datotek. Dodajte skladbe!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Pot do zbirke glasbe"
@@ -79,7 +75,7 @@ msgstr "Pot do zbirke glasbe"
 msgid "Pause"
 msgstr "Premor"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Predvajaj"
 
@@ -94,22 +90,6 @@ msgstr "Ponovi"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Razveljavi geslo API"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Poteka preiskovanje ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Pokaži {{ trackcount }} posnetek ..."
-msgstr[1] "Pokaži {{ trackcount }} posnetka ..."
-msgstr[2] "Pokaži {{ trackcount }} posnetke ..."
-msgstr[3] "Pokaži {{ trackcount }} posnetkov ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Pokaži manj ..."
 
 #: ../templates/main.php
 msgid "Shuffle"

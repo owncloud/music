@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,7 +57,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Betöltés ..."
 
@@ -69,10 +69,6 @@ msgstr "Zene"
 msgid "Next"
 msgstr "Következő"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nincs itt semmi. Töltsd fel a zenédet!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "A zenegyűjtemény útvonala"
@@ -81,7 +77,7 @@ msgstr "A zenegyűjtemény útvonala"
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Lejátszás"
 
@@ -96,20 +92,6 @@ msgstr "Ismétlés"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "API-jelszó visszavonása"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Átnézés ..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Mutasd mind a {{ trackcount }} zenét ..."
-msgstr[1] "Mutasd mind a {{ trackcount }} zenét ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Mutass kevesebbet..."
 
 #: ../templates/main.php
 msgid "Shuffle"

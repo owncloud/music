@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-11 05:03+0000\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/projects/p/owncloud/language/fi_FI/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +55,7 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Loading ..."
 msgstr "Ladataan..."
 
@@ -67,10 +67,6 @@ msgstr "Musiikki"
 msgid "Next"
 msgstr "Seuraava"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Täällä ei ole mitään. Lähetä musiikkia tänne!"
-
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
 msgstr "Musiikkikokoelman polku"
@@ -79,7 +75,7 @@ msgstr "Musiikkikokoelman polku"
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Toista"
 
@@ -94,20 +90,6 @@ msgstr "Kertaa"
 #: ../templates/fake-template.php
 msgid "Revoke API password"
 msgstr "Peru API-salasana"
-
-#: ../templates/part.main.php
-msgid "Scanning ..."
-msgstr "Tutkitaan..."
-
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Näytä {{ trackcount }} kappale..."
-msgstr[1] "Näytä kaikki {{ trackcount }} kappaletta..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Näytä vähemmän..."
 
 #: ../templates/main.php
 msgid "Shuffle"

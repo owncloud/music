@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Description" => "ဖော်ပြချက်",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("")
+"Description" => "ဖော်ပြချက်"
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

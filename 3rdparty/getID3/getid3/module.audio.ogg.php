@@ -503,7 +503,13 @@ $info['warning'][] = 'Ogg Theora (v3) not fully supported in this version of get
 
 		$basicfields = array('TITLE', 'ARTIST', 'ALBUM', 'TRACKNUMBER', 'GENRE', 'DATE', 'DESCRIPTION', 'COMMENT');
 		$ThisFileInfo_ogg_comments_raw = &$info['ogg']['comments_raw'];
-		for ($i = 0; $i < $CommentsCount && $i < 10000; $i++) {
+		for ($i = 0; $i < $CommentsCount; $i++) {
+
+			if ($i >= 10000) {
+				// https://github.com/owncloud/music/issues/212#issuecomment-43082336
+				$info['warning'][] = 'Unexpectedly large number ('.$CommentsCount.') of Ogg comments - breaking after reading '.$i.' comments';
+				break 2;
+			}
 
 			$ThisFileInfo_ogg_comments_raw[$i]['dataoffset'] = $CommentStartOffset + $commentdataoffset;
 

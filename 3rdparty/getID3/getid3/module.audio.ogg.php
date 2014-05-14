@@ -503,7 +503,7 @@ $info['warning'][] = 'Ogg Theora (v3) not fully supported in this version of get
 
 		$basicfields = array('TITLE', 'ARTIST', 'ALBUM', 'TRACKNUMBER', 'GENRE', 'DATE', 'DESCRIPTION', 'COMMENT');
 		$ThisFileInfo_ogg_comments_raw = &$info['ogg']['comments_raw'];
-		for ($i = 0; $i < $CommentsCount; $i++) {
+		for ($i = 0; $i < $CommentsCount && $i < 10000; $i++) {
 
 			$ThisFileInfo_ogg_comments_raw[$i]['dataoffset'] = $CommentStartOffset + $commentdataoffset;
 

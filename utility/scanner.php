@@ -69,8 +69,11 @@ class Scanner extends PublicEmitter {
 
 	public function updateById($fileId, $userId = null) {
 		try {
-			$file = $this->userFolder->get($path);
-			$this->update($file, $userId);
+			$files = $this->userFolder->getById($fileId);
+			if(count($files) > 0) {
+				// use first result
+				$this->update($files[0], $userId);
+			}
 		} catch (\OCP\Files\NotFoundException $e) {
 			// just ignore the error
 			$this->logger->log('updateById - file not found - '. $fileId , 'debug');
@@ -79,11 +82,8 @@ class Scanner extends PublicEmitter {
 
 	public function updateByPath($filePath, $userId = null) {
 		try {
-			$files = $this->userFolder->getById($filePath);
-			if(count($files) > 0) {
-				// use first result
-				$this->update($files[0], $userId);
-			}
+			$file = $this->userFolder->get($filePath);
+			$this->update($file, $userId);
 		} catch (\OCP\Files\NotFoundException $e) {
 			// just ignore the error
 			$this->logger->log('updateByPath - file not found - '. $filePath , 'debug');

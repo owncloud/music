@@ -6,7 +6,7 @@ $TRANSLATIONS = array(
 "Description" => "Tanımlama",
 "Description (e.g. App name)" => "Açıklama (örn. Uygulama adı)",
 "Generate API password" => "API parolası oluştur",
-"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Burada Ampache API'si ile kullanılacak parolaları oluşturabilirsiniz. Çünkü Ampache API'sinin tasarımından dolayı bu parolalar yeterince güvenli bir şekilde depolanamamaktadır. İstediğiniz kadar parola oluşturup; ardından istediğiniz zaman geçersiz kılabilirsiniz.",
+"Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Ampache API'sinin tasarımından dolayı bu parolalar yeterince güvenli bir şekilde depolanamadığından, burada Ampache API'si ile kullanılacak parolaları oluşturabilirsiniz. İstediğiniz kadar parola oluşturup; ardından istediğiniz zaman geçersiz kılabilirsiniz.",
 "Invalid path" => "Geçersiz yol",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Unutmayın, Ampache API'si henüz bir önizleme olup, kararlı sürüm değildir. Bu özellikle ilgili deneyiminizi ilgili <a href=\"https://github.com/owncloud/music/issues/60\">sorunlar</a> kısmında bildirmekten çekinmeyin. Ayrıca test edilmesi gereken istemcilerin listesini de edinmek isterim. Teşekkürler.",
 "Loading ..." => "Yükleniyor...",
@@ -24,7 +24,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Parçalar",
 "Unknown album" => "Bilinmeyen albüm",
 "Unknown artist" => "Bilinmeyen sanatçı",
-"Use this address to browse your music collection from any Ampache compatible player." => "Herhangi Ampache uyumlu çalardan müzik koleksiyonunuza göz atmak için bu adresi kullanabilirsiniz.",
+"Use this address to browse your music collection from any Ampache compatible player." => "Herhangi Ampache uyumlu çalardan müzik koleksiyonunuza göz atmak için bu adresi kullanın.",
 "Use your username and following password to connect to this Ampache instance:" => "Bu Ampache örneğine bağlanmak için kullanıcı adı ve parolanızı kullanın:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n > 1);";

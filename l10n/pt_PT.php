@@ -19,6 +19,7 @@ $TRANSLATIONS = array(
 "Repeat" => "Repetir",
 "Revoke API password" => "Revogar palavra-passe da API",
 "Shuffle" => "Baralhar",
+"This setting specifies the folder which will be scanned for music." => "Esta definição especifica a pasta onde vai ser rastreada a música.",
 "Tracks" => "Faixas",
 "Unknown album" => "Álbum desconhecido",
 "Unknown artist" => "Artista desconhecido",

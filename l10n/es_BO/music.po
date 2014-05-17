@@ -3,12 +3,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-16 15:33+0000\n"
-"Last-Translator: I Robot\n"
-"Language-Team: Urdu (Pakistan) (http://www.transifex.com/projects/p/owncloud/language/ur_PK/)\n"
+"PO-Revision-Date: 2013-09-30 11:39+0000\n"
+"Language-Team: Spanish (Bolivia) (http://www.transifex.com/projects/p/owncloud/language/es_BO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ur_PK\n"
+"Language: es_BO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../templates/fake-template.php
@@ -21,7 +20,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "حذف کریں"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description"

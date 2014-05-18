@@ -819,7 +819,7 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('ug', {"Delete":"ئۆچۈر","Description":"چۈشەندۈرۈش","Music":"نەغمە","Next":"كېيىنكى","Pause":"ۋاقىتلىق توختا","Play":"چال","Previous":"ئالدىنقى","Repeat":"قايتىلا"});
     gettextCatalog.setStrings('uk', {"Delete":"Видалити","Description":"Опис","Loading ...":"Завантаження ...","Music":"Музика","Next":"Наступний","Pause":"Пауза","Play":"Грати","Previous":"Попередній","Repeat":"Повторювати","Shuffle":"Перемішати"});
     gettextCatalog.setStrings('ur', {});
-    gettextCatalog.setStrings('ur_PK', {"Delete":"حذف کریں"});
+    gettextCatalog.setStrings('ur_PK', {"Delete":"حذف کریں","Next":"اگلا"});
     gettextCatalog.setStrings('uz', {});
     gettextCatalog.setStrings('vi', {"Delete":"Xóa","Description":"Mô tả","Loading ...":"Đang tải ...","Music":"Âm nhạc","Next":"Kế tiếp","Pause":"Tạm dừng","Play":"Play","Previous":"Lùi lại","Repeat":"Lặp lại","Shuffle":"Ngẫu nhiên","Unknown album":"Không tìm thấy album","Unknown artist":"Không tìm thấy nghệ sĩ"});
     gettextCatalog.setStrings('zh_CN', {"Albums":"专辑页","Artists":"艺术家","Delete":"删除","Description":"描述","Description (e.g. App name)":"描述 (例如 App 名称)","Generate API password":"生成 API 密码","Invalid path":"无效路径","Loading ...":"加载中...","Music":"音乐","Next":"下一个","Pause":"暂停","Play":"播放","Previous":"前一首","Repeat":"重复","Shuffle":"随机","Tracks":"音轨","Unknown album":"未知专辑","Unknown artist":"未知艺术家"});

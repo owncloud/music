@@ -24,7 +24,7 @@
 	<div>
 		<label for="music-path"><?php p($l->t('Path to your music collection')); ?></label>
 		<input type="text" id="music-path" value="<?php p($_['path']); ?>" />
-		<p><em><?php p($l->t('This setting specifies the folder which will be scanned for music.')); ?>.</em></p>
+		<p><em><?php p($l->t('This setting specifies the folder which will be scanned for music.')); ?></em></p>
 	</div>
 	<h3>Ampache</h3>
 	<div class="warning">

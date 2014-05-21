@@ -19,8 +19,6 @@ use \OCA\Music\AppFramework\Db\Entity;
 use \OCA\Music\Core\API;
 
 /**
- * @method int getId()
- * @method setId(int $id)
  * @method string getName()
  * @method setName(string $name)
  * @method string getImage()

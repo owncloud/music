@@ -13,6 +13,10 @@
 
 namespace OCA\Music\AppFramework\Db;
 
+/**
+ * @method int getId()
+ * @method setId(int $id)
+ */
 
 abstract class Entity {
 

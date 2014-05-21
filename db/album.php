@@ -31,8 +31,8 @@ use \OCA\Music\Core\API;
  * @method setUserId(string $userId)
  * @method int getTrackCount()
  * @method setTrackCount(int $trackCount)
- * @method string getArtist()
- * @method setArtist(string $artist)
+ * @method Artist getArtist()
+ * @method setArtist(Artist $artist)
  */
 class Album extends Entity {
 

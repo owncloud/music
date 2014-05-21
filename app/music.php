@@ -188,7 +188,7 @@ class Music extends App {
 			return $c->getServer()->getConfig();
 		});
 
-		$container->registerService('Db', function($c) {
+		$container->registerService('Db', function() {
 			return new Db();
 		});
 
@@ -210,7 +210,7 @@ class Music extends App {
 			return $c->getServer()->getUserFolder();
 		});
 
-		$container->registerService('UserId', function($c) {
+		$container->registerService('UserId', function() {
 			return \OCP\User::getUser();
 		});
 
@@ -218,7 +218,7 @@ class Music extends App {
 		 * Utility
 		 */
 
-		$container->registerService('AmpacheUser', function($c) {
+		$container->registerService('AmpacheUser', function() {
 			return new AmpacheUser();
 		});
 
@@ -229,7 +229,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('getID3', function($c) {
+		$container->registerService('getID3', function() {
 			$getID3 = new \getID3();
 			$getID3->encoding = 'UTF-8';
 			// On 32-bit systems, getid3 tries to make a 2GB size check,

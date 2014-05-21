@@ -58,8 +58,6 @@ class Scan extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$scanner = $this->container['Scanner'];
-
 		$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 			$output->writeln("Scanning <info>$path</info>");
 		});

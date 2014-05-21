@@ -17,6 +17,7 @@ use \OCP\IURLGenerator;
 
 use \OCA\Music\Core\API;
 
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Http\Request;
 use \OCA\Music\AppFramework\Http\Http;
 use \OCA\Music\AppFramework\Http\Response;

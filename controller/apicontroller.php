@@ -20,10 +20,11 @@ use \OCP\Files\Folder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\Db\DoesNotExistException;
+
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\Db\DoesNotExistException;
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\Scanner;
 

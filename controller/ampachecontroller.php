@@ -29,7 +29,6 @@ use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\ArtistMapper;
-use \OCA\Music\Db\DoesNotExistException;
 use \OCA\Music\Db\TrackMapper;
 
 

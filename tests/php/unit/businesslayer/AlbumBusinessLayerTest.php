@@ -206,14 +206,6 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('removeCover')
 			->with($this->equalTo($fileId));
 
-		$this->mapper->expects($this->once())
-			->method('getAlbumsWithoutCover')
-			->will($this->returnValue(array(array('albumId' => 2, 'parentFolderId' => 3))));
-
-		$this->mapper->expects($this->once())
-			->method('findAlbumCover')
-			->with($this->equalTo(2), $this->equalTo(3));
-
 		$this->albumBusinessLayer->removeCover($fileId);
 
 	}

@@ -29,9 +29,7 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist->setName('The name');
 		$artist->setImage('The image url');
 
-		$l10n = $this->getMockBuilder('\OCP\IL10N')
-			->disableOriginalConstructor()
-			->getMock();
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 
 		$this->assertEquals(array(
 			'id' => 3,
@@ -46,7 +44,7 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist = new Artist();
 		$artist->setName(null);
 
-		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l'));
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 		$l10nString = $this->getMock('\OC\L10N\String', array('__toString'));
 		$l10nString->expects($this->any())
 			->method('__toString')

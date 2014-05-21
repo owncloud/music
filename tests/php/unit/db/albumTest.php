@@ -31,9 +31,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1,2));
 
-		$l10n = $this->getMockBuilder('\OCP\IL10N')
-			->disableOriginalConstructor()
-			->getMock();
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 
 		$this->assertEquals(array(
 			'id' => 3,
@@ -53,7 +51,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album = new Album();
 		$album->setName(null);
 
-		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l'));
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 		$l10nString = $this->getMock('\OC\L10N\String', array('__toString'));
 		$l10nString->expects($this->any())
 			->method('__toString')

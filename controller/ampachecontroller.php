@@ -308,7 +308,7 @@ class AmpacheController extends Controller {
 
 		// set album and track count for artists
 		$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-		$track->setAlbum($album);
+		$track->setAlbum($this->albumMapper->find($track->getAlbumId(), $userId));
 
 		return $this->render(
 			'ampache/songs',

@@ -17,7 +17,7 @@ interface Extractor {
 	/**
 	 * get metadata info for a media file
 	 *
-	 * @param $path the path to the file
+	 * @param string $path the path to the file
 	 * @return array extracted data
 	 */
 	public function extract($path);

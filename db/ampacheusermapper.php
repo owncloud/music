@@ -23,6 +23,9 @@ class AmpacheUserMapper extends Mapper {
 		parent::__construct($db, 'music_ampache_users', '');
 	}
 
+	/**
+	 * @param string $userId
+	 */
 	public function getPasswordHashes($userId){
 		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';
@@ -38,6 +41,11 @@ class AmpacheUserMapper extends Mapper {
 		return $hashes;
 	}
 
+	/**
+	 * @param string $userId
+	 * @param string $hash
+	 * @param string $description
+	 */
 	public function addUserKey($userId, $hash, $description){
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users` '.
 			'(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
@@ -57,6 +65,10 @@ class AmpacheUserMapper extends Mapper {
 		return $row['id'];
 	}
 
+	/**
+	 * @param string $userId
+	 * @param integer|string $id
+	 */
 	public function removeUserKey($userId, $id){
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_users` '.
 				'WHERE `user_id` = ? AND `id` = ?';
@@ -64,6 +76,9 @@ class AmpacheUserMapper extends Mapper {
 		$this->execute($sql, $params);
 	}
 
+	/**
+	 * @param string $userId
+	 */
 	public function getAll($userId) {
 		$sql = 'SELECT `id`, `hash`, `description` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';

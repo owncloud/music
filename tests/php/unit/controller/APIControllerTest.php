@@ -87,6 +87,9 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->userFolder);
 	}
 
+	/**
+	 * @param string $methodName
+	 */
 	private function assertAPIControllerAnnotations($methodName){
 		$annotations = array('NoAdminRequired', 'NoCSRFRequired');
 		$this->assertAnnotations($this->controller, $methodName, $annotations);

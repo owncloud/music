@@ -22,6 +22,9 @@ class AmpacheSessionMapper extends Mapper {
 		parent::__construct($db, 'music_ampache_sessions', '\OCA\Music\Db\AmpacheSession');
 	}
 
+	/**
+	 * @param string $token
+	 */
 	public function findByToken($token){
 		$sql = 'SELECT `user_id` '.
 			'FROM `*PREFIX*music_ampache_sessions` '.
@@ -34,6 +37,10 @@ class AmpacheSessionMapper extends Mapper {
 		return $result->fetchRow();
 	}
 
+	/**
+	 * @param string $token
+	 * @param integer $expiry
+	 */
 	public function extend($token, $expiry){
 		$sql = 'UPDATE `*PREFIX*music_ampache_sessions` '.
 			'SET `expiry` = ? '.

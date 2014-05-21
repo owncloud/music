@@ -16,6 +16,16 @@
 namespace OCA\Music\AppFramework\Db;
 
 interface IMapper {
+
+	/**
+	 * @param string $userId
+	 *
+	 * @return Entity
+	 */
 	public function find($id, $userId);
+
+	/**
+	 * @param string $userId
+	 */
 	public function findAll($userId);
 }

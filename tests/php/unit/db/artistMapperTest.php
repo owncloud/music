@@ -55,6 +55,9 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 	}
 
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.

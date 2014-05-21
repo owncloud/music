@@ -46,6 +46,9 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 		);
 	}
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQueryWithoutUserId($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
@@ -54,6 +57,9 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 			'WHERE ' . $condition;
 	}
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithOutUserId('`track`.`user_id` = ? ' . $condition);
 	}

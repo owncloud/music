@@ -57,6 +57,9 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.

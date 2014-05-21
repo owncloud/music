@@ -22,6 +22,9 @@ class TrackMapper extends Mapper implements IMapper {
 		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
 	}
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQueryWithoutUserId($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
@@ -30,22 +33,39 @@ class TrackMapper extends Mapper implements IMapper {
 			'WHERE ' . $condition;
 	}
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
+	/**
+	 * @param string $userId
+	 * @param integer $limit
+	 * @param integer $offset
+	 */
 	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
+	/**
+	 * @param integer $artistId
+	 * @param string $userId
+	 */
 	public function findAllByArtist($artistId, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ?');
 		$params = array($userId, $artistId);
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * @param integer $albumId
+	 * @param string $userId
+	 * @param integer $artistId
+	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null){
 		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ?');
 		$params = array($userId, $albumId);
@@ -56,24 +76,39 @@ class TrackMapper extends Mapper implements IMapper {
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * @param integer $id
+	 * @param string $userId
+	 */
 	public function find($id, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
 		$params = array($userId, $id);
 		return $this->findEntity($sql, $params);
 	}
 
+	/**
+	 * @param integer $fileId
+	 * @param string $userId
+	 */
 	public function findByFileId($fileId, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
 		$params = array($userId, $fileId);
 		return $this->findEntity($sql, $params);
 	}
 
+	/**
+	 * @param integer $fileId
+	 */
 	public function findAllByFileId($fileId){
 		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
 		$params = array($fileId);
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * @param integer $artistId
+	 * @param string $userId
+	 */
 	public function countByArtist($artistId, $userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
@@ -83,6 +118,10 @@ class TrackMapper extends Mapper implements IMapper {
 		return $row['COUNT(*)'];
 	}
 
+	/**
+	 * @param integer $albumId
+	 * @param string $userId
+	 */
 	public function countByAlbum($albumId, $userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
@@ -92,6 +131,9 @@ class TrackMapper extends Mapper implements IMapper {
 		return $row['COUNT(*)'];
 	}
 
+	/**
+	 * @param string $userId
+	 */
 	public function count($userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` '.
 			'WHERE `user_id` = ?';
@@ -101,6 +143,11 @@ class TrackMapper extends Mapper implements IMapper {
 		return $row['COUNT(*)'];
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 */
 	public function findAllByName($name, $userId, $fuzzy = false){
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
@@ -113,6 +160,10 @@ class TrackMapper extends Mapper implements IMapper {
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $userId
+	 */
 	public function findAllByNameRecursive($name, $userId){
 		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.

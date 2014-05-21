@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Http;
 
-use OC\Files\View;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http;
 

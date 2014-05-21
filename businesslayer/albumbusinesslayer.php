@@ -83,6 +83,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Adds an album (if it does not exist already) and returns the new album
 	 * @param string $name the name of the album
 	 * @param string $year the year of the release
+	 * @param integer $artistId
+	 * @param string $userId
 	 * @return \OCA\Music\Db\Album
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */

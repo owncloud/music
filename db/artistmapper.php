@@ -22,18 +22,28 @@ class ArtistMapper extends Mapper implements IMapper {
 		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist');
 	}
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
 			'FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition;
 	}
 
+	/**
+	 * @param string $userId
+	 */
 	public function findAll($userId){
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * @param integer[] $artistIds
+	 * @param string $userId
+	 */
 	public function findMultipleById($artistIds, $userId){
 		$questionMarks = array();
 		for($i = 0; $i < count($artistIds); $i++){
@@ -46,12 +56,22 @@ class ArtistMapper extends Mapper implements IMapper {
 		return $this->findEntities($sql, $params);
 	}
 
+
+	/**
+	 * @param integer $artistId
+	 * @param string $userId
+	 */
 	public function find($artistId, $userId){
 		$sql = $this->makeSelectQuery('AND `artist`.`id` = ?');
 		$params = array($userId, $artistId);
 		return $this->findEntity($sql, $params);
 	}
 
+	/**
+	 * @param string|null $artistName
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 */
 	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false) {
 		if ($artistName === null) {
 			$condition = 'AND `artist`.`name` IS NULL';
@@ -70,16 +90,29 @@ class ArtistMapper extends Mapper implements IMapper {
 		);
 	}
 
+	/**
+	 * @param string|null $artistName
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 */
 	public function findByName($artistName, $userId, $fuzzy = false){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
 		return $this->findEntity($sqlAndParams['sql'], $sqlAndParams['params']);
 	}
 
+	/**
+	 * @param string|null $artistName
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
 	}
 
+	/**
+	 * @param integer[] $artistIds
+	 */
 	public function deleteById($artistIds){
 		if(count($artistIds) === 0)
 			return;
@@ -91,6 +124,9 @@ class ArtistMapper extends Mapper implements IMapper {
 		$this->execute($sql, $artistIds);
 	}
 
+	/**
+	 * @param string $userId
+	 */
 	public function count($userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_artists` '.
 			'WHERE `user_id` = ?';

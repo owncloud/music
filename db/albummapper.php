@@ -25,6 +25,7 @@ class AlbumMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param string $condition
+	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
@@ -35,6 +36,7 @@ class AlbumMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param string $userId
+	 * @return Album[]
 	 */
 	public function findAll($userId){
 		$sql = $this->makeSelectQuery();
@@ -45,6 +47,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $albumId
 	 * @param string $userId
+	 * @return Album
 	 */
 	public function find($albumId, $userId){
 		$sql = $this->makeSelectQuery('AND `album`.`id` = ?');
@@ -54,6 +57,7 @@ class AlbumMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param integer[] $albumIds
+	 * @return array
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
 		$questionMarks = array();
@@ -77,6 +81,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $artistId
 	 * @param string $userId
+	 * @return Album[]
 	 */
 	public function findAllByArtist($artistId, $userId){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
@@ -93,6 +98,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @param string|null $albumName
 	 * @param integer|null $albumYear
 	 * @param string $userId
+	 * @return Album
 	 */
 	public function findByNameAndYear($albumName, $albumYear, $userId){
 		if($albumName === null && $albumYear === null) {
@@ -116,6 +122,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @param integer|null $albumYear
 	 * @param integer|null $artistId
 	 * @param string $userId
+	 * @return Album[]
 	 */
 	public function findAlbum($albumName, $albumYear, $artistId, $userId) {
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
@@ -216,6 +223,9 @@ class AlbumMapper extends Mapper implements IMapper {
 		$this->execute($sql, $params);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getAlbumsWithoutCover(){
 		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
@@ -273,6 +283,7 @@ class AlbumMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param string $userId
+	 * @return integer
 	 */
 	public function count($userId){
 		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_albums` '.
@@ -286,6 +297,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $artistId
 	 * @param string $userId
+	 * @return integer
 	 */
 	public function countByArtist($artistId, $userId){
 		$sql = 'SELECT COUNT(*) '.
@@ -303,6 +315,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @return Album[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false){
 		if ($fuzzy) {

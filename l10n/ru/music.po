@@ -3,7 +3,7 @@
 # Alexander Savchenko <>, 2014
 # Dmitry <linuxsquirrel.dev@gmail.com>, 2013
 # jekader <jekader@gmail.com>, 2013
-# tukos <kalyuzhniy@gmail.com>, 2014
+# tukos, 2014
 # not_your_conscience <hex.void@gmail.com>, 2013
 # CatWhoCode <me@imthecat.ru>, 2014
 msgid ""

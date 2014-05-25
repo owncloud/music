@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-15 02:55+0000\n"
+"PO-Revision-Date: 2014-05-24 13:42+0000\n"
 "Last-Translator: volkangezer <volkangezer@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr "Sil"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr "Tanımlama"
+msgstr "Açıklama"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
@@ -86,7 +86,7 @@ msgstr "Önceki"
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Tekrar"
+msgstr "Tekrarla"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"

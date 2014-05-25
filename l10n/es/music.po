@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-24 05:26+0000\n"
+"PO-Revision-Date: 2014-05-24 05:41+0000\n"
 "Last-Translator: joses <jose_mari_s@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,7 +46,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr "Aquí uno puede crear contraseñas para usarlas con la API de Ampache, pues no pueden ser almacenadas de forma segura debido al diseño de la API de Ampache. Puede crear todas las contraseñas que quiera y revocarlas en cualquier momento."
+msgstr "Aquí se pueden crear contraseñas para usarlas con el API de Ampache. Dado que el diseño del API de Ampache no permite almacenar contraseñas de manera segura, se puden generar tantas contrasenas como sea necesario, así como revocarlas en cualquier momento."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -58,7 +58,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr "Recuerde que la API de Ampache solo es un prototipo y es inestable. Sírvase reportar su experiencia con esta nueva característica en el <a href=\"https://github.com/owncloud/music/issues/60\">informe de error</a> correspondiente. También quisiera tener una lista de clientes con qué probarla. Gracias."
+msgstr "Recuerde que el API de Ampache solo es un prototipo y es inestable. Puede reportar su experiencia con esta nueva funcionalidad en el <a href=\"https://github.com/owncloud/music/issues/60\">informe de error</a> correspondiente. También quisiera tener una lista de clientes con quienes probarla. Gracias."
 
 #: ../templates/main.php
 msgid "Loading ..."

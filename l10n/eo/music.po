@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Mariano <mstreet@kde.org.ar>, 2013
+# Mariano <mstreet@kde.org.ar>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-13 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-25 21:53+0000\n"
+"Last-Translator: Mariano <mstreet@kde.org.ar>\n"
 "Language-Team: Esperanto (http://www.transifex.com/projects/p/owncloud/language/eo/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albumoj"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistoj"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,7 +30,7 @@ msgstr "Priskribo"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Priskribo (ekz.: aplikaĵonomo)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Nevalida vojo"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -69,7 +69,7 @@ msgstr "Jena"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Vojo al via muzikokolekto"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -109,11 +109,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Nekonata albumo"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Nekonata artisto"
 
 #: ../templates/fake-template.php
 msgid ""

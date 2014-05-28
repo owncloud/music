@@ -44,9 +44,6 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
 		.when('/', {
 			controller:'OverviewController',
 			templateUrl:'overview.html'
-		})
-		.otherwise({
-			redirectTo:'/'
 		});
 }]).
 	run(function(Token, Restangular){

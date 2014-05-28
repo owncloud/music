@@ -132,7 +132,14 @@ angular.module('Music').controller('PlayerController',
 				}
 			);
 		// determine index of clicked track
-		var index = tracks.indexOf(track);
+		var index = -1;
+		for (var i = 0; i < tracks.length; i++) {
+			if(tracks[i].id == track.id) {
+				index = i;
+				break;
+			}
+		}
+
 		if(index > 0) {
 			// slice array in two parts and interchange them
 			var begin = tracks.slice(0, index);

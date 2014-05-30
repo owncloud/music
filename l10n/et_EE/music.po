@@ -1,12 +1,12 @@
 # 
 # Translators:
 # pisike.sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
-# Rivo Zängov <eraser@eraser.ee>, 2013
+# Rivo Zängov <eraser@eraser.ee>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-13 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-05-29 15:19+0000\n"
+"Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -98,11 +98,11 @@ msgstr "Juhuslik esitus"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Mõned mittemängitavad lood jäeti vahele."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "See seade määrab kausta, kust muusikat otsitakse."
 
 #: ../templates/fake-template.php
 msgid "Tracks"

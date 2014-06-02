@@ -53,7 +53,7 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/file/:id',		overviewControllerConfig)
 				.when('/new', {
 					controller:'PlaylistController',
-					templateUrl:'details.html'
+					templateUrl:'new-plist.html'
 				})
 				.when('/playlist/:playlistId', {
 					controller:'PlaylistController',

@@ -23,8 +23,8 @@
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
-	<script type="text/ng-template" id="details.html">
-		<?php print_unescaped($this->inc('partials/details')) ?>
+	<script type="text/ng-template" id="new-plist.html">
+		<?php print_unescaped($this->inc('partials/new-plist')) ?>
 	</script>
 	<script type="text/ng-template" id="plsongs.html">
 		<?php print_unescaped($this->inc('partials/plsongs')) ?>
@@ -78,7 +78,7 @@
 				<li><a href="#/new" translate>+ New Playlist</a></li>
 				<li ng-repeat="playlist in playlists">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<img alt="{{ 'Delete' | translate }}" src="<?php p(OCP\image_path('core', 'actions/close.svg')) ?>" />
+					<a href="" ng-click="removePlaylist(playlist.id)">x</a>
 				</li>
 			</ul>
 		</div>

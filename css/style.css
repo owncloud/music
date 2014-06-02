@@ -19,6 +19,10 @@
 	text-decoration: underline;
 }
 
+#app-navigation li > a {
+	display: table-cell;
+}
+
 #app-content {
 	overflow-y:auto;
 	-moz-box-sizing: border-box;

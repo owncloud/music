@@ -35,7 +35,9 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param string $userId
+	 * returns all albums of a user
+	 *
+	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
 	public function findAll($userId){
@@ -45,8 +47,10 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param integer $albumId
-	 * @param string $userId
+	 * finds an album by ID
+	 *
+	 * @param integer $albumId ID of the album
+	 * @param string $userId the user ID
 	 * @return Album
 	 */
 	public function find($albumId, $userId){
@@ -56,8 +60,11 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param integer[] $albumIds
-	 * @return array
+	 * returns artist IDs mapped to album IDs
+	 *
+	 * @param integer[] $albumIds IDs of the albums
+	 * @return array the artist IDs of an album are accessible
+	 * 				by the album ID inside of this array
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
 		$questionMarks = array();
@@ -79,8 +86,10 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param integer $artistId
-	 * @param string $userId
+	 * returns albums of a specified artist
+	 *
+	 * @param integer $artistId ID of the artist
+	 * @param strig $userId the user ID
 	 * @return Album[]
 	 */
 	public function findAllByArtist($artistId, $userId){
@@ -95,9 +104,11 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param string|null $albumName
-	 * @param integer|null $albumYear
-	 * @param string $userId
+	 * returns album that matches a name and year
+	 *
+	 * @param string $albumName name of the album
+	 * @param string|integer $albumYear year of the album release
+	 * @param strig $userId the user ID
 	 * @return Album
 	 */
 	public function findByNameAndYear($albumName, $albumYear, $userId){
@@ -118,10 +129,12 @@ class AlbumMapper extends Mapper implements IMapper {
 	}
 
 	/**
-	 * @param string|null $albumName
-	 * @param integer|null $albumYear
-	 * @param integer|null $artistId
-	 * @param string $userId
+	 * returns album that matches a name, a year and a artist ID
+	 *
+	 * @param string|null $albumName name of the album
+	 * @param string|integer|null $albumYear year of the album release
+	 * @param integer|null $artistId ID of the artist
+	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
 	public function findAlbum($albumName, $albumYear, $artistId, $userId) {

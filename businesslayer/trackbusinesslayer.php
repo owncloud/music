@@ -57,7 +57,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns all tracks filtered by album
 	 * @param string $albumId the id of the track
 	 * @param string $userId the name of the user
-	 * @return array of tracks
+	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null){
 		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
@@ -67,7 +67,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns the track for a file id
 	 * @param string $fileId the file id of the track
 	 * @param string $userId the name of the user
-	 * @return track
+	 * @return \OCA\Music\Db\Track track
 	 */
 	public function findByFileId($fileId, $userId){
 		return $this->mapper->findByFileId($fileId, $userId);
@@ -82,7 +82,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $fileId the file id of the track
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track
+	 * @return \OCA\Music\Db\Track track
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
@@ -156,7 +156,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns all tracks filtered by name (of track/album/artist)
 	 * @param string $name the name of the track/album/artist
 	 * @param string $userId the name of the user
-	 * @return array of tracks
+	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByNameRecursive($name, $userId){
 		return $this->mapper->findAllByNameRecursive($name, $userId);

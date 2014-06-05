@@ -1,14 +1,14 @@
 # 
 # Translators:
-# AsavarTzeth <asavartzeth@gmail.com>, 2014
+# Patrik Nilsson <asavartzeth@gmail.com>, 2014
 # Gustav Smedberg <shadow.elf@hotmail.com>, 2013
-# medialabs, 2013-2014
+# Juho Ojala, 2013-2014
 # lagre, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "PO-Revision-Date: 2014-05-18 21:11+0000\n"
-"Last-Translator: medialabs\n"
+"Last-Translator: Juho Ojala\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/owncloud/language/sv/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

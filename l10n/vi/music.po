@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Nguyễn Tài <mattheu.9x@gmail.com>, 2014
+# Nguyễn Hữu Tài <mattheu.9x@gmail.com>, 2014
 # Sơn Nguyễn <sonnghit@gmail.com>, 2014
 msgid ""
 msgstr ""

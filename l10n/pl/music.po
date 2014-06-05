@@ -1,7 +1,7 @@
 # 
 # Translators:
 # Cyryl Sochacki <cyrylsochacki@gmail.com>, 2013-2014
-# bobie <maciej.przybecki@gmail.com>, 2014
+# Maciej Przybecki <maciej.przybecki@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

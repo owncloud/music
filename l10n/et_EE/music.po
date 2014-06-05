@@ -1,6 +1,6 @@
 # 
 # Translators:
-# pisike.sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
+# Pisike Sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
 # Rivo Zängov <eraser@eraser.ee>, 2013-2014
 msgid ""
 msgstr ""

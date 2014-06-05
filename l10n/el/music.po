@@ -3,8 +3,8 @@
 # Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014
 # thea_rad <inactive+thea_rad@transifex.com>, 2014
 # Marios Bekatoros <>, 2013
-# pe_ppe <peppe@cs.uoi.gr>, 2014
-# vkehayas <vkehayas@gmail.com>, 2014
+# Spyros Melissovas <peppe@cs.uoi.gr>, 2014
+# Vassilis Kehayas <vkehayas@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

@@ -1,10 +1,10 @@
 # 
 # Translators:
-# timelord <bruno@timelord.fr>, 2014
+# Bruno Million <bruno@timelord.fr>, 2014
 # Christophe Lherieau <skimpax@gmail.com>, 2013-2014
-# etiess <etiess@gmail.com>, 2013
-# ptit_boogy <ptit.boogy@gmail.com>, 2014
-# ogre_sympathique, 2013
+# Etienne <etiess@gmail.com>, 2013
+# Fabian Lemaître <ptit.boogy@gmail.com>, 2014
+# Ogre Sympathique, 2013
 # Romain DEP. <rom1dep@gmail.com>, 2013
 # themen <themen2004@gmail.com>, 2014
 # tcit <thomas.citharet@gmail.com>, 2014

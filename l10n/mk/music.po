@@ -1,6 +1,6 @@
 # 
 # Translators:
-# miroj <jmiroslav@softhome.net>, 2013
+# Miroslav Jovanovic <jmiroslav@softhome.net>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

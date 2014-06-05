@@ -1,6 +1,6 @@
 # 
 # Translators:
-# hajibaba <majid.hajibaba@gmail.com>, 2014
+# majid hajibaba <majid.hajibaba@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

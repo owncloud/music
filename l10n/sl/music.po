@@ -1,6 +1,6 @@
 # 
 # Translators:
-# mateju <>, 2013-2014
+# Matej Urbančič <>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

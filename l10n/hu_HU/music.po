@@ -1,8 +1,8 @@
 # 
 # Translators:
 # ebela <bela@dandre.hu>, 2013
-# aries1980 <feher.janos@mindworks.hu>, 2014
-# pty <peti@szladovics.hu>, 2014
+# János Fehér <feher.janos@mindworks.hu>, 2014
+# Szládovics Péter <peti@szladovics.hu>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

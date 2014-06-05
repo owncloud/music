@@ -1,8 +1,8 @@
 # 
 # Translators:
-# 책읽는달팽 <bjh13579@gmail.com>, 2013
+# woosuk park <bjh13579@gmail.com>, 2013
 # Shinjo Park <kde@peremen.name>, 2013
-# 책읽는달팽 <bjh13579@gmail.com>, 2013-2014
+# woosuk park <bjh13579@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

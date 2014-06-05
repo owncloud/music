@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Duarte Velez Grilo <duartegrilo@gmail.com>, 2014
+# zedascouves <duartegrilo@gmail.com>, 2014
 # Helder Meneses <helder.meneses@gmail.com>, 2013-2014
 # rtbfreitas, 2014
 msgid ""

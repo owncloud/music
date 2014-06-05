@@ -1,6 +1,6 @@
 # 
 # Translators:
-# mhh <marian.hvolka@stuba.sk>, 2013-2014
+# Marián Hvolka <marian.hvolka@stuba.sk>, 2013-2014
 # mehturt <mehturt@gmail.com>, 2014
 msgid ""
 msgstr ""

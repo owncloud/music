@@ -1,12 +1,12 @@
 # 
 # Translators:
-# Emre Saracoglu <emresaracoglu@live.com>, 2014
-# volkangezer <volkangezer@gmail.com>, 2013-2014
+# Emre Saraçoğlu <emresaracoglu@live.com>, 2014
+# Volkan Gezer <volkangezer@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "PO-Revision-Date: 2014-05-25 21:41+0000\n"
-"Last-Translator: volkangezer <volkangezer@gmail.com>\n"
+"Last-Translator: Volkan Gezer <volkangezer@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

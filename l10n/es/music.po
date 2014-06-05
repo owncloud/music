@@ -1,11 +1,11 @@
 # 
 # Translators:
 # Art O. Pal <artopal@fastmail.fm>, 2013-2014
-# japaol <japaol@gmail.com>, 2013
+# Javi <japaol@gmail.com>, 2013
 # joses <jose_mari_s@hotmail.com>, 2014
 # Maenso <balero_arana@hotmail.com>, 2013
-# mreyesca <mreyesca@luthcueit.onmicrosoft.com>, 2014
-# Rubén del Campo <yo@rubendelcampo.es>, 2013
+# Miguel Reyes Canales <mreyesca@luthcueit.onmicrosoft.com>, 2014
+# Rubén del Campo Gómez <yo@rubendelcampo.es>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

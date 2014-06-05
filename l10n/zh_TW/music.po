@@ -1,6 +1,6 @@
 # 
 # Translators:
-# pellaeon <nfsmwlin@gmail.com>, 2013
+# Pellaeon Lin <nfsmwlin@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

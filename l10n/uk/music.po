@@ -1,7 +1,7 @@
 # 
 # Translators:
 # zubr139, 2013
-# volodya327 <volodya327@gmail.com>, 2013
+# пан Володимир <volodya327@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

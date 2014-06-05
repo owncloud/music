@@ -1,6 +1,6 @@
 # 
 # Translators:
-# espenbye <espenbye@me.com>, 2014
+# Espen Bye <espenbye@me.com>, 2014
 # Jukselapp <ingemundskalnes@gmail.com>, 2014
 # vidaren <news@vidartysse.net>, 2014
 msgid ""

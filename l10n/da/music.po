@@ -1,7 +1,7 @@
 # 
 # Translators:
-# Sappe, 2013-2014
-# lodahl <leiflodahl@gmail.com>, 2014
+# Anders J. Sørensen, 2013-2014
+# Leif Lodahl <leiflodahl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

@@ -1,6 +1,6 @@
 # 
 # Translators:
-# mnestis <transifex@mnestis.net>, 2013-2014
+# Darren Richardson <transifex@mnestis.net>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

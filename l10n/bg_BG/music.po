@@ -1,6 +1,6 @@
 # 
 # Translators:
-# cybertorture, 2014
+# George Kamenov, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Jessica Di Maria <dimariaj87@gmail.com>, 2014
+# dimariaj87 <dimariaj87@gmail.com>, 2014
 # idetao <marcxosm@gmail.com>, 2014
 # Paolo Velati <paolo.velati@gmail.com>, 2014
 # Vincenzo Reale <vinx.reale@gmail.com>, 2013-2014

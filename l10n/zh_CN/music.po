@@ -1,8 +1,8 @@
 # 
 # Translators:
 # phy <transifex@phy25.com>, 2014
-# Xuetian Weng <wengxt@gmail.com>, 2014
-# 攀 张 <zhangguangpan@gmail.com>, 2014
+# csslayer <wengxt@gmail.com>, 2014
+# zhangguangpan <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

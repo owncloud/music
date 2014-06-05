@@ -1,14 +1,15 @@
 # 
 # Translators:
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
-# plazmism <gomidori@live.jp>, 2014
-# mikako, 2014
-# tt yn <tetuyano+transi@gmail.com>, 2014
+# タカハシ <gomidori@live.jp>, 2014
+# kuromabo <md81bird@hitaki.net>, 2014
+# Mika Kobayashi, 2014
+# YANO Tetsu <tetuyano+transi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-13 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-04 17:41+0000\n"
+"Last-Translator: kuromabo <md81bird@hitaki.net>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -104,7 +105,7 @@ msgstr "いくつかの再生不可能なトラックを飛ばしました。"
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr "この設定では、音楽ファイルをスキャンするフォルダを指定します。"
+msgstr "この設定では、音楽ファイルをスキャンするフォルダーを指定します。"
 
 #: ../templates/fake-template.php
 msgid "Tracks"

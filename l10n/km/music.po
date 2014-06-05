@@ -1,7 +1,7 @@
 # 
 # Translators:
-# Pongsametrey SOK <metreysk@gmail.com>, 2013-2014
-# សុវិចិត្រ Sovichet ទេព Tep, 2014
+# Pongsametrey <metreysk@gmail.com>, 2013-2014
+# Sovichet Tep, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

@@ -1,6 +1,6 @@
 # 
 # Translators:
-# ard1t <ardit.dani@gmail.com>, 2014
+# Ardit Dani <ardit.dani@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

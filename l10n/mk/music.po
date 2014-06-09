@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Miroslav Jovanovic <jmiroslav@softhome.net>, 2013
+# Miroslav Jovanovic <jmiroslav@softhome.net>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-13 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-08 20:10+0000\n"
+"Last-Translator: Miroslav Jovanovic <jmiroslav@softhome.net>\n"
 "Language-Team: Macedonian (http://www.transifex.com/projects/p/owncloud/language/mk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Албуми"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Артисти"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,11 +30,11 @@ msgstr "Опис"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Опис (нпр. име на апликацијата)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Генерирај API лозинка"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -45,7 +45,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Грешна патека"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -69,7 +69,7 @@ msgstr "Следно"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Патека до вашата музичка колекција"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -89,7 +89,7 @@ msgstr "Повтори"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Отповикај ја API лозинката"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -97,23 +97,23 @@ msgstr "Помешај"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Некои песни кои не можеа да се пуштат беа прескокнати."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Овие поставки го одредуваат фолдерот кој ќе биде прегледан за музика."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Песна"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Непознат албум"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Непознат артист"
 
 #: ../templates/fake-template.php
 msgid ""

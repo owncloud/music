@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-12 19:21+0000\n"
+"Last-Translator: Anders J. Sørensen\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +31,7 @@ msgstr "Beskrivelse"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Beskrivelse (f.eks. App-navn)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Ugyldig sti"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -70,7 +70,7 @@ msgstr "Næste"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Sti til dit musik bibliotek "
 
 #: ../templates/main.php
 msgid "Pause"
@@ -90,7 +90,7 @@ msgstr "Gentag"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Tilbagekald API adgangskode"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -98,7 +98,7 @@ msgstr "Bland"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Nogle ikke afspillelig numre blev sprunget over."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."

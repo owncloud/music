@@ -75,10 +75,10 @@
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
-				<li><a href="#/new" translate>+ New Playlist</a></li>
+				<li><a href="" id="create" ng-click="newPlaylist()" translate>+ New Playlist</a></li>
 				<li ng-repeat="playlist in playlists">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<a href="" ng-click="removePlaylist(playlist.id)">x</a>
+					<a href="" id="playlist-edit{{playlist.id}}" ng-click="getPlaylist(playlist.id)">edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
 				</li>
 			</ul>
 		</div>

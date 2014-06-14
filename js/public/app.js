@@ -503,8 +503,8 @@ angular.module('Music').controller('PlayerController',
 }]);
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location',
-	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location) {
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location', '$http',
+	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location, $http) {
 
 	$scope.currentPlaylist = $routeParams.playlistId;
 	console.log("Current PLaylist: "+ $scope.currentPlaylist);
@@ -550,6 +550,20 @@ angular.module('Music').controller('PlaylistController',
 		console.log("-------------------$scope.cPlist.id: " + $scope.cPlistId);
 	};
 
+	$scope.newPlaylist = function() {
+		var li = $(document.createElement('li'))
+		  .load(OC.filePath('music', 'ajax', 'plist-new.php'));
+		var bodyListener = function(e) {
+			if($('#new-plist-dialog').find($(e.target)).length === 0) {
+				$('#create').closest('li').after(li).show();
+				$('#new-plist-dialog').remove();
+				$('body').unbind('click', bodyListener);
+			}
+		};
+		$('body').bind('click', bodyListener);
+		$('#create').closest('li').after(li).hide();
+	};
+
 	$scope.addPlaylist = function(plistName) {
 		console.log(plistName);
 		var message = Restangular.one('addPlaylist');
@@ -558,11 +572,32 @@ angular.module('Music').controller('PlaylistController',
 			$scope.playlists = [];
 			$scope.getPlaylists();
 			$location.url('/');
+			$('#new-plist-dialog').remove();
 		}, function error(reason) {
 			console.log("error :(");
 		});
 	};
+	$scope.getPlaylist = function(id) {
+		console.log(id);
+		var message = Restangular.one('getPlaylist');
+		message.post(id).then(function(pl) {
+			var li = $(document.createElement('li'))
+			.load(OC.filePath('music', 'ajax', 'edit-plists.php'), {plist: pl});
 
+			var bodyListener = function(e) {
+				if($('#pledit_dialog').find($(e.target)).length === 0) {
+					$('#playlist-edit'+pl[0].id).closest('li').before(li).show();
+					$('#pledit_dialog').parent().remove();
+					$('body').unbind('click', bodyListener);
+				}
+			};
+			$('body').bind('click', bodyListener);
+
+			$('#playlist-edit'+pl[0].id).closest('li').before(li).hide();
+		}, function error(reason) {
+			console.log("error :(");
+		});
+	};
 	$scope.removePlaylist = function(id) {
 		console.log(id);
 		var message = Restangular.one('removePlaylist');
@@ -570,7 +605,6 @@ angular.module('Music').controller('PlaylistController',
 			console.log("i sent it");
 			$scope.playlists = [];
 			$scope.getPlaylists();
-			$location.url('/'+id);
 		}, function error(reason) {
 			console.log("error :(");
 		});
@@ -578,19 +612,21 @@ angular.module('Music').controller('PlaylistController',
 	$scope.playlistIndex = function() {
 		for(var i=0; i < $scope.playlists.length; i++) {
 			if($scope.playlists[i].id == $scope.currentPlaylist) {
-			console.log("i found the playlist: "+i);
-			return i;
+				console.log("i found the playlist: "+i);
+				return i;
 		  }
 		}
-		console.log("no i could'nt!!!!! "+i);
+		console.log("no i couldn't!!!!! "+i);
 		return 0;
 	};
 	$scope.updatePlaylist = function(id, name, songs) {
 		console.log("adding to: "+id+" name: "+name+" songs: "+songs);
 		var message = Restangular.one('updatePlaylist/'+id+"/"+name);
 			message.post(songs).then(function(newMsg) {
-			console.log("updated");
-			$location.url('/playlist/'+id);
+				console.log("updated");
+				$scope.playlists = [];
+				$scope.getPlaylists();
+				$('#pledit_dialog').hide();
 		}, function error(reason) {
 			console.log("error :(");
 		});
@@ -625,6 +661,14 @@ angular.module('Music').controller('PlaylistController',
 //	$scope.getCurrentPlist();
 
 }]);
+
+$(document).on('click', '#addPlaylist', function () {
+	angular.element('#new-plist-dialog').scope().addPlaylist(document.getElementById('name').value);
+});
+
+$(document).on('click', '#updatePlaylist', function () {
+	angular.element('#pledit_dialog').scope().updatePlaylist(document.getElementById('id').value, document.getElementById('name').value, document.getElementById('songs').value);
+});
 
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {

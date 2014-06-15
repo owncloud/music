@@ -19,10 +19,6 @@
 	text-decoration: underline;
 }
 
-#app-navigation li > a {
-	display: table-cell;
-}
-
 #app-content {
 	overflow-y:auto;
 	-moz-box-sizing: border-box;
@@ -32,10 +28,9 @@
 	top: 0;
 	bottom: 0;
 	right: 0;
-	left: 0;
+	left: 250px;
 	position: absolute;
 	padding-right: 50px;
-	margin-left: 300px;
 }
 
 #app-content.started {

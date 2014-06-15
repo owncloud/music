@@ -18,3 +18,28 @@
 	height: 21px;
 	display: none;
 }
+
+#new-playlist {
+	padding: 6px 12px;
+}
+
+#new-playlist input {
+	margin: 0;
+}
+
+#new-playlist input[type="text"] {
+	width: 193px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+#new-playlist input[type="button"] {
+	position: absolute;
+	/* right padding */
+	right: 12px;
+
+	width: 32px;
+	height: 32px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}

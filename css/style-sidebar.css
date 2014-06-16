@@ -28,7 +28,8 @@
 }
 
 #new-playlist input[type="text"] {
-	width: 193px;
+	height: 32px;
+	width: 194px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }

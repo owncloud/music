@@ -13,10 +13,10 @@ $TRANSLATIONS = array(
 "Music" => "Música",
 "Next" => "Próxima",
 "Path to your music collection" => "Caminho para a sua coleção de músicas",
-"Pause" => "Paisa",
+"Pause" => "Pausa",
 "Play" => "Reproduzir",
 "Previous" => "Anterior",
-"Repeat" => "Repatir",
+"Repeat" => "Repetir",
 "Revoke API password" => "Revogar senha API",
 "Shuffle" => "Embaralhar",
 "Some not playable tracks were skipped." => "Algumas faixas não reproduzíveis ​​foram ignoradas.",
@@ -24,7 +24,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Trilhas",
 "Unknown album" => "Album desconhecido",
 "Unknown artist" => "Artista desconhecido",
-"Use this address to browse your music collection from any Ampache compatible player." => "Utilize este endereço para navegar por sua coleção de música a partir de qualquer leitor compatível com Apache.",
+"Use this address to browse your music collection from any Ampache compatible player." => "Utilize este endereço para navegar por sua coleção de música a partir de qualquer leitor compatível com Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Use o seu nome de usuário e senha a seguir para se conectar a essa instância Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n > 1);";

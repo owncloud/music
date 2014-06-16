@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-15 14:10+0000\n"
+"Last-Translator: Flávio Veras <flaviove@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/owncloud/language/pt_BR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -73,7 +73,7 @@ msgstr "Caminho para a sua coleção de músicas"
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "Paisa"
+msgstr "Pausa"
 
 #: ../templates/main.php
 msgid "Play"
@@ -85,7 +85,7 @@ msgstr "Anterior"
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "Repatir"
+msgstr "Repetir"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
@@ -119,7 +119,7 @@ msgstr "Artista desconhecido"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr "Utilize este endereço para navegar por sua coleção de música a partir de qualquer leitor compatível com Apache."
+msgstr "Utilize este endereço para navegar por sua coleção de música a partir de qualquer leitor compatível com Ampache."
 
 #: ../templates/fake-template.php
 msgid ""

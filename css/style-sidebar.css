@@ -19,16 +19,16 @@
 	display: none;
 }
 
-#new-playlist {
+#new-playlist, li.input {
 	padding: 6px 12px;
 }
 
-#new-playlist input {
+#new-playlist input, li.input input {
 	margin: 0;
+	height: 32px;
 }
 
 #new-playlist input[type="text"] {
-	height: 32px;
 	width: 194px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
@@ -40,7 +40,10 @@
 	right: 12px;
 
 	width: 32px;
-	height: 32px;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
+}
+
+li.input input {
+	width: 100%;
 }

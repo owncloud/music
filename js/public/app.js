@@ -506,6 +506,17 @@ angular.module('Music').controller('PlaylistController',
 	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location', '$http',
 	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location, $http) {
 
+
+		$scope.createPlaylist = function(playlist) {
+			var playlists = Restangular.all('playlists');
+			playlists.post(playlist).then(function(){
+				console.log(arguments);
+			});
+
+		};
+
+
+
 	$scope.currentPlaylist = $routeParams.playlistId;
 	console.log("Current PLaylist: "+ $scope.currentPlaylist);
 	$scope.playlistSongs = [];

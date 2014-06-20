@@ -51,10 +51,6 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/album/:id',		overviewControllerConfig)
 				.when('/track/:id',		overviewControllerConfig)
 				.when('/file/:id',		overviewControllerConfig)
-				.when('/new', {
-					controller:'PlaylistController',
-					templateUrl:'new-plist.html'
-				})
 				.when('/playlist/:playlistId', {
 					controller:'PlaylistController',
 					templateUrl:'plsongs.html'

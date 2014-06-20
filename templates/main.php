@@ -72,23 +72,27 @@
 		</div>
 
 		<div id="app-navigation">
-			<ul ng-controller="PlaylistController" ng-init="showForm = false">
+			<ul ng-controller="PlaylistController" ng-init="showForm = false; editForm = false">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
 				<li ng-hide="showForm"><a href="" id="create" ng-click="showForm = !showForm" translate>+ New Playlist</a></li>
-				<li id="new-playlist" ng-show="showForm">
-					<input type="text" placeholder="New Playlist" name="name" ng-model="newPlaylistForm.name" />
-					<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
-				</li>
+				<form name="newPlaylistForm" id="newPlaylistForm" ng-show="showForm">
+					<li id="new-playlist">
+						<input type="text" placeholder="New Playlist" name="name" ng-model="newPlaylistForm.name" />
+						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
+					</li>
 				<!-- debug start -->
-				<li class="input" ng-show="showForm">
-					<input type="text" placeholder="Tracks" ng-model="newPlaylistForm.trackIds" />
-				</li>
-				<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
+					<li class="input" ng-show="showForm">
+						<input type="text" placeholder="Tracks" ng-model="newPlaylistForm.trackIds"/>
+					</li>
+					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
 				<!-- debug end -->
+				</form>
+				<li ng-hide="editForm"><a href="" id="edit" ng-click="editForm = !editForm" translate>+ New asda</a></li>
+				</form>
 				<li ng-repeat="playlist in playlists">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<a href="" id="playlist-edit{{playlist.id}}" ng-click="getPlaylist(playlist.id)">edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
+					<a href="" id="edit" ng-click="editForm = !editForm" translate>edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
 				</li>
 			</ul>
 		</div>

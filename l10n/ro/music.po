@@ -1,10 +1,11 @@
 # 
 # Translators:
+# andreiacob <andrei.iacob@y7mail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-23 12:30+0000\n"
+"Last-Translator: andreiacob <andrei.iacob@y7mail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/owncloud/language/ro/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albume"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artiști"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -29,11 +30,11 @@ msgstr "Descriere"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Descriere (ex. Numele aplicației)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Generează parola API"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -44,7 +45,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Cale invalidă"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -68,7 +69,7 @@ msgstr "Următor"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Calea spre colecția cu muzica dvs."
 
 #: ../templates/main.php
 msgid "Pause"
@@ -108,11 +109,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Album necunoscut"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Artist necunoscut"
 
 #: ../templates/fake-template.php
 msgid ""

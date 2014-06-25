@@ -88,9 +88,15 @@
 					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
 				<!-- debug end -->
 				</form>
+				<form name="editPlaylistForm" id="newPlaylistForm" ng-show="editForm">
+					<li id="new-playlist">
+						<input type="text" placeholder="Edit" name="name" ng-model="newPlaylistForm.name" />
+						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
+					</li>
+				</form>
 				<li ng-hide="editForm"><a href="" id="edit" ng-click="editForm = !editForm" translate>+ New asda</a></li>
 				</form>
-				<li ng-repeat="playlist in playlists">
+				<li ng-hide="editForm" ng-repeat="playlist in playlists">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<a href="" id="edit" ng-click="editForm = !editForm" translate>edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
 				</li>

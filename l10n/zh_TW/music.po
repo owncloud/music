@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Pellaeon Lin <nfsmwlin@gmail.com>, 2013
+# Flymok <transifex@flymok.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-25 03:11+0000\n"
+"Last-Translator: Flymok <transifex@flymok.net>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/owncloud/language/zh_TW/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +15,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "專輯"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "歌手"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,11 +31,11 @@ msgstr "描述"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "描述 (例: App 名稱)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "產生 API 密碼"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -45,7 +46,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "無效的路徑"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -89,7 +90,7 @@ msgstr "重覆"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "撤銷 API 密碼"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -97,7 +98,7 @@ msgstr "隨機播放"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "部份無法播放的曲目已跳過。"
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
@@ -105,15 +106,15 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "曲目"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "未知的專輯"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "未知的歌手"
 
 #: ../templates/fake-template.php
 msgid ""

@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
-	function ($rootScope, $scope, ArtistFactory, playlistService, gettextCatalog, Restangular) {
+	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -96,12 +96,4 @@ angular.module('Music').controller('MainController',
 	$scope.scanningScanned = 0;
 	$scope.scanningTotal = 0;
 
-
-	$scope.play = function (type, object) {
-		$scope.playRequest = {
-			type: type,
-			object: object
-		};
-		window.location.hash = '#/' + type + '/' + object.id;
-	};
 }]);

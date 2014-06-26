@@ -33,22 +33,27 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute']).
-	config(['RestangularProvider', '$routeProvider',
+angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
+	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
-	// configure RESTAngular path
-	RestangularProvider.setBaseUrl('api');
+			// configure RESTAngular path
+			RestangularProvider.setBaseUrl('api');
 
-	$routeProvider
-		.when('/', {
-			controller:'OverviewController',
-			templateUrl:'overview.html'
-		});
-}]).
-	run(function(Token, Restangular){
+			var overviewControllerConfig = {
+				controller:'OverviewController',
+				templateUrl:'overview.html'
+			};
 
-	// add CSRF token
-	Restangular.setDefaultHeaders({requesttoken: Token});
-
-});
+			$routeProvider
+				.when('/',				overviewControllerConfig)
+				.when('/artist/:id',	overviewControllerConfig)
+				.when('/album/:id',		overviewControllerConfig)
+				.when('/track/:id',		overviewControllerConfig)
+				.when('/file/:id',		overviewControllerConfig);
+		}
+	])
+	.run(function(Token, Restangular){
+		// add CSRF token
+		Restangular.setDefaultHeaders({requesttoken: Token});
+	});

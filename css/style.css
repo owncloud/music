@@ -128,13 +128,16 @@
 	white-space: nowrap;
 }
 
+.track-list > li:hover {
+	cursor: pointer;
+}
+
 .track-list > li > .play.playing,
 .track-list > li:hover > .play {
 	display: inline;
 	height: 10px;
-	margin-left: -20px;
+	margin-left: -19px;
 	margin-right: 6px;
-	cursor: pointer;
 }
 
 .muted {

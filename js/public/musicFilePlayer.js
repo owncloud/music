@@ -39,8 +39,8 @@ $(document).ready(function () {
 						// trigger event for play/pause on click
 						var filerow = context.$file;
 						var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
-						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
-						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
+						var playAction = filerow.find('a[data-action="music-play"]');
+						var stopAction = filerow.find('a[data-action="music-stop"]');
 
 						soundManager.stopAll();
 						soundManager.destroySound('ownCloudSound');
@@ -58,7 +58,7 @@ $(document).ready(function () {
 							},
 							onplay: function() {
 								//hide allstop actions in fileList
-								$('#fileList').find('a[data-action="'+t('files', 'Stop')+'"]').hide();
+								$('#fileList').find('a[data-action="music-stop"]').hide();
 								playAction.hide();
 								stopAction.addClass('permanent');
 								stopAction.show();
@@ -83,8 +83,8 @@ $(document).ready(function () {
 
 					var stopPlayback = function (filename, context) {
 						var filerow = context.$file;
-						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
-						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
+						var playAction = filerow.find('a[data-action="music-play"]');
+						var stopAction = filerow.find('a[data-action="music-stop"]');
 						soundManager.togglePause('ownCloudSound');
 						stopAction.removeClass('permanent');
 						stopAction.hide();
@@ -92,14 +92,24 @@ $(document).ready(function () {
 					};
 
 					// add play button here
-					OCA.Files.fileActions.register('audio', t('files', 'Play'), OC.PERMISSION_READ, function () {
-						return OC.imagePath('music', 'play-big');
-					}, playFile);
+					OCA.Files.fileActions.register(
+						'audio',
+						'music-play',
+						OC.PERMISSION_READ,
+						OC.imagePath('music', 'play-big'),
+						playFile,
+						t('music', 'Play')
+					);
 
-					// add play button here
-					OCA.Files.fileActions.register('audio', t('files', 'Stop'), OC.PERMISSION_READ, function () {
-						return OC.imagePath('music', 'pause-big');
-					}, stopPlayback);
+					// add stop button here
+					OCA.Files.fileActions.register(
+						'audio',
+						'music-stop',
+						OC.PERMISSION_READ,
+						OC.imagePath('music', 'pause-big'),
+						stopPlayback,
+						t('music', 'Stop')
+					);
 				}
 			});
 

@@ -27,7 +27,7 @@ $(document).ready(function () {
 		return true; //deactivate on login page and non-public-share pages
 	}
 
-	$.getScript(OC.linkTo('music', 'js/vendor/soundmanager/soundmanager2-jsmin.js'))
+	$.getScript(OC.linkTo('music', 'js/vendor/soundmanager/script/soundmanager2-jsmin.js'))
 		.done(function(){
 
 			soundManager.setup({

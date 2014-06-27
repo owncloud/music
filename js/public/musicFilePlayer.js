@@ -35,12 +35,34 @@ $(document).ready(function () {
 				flashVersion: 8,
 				useFlashBlock: true,
 				onready: function() {
-					var playFile = function (filename) {
+					var changeButton = function(action, playing) {
+						if(playing) { // change to playing state
+
+							action.addClass('permanent');
+							action.find('img').attr('src', OC.imagePath('music', 'pause-big'));
+							action.find('span').html(' ' + t('music', 'Stop'));
+
+						} else { // change to stopped state
+
+							action.removeClass('permanent');
+							action.find('img').attr('src', OC.imagePath('music', 'play-big'));
+							action.find('span').html(' ' + t('music', 'Play'));
+
+						}
+					}
+
+					var playFile = function (filename, context) {
 						// trigger event for play/pause on click
-						var filerow = $('#fileList').find('tr[data-file="'+filename+'"]');
-						var fileURL = filerow.find('a.name').attr('href');
-						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
-						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
+						var filerow = context.$file;
+						var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
+						var playAction = filerow.find('a[data-action="music-play"]');
+
+						if(filerow.data('playstate') === 'playing') {
+							soundManager.togglePause('ownCloudSound');
+							filerow.data('playstate', null);
+							changeButton(playAction, false);
+							return;
+						}
 
 						soundManager.stopAll();
 						soundManager.destroySound('ownCloudSound');
@@ -48,43 +70,34 @@ $(document).ready(function () {
 						soundManager.createSound({
 							id: 'ownCloudSound',
 							url: fileURL,
-							whileplaying: function() {
-								//$scope.setTime(this.position/1000, this.duration/1000);
-							},
 							onstop: function() {
-								stopAction.removeClass('permanent');
-								stopAction.hide();
-								playAction.show();
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', null);
+
+								changeButton(playAction, false);
 							},
 							onplay: function() {
-								//hide allstop actions in fileList
-								$('#fileList').find('a[data-action="'+t('files', 'Stop')+'"]').hide();
-								playAction.hide();
-								stopAction.addClass('permanent');
-								stopAction.show();
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', 'playing');
+
+								changeButton(playAction, true);
+
 							},
 							onfinish: function() {
-								playAction.show();
-								var nextTrackId = false;
-								var playlist = $('tr[data-mime^="audio/"]');
-								jQuery.each (playlist, function(i,e) {
-									if ($(e).attr('data-file') === filename) {
-										nextTrackId = i+1;
-									}
-								});
-								if (nextTrackId && nextTrackId <= playlist.length) {
-									playFile($(playlist[nextTrackId]).attr('data-file'));
-								}
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', null);
+
+								changeButton(playAction, false);
 							},
 							volume: 50
 						});
 						soundManager.play('ownCloudSound');
 					};
 
-					var stopPlayback = function (filename) {
-						var filerow = $('#fileList').find('tr[data-file="'+filename+'"]');
-						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
-						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
+					var stopPlayback = function (filename, context) {
+						var filerow = context.$file;
+						var playAction = filerow.find('a[data-action="music-play"]');
+						var stopAction = filerow.find('a[data-action="music-stop"]');
 						soundManager.togglePause('ownCloudSound');
 						stopAction.removeClass('permanent');
 						stopAction.hide();
@@ -92,22 +105,14 @@ $(document).ready(function () {
 					};
 
 					// add play button here
-					FileActions.register('audio', t('files', 'Play'), OC.PERMISSION_READ, function () {
-						return OC.imagePath('music', 'play-big');
-					}, playFile);
-
-					// add play button here
-					FileActions.register('audio', t('files', 'Stop'), OC.PERMISSION_READ, function () {
-						return OC.imagePath('music', 'pause-big');
-					}, stopPlayback);
-
-					var musicfiles = $('tr[data-mime^="audio/"]');
-					//redisplay file actions on music files
-					musicfiles.each(function () {
-						FileActions.display($(this).children('td.filename'));
-						//hide pause by default
-						$(this).find('a[data-action="'+t('files', 'Stop')+'"]').hide();
-					});
+					OCA.Files.fileActions.register(
+						'audio',
+						'music-play',
+						OC.PERMISSION_READ,
+						OC.imagePath('music', 'play-big'),
+						playFile,
+						t('music', 'Play')
+					);
 				}
 			});
 

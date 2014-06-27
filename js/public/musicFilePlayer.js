@@ -100,14 +100,6 @@ $(document).ready(function () {
 					FileActions.register('audio', t('files', 'Stop'), OC.PERMISSION_READ, function () {
 						return OC.imagePath('music', 'pause-big');
 					}, stopPlayback);
-
-					var musicfiles = $('tr[data-mime^="audio/"]');
-					//redisplay file actions on music files
-					musicfiles.each(function () {
-						FileActions.display($(this).children('td.filename'));
-						//hide pause by default
-						$(this).find('a[data-action="'+t('files', 'Stop')+'"]').hide();
-					});
 				}
 			});
 

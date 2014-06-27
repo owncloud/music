@@ -35,10 +35,10 @@ $(document).ready(function () {
 				flashVersion: 8,
 				useFlashBlock: true,
 				onready: function() {
-					var playFile = function (filename) {
+					var playFile = function (filename, context) {
 						// trigger event for play/pause on click
-						var filerow = $('#fileList').find('tr[data-file="'+filename+'"]');
-						var fileURL = filerow.find('a.name').attr('href');
+						var filerow = context.$file;
+						var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
 						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
 						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
 
@@ -81,8 +81,8 @@ $(document).ready(function () {
 						soundManager.play('ownCloudSound');
 					};
 
-					var stopPlayback = function (filename) {
-						var filerow = $('#fileList').find('tr[data-file="'+filename+'"]');
+					var stopPlayback = function (filename, context) {
+						var filerow = context.$file;
 						var playAction = filerow.find('a[data-action="'+t('files', 'Play')+'"]');
 						var stopAction = filerow.find('a[data-action="'+t('files', 'Stop')+'"]');
 						soundManager.togglePause('ownCloudSound');
@@ -92,12 +92,12 @@ $(document).ready(function () {
 					};
 
 					// add play button here
-					FileActions.register('audio', t('files', 'Play'), OC.PERMISSION_READ, function () {
+					OCA.Files.fileActions.register('audio', t('files', 'Play'), OC.PERMISSION_READ, function () {
 						return OC.imagePath('music', 'play-big');
 					}, playFile);
 
 					// add play button here
-					FileActions.register('audio', t('files', 'Stop'), OC.PERMISSION_READ, function () {
+					OCA.Files.fileActions.register('audio', t('files', 'Stop'), OC.PERMISSION_READ, function () {
 						return OC.imagePath('music', 'pause-big');
 					}, stopPlayback);
 				}

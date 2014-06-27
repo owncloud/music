@@ -35,12 +35,34 @@ $(document).ready(function () {
 				flashVersion: 8,
 				useFlashBlock: true,
 				onready: function() {
+					var changeButton = function(action, playing) {
+						if(playing) { // change to playing state
+
+							action.addClass('permanent');
+							action.find('img').attr('src', OC.imagePath('music', 'pause-big'));
+							action.find('span').html(' ' + t('music', 'Stop'));
+
+						} else { // change to stopped state
+
+							action.removeClass('permanent');
+							action.find('img').attr('src', OC.imagePath('music', 'play-big'));
+							action.find('span').html(' ' + t('music', 'Play'));
+
+						}
+					}
+
 					var playFile = function (filename, context) {
 						// trigger event for play/pause on click
 						var filerow = context.$file;
 						var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
 						var playAction = filerow.find('a[data-action="music-play"]');
-						var stopAction = filerow.find('a[data-action="music-stop"]');
+
+						if(filerow.data('playstate') === 'playing') {
+							soundManager.togglePause('ownCloudSound');
+							filerow.data('playstate', null);
+							changeButton(playAction, false);
+							return;
+						}
 
 						soundManager.stopAll();
 						soundManager.destroySound('ownCloudSound');
@@ -48,33 +70,24 @@ $(document).ready(function () {
 						soundManager.createSound({
 							id: 'ownCloudSound',
 							url: fileURL,
-							whileplaying: function() {
-								//$scope.setTime(this.position/1000, this.duration/1000);
-							},
 							onstop: function() {
-								stopAction.removeClass('permanent');
-								stopAction.hide();
-								playAction.show();
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', null);
+
+								changeButton(playAction, false);
 							},
 							onplay: function() {
-								//hide allstop actions in fileList
-								$('#fileList').find('a[data-action="music-stop"]').hide();
-								playAction.hide();
-								stopAction.addClass('permanent');
-								stopAction.show();
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', 'playing');
+
+								changeButton(playAction, true);
+
 							},
 							onfinish: function() {
-								playAction.show();
-								var nextTrackId = false;
-								var playlist = $('tr[data-mime^="audio/"]');
-								jQuery.each (playlist, function(i,e) {
-									if ($(e).attr('data-file') === filename) {
-										nextTrackId = i+1;
-									}
-								});
-								if (nextTrackId && nextTrackId <= playlist.length) {
-									playFile($(playlist[nextTrackId]).attr('data-file'));
-								}
+								var filerow = $('#fileList').find('tr[data-file="' + filename + '"]');
+								filerow.data('playstate', null);
+
+								changeButton(playAction, false);
 							},
 							volume: 50
 						});
@@ -99,16 +112,6 @@ $(document).ready(function () {
 						OC.imagePath('music', 'play-big'),
 						playFile,
 						t('music', 'Play')
-					);
-
-					// add stop button here
-					OCA.Files.fileActions.register(
-						'audio',
-						'music-stop',
-						OC.PERMISSION_READ,
-						OC.imagePath('music', 'pause-big'),
-						stopPlayback,
-						t('music', 'Stop')
 					);
 				}
 			});

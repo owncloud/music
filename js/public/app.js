@@ -508,13 +508,13 @@ angular.module('Music').controller('PlaylistController',
 
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
-
+		$scope.newPlaylistForm = null;
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');
 			playlists.post(playlist).then(function(){
 				$scope.playlists = [];
 				console.log("new plist:" +arguments);
-// 				$scope.newPlaylistForm.name = "";
+				$scope.newPlaylistForm = {};
 // 				$scope.newPlaylistForm.trackIds = "";
 // 				$scope.newPlaylistForm.$setPristine();
 				$scope.getPlaylists();

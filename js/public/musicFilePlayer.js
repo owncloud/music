@@ -49,7 +49,7 @@ $(document).ready(function () {
 							action.find('span').html(' ' + t('music', 'Play'));
 
 						}
-					}
+					};
 
 					var playFile = function (filename, context) {
 						// trigger event for play/pause on click

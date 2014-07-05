@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-06-29 21:41+0000\n"
+"Last-Translator: asieriko <asieriko@gmail.com>\n"
 "Language-Team: Basque (http://www.transifex.com/projects/p/owncloud/language/eu/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Diskak"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Artistak"
 
 #: ../templates/main.php
 msgid "Delete"
@@ -30,11 +30,11 @@ msgstr "Deskribapena"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Deskribapena (adb. App izena)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Sortu API pasahitza"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -45,7 +45,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Baliogabeko bidea"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -69,7 +69,7 @@ msgstr "Hurrengoa"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Musika bildumaren bidea"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -97,15 +97,15 @@ msgstr "Nahastu"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Erreproduzitu ezin ziren pista batzuk saltatu egin dira."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Hemen musika bilatuko den karpetak zehazten dira."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Pistak"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -119,10 +119,10 @@ msgstr "Artista ezezaguna"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Erabili helbide hau zure musika bilduma Ampacherekin bateragarria den edozein erreproduktorekin arakatzeko."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Erabili zure erabiltzaile izena eta hurrengo pasahitza Ampache honetara konektatzeko:"

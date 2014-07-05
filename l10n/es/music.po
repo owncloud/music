@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Art O. Pal <artopal@fastmail.fm>, 2013-2014
+# Artopal <artopal@fastmail.fm>, 2013-2014
 # Javi <japaol@gmail.com>, 2013
 # joses <jose_mari_s@hotmail.com>, 2014
 # Maenso <balero_arana@hotmail.com>, 2013

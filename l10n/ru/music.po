@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Alexander Savchenko <a.v.savchenko@mail.ru>, 2014
+# Alexander Savchenko, 2014
 # Dmitry <linuxsquirrel.dev@gmail.com>, 2013
 # jekader <jekader@gmail.com>, 2013
 # Kalyuzhniy Aleksey, 2014

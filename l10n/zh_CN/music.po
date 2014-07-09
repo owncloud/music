@@ -1,13 +1,14 @@
 # 
 # Translators:
+# Kaijia Feng <fengkaijia@gmail.com>, 2014
 # phy <transifex@phy25.com>, 2014
 # csslayer <wengxt@gmail.com>, 2014
 # zhangguangpan <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-07-09 03:50+0000\n"
+"Last-Translator: Kaijia Feng <fengkaijia@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -71,7 +72,7 @@ msgstr "下一个"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "音乐集路径"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -91,7 +92,7 @@ msgstr "重复"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "撤销 API 密码"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -99,11 +100,11 @@ msgstr "随机"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "部分无法播放的音轨已被跳过。"
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "将会在此设置指定的文件夹中扫描音乐文件。"
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -121,10 +122,10 @@ msgstr "未知艺术家"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "使用此地址在任何与 Ampache 兼容的音乐播放器中查看您的音乐集。"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "使用您的用户名和密码连接到此 Ampache 服务："

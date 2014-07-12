@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Alex <__sashok@mail.ru>, 2014
 # andreiacob <andrei.iacob@y7mail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-23 12:30+0000\n"
-"Last-Translator: andreiacob <andrei.iacob@y7mail.com>\n"
+"PO-Revision-Date: 2014-07-11 18:30+0000\n"
+"Last-Translator: Alex <__sashok@mail.ru>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/owncloud/language/ro/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +58,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Se încarcă ..."
 
 #: ../templates/fake-template.php
 msgid "Music"

@@ -1,12 +1,13 @@
 # 
 # Translators:
 # Anders J. Sørensen, 2013-2014
+# Aputsiaĸ Niels Janussen <aj@isit.gl>, 2014
 # Leif Lodahl <leiflodahl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-12 19:21+0000\n"
-"Last-Translator: Anders J. Sørensen\n"
+"PO-Revision-Date: 2014-07-12 07:10+0000\n"
+"Last-Translator: Aputsiaĸ Niels Janussen <aj@isit.gl>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,14 +36,14 @@ msgstr "Beskrivelse (f.eks. App-navn)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Generér API-adgangskode"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Her kan du generere adgangskoder, der bruges med Ampache API'et, da de ikke kan lagres på en rigtig sikker måden, hvilket skyldes designet af Ampache API'et. Du kan generere så kan adgangskoder som du ønsker og tilbagekalde dem til enhver tid."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -54,7 +55,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Det bør holdes for øje, at Ampache API'et er i et meget tidligt stadie og fungerer ustabilt. Du er velkommen til at berette om dine erfaringer med denne funktion i den respektive <a href=\"https://github.com/owncloud/music/issues/60\">sag</a>. Jeg vil også være interesseret i at etablere en kreds af klienter, der kan hjælpe med afprøvninger. Tak"
 
 #: ../templates/main.php
 msgid "Loading ..."
@@ -102,7 +103,7 @@ msgstr "Nogle ikke afspillelig numre blev sprunget over."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Denne indstilling angiver dén mappe, der vil blive skannet for musik."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -120,10 +121,10 @@ msgstr "Ukendt artist"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Brug denne adresse til at gennemse din musiksamling fra hvilken som helst Ampache-kompatibel afspiller."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Brug dit brugernavn og følgende adgangskode for at tilslutte til denne Ampache-instans:"

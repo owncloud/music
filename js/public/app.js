@@ -42,7 +42,7 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 	});
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular', 'ngDragDrop',
+	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
 	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
@@ -54,10 +54,6 @@ angular.module('Music').controller('MainController',
 	$rootScope.$on('artistsLoaded', function() {
 		$scope.loading = false;
 	});
-
-	$scope.dragCallback = function(event, ui) {
-		console.log('hey, look I`m flying');
-	};
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
@@ -503,11 +499,21 @@ angular.module('Music').controller('PlayerController',
 }]);
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location', 'ngDragDrop',
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location',
 	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location) {
 
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
+
+		$scope.dropSuccessHandler = function($event,index,array){
+			console.log("Drop successful anywhere!");
+		};
+
+		$scope.onDrop = function($event,$data,array){
+			array.push($data);
+			console.log("Dropped somewhere correct!");
+		};
+
 		$scope.newPlaylistForm = null;
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');

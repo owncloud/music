@@ -22,11 +22,21 @@
 
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location', 'ngDragDrop',
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location',
 	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location) {
 
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
+
+		$scope.dropSuccessHandler = function($event,index,array){
+			console.log("Drop successful anywhere!");
+		};
+
+		$scope.onDrop = function($event,$data,array){
+			array.push($data);
+			console.log("Dropped somewhere correct!");
+		};
+
 		$scope.newPlaylistForm = null;
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');

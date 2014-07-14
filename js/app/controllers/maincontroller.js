@@ -9,7 +9,7 @@
  */
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular', 'ngDragDrop',
+	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
 	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
@@ -21,10 +21,6 @@ angular.module('Music').controller('MainController',
 	$rootScope.$on('artistsLoaded', function() {
 		$scope.loading = false;
 	});
-
-	$scope.dragCallback = function(event, ui) {
-		console.log('hey, look I`m flying');
-	};
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){

@@ -22,12 +22,8 @@
 
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location',
+	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location', 'ngDragDrop',
 	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location) {
-
-
-
-
 
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
@@ -90,6 +86,10 @@ angular.module('Music').controller('PlaylistController',
 
 	$scope.getListSongs = function() {
 
+	};
+
+	$scope.dropCallback = function(event, ui) {
+		console.log('hey, look I`m flying');
 	};
 
 	$scope.getCurrentPlist = function() {

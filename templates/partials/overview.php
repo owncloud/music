@@ -22,7 +22,7 @@
 			<li ng-click="playTrack(track)"
 				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit" title="{{ track.title }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-					ng-class="{playing: currentTrack.id == track.id}" />
+					ng-class="{playing: currentTrack.id == track.id}" data-drag="{{item.drag}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="list5" jqyoui-draggable="{index: {{$index}},placeholder:true,animate:true, onDrag: 'dragCallback'}"/>
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
 				{{ track.title }}
 			</li>

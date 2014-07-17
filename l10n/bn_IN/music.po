@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr ""
+msgstr "মুছে ফেলা"
 
 #: ../templates/fake-template.php
 msgid "Description"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "পরবর্তী"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"

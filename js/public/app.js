@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
+angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngDragDrop'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -54,6 +54,10 @@ angular.module('Music').controller('MainController',
 	$rootScope.$on('artistsLoaded', function() {
 		$scope.loading = false;
 	});
+
+	$scope.dropSuccessHandler = function($event,index,array){
+		console.log("Drop successful anywhere!");
+	};
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
@@ -514,7 +518,10 @@ angular.module('Music').controller('PlaylistController',
 			console.log("Dropped somewhere correct!");
 		};
 
-		$scope.newPlaylistForm = null;
+		$scope.newPlaylistForm = {
+			name: null,
+			trackIds: []
+		};
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');
 			playlists.post(playlist).then(function(){

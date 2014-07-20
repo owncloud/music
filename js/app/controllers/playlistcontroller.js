@@ -37,7 +37,10 @@ angular.module('Music').controller('PlaylistController',
 			console.log("Dropped somewhere correct!");
 		};
 
-		$scope.newPlaylistForm = null;
+		$scope.newPlaylistForm = {
+			name: null,
+			trackIds: []
+		};
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');
 			playlists.post(playlist).then(function(){

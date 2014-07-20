@@ -22,6 +22,10 @@ angular.module('Music').controller('MainController',
 		$scope.loading = false;
 	});
 
+	$scope.dropSuccessHandler = function($event,index,array){
+		console.log("Drop successful anywhere!");
+	};
+
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
 		// determine if already inside of an $apply or $digest

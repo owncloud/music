@@ -46,11 +46,9 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'setting#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
 
 	// ampache
-	array('name' => 'ampache#ampache', 'url' => '/ampache', 'verb' => 'GET'),
 	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'),
 	// Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
-	array('name' => 'ampache#ampache', 'url' => '/ampache', 'verb' => 'POST'),
-	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST')
+	array('name' => 'ampache#ampache2', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST')
 
 
 )));

@@ -73,7 +73,7 @@ class Music extends App {
 				$c->query('ArtistMapper'),
 				$c->query('TrackMapper'),
 				$c->query('AmpacheUser'),
-				$c->query('Server')
+				$c->getServer()->getRootFolder()
 			);
 		});
 

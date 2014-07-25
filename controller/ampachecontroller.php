@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Controller;
 
+use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -46,6 +47,8 @@ class AmpacheController extends Controller {
 	private $trackMapper;
 	private $ampacheUser;
 	private $urlGenerator;
+	private $rootFolder;
+	private $l10n;
 
 	private $sessionExpiryTime = 6000;
 
@@ -59,7 +62,7 @@ class AmpacheController extends Controller {
 								ArtistMapper $artistMapper,
 								TrackMapper $trackMapper,
 								AmpacheUser $ampacheUser,
-								$server){
+								$rootFolder){
 		parent::__construct($appname, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
@@ -68,12 +71,13 @@ class AmpacheController extends Controller {
 		$this->artistMapper = $artistMapper;
 		$this->trackMapper = $trackMapper;
 		$this->urlGenerator = $urlGenerator;
+		$this->l10n = $l10n;
 
 		// used to share user info with middleware
 		$this->ampacheUser = $ampacheUser;
 
 		// used to deliver actual media file
-		$this->server = $server;
+		$this->rootFolder = $rootFolder;
 	}
 
 
@@ -110,6 +114,21 @@ class AmpacheController extends Controller {
 				return $this->play();
 		}
 		throw new AmpacheException('TODO', 999);
+	}
+
+	/**
+	 * JustPlayer fix
+	 *
+	 * router crashes if same route is defined for POST and GET
+	 * so this just forwards to ampache()
+	 *
+	 * @NoAdminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 * @AmpacheAPI
+	 */
+	public function ampache2() {
+		return $this->ampache();
 	}
 
 	protected function handshake() {
@@ -444,7 +463,7 @@ class AmpacheController extends Controller {
 			return $r;
 		}
 
-		$files = $this->server->getRootFolder()->getById($track->getFileId());
+		$files = $this->rootFolder->getById($track->getFileId());
 
 		if(count($files) === 1) {
 			return new FileResponse($files[0]);

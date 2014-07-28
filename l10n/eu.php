@@ -15,6 +15,7 @@ $TRANSLATIONS = array(
 "Play" => "Erreproduzitu",
 "Previous" => "Aurrekoa",
 "Repeat" => "Errepikatu",
+"Revoke API password" => "Ezeztatu API pasahitza",
 "Shuffle" => "Nahastu",
 "Some not playable tracks were skipped." => "Erreproduzitu ezin ziren pista batzuk saltatu egin dira.",
 "This setting specifies the folder which will be scanned for music." => "Hemen musika bilatuko den karpetak zehazten dira.",

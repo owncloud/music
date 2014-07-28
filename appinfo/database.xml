@@ -73,6 +73,13 @@
 				<length>4</length>
 				<default></default>
 			</field>
+
+			<index>
+				<name>ma_cover_file_id_idx</name>
+				<field>
+					<name>cover_file_id</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
 

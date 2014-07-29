@@ -1,34 +1,30 @@
 # 
 # Translators:
-# woosuk park <bjh13579@gmail.com>, 2013
-# Shinjo Park <kde@peremen.name>, 2013
-# woosuk park <bjh13579@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-29 01:30+0000\n"
-"Last-Translator: woosuk park <bjh13579@gmail.com>\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
+"PO-Revision-Date: 2013-09-30 11:39+0000\n"
+"Language-Team: Ido (http://www.transifex.com/projects/p/owncloud/language/io/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: io\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr "앨범"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr "음악가"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Delete"
-msgstr "삭제"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr "종류"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
@@ -36,7 +32,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr "API 비밀번호 생성"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""
@@ -59,15 +55,15 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Loading ..."
-msgstr "불러오는 중..."
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Music"
-msgstr "음악"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "다음"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
@@ -75,19 +71,19 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
-msgstr "일시 정지"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Play"
-msgstr "재생"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Previous"
-msgstr "이전"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr "반복"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
@@ -95,7 +91,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr "임의 재생"
+msgstr ""
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
@@ -111,11 +107,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr "알려지지 않은 앨범"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr "알려지지 않은 아티스트"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid ""

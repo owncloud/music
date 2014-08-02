@@ -28,15 +28,6 @@ angular.module('Music').controller('PlaylistController',
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
 
-		$scope.dropSuccessHandler = function($event,index,array){
-			console.log("Drop successful anywhere!");
-		};
-
-		$scope.onDrop = function($event,$data,array){
-			array.push($data);
-			console.log("Dropped somewhere correct!");
-		};
-
 		$scope.newPlaylistForm = {
 			name: null,
 			trackIds: []
@@ -46,7 +37,7 @@ angular.module('Music').controller('PlaylistController',
 			playlists.post(playlist).then(function(){
 				$scope.playlists = [];
 				console.log("new plist:" +arguments);
-				$scope.newPlaylistForm = {};
+
 // 				$scope.newPlaylistForm.trackIds = "";
 // 				$scope.newPlaylistForm.$setPristine();
 				$scope.getPlaylists();
@@ -88,154 +79,49 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
+		$scope.currentPlaylist = $routeParams.playlistId;
+		console.log("Current Playlist: "+ $scope.currentPlaylist);
 
+		$scope.getListSongs = function() {
 
-	$scope.currentPlaylist = $routeParams.playlistId;
-	console.log("Current PLaylist: "+ $scope.currentPlaylist);
+		};
 
-// 	$scope.list = function(playlistId) {
-// 		$scope.playlists = PlaylistFactory.getPlaylists();
-// 	};
-
-	$scope.getListSongs = function() {
-
-	};
-
-	$scope.dropCallback = function(event, ui) {
-		console.log('hey, look I`m flying');
-	};
-
-	$scope.getCurrentPlist = function() {
-		for(var i=0; i < $scope.playlists.length; i++) {
-			if($scope.playlists[i].id == $scope.currentPlaylist) {
-				$scope.cPlistN = $scope.playlists[i].name;
-				$scope.cPlistId = $scope.playlists[i].id;
-				$scope.cPlistSongs = $scope.playlists[i].songs;
-				$scope.getRawSongs(i);
-				break;
+		$scope.getCurrentPlist = function() {
+			for(var i=0; i < $scope.playlists.length; i++) {
+				if($scope.playlists[i].id == $scope.currentPlaylist) {
+					$scope.cPlistN = $scope.playlists[i].name;
+					$scope.cPlistId = $scope.playlists[i].id;
+					$scope.cPlistSongs = $scope.playlists[i].songs;
+					$scope.getRawSongs(i);
+					break;
+				}
 			}
-		}
-		console.log("-------------------$scope.cPlist.name: " + $scope.cPlistN);
-		console.log("-------------------$scope.cPlist.id: " + $scope.cPlistId);
-		console.log("-------------------$scope.cPlist.songs: " + $scope.cPlistSongs);
-	};
+			console.log("-------------------$scope.cPlist.name: " + $scope.cPlistN);
+			console.log("-------------------$scope.cPlist.id: " + $scope.cPlistId);
+			console.log("-------------------$scope.cPlist.songs: " + $scope.cPlistSongs);
+		};
 
-// 	$scope.newPlaylist = function() {
-// 		var li = $(document.createElement('li'))
-// 		  .load(OC.filePath('music', 'ajax', 'plist-new.php'));
-// 		var bodyListener = function(e) {
-// 			if($('#new-plist-dialog').find($(e.target)).length === 0) {
-// 				$('#create').closest('li').after(li).show();
-// 				$('#new-plist-dialog').remove();
-// 				$('body').unbind('click', bodyListener);
-// 			}
-// 		};
-// 		$('body').bind('click', bodyListener);
-// 		$('#create').closest('li').after(li).hide();
-// 	};
+		$scope.addTracks = function(playlistId, songs) {
+			console.log("adding to: "+playlistId+" songs: "+songs);
+			var message = Restangular.one('playlists', playlistId).all("add");
+			message.post({trackIds: songs}).then(function(newMsg) {
+					console.log("tracks added "+ songs);
+					$scope.playlists = [];
+					$scope.getPlaylists();
+			}, function error(reason) {
+				console.log("error :(");
+			});
+		};
 
-// 	$scope.addPlaylist = function(plistName) {
-// 		console.log(plistName);
-// 		var message = Restangular.one('addPlaylist');
-// 		message.post(plistName).then(function(newMsg) {
-// 			console.log("i sent it");
-// 			$scope.playlists = [];
-// 			$scope.getPlaylists();
-// 			$location.url('/');
-// 			$('#new-plist-dialog').remove();
-// 		}, function error(reason) {
-// 			console.log("error :(");
-// 		});
-// 	};
-// 	$scope.getPlaylist = function(id) {
-// 		console.log(id);
-// 		var message = Restangular.one('getPlaylist');
-// 		message.post(id).then(function(pl) {
-// 			var li = $(document.createElement('li'))
-// 			.load(OC.filePath('music', 'ajax', 'edit-plists.php'), {plist: pl});
-//
-// 			var bodyListener = function(e) {
-// 				if($('#pledit_dialog').find($(e.target)).length === 0) {
-// 					$('#playlist-edit'+pl[0].id).closest('li').before(li).show();
-// 					$('#pledit_dialog').parent().remove();
-// 					$('body').unbind('click', bodyListener);
-// 				}
-// 			};
-// 			$('body').bind('click', bodyListener);
-//
-// 			$('#playlist-edit'+pl[0].id).closest('li').before(li).hide();
-// 		}, function error(reason) {
-// 			console.log("error :(");
-// 		});
-// 	};
-// 	$scope.removePlaylist = function(id) {
-// 		console.log(id);
-// 		var message = Restangular.one('removePlaylist');
-// 		message.post(id).then(function(newMsg) {
-// 			console.log("i sent it");
-// 			$scope.playlists = [];
-// 			$scope.getPlaylists();
-// 		}, function error(reason) {
-// 			console.log("error :(");
-// 		});
-// 	};
-// 	$scope.playlistIndex = function() {
-// 		for(var i=0; i < $scope.playlists.length; i++) {
-// 			if($scope.playlists[i].id == $scope.currentPlaylist) {
-// 				console.log("i found the playlist: "+i);
-// 				return i;
-// 		  }
-// 		}
-// 		console.log("no i couldn't!!!!! "+i);
-// 		return 0;
-// 	};
-	$scope.updatePlaylist = function(id, name, songs) {
-		console.log("adding to: "+id+" name: "+name+" songs: "+songs);
-		var message = Restangular.one('updatePlaylist/'+id+"/"+name);
-			message.post(songs).then(function(newMsg) {
-				console.log("updated");
-				$scope.playlists = [];
-				$scope.getPlaylists();
-				$('#pledit_dialog').hide();
-		}, function error(reason) {
-			console.log("error :(");
+		$scope.$on('droppedSong', function(event, songId, playlistId) {
+			$scope.addTracks(playlistId, songId);
+			console.log("I am activated by main" + songId + " " + playlistId);
 		});
-	};
-	$scope.rootFolders = 'bob';
-	$scope.array = [];
-// 	$scope.getRawSongs = function(ind) {
-// 		Restangular.all('fulllist').getList().then(function(fulllist){
-// 			$scope.songArray = $scope.playlists[ind].songs.split(',');
-// 			console.log("sending raw song list for: "+ind + " which plID is: "+$scope.playlists[ind].id+" and name is: "+$scope.playlists[ind].name + " and the songs of this list are: "+$scope.playlists[ind].songs);
-// 			console.log("the first song for example: "+$scope.songArray[0]);
-// 			var song;
-// 			for(var i=0; i < fulllist.length; i++) {
-// 				song = fulllist[i];
-// 				for(var j=0; j < $scope.songArray.length; j++) {
-// 			  		if($scope.songArray[j]==song.id) {
-// 						console.log(ind+" index, " +$scope.playlists[ind].name + " songs: "+$scope.songArray+" matches with: " +song.id);
-// 						$scope.playlistSongs.push(song);
-// 					}
-// 				}
-// 		    	}
-// 		});
-// //		return $scope.playlistSongs;
-// 	};
-
-//	$scope.list();
-	$scope.getPlaylists();
-	console.log("$scope.currentPlaylist = " + $scope.currentPlaylist);
-	console.log("$scope.playlists[0] = " + $scope.playlists[0]);
-	console.log("$scope.playlists = " + $scope.playlists);
-//	$scope.getRawSongs();
-//	$scope.getCurrentPlist();
+		$scope.getPlaylists();
+		console.log("$scope.currentPlaylist = " + $scope.currentPlaylist);
+		console.log("$scope.playlists[0] = " + $scope.playlists[0]);
+		console.log("$scope.playlists = " + $scope.playlists);
+	//	$scope.getRawSongs();
+	//	$scope.getCurrentPlist();
 
 }]);
-/*
-$(document).on('click', '#addPlaylist', function () {
-	angular.element('#new-plist-dialog').scope().createPlaylist(document.getElementById('name').value);
-});
-*/
-// $(document).on('click', '#updatePlaylist', function () {
-// 	angular.element('#pledit_dialog').scope().updatePlaylist(document.getElementById('id').value, document.getElementById('name').value, document.getElementById('songs').value);
-// });

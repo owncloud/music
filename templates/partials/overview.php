@@ -18,9 +18,8 @@
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
 			src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
 		<!-- variable "limit" toogles length of track list for each album -->
-		<ul class="track-list" ng-init="limit = 5; trackcount = album.tracks.length" ui-on-Drop="onDrop($event,$data,album.tracks)">
-			<li ng-click="playTrack(track)" ui-draggable="true" drag="track"
-                    on-drop-success="dropSuccessHandler($event,$index,album.tracks)"
+		<ul class="track-list" ng-init="limit = 5; trackcount = album.tracks.length">
+			<li ng-click="playTrack(track)" ui-draggable="true" drag="track.id"
 				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit" title="{{ track.title }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == track.id}"/>

@@ -79,7 +79,7 @@
 				<li ng-hide="showForm"><a href="" id="create" ng-click="showForm = !showForm" translate>+ New Playlist</a></li>
 				<form name="newPlaylistForm" id="newPlaylistForm" ng-show="showForm">
 					<li id="new-playlist">
-						<input type="text" placeholder="New Playlist" name="name" ng-model="newPlaylistForm.name" />
+						<input type="text" placeholder="New Playlist" ng-model="newPlaylistForm.name" />
 						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
 					</li>
 				<!-- debug start -->
@@ -95,10 +95,9 @@
 						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); editForm = !editForm">
 					</li>
 				</form>
-				<li ng-hide="editForm"><a href="" id="edit" ng-click="editForm = !editForm" translate>+ New asda</a></li>
-				<li ng-hide="editForm" ng-repeat="playlist in playlists">
+				<li ng-hide="editForm" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
 					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<a href="" id="edit" ng-click="editForm = !editForm" translate>edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
+					<a id="edit" ng-click="showForm = !showForm" translate>edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
 				</li>
 			</ul>
 		</div>

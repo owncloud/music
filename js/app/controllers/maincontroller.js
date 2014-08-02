@@ -22,8 +22,10 @@ angular.module('Music').controller('MainController',
 		$scope.loading = false;
 	});
 
-	$scope.dropSuccessHandler = function($event,index,array){
-		console.log("Drop successful anywhere!");
+	$scope.dropSong = function($event, $data, playlistId){
+		$rootScope.$broadcast('droppedSong', $data, playlistId);
+		console.log("Dropped on list " + playlistId);
+		console.log($data);
 	};
 
 	$scope.currentTrack = null;

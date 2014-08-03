@@ -82,13 +82,14 @@
 					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
 				<!-- debug end -->
 				</form>
-				<li ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
+				<div ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
 					<a ng-hide="editorEnabled" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<div ng-show="editorEnabled">
-					      <input ng-model="playlist.name" /><a href="#" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)">Save</a>
+					<div ng-if="editorEnabled">
+					      <input ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
 					</div>
-					<a id="edit" ng-hide="editorEnabled" ng-click="editorEnabled=!editorEnabled" translate>edit</a><button class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title="Web sitesini sil"></button>
-				</li>
+					<button class="svg action edit-icon" ng-hide="editorEnabled" ng-click="editorEnabled=!editorEnabled"></button>
+					<button ng-hide="editorEnabled" class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title=""></button>
+				</div>
 			</ul>
 		</div>
 

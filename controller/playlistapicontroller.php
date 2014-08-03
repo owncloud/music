@@ -16,25 +16,33 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
+use \OCP\IURLGenerator;
 
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
 
 	private $playlistMapper;
 	private $userId;
+	private $trackMapper;
+	private $urlGenerator;
 
 	public function __construct($appname,
 								IRequest $request,
+								IURLGenerator $urlGenerator,
 								PlaylistMapper $playlistMapper,
+								TrackMapper $trackMapper,
 								$userId){
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
+		$this->urlGenerator = $urlGenerator;
 		$this->playlistMapper = $playlistMapper;
+		$this->trackMapper = $trackMapper;
 
 	}
 
@@ -111,7 +119,14 @@ class PlaylistApiController extends Controller {
 
 			// set trackIds in model
 			$tracks = $this->playlistMapper->getTracks($id);
-			$playlist->setTrackIds($tracks);
+
+			foreach($tracks as $track) {
+				$song = $this->trackMapper->find($track, $this->userId);
+				$songs[] = $song->toCollection($this->urlGenerator);
+			}
+
+
+			$playlist->setTrackIds($songs);
 
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {

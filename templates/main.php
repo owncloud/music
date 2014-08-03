@@ -24,9 +24,6 @@
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
-	<script type="text/ng-template" id="new-plist.html">
-		<?php print_unescaped($this->inc('partials/new-plist')) ?>
-	</script>
 	<script type="text/ng-template" id="plsongs.html">
 		<?php print_unescaped($this->inc('partials/plsongs')) ?>
 	</script>
@@ -73,7 +70,7 @@
 		</div>
 
 		<div id="app-navigation">
-			<ul ng-controller="PlaylistController" ng-init="showForm = false; editForm = false">
+			<ul ng-controller="PlaylistController" ng-init="showForm = false">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
 				<li ng-hide="showForm"><a href="" id="create" ng-click="showForm = !showForm" translate>+ New Playlist</a></li>
@@ -82,22 +79,15 @@
 						<input type="text" placeholder="New Playlist" ng-model="newPlaylistForm.name" />
 						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
 					</li>
-				<!-- debug start -->
-					<li class="input" ng-show="showForm">
-						<input type="text" placeholder="Tracks" ng-model="newPlaylistForm.trackIds"/>
-					</li>
 					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
 				<!-- debug end -->
 				</form>
-				<form name="editPlaylistForm" id="editPlaylistForm" ng-show="editForm">
-					<li id="edit-playlist">
-						<input type="text" placeholder="Edit" name="newname" ng-model="newPlaylistForm.name" />
-						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); editForm = !editForm">
-					</li>
-				</form>
-				<li ng-hide="editForm" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
-					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
-					<a id="edit" ng-click="showForm = !showForm" translate>edit</a><a href="" ng-click="removePlaylist(playlist.id)">x</a>
+				<li ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
+					<a ng-hide="editorEnabled" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
+					<div ng-show="editorEnabled">
+					      <input ng-model="playlist.name" /><a href="#" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)">Save</a>
+					</div>
+					<a id="edit" ng-hide="editorEnabled" ng-click="editorEnabled=!editorEnabled" translate>edit</a><button class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title="Web sitesini sil"></button>
 				</li>
 			</ul>
 		</div>

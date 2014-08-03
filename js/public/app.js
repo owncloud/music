@@ -57,8 +57,6 @@ angular.module('Music').controller('MainController',
 
 	$scope.dropSong = function($event, $data, playlistId){
 		$rootScope.$broadcast('droppedSong', $data, playlistId);
-		console.log("Dropped on list " + playlistId);
-		console.log($data);
 	};
 
 	$scope.currentTrack = null;
@@ -143,6 +141,9 @@ angular.module('Music').controller('OverviewController',
 
 		$scope.playTrack = function(track) {
 			// update URL hash
+			console.log(track);
+			console.log("track yazdım");
+
 			window.location.hash = '#/track/' + track.id;
 
 			var artist = _.find($scope.$parent.artists,
@@ -158,6 +159,8 @@ angular.module('Music').controller('OverviewController',
 						return track.number;
 					}
 				);
+				console.log(artist);
+				console.log(album);
 			// determine index of clicked track
 			var index = -1;
 			for (var i = 0; i < tracks.length; i++) {
@@ -166,7 +169,7 @@ angular.module('Music').controller('OverviewController',
 					break;
 				}
 			}
-
+			console.log(tracks);
 			if(index > 0) {
 				// slice array in two parts and interchange them
 				var begin = tracks.slice(0, index);
@@ -174,6 +177,8 @@ angular.module('Music').controller('OverviewController',
 				tracks = end.concat(begin);
 			}
 			playlistService.setPlaylist(tracks);
+			console.log("bunlar tracks: ");
+			console.log(tracks);
 			playlistService.publish('play');
 		};
 
@@ -505,15 +510,14 @@ angular.module('Music').controller('PlayerController',
 }]);
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$location',
-	function ($scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular, $location) {
+	['$rootScope', '$scope', '$routeParams', 'PlaylistFactory', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
+	function ($rootScope, $scope, $routeParams, PlaylistFactory, playlistService, gettextCatalog, Restangular , $timeout) {
 
 		$scope.playlistSongs = [];
 		$scope.playlists = [];
 
 		$scope.newPlaylistForm = {
 			name: null,
-			trackIds: []
 		};
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');
@@ -521,16 +525,16 @@ angular.module('Music').controller('PlaylistController',
 				$scope.playlists = [];
 				console.log("new plist:" +arguments);
 
-// 				$scope.newPlaylistForm.trackIds = "";
-// 				$scope.newPlaylistForm.$setPristine();
 				$scope.getPlaylists();
+				$scope.newPlaylistForm = {
+					name: null,
+				};
 			});
 
 		};
 		$scope.getPlaylists = function() {
 			Restangular.all('playlists').getList().then(function(getPlaylists){
 				var plist;
-				console.log("getplists: "+getPlaylists);
 				for(var i=0; i < getPlaylists.length; i++) {
 					plist = getPlaylists[i];
 					$scope.playlists.push(plist);
@@ -538,20 +542,12 @@ angular.module('Music').controller('PlaylistController',
 				return $scope.playlists;
 
 				}, function error(reason) {
-					console.log("cannot get playlists");
-			});
-		};
-		$scope.removePlaylist = function(id) {
-			var playlist = Restangular.one('playlists', id);
-			playlist.remove().then(function(){
-				$scope.playlists = [];
-				$scope.getPlaylists();
+					console.log("Cannot get playlists due to: " + reason);
 			});
 		};
 		$scope.getPlaylist = function(id) {
 			var playlist = Restangular.one('playlists', id).get().then(function(playlist){
 
-// 				$scope.getCurrentPlist();
 				console.log("==========HERE GOES THE LIST "+id+"=============");
 				console.log("name: "+playlist.name);
 				$scope.currentPlaylistName = playlist.name;
@@ -562,50 +558,72 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
+		$scope.updatePlaylist = function(id, newName) {
+			var playlists = Restangular.one('playlists', id);
+			playlists.name = newName;
+			playlists.put();
+			$scope.playlists = [];
+			$scope.getPlaylists();
+			OC.Notification.show(t('music', 'Playlist has been renamed to {newPlaylistName}', {newPlaylistName: newName}));
+			$timeout(OC.Notification.hide, 5000);
+
+		};
+
+		$scope.removePlaylist = function(id) {
+			var playlist = Restangular.one('playlists', id);
+			playlist.remove().then(function(){
+				$scope.playlists = [];
+				$scope.getPlaylists();
+			});
+		};
+
 		$scope.currentPlaylist = $routeParams.playlistId;
 		console.log("Current Playlist: "+ $scope.currentPlaylist);
 
-		$scope.getListSongs = function() {
-
-		};
-
-		$scope.getCurrentPlist = function() {
-			for(var i=0; i < $scope.playlists.length; i++) {
-				if($scope.playlists[i].id == $scope.currentPlaylist) {
-					$scope.cPlistN = $scope.playlists[i].name;
-					$scope.cPlistId = $scope.playlists[i].id;
-					$scope.cPlistSongs = $scope.playlists[i].songs;
-					$scope.getRawSongs(i);
-					break;
-				}
-			}
-			console.log("-------------------$scope.cPlist.name: " + $scope.cPlistN);
-			console.log("-------------------$scope.cPlist.id: " + $scope.cPlistId);
-			console.log("-------------------$scope.cPlist.songs: " + $scope.cPlistSongs);
-		};
 
 		$scope.addTracks = function(playlistId, songs) {
-			console.log("adding to: "+playlistId+" songs: "+songs);
+
 			var message = Restangular.one('playlists', playlistId).all("add");
-			message.post({trackIds: songs}).then(function(newMsg) {
-					console.log("tracks added "+ songs);
-					$scope.playlists = [];
-					$scope.getPlaylists();
+			message.post({trackIds: songs}).then(function() {
+				Restangular.one('playlists', playlistId).get().then(function(playlist){
+					OC.Notification.show(t('music', 'Track {songs} was added to the playlist {playlistName}', {songs: songs, playlistName: playlist.name}));
+					$timeout(OC.Notification.hide, 5000);
+				});
 			}, function error(reason) {
 				console.log("error :(");
 			});
 		};
 
+		$scope.removeTrack = function(songs) {
+			var message = Restangular.one('playlists', $scope.currentPlaylist).all("remove");
+			message.post({trackIds: songs}).then(function() {
+				Restangular.one('playlists', $scope.currentPlaylist).get().then(function(playlist){
+					OC.Notification.show(t('music', 'Track {songs} was removed from the playlist {playlistName}', {songs: songs, playlistName: playlist.name}));
+					$timeout(OC.Notification.hide, 5000);
+					$scope.getPlaylist($scope.currentPlaylist);
+				});
+			}, function error(reason) {
+				console.log("error :(");
+			});
+		};
+
+		$scope.playAll = function() {
+			playlistService.setPlaylist($scope.currentPlaylistSongs);
+			playlistService.publish('play');
+		};
+
+		$scope.playTrack = function(track) {
+			var tracks = [];
+			tracks[0] = track;
+			playlistService.setPlaylist(tracks);
+			playlistService.publish('play');
+		};
+
 		$scope.$on('droppedSong', function(event, songId, playlistId) {
 			$scope.addTracks(playlistId, songId);
-			console.log("I am activated by main" + songId + " " + playlistId);
 		});
+
 		$scope.getPlaylists();
-		console.log("$scope.currentPlaylist = " + $scope.currentPlaylist);
-		console.log("$scope.playlists[0] = " + $scope.playlists[0]);
-		console.log("$scope.playlists = " + $scope.playlists);
-	//	$scope.getRawSongs();
-	//	$scope.getCurrentPlist();
 
 }]);
 

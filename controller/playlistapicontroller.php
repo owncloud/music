@@ -120,6 +120,7 @@ class PlaylistApiController extends Controller {
 			// set trackIds in model
 			$tracks = $this->playlistMapper->getTracks($id);
 
+			// Get all track information after finding them by their IDs
 			foreach($tracks as $track) {
 				$song = $this->trackMapper->find($track, $this->userId);
 				$songs[] = $song->toCollection($this->urlGenerator);

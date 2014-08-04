@@ -31,6 +31,8 @@ angular.module('Music').controller('PlaylistController',
 		$scope.newPlaylistForm = {
 			name: null,
 		};
+
+		// Create playlist by providing the name
 		$scope.createPlaylist = function(playlist) {
 			var playlists = Restangular.all('playlists');
 			playlists.post(playlist).then(function(){
@@ -44,6 +46,8 @@ angular.module('Music').controller('PlaylistController',
 			});
 
 		};
+
+		// Return all playlists
 		$scope.getPlaylists = function() {
 			Restangular.all('playlists').getList().then(function(getPlaylists){
 				var plist;
@@ -57,6 +61,8 @@ angular.module('Music').controller('PlaylistController',
 					console.log("Cannot get playlists due to: " + reason);
 			});
 		};
+
+		// Return playlist and its songs
 		$scope.getPlaylist = function(id) {
 			var playlist = Restangular.one('playlists', id).get().then(function(playlist){
 
@@ -70,6 +76,7 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
+		// Rename playlist
 		$scope.updatePlaylist = function(id, newName) {
 			Restangular.one('playlists', id).get().then(function(playlist){
 				var playlists = Restangular.one('playlists', id);
@@ -83,6 +90,7 @@ angular.module('Music').controller('PlaylistController',
 
 		};
 
+		// Remove playlist
 		$scope.removePlaylist = function(id) {
 			Restangular.one('playlists', id).get().then(function(playlist){
 				var pl = Restangular.one('playlists', id);
@@ -99,6 +107,7 @@ angular.module('Music').controller('PlaylistController',
 		console.log("Current Playlist: "+ $scope.currentPlaylist);
 
 
+		// Add tracks to the playlist
 		$scope.addTracks = function(playlistId, songs) {
 
 			var message = Restangular.one('playlists', playlistId).all("add");
@@ -112,6 +121,7 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
+		// Remove chosen track from the list
 		$scope.removeTrack = function(songs) {
 			var message = Restangular.one('playlists', $scope.currentPlaylist).all("remove");
 			message.post({trackIds: songs}).then(function() {
@@ -125,11 +135,13 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
+		// Call playlistService to play all songs in the current playlist
 		$scope.playAll = function() {
 			playlistService.setPlaylist($scope.currentPlaylistSongs);
 			playlistService.publish('play');
 		};
 
+		// Play only one song from the playlist
 		$scope.playTrack = function(track) {
 			var tracks = [];
 			tracks[0] = track;
@@ -137,6 +149,7 @@ angular.module('Music').controller('PlaylistController',
 			playlistService.publish('play');
 		};
 
+		// Emitted by MainController after dropping a  song on a playlist
 		$scope.$on('droppedSong', function(event, songId, playlistId) {
 			$scope.addTracks(playlistId, songId);
 		});

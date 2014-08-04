@@ -76,7 +76,7 @@
 				<li ng-hide="showForm"><a href="" id="create" ng-click="showForm = !showForm" translate>+ New Playlist</a></li>
 				<form name="newPlaylistForm" id="newPlaylistForm" ng-show="showForm">
 					<li id="new-playlist">
-						      <input type="text" placeholder="New Playlist" ng-model="newPlaylistForm.name" />
+						      <input type="text" placeholder="New Playlist" ng-enter="createPlaylist(newPlaylistForm); showForm = !showForm" ng-model="newPlaylistForm.name" />
 						<div class="actions">
 						      <button ng-if="newPlaylistForm.name.length > 0" class="svg action icon-checkmark" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm" />
 						      <button class="svg action icon-close" ng-click="showForm = !showForm" />
@@ -86,7 +86,7 @@
 				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
 					<a ng-hide="editorEnabled" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="editorEnabled">
-					      <input type="text" ng-keyup="$event.keyCode == 13 ? updatePlaylist(playlist.id, playlist.name) : null" ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
+					      <input type="text" ng-enter="updatePlaylist(playlist.id, playlist.name)" ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
 					</div>
 					<div class="actions">
 						<button ng-hide="editorEnabled" class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title=""></button>

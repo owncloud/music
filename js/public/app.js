@@ -677,6 +677,19 @@ angular.module('Music').directive('albumart', function() {
 	};
 });
 
+angular.module('Music').directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if(event.which === 13) {
+				scope.$apply(function (){
+				scope.$eval(attrs.ngEnter);
+			});
+				event.preventDefault();
+			}
+		});
+	};
+});
+
 angular.module('Music').directive('resize', ['$window', '$rootScope', function($window, $rootScope) {
 	return function(scope, element, attrs, ctrl) {
 		var resizeNavigation = function() {

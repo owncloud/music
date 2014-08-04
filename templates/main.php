@@ -82,13 +82,11 @@
 						      <button class="svg action icon-close" ng-click="showForm = !showForm" />
 						</div>
 					</li>
-					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
-				<!-- debug end -->
 				</form>
 				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
 					<a ng-hide="editorEnabled" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="editorEnabled">
-					      <input type="text" ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
+					      <input type="text" ng-keyup="$event.keyCode == 13 ? updatePlaylist(playlist.id, playlist.name) : null" ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
 					</div>
 					<div class="actions">
 						<button ng-hide="editorEnabled" class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title=""></button>

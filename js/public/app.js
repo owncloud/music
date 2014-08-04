@@ -559,21 +559,27 @@ angular.module('Music').controller('PlaylistController',
 		};
 
 		$scope.updatePlaylist = function(id, newName) {
-			var playlists = Restangular.one('playlists', id);
-			playlists.name = newName;
-			playlists.put();
-			$scope.playlists = [];
-			$scope.getPlaylists();
-			OC.Notification.show(t('music', 'Playlist has been renamed to {newPlaylistName}', {newPlaylistName: newName}));
-			$timeout(OC.Notification.hide, 5000);
+			Restangular.one('playlists', id).get().then(function(playlist){
+				var playlists = Restangular.one('playlists', id);
+				playlists.name = newName;
+				playlists.put();
+				$scope.playlists = [];
+				$scope.getPlaylists();
+				OC.Notification.show(t('music', '{oldName} has been renamed to {newPlaylistName}', {oldName: playlist.name, newPlaylistName: newName}));
+				$timeout(OC.Notification.hide, 5000);
+			});
 
 		};
 
 		$scope.removePlaylist = function(id) {
-			var playlist = Restangular.one('playlists', id);
-			playlist.remove().then(function(){
-				$scope.playlists = [];
-				$scope.getPlaylists();
+			Restangular.one('playlists', id).get().then(function(playlist){
+				var pl = Restangular.one('playlists', id);
+				pl.remove().then(function(){
+					OC.Notification.show(t('music', 'Playlist {playlistName} removed', {playlistName: playlist.name}));
+					$timeout(OC.Notification.hide, 5000);
+					$scope.playlists = [];
+					$scope.getPlaylists();
+				});
 			});
 		};
 
@@ -587,7 +593,7 @@ angular.module('Music').controller('PlaylistController',
 			message.post({trackIds: songs}).then(function() {
 				Restangular.one('playlists', playlistId).get().then(function(playlist){
 					OC.Notification.show(t('music', 'Track {songs} was added to the playlist {playlistName}', {songs: songs, playlistName: playlist.name}));
-					$timeout(OC.Notification.hide, 5000);
+					$timeout(OC.Notification.hide, 3000);
 				});
 			}, function error(reason) {
 				console.log("error :(");
@@ -599,7 +605,7 @@ angular.module('Music').controller('PlaylistController',
 			message.post({trackIds: songs}).then(function() {
 				Restangular.one('playlists', $scope.currentPlaylist).get().then(function(playlist){
 					OC.Notification.show(t('music', 'Track {songs} was removed from the playlist {playlistName}', {songs: songs, playlistName: playlist.name}));
-					$timeout(OC.Notification.hide, 5000);
+					$timeout(OC.Notification.hide, 3000);
 					$scope.getPlaylist($scope.currentPlaylist);
 				});
 			}, function error(reason) {

@@ -76,20 +76,25 @@
 				<li ng-hide="showForm"><a href="" id="create" ng-click="showForm = !showForm" translate>+ New Playlist</a></li>
 				<form name="newPlaylistForm" id="newPlaylistForm" ng-show="showForm">
 					<li id="new-playlist">
-						<input type="text" placeholder="New Playlist" ng-model="newPlaylistForm.name" />
-						<input class="primary icon-checkmark-white" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm">
+						      <input type="text" placeholder="New Playlist" ng-model="newPlaylistForm.name" />
+						<div class="actions">
+						      <button ng-if="newPlaylistForm.name.length > 0" class="svg action icon-checkmark" type="button" ng-click="createPlaylist(newPlaylistForm); showForm = !showForm" />
+						      <button class="svg action icon-close" ng-click="showForm = !showForm" />
+						</div>
 					</li>
 					<li style="padding: 6px 12px;" ng-show="showForm"><pre>{{ newPlaylistForm | json }}</pre></li>
 				<!-- debug end -->
 				</form>
-				<div ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
+				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist.id)">
 					<a ng-hide="editorEnabled" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="editorEnabled">
-					      <input ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
+					      <input type="text" ng-model="playlist.name" /><button class="svg action icon-checkmark" ng-click="editorEnabled=!editorEnabled; updatePlaylist(playlist.id, playlist.name)"></button>
 					</div>
-					<button class="svg action edit-icon" ng-hide="editorEnabled" ng-click="editorEnabled=!editorEnabled"></button>
-					<button ng-hide="editorEnabled" class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title=""></button>
-				</div>
+					<div class="actions">
+						<button ng-hide="editorEnabled" class="svg action delete-icon" ng-click="removePlaylist(playlist.id)" title="" oc-tooltip="" data-original-title=""></button>
+						<button class="svg action edit-icon" ng-hide="editorEnabled" ng-click="editorEnabled=!editorEnabled"></button>
+					</div>
+				</li>
 			</ul>
 		</div>
 

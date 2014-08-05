@@ -73,7 +73,7 @@ class Music extends App {
 				$c->query('ArtistMapper'),
 				$c->query('TrackMapper'),
 				$c->query('AmpacheUser'),
-				$c->getServer()->getRootFolder()
+				$c->query('RootFolder')
 			);
 		});
 
@@ -208,6 +208,10 @@ class Music extends App {
 
 		$container->registerService('UserFolder', function($c){
 			return $c->getServer()->getUserFolder();
+		});
+
+		$container->registerService('RootFolder', function($c){
+			return $c->getServer()->getRootFolder();
 		});
 
 		$container->registerService('UserId', function() {

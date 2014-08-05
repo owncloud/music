@@ -94,7 +94,7 @@ class Scanner extends PublicEmitter {
 	 * Get called by 'post_write' hook (file creation, file update)
 	 * @param \OCP\Files\Node $file the file
 	 */
-	public function update($file){
+	public function update($file, $userId){
 		// debug logging
 		$this->logger->log('update - '. $file->getPath() , 'debug');
 
@@ -120,12 +120,15 @@ class Scanner extends PublicEmitter {
 		}
 
 		if(ini_get('allow_url_fopen')) {
+			// TODO find a way to get this for a sharee
+			$isSharee = $userId && $this->userId !== $userId;
+
 			$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
 			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
 				// TODO verify
 				$musicPath = $this->userFolder->get($musicPath)->getPath();
-				// skip files that aren't inside the user specified path
-				if(substr($file->getPath(), 0, strlen($musicPath)) !== $musicPath) {
+				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
+				if(!$isSharee && substr($file->getPath(), 0, strlen($musicPath)) !== $musicPath) {
 					$this->logger->log('skipped - outside of specified path' , 'debug');
 					return;
 				}
@@ -217,20 +220,24 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
-				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i',
-					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId), 'debug');
+				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i, this->userId: %s, userId: %s',
+					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId, $this->userId, $userId), 'debug');
+
+			if(!$userId) {
+				$userId = $this->userId;
+			}
 
 			// add artist and get artist entity
-			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $this->userId);
+			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
 			$artistId = $artist->getId();
 
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $this->userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
-				$albumId, $fileId, $mimetype, $this->userId);
+				$albumId, $fileId, $mimetype, $userId);
 
 			// debug logging
 			$this->logger->log('imported entities - ' .
@@ -339,7 +346,7 @@ class Scanner extends PublicEmitter {
 				// skip this file as it's already scanned
 				continue;
 			}
-			$this->update($file);
+			$this->update($file, $userId);
 			$count++;
 		}
 		// find album covers

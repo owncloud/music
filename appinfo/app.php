@@ -55,10 +55,13 @@ $c->query('ServerContainer')->getNavigationManager()->add($navConfig);
 	'OCP\Share', 'post_unshare',
 	'OCA\Music\Hooks\Share', 'itemUnshared'
 );
+// TODO: disabled because it can delay the share a lot
+/*
 \OCP\Util::connectHook(
 	'OCP\Share', 'post_shared',
 	'OCA\Music\Hooks\Share', 'itemShared'
 );
+*/
 
 /**
  * register search provider

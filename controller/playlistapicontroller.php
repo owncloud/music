@@ -204,6 +204,8 @@ class PlaylistApiController extends Controller {
 
 		try {
 			$this->playlistMapper->removeTracks($id, $trackIds);
+
+			// TODO what should be returned here - the state of the playlist after the removal?
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);

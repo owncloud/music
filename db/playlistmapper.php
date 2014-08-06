@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Volkan Gezer <volkangezer@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Volkan Gezer 2014
  */
 
 namespace OCA\Music\Db;

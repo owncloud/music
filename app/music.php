@@ -28,6 +28,7 @@ use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
+use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
 
 use \OCA\Music\Core\API;
@@ -36,6 +37,7 @@ use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
 use \OCA\Music\DB\AmpacheUserMapper;
 use \OCA\Music\DB\ArtistMapper;
+use \OCA\Music\DB\PlaylistMapper;
 use \OCA\Music\DB\TrackMapper;
 
 use \OCA\Music\Middleware\AmpacheMiddleware;
@@ -98,6 +100,15 @@ class Music extends App {
 				$c->query('Request'),
 				$c->query('L10N'),
 				$c->query('Scanner')
+			);
+		});
+
+		$container->registerService('PlaylistApiController', function($c) {
+			return new PlaylistApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('PlaylistMapper'),
+				$c->query('UserId')
 			);
 		});
 
@@ -170,6 +181,12 @@ class Music extends App {
 
 		$container->registerService('ArtistMapper', function($c) {
 			return new ArtistMapper(
+				$c->query('Db')
+			);
+		});
+
+		$container->registerService('PlaylistMapper', function($c) {
+			return new PlaylistMapper(
 				$c->query('Db')
 			);
 		});

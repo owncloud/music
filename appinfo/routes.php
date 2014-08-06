@@ -40,6 +40,15 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
 	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'GET'),
 
+	// playlist API
+	array('name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'),
+	array('name' => 'playlistApi#create',		'url' => '/api/playlists',				'verb' => 'POST'),
+	array('name' => 'playlistApi#get',			'url' => '/api/playlists/{id}',			'verb' => 'GET'),
+	array('name' => 'playlistApi#delete',		'url' => '/api/playlists/{id}',			'verb' => 'DELETE'),
+	array('name' => 'playlistApi#update',		'url' => '/api/playlists/{id}',			'verb' => 'PUT'),
+	array('name' => 'playlistApi#addTracks',	'url' => '/api/playlists/{id}/add',		'verb' => 'POST'),
+	array('name' => 'playlistApi#removeTracks',	'url' => '/api/playlists/{id}/remove',	'verb' => 'POST'),
+
 	// settings
 	array('name' => 'setting#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
 	array('name' => 'setting#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),

@@ -38,6 +38,67 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*music_playlists</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_playlist_tracks</name>
+		<declaration>
+			<field>
+				<name>playlist_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>track_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<index>
+				<name>music_playlist_tracks_idx</name>
+				<field>
+					<name>playlist_id</name>
+				</field>
+			</index>
+
+			<index>
+				<name>music_playlist_tracks_unique_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>playlist_id</name>
+				</field>
+				<field>
+					<name>track_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
 		<name>*dbprefix*music_albums</name>
 		<declaration>
 			<field>

@@ -1,3 +1,33 @@
+v0.3.0 2014-08-06
+
+  # General
+
+  * disable share hook, because it delayed the sharing action a lot
+  * add index for cover_file_id in albums
+  * playstate is now represented in the URL
+  * change scan count from 50 to 20 - should fix #172, fix #212
+  * remove album cover search on remove of album cover (should speedup deletions)
+
+  # ownCloud 7 related
+
+  * adjusted design to ownCloud 7 (loading spinner, no shadow on icon)
+  * fixes to get it work with ownCloud 7 (especially public shares and Ampache API)
+  * fixes several typos and minor issues
+
+  # Internal
+
+  * migration from separate AppFramework to core provided AppFramework
+  * JavaScript 3rdparty library management is now handled by bower
+  * getID3 is update to v1.9.8, which fixes a memory leak - see #212
+  * change handling of routes in a proper way as preparation for playlist functionality - GSoC project by @wakeup
+  * improved documentation of PHP classes
+  * licence header cleanup (shrinked)
+  * respect the user ID on update (scanner)
+
+  ## Known issues
+
+  * listen to shared files doesn't work - this is a issue of the ownCloud core and will hopefully be fixed in 7.0.2 and 6.0.5 - owncloud/core#10173
+
 v0.2 2014-04-30
 
   * handle shared files properly (also fixes mounted storage)

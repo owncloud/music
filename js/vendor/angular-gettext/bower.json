@@ -1,6 +1,6 @@
 {
   "name": "angular-gettext",
-  "version": "0.2.8",
+  "version": "1.0.0",
   "main": "dist/angular-gettext.js",
   "ignore": [
     "**/.*",
@@ -9,13 +9,13 @@
     "bower_components",
     "test",
     "genplurals.py",
-    "Gruntfile.coffee"
+    "Gruntfile.js"
   ],
   "dependencies": {
-    "jquery": ">=1.8.0",
     "angular": "~1.2.0"
   },
   "devDependencies": {
+    "jquery": ">=1.8.0",
     "angular-mocks": "~1.2.0"
   }
 }

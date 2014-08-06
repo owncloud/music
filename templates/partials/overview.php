@@ -1,6 +1,5 @@
 <div ng-hide="artists" id="emptycontent">
 	<span ng-hide="loading" translate>Nothing in here. Upload your music!</span>
-	<span ng-show="loading" translate>Loading ...</span>
 </div>
 
 <div id="scanning" ng-show="scanning">

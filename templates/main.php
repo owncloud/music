@@ -77,7 +77,7 @@
 			</ul>
 		</div>-->
 
-		<div id="app-content" ng-view ng-class="{started: started}">
+		<div id="app-content" ng-view ng-class="{started: started, 'icon-loading': loading}">
 		</div>
 
 		<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>

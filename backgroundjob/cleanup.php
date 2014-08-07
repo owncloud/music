@@ -25,7 +25,7 @@ class CleanUp {
 		$container = $app->getContainer();
 
 		// remove orphaned entities
-		$container->query('Scanner')->cleanUp();
+		$container->query('Helper')->cleanUp();
 		// find covers - TODO performance stuff - maybe just call this once in an hour
 		$container->query('AlbumBusinessLayer')->findCovers();
 

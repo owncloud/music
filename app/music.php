@@ -44,6 +44,7 @@ use \OCA\Music\Middleware\AmpacheMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\ExtractorGetID3;
+use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
 
 use \OCA\Music\AppFramework\Middleware\MiddlewareDispatcher;
@@ -259,6 +260,12 @@ class Music extends App {
 			// (for files over ~2 GB) but this isn't used in any way.
 			$getID3->option_max_2gb_check = false;
 			return $getID3;
+		});
+
+		$container->registerService('Helper', function($c) {
+			return new Helper(
+				$c->query('Db')
+			);
 		});
 
 		$container->registerService('Scanner', function($c) {

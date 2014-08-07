@@ -12,10 +12,6 @@
 
 @media only screen and (max-width: 768px) {
 
-#app-content.started {
-	top: 65px;
-}
-
 .artist-area {
 	padding-top: 15px;
 }
@@ -90,26 +86,26 @@
 #play-controls img:first-child {
 	display: none;
 }
-#playerbar .albumart {
+#controls .albumart {
 	left: 135px;
 	margin-left: 0;
 }
-#playerbar .song-info {
+#controls .song-info {
 	left: 180px;
 	max-width: 45%;
 }
-#playerbar .title {
+#controls .title {
 	font-size: 14px;
 }
-#playerbar .progress-info {
+#controls .progress-info {
 	display: none;
 }
 
 /* hide repeat, save space */
-#playerbar #repeat {
+#controls #repeat {
 	right: 0;
 }
-#playerbar #shuffle {
+#controls #shuffle {
 	right: 40px;
 }
 

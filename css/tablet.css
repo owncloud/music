@@ -20,21 +20,21 @@
 	margin-left: 0;
 }
 
-#playerbar .albumart {
+#controls .albumart {
 	left: 180px;
 	margin-left: 0;
 }
 
-#playerbar .song-info {
+#controls .song-info {
 	max-width: 25%;
 	left: 230px;
 }
 
-#playerbar .title {
+#controls .title {
 	font-size: 14px;
 }
 
-#playerbar .progress-info {
+#controls .progress-info {
 	width: 25%;
 	left: initial;
 	right: 125px;

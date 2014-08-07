@@ -12,22 +12,19 @@
 	text-decoration: underline;
 }
 
-#app-content {
-	overflow-y:auto;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+/* angular JS wrapper for main controller */
+#app > div {
+	width: 100%;
+	height: 100%;
+}
 
-	height: auto;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	position: absolute;
+#app-view {
+	height: 100%;
 	padding-right: 50px;
 }
 
-#app-content.started {
-	top: 65px;
+#app-view.started {
+	padding-top: 65px;
 }
 
 .play {
@@ -142,7 +139,7 @@
 
 .alphabet-navigation {
 	z-index: 5;
-	position: absolute;
+	position: fixed;
 	right: 10px;
 	bottom: 0;
 	width: 50px;
@@ -164,7 +161,7 @@
 	opacity: .4;
 }
 
-.alphabet-navigation a:hover {
+.alphabet-navigation a.available:hover {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 	filter: alpha(opacity = 80);
 	opacity: .8;

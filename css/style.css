@@ -28,13 +28,19 @@
 	top: 0;
 	bottom: 0;
 	right: 0;
-	left: 0;
+	left: 250px;
 	position: absolute;
 	padding-right: 50px;
 }
 
 #app-content.started {
 	top: 65px;
+}
+
+#app-content .action {
+	float: right;
+	margin-right: 800px;
+
 }
 
 .play {

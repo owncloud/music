@@ -8,13 +8,6 @@
  * @copyright Morris Jobke 2013, 2014
  */
 
-/* stable5 fixes */
-#content * {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-/* end stable5 fixes */
-
 #notification a {
 	text-decoration: underline;
 }

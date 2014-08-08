@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-27 20:00+0000\n"
-"Last-Translator: Matej Urbančič <>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,10 +19,6 @@ msgstr "Albumi"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Izvajalci"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Izbriši"
 
 #: ../templates/fake-template.php
 msgid "Description"

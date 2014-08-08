@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-10 19:41+0000\n"
-"Last-Translator: Helder Meneses <helder.meneses@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,10 +21,6 @@ msgstr "Álbuns"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Artistas"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Eliminar"
 
 #: ../templates/fake-template.php
 msgid "Description"

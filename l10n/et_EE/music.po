@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,10 +20,6 @@ msgstr "Albumid"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Artistid"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Kustuta"
 
 #: ../templates/fake-template.php
 msgid "Description"

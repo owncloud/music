@@ -3,7 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2013-09-30 11:39+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Catalan (Valencian) (http://www.transifex.com/projects/p/owncloud/language/ca@valencia/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,10 +17,6 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Delete"
 msgstr ""
 
 #: ../templates/fake-template.php

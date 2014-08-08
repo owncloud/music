@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "آلبوم ها",
 "Artists" => "هنرمندان",
-"Delete" => "حذف",
 "Description" => "توضیحات",
 "Invalid path" => "مسیر اشتباه",
 "Loading ..." => "درحال بارگذاری...",

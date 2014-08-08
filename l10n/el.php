@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Δίσκοι",
 "Artists" => "Καλλιτέχνες",
-"Delete" => "Διαγραφή",
 "Description" => "Περιγραφή",
 "Description (e.g. App name)" => "Περιγραφή (π.χ. όνομα εφαρμογής)",
 "Generate API password" => "Δημιουργία συνθηματικού API",

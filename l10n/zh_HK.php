@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "刪除",
 "Music" => "音樂",
 "Next" => "下一首",
 "Pause" => "暫停",

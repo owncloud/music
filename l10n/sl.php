@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Albumi",
 "Artists" => "Izvajalci",
-"Delete" => "Izbriši",
 "Description" => "Opis",
 "Description (e.g. App name)" => "Opis (na primer ime programa)",
 "Generate API password" => "Ustvari geslo API",

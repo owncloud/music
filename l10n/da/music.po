@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-12 07:10+0000\n"
-"Last-Translator: Aputsiaĸ Niels Janussen <aj@isit.gl>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,10 +21,6 @@ msgstr "Album"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Kunstnere"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Slet"
 
 #: ../templates/fake-template.php
 msgid "Description"

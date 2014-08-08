@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "Läschen",
 "Description" => "Beschreiwung",
 "Music" => "Musek",
 "Next" => "Weider",

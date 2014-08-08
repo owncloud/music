@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Diskak",
 "Artists" => "Artistak",
-"Delete" => "Ezabatu",
 "Description" => "Deskribapena",
 "Description (e.g. App name)" => "Deskribapena (adb. App izena)",
 "Generate API password" => "Sortu API pasahitza",

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,10 +20,6 @@ msgstr "អាល់ប៊ុម"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "សិល្បករ"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "លុប"
 
 #: ../templates/fake-template.php
 msgid "Description"

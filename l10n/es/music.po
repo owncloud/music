@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: joses <jose_mari_s@hotmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,10 +24,6 @@ msgstr "Álbumes"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Artistas"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Eliminar"
 
 #: ../templates/fake-template.php
 msgid "Description"

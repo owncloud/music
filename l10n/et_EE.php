@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Albumid",
 "Artists" => "Artistid",
-"Delete" => "Kustuta",
 "Description" => "Kirjeldus",
 "Description (e.g. App name)" => "Kirjeldus (nt. rakendi nimi)",
 "Generate API password" => "Tekita API parool",

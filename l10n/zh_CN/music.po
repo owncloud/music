@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-09 03:50+0000\n"
-"Last-Translator: Kaijia Feng <fengkaijia@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,10 +22,6 @@ msgstr "专辑页"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "艺术家"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "删除"
 
 #: ../templates/fake-template.php
 msgid "Description"

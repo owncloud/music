@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "অ্যালবাম",
 "Artists" => "শিল্পী",
-"Delete" => "মুছে ফেলা",
 "Description" => "বর্ণনা",
 "Description (e.g. App name)" => "বর্ণনা (যেমন অ্যাপ নাম)",
 "Generate API password" => "এপিআই পাসওয়ার্ড নির্মাণ করা",

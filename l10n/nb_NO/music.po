@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-10 05:01+0000\n"
-"Last-Translator: vidaren <news@vidartysse.net>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,10 +21,6 @@ msgstr "Album"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Artister"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Slett"
 
 #: ../templates/fake-template.php
 msgid "Description"

@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "حذف کریں",
 "Description" => "تصریح",
 "Next" => "اگلا",
 "Repeat" => "دہرایں"

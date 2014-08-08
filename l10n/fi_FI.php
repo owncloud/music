@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Levyt",
 "Artists" => "Esittäjät",
-"Delete" => "Poista",
 "Description" => "Kuvaus",
 "Description (e.g. App name)" => "Kuvaus (esim. sovelluksen nimi)",
 "Generate API password" => "Luo API-salasana",

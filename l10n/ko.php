@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "앨범",
 "Artists" => "음악가",
-"Delete" => "삭제",
 "Description" => "종류",
 "Generate API password" => "API 비밀번호 생성",
 "Loading ..." => "불러오는 중...",

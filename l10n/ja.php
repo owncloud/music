@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "アルバム",
 "Artists" => "アーティスト",
-"Delete" => "削除",
 "Description" => "説明",
 "Description (e.g. App name)" => "説明 (例えばアプリケーション名)",
 "Generate API password" => "APIパスワードの生成",

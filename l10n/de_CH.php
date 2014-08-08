@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "Löschen",
 "Description" => "Beschreibung",
 "Music" => "Musik",
 "Next" => "Weiter",

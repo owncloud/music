@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Albümler",
 "Artists" => "Sanatçılar",
-"Delete" => "Sil",
 "Description" => "Açıklama",
 "Description (e.g. App name)" => "Açıklama (örn. Uygulama adı)",
 "Generate API password" => "API parolası oluştur",

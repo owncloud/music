@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-05-13 05:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: French (Canada) (http://www.transifex.com/projects/p/owncloud/language/fr_CA/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,10 +17,6 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Delete"
 msgstr ""
 
 #: ../templates/fake-template.php

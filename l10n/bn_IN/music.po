@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-27 16:11+0000\n"
-"Last-Translator: ishita mukherjee <ishitamukh91@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Bengali (India) (http://www.transifex.com/projects/p/owncloud/language/bn_IN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,10 +19,6 @@ msgstr "অ্যালবাম"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "শিল্পী"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "মুছে ফেলা"
 
 #: ../templates/fake-template.php
 msgid "Description"

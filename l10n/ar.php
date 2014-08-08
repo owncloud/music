@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "الألبومات",
 "Artists" => "الفنانون",
-"Delete" => "حذف",
 "Description" => "وصف",
 "Loading ..." => "تحميل ...",
 "Music" => "الموسيقى",

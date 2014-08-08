@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Albumok",
 "Artists" => "Művészek",
-"Delete" => "Törlés",
 "Description" => "Leírás",
 "Description (e.g. App name)" => "Leírás (például Alkalmazás neve)",
 "Generate API password" => "API-jelszó előállítása",

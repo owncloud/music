@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "Eyða",
 "Music" => "Tónlist",
 "Next" => "Næst",
 "Pause" => "Pása",

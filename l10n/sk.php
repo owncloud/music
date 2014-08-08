@@ -1,6 +1,5 @@
 <?php
 $TRANSLATIONS = array(
-"Delete" => "Odstrániť",
 "Description" => "Popis",
 "Repeat" => "Opakovať"
 );

@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Album",
 "Artists" => "Kunstnere",
-"Delete" => "Slet",
 "Description" => "Beskrivelse",
 "Description (e.g. App name)" => "Beskrivelse (f.eks. App-navn)",
 "Generate API password" => "Generér API-adgangskode",

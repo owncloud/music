@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Albumoj",
 "Artists" => "Artistoj",
-"Delete" => "Forigi",
 "Description" => "Priskribo",
 "Description (e.g. App name)" => "Priskribo (ekz.: aplikaĵonomo)",
 "Invalid path" => "Nevalida vojo",

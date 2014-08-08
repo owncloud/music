@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "Alba",
 "Artists" => "Umělci",
-"Delete" => "Smazat",
 "Description" => "Popis",
 "Description (e.g. App name)" => "Popis (např. Jméno aplikace)",
 "Generate API password" => "Generovat heslo API",

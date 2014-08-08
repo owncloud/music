@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-07-29 01:30+0000\n"
-"Last-Translator: woosuk park <bjh13579@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,10 +21,6 @@ msgstr "앨범"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "음악가"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "삭제"
 
 #: ../templates/fake-template.php
 msgid "Description"

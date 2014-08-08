@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "អាល់ប៊ុម",
 "Artists" => "សិល្បករ",
-"Delete" => "លុប",
 "Description" => "ការ​អធិប្បាយ",
 "Description (e.g. App name)" => "ការ​អធិប្បាយ (ឧ. ឈ្មោះ​កម្មវិធី)",
 "Generate API password" => "បង្កើត​ពាក្យ​សម្ងាត់ API",

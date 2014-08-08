@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-06-11 06:46+0000\n"
-"Last-Translator: Marián Hvolka <marian.hvolka@stuba.sk>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,10 +20,6 @@ msgstr "Albumy"
 #: ../templates/fake-template.php
 msgid "Artists"
 msgstr "Interpreti"
-
-#: ../templates/main.php
-msgid "Delete"
-msgstr "Zmazať"
 
 #: ../templates/fake-template.php
 msgid "Description"

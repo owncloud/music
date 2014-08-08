@@ -2,7 +2,6 @@
 $TRANSLATIONS = array(
 "Albums" => "專輯",
 "Artists" => "歌手",
-"Delete" => "刪除",
 "Description" => "描述",
 "Description (e.g. App name)" => "描述 (例: App 名稱)",
 "Generate API password" => "產生 API 密碼",

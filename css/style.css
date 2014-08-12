@@ -32,12 +32,6 @@
 	padding-top: 65px;
 }
 
-#app-content .action {
-	float: right;
-	margin-right: 800px;
-
-}
-
 .play {
 	display: none;
 	/* opacity */

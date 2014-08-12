@@ -36,6 +36,7 @@ class Scan extends Command {
 
 		$app = new Music();
 		$this->scanner = $app->getContainer()->query('Scanner');
+		$this->rootFolder = $app->getContainer()->query('RootFolder');
 		parent::__construct();
 	}
 
@@ -75,7 +76,30 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$this->scanner->rescan($user, true);
+			$this->scanner->rescan($user, true, $this->resolveUserFolder($user));
 		}
+	}
+
+	private function resolveUserFolder($userId) {
+		$dir = '/' . $userId;
+		$root = $this->rootFolder;
+
+		// copy of getUserServer of server container
+		$folder = null;
+
+		if (!$root->nodeExists($dir)) {
+			$folder = $root->newFolder($dir);
+		} else {
+			$folder = $root->get($dir);
+		}
+
+		$dir = '/files';
+		if (!$folder->nodeExists($dir)) {
+			$folder = $folder->newFolder($dir);
+		} else {
+			$folder = $folder->get($dir);
+		}
+
+		return $folder;
 	}
 }

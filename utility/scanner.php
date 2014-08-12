@@ -326,8 +326,14 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan($userId = null, $batch = false) {
+	public function rescan($userId = null, $batch = false, $userHome = null) {
 		$this->logger->log('Rescan triggered', 'info');
+
+		if($userHome !== null){
+			// $userHome can be injected by batch scan process
+			$this->userFolder = $userHome;
+		}
+
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited

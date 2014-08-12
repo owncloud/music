@@ -1,3 +1,16 @@
+v0.3.2 2014-08-12
+
+  * RESTful playlist API (thanks @wakeup - Volkan Gezer)
+  * Updated libraries (AngularJS 1.2.21, angular-gettext 1.0.0, drop jQuery)
+  * refactor cleanup method (reduce injected dependencies)
+    * move clean up task to separate helper class
+  * drop stable5 fixes as they are unused
+  * verified support for ownCloud 6
+  * prepare use of sidebar and mobile responsive sidebar
+  * migrate to ownCloud 7 core CSS
+  * add ID to ampache session - fixes issues with the DB mapper (#213)
+  * make user folder injectable into rescan method
+
 v0.3.0 2014-08-06
 
   # General

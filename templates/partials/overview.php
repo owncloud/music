@@ -36,11 +36,11 @@
 		<ul class="track-list" ng-init="limit = 5; trackcount = album.tracks.length">
 			<li id="{{ 'track-' + track.id }}" 
 				ng-click="playTrack(track)"
-				ui-draggable="true" drag="track.id"
+				ui-draggable="true" drag="track"
 				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit.count"
 				title="{{ track.title + ((track.artistId != track.albumArtistId) ? '  (' + track.artistName + ')' : '') }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-					ng-class="{playing: currentTrack.id == track.id}"/>
+					ng-class="{playing: currentTrack.id == track.id}" />
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
 				{{ track.title }}
 				<span ng-if="track.artistId != track.albumArtistId" class="muted">&nbsp;({{ track.artistName }})</span>

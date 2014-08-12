@@ -53,7 +53,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 				.when('/file/:id',		overviewControllerConfig)
 				.when('/playlist/:playlistId', {
 					controller:'PlaylistController',
-					templateUrl:'plsongs.html'
+					templateUrl:'playlistview.html'
 				});
 		}
 	])

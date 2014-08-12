@@ -19,10 +19,10 @@
 			src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
 		<!-- variable "limit" toogles length of track list for each album -->
 		<ul class="track-list" ng-init="limit = 5; trackcount = album.tracks.length">
-			<li ng-click="playTrack(track)" ui-draggable="true" drag="track.id"
+			<li ng-click="playTrack(track)" ui-draggable="true" drag="track"
 				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit" title="{{ track.title }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-					ng-class="{playing: currentTrack.id == track.id}"/>
+					ng-class="{playing: currentTrack.id == track.id}" />
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
 				{{ track.title }}
 			</li>

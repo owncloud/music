@@ -52,7 +52,7 @@ $(document).ready(function() {
 	var addAPIKey = function(){
 		var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6),
 			description = $('#music-ampache-description').val(),
-			templateRow = $('#music-ampache-template-row').clone(true); // clone with events
+			templateRow = $('#music-ampache-template-row').clone(true).removeAttr('id'); // clone with events and remove id
 
 		$('#music-ampache-description').val('');
 		templateRow.removeClass('hidden');

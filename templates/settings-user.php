@@ -33,8 +33,9 @@
 		'I would also like to have a list of clients to test with. Thanks')); ?>
 	</div>
 	<div>
-		<code><?php p(\OC_Helper::makeURLAbsolute(\OC_Helper::linkToRoute('music.ampache.ampache')));?></code><br />
-		<em><?php p($l->t('Use this address to browse your music collection from any Ampache compatible player.')); ?></em>
+		<code><?php p(str_replace('/server/xml.server.php', '', \OC_Helper::makeURLAbsolute(\OC_Helper::linkToRoute('music.ampache.ampache'))));?></code><br />
+		<em><?php p($l->t('Use this address to browse your music collection from any Ampache compatible player.')); ?>
+			<?php p($l->t("If this URL doesn't work try to append '/server/xml.server.php'." )); ?></em>
 	</div>
 	<div>
 		<?php p($l->t("Here you can generate passwords to use with the Ampache API, because they " .

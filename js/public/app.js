@@ -538,7 +538,9 @@ angular.module('Music').controller('PlaylistController',
 
 		$scope.newPlaylistName = null;
 
+		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
+		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
 
 		// create playlist

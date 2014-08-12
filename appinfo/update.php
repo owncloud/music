@@ -37,3 +37,10 @@ if (version_compare($installedVersion, '0.1.8.2-beta', '<')) {
 		$query->execute();
 	}
 }
+
+if (version_compare($installedVersion, '0.3.2', '<')) {
+	// drop all sessions, because a primary key is introduced
+	$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`';
+	$query = \OCP\DB::prepare($sql);
+	$query->execute();
+}

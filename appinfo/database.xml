@@ -265,6 +265,14 @@
 		<name>*dbprefix*music_ampache_sessions</name>
 		<declaration>
 			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
 				<name>user_id</name>
 				<type>text</type>
 				<notnull>true</notnull>

@@ -9,7 +9,6 @@ v0.3.3 2014-08-12
     * remove of '/server/xml.server.php'
     * add note
 
-
 v0.3.2 2014-08-12
 
   * RESTful playlist API (thanks @wakeup - Volkan Gezer)

@@ -128,12 +128,12 @@ class ArtistMapper extends Mapper implements IMapper {
 	 * @param string $userId
 	 */
 	public function count($userId){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_artists` '.
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_artists` '.
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 }

@@ -299,12 +299,12 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @return integer
 	 */
 	public function count($userId){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_albums` '.
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_albums` '.
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 	/**
@@ -313,7 +313,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @return integer
 	 */
 	public function countByArtist($artistId, $userId){
-		$sql = 'SELECT COUNT(*) '.
+		$sql = 'SELECT COUNT(*) AS count '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
@@ -321,7 +321,7 @@ class AlbumMapper extends Mapper implements IMapper {
 		$params = array($userId, $artistId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 	/**

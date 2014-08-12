@@ -110,12 +110,12 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @param string $userId
 	 */
 	public function countByArtist($artistId, $userId){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
 		$params = array($userId, $artistId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 	/**
@@ -123,24 +123,24 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @param string $userId
 	 */
 	public function countByAlbum($albumId, $userId){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` `track` '.
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
 		$params = array($userId, $albumId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 	/**
 	 * @param string $userId
 	 */
 	public function count($userId){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_tracks` '.
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` '.
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetchRow();
-		return $row['COUNT(*)'];
+		return $row['count'];
 	}
 
 	/**

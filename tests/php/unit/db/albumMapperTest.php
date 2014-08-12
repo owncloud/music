@@ -211,20 +211,20 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 	public function testCount(){
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_albums` WHERE `user_id` = ?';
-		$this->setMapperResult($sql, array($this->userId), array(array('COUNT(*)' => 4)));
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_albums` WHERE `user_id` = ?';
+		$this->setMapperResult($sql, array($this->userId), array(array('count' => 4)));
 		$result = $this->mapper->count($this->userId);
 		$this->assertEquals(4, $result);
 	}
 
 	public function testCountByArtist(){
 		$artistId = 2;
-		$sql = 'SELECT COUNT(*) '.
+		$sql = 'SELECT COUNT(*) AS count '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
 			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
-		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('COUNT(*)' => 4)));
+		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('count' => 4)));
 		$result = $this->mapper->countByArtist($artistId, $this->userId);
 		$this->assertEquals(4, $result);
 	}

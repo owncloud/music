@@ -37,7 +37,6 @@ angular.module('Music').controller('OverviewController',
 					break;
 				}
 			}
-
 			if(index > 0) {
 				// slice array in two parts and interchange them
 				var begin = tracks.slice(0, index);

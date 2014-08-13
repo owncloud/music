@@ -4,6 +4,7 @@
 \OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
+\OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
@@ -29,21 +30,42 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
+	<script type="text/ng-template" id="playlistview.html">
+		<?php print_unescaped($this->inc('partials/playlistview')) ?>
+	</script>
+
 
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
 
-		<!--<div id="app-navigation">
+		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
 				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
-				<li><a href="#/" translate>+ New Playlist</a></li>
-				<li ng-repeat="playlist in playlists">
-					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
+				<li ng-hide="showCreateForm"><a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a></li>
+				<form name="newPlaylistForm" ng-show="showCreateForm">
+					<li id="new-playlist">
+						<input type="text" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
+						<div class="actions">
+							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()" />
+							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm" />
+						</div>
+					</li>
+				</form>
+				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist)">
+					<a ng-hide="showEditForm == playlist.id" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
+					<div ng-if="showEditForm == playlist.id">
+						<input type="text" ng-enter="update(playlist)" ng-model="playlist.name" />
+						<button class="svg action icon-checkmark" ng-click="update(playlist)" />
+					</div>
+					<div class="actions">
+						<button ng-hide="$parent.showEditForm == playlist.id" class="svg action delete-icon" ng-click="remove(playlist)" />
+						<button class="svg action edit-icon" ng-hide="$parent.showEditForm == playlist.id" ng-click="$parent.showEditForm=playlist.id" />
+					</div>
 				</li>
 			</ul>
-		</div>-->
+		</div>
 
 		<div id="app-content">
 

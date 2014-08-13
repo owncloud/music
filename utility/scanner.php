@@ -48,7 +48,7 @@ class Scanner extends PublicEmitter {
 								$userId,
 								IConfig $configManager,
 								$appName,
-								Folder $userFolder){
+								Folder $userFolder = null){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;

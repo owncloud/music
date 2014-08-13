@@ -348,7 +348,7 @@ class Scanner extends PublicEmitter {
 				// break scan - 20 files are already scanned
 				break;
 			}
-			if(!$batch && in_array($file->getId(), $fileIds)) {
+			if(in_array($file->getId(), $fileIds)) {
 				// skip this file as it's already scanned
 				continue;
 			}

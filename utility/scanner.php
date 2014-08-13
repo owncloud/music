@@ -208,6 +208,13 @@ class Scanner extends PublicEmitter {
 			$tmp = explode('/', $trackNumber);
 			$trackNumber = $tmp[0];
 
+			// check for numeric values - cast them to int and verify it's a natural number above 0
+			if(is_numeric($trackNumber) && ((int)$trackNumber) > 0) {
+				$trackNumber = (int)$trackNumber;
+			} else {
+				$trackNumber = null;
+			}
+
 			$year = null;
 			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
 				$year = $fileInfo['comments']['year'][0];

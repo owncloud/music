@@ -1,4 +1,6 @@
   * make batch rescan incremental
+  * make userFolder optional - get rid of wrong type of parameter error logs
+  * add check for natural numbers above 0 for track number
 
 v0.3.3 2014-08-12
 

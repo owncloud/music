@@ -1,6 +1,7 @@
   * make batch rescan incremental
   * make userFolder optional - get rid of wrong type of parameter error logs
   * add check for natural numbers above 0 for track number
+  * add --debug switch to music:scan command to list memory usage of each step
 
 v0.3.3 2014-08-12
 

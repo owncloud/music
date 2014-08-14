@@ -333,7 +333,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan($userId = null, $batch = false, $userHome = null) {
+	public function rescan($userId = null, $batch = false, $userHome = null, $debug = false, $output = null) {
 		$this->logger->log('Rescan triggered', 'info');
 
 		if($userHome !== null){
@@ -359,7 +359,20 @@ class Scanner extends PublicEmitter {
 				// skip this file as it's already scanned
 				continue;
 			}
+			if($debug) {
+				$before = memory_get_usage(true);
+			}
 			$this->update($file, $userId);
+			if($debug && $output) {
+				$after = memory_get_usage(true);
+				$diff = $after - $before;
+				$afterFileSize = new FileSize($after);
+				$diffFileSize = new FileSize($diff);
+				$humanFilesizeAfter = $afterFileSize->getHumanReadable();
+				$humanFilesizeDiff = $diffFileSize->getHumanReadable();
+				$path = $file->getPath();
+				$output->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+			}
 			$count++;
 		}
 		// find album covers

@@ -15,7 +15,7 @@ This scans all not scanned music files of the user USERNAME and saves the extrac
 
 This scans music files for all users.
 
-Both of the above commands can be combined with the `--debug` switch, which enables debug output the show the memory usage of each scan step.
+Both of the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
 
 ## Ampache
 

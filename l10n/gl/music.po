@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-08-14 18:11+0000\n"
+"Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/owncloud/language/gl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,7 +27,7 @@ msgstr "Descrición"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr "Descrición (p.ex. o nome do aplicativo)"
+msgstr "Descrición (p.ex. o nome da aplicación)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"

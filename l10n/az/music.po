@@ -1,10 +1,11 @@
 # 
 # Translators:
+# unixidzero <unixidzero@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-08-16 11:00+0000\n"
+"Last-Translator: unixidzero <unixidzero@gmail.com>\n"
 "Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,30 +14,30 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Albomlar"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Müğənnilər"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Açıqlanma"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Açıqlanma(Misal üçün proqram adı)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "APİ şifrəsinin generasiyası"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Ampache APİ-nin istifadə edilməsi üçün burda siz şifrələr generasiya edə bilərsiniz ona görə ki, onlar yalnz təhlükəsiz saxlana bilər. Bu Ampache API-nin öz dizaynıdır. Siz istənilən zaman çoxlu şifrə yarada və onları silə bilərsiniz."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -60,7 +61,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Next"
-msgstr ""
+msgstr "Növbəti"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"

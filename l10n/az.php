@@ -8,6 +8,7 @@ $TRANSLATIONS = array(
 "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Ampache APİ-nin istifadə edilməsi üçün burda siz şifrələr generasiya edə bilərsiniz ona görə ki, onlar yalnz təhlükəsiz saxlana bilər. Bu Ampache API-nin öz dizaynıdır. Siz istənilən zaman çoxlu şifrə yarada və onları silə bilərsiniz.",
 "Loading ..." => "Yüklənir ...",
 "Music" => "Musiqi",
-"Next" => "Növbəti"
+"Next" => "Növbəti",
+"Repeat" => "Təkrar"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

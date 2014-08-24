@@ -9,6 +9,7 @@ $TRANSLATIONS = array(
 "Loading ..." => "Yüklənir ...",
 "Music" => "Musiqi",
 "Next" => "Növbəti",
+"Path to your music collection" => "Sizin musiqi yığmasının ünvanı",
 "Repeat" => "Təkrar"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

@@ -88,6 +88,7 @@ angular.module('Music').controller('PlayerController',
 										});
 
 			$scope.player=AV.Player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			// ownCloud doesn't support HTTP chunked request currently, so the chunkSize option won't have any effect
 			$scope.player.asset.source.chunkSize=1048576;
 			$scope.setBuffering(true);
 

@@ -40,6 +40,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.shuffle = false;
 
 	$scope.$playPosition = $('.play-position');
+	$scope.$loadPosition = $('.load-position');
 	$scope.$bufferBar = $('.buffer-bar');
 	$scope.$playBar = $('.play-bar');
 
@@ -97,27 +98,13 @@ angular.module('Music').controller('PlayerController',
 
 			$scope.setPlay(true);
 			$scope.player.on("buffer", function (percent) {
-				// update percent
-				if($scope.$$phase) {
-					$scope.bufferPercent = percent;
-				} else {
-					$scope.$apply(function(){
-						$scope.bufferPercent = percent;
-					});
-				}
+				$scope.setBufferPercent(parseInt(percent));
 				if (percent == 100) {
 					$scope.setBuffering(false);
 				}
 			})
 			$scope.player.on("progress", function (currentTime) {
-				var position = currentTime/1000;
-				if($scope.$$phase) {
-					$scope.position = position;
-				} else {
-					$scope.$apply(function(){
-						$scope.position = position;
-					});
-				}
+				$scope.setTime(currentTime/1000, $scope.player.duration/1000)
 			});
 			$scope.player.on('end', function() {
 				$scope.setPlay(false);
@@ -188,8 +175,9 @@ angular.module('Music').controller('PlayerController',
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
 	};
 
-	$scope.setBuffer = function(position, duration) {
-		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
+	$scope.setBufferPercent = function(percent) {
+		$scope.$loadPosition.text(gettext("Loading...") + percent + '%');
+		$scope.$bufferBar.css('width', percent + '%');
 	};
 
 	$scope.toggle = function(forcePlay) {

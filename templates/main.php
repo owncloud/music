@@ -71,7 +71,7 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 				</div>
 				<div ng-show="currentTrack.title" class="progress-info">
 					<span ng-hide="buffering" class="play-position muted">&nbsp;</span>
-					<span ng-show="buffering" class="muted" translate>Loading ... {{ bufferPercent | number:0 }}%</span>
+					<span ng-show="buffering" class="load-position muted">Loading...</span>
 					<div class="progress">
 						<div class="seek-bar" ng-click="seek($event)">
 							<div class="buffer-bar"></div>

@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Patrik Nilsson <asavartzeth@gmail.com>, 2014
 # Gustav Smedberg <shadow.elf@hotmail.com>, 2013
-# medialabs, 2013
+# Juho Ojala, 2013-2014
+# lagre, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/owncloud/language/sv/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,18 +15,46 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Album"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Artister"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Beskrivning"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Beskrivning (ex. App namn)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Generera API lösenord"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome har bara möjligheten att spela upp MP3 filer - se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Här kan du generera lösenord för användning med Ampaches API, eftersom de inte kan lagras på ett riktigt säkert sätt på grund av Ampachi API:ns design. Du kan generera så många lösenord du vill och upphäva dem när som helst."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Ogiltig sökväg"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Kom ihåg, att Ampaches API endast är en förhandsvisning och är ostabil. Du är välkommen att rapportera din upplevelse med denna funktionen i motsvarande <a href=\"https://github.com/owncloud/music/issues/60\">problem</a>. Jag skulle också vilja ha en lista över klienter att testa med.\nTack"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Radera"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Laddar  ..."
 
@@ -37,15 +66,15 @@ msgstr "Musik"
 msgid "Next"
 msgstr "Nästa"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Det finns inget här. Ladda upp din musik!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Sökvägen till din musiksamling"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Paus"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Spela"
 
@@ -57,24 +86,42 @@ msgstr "Föregående"
 msgid "Repeat"
 msgstr "Upprepa"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Visa alla {{ trackcount }} låtar ..."
-msgstr[1] "Visa alla {{ trackcount }} låtar ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Visa mindre ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Upphäv API lösenord"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Blanda"
 
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Några icke spelbara spår hoppades över"
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Denna inställning specificerar vilken mapp som kommer skannas efter musik"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Spår"
+
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Okänt album"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Okänd artist"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Använd denna adress för att bläddra igenom din musiksamling från valfri Ampache-kompatibel enhet."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Använd ditt användarnamn och följande lösenord för att ansluta mot denna Ampache instansen:"

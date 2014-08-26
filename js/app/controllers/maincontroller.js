@@ -1,28 +1,16 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
-
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', 'Artists', 'playlistService', 'gettextCatalog',
-	function ($rootScope, $scope, Artists, playlistService, gettextCatalog) {
+	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -60,77 +48,52 @@ angular.module('Music').controller('MainController',
 		$scope.letterAvailable[$scope.letters[i]] = false;
 	}
 
-	Artists.then(function(artists){
-		$scope.artists = artists;
-		for(var i=0; i < artists.length; i++) {
-			var artist = artists[i],
-				letter = artist.name.substr(0,1).toUpperCase();
+	$scope.update = function() {
+		ArtistFactory.getArtists().then(function(artists){
+			$scope.artists = artists;
+			for(var i=0; i < artists.length; i++) {
+				var artist = artists[i],
+					letter = artist.name.substr(0,1).toUpperCase();
 
-			if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-				if($scope.letterAvailable[letter] === false) {
-					$scope.anchorArtists.push(artist.name);
+				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
+					if($scope.letterAvailable[letter] === false) {
+						$scope.anchorArtists.push(artist.name);
+					}
+					$scope.letterAvailable[letter] = true;
 				}
-				$scope.letterAvailable[letter] = true;
+
 			}
 
-		}
-	});
+			$rootScope.$emit('artistsLoaded');
+		});
+	};
 
-	$scope.playTrack = function(track) {
-		var artist = _.find($scope.artists,
-			function(artist) {
-				return artist.id === track.artist.id;
-			}),
-			album = _.find(artist.albums,
-			function(album) {
-				return album.id === track.album.id;
-			}),
-			tracks = _.sortBy(album.tracks,
-				function(track) {
-					return track.number;
+	// initial loading of artists
+	$scope.update();
+
+
+	var scanLoopFunction = function(dry) {
+		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
+			var scan = scanItems[0];
+			$scope.scanningScanned = scan.processed;
+			$scope.scanningTotal = scan.total;
+			$scope.update();
+			if(scan.processed < scan.total) {
+				$scope.scanning = true;
+				scanLoopFunction(0);
+			} else {
+				if(scan.processed !== scan.total) {
+					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
 				}
-			);
-		// determine index of clicked track
-		var index = tracks.indexOf(track);
-		if(index > 0) {
-			// slice array in two parts and interchange them
-			var begin = tracks.slice(0, index);
-			var end = tracks.slice(index);
-			tracks = end.concat(begin);
-		}
-		playlistService.setPlaylist(tracks);
-		playlistService.publish('play');
+				$scope.scanning = false;
+			}
+		});
 	};
 
-	$scope.playAlbum = function(album) {
-		var tracks = _.sortBy(album.tracks,
-				function(track) {
-					return track.number;
-				}
-			);
-		playlistService.setPlaylist(tracks);
-		playlistService.publish('play');
-	};
+	scanLoopFunction(1);
 
-	$scope.playArtist = function(artist) {
-		var albums = _.sortBy(artist.albums,
-			function(album) {
-				return album.year;
-			}),
-			playlist = _.union.apply(null,
-				_.map(
-					albums,
-					function(album){
-						var tracks = _.sortBy(album.tracks,
-							function(track) {
-								return track.number;
-							}
-						);
-						return tracks;
-					}
-				)
-			);
-		playlistService.setPlaylist(playlist);
-		playlistService.publish('play');
-	};
+	$scope.scanning = false;
+	$scope.scanningScanned = 0;
+	$scope.scanningTotal = 0;
+
 }]);

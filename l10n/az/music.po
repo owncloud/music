@@ -1,49 +1,77 @@
 # 
 # Translators:
+# unixidzero <unixidzero@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-08-23 10:01+0000\n"
+"Last-Translator: unixidzero <unixidzero@gmail.com>\n"
 "Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: az\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albomlar"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Müğənnilər"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Açıqlanma"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Açıqlanma(Misal üçün proqram adı)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "APİ şifrəsinin generasiyası"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Ampache APİ-nin istifadə edilməsi üçün burda siz şifrələr generasiya edə bilərsiniz ona görə ki, onlar yalnz təhlükəsiz saxlana bilər. Bu Ampache API-nin öz dizaynıdır. Siz istənilən zaman çoxlu şifrə yarada və onları silə bilərsiniz."
 
-#: ../templates/main.php
-msgid "Delete"
-msgstr ""
-
-#: ../templates/main.php ../templates/part.main.php
-msgid "Loading ..."
+#: ../templates/fake-template.php
+msgid "Invalid path"
 msgstr ""
 
 #: ../templates/fake-template.php
-msgid "Music"
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
 msgstr ""
 
 #: ../templates/main.php
-msgid "Next"
-msgstr ""
+msgid "Loading ..."
+msgstr "Yüklənir ..."
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr ""
+#: ../templates/fake-template.php
+msgid "Music"
+msgstr "Musiqi"
+
+#: ../templates/main.php
+msgid "Next"
+msgstr "Növbəti"
+
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Sizin musiqi yığmasının ünvanı"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr ""
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr ""
 
@@ -53,19 +81,26 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Təkrar"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
 msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
+msgstr ""
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
 msgstr ""
 
 #: ../templates/fake-template.php
@@ -74,4 +109,16 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
 msgstr ""

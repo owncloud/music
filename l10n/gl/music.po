@@ -1,30 +1,58 @@
 # 
 # Translators:
-# mbouzada <mbouzada@gmail.com>, 2013-2014
+# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2013-2014
+# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-21 10:50+0000\n"
-"Last-Translator: mbouzada <mbouzada@gmail.com>\n"
+"PO-Revision-Date: 2014-08-14 18:11+0000\n"
+"Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/owncloud/language/gl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albumes"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Interpretes"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Descrición"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Descrición (p.ex. o nome da aplicación)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Xerar o contrasinal da API"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome só pode de reproducir ficheiros MP3 - vexa o <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Aquí pode xerar contrasinais para utilizar coa API de Ampache, xa que non poden ser almacenados nunha forma abondo segura por mor do deseño da API de Ampache. Pode xerar tantos contrasinais como queira e revogalos en calquera momento."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Ruta incorrecta"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Teña presente que a API de Ampache é só unha edición preliminar e é inestábel. Non dubide en informarnos da súa experiencia con esta característica na correspondente páxina de  <a href=\"https://github.com/owncloud/music/issues/60\">problemas</a>. Gustaríanos tamén, ter unha lista de clientes cos que facer probas. Grazas"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Eliminar"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Cargando ..."
 
@@ -36,15 +64,15 @@ msgstr "Música"
 msgid "Next"
 msgstr "Seguinte"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Aquí non hai nada. Envíe a súa música!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Ruta á súa colección de música"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Reproducir"
 
@@ -56,24 +84,42 @@ msgstr "Anterior"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Amosar todas as {{ trackcount }} cancións ..."
-msgstr[1] "Amosar todas as {{ trackcount }} cancións ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Amosar menos ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Revogar o contrasinal da API"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Ao chou"
 
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Omitíronse algunhas pistas non reproducíbeis."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Este axuste especifica o cartafol que será analizado na busca de música."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Pistas"
+
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr "Album descoñecido"
+msgstr "Álbum descoñecido"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Interprete descoñecido"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Utilice este enderezo para navegar pola súa colección de música desde calquera reprodutor compatíbel con Ampache."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Utilice o seu nome de usuario e o seguinte contrasinal para conectarse a esta instancia do Ampache:"

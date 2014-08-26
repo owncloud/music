@@ -1,0 +1,53 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2014
+ */
+
+
+
+@media only screen and (min-width: 1100px) {
+
+	#controls .albumart {
+		left: 293px;
+	}
+
+	#controls .song-info {
+		left: 393px;
+	}
+
+	#controls .progress-info {
+		left: 700px;
+	}
+
+}
+@media only screen and (min-width: 769px) and (max-width: 1100px) {
+
+	#controls .albumart {
+		left: 245px;
+	}
+
+	#controls .song-info {
+		left: 290px;
+	}
+
+
+}
+
+@media only screen and (max-width: 768px) {
+
+	#controls .albumart {
+		left: 190px;
+	}
+	#controls .song-info {
+		left: 240px;
+	}
+}
+
+#controls .progress, #controls .seek-bar {
+	background-color: #ccc;
+}

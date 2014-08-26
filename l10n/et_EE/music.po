@@ -1,31 +1,58 @@
 # 
 # Translators:
-# pisike.sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
-# Rivo Zängov <eraser@eraser.ee>, 2013
+# Pisike Sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
+# Rivo Zängov <eraser@eraser.ee>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-27 07:30+0000\n"
-"Last-Translator: pisike.sipelgas <pisike.sipelgas@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: et_EE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albumid"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Artistid"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Kirjeldus"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Kirjeldus (nt. rakendi nimi)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Tekita API parool"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome suudab esitada ainult MP3 faile - vaata lisa <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wikist</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Siin sa saad tekitada parooli, mida kasutada Ampache API-ga, kuid neid ei ole võimalik talletada turvalisel moel Ampache API olemuse tõttu. Sa saad genereerida nii palju paroole kui soovid ning tühistada neid igal ajal."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Vigane tee"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Pea meeles, et Ampache APi ei ole küps ning on ebastabiilne. Anna teada oma kogemustest selle funktsionaalsusega vastavalt <a href=\"https://github.com/owncloud/music/issues/60\">teemaarendusele</a>. Ühtlasi soovin nimistut klientidest, mida testida. Tänan."
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Kustuta"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Laadimine ..."
 
@@ -37,15 +64,15 @@ msgstr "Muusika"
 msgid "Next"
 msgstr "Järgmine"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Siin pole midagi. Laadi oma muusikat üles!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Tee sinu muusikakoguni"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Paus"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Esita"
 
@@ -57,19 +84,25 @@ msgstr "Eelmine"
 msgid "Repeat"
 msgstr "Korda"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Näita {{ trackcount }} lugu ..."
-msgstr[1] "Näita kõiki {{ trackcount }} lugu ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Näita vähem ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Keeldu API paroolist"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Juhuslik esitus"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Mõned mittemängitavad lood jäeti vahele."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "See seade määrab kausta, kust muusikat otsitakse."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Rajad"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -78,3 +111,15 @@ msgstr "Tundmatu album"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Tundmatu esitaja"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Kasuta seda aadressi sirvimaks oma muusikakogu suvalisest Ampache-ga ühilduvast muusikapleierist."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Kasuta oma kasutajatunnust ja järgmist parooli ühendumaks selle Ampache instantsiga:"

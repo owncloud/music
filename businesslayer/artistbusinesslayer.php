@@ -3,44 +3,39 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\ArtistMapper;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
+use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\ArtistMapper;
+
+
 class ArtistBusinessLayer extends BusinessLayer {
 
-	public function __construct(ArtistMapper $artistMapper, API $api){
-		parent::__construct($artistMapper, $api);
+	private $logger;
+
+	public function __construct(ArtistMapper $artistMapper, Logger $logger){
+		parent::__construct($artistMapper);
+		$this->logger = $logger;
 	}
 
 	/**
 	 * Returns all artists with the given ids
 	 * @param array $artistIds the ids of the artists
 	 * @param string $userId the name of the user
-	 * @return array of artists
+	 * @return \OCA\Music\Db\Artist[] artists
 	 */
 	public function findMultipleById($artistIds, $userId){
 		return $this->mapper->findMultipleById($artistIds, $userId);
@@ -49,19 +44,19 @@ class ArtistBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds an artist (if it does not exist already) and returns the new artist
 	 * @param string $name the name of the artist
-	 * @return \OCA\Music\Db\Artist
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @return \OCA\Music\Db\Artist artist
+	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addArtistIfNotExist($name, $userId){
 		try {
 			$artist = $this->mapper->findByName($name, $userId);
-			$this->api->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
+			$this->logger->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$artist = new Artist();
 			$artist->setName($name);
 			$artist->setUserId($userId);
 			$artist = $this->mapper->insert($artist);
-			$this->api->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
+			$this->logger->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

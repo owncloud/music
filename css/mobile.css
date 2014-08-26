@@ -1,0 +1,112 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Jan-Christoph Borchardt, http://jancborchardt.net
+ * @copyright Morris Jobke 2013, 2014
+ * @copyright Jan-Christoph Borchardt 2014
+ */
+
+@media only screen and (max-width: 768px) {
+
+.artist-area {
+	padding-top: 15px;
+}
+
+.artist-area > h1 {
+	margin-left: 8px;
+}
+
+/* adjust album area to screen width */
+.album-area {
+	width: 100%;
+	padding: 10px 30px 0 10px;
+}
+
+/* smaller album art */
+.album-area > .albumart,
+.album-area > img {
+	line-height: 50px;
+	font-size: 30px;
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+/* also adjust the overlay */
+.album-area > img.overlay {
+	margin-left: -37px;
+	padding: 0;
+	width: 25px;
+	height: 25px;
+	margin-top: 13px;
+}
+
+/* nicely display album name next to cover */
+.album-area h2 {
+	padding: 0px 15px;
+	position: absolute;
+	left: 56px;
+	max-width: 75%;
+	white-space: normal;
+	height: 50px;
+	line-height: 50px;
+}
+
+.album-area > h2 > div {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
+}
+/* move track list to the left so it’s visible on small screens */
+.track-list {
+	margin-left: 0;
+	padding-top: 15px;
+	clear: both;
+}
+/* align track title to the left with album title */
+.track-list > li {
+	padding-left: 60px;
+}
+
+.track-list > li > .play.playing {
+	display: inline;
+	height: 10px;
+	margin-left: -20px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
+/* layout the play bar elements for less space */
+#play-controls {
+	margin-left: 0;
+}
+#play-controls img:first-child {
+	display: none;
+}
+#controls .albumart {
+	left: 135px;
+	margin-left: 0;
+}
+#controls .song-info {
+	left: 180px;
+	max-width: 45%;
+}
+#controls .title {
+	font-size: 14px;
+}
+#controls .progress-info {
+	display: none;
+}
+
+/* hide repeat, save space */
+#controls #repeat {
+	right: 0;
+}
+#controls #shuffle {
+	right: 40px;
+}
+
+}

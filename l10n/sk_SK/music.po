@@ -1,11 +1,11 @@
 # 
 # Translators:
-# mhh <marian.hvolka@stuba.sk>, 2013-2014
+# Marián Hvolka <marian.hvolka@stuba.sk>, 2013-2014
+# mehturt <mehturt@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,18 +13,46 @@ msgstr ""
 "Language: sk_SK\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albumy"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Interpreti"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Popis"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Popis (napr. App name)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Vygenerovanie hesla API"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome je schopný prehrávať len MP3 súbory - pozri <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Tu môžete vytvárať heslá pre Ampache API, pretože tieto nemôžu byť uložené skutočne bezpečným spôsobom z dôvodu dizajnu Ampache API. Je možné vygenerovať ľubovoľné množstvo hesiel a kedykoľvek ich zneplatniť."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Neplatná cesta"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Myslite na to, že Ampache API je stále vo vývoji a nie je stabilné. Môžete nás informovať o skúsenostiach s touto funkciou odoslaním hlásenia v príslušnom <a href=\"https://github.com/owncloud/music/issues/60\">tikete</a>. Chcel by som tiež zostaviť zoznam záujemcov o testovanie. Vďaka"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Zmazať"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Nahrávam..."
 
@@ -36,15 +64,15 @@ msgstr "Hudba"
 msgid "Next"
 msgstr "Ďalšia"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nič tu nie je. Nahrajte si vašu hudbu!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Cesta k vašej hudobnej zbierke"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pauza"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Prehrať"
 
@@ -56,25 +84,42 @@ msgstr "Predošlá"
 msgid "Repeat"
 msgstr "Opakovať"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Zobraziť {{ trackcount }} skladieb ..."
-msgstr[1] "Zobraziť {{ trackcount }} skladieb ..."
-msgstr[2] "Zobraziť všetky {{ trackcount }} skladieb ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Zobraziť menej ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Zneplatniť heslo API"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Zamiešať"
 
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Niektoré neprehrateľné skladby boli vynechané."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Toto nastavenie určuje priečinok, ktorý bude prehľadaný pre hudbu."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Skladby"
+
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Neznámy album"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Neznámy umelec"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Použite túto adresu pre prístup k hudobnej zbierke z akéhokoľvek prehrávača podporujúceho Ampache."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Použite svoje používateľské meno a heslo pre pripojenie k tejto inštancii Ampache:"

@@ -23,18 +23,24 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\TrackMapper;
-use \OCA\Music\Db\Track;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 
+use \OCA\Music\Db\TrackMapper;
+use \OCA\Music\Db\Track;
+
+
 class TrackBusinessLayer extends BusinessLayer {
 
-	public function __construct(TrackMapper $trackMapper, API $api){
-		parent::__construct($trackMapper, $api);
+	private $logger;
+
+	public function __construct(TrackMapper $trackMapper, Logger $logger){
+		parent::__construct($trackMapper);
+		$this->logger = $logger;
 	}
 
 	/**
@@ -49,9 +55,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by album
-	 * @param string $albumId the id of the artist
+	 * @param string $albumId the id of the track
 	 * @param string $userId the name of the user
-	 * @return array of tracks
+	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null){
 		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
@@ -61,7 +67,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns the track for a file id
 	 * @param string $fileId the file id of the track
 	 * @param string $userId the name of the user
-	 * @return track
+	 * @return \OCA\Music\Db\Track track
 	 */
 	public function findByFileId($fileId, $userId){
 		return $this->mapper->findByFileId($fileId, $userId);
@@ -69,15 +75,15 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Adds a track (if it does not exist already) and returns the new track
-	 * @param string $name the name of the track
+	 * @param string $title the title of the track
 	 * @param string $number the number of the track
 	 * @param string $artistId the artist id of the track
 	 * @param string $albumId the album id of the track
 	 * @param string $fileId the file id of the track
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @return \OCA\Music\Db\Track track
+	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
 		try {
@@ -89,7 +95,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$this->mapper->update($track);
-			$this->api->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
+			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();
 			$track->setTitle($title);
@@ -100,7 +106,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$track = $this->mapper->insert($track);
-			$this->api->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
+			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}
@@ -109,7 +115,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Deletes a track
-	 * @param string $fileId the file id of the track
+	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user
 	 * @return array of two arrays (named 'albumIds', 'artistIds') containing all album ids
 	 *		   and artist ids of the deleted track(s)
@@ -129,14 +135,14 @@ class TrackBusinessLayer extends BusinessLayer {
 			if(!in_array($artistId, $remaining['artistIds'])){
 				// only add artists which have no tracks left
 				$result = $this->mapper->countByArtist($artistId, $userId);
-				if($result['COUNT(*)'] === '0') {
+				if($result === '0') {
 					$remaining['artistIds'][] = $artistId;
 				}
 			}
 			if(!in_array($albumId, $remaining['albumIds'])){
 				// only add albums which have no tracks left
 				$result = $this->mapper->countByAlbum($albumId, $userId);
-				if($result['COUNT(*)'] === '0') {
+				if($result === '0') {
 					$remaining['albumIds'][] = $albumId;
 				}
 
@@ -144,5 +150,15 @@ class TrackBusinessLayer extends BusinessLayer {
 		}
 
 		return $remaining;
+	}
+
+	/**
+	 * Returns all tracks filtered by name (of track/album/artist)
+	 * @param string $name the name of the track/album/artist
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track[] tracks
+	 */
+	public function findAllByNameRecursive($name, $userId){
+		return $this->mapper->findAllByNameRecursive($name, $userId);
 	}
 }

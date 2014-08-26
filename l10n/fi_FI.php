@@ -1,19 +1,27 @@
 <?php
 $TRANSLATIONS = array(
-"Chrome is only able to playback MP3 files - see <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>" => "Chrome voi toistaa vain MP3-tiedostoja - lisätietoja <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wikissä</a>",
-"Delete" => "Poista",
+"Albums" => "Levyt",
+"Artists" => "Esittäjät",
+"Description" => "Kuvaus",
+"Description (e.g. App name)" => "Kuvaus (esim. sovelluksen nimi)",
+"Generate API password" => "Luo API-salasana",
+"Invalid path" => "Virheellinen polku",
 "Loading ..." => "Ladataan...",
 "Music" => "Musiikki",
 "Next" => "Seuraava",
-"Nothing in here. Upload your music!" => "Täällä ei ole mitään. Lähetä musiikkia tänne!",
+"Path to your music collection" => "Musiikkikokoelman polku",
 "Pause" => "Keskeytä",
 "Play" => "Toista",
 "Previous" => "Edellinen",
 "Repeat" => "Kertaa",
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("Näytä {{ trackcount }} kappale...","Näytä kaikki {{ trackcount }} kappaletta..."),
-"Show less ..." => "Näytä vähemmän...",
+"Revoke API password" => "Peru API-salasana",
 "Shuffle" => "Sekoita",
+"Some not playable tracks were skipped." => "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa.",
+"This setting specifies the folder which will be scanned for music." => "Tämä asetus määrittää kansion, josta musiikkia etsitään.",
+"Tracks" => "Kappaleet",
 "Unknown album" => "Tuntematon levy",
-"Unknown artist" => "Tuntematon esittäjä"
+"Unknown artist" => "Tuntematon esittäjä",
+"Use this address to browse your music collection from any Ampache compatible player." => "Käytä tätä osoitetta selataksesi musiikkikokoelmaasi miltä tahansa Ampache-yhteensopivalta soittimelta.",
+"Use your username and following password to connect to this Ampache instance:" => "Käytä käyttäjätunnustasi ja seuraavaa salasanaa yhditäessäsi tähän Ampache-istuntoon:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

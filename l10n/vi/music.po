@@ -1,31 +1,58 @@
 # 
 # Translators:
-# Nguyễn Tài <mattheu.9x@gmail.com>, 2014
+# Nguyễn Hữu Tài <mattheu.9x@gmail.com>, 2014
 # Sơn Nguyễn <sonnghit@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-21 07:50+0000\n"
-"Last-Translator: Sơn Nguyễn <sonnghit@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/owncloud/language/vi/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Mô tả"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr ""
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome chỉ có thể phát các tập tin MP3 - xem thêm <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr ""
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Xóa"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Đang tải ..."
 
@@ -37,15 +64,15 @@ msgstr "Âm nhạc"
 msgid "Next"
 msgstr "Kế tiếp"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Không có gì ở đây. Hãy tải nhạc của bạn lên!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Tạm dừng"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Play"
 
@@ -57,18 +84,25 @@ msgstr "Lùi lại"
 msgid "Repeat"
 msgstr "Lặp lại"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Hiển thị tất cả {{ trackcount }} bài hát ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Hiển thị ít hơn ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Ngẫu nhiên"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -77,3 +111,15 @@ msgstr "Không tìm thấy album"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Không tìm thấy nghệ sĩ"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr ""

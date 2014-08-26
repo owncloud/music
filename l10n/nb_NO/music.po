@@ -1,10 +1,12 @@
 # 
 # Translators:
+# Espen Bye <espenbye@me.com>, 2014
+# Jukselapp <ingemundskalnes@gmail.com>, 2014
+# vidaren <news@vidartysse.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/owncloud/language/nb_NO/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,20 +14,48 @@ msgstr ""
 "Language: nb_NO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Album"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Artister"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Beskrivelse (f.eks. applikasjonsnavn)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Generer API-passord"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr ""
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Her kan du generere passord som kan brukes med Ampache API, fordi de ikke kan lagres på en virkelig sikker måte pga. utformingen av Ampache API. Du kan generere så mange passord som du vil og trekke dem tilbake når som helst."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Individuell sti"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Vær klar over at Ampache API bare er en forhåndsversjon og er ustabil. Rapporter gjerne dine erfaringer med denne funksjonen i den tilhørende <a href=\"https://github.com/owncloud/music/issues/60\">saken</a>. Jeg vil også gjerne ha en liste over klienter som jeg kan teste med. Takk"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Slett"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "Laster ..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -35,15 +65,15 @@ msgstr "Musikk"
 msgid "Next"
 msgstr "Neste"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr ""
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Sti til din musikksamling"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Spill"
 
@@ -55,24 +85,42 @@ msgstr "Forrige"
 msgid "Repeat"
 msgstr "Gjenta"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr ""
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Tilbakestill API-passord"
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "Tilfeldig"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Noen ikke-spillbare spor ble hoppet over."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Denne innstillingen spesifiserer mappen som vil bli skannet for musikk."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Spor"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Ukjent album"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Ukjent artist"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Bruk denne adressen til å bla gjennom din musikksamling fra hvilket som helst Ampache-kompitabelt lag."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Benytt ditt brukernavn og følgende passord for å koble til denne Ampache-forekomsten:"

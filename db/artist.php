@@ -3,55 +3,72 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
-
 
 namespace OCA\Music\Db;
 
+use \OCP\IURLGenerator;
+
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\AppFramework\Core\API;
 
+use \OCA\Music\Core\API;
 
+/**
+ * @method string getName()
+ * @method setName(string $name)
+ * @method string getImage()
+ * @method setImage(string $image)
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ * @method int getAlbumCount()
+ * @method setAlbumCount(int $albumCount)
+ * @method int getTrackCount()
+ * @method setTrackCount(int $trackCount)
+ */
 class Artist extends Entity {
 
 	public $name;
 	public $image; // URL
 	public $userId;
 
-	public function getUri(API $api) {
-		return $api->linkToRoute(
-			'music_artist',
+	// the following attributes aren't filled automatically
+	public $albumCount;
+	public $trackCount;
+
+	public function getUri(IURLGenerator $urlGenerator) {
+		return $urlGenerator->linkToRoute(
+			'music.api.artist',
 			array('artistIdOrSlug' => $this->id)
 		);
 	}
 
-	public function toAPI(API $api) {
+	public function getNameString($l10n) {
 		$name = $this->getName();
 		if ($name === null) {
-			$name = $api->getTrans()->t('Unknown artist')->__toString();
+			$name = $l10n->t('Unknown artist')->__toString();
 		}
+		return $name;
+	}
+
+	public function toCollection($l10n) {
 		return array(
 			'id' => $this->getId(),
-			'name' => $name,
+			'name' => $this->getNameString($l10n)
+		);
+	}
+
+	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
+		return array(
+			'id' => $this->getId(),
+			'name' => $this->getNameString($l10n),
 			'image' => $this->getImage(),
 			'slug' => $this->getId() . '-' . $this->slugify('name'),
-			'uri' => $this->getUri($api)
+			'uri' => $this->getUri($urlGenerator)
 		);
 	}
 }

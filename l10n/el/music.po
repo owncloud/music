@@ -1,13 +1,14 @@
 # 
 # Translators:
-# Efstathios Iosifidis <iefstathios@gmail.com>, 2013
+# Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014
+# thea_rad <inactive+thea_rad@transifex.com>, 2014
 # Marios Bekatoros <>, 2013
-# vkehayas <vkehayas@gmail.com>, 2014
+# Spyros Melissovas <peppe@cs.uoi.gr>, 2014
+# Vassilis Kehayas <vkehayas@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,18 +16,46 @@ msgstr ""
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Δίσκοι"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Καλλιτέχνες"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Περιγραφή (π.χ. όνομα εφαρμογής)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Δημιουργία συνθηματικού API"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Το Chrome αναπαράγει μόνο αρχεία MP3 - δείτε στο <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Εδώ μπορείτε να δημιουργήσετε συνθηματικά για χρήση με το API Ampache, γιατί δεν είναι δυνατό να αποθηκευτούν με πραγματικά ασφαλή τρόπο, λόγω της σχεδίασης του API Ampache. Μπορείτε να δημιουργήσετε όσα συνθηματικά θέλετε και να τα ανακαλέσετε οποτεδήποτε."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Άκυρη διαδρομή"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Θυμηθείτε ότι το API Ampache είναι απλά μια επισκόπηση και είναι ασταθές. Παρακαλούμε αναφέρετε την εμπειρία σας με αυτή την λειτουργία στην αντίστοιχη <a href=\"https://github.com/owncloud/music/issues/60\">αναφορά</a>. Θα ήταν καλό να υπάρχει επίσης μια λίστα με εφαρμογές για δοκιμή. Ευχαριστώ!"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Διαγραφή"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Φόρτωση ..."
 
@@ -38,15 +67,15 @@ msgstr "Μουσική"
 msgid "Next"
 msgstr "Επόμενο"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Δεν υπάρχει τίποτα εδώ. Μεταφορτώστε την μουσική σας!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Διαδρομή για την μουσική σας συλλογή"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Παύση"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Αναπαραγωγή"
 
@@ -58,24 +87,42 @@ msgstr "Προηγούμενο"
 msgid "Repeat"
 msgstr "Επανάληψη"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Εμφάνιση του τραγουδιού"
-msgstr[1] "Εμφάνιση όλων των {{ trackcount }} τραγουδιών ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Προβολή λιγότερων..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Ανάκληση συνθηματικού API"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Τυχαία αναπαραγωγή"
 
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Μερικά μη αναγνώσιμα τραγούδια έχουν παρακαμφθεί."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Αυτή η ρύθμιση αναφέρεται στο φάκελο,στον οποίο θα γίνει σάρωση για να βρεθούν τραγούδια."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Κομμάτια"
+
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Άγνωστο άλμπουμ"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Άγνωστος καλλιτέχνης"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Χρησιμοποιήστε αυτή τη διεύθυνση για να περιηγηθείτε στη μουσική σας συλλογή από οποιοδήποτε μέσο,συμβατό με το Ampache."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Χρησιμοποιήστε το όνομα χρήστη σας και το παρακάτω συνθηματικό για να συνδεθείτε σε αυτή την εκτέλεση του Ampache:"

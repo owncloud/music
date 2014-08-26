@@ -3,22 +3,11 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
 namespace OCA\Music\Db;
@@ -36,7 +25,7 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	{
 		$this->beforeEach();
 
-		$this->mapper = new AlbumMapper($this->api);
+		$this->mapper = new AlbumMapper($this->db);
 
 		// create mock items
 		$album1 = new Album();
@@ -68,6 +57,9 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 
+	/**
+	 * @param string $condition
+	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
@@ -148,6 +140,30 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 		$this->assertEquals($this->albums[0], $result);
 	}
 
+	public function testFindByNameAndYearNameIsNull(){
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+			'`album`.`cover_file_id` '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'WHERE `album`.`user_id` = ? AND `album`.`name` IS NULL AND `album`.`year` = ?';
+		$albumName = null;
+		$albumYear = 2014;
+		$this->setMapperResult($sql, array($this->userId, $albumYear), array($this->rows[0]));
+		$result = $this->mapper->findByNameAndYear($albumName, $albumYear, $this->userId);
+		$this->assertEquals($this->albums[0], $result);
+	}
+
+	public function testFindByNameAndYearBothNull(){
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+			'`album`.`cover_file_id` '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'WHERE `album`.`user_id` = ? AND `album`.`name` IS NULL AND `album`.`year` IS NULL';
+		$albumName = null;
+		$albumYear = null;
+		$this->setMapperResult($sql, array($this->userId), array($this->rows[0]));
+		$result = $this->mapper->findByNameAndYear($albumName, $albumYear, $this->userId);
+		$this->assertEquals($this->albums[0], $result);
+	}
+
 	public function testAddAlbumArtistRelationIfNotExistNoAdd(){
 		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
 			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';
@@ -160,36 +176,14 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	public function testAddAlbumArtistRelationIfNotExistAdd(){
 		$albumId = 1;
 		$artistId = 2;
-		$sql = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
+		$sql1 = 'SELECT 1 FROM `*PREFIX*music_album_artists` `relation` '.
 			'WHERE `relation`.`album_id` = ? AND `relation`.`artist_id` = ?';
 		$arguments = array($albumId, $artistId);
 		$sql2 = 'INSERT INTO `*PREFIX*music_album_artists` (`album_id`, `artist_id`) '.
 			'VALUES (?, ?)';
 
-		$pdoResult = $this->getMock('Result',
-			array('fetchRow'));
-		$pdoResult->expects($this->any())
-			->method('fetchRow');
-
-		$query = $this->getMock('Query',
-			array('execute'));
-		$query->expects($this->at(0))
-			->method('execute')
-			->with($this->equalTo($arguments))
-			->will($this->returnValue($pdoResult));
-		$this->api->expects($this->at(0))
-			->method('prepareQuery')
-			->with($this->equalTo($sql))
-			->will(($this->returnValue($query)));
-
-		$query->expects($this->at(1))
-			->method('execute')
-			->with($this->equalTo($arguments))
-			->will($this->returnValue($pdoResult));
-		$this->api->expects($this->at(1))
-			->method('prepareQuery')
-			->with($this->equalTo($sql2))
-			->will(($this->returnValue($query)));
+		$this->setMapperResult($sql1, $arguments);
+		$this->setMapperResult($sql2, $arguments);
 
 		$this->mapper->addAlbumArtistRelationIfNotExist($albumId, $artistId);
 	}
@@ -197,7 +191,7 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	public function testDeleteByIdNone(){
 		$albumIds = array();
 
-		$this->api->expects($this->never())
+		$this->db->expects($this->never())
 			->method('prepareQuery');
 
 		$this->mapper->deleteById($albumIds);
@@ -206,35 +200,116 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	public function testDeleteById(){
 		$albumIds = array(1, 2);
 
-		$sql = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN (?,?)';
+		$sql1 = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN (?,?)';
 		$arguments = $albumIds;
 		$sql2 = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN (?,?)';
 
-		$pdoResult = $this->getMock('Result',
-			array('fetchRow'));
-		$pdoResult->expects($this->any())
-			->method('fetchRow');
-
-		$query = $this->getMock('Query',
-			array('execute'));
-		$query->expects($this->at(0))
-			->method('execute')
-			->with($this->equalTo($arguments))
-			->will($this->returnValue($pdoResult));
-		$this->api->expects($this->at(0))
-			->method('prepareQuery')
-			->with($this->equalTo($sql))
-			->will(($this->returnValue($query)));
-
-		$query->expects($this->at(1))
-			->method('execute')
-			->with($this->equalTo($arguments))
-			->will($this->returnValue($pdoResult));
-		$this->api->expects($this->at(1))
-			->method('prepareQuery')
-			->with($this->equalTo($sql2))
-			->will(($this->returnValue($query)));
+		$this->setMapperResult($sql1, $arguments);
+		$this->setMapperResult($sql2, $arguments);
 
 		$this->mapper->deleteById($albumIds);
+	}
+
+	public function testCount(){
+		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_albums` WHERE `user_id` = ?';
+		$this->setMapperResult($sql, array($this->userId), array(array('count' => 4)));
+		$result = $this->mapper->count($this->userId);
+		$this->assertEquals(4, $result);
+	}
+
+	public function testCountByArtist(){
+		$artistId = 2;
+		$sql = 'SELECT COUNT(*) AS count '.
+			'FROM `*PREFIX*music_albums` `album` '.
+			'JOIN `*PREFIX*music_album_artists` `artists` '.
+			'ON `album`.`id` = `artists`.`album_id` '.
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+		$this->setMapperResult($sql, array($this->userId, $artistId), array(array('count' => 4)));
+		$result = $this->mapper->countByArtist($artistId, $this->userId);
+		$this->assertEquals(4, $result);
+	}
+
+	public function testRemoveCover(){
+		$fileId = 7;
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = NULL
+				WHERE `cover_file_id` = ?';
+		$this->setMapperResult($sql, array($fileId), array());
+		$this->mapper->removeCover($fileId);
+	}
+
+	public function testUpdateCover(){
+		$coverFileId = 9;
+		$parentFileId = 7;
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ?
+				WHERE `cover_file_id` IS NULL AND `id` IN (
+					SELECT DISTINCT `tracks`.`album_id`
+					FROM `*PREFIX*music_tracks` `tracks`
+					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
+					WHERE `files`.`parent` = ?
+				)';
+		$this->setMapperResult($sql, array($coverFileId, $parentFileId));
+		$this->mapper->updateCover($coverFileId, $parentFileId);
+	}
+
+	public function testFindAlbumCover(){
+		$albumId = 9;
+		$parentFileId = 3;
+		$imageFileId = 7;
+		$sql1 = 'SELECT `fileid`, `name`
+					FROM `*PREFIX*filecache`
+					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
+					WHERE `parent` = ? AND `*PREFIX*mimetypes`.`mimetype` LIKE \'image%\'';
+		$arguments1 = array($parentFileId);
+		$result = array(
+			array('fileid' => 5, 'name' => '1123213.jpg'),
+			array('fileid' => $imageFileId, 'name' => 'coverasd.jpg'),
+			array('fileid' => 4, 'name' => 'albumart.jpg'),
+			array('fileid' => 6, 'name' => 'folder.jpg'),
+			array('fileid' => 8, 'name' => 'front.jpg'),
+		);
+
+		$sql2 = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ? WHERE `id` = ?';
+		$arguments2 = array($imageFileId, $albumId);
+
+		$this->setMapperResult($sql1, $arguments1, $result);
+		$this->setMapperResult($sql2, $arguments2);
+
+		$this->mapper->findAlbumCover($albumId, $parentFileId);
+	}
+
+	public function testGetAlbumsWithoutCover() {
+		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
+				FROM `*PREFIX*music_albums` `albums`
+				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
+				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
+				WHERE `albums`.`cover_file_id` IS NULL';
+		$expectedRows = array(
+			array('id' => 1, 'parent' => 6),
+			array('id' => 37, 'parent' => 19),
+		);
+		$this->setMapperResult($sql, array(), $expectedRows);
+		$result = $this->mapper->getAlbumsWithoutCover();
+		$expectedResult =array(
+			array('albumId' => 1, 'parentFolderId' => 6),
+			array('albumId' => 37, 'parentFolderId' => 19),
+		);
+		$this->assertEquals($expectedResult, $result);
+	}
+
+	public function testFindAllByName(){
+		$sql = $this->makeSelectQuery('AND `album`.`name` = ? ');
+		$this->setMapperResult($sql, array($this->userId, 123), array($this->rows[0]));
+		$result = $this->mapper->findAllByName(123, $this->userId);
+		$this->assertEquals(array($this->albums[0]), $result);
+	}
+
+	public function testFindAllByNameFuzzy(){
+		$sql = $this->makeSelectQuery('AND LOWER(`album`.`name`) LIKE LOWER(?) ');
+		$this->setMapperResult($sql, array($this->userId, '%test123test%'), array($this->rows[0]));
+		$result = $this->mapper->findAllByName('test123test', $this->userId, true);
+		$this->assertEquals(array($this->albums[0]), $result);
 	}
 }

@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Pongsametrey SOK <metreysk@gmail.com>, 2013
+# Pongsametrey <metreysk@gmail.com>, 2013-2014
+# Sovichet Tep, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,18 +13,46 @@ msgstr ""
 "Language: km\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "អាល់ប៊ុម"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "សិល្បករ"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "ការ​អធិប្បាយ"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "ការ​អធិប្បាយ (ឧ. ឈ្មោះ​កម្មវិធី)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "បង្កើត​ពាក្យ​សម្ងាត់ API"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome គ្រាន់​តែអាច​ចាក់ឡើងវិញនូវឯកសារ MP3​ ប៉ុណ្ណោះ - សូម​អាននៅ <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">វីគី</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "ទីតាំង​មិន​ត្រឹម​ត្រូវ"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr ""
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "លុប"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "កំពុងផ្ទុក ..."
 
@@ -36,15 +64,15 @@ msgstr "តន្ត្រី"
 msgid "Next"
 msgstr "បន្ទាប់"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "គ្មាន​អ្វីទេ​នៅទីនេះ។ ដាក់តន្ត្រី​របស់​អ្នកឡើង!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "ផ្អាក"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "លេង"
 
@@ -56,23 +84,42 @@ msgstr "មុន"
 msgid "Repeat"
 msgstr "ធ្វើម្ដងទៀត"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "បង្ហាញ​ទាំង {{ trackcount }} ចម្រៀង ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "បង្ហាញ​តិច ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "បង្អូស"
 
-#: ../templates/fake-template.php
-msgid "Unknown album"
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
 msgstr ""
 
 #: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "បទ"
+
+#: ../templates/fake-template.php
+msgid "Unknown album"
+msgstr "អាល់ប៊ុមអត់​ឈ្មោះ"
+
+#: ../templates/fake-template.php
 msgid "Unknown artist"
+msgstr "សិល្បករអត់​ឈ្មោះ"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
 msgstr ""

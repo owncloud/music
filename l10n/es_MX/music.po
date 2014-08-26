@@ -3,8 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/owncloud/language/es_MX/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,18 +11,46 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Descripción"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr ""
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome únicamente puede reproducir archivos MP3 - ver <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr ""
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Eliminar"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Cargando ..."
 
@@ -35,15 +62,15 @@ msgstr "Música"
 msgid "Next"
 msgstr "Siguiente"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Aquí no hay nada. ¡Sube tu música!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Reproducir"
 
@@ -55,19 +82,25 @@ msgstr "Anterior"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Mostrar todas las {{ trackcount}} canciones ..."
-msgstr[1] "Mostrar todas las {{ trackcount }} canciones ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Mostrar menos ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr ""
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Mezclar"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -75,4 +108,16 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
 msgstr ""

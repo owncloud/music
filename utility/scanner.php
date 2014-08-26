@@ -3,105 +3,156 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
 namespace OCA\Music\Utility;
+
+use OC\Hooks\PublicEmitter;
+
+use \OCP\Files\Folder;
+use \OCP\IConfig;
+
+use \OCA\Music\AppFramework\Core\Db;
+use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\Music\AppFramework\Core\API;
 
-class Scanner {
 
-	private $api;
+class Scanner extends PublicEmitter {
+
 	private $extractor;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
+	private $logger;
+	private $db;
+	private $userId;
+	private $configManager;
+	private $appName;
+	private $userFolder;
 
-	public function __construct(API $api, Extractor $extractor, ArtistBusinessLayer $artistBusinessLayer,
-		AlbumBusinessLayer $albumBusinessLayer, TrackBusinessLayer $trackBusinessLayer){
-		$this->api = $api;
+	public function __construct(Extractor $extractor,
+								ArtistBusinessLayer $artistBusinessLayer,
+								AlbumBusinessLayer $albumBusinessLayer,
+								TrackBusinessLayer $trackBusinessLayer,
+								Logger $logger,
+								Db $db,
+								$userId,
+								IConfig $configManager,
+								$appName,
+								Folder $userFolder = null){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->logger = $logger;
+		$this->db = $db;
+		$this->userId = $userId;
+		$this->configManager = $configManager;
+		$this->appName = $appName;
+		$this->userFolder = $userFolder;
 
 		// Trying to enable stream support
 		if(ini_get('allow_url_fopen') !== '1') {
-			$this->api->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
+			$this->logger->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
 			@ini_set('allow_url_fopen', '1');
+		}
+	}
+
+	public function updateById($fileId, $userId = null) {
+		try {
+			$files = $this->userFolder->getById($fileId);
+			if(count($files) > 0) {
+				// use first result
+				$this->update($files[0], $userId);
+			}
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('updateById - file not found - '. $fileId , 'debug');
+		}
+	}
+
+	public function updateByPath($filePath, $userId = null) {
+		try {
+			$file = $this->userFolder->get($filePath);
+			$this->update($file, $userId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('updateByPath - file not found - '. $filePath , 'debug');
 		}
 	}
 
 	/**
 	 * Get called by 'post_write' hook (file creation, file update)
-	 * @param string $path the path of the file
+	 * @param \OCP\Files\Node $file the file
 	 */
-	public function update($path){
+	public function update($file, $userId){
 		// debug logging
-		$this->api->log('update - '. $path , 'debug');
+		$this->logger->log('update - '. $file->getPath() , 'debug');
 
-		$metadata = $this->api->getFileInfo($path);
-
-		if($metadata === false) {
-			$this->api->log('cannot determine metadata for path ' . $path, 'debug');
+		if(!($file instanceof \OCP\Files\File)) {
 			return;
 		}
 
-		// debug logging
-		$this->api->log('update - mimetype '. $metadata['mimetype'] , 'debug');
+		$mimetype = $file->getMimeType();
 
-		if(substr($metadata['mimetype'], 0, 5) === 'image') {
-			$coverFileId = $metadata['fileid'];
-			$parentFolderId = $metadata['parent'];
+		// debug logging
+		$this->logger->log('update - mimetype '. $mimetype , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($file->getPath()));
+
+		if(substr($mimetype, 0, 5) === 'image') {
+			$coverFileId = $file->getId();
+			$parentFolderId = $file->getParent()->getId();
 			$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
 			return;
 		}
 
-		if(substr($metadata['mimetype'], 0, 5) !== 'audio' && substr($metadata['mimetype'], 0, 15) !== 'application/ogg' ) {
+		if(substr($mimetype, 0, 5) !== 'audio' && substr($mimetype, 0, 15) !== 'application/ogg' ) {
 			return;
 		}
 
 		if(ini_get('allow_url_fopen')) {
-			$fileInfo = $this->extractor->extract('oc://' . $this->api->getView()->getAbsolutePath($path));
+			// TODO find a way to get this for a sharee
+			$isSharee = $userId && $this->userId !== $userId;
+
+			$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
+			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
+				// TODO verify
+				$musicPath = $this->userFolder->get($musicPath)->getPath();
+				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
+				if(!$isSharee && substr($file->getPath(), 0, strlen($musicPath)) !== $musicPath) {
+					$this->logger->log('skipped - outside of specified path' , 'debug');
+					return;
+				}
+			}
+
+
+			$fileInfo = $this->extractor->extract('oc://' . $file->getPath());
 
 			$hasComments = array_key_exists('comments', $fileInfo);
 
 			if(!$hasComments) {
 				// TODO: fix this dirty fallback
-				// fallback to local file path
-				$this->api->log('fallback metadata extraction', 'debug');
-				$fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
-				$hasComments = array_key_exists('comments', $fileInfo);
+				// fallback to local file path removed
+				$this->logger->log('fallback metadata extraction - removed code', 'debug');
+				// $fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
+				// $hasComments = array_key_exists('comments', $fileInfo);
 			}
-
-			$userId = $this->api->getUserId();
 
 			// artist
 			$artist = null;
 			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
 				$artist = $fileInfo['comments']['artist'][0];
 				if(count($fileInfo['comments']['artist']) > 1) {
-					$this->api->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
+					$this->logger->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
 					// determine shortest, because the longer names are just concatenations of all artists
 					for($i=0; $i < count($fileInfo['comments']['artist']); $i++){
 						if(strlen($fileInfo['comments']['artist'][$i]) < strlen($artist)) {
@@ -124,7 +175,7 @@ class Scanner {
 			}
 			if($title === null || $title === ''){
 				// fallback to file name
-				$title = $metadata['name'];
+				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
 					$alternativeTrackNumber = $matches[1];
 					if(preg_match('/(.*)(\.(mp3|ogg))$/', $matches[2], $titleMatches) === 1) {
@@ -157,6 +208,13 @@ class Scanner {
 			$tmp = explode('/', $trackNumber);
 			$trackNumber = $tmp[0];
 
+			// check for numeric values - cast them to int and verify it's a natural number above 0
+			if(is_numeric($trackNumber) && ((int)$trackNumber) > 0) {
+				$trackNumber = (int)$trackNumber;
+			} else {
+				$trackNumber = null;
+			}
+
 			$year = null;
 			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
 				$year = $fileInfo['comments']['year'][0];
@@ -165,13 +223,16 @@ class Scanner {
 				}
 
 			}
-			$mimetype = $metadata['mimetype'];
-			$fileId = $metadata['fileid'];
+			$fileId = $file->getId();
 
 			// debug logging
-			$this->api->log('extracted metadata - ' .
-				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i',
-					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId), 'debug');
+			$this->logger->log('extracted metadata - ' .
+				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i, this->userId: %s, userId: %s',
+					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId, $this->userId, $userId), 'debug');
+
+			if(!$userId) {
+				$userId = $this->userId;
+			}
 
 			// add artist and get artist entity
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
@@ -186,7 +247,7 @@ class Scanner {
 				$albumId, $fileId, $mimetype, $userId);
 
 			// debug logging
-			$this->api->log('imported entities - ' .
+			$this->logger->log('imported entities - ' .
 				sprintf('artist: %d, album: %d, track: %d', $artistId, $albumId, $track->getId()),
 				'debug');
 		}
@@ -197,13 +258,28 @@ class Scanner {
 	 * Get called by 'delete' hook (file deletion)
 	 * @param string $path the path of the file
 	 */
-	public function delete($path){
+	public function deleteByPath($path){
+		try {
+			$fileId = $this->userFolder->get($path)->getId();
+			$this->delete($fileId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			// just ignore the error
+			$this->logger->log('delete - file not found - '. $path , 'debug');
+		}
+	}
+	/**
+	 * Get called by 'unshare' hook and 'deleteByPath'
+	 * @param int $fileId the file id of the track
+	 * @param string $userId the user id of the user to delete the track from
+	 */
+	public function delete($fileId, $userId = null){
 		// debug logging
-		$this->api->log('delete - '. $path , 'debug');
+		$this->logger->log('delete - '. $fileId , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
 
-		$metadata = $this->api->getFileInfo($path);
-		$fileId = $metadata['fileid'];
-		$userId = $this->api->getUserId();
+		if ($userId === null) {
+			$userId = $this->userId;
+		}
 
 		$remaining = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 
@@ -211,49 +287,132 @@ class Scanner {
 		$this->artistBusinessLayer->deleteById($remaining['artistIds']);
 
 		// debug logging
-		$this->api->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
+		$this->logger->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
 			'], artists: [' . implode(',', $remaining['artistIds']) . ']' , 'debug');
 
 		$this->albumBusinessLayer->removeCover($fileId);
 	}
 
 	/**
+	 * search for files by mimetype inside an optional user specified path
+	 *
+	 * @return \OCP\Files\Node[]
+	 */
+	public function getMusicFiles() {
+		$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
+
+		$folder = $this->userFolder;
+		if($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
+			try {
+				$folder = $this->userFolder->get($musicPath);
+			} catch (\OCP\Files\NotFoundException $e) {
+				return array();
+			}
+		}
+
+		$audio = $folder->searchByMime('audio');
+		$ogg = $folder->searchByMime('application/ogg');
+
+		return array_merge($audio, $ogg);
+	}
+
+	public function getScannedFiles($userId = NULL) {
+		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks`';
+		$params = array();
+		if($userId) {
+			$sql .= ' WHERE `user_id` = ?';
+			$params = array($userId);
+		}
+		$query = $this->db->prepareQuery($sql);
+		$result = $query->execute($params);
+		$fileIds = array_map(function($i) { return $i['file_id']; }, $result->fetchAll());
+
+		return $fileIds;
+	}
+
+	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan() {
+	public function rescan($userId = null, $batch = false, $userHome = null, $debug = false, $output = null) {
+		$this->logger->log('Rescan triggered', 'info');
+
+		if($userHome !== null){
+			// $userHome can be injected by batch scan process
+			$this->userFolder = $userHome;
+		}
+
 		// get execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
 		set_time_limit(0);
 
-		$music = $this->api->searchByMime('audio');
-		$ogg = $this->api->searchByMime('application/ogg');
-		$music = array_merge($music, $ogg);
+		$fileIds = $this->getScannedFiles($userId);
+		$music = $this->getMusicFiles();
+
+		$count = 0;
 		foreach ($music as $file) {
-			$this->update($file['path']);
+			if(!$batch && $count >= 20) {
+				// break scan - 20 files are already scanned
+				break;
+			}
+			if(in_array($file->getId(), $fileIds)) {
+				// skip this file as it's already scanned
+				continue;
+			}
+			if($debug) {
+				$before = memory_get_usage(true);
+			}
+			$this->update($file, $userId);
+			if($debug && $output) {
+				$after = memory_get_usage(true);
+				$diff = $after - $before;
+				$afterFileSize = new FileSize($after);
+				$diffFileSize = new FileSize($diff);
+				$humanFilesizeAfter = $afterFileSize->getHumanReadable();
+				$humanFilesizeDiff = $diffFileSize->getHumanReadable();
+				$path = $file->getPath();
+				$output->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+			}
+			$count++;
 		}
 		// find album covers
 		$this->albumBusinessLayer->findCovers();
 
 		// reset execution time limit
 		set_time_limit($executionTime);
+
+		$totalCount = count($music);
+		$processedCount = $count;
+		if(!$batch) {
+			$processedCount += count($fileIds);
+		}
+		$this->logger->log(sprintf('Rescan finished (%d/%d)', $processedCount, $totalCount), 'info');
+
+		return array('processed' => $processedCount, 'scanned' => $count, 'total' => $totalCount);
 	}
 
 	/**
-	 * Removes orphaned data from the database
+	 * Update music path
 	 */
-	public function cleanUp() {
+	public function updatePath($path, $userId = null) {
+		// TODO currently this function is quite dumb
+		// it just drops all entries of an user from the tables
+		if ($userId === null) {
+			$userId = $this->userId;
+		}
+
 		$sqls = array(
-			'UPDATE `*PREFIX*music_albums` SET `cover_file_id` = NULL WHERE `cover_file_id` IS NOT NULL AND `cover_file_id` NOT IN (SELECT `fileid` FROM `*PREFIX*filecache`);',
-			'DELETE FROM `*PREFIX*music_tracks` WHERE `file_id` NOT IN (SELECT `fileid` FROM `*PREFIX*filecache`);',
-			'DELETE FROM `*PREFIX*music_albums` WHERE `id` NOT IN (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id`);',
-			'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);',
-			'DELETE FROM `*PREFIX*music_artists` WHERE `id` NOT IN (SELECT `artist_id` FROM `*PREFIX*music_album_artists` GROUP BY `artist_id`);'
+			'DELETE FROM `*PREFIX*music_tracks` WHERE `user_id` = ?;',
+			'DELETE FROM `*PREFIX*music_albums` WHERE `user_id` = ?;',
+			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;'
 		);
 
 		foreach ($sqls as $sql) {
-			$query = $this->api->prepareQuery($sql);
-			$query->execute();
+			$query = $this->db->prepareQuery($sql);
+			$query->execute(array($userId));
 		}
+
+		$query = $this->db->prepareQuery('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
+		$query->execute();
 	}
 }

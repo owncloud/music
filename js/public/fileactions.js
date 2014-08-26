@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 	var openInMusic = function (filename) {
 		var id = $('#fileList').find('[data-file="'+filename+'"]').data('id');
-		window.location = OC.Router.generate('music_index')+'#/file/'+id;
+		window.location = OC.generateUrl('apps/music/#/file/{id}', {id: id});
 	};
 
 	if(typeof FileActions !== 'undefined') {

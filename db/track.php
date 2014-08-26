@@ -3,31 +3,43 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
-
 
 namespace OCA\Music\Db;
 
+use \OCP\IURLGenerator;
+
 use \OCA\Music\AppFramework\Db\Entity;
-use \OCA\Music\AppFramework\Core\API;
 
-
+/**
+ * @method string getTitle()
+ * @method setTitle(string $title)
+ * @method int getNumber()
+ * @method setNumber(int $number)
+ * @method int getArtistId()
+ * @method setArtistId(int $artistId)
+ * @method Artist getArtist()
+ * @method setArtist(Artist $artist)
+ * @method int getAlbumId()
+ * @method setAlbumId(int $albumId)
+ * @method Album getAlbum()
+ * @method setAlbum(Album $album)
+ * @method int getLength()
+ * @method setLength(int $length)
+ * @method int getFileId()
+ * @method setFileId(int $fileId)
+ * @method int getBitrate()
+ * @method setBitrate(int $bitrate)
+ * @method string getMimetype()
+ * @method setMimetype(string $mimetype)
+ * @method string getUserId()
+ * @method setUserId(string $userId)
+ */
 class Track extends Entity {
 
 	public $title;
@@ -47,54 +59,67 @@ class Track extends Entity {
 		$this->addType('number', 'int');
 		$this->addType('artistId', 'int');
 		$this->addType('albumId', 'int');
-		$this->addType('fileSize', 'int');
 		$this->addType('length', 'int');
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');
 	}
 
-	public function getUri(API $api) {
-		return $api->linkToRoute(
-			'music_track',
+	public function getUri(IURLGenerator $urlGenerator) {
+		return $urlGenerator->linkToRoute(
+			'music.api.track',
 			array('trackIdOrSlug' => $this->id)
 		);
 	}
 
-	public function getArtist(API $api) {
+	public function getArtistWithUri(IURLGenerator $urlGenerator) {
 		return array(
 			'id' => $this->artistId,
-			'uri' => $api->linkToRoute(
-				'music_artist',
+			'uri' => $urlGenerator->linkToRoute(
+				'music.api.artist',
 				array('artistIdOrSlug' => $this->artistId)
 			)
 		);
 	}
 
-	public function getAlbum(API $api) {
+	public function getAlbumWithUri(IURLGenerator $urlGenerator) {
 		return array(
 			'id' => $this->albumId,
-			'uri' => $api->linkToRoute(
-				'music_album',
+			'uri' => $urlGenerator->linkToRoute(
+				'music.api.album',
 				array('albumIdOrSlug' => $this->albumId)
 			)
 		);
 	}
 
-	public function toAPI(API $api) {
+	public function toCollection(IURLGenerator $urlGenerator) {
 		return array(
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
-			'artist' => $this->getArtist($api),
-			'album' => $this->getAlbum($api),
+			'artistId' => $this->getArtistId(),
+			'albumId' => $this->getAlbumId(),
+			'files' => array($this->getMimetype() => $urlGenerator->linkToRoute(
+				'music.api.download',
+				array('fileId' => $this->getFileId())
+			)),
+			'id' => $this->getId(),
+		);
+	}
+
+	public function toAPI(IURLGenerator $urlGenerator) {
+		return array(
+			'title' => $this->getTitle(),
+			'number' => $this->getNumber(),
+			'artist' => $this->getArtistWithUri($urlGenerator),
+			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
-			'files' => array($this->getMimetype() => $api->linkToRoute(
-				'download',
-				array('file' => $api->getView()->getPath($this->getFileId()))
+			'files' => array($this->getMimetype() => $urlGenerator->linkToRoute(
+				'music.api.download',
+				array('fileId' => $this->getFileId())
 			)),
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),
 			'slug' => $this->getId() . '-' . $this->slugify('title'),
-			'uri' => $this->getUri($api)
+			'uri' => $this->getUri($urlGenerator)
 		);
 	}
 

@@ -1,25 +1,12 @@
-
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
-
 
 module.exports = function(grunt) {
 
@@ -28,8 +15,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-wrap');
-	grunt.loadNpmTasks('grunt-karma');
-	grunt.loadNpmTasks('grunt-phpunit');
 	grunt.loadNpmTasks('grunt-angular-gettext');
 
 
@@ -73,7 +58,11 @@ module.exports = function(grunt) {
 				'../js/app/**/*.js',
 				'../js/config/*.js',
 				'../js/l10n/*.js',
-				'../tests/js/unit/**/*.js'
+				'../tests/js/unit/**/*.js',
+				'../js/public/**/*.js'
+			],
+			exclude: [
+				'../js/public/app.js'
 			],
 			options: {
 				// options here to override JSHint defaults
@@ -95,31 +84,6 @@ module.exports = function(grunt) {
 				],
 				tasks: ['build']
 			},
-			phpunit: {
-				files: '../**/*.php',
-				tasks: ['phpunit']
-			}
-		},
-
-		phpunit: {
-			classes: {
-				dir: '../tests/php/unit'
-			},
-			options: {
-				colors: true
-			}
-		},
-
-		karma: {
-			unit: {
-				configFile: '../tests/js/config/karma.js'
-			},
-			continuous: {
-				configFile: '../tests/js/config/karma.js',
-				singleRun: true,
-				browsers: ['PhantomJS'],
-				reporters: ['progress']
-			}
 		},
 
 		nggettext_extract: {

@@ -3,22 +3,11 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -29,10 +18,10 @@ use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCA\Music\Db\Album;
 
 
-class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility {
+class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 
-	private $api;
 	private $mapper;
+	private $logger;
 	private $albumBusinessLayer;
 	private $userId;
 	private $albums;
@@ -40,11 +29,13 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 
 	protected function setUp(){
-		$this->api = $this->getAPIMock();
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->api);
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->albumBusinessLayer = new AlbumBusinessLayer($this->mapper, $this->logger);
 		$this->userId = 'jack';
 		$album1 = new Album();
 		$album2 = new Album();
@@ -68,7 +59,6 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 	}
 
 	public function testFindAll(){
-
 		$this->mapper->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
@@ -80,6 +70,16 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
 		$this->assertEquals($this->response, $result);
+	}
+
+	public function testFindAllWithoutResult(){
+		$this->mapper->expects($this->once())
+			->method('findAll')
+			->with($this->equalTo($this->userId))
+			->will($this->returnValue(array()));
+
+		$result = $this->albumBusinessLayer->findAll($this->userId);
+		$this->assertEquals(array(), $result);
 	}
 
 	public function testFind(){
@@ -127,15 +127,27 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$this->albumBusinessLayer->deleteById($albumIds);
 	}
 
+	public function testUpdateCover(){
+		$coverFileId = 1;
+		$parentFolderId = 2;
+
+		$this->mapper->expects($this->once())
+			->method('updateCover')
+			->with($this->equalTo($coverFileId), $this->equalTo($parentFolderId));
+
+		$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
+	}
+
 	public function testAddAlbumIfNotExistAdd(){
 		$name = 'test';
 		$year = 2002;
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new DoesNotExistException('bla')));
 
@@ -153,9 +165,10 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->returnValue($this->albums[0]));
 
@@ -172,16 +185,28 @@ class AlbumBusinessLayerTest extends \OCA\Music\AppFramework\Utility\TestUtility
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findByNameAndYear')
+			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
 
 		$this->mapper->expects($this->never())
 			->method('insert');
 
-		$this->setExpectedException('\OCA\Music\BusinessLayer\BusinessLayerException');
+		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
 		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+	}
+
+	public function testRemoveAndFindCovers(){
+		$fileId = 1;
+
+		$this->mapper->expects($this->once())
+			->method('removeCover')
+			->with($this->equalTo($fileId));
+
+		$this->albumBusinessLayer->removeCover($fileId);
+
 	}
 }

@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$routeParams', '$rootScope', 'playlistService', 'Audio', 'Artists', 'Restangular', 'gettext',
-	function ($scope, $routeParams, $rootScope, playlistService, Audio, Artists, Restangular, gettext) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter', '$timeout',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter, $timeout) {
 
 	$scope.playing = false;
 	$scope.buffering = false;
@@ -36,30 +36,9 @@ angular.module('Music').controller('PlayerController',
 	$scope.repeat = false;
 	$scope.shuffle = false;
 
-	// will be invoked by the audio factory
-	$rootScope.$on('SoundManagerReady', function() {
-		$scope.playFile($routeParams.id);
-		if($scope.$parent.started) {
-			// invoke play after the flash gets unblocked
-			$scope.$apply(function(){
-				$scope.next();
-			});
-		}
-	});
-
-	$rootScope.$on('$routeChangeSuccess', function() {
-		$scope.playFile($routeParams.id);
-	});
-
-	$scope.playFile = function (fileid) {
-		if (fileid) {
-			Restangular.one('file', fileid).get()
-				.then(function(result){
-					playlistService.setPlaylist([result]);
-					playlistService.publish('play');
-				});
-		}
-	};
+	$scope.$playPosition = $('.play-position');
+	$scope.$bufferBar = $('.buffer-bar');
+	$scope.$playBar = $('.play-bar');
 
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
@@ -74,16 +53,7 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$scope.getPlayableFileURL = function (track) {
-		var isChrome = (navigator && navigator.userAgent &&
-			navigator.userAgent.indexOf('Chrome') !== -1) ?
-				true : false;
 		for(var mimeType in track.files) {
-			if(mimeType === 'audio/ogg' && isChrome) {
-				// TODO inject this
-				OC.Notification.showHtml(gettext(
-					'Chrome is only able to playback MP3 files - see <a href="https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files">wiki</a>'
-				));
-			}
 			if(Audio.canPlayMIME(mimeType)) {
 				return track.files[mimeType];
 			}
@@ -98,23 +68,29 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state
-			$scope.$parent.started = true;
+			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.artist.id;
+											return artist.id === newValue.artistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.album.id;
+											return album.id === newValue.albumId;
 										});
 
 			$scope.player.createSound({
 				id: 'ownCloudSound',
 				url: $scope.getPlayableFileURL($scope.currentTrack),
 				whileplaying: function() {
-					$scope.setTime(this.position/1000, this.duration/1000);
+					$scope.setTime(this.position/1000, this.durationEstimate/1000);
+				},
+				whileloading: function() {
+					var position = this.buffered.reduce(function(prevBufferEnd, buffer) {
+						return buffer.end > prevBufferEnd ? buffer.end : prevBuffer.end;
+					}, 0);
+					$scope.setBuffer(position/1000, this.durationEstimate/1000);
 				},
 				onstop: function() {
 					$scope.setPlay(false);
@@ -165,9 +141,10 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
 			// switch initial state
-			$scope.$parent.started = false;
+			$rootScope.started = false;
+			playlistService.publish('playlistEnded');
 		}
-	});
+	}, true);
 
 	// only call from external script
 	$scope.setPlay = function(playing) {
@@ -197,17 +174,12 @@ angular.module('Music').controller('PlayerController',
 
 	// only call from external script
 	$scope.setTime = function(position, duration) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.duration = duration;
-			$scope.position = position;
-		} else {
-			$scope.$apply(function(){
-				$scope.duration = duration;
-				$scope.position = position;
-			});
-		}
+		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
+		$scope.$playBar.css('width', (position / duration * 100) + '%');
+	};
+
+	$scope.setBuffer = function(position, duration) {
+		$scope.$bufferBar.css('width', (position / duration * 100) + '%');
 	};
 
 	$scope.toggle = function(forcePlay) {
@@ -224,12 +196,18 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
+			tracksSkipped = true;
 			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+		}
+		if(tracksSkipped === true) {
+			OC.Notification.show(gettextCatalog.getString(gettext("Some not playable tracks were skipped.")));
+			$timeout(OC.Notification.hide, 10000);
 		}
 		$scope.currentTrack = track;
 	};
@@ -239,6 +217,12 @@ angular.module('Music').controller('PlayerController',
 		if(track !== null) {
 			$scope.currentTrack = track;
 		}
+	};
+
+	$scope.seek = function($event) {
+		var sound = $scope.player.sounds.ownCloudSound,
+			offsetX = $event.offsetX || $event.originalEvent.layerX;
+		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
 	};
 
 	playlistService.subscribe('play', function(){

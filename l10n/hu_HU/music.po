@@ -1,30 +1,60 @@
 # 
 # Translators:
 # ebela <bela@dandre.hu>, 2013
+# János Fehér <feher.janos@mindworks.hu>, 2014
+# Laszlo Tornoci <torlasz@gmail.com>, 2014
+# Szládovics Péter <peti@szladovics.hu>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-08-25 12:10+0000\n"
+"Last-Translator: Laszlo Tornoci <torlasz@gmail.com>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albumok"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Előadók"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Leírás"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Leírás (például az alkalmazás neve)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "API-jelszó előállítása"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Csak a Chrome képes lejátszani MP3 fileokat - nézd meg a <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki-t</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Itt hozhat létre jelszavakat, amikkel távolról használhatja az Ampache szolgáltatást. Azért van szükség másik jelszóra, mert az Amapche protokoll miatt a használt jelszó nem tárolható igazán biztonságosan. Bármikor visszavonhatja az Ampache jelszavát és újat hozhat létre (sőt tobbfélét is használhat a különböző eszközeihez)."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Érvénytelen útvonal"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a szolgáltatást. Köszönöm!"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Törlés"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Betöltés ..."
 
@@ -36,15 +66,15 @@ msgstr "Zene"
 msgid "Next"
 msgstr "Következő"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Nincs itt semmi. Töltsd fel a zenédet!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "A zenegyűjtemény útvonala"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Lejátszás"
 
@@ -56,24 +86,42 @@ msgstr "Előző"
 msgid "Repeat"
 msgstr "Ismétlés"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Mutasd mind a {{ trackcount }} zenét ..."
-msgstr[1] "Mutasd mind a {{ trackcount }} zenét ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Mutass kevesebbet..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "API-jelszó visszavonása"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Keverés"
 
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Néhány szám kimaradt, amit a rendszer nem tud lejátszani."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Ez a beállítás határozza meg, hogy melyik mappát figyelje a rendszer, amikor az zenei tartalmakat keresi."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Számok"
+
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Ismeretlen album"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Ismeretlen előadó"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis lejátszóval böngészhető."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Használja a felhasználónevét és a következő jelszót, ha csatlakozni kíván ehhez az Ampache kiszolgálóhoz:"

@@ -38,6 +38,67 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*music_playlists</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_playlist_tracks</name>
+		<declaration>
+			<field>
+				<name>playlist_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>track_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<index>
+				<name>music_playlist_tracks_idx</name>
+				<field>
+					<name>playlist_id</name>
+				</field>
+			</index>
+
+			<index>
+				<name>music_playlist_tracks_unique_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>playlist_id</name>
+				</field>
+				<field>
+					<name>track_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
 		<name>*dbprefix*music_albums</name>
 		<declaration>
 			<field>
@@ -73,6 +134,13 @@
 				<length>4</length>
 				<default></default>
 			</field>
+
+			<index>
+				<name>ma_cover_file_id_idx</name>
+				<field>
+					<name>cover_file_id</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
 
@@ -193,10 +261,17 @@
 		</declaration>
 	</table>
 
-
 	<table>
-		<name>*dbprefix*music_scanned_users</name>
+		<name>*dbprefix*music_ampache_sessions</name>
 		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
 			<field>
 				<name>user_id</name>
 				<type>text</type>
@@ -204,13 +279,73 @@
 				<length>64</length>
 			</field>
 
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>expiry</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+
 			<index>
-				<name>music_scanned_users_idx</name>
+				<name>music_ampache_sessions_index</name>
 				<unique>true</unique>
+				<field>
+					<name>token</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_ampache_users</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<default>0</default>
+				<notnull>true</notnull>
+				<autoincrement>1</autoincrement>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>description</name>
+				<type>text</type>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>hash</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<index>
+				<name>music_ampache_users_index</name>
+				<unique>true</unique>
+				<field>
+					<name>hash</name>
+				</field>
 				<field>
 					<name>user_id</name>
 				</field>
 			</index>
 		</declaration>
 	</table>
+
 </database>

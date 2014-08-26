@@ -1,35 +1,64 @@
 # 
 # Translators:
-# Christophe Lherieau <skimpax@gmail.com>, 2013
-# etiess <etiess@gmail.com>, 2013
-# ogre_sympathique <ogre.sympathique@speed.1s.fr>, 2013
+# Bruno Million <bruno@timelord.fr>, 2014
+# Christophe Lherieau <skimpax@gmail.com>, 2013-2014
+# Etienne <etiess@gmail.com>, 2013
+# Fabian Lemaître <ptit.boogy@gmail.com>, 2014
+# Ogre Sympathique, 2013
 # Romain DEP. <rom1dep@gmail.com>, 2013
 # themen <themen2004@gmail.com>, 2014
 # tcit <thomas.citharet@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-23 17:20+0000\n"
-"Last-Translator: tcit <thomas.citharet@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Albums"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Artistes"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Description"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Description (ex. nom de l'application)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Générer un mot de passe de l'API"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome  n'est capable de jouer que les fichiers MP3 uniquement - voir le <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Ici, vous pouvez générer des mots de passe à utiliser avec l'API Ampache, parce qu'ils ne peuvent être stockés d'une manière très sécurisée en raison de la conception de l'API d'Ampache. Vous pouvez générer autant de mots de passe que vous voulez et vous pouvez les révoquer à tout instant."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Chemin invalide"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Gardez en mémoire que l'API Ampache est une avant-première et n'est pas encore stable. N'hésitez pas à donner un retour d'expérience de cette fonctionnalité dans l'<a href=\"https://github.com/owncloud/music/issues/60\">item</a> dédié. On aimerait également obtenir une liste des clients avec lesquels tester. Merci."
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Supprimer"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Chargement…"
 
@@ -41,15 +70,15 @@ msgstr "Musique"
 msgid "Next"
 msgstr "Suivant"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Il n'y a rien ici ! Envoyez donc votre musique :)"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Chemin vers votre collection de musique"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Lire"
 
@@ -61,19 +90,25 @@ msgstr "Précédent"
 msgid "Repeat"
 msgstr "Répéter"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Afficher le morceau {{ trackcount }}..."
-msgstr[1] "Afficher les {{ trackcount }} morceaux..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Afficher moins…"
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Révoquer le mot de passe de l'API"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Lecture aléatoire"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Certaines pistes non jouables ont été ignorées."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Ce paramètre spécifie quel dossier sera balayé pour trouver de la musique."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Pistes"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -82,3 +117,15 @@ msgstr "Album inconnu"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Artiste inconnu"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Utilisez cette adresse pour naviguer dans votre collection musicale avec un player compatible Ampache."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Utilisez votre nom d'utilisateur et le mot de passe suivant pour vous connecter à cette instance d'Ampache : "

@@ -3,45 +3,39 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @copyright Morris Jobke 2013, 2014
  */
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\AlbumMapper;
-use \OCA\Music\Db\Album;
-
-use \OCA\Music\AppFramework\Core\API;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\DoesNotExistException;
 use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
 
 
+use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Db\Album;
+
 class AlbumBusinessLayer extends BusinessLayer {
 
-	public function __construct(AlbumMapper $albumMapper, API $api){
-		parent::__construct($albumMapper, $api);
+	private $logger;
+
+	public function __construct(AlbumMapper $albumMapper, Logger $logger){
+		parent::__construct($albumMapper);
+		$this->logger = $logger;
 	}
 
 	/**
 	 * Return an album
 	 * @param string $albumId the id of the album
 	 * @param string $userId the name of the user
-	 * @return album
+	 * @return Album album
 	 */
 	public function find($albumId, $userId){
 		$album = $this->mapper->find($albumId, $userId);
@@ -53,7 +47,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all albums
 	 * @param string $userId the name of the user
-	 * @return array of albums
+	 * @return Album[] albums
 	 */
 	public function findAll($userId){
 		$albums = $this->mapper->findAll($userId);
@@ -63,7 +57,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all albums filtered by artist
 	 * @param string $artistId the id of the artist
-	 * @return array of albums
+	 * @return Album[] albums
 	 */
 	public function findAllByArtist($artistId, $userId){
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
@@ -89,20 +83,22 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * Adds an album (if it does not exist already) and returns the new album
 	 * @param string $name the name of the album
 	 * @param string $year the year of the release
-	 * @return \OCA\Music\Db\Album
-	 * @throws \OCA\Music\BusinessLayer\BusinessLayerException
+	 * @param integer $artistId
+	 * @param string $userId
+	 * @return Album
+	 * @throws BusinessLayerException
 	 */
 	public function addAlbumIfNotExist($name, $year, $artistId, $userId){
 		try {
-			$album = $this->mapper->findByNameAndYear($name, $year, $userId);
-			$this->api->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
+			$album = $this->mapper->findAlbum($name, $year, $artistId, $userId);
+			$this->logger->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$album = new Album();
 			$album->setName($name);
 			$album->setYear($year);
 			$album->setUserId($userId);
 			$album = $this->mapper->insert($album);
-			$this->api->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
+			$this->logger->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}
@@ -128,13 +124,11 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * removes the cover from albums
+	 * removes the cover from albums and search for new ones
 	 * @param integer $coverFileId the file id of the cover image
 	 */
 	public function removeCover($coverFileId){
 		$this->mapper->removeCover($coverFileId);
-		// find new cover
-		$this->findCovers();
 	}
 
 	/**

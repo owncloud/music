@@ -1,10 +1,13 @@
 # 
 # Translators:
+# Kaijia Feng <fengkaijia@gmail.com>, 2014
+# phy <transifex@phy25.com>, 2014
+# csslayer <wengxt@gmail.com>, 2014
+# zhangguangpan <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-20 06:30+0000\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,20 +15,48 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "专辑页"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "艺术家"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "描述"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "描述 (例如 App 名称)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "生成 API 密码"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "无效路径"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
 msgstr ""
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "删除"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
-msgstr ""
+msgstr "加载中..."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -35,15 +66,15 @@ msgstr "音乐"
 msgid "Next"
 msgstr "下一个"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr ""
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "音乐集路径"
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "暂停"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "播放"
 
@@ -55,23 +86,42 @@ msgstr "前一首"
 msgid "Repeat"
 msgstr "重复"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] ""
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr ""
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "撤销 API 密码"
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "随机"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "部分无法播放的音轨已被跳过。"
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "将会在此设置指定的文件夹中扫描音乐文件。"
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "音轨"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "未知专辑"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "未知艺术家"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "使用此地址在任何与 Ampache 兼容的音乐播放器中查看您的音乐集。"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "使用您的用户名和密码连接到此 Ampache 服务："

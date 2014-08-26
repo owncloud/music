@@ -1,31 +1,59 @@
 # 
 # Translators:
-# Sappe, 2013
-# lodahl <leiflodahl@gmail.com>, 2014
+# Anders J. Sørensen, 2013-2014
+# Aputsiaĸ Niels Janussen <aj@isit.gl>, 2014
+# Leif Lodahl <leiflodahl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"POT-Creation-Date: 2014-02-02 06:30:49+0500\n"
-"PO-Revision-Date: 2014-01-21 21:20+0000\n"
-"Last-Translator: lodahl <leiflodahl@gmail.com>\n"
+"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../js/public/app.js
+#: ../templates/fake-template.php
+msgid "Albums"
+msgstr "Album"
+
+#: ../templates/fake-template.php
+msgid "Artists"
+msgstr "Kunstnere"
+
+#: ../templates/fake-template.php
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: ../templates/fake-template.php
+msgid "Description (e.g. App name)"
+msgstr "Beskrivelse (f.eks. App-navn)"
+
+#: ../templates/fake-template.php
+msgid "Generate API password"
+msgstr "Generér API-adgangskode"
+
+#: ../templates/fake-template.php
 msgid ""
-"Chrome is only able to playback MP3 files - see <a "
-"href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions"
-"#why-can-chromechromium-just-playback-mp3-files\">wiki</a>"
-msgstr "Chrome kan kun afspille MP3 filer se <a href=\"https://github.com/owncloud/music/wiki/Frequently-Asked-Questions#why-can-chromechromium-just-playback-mp3-files\">wiki'en</a> for yderligere information."
+"Here you can generate passwords to use with the Ampache API, because they "
+"can't be stored in a really secure way due to the design of the Ampache API."
+" You can generate as many passwords as you want and revoke them anytime."
+msgstr "Her kan du generere adgangskoder, der bruges med Ampache API'et, da de ikke kan lagres på en rigtig sikker måden, hvilket skyldes designet af Ampache API'et. Du kan generere så kan adgangskoder som du ønsker og tilbagekalde dem til enhver tid."
+
+#: ../templates/fake-template.php
+msgid "Invalid path"
+msgstr "Ugyldig sti"
+
+#: ../templates/fake-template.php
+msgid ""
+"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
+"free to report your experience with this feature in the corresponding <a "
+"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
+" like to have a list of clients to test with. Thanks"
+msgstr "Det bør holdes for øje, at Ampache API'et er i et meget tidligt stadie og fungerer ustabilt. Du er velkommen til at berette om dine erfaringer med denne funktion i den respektive <a href=\"https://github.com/owncloud/music/issues/60\">sag</a>. Jeg vil også være interesseret i at etablere en kreds af klienter, der kan hjælpe med afprøvninger. Tak"
 
 #: ../templates/main.php
-msgid "Delete"
-msgstr "Slet"
-
-#: ../templates/main.php ../templates/part.main.php
 msgid "Loading ..."
 msgstr "Indlæser..."
 
@@ -37,15 +65,15 @@ msgstr "Musik"
 msgid "Next"
 msgstr "Næste"
 
-#: ../templates/part.main.php
-msgid "Nothing in here. Upload your music!"
-msgstr "Her er tomt. Upload din musik!"
+#: ../templates/fake-template.php
+msgid "Path to your music collection"
+msgstr "Sti til dit musik bibliotek "
 
 #: ../templates/main.php
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php ../templates/part.main.php
+#: ../templates/main.php
 msgid "Play"
 msgstr "Afspil"
 
@@ -57,19 +85,25 @@ msgstr "Forrige"
 msgid "Repeat"
 msgstr "Gentag"
 
-#: ../templates/part.main.php
-msgid "Show all {{ trackcount }} songs ..."
-msgid_plural "Show all {{ trackcount }} songs ..."
-msgstr[0] "Vis alle {{ trackcount }} sange ..."
-msgstr[1] "Vis alle {{ trackcount }} sange ..."
-
-#: ../templates/part.main.php
-msgid "Show less ..."
-msgstr "Vis færre ..."
+#: ../templates/fake-template.php
+msgid "Revoke API password"
+msgstr "Tilbagekald API adgangskode"
 
 #: ../templates/main.php
 msgid "Shuffle"
 msgstr "Bland"
+
+#: ../js/public/app.js
+msgid "Some not playable tracks were skipped."
+msgstr "Nogle ikke afspillelig numre blev sprunget over."
+
+#: ../templates/fake-template.php
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr "Denne indstilling angiver dén mappe, der vil blive skannet for musik."
+
+#: ../templates/fake-template.php
+msgid "Tracks"
+msgstr "Spor"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
@@ -78,3 +112,15 @@ msgstr "Ukendt album"
 #: ../templates/fake-template.php
 msgid "Unknown artist"
 msgstr "Ukendt artist"
+
+#: ../templates/fake-template.php
+msgid ""
+"Use this address to browse your music collection from any Ampache compatible"
+" player."
+msgstr "Brug denne adresse til at gennemse din musiksamling fra hvilken som helst Ampache-kompatibel afspiller."
+
+#: ../templates/fake-template.php
+msgid ""
+"Use your username and following password to connect to this Ampache "
+"instance:"
+msgstr "Brug dit brugernavn og følgende adgangskode for at tilslutte til denne Ampache-instans:"

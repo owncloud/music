@@ -27,8 +27,6 @@ angular.module('Music').controller('PlayerController',
 	$scope.playing = false;
 	$scope.buffering = false;
 	$scope.player = Audio;
-	$scope.position = 0.0;
-	$scope.duration = 0.0;
 	$scope.currentTrack = null;
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
@@ -74,8 +72,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.player.stop();
 		}
 		$scope.setPlay(false);
-		// Reset position
-		$scope.position=0.0;
+		$scope.setTime(0, 1);
 		if(newValue !== null) {
 			// switch initial state
 			$rootScope.started = true;

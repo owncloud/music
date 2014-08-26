@@ -679,25 +679,6 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-<<<<<<< HEAD
-	/*var isChrome = (navigator && navigator.userAgent &&
-		navigator.userAgent.indexOf('Chrome') !== -1) ?
-			true : false;
-
-=======
->>>>>>> upstream/master
-	soundManager.setup({
-		url: OC.linkTo('music', 'js/vendor/soundmanager/swf'),
-		flashVersion: 8,
-		useFlashBlock: true,
-		flashPollingInterval: 200,
-		html5PollingInterval: 200,
-		onready: function() {
-		XXX: May cause problem $rootScope.$emit('SoundManagerReady');
-		}
-	});
-	*/
-
 	$rootScope.$emit('SoundManagerReady');
 	return AV.Player;
 }]);

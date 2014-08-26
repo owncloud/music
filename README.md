@@ -3,9 +3,11 @@
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
-## Commands
+## FLAC & AAC support in progress
 
-Following command is available (see script occ in your ownCloud root folder)
+Using Aurora.js
+
+## Commands
 
 	./occ music:scan USERNAME
 

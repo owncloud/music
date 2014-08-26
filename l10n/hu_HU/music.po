@@ -2,12 +2,13 @@
 # Translators:
 # ebela <bela@dandre.hu>, 2013
 # János Fehér <feher.janos@mindworks.hu>, 2014
+# Laszlo Tornoci <torlasz@gmail.com>, 2014
 # Szládovics Péter <peti@szladovics.hu>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-08-25 12:10+0000\n"
+"Last-Translator: Laszlo Tornoci <torlasz@gmail.com>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +21,7 @@ msgstr "Albumok"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr "Művészek"
+msgstr "Előadók"
 
 #: ../templates/fake-template.php
 msgid "Description"
@@ -28,7 +29,7 @@ msgstr "Leírás"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr "Leírás (például Alkalmazás neve)"
+msgstr "Leírás (például az alkalmazás neve)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
@@ -39,7 +40,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Itt hozhat létre jelszavakat, amikkel távolról használhatja az Ampache szolgáltatást. Azért van szükség másik jelszóra, mert az Amapche protokoll miatt a használt jelszó nem tárolható igazán biztonságosan. Bármikor visszavonhatja az Ampache jelszavát és újat hozhat létre (sőt tobbfélét is használhat a különböző eszközeihez)."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -51,7 +52,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a szolgáltatást. Köszönöm!"
 
 #: ../templates/main.php
 msgid "Loading ..."
@@ -95,11 +96,11 @@ msgstr "Keverés"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr "Néhány le nem játszható szám ki lett hagyva."
+msgstr "Néhány szám kimaradt, amit a rendszer nem tud lejátszani."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Ez a beállítás határozza meg, hogy melyik mappát figyelje a rendszer, amikor az zenei tartalmakat keresi."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
@@ -123,4 +124,4 @@ msgstr "Ezt a címet használva a zenegyűjtemény bármely Ampache-kompatibilis
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Felhasználónév és jelszó használatával lehet csatlakozni ehhez az Ampache-hez:"
+msgstr "Használja a felhasználónevét és a következő jelszót, ha csatlakozni kíván ehhez az Ampache kiszolgálóhoz:"

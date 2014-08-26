@@ -36,49 +36,6 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
-
-<<<<<<< HEAD
-		<div id="playerbar" ng-controller="PlayerController" ng-class="{started: started}">
-			<div id="play-controls">
-				<img  ng-click="prev()"class="control small svg" alt="{{'Previous' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
-				<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
-				<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{'Pause' | translate }}"
-					src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
-				<img ng-click="next()" class="control small svg" alt="{{'Next' | translate }}"
-					src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
-			</div>
-
-
-			<div ng-show="currentAlbum" class="albumart" cover="{{ currentAlbum.cover }}"
-				albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
-
-			<div class="song-info">
-				<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
-				<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
-			</div>
-			<div ng-show="currentTrack.title" class="progress-info">
-				<span ng-hide="buffering" class="muted">{{ position | playTime }} / {{ duration | playTime }}</span>
-				<span ng-show="buffering" class="muted" translate>Loading ... {{ bufferPercent | number:0 }}% completed</span>
-				<div class="progress">
-					<div class="seek-bar">
-						<div class="play-bar" style="width: {{ position / duration * 100 }}%;"></div>
-					</div>
-				</div>
-			</div>
-			<div class="volume-control">
-				<img id="volume-icon" alt="Volume" src="<?php p(OCP\image_path('music', 'volume_icon.png')) ?>">
-				<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
-			</div>
-			<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
-				src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
-			<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
-				src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
-		</div>
-
-=======
->>>>>>> upstream/master
 		<!--<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
@@ -114,7 +71,7 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 				</div>
 				<div ng-show="currentTrack.title" class="progress-info">
 					<span ng-hide="buffering" class="play-position muted">&nbsp;</span>
-					<span ng-show="buffering" class="muted" translate>Loading ...</span>
+					<span ng-show="buffering" class="muted" translate>Loading ... {{ bufferPercent | number:0 }}%</span>
 					<div class="progress">
 						<div class="seek-bar" ng-click="seek($event)">
 							<div class="buffer-bar"></div>
@@ -127,6 +84,10 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
+				<div class="volume-control">
+					<img id="volume-icon" alt="Volume" src="<?php p(OCP\image_path('music', 'volume_icon.png')) ?>">
+					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
+				</div>
 			</div>
 
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">

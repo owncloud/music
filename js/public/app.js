@@ -1,4 +1,3 @@
-
 // fix SVGs in IE because the scaling is a real PITA
 // https://github.com/owncloud/music/issues/126
 if($('html').hasClass('ie')) {
@@ -338,7 +337,6 @@ angular.module('Music').controller('PlayerController',
 		$scope.setPlay(false);
 		// Reset position
 		$scope.position=0.0;
-		//$scope.player.destroySound('ownCloudSound');
 		if(newValue !== null) {
 			// switch initial state
 			$rootScope.started = true;
@@ -353,67 +351,10 @@ angular.module('Music').controller('PlayerController',
 											return album.id === newValue.albumId;
 										});
 
-			/*$scope.player.createSound({
-				id: 'ownCloudSound',
-				url: $scope.getPlayableFileURL($scope.currentTrack),
-				whileplaying: function() {
-					$scope.setTime(this.position/1000, this.durationEstimate/1000);
-				},
-				whileloading: function() {
-					var position = this.buffered.reduce(function(prevBufferEnd, buffer) {
-						return buffer.end > prevBufferEnd ? buffer.end : prevBuffer.end;
-					}, 0);
-					$scope.setBuffer(position/1000, this.durationEstimate/1000);
-				},
-				onstop: function() {
-					$scope.setPlay(false);
-				},
-				onfinish: function() {
-					$scope.setPlay(false);
-					// determine if already inside of an $apply or $digest
-					// see http://stackoverflow.com/a/12859093
-					if($scope.$$phase) {
-						$scope.next();
-					} else {
-						$scope.$apply(function(){
-							$scope.next();
-						});
-					}
-				},
-				onresume: function() {
-					$scope.setPlay(true);
-				},
-				onplay: function() {
-					$scope.setPlay(true);
-				},
-				onpause: function() {
-					$scope.setPlay(false);
-				},
-				onload: function(success) {
-					if(!success) {
-						$scope.setPlay(false);
-						Restangular.all('log').post({message: JSON.stringify($scope.currentTrack)});
-						// determine if already inside of an $apply or $digest
-						// see http://stackoverflow.com/a/12859093
-						if($scope.$$phase) {
-							$scope.next();
-						} else {
-							$scope.$apply(function(){
-								$scope.next();
-							});
-						}
-					}
-				},
-				onbufferchange: function() {
-					$scope.setBuffering(this.isBuffering);
-				},
-				volume: 50
-			});
-			$scope.player.play('ownCloudSound');*/
 			$scope.player=AV.Player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.player.asset.source.chunkSize=1048576;
 			$scope.setBuffering(true);
-			
+
 			$scope.player.play();
 
 			$scope.setPlay(true);
@@ -498,12 +439,10 @@ angular.module('Music').controller('PlayerController',
 		}
 	};
 
-
 	$scope.$watch("volume", function (newValue, oldValue) {
 		var volume = parseInt(newValue);
 		$scope.player.volume = volume;
-	})
-
+	});
 
 	// only call from external script
 	$scope.setTime = function(position, duration) {

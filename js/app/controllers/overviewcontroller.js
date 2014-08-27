@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService',
-	function ($scope, $rootScope, playlistService) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular',
+	function ($scope, $rootScope, playlistService, Restangular) {
 
 		$scope.playTrack = function(track) {
 			// update URL hash

@@ -7,6 +7,9 @@
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
+\OCP\Util::addScript('music', 'vendor/aurora/aurora');
+\OCP\Util::addScript('music', 'vendor/aurora/flac');
+\OCP\Util::addScript('music', 'vendor/aurora/mp3');
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-controls');
@@ -33,7 +36,6 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
-
 		<!--<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li><a href="#/" translate>All</a></li>
@@ -69,7 +71,7 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 				</div>
 				<div ng-show="currentTrack.title" class="progress-info">
 					<span ng-hide="buffering" class="play-position muted">&nbsp;</span>
-					<span ng-show="buffering" class="muted" translate>Loading ...</span>
+					<span ng-show="buffering" class="muted">Loading...</span>
 					<div class="progress">
 						<div class="seek-bar" ng-click="seek($event)">
 							<div class="buffer-bar"></div>

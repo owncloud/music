@@ -20,16 +20,6 @@
  */
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	soundManager.setup({
-		url: OC.linkTo('music', 'js/vendor/soundmanager/swf'),
-		flashVersion: 8,
-		useFlashBlock: true,
-		flashPollingInterval: 200,
-		html5PollingInterval: 200,
-		onready: function() {
-			$rootScope.$emit('SoundManagerReady');
-		}
-	});
-
-	return soundManager;
+	$rootScope.$emit('SoundManagerReady');
+	return AV.Player;
 }]);

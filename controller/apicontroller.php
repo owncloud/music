@@ -104,7 +104,7 @@ class ApiController extends Controller {
 				$artist['albums'][] = &$album;
 			}
 
-			$album['tracks'][] = $track->toCollection($this->urlGenerator);
+			$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
 		}
 
 		return new JSONResponse($artists);
@@ -265,7 +265,7 @@ class ApiController extends Controller {
 	public function trackByFileId() {
 		$fileId = $this->params('fileId');
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
-		return new JSONResponse($track->toCollection($this->urlGenerator));
+		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder));
 	}
 
 	/**

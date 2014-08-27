@@ -91,16 +91,24 @@ class Track extends Entity {
 		);
 	}
 
-	public function toCollection(IURLGenerator $urlGenerator) {
+	public function toCollection(IURLGenerator $urlGenerator, $userFolder) {
+		$nodes = $userFolder->getById($this->getFileId());
+		if(count($nodes) == 0 ) {
+			throw new \OCP\Files\NotFoundException();
+		}
+
+		// get the first valid node
+		$node = $nodes[0];
+		$path = $node->getPath();
+
+		$relativePath = $userFolder->getRelativePath($path);
+
 		return array(
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
-			'files' => array($this->getMimetype() => $urlGenerator->linkToRoute(
-				'music.api.download',
-				array('fileId' => $this->getFileId())
-			)),
+			'files' => array($this->getMimetype() => $urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)),
 			'id' => $this->getId(),
 		);
 	}

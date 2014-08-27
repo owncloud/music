@@ -36,8 +36,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.repeat = false;
 	$scope.shuffle = false;
 
+	// TODO don't use jQuery
 	$scope.$playPosition = $('.play-position');
-	$scope.$loadPosition = $('.load-position');
 	$scope.$bufferBar = $('.buffer-bar');
 	$scope.$playBar = $('.play-bar');
 
@@ -93,13 +93,12 @@ angular.module('Music').controller('PlayerController',
 			$scope.player.play();
 
 			$scope.setPlay(true);
-			$scope.player.on("buffer", function (percent) {
-				$scope.setBufferPercent(parseInt(percent));
-				if (percent == 100) {
-					$scope.setBuffering(false);
-				}
+			$scope.setBuffering(false);
+
+			$scope.player.on('buffer', function (percent) {
+				$scope.setBufferPercentage(parseInt(percent));
 			});
-			$scope.player.on("progress", function (currentTime) {
+			$scope.player.on('progress', function (currentTime) {
 				$scope.setTime(currentTime/1000, $scope.player.duration/1000);
 			});
 			$scope.player.on('end', function() {
@@ -166,8 +165,7 @@ angular.module('Music').controller('PlayerController',
 		$scope.$playBar.css('width', (position / duration * 100) + '%');
 	};
 
-	$scope.setBufferPercent = function(percent) {
-		$scope.$loadPosition.text(gettext("Loading...") + percent + '%');
+	$scope.setBufferPercentage = function(percent) {
 		$scope.$bufferBar.css('width', percent + '%');
 	};
 
@@ -182,11 +180,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.setPlay(true);
 		} else {
 			$scope.player.togglePlayback();
-			if($scope.playing) {
-				$scope.playing=false;
-			} else {
-				$scope.playing=true;
-			}
+			$scope.playing = !$scope.playing;
 		}
 	};
 

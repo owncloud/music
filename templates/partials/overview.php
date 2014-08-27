@@ -18,9 +18,9 @@
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
 			src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
 		<!-- variable "limit" toogles length of track list for each album -->
-		<ul class="track-list" ng-init="limit = 5; trackcount = album.tracks.length">
+		<ul class="track-list" ng-init="limit.count = 5; trackcount = album.tracks.length">
 			<li ng-click="playTrack(track)"
-				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit" title="{{ track.title }}">
+				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit.count" title="{{ track.title }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == track.id}" />
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
@@ -28,12 +28,12 @@
 			</li>
 			<li class="muted" translate translate-n="trackcount"
 				translate-plural="Show all {{ trackcount }} songs ..."
-				ng-click="limit = album.tracks.length"
-				ng-hide="trackcount <= limit || limit != 5"
+				ng-click="limit.count = trackcount"
+				ng-hide="trackcount <= limit.count || limit.count != 5"
 				>Show all {{ trackcount }} songs ...</li>
 			<li class="muted"
-				ng-click="limit = 5"
-				ng-hide="limit == 5" translate>Show less ...</li>
+				ng-click="limit.count = 5"
+				ng-hide="limit.count == 5" translate>Show less ...</li>
 		</ul>
 	</div>
 </div>

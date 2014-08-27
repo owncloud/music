@@ -31,6 +31,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
+	$scope.volume = 100;  // volume can be 0~100
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
@@ -137,6 +138,11 @@ angular.module('Music').controller('PlayerController',
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
 	};
+
+	$scope.$watch('volume', function (newValue, oldValue) {
+		var volume = parseInt(newValue);
+		$scope.player.volume = volume;
+	});
 
 	$scope.setTime = function(position, duration) {
 		$scope.position.current = position;

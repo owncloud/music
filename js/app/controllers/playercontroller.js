@@ -215,9 +215,13 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.seek = function($event) {
-		var sound = $scope.player.sounds.ownCloudSound,
-			offsetX = $event.offsetX || $event.originalEvent.layerX;
-		sound.setPosition(offsetX * sound.durationEstimate / $event.currentTarget.clientWidth);
+		var offsetX = $event.offsetX || $event.originalEvent.layerX,
+			percentage = offsetX / $event.currentTarget.clientWidth;
+		if($scope.player.format.formatID !== 'flac') {
+			// just in flac seeking is tested
+			return;
+		}
+		$scope.player.seek(percentage * $scope.player.duration);
 	};
 
 	playlistService.subscribe('play', function(){

@@ -22,3 +22,5 @@
 * [arboss](https://github.com/arboss)
 * [Volkan Gezer](https://github.com/wakeup)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
+* [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
+* [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>

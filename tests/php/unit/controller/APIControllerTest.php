@@ -964,7 +964,6 @@ class APIControllerTest extends ControllerTestUtility {
 	public function testTrackById(){
 		$trackId = 1;
 		$fileId = 3;
-		$filePath = null;
 
 		$track = new Track();
 		$track->setId($trackId);

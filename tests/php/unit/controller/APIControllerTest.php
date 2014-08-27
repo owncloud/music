@@ -989,12 +989,32 @@ class APIControllerTest extends ControllerTestUtility {
 			'artistId' => 3,
 			'albumId' => 1,
 			'files' => array(
-				'audio/mp3' => $filePath
+				'audio/mp3' => 'relative/funny/path'
 			)
 		);
 
 		$urlParams = array('fileId' => $fileId);
 		$this->controller = $this->getController($urlParams);
+
+
+		$node = $this->getMockBuilder('\OCP\Files\Node')
+			->disableOriginalConstructor()
+			->getMock();
+		$node->expects($this->once())
+			->method('getPath')
+			->will($this->returnValue('funny/path'));
+		$this->userFolder->expects($this->once())
+			->method('getById')
+			->with($this->equalTo($fileId))
+			->will($this->returnValue(array($node)));
+		$this->userFolder->expects($this->once())
+			->method('getRelativePath')
+			->with($this->equalTo('funny/path'))
+			->will($this->returnValue('/relative/funny/path'));
+		$this->urlGenerator->expects($this->once())
+			->method('getAbsoluteURL')
+			->with($this->equalTo('remote.php/webdav/relative/funny/path'))
+			->will($this->returnValue('relative/funny/path'));
 
 		$response = $this->controller->trackByFileId();
 

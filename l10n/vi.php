@@ -1,7 +1,6 @@
 <?php
 $TRANSLATIONS = array(
 "Description" => "Mô tả",
-"Loading ..." => "Đang tải ...",
 "Music" => "Âm nhạc",
 "Next" => "Kế tiếp",
 "Pause" => "Tạm dừng",

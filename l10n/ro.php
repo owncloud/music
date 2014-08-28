@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Descriere (ex. Numele aplicației)",
 "Generate API password" => "Generează parola API",
 "Invalid path" => "Cale invalidă",
-"Loading ..." => "Se încarcă ...",
 "Music" => "Muzică",
 "Next" => "Următor",
 "Path to your music collection" => "Calea spre colecția cu muzica dvs.",

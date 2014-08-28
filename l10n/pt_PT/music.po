@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"PO-Revision-Date: 2014-08-28 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,10 +52,6 @@ msgid ""
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
 msgstr "Lembre-se que a API do Ampache é apenas provisória e instável. Esteja à vontade para relatar a sua experiência com esta característica na <a href=\"https://github.com/owncloud/music/issues/60\">questão</a> correspondente. Também gostaria de ter uma lista de clientes para testar. Obrigado"
-
-#: ../templates/main.php
-msgid "Loading ..."
-msgstr "A carregar..."
 
 #: ../templates/fake-template.php
 msgid "Music"

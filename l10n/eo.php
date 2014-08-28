@@ -5,7 +5,6 @@ $TRANSLATIONS = array(
 "Description" => "Priskribo",
 "Description (e.g. App name)" => "Priskribo (ekz.: aplikaĵonomo)",
 "Invalid path" => "Nevalida vojo",
-"Loading ..." => "Ŝargante...",
 "Music" => "Muziko",
 "Next" => "Jena",
 "Path to your music collection" => "Vojo al via muzikokolekto",

@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "ការ​អធិប្បាយ (ឧ. ឈ្មោះ​កម្មវិធី)",
 "Generate API password" => "បង្កើត​ពាក្យ​សម្ងាត់ API",
 "Invalid path" => "ទីតាំង​មិន​ត្រឹម​ត្រូវ",
-"Loading ..." => "កំពុងផ្ទុក ...",
 "Music" => "តន្ត្រី",
 "Next" => "បន្ទាប់",
 "Pause" => "ផ្អាក",

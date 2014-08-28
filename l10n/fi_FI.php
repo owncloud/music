@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Kuvaus (esim. sovelluksen nimi)",
 "Generate API password" => "Luo API-salasana",
 "Invalid path" => "Virheellinen polku",
-"Loading ..." => "Ladataan...",
 "Music" => "Musiikki",
 "Next" => "Seuraava",
 "Path to your music collection" => "Musiikkikokoelman polku",

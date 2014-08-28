@@ -1,7 +1,6 @@
 <?php
 $TRANSLATIONS = array(
 "Description" => "Përshkrimi",
-"Loading ..." => "Ngarkim...",
 "Music" => "Muzikë",
 "Next" => "Mëpasshëm",
 "Pause" => "Pauzë",

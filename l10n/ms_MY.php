@@ -1,7 +1,6 @@
 <?php
 $TRANSLATIONS = array(
 "Description" => "Keterangan",
-"Loading ..." => "Memuatkan ...",
 "Music" => "Muzik",
 "Next" => "Seterus",
 "Pause" => "Jeda",

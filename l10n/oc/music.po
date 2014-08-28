@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"PO-Revision-Date: 2014-08-28 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Occitan (post 1500) (http://www.transifex.com/projects/p/owncloud/language/oc/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,10 +48,6 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
-
-#: ../templates/main.php
-msgid "Loading ..."
 msgstr ""
 
 #: ../templates/fake-template.php

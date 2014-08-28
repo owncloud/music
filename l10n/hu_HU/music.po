@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-25 12:10+0000\n"
-"Last-Translator: Laszlo Tornoci <torlasz@gmail.com>\n"
+"PO-Revision-Date: 2014-08-28 05:29+0000\n"
+"Last-Translator: I Robot\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -53,10 +53,6 @@ msgid ""
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
 msgstr "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a szolgáltatást. Köszönöm!"
-
-#: ../templates/main.php
-msgid "Loading ..."
-msgstr "Betöltés ..."
 
 #: ../templates/fake-template.php
 msgid "Music"

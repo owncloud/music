@@ -8,7 +8,6 @@ $TRANSLATIONS = array(
 "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Itt hozhat létre jelszavakat, amikkel távolról használhatja az Ampache szolgáltatást. Azért van szükség másik jelszóra, mert az Amapche protokoll miatt a használt jelszó nem tárolható igazán biztonságosan. Bármikor visszavonhatja az Ampache jelszavát és újat hozhat létre (sőt tobbfélét is használhat a különböző eszközeihez).",
 "Invalid path" => "Érvénytelen útvonal",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthető stabilnak, ez még csak tesztváltozat. <a href=\"https://github.com/owncloud/music/issues/60\">Ezen a webcímen</a> számolhat be a tapasztalatairól. Jó lenne minél több kliensprogrammal tesztelni a szolgáltatást. Köszönöm!",
-"Loading ..." => "Betöltés ...",
 "Music" => "Zene",
 "Next" => "Következő",
 "Path to your music collection" => "A zenegyűjtemény útvonala",

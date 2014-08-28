@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"PO-Revision-Date: 2014-08-28 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Bengali (India) (http://www.transifex.com/projects/p/owncloud/language/bn_IN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,10 +50,6 @@ msgid ""
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
 msgstr "  মনে রাখবেন যে আম্পাচে এপিআই শুধু একটি প্রাকদর্শন এবং অস্থির।এই বৈশিষ্ট্যের সঙ্গে আপনার অভিজ্ঞতা রিপোর্ট করুন বিনা দ্বিধায় <a href=\"https://github.com/owncloud/music/issues/60\">সংশ্লিষ্ট প্রকাশে</a>।আমি সঙ্গে পরীক্ষা করার জন্য গ্রাহকদের একটি তালিকা চাই।ধন্যবাদ"
-
-#: ../templates/main.php
-msgid "Loading ..."
-msgstr "লডিং"
 
 #: ../templates/fake-template.php
 msgid "Music"

@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "描述 (例如 App 名称)",
 "Generate API password" => "生成 API 密码",
 "Invalid path" => "无效路径",
-"Loading ..." => "加载中...",
 "Music" => "音乐",
 "Next" => "下一个",
 "Path to your music collection" => "音乐集路径",

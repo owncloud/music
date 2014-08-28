@@ -1,7 +1,6 @@
 <?php
 $TRANSLATIONS = array(
 "Description" => "תיאור",
-"Loading ..." => "טוען...",
 "Music" => "מוזיקה",
 "Next" => "הבא",
 "Pause" => "השהה",

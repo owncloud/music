@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-08 05:29+0000\n"
+"PO-Revision-Date: 2014-08-28 05:29+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,10 +54,6 @@ msgid ""
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
 msgstr "Θυμηθείτε ότι το API Ampache είναι απλά μια επισκόπηση και είναι ασταθές. Παρακαλούμε αναφέρετε την εμπειρία σας με αυτή την λειτουργία στην αντίστοιχη <a href=\"https://github.com/owncloud/music/issues/60\">αναφορά</a>. Θα ήταν καλό να υπάρχει επίσης μια λίστα με εφαρμογές για δοκιμή. Ευχαριστώ!"
-
-#: ../templates/main.php
-msgid "Loading ..."
-msgstr "Φόρτωση ..."
 
 #: ../templates/fake-template.php
 msgid "Music"

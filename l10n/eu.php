@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Deskribapena (adb. App izena)",
 "Generate API password" => "Sortu API pasahitza",
 "Invalid path" => "Baliogabeko bidea",
-"Loading ..." => "Kargatzen...",
 "Music" => "Musika",
 "Next" => "Hurrengoa",
 "Path to your music collection" => "Musika bildumaren bidea",

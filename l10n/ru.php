@@ -8,7 +8,6 @@ $TRANSLATIONS = array(
 "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime." => "Здесь вы можете генерировать пароли для использования с API Ampache, в связи с тем что, они не могут быть сохранены в действительно безопасным способом из-за конструкции API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время.",
 "Invalid path" => "Некорректный путь",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Следует помнить, что API Ampache только демо и неустойчиво. Мы будем презнательны если вы поделитесь опытом работы с этой функцией в разделе <a href=\"https://github.com/owncloud/music/issues/60\"> </ A>. Я также хотел бы создать список клиентов для тестирования. Спасибо",
-"Loading ..." => "Загружается...",
 "Music" => "Музыка",
 "Next" => "Следующий",
 "Path to your music collection" => "Путь до вашей музыкальной коллекции",

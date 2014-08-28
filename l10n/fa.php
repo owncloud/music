@@ -4,7 +4,6 @@ $TRANSLATIONS = array(
 "Artists" => "هنرمندان",
 "Description" => "توضیحات",
 "Invalid path" => "مسیر اشتباه",
-"Loading ..." => "درحال بارگذاری...",
 "Music" => "موزیک",
 "Next" => "بعدی",
 "Pause" => "توقف کردن",

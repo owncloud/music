@@ -6,7 +6,6 @@ $TRANSLATIONS = array(
 "Description (e.g. App name)" => "Опис (нпр. име на апликацијата)",
 "Generate API password" => "Генерирај API лозинка",
 "Invalid path" => "Грешна патека",
-"Loading ..." => "Вчитувам ...",
 "Music" => "Музика",
 "Next" => "Следно",
 "Path to your music collection" => "Патека до вашата музичка колекција",

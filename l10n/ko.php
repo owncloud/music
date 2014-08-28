@@ -4,7 +4,6 @@ $TRANSLATIONS = array(
 "Artists" => "음악가",
 "Description" => "종류",
 "Generate API password" => "API 비밀번호 생성",
-"Loading ..." => "불러오는 중...",
 "Music" => "음악",
 "Next" => "다음",
 "Pause" => "일시 정지",

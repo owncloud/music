@@ -3,7 +3,6 @@ $TRANSLATIONS = array(
 "Albums" => "الألبومات",
 "Artists" => "الفنانون",
 "Description" => "وصف",
-"Loading ..." => "تحميل ...",
 "Music" => "الموسيقى",
 "Next" => "التالي",
 "Pause" => "إيقاف",

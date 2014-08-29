@@ -70,8 +70,8 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 					<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
 				</div>
 				<div ng-show="currentTrack.title" class="progress-info">
-					<span ng-hide="buffering" class="play-position muted">&nbsp;</span>
-					<span ng-show="buffering" class="muted">Loading...</span>
+					<span ng-hide="loading" class="play-position muted">&nbsp;</span>
+					<span ng-show="loading" class="muted">Loading...</span>
 					<div class="progress">
 						<div class="seek-bar" ng-click="seek($event)">
 							<div class="buffer-bar"></div>

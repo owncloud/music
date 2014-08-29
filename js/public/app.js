@@ -288,7 +288,7 @@ angular.module('Music').controller('PlayerController',
 	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter, $timeout) {
 
 	$scope.playing = false;
-	$scope.buffering = false;
+	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
 	$scope.currentArtist = null;
@@ -334,7 +334,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.player.stop();
 		}
 		$scope.setPlay(false);
-		$scope.setTime(0, 1);
+		$scope.setLoading(true);
 		if(newValue !== null) {
 			// switch initial state
 			$rootScope.started = true;
@@ -351,15 +351,17 @@ angular.module('Music').controller('PlayerController',
 
 			$scope.player=Audio.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.player.asset.source.chunkSize=524288;
-			$scope.setBuffering(true);
+			$scope.setLoading(true);
 
 			$scope.player.play();
 
 			$scope.setPlay(true);
-			$scope.setBuffering(false);
 
 			$scope.player.on('buffer', function (percent) {
 				$scope.setBufferPercentage(parseInt(percent));
+			});
+			$scope.player.on('ready', function () {
+				$scope.setLoading(false);
 			});
 			$scope.player.on('progress', function (currentTime) {
 				$scope.setTime(currentTime/1000, $scope.player.duration/1000);
@@ -410,14 +412,14 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	// only call from external script
-	$scope.setBuffering = function(buffering) {
+	$scope.setLoading = function(loading) {
 		// determine if already inside of an $apply or $digest
 		// see http://stackoverflow.com/a/12859093
 		if($scope.$$phase) {
-			$scope.buffering = buffering;
+			$scope.loading = loading;
 		} else {
 			$scope.$apply(function(){
-				$scope.buffering = buffering;
+				$scope.loading = loading;
 			});
 		}
 	};

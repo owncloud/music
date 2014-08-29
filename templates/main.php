@@ -84,6 +84,10 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
+				<div class="volume-control">
+					<img id="volume-icon" alt="Volume" src="<?php p(OCP\image_path('music', 'volume_icon.png')) ?>">
+					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume">
+				</div>
 			</div>
 
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">

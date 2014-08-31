@@ -34,10 +34,27 @@
 	font-size: 14px;
 }
 
-#controls .progress-info {
-	width: 25%;
-	left: initial;
-	right: 125px;
 }
 
+@media only screen and (min-width: 769px) and (max-width: 1000px) {
+
+	#controls.started .progress {
+		display: none;
+	}
+	#controls .progress-info {
+		right: 365px;
+		padding-top: 12px;
+		text-align: right;
+		width: inherit;
+	}
+}
+
+@media only screen and (min-width: 769px) and (max-width: 870px) {
+
+	#controls.started .progress {
+		display: none;
+	}
+	#controls .progress-info {
+		display: none;
+	}
 }

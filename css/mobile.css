@@ -12,6 +12,10 @@
 
 @media only screen and (max-width: 768px) {
 
+#app-view {
+	left: 0px;
+}
+
 .artist-area {
 	padding-top: 15px;
 }
@@ -87,17 +91,17 @@
 	display: none;
 }
 #controls .albumart {
-	left: 135px;
+	left: 155px;
 	margin-left: 0;
 }
 #controls .song-info {
-	left: 180px;
+	left: 200px;
 	max-width: 45%;
 }
 #controls .title {
 	font-size: 14px;
 }
-#controls .progress-info {
+#controls.started .progress {
 	display: none;
 }
 
@@ -108,5 +112,27 @@
 #controls #shuffle {
 	right: 40px;
 }
+
+#app-view:not(.started) {
+	padding-top: 66px;
+}
+
+}
+
+@media only screen and (min-width: 570px) and (max-width: 768px) {
+
+	#controls .progress-info {
+		right: 115px;
+		padding-top: 12px;
+		text-align: right;
+		width: inherit;
+	}
+
+}
+@media only screen and (max-width: 570px) {
+
+	#controls .progress-info {
+		display: none;
+	}
 
 }

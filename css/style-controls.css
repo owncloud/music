@@ -10,7 +10,7 @@
 
 #controls {
 	height: 66px;
-	padding: 0 20px 0 20px;
+	padding: 0 270px 0 20px;
 }
 
 #controls, #controls * {
@@ -24,7 +24,7 @@
 #controls > img.right {
 	position: absolute;
 	top: 0;
-	right: 0;
+	right: 250px;
 }
 
 #controls .control {
@@ -88,10 +88,10 @@
 }
 
 #controls .progress-info {
-	width: 300px;
+	width: 25%;
 	position: absolute;
 	top: 0px;
-	left: 620px;
+	right: 375px;
 	text-align: center;
 	margin: 7px 0 14px 0;
 }
@@ -130,11 +130,11 @@
 #shuffle, #repeat {
 	position: absolute;
 	top: 0;
-	right: 8px;
+	right: 258px;
 }
 
 #shuffle {
-	right: 65px;
+	right: 315px;
 }
 
 #controls .active {

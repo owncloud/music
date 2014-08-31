@@ -21,8 +21,8 @@
 
 
 angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$filter', '$timeout',
-	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $filter, $timeout) {
+	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
+	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $timeout) {
 
 	$scope.playing = false;
 	$scope.loading = false;
@@ -31,15 +31,13 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 
-	$scope.bufferPercent = 0;
-
 	$scope.repeat = false;
 	$scope.shuffle = false;
-
-	// TODO don't use jQuery
-	$scope.$playPosition = $('.play-position');
-	$scope.$bufferBar = $('.buffer-bar');
-	$scope.$playBar = $('.play-bar');
+	$scope.position = {
+		buffer: 0,
+		current: 0,
+		total: 0
+	};
 
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
@@ -96,15 +94,19 @@ angular.module('Music').controller('PlayerController',
 
 			$scope.player.on('buffer', function (percent) {
 				$scope.setBufferPercentage(parseInt(percent));
+				$scope.$digest();
 			});
 			$scope.player.on('ready', function () {
 				$scope.setLoading(false);
+				$scope.$digest();
 			});
 			$scope.player.on('progress', function (currentTime) {
 				$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+				$scope.$digest();
 			});
 			$scope.player.on('end', function() {
 				$scope.setPlay(false);
+				$scope.$digest();
 				if($scope.$$phase) {
 					$scope.next();
 				} else {
@@ -122,53 +124,21 @@ angular.module('Music').controller('PlayerController',
 		}
 	}, true);
 
-	$scope.$watch(function () {
-		return $scope.player.duration;
-	}, function (newValue, oldValue) {
-		var duration = newValue/1000;
-		if($scope.$$phase) {
-			$scope.duration = duration;
-		} else {
-			$scope.$apply(function(){
-				$scope.duration = duration;
-			});
-		}
-	});
-
-	// only call from external script
 	$scope.setPlay = function(playing) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.playing = playing;
-		} else {
-			$scope.$apply(function(){
-				$scope.playing = playing;
-			});
-		}
+		$scope.playing = playing;
 	};
 
-	// only call from external script
 	$scope.setLoading = function(loading) {
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.loading = loading;
-		} else {
-			$scope.$apply(function(){
-				$scope.loading = loading;
-			});
-		}
+		$scope.loading = loading;
 	};
 
-	// only call from external script
 	$scope.setTime = function(position, duration) {
-		$scope.$playPosition.text($filter('playTime')(position) + ' / ' + $filter('playTime')(duration));
-		$scope.$playBar.css('width', (position / duration * 100) + '%');
+		$scope.position.current = position;
+		$scope.position.total = duration;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.$bufferBar.css('width', percent + '%');
+		$scope.position.buffer = percent;
 	};
 
 	$scope.toggle = function(forcePlay) {

@@ -20,6 +20,10 @@
 	display: none;
 }
 
+#app-navigation-toggle {
+	height: 66px;
+}
+
 .playlist .svg.action {
 	margin-top: -25px;
 	margin-right: 5px;

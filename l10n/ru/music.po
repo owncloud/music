@@ -4,13 +4,14 @@
 # Dmitry <linuxsquirrel.dev@gmail.com>, 2013
 # jekader <jekader@gmail.com>, 2013
 # Kalyuzhniy Aleksey, 2014
+# lifeslice <root@lifeslice.ru>, 2014
 # Void Ayanami <hex.void@gmail.com>, 2013
 # Дмитрий <me@imthecat.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-09-01 12:20+0000\n"
+"Last-Translator: lifeslice <root@lifeslice.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,7 +55,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr "Следует помнить, что API Ampache только демо и неустойчиво. Мы будем презнательны если вы поделитесь опытом работы с этой функцией в разделе <a href=\"https://github.com/owncloud/music/issues/60\"> </ A>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
+msgstr "Следует помнить, что API Ampache является демо-версией и поэтому неустойчиво. Мы будем признательны, если вы поделитесь опытом работы с этой функцией в соответствующем <a href=\"https://github.com/owncloud/music/issues/60\">разделе</a>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -94,7 +95,7 @@ msgstr "Перемешать"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr "Некоторые не проигрываемые композиции были пропущены."
+msgstr "Некоторые непроигрываемые композиции были пропущены."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
@@ -122,4 +123,4 @@ msgstr "Используйте этот адрес, чтобы просмотр�
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Используйте свой логин и ниже следующий пароль для подключения к данному экземпляру Ampache:"
+msgstr "Используйте свой логин и следующий ниже пароль для подключения к данному экземпляру Ampache:"

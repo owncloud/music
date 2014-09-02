@@ -1,10 +1,11 @@
 # 
 # Translators:
+# azizul <aziz.murad3@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-09-01 17:50+0000\n"
+"Last-Translator: azizul <aziz.murad3@gmail.com>\n"
 "Language-Team: Bengali (Bangladesh) (http://www.transifex.com/projects/p/owncloud/language/bn_BD/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "অ্যালবামসমূহ"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "শিল্পীগণ"
 
 #: ../templates/fake-template.php
 msgid "Description"
@@ -25,22 +26,22 @@ msgstr "বিবরণ"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "বিবরণ (উদাহরণ: অ্যাপ নাম)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "API কুটশব্দ তৈরী কর"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "এখানে আপনি Ampache API এর জন্য কুটশব্দ তৈরী করতে পারেন কারণ তার ডিজােইনের কারণেই Ampache API কে নিরাপদে সংরক্ষণ করা যায়না। আপনার যত খুশি কুটশব্দ তৈরী করতে পারেন এবং ইচ্ছেমাফিক তাদের বাতিল করতেও পারেন।"
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "পথটি সঠিক নয়"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -48,7 +49,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "মনে রাখুন যে Ampache API একটি প্রিভিউ মাত্র এবং এটি স্থির কিছু নয়। এতদ্বিষয়ে আপনার অভিজ্ঞতা আমাদের জানাতে <a href=\"https://github.com/owncloud/music/issues/60\">issue</a> ব্যাবহার করুন। এটি পরীক্ষা করার জন্য আমার কিছু ব্যাবহারকারী প্রয়োজন। ধন্যবাদ "
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -60,7 +61,7 @@ msgstr "পরবর্তী"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "আপনার গানের সংগ্রহের পথ "
 
 #: ../templates/main.php
 msgid "Pause"
@@ -80,40 +81,40 @@ msgstr "পূনঃসংঘটন"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "API কুটশব্দ বাতিল কর"
 
 #: ../templates/main.php
 msgid "Shuffle"
-msgstr ""
+msgstr "এলোমেলো কর"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "বাজানোর অনুপযোগী কিছু ট্র্যাক এড়িয়ে যাওয়া হয়েছে।"
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "এই নিয়ামকটি গান খুজে বের করার জন্য ফোল্ডার নির্ধারণ করে।"
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "ট্র্যাকসমূহ"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "অজানা অ্যালবাম"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "অজানা শিল্পী"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Ampache compatible player হতে আপনার গানের সংগ্রহ দেখতে এই ঠিকানা ব্যাবহার করুন।"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "এই  Ampache-টিতে সংযুক্ত হতে আপনার ব্যাবহারকারী নাম ও নীচের কুটশব্দ ব্যাবহার করুন:"

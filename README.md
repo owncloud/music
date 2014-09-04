@@ -38,7 +38,11 @@ The current version doesn't scale well for huge music collections. There are pla
 #### Application can not be activated because of illegal code
 
 The current music app can't be installed and ownCloud prints following error message:
-"Application can not be activated because of illegal code". This is due to the appcodechecker in core (which is kind of broken), but you can do the installation if the appcodechecker gets deactivated in `config.php`. Just set `appcodechecker` to `false` (see the [config.sample.php](https://github.com/owncloud/core/blob/a8861c70c8e5876a961f00e49db88843432bf7ba/config/config.sample.php#L164) ). Then you can install the app. Afterwards you can re-enable the appcodechecker again.
+"Application can not be activated because of illegal code". This is due to the appcodechecker in core (which is kind of broken), but you can do the installation if the appcodechecker is deactivated:
+
+* set `appcodechecker` to `false` in `config.php` (see the [config.sample.php](https://github.com/owncloud/core/blob/a8861c70c8e5876a961f00e49db88843432bf7ba/config/config.sample.php#L164) )
+* now you can install the app
+* afterwards re-enable the appcodechecker
 
 ## Development
 

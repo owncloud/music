@@ -26,17 +26,19 @@ use \OCA\Music\App\Music;
 
 class Scan extends Command {
 	/**
-	 * @var \OC\User\Manager $userManager
+	 * @var \OCP\IUserManager $userManager
 	 */
 	private $userManager;
 	private $scanner;
+	/**
+	 * @var \OCP\Files\Folder $rootFolder
+	 */
+	private $rootFolder;
 
-	public function __construct(\OC\User\Manager $userManager) {
+	public function __construct(\OCP\IUserManager $userManager, $scanner, \OCP\Files\Folder $rootFolder) {
 		$this->userManager = $userManager;
-
-		$app = new Music();
-		$this->scanner = $app->getContainer()->query('Scanner');
-		$this->rootFolder = $app->getContainer()->query('RootFolder');
+		$this->scanner = $scanner;
+		$this->rootFolder = $rootFolder;
 		parent::__construct();
 	}
 

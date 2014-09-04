@@ -32,6 +32,8 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 ### Known issues
 
 * The current version doesn't scale well for huge music collections. There are plans for a kind of paginated version, which hides the pagination and should be useable as known before. #78
+* Current app can't be installed and ownCloud prints following error message:
+"Application can not be activated because of illegal code". This is due to the appcodechecker in core (which is kind of broken), but you can do the installation if the appcodechecker gets deactivated in `config.php`. Just set `appcodechecker` to `false` (see the [config.sample.php](https://github.com/owncloud/core/blob/a8861c70c8e5876a961f00e49db88843432bf7ba/config/config.sample.php#L164) ). Then you can install the app. Afterwards you can re-enable the appcodechecker again.
 
 ## Development
 

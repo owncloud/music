@@ -1,8 +1,25 @@
+v0.3.4 2014-09-04
+
+  Thanks to Volkan Geezer (@wakeup) and Yu-De (@pellaeon)
+
+  * switch to aurora.js for JavaScript decoding of music files (ability to
+    support more codecs) - currently just mp3 and flac - thanks to @pellaeon
+
   * make batch rescan incremental
   * make userFolder optional - get rid of wrong type of parameter error logs
   * add check for natural numbers above 0 for track number
   * add --debug switch to music:scan command to list memory usage of each step
+  * fix for not working apps/music/#/file/ID routes
+  * fix broken expand track list for albums
+  * use WebDAV for file access as it provides a better stability and functionality
+
+  # Internal
   * drop unsupported calls to ownCloud private APIs
+  * use dependency injection for scan command
+
+  ## Known issues
+
+  * mp3 seeking isn't working
 
 v0.3.3 2014-08-12
 

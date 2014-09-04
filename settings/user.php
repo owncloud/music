@@ -26,5 +26,6 @@ $tmpl = new \OCP\Template($c->query('AppName'), 'settings-user');
 $tmpl->assign('path', $c->query('Config')->getUserValue($c->query('UserId'), $c->query('AppName'), 'path'));
 
 $tmpl->assign('ampacheKeys', $c->query('AmpacheUserMapper')->getAll($c->query('UserId')));
+$tmpl->assign('URLGenerator', $c->query('URLGenerator'));
 
 return $tmpl->fetchPage();

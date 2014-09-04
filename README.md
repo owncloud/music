@@ -3,7 +3,9 @@
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
-## Commands
+## Usage hints
+
+### Commands
 
 Following command is available (see script occ in your ownCloud root folder)
 
@@ -17,33 +19,39 @@ This scans music files for all users.
 
 Both of the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
 
-## Ampache
+### Ampache
 
 In the settings the URL you need form Ampache is listed and looks like this:
 
 ```
-https://cloud.domain.org/index.php/apps/music/ampache/server/xml.server.php
+https://cloud.domain.org/index.php/apps/music/ampache/
 ```
 
-This is the full path. Some clients append the last part (`server/xml.server.php`) automatically. If you have connection problems try the shorter version of the URL.
+This is the common path. Some clients append the last part (`server/xml.server.php`) automatically. If you have connection problems try the longer version of the URL with the `server/xml.server.php` appended.
 
-## L10n hints
+### Known issues
+
+* The current version doesn't scale well for huge music collections. There are plans for a kind of paginated version, which hides the pagination and should be useable as known before. #78
+
+## Development
+
+### L10n hints
 
 Sometimes translatable strings aren't detected. Try to move the `translate` attribute
 more to the beginning of the HTML element.
 
-## Build appstore package
+### Build appstore package
 
 	git archive HEAD --format=zip --prefix=music/ > build/music.zip
 
-## Run tests
+### Run tests
 
 PHP tests
 
 	phpunit tests/php
 	phpunit --coverage-html coverage-html tests/php
 
-## 3rdparty libs
+### 3rdparty libs
 
 update JavaScript libraries
 

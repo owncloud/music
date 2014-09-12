@@ -1,7 +1,7 @@
 # 
 # Translators:
 # Jan Liska, 2013-2014
-# Jaroslav Lichtblau <jaroslav@lichtblau.cz>, 2014
+# Jaroslav Lichtblau <jlichtblau@seznam.cz>, 2014
 # MICHAL D. <black23@gmail.com>, 2014
 # Petr Šťastný <petr@stastny.eu>, 2013-2014
 msgid ""

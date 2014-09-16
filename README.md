@@ -21,7 +21,7 @@ Both of the above commands can be combined with the `--debug` switch, which enab
 
 ### Ampache
 
-In the settings the URL you need form Ampache is listed and looks like this:
+In the settings the URL you need for Ampache is listed and looks like this:
 
 ```
 https://cloud.domain.org/index.php/apps/music/ampache/

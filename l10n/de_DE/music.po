@@ -3,7 +3,7 @@
 # I Robot, 2013
 # Mario Siegmann <mario_siegmann@web.de>, 2013-2014
 # stefanniedermann <stefan.niedermann@googlemail.com>, 2014
-# kabum <uu.kabum@gmail.com>, 2013-2014
+# kabum <morris.jobke@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

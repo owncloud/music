@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-09-19 08:10+0000\n"
+"Last-Translator: Aputsiaĸ Niels Janussen <aj@isit.gl>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,7 +39,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr "Her kan du generere adgangskoder, der bruges med Ampache API'et, da de ikke kan lagres på en rigtig sikker måden, hvilket skyldes designet af Ampache API'et. Du kan generere så kan adgangskoder som du ønsker og tilbagekalde dem til enhver tid."
+msgstr "Her kan du generere adgangskoder, der bruges med Ampache API'et, da de ikke kan lagres på en rigtig sikker måde, hvilket skyldes designet af Ampache API'et. Du kan generere alle de adgangskoder som du ønsker, og tilbagekalde dem til enhver tid."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
@@ -63,7 +63,7 @@ msgstr "Næste"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr "Sti til dit musik bibliotek "
+msgstr "Sti til dit musikbibliotek "
 
 #: ../templates/main.php
 msgid "Pause"
@@ -83,7 +83,7 @@ msgstr "Gentag"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr "Tilbagekald API adgangskode"
+msgstr "Tilbagekald API-adgangskode"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -91,7 +91,7 @@ msgstr "Bland"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr "Nogle ikke afspillelig numre blev sprunget over."
+msgstr "Numre som ikke kunne afspilles blev sprunget over."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
@@ -99,7 +99,7 @@ msgstr "Denne indstilling angiver dén mappe, der vil blive skannet for musik."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr "Spor"
+msgstr "Numre"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"

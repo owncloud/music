@@ -24,7 +24,7 @@
 }
 
 #app-view.started {
-	padding-top: 65px;
+	padding-top: 70px;
 }
 
 .play {
@@ -54,7 +54,7 @@
 	display: inline;
 	margin-bottom: 2px;
 	cursor: pointer;
-	width: 16px;
+	width: 20px;
 	height: 16px;
 }
 

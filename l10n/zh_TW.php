@@ -8,6 +8,7 @@ $TRANSLATIONS = array(
 "Invalid path" => "無效的路徑",
 "Music" => "音樂",
 "Next" => "下一個",
+"Path to your music collection" => "您的音樂資料夾的路徑",
 "Pause" => "暫停",
 "Play" => "播放",
 "Previous" => "上一個",

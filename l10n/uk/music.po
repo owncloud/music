@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Sergiy, 2014
 # zubr139, 2013
 # пан Володимир <volodya327@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-10-19 16:20+0000\n"
+"Last-Translator: Sergiy\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/owncloud/language/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,11 +16,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Альбоми"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Виконавці"
 
 #: ../templates/fake-template.php
 msgid "Description"
@@ -27,22 +28,22 @@ msgstr "Опис"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Опис (наприклад назва додатку)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Сгенерувати пароль для API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Тут ви можете згенерувати пароль для використання з Ampache API, оскільки вони не можуть бути збережені дійсно безпечним чином через конструкцію Ampache API. Ви можете створити стільки паролей, скільки необхідно, та відмовитись від них в будь який час."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Невірний шлях"
 
 #: ../templates/fake-template.php
 msgid ""
@@ -50,7 +51,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Пам'ятайте, що Ampache API є демо-версією і тому не стабільна. Ми будемо вдячні, якщо ви поділитеся досвідом роботи з цією функцією у відповідному <a href=\"https://github.com/owncloud/music/issues/60\">розділі</a>. Я також хотів би створити список клієнтів для тестування. Дякую."
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -62,7 +63,7 @@ msgstr "Наступний"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Шлях до вашої музичної колекції"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -82,7 +83,7 @@ msgstr "Повторювати"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Відкликати API пароль"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -90,32 +91,32 @@ msgstr "Перемішати"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Деякі треки, що не відтворюються, були пропущені."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Цей параметр вказує теку, в якій буде проведено пошук музики."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Доріжки"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Невідомий альбом"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Невідомий виконавець"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Використовуйте цю адресу, щоб переглядати вашу музичну колекцію в будь-якому програвачі, що підтримує Ampache."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Використовуйте власний логін та пароль для з'єднання з даним Ampache:"

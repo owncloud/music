@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Arif Budiman <arifpedia@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-10-21 05:21+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-10-25 03:30+0000\n"
+"Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/owncloud/language/id/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,34 +14,34 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Album"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Pembuat"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr "Penjelasan"
+msgstr "Keterangan"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Keterangan (cth. nama Aplikasi)"
 
 #: ../templates/fake-template.php
 msgid "Generate API password"
-msgstr ""
+msgstr "Hasilkan sandi API"
 
 #: ../templates/fake-template.php
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Disini Anda dapat menghasilkan sandi untuk digunakan dengan Ampache API, karena mereka tidak dapat disimpan dengan cara yang benar-benar aman karena desain Ampache API. Anda dapat menghasilkan banyak sandi yang Anda inginkan dan mencabut mereka kapan saja."
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr ""
+msgstr "Jalur lokasi salah."
 
 #: ../templates/fake-template.php
 msgid ""
@@ -48,7 +49,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Harus diingat, bahwa Ampache API hanya pratinjau dan tidak stabil. Jangan ragu untuk melaporkan pengalaman Anda dengan fitur ini di <a href=\"https://github.com/owncloud/music/issues/60\">masalah yang sesuai</a>. Saya juga ingin memiliki daftar klien untuk menguji dengannya. Terima kasih"
 
 #: ../templates/fake-template.php
 msgid "Music"
@@ -56,11 +57,11 @@ msgstr "Musik"
 
 #: ../templates/main.php
 msgid "Next"
-msgstr "Selanjutnya"
+msgstr "Berikutnya"
 
 #: ../templates/fake-template.php
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Jalur lokasi koleksi musik Anda"
 
 #: ../templates/main.php
 msgid "Pause"
@@ -80,7 +81,7 @@ msgstr "Ulangi"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"
-msgstr ""
+msgstr "Cabut sandi API"
 
 #: ../templates/main.php
 msgid "Shuffle"
@@ -88,32 +89,32 @@ msgstr "Acak"
 
 #: ../js/public/app.js
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Beberapa trek yang tidak diputar akan dilewati."
 
 #: ../templates/fake-template.php
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Pengaturan ini menentukan folder yang akan dipindai untuk musik."
 
 #: ../templates/fake-template.php
 msgid "Tracks"
-msgstr ""
+msgstr "Trek"
 
 #: ../templates/fake-template.php
 msgid "Unknown album"
-msgstr ""
+msgstr "Album tidak diketahui"
 
 #: ../templates/fake-template.php
 msgid "Unknown artist"
-msgstr ""
+msgstr "Pembuat tidak diketahui"
 
 #: ../templates/fake-template.php
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Gunakan alamat ini untuk meramban koleksi musik Anda dari pemutar yang kompatibel dengan Ampache."
 
 #: ../templates/fake-template.php
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Gunakan nama pengguna dan sandi berikut untuk terhubung dengan instansi Ampache:"

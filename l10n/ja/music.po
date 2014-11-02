@@ -4,12 +4,13 @@
 # タカハシ <gomidori@live.jp>, 2014
 # kuromabo <md81bird@hitaki.net>, 2014
 # Mika Kobayashi, 2014
+# Shinozaki Ippei <shino.ip.1231@gmail.com>, 2014
 # YANO Tetsu <tetuyano+transi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-10-21 05:21+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-11-01 14:10+0000\n"
+"Last-Translator: Shinozaki Ippei <shino.ip.1231@gmail.com>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,7 +46,7 @@ msgstr "ここでは、Ampache APIに使用するパスワードを生成する�
 
 #: ../templates/fake-template.php
 msgid "Invalid path"
-msgstr "パスが無効"
+msgstr "無効なパス"
 
 #: ../templates/fake-template.php
 msgid ""

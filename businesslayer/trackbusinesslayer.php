@@ -85,7 +85,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track track
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
-	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
+	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
 		try {
 			$track = $this->mapper->findByFileId($fileId, $userId);
 			$track->setTitle($title);
@@ -105,6 +105,8 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setFileId($fileId);
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
+			$track->setLength($length);
+			$track->setBitrage($bitrate);
 			$track = $this->mapper->insert($track);
 			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){

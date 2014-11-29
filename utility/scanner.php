@@ -224,6 +224,16 @@ class Scanner extends PublicEmitter {
 
 			}
 			$fileId = $file->getId();
+			
+			$length = null;
+			if (array_key_exists('playtime_seconds', $fileInfo)) {
+				$length = ceil($fileInfo['playtime_seconds']);
+			}
+			
+			$bitrate = null;
+			if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
+				$bitrate = $fileInfo['audio']['bitrate'];
+			}
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
@@ -244,7 +254,7 @@ class Scanner extends PublicEmitter {
 
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
-				$albumId, $fileId, $mimetype, $userId);
+				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
 
 			// debug logging
 			$this->logger->log('imported entities - ' .

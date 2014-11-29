@@ -237,8 +237,8 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
-				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, fileId: %i, this->userId: %s, userId: %s',
-					$artist, $album, $title, $trackNumber, $year, $mimetype, $fileId, $this->userId, $userId), 'debug');
+				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
+					$artist, $album, $title, $trackNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
 
 			if(!$userId) {
 				$userId = $this->userId;

@@ -74,8 +74,8 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 					<span ng-show="loading" class="muted">Loading...</span>
 					<div class="progress">
 						<div class="seek-bar" ng-click="seek($event)">
-							<div style="width: {{ position.buffer }}%"></div>
-							<div ng-show="position.total" style="width: {{ position.current/position.total * 100 }}%"></div>
+							<div class="seek-bar-buffered" style="width: {{ position.buffer }}%"></div>
+							<div class="seek-bar-played" ng-show="position.total" style="width: {{ position.current/position.total * 100 }}%"></div>
 						</div>
 					</div>
 				</div>

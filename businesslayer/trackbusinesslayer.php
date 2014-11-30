@@ -82,8 +82,8 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $fileId the file id of the track
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
-	 * @param int $length the mimetype of the track
-	 * @param int $bitrate the name of the user
+	 * @param int $length track length in seconds
+	 * @param int $bitrate track bitrate in bits (not kbits)
 	 * @return \OCA\Music\Db\Track track
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */

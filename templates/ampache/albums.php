@@ -11,7 +11,7 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 			<rating>0</rating>
 			<year><?php p($album->getYear())?></year>
 			<disk>1</disk>
-			<art></art>
+			<art><?php $cid = $album->getCoverFileId(); if ($cid){p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=_get_cover&amp;filter=<?php p($album->getId());?>&amp;auth=<?php p($_['authtoken']);} ?></art>
 			<preciserating>0</preciserating>
 		</album>
 	<?php endforeach;?>

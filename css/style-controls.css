@@ -107,21 +107,6 @@
 	background-color: #eee;
 }
 
-#controls .progress, #controls .seek-bar-buffered {
-	height: 15px;
-	float: left;
-	left: 0;
-	position: absolute;
-	background-color: #ccccff;
-}
-
-#controls .progress, #controls .seek-bar-played {
-	height: 15px;
-	left: 0;
-	position: absolute;
-	background-color: #1d2d44;
-}
-
 #controls.started .progress, #controls.started .seek-bar, #controls.started .play-bar, #controls .buffer-bar {
 	display: block;
 }

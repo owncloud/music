@@ -31,8 +31,8 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 
 #### Authentication
 
-To use Ampache you can't use your OwnCloud password. Instead, you need to generate APIKEY for Ampache.
-To go "Your username" → "Personal", and check section Music/Ampache, where you can generate your key. Enter generated key to your client as password.
+To use Ampache you can't use your ownCloud password. Instead, you need to generate APIKEY for Ampache.
+Go to "Your username" → "Personal", and check section Music/Ampache, where you can generate your key. Enter your ownCloud username and the generated key as password to your client.
 
 ### Installation
 

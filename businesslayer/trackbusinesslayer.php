@@ -97,6 +97,8 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$this->mapper->update($track);
+			$track->setLength($length);
+			$track->setBitrate($bitrate);
 			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();

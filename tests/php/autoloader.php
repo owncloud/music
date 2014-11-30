@@ -9,8 +9,6 @@
  * @copyright Morris Jobke 2014
  */
 
-require_once __DIR__ . '/../../../../3rdparty/Pimple/Pimple.php';
-
 
 class OC {
     public static $server;

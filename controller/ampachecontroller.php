@@ -409,7 +409,7 @@ class AmpacheController extends Controller {
 
 		// set track count for artists
 		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackMapper->countByArtist($album->getId(), $userId));
+			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
 			$albumIds[] = $album->getId();
 		}
 

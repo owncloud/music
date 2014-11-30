@@ -11,7 +11,7 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		<time><?php p($song->getLength());?></time>
 		<track><?php p($song->getNumber());?></track>
 		<size>0</size>
-		<art> </art>
+		<art><?php $cid = $song->getAlbum()->getCoverFileId(); if ($cid){p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=_get_cover&amp;filter=<?php p($song->getAlbum()->getId());?>&amp;auth=<?php p($_['authtoken']);} ?></art>
 		<rating>0</rating>
 		<preciserating>0</preciserating>
 	</song>

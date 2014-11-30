@@ -112,6 +112,8 @@ class AmpacheController extends Controller {
 			# non Ampache API action - used for provide the file
 			case 'play':
 				return $this->play();
+			case '_get_cover':
+				return $this->get_cover();
 		}
 		throw new AmpacheException('TODO', 999);
 	}
@@ -265,7 +267,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n),
+			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -445,7 +447,7 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n),
+			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
@@ -464,6 +466,30 @@ class AmpacheController extends Controller {
 		}
 
 		$files = $this->rootFolder->getById($track->getFileId());
+
+		if(count($files) === 1) {
+			return new FileResponse($files[0]);
+		} else {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
+		}
+	}
+
+	/* this is not ampache proto */
+	protected function get_cover() {
+		$userId = $this->ampacheUser->getUserId();
+		$albumId = $this->params('filter');
+
+		try {
+			$album = $this->albumMapper->find($albumId, $userId);
+		} catch(DoesNotExistException $e) {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
+		}
+
+		$files = $this->rootFolder->getById($album->getCoverFileId());
 
 		if(count($files) === 1) {
 			return new FileResponse($files[0]);

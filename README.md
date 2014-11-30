@@ -29,6 +29,11 @@ https://cloud.domain.org/index.php/apps/music/ampache/
 
 This is the common path. Some clients append the last part (`server/xml.server.php`) automatically. If you have connection problems try the longer version of the URL with the `server/xml.server.php` appended.
 
+#### Authentication
+
+To use Ampache you can't use your OwnCloud password. Instead, you need to generate APIKEY for Ampache.
+To go "Your username" → "Personal", and check section Music/Ampache, where you can generate your key. Enter generated key to your client as password.
+
 ### Installation
 
 Music App can be installed from [Appstore](http://apps.owncloud.com/) by following the instructions [here](http://doc.owncloud.org/server/7.0/user_manual/installing_apps.html) or using App Management in ownCloud with instructions written [here](http://doc.owncloud.org/server/7.0/admin_manual/configuration/configuration_apps.html)

@@ -82,10 +82,12 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $fileId the file id of the track
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
+	 * @param int $length track length in seconds
+	 * @param int $bitrate track bitrate in bits (not kbits)
 	 * @return \OCA\Music\Db\Track track
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
-	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId){
+	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
 		try {
 			$track = $this->mapper->findByFileId($fileId, $userId);
 			$track->setTitle($title);
@@ -95,6 +97,8 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
 			$this->mapper->update($track);
+			$track->setLength($length);
+			$track->setBitrate($bitrate);
 			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();
@@ -105,6 +109,8 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setFileId($fileId);
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
+			$track->setLength($length);
+			$track->setBitrate($bitrate);
 			$track = $this->mapper->insert($track);
 			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){

@@ -88,7 +88,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album
 	 * @throws BusinessLayerException
 	 */
-	public function addAlbumIfNotExist($name, $year, $artistId, $userId, $coverFileId){
+	public function addAlbumIfNotExist($name, $year, $artistId, $userId){
 		try {
 			$album = $this->mapper->findAlbum($name, $year, $artistId, $userId);
 			$this->logger->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
@@ -97,7 +97,6 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$album->setName($name);
 			$album->setYear($year);
 			$album->setUserId($userId);
-			$album->setCoverFileId($coverFileId);
 			$album = $this->mapper->insert($album);
 			$this->logger->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){

@@ -244,21 +244,12 @@ class Scanner extends PublicEmitter {
 				$userId = $this->userId;
 			}
 
-			// get directory path
-			$coverFileId = null;
-			try {
-				$coverFileId = $file->getParent()->get('cover.jpg')->getId();
-			} catch (\OCP\Files\NotFoundException $e) {
-				# pass
-				# we're just using null
-			}
-
 			// add artist and get artist entity
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
 			$artistId = $artist->getId();
 
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId, $coverFileId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity

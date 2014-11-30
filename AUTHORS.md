@@ -24,3 +24,4 @@
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
+* [Konrad Mosoń](https://github.com/morsikg): <morsik@darkserver.it>

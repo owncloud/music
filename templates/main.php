@@ -1,6 +1,10 @@
 <?php
 \OCP\Util::addScript('core', 'placeholder');
-\OCP\Util::addScript('3rdparty', 'md5/md5.min');
+if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
+	\OCP\Util::addScript('3rdparty', 'md5/md5.min');
+} else {
+	vendor_script('blueimp-md5/js/md5');
+}
 \OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');

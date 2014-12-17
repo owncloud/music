@@ -2,6 +2,15 @@
 	<span ng-hide="loading" translate>Nothing in here. Upload your music!</span>
 </div>
 
+<img id="updateData" ng-show="updateAvailable"
+	 class="svg clickable" src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>"  ng-click="update()"
+	 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
+	 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
+
+<div id="toScan" ng-show="toScan">
+	<span class="clickable" ng-click="processNextScanStep(0)" translate>Unscanned files available. Click here to start the scan.</span>
+</div>
+
 <div id="scanning" ng-show="scanning">
 	<span translate>Scanning ... </span> {{ scanningScanned }}/{{ scanningTotal }}
 </div>

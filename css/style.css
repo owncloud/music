@@ -182,7 +182,11 @@
 	display: none;
 }
 
-#scanning {
+.clickable, .clickable * {
+	cursor: pointer;
+}
+
+#scanning, #toScan {
 	font-size: 21px;
 	font-weight: bold;
 	color: #888;
@@ -194,4 +198,27 @@
 	line-height: 40px;
 	background-color: rgba(255,255,255,0.5);
 	z-index: 100;
+}
+
+#updateData {
+	position: fixed;
+	width: 48px;
+	height: 48px;
+	padding: 12px;
+	bottom: 0;
+	left: 0;
+	z-index: 101;
+	background-color: rgba(255,255,255,0.5);
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 40);
+	opacity: .4;
+}
+
+#updateData:hover, #updateData:focus {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
 }

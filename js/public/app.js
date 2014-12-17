@@ -78,7 +78,10 @@ angular.module('Music').controller('MainController',
 	}
 
 	$scope.update = function() {
+		$scope.updateAvailable = false;
+		$scope.loading = true;
 		ArtistFactory.getArtists().then(function(artists){
+			$scope.loading = false;
 			$scope.artists = artists;
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
@@ -100,26 +103,48 @@ angular.module('Music').controller('MainController',
 	// initial loading of artists
 	$scope.update();
 
+	$scope.processNextScanStep = function(dry) {
+		$scope.toScan = false;
+		$scope.dryScanRun = dry;
 
-	var scanLoopFunction = function(dry) {
+		// if it's not a dry run it will scan
+		if(dry === 0) {
+			$scope.scanning = true;
+		}
 		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
 			var scan = scanItems[0];
+
+			// if it was not a dry run and the processed count is bigger than
+			// the previous value there are new music files available
+			if(scan.processed > $scope.scanningScanned && $scope.dryScanRun === 0) {
+				$scope.updateAvailable = true;
+			}
+
 			$scope.scanningScanned = scan.processed;
 			$scope.scanningTotal = scan.total;
-			$scope.update();
+
 			if(scan.processed < scan.total) {
-				$scope.scanning = true;
-				scanLoopFunction(0);
+				// allow recursion but just if it was not a dry run previously
+				if($scope.dryScanRun === 0) {
+					$scope.processNextScanStep(0);
+				} else {
+					$scope.toScan = true;
+				}
 			} else {
 				if(scan.processed !== scan.total) {
 					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
 				}
 				$scope.scanning = false;
 			}
+
+			if($scope.updateAvailable && $scope.artists.length === 0) {
+				$scope.update();
+			}
 		});
 	};
 
-	scanLoopFunction(1);
+	// initial lookup if new files are available
+	$scope.processNextScanStep(1);
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

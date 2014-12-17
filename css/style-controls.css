@@ -51,7 +51,7 @@
 	margin: 13px 2px 9px;
 }
 
-#controls .control:hover {
+#controls .control:hover, #controls .control:focus {
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);

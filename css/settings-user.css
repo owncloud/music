@@ -60,11 +60,6 @@
 	background-color: rgb(71, 164, 71);
 }
 
-#music-user .warning {
-	color: rgb(49, 49, 49);
-	background-color: rgb(237, 156, 40);
-}
-
 #music-user .warning a {
 	color: rgb(0, 0, 0) !important;
 }

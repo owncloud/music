@@ -7,9 +7,11 @@
 
 ### Commands
 
-Following command is available (see script occ in your ownCloud root folder)
+Following commands are available(see script occ in your ownCloud root folder):
 
-	./occ music:scan USERNAME
+#### Scan music files
+
+	./occ music:scan USERNAME1 USERNAME2 ...
 
 This scans all not scanned music files of the user USERNAME and saves the extracted metadata into the music tables in the database. This is also done if you browse the music app web interface. There the scan is done in steps of 20 tracks and the current state is visible at the bottom of the interface.
 
@@ -18,6 +20,18 @@ This scans all not scanned music files of the user USERNAME and saves the extrac
 This scans music files for all users.
 
 Both of the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
+
+#### Reset scanned metadata
+
+**Warning:** This command will delete data! It will remove unavailable tracks from playlists as playlists are linked against the track metadata.
+
+    ./occ music:reset-database USERNAME1 USERNAME2 ...
+
+This will reset the scanned metadata of the provided users.
+
+    ./occ music:reset-database --all
+
+This will reset the scanned metadata of all users.
 
 ### Ampache
 

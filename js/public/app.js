@@ -771,7 +771,7 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('mk', {"Albums":"Албуми","Artists":"Артисти","Description":"Опис","Description (e.g. App name)":"Опис (нпр. име на апликацијата)","Generate API password":"Генерирај API лозинка","Invalid path":"Грешна патека","Music":"Музика","Next":"Следно","Path to your music collection":"Патека до вашата музичка колекција","Pause":"Пауза","Play":"Пушти","Previous":"Претходно","Repeat":"Повтори","Revoke API password":"Отповикај ја API лозинката","Shuffle":"Помешај","Some not playable tracks were skipped.":"Некои песни кои не можеа да се пуштат беа прескокнати.","This setting specifies the folder which will be scanned for music.":"Овие поставки го одредуваат фолдерот кој ќе биде прегледан за музика.","Tracks":"Песна","Unknown album":"Непознат албум","Unknown artist":"Непознат артист"});
     gettextCatalog.setStrings('ml', {});
     gettextCatalog.setStrings('ml_IN', {"Music":"സംഗീതം","Next":"അടുത്തത്","Pause":" നിറുത്ത്","Play":"തുടങ്ങുക","Previous":"മുന്‍പത്തേത്"});
-    gettextCatalog.setStrings('mn', {});
+    gettextCatalog.setStrings('mn', {"Albums":"Цомог","Artists":"Хамтлаг/Дуучин","Description":"Тайлбар"});
     gettextCatalog.setStrings('ms_MY', {"Description":"Keterangan","Music":"Muzik","Next":"Seterus","Pause":"Jeda","Play":"Main","Previous":"Sebelum","Repeat":"Ulang","Shuffle":"Kocok"});
     gettextCatalog.setStrings('mt_MT', {});
     gettextCatalog.setStrings('my_MM', {"Description":"ဖော်ပြချက်"});

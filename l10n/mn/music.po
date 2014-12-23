@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Buyanbat <buyanbatu@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-12-23 05:00+0000\n"
+"Last-Translator: Buyanbat <buyanbatu@gmail.com>\n"
 "Language-Team: Mongolian (http://www.transifex.com/projects/p/owncloud/language/mn/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,15 +14,15 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "Цомог"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "Хамтлаг/Дуучин"
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Тайлбар"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"

@@ -765,6 +765,7 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('ko', {"Albums":"앨범","Artists":"음악가","Description":"종류","Generate API password":"API 비밀번호 생성","Music":"음악","Next":"다음","Pause":"일시 정지","Play":"재생","Previous":"이전","Repeat":"반복","Shuffle":"임의 재생","Unknown album":"알려지지 않은 앨범","Unknown artist":"알려지지 않은 아티스트"});
     gettextCatalog.setStrings('ku_IQ', {"Description":"پێناسه","Music":"مۆسیقا","Next":"دوواتر","Pause":"وه‌ستان","Play":"لێدان","Previous":"پێشووتر"});
     gettextCatalog.setStrings('lb', {"Description":"Beschreiwung","Music":"Musek","Next":"Weider","Pause":"Paus","Play":"Ofspillen","Previous":"Zeréck","Repeat":"Widderhuelen"});
+    gettextCatalog.setStrings('lo', {});
     gettextCatalog.setStrings('lt_LT', {"Description":"Aprašymas","Music":"Muzika","Next":"Kitas","Pause":"Pristabdyti","Play":"Groti","Previous":"Ankstesnis","Repeat":"Kartoti","Shuffle":"Maišyti","Unknown album":"Nežinomas albumas","Unknown artist":"Nežinomas atlikėjas"});
     gettextCatalog.setStrings('lv', {"Description":"Apraksts","Music":"Mūzika","Next":"Nākamā","Pause":"Pauzēt","Play":"Atskaņot","Previous":"Iepriekšējā","Repeat":"Atkārtot"});
     gettextCatalog.setStrings('mg', {});

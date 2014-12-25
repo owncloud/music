@@ -761,7 +761,7 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('ka', {});
     gettextCatalog.setStrings('ka_GE', {"Description":"გვერდის დახასიათება","Music":"მუსიკა","Next":"შემდეგი","Pause":"პაუზა","Play":"დაკვრა","Previous":"წინა","Repeat":"გამეორება"});
     gettextCatalog.setStrings('km', {"Albums":"អាល់ប៊ុម","Artists":"សិល្បករ","Description":"ការ​អធិប្បាយ","Description (e.g. App name)":"ការ​អធិប្បាយ (ឧ. ឈ្មោះ​កម្មវិធី)","Generate API password":"បង្កើត​ពាក្យ​សម្ងាត់ API","Invalid path":"ទីតាំង​មិន​ត្រឹម​ត្រូវ","Music":"តន្ត្រី","Next":"បន្ទាប់","Pause":"ផ្អាក","Play":"លេង","Previous":"មុន","Repeat":"ធ្វើម្ដងទៀត","Shuffle":"បង្អូស","Tracks":"បទ","Unknown album":"អាល់ប៊ុមអត់​ឈ្មោះ","Unknown artist":"សិល្បករអត់​ឈ្មោះ"});
-    gettextCatalog.setStrings('kn', {});
+    gettextCatalog.setStrings('kn', {"Next":"ಮುಂದೆ"});
     gettextCatalog.setStrings('ko', {"Albums":"앨범","Artists":"음악가","Description":"종류","Generate API password":"API 비밀번호 생성","Music":"음악","Next":"다음","Pause":"일시 정지","Play":"재생","Previous":"이전","Repeat":"반복","Shuffle":"임의 재생","Unknown album":"알려지지 않은 앨범","Unknown artist":"알려지지 않은 아티스트"});
     gettextCatalog.setStrings('ku_IQ', {"Description":"پێناسه","Music":"مۆسیقا","Next":"دوواتر","Pause":"وه‌ستان","Play":"لێدان","Previous":"پێشووتر"});
     gettextCatalog.setStrings('lb', {"Description":"Beschreiwung","Music":"Musek","Next":"Weider","Pause":"Paus","Play":"Ofspillen","Previous":"Zeréck","Repeat":"Widderhuelen"});

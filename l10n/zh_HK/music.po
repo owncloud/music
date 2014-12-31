@@ -1,10 +1,11 @@
 # 
 # Translators:
+# hklcf, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2014-12-30 10:51+0000\n"
+"Last-Translator: hklcf\n"
 "Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/owncloud/language/zh_HK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Albums"
-msgstr ""
+msgstr "相簿"
 
 #: ../templates/fake-template.php
 msgid "Artists"
-msgstr ""
+msgstr "歌手"
 
 #: ../templates/fake-template.php
 msgid "Description"

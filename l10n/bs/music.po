@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
+"PO-Revision-Date: 2014-12-30 12:21+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Bosnian (http://www.transifex.com/projects/p/owncloud/language/bs/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../templates/fake-template.php
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: ../templates/fake-template.php
 msgid "Description (e.g. App name)"
@@ -76,7 +76,7 @@ msgstr ""
 
 #: ../templates/main.php
 msgid "Repeat"
-msgstr ""
+msgstr "Ponovi"
 
 #: ../templates/fake-template.php
 msgid "Revoke API password"

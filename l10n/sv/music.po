@@ -2,51 +2,52 @@
 # Translators:
 # Patrik Nilsson <asavartzeth@gmail.com>, 2014
 # Gustav Smedberg <shadow.elf@hotmail.com>, 2013
+# Jerry Lidén <gurragurra@gmail.com>, 2015
 # Juho Ojala, 2013-2014
 # lagre, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-12-31 09:15+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-01-06 01:50+0000\n"
+"Last-Translator: Jerry Lidén <gurragurra@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/owncloud/language/sv/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:7
 msgid "Albums"
 msgstr "Album"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "Artister"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:13
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr "Beskrivning (ex. App namn)"
+msgstr "Beskrivning (ex. App-namn)"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr "Generera API lösenord"
+msgstr "Generera API-lösenord"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
 msgstr "Här kan du generera lösenord för användning med Ampaches API, eftersom de inte kan lagras på ett riktigt säkert sätt på grund av Ampachi API:ns design. Du kan generera så många lösenord du vill och upphäva dem när som helst."
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:10
 msgid "Invalid path"
 msgstr "Ogiltig sökväg"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:19
 msgid ""
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
 "free to report your experience with this feature in the corresponding <a "
@@ -54,69 +55,69 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Kom ihåg, att Ampaches API endast är en förhandsvisning och är ostabil. Du är välkommen att rapportera din upplevelse med denna funktionen i motsvarande <a href=\"https://github.com/owncloud/music/issues/60\">problem</a>. Jag skulle också vilja ha en lista över klienter att testa med.\nTack"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "Musik"
 
-#: ../templates/main.php
+#: ../templates/main.php:64
 msgid "Next"
 msgstr "Nästa"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "Sökvägen till din musiksamling"
 
-#: ../templates/main.php
+#: ../templates/main.php:62
 msgid "Pause"
 msgstr "Paus"
 
-#: ../templates/main.php
+#: ../templates/main.php:60
 msgid "Play"
 msgstr "Spela"
 
-#: ../templates/main.php
+#: ../templates/main.php:58
 msgid "Previous"
 msgstr "Föregående"
 
-#: ../templates/main.php
+#: ../templates/main.php:89
 msgid "Repeat"
 msgstr "Upprepa"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:16
 msgid "Revoke API password"
-msgstr "Upphäv API lösenord"
+msgstr "Upphäv API-lösenord"
 
-#: ../templates/main.php
+#: ../templates/main.php:87
 msgid "Shuffle"
 msgstr "Blanda"
 
-#: ../js/public/app.js
+#: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
 msgstr "Några icke spelbara spår hoppades över"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "Denna inställning specificerar vilken mapp som kommer skannas efter musik"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:8
 msgid "Tracks"
 msgstr "Spår"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:4
 msgid "Unknown album"
 msgstr "Okänt album"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:5
 msgid "Unknown artist"
 msgstr "Okänd artist"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
 msgstr "Använd denna adress för att bläddra igenom din musiksamling från valfri Ampache-kompatibel enhet."
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"

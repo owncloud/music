@@ -12,38 +12,38 @@ msgstr ""
 "Language: bn_BD\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:7
 msgid "Albums"
 msgstr "অ্যালবামসমূহ"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "শিল্পীগণ"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:13
 msgid "Description"
 msgstr "বিবরণ"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
 msgstr "বিবরণ (উদাহরণ: অ্যাপ নাম)"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:15
 msgid "Generate API password"
 msgstr "API কুটশব্দ তৈরী কর"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
 msgstr "এখানে আপনি Ampache API এর জন্য কুটশব্দ তৈরী করতে পারেন কারণ তার ডিজােইনের কারণেই Ampache API কে নিরাপদে সংরক্ষণ করা যায়না। আপনার যত খুশি কুটশব্দ তৈরী করতে পারেন এবং ইচ্ছেমাফিক তাদের বাতিল করতেও পারেন।"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:10
 msgid "Invalid path"
 msgstr "পথটি সঠিক নয়"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:19
 msgid ""
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
 "free to report your experience with this feature in the corresponding <a "
@@ -51,69 +51,69 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "মনে রাখুন যে Ampache API একটি প্রিভিউ মাত্র এবং এটি স্থির কিছু নয়। এতদ্বিষয়ে আপনার অভিজ্ঞতা আমাদের জানাতে <a href=\"https://github.com/owncloud/music/issues/60\">issue</a> ব্যাবহার করুন। এটি পরীক্ষা করার জন্য আমার কিছু ব্যাবহারকারী প্রয়োজন। ধন্যবাদ "
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "গানবাজনা"
 
-#: ../templates/main.php
+#: ../templates/main.php:64
 msgid "Next"
 msgstr "পরবর্তী"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "আপনার গানের সংগ্রহের পথ "
 
-#: ../templates/main.php
+#: ../templates/main.php:62
 msgid "Pause"
 msgstr "বিরতি"
 
-#: ../templates/main.php
+#: ../templates/main.php:60
 msgid "Play"
 msgstr "বাজাও"
 
-#: ../templates/main.php
+#: ../templates/main.php:58
 msgid "Previous"
 msgstr "পূর্ববর্তী"
 
-#: ../templates/main.php
+#: ../templates/main.php:89
 msgid "Repeat"
 msgstr "পূনঃসংঘটন"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:16
 msgid "Revoke API password"
 msgstr "API কুটশব্দ বাতিল কর"
 
-#: ../templates/main.php
+#: ../templates/main.php:87
 msgid "Shuffle"
 msgstr "এলোমেলো কর"
 
-#: ../js/public/app.js
+#: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
 msgstr "বাজানোর অনুপযোগী কিছু ট্র্যাক এড়িয়ে যাওয়া হয়েছে।"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "এই নিয়ামকটি গান খুজে বের করার জন্য ফোল্ডার নির্ধারণ করে।"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:8
 msgid "Tracks"
 msgstr "ট্র্যাকসমূহ"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:4
 msgid "Unknown album"
 msgstr "অজানা অ্যালবাম"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:5
 msgid "Unknown artist"
 msgstr "অজানা শিল্পী"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
 msgstr "Ampache compatible player হতে আপনার গানের সংগ্রহ দেখতে এই ঠিকানা ব্যাবহার করুন।"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"

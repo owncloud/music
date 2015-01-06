@@ -17,38 +17,38 @@ msgstr ""
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:7
 msgid "Albums"
 msgstr "アルバム"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "アーティスト"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:13
 msgid "Description"
 msgstr "説明"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
 msgstr "説明 (例えばアプリケーション名)"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:15
 msgid "Generate API password"
 msgstr "APIパスワードの生成"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
 msgstr "ここでは、Ampache APIに使用するパスワードを生成することができます。Ampache API のパスワードを本当に安全な方法では保管することができないからです。いつでも望むままに、いくつものパスワードを生成したり、それらを無効にしたりすることができます。"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:10
 msgid "Invalid path"
 msgstr "無効なパス"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:19
 msgid ""
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
 "free to report your experience with this feature in the corresponding <a "
@@ -56,69 +56,69 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr "Ampache APIはまだプレビュー版で、まだ不安定ですので、注意してください。この機能について、 <a href=\"https://github.com/owncloud/music/issues/60\">issue</a> への動作結果報告を歓迎します。テスト済クライアントのリストも作成したいと考えていますので、よろしくお願いいたします。"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "ミュージック"
 
-#: ../templates/main.php
+#: ../templates/main.php:64
 msgid "Next"
 msgstr "次"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "音楽コレクションのパス"
 
-#: ../templates/main.php
+#: ../templates/main.php:62
 msgid "Pause"
 msgstr "一時停止"
 
-#: ../templates/main.php
+#: ../templates/main.php:60
 msgid "Play"
 msgstr "再生"
 
-#: ../templates/main.php
+#: ../templates/main.php:58
 msgid "Previous"
 msgstr "前"
 
-#: ../templates/main.php
+#: ../templates/main.php:89
 msgid "Repeat"
 msgstr "繰り返し"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:16
 msgid "Revoke API password"
 msgstr "API パスワードを無効にする"
 
-#: ../templates/main.php
+#: ../templates/main.php:87
 msgid "Shuffle"
 msgstr "シャッフル"
 
-#: ../js/public/app.js
+#: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
 msgstr "いくつかの再生不可能なトラックを飛ばしました。"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "この設定では、音楽ファイルをスキャンするフォルダーを指定します。"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:8
 msgid "Tracks"
 msgstr "トラック"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:4
 msgid "Unknown album"
 msgstr "不明なアルバム"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:5
 msgid "Unknown artist"
 msgstr "不明なアーティスト"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
 msgstr "あなたの音楽コレクションをAmpache対応プレイヤーから閲覧するには、このアドレスを使用してください。"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"

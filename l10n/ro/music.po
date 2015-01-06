@@ -13,38 +13,38 @@ msgstr ""
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:7
 msgid "Albums"
 msgstr "Albume"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "Artiști"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:13
 msgid "Description"
 msgstr "Descriere"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
 msgstr "Descriere (ex. Numele aplicației)"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:15
 msgid "Generate API password"
 msgstr "Generează parola API"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:10
 msgid "Invalid path"
 msgstr "Cale invalidă"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:19
 msgid ""
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
 "free to report your experience with this feature in the corresponding <a "
@@ -52,69 +52,69 @@ msgid ""
 " like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "Muzică"
 
-#: ../templates/main.php
+#: ../templates/main.php:64
 msgid "Next"
 msgstr "Următor"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "Calea spre colecția cu muzica dvs."
 
-#: ../templates/main.php
+#: ../templates/main.php:62
 msgid "Pause"
 msgstr "Pauză"
 
-#: ../templates/main.php
+#: ../templates/main.php:60
 msgid "Play"
 msgstr "Redă"
 
-#: ../templates/main.php
+#: ../templates/main.php:58
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../templates/main.php
+#: ../templates/main.php:89
 msgid "Repeat"
 msgstr "Repetă"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:16
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php
+#: ../templates/main.php:87
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js
+#: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:8
 msgid "Tracks"
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:4
 msgid "Unknown album"
 msgstr "Album necunoscut"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:5
 msgid "Unknown artist"
 msgstr "Artist necunoscut"
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
 msgstr ""
 
-#: ../templates/fake-template.php
+#: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"

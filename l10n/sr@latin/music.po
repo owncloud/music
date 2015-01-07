@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Marko Radojcic <sambucuself@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-12-31 09:15+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-01-06 19:01+0000\n"
+"Last-Translator: Marko Radojcic <sambucuself@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/projects/p/owncloud/language/sr@latin/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,11 +14,11 @@ msgstr ""
 
 #: ../templates/fake-template.php:7
 msgid "Albums"
-msgstr ""
+msgstr "Albumi"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
-msgstr ""
+msgstr "Izvođači"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -25,22 +26,22 @@ msgstr "Opis"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Opis (npr. Ime aplikacije)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr ""
+msgstr "Generiši API lozinku"
 
 #: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Ovde možete da generišete lozinke za korišćenje sa Ampache API-jem za to što one ne mogu biti sačuvane na veoma siguran način zbog dizajna Ampache API-ja. Možete da generišete koliko god želite lozinki i da ih opozovete u bilo kom trenutku."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
-msgstr ""
+msgstr "Neispravna putanja"
 
 #: ../templates/fake-template.php:19
 msgid ""
@@ -48,7 +49,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Imajte na umu da je Ampache API samo probna verzija i da je nestabilna. Slobodno prijavite Vaša iskustva sa ovom opcijom obraćajući se na odgovarajuću <a href=\"https://github.com/owncloud/music/issues/60\">stavku</a>. Takođe je dobrodošla lista klijenata za testiranje ove opcije. Hvala"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
@@ -60,7 +61,7 @@ msgstr "Sledeća"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Putanja do Vaše muzičke kolekcije"
 
 #: ../templates/main.php:62
 msgid "Pause"
@@ -80,40 +81,40 @@ msgstr "Ponavljaj"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
-msgstr ""
+msgstr "Opozovi API lozinku"
 
 #: ../templates/main.php:87
 msgid "Shuffle"
-msgstr ""
+msgstr "Nasumično"
 
 #: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Neke numere koje nije bilo moguće pustiti su preskočene."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Ovo podešavanje određuje direktorijum koji će biti skeniran u potrazi za muzikom."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr ""
+msgstr "Numere"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
-msgstr ""
+msgstr "Nepoznati album"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
-msgstr ""
+msgstr "Nepoznati izvođač"
 
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Koristite ovu adresu da pregledate Vašu muzičku kolekciju iz bilo kog Ampache kompatibilnog plejera."
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Koristite Vaše korisničko ime i sledeću lozinku da se povežete na ovu Ampache instancu:"

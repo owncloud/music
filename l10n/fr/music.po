@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-01-12 21:32+0000\n"
+"PO-Revision-Date: 2015-01-17 20:41+0000\n"
 "Last-Translator: Thomas Imbreckx <zinks@member.fsf.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/owncloud/language/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,7 +119,7 @@ msgstr "Artiste inconnu"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr "Utilisez cette adresse pour naviguer dans votre collection musicale avec un player compatible Ampache."
+msgstr "Utilisez cette adresse pour naviguer dans votre collection musicale avec un client compatible Ampache."
 
 #: ../templates/fake-template.php:17
 msgid ""

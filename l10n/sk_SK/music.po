@@ -1,12 +1,12 @@
 # 
 # Translators:
-# Marián Hvolka <marian.hvolka@stuba.sk>, 2013-2014
+# Marián Hvolka <marian.hvolka@stuba.sk>, 2013-2015
 # mehturt <mehturt@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-01-12 12:47+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-01-27 10:02+0000\n"
+"Last-Translator: Marián Hvolka <marian.hvolka@stuba.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/owncloud/language/sk_SK/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -94,7 +94,7 @@ msgstr "Niektoré neprehrateľné skladby boli vynechané."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr "Toto nastavenie určuje priečinok, ktorý bude prehľadaný pre hudbu."
+msgstr "Toto nastavenie určuje priečinok, v ktorom bude vyhľadaná hudba."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"

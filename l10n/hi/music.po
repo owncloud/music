@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Abhishek <kristoabhi@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2014-08-28 05:29+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-01-31 16:31+0000\n"
+"Last-Translator: Abhishek <kristoabhi@gmail.com>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/owncloud/language/hi/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,15 +14,15 @@ msgstr ""
 
 #: ../templates/fake-template.php:7
 msgid "Albums"
-msgstr ""
+msgstr "एलबम"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
-msgstr ""
+msgstr "कलाकारों"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
-msgstr ""
+msgstr "विवरण"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
@@ -52,11 +53,11 @@ msgstr ""
 
 #: ../templates/fake-template.php:3
 msgid "Music"
-msgstr ""
+msgstr "गाना"
 
 #: ../templates/main.php:64
 msgid "Next"
-msgstr ""
+msgstr "अगला"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"

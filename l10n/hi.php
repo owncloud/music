@@ -1,5 +1,9 @@
 <?php
 $TRANSLATIONS = array(
-"_Show all {{ trackcount }} songs ..._::_Show all {{ trackcount }} songs ..._" => array("","")
+"Albums" => "एलबम",
+"Artists" => "कलाकारों",
+"Description" => "विवरण",
+"Music" => "गाना",
+"Next" => "अगला"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

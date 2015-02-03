@@ -1,5 +1,6 @@
 # 
 # Translators:
+# Christian Hoffmann <github@christianhoffmann.com>, 2015
 # I Robot, 2013
 # Mario Siegmann <mario_siegmann@web.de>, 2013-2014
 # stefanniedermann <stefan.niedermann@googlemail.com>, 2014
@@ -7,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-01-12 12:47+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-02-02 10:13+0000\n"
+"Last-Translator: Christian Hoffmann <github@christianhoffmann.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/owncloud/language/de_DE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -120,4 +121,4 @@ msgstr "Nutzen Sie diese Adresse zum Durchsuchen Ihrer Musiksammlung auf einem b
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Nutzen Sie Ihren Benutzernamen und folgendes Passwort, um zu dieser Ampache-Instanz zu verbinden:"
+msgstr "Benutzen Sie Ihren Benutzernamen und folgendes Passwort, um sich mit dieser Ampache-Instanz zu verbinden:"

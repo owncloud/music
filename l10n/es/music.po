@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-01-12 12:47+0000\n"
+"PO-Revision-Date: 2015-02-05 19:23+0000\n"
 "Last-Translator: Adrián López Galera <adrian_201@hotmail.es>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

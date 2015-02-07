@@ -3,6 +3,7 @@
 # Alexander Savchenko, 2014
 # Dmitry <linuxsquirrel.dev@gmail.com>, 2013
 # jekader <jekader@gmail.com>, 2013
+# John Doe <twisted_tits@mail.ru>, 2015
 # Kalyuzhniy Aleksey, 2014
 # lifeslice <root@lifeslice.ru>, 2014
 # Sergei Shuykov <n1nj4p0w3r@gmail.com>, 2015
@@ -11,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
-"Last-Translator: Sergei Shuykov <n1nj4p0w3r@gmail.com>\n"
+"PO-Revision-Date: 2015-02-06 10:51+0000\n"
+"Last-Translator: John Doe <twisted_tits@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -44,7 +45,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr "Здесь вы можете генерировать пароли для использования с API Ampache, в связи с тем что, они не могут быть сохранены в действительно безопасным способом из-за конструкции API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время."
+msgstr "Здесь вы можете генерировать пароли для использования API Ampache, так как они не могут быть сохранены действительно безопасным способом из-за особенностей API Ampache. Вы можете создать столько паролей, сколько необходимо, и отказаться от них в любое время."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
@@ -56,7 +57,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr "Следует помнить, что API Ampache является демо-версией и поэтому неустойчиво. Мы будем признательны, если вы поделитесь опытом работы с этой функцией в соответствующем <a href=\"https://github.com/owncloud/music/issues/60\">разделе</a>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
+msgstr "Следует помнить, что API Ampache является предварительной и поэтому неустойчивой реализацией. Не стесняйтесь делиться опытом работы с этой функцией в соответствующем <a href=\"https://github.com/owncloud/music/issues/60\">разделе</a>. Я также хотел бы создать список клиентов для тестирования. Спасибо"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
@@ -96,7 +97,7 @@ msgstr "Перемешать"
 
 #: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
-msgstr "Некоторые непроигрываемые композиции были пропущены."
+msgstr "Некоторые не проигрываемые композиции были пропущены."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
@@ -124,4 +125,4 @@ msgstr "Используйте этот адрес, чтобы просмотр�
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Используйте свой логин и следующий ниже пароль для подключения к данному экземпляру Ampache:"
+msgstr "Используйте свой логин и пароль ниже для подключения к данному экземпляру Ampache:"

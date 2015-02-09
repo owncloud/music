@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:24+0000\n"
+"PO-Revision-Date: 2015-02-09 05:30+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,11 +69,11 @@ msgstr "Ara ver"
 
 #: ../templates/main.php:60
 msgid "Play"
-msgstr ""
+msgstr "Oxu"
 
 #: ../templates/main.php:58
 msgid "Previous"
-msgstr ""
+msgstr "Əvvələ"
 
 #: ../templates/main.php:89
 msgid "Repeat"

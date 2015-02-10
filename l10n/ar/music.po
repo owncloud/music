@@ -2,11 +2,12 @@
 # Translators:
 # Abderraouf Mehdi Bouhali <armbouhali@gmail.com>, 2014
 # suliman al-ajlan <291101251@std.qu.edu.sa>, 2014
+# Yousra Fakhrey <yousra.fakhrey@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-02-09 16:33+0000\n"
+"Last-Translator: Yousra Fakhrey <yousra.fakhrey@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/owncloud/language/ar/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,15 +24,15 @@ msgstr "الفنانون"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
-msgstr "وصف"
+msgstr "الوصف"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "الوصف (مثل اسم التطبيق)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr ""
+msgstr "أنشِئ كلمة سر لواجهة برمجة التطبيقات ( API)"
 
 #: ../templates/fake-template.php:18
 msgid ""
@@ -82,7 +83,7 @@ msgstr "إعادة"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
-msgstr ""
+msgstr "إلغاء كلمة سر API"
 
 #: ../templates/main.php:87
 msgid "Shuffle"
@@ -90,11 +91,11 @@ msgstr "اختيار عشوائي"
 
 #: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "جرى تخطى بعض المقاطع غير العاملة"
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "ستخصص الإعدادات الملف الذي سُيجرى البحث فيه عن الموسيقى"
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
@@ -112,7 +113,7 @@ msgstr "فنان غير معروف"
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "استخدم هذا العنوان في أي مشغل متوافق مع Ampache للبحث عن مجموعتك الموسيقية "
 
 #: ../templates/fake-template.php:17
 msgid ""

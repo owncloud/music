@@ -1,3 +1,12 @@
+v0.3.5 2015-02-16
+
+  * reset-database command
+  * set length of a track in the database and expose via Ampache
+  * fix album count in Ampache API
+  * expose Album cover via (inofficial) Ampache API
+  * ownCloud 8 compatibility
+  * user interaction needed to start background scan and reload the music view
+
 v0.3.4 2014-09-04
 
   Thanks to Volkan Geezer (@wakeup) and Yu-De (@pellaeon)

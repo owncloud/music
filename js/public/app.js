@@ -773,6 +773,7 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('ml', {});
     gettextCatalog.setStrings('ml_IN', {"Music":"സംഗീതം","Next":"അടുത്തത്","Pause":" നിറുത്ത്","Play":"തുടങ്ങുക","Previous":"മുന്‍പത്തേത്"});
     gettextCatalog.setStrings('mn', {"Albums":"Цомог","Artists":"Хамтлаг/Дуучин","Description":"Тайлбар"});
+    gettextCatalog.setStrings('mr', {});
     gettextCatalog.setStrings('ms_MY', {"Description":"Keterangan","Music":"Muzik","Next":"Seterus","Pause":"Jeda","Play":"Main","Previous":"Sebelum","Repeat":"Ulang","Shuffle":"Kocok"});
     gettextCatalog.setStrings('mt_MT', {});
     gettextCatalog.setStrings('my_MM', {"Description":"ဖော်ပြချက်"});

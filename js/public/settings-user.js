@@ -25,7 +25,7 @@ $(document).ready(function() {
 	 * Collection path
 	 */
 	var $path = $('#music-path');
-	$path.on('click focus', function() {
+	$path.on('click', function() {
 		OC.dialogs.filepicker(
 			t('music', 'Path to your music collection'),
 			function (path) {

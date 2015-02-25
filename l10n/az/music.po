@@ -1,11 +1,11 @@
 # 
 # Translators:
-# unixidzero <unixidzero@gmail.com>, 2014
+# unixidzero <unixidzero@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-09 05:30+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2015-02-25 04:39+0000\n"
+"Last-Translator: unixidzero <unixidzero@gmail.com>\n"
 "Language-Team: Azerbaijani (http://www.transifex.com/projects/p/owncloud/language/az/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,7 +41,7 @@ msgstr "Ampache APİ-nin istifadə edilməsi üçün burda siz şifrələr gener
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
-msgstr ""
+msgstr "Yalnış ünvan"
 
 #: ../templates/fake-template.php:19
 msgid ""
@@ -49,7 +49,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Yadda saxlayın, Ampache API yalnız göstərmək üçündür və stabil deyil. Bu imkanla olan öz praktikanızı <a href=\"https://github.com/owncloud/music/issues/60\">səbəb</a> uyğun unvanla bölüşməkdən çəkinməyin. Həmçinin bunun test edilməsi üçün müştərilər siyahısını istərdim.\nTəşəkkürlər "
 
 #: ../templates/fake-template.php:3
 msgid "Music"
@@ -81,40 +81,40 @@ msgstr "Təkrar"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
-msgstr ""
+msgstr "API şifrəsini sil"
 
 #: ../templates/main.php:87
 msgid "Shuffle"
-msgstr ""
+msgstr "Qarışdırmaq"
 
 #: ../js/public/app.js:458
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Bəzi oxunulabilməyən musiqilər ötürülüb."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Bu quraşdırma qovluğu təyin edir hansı ki, musiqi üçün tədqiq ediləcək."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr ""
+msgstr "Musiqi"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
-msgstr ""
+msgstr "Bəlli olmayan albom"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
-msgstr ""
+msgstr "Bəlli olmayan artist"
 
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "İstənilən Ampache uyğunluğu olan oxuyucudan sizin musiqi kolleksiyanızı göstərmək üçün, bu ünvandan istifadə edin."
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr ""
+msgstr "Bu Ampache nusxəsinə qoşulmaq üçün öz istifadəçi adı və şifrənizi istifadə edin."

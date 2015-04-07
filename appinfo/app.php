@@ -76,7 +76,16 @@ $c->query('ServerContainer')->getNavigationManager()->add($navConfig);
 /**
  * load styles and scripts
  */
-// fileactions
-$c->query('API')->addScript('public/fileactions', $c->query('AppName'));
-// file player for public sharing page
-$c->query('API')->addScript('public/musicFilePlayer', $c->query('AppName'));
+
+$appName = $c->query('AppName');
+if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
+	// fileactions
+	$c->query('API')->addScript('public/fileactions', $appName);
+	// file player for public sharing page
+	$c->query('API')->addScript('public/musicFilePlayer', $appName);
+} else {
+	// fileactions
+	\OCP\Util::addScript($appName, 'public/fileactions');
+	// file player for public sharing page
+	\OCP\Util::addScript($appName, 'public/musicFilePlayer');
+}

@@ -13,7 +13,6 @@
 
 namespace OCA\Music\AppFramework\Utility;
 
-use OCP\IRequest;
 use OCP\AppFramework\Http\Response;
 
 

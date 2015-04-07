@@ -16,8 +16,6 @@ use \OCP\IURLGenerator;
 
 use \OCA\Music\AppFramework\Db\Entity;
 
-use \OCA\Music\Core\API;
-
 /**
  * @method string getName()
  * @method setName(string $name)

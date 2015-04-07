@@ -31,8 +31,6 @@ use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
 
-use \OCA\Music\Core\API;
-
 use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
 use \OCA\Music\DB\AmpacheUserMapper;
@@ -46,8 +44,6 @@ use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
-
-use \OCA\Music\AppFramework\Middleware\MiddlewareDispatcher;
 
 // in stable5 getid3 is already loaded
 if(!class_exists('getid3_exception')) {

@@ -3,6 +3,7 @@ php:
   - 5.3
   - 5.4
   - 5.5
+  - 5.6
 
 before_install:
   - cd ..
@@ -14,4 +15,10 @@ before_install:
   - cd apps/music
 
 script:
-  - phpunit tests
+  - phpunit tests  --coverage-clover clover.xml
+
+  # Create coverage report
+  - sh -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
+  - sh -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then php ocular.phar code-coverage:upload --format=php-clover clover.xml; fi"
+
+

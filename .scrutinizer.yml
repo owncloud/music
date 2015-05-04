@@ -4,3 +4,6 @@ imports:
 
 filter:
     excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js]
+
+tools:
+    external_code_coverage: true

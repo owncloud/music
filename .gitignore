@@ -54,3 +54,5 @@ coverage-html
 # L10n
 l10n/templates/music.pot
 
+vendor/
+bin/

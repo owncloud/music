@@ -14,13 +14,12 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Core\Db;
-use \OCA\Music\AppFramework\Db\IMapper;
-use \OCA\Music\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\Mapper;
+use OCP\IDb;
 
-class PlaylistMapper extends Mapper implements IMapper {
+class PlaylistMapper extends Mapper {
 
-	public function __construct(DB $db){
+	public function __construct(IDb $db){
 		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
 	}
 

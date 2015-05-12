@@ -17,10 +17,11 @@ use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\AppFramework\Http\Response;
 use \OCP\Files\Folder;
+use \OCP\IL10N;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -31,13 +32,21 @@ use \OCA\Music\Utility\Scanner;
 
 class ApiController extends Controller {
 
+	/** @var IL10N */
 	private $l10n;
+	/** @var TrackBusinessLayer */
 	private $trackBusinessLayer;
+	/** @var ArtistBusinessLayer */
 	private $artistBusinessLayer;
+	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
+	/** @var Scanner */
 	private $scanner;
+	/** @var string */
 	private $userId;
+	/** @var IURLGenerator */
 	private $urlGenerator;
+	/** @var Folder */
 	private $userFolder;
 
 	public function __construct($appname,

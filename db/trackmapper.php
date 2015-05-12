@@ -12,13 +12,12 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Core\Db;
-use \OCA\Music\AppFramework\Db\IMapper;
-use \OCA\Music\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\Mapper;
+use OCP\IDb;
 
-class TrackMapper extends Mapper implements IMapper {
+class TrackMapper extends Mapper {
 
-	public function __construct(DB $db){
+	public function __construct(IDb $db){
 		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
 	}
 
@@ -124,7 +123,7 @@ class TrackMapper extends Mapper implements IMapper {
 			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
 		$params = array($userId, $artistId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 
@@ -138,7 +137,7 @@ class TrackMapper extends Mapper implements IMapper {
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
 		$params = array($userId, $albumId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 
@@ -151,7 +150,7 @@ class TrackMapper extends Mapper implements IMapper {
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 

@@ -13,16 +13,16 @@
 
 namespace OCA\Music\AppFramework\BusinessLayer;
 
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
-use \OCA\Music\AppFramework\Db\IMapper;
-use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCP\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\Mapper;
+use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 
 abstract class BusinessLayer {
 
 	protected $mapper;
 
-	public function __construct(IMapper $mapper){
+	public function __construct(Mapper $mapper){
 		$this->mapper = $mapper;
 	}
 

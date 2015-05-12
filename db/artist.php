@@ -14,7 +14,7 @@ namespace OCA\Music\Db;
 
 use \OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\Db\Entity;
+use \OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getName()

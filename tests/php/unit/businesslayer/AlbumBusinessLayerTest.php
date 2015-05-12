@@ -12,8 +12,8 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
-use \OCA\Music\AppFramework\Db\MultipleObjectsReturnedException;
+use \OCP\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Album;
 

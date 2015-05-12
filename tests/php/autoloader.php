@@ -9,6 +9,7 @@
  * @copyright Morris Jobke 2014
  */
 
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 class OC {
     public static $server;
@@ -43,6 +44,15 @@ spl_autoload_register(function ($className){
         $path = strtolower(str_replace('\\', '/', substr($className, 2)) . '.php');
         $relPath = __DIR__ . '/../../../../lib/private' . $path;
 
+        if(file_exists($relPath)){
+            require_once $relPath;
+        }
+    } else if(strpos($className, 'Test\\') === 0) {
+        $path = strtolower(
+            str_replace('\\', '/', substr($className, 4)) . '.php'
+        );
+        echo $path;
+        $relPath = __DIR__ . '/../../../../tests/lib' . $path;
         if(file_exists($relPath)){
             require_once $relPath;
         }

@@ -22,13 +22,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use \OCA\Music\App\Music;
+
+use OCA\Music\Utility\Scanner;
 
 class Scan extends Command {
 	/**
 	 * @var \OCP\IUserManager $userManager
 	 */
 	private $userManager;
+	/**
+	 * @var  Scanner
+	 */
 	private $scanner;
 	/**
 	 * @var \OCP\Files\Folder $rootFolder

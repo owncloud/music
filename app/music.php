@@ -13,12 +13,9 @@
 
 namespace OCA\Music\App;
 
-use \OC\Files\View;
-
 use \OCP\AppFramework\App;
 
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\AppFramework\Core\Db;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -44,6 +41,7 @@ use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
+use OCP\AppFramework\IAppContainer;
 
 // in stable5 getid3 is already loaded
 if(!class_exists('getid3_exception')) {
@@ -158,39 +156,45 @@ class Music extends App {
 		 * Mappers
 		 */
 
-		$container->registerService('AlbumMapper', function($c) {
+		$container->registerService('AlbumMapper', function(IAppContainer $c) {
 			return new AlbumMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
-		$container->registerService('AmpacheSessionMapper', function($c) {
+		$container->registerService('AmpacheSessionMapper', function(IAppContainer $c) {
 			return new AmpacheSessionMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
-		$container->registerService('AmpacheUserMapper', function($c) {
+		$container->registerService('AmpacheUserMapper', function(IAppContainer $c) {
 			return new AmpacheUserMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
-		$container->registerService('ArtistMapper', function($c) {
+		$container->registerService('ArtistMapper', function(IAppContainer $c) {
 			return new ArtistMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
-		$container->registerService('PlaylistMapper', function($c) {
+		$container->registerService('PlaylistMapper', function(IAppContainer $c) {
 			return new PlaylistMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
-		$container->registerService('TrackMapper', function($c) {
+		$container->registerService('TrackMapper', function(IAppContainer $c) {
 			return new TrackMapper(
-				$c->query('Db')
+				// TODO: replace this with IDBConnection (only 8.1+)
+				$c->getServer()->getDb()
 			);
 		});
 
@@ -202,8 +206,8 @@ class Music extends App {
 			return $c->getServer()->getConfig();
 		});
 
-		$container->registerService('Db', function() {
-			return new Db();
+		$container->registerService('Db', function(IAppContainer $c) {
+			return $c->getServer()->getDatabaseConnection();
 		});
 
 		$container->registerService('L10N', function($c) {
@@ -258,7 +262,7 @@ class Music extends App {
 			return $getID3;
 		});
 
-		$container->registerService('Helper', function($c) {
+		$container->registerService('Helper', function(IAppContainer $c) {
 			return new Helper(
 				$c->query('Db')
 			);

@@ -12,14 +12,15 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\Core\Db;
+use OCP\IDBConnection;
 
 
 class Helper {
 
+	/** @var IDBConnection */
 	private $db;
 
-	public function __construct(Db $db){
+	public function __construct(IDBConnection $db){
 		$this->db = $db;
 	}
 
@@ -36,7 +37,7 @@ class Helper {
 		);
 
 		foreach ($sqls as $sql) {
-			$query = $this->db->prepareQuery($sql);
+			$query = $this->db->prepare($sql);
 			$query->execute();
 		}
 	}

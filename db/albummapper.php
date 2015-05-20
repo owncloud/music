@@ -41,7 +41,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @return Album[]
 	 */
 	public function findAll($userId){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `album`.`name`');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
 	}
@@ -98,7 +98,8 @@ class AlbumMapper extends Mapper implements IMapper {
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
-			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? '.
+			'ORDER BY `album`.`name`';
 		$params = array($userId, $artistId);
 		return $this->findEntities($sql, $params);
 	}
@@ -337,7 +338,7 @@ class AlbumMapper extends Mapper implements IMapper {
 		} else {
 			$condition = 'AND `album`.`name` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition);
+		$sql = $this->makeSelectQuery($condition . 'ORDER BY `album`.`name`');
 		$params = array($userId, $name);
 		return $this->findEntities($sql, $params);
 	}

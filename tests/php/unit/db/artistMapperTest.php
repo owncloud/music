@@ -72,7 +72,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 	}
 
 	public function testFindAll(){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId), $this->rows);
 		$result = $this->mapper->findAll($this->userId);
 		$this->assertEquals($this->artists, $result);
@@ -80,7 +80,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 
 	public function testFindMultipleById(){
 		$artistIds = array(1,3,5);
-		$sql = $this->makeSelectQuery('AND `artist`.`id` IN (?,?,?)');
+		$sql = $this->makeSelectQuery('AND `artist`.`id` IN (?,?,?) ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId, 1, 3, 5), $this->rows);
 		$result = $this->mapper->findMultipleById($artistIds, $this->userId);
 		$this->assertEquals($this->artists, $result);
@@ -88,7 +88,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 
 	public function testFindByName(){
 		$artistName = 'test';
-		$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+		$sql = $this->makeSelectQuery('AND `artist`.`name` = ? ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId, $artistName), array($this->rows[0]));
 		$result = $this->mapper->findByName($artistName, $this->userId);
 		$this->assertEquals($this->artists[0], $result);
@@ -96,7 +96,7 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 
 	public function testFindByNameIsNull(){
 		$artistName = null;
-		$sql = $this->makeSelectQuery('AND `artist`.`name` IS NULL');
+		$sql = $this->makeSelectQuery('AND `artist`.`name` IS NULL ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId), array($this->rows[2]));
 		$result = $this->mapper->findByName($artistName, $this->userId);
 		$this->assertEquals($this->artists[2], $result);
@@ -128,14 +128,14 @@ class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility
 	}
 
 	public function testFindAllByName(){
-		$sql = $this->makeSelectQuery('AND `artist`.`name` = ?');
+		$sql = $this->makeSelectQuery('AND `artist`.`name` = ? ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId, 123), array($this->rows[0]));
 		$result = $this->mapper->findAllByName(123, $this->userId);
 		$this->assertEquals(array($this->artists[0]), $result);
 	}
 
 	public function testFindAllByNameFuzzy(){
-		$sql = $this->makeSelectQuery('AND LOWER(`artist`.`name`) LIKE LOWER(?)');
+		$sql = $this->makeSelectQuery('AND LOWER(`artist`.`name`) LIKE LOWER(?) ORDER BY `artist`.`name`');
 		$this->setMapperResult($sql, array($this->userId, '%test123test%'), array($this->rows[0]));
 		$result = $this->mapper->findAllByName('test123test', $this->userId, true);
 		$this->assertEquals(array($this->artists[0]), $result);

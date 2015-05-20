@@ -36,7 +36,7 @@ class ArtistMapper extends Mapper implements IMapper {
 	 * @return Artist[]
 	 */
 	public function findAll($userId){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `artist`.`name`');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
 	}
@@ -52,7 +52,7 @@ class ArtistMapper extends Mapper implements IMapper {
 			$questionMarks[] = '?';
 		}
 		$sql = $this->makeSelectQuery('AND `artist`.`id` IN (' .
-			implode(',', $questionMarks) .')');
+			implode(',', $questionMarks) .') ORDER BY `artist`.`name`');
 		$params = $artistIds;
 		array_unshift($params, $userId);
 		return $this->findEntities($sql, $params);
@@ -86,7 +86,7 @@ class ArtistMapper extends Mapper implements IMapper {
 			$condition = 'AND `artist`.`name` = ?';
 			$params = array($userId, $artistName);
 		}
-		$sql = $this->makeSelectQuery($condition);
+		$sql = $this->makeSelectQuery($condition . ' ORDER BY `artist`.`name`');
 		return array(
 			'sql' => $sql,
 			'params' => $params,

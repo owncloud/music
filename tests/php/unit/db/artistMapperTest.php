@@ -14,7 +14,9 @@ namespace OCA\Music\Db;
 
 class ArtistMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility {
 
+	/** @var ArtistMapper */
 	private $mapper;
+	/** @var Artist[] */
 	private $artists;
 
 	private $userId = 'john';

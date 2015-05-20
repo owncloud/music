@@ -14,7 +14,9 @@ namespace OCA\Music\Db;
 
 class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility {
 
+	/** @var AlbumMapper */
 	private $mapper;
+	/** @var Album[] */
 	private $albums;
 
 	private $userId = 'john';

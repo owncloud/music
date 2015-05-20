@@ -65,3 +65,40 @@ Feature: Ampache API
       | name                                                | artist                 | tracks | year |
       | Nuance                                              | Pascalb                | 8      | 2006 |
 
+  Scenario: List 10 songs
+    Given I am logged in with an auth token
+    When I specify the parameter "limit" with value "10"
+    And I request the "songs" resource
+    Then I should get:
+      | title                          | artist      | album                          | time | track |
+      | 2000 Six                       | Pascalb     | NUANCE II                      | 342  | 8     |
+      | Ac                             | Pascalb     | Nuance                         | 187  |       |
+      | Adrift                         | SimonBowman | Orchestral Film Music Vol 1    | 114  | 4     |
+      | Angel                          | Pascalb     | NUANCE II                      | 332  | 4     |
+      | Anniversary Meal               | SimonBowman | Backwards Original Film Score  | 101  | 3     |
+      | Arrival and Transformation One | SimonBowman | The Visitor Original Film Scor | 91   | 1     |
+      | Ashes                          | SimonBowman | Instrumental Film Music Vol 1  | 122  | 4     |
+      | Avaunt                         | SimonBowman | NDP Philo Cafe Original Film S | 77   | 6     |
+      | Backwards                      | SimonBowman | Backwards Original Film Score  | 52   | 8     |
+      | Bagatelle                      | SimonBowman | Instrumental Film Music Vol 1  | 179  | 7     |
+
+  Scenario: List songs that contain "di"
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "di"
+    And I request the "songs" resource
+    Then I should get:
+      | title                            | artist                 | album                          | time | track |
+      | Divertimento                     | SimonBowman            | Instrumental Film Music Vol 1  | 180  | 8     |
+      | Final Transformation and Credits | SimonBowman            | The Visitor Original Film Scor | 124  | 5     |
+      | Mediane                          | Pascalb                | Nuance                         | 203  |       |
+      | Wedding March for a Bullet       | Diablo Swing Orchestra | The Butcher s Ballroom         | 194  |       |
+      | Zodiac Virtues                   | Diablo Swing Orchestra | The Butcher s Ballroom         | 288  |       |
+
+  Scenario: List songs that contain "Mediane"
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "Mediane"
+    And I specify the parameter "exact" with value "true"
+    And I request the "songs" resource
+    Then I should get:
+      | title                            | artist                 | album                          | time | track |
+      | Mediane                          | Pascalb                | Nuance                         | 203  |       |

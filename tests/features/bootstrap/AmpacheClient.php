@@ -69,7 +69,7 @@ class AmpacheClient {
 	 * @throws Exception if the method isn't supported
 	 */
 	public function request($method, $options = []) {
-		if (!in_array($method, ['artists', 'handshake', 'albums'])) {
+		if (!in_array($method, ['artists', 'handshake', 'albums', 'songs'])) {
 			throw new Exception('Unsupported method: ' . $method);
 		}
 

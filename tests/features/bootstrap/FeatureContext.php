@@ -31,6 +31,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	private $resourceToXMLElementMapping = [
 		'artists' => 'artist',
 		'albums' => 'album',
+		'songs' => 'song',
 	];
 
 	/**

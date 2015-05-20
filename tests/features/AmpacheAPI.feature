@@ -13,6 +13,22 @@ Feature: Ampache API
       | SimonBowman            | 8      | 70    |
       | Simon Bowman           | 1      | 8     |
 
+  Scenario: List filtered artists
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "Simon Bowman"
+    And I request the "artists" resource
+    Then I should get:
+      | name                   | albums | songs |
+      | Simon Bowman           | 1      | 8     |
+
+  Scenario: List exact filtered artists
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "Pascal"
+    And I specify the parameter "exact" with value "true"
+    And I request the "artists" resource
+    Then I should get:
+      | name                   | albums | songs |
+
   Scenario: List all albums
     Given I am logged in with an auth token
     When I request the "albums" resource

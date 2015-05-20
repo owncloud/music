@@ -78,12 +78,29 @@ more to the beginning of the HTML element.
 
 	git archive HEAD --format=zip --prefix=music/ > build/music.zip
 
+### Install test dependencies
+
+    composer install
+
 ### Run tests
 
 PHP tests
 
 	phpunit tests/php
 	phpunit --coverage-html coverage-html tests/php
+
+Behat acceptance tests
+
+    cd tests
+    cp behat.yml.dist behat.yml
+    # add credentials for Amapache API to behat.yml
+    ../vendor/bin/behat
+
+For the acceptance tests you need to upload all tracks of the following 3 artists:
+
+* https://www.jamendo.com/de/artist/435725/simon-bowman
+* https://www.jamendo.com/de/artist/351716/diablo-swing-orchestra
+* https://www.jamendo.com/de/artist/3573/pascalb-pascal-boiseau
 
 ### 3rdparty libs
 

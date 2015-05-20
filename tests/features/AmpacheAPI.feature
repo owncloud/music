@@ -1,4 +1,4 @@
-Feature: ls
+Feature: Ampache API
   In order to browse my music collection
   As a user
   I need to be able to list my music files
@@ -30,4 +30,22 @@ Feature: ls
       | Instrumental Film Music Vol 1                       | SimonBowman            | 10     | 2013 |
       | Orchestral Film Music Vol 1                         | SimonBowman            | 10     | 2013 |
       | Witness for the Prosecution: Original Theatre Score | Simon Bowman           | 8      | 2014 |
+
+  Scenario: List filtered albums
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "Nuance"
+    And I request the "albums" resource
+    Then I should get:
+      | name                                                | artist                 | tracks | year |
+      | NUANCE II                                           | Pascalb                | 10     | 2008 |
+      | Nuance                                              | Pascalb                | 8      | 2006 |
+
+  Scenario: List exact filtered albums
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "Nuance"
+    And I specify the parameter "exact" with value "true"
+    And I request the "albums" resource
+    Then I should get:
+      | name                                                | artist                 | tracks | year |
+      | Nuance                                              | Pascalb                | 8      | 2006 |
 

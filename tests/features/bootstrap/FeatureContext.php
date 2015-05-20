@@ -24,6 +24,8 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	private $xml;
 	/** @var string specifies the requested resource */
 	private $resource;
+	/** @var array options to pass to the Ampache API request */
+	private $options = [];
 
 	/** @var array maps resources to the name of the XML element of the response */
 	private $resourceToXMLElementMapping = [
@@ -56,10 +58,18 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
+	 * @When I specify the parameter :option with value :value
+	 */
+	public function iSpecifyTheParameterWithValue($option, $value) {
+		$this->options[$option] = $value;
+	}
+
+
+	/**
 	 * @When I request the :resource resource
 	 */
 	public function iRequestTheResource($resource) {
-		$this->xml = $this->client->request($resource);
+		$this->xml = $this->client->request($resource, $this->options);
 		$this->resource = $resource;
 	}
 

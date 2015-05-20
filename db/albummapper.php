@@ -89,7 +89,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * returns albums of a specified artist
 	 *
 	 * @param integer $artistId ID of the artist
-	 * @param strig $userId the user ID
+	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
 	public function findAllByArtist($artistId, $userId){
@@ -108,7 +108,7 @@ class AlbumMapper extends Mapper implements IMapper {
 	 *
 	 * @param string $albumName name of the album
 	 * @param string|integer $albumYear year of the album release
-	 * @param strig $userId the user ID
+	 * @param string $userId the user ID
 	 * @return Album
 	 */
 	public function findByNameAndYear($albumName, $albumYear, $userId){

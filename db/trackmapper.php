@@ -44,6 +44,7 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @param string $userId
 	 * @param integer $limit
 	 * @param integer $offset
+	 * @return Track[]
 	 */
 	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery();
@@ -54,6 +55,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $artistId
 	 * @param string $userId
+	 * @return Track[]
 	 */
 	public function findAllByArtist($artistId, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ?');
@@ -65,6 +67,7 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @param integer $albumId
 	 * @param string $userId
 	 * @param integer $artistId
+	 * @return Track[]
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null){
 		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ?');
@@ -79,6 +82,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $id
 	 * @param string $userId
+	 * @return Track
 	 */
 	public function find($id, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
@@ -89,6 +93,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $fileId
 	 * @param string $userId
+	 * @return Track
 	 */
 	public function findByFileId($fileId, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
@@ -98,6 +103,7 @@ class TrackMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param integer $fileId
+	 * @return Track[]
 	 */
 	public function findAllByFileId($fileId){
 		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
@@ -108,6 +114,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $artistId
 	 * @param string $userId
+	 * @return integer
 	 */
 	public function countByArtist($artistId, $userId){
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
@@ -121,6 +128,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $albumId
 	 * @param string $userId
+	 * @return integer
 	 */
 	public function countByAlbum($albumId, $userId){
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
@@ -133,6 +141,7 @@ class TrackMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param string $userId
+	 * @return integer
 	 */
 	public function count($userId){
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` '.
@@ -147,6 +156,7 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @return Track[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false){
 		if ($fuzzy) {
@@ -163,6 +173,7 @@ class TrackMapper extends Mapper implements IMapper {
 	/**
 	 * @param string $name
 	 * @param string $userId
+	 * @return Track[]
 	 */
 	public function findAllByNameRecursive($name, $userId){
 		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.

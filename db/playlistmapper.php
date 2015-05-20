@@ -37,6 +37,7 @@ class PlaylistMapper extends Mapper implements IMapper {
 	 * @param string $userId
 	 * @param integer $limit
 	 * @param integer $offset
+	 * @return Playlist[]
 	 */
 	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery();
@@ -47,6 +48,7 @@ class PlaylistMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $id
 	 * @param string $userId
+	 * @return Playlist
 	 */
 	public function find($id, $userId){
 		$sql = $this->makeSelectQuery('AND `id` = ?');

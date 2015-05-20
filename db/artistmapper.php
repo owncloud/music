@@ -33,6 +33,7 @@ class ArtistMapper extends Mapper implements IMapper {
 
 	/**
 	 * @param string $userId
+	 * @return Artist[]
 	 */
 	public function findAll($userId){
 		$sql = $this->makeSelectQuery();
@@ -43,6 +44,7 @@ class ArtistMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer[] $artistIds
 	 * @param string $userId
+	 * @return Artist[]
 	 */
 	public function findMultipleById($artistIds, $userId){
 		$questionMarks = array();
@@ -60,6 +62,7 @@ class ArtistMapper extends Mapper implements IMapper {
 	/**
 	 * @param integer $artistId
 	 * @param string $userId
+	 * @return Artist
 	 */
 	public function find($artistId, $userId){
 		$sql = $this->makeSelectQuery('AND `artist`.`id` = ?');
@@ -94,6 +97,7 @@ class ArtistMapper extends Mapper implements IMapper {
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @return Artist
 	 */
 	public function findByName($artistName, $userId, $fuzzy = false){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
@@ -104,6 +108,7 @@ class ArtistMapper extends Mapper implements IMapper {
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @return Artist[]
 	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);

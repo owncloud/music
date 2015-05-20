@@ -22,8 +22,10 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	private $client;
 	/** @var  SimpleXMLElement */
 	private $xml;
+	/** @var string specifies the requested resource */
 	private $resource;
 
+	/** @var array maps resources to the name of the XML element of the response */
 	private $resourceToXMLElementMapping = [
 		'artists' => 'artist',
 		'albums' => 'album',

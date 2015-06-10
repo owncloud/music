@@ -93,7 +93,7 @@ Behat acceptance tests
 
     cd tests
     cp behat.yml.dist behat.yml
-    # add credentials for Amapache API to behat.yml
+    # add credentials for Ampache API to behat.yml
     ../vendor/bin/behat
 
 For the acceptance tests you need to upload all tracks of the following 3 artists:

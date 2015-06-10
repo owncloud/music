@@ -93,7 +93,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 			foreach ($expectedElement as $key => $expectedValue) {
 				$actualValue = $element->xpath($key)[0]->__toString();
 				if ($actualValue !== $expectedValue) {
-					throw new Exception(ucfirst($key) . ' does not match - expected: ' . $expectedValue . ' got: ' . $actualValue);
+					throw new Exception(ucfirst($key) . ' does not match - expected: ' . $expectedValue . ' got: ' . $actualValue . PHP_EOL . $this->xml->asXML());
 				}
 			}
 		}
@@ -102,7 +102,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 		$expectedCount = count($table->getHash());
 		$actualCount = count($elements);
 		if ($expectedCount !== $actualCount) {
-			throw new Exception('Not all elements are in the result set - ' . $actualCount . ' does not match the expected ' . $expectedCount);
+			throw new Exception('Not all elements are in the result set - ' . $actualCount . ' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
 

@@ -1,8 +1,17 @@
 language: php
+sudo: false
 php:
   - 5.4
   - 5.5
   - 5.6
+
+env:
+  matrix:
+    - DB=sqlite
+
+branches:
+  only:
+    master
 
 before_install:
   - cd ..
@@ -11,13 +20,37 @@ before_install:
   - cd core
   - git submodule init
   - git submodule update
+  - ./occ maintenance:install --admin-user admin --admin-pass admin --database $DB
+  - ./occ app:enable music
+  - OC_PASS=ampache ./occ user:add ampache --password-from-env
+  # download test data (only if not cached already)
+  - apps/music/tests/downloadTestData.sh data/
+  - ./occ files:scan ampache
+  - ./occ music:scan ampache
+  # startup php server
+  - php -S localhost:8888 -t . &
+  # add Ampache API key with ampache as password for user ampache
+  - bash -c "if [ '$DB' == 'sqlite' ]; then sqlite3 data/owncloud.db 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
   - cd apps/music
+
+install:
+  - composer install
+  - cp tests/behat.yml.travis tests/behat.yml
 
 script:
   - phpunit --coverage-clover clover.xml tests
+  - cd tests && ../vendor/bin/behat
 
   # Create coverage report
-  - sh -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
-  - sh -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then php ocular.phar code-coverage:upload --format=php-clover clover.xml; fi"
+  - bash -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
+  - bash -c "if [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]; then php ocular.phar code-coverage:upload --format=php-clover clover.xml; fi"
 
+  # debug section to check what went wrong
+  - curl http://admin:admin@localhost:8888/index.php
+  - curl http://admin:admin@localhost:8888/index.php/apps/music/
+  - cat ../../../data/owncloud.log
+
+cache:
+  directories:
+    downloadedData
 

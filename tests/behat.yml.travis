@@ -1,0 +1,9 @@
+
+default:
+    suites:
+        default:
+            contexts:
+                - FeatureContext:
+                    baseUrl: http://localhost:8888/index.php/apps/music/ampache/server/xml.server.php
+                    username: ampache
+                    password: ampache

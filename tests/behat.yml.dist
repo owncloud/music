@@ -1,0 +1,9 @@
+
+default:
+    suites:
+        default:
+            contexts:
+                - FeatureContext:
+                    baseUrl: http://urlpath/index.php/apps/music/ampache/server/xml.server.php
+                    username: UserName
+                    password: MyAmpacheAPIPassword

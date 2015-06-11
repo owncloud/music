@@ -14,7 +14,9 @@ namespace OCA\Music\Db;
 
 class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility {
 
+	/** @var AlbumMapper */
 	private $mapper;
+	/** @var Album[] */
 	private $albums;
 
 	private $userId = 'john';
@@ -75,7 +77,7 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 	public function testFindAll(){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `album`.`name`');
 		$this->setMapperResult($sql, array($this->userId), $this->rows);
 		$result = $this->mapper->findAll($this->userId);
 		$this->assertEquals($this->albums, $result);
@@ -109,7 +111,8 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
 			'ON `album`.`id` = `artists`.`album_id` '.
-			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
+			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? '.
+			'ORDER BY `album`.`name`';
 		$artistId = 3;
 		$this->setMapperResult($sql, array($this->userId, $artistId), $this->rows);
 		$result = $this->mapper->findAllByArtist($artistId, $this->userId);
@@ -300,14 +303,14 @@ class AlbumMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 	public function testFindAllByName(){
-		$sql = $this->makeSelectQuery('AND `album`.`name` = ? ');
+		$sql = $this->makeSelectQuery('AND `album`.`name` = ? ORDER BY `album`.`name`');
 		$this->setMapperResult($sql, array($this->userId, 123), array($this->rows[0]));
 		$result = $this->mapper->findAllByName(123, $this->userId);
 		$this->assertEquals(array($this->albums[0]), $result);
 	}
 
 	public function testFindAllByNameFuzzy(){
-		$sql = $this->makeSelectQuery('AND LOWER(`album`.`name`) LIKE LOWER(?) ');
+		$sql = $this->makeSelectQuery('AND LOWER(`album`.`name`) LIKE LOWER(?) ORDER BY `album`.`name`');
 		$this->setMapperResult($sql, array($this->userId, '%test123test%'), array($this->rows[0]));
 		$result = $this->mapper->findAllByName('test123test', $this->userId, true);
 		$this->assertEquals(array($this->albums[0]), $result);

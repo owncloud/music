@@ -14,7 +14,9 @@ namespace OCA\Music\Db;
 
 class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility {
 
+	/** @var TrackMapper */
 	private $mapper;
+	/** @var Track[] */
 	private $tracks;
 
 	private $userId = 'john';
@@ -72,28 +74,28 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 	public function testFindAll(){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId), $this->rows);
 		$result = $this->mapper->findAll($this->userId);
 		$this->assertEquals($this->tracks, $result);
 	}
 
 	public function testFindAllByArtist(){
-		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ? ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, $this->artistId), $this->rows);
 		$result = $this->mapper->findAllByArtist($this->artistId, $this->userId);
 		$this->assertEquals($this->tracks, $result);
 	}
 
 	public function testFindAllByAlbumAndArtist(){
-		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ? AND `track`.`artist_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ? AND `track`.`artist_id` = ? ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, $this->albumId, $this->artistId), $this->rows);
 		$result = $this->mapper->findAllByAlbum($this->albumId, $this->userId, $this->artistId);
 		$this->assertEquals($this->tracks, $result);
 	}
 
 	public function testFindAllByAlbum(){
-		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ? ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, $this->albumId), $this->rows);
 		$result = $this->mapper->findAllByAlbum($this->albumId, $this->userId);
 		$this->assertEquals($this->tracks, $result);
@@ -101,7 +103,7 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 
 	public function testFindAllByFileId(){
 		$fileId = 1;
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ? ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($fileId), $this->rows);
 		$result = $this->mapper->findAllByFileId($fileId);
 		$this->assertEquals($this->tracks, $result);
@@ -141,14 +143,14 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	}
 
 	public function testFindAllByName(){
-		$sql = $this->makeSelectQuery('AND `track`.`title` = ? ');
+		$sql = $this->makeSelectQuery('AND `track`.`title` = ? ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, 123), array($this->rows[0]));
 		$result = $this->mapper->findAllByName(123, $this->userId);
 		$this->assertEquals(array($this->tracks[0]), $result);
 	}
 
 	public function testFindAllByNameFuzzy(){
-		$sql = $this->makeSelectQuery('AND LOWER(`track`.`title`) LIKE LOWER(?) ');
+		$sql = $this->makeSelectQuery('AND LOWER(`track`.`title`) LIKE LOWER(?) ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, '%test123test%'), array($this->rows[0]));
 		$result = $this->mapper->findAllByName('test123test', $this->userId, true);
 		$this->assertEquals(array($this->tracks[0]), $result);
@@ -157,7 +159,7 @@ class TrackMapperTest extends \OCA\Music\AppFramework\Utility\MapperTestUtility 
 	public function testFindAllByNameRecursive(){
 		$sql = $this->makeSelectQuery(' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
-						' LOWER(`track`.`title`) LIKE LOWER(?) )');
+						' LOWER(`track`.`title`) LIKE LOWER(?) ) ORDER BY `track`.`title`');
 		$this->setMapperResult($sql, array($this->userId, '%test123test%', '%test123test%', '%test123test%'), array($this->rows[0]));
 		$result = $this->mapper->findAllByNameRecursive('test123test', $this->userId);
 		$this->assertEquals(array($this->tracks[0]), $result);

@@ -47,7 +47,7 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @return Track[]
 	 */
 	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery();
+		$sql = $this->makeSelectQuery('ORDER BY `track`.`title`');
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -58,7 +58,8 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @return Track[]
 	 */
 	public function findAllByArtist($artistId, $userId){
-		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ? '.
+			'ORDER BY `track`.`title`');
 		$params = array($userId, $artistId);
 		return $this->findEntities($sql, $params);
 	}
@@ -70,12 +71,13 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @return Track[]
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null){
-		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ?');
+		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ? ');
 		$params = array($userId, $albumId);
 		if($artistId !== null) {
-			$sql .= ' AND `track`.`artist_id` = ?';
+			$sql .= 'AND `track`.`artist_id` = ? ';
 			array_push($params, $artistId);
 		}
+		$sql .= 'ORDER BY `track`.`title`';
 		return $this->findEntities($sql, $params);
 	}
 
@@ -106,7 +108,8 @@ class TrackMapper extends Mapper implements IMapper {
 	 * @return Track[]
 	 */
 	public function findAllByFileId($fileId){
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ?');
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ? '.
+			'ORDER BY `track`.`title`');
 		$params = array($fileId);
 		return $this->findEntities($sql, $params);
 	}
@@ -165,7 +168,7 @@ class TrackMapper extends Mapper implements IMapper {
 		} else {
 			$condition = 'AND `track`.`title` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition);
+		$sql = $this->makeSelectQuery($condition . 'ORDER BY `track`.`title`');
 		$params = array($userId, $name);
 		return $this->findEntities($sql, $params);
 	}
@@ -178,7 +181,7 @@ class TrackMapper extends Mapper implements IMapper {
 	public function findAllByNameRecursive($name, $userId){
 		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
-						' LOWER(`track`.`title`) LIKE LOWER(?) )';
+						' LOWER(`track`.`title`) LIKE LOWER(?) ) ORDER BY `track`.`title`';
 		$sql = $this->makeSelectQuery($condition);
 		$name = '%' . $name . '%';
 		$params = array($userId, $name, $name, $name);

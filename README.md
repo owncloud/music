@@ -25,11 +25,11 @@ Both of the above commands can be combined with the `--debug` switch, which enab
 
 **Warning:** This command will delete data! It will remove unavailable tracks from playlists as playlists are linked against the track metadata.
 
-    ./occ music:reset-database USERNAME1 USERNAME2 ...
+	./occ music:reset-database USERNAME1 USERNAME2 ...
 
 This will reset the scanned metadata of the provided users.
 
-    ./occ music:reset-database --all
+	./occ music:reset-database --all
 
 This will reset the scanned metadata of all users.
 
@@ -80,7 +80,7 @@ more to the beginning of the HTML element.
 
 ### Install test dependencies
 
-    composer install
+	composer install
 
 ### Run tests
 
@@ -91,10 +91,10 @@ PHP tests
 
 Behat acceptance tests
 
-    cd tests
-    cp behat.yml.dist behat.yml
-    # add credentials for Ampache API to behat.yml
-    ../vendor/bin/behat
+	cd tests
+	cp behat.yml.dist behat.yml
+	# add credentials for Ampache API to behat.yml
+	../vendor/bin/behat
 
 For the acceptance tests you need to upload all tracks of the following 3 artists:
 
@@ -108,3 +108,115 @@ update JavaScript libraries
 
 	cd js
 	bower update
+
+## API
+
+The music app implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
+
+Beside those mentioned resources following additional resources are implemented:
+
+* `/api/log`
+* `/api/collection`
+* `/api/file/{fileId}`
+* `/api/scan`
+* Playlist API at `/api/playlist/`
+* Settings API at `/api/settings`
+* [Ampache API](https://github.com/ampache/ampache/wiki/XML-API) at `/ampache/server/xml.server.php`
+
+### `/api/log`
+
+Allows to log a message to ownCloud defined log system.
+
+	POST /api/log
+
+Parameters:
+
+	{
+		"message": "The message to log"
+	}
+
+Response:
+
+	{
+		"success": true
+	}
+
+
+### `/api/collection`
+
+Returns all artists with nested albums and each album with nested tracks.
+
+	GET /api/collection
+
+Response:
+
+	[
+		{
+			"id": 2,
+			"name": "Blind Guardian",
+			"albums": [
+				{
+					"name": "Nightfall in Middle-Earth",
+					"year": 1998,
+					"cover": "/index.php/apps/music/api/album/16/cover",
+					"id": 16,
+					"tracks": [
+						{
+							"title": "A Dark Passage",
+							"number": 21,
+							"artistId": 2,
+							"albumId": 16,
+							"files": {
+								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/21 - A Dark Passage.mp3"
+							},
+							"id": 202
+						},
+						{
+							"title": "Battle of Sudden Flame",
+							"number": 12,
+							"artistId": 2,
+							"albumId": 16,
+							"files": {
+								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/12 - Battle of Sudden Flame.mp3"
+							},
+							"id": 212
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 3,
+			"name": "blink-182",
+			"albums": [
+				{
+					"name": "Stay Together for the Kids",
+					"year": 2002,
+					"cover": "/index.php/apps/music/api/album/22/cover",
+					"id": 22,
+					"tracks": [
+						{
+							"title": "Stay Together for the Kids",
+							"number": 1,
+							"artistId": 3,
+							"albumId": 22,
+							"files": {
+								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/01 - Stay Together for the Kids.mp3"
+							},
+							"id": 243
+						},
+						{
+							"title": "The Rock Show (live)",
+							"number": 2,
+							"artistId": 3,
+							"albumId": 22,
+							"files": {
+								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/02 - The Rock Show (live).mp3"
+							},
+							"id": 244
+						}
+					]
+				}
+			]
+		}
+	]

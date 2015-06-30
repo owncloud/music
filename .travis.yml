@@ -4,10 +4,24 @@ php:
   - 5.4
   - 5.5
   - 5.6
+# don't waste CI cycles
+#  - 7
+#  - hhvm
 
 env:
   matrix:
-    - DB=sqlite
+    - DB=mysql
+
+matrix:
+  allow_failures:
+    - php: 7
+    - php: hhvm
+  include:
+    - php: 5.4
+      env: DB=sqlite
+    - php: 5.4
+      env: DB=pgsql
+  fast_finish: true
 
 branches:
   only:
@@ -18,9 +32,13 @@ before_install:
   - git clone https://github.com/owncloud/core.git --depth 1
   - mv music core/apps/
   - cd core
-  - git submodule init
-  - git submodule update
-  - ./occ maintenance:install --admin-user admin --admin-pass admin --database $DB
+  - git submodule update --init
+  # provisioning the database
+  - mysql -u root -e "CREATE DATABASE oc_autotest; CREATE USER 'oc_autotest'@'localhost' IDENTIFIED BY 'oc_autotest'; GRANT ALL ON oc_autotest.* TO 'oc_autotest'@'localhost';"
+  - psql -U postgres -w -c "CREATE DATABASE oc_autotest;"
+  - psql -U postgres -w -c "CREATE USER oc_autotest WITH PASSWORD 'oc_autotest'; GRANT ALL PRIVILEGES ON DATABASE oc_autotest TO oc_autotest;"
+  # setup ownCloud
+  - ./occ maintenance:install --admin-user admin --admin-pass admin --database $DB --database-name oc_autotest --database-user oc_autotest --database-pass oc_autotest
   - ./occ app:enable music
   - OC_PASS=ampache ./occ user:add ampache --password-from-env
   # download test data (only if not cached already)
@@ -31,6 +49,8 @@ before_install:
   - php -S localhost:8888 -t . &
   # add Ampache API key with ampache as password for user ampache
   - bash -c "if [ '$DB' == 'sqlite' ]; then sqlite3 data/owncloud.db 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
+  - bash -c "if [ '$DB' == 'mysql' ]; then mysql -u travis oc_autotest -e 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
+  - bash -c "if [ '$DB' == 'pgsql' ]; then psql -U postgres -d oc_autotest -w -c \"INSERT INTO oc_music_ampache_users (user_id, hash) VALUES ('ampache', '3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18');\"; fi"
   - cd apps/music
 
 install:

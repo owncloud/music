@@ -31,5 +31,5 @@ then
     cd ..
 fi
 
-mkdir -p $1/ampache/files/
-cp -r downloadedData $1/ampache/files/music
+mkdir -p $1/$2/files/
+cp -r downloadedData $1/$2/files/music

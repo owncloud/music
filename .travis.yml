@@ -15,7 +15,7 @@ branches:
 
 before_install:
   - cd ..
-  - git clone https://github.com/owncloud/core.git
+  - git clone https://github.com/owncloud/core.git --depth 1
   - mv music core/apps/
   - cd core
   - git submodule init

@@ -31,7 +31,7 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#artist', 'url' => '/api/artist/{artistIdOrSlug}', 'verb' => 'GET'),
 	// array('name' => 'api#artistShows', 'url' => '/api/artist/{artistIdOrSlug}/shows', 'verb' => 'GET'),
 	array('name' => 'api#albums', 'url' => '/api/albums', 'verb' => 'GET'),
-	array('name' => 'api#album', 'url' => '/api/album/{albumIdOrSlug', 'verb' => 'GET'),
+	array('name' => 'api#album', 'url' => '/api/album/{albumIdOrSlug}', 'verb' => 'GET'),
 	array('name' => 'api#cover', 'url' => '/api/album/{albumIdOrSlug}/cover', 'verb' => 'GET'),
 	array('name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'),
 	array('name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'),

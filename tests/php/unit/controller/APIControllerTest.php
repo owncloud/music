@@ -13,7 +13,6 @@
 namespace OCA\Music\Controller;
 
 use \OCA\Music\AppFramework\Utility\ControllerTestUtility;
-use \OCP\AppFramework\Http\Request;
 use \OCP\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Artist;
@@ -22,7 +21,6 @@ use OCA\Music\DB\Track;
 
 class APIControllerTest extends ControllerTestUtility {
 
-	private $mapper;
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
@@ -32,6 +30,8 @@ class APIControllerTest extends ControllerTestUtility {
 	private $appname = 'music';
 	private $urlGenerator;
 	private $l10n;
+	private $scanner;
+	private $userFolder;
 
 	protected function getController($urlParams){
 		return new ApiController(

@@ -16,7 +16,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\Middleware\AmpacheException;
 

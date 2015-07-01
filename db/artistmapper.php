@@ -12,13 +12,12 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Core\Db;
-use \OCA\Music\AppFramework\Db\IMapper;
-use \OCA\Music\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\Mapper;
+use OCP\IDb;
 
-class ArtistMapper extends Mapper implements IMapper {
+class ArtistMapper extends Mapper {
 
-	public function __construct(Db $db){
+	public function __construct(IDb $db){
 		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist');
 	}
 
@@ -137,7 +136,7 @@ class ArtistMapper extends Mapper implements IMapper {
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 

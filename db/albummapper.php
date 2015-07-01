@@ -12,14 +12,13 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Core\Db;
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
-use \OCA\Music\AppFramework\Db\IMapper;
-use \OCA\Music\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\Mapper;
+use OCP\IDb;
 
-class AlbumMapper extends Mapper implements IMapper {
+class AlbumMapper extends Mapper {
 
-	public function __construct(Db $db){
+	public function __construct(IDb $db){
 		parent::__construct($db, 'music_albums', '\OCA\Music\Db\Album');
 	}
 
@@ -76,7 +75,7 @@ class AlbumMapper extends Mapper implements IMapper {
 			')';
 		$result = $this->execute($sql, $albumIds);
 		$artists = array();
-		while($row = $result->fetchRow()){
+		while($row = $result->fetch()){
 			if(!array_key_exists($row['album_id'], $artists)){
 				$artists[$row['album_id']] = array();
 			}
@@ -197,8 +196,10 @@ class AlbumMapper extends Mapper implements IMapper {
 	 * @param integer[] $albumIds
 	 */
 	public function deleteById($albumIds){
-		if(count($albumIds) === 0)
+		if(count($albumIds) === 0) {
 			return;
+		}
+
 		$questionMarks = array();
 		for($i = 0; $i < count($albumIds); $i++){
 			$questionMarks[] = '?';
@@ -248,7 +249,7 @@ class AlbumMapper extends Mapper implements IMapper {
 				WHERE `albums`.`cover_file_id` IS NULL';
 		$result = $this->execute($sql);
 		$return = Array();
-		while($row = $result->fetchRow()){
+		while($row = $result->fetch()){
 			array_push($return, Array('albumId' => $row['id'], 'parentFolderId' => $row['parent']));
 		}
 		return $return;
@@ -288,7 +289,7 @@ class AlbumMapper extends Mapper implements IMapper {
 				return $indexA > $indexB;
 			});
 			$imageId = $images[0]['fileid'];
-		};
+		}
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = ? WHERE `id` = ?';
 		$params = array($imageId, $albumId);
@@ -304,7 +305,7 @@ class AlbumMapper extends Mapper implements IMapper {
 			'WHERE `user_id` = ?';
 		$params = array($userId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 
@@ -321,7 +322,7 @@ class AlbumMapper extends Mapper implements IMapper {
 			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? ';
 		$params = array($userId, $artistId);
 		$result = $this->execute($sql, $params);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 		return $row['count'];
 	}
 

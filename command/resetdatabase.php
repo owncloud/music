@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Command;
 
-use OCA\Music\AppFramework\Core\Db;
+use OCP\IDBConnection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,10 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetDatabase extends Command {
 
-	/** @var Db */
+	/** @var IDBConnection */
 	private $db;
 
-	public function __construct(Db $db) {
+	public function __construct(IDBConnection $db) {
 		$this->db = $db;
 		parent::__construct();
 	}
@@ -73,7 +73,7 @@ class ResetDatabase extends Command {
 				$sql .= 'WHERE `user_id` = ?';
 				$params[] = $userID;
 			}
-			$query = $this->db->prepareQuery($sql);
+			$query = $this->db->prepare($sql);
 			$query->execute($params);
 		}
 	}

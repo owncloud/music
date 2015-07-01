@@ -17,7 +17,7 @@ use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
 
-use \OCA\Music\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PlaylistMapper;

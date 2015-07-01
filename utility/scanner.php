@@ -17,13 +17,13 @@ use OC\Hooks\PublicEmitter;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
 
-use \OCA\Music\AppFramework\Core\Db;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-
+use OCP\IDBConnection;
+use Symfony\Component\Console\Output\OutputInterface;
 
 
 class Scanner extends PublicEmitter {
@@ -33,6 +33,7 @@ class Scanner extends PublicEmitter {
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
 	private $logger;
+	/** @var IDBConnection  */
 	private $db;
 	private $userId;
 	private $configManager;
@@ -44,7 +45,7 @@ class Scanner extends PublicEmitter {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Logger $logger,
-								Db $db,
+								IDBConnection $db,
 								$userId,
 								IConfig $configManager,
 								$appName,
@@ -333,9 +334,11 @@ class Scanner extends PublicEmitter {
 			$sql .= ' WHERE `user_id` = ?';
 			$params = array($userId);
 		}
-		$query = $this->db->prepareQuery($sql);
-		$result = $query->execute($params);
-		$fileIds = array_map(function($i) { return $i['file_id']; }, $result->fetchAll());
+
+		$query = $this->db->prepare($sql);
+		// TODO: switch to executeQuery with 8.0
+		$query->execute($params);
+		$fileIds = array_map(function($i) { return $i['file_id']; }, $query->fetchAll());
 
 		return $fileIds;
 	}
@@ -343,7 +346,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Rescan the whole file base for new files
 	 */
-	public function rescan($userId = null, $batch = false, $userHome = null, $debug = false, $output = null) {
+	public function rescan($userId = null, $batch = false, $userHome = null, $debug = false, OutputInterface $output = null) {
 		$this->logger->log('Rescan triggered', 'info');
 
 		if($userHome !== null){
@@ -418,11 +421,9 @@ class Scanner extends PublicEmitter {
 		);
 
 		foreach ($sqls as $sql) {
-			$query = $this->db->prepareQuery($sql);
-			$query->execute(array($userId));
+			$this->db->executeUpdate($sql, array($userId));
 		}
 
-		$query = $this->db->prepareQuery('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
-		$query->execute();
+		$this->db->executeUpdate('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
 	}
 }

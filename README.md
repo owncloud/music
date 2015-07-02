@@ -50,7 +50,7 @@ Go to "Your username" → "Personal", and check section Music/Ampache, where you
 
 ### Installation
 
-Music App can be installed from [Appstore](http://apps.owncloud.com/) by following the instructions [here](http://doc.owncloud.org/server/8.0/user_manual/installing_apps.html) or using App Management in ownCloud with instructions written [here](http://doc.owncloud.org/server/8.0/admin_manual/configuration/configuration_apps.html).
+Music App can be installed using the App Management in ownCloud. Instructions can be found [here](https://doc.owncloud.org/server/8.1/admin_manual/installation/apps_management_installation.html).
 
 ### Known issues
 

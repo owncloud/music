@@ -66,7 +66,7 @@ $c->query('ServerContainer')->getNavigationManager()->add($navConfig);
 /**
  * register search provider
  */
-\OC_Search::registerProvider('OCA\Music\Utility\Search');
+\OC::$server->getSearch()->registerProvider('OCA\Music\Utility\Search');
 
 /**
  * register settings

@@ -16,7 +16,7 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\App\Music;
 
-class Search extends \OC_Search_Provider {
+class Search extends \OCP\Search\Provider {
 	public function search($query) {
 		$app = new Music();
 		$c = $app->getContainer();
@@ -38,7 +38,7 @@ class Search extends \OC_Search_Provider {
 			$name = $artist->name;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/artist/' . $artist->id;
 			$type = (string)$l10n->t('Artists');
-			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
+			$results[] = new \OCP\Search\Result($name, $text, $link, $type, $container);
 		}
 
 		$albums = $albumMapper->findAllByName($pattern, $userId, true);
@@ -46,7 +46,7 @@ class Search extends \OC_Search_Provider {
 			$name = $album->name;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/album/' . $album->id;
 			$type = (string)$l10n->t('Albums');
-			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
+			$results[] = new \OCP\Search\Result($name, $text, $link, $type, $container);
 		}
 
 		$tracks = $trackMapper->findAllByName($pattern, $userId, true);
@@ -54,7 +54,7 @@ class Search extends \OC_Search_Provider {
 			$name = $track->title;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/track/' . $track->id;
 			$type = (string)$l10n->t('Tracks');
-			$results[] = new \OC_Search_Result($name, $text, $link, $type, $container);
+			$results[] = new \OCP\Search\Result($name, $text, $link, $type, $container);
 		}
 		return $results;
 	}

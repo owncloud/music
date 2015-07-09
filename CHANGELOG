@@ -1,5 +1,11 @@
+v0.3.6 2015-07-09
 
+ * works now with ownCloud 7, 8, 8.1 and master
  * fix twice opened file chooser in personal settings (#344)
+ * move to core shipped AppFramework (ownCloud 7.0.0+) (#390)
+ * proper cleanup SQL statement (#347 by butonic)
+ * automated tests for the Ampache API (#380)
+ * automated tests against stable7+ versions of core and all DBs on travis (391)
 
 v0.3.5 2015-02-16
 

@@ -22,6 +22,8 @@ matrix:
     - php: 5.4
       env: DB=pgsql OWNCLOUD=master
     - php: 5.4
+      env: DB=mysql OWNCLOUD=stable8.1
+    - php: 5.4
       env: DB=mysql OWNCLOUD=stable8
     - php: 5.4
       env: DB=mysql OWNCLOUD=stable7

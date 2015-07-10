@@ -3,8 +3,9 @@ imports:
     - php
 
 filter:
-    excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js]
+    excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js, tests/]
 
 tools:
     external_code_coverage:
         timeout: 600    # Timeout in seconds. 10 minutes
+        runs: 6         # Scrutinizer waits for the first 6 coverage submissions (each DB, unit & integration)

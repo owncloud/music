@@ -1,0 +1,7 @@
+{
+  "music_artists" : [
+    { "id" : 1001, "name": "The First Artist",  "user_id": "integration" },
+    { "id" : 1002, "name": "The Second Artist", "user_id": "integration" },
+    { "id" : 1003, "name": "The Third Artist",  "user_id": "integration" }
+  ]
+}

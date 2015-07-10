@@ -84,10 +84,17 @@ more to the beginning of the HTML element.
 
 ### Run tests
 
-PHP tests
+PHP unit tests
 
-	phpunit tests/php
-	phpunit --coverage-html coverage-html tests/php
+    phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
+
+PHP integration tests
+
+    cd ../..          # owncloud core
+    ./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
+    ./occ app:enable music
+    cd apps/music
+    phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
 
 Behat acceptance tests
 

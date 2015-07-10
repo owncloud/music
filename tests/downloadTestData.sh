@@ -16,11 +16,16 @@ https://storage-new.newjamendo.com/download/a3311/mp32/"
 if [ ! -d /tmp/downloadedData ];
 then
     mkdir -p /tmp/downloadedData
-    cd /tmp/downloadedData
+fi
 
-    for url in $urls
-    do
-        name=`echo $url | cut -d "/" -f 5`
+cd /tmp/downloadedData
+
+for url in $urls
+do
+    name=`echo $url | cut -d "/" -f 5`
+    if [ ! -d "$name" ];
+    then
+        echo "Downloading $name ..."
         wget $url -q -O archive.zip
         if [ $? -ne 0 ];
         then
@@ -38,11 +43,13 @@ then
         fi
         unzip archive.zip -d $name
         rm archive.zip
-    done
+    else
+        echo "$name is already available"
+    fi
+done
 
-    # go back to the old folder
-    cd -
-fi
+# go back to the old folder
+cd -
 
-mkdir -p $1/$2/files/
-cp -r /tmp/downloadedData $1/$2/files/music
+mkdir -p $1/files/
+cp -r /tmp/downloadedData $1/files/music

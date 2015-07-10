@@ -52,7 +52,7 @@ before_install:
   - ./occ app:enable music
   - apps/music/build/addUser.sh $OWNCLOUD ampache ampache
   # download test data (only if not cached already)
-  - apps/music/tests/downloadTestData.sh data/ ampache
+  - apps/music/tests/downloadTestData.sh data/ampache
   - ./occ files:scan ampache
   - ./occ music:scan ampache
   # TODO remove once stable7 is not supported anymore

@@ -13,10 +13,10 @@ https://storage-new.newjamendo.com/download/a123495/mp32/
 https://storage-new.newjamendo.com/download/a49216/mp32/
 https://storage-new.newjamendo.com/download/a3311/mp32/"
 
-if [ ! -d downloadedData ];
+if [ ! -d /tmp/downloadedData ];
 then
-    mkdir downloadedData
-    cd downloadedData
+    mkdir -p /tmp/downloadedData
+    cd /tmp/downloadedData
 
     for url in $urls
     do
@@ -40,8 +40,9 @@ then
         rm archive.zip
     done
 
-    cd ..
+    # go back to the old folder
+    cd -
 fi
 
 mkdir -p $1/$2/files/
-cp -r downloadedData $1/$2/files/music
+cp -r /tmp/downloadedData $1/$2/files/music

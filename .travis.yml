@@ -84,5 +84,5 @@ script:
 
 cache:
   directories:
-    downloadedData
+    /tmp/downloadedData
 

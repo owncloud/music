@@ -18,7 +18,6 @@ if (version_compare($installedVersion, '0.1.6-alpha', '<')) {
 		'DELETE FROM `*PREFIX*music_albums`;',
 		'DELETE FROM `*PREFIX*music_album_artists`;',
 		'DELETE FROM `*PREFIX*music_tracks`;',
-		'DELETE FROM `*PREFIX*music_scanned_users`;'
 	);
 	foreach ($sqls as $sql) {
 		$query = \OCP\DB::prepare($sql);

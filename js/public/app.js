@@ -12,6 +12,92 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
+var PlayerWrapper = function() {
+	this.underlyingPlayer = 'aurora';
+	this.aurora = {};
+	this.sm2 = {};
+	this.duration = 0;
+	var self = this;
+
+	return this;
+}
+
+PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
+
+PlayerWrapper.prototype.play = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			break;
+		case 'aurora':
+			this.aurora.play();
+			break;
+	}
+};
+
+PlayerWrapper.prototype.stop = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			break;
+		case 'aurora':
+			if(this.aurora.asset !== undefined) {
+				// check if player's constructor has been called,
+				// if so, stop() will be available
+				this.aurora.stop();
+			}
+			break;
+	}
+};
+
+PlayerWrapper.prototype.togglePlayback = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			break;
+		case 'aurora':
+			this.aurora.togglePlayback();
+			break;
+	}
+};
+
+PlayerWrapper.prototype.seek = function(percentage) {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			break;
+		case 'aurora':
+			this.aurora.seek(percentage);
+			break;
+	}
+};
+
+PlayerWrapper.prototype.fromURL = function(url) {
+	var self = this;
+	console.log(url);
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			break;
+		case 'aurora':
+			this.aurora = AV.Player.fromURL(url);
+			this.aurora.asset.source.chunkSize=524288;
+
+			this.aurora.on('buffer', function(percent) {
+				self.trigger('buffer', percent);
+			});
+			this.aurora.on('progress', function(currentTime) {
+				self.trigger('progress', currentTime);
+			});
+			this.aurora.on('ready', function() {
+				self.trigger('ready');
+			});
+			this.aurora.on('end', function() {
+				self.trigger('end');
+			});
+			this.aurora.on('duration', function(msecs) {
+				self.duration = msecs;
+				self.trigger('duration', msecs);
+			});
+			return this;
+	}
+};
+
 angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
@@ -340,6 +426,7 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$scope.getPlayableFileURL = function (track) {
+		console.log(mimeType);
 		for(var mimeType in track.files) {
 			if(mimeType=='audio/flac' || mimeType=='audio/mpeg') {
 				return track.files[mimeType];
@@ -351,11 +438,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		if($scope.player.asset !== undefined) {
-			// check if player's constructor has been called,
-			// if so, stop() will be available
-			$scope.player.stop();
-		}
+		$scope.player.stop();
 		$scope.setPlay(false);
 		$scope.setLoading(true);
 		if(newValue !== null) {
@@ -373,7 +456,6 @@ angular.module('Music').controller('PlayerController',
 										});
 
 			$scope.player=Audio.fromURL($scope.getPlayableFileURL($scope.currentTrack));
-			$scope.player.asset.source.chunkSize=524288;
 			$scope.setLoading(true);
 
 			$scope.player.play();
@@ -402,6 +484,10 @@ angular.module('Music').controller('PlayerController',
 						$scope.next();
 					});
 				}
+			});
+			$scope.player.on('duration', function(msecs) {
+				$scope.setTime($scope.position.current, $scope.player.duration/1000);
+				$scope.$digest();
 			});
 		} else {
 			$scope.currentArtist = null;
@@ -594,7 +680,9 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
-	return AV.Player;
+	//return AV.Player;
+	return new PlayerWrapper();
+	//return PlayerWrapper;
 }]);
 
 angular.module('Music').factory('playlists', function(){

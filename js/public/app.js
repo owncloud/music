@@ -27,6 +27,7 @@ PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
 PlayerWrapper.prototype.play = function() {
 	switch(this.underlyingPlayer) {
 		case 'sm2':
+			this.sm2.play('ownCloudSound');
 			break;
 		case 'aurora':
 			this.aurora.play();
@@ -37,6 +38,8 @@ PlayerWrapper.prototype.play = function() {
 PlayerWrapper.prototype.stop = function() {
 	switch(this.underlyingPlayer) {
 		case 'sm2':
+			this.sm2.stop('ownCloudSound');
+			this.sm2.destroySound('ownCloudSound');
 			break;
 		case 'aurora':
 			if(this.aurora.asset !== undefined) {
@@ -51,6 +54,7 @@ PlayerWrapper.prototype.stop = function() {
 PlayerWrapper.prototype.togglePlayback = function() {
 	switch(this.underlyingPlayer) {
 		case 'sm2':
+			this.sm2.togglePause('ownCloudSound');
 			break;
 		case 'aurora':
 			this.aurora.togglePlayback();
@@ -59,8 +63,10 @@ PlayerWrapper.prototype.togglePlayback = function() {
 };
 
 PlayerWrapper.prototype.seek = function(percentage) {
+	console.log('seek to '+percentage);
 	switch(this.underlyingPlayer) {
 		case 'sm2':
+			this.sm2.setPosition(percentage * this.duration);
 			break;
 		case 'aurora':
 			this.aurora.seek(percentage);
@@ -68,14 +74,48 @@ PlayerWrapper.prototype.seek = function(percentage) {
 	}
 };
 
-PlayerWrapper.prototype.fromURL = function(url) {
+PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 	var self = this;
-	console.log(url);
+	console.log(typeAndURL['url']);
+	switch(typeAndURL['type']) {
+		case 'audio/ogg':
+			this.underlyingPlayer = 'sm2';
+			break;
+		default:
+			this.underlyingPlayer = 'aurora';
+			break;
+	}
 	switch(this.underlyingPlayer) {
 		case 'sm2':
+			this.sm2 = soundManager.setup({
+				html5PollingInterval: 200
+			});
+			this.sm2.html5Only = true;
+			this.sm2.createSound({
+				id: 'ownCloudSound',
+				url: typeAndURL['url'],
+				whileplaying: function() {
+					self.trigger('progress', this.position);
+				},
+				whileloading: function() {
+					self.duration = this.durationEstimate;
+					self.trigger('duration', this.durationEstimate);
+					self.trigger('buffer', parseInt(this.bytesLoaded/this.bytesTotal)*100);
+				},
+				onfinish: function() {
+					self.trigger('end');
+				},
+				onload: function(success) {
+					if ( success ) {
+					self.trigger('ready');
+					} else {
+						console.log('SM2: sound load error');
+					}
+				}
+			});
 			break;
 		case 'aurora':
-			this.aurora = AV.Player.fromURL(url);
+			this.aurora = AV.Player.fromURL(typeAndURL['url']);
 			this.aurora.asset.source.chunkSize=524288;
 
 			this.aurora.on('buffer', function(percent) {
@@ -94,8 +134,9 @@ PlayerWrapper.prototype.fromURL = function(url) {
 				self.duration = msecs;
 				self.trigger('duration', msecs);
 			});
-			return this;
+			break;
 	}
+	return this;
 };
 
 angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
@@ -426,10 +467,13 @@ angular.module('Music').controller('PlayerController',
 	});
 
 	$scope.getPlayableFileURL = function (track) {
-		console.log(mimeType);
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mpeg') {
-				return track.files[mimeType];
+		console.log(mimeType);
+			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
+				return {
+					'type': mimeType,
+					'url': track.files[mimeType]
+				};
 			}
 		}
 
@@ -557,11 +601,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		if($scope.player.format.formatID !== 'flac') {
-			// just in flac seeking is tested
-			return;
-		}
-		$scope.player.seek(percentage * $scope.player.duration);
+		$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){

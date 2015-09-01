@@ -3,6 +3,26 @@
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
+## Supported formats
+
+* FLAC (`audio/flac`)
+* MP3 (`audio/mpeg`)
+* Vorbis in OGG container (`audio/ogg`)
+* Opus in OGG container (`audio/ogg` or `audio/opus`)
+* All formats listed for your browser on [this table](https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats#Browser_compatibility)
+
+_Note: it might be unable to play some particular files._
+
+_Note: sometimes it might be unable to play all FLAC and MP3 files (especially in Firefox), in this case restarting the browser may help._
+
+### Detail
+
+This app utilizes 2 backend players: Aurora.js and SoundManager2.
+
+Aurora.js uses Javascript and HTML5 Audio API to decode and play music, it doesn't use the browser's built-in codec. This app choose Aurora.js for FLAC and MP3 files.
+
+SoundManager2 utilizes the browser's built-in codec, This app choose SoundManager2 for OGG files.
+
 ## Usage hints
 
 ### Commands

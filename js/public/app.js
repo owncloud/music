@@ -341,7 +341,6 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.getPlayableFileURL = function (track) {
 		for(var mimeType in track.files) {
-		console.log(mimeType);
 			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
 				return {
 					'type': mimeType,
@@ -594,9 +593,7 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
-	//return AV.Player;
 	return new PlayerWrapper();
-	//return PlayerWrapper;
 }]);
 
 angular.module('Music').factory('playlists', function(){

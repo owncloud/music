@@ -15,6 +15,7 @@ if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
 \OCP\Util::addScript('music', 'vendor/aurora/flac');
 \OCP\Util::addScript('music', 'vendor/aurora/mp3');
 \OCP\Util::addScript('music', 'public/app');
+\OCP\Util::addScript('music', 'app/playerwrapper');
 
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-sidebar');

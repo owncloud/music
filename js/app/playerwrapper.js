@@ -55,7 +55,7 @@ PlayerWrapper.prototype.seek = function(percentage) {
 			this.sm2.setPosition(percentage * this.duration);
 			break;
 		case 'aurora':
-			this.aurora.seek(percentage);
+			this.aurora.seek(percentage * this.duration);
 			break;
 	}
 };

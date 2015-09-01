@@ -474,7 +474,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		$scope.player.seek(percentage);
+		// disable seeking for all format because of some angular error
+		//$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){

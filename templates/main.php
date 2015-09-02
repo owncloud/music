@@ -1,4 +1,6 @@
 <?php
+/*
+
 \OCP\Util::addScript('core', 'placeholder');
 if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
 	\OCP\Util::addScript('3rdparty', 'md5/md5.min');
@@ -15,6 +17,16 @@ if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
 \OCP\Util::addScript('music', 'vendor/aurora/flac');
 \OCP\Util::addScript('music', 'vendor/aurora/mp3');
 \OCP\Util::addScript('music', 'public/app');
+*/
+script('music', [
+	'model/album',
+	'model/albumcollection',
+	'model/artist',
+	'model/artistcollection',
+	'view/albumview',
+	'view/artistview',
+	'app',
+]);
 
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-sidebar');
@@ -22,13 +34,61 @@ if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
 \OCP\Util::addStyle('music', 'mobile');
 \OCP\Util::addStyle('music', 'tablet');
 
-// stylesheets for different OC versions
-$version = \OCP\Util::getVersion();
-// owncloud 6
-if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
-	\OCP\Util::addStyle('music', 'stable6-fixes');
-}
 ?>
+
+
+<div id="app">
+
+	<script id="artist-template" type="text/x-handlebars-template">
+		<div class="artist-area">
+			<h1>{{ name }} <img class="play svg" alt="<?php p($l->t('Play')); ?>"
+								src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" /></h1>
+			<div class="album-area"></div>
+		</div>
+	</script>
+
+	<script id="album-template" type="text/x-handlebars-template">
+		{{#each this}}
+
+			<h2>Placeholder album name <span class="muted">(1923)</span></h2>
+			<div class="albumart">ABC</div>
+			<img class="play overlay svg" alt="<?php p($l->t('Play')); ?>"
+				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+			<ul class="track-list">
+				<li>
+					<img class="play svg" alt="<?php p($l->t('Play')); ?>" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+					<span class="muted">1.</span>
+					track title
+				</li>
+				<li>
+					<img class="play svg" alt="<?php p($l->t('Play')); ?>" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+					<span class="muted">1.</span>
+					track title
+				</li>
+				<li>
+					<img class="play svg" alt="<?php p($l->t('Play')); ?>" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+					<span class="muted">1.</span>
+					track title
+				</li>
+				<li>
+					<img class="play svg" alt="<?php p($l->t('Play')); ?>" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+					<span class="muted">1.</span>
+					track title
+				</li>
+				<li>
+					<img class="play svg" alt="<?php p($l->t('Play')); ?>" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+					<span class="muted">1.</span>
+					track title
+				</li>
+			</ul>
+		</div>
+		{{/each}
+	</script>
+</div>
+
+
+<?php
+/*
 
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
@@ -104,3 +164,7 @@ if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 	</div>
 
 </div>
+
+
+*/
+?>

@@ -63,6 +63,8 @@
 	padding: 14px 28px;
 	width: 480px;
 	float: left;
+	/* empty area */
+	min-height: 260px;
 }
 
 .album-area > h2 {

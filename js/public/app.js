@@ -341,8 +341,11 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.getPlayableFileURL = function (track) {
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mpeg') {
-				return track.files[mimeType];
+			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
+				return {
+					'type': mimeType,
+					'url': track.files[mimeType]
+				};
 			}
 		}
 
@@ -351,11 +354,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		if($scope.player.asset !== undefined) {
-			// check if player's constructor has been called,
-			// if so, stop() will be available
-			$scope.player.stop();
-		}
+		$scope.player.stop();
 		$scope.setPlay(false);
 		$scope.setLoading(true);
 		if(newValue !== null) {
@@ -373,7 +372,6 @@ angular.module('Music').controller('PlayerController',
 										});
 
 			$scope.player=Audio.fromURL($scope.getPlayableFileURL($scope.currentTrack));
-			$scope.player.asset.source.chunkSize=524288;
 			$scope.setLoading(true);
 
 			$scope.player.play();
@@ -402,6 +400,10 @@ angular.module('Music').controller('PlayerController',
 						$scope.next();
 					});
 				}
+			});
+			$scope.player.on('duration', function(msecs) {
+				$scope.setTime($scope.position.current, $scope.player.duration/1000);
+				$scope.$digest();
 			});
 		} else {
 			$scope.currentArtist = null;
@@ -471,11 +473,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		if($scope.player.format.formatID !== 'flac') {
-			// just in flac seeking is tested
-			return;
-		}
-		$scope.player.seek(percentage * $scope.player.duration);
+		// disable seeking for all format because of some angular error
+		//$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){
@@ -594,7 +593,7 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
-	return AV.Player;
+	return new PlayerWrapper();
 }]);
 
 angular.module('Music').factory('playlists', function(){

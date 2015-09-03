@@ -192,9 +192,14 @@ class Scanner extends PublicEmitter {
 			if($hasComments && array_key_exists('album', $fileInfo['comments'])){
 				$album = $fileInfo['comments']['album'][0];
 			}
-			if($album === ''){
-				// assume album is not set
-				$album = null;
+			if($album === '' || $album === null){
+				// album name not set in fileinfo, use parent folder name as album name
+				if ( $this->userFolder->getId() === $file->getParent()->getId() ) {
+					// if the file is in user home, still set album name to unknown
+					$album = null;
+				} else {
+					$album = $file->getParent()->getName();
+				}
 			}
 
 			// track number

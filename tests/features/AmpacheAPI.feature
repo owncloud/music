@@ -67,12 +67,12 @@ Feature: Ampache API
     And I request the "songs" resource
     Then I should get:
       | title                          | artist      | album                             | time | track |
-      | Ac                             | Pascalb     | Nuance                            | 187  |       |
       | Adrift                         | SimonBowman | Orchestral Film Music Vol 1       | 114  | 4     |
       | Anniversary Meal               | SimonBowman | Backwards Original Film Score     | 101  | 3     |
       | Arrival and Transformation One | SimonBowman | The Visitor Original Film Scor    | 91   | 1     |
       | Ashes                          | SimonBowman | Instrumental Film Music Vol 1     | 122  | 4     |
       | Avaunt                         | SimonBowman | NDP Philo Cafe Original Film S    | 77   | 6     |
+      | Aç                             | Pascalb     | Nuance                            | 187  | 7     |
       | Backwards                      | SimonBowman | Backwards Original Film Score     | 52   | 8     |
       | Bagatelle                      | SimonBowman | Instrumental Film Music Vol 1     | 179  | 7     |
       | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  |       |
@@ -86,15 +86,15 @@ Feature: Ampache API
       | title                            | artist                 | album                          | time | track |
       | Divertimento                     | SimonBowman            | Instrumental Film Music Vol 1  | 180  | 8     |
       | Final Transformation and Credits | SimonBowman            | The Visitor Original Film Scor | 124  | 5     |
-      | Mediane                          | Pascalb                | Nuance                         | 203  |       |
+      | Médiane                          | Pascalb                | Nuance                         | 203  | 1     |
       | Wedding March for a Bullet       | Diablo Swing Orchestra | The Butcher s Ballroom         | 194  |       |
       | Zodiac Virtues                   | Diablo Swing Orchestra | The Butcher s Ballroom         | 288  |       |
 
   Scenario: List songs that contain "Mediane"
     Given I am logged in with an auth token
-    When I specify the parameter "filter" with value "Mediane"
+    When I specify the parameter "filter" with value "Médiane"
     And I specify the parameter "exact" with value "true"
     And I request the "songs" resource
     Then I should get:
       | title                            | artist                 | album                          | time | track |
-      | Mediane                          | Pascalb                | Nuance                         | 203  |       |
+      | Médiane                          | Pascalb                | Nuance                         | 203  | 1     |

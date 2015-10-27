@@ -1,3 +1,10 @@
+v0.3.8 2015-10-27
+
+ * support for ogg (#416 by pellaeon)
+ * fix issue with not existing prepareQuery (#411 by roha4000)
+ * fix failures after upload to public link shares (#436, #387)
+ * fix for Angular variable names (#425 by DavidPrevot)
+
 v0.3.7 2015-07-16
 
  * fix issue with SQL statement in background job for MySQL (#372)

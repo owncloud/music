@@ -49,7 +49,7 @@ class Scanner extends PublicEmitter {
 								$userId,
 								IConfig $configManager,
 								$appName,
-								Folder $userFolder = null){
+								$userFolder = null){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -69,6 +69,11 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function updateById($fileId, $userId = null) {
+		// TODO properly initialize the user folder for external events (upload to public share)
+		if ($this->userFolder === null) {
+			return;
+		}
+
 		try {
 			$files = $this->userFolder->getById($fileId);
 			if(count($files) > 0) {
@@ -82,6 +87,11 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function updateByPath($filePath, $userId = null) {
+		// TODO properly initialize the user folder for external events (upload to public share)
+		if ($this->userFolder === null) {
+			return;
+		}
+
 		try {
 			$file = $this->userFolder->get($filePath);
 			$this->update($file, $userId);

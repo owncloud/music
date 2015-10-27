@@ -24,7 +24,7 @@ abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * Checks if a controllermethod has the expected annotations
-	 * @param Controller/string $controller name or instance of the controller
+	 * @param Controller|string $controller name or instance of the controller
 	 * @param array $expected an array containing the expected annotations
 	 * @param array $valid if you define your own annotations, pass them here
 	 */

@@ -50,7 +50,7 @@ class AmpacheMiddleware extends Middleware {
 	 * This runs all the security checks before a method call. The
 	 * security checks are determined by inspecting the controller method
 	 * annotations
-	 * @param string/Controller $controller the controllername or string
+	 * @param string|Controller $controller the controllername or string
 	 * @param string $methodName the name of the method
 	 * @throws AmpacheException when a security check fails
 	 */

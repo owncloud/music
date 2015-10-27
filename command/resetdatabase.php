@@ -82,11 +82,11 @@ class ResetDatabase extends Command {
 		$sql = 'DELETE FROM `*PREFIX*music_album_artists` ' .
 			'WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums`) ' .
 			'OR `artist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_artists`)';
-		$this->db->prepareQuery($sql)->execute();
+		$this->db->prepare($sql)->execute();
 
 		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` ' .
 			'WHERE `track_id` NOT IN (SELECT `id` FROM `*PREFIX*music_tracks`)';
-		$this->db->prepareQuery($sql)->execute();
+		$this->db->prepare($sql)->execute();
 	}
 
 }

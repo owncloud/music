@@ -26,15 +26,15 @@ do
     if [ ! -d "$name" ];
     then
         echo "Downloading $name ..."
-        wget $url -q -O archive.zip
+        wget $url -q --no-check-certificate -O archive.zip
         if [ $? -ne 0 ];
         then
             sleep 5
-            wget $url -O archive.zip
+            wget $url --no-check-certificate -O archive.zip
             if [ $? -ne 0 ];
             then
                 sleep 5
-                wget $url -O archive.zip
+                wget $url --no-check-certificate -O archive.zip
                 if [ $? -ne 0 ];
                 then
                     exit 1

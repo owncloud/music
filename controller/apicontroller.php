@@ -12,6 +12,8 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Track;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
@@ -86,6 +88,7 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
+		/** @var Artist[] $allArtists */
 		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
 		$allArtistsById = array();
 		foreach ($allArtists as &$artist) {
@@ -98,6 +101,7 @@ class ApiController extends Controller {
 			$allAlbumsById[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
 		}
 
+		/** @var Track[] $allTracks */
 		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
 
 		$artists = array();
@@ -126,6 +130,7 @@ class ApiController extends Controller {
 	public function artists() {
 		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = filter_var($this->params('albums'), FILTER_VALIDATE_BOOLEAN);
+		/** @var Artist[] $artists */
 		$artists = $this->artistBusinessLayer->findAll($this->userId);
 		foreach($artists as &$artist) {
 			$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
@@ -156,6 +161,7 @@ class ApiController extends Controller {
 	public function artist() {
 		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 		$artistId = $this->getIdFromSlug($this->params('artistIdOrSlug'));
+		/** @var Artist $artist */
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 		$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
 		if($fulltree) {
@@ -248,6 +254,7 @@ class ApiController extends Controller {
 			$albumId = $track->getAlbumId();
 			$track = $track->toAPI($this->urlGenerator);
 			if($fulltree) {
+				/** @var Artist $artist */
 				$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 				$track['artist'] = $artist->toAPI($this->urlGenerator, $this->l10n);
 				$album = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -263,6 +270,7 @@ class ApiController extends Controller {
 	 */
 	public function track() {
 		$trackId = $this->getIdFromSlug($this->params('trackIdOrSlug'));
+		/** @var Track $track */
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		return new JSONResponse($track->toAPI($this->urlGenerator));
 	}

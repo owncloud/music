@@ -1,5 +1,6 @@
 {
   "name": "underscore",
+  "version": "1.8.3",
   "main": "underscore.js",
   "keywords": [
     "util",
@@ -12,19 +13,23 @@
     "docs",
     "test",
     "*.yml",
-    "*.map",
     "CNAME",
     "index.html",
     "favicon.ico",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    ".*",
+    "component.json",
+    "package.json",
+    "karma.*"
   ],
   "homepage": "https://github.com/jashkenas/underscore",
-  "_release": "32216a4afe",
+  "_release": "1.8.3",
   "_resolution": {
-    "type": "commit",
-    "commit": "32216a4afe97c0c3665897b58be73409d5571dcf"
+    "type": "version",
+    "tag": "1.8.3",
+    "commit": "e4743ab712b8ab42ad4ccb48b155034d02394e4d"
   },
   "_source": "git://github.com/jashkenas/underscore.git",
-  "_target": "32216a4afe97c0c3665897b58be73409d5571dcf",
+  "_target": ">=1.7.0",
   "_originalSource": "underscore"
 }

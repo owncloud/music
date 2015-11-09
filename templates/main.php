@@ -26,10 +26,6 @@ if (version_compare(implode('.', $version), '7.8', '<=')) {
 \OCP\Util::addStyle('music', 'mobile');
 \OCP\Util::addStyle('music', 'tablet');
 
-// owncloud 6
-if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
-	\OCP\Util::addStyle('music', 'stable6-fixes');
-}
 ?>
 
 

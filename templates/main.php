@@ -9,6 +9,13 @@ if (version_compare(implode('.', $version), '7.8', '<=')) {
 } else {
 	vendor_script('blueimp-md5/js/md5');
 }
+
+// until ownCloud 8.2 OC.Backbone was not present
+if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
+	\OCP\Util::addScript('music', 'vendor/backbone/backbone-min');
+	\OCP\Util::addScript('music', 'public/pre-stable8.2-fixes');
+}
+
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');

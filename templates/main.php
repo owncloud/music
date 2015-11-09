@@ -1,11 +1,14 @@
 <?php
+// scripts/stylesheets for different OC versions
+$version = \OCP\Util::getVersion();
+
 \OCP\Util::addScript('core', 'placeholder');
-if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
+if (version_compare(implode('.', $version), '7.8', '<=')) {
 	\OCP\Util::addScript('3rdparty', 'md5/md5.min');
+	\OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 } else {
 	vendor_script('blueimp-md5/js/md5');
 }
-\OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
@@ -23,8 +26,6 @@ if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
 \OCP\Util::addStyle('music', 'mobile');
 \OCP\Util::addStyle('music', 'tablet');
 
-// stylesheets for different OC versions
-$version = \OCP\Util::getVersion();
 // owncloud 6
 if($version[0] === 6 || ($version[0] === 5 && $version[1] >= 80)) {
 	\OCP\Util::addStyle('music', 'stable6-fixes');

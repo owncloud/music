@@ -5,6 +5,7 @@
     "angular" : "",
     "angular-route" : "",
     "angular-gettext" : "",
+    "backbone": "",
     "restangular" : "",
     "soundmanager": "",
     "underscore" : ""

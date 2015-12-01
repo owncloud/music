@@ -1,5 +1,7 @@
 <div ng-hide="artists" id="emptycontent">
-	<span ng-hide="loading" translate>Nothing in here. Upload your music!</span>
+	<div class="icon-audio svg" ng-hide="loading"></div>
+	<h2 ng-hide="loading" translate>No music found</h2>
+	<p ng-hide="loading" translate>Upload music in the files app to listen to it here</p>
 </div>
 
 <img id="updateData" ng-show="updateAvailable"

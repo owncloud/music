@@ -12,6 +12,10 @@
 	text-decoration: underline;
 }
 
+.icon-audio {
+	background-image: url('../img/audio.svg');
+}
+
 /* angular JS wrapper for main controller */
 #app > div {
 	width: 100%;

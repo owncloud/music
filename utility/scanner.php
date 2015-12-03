@@ -383,8 +383,14 @@ class Scanner extends PublicEmitter {
 				// break scan - 20 files are already scanned
 				break;
 			}
-			if(in_array($file->getId(), $fileIds)) {
-				// skip this file as it's already scanned
+			try {
+				if(in_array($file->getId(), $fileIds)) {
+					// skip this file as it's already scanned
+					continue;
+				}
+			} catch (\OCP\Files\NotFoundException $e) {
+				// just ignore the error
+				$this->logger->log('updateById - file not found - '. $file , 'debug');
 				continue;
 			}
 			if($debug) {

@@ -69,6 +69,10 @@
 	font-size: 22px;
 }
 
+#music-user code {
+	overflow-wrap: break-word;
+}
+
 #music-ampache-description {
-	width: 300px;
+	width: 200px;
 }

@@ -116,8 +116,11 @@ class ApiController extends Controller {
 				$album['tracks'] = array();
 				$artist['albums'][] = &$album;
 			}
-
-			$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
+			try {
+				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
+			} catch (\OCP\Files\NotFoundException $e) {
+				//ignore not found	
+			}
 		}
 
 		return new JSONResponse($artists);

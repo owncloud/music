@@ -3,5 +3,14 @@
     { "id" : 1001, "name": "The First Artist",  "user_id": "integration" },
     { "id" : 1002, "name": "The Second Artist", "user_id": "integration" },
     { "id" : 1003, "name": "The Third Artist",  "user_id": "integration" }
+  ],
+  "music_albums" : [
+    { "id" : 1001, "name": "Testalbum",  "user_id": "integration", "year":"2016", "cover_file_id":"0" }
+  ],
+  "music_tracks" : [
+    { "id" : "1001", "user_id": "integration", "title" : "Testtitel 1", "number" : "1", "artist_id" : "1001", "album_id": "1001" , "length" : "100", "file_id" : "0", "bitrate" : "123", "mimetype" : "audio/mpeg"}
+  ],
+  "music_album_artists" : [
+    { "artist_id" : 1001, "album_id": "1001"}
   ]
 }

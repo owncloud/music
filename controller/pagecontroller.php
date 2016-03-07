@@ -40,7 +40,7 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index() {
-		$userLang = $this->l10n->findLanguage();
+		$userLang = $this->l10n->getLanguageCode();
 		return $this->render('main', array('lang' => $userLang));
 	}
 }

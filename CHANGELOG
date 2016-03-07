@@ -1,5 +1,11 @@
+v0.3.9 2016-03-07
+ * increase robustness against removed files - thanks @jerome-pouiller - #452
  * update underscore
  * drop stable6 supports
+ * fix blank page in ownCloud 9.0
+ * bring in backbone
+ * fix some layout issues
+ * better SQL for the cleanup code
 
 v0.3.8 2015-10-27
 

@@ -1,3 +1,9 @@
+v0.3.10 2016-03-09
+
+ * general fixes for ownCloud 9.0.0
+ * fix missing request token for WebDAV requests - #474
+ * fix bug for not translated strings - #473
+
 v0.3.9 2016-03-07
 
  * increase robustness against removed files - thanks @jerome-pouiller - #452

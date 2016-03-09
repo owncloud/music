@@ -344,7 +344,7 @@ angular.module('Music').controller('PlayerController',
 			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
 				return {
 					'type': mimeType,
-					'url': track.files[mimeType]
+					'url': track.files[mimeType] + '?requesttoken=' + encodeURIComponent(OC.requestToken)
 				};
 			}
 		}

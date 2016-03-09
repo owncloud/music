@@ -90,7 +90,11 @@ class Album extends Entity {
 	public function getNameString($l10n) {
 		$name = $this->getName();
 		if ($name === null) {
-			$name = $l10n->t('Unknown album')->__toString();
+			$name = $l10n->t('Unknown album');
+			if(!is_string($name)) {
+				/** @var \OC_L10N_String $name */
+				$name = $name->__toString();
+			}
 		}
 		return $name;
 	}

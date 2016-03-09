@@ -6,7 +6,18 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		<?php $artist = $album->getArtist(); ?>
 		<album id='<?php p($album->getId())?>'>
 			<name><?php p($album->getNameString($_['l10n']))?></name>
-			<artist id='<?php p($artist?$artist->getId():'')?>'><?php p($artist?$artist->getName():$_['l10n']->t('Unknown artist')->__toString())?></artist>
+			<artist id='<?php p($artist?$artist->getId():'')?>'><?php
+				if($artist) {
+					p($artist->getName());
+				} else {
+					$name = $_['l10n']->t('Unknown artist');
+					if(!is_string($name)) {
+						/** @var \OC_L10N_String $name */
+						$name = $name->__toString();
+					}
+					p($name);
+				}
+				?></artist>
 			<tracks><?php p($album->getTrackCount())?></tracks>
 			<rating>0</rating>
 			<year><?php p($album->getYear())?></year>

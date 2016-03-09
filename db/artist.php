@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Db;
 
+use OCP\IL10N;
 use \OCP\IURLGenerator;
 
 use \OCP\AppFramework\Db\Entity;
@@ -45,15 +46,19 @@ class Artist extends Entity {
 		);
 	}
 
-	public function getNameString($l10n) {
+	public function getNameString(IL10N $l10n) {
 		$name = $this->getName();
 		if ($name === null) {
-			$name = $l10n->t('Unknown artist')->__toString();
+			$name = $l10n->t('Unknown artist');
+			if(!is_string($name)) {
+				/** @var \OC_L10N_String $name */
+				$name = $name->__toString();
+			}
 		}
 		return $name;
 	}
 
-	public function toCollection($l10n) {
+	public function toCollection(IL10N $l10n) {
 		return array(
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n)

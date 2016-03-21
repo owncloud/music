@@ -19,15 +19,15 @@ $c = $app->getContainer();
 /**
  * add navigation
  */
-$navConfig = array(
-	'id' => $c->query('AppName'),
-	'order' => 10,
-	'name' => $c->query('L10N')->t('Music'),
-	'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
-	'icon' => $c->query('URLGenerator')->imagePath($c->query('AppName'), 'music.svg')
-);
-
-$c->query('ServerContainer')->getNavigationManager()->add($navConfig);
+\OC::$server->getNavigationManager()->add(function () use($c) {
+	return [
+		'id' => $c->query('AppName'),
+		'order' => 10,
+		'name' => $c->query('L10N')->t('Music'),
+		'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
+		'icon' => $c->query('URLGenerator')->imagePath($c->query('AppName'), 'music.svg')
+	];
+});
 
 /**
  * register regular task

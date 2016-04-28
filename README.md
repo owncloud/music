@@ -68,6 +68,53 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 To use Ampache you can't use your ownCloud password. Instead, you need to generate APIKEY for Ampache.
 Go to "Your username" → "Personal", and check section Music/Ampache, where you can generate your key. Enter your ownCloud username and the generated key as password to your client.
 
+You may use the `/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
+Please note that the minimum password length is 10 characters.
+
+```
+POST /settings/userkey/generate
+```
+
+Parameters:
+
+```
+{
+    "length": <length>,
+    "description": <description>
+}
+```
+
+Response (success):
+
+```
+{
+    "success": true,
+    "id": <userkey_id>,
+    "password": <random_password>,
+    "description": <description>
+}
+```
+
+Response (no description provided):
+
+```
+{
+    "success": false,
+    "message": "Please provide a description"
+}
+```
+
+Response (error saving password):
+
+```
+{
+    "success": false,
+    "id": null,
+    "password": <random_password>,
+    "description": <description>
+}
+```
+
 ### Installation
 
 Music App can be installed using the App Management in ownCloud. Instructions can be found [here](https://doc.owncloud.org/server/8.1/admin_manual/installation/apps_management_installation.html).

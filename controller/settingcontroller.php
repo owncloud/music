@@ -13,6 +13,7 @@
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
@@ -101,10 +102,8 @@ class SettingController extends Controller {
 	 * @CORS
 	 */
 	public function generateUserKey($length, $description) {
-		$success = false;
-
 		if($description == NULL) {
-			return new JSONResponse(array('success' => $success, 'message' => $this->l10n->t('Please provide a description')));
+			return new JSONResponse(['message' => $this->l10n->t('Please provide a description')], Http::STATUS_BAD_REQUEST);
 		}
 
 		if($length == NULL || $length < self::DEFAULT_PASSWORD_LENGTH) {
@@ -118,11 +117,11 @@ class SettingController extends Controller {
 		$hash = hash('sha256', $password);
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 
-		if($id !== null) {
-			$success = true;
+		if(is_null($id)) {
+			return new JSONResponse(['message' => $this->l10n->t('Error while saving the credentials')], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
-		return new JSONResponse(array('success' => $success, 'id' => $id, 'password' => $password, 'description' => $description));
+		return new JSONResponse(['id' => $id, 'password' => $password, 'description' => $description], Http::STATUS_CREATED);
 	}
 
 	/**

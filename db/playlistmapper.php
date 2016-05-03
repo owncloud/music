@@ -97,7 +97,7 @@ class PlaylistMapper extends Mapper {
 
 	/**
 	 * deletes a playlist
-	 * @param int $id       playlist ID
+	 * @param Entity $entity the playlist entity
 	 */
 	public function delete(Entity $entity) {
 		// remove all tracks in it

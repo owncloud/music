@@ -15,6 +15,7 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\Entity;
 use OCP\IDb;
 
 class PlaylistMapper extends Mapper {
@@ -98,14 +99,14 @@ class PlaylistMapper extends Mapper {
 	 * deletes a playlist
 	 * @param int $id       playlist ID
 	 */
-	public function delete($id) {
+	public function delete(Entity $entity) {
 		// remove all tracks in it
-		$this->removeTracks($id);
+		$this->removeTracks($entity->getId());
 
 		// then remove playlist
 		$sql = 'DELETE FROM `*PREFIX*music_playlists` ' .
 					'WHERE `id` = ?';
-		$this->execute($sql, array($id));
+		$this->execute($sql, array($entity->getId()));
 
 	}
 
@@ -122,7 +123,7 @@ class PlaylistMapper extends Mapper {
 		if(is_null($trackIds)) {
 			$this->execute($sql, array($id));
 		} else {
-			$sql .= 'AND `track_id` = ?';
+			$sql .= ' AND `track_id` = ?';
 			foreach ($trackIds as $trackId) {
 				$this->execute($sql, array($id, $trackId));
 			}

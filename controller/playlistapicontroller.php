@@ -15,11 +15,11 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Db\DoesNotExistException;
+
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 use \OCP\Files\Folder;
-
-use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PlaylistMapper;

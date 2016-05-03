@@ -105,6 +105,7 @@ class Music extends App {
 				$c->query('URLGenerator'),
 				$c->query('PlaylistMapper'),
 				$c->query('TrackMapper'),
+				$c->query('UserFolder'),
 				$c->query('UserId')
 			);
 		});

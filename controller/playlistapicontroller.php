@@ -17,6 +17,7 @@ use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
+use \OCP\Files\Folder;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
 
@@ -29,6 +30,7 @@ class PlaylistApiController extends Controller {
 
 	private $playlistMapper;
 	private $userId;
+	private $userFolder;
 	private $trackMapper;
 	private $urlGenerator;
 
@@ -37,9 +39,11 @@ class PlaylistApiController extends Controller {
 								IURLGenerator $urlGenerator,
 								PlaylistMapper $playlistMapper,
 								TrackMapper $trackMapper,
+								Folder $userFolder,
 								$userId){
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
+		$this->userFolder = $userFolder;
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistMapper = $playlistMapper;
 		$this->trackMapper = $trackMapper;
@@ -120,12 +124,13 @@ class PlaylistApiController extends Controller {
 			// set trackIds in model
 			$tracks = $this->playlistMapper->getTracks($id);
 
+			$songs = [];
+
 			// Get all track information after finding them by their IDs
 			foreach($tracks as $track) {
 				$song = $this->trackMapper->find($track, $this->userId);
-				$songs[] = $song->toCollection($this->urlGenerator);
+				$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder);
 			}
-
 
 			$playlist->setTrackIds($songs);
 

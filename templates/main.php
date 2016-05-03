@@ -71,8 +71,8 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 						<button class="svg action icon-checkmark" ng-click="update(playlist)" />
 					</div>
 					<div class="actions">
-						<button ng-hide="$parent.showEditForm == playlist.id" class="svg action delete-icon" ng-click="remove(playlist)" />
-						<button class="svg action edit-icon" ng-hide="$parent.showEditForm == playlist.id" ng-click="$parent.showEditForm=playlist.id" />
+						<button ng-hide="$parent.showEditForm == playlist.id" class="svg action icon-delete" ng-click="remove(playlist)" />
+						<button class="svg action icon-edit" ng-hide="$parent.showEditForm == playlist.id" ng-click="$parent.showEditForm=playlist.id" />
 					</div>
 				</li>
 			</ul>

@@ -92,10 +92,12 @@ class AmpacheController extends Controller {
 				return $this->artists();
 			case 'artist_albums':
 				return $this->artist_albums();
-			case 'album_songs':
-				return $this->album_songs();
 			case 'albums':
 				return $this->albums();
+			case 'album':
+				return $this->album();
+			case 'album_songs':
+				return $this->album_songs();
 			case 'artist_songs':
 				return $this->artist_songs();
 			case 'songs':
@@ -389,6 +391,51 @@ class AmpacheController extends Controller {
 		return $this->render(
 			'ampache/songs',
 			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			'blank',
+			array('Content-Type' => 'text/xml')
+		);
+	}
+
+	protected function album() {
+		$userId = $this->ampacheUser->getUserId();
+		$trackId = $this->params('filter');
+
+		$album = $this->albumMapper->find($trackId, $userId);
+
+		// set track count for album
+		$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
+
+		$albumWithArtistIds = $this->albumMapper->getAlbumArtistsByAlbumId(array($album->getId()));
+
+		// this function is used to extract the first artistId of each album
+		$mapFunction = function($value) {
+			if (count($value)) {
+				// as Ampache only supports one artist per album
+				// we only return the first one
+				return $value[0];
+			}
+		};
+
+		// map this array to retrieve all artist ids and make it unique it
+		$artistIds = array_unique(array_map($mapFunction, $albumWithArtistIds));
+
+		$artists = $this->artistMapper->findMultipleById($artistIds, $userId);
+
+		$mappedArtists = array();
+		foreach ($artists as $artist) {
+			$mappedArtists[$artist->getId()] = $artist;
+		}
+
+		// set artist for album
+		if (count($albumWithArtistIds[$album->getId()])) {
+			// as Ampache only supports one artist per album
+			// we only use the first one
+			$album->setArtist($mappedArtists[$albumWithArtistIds[$album->getId()][0]]);
+		}
+
+		return $this->render(
+			'ampache/albums',
+			array('albums' => array($album), 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);

@@ -110,7 +110,7 @@ class AmpacheController extends Controller {
 			case '_get_cover':
 				return $this->get_cover();
 		}
-		throw new AmpacheException('TODO', 999);
+		throw new AmpacheException('Action not supported', 501);
 	}
 
 	/**

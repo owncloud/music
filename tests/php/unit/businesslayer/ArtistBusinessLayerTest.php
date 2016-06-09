@@ -118,5 +118,3 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
 	}
 }
-
-

@@ -19,35 +19,48 @@ use \OCP\AppFramework\Db\Entity;
 /**
  * @method string getName()
  * @method setName(string $name)
+ * @method string getMbid()
+ * @method setMbid(string $mbid)
  * @method int getYear()
  * @method setYear(int $year)
+ * @method int getDisk()
+ * @method setDisk(int $disk)
+ * @method string getMbidGroup()
+ * @method setMbidGroup(string $mbidGroup)
  * @method int getCoverFileId()
  * @method setCoverFileId(int $coverFileId)
  * @method array getArtistIds()
  * @method setArtistIds(array $artistIds)
  * @method string getUserId()
  * @method setUserId(string $userId)
+ * @method int getAlbumArtistId()
+ * @method setAlbumArtistId(int $albumArtistId)
+ * @method Artist getAlbumArtist()
+ * @method setArtist(Artist $albumArtist)
  * @method int getTrackCount()
  * @method setTrackCount(int $trackCount)
- * @method Artist getArtist()
- * @method setArtist(Artist $artist)
  */
 class Album extends Entity {
 
 	public $name;
+	public $mbid;
 	public $year;
+	public $disk;
+	public $mbidGroup;
 	public $coverFileId;
 	public $artistIds;
-	public $artists;
 	public $userId;
+	public $albumArtistId;
+	public $albumArtist;
 
 	// the following attributes aren't filled automatically
 	public $trackCount;
-	public $artist; // just used for Ampache as this supports just one artist
 
 	public function __construct(){
 		$this->addType('year', 'int');
 		$this->addType('coverFileId', 'int');
+		$this->addType('disk', 'int');
+		$this->addType('albumArtistId', 'int');
 	}
 
 	/**
@@ -139,6 +152,7 @@ class Album extends Entity {
 			'uri' => $this->getUri($urlGenerator),
 			'slug' => $this->getid() . '-' .$this->slugify('name'),
 			'id' => $this->getId(),
+			'albumArtistId' => $this->getAlbumArtistId(),
 			'artists' => $this->getArtists($urlGenerator)
 		);
 	}

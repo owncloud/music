@@ -25,8 +25,8 @@ class ArtistMapper extends Mapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id` '.
-			'FROM `*PREFIX*music_artists` `artist` '.
+		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id`, '.
+			'`artist`.`mbid` FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition;
 	}
 
@@ -35,7 +35,7 @@ class ArtistMapper extends Mapper {
 	 * @return Artist[]
 	 */
 	public function findAll($userId){
-		$sql = $this->makeSelectQuery('ORDER BY `artist`.`name`');
+		$sql = $this->makeSelectQuery('ORDER BY LOWER(`artist`.`name`)');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
 	}
@@ -51,7 +51,7 @@ class ArtistMapper extends Mapper {
 			$questionMarks[] = '?';
 		}
 		$sql = $this->makeSelectQuery('AND `artist`.`id` IN (' .
-			implode(',', $questionMarks) .') ORDER BY `artist`.`name`');
+			implode(',', $questionMarks) .') ORDER BY LOWER(`artist`.`name`)');
 		$params = $artistIds;
 		array_unshift($params, $userId);
 		return $this->findEntities($sql, $params);
@@ -85,7 +85,7 @@ class ArtistMapper extends Mapper {
 			$condition = 'AND `artist`.`name` = ?';
 			$params = array($userId, $artistName);
 		}
-		$sql = $this->makeSelectQuery($condition . ' ORDER BY `artist`.`name`');
+		$sql = $this->makeSelectQuery($condition . ' ORDER BY LOWER(`artist`.`name`)');
 		return array(
 			'sql' => $sql,
 			'params' => $params,

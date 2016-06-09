@@ -24,6 +24,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method setImage(string $image)
  * @method string getUserId()
  * @method setUserId(string $userId)
+ * @method string getMbid()
+ * @method setMbid(string $mbid)
  * @method int getAlbumCount()
  * @method setAlbumCount(int $albumCount)
  * @method int getTrackCount()
@@ -34,6 +36,7 @@ class Artist extends Entity {
 	public $name;
 	public $image; // URL
 	public $userId;
+	public $mbid;
 
 	// the following attributes aren't filled automatically
 	public $albumCount;

@@ -55,22 +55,12 @@ class Helper {
 					WHERE `*PREFIX*music_tracks`.`album_id` IS NULL
 				) as tmp
 			);',
-			'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN (
-				SELECT `album_id` FROM (
-					SELECT `*PREFIX*music_album_artists`.`album_id`
-					FROM `*PREFIX*music_album_artists`
-					LEFT JOIN `*PREFIX*music_albums`
-						ON `*PREFIX*music_albums`.`id` = `*PREFIX*music_album_artists`.`album_id`
-					WHERE `*PREFIX*music_albums`.`id` IS NULL
-				) as tmp
-			);',
-			'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN (
-				SELECT `id` FROM (
-					SELECT `*PREFIX*music_artists`.`id`
-					FROM `*PREFIX*music_artists`
-					LEFT JOIN `*PREFIX*music_album_artists`
-						ON `*PREFIX*music_album_artists`.`artist_id` = `*PREFIX*music_artists`.`id`
-					WHERE `*PREFIX*music_album_artists`.`artist_id` IS NULL
+			'DELETE FROM `*PREFIX*music_artists` WHERE `id` NOT IN (
+				SELECT DISTINCT * FROM (
+					SELECT `artist`.`id` FROM `*PREFIX*music_artists` `artist`
+					JOIN `*PREFIX*music_albums` `album` ON
+					`artist`.`id` = `album`.`album_artist_id` UNION SELECT `track`.`artist_id`
+					FROM `*PREFIX*music_tracks` `track`
 				) as tmp
 			);',
 		);

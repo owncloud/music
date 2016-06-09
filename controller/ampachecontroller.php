@@ -257,7 +257,8 @@ class AmpacheController extends Controller {
 		// set album and track count for artists
 		foreach($albums as &$album) {
 			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
-			$album->setArtist($artist);
+			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId(), $userId);
+			$album->setAlbumArtist($albumArtist);
 		}
 
 		return $this->render(
@@ -280,7 +281,9 @@ class AmpacheController extends Controller {
 		// set album and track count for artists
 		foreach($tracks as &$track) {
 			$track->setArtist($artist);
-			$track->setAlbum($this->albumMapper->find($track->getAlbumId(), $userId));
+			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+			$track->setAlbum($album);
 		}
 
 		return $this->render(
@@ -298,6 +301,7 @@ class AmpacheController extends Controller {
 
 		// this is used to fill in the album information for each track
 		$album = $this->albumMapper->find($albumId, $userId);
+		$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
 		$tracks = $this->trackMapper->findAllByAlbum($albumId, $userId);
 
 		// set album and track count for artists
@@ -323,7 +327,9 @@ class AmpacheController extends Controller {
 
 		// set album and track count for artists
 		$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-		$track->setAlbum($this->albumMapper->find($track->getAlbumId(), $userId));
+		$album = $this->albumMapper->find($track->getAlbumId(), $userId);
+		$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+		$track->setAlbum($album);
 
 		return $this->render(
 			'ampache/songs',
@@ -361,7 +367,9 @@ class AmpacheController extends Controller {
 		// set album and artist for tracks
 		foreach($tracks as &$track) {
 			$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-			$track->setAlbum($this->albumMapper->find($track->getAlbumId(), $userId));
+			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+			$track->setAlbum($album);
 		}
 
 		return $this->render(
@@ -383,7 +391,9 @@ class AmpacheController extends Controller {
 		// set album and artist for tracks
 		foreach($tracks as &$track) {
 			$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-			$track->setAlbum($this->albumMapper->find($track->getAlbumId(), $userId));
+			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistMapper->find($track->getArtistId(), $userId));
+			$track->setAlbum($album);
 		}
 
 		return $this->render(
@@ -409,42 +419,11 @@ class AmpacheController extends Controller {
 			$albums = $this->albumMapper->findAll($userId);
 		}
 
-		$albumIds = array();
-
 		// set track count for artists
 		foreach($albums as &$album) {
 			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
-			$albumIds[] = $album->getId();
-		}
-
-		$albumWithArtistIds = $this->albumMapper->getAlbumArtistsByAlbumId($albumIds);
-
-		// this function is used to extract the first artistId of each album
-		$mapFunction = function($value) {
-			if (count($value)) {
-				// as Ampache only supports one artist per album
-				// we only return the first one
-				return $value[0];
-			}
-		};
-
-		// map this array to retrieve all artist ids and make it unique it
-		$artistIds = array_unique(array_map($mapFunction, $albumWithArtistIds));
-
-		$artists = $this->artistMapper->findMultipleById($artistIds, $userId);
-
-		$mappedArtists = array();
-		foreach ($artists as $artist) {
-			$mappedArtists[$artist->getId()] = $artist;
-		}
-
-		// set track count for artists
-		foreach($albums as &$album) {
-			if (count($albumWithArtistIds[$album->getId()])) {
-				// as Ampache only supports one artist per album
-				// we only use the first one
-				$album->setArtist($mappedArtists[$albumWithArtistIds[$album->getId()][0]]);
-			}
+			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId(), $userId);
+			$album->setAlbumArtist($albumArtist);
 		}
 
 		return $this->render(

@@ -162,7 +162,7 @@ angular.module('Music').controller('OverviewController',
 
 			var artist = _.find($scope.$parent.artists,
 				function(artist) {
-					return artist.id === track.artistId;
+					return artist.id === track.albumArtistId;
 				}),
 				album = _.find(artist.albums,
 				function(album) {
@@ -363,7 +363,7 @@ angular.module('Music').controller('PlayerController',
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.artistId;
+											return artist.id === newValue.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,

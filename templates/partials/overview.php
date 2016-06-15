@@ -1,5 +1,7 @@
 <div ng-hide="artists" id="emptycontent">
-	<span ng-hide="loading" translate>Nothing in here. Upload your music!</span>
+	<div class="icon-audio svg" ng-hide="loading"></div>
+	<h2 ng-hide="loading" translate>No music found</h2>
+	<p ng-hide="loading" translate>Upload music in the files app to listen to it here</p>
 </div>
 
 <img id="updateData" ng-show="updateAvailable"
@@ -7,12 +9,16 @@
 	 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 	 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 
-<div id="toScan" ng-show="toScan">
-	<span class="clickable" ng-click="processNextScanStep(0)" translate>Unscanned files available. Click here to start the scan.</span>
+<div id="toScan" ng-show="toScan" class="emptycontent clickable" ng-click="processNextScanStep(0)">
+	<div class="icon-audio svg"></div>
+	<h2 translate>New music available</h2>
+	<p translate>Click here to start the scan</p>
 </div>
 
-<div id="scanning" ng-show="scanning">
-	<span translate>Scanning ... </span> {{ scanningScanned }}/{{ scanningTotal }}
+<div id="scanning" class="emptycontent" ng-show="scanning">
+	<div class="icon-loading svg"></div>
+	<h2 translate>Scanning music …</h2>
+	<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
 </div>
 
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">

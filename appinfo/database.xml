@@ -201,6 +201,12 @@
 				<unsigned>true</unsigned>
 			</field>
 			<field>
+				<name>discnumber</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
 				<name>artist_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>

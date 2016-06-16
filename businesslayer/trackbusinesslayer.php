@@ -77,6 +77,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Adds a track (if it does not exist already) and returns the new track
 	 * @param string $title the title of the track
 	 * @param string $number the number of the track
+	 * @param string $disc the disc number of the track
 	 * @param string $artistId the artist id of the track
 	 * @param string $albumId the album id of the track
 	 * @param string $fileId the file id of the track
@@ -87,11 +88,12 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track track
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
-	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
+	public function addTrackIfNotExist($title, $number, $discnumber, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
 		try {
 			$track = $this->mapper->findByFileId($fileId, $userId);
 			$track->setTitle($title);
 			$track->setNumber($number);
+			$track->setDiscnumber($discnumber);
 			$track->setArtistId($artistId);
 			$track->setAlbumId($albumId);
 			$track->setMimetype($mimetype);
@@ -104,6 +106,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track = new Track();
 			$track->setTitle($title);
 			$track->setNumber($number);
+			$track->setDiscnumber($discnumber);
 			$track->setArtistId($artistId);
 			$track->setAlbumId($albumId);
 			$track->setFileId($fileId);

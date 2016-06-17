@@ -226,12 +226,18 @@ class AmpacheController extends Controller {
 		$filter = $this->params('filter');
 		$fuzzy = !((boolean) $this->params('exact'));
 
-		// TODO add & update
+		// range
+		$limit = $this->params('limit');
+		$offset = $this->params('offset');
+
+		// time spans
+        $add = $this->params('add');
+        $update = $this->params('update');
 
 		if ($filter) {
-			$artists = $this->artistMapper->findAllByName($filter, $userId, $fuzzy);
+			$artists = $this->artistMapper->findAllByName($filter, $userId, $fuzzy, $add, $update);
 		} else {
-			$artists = $this->artistMapper->findAll($userId);
+			$artists = $this->artistMapper->findAll($userId, $limit, $offset, $add, $update);
 		}
 
 		// set album and track count for artists
@@ -342,21 +348,14 @@ class AmpacheController extends Controller {
 		// filter
 		$filter = $this->params('filter');
 		$fuzzy = !((boolean) $this->params('exact'));
+		$limit = intval($this->params('limit'));
+		$offset = intval($this->params('offset'));
 
 		// TODO add & update
 
 		if ($filter) {
 			$tracks = $this->trackMapper->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$limit = intval($this->params('limit'));
-			if($limit === 0) {
-				$limit = null;
-			}
-			$offset = intval($this->params('offset'));
-			if($offset === 0) {
-				$offset = null;
-			}
-
 			$tracks = $this->trackMapper->findAll($userId, $limit, $offset);
 		}
 

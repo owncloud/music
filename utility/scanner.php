@@ -147,7 +147,6 @@ class Scanner extends PublicEmitter {
 
 
 			$fileInfo = $this->extractor->extract('oc://' . $file->getPath());
-			$this->logger->log(var_export($fileInfo, true), 'debug');
 
 			$hasComments = array_key_exists('comments', $fileInfo);
 
@@ -213,6 +212,12 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
+			// album artist
+			$albumartist = $artist;
+			if($hasComments && array_key_exists('albumartist', $fileInfo['comments'])){
+				$albumartist = $fileInfo['comments']['albumartist'][0];
+			}
+
 			// track number
 			$trackNumber = null;
 			if($hasComments && array_key_exists('track_number', $fileInfo['comments'])){
@@ -259,6 +264,11 @@ class Scanner extends PublicEmitter {
 					$year = null;
 				}
 
+			} else if($hasComments && array_key_exists('date', $fileInfo['comments'])){
+				$year = $fileInfo['comments']['date'][0];
+				if(!ctype_digit($year)) {
+					$year = null;
+				}
 			}
 			$fileId = $file->getId();
 			
@@ -285,8 +295,12 @@ class Scanner extends PublicEmitter {
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
 			$artistId = $artist->getId();
 
+			// add album artist and get album artist entity
+			$albumartist = $this->artistBusinessLayer->addArtistIfNotExist($albumartist, $userId);
+			$albumartistId = $albumartist->getId();
+
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $albumartistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity

@@ -134,6 +134,12 @@
 				<length>4</length>
 				<default></default>
 			</field>
+			<field>
+				<name>disk</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
 
 			<index>
 				<name>ma_cover_file_id_idx</name>
@@ -196,12 +202,6 @@
 			</field>
 			<field>
 				<name>number</name>
-				<type>integer</type>
-				<notnull>false</notnull>
-				<unsigned>true</unsigned>
-			</field>
-			<field>
-				<name>discnumber</name>
 				<type>integer</type>
 				<notnull>false</notnull>
 				<unsigned>true</unsigned>

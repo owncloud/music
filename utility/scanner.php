@@ -300,11 +300,11 @@ class Scanner extends PublicEmitter {
 			$albumartistId = $albumartist->getId();
 
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $albumartistId, $userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $discNumber, $albumartistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity
-			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $discNumber, $artistId,
+			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
 
 			// debug logging

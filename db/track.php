@@ -21,8 +21,6 @@ use \OCP\AppFramework\Db\Entity;
  * @method setTitle(string $title)
  * @method int getNumber()
  * @method setNumber(int $number)
- * @method int getDiscnumber()
- * @method setDiscnumber(int $discnumber)
  * @method int getArtistId()
  * @method setArtistId(int $artistId)
  * @method Artist getArtist()
@@ -46,7 +44,6 @@ class Track extends Entity {
 
 	public $title;
 	public $number;
-	public $discnumber;
 	public $artistId;
 	public $artist;
 	public $albumId;
@@ -60,7 +57,6 @@ class Track extends Entity {
 
 	public function __construct(){
 		$this->addType('number', 'int');
-		$this->addType('discnumber', 'int');
 		$this->addType('artistId', 'int');
 		$this->addType('albumId', 'int');
 		$this->addType('length', 'int');

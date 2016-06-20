@@ -64,7 +64,7 @@ class ArtistMapper extends Mapper {
 			$updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
 			$condition = "";
 			$having = "";
-                $params = array($userId);
+            $params = array($userId);
 
 			if($updated_start) {
 				$condition .= 'AND `files`.`mtime` >= ? ';
@@ -86,7 +86,6 @@ class ArtistMapper extends Mapper {
 					$having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
                     array_push($params, $added_end->format('U'));
                 }
-
 
             $order = '`artist`.`name`';
             $sql = $this->makeJoinedQuery($condition, $having, $order);
@@ -128,9 +127,11 @@ class ArtistMapper extends Mapper {
      * @param string|null $artistName
      * @param string $userId
      * @param bool $fuzzy
+     * @param null $add
+     * @param null $update
      * @return array
      */
-	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false) {
+	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false, $add=null, $update = null) {
 		if ($artistName === null) {
 			$condition = 'AND `artist`.`name` IS NULL';
 			$params = array($userId);
@@ -141,7 +142,41 @@ class ArtistMapper extends Mapper {
 			$condition = 'AND `artist`.`name` = ?';
 			$params = array($userId, $artistName);
 		}
-		$sql = $this->makeSelectQuery($condition . ' ORDER BY `artist`.`name`');
+        if(is_null($add) && is_null($update)) {
+            $sql = $this->makeSelectQuery('ORDER BY `artist`.`name`');
+        } else {
+            $added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
+            $added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;
+            $updated_start = \DateTime::createFromFormat('Y-m-d', explode("/", $update)[0]);
+            $updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
+            $having = "";
+
+            if($updated_start) {
+                $condition .= 'AND `files`.`mtime` >= ? ';
+                array_push($params, $updated_start->format('U'));
+            }
+            if($updated_end) {
+                $condition .= 'AND `files`.`mtime` <= ? ';
+                array_push($params, $updated_end->format('U'));
+            }
+
+            if($updated_start || $updated_end) {
+                $having .= 'HAVING MIN(`files`.`mtime`) != MAX(`files`.`mtime`) ';
+            }
+            if($added_start) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) >= ? ';
+                array_push($params, $added_start->format('U'));
+            }
+            if($added_end) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
+                array_push($params, $added_end->format('U'));
+            }
+
+
+            $order = '`artist`.`name`';
+            $sql = $this->makeJoinedQuery($condition, $having, $order);
+        }
+
 		return array(
 			'sql' => $sql,
 			'params' => $params,
@@ -170,7 +205,7 @@ class ArtistMapper extends Mapper {
 	 * @return Artist[]
 	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null, $add=null, $update=null){
-		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
+		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy, $add, $update);
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
 	}
 

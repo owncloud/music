@@ -357,8 +357,6 @@ class AmpacheController extends Controller {
         $add = $this->params('add');
         $update = $this->params('update');
 
-		// TODO add & update
-
 		if ($filter) {
 			$tracks = $this->trackMapper->findAllByName($filter, $userId, $fuzzy, $limit, $offset, $add, $update);
 		} else {

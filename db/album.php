@@ -110,11 +110,9 @@ class Album extends Entity {
 	 * @return array                       collection API object
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n) {
-		$coverUrl = null;
-		if($this->getCoverFileId()) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
+		$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
 					array('albumIdOrSlug' => $this->getId()));
-		}
+
 		return array(
 				'name' => $this->getNameString($l10n),
 				'year' => $this->getYear(),
@@ -131,21 +129,11 @@ class Album extends Entity {
 	 * @return array                       shiva API object
 	 */
 	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
-		// TODO refactor to use toCollection() and just append additional keys
-		$coverUrl = null;
-		if($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
-					array('albumIdOrSlug' => $this->getId()));
-		}
-		return array(
-			'name' => $this->getNameString($l10n),
-			'year' => $this->getYear(),
-			'disk' => $this->getDisk(),
-			'cover' => $coverUrl,
-			'uri' => $this->getUri($urlGenerator),
-			'slug' => $this->getid() . '-' .$this->slugify('name'),
-			'id' => $this->getId(),
-			'artists' => $this->getArtists($urlGenerator)
-		);
+		$collection = $this->toCollection($urlGenerator, $l10n);
+        $collection["uri"] = $this->getUri($urlGenerator);
+        $collection["slug"] = $this->getid() . '-' .$this->slugify('name');
+        $collection["artists"] = $this->getArtists($urlGenerator);
+
+		return $collection;
 	}
 }

@@ -91,7 +91,7 @@ class ArtistMapper extends Mapper {
             $sql = $this->makeJoinedQuery($condition, $having, $order);
         }
 
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -206,7 +206,7 @@ class ArtistMapper extends Mapper {
 	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null, $add=null, $update=null){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy, $add, $update);
-		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
+		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**

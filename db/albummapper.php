@@ -94,7 +94,7 @@ class AlbumMapper extends Mapper {
             $order = '`album`.`name`';
             $sql = $this->makeJoinedQuery($condition, $having, $order);
         }
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -136,14 +136,16 @@ class AlbumMapper extends Mapper {
 		return $artists;
 	}
 
-	/**
-	 * returns albums of a specified artist
-	 *
-	 * @param integer $artistId ID of the artist
-	 * @param string $userId the user ID
-	 * @return Album[]
-	 */
-	public function findAllByArtist($artistId, $userId){
+    /**
+     * returns albums of a specified artist
+     *
+     * @param integer $artistId ID of the artist
+     * @param string $userId the user ID
+     * @param null $limit
+     * @param null $offset
+     * @return Album[]
+     */
+	public function findAllByArtist($artistId, $userId, $limit=null, $offset=null){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
@@ -152,7 +154,7 @@ class AlbumMapper extends Mapper {
 			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? '.
 			'ORDER BY `album`.`name`';
 		$params = array($userId, $artistId);
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -439,6 +441,6 @@ class AlbumMapper extends Mapper {
             $order = '`album`.`name`';
             $sql = $this->makeJoinedQuery($condition, $having, $order);
         }
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 }

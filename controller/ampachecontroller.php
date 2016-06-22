@@ -258,9 +258,13 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$artistId = $this->params('filter');
 
+        // range
+        $limit = $this->params('limit');
+        $offset = $this->params('offset');
+
 		// this is used to fill in the artist information for each album
 		$artist = $this->artistMapper->find($artistId, $userId);
-		$albums = $this->albumMapper->findAllByArtist($artistId, $userId);
+		$albums = $this->albumMapper->findAllByArtist($artistId, $userId, $limit, $offset);
 
 		// set album and track count for artists
 		foreach($albums as &$album) {

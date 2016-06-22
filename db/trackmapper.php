@@ -101,7 +101,7 @@ class TrackMapper extends Mapper {
 			$order = '`track`.`title`';
 			$sql = $this->makeJoinedQuery($condition, $having, $order);
 		}
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -259,7 +259,7 @@ class TrackMapper extends Mapper {
             $order = '`track`.`title`';
             $sql = $this->makeJoinedQuery($condition, $having, $order);
         }
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**

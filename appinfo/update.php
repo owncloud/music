@@ -43,3 +43,15 @@ if (version_compare($installedVersion, '0.3.2', '<')) {
 	$query = \OCP\DB::prepare($sql);
 	$query->execute();
 }
+
+if (version_compare($installedVersion, '0.3.12', '<')) {
+	$sqls = array(
+		'DELETE FROM `*PREFIX*music_artists`;',
+		'DELETE FROM `*PREFIX*music_albums`;',
+		'DELETE FROM `*PREFIX*music_album_artists`;',
+		'DELETE FROM `*PREFIX*music_tracks`;',
+		'DELETE FROM `*PREFIX*music_ampache_sessions`;',
+	);
+	$query = \OCP\DB::prepare($sql);
+	$query->execute();
+}

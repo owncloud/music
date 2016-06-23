@@ -212,10 +212,20 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
+			// album artist
+			$albumartist = $artist;
+			if($hasComments && array_key_exists('albumartist', $fileInfo['comments'])){
+				$albumartist = $fileInfo['comments']['albumartist'][0];
+			}
+
 			// track number
 			$trackNumber = null;
 			if($hasComments && array_key_exists('track_number', $fileInfo['comments'])){
 				$trackNumber = $fileInfo['comments']['track_number'][0];
+			} else if($hasComments && array_key_exists('tracknumber', $fileInfo['comments'])){
+				$trackNumber = $fileInfo['comments']['tracknumber'][0];
+			} else if($hasComments && array_key_exists('track', $fileInfo['comments'])){
+				$trackNumber = $fileInfo['comments']['track'][0];
 			}
 			if($trackNumber === null && $alternativeTrackNumber !== null) {
 				$trackNumber = $alternativeTrackNumber;
@@ -231,6 +241,22 @@ class Scanner extends PublicEmitter {
 				$trackNumber = null;
 			}
 
+			// disc number
+			$discNumber = "1";
+			if($hasComments && array_key_exists('discnumber', $fileInfo['comments'])){
+				$discNumber = $fileInfo['comments']['discnumber'][0];
+			}
+			// convert disc number '1/10' to '1'
+			$tmp = explode('/', $discNumber);
+			$discNumber = $tmp[0];
+
+			// check for numeric values - cast them to int and verify it's a natural number above 0
+			if(is_numeric($discNumber) && ((int)$discNumber) > 0) {
+				$discNumber = (int)$discNumber;
+			} else {
+				$discNumber = null;
+			}
+
 			$year = null;
 			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
 				$year = $fileInfo['comments']['year'][0];
@@ -238,6 +264,11 @@ class Scanner extends PublicEmitter {
 					$year = null;
 				}
 
+			} else if($hasComments && array_key_exists('date', $fileInfo['comments'])){
+				$year = $fileInfo['comments']['date'][0];
+				if(!ctype_digit($year)) {
+					$year = null;
+				}
 			}
 			$fileId = $file->getId();
 			
@@ -253,8 +284,8 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
-				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
-					$artist, $album, $title, $trackNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
+				sprintf('artist: %s, album: %s, title: %s, track#: %s, disc#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
+					$artist, $album, $title, $trackNumber, $discNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
 
 			if(!$userId) {
 				$userId = $this->userId;
@@ -264,8 +295,12 @@ class Scanner extends PublicEmitter {
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
 			$artistId = $artist->getId();
 
+			// add album artist and get album artist entity
+			$albumartist = $this->artistBusinessLayer->addArtistIfNotExist($albumartist, $userId);
+			$albumartistId = $albumartist->getId();
+
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $discNumber, $albumartistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity

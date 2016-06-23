@@ -142,6 +142,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$name = 'test';
 		$year = 2002;
 		$artistId = 1;
+		$disc = 1;
 
 		$this->mapper->expects($this->once())
 			->method('findAlbum')
@@ -155,7 +156,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('insert')
 			->will($this->returnValue($this->albums[0]));
 
-		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
 		$this->assertEquals($this->albums[0], $album);
 	}
 

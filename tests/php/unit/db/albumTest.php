@@ -29,6 +29,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setName('The name');
 		$album->setYear(2013);
 		$album->setCoverFileId(5);
+		$album->setDisk(1);
 		$album->setArtistIds(array(1,2));
 
 		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
@@ -37,6 +38,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 			'id' => 3,
 			'name' => 'The name',
 			'year' => 2013,
+			'disk' => 1,
 			'cover' => null,
 			'slug' => '3-the-name',
 			'artists' => array(

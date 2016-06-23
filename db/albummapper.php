@@ -27,22 +27,74 @@ class AlbumMapper extends Mapper {
 	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+		return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
 
+    /**
+     * @param null $condition
+     * @param null $having
+     * @param null $order
+     * @return string
+     */
+    private function makeJoinedQuery($condition=null, $having=null, $order=null){
+        return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id` '.
+        'FROM `*PREFIX*music_albums` `album` '.
+        'JOIN `*PREFIX*music_tracks` `tracks` ON `album`.`id`=`tracks`.`album_id` '.
+        'JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id`=`files`.`fileid` '.
+        'WHERE `album`.`user_id` = ? ' . $condition . ' GROUP BY `album`.`id` ' . $having . ' ORDER BY ' . $order;
+    }
+
 	/**
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
+     * @param int $limit
+     * @param int $offset
+     * @param string $add
+     * @param string $update
 	 * @return Album[]
 	 */
-	public function findAll($userId){
-		$sql = $this->makeSelectQuery('ORDER BY `album`.`name`');
-		$params = array($userId);
-		return $this->findEntities($sql, $params);
+	public function findAll($userId, $limit=null, $offset=null, $add=null, $update=null){
+        if(is_null($add) && is_null($update)) {
+            $sql = $this->makeSelectQuery('ORDER BY `album`.`name`');
+            $params = array($userId);
+        } else {
+            $added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
+            $added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;
+            $updated_start = \DateTime::createFromFormat('Y-m-d', explode("/", $update)[0]);
+            $updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
+            $condition = "";
+            $having = "";
+            $params = array($userId);
+
+            if($updated_start) {
+                $condition .= 'AND `files`.`mtime` >= ? ';
+                array_push($params, $updated_start->format('U'));
+            }
+            if($updated_end) {
+                $condition .= 'AND `files`.`mtime` <= ? ';
+                array_push($params, $updated_end->format('U'));
+            }
+
+            if($updated_start || $updated_end) {
+                $having .= 'HAVING MIN(`files`.`mtime`) != MAX(`files`.`mtime`) ';
+            }
+            if($added_start) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) >= ? ';
+                array_push($params, $added_start->format('U'));
+            }
+            if($added_end) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
+                array_push($params, $added_end->format('U'));
+            }
+
+            $order = '`album`.`name`';
+            $sql = $this->makeJoinedQuery($condition, $having, $order);
+        }
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -84,14 +136,16 @@ class AlbumMapper extends Mapper {
 		return $artists;
 	}
 
-	/**
-	 * returns albums of a specified artist
-	 *
-	 * @param integer $artistId ID of the artist
-	 * @param string $userId the user ID
-	 * @return Album[]
-	 */
-	public function findAllByArtist($artistId, $userId){
+    /**
+     * returns albums of a specified artist
+     *
+     * @param integer $artistId ID of the artist
+     * @param string $userId the user ID
+     * @param null $limit
+     * @param null $offset
+     * @return Album[]
+     */
+	public function findAllByArtist($artistId, $userId, $limit=null, $offset=null){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
@@ -100,7 +154,7 @@ class AlbumMapper extends Mapper {
 			'WHERE `album`.`user_id` = ? AND `artists`.`artist_id` = ? '.
 			'ORDER BY `album`.`name`';
 		$params = array($userId, $artistId);
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -133,12 +187,13 @@ class AlbumMapper extends Mapper {
 	 *
 	 * @param string|null $albumName name of the album
 	 * @param string|integer|null $albumYear year of the album release
+	 * @param string|integer|null $discNumber disk number of this album's disk
 	 * @param integer|null $artistId ID of the artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAlbum($albumName, $albumYear, $artistId, $userId) {
-		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+	public function findAlbum($albumName, $albumYear, $discNumber, $artistId, $userId) {
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'JOIN `*PREFIX*music_album_artists` `artists` '.
@@ -168,6 +223,14 @@ class AlbumMapper extends Mapper {
 		} else {
 			$sql .= 'AND `album`.`year` = ? ';
 			array_push($params, $albumYear);
+		}
+
+		// add disc number check
+		if ($discNumber === null) {
+			$sql .= 'AND `album`.`disk` IS NULL ';
+		} else {
+			$sql .= 'AND `album`.`disk` = ? ';
+			array_push($params, $discNumber);
 		}
 
 		return $this->findEntity($sql, $params);
@@ -330,17 +393,54 @@ class AlbumMapper extends Mapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+     * @param int $limit
+     * @param int $offset
+     * @param string $add
+     * @param string $update
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null, $add=null, $update=null){
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
 		} else {
 			$condition = 'AND `album`.`name` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition . 'ORDER BY `album`.`name`');
-		$params = array($userId, $name);
-		return $this->findEntities($sql, $params);
+        if(is_null($add) && is_null($update)) {
+            $sql = $this->makeSelectQuery($condition.'ORDER BY `album`.`name`');
+            $params = array($userId, $name);
+        } else {
+            $added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
+            $added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;
+            $updated_start = \DateTime::createFromFormat('Y-m-d', explode("/", $update)[0]);
+            $updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
+            $having = "";
+            $params = array($userId, $name);
+
+            if($updated_start) {
+                $condition .= 'AND `files`.`mtime` >= ? ';
+                array_push($params, $updated_start->format('U'));
+            }
+            if($updated_end) {
+                $condition .= 'AND `files`.`mtime` <= ? ';
+                array_push($params, $updated_end->format('U'));
+            }
+
+            if($updated_start || $updated_end) {
+                $having .= 'HAVING MIN(`files`.`mtime`) != MAX(`files`.`mtime`) ';
+            }
+            if($added_start) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) >= ? ';
+                array_push($params, $added_start->format('U'));
+            }
+            if($added_end) {
+                $having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
+                array_push($params, $added_end->format('U'));
+            }
+
+            $order = '`album`.`name`';
+            $sql = $this->makeJoinedQuery($condition, $having, $order);
+        }
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 }

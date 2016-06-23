@@ -77,6 +77,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Adds a track (if it does not exist already) and returns the new track
 	 * @param string $title the title of the track
 	 * @param string $number the number of the track
+	 * @param string $disc the disc number of the track
 	 * @param string $artistId the artist id of the track
 	 * @param string $albumId the album id of the track
 	 * @param string $fileId the file id of the track

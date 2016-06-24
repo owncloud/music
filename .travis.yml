@@ -29,6 +29,10 @@ matrix:
       env: DB=mysql OWNCLOUD=stable7
   fast_finish: true
 
+branches:
+    only:
+        - master
+
 before_install:
   - cd ..
   - git clone https://github.com/owncloud/core.git --depth 1 -b $OWNCLOUD

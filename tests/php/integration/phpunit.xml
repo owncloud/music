@@ -1,3 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit bootstrap="../bootstrap-integration.php">
+	<!-- filters for code coverage -->
+	<filter>
+		<!-- whitelist processUncoveredFilesFromWhitelist="true" -->
+		<whitelist>
+			<directory suffix=".php">..</directory>
+			<exclude>
+				<directory suffix=".php">../3rdparty</directory>
+				<directory suffix=".php">../vendor</directory>
+				<directory suffix=".php">../tests</directory>
+			</exclude>
+		</whitelist>
+	</filter>
 </phpunit>

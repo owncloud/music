@@ -32,7 +32,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setDisk(1);
 		$album->setArtistIds(array(1,2));
 
-		$l10n = $this->createMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 
 		$this->assertEquals(array(
 			'id' => 3,
@@ -53,8 +53,8 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album = new Album();
 		$album->setName(null);
 
-		$l10n = $this->createMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
-		$l10nString = $this->createMock('\OC\L10N\String', array('__toString'));
+		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
+		$l10nString = $this->getMock('\OC\L10N\String', array('__toString'));
 		$l10nString->expects($this->any())
 			->method('__toString')
 			->will($this->returnValue('Unknown album'));

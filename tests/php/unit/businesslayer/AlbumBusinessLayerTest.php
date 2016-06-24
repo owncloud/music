@@ -142,11 +142,13 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$name = 'test';
 		$year = 2002;
 		$artistId = 1;
+		$disc = 1;
 
 		$this->mapper->expects($this->once())
 			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+			   $this->equalTo($disc),
 				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new DoesNotExistException('bla')));
@@ -155,19 +157,21 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('insert')
 			->will($this->returnValue($this->albums[0]));
 
-		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
 		$this->assertEquals($this->albums[0], $album);
 	}
 
 	public function testAddAlbumIfNotExistNoAdd(){
 		$name = 'test';
 		$year = 2002;
+		$disc = 1;
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
 			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+			    $this->equalTo($disc),
 				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->returnValue($this->albums[0]));
@@ -175,19 +179,21 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->mapper->expects($this->never())
 			->method('insert');
 
-		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
 		$this->assertEquals($this->albums[0], $album);
 	}
 
 	public function testAddAlbumIfNotExistException(){
 		$name = 'test';
 		$year = 2002;
+		$disc = 1;
 		$artistId = 1;
 
 		$this->mapper->expects($this->once())
 			->method('findAlbum')
 			->with($this->equalTo($name),
 				$this->equalTo($year),
+			   	$this->equalTo($disc),
 				$this->equalTo($artistId),
 				$this->equalTo($this->userId))
 			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
@@ -196,7 +202,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('insert');
 
 		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
-		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $artistId, $this->userId);
+		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
 	}
 
 	public function testRemoveAndFindCovers(){

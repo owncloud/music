@@ -10,7 +10,8 @@ Feature: Ampache API
       | name                   | albums | songs |
       | Diablo Swing Orchestra | 1      | 13    |
       | Pascalb                | 1      | 8     |
-      | SimonBowman            | 8      | 70    |
+      | Simon Bowman           | 1      | 6     |
+      | SimonBowman            | 7      | 64    |
 
   Scenario: List filtered artists
     Given I am logged in with an auth token
@@ -34,7 +35,7 @@ Feature: Ampache API
     Then I should get:
       | name                                                | artist                 | tracks | year |
       | Backwards Original Film Score                       | SimonBowman            | 14     | 2013 |
-      | Francesco da Milano 1497 1543                       | SimonBowman            | 6      | 2013 |
+      | Francesco da Milano (1497-1543)                     | Simon Bowman           | 6      | 2013 |
       | Grace Original Film Score                           | SimonBowman            | 5      | 2013 |
       | Instrumental Film Music Vol 1                       | SimonBowman            | 10     | 2013 |
       | NDP Philo Cafe Original Film S                      | SimonBowman            | 12     | 2014 |
@@ -75,7 +76,7 @@ Feature: Ampache API
       | Aç                             | Pascalb     | Nuance                            | 187  | 7     |
       | Backwards                      | SimonBowman | Backwards Original Film Score     | 52   | 8     |
       | Bagatelle                      | SimonBowman | Instrumental Film Music Vol 1     | 179  | 7     |
-      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  |       |
+      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  | 1     |
       | Barley Sky                     | SimonBowman | Instrumental Film Music Vol 1     | 155  | 6     |
 
   Scenario: List songs that contain "di"
@@ -87,8 +88,8 @@ Feature: Ampache API
       | Divertimento                     | SimonBowman            | Instrumental Film Music Vol 1  | 180  | 8     |
       | Final Transformation and Credits | SimonBowman            | The Visitor Original Film Scor | 124  | 5     |
       | Médiane                          | Pascalb                | Nuance                         | 203  | 1     |
-      | Wedding March for a Bullet       | Diablo Swing Orchestra | The Butcher s Ballroom         | 194  |       |
-      | Zodiac Virtues                   | Diablo Swing Orchestra | The Butcher s Ballroom         | 288  |       |
+      | Wedding March for a Bullet       | Diablo Swing Orchestra | The Butcher s Ballroom         | 194  | 9     |
+      | Zodiac Virtues                   | Diablo Swing Orchestra | The Butcher s Ballroom         | 288  | 11    |
 
   Scenario: List songs that contain "Mediane"
     Given I am logged in with an auth token

@@ -133,17 +133,17 @@ class ArtistMapper extends Mapper {
 	 */
 	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false, $add=null, $update = null) {
 		if ($artistName === null) {
-			$condition = 'AND `artist`.`name` IS NULL';
+			$condition = 'AND `artist`.`name` IS NULL ';
 			$params = array($userId);
-		} elseif($fuzzy) {
-			$condition = 'AND LOWER(`artist`.`name`) LIKE LOWER(?)';
+		} else if($fuzzy) {
+			$condition = 'AND LOWER(`artist`.`name`) LIKE LOWER(?) ';
 			$params = array($userId, '%' . $artistName . '%');
 		} else {
-			$condition = 'AND `artist`.`name` = ?';
+			$condition = 'AND `artist`.`name` = ? ';
 			$params = array($userId, $artistName);
 		}
 		if(is_null($add) && is_null($update)) {
-			$sql = $this->makeSelectQuery('ORDER BY `artist`.`name`');
+			$sql = $this->makeSelectQuery($condition.'ORDER BY `artist`.`name`');
 		} else {
 			$added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
 			$added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;

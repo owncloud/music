@@ -92,10 +92,12 @@ class AmpacheController extends Controller {
 				return $this->artists();
 			case 'artist_albums':
 				return $this->artist_albums();
-			case 'album_songs':
-				return $this->album_songs();
 			case 'albums':
 				return $this->albums();
+			case 'album':
+				return $this->album();
+			case 'album_songs':
+				return $this->album_songs();
 			case 'artist_songs':
 				return $this->artist_songs();
 			case 'songs':
@@ -224,12 +226,18 @@ class AmpacheController extends Controller {
 		$filter = $this->params('filter');
 		$fuzzy = !((boolean) $this->params('exact'));
 
-		// TODO add & update
+		// range
+		$limit = $this->params('limit');
+		$offset = $this->params('offset');
+
+		// time spans
+		$add = $this->params('add');
+		$update = $this->params('update');
 
 		if ($filter) {
-			$artists = $this->artistMapper->findAllByName($filter, $userId, $fuzzy);
+			$artists = $this->artistMapper->findAllByName($filter, $userId, $fuzzy, $add, $update);
 		} else {
-			$artists = $this->artistMapper->findAll($userId);
+			$artists = $this->artistMapper->findAll($userId, $limit, $offset, $add, $update);
 		}
 
 		// set album and track count for artists
@@ -250,9 +258,13 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$artistId = $this->params('filter');
 
+		// range
+		$limit = $this->params('limit');
+		$offset = $this->params('offset');
+
 		// this is used to fill in the artist information for each album
 		$artist = $this->artistMapper->find($artistId, $userId);
-		$albums = $this->albumMapper->findAllByArtist($artistId, $userId);
+		$albums = $this->albumMapper->findAllByArtist($artistId, $userId, $limit, $offset);
 
 		// set album and track count for artists
 		foreach($albums as &$album) {
@@ -341,21 +353,18 @@ class AmpacheController extends Controller {
 		$filter = $this->params('filter');
 		$fuzzy = !((boolean) $this->params('exact'));
 
-		// TODO add & update
+		// range
+		$limit = $this->params('limit');
+		$offset = $this->params('offset');
+
+		// time spans
+		$add = $this->params('add');
+		$update = $this->params('update');
 
 		if ($filter) {
-			$tracks = $this->trackMapper->findAllByName($filter, $userId, $fuzzy);
+			$tracks = $this->trackMapper->findAllByName($filter, $userId, $fuzzy, $limit, $offset, $add, $update);
 		} else {
-			$limit = intval($this->params('limit'));
-			if($limit === 0) {
-				$limit = null;
-			}
-			$offset = intval($this->params('offset'));
-			if($offset === 0) {
-				$offset = null;
-			}
-
-			$tracks = $this->trackMapper->findAll($userId, $limit, $offset);
+			$tracks = $this->trackMapper->findAll($userId, $limit, $offset, $add, $update);
 		}
 
 		// set album and artist for tracks
@@ -394,6 +403,51 @@ class AmpacheController extends Controller {
 		);
 	}
 
+	protected function album() {
+		$userId = $this->ampacheUser->getUserId();
+		$trackId = $this->params('filter');
+
+		$album = $this->albumMapper->find($trackId, $userId);
+
+		// set track count for album
+		$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
+
+		$albumWithArtistIds = $this->albumMapper->getAlbumArtistsByAlbumId(array($album->getId()));
+
+		// this function is used to extract the first artistId of each album
+		$mapFunction = function($value) {
+			if (count($value)) {
+				// as Ampache only supports one artist per album
+				// we only return the first one
+				return $value[0];
+			}
+		};
+
+		// map this array to retrieve all artist ids and make it unique it
+		$artistIds = array_unique(array_map($mapFunction, $albumWithArtistIds));
+
+		$artists = $this->artistMapper->findMultipleById($artistIds, $userId);
+
+		$mappedArtists = array();
+		foreach ($artists as $artist) {
+			$mappedArtists[$artist->getId()] = $artist;
+		}
+
+		// set artist for album
+		if (count($albumWithArtistIds[$album->getId()])) {
+			// as Ampache only supports one artist per album
+			// we only use the first one
+			$album->setArtist($mappedArtists[$albumWithArtistIds[$album->getId()][0]]);
+		}
+
+		return $this->render(
+			'ampache/albums',
+			array('albums' => array($album), 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			'blank',
+			array('Content-Type' => 'text/xml')
+		);
+	}
+
 	protected function albums() {
 		$userId = $this->ampacheUser->getUserId();
 
@@ -401,12 +455,18 @@ class AmpacheController extends Controller {
 		$filter = $this->params('filter');
 		$fuzzy = !((boolean) $this->params('exact'));
 
-		// TODO add & update
+		// range
+		$limit = $this->params('limit');
+		$offset = $this->params('offset');
+
+		// time spans
+		$add = $this->params('add');
+		$update = $this->params('update');
 
 		if ($filter) {
-			$albums = $this->albumMapper->findAllByName($filter, $userId, $fuzzy);
+			$albums = $this->albumMapper->findAllByName($filter, $userId, $fuzzy, $limit, $offset,  $add, $update);
 		} else {
-			$albums = $this->albumMapper->findAll($userId);
+			$albums = $this->albumMapper->findAll($userId, $limit, $offset, $add, $update);
 		}
 
 		$albumIds = array();

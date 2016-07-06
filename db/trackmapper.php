@@ -23,6 +23,7 @@ class TrackMapper extends Mapper {
 
 	/**
 	 * @param string $condition
+	 * @return string
 	 */
 	private function makeSelectQueryWithoutUserId($condition){
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
@@ -34,21 +35,73 @@ class TrackMapper extends Mapper {
 
 	/**
 	 * @param string $condition
+	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
 		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
 	}
 
 	/**
+	 * @param null $condition
+	 * @param null $having
+	 * @param null $order
+	 * @return string
+	 */
+	private function makeJoinedQuery($condition=null, $having=null, $order=null){
+		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
+		'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
+		'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype` '.
+		'FROM `*PREFIX*music_tracks` `track` '.
+		'JOIN `*PREFIX*filecache` `files` ON `track`.`file_id`=`files`.`fileid` '.
+		'WHERE `track`.`user_id` = ? ' . $condition . ' GROUP BY `track`.`id` ' . $having . ' ORDER BY ' . $order;
+	}
+
+	/**
 	 * @param string $userId
 	 * @param integer $limit
 	 * @param integer $offset
+	 * @param null $add
+	 * @param null $update
 	 * @return Track[]
 	 */
-	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery('ORDER BY `track`.`title`');
-		$params = array($userId);
-		return $this->findEntities($sql, $params, $limit, $offset);
+	public function findAll($userId, $limit=null, $offset=null, $add=null, $update=null){
+		if(is_null($add) && is_null($update)) {
+			$sql = $this->makeSelectQuery('ORDER BY `track`.`title`');
+			$params = array($userId);
+		} else {
+			$added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
+			$added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;
+			$updated_start = \DateTime::createFromFormat('Y-m-d', explode("/", $update)[0]);
+			$updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
+			$condition = "";
+			$having = "";
+			$params = array($userId);
+
+			if($updated_start) {
+				$condition .= 'AND `files`.`mtime` >= ? ';
+				array_push($params, $updated_start->format('U'));
+			}
+			if($updated_end) {
+				$condition .= 'AND `files`.`mtime` <= ? ';
+				array_push($params, $updated_end->format('U'));
+			}
+
+			if($updated_start || $updated_end) {
+				$having .= 'HAVING MIN(`files`.`mtime`) != MAX(`files`.`mtime`) ';
+			}
+			if($added_start) {
+				$having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) >= ? ';
+				array_push($params, $added_start->format('U'));
+			}
+			if($added_end) {
+				$having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
+				array_push($params, $added_end->format('U'));
+			}
+
+			$order = '`track`.`title`';
+			$sql = $this->makeJoinedQuery($condition, $having, $order);
+		}
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**
@@ -158,18 +211,55 @@ class TrackMapper extends Mapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param int $limit
+	 * @param int $offset
+	 * @param string $add
+	 * @param string $update
 	 * @return Track[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null, $add=null, $update=null){
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
 		} else {
 			$condition = 'AND `track`.`title` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition . 'ORDER BY `track`.`title`');
-		$params = array($userId, $name);
-		return $this->findEntities($sql, $params);
+		if(is_null($add) && is_null($update)) {
+			$sql = $this->makeSelectQuery($condition.'ORDER BY `track`.`title`');
+			$params = array($userId, $name);
+		} else {
+			$added_start = \DateTime::createFromFormat('Y-m-d', explode("/", $add)[0]);
+			$added_end = count(explode("/", $add)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $add)[1]) : false;
+			$updated_start = \DateTime::createFromFormat('Y-m-d', explode("/", $update)[0]);
+			$updated_end = count(explode("/", $update)) > 1 ? \DateTime::createFromFormat('Y-m-d', explode("/", $update)[1]) : false;
+			$having = "";
+			$params = array($userId, $name);
+
+			if($updated_start) {
+				$condition .= 'AND `files`.`mtime` >= ? ';
+				array_push($params, $updated_start->format('U'));
+			}
+			if($updated_end) {
+				$condition .= 'AND `files`.`mtime` <= ? ';
+				array_push($params, $updated_end->format('U'));
+			}
+
+			if($updated_start || $updated_end) {
+				$having .= 'HAVING MIN(`files`.`mtime`) != MAX(`files`.`mtime`) ';
+			}
+			if($added_start) {
+				$having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) >= ? ';
+				array_push($params, $added_start->format('U'));
+			}
+			if($added_end) {
+				$having .= (strlen($having)==0 ? 'HAVING' : 'AND') . ' MIN(`files`.`mtime`) <= ? ';
+				array_push($params, $added_end->format('U'));
+			}
+
+			$order = '`track`.`title`';
+			$sql = $this->makeJoinedQuery($condition, $having, $order);
+		}
+		return $this->findEntities($sql, $params, ($limit==0 ? null : $limit), $offset);
 	}
 
 	/**

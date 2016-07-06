@@ -30,13 +30,13 @@ matrix:
   fast_finish: true
 
 branches:
-  only:
-    master
+    only:
+        - master
 
 before_install:
   - cd ..
   - git clone https://github.com/owncloud/core.git --depth 1 -b $OWNCLOUD
-  - mv music core/apps/
+  - mv music core/apps/music
   - cd core
   - git submodule update --init
   # startup php server
@@ -62,6 +62,13 @@ before_install:
   - bash -c "if [ '$DB' == 'mysql' ]; then mysql -u oc_autotest -poc_autotest oc_autotest -e 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
   - bash -c "if [ '$DB' == 'pgsql' ]; then psql -U postgres -d oc_autotest -w -c \"INSERT INTO oc_music_ampache_users (user_id, hash) VALUES ('ampache', '3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18');\"; fi"
   - cd apps/music
+  # Lowering camel case lib paths in autoload for older oc installations
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '24 s/ str_replace(/ strtolower(str_replace(/' tests/php/autoloader.php; fi"
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '31 s/ str_replace(/ strtolower(str_replace(/' tests/php/autoloader.php; fi"
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '38 s/ str_replace(/ strtolower(str_replace(/' tests/php/autoloader.php; fi"
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '24 s/;/\);/' tests/php/autoloader.php; fi"
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '31 s/;/\);/' tests/php/autoloader.php; fi"
+  - bash -c "if [ '$OWNCLOUD' != 'master' ]; then sed -i '38 s/;/\);/' tests/php/autoloader.php; fi"
 
 install:
   - composer install

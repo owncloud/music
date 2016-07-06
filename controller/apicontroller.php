@@ -107,6 +107,11 @@ class ApiController extends Controller {
 		$artists = array();
 		foreach ($allTracks as $track) {
 			$artist = &$allArtistsById[$track->getArtistId()];
+			$albumArtists = $this->albumBusinessLayer->find($track->getAlbumId(), $this->userId);
+
+			if($albumArtists->getArtistIds()[0]!=$artist['id']) {
+				$artist = &$allArtistsById[$albumArtists->getArtistIds()[0]];
+			}
 			if (!isset($artist['albums'])) {
 				$artist['albums'] = array();
 				$artists[] = &$artist;
@@ -350,6 +355,7 @@ class ApiController extends Controller {
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 
 		$nodes = $this->userFolder->getById($album->getCoverFileId());
+
 		if(count($nodes) > 0 ) {
 			// get the first valid node
 			$node = $nodes[0];
@@ -357,8 +363,22 @@ class ApiController extends Controller {
 			$mime = $node->getMimeType();
 			$content = $node->getContent();
 			return new FileResponse(array('mimetype' => $mime, 'content' => $content));
-		}
+		} else {
+			// try to extract the first picture from the first track on the album
+			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+			$extractor = new \getID3();
+			$metadata = $extractor->analyze('oc://' . $this->userFolder->getById($tracks[0]->getFileId())[0]->getPath());
+			\getid3_lib::CopyTagsToComments($metadata);
 
+			if(array_key_exists("comments", $metadata) &&
+				array_key_exists("picture", $metadata["comments"]) &&
+				!is_null($metadata["comments"]["picture"][0]["data"]) ) {
+				return new FileResponse(array(
+					'mimetype' => $metadata["comments"]["picture"][0]["image_mime"],
+					'content' => $metadata["comments"]["picture"][0]["data"]
+				));
+			}
+		}
 		$r = new Response();
 		$r->setStatus(Http::STATUS_NOT_FOUND);
 		return $r;

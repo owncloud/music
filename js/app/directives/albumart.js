@@ -19,17 +19,31 @@
  *
  */
 
-angular.module('Music').directive('albumart', function() {
+angular.module('Music').directive('albumart', function($http) {
 	return function(scope, element, attrs, ctrl) {
 		var setAlbumart = function() {
 			if(attrs.cover) {
-				// remove placeholder stuff
-				element.html('');
-				element.css('background-color', '');
-				// add background image
-				element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
-				element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
-				element.css('background-image', 'url(' + attrs.cover + ')');
+				$http.get(attrs.cover).then(
+					function(response) {
+						// remove placeholder stuff
+						element.html('');
+						element.css('background-color', '');
+						// add background image
+						element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
+						element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
+						element.css('background-image', 'url(' + attrs.cover + ')');
+					},
+					function(reject) {
+						// remove background image
+						element.css('-ms-filter', '');
+						element.css('background-image', '');
+						// add placeholder stuff
+						element.imageplaceholder(attrs.albumart);
+						// remove style of the placeholder to allow mobile styling
+						element.css('line-height', '');
+						element.css('font-size', '');
+					}
+				);
 			} else {
 				if(attrs.albumart) {
 					// remove background image

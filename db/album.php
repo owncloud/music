@@ -102,15 +102,13 @@ class Album extends Entity {
 	/**
 	 * Creates object used for collection API (array with name, year, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URLGenerator
-	 * @param  object        $l10n         L10n handler
-	 * @return array                       collection API object
+	 * @param  object $l10n L10n handler
+	 * @return array collection API object
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n) {
-		$coverUrl = null;
-		if($this->getCoverFileId()) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
+		$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
 					array('albumIdOrSlug' => $this->getId()));
-		}
+
 		return array(
 				'name' => $this->getNameString($l10n),
 				'year' => $this->getYear(),
@@ -122,24 +120,15 @@ class Album extends Entity {
 	/**
 	 * Creates object used by the shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
 	 * @param  IURLGenerator $urlGenerator URLGenerator
-	 * @param  object        $l10n         L10n handler
-	 * @return array                       shiva API object
+	 * @param  object $l10n L10n handler
+	 * @return array shiva API object
 	 */
 	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
-		// TODO refactor to use toCollection() and just append additional keys
-		$coverUrl = null;
-		if($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
-					array('albumIdOrSlug' => $this->getId()));
-		}
-		return array(
-			'name' => $this->getNameString($l10n),
-			'year' => $this->getYear(),
-			'cover' => $coverUrl,
-			'uri' => $this->getUri($urlGenerator),
-			'slug' => $this->getid() . '-' .$this->slugify('name'),
-			'id' => $this->getId(),
-			'artists' => $this->getArtists($urlGenerator)
-		);
+		$collection = $this->toCollection($urlGenerator, $l10n);
+		$collection["uri"] = $this->getUri($urlGenerator);
+		$collection["slug"] = $this->getid() . '-' .$this->slugify('name');
+		$collection["artists"] = $this->getArtists($urlGenerator);
+
+		return $collection;
 	}
 }

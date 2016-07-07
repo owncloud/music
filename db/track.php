@@ -54,6 +54,7 @@ class Track extends Entity {
 	public $uri;
 	public $mimetype;
 	public $userId;
+	public $mbid;
 
 	public function __construct(){
 		$this->addType('number', 'int');
@@ -108,6 +109,7 @@ class Track extends Entity {
 			'number' => $this->getNumber(),
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
+			'albumArtistId' => $this->getAlbum()->getAlbumArtistId(),
 			'files' => array($this->getMimetype() => $urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)),
 			'id' => $this->getId(),
 		);

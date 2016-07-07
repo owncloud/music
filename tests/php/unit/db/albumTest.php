@@ -30,6 +30,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album->setYear(2013);
 		$album->setCoverFileId(5);
 		$album->setArtistIds(array(1,2));
+		$album->setAlbumArtistId(3);
 
 		$l10n = $this->getMock('\OCP\IL10N', array('t', 'n', 'l', 'getLanguageCode'));
 
@@ -43,7 +44,8 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 				array('id' => 1, 'uri' => null),
 				array('id' => 2, 'uri' => null)
 			),
-			'uri' => null
+			'uri' => null,
+			'albumArtistId' => 3,
 			), $album->toAPI($this->urlGenerator, $l10n));
 	}
 

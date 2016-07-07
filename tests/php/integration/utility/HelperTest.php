@@ -135,18 +135,6 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 
 			$this->assertEquals(0, $count);
 		}
-
-		$qb = $this->db->createQueryBuilder();
-		$qb->select('COUNT(*)')
-			->from('`*PREFIX*music_album_artists`', '`album_artists`')
-			->join('`album_artists`', '`*PREFIX*music_albums`', '`albums`', '`album_artists`.`album_id` = `albums`.`id`')
-			->where('`user_id` = :user_id')
-			->setParameter(':user_id', $user);
-		$stmt = $qb->execute();
-		$row = $stmt->fetch();
-		$count = $row['COUNT(*)'];
-
-		$this->assertEquals(0, $count);
 	}
 
 	public function testCleanup(){

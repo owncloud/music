@@ -106,7 +106,9 @@ class ApiController extends Controller {
 
 		$artists = array();
 		foreach ($allTracks as $track) {
-			$artist = &$allArtistsById[$track->getArtistId()];
+			$albumObj = $this->albumBusinessLayer->find($track->getAlbumId(), $this->userId);
+			$track->setAlbum($albumObj);
+			$artist = &$allArtistsById[$albumObj->getAlbumArtistId()];
 			if (!isset($artist['albums'])) {
 				$artist['albums'] = array();
 				$artists[] = &$artist;
@@ -119,10 +121,9 @@ class ApiController extends Controller {
 			try {
 				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
 			} catch (\OCP\Files\NotFoundException $e) {
-				//ignore not found	
+				//ignore not found
 			}
 		}
-
 		return new JSONResponse($artists);
 	}
 
@@ -285,6 +286,7 @@ class ApiController extends Controller {
 	public function trackByFileId() {
 		$fileId = $this->params('fileId');
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
+		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder));
 	}
 

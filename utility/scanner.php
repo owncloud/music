@@ -162,20 +162,20 @@ class Scanner extends PublicEmitter {
 			$artist = null;
 			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
 				$artist = $fileInfo['comments']['artist'][0];
-				if(count($fileInfo['comments']['artist']) > 1) {
-					$this->logger->log('multiple artists found (use shortest): ' . implode(', ', $fileInfo['comments']['artist']), 'debug');
-					// determine shortest, because the longer names are just concatenations of all artists
-					for($i=0; $i < count($fileInfo['comments']['artist']); $i++){
-						if(strlen($fileInfo['comments']['artist'][$i]) < strlen($artist)) {
-							$artist = $fileInfo['comments']['artist'][$i];
-						}
-					}
-
-				}
 			}
-			if($artist === ''){
-				// assume artist is not set
-				$artist = null;
+			if($artist === '' || $artist === null){
+				// set artist to Unknown Artist
+				$artist = 'Unknown Artist';
+			}
+
+			// albumArtist
+			$albumArtist = null;
+			if($hasComments && array_key_exists('band', $fileInfo['comments'])){
+				$albumArtist = $fileInfo['comments']['band'][0];
+			}
+			if($albumArtist === '' || $albumArtist === null){
+				// set albumArtist to Unknown Artist
+				$albumArtist = 'Unknown Artist';
 			}
 
 			$alternativeTrackNumber = null;
@@ -240,12 +240,12 @@ class Scanner extends PublicEmitter {
 
 			}
 			$fileId = $file->getId();
-			
+
 			$length = null;
 			if (array_key_exists('playtime_seconds', $fileInfo)) {
 				$length = ceil($fileInfo['playtime_seconds']);
 			}
-			
+
 			$bitrate = null;
 			if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
 				$bitrate = $fileInfo['audio']['bitrate'];
@@ -253,8 +253,8 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
-				sprintf('artist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
-					$artist, $album, $title, $trackNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
+				sprintf('artist: %s, albumArtist: %s, album: %s, title: %s, track#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
+					$artist, $albumArtist, $album, $title, $trackNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
 
 			if(!$userId) {
 				$userId = $this->userId;
@@ -264,8 +264,12 @@ class Scanner extends PublicEmitter {
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
 			$artistId = $artist->getId();
 
+			// add albumArtist and get artist entity
+			$albumArtist = $this->artistBusinessLayer->addArtistIfNotExist($albumArtist, $userId);
+			$albumArtistId = $albumArtist->getId();
+
 			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $artistId, $userId);
+			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $albumArtistId, $userId);
 			$albumId = $album->getId();
 
 			// add track and get track entity
@@ -274,7 +278,7 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('imported entities - ' .
-				sprintf('artist: %d, album: %d, track: %d', $artistId, $albumId, $track->getId()),
+				sprintf('artist: %d, albumArtist: %d, album: %d, track: %d', $artistId, $albumArtistId, $albumId, $track->getId()),
 				'debug');
 		}
 

@@ -2,16 +2,21 @@
 # this downloads test data from jamendo that is then moved to the data folder
 # and then caan be scanned by the ownCloud filescanner
 
-urls="https://storage-new.newjamendo.com/download/a131278/mp32/
-https://storage-new.newjamendo.com/download/a130324/mp32/
-https://storage-new.newjamendo.com/download/a129252/mp32/
-https://storage-new.newjamendo.com/download/a126850/mp32/
-https://storage-new.newjamendo.com/download/a123905/mp32/
-https://storage-new.newjamendo.com/download/a123663/mp32/
-https://storage-new.newjamendo.com/download/a123543/mp32/
-https://storage-new.newjamendo.com/download/a123495/mp32/
-https://storage-new.newjamendo.com/download/a49216/mp32/
-https://storage-new.newjamendo.com/download/a3311/mp32/"
+urls="https://mp3d.jamendo.com/download/track/391005/mp32/
+https://mp3d.jamendo.com/download/track/391013/mp32/
+https://mp3d.jamendo.com/download/track/391014/mp32/
+https://mp3d.jamendo.com/download/track/391010/mp32/
+https://mp3d.jamendo.com/download/track/391002/mp32/
+https://mp3d.jamendo.com/download/track/134103/mp32/
+https://mp3d.jamendo.com/download/track/23975/mp32/
+https://mp3d.jamendo.com/download/track/23969/mp32/
+https://mp3d.jamendo.com/download/track/134127/mp32/
+https://mp3d.jamendo.com/download/track/23976/mp32/
+https://mp3d.jamendo.com/download/track/1048293/mp32/
+https://mp3d.jamendo.com/download/track/1048300/mp32/
+https://mp3d.jamendo.com/download/track/1050078/mp32/
+https://mp3d.jamendo.com/download/track/1050077/mp32/
+https://mp3d.jamendo.com/download/track/1048292/mp32/"
 
 if [ ! -d /tmp/downloadedData ];
 then
@@ -22,27 +27,25 @@ cd /tmp/downloadedData
 
 for url in $urls
 do
-    name=`echo $url | cut -d "/" -f 5`
+    name=`echo $url | cut -d "/" -f 6`
     if [ ! -d "$name" ];
     then
         echo "Downloading $name ..."
-        wget $url -q --no-check-certificate -O archive.zip
+        wget $url -q --no-check-certificate -O $name.mp3
         if [ $? -ne 0 ];
         then
             sleep 5
-            wget $url --no-check-certificate -O archive.zip
+            wget $url --no-check-certificate -O $name.mp3
             if [ $? -ne 0 ];
             then
                 sleep 5
-                wget $url --no-check-certificate -O archive.zip
+                wget $url --no-check-certificate -O $name.mp3
                 if [ $? -ne 0 ];
                 then
                     exit 1
                 fi
             fi
         fi
-        unzip archive.zip -d $name
-        rm archive.zip
     else
         echo "$name is already available"
     fi

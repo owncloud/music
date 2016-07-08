@@ -27,7 +27,7 @@ class AlbumMapper extends Mapper {
 	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+		return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
 			'`album`.`mbid_group`, `album`.`mbid_group`, '.
 			'`album`.`album_artist_id` FROM `*PREFIX*music_albums` `album`'.
@@ -140,12 +140,13 @@ class AlbumMapper extends Mapper {
 	 *
 	 * @param string|null $albumName name of the album
 	 * @param string|integer|null $albumYear year of the album release
+	 * @param string|integer|null $discNumber disk number of this album's disk
 	 * @param integer|null $artistId ID of the album artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAlbum($albumName, $albumYear, $albumArtistId, $userId) {
-		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
+	public function findAlbum($albumName, $albumYear, $discNumber, $albumArtistId, $userId) {
+		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
 			'`album`.`mbid_group`, `album`.`mbid_group`, '.
 			'`album`.`album_artist_id` '.
@@ -175,6 +176,14 @@ class AlbumMapper extends Mapper {
 		} else {
 			$sql .= 'AND `album`.`year` = ? ';
 			array_push($params, $albumYear);
+		}
+
+		// add disc number check
+		if ($discNumber === null) {
+			$sql .= 'AND `album`.`disk` IS NULL ';
+		} else {
+			$sql .= 'AND `album`.`disk` = ? ';
+			array_push($params, $discNumber);
 		}
 
 		return $this->findEntity($sql, $params);

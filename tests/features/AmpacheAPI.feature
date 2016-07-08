@@ -65,15 +65,15 @@ Feature: Ampache API
     Then I should get:
       | title                          | artist      | album                             | time | track |
       | Aç                             | Pascalb / Pascal Boiseau | Nuance                            | 187  | 7     |
-      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  |       |
+      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  | 1     |
       | Forgotten Days                 | SimonBowman | Instrumental Film Music Vol 1     | 195  | 1     |
       | FX Love                        | Pascalb / Pascal Boiseau | NUANCE II                         | 229  | 1     |
-      | Gunpowder Chant                | Diablo Swing Orchestra | The Butcher s Ballroom | 111  |       |
-      | Heroines                       | Diablo Swing Orchestra | The Butcher s Ballroom | 322  |       |
+      | Gunpowder Chant                | Diablo Swing Orchestra | The Butcher s Ballroom | 111  | 7     |
+      | Heroines                       | Diablo Swing Orchestra | The Butcher s Ballroom | 322  | 2     |
       | Médiane                        | Pascalb / Pascal Boiseau | Nuance                            | 203  | 1     |
       | Nocturne                       | SimonBowman | Instrumental Film Music Vol 1     | 142  | 2     |
-      | Poetic Pitbull Revolutions     | Diablo Swing Orchestra | The Butcher s Ballroom | 288  |       |
-      | Rag Doll Physics               | Diablo Swing Orchestra | The Butcher s Ballroom | 233  |       |
+      | Poetic Pitbull Revolutions     | Diablo Swing Orchestra | The Butcher s Ballroom | 288  | 3     |
+      | Rag Doll Physics               | Diablo Swing Orchestra | The Butcher s Ballroom | 233  | 4     |
 
   Scenario: List songs that contain "an"
     Given I am logged in with an auth token
@@ -81,7 +81,7 @@ Feature: Ampache API
     And I request the "songs" resource
     Then I should get:
       | title                            | artist                 | album                          | time | track |
-      | Gunpowder Chant                  | Diablo Swing Orchestra | The Butcher s Ballroom         | 111  |       |
+      | Gunpowder Chant                  | Diablo Swing Orchestra | The Butcher s Ballroom         | 111  | 7     |
       | Médiane                          | Pascalb / Pascal Boiseau | Nuance                         | 203  | 1     |
 
   Scenario: List songs that contain "Mediane"

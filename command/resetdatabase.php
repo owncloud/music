@@ -79,9 +79,9 @@ class ResetDatabase extends Command {
 	}
 
 	private function cleanupRelation() {
-		$sql = 'DELETE FROM `*PREFIX*music_album_artists` ' .
-			'WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums`) ' .
-			'OR `artist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_artists`)';
+		$sql = 'DELETE FROM `*PREFIX*music_artists` ' .
+			'WHERE `id` NOT IN (SELECT `album_artist_id` FROM `*PREFIX*music_albums`)' .
+			'OR `id` NOT IN (SELECT `artist_id` FROM `*PREFIX*music_tracks`)';
 		$this->db->prepare($sql)->execute();
 
 		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` ' .

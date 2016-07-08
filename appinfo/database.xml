@@ -150,7 +150,7 @@
 				<name>disk</name>
 				<type>integer</type>
 				<notnull>false</notnull>
-				<length>2</length>
+				<unsigned>true</unsigned>
 			</field>
 			<field>
 				<name>mbid_group</name>

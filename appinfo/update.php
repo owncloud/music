@@ -52,6 +52,8 @@ if (version_compare($installedVersion, '0.3.12', '<')) {
 		'DELETE FROM `*PREFIX*music_ampache_sessions`',
 		'DROP TABLE `*PREFIX*music_album_artists`;',
 	);
-	$query = \OCP\DB::prepare($sql);
-	$query->execute();
+	foreach ($sqls as $sql) {
+		$query = \OCP\DB::prepare($sql);
+		$query->execute();
+	}
 }

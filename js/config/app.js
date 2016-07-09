@@ -33,7 +33,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
+angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngDragDrop'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -50,7 +50,11 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/artist/:id',	overviewControllerConfig)
 				.when('/album/:id',		overviewControllerConfig)
 				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/file/:id',		overviewControllerConfig)
+				.when('/playlist/:playlistId', {
+					controller:'PlaylistController',
+					templateUrl:'playlistview.html'
+				});
 		}
 	])
 	.run(['Token', 'Restangular',

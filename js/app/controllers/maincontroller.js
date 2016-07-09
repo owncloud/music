@@ -22,6 +22,11 @@ angular.module('Music').controller('MainController',
 		$scope.loading = false;
 	});
 
+	// Broadcast an event in case of a drop on a playlist
+	$scope.dropSong = function($event, $data, playlistId){
+		$rootScope.$broadcast('droppedSong', $data, playlistId);
+	};
+
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
 		// determine if already inside of an $apply or $digest

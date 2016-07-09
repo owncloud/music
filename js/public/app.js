@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
+angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngDragDrop'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -29,7 +29,11 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/artist/:id',	overviewControllerConfig)
 				.when('/album/:id',		overviewControllerConfig)
 				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/file/:id',		overviewControllerConfig)
+				.when('/playlist/:playlistId', {
+					controller:'PlaylistController',
+					templateUrl:'playlistview.html'
+				});
 		}
 	])
 	.run(function(Token, Restangular){
@@ -50,6 +54,11 @@ angular.module('Music').controller('MainController',
 	$rootScope.$on('artistsLoaded', function() {
 		$scope.loading = false;
 	});
+
+	// Broadcast an event in case of a drop on a playlist
+	$scope.dropSong = function($event, $data, playlistId){
+		$rootScope.$broadcast('droppedSong', $data, playlistId);
+	};
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
@@ -181,7 +190,6 @@ angular.module('Music').controller('OverviewController',
 					break;
 				}
 			}
-
 			if(index > 0) {
 				// slice array in two parts and interchange them
 				var begin = tracks.slice(0, index);
@@ -484,11 +492,102 @@ angular.module('Music').controller('PlayerController',
 }]);
 
 angular.module('Music').controller('PlaylistController',
-	['$scope', 'playlists', function ($scope, playlists) {
+	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
+	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-	$scope.playlists = playlists;
+		$scope.playlistSongs = [];
+		$scope.playlists = [];
+
+		$scope.newPlaylistName = null;
+
+		// holds the state of the editor (visible or not)
+		$scope.showCreateForm = false;
+		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
+		$scope.showEditForm = null;
+
+		// create playlist
+		$scope.create = function(playlist) {
+			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
+				$scope.playlists.push(playlist);
+				$scope.newPlaylistName = null;
+			});
+
+			$scope.showCreateForm = false;
+		};
+
+		// load all playlists
+		$scope.load = function() {
+			Restangular.all('playlists').getList().then(function(playlists){
+				$scope.playlists = playlists;
+			});
+		};
+
+		// fetch playlist and its songs
+		$scope.getPlaylist = function(id) {
+			Restangular.one('playlists', id).get().then(function(playlist){
+				$scope.currentPlaylist = playlist;
+			});
+		};
+
+		// Rename playlist
+		$scope.update = function(playlist) {
+			// change of the attribute happens in form
+			playlist.put();
+
+			$scope.showEditForm = false;
+		};
+
+		// Remove playlist
+		$scope.remove = function(playlist) {
+			playlist.remove();
+
+			// remove the elemnt also from the AngularJS list
+			$scope.playlists.splice($scope.playlists.indexOf(playlist), 1);
+		};
+
+		// Add track to the playlist
+		$scope.addTrack = function(playlist, song) {
+
+			playlist.all("add").post({trackIds: song.id}).then(function() {
+				playlist.trackIds.push(song);
+			});
+		};
+
+		// Remove chosen track from the list
+		$scope.removeTrack = function(track) {
+			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function() {
+				// remove the element also from the JS array
+				$scope.currentPlaylist.trackIds.splice($scope.currentPlaylist.trackIds.indexOf(track), 1);
+			});
+		};
+
+		// Call playlistService to play all songs in the current playlist
+		$scope.playAll = function() {
+			playlistService.setPlaylist($scope.currentPlaylist.trackIds);
+			playlistService.publish('play');
+		};
+
+		// Play only one song from the playlist
+		$scope.playTrack = function(track) {
+			playlistService.setPlaylist([track]);
+			playlistService.publish('play');
+		};
+
+		if($routeParams.playlistId) {
+			// load playlist in playlist route
+			$scope.getPlaylist($routeParams.playlistId);
+		}
+
+		// Emitted by MainController after dropping a song on a playlist
+		$scope.$on('droppedSong', function(event, song, playlist) {
+			$scope.addTrack(playlist, song);
+		});
+
+		// load all playlists in sidebar
+		$scope.load();
 
 }]);
+
 angular.module('Music').directive('albumart', function() {
 	return function(scope, element, attrs, ctrl) {
 		var setAlbumart = function() {
@@ -516,6 +615,19 @@ angular.module('Music').directive('albumart', function() {
 
 		attrs.$observe('albumart', setAlbumart);
 		attrs.$observe('cover', setAlbumart);
+	};
+});
+
+angular.module('Music').directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if(event.which === 13) {
+				scope.$apply(function (){
+					scope.$eval(attrs.ngEnter);
+				});
+				event.preventDefault();
+			}
+		});
 	};
 });
 
@@ -595,15 +707,6 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
 	return new PlayerWrapper();
 }]);
-
-angular.module('Music').factory('playlists', function(){
-	return [
-		{name: 'test playlist 1', id: 1},
-		{name: 'test playlist 2', id: 2},
-		{name: 'test playlist 3', id: 3},
-		{name: 'test playlist 4', id: 4}
-	];
-});
 
 angular.module('Music').factory('Token', [function () {
 	return document.getElementsByTagName('head')[0].getAttribute('data-requesttoken');

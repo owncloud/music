@@ -52,6 +52,7 @@ $app->registerRoutes($this, array('routes' => array(
 	// settings
 	array('name' => 'setting#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
 	array('name' => 'setting#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),
+	array('name' => 'setting#generateUserKey', 'url' => '/settings/userkey/generate', 'verb' => 'POST'),
 	array('name' => 'setting#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
 
 	// ampache

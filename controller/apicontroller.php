@@ -106,7 +106,9 @@ class ApiController extends Controller {
 
 		$artists = array();
 		foreach ($allTracks as $track) {
-			$artist = &$allArtistsById[$track->getArtistId()];
+			$albumObj = $this->albumBusinessLayer->find($track->getAlbumId(), $this->userId);
+			$track->setAlbum($albumObj);
+			$artist = &$allArtistsById[$albumObj->getAlbumArtistId()];
 			if (!isset($artist['albums'])) {
 				$artist['albums'] = array();
 				$artists[] = &$artist;
@@ -119,10 +121,9 @@ class ApiController extends Controller {
 			try {
 				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
 			} catch (\OCP\Files\NotFoundException $e) {
-				//ignore not found	
+				//ignore not found
 			}
 		}
-
 		return new JSONResponse($artists);
 	}
 
@@ -285,6 +286,7 @@ class ApiController extends Controller {
 	public function trackByFileId() {
 		$fileId = $this->params('fileId');
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
+		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder));
 	}
 
@@ -357,8 +359,22 @@ class ApiController extends Controller {
 			$mime = $node->getMimeType();
 			$content = $node->getContent();
 			return new FileResponse(array('mimetype' => $mime, 'content' => $content));
-		}
+		} else {
+			// try to extract the first picture from the first track on the album
+			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+			$extractor = new \getID3();
+			$metadata = $extractor->analyze('oc://' . $this->userFolder->getById($tracks[0]->getFileId())[0]->getPath());
+			\getid3_lib::CopyTagsToComments($metadata);
 
+			if(array_key_exists("comments", $metadata) &&
+				array_key_exists("picture", $metadata["comments"]) &&
+				!is_null($metadata["comments"]["picture"][0]["data"]) ) {
+				return new FileResponse(array(
+					'mimetype' => $metadata["comments"]["picture"][0]["image_mime"],
+					'content' => $metadata["comments"]["picture"][0]["data"]
+				));
+			}
+		}
 		$r = new Response();
 		$r->setStatus(Http::STATUS_NOT_FOUND);
 		return $r;

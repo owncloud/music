@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit bootstrap="../bootstrap-unit.php">
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./db</directory>
+			<directory suffix=".php">./controller</directory>
+			<directory suffix=".php">./businesslayer</directory>
+		</whitelist>
+	</filter>
 </phpunit>

@@ -16,12 +16,16 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
+use \OCP\IL10N;
 use \OCP\IRequest;
+use \OCP\Security\ISecureRandom;
 
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;
 
 class SettingController extends Controller {
+
+	const DEFAULT_PASSWORD_LENGTH = 10;
 
 	private $appname;
 	private $ampacheUserMapper;
@@ -29,6 +33,8 @@ class SettingController extends Controller {
 	private $userId;
 	private $userFolder;
 	private $configManager;
+	private $secureRandom;
+	private $l10n;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -36,7 +42,9 @@ class SettingController extends Controller {
 								Scanner $scanner,
 								$userId,
 								Folder $userFolder,
-								IConfig $configManager){
+								IConfig $configManager,
+								ISecureRandom $secureRandom,
+								$l10n){
 		parent::__construct($appname, $request);
 
 		$this->appname = $appname;
@@ -45,6 +53,8 @@ class SettingController extends Controller {
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
 		$this->configManager = $configManager;
+		$this->secureRandom = $secureRandom;
+		$this->l10n = $l10n;
 	}
 
 	/**
@@ -83,6 +93,36 @@ class SettingController extends Controller {
 			$success = true;
 		}
 		return new JSONResponse(array('success' => $success, 'id' => $id));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @CORS
+	 */
+	public function generateUserKey($length, $description) {
+		$success = false;
+
+		if($description == NULL) {
+			return new JSONResponse(array('success' => $success, 'message' => $this->l10n->t('Please provide a description')));
+		}
+
+		if($length == NULL || $length < self::DEFAULT_PASSWORD_LENGTH) {
+			$length = self::DEFAULT_PASSWORD_LENGTH;
+		}
+
+		$password = $this->secureRandom->generate(
+			$length,
+			ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_UPPER . ISecureRandom::CHAR_DIGITS);
+
+		$hash = hash('sha256', $password);
+		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
+
+		if($id !== null) {
+			$success = true;
+		}
+
+		return new JSONResponse(array('success' => $success, 'id' => $id, 'password' => $password, 'description' => $description));
 	}
 
 	/**

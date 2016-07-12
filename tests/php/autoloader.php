@@ -15,41 +15,54 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 spl_autoload_register(function ($className){
     if (strpos($className, 'OCA\\') === 0) {
 
-        $path = strtolower(str_replace('\\', '/', substr($className, 3)) . '.php');
+        $path = str_replace('\\', '/', substr($className, 3)) . '.php';
         $relPath = __DIR__ . '/../../..' . $path;
 
         if(file_exists($relPath)){
             require_once $relPath;
         }
+        else if(file_exists(strtolower($relPath))){
+            require_once strtolower($relPath);
+        }
     } else if(strpos($className, 'OCP\\') === 0) {
-        $path = strtolower(str_replace('\\', '/', substr($className, 3)) . '.php');
+        $path = str_replace('\\', '/', substr($className, 3)) . '.php';
         $relPath = __DIR__ . '/../../../../lib/public' . $path;
 
         if(file_exists($relPath)){
             require_once $relPath;
         }
+        else if(file_exists(strtolower($relPath))){
+            require_once strtolower($relPath);
+        }
     } else if(strpos($className, 'OC_') === 0) {
-        $path = strtolower(str_replace('\\', '/', substr($className, 3)) . '.php');
+        $path = str_replace('\\', '/', substr($className, 3)) . '.php';
         $relPath = __DIR__ . '/../../../../lib/private/' . $path;
 
         if(file_exists($relPath)){
             require_once $relPath;
         }
+        else if(file_exists(strtolower($relPath))){
+            require_once strtolower($relPath);
+        }
     } else if(strpos($className, 'OC\\') === 0) {
-        $path = strtolower(str_replace('\\', '/', substr($className, 2)) . '.php');
+        $path = str_replace('\\', '/', substr($className, 2)) . '.php';
         $relPath = __DIR__ . '/../../../../lib/private' . $path;
 
         if(file_exists($relPath)){
             require_once $relPath;
         }
+        else if(file_exists(strtolower($relPath))){
+            require_once strtolower($relPath);
+        }
     } else if(strpos($className, 'Test\\') === 0) {
-        $path = strtolower(
-            str_replace('\\', '/', substr($className, 4)) . '.php'
-        );
+        $path = str_replace('\\', '/', substr($className, 4)) . '.php';
         echo $path;
         $relPath = __DIR__ . '/../../../../tests/lib' . $path;
         if(file_exists($relPath)){
             require_once $relPath;
+        }
+        else if(file_exists(strtolower($relPath))){
+            require_once strtolower($relPath);
         }
     }
 });

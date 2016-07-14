@@ -31,10 +31,12 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute'])
 				.when('/file/:id',		overviewControllerConfig);
 		}
 	])
-	.run(function(Token, Restangular){
-		// add CSRF token
-		Restangular.setDefaultHeaders({requesttoken: Token});
-	});
+	.run(['Token', 'Restangular',
+		function(Token, Restangular){
+			// add CSRF token
+			Restangular.setDefaultHeaders({requesttoken: Token});
+		}
+	]);
 
 angular.module('Music').controller('MainController',
 	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',

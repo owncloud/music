@@ -490,7 +490,7 @@ angular.module('Music').controller('PlaylistController',
 	$scope.playlists = playlists;
 
 }]);
-angular.module('Music').directive('albumart', function($http) {
+angular.module('Music').directive('albumart', ['$http', function($http) {
 	return function(scope, element, attrs, ctrl) {
 		var setAlbumart = function() {
 			if(attrs.cover) {
@@ -532,7 +532,7 @@ angular.module('Music').directive('albumart', function($http) {
 		attrs.$observe('albumart', setAlbumart);
 		attrs.$observe('cover', setAlbumart);
 	};
-});
+}]);
 
 angular.module('Music').directive('resize', ['$window', '$rootScope', function($window, $rootScope) {
 	return function(scope, element, attrs, ctrl) {

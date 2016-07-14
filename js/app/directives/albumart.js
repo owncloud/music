@@ -19,7 +19,7 @@
  *
  */
 
-angular.module('Music').directive('albumart', function($http) {
+angular.module('Music').directive('albumart', ['$http', function($http) {
 	return function(scope, element, attrs, ctrl) {
 		var setAlbumart = function() {
 			if(attrs.cover) {
@@ -61,4 +61,4 @@ angular.module('Music').directive('albumart', function($http) {
 		attrs.$observe('albumart', setAlbumart);
 		attrs.$observe('cover', setAlbumart);
 	};
-});
+}]);

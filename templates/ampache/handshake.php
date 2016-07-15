@@ -4,8 +4,8 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 <root>
 	<auth><?php p($_['token']);?></auth>
 	<version>350001</version>
-	<update><?php p(date('c', $_['updateDate']));?></update>
-	<add><?php p(date('c', $_['addDate']));?></add>
+	<update><?php p($_['updateDate']);?></update>
+	<add><?php p($_['addDate']);?></add>
 	<clean><?php p(date('c', $_['cleanDate']));?></clean>
 	<songs><?php p($_['songCount']);?></songs>
 	<artists><?php p($_['artistCount']);?></artists>

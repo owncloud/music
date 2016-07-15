@@ -36,6 +36,8 @@ use \OCA\Music\Db\Track;
 
 class TrackBusinessLayer extends BusinessLayer {
 
+	const DATE_FORMAT = 'Y-m-d H:i:s';
+
 	private $logger;
 
 	public function __construct(TrackMapper $trackMapper, Logger $logger){
@@ -88,6 +90,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
+		$date = new \DateTime();
 		try {
 			$track = $this->mapper->findByFileId($fileId, $userId);
 			$track->setTitle($title);
@@ -96,10 +99,11 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setAlbumId($albumId);
 			$track->setMimetype($mimetype);
 			$track->setUserId($userId);
-			$this->mapper->update($track);
 			$track->setLength($length);
 			$track->setBitrate($bitrate);
-			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
+			$track->setUpdated($date->format(self::DATE_FORMAT));
+			$this->mapper->update($track);
+			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId() . ' updated = '. $date->format(self::DATE_FORMAT), 'debug');
 		} catch(DoesNotExistException $ex){
 			$track = new Track();
 			$track->setTitle($title);
@@ -111,8 +115,9 @@ class TrackBusinessLayer extends BusinessLayer {
 			$track->setUserId($userId);
 			$track->setLength($length);
 			$track->setBitrate($bitrate);
+			$track->setAdded($date->format(self::DATE_FORMAT));
 			$track = $this->mapper->insert($track);
-			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
+			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId() . ' added = '. $date->format(self::DATE_FORMAT), 'debug');
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}

@@ -183,6 +183,9 @@ class AmpacheController extends Controller {
 		$artistCount = $this->artistMapper->count($userId);
 		$albumCount = $this->albumMapper->count($userId);
 		$trackCount = $this->trackMapper->count($userId);
+		$lastChange = $this->trackMapper->lastChange($userId);
+		$lastUpdated = new \DateTime($lastChange['last_updated']);
+		$lastAdded = new \DateTime($lastChange['last_added']);
 
 		return $this->render(
 			'ampache/handshake',
@@ -192,9 +195,9 @@ class AmpacheController extends Controller {
 				'artistCount' => $artistCount,
 				'albumCount' => $albumCount,
 				'playlistCount' => 0,
-				'updateDate' => $currentTime,
+				'updateDate' => max($lastUpdated, $lastAdded)->format('c'),
 				'cleanDate' => $currentTime,
-				'addDate' => $currentTime,
+				'addDate' => $lastAdded->format('c'),
 				'expireDate' => $expiryDate
 			),
 			'blank',

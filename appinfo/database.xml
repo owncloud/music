@@ -248,6 +248,16 @@
 				<notnull>false</notnull>
 				<length>36</length>
 			</field>
+			<field>
+				<name>added</name>
+				<type>timestamp</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>updated</name>
+				<type>timestamp</type>
+				<notnull>true</notnull>
+			</field>
 
 			<index>
 				<name>music_tracks_artist_id_idx</name>

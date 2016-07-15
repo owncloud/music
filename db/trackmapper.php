@@ -28,7 +28,8 @@ class TrackMapper extends Mapper {
 		return 'SELECT `track`.`title`, `track`.`number`, `track`.`id`, '.
 			'`track`.`artist_id`, `track`.`album_id`, `track`.`length`, '.
 			'`track`.`file_id`, `track`.`bitrate`, `track`.`mimetype`, '.
-			'`track`.`mbid` FROM `*PREFIX*music_tracks` `track` '.
+			'`track`.`mbid`, `track`.`added`, `track`.`updated` '.
+			'FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE ' . $condition;
 	}
 
@@ -185,5 +186,18 @@ class TrackMapper extends Mapper {
 		$name = '%' . $name . '%';
 		$params = array($userId, $name, $name, $name);
 		return $this->findEntities($sql, $params);
+	}
+
+	/**
+	 * @param string $userId
+	 * @return string[]
+	 */
+	public function lastChange($userId){
+		$sql = 'SELECT MAX(added) last_added, MAX(updated) last_updated FROM `*PREFIX*music_tracks` '.
+			'WHERE `user_id` = ?';
+		$params = array($userId);
+		$result = $this->execute($sql, $params);
+		$row = $result->fetch();
+		return $row;
 	}
 }

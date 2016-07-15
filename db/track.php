@@ -39,6 +39,12 @@ use \OCP\AppFramework\Db\Entity;
  * @method setMimetype(string $mimetype)
  * @method string getUserId()
  * @method setUserId(string $userId)
+ * @method string getMbid()
+ * @method setMbid(string $mbid)
+ * @method string getAdded()
+ * @method setAdded(string $date)
+ * @method string getUpdated()
+ * @method setUpdated(string $date)
  */
 class Track extends Entity {
 
@@ -55,6 +61,8 @@ class Track extends Entity {
 	public $mimetype;
 	public $userId;
 	public $mbid;
+	public $added;
+	public $updated;
 
 	public function __construct(){
 		$this->addType('number', 'int');

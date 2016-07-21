@@ -67,7 +67,7 @@ angular.module('Music').directive('albumart', ['$http', function($http) {
 			if(!attrs.cover || coverLoadFailed) {
 				setPlaceholder(element, attrs.albumart);
 			}
-		}
+		};
 		
 		attrs.$observe('albumart', onAlbumartChanged);
 		attrs.$observe('cover', onCoverChanged);

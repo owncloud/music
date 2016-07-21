@@ -84,11 +84,11 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			currentTrackId = null;
 			played = [];
 		},
-        publish: function(name, parameters) {
-            $rootScope.$emit(name, parameters);
-        },
-        subscribe: function(name, listener) {
-            $rootScope.$on(name, listener);
-        }
+		publish: function(name, parameters) {
+			$rootScope.$emit(name, parameters);
+		},
+		subscribe: function(name, listener) {
+			$rootScope.$on(name, listener);
+		}
 	};
 }]);

@@ -25,7 +25,7 @@ angular.module('Music').controller('OverviewController',
 
 			var artist = _.find($scope.$parent.artists,
 				function(artist) {
-					return artist.id === track.artistId;
+					return artist.id === track.albumArtistId;
 				}),
 				album = _.find(artist.albums,
 				function(album) {

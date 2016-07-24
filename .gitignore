@@ -55,6 +55,6 @@ coverage-html-integration
 # L10n
 l10n/templates/music.pot
 
-vendor/
 bin/
 tests/behat.yml
+

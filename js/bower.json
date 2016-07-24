@@ -8,6 +8,7 @@
     "backbone": "",
     "restangular" : "",
     "soundmanager": "",
-    "underscore" : ""
+    "underscore" : "",
+    "ngQueue" : ""
   }
 }

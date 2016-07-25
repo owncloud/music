@@ -39,6 +39,34 @@ angular.module('Music').controller('PlayerController',
 		total: 0
 	};
 
+	$scope.player.on('buffer', function (percent) {
+		$scope.setBufferPercentage(parseInt(percent));
+		$scope.$digest();
+	});
+	$scope.player.on('ready', function () {
+		$scope.setLoading(false);
+		$scope.$digest();
+	});
+	$scope.player.on('progress', function (currentTime) {
+		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+		$scope.$digest();
+	});
+	$scope.player.on('end', function() {
+		$scope.setPlay(false);
+		$scope.$digest();
+		if($scope.$$phase) {
+			$scope.next();
+		} else {
+			$scope.$apply(function(){
+				$scope.next();
+			});
+		}
+	});
+	$scope.player.on('duration', function(msecs) {
+		$scope.setTime($scope.position.current, $scope.player.duration/1000);
+		$scope.$digest();
+	});
+
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
 		var title = $('title').html().trim();
@@ -83,40 +111,13 @@ angular.module('Music').controller('PlayerController',
 											return album.id === newValue.albumId;
 										});
 
-			$scope.player=Audio.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.setLoading(true);
 
 			$scope.player.play();
 
 			$scope.setPlay(true);
 
-			$scope.player.on('buffer', function (percent) {
-				$scope.setBufferPercentage(parseInt(percent));
-				$scope.$digest();
-			});
-			$scope.player.on('ready', function () {
-				$scope.setLoading(false);
-				$scope.$digest();
-			});
-			$scope.player.on('progress', function (currentTime) {
-				$scope.setTime(currentTime/1000, $scope.player.duration/1000);
-				$scope.$digest();
-			});
-			$scope.player.on('end', function() {
-				$scope.setPlay(false);
-				$scope.$digest();
-				if($scope.$$phase) {
-					$scope.next();
-				} else {
-					$scope.$apply(function(){
-						$scope.next();
-					});
-				}
-			});
-			$scope.player.on('duration', function(msecs) {
-				$scope.setTime($scope.position.current, $scope.player.duration/1000);
-				$scope.$digest();
-			});
 		} else {
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;

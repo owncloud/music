@@ -239,6 +239,8 @@ class Scanner extends PublicEmitter {
 			$discNumber = "1";
 			if($hasComments && array_key_exists('discnumber', $fileInfo['comments'])){
 				$discNumber = $fileInfo['comments']['discnumber'][0];
+			} else if($hasComments && array_key_exists('part_of_a_set', $fileInfo['comments'])){
+				$discNumber = $fileInfo['comments']['part_of_a_set'][0];
 			}
 			// convert disc number '1/10' to '1'
 			$tmp = explode('/', $discNumber);

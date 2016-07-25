@@ -29,7 +29,7 @@ angular.module('Music').directive('albumart', ['$http', function($http) {
 		element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='scale')");
 		element.css('background-image', 'url(' + imageUrl + ')');
 	}
-	
+
 	function setPlaceholder(element, text) {
 		if(text) {
 			// remove background image
@@ -42,10 +42,10 @@ angular.module('Music').directive('albumart', ['$http', function($http) {
 			element.css('font-size', '');
 		}
 	}
-	
+
 	return function(scope, element, attrs, ctrl) {
 		var coverLoadFailed = false;
-		
+
 		var onCoverChanged = function() {
 			if(attrs.cover) {
 				$http.get(attrs.cover).then(
@@ -68,7 +68,7 @@ angular.module('Music').directive('albumart', ['$http', function($http) {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};
-		
+
 		attrs.$observe('albumart', onAlbumartChanged);
 		attrs.$observe('cover', onCoverChanged);
 	};

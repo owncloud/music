@@ -20,45 +20,57 @@
  */
 
 angular.module('Music').directive('albumart', ['$http', function($http) {
+	function setCoverImage(element, imageUrl) {
+		// remove placeholder stuff
+		element.html('');
+		element.css('background-color', '');
+		// add background image
+		element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='scale')");
+		element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='scale')");
+		element.css('background-image', 'url(' + imageUrl + ')');
+	}
+
+	function setPlaceholder(element, text) {
+		if(text) {
+			// remove background image
+			element.css('-ms-filter', '');
+			element.css('background-image', '');
+			// add placeholder stuff
+			element.imageplaceholder(text);
+			// remove style of the placeholder to allow mobile styling
+			element.css('line-height', '');
+			element.css('font-size', '');
+		}
+	}
+
 	return function(scope, element, attrs, ctrl) {
-		var setAlbumart = function() {
+		var coverLoadFailed = false;
+
+		var onCoverChanged = function() {
 			if(attrs.cover) {
 				$http.get(attrs.cover).then(
 					function(response) {
-						// remove placeholder stuff
-						element.html('');
-						element.css('background-color', '');
-						// add background image
-						element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
-						element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + attrs.cover + "', sizingMethod='scale')");
-						element.css('background-image', 'url(' + attrs.cover + ')');
+						setCoverImage(element, attrs.cover);
+						coverLoadFailed = false;
 					},
 					function(reject) {
-						// remove background image
-						element.css('-ms-filter', '');
-						element.css('background-image', '');
-						// add placeholder stuff
-						element.imageplaceholder(attrs.albumart);
-						// remove style of the placeholder to allow mobile styling
-						element.css('line-height', '');
-						element.css('font-size', '');
+						setPlaceholder(element, attrs.albumart);
+						coverLoadFailed = true;
 					}
 				);
 			} else {
-				if(attrs.albumart) {
-					// remove background image
-					element.css('-ms-filter', '');
-					element.css('background-image', '');
-					// add placeholder stuff
-					element.imageplaceholder(attrs.albumart);
-					// remove style of the placeholder to allow mobile styling
-					element.css('line-height', '');
-					element.css('font-size', '');
-				}
+				setPlaceholder(element, attrs.albumart);
 			}
 		};
 
-		attrs.$observe('albumart', setAlbumart);
-		attrs.$observe('cover', setAlbumart);
+		var onAlbumartChanged = function() {
+			if(!attrs.cover || coverLoadFailed) {
+				setPlaceholder(element, attrs.albumart);
+			}
+		};
+
+		attrs.$observe('albumart', onAlbumartChanged);
+		attrs.$observe('cover', onCoverChanged);
 	};
 }]);
+

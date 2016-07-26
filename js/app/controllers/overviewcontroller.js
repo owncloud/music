@@ -9,8 +9,15 @@
  */
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular',
-	function ($scope, $rootScope, playlistService, Restangular) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route',
+	function ($scope, $rootScope, playlistService, Restangular, $route) {
+
+		// Prevent controller reload when the URL is updated with window.location.hash.
+		// See http://stackoverflow.com/a/12429133/2104976
+		var lastRoute = $route.current;
+		$scope.$on('$locationChangeSuccess', function(event) {
+			$route.current = lastRoute;
+		});
 
 		$scope.playTrack = function(track) {
 			// update URL hash
@@ -18,7 +25,7 @@ angular.module('Music').controller('OverviewController',
 
 			var artist = _.find($scope.$parent.artists,
 				function(artist) {
-					return artist.id === track.artistId;
+					return artist.id === track.albumArtistId;
 				}),
 				album = _.find(artist.albums,
 				function(album) {

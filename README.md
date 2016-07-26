@@ -1,7 +1,5 @@
 # README
 
-**This app looks for a maintainer** by @MorrisJobke: I sadly don't have the energy, motivation and time to work on the music app anymore. I just put too few resources in it lately. If there are questions I'm happy to help out to understand the code base.
-
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 

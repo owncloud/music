@@ -1,3 +1,15 @@
+v0.3.12 2016-07-26
+
+ * provide bitrate and mime information in the Ampache API's song endpoint
+ * expose Ampache token generation API
+ * fixed Konrad Mosoń's profile url
+ * add new design for empty content
+ * add support for disc numbers
+ * add support for albumartist tag
+ * improved album art extraction
+ * fixed blank page on asset.pipeline enable
+ * frontend optimizations
+
 v0.3.11 2016-04-11
 
  * fix syntax in info.xml

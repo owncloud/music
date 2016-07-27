@@ -1032,6 +1032,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setId(1);
 		$album->setAlbumArtistId(1);
 
+		$artist = new Artist();
+		$artist->setId(3);
+		$artist->setName('The track artist');
+		
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findByFileId')
 			->with($this->equalTo($fileId), $this->equalTo($this->userId))
@@ -1042,8 +1046,14 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($track->getAlbumId()), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
 
+		$this->artistBusinessLayer->expects($this->once())
+			->method('find')
+			->with($this->equalTo($track->getArtistId()), $this->equalTo($this->userId))
+			->will($this->returnValue($artist));
+
 		$result = array(
 			'title' => 'The title',
+			'artistName' => 'The track artist',
 			'id' => 1,
 			'number' => 4,
 			'artistId' => 3,

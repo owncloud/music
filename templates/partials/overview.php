@@ -41,12 +41,12 @@
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
 				{{ track.title }}
 			</li>
-			<li class="muted" translate translate-n="trackcount"
+			<li class="muted more-less" translate translate-n="trackcount"
 				translate-plural="Show all {{ trackcount }} songs ..."
 				ng-click="limit.count = trackcount"
 				ng-hide="trackcount <= limit.count || limit.count != 5"
 				>Show all {{ trackcount }} songs ...</li>
-			<li class="muted"
+			<li class="muted more-less"
 				ng-click="limit.count = 5"
 				ng-hide="limit.count == 5" translate>Show less ...</li>
 		</ul>

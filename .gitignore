@@ -57,4 +57,4 @@ l10n/templates/music.pot
 
 bin/
 tests/behat.yml
-
+/vendor/

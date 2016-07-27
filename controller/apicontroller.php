@@ -107,16 +107,19 @@ class ApiController extends Controller {
 		$artists = array();
 		foreach ($allTracks as $track) {
 			$albumObj = $this->albumBusinessLayer->find($track->getAlbumId(), $this->userId);
+			$trackArtistObj = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
 			$track->setAlbum($albumObj);
-			$artist = &$allArtistsById[$albumObj->getAlbumArtistId()];
-			if (!isset($artist['albums'])) {
-				$artist['albums'] = array();
-				$artists[] = &$artist;
+			$track->setArtist($trackArtistObj);
+
+			$albumArtist = &$allArtistsById[$albumObj->getAlbumArtistId()];
+			if (!isset($albumArtist['albums'])) {
+				$albumArtist['albums'] = array();
+				$artists[] = &$albumArtist;
 			}
 			$album = &$allAlbumsById[$track->getAlbumId()];
 			if (!isset($album['tracks'])) {
 				$album['tracks'] = array();
-				$artist['albums'][] = &$album;
+				$albumArtist['albums'][] = &$album;
 			}
 			try {
 				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
@@ -287,6 +290,7 @@ class ApiController extends Controller {
 		$fileId = $this->params('fileId');
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
+		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
 		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder));
 	}
 

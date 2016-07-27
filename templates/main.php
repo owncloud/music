@@ -76,7 +76,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 
 				<div class="song-info">
 					<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
-					<span class="artist" title="{{ currentArtist.name }}">{{ currentArtist.name }}</span>
+					<span class="artist" title="{{ currentTrack.artistName }}">{{ currentTrack.artistName }}</span>
 				</div>
 				<div ng-show="currentTrack.title" class="progress-info">
 					<span ng-hide="loading" class="muted">{{ position.current | playTime }}/{{ position.total | playTime }}</span>

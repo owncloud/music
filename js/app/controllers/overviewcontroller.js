@@ -109,26 +109,8 @@ angular.module('Music').controller('OverviewController',
 			window.location.hash = '#/';
 		});
 
-		// variable to count events which needs triggered first to successfully process the request
-		$scope.eventsBeforePlaying = 2;
-
-		// will be invoked by the audio factory
-		$rootScope.$on('SoundManagerReady', function() {
-			if($rootScope.started) {
-				// invoke play after the flash gets unblocked
-				$scope.$apply(function(){
-					playlistService.publish('play');
-				});
-			}
-			if (!--$scope.eventsBeforePlaying) {
-				$scope.initializePlayerStateFromURL();
-			}
-		});
-
 		$rootScope.$on('artistsLoaded', function () {
-			if (!--$scope.eventsBeforePlaying) {
-				$scope.initializePlayerStateFromURL();
-			}
+			$scope.initializePlayerStateFromURL();
 		});
 
 		$scope.initializePlayerStateFromURL = function() {

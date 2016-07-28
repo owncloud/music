@@ -267,6 +267,10 @@ angular.module('Music').controller('OverviewController',
 			}
 		};
 
+		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
+			$scope.scrollToItem('album-' + albumId);
+		});
+
 		$rootScope.$on('artistsLoaded', function () {
 			$scope.initializePlayerStateFromURL();
 		});
@@ -487,6 +491,12 @@ angular.module('Music').controller('PlayerController',
 		// fetch track and start playing
 		$scope.next();
 	});
+
+	$scope.scrollToCurrentAlbum = function() {
+		if ($scope.currentAlbum) {
+			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+		}
+	};
 }]);
 
 angular.module('Music').controller('PlaylistController',

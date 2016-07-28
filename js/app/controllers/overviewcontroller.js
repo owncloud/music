@@ -117,6 +117,10 @@ angular.module('Music').controller('OverviewController',
 			}
 		};
 
+		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
+			$scope.scrollToItem('album-' + albumId);
+		});
+
 		$rootScope.$on('artistsLoaded', function () {
 			$scope.initializePlayerStateFromURL();
 		});

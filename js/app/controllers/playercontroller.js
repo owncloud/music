@@ -194,4 +194,10 @@ angular.module('Music').controller('PlayerController',
 		// fetch track and start playing
 		$scope.next();
 	});
+
+	$scope.scrollToCurrentAlbum = function() {
+		if ($scope.currentAlbum) {
+			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+		}
+	};
 }]);

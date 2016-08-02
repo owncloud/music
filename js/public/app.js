@@ -504,8 +504,8 @@ angular.module('Music').directive('albumart', ['$http', '$queueFactory', functio
 	// block the playback until all the covers are loaded. Hence, we use queue which allows 5 simultaneous
 	// HTTP GET queries. This is faster than running them only one at a time, but still enables starting
 	// the playback with rather short delay.
-	var httpQueue = $queueFactory(5);
-	
+	var httpQueue = $queueFactory(5)
+
 	function setCoverImage(element, imageUrl) {
 		// remove placeholder stuff
 		element.html('');

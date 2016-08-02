@@ -122,5 +122,4 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 			});
 			break;
 	}
-	return this;
 };

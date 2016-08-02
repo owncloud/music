@@ -39,6 +39,34 @@ angular.module('Music').controller('PlayerController',
 		total: 0
 	};
 
+	$scope.player.on('buffer', function (percent) {
+		$scope.setBufferPercentage(parseInt(percent));
+		$scope.$digest();
+	});
+	$scope.player.on('ready', function () {
+		$scope.setLoading(false);
+		$scope.$digest();
+	});
+	$scope.player.on('progress', function (currentTime) {
+		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+		$scope.$digest();
+	});
+	$scope.player.on('end', function() {
+		$scope.setPlay(false);
+		$scope.$digest();
+		if($scope.$$phase) {
+			$scope.next();
+		} else {
+			$scope.$apply(function(){
+				$scope.next();
+			});
+		}
+	});
+	$scope.player.on('duration', function(msecs) {
+		$scope.setTime($scope.position.current, $scope.player.duration/1000);
+		$scope.$digest();
+	});
+
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
 		var title = $('title').html().trim();
@@ -53,8 +81,11 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.getPlayableFileURL = function (track) {
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mpeg') {
-				return track.files[mimeType];
+			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
+				return {
+					'type': mimeType,
+					'url': track.files[mimeType] + '?requesttoken=' + encodeURIComponent(OC.requestToken)
+				};
 			}
 		}
 
@@ -63,11 +94,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('currentTrack', function(newValue, oldValue) {
 		playlistService.publish('playing', newValue);
-		if($scope.player.asset !== undefined) {
-			// check if player's constructor has been called,
-			// if so, stop() will be available
-			$scope.player.stop();
-		}
+		$scope.player.stop();
 		$scope.setPlay(false);
 		$scope.setLoading(true);
 		if(newValue !== null) {
@@ -76,7 +103,7 @@ angular.module('Music').controller('PlayerController',
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.artistId;
+											return artist.id === newValue.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
@@ -84,37 +111,13 @@ angular.module('Music').controller('PlayerController',
 											return album.id === newValue.albumId;
 										});
 
-			$scope.player=Audio.fromURL($scope.getPlayableFileURL($scope.currentTrack));
-			$scope.player.asset.source.chunkSize=524288;
+			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.setLoading(true);
 
 			$scope.player.play();
 
 			$scope.setPlay(true);
 
-			$scope.player.on('buffer', function (percent) {
-				$scope.setBufferPercentage(parseInt(percent));
-				$scope.$digest();
-			});
-			$scope.player.on('ready', function () {
-				$scope.setLoading(false);
-				$scope.$digest();
-			});
-			$scope.player.on('progress', function (currentTime) {
-				$scope.setTime(currentTime/1000, $scope.player.duration/1000);
-				$scope.$digest();
-			});
-			$scope.player.on('end', function() {
-				$scope.setPlay(false);
-				$scope.$digest();
-				if($scope.$$phase) {
-					$scope.next();
-				} else {
-					$scope.$apply(function(){
-						$scope.next();
-					});
-				}
-			});
 		} else {
 			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
@@ -183,11 +186,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		if($scope.player.format.formatID !== 'flac') {
-			// just in flac seeking is tested
-			return;
-		}
-		$scope.player.seek(percentage * $scope.player.duration);
+		// disable seeking for all format because of some angular error
+		//$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){

@@ -32,11 +32,15 @@
 }
 
 .play {
-	display: none;
+	display: inline;
+	visibility: hidden;
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 	filter: alpha(opacity = 70);
 	opacity: .7;
+	height: 10px;
+	margin-left: 0px;
+	margin-right: 6px;
 }
 
 .artist-area {
@@ -81,7 +85,7 @@
 	display: inline-block;
 }
 
-.album-area > h2:hover {
+.album-area > h2 *:hover {
 	cursor: pointer;
 }
 
@@ -106,7 +110,7 @@
 }
 
 .album-area:hover > img.overlay {
-	display: inline;
+	visibility: visible;
 	cursor: pointer;
 }
 
@@ -115,23 +119,24 @@
 }
 
 .track-list > li {
-	padding-left: 21px;
+	padding-left: 2px;
 	padding-bottom: 11px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 }
 
-.track-list > li:hover {
+.track-list > li:hover, li *:hover {
 	cursor: pointer;
+}
+
+.track-list > li.more-less {
+	padding-left: 21px;
 }
 
 .track-list > li > .play.playing,
 .track-list > li:hover > .play {
-	display: inline;
-	height: 10px;
-	margin-left: -19px;
-	margin-right: 6px;
+	visibility: visible;
 }
 
 .muted {

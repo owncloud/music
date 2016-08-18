@@ -163,18 +163,24 @@ class Scanner extends PublicEmitter {
 			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
 				$artist = $fileInfo['comments']['artist'][0];
 			}
-			if($artist === '' || $artist === null){
-				// set artist to Unknown Artist
-				$artist = 'Unknown Artist';
-			}
 
 			// albumArtist
 			$albumArtist = null;
 			if($hasComments && array_key_exists('band', $fileInfo['comments'])){
 				$albumArtist = $fileInfo['comments']['band'][0];
 			}
-			if($albumArtist === '' || $albumArtist === null){
-				// set albumArtist to Unknown Artist
+
+			// use artist and albumArtist as fallbacks for each other
+			if($this->isNullOrEmpty($albumArtist)){
+				$albumArtist = $artist;
+			}
+			if($this->isNullOrEmpty($artist)){
+				$artist = $albumArtist;
+			}
+
+			// set 'Unknown Artist' in case neither artist nor albumArtist was found
+			if($this->isNullOrEmpty($artist)){
+				$artist = 'Unknown Artist';
 				$albumArtist = 'Unknown Artist';
 			}
 
@@ -184,7 +190,7 @@ class Scanner extends PublicEmitter {
 			if($hasComments && array_key_exists('title', $fileInfo['comments'])){
 				$title = $fileInfo['comments']['title'][0];
 			}
-			if($title === null || $title === ''){
+			if($this->isNullOrEmpty($title)){
 				// fallback to file name
 				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
@@ -202,7 +208,7 @@ class Scanner extends PublicEmitter {
 			if($hasComments && array_key_exists('album', $fileInfo['comments'])){
 				$album = $fileInfo['comments']['album'][0];
 			}
-			if($album === '' || $album === null){
+			if($this->isNullOrEmpty($album)){
 				// album name not set in fileinfo, use parent folder name as album name
 				if ( $this->userFolder->getId() === $file->getParent()->getId() ) {
 					// if the file is in user home, still set album name to unknown
@@ -477,5 +483,9 @@ class Scanner extends PublicEmitter {
 		}
 
 		$this->db->executeUpdate('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
+	}
+
+	private static function isNullOrEmpty($string) {
+		return $string === null || $string === '';
 	}
 }

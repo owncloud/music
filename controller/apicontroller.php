@@ -90,15 +90,19 @@ class ApiController extends Controller {
 	public function collection() {
 		/** @var Artist[] $allArtists */
 		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
-		$allArtistsById = array();
+		$allArtistsByIdAsObj = array();
+		$allArtistsByIdAsArr = array();
 		foreach ($allArtists as &$artist) {
-			$allArtistsById[$artist->getId()] = $artist->toCollection($this->l10n);
+			$allArtistsByIdAsObj[$artist->getId()] = $artist;
+			$allArtistsByIdAsArr[$artist->getId()] = $artist->toCollection($this->l10n);
 		}
 
 		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-		$allAlbumsById = array();
+		$allAlbumsByIdAsObj = array();
+		$allAlbumsByIdAsArr = array();
 		foreach ($allAlbums as &$album) {
-			$allAlbumsById[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
+			$allAlbumsByIdAsObj[$album->getId()] = $album;
+			$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
 		}
 
 		/** @var Track[] $allTracks */
@@ -106,17 +110,20 @@ class ApiController extends Controller {
 
 		$artists = array();
 		foreach ($allTracks as $track) {
-			$albumObj = $this->albumBusinessLayer->find($track->getAlbumId(), $this->userId);
+			$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
+			$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
 			$track->setAlbum($albumObj);
-			$artist = &$allArtistsById[$albumObj->getAlbumArtistId()];
-			if (!isset($artist['albums'])) {
-				$artist['albums'] = array();
-				$artists[] = &$artist;
+			$track->setArtist($trackArtistObj);
+
+			$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
+			if (!isset($albumArtist['albums'])) {
+				$albumArtist['albums'] = array();
+				$artists[] = &$albumArtist;
 			}
-			$album = &$allAlbumsById[$track->getAlbumId()];
+			$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
 			if (!isset($album['tracks'])) {
 				$album['tracks'] = array();
-				$artist['albums'][] = &$album;
+				$albumArtist['albums'][] = &$album;
 			}
 			try {
 				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder);
@@ -287,6 +294,7 @@ class ApiController extends Controller {
 		$fileId = $this->params('fileId');
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
+		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
 		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder));
 	}
 

@@ -79,8 +79,8 @@ Parameters:
 
 ```
 {
-    "length": <length>,
-    "description": <description>
+	"length": <length>,
+	"description": <description>
 }
 ```
 
@@ -90,9 +90,9 @@ Response (success):
 HTTP/1.1 201 Created
 
 {
-    "id": <userkey_id>,
-    "password": <random_password>,
-    "description": <description>
+	"id": <userkey_id>,
+	"password": <random_password>,
+	"description": <description>
 }
 ```
 
@@ -102,7 +102,7 @@ Response (error - no description provided):
 HTTP/1.1 400 Bad request
 
 {
-    "message": "Please provide a description"
+	"message": "Please provide a description"
 }
 ```
 
@@ -112,7 +112,7 @@ Response (error - error while saving password):
 HTTP/1.1 500 Internal Server Error
 
 {
-    "message": "Error while saving the credentials"
+	"message": "Error while saving the credentials"
 }
 ```
 
@@ -154,15 +154,15 @@ more to the beginning of the HTML element.
 
 PHP unit tests
 
-    phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
+	phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
 
 PHP integration tests
 
-    cd ../..          # owncloud core
-    ./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
-    ./occ app:enable music
-    cd apps/music
-    phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
+	cd ../..          # owncloud core
+	./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
+	./occ app:enable music
+	cd apps/music
+	phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
 
 Behat acceptance tests
 
@@ -233,14 +233,17 @@ Response:
 				{
 					"name": "Nightfall in Middle-Earth",
 					"year": 1998,
+					"disk" : 1,
 					"cover": "/index.php/apps/music/api/album/16/cover",
 					"id": 16,
 					"tracks": [
 						{
 							"title": "A Dark Passage",
 							"number": 21,
+							"artistName": "Blind Guardian",
 							"artistId": 2,
 							"albumId": 16,
+							"albumArtistId": 2,
 							"files": {
 								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/21 - A Dark Passage.mp3"
 							},
@@ -249,8 +252,10 @@ Response:
 						{
 							"title": "Battle of Sudden Flame",
 							"number": 12,
+							"artistName": "Blind Guardian",
 							"artistId": 2,
 							"albumId": 16,
+							"albumArtistId": 2,
 							"files": {
 								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/12 - Battle of Sudden Flame.mp3"
 							},
@@ -267,14 +272,17 @@ Response:
 				{
 					"name": "Stay Together for the Kids",
 					"year": 2002,
+					"disk" : 1,
 					"cover": "/index.php/apps/music/api/album/22/cover",
 					"id": 22,
 					"tracks": [
 						{
 							"title": "Stay Together for the Kids",
 							"number": 1,
+							"artistName": "blink-182",
 							"artistId": 3,
 							"albumId": 22,
+							"albumArtistId": 3,
 							"files": {
 								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/01 - Stay Together for the Kids.mp3"
 							},
@@ -283,8 +291,10 @@ Response:
 						{
 							"title": "The Rock Show (live)",
 							"number": 2,
+							"artistName": "blink-182",
 							"artistId": 3,
 							"albumId": 22,
+							"albumArtistId": 3,
 							"files": {
 								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/02 - The Rock Show (live).mp3"
 							},

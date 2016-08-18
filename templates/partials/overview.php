@@ -35,11 +35,13 @@
 		<!-- variable "limit" toogles length of track list for each album -->
 		<ul class="track-list" ng-init="limit.count = 5; trackcount = album.tracks.length">
 			<li ng-click="playTrack(track)"
-				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit.count" title="{{ track.title }}">
+				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit.count"
+				title="{{ track.title + ((track.artistId != track.albumArtistId) ? '  (' + track.artistName + ')' : '') }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == track.id}" />
 				<span ng-show="track.number" class="muted">{{ track.number }}.</span>
 				{{ track.title }}
+				<span ng-if="track.artistId != track.albumArtistId" class="muted">&nbsp;({{ track.artistName }})</span>
 			</li>
 			<li class="muted more-less" translate translate-n="trackcount"
 				translate-plural="Show all {{ trackcount }} songs ..."

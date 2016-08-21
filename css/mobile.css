@@ -68,14 +68,14 @@
 }
 /* align track title to the left with album title */
 .track-list > li {
-	padding-left: 60px;
+	padding-left: 40px;
+}
+.track-list > li.more-less {
+	padding-left: 59px;
 }
 
 .track-list > li > .play.playing {
-	display: inline;
 	height: 10px;
-	margin-left: -20px;
-	margin-right: 6px;
 	cursor: pointer;
 }
 

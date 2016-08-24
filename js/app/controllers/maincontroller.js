@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
-	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
+	['$rootScope', '$scope', '$route', '$timeout', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, $route, $timeout, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -67,7 +67,11 @@ angular.module('Music').controller('MainController',
 
 			}
 
-			$rootScope.$emit('artistsLoaded');
+			// Emit the event asynchronously so that the DOM tree has already been
+			// manipulated and rendered by the browser when obeservers get the event.
+			$timeout(function() {
+				$rootScope.$emit('artistsLoaded');
+			});
 		});
 	};
 

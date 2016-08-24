@@ -40,8 +40,8 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngQueue'])
 	]);
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$route', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
-	function ($rootScope, $scope, $route, ArtistFactory, playlistService, gettextCatalog, Restangular) {
+	['$rootScope', '$scope', '$route', '$timeout', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, $route, $timeout, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -98,7 +98,11 @@ angular.module('Music').controller('MainController',
 
 			}
 
-			$rootScope.$emit('artistsLoaded');
+			// Emit the event asynchronously so that the DOM tree has already been
+			// manipulated and rendered by the browser when obeservers get the event.
+			$timeout(function() {
+				$rootScope.$emit('artistsLoaded');
+			});
 		});
 	};
 
@@ -155,8 +159,8 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route',
-	function ($scope, $rootScope, playlistService, Restangular, $route) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
+	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
 
 		// Prevent controller reload when the URL is updated with window.location.hash.
 		// See http://stackoverflow.com/a/12429133/2104976
@@ -245,6 +249,7 @@ angular.module('Music').controller('OverviewController',
 					.then(function(result){
 						playlistService.setPlaylist([result]);
 						playlistService.publish('play');
+						$scope.scrollToItem('album-' + result.albumId);
 					});
 			}
 		};
@@ -255,26 +260,19 @@ angular.module('Music').controller('OverviewController',
 			window.location.hash = '#/';
 		});
 
-		// variable to count events which needs triggered first to successfully process the request
-		$scope.eventsBeforePlaying = 2;
+		$scope.scrollToItem = function(itemId) {
+			var el = $window.document.getElementById(itemId);
+			if(el) {
+				el.scrollIntoView({behavior: "smooth"});
+			}
+		};
 
-		// will be invoked by the audio factory
-		$rootScope.$on('SoundManagerReady', function() {
-			if($rootScope.started) {
-				// invoke play after the flash gets unblocked
-				$scope.$apply(function(){
-					playlistService.publish('play');
-				});
-			}
-			if (!--$scope.eventsBeforePlaying) {
-				$scope.initializePlayerStateFromURL();
-			}
+		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
+			$scope.scrollToItem('album-' + albumId);
 		});
 
 		$rootScope.$on('artistsLoaded', function () {
-			if (!--$scope.eventsBeforePlaying) {
-				$scope.initializePlayerStateFromURL();
-			}
+			$scope.initializePlayerStateFromURL();
 		});
 
 		$scope.initializePlayerStateFromURL = function() {
@@ -293,6 +291,7 @@ angular.module('Music').controller('OverviewController',
 					});
 					// trigger play
 					$scope.playArtist(object);
+					$scope.scrollToItem('artist-' + object.id);
 				} else {
 					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
 					if (type == 'album') {
@@ -302,6 +301,7 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playAlbum(object);
+						$scope.scrollToItem('album-' + object.id);
 					} else if (type == 'track') {
 						var tracks = _.flatten(_.pluck(albums, 'tracks'));
 						// search for the track by id
@@ -310,11 +310,11 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playTrack(object);
+						$scope.scrollToItem('album-' + object.albumId);
 					}
 				}
 			}
 		};
-
 }]);
 
 angular.module('Music').controller('PlayerController',
@@ -491,6 +491,12 @@ angular.module('Music').controller('PlayerController',
 		// fetch track and start playing
 		$scope.next();
 	});
+
+	$scope.scrollToCurrentAlbum = function() {
+		if ($scope.currentAlbum) {
+			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+		}
+	};
 }]);
 
 angular.module('Music').controller('PlaylistController',

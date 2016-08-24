@@ -530,9 +530,12 @@ angular.module('Music').directive('albumart', ['$http', '$queueFactory', functio
 			element.css('background-image', '');
 			// add placeholder stuff
 			element.imageplaceholder(text);
-			// remove style of the placeholder to allow mobile styling
+			// remove inlined size-related style properties set by imageplaceholder() to allow
+			// dynamic changing between mobile and desktop styles when window size changes
 			element.css('line-height', '');
 			element.css('font-size', '');
+			element.css('width', '');
+			element.css('height', '');
 		}
 	}
 

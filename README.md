@@ -19,9 +19,9 @@ _Note: sometimes it might be unable to play all FLAC and MP3 files (especially i
 
 This app utilizes 2 backend players: Aurora.js and SoundManager2.
 
-Aurora.js uses Javascript and HTML5 Audio API to decode and play music, it doesn't use the browser's built-in codec. This app choose Aurora.js for FLAC and MP3 files.
+SoundManager2 utilizes the browser's built-in codec. Aurora.js uses Javascript and HTML5 Audio API to decode and play music, and it doesn't use the browser's built-in codec.
 
-SoundManager2 utilizes the browser's built-in codec, This app choose SoundManager2 for OGG files.
+This app choose SoundManager2 if the browser has a suitable codec available and Aurora.js otherwise. In practice, SoundManager is used for OGG files, Aurora.js for FLAC files, and playback backend for MP3 files varies by the browser.
 
 ## Usage hints
 

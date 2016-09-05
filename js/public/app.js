@@ -340,7 +340,7 @@ angular.module('Music').controller('PlayerController',
 	}
 
 	onPlayerEvent('buffer', function (percent) {
-		$scope.setBufferPercentage(parseInt(percent));
+		$scope.setBufferPercentage(percent);
 	});
 	onPlayerEvent('ready', function () {
 		$scope.setLoading(false);

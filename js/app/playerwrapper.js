@@ -87,13 +87,17 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 				whileloading: function() {
 					self.duration = this.durationEstimate;
 					self.trigger('duration', this.durationEstimate);
-					self.trigger('buffer', parseInt(this.bytesLoaded/this.bytesTotal)*100);
+					// The buffer may contain holes after seeking but just ignore those.
+					// Show the buffering status according the last buffered position.
+					var bufCount = this.buffered.length;
+					var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
+					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
 				},
 				onfinish: function() {
 					self.trigger('end');
 				},
 				onload: function(success) {
-					if ( success ) {
+					if (success) {
 						self.trigger('ready');
 					} else {
 						console.log('SM2: sound load error');

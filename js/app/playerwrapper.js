@@ -62,15 +62,16 @@ PlayerWrapper.prototype.seek = function(percentage) {
 
 PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 	var self = this;
-	console.log(typeAndURL['url']);
-	switch(typeAndURL['type']) {
-		case 'audio/ogg':
-			this.underlyingPlayer = 'sm2';
-			break;
-		default:
-			this.underlyingPlayer = 'aurora';
-			break;
+	var url = typeAndURL['url'];
+	var type = typeAndURL['type'];
+
+	if (soundManager.canPlayURL(url)) {
+		this.underlyingPlayer = 'sm2';
+	} else {
+		this.underlyingPlayer = 'aurora';
 	}
+	console.log('Using ' + this.underlyingPlayer + ' for type ' + type + ' URL ' + url);
+
 	switch(this.underlyingPlayer) {
 		case 'sm2':
 			this.sm2 = soundManager.setup({
@@ -79,7 +80,7 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 			this.sm2.html5Only = true;
 			this.sm2.createSound({
 				id: 'ownCloudSound',
-				url: typeAndURL['url'],
+				url: url,
 				whileplaying: function() {
 					self.trigger('progress', this.position);
 				},
@@ -101,7 +102,7 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 			});
 			break;
 		case 'aurora':
-			this.aurora = AV.Player.fromURL(typeAndURL['url']);
+			this.aurora = AV.Player.fromURL(url);
 			this.aurora.asset.source.chunkSize=524288;
 
 			this.aurora.on('buffer', function(percent) {

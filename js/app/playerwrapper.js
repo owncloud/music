@@ -48,15 +48,26 @@ PlayerWrapper.prototype.togglePlayback = function() {
 	}
 };
 
+PlayerWrapper.prototype.seekingSupported = function() {
+	// Seeking is not implemented in aurora/flac.js and does not work on all
+	// files with aurora/mp3.js. Hence, we disable seeking with aurora.
+	return this.underlyingPlayer == 'sm2';
+};
+
 PlayerWrapper.prototype.seek = function(percentage) {
-	console.log('seek to '+percentage);
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.setPosition('ownCloudSound', percentage * this.duration);
-			break;
-		case 'aurora':
-			this.aurora.seek(percentage * this.duration);
-			break;
+	if (this.seekingSupported()) {
+		console.log('seek to '+percentage);
+		switch(this.underlyingPlayer) {
+			case 'sm2':
+				this.sm2.setPosition('ownCloudSound', percentage * this.duration);
+				break;
+			case 'aurora':
+				this.aurora.seek(percentage * this.duration);
+				break;
+		}
+	}
+	else {
+		console.log('seeking is not supported for this file');
 	}
 };
 

@@ -52,7 +52,7 @@ PlayerWrapper.prototype.seek = function(percentage) {
 	console.log('seek to '+percentage);
 	switch(this.underlyingPlayer) {
 		case 'sm2':
-			this.sm2.setPosition(percentage * this.duration);
+			this.sm2.setPosition('ownCloudSound', percentage * this.duration);
 			break;
 		case 'aurora':
 			this.aurora.seek(percentage * this.duration);
@@ -94,7 +94,7 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 				},
 				onload: function(success) {
 					if ( success ) {
-					self.trigger('ready');
+						self.trigger('ready');
 					} else {
 						console.log('SM2: sound load error');
 					}

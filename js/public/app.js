@@ -55,15 +55,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.currentTrack = track;
-		} else {
-			$scope.$apply(function(){
-				$scope.currentTrack = track;
-			});
-		}
+		$scope.currentTrack = track;
 	});
 
 	$scope.anchorArtists = [];
@@ -336,32 +328,32 @@ angular.module('Music').controller('PlayerController',
 		total: 0
 	};
 
-	$scope.player.on('buffer', function (percent) {
-		$scope.setBufferPercentage(parseInt(percent));
-		$scope.$digest();
-	});
-	$scope.player.on('ready', function () {
-		$scope.setLoading(false);
-		$scope.$digest();
-	});
-	$scope.player.on('progress', function (currentTime) {
-		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
-		$scope.$digest();
-	});
-	$scope.player.on('end', function() {
-		$scope.setPlay(false);
-		$scope.$digest();
-		if($scope.$$phase) {
-			$scope.next();
-		} else {
-			$scope.$apply(function(){
-				$scope.next();
+	// Player events may fire synchronously or asynchronously. Utilize $timeout
+	// to always handle them asynchronously to run the handler within digest loop
+	// but with no nested digests loop (which causes an exception).
+	function onPlayerEvent(event, handler) {
+		$scope.player.on(event, function(arg) {
+			$timeout(function() {
+				handler(arg);
 			});
-		}
+		});
+	}
+
+	onPlayerEvent('buffer', function (percent) {
+		$scope.setBufferPercentage(parseInt(percent));
 	});
-	$scope.player.on('duration', function(msecs) {
+	onPlayerEvent('ready', function () {
+		$scope.setLoading(false);
+	});
+	onPlayerEvent('progress', function (currentTime) {
+		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+	});
+	onPlayerEvent('end', function() {
+		$scope.setPlay(false);
+		$scope.next();
+	});
+	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, $scope.player.duration/1000);
-		$scope.$digest();
 	});
 
 	// display a play icon in the title if a song is playing
@@ -483,8 +475,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		// disable seeking for all format because of some angular error
-		//$scope.player.seek(percentage);
+		$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){

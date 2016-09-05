@@ -24,15 +24,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
-		// determine if already inside of an $apply or $digest
-		// see http://stackoverflow.com/a/12859093
-		if($scope.$$phase) {
-			$scope.currentTrack = track;
-		} else {
-			$scope.$apply(function(){
-				$scope.currentTrack = track;
-			});
-		}
+		$scope.currentTrack = track;
 	});
 
 	$scope.anchorArtists = [];

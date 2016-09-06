@@ -35,14 +35,21 @@ spl_autoload_register(function ($className){
             require_once strtolower($relPath);
         }
     } else if(strpos($className, 'OC_') === 0) {
-        $path = str_replace('\\', '/', substr($className, 3)) . '.php';
-        $relPath = __DIR__ . '/../../../../lib/private/' . $path;
+        $path = str_replace('_', '/', substr($className, 3)) . '.php';
+        $relPath = __DIR__ . '/../../../../lib/private/legacy/' . $path;
+        $alterRelPath = __DIR__ . '/../../../../lib/private/' . $path;
 
         if(file_exists($relPath)){
             require_once $relPath;
         }
-        else if(file_exists(strtolower($relPath))){
+        else if(file_exists(strtolower($relPath))) {
             require_once strtolower($relPath);
+        }
+        else if(file_exists($alterRelPath)) {
+            require_once $alterRelPath;
+        }
+        else if(file_exists(strtolower($alterRelPath))) {
+            require_once strtolower($alterRelPath);
         }
     } else if(strpos($className, 'OC\\') === 0) {
         $path = str_replace('\\', '/', substr($className, 2)) . '.php';

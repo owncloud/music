@@ -324,7 +324,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.repeat = false;
 	$scope.shuffle = false;
 	$scope.position = {
-		buffer: 0,
+		bufferPercent: '0%',
+		currentPercent: '0%',
 		current: 0,
 		total: 0
 	};
@@ -429,10 +430,11 @@ angular.module('Music').controller('PlayerController',
 	$scope.setTime = function(position, duration) {
 		$scope.position.current = position;
 		$scope.position.total = duration;
+		$scope.position.currentPercent = Math.round(position/duration*100) + '%';
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.buffer = percent;
+		$scope.position.bufferPercent = Math.round(percent) + '%';
 	};
 
 	$scope.toggle = function(forcePlay) {

@@ -319,6 +319,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentTrack = null;
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
+	$scope.seekCursorType = 'default';
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
@@ -402,6 +403,7 @@ angular.module('Music').controller('PlayerController',
 
 			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.setLoading(true);
+			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
 			$scope.player.play();
 

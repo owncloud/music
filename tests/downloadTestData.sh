@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # this downloads test data from jamendo that is then moved to the data folder
-# and then caan be scanned by the ownCloud filescanner
+# and then can be scanned by the ownCloud filescanner
 
 urls="https://mp3d.jamendo.com/download/track/391005/mp32/
 https://mp3d.jamendo.com/download/track/391013/mp32/

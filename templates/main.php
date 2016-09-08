@@ -84,9 +84,10 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					<span ng-hide="loading" class="muted">{{ position.current | playTime }}/{{ position.total | playTime }}</span>
 					<span ng-show="loading" class="muted">Loading...</span>
 					<div class="progress">
-						<div class="seek-bar" ng-click="seek($event)">
-							<div class="buffer-bar" style="width: {{ position.buffer }}%"></div>
-							<div class="play-bar" ng-show="position.total" style="width: {{ position.current/position.total * 100 }}%"></div>
+						<div class="seek-bar" ng-click="seek($event)" ng-style="{'cursor': seekCursorType}">
+							<div class="buffer-bar" ng-style="{'width': position.bufferPercent, 'cursor': seekCursorType}"></div>
+							<div class="play-bar" ng-show="position.total" 
+								ng-style="{'width': position.currentPercent, 'cursor': seekCursorType}"></div>
 						</div>
 					</div>
 				</div>

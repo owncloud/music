@@ -30,41 +30,43 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentTrack = null;
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
+	$scope.seekCursorType = 'default';
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
 	$scope.position = {
-		buffer: 0,
+		bufferPercent: '0%',
+		currentPercent: '0%',
 		current: 0,
 		total: 0
 	};
 
-	$scope.player.on('buffer', function (percent) {
-		$scope.setBufferPercentage(parseInt(percent));
-		$scope.$digest();
-	});
-	$scope.player.on('ready', function () {
-		$scope.setLoading(false);
-		$scope.$digest();
-	});
-	$scope.player.on('progress', function (currentTime) {
-		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
-		$scope.$digest();
-	});
-	$scope.player.on('end', function() {
-		$scope.setPlay(false);
-		$scope.$digest();
-		if($scope.$$phase) {
-			$scope.next();
-		} else {
-			$scope.$apply(function(){
-				$scope.next();
+	// Player events may fire synchronously or asynchronously. Utilize $timeout
+	// to always handle them asynchronously to run the handler within digest loop
+	// but with no nested digests loop (which causes an exception).
+	function onPlayerEvent(event, handler) {
+		$scope.player.on(event, function(arg) {
+			$timeout(function() {
+				handler(arg);
 			});
-		}
+		});
+	}
+
+	onPlayerEvent('buffer', function (percent) {
+		$scope.setBufferPercentage(percent);
 	});
-	$scope.player.on('duration', function(msecs) {
+	onPlayerEvent('ready', function () {
+		$scope.setLoading(false);
+	});
+	onPlayerEvent('progress', function (currentTime) {
+		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+	});
+	onPlayerEvent('end', function() {
+		$scope.setPlay(false);
+		$scope.next();
+	});
+	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, $scope.player.duration/1000);
-		$scope.$digest();
 	});
 
 	// display a play icon in the title if a song is playing
@@ -113,6 +115,7 @@ angular.module('Music').controller('PlayerController',
 
 			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
 			$scope.setLoading(true);
+			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
 			$scope.player.play();
 
@@ -138,10 +141,11 @@ angular.module('Music').controller('PlayerController',
 	$scope.setTime = function(position, duration) {
 		$scope.position.current = position;
 		$scope.position.total = duration;
+		$scope.position.currentPercent = Math.round(position/duration*100) + '%';
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.buffer = percent;
+		$scope.position.bufferPercent = Math.round(percent) + '%';
 	};
 
 	$scope.toggle = function(forcePlay) {
@@ -186,8 +190,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX,
 			percentage = offsetX / $event.currentTarget.clientWidth;
-		// disable seeking for all format because of some angular error
-		//$scope.player.seek(percentage);
+		$scope.player.seek(percentage);
 	};
 
 	playlistService.subscribe('play', function(){

@@ -48,15 +48,26 @@ PlayerWrapper.prototype.togglePlayback = function() {
 	}
 };
 
+PlayerWrapper.prototype.seekingSupported = function() {
+	// Seeking is not implemented in aurora/flac.js and does not work on all
+	// files with aurora/mp3.js. Hence, we disable seeking with aurora.
+	return this.underlyingPlayer == 'sm2';
+};
+
 PlayerWrapper.prototype.seek = function(percentage) {
-	console.log('seek to '+percentage);
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.setPosition(percentage * this.duration);
-			break;
-		case 'aurora':
-			this.aurora.seek(percentage * this.duration);
-			break;
+	if (this.seekingSupported()) {
+		console.log('seek to '+percentage);
+		switch(this.underlyingPlayer) {
+			case 'sm2':
+				this.sm2.setPosition('ownCloudSound', percentage * this.duration);
+				break;
+			case 'aurora':
+				this.aurora.seek(percentage * this.duration);
+				break;
+		}
+	}
+	else {
+		console.log('seeking is not supported for this file');
 	}
 };
 
@@ -87,14 +98,18 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 				whileloading: function() {
 					self.duration = this.durationEstimate;
 					self.trigger('duration', this.durationEstimate);
-					self.trigger('buffer', parseInt(this.bytesLoaded/this.bytesTotal)*100);
+					// The buffer may contain holes after seeking but just ignore those.
+					// Show the buffering status according the last buffered position.
+					var bufCount = this.buffered.length;
+					var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
+					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
 				},
 				onfinish: function() {
 					self.trigger('end');
 				},
 				onload: function(success) {
-					if ( success ) {
-					self.trigger('ready');
+					if (success) {
+						self.trigger('ready');
 					} else {
 						console.log('SM2: sound load error');
 					}

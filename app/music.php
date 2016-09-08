@@ -35,6 +35,8 @@ use \OCA\Music\DB\ArtistMapper;
 use \OCA\Music\DB\PlaylistMapper;
 use \OCA\Music\DB\TrackMapper;
 
+use \OCA\Music\Hooks\FileHooks;
+
 use \OCA\Music\Middleware\AmpacheMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
@@ -305,5 +307,13 @@ class Music extends App {
 
 		$container->registerMiddleWare('AmpacheMiddleware');
 
+		/**
+		 * Hooks
+		 */
+		$container->registerService('FileHooks', function($c) {
+			return new FileHooks(
+				$c->query('ServerContainer')->getRootFolder()
+			);
+		});
 	}
 }

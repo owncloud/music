@@ -86,21 +86,6 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	public function updateByPath($filePath, $userId = null) {
-		// TODO properly initialize the user folder for external events (upload to public share)
-		if ($this->userFolder === null) {
-			return;
-		}
-
-		try {
-			$file = $this->userFolder->get($filePath);
-			$this->update($file, $userId);
-		} catch (\OCP\Files\NotFoundException $e) {
-			// just ignore the error
-			$this->logger->log('updateByPath - file not found - '. $filePath , 'debug');
-		}
-	}
-
 	/**
 	 * Get called by 'post_write' hook (file creation, file update)
 	 * @param \OCP\Files\Node $file the file
@@ -318,20 +303,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * Get called by 'delete' hook (file deletion)
-	 * @param string $path the path of the file
-	 */
-	public function deleteByPath($path){
-		try {
-			$fileId = $this->userFolder->get($path)->getId();
-			$this->delete($fileId);
-		} catch (\OCP\Files\NotFoundException $e) {
-			// just ignore the error
-			$this->logger->log('delete - file not found - '. $path , 'debug');
-		}
-	}
-	/**
-	 * Get called by 'unshare' hook and 'deleteByPath'
+	 * Get called by 'unshare' hook and 'delete' hook
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the user id of the user to delete the track from
 	 */

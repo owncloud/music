@@ -3,7 +3,7 @@ var PlayerWrapper = function() {
 	this.aurora = {};
 	this.sm2 = {};
 	this.duration = 0;
-	var self = this;
+	this.volume = 100;
 
 	return this;
 };
@@ -72,13 +72,15 @@ PlayerWrapper.prototype.seek = function(percentage) {
 };
 
 PlayerWrapper.prototype.setVolume = function(percentage) {
+	this.volume = percentage;
+
 	switch(this.underlyingPlayer) {
-	case 'sm2':
-		this.sm2.setVolume('ownCloudSound', percentage);
-		break;
-	case 'aurora':
-		this.aurora.volume = percentage;
-		break;
+		case 'sm2':
+			this.sm2.setVolume('ownCloudSound', this.volume);
+			break;
+		case 'aurora':
+			this.aurora.volume = this.volume;
+			break;
 	}
 };
 
@@ -149,4 +151,7 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 			});
 			break;
 	}
+
+	// Set the current volume to the newly created player instance
+	this.setVolume(this.volume);
 };

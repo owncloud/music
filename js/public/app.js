@@ -428,9 +428,8 @@ angular.module('Music').controller('PlayerController',
 		$scope.loading = loading;
 	};
 
-	$scope.$watch('volume', function (newValue, oldValue) {
-		var volume = parseInt(newValue);
-		$scope.player.volume = volume;
+	$scope.$watch('volume', function(newValue, oldValue) {
+		$scope.player.setVolume(newValue);
 	});
 
 	$scope.setTime = function(position, duration) {

@@ -71,6 +71,17 @@ PlayerWrapper.prototype.seek = function(percentage) {
 	}
 };
 
+PlayerWrapper.prototype.setVolume = function(percentage) {
+	switch(this.underlyingPlayer) {
+	case 'sm2':
+		this.sm2.setVolume('ownCloudSound', percentage);
+		break;
+	case 'aurora':
+		this.aurora.volume = percentage;
+		break;
+	}
+};
+
 PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 	var self = this;
 	var url = typeAndURL['url'];

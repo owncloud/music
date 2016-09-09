@@ -97,8 +97,10 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
 				<div class="volume-control">
-					<img id="volume-icon" alt="Volume"
+					<img id="volume-icon" class="control small svg" alt="Volume" ng-if="volume > 0"
 						src="<?php p(OCP\image_path('music', 'sound.svg')) ?>" />
+					<img id="volume-icon" class="control small svg" alt="Volume" ng-if="volume == 0"
+						src="<?php p(OCP\image_path('music', 'sound-off.svg')) ?>" />
 					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 				</div>
 			</div>

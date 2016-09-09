@@ -144,16 +144,24 @@
 
 #controls .volume-control {
 	position: absolute;
-	left: 1000px;
-	top: 22px;
+	right: 110px;
+}
+
+#controls #volume-icon {
+	cursor: default;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 40);
+	opacity: .4;
 }
 
 #controls .volume-control input[type=range] {
-	width: 80px;
+	width: 50px;
+	height:3px;
+	margin-top: 30px;
+	margin-left: -3px;
 	-webkit-appearance: none;
 	background-color: silver;
-	width: 100px;
-	height:3px;
+	transform: rotate(270deg);
 }
 
 ::-webkit-slider-thumb {

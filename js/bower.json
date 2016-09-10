@@ -9,6 +9,7 @@
     "restangular" : "",
     "soundmanager": "",
     "underscore" : "",
-    "ngQueue" : ""
+    "ngQueue" : "",
+    "js-cookie" :""
   }
 }

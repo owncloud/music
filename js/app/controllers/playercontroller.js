@@ -31,7 +31,7 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = 100;  // volume can be 0~100
+	$scope.volume = Cookies.get('oc_music_volume') || 75;  // volume can be 0~100
 
 	$scope.repeat = false;
 	$scope.shuffle = false;
@@ -141,6 +141,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.$watch('volume', function(newValue, oldValue) {
 		$scope.player.setVolume(newValue);
+		Cookies.set('oc_music_volume', newValue, { expires: 3650 });
 	});
 
 	$scope.setTime = function(position, duration) {

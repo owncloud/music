@@ -24,18 +24,18 @@ gruntfile_dir=$(CURDIR)/Gruntfile.js
 
 # building the javascript
 build: deps
-	$(grunt_dir) --config $(gruntfile_dir) build
+	$(grunt_dir) --config=$(gruntfile_dir) build
 
 watch: build
-	$(grunt_dir) --config $(gruntfile_dir) watch:concat
+	$(grunt_dir) --config=$(gruntfile_dir) watch:concat
 
 # general
 deps:
 	npm install --deps
 
 l10n-extract: deps
-	$(grunt_dir) --config $(gruntfile_dir) nggettext_extract
+	$(grunt_dir) --config=$(gruntfile_dir) nggettext_extract
 
 l10n-compile: deps
-	$(grunt_dir) --config $(gruntfile_dir) nggettext_compile
+	$(grunt_dir) --config=$(gruntfile_dir) nggettext_compile
 	cd ../l10n; ./l10n.pl music write

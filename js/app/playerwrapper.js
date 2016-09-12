@@ -86,8 +86,8 @@ PlayerWrapper.prototype.setVolume = function(percentage) {
 
 PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 	var self = this;
-	var url = typeAndURL['url'];
-	var type = typeAndURL['type'];
+	var url = typeAndURL.url;
+	var type = typeAndURL.type;
 
 	if (soundManager.canPlayURL(url)) {
 		this.underlyingPlayer = 'sm2';

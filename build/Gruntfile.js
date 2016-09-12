@@ -59,10 +59,9 @@ module.exports = function(grunt) {
 				'../js/config/*.js',
 				'../js/l10n/*.js',
 				'../tests/js/unit/**/*.js',
-				'../js/public/**/*.js'
-			],
-			exclude: [
-				'../js/public/app.js'
+				'../js/public/**/*.js',
+				// exclusions
+				'!../js/public/app.js'
 			],
 			options: {
 				// options here to override JSHint defaults

@@ -101,12 +101,15 @@
 	display: none;
 }
 
-/* hide repeat, save space */
 #controls #repeat {
 	right: 0;
 }
 #controls #shuffle {
 	right: 40px;
+}
+
+#controls .volume-control {
+	display: none;
 }
 
 }

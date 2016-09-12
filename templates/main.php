@@ -25,6 +25,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'vendor/aurora/aurora');
 \OCP\Util::addScript('music', 'vendor/aurora/flac');
 \OCP\Util::addScript('music', 'vendor/aurora/mp3');
+\OCP\Util::addScript('music', 'vendor/js-cookie/src/js.cookie');
 \OCP\Util::addScript('music', 'public/app');
 \OCP\Util::addScript('music', 'app/playerwrapper');
 
@@ -96,6 +97,13 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
+				<div class="volume-control">
+					<img id="volume-icon" class="control small svg" alt="{{'Volume' | translate }}" ng-show="volume > 0"
+						src="<?php p(OCP\image_path('music', 'sound.svg')) ?>" />
+					<img id="volume-icon" class="control small svg" alt="{{'Volume' | translate }}" ng-show="volume == 0"
+						src="<?php p(OCP\image_path('music', 'sound-off.svg')) ?>" />
+					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
+				</div>
 			</div>
 
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">

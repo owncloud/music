@@ -37,7 +37,19 @@
 #controls .progress-info {
 	width: 25%;
 	left: initial;
-	right: 125px;
+	right: 150px;
+}
+
+#controls #shuffle {
+	right: 57px;
+}
+
+#controls .volume-control {
+	right: 170px;
+}
+
+#controls #volume-icon {
+	display: none;
 }
 
 }

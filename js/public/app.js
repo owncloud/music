@@ -40,8 +40,8 @@ angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngQueue'])
 	]);
 
 angular.module('Music').controller('MainController',
-	['$rootScope', '$scope', '$route', '$timeout', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
-	function ($rootScope, $scope, $route, $timeout, ArtistFactory, playlistService, gettextCatalog, Restangular) {
+	['$rootScope', '$scope', '$route', '$timeout', '$window', 'ArtistFactory', 'playlistService', 'gettextCatalog', 'Restangular',
+	function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory, playlistService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -140,6 +140,20 @@ angular.module('Music').controller('MainController',
 			}
 		});
 	};
+
+	// adjust controls bar width to not overlap with the scroll bar
+	function adjustControlsBarWidth() {
+		try {
+			var controlsWidth = $window.innerWidth - getScrollBarWidth();
+			$('#controls').css('width', controlsWidth);
+			$('#controls').css('min-width', controlsWidth);
+		}
+		catch (exception) {
+			console.log("No getScrollBarWidth() in core");
+		}
+	}
+	$($window).resize(adjustControlsBarWidth);
+	adjustControlsBarWidth();
 
 	// initial lookup if new files are available
 	$scope.processNextScanStep(1);

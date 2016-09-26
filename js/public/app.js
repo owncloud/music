@@ -527,12 +527,7 @@ angular.module('Music').controller('PlaylistController',
 	$scope.playlists = playlists;
 
 }]);
-angular.module('Music').directive('albumart', ['$http', '$queueFactory', function($http, $queueFactory) {
-	// Calling $http.get immediately for all album cover images would be bad idea because it would
-	// block the playback until all the covers are loaded. Hence, we use queue which allows 5 simultaneous
-	// HTTP GET queries. This is faster than running them only one at a time, but still enables starting
-	// the playback with rather short delay.
-	var httpQueue = $queueFactory(5);
+angular.module('Music').directive('albumart', [function() {
 
 	function setCoverImage(element, imageUrl) {
 		// remove placeholder stuff
@@ -561,29 +556,17 @@ angular.module('Music').directive('albumart', ['$http', '$queueFactory', functio
 	}
 
 	return function(scope, element, attrs, ctrl) {
-		var coverLoadFailed = false;
 
 		var onCoverChanged = function() {
 			if(attrs.cover) {
-				httpQueue.enqueue(function() {
-					return $http.get(attrs.cover).then(
-						function(response) {
-							setCoverImage(element, attrs.cover);
-							coverLoadFailed = false;
-						},
-						function(reject) {
-							setPlaceholder(element, attrs.albumart);
-							coverLoadFailed = true;
-						}
-					);
-				});
+				setCoverImage(element, attrs.cover);
 			} else {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};
 
 		var onAlbumartChanged = function() {
-			if(!attrs.cover || coverLoadFailed) {
+			if(!attrs.cover) {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};

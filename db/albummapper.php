@@ -190,9 +190,9 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * @param integer $coverFileId
-	 * @param integer $parentFolderId
+	 * @param integer $folderId
 	 */
-	public function updateCover($coverFileId, $parentFolderId){
+	public function updateFolderCover($coverFileId, $folderId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = ?
 				WHERE `cover_file_id` IS NULL AND `id` IN (
@@ -201,7 +201,19 @@ class AlbumMapper extends BaseMapper {
 					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
 					WHERE `files`.`parent` = ?
 				)';
-		$params = array($coverFileId, $parentFolderId);
+		$params = array($coverFileId, $folderId);
+		$this->execute($sql, $params);
+	}
+
+	/**
+	 * @param integer $coverFileId
+	 * @param integer $albumId
+	 */
+	public function setCover($coverFileId, $albumId){
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ?
+				WHERE `id` = ?';
+		$params = array($coverFileId, $albumId);
 		$this->execute($sql, $params);
 	}
 

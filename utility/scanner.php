@@ -107,7 +107,7 @@ class Scanner extends PublicEmitter {
 		if(substr($mimetype, 0, 5) === 'image') {
 			$coverFileId = $file->getId();
 			$parentFolderId = $file->getParent()->getId();
-			$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
+			$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 			return;
 		}
 
@@ -254,6 +254,11 @@ class Scanner extends PublicEmitter {
 			// add track and get track entity
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
+
+			// if present, use the embedded album art as cover for the respective album
+			if($this->getId3Tag($fileInfo, 'picture') != null) {
+				$this->albumBusinessLayer->setCover($fileId, $albumId);
+			}
 
 			// debug logging
 			$this->logger->log('imported entities - ' .

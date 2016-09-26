@@ -21,5 +21,5 @@
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
-	return AV.Player;
+	return new PlayerWrapper();
 }]);

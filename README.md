@@ -142,6 +142,13 @@ The current music app can't be installed and ownCloud prints following error mes
 Sometimes translatable strings aren't detected. Try to move the `translate` attribute
 more to the beginning of the HTML element.
 
+### Build frontend bundle
+
+All the frontend javascript sources of the Music app, excluding the vendor libraries, are bundled into a single file for deployment. The bundle file is js/public/app.js. Generating it requires make and npm utilities, and happens by running:
+
+	cd build
+	make
+
 ### Build appstore package
 
 	git archive HEAD --format=zip --prefix=music/ > build/music.zip

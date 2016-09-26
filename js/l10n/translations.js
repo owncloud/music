@@ -1,5 +1,5 @@
-angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
 /* jshint -W100 */
+angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
 	gettextCatalog.setStrings('ach', {});
 	gettextCatalog.setStrings('ady', {});
 	gettextCatalog.setStrings('af', {});

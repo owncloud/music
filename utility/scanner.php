@@ -166,7 +166,7 @@ class Scanner extends PublicEmitter {
 				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
 					$alternativeTrackNumber = $matches[1];
-					if(preg_match('/(.*)(\.(mp3|ogg))$/', $matches[2], $titleMatches) === 1) {
+					if(preg_match('/(.*)(\.(mp3|ogg|flac))$/', $matches[2], $titleMatches) === 1) {
 						$title = $titleMatches[1];
 					} else {
 						$title = $matches[2];

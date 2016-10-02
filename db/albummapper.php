@@ -201,8 +201,6 @@ class AlbumMapper extends Mapper {
 		for($i = 0; $i < count($albumIds); $i++){
 			$questionMarks[] = '?';
 		}
-		$sql = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN ('. implode(',', $questionMarks) . ')';
-		$this->execute($sql, $albumIds);
 		$sql = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
 		$this->execute($sql, $albumIds);
 	}

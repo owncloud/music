@@ -414,8 +414,6 @@ class Scanner extends PublicEmitter {
 		foreach ($sqls as $sql) {
 			$this->db->executeUpdate($sql, array($userId));
 		}
-
-		$this->db->executeUpdate('DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` NOT IN (SELECT `id` FROM `*PREFIX*music_albums` GROUP BY `id`);');
 	}
 
 	private static function isNullOrEmpty($string) {

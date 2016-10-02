@@ -133,27 +133,16 @@ class Scanner extends PublicEmitter {
 
 			$fileInfo = $this->extractor->extract('oc://' . $file->getPath());
 
-			$hasComments = array_key_exists('comments', $fileInfo);
-
-			if(!$hasComments) {
+			if(!array_key_exists('comments', $fileInfo)) {
 				// TODO: fix this dirty fallback
 				// fallback to local file path removed
 				$this->logger->log('fallback metadata extraction - removed code', 'debug');
 				// $fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
-				// $hasComments = array_key_exists('comments', $fileInfo);
 			}
 
-			// artist
-			$artist = null;
-			if($hasComments && array_key_exists('artist', $fileInfo['comments'])){
-				$artist = $fileInfo['comments']['artist'][0];
-			}
-
-			// albumArtist
-			$albumArtist = null;
-			if($hasComments && array_key_exists('band', $fileInfo['comments'])){
-				$albumArtist = $fileInfo['comments']['band'][0];
-			}
+			// Track artist and album artist
+			$artist = $this->getId3Tag($fileInfo, 'artist');
+			$albumArtist = $this->getId3Tag($fileInfo, 'band');
 
 			// use artist and albumArtist as fallbacks for each other
 			if($this->isNullOrEmpty($albumArtist)){
@@ -171,16 +160,13 @@ class Scanner extends PublicEmitter {
 
 			$alternativeTrackNumber = null;
 			// title
-			$title = null;
-			if($hasComments && array_key_exists('title', $fileInfo['comments'])){
-				$title = $fileInfo['comments']['title'][0];
-			}
+			$title = $this->getId3Tag($fileInfo, 'title');
 			if($this->isNullOrEmpty($title)){
 				// fallback to file name
 				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
 					$alternativeTrackNumber = $matches[1];
-					if(preg_match('/(.*)(\.(mp3|ogg))$/', $matches[2], $titleMatches) === 1) {
+					if(preg_match('/(.*)(\.(mp3|ogg|flac))$/', $matches[2], $titleMatches) === 1) {
 						$title = $titleMatches[1];
 					} else {
 						$title = $matches[2];
@@ -189,10 +175,7 @@ class Scanner extends PublicEmitter {
 			}
 
 			// album
-			$album = null;
-			if($hasComments && array_key_exists('album', $fileInfo['comments'])){
-				$album = $fileInfo['comments']['album'][0];
-			}
+			$album = $this->getId3Tag($fileInfo, 'album');
 			if($this->isNullOrEmpty($album)){
 				// album name not set in fileinfo, use parent folder name as album name
 				if ( $this->userFolder->getId() === $file->getParent()->getId() ) {
@@ -204,59 +187,37 @@ class Scanner extends PublicEmitter {
 			}
 
 			// track number
-			$trackNumber = null;
-			if($hasComments && array_key_exists('track_number', $fileInfo['comments'])){
-				$trackNumber = $fileInfo['comments']['track_number'][0];
-			} else if($hasComments && array_key_exists('tracknumber', $fileInfo['comments'])){
-				$trackNumber = $fileInfo['comments']['tracknumber'][0];
-			} else if($hasComments && array_key_exists('track', $fileInfo['comments'])){
-				$trackNumber = $fileInfo['comments']['track'][0];
+			$trackNumber = $this->getId3Tag($fileInfo, 'track_number');
+			if($this->isNullOrEmpty($trackNumber)) {
+				$trackNumber = $this->getId3Tag($fileInfo, 'tracknumber');
 			}
-			if($trackNumber === null && $alternativeTrackNumber !== null) {
+			if($this->isNullOrEmpty($trackNumber)) {
+				$trackNumber = $this->getId3Tag($fileInfo, 'track');
+			}
+			if($this->isNullOrEmpty($trackNumber)) {
 				$trackNumber = $alternativeTrackNumber;
 			}
-			// convert track number '1/10' to '1'
-			$tmp = explode('/', $trackNumber);
-			$trackNumber = $tmp[0];
-
-			// check for numeric values - cast them to int and verify it's a natural number above 0
-			if(is_numeric($trackNumber) && ((int)$trackNumber) > 0) {
-				$trackNumber = (int)$trackNumber;
-			} else {
-				$trackNumber = null;
-			}
+			$trackNumber = $this->normalizeOrdinal($trackNumber);
 
 			// disc number
-			$discNumber = "1";
-			if($hasComments && array_key_exists('discnumber', $fileInfo['comments'])){
-				$discNumber = $fileInfo['comments']['discnumber'][0];
-			} else if($hasComments && array_key_exists('part_of_a_set', $fileInfo['comments'])){
-				$discNumber = $fileInfo['comments']['part_of_a_set'][0];
+			$discNumber = $this->getId3Tag($fileInfo, 'discnumber');
+			if($this->isNullOrEmpty($discNumber)) {
+				$discNumber = $this->getId3Tag($fileInfo, 'part_of_a_set');
 			}
-			// convert disc number '1/10' to '1'
-			$tmp = explode('/', $discNumber);
-			$discNumber = $tmp[0];
+			if($this->isNullOrEmpty($discNumber)) {
+				$discNumber = "1";
+			}
+			$discNumber = $this->normalizeOrdinal($discNumber);
 
-			// check for numeric values - cast them to int and verify it's a natural number above 0
-			if(is_numeric($discNumber) && ((int)$discNumber) > 0) {
-				$discNumber = (int)$discNumber;
-			} else {
-				$discNumber = null;
+			// year
+			$year = $this->getId3Tag($fileInfo, 'year');
+			if($this->isNullOrEmpty($year)) {
+				$year = $this->getId3Tag($fileInfo, 'date');
+			}
+			if(!ctype_digit($year)) {
+				$year = null;
 			}
 
-			$year = null;
-			if($hasComments && array_key_exists('year', $fileInfo['comments'])){
-				$year = $fileInfo['comments']['year'][0];
-				if(!ctype_digit($year)) {
-					$year = null;
-				}
-
-			} else if($hasComments && array_key_exists('date', $fileInfo['comments'])){
-				$year = $fileInfo['comments']['date'][0];
-				if(!ctype_digit($year)) {
-					$year = null;
-				}
-			}
 			$fileId = $file->getId();
 
 			$length = null;
@@ -459,5 +420,30 @@ class Scanner extends PublicEmitter {
 
 	private static function isNullOrEmpty($string) {
 		return $string === null || $string === '';
+	}
+
+	private static function getId3Tag($fileInfo, $tag) {
+		if(array_key_exists('comments', $fileInfo)) {
+			$comments = $fileInfo['comments'];
+			if(array_key_exists($tag, $comments)) {
+				return $comments[$tag][0];
+			}
+		}
+		return null;
+	}
+
+	private static function normalizeOrdinal($ordinal) {
+		// convert format '1/10' to '1'
+		$tmp = explode('/', $ordinal);
+		$ordinal = $tmp[0];
+
+		// check for numeric values - cast them to int and verify it's a natural number above 0
+		if(is_numeric($ordinal) && ((int)$ordinal) > 0) {
+			$ordinal = (int)$ordinal;
+		} else {
+			$ordinal = null;
+		}
+
+		return $ordinal;
 	}
 }

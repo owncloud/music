@@ -12,10 +12,9 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
 use OCP\IDb;
 
-class ArtistMapper extends Mapper {
+class ArtistMapper extends BaseMapper {
 
 	public function __construct(IDb $db){
 		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist');
@@ -112,32 +111,6 @@ class ArtistMapper extends Mapper {
 	public function findAllByName($artistName, $userId, $fuzzy = false){
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
-	}
-
-	/**
-	 * @param integer[] $artistIds
-	 */
-	public function deleteById($artistIds){
-		if(count($artistIds) === 0)
-			return;
-		$questionMarks = array();
-		for($i = 0; $i < count($artistIds); $i++){
-			$questionMarks[] = '?';
-		}
-		$sql = 'DELETE FROM `*PREFIX*music_artists` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
-		$this->execute($sql, $artistIds);
-	}
-
-	/**
-	 * @param string $userId
-	 */
-	public function count($userId){
-		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_artists` '.
-			'WHERE `user_id` = ?';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetch();
-		return $row['count'];
 	}
 
 }

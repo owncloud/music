@@ -68,7 +68,7 @@ class AlbumMapper extends BaseMapper {
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
 		$questionMarks = array();
-		for($i = 0; $i < count($albumIds); $i++){
+		for($i = 0, $count = count($albumIds); $i < $count; $i++){
 			$questionMarks[] = '?';
 		}
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
@@ -140,7 +140,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string|null $albumName name of the album
 	 * @param string|integer|null $albumYear year of the album release
 	 * @param string|integer|null $discNumber disk number of this album's disk
-	 * @param integer|null $artistId ID of the album artist
+	 * @param integer|null $albumArtistId ID of the album artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */

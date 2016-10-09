@@ -46,7 +46,7 @@ class ArtistMapper extends BaseMapper {
 	 */
 	public function findMultipleById($artistIds, $userId){
 		$questionMarks = array();
-		for($i = 0; $i < count($artistIds); $i++){
+		for($i = 0, $count = count($artistIds); $i < $count; $i++){
 			$questionMarks[] = '?';
 		}
 		$sql = $this->makeSelectQuery('AND `artist`.`id` IN (' .

@@ -28,11 +28,12 @@ class BaseMapper extends Mapper {
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
 	public function deleteById($ids){
-		if(count($ids) === 0) {
+		$count = count($ids);
+		if($count === 0) {
 			return;
 		}
 		$questionMarks = array();
-		for($i = 0; $i < count($ids); $i++){
+		for($i = 0; $i < $count; $i++){
 			$questionMarks[] = '?';
 		}
 		$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` IN ('. implode(',', $questionMarks) . ')';

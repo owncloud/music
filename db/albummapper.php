@@ -229,7 +229,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @return array
+	 * @return array of [albumId, parentFolderId] pairs
 	 */
 	public function getAlbumsWithoutCover(){
 		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
@@ -279,11 +279,8 @@ class AlbumMapper extends BaseMapper {
 				return $indexA > $indexB;
 			});
 			$imageId = $images[0]['fileid'];
+			$this->setCover($imageId, $albumId);
 		}
-		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = ? WHERE `id` = ?';
-		$params = array($imageId, $albumId);
-		$this->execute($sql, $params);
 	}
 
 	/**

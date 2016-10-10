@@ -269,6 +269,15 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
+	 * @param \OCP\Files\Node $musicFile
+	 * @return Array with image MIME and content or null
+	 */
+	public function parseEmbeddedCoverArt($musicFile){
+		$fileInfo = $this->extractor->extract('oc://' . $musicFile->getPath());
+		return $this->getId3Tag($fileInfo, 'picture');
+	}
+
+	/**
 	 * Get called by 'unshare' hook and 'delete' hook
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the user id of the user to delete the track from

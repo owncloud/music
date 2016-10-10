@@ -366,16 +366,12 @@ class ApiController extends Controller {
 			$mime = $node->getMimeType();
 
 			if (0 === strpos($mime, 'audio')) { // embedded cover image
-				$extractor = new \getID3();
-				$metadata = $extractor->analyze('oc://' . $node->getPath());
-				\getid3_lib::CopyTagsToComments($metadata);
+				$cover = $this->scanner->parseEmbeddedCoverArt($node);
 
-				if( array_key_exists("comments", $metadata) &&
-					array_key_exists("picture", $metadata["comments"]) &&
-					!is_null($metadata["comments"]["picture"][0]["data"]) ) {
+				if($cover != null) {
 					return new FileResponse(array(
-							'mimetype' => $metadata["comments"]["picture"][0]["image_mime"],
-							'content' => $metadata["comments"]["picture"][0]["data"]
+							'mimetype' => $cover["image_mime"],
+							'content' => $cover["data"]
 					));
 				}
 			}

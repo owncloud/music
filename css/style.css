@@ -200,8 +200,21 @@
 #scanning, #toScan {
 	position: absolute;
 	top: 0;
-	background-color: #fff;
-	padding: 12px;
+	background-color: rgba(255,255,255,0.95);
+	padding: 20px 50px;
+	z-index: 1;
+	width: auto;
+	margin-left: 50%;
+	transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+}
+
+#toScan:hover * {
+	color: #000;
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity = 100);
+	opacity: 1;
 }
 
 #updateData {
@@ -222,7 +235,7 @@
 
 #updateData:hover, #updateData:focus {
 	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);
 	opacity: 1;
 }

@@ -12,10 +12,9 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
 use OCP\IDb;
 
-class TrackMapper extends Mapper {
+class TrackMapper extends BaseMapper {
 
 	public function __construct(IDb $db){
 		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
@@ -136,19 +135,6 @@ class TrackMapper extends Mapper {
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
 		$params = array($userId, $albumId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetch();
-		return $row['count'];
-	}
-
-	/**
-	 * @param string $userId
-	 * @return integer
-	 */
-	public function count($userId){
-		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` '.
-			'WHERE `user_id` = ?';
-		$params = array($userId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return $row['count'];

@@ -13,10 +13,9 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\DoesNotExistException;
-use OCP\AppFramework\Db\Mapper;
 use OCP\IDb;
 
-class AlbumMapper extends Mapper {
+class AlbumMapper extends BaseMapper {
 
 	public function __construct(IDb $db){
 		parent::__construct($db, 'music_albums', '\OCA\Music\Db\Album');
@@ -69,7 +68,7 @@ class AlbumMapper extends Mapper {
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
 		$questionMarks = array();
-		for($i = 0; $i < count($albumIds); $i++){
+		for($i = 0, $count = count($albumIds); $i < $count; $i++){
 			$questionMarks[] = '?';
 		}
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
@@ -141,7 +140,7 @@ class AlbumMapper extends Mapper {
 	 * @param string|null $albumName name of the album
 	 * @param string|integer|null $albumYear year of the album release
 	 * @param string|integer|null $discNumber disk number of this album's disk
-	 * @param integer|null $artistId ID of the album artist
+	 * @param integer|null $albumArtistId ID of the album artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
@@ -187,24 +186,6 @@ class AlbumMapper extends Mapper {
 		}
 
 		return $this->findEntity($sql, $params);
-	}
-
-	/**
-	 * @param integer[] $albumIds
-	 */
-	public function deleteById($albumIds){
-		if(count($albumIds) === 0) {
-			return;
-		}
-
-		$questionMarks = array();
-		for($i = 0; $i < count($albumIds); $i++){
-			$questionMarks[] = '?';
-		}
-		$sql = 'DELETE FROM `*PREFIX*music_album_artists` WHERE `album_id` IN ('. implode(',', $questionMarks) . ')';
-		$this->execute($sql, $albumIds);
-		$sql = 'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
-		$this->execute($sql, $albumIds);
 	}
 
 	/**
@@ -291,19 +272,6 @@ class AlbumMapper extends Mapper {
 				SET `cover_file_id` = ? WHERE `id` = ?';
 		$params = array($imageId, $albumId);
 		$this->execute($sql, $params);
-	}
-
-	/**
-	 * @param string $userId
-	 * @return integer
-	 */
-	public function count($userId){
-		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_albums` '.
-			'WHERE `user_id` = ?';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
-		$row = $result->fetch();
-		return $row['count'];
 	}
 
 	/**

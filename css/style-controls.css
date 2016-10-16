@@ -129,11 +129,11 @@
 #shuffle, #repeat {
 	position: absolute;
 	top: 0;
-	right: 8px;
+	right: 0;
 }
 
 #shuffle {
-	right: 65px;
+	right: 55px;
 }
 
 #controls .active {
@@ -144,7 +144,7 @@
 
 #controls .volume-control {
 	position: absolute;
-	right: 185px;
+	right: 172px;
 }
 
 .ie.lte9 #controls .volume-control {

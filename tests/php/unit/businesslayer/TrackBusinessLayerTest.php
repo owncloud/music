@@ -165,7 +165,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('countByAlbum');
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
-		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array()), $result);
+		$this->assertEquals(false, $result);
 	}
 
 	public function testDeleteTrackDeleteArtist(){
@@ -198,7 +198,10 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue('1'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
-		$this->assertEquals(array('albumIds'=>array(), 'artistIds' => array(2)), $result);
+		$this->assertEquals([],  $result['obsoleteAlbums']);
+		$this->assertEquals([2], $result['obsoleteArtists']);
+		$this->assertEquals([3], $result['remainingAlbums']);
+		$this->assertEquals([],  $result['remainingArtists']);
 	}
 
 	public function testDeleteTrackDeleteAlbum(){
@@ -231,7 +234,10 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue('0'));
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $this->userId);
-		$this->assertEquals(array('albumIds'=>array(3), 'artistIds' => array()), $result);
+		$this->assertEquals([3], $result['obsoleteAlbums']);
+		$this->assertEquals([],  $result['obsoleteArtists']);
+		$this->assertEquals([],  $result['remainingAlbums']);
+		$this->assertEquals([2], $result['remainingArtists']);
 	}
 }
 

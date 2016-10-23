@@ -493,7 +493,7 @@ class Scanner extends PublicEmitter {
 			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 			foreach ($tracks as $track) {
 				$nodes = $this->userFolder->getById($track->getFileId());
-				if(count($nodes) > 0 ) {
+				if(count($nodes) > 0) {
 					// parse the first valid node and check if it contains embedded cover art
 					$image = $this->parseEmbeddedCoverArt($nodes[0]);
 					if ($image != null) {

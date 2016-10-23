@@ -258,7 +258,6 @@ class AlbumMapper extends BaseMapper {
 		$params = array($parentFolderId);
 		$result = $this->execute($imagesSql, $params);
 		$images = $result->fetchAll();
-		$imageId = null;
 		if (count($images)) {
 			usort($images, function ($imageA, $imageB) use ($coverNames) {
 				$nameA = strtolower($imageA['name']);

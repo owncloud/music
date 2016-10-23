@@ -251,13 +251,19 @@ class Scanner extends PublicEmitter {
 			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $discNumber, $albumArtistId, $userId);
 			$albumId = $album->getId();
 
-			// add track and get track entity
+			// add track and get track entity; the track gets updated if it already exists
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
 
 			// if present, use the embedded album art as cover for the respective album
 			if($this->getId3Tag($fileInfo, 'picture') != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
+			}
+			// if this file is an existing file which previously was used as cover for an album but now
+			// the file no longer contains any embedded album art
+			else if($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
+				$this->albumBusinessLayer->removeCover($fileId);
+				$this->findEmbeddedCoverForAlbum($albumId, $userId);
 			}
 
 			// debug logging
@@ -300,8 +306,7 @@ class Scanner extends PublicEmitter {
 
 			// check if the removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
-				$album = $this->albumBusinessLayer->find($albumId, $userId);
-				if ($album->getCoverFileId() == $fileId) {
+				if ($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
 					$this->albumBusinessLayer->removeCover($fileId);
 					$this->findEmbeddedCoverForAlbum($albumId, $userId);
 				}
@@ -470,6 +475,11 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $ordinal;
+	}
+
+	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+		return ($album != null && $album->getCoverFileId() == $fileId);
 	}
 
 	/**

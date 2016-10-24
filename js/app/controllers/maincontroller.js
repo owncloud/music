@@ -110,6 +110,11 @@ angular.module('Music').controller('MainController',
 		});
 	};
 
+	var controls = document.getElementById('controls');
+	$scope.scrollOffset = function() {
+		return controls ? controls.offsetHeight : 0;
+	};
+
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {

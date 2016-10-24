@@ -111,9 +111,11 @@ angular.module('Music').controller('OverviewController',
 		});
 
 		$scope.scrollToItem = function(itemId) {
-			var el = $window.document.getElementById(itemId);
-			if(el) {
-				el.scrollIntoView({behavior: "smooth"});
+			var container = angular.element(document.getElementById('app-content'));
+			var element = angular.element(document.getElementById(itemId));
+			var controls = document.getElementById('controls');
+			if(container && controls && element) {
+				container.scrollToElement(element, controls.offsetHeight, 500);
 			}
 		};
 

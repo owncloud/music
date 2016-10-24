@@ -33,7 +33,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngQueue'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngQueue'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 

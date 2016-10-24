@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'gettext', 'ngRoute', 'ngQueue'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngQueue'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -141,6 +141,11 @@ angular.module('Music').controller('MainController',
 		});
 	};
 
+	var controls = document.getElementById('controls');
+	$scope.scrollOffset = function() {
+		return controls ? controls.offsetHeight : 0;
+	};
+
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {
@@ -267,9 +272,11 @@ angular.module('Music').controller('OverviewController',
 		});
 
 		$scope.scrollToItem = function(itemId) {
-			var el = $window.document.getElementById(itemId);
-			if(el) {
-				el.scrollIntoView({behavior: "smooth"});
+			var container = angular.element(document.getElementById('app-content'));
+			var element = angular.element(document.getElementById(itemId));
+			var controls = document.getElementById('controls');
+			if(container && controls && element) {
+				container.scrollToElement(element, controls.offsetHeight, 500);
 			}
 		};
 
@@ -633,26 +640,6 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 	};
 }]);
 
-angular.module('Music').directive('scrollTo', ['$window', function($window) {
-	return function(scope, element, attrs, ctrl) {
-		var scrollToElement = function(id) {
-			if(!id) {
-				// scroll to top if nothing is provided
-				$window.scrollTo(0, 0);
-			}
-
-			var el = $window.document.getElementById(id);
-
-			if(el) {
-				el.scrollIntoView({behavior: "smooth"});
-			}
-		};
-
-		element.bind('click', function() {
-			scrollToElement(attrs.scrollTo);
-		});
-	};
-}]);
 angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
 	return {
 		getArtists: function() { return Restangular.all('collection').getList(); }

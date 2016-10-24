@@ -18,6 +18,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
+\OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
@@ -57,7 +58,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 			</ul>
 		</div>-->
 
-		<div id="app-content">
+		<div id="app-content" du-scroll-container>
 
 			<div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 				<div id="play-controls">
@@ -109,7 +110,9 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 			</div>
 
 			<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
-				<a scroll-to="{{ letter }}" ng-repeat="letter in letters" ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
+				<a du-smooth-scroll="{{ letter }}" offset="{{ scrollOffset() }}"
+					ng-repeat="letter in letters" 
+					ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
 					<span class="letter-content">{{ letter }}</span>
 				</a>
 			</div>

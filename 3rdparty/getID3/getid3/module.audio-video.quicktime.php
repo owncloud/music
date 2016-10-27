@@ -35,7 +35,7 @@ class getid3_quicktime extends getid3_handler
 
 		$offset      = 0;
 		$atomcounter = 0;
-
+		$atom_data_read_buffer_size = ($info['php_memory_limit'] ? round($info['php_memory_limit'] / 2) : $this->getid3->option_fread_buffer_size * 1024); // allow [default: 32MB] if PHP configured with no memory_limit
 		while ($offset < $info['avdataend']) {
 			if (!getid3_lib::intValueSupported($offset)) {
 				$info['error'][] = 'Unable to parse atom at offset '.$offset.' because beyond '.round(PHP_INT_MAX / 1073741824).'GB limit of PHP filesystem functions';
@@ -68,7 +68,7 @@ class getid3_quicktime extends getid3_handler
 				break;
 			}
 			$atomHierarchy = array();
-			$info['quicktime'][$atomname] = $this->QuicktimeParseAtom($atomname, $atomsize, $this->fread(min($atomsize, round($this->getid3->memory_limit / 2))), $offset, $atomHierarchy, $this->ParseAllPossibleAtoms);
+			$info['quicktime'][$atomname] = $this->QuicktimeParseAtom($atomname, $atomsize, $this->fread(min($atomsize, $atom_data_read_buffer_size)), $offset, $atomHierarchy, $this->ParseAllPossibleAtoms);
 
 			$offset += $atomsize;
 			$atomcounter++;
@@ -79,6 +79,81 @@ class getid3_quicktime extends getid3_handler
 			// otherwise any atoms beyond the 'mdat' atom would not get parsed
 			$info['avdataend'] = $info['avdataend_tmp'];
 			unset($info['avdataend_tmp']);
+		}
+
+		if (!empty($info['quicktime']['comments']['chapters']) && is_array($info['quicktime']['comments']['chapters']) && (count($info['quicktime']['comments']['chapters']) > 0)) {
+			$durations = $this->quicktime_time_to_sample_table($info);
+			for ($i = 0; $i < count($info['quicktime']['comments']['chapters']); $i++) {
+				$bookmark = array();
+				$bookmark['title'] = $info['quicktime']['comments']['chapters'][$i];
+				if (isset($durations[$i])) {
+					$bookmark['duration_sample'] = $durations[$i]['sample_duration'];
+					if ($i > 0) {
+						$bookmark['start_sample'] = $info['quicktime']['bookmarks'][($i - 1)]['start_sample'] + $info['quicktime']['bookmarks'][($i - 1)]['duration_sample'];
+					} else {
+						$bookmark['start_sample'] = 0;
+					}
+					if ($time_scale = $this->quicktime_bookmark_time_scale($info)) {
+						$bookmark['duration_seconds'] = $bookmark['duration_sample'] / $time_scale;
+						$bookmark['start_seconds']    = $bookmark['start_sample']    / $time_scale;
+					}
+				}
+				$info['quicktime']['bookmarks'][] = $bookmark;
+			}
+		}
+
+		if (isset($info['quicktime']['temp_meta_key_names'])) {
+			unset($info['quicktime']['temp_meta_key_names']);
+		}
+
+		if (!empty($info['quicktime']['comments']['location.ISO6709'])) {
+			// https://en.wikipedia.org/wiki/ISO_6709
+			foreach ($info['quicktime']['comments']['location.ISO6709'] as $ISO6709string) {
+				$latitude  = false;
+				$longitude = false;
+				$altitude  = false;
+				if (preg_match('#^([\\+\\-])([0-9]{2}|[0-9]{4}|[0-9]{6})(\\.[0-9]+)?([\\+\\-])([0-9]{3}|[0-9]{5}|[0-9]{7})(\\.[0-9]+)?(([\\+\\-])([0-9]{3}|[0-9]{5}|[0-9]{7})(\\.[0-9]+)?)?/$#', $ISO6709string, $matches)) {
+					@list($dummy, $lat_sign, $lat_deg, $lat_deg_dec, $lon_sign, $lon_deg, $lon_deg_dec, $dummy, $alt_sign, $alt_deg, $alt_deg_dec) = $matches;
+
+					if (strlen($lat_deg) == 2) {        // [+-]DD.D
+						$latitude = floatval(ltrim($lat_deg, '0').$lat_deg_dec);
+					} elseif (strlen($lat_deg) == 4) {  // [+-]DDMM.M
+						$latitude = floatval(ltrim(substr($lat_deg, 0, 2), '0')) + floatval(ltrim(substr($lat_deg, 2, 2), '0').$lat_deg_dec / 60);
+					} elseif (strlen($lat_deg) == 6) {  // [+-]DDMMSS.S
+						$latitude = floatval(ltrim(substr($lat_deg, 0, 2), '0')) + floatval(ltrim(substr($lat_deg, 2, 2), '0') / 60) + floatval(ltrim(substr($lat_deg, 4, 2), '0').$lat_deg_dec / 3600);
+					}
+
+					if (strlen($lon_deg) == 3) {        // [+-]DDD.D
+						$longitude = floatval(ltrim($lon_deg, '0').$lon_deg_dec);
+					} elseif (strlen($lon_deg) == 5) {  // [+-]DDDMM.M
+						$longitude = floatval(ltrim(substr($lon_deg, 0, 2), '0')) + floatval(ltrim(substr($lon_deg, 2, 2), '0').$lon_deg_dec / 60);
+					} elseif (strlen($lon_deg) == 7) {  // [+-]DDDMMSS.S
+						$longitude = floatval(ltrim(substr($lon_deg, 0, 2), '0')) + floatval(ltrim(substr($lon_deg, 2, 2), '0') / 60) + floatval(ltrim(substr($lon_deg, 4, 2), '0').$lon_deg_dec / 3600);
+					}
+
+					if (strlen($alt_deg) == 3) {        // [+-]DDD.D
+						$altitude = floatval(ltrim($alt_deg, '0').$alt_deg_dec);
+					} elseif (strlen($alt_deg) == 5) {  // [+-]DDDMM.M
+						$altitude = floatval(ltrim(substr($alt_deg, 0, 2), '0')) + floatval(ltrim(substr($alt_deg, 2, 2), '0').$alt_deg_dec / 60);
+					} elseif (strlen($alt_deg) == 7) {  // [+-]DDDMMSS.S
+						$altitude = floatval(ltrim(substr($alt_deg, 0, 2), '0')) + floatval(ltrim(substr($alt_deg, 2, 2), '0') / 60) + floatval(ltrim(substr($alt_deg, 4, 2), '0').$alt_deg_dec / 3600);
+					}
+
+					if ($latitude !== false) {
+						$info['quicktime']['comments']['gps_latitude'][]  = (($lat_sign == '-') ? -1 : 1) * floatval($latitude);
+					}
+					if ($longitude !== false) {
+						$info['quicktime']['comments']['gps_longitude'][] = (($lon_sign == '-') ? -1 : 1) * floatval($longitude);
+					}
+					if ($altitude !== false) {
+						$info['quicktime']['comments']['gps_altitude'][]  = (($alt_sign == '-') ? -1 : 1) * floatval($altitude);
+					}
+				}
+				if ($latitude === false) {
+					$info['warning'][] = 'location.ISO6709 string not parsed correctly: "'.$ISO6709string.'", please submit as a bug';
+				}
+				break;
+			}
 		}
 
 		if (!isset($info['bitrate']) && isset($info['playtime_seconds'])) {
@@ -120,6 +195,7 @@ class getid3_quicktime extends getid3_handler
 
 	public function QuicktimeParseAtom($atomname, $atomsize, $atom_data, $baseoffset, &$atomHierarchy, $ParseAllPossibleAtoms) {
 		// http://developer.apple.com/techpubs/quicktime/qtdevdocs/APIREF/INDEX/atomalphaindex.htm
+		// https://code.google.com/p/mp4v2/wiki/iTunesMetadata
 
 		$info = &$this->getid3->info;
 
@@ -222,81 +298,88 @@ class getid3_quicktime extends getid3_handler
 				break;
 
 
+			case "\xA9".'alb': // ALBum
+			case "\xA9".'ART': //
+			case "\xA9".'art': // ARTist
+			case "\xA9".'aut': //
+			case "\xA9".'cmt': // CoMmenT
+			case "\xA9".'com': // COMposer
+			case "\xA9".'cpy': //
+			case "\xA9".'day': // content created year
+			case "\xA9".'dir': //
+			case "\xA9".'ed1': //
+			case "\xA9".'ed2': //
+			case "\xA9".'ed3': //
+			case "\xA9".'ed4': //
+			case "\xA9".'ed5': //
+			case "\xA9".'ed6': //
+			case "\xA9".'ed7': //
+			case "\xA9".'ed8': //
+			case "\xA9".'ed9': //
+			case "\xA9".'enc': //
+			case "\xA9".'fmt': //
+			case "\xA9".'gen': // GENre
+			case "\xA9".'grp': // GRouPing
+			case "\xA9".'hst': //
+			case "\xA9".'inf': //
+			case "\xA9".'lyr': // LYRics
+			case "\xA9".'mak': //
+			case "\xA9".'mod': //
+			case "\xA9".'nam': // full NAMe
+			case "\xA9".'ope': //
+			case "\xA9".'PRD': //
+			case "\xA9".'prf': //
+			case "\xA9".'req': //
+			case "\xA9".'src': //
+			case "\xA9".'swr': //
+			case "\xA9".'too': // encoder
+			case "\xA9".'trk': // TRacK
+			case "\xA9".'url': //
+			case "\xA9".'wrn': //
+			case "\xA9".'wrt': // WRiTer
+			case '----': // itunes specific
 			case 'aART': // Album ARTist
+			case 'akID': // iTunes store account type
+			case 'apID': // Purchase Account
+			case 'atID': //
 			case 'catg': // CaTeGory
+			case 'cmID': //
+			case 'cnID': //
 			case 'covr': // COVeR artwork
 			case 'cpil': // ComPILation
 			case 'cprt': // CoPyRighT
 			case 'desc': // DESCription
 			case 'disk': // DISK number
 			case 'egid': // Episode Global ID
+			case 'geID': //
 			case 'gnre': // GeNRE
+			case 'hdvd': // HD ViDeo
 			case 'keyw': // KEYWord
-			case 'ldes':
+			case 'ldes': // Long DEScription
 			case 'pcst': // PodCaST
 			case 'pgap': // GAPless Playback
+			case 'plID': //
 			case 'purd': // PURchase Date
 			case 'purl': // Podcast URL
-			case 'rati':
-			case 'rndu':
-			case 'rpdu':
+			case 'rati': //
+			case 'rndu': //
+			case 'rpdu': //
 			case 'rtng': // RaTiNG
-			case 'stik':
+			case 'sfID': // iTunes store country
+			case 'soaa': // SOrt Album Artist
+			case 'soal': // SOrt ALbum
+			case 'soar': // SOrt ARtist
+			case 'soco': // SOrt COmposer
+			case 'sonm': // SOrt NaMe
+			case 'sosn': // SOrt Show Name
+			case 'stik': //
 			case 'tmpo': // TeMPO (BPM)
 			case 'trkn': // TRacK Number
+			case 'tven': // tvEpisodeID
 			case 'tves': // TV EpiSode
 			case 'tvnn': // TV Network Name
 			case 'tvsh': // TV SHow Name
 			case 'tvsn': // TV SeasoN
-			case 'akID': // iTunes store account type
-			case 'apID':
-			case 'atID':
-			case 'cmID':
-			case 'cnID':
-			case 'geID':
-			case 'plID':
-			case 'sfID': // iTunes store country
-			case "\xA9".'alb': // ALBum
-			case "\xA9".'art': // ARTist
-			case "\xA9".'ART':
-			case "\xA9".'aut':
-			case "\xA9".'cmt': // CoMmenT
-			case "\xA9".'com': // COMposer
-			case "\xA9".'cpy':
-			case "\xA9".'day': // content created year
-			case "\xA9".'dir':
-			case "\xA9".'ed1':
-			case "\xA9".'ed2':
-			case "\xA9".'ed3':
-			case "\xA9".'ed4':
-			case "\xA9".'ed5':
-			case "\xA9".'ed6':
-			case "\xA9".'ed7':
-			case "\xA9".'ed8':
-			case "\xA9".'ed9':
-			case "\xA9".'enc':
-			case "\xA9".'fmt':
-			case "\xA9".'gen': // GENre
-			case "\xA9".'grp': // GRouPing
-			case "\xA9".'hst':
-			case "\xA9".'inf':
-			case "\xA9".'lyr': // LYRics
-			case "\xA9".'mak':
-			case "\xA9".'mod':
-			case "\xA9".'nam': // full NAMe
-			case "\xA9".'ope':
-			case "\xA9".'PRD':
-			case "\xA9".'prd':
-			case "\xA9".'prf':
-			case "\xA9".'req':
-			case "\xA9".'src':
-			case "\xA9".'swr':
-			case "\xA9".'too': // encoder
-			case "\xA9".'trk': // TRacK
-			case "\xA9".'url':
-			case "\xA9".'wrn':
-			case "\xA9".'wrt': // WRiTer
-			case '----': // itunes specific
 				if ($atom_parent == 'udta') {
 					// User data atom handler
 					$atom_structure['data_length'] = getid3_lib::BigEndian2Int(substr($atom_data, 0, 2));
@@ -361,17 +444,21 @@ class getid3_quicktime extends getid3_handler
 										case 21: // tmpo/cpil flag
 											switch ($atomname) {
 												case 'cpil':
+												case 'hdvd':
 												case 'pcst':
 												case 'pgap':
+													// 8-bit integer (boolean)
 													$atom_structure['data'] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 1));
 													break;
 
 												case 'tmpo':
+													// 16-bit integer
 													$atom_structure['data'] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 2));
 													break;
 
 												case 'disk':
 												case 'trkn':
+													// binary
 													$num       = getid3_lib::BigEndian2Int(substr($boxdata, 10, 2));
 													$num_total = getid3_lib::BigEndian2Int(substr($boxdata, 12, 2));
 													$atom_structure['data']  = empty($num) ? '' : $num;
@@ -379,21 +466,25 @@ class getid3_quicktime extends getid3_handler
 													break;
 
 												case 'gnre':
+													// enum
 													$GenreID = getid3_lib::BigEndian2Int(substr($boxdata, 8, 4));
 													$atom_structure['data']    = getid3_id3v1::LookupGenreName($GenreID - 1);
 													break;
 
 												case 'rtng':
+													// 8-bit integer
 													$atom_structure[$atomname] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 1));
 													$atom_structure['data']    = $this->QuicktimeContentRatingLookup($atom_structure[$atomname]);
 													break;
 
 												case 'stik':
+													// 8-bit integer (enum)
 													$atom_structure[$atomname] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 1));
 													$atom_structure['data']    = $this->QuicktimeSTIKLookup($atom_structure[$atomname]);
 													break;
 
 												case 'sfID':
+													// 32-bit integer
 													$atom_structure[$atomname] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 4));
 													$atom_structure['data']    = $this->QuicktimeStoreFrontCodeLookup($atom_structure[$atomname]);
 													break;
@@ -403,7 +494,30 @@ class getid3_quicktime extends getid3_handler
 													$atom_structure['data'] = substr($boxdata, 8);
 													break;
 
+												case 'plID':
+													// 64-bit integer
+													$atom_structure['data'] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 8));
+													break;
+
+												case 'covr':
+													$atom_structure['data'] = substr($boxdata, 8);
+													// not a foolproof check, but better than nothing
+													if (preg_match('#^\\xFF\\xD8\\xFF#', $atom_structure['data'])) {
+														$atom_structure['image_mime'] = 'image/jpeg';
+													} elseif (preg_match('#^\\x89\\x50\\x4E\\x47\\x0D\\x0A\\x1A\\x0A#', $atom_structure['data'])) {
+														$atom_structure['image_mime'] = 'image/png';
+													} elseif (preg_match('#^GIF#', $atom_structure['data'])) {
+														$atom_structure['image_mime'] = 'image/gif';
+													}
+													break;
+
+												case 'atID':
+												case 'cnID':
+												case 'geID':
+												case 'tves':
+												case 'tvsn':
 												default:
+													// 32-bit integer
 													$atom_structure['data'] = getid3_lib::BigEndian2Int(substr($boxdata, 8, 4));
 											}
 											break;
@@ -414,9 +528,9 @@ class getid3_quicktime extends getid3_handler
 											$atom_structure['data'] = substr($boxdata, 8);
 											if ($atomname == 'covr') {
 												// not a foolproof check, but better than nothing
-												if (preg_match('#^\xFF\xD8\xFF#', $atom_structure['data'])) {
+												if (preg_match('#^\\xFF\\xD8\\xFF#', $atom_structure['data'])) {
 													$atom_structure['image_mime'] = 'image/jpeg';
-												} elseif (preg_match('#^\x89\x50\x4E\x47\x0D\x0A\x1A\x0A#', $atom_structure['data'])) {
+												} elseif (preg_match('#^\\x89\\x50\\x4E\\x47\\x0D\\x0A\\x1A\\x0A#', $atom_structure['data'])) {
 													$atom_structure['image_mime'] = 'image/png';
 												} elseif (preg_match('#^GIF#', $atom_structure['data'])) {
 													$atom_structure['image_mime'] = 'image/gif';
@@ -799,9 +913,9 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				//$FrameRateCalculatorArray = array();
 				$frames_count = 0;
 
-				$max_stts_entries_to_scan = min(floor($this->getid3->memory_limit / 10000), $atom_structure['number_entries']);
+				$max_stts_entries_to_scan = ($info['php_memory_limit'] ? min(floor($this->getid3->memory_limit / 10000), $atom_structure['number_entries']) : $atom_structure['number_entries']);
 				if ($max_stts_entries_to_scan < $atom_structure['number_entries']) {
-					$info['warning'][] = 'QuickTime atom "stts" has '.$atom_structure['number_entries'].' but only scanning the first '.$max_stts_entries_to_scan.' entries due to limited PHP memory available ('.floor($this->getid3->memory_limit / 1048576).'MB).';
+					$info['warning'][] = 'QuickTime atom "stts" has '.$atom_structure['number_entries'].' but only scanning the first '.$max_stts_entries_to_scan.' entries due to limited PHP memory available ('.floor($atom_structure['number_entries'] / 1048576).'MB).';
 				}
 				for ($i = 0; $i < $max_stts_entries_to_scan; $i++) {
 					$atom_structure['time_to_sample_table'][$i]['sample_count']    = getid3_lib::BigEndian2Int(substr($atom_data, $sttsEntriesDataOffset, 4));
@@ -928,13 +1042,13 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				for ($i = 0; $i < $atom_structure['number_entries']; $i++) {
 					$atom_structure['data_references'][$i]['size']                    = getid3_lib::BigEndian2Int(substr($atom_data, $drefDataOffset, 4));
 					$drefDataOffset += 4;
-					$atom_structure['data_references'][$i]['type']                    =               substr($atom_data, $drefDataOffset, 4);
+					$atom_structure['data_references'][$i]['type']                    =                           substr($atom_data, $drefDataOffset, 4);
 					$drefDataOffset += 4;
 					$atom_structure['data_references'][$i]['version']                 = getid3_lib::BigEndian2Int(substr($atom_data,  $drefDataOffset, 1));
 					$drefDataOffset += 1;
 					$atom_structure['data_references'][$i]['flags_raw']               = getid3_lib::BigEndian2Int(substr($atom_data,  $drefDataOffset, 3)); // hardcoded: 0x0000
 					$drefDataOffset += 3;
-					$atom_structure['data_references'][$i]['data']                    =               substr($atom_data, $drefDataOffset, ($atom_structure['data_references'][$i]['size'] - 4 - 4 - 1 - 3));
+					$atom_structure['data_references'][$i]['data']                    =                           substr($atom_data, $drefDataOffset, ($atom_structure['data_references'][$i]['size'] - 4 - 4 - 1 - 3));
 					$drefDataOffset += ($atom_structure['data_references'][$i]['size'] - 4 - 4 - 1 - 3);
 
 					$atom_structure['data_references'][$i]['flags']['self_reference'] = (bool) ($atom_structure['data_references'][$i]['flags_raw'] & 0x001);
@@ -1004,7 +1118,7 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 					$info['error'][] = 'Corrupt Quicktime file: mdhd.time_scale == zero';
 					return false;
 				}
-				$info['quicktime']['time_scale'] = (isset($info['quicktime']['time_scale']) ? max($info['quicktime']['time_scale'], $atom_structure['time_scale']) : $atom_structure['time_scale']);
+				$info['quicktime']['time_scale'] = ((isset($info['quicktime']['time_scale']) && ($info['quicktime']['time_scale'] < 1000)) ? max($info['quicktime']['time_scale'], $atom_structure['time_scale']) : $atom_structure['time_scale']);
 
 				$atom_structure['creation_time_unix']    = getid3_lib::DateMac2Unix($atom_structure['creation_time']);
 				$atom_structure['modify_time_unix']      = getid3_lib::DateMac2Unix($atom_structure['modify_time']);
@@ -1019,7 +1133,7 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 			case 'pnot': // Preview atom
 				$atom_structure['modification_date']      = getid3_lib::BigEndian2Int(substr($atom_data,  0, 4)); // "standard Macintosh format"
 				$atom_structure['version_number']         = getid3_lib::BigEndian2Int(substr($atom_data,  4, 2)); // hardcoded: 0x00
-				$atom_structure['atom_type']              =               substr($atom_data,  6, 4);        // usually: 'PICT'
+				$atom_structure['atom_type']              =                           substr($atom_data,  6, 4);        // usually: 'PICT'
 				$atom_structure['atom_index']             = getid3_lib::BigEndian2Int(substr($atom_data, 10, 2)); // usually: 0x01
 
 				$atom_structure['modification_date_unix'] = getid3_lib::DateMac2Unix($atom_structure['modification_date']);
@@ -1029,7 +1143,7 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 			case 'crgn': // Clipping ReGioN atom
 				$atom_structure['region_size']   = getid3_lib::BigEndian2Int(substr($atom_data,  0, 2)); // The Region size, Region boundary box,
 				$atom_structure['boundary_box']  = getid3_lib::BigEndian2Int(substr($atom_data,  2, 8)); // and Clipping region data fields
-				$atom_structure['clipping_data'] =               substr($atom_data, 10);           // constitute a QuickDraw region.
+				$atom_structure['clipping_data'] =                           substr($atom_data, 10);           // constitute a QuickDraw region.
 				break;
 
 
@@ -1120,7 +1234,7 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				}
 				$atom_structure['creation_time_unix']        = getid3_lib::DateMac2Unix($atom_structure['creation_time']);
 				$atom_structure['modify_time_unix']          = getid3_lib::DateMac2Unix($atom_structure['modify_time']);
-				$info['quicktime']['time_scale']    = (isset($info['quicktime']['time_scale']) ? max($info['quicktime']['time_scale'], $atom_structure['time_scale']) : $atom_structure['time_scale']);
+				$info['quicktime']['time_scale']    = ((isset($info['quicktime']['time_scale']) && ($info['quicktime']['time_scale'] < 1000)) ? max($info['quicktime']['time_scale'], $atom_structure['time_scale']) : $atom_structure['time_scale']);
 				$info['quicktime']['display_scale'] = $atom_structure['matrix_a'];
 				$info['playtime_seconds']           = $atom_structure['duration'] / $atom_structure['time_scale'];
 				break;
@@ -1240,14 +1354,20 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				}
 
 				// check to see if it looks like chapter titles, in the form of unterminated strings with a leading 16-bit size field
-				while  (($chapter_string_length = getid3_lib::BigEndian2Int(substr($atom_data, $mdat_offset, 2)))
+				while (($mdat_offset < (strlen($atom_data) - 8))
+					&& ($chapter_string_length = getid3_lib::BigEndian2Int(substr($atom_data, $mdat_offset, 2)))
 					&& ($chapter_string_length < 1000)
 					&& ($chapter_string_length <= (strlen($atom_data) - $mdat_offset - 2))
-					&& preg_match('#^[\x20-\xFF]+$#', substr($atom_data, $mdat_offset + 2, $chapter_string_length), $chapter_matches)) {
+					&& preg_match('#^([\x00-\xFF]{2})([\x20-\xFF]+)$#', substr($atom_data, $mdat_offset, $chapter_string_length + 2), $chapter_matches)) {
+						list($dummy, $chapter_string_length_hex, $chapter_string) = $chapter_matches;
 						$mdat_offset += (2 + $chapter_string_length);
-						@$info['quicktime']['comments']['chapters'][] = $chapter_matches[0];
-				}
+						@$info['quicktime']['comments']['chapters'][] = $chapter_string;
 
+						// "encd" atom specifies encoding. In theory could be anything, almost always UTF-8, but may be UTF-16 with BOM (not currently handled)
+						if (substr($atom_data, $mdat_offset, 12) == "\x00\x00\x00\x0C\x65\x6E\x63\x64\x00\x00\x01\x00") { // UTF-8
+							$mdat_offset += 12;
+						}
+				}
 
 
 				if (($atomsize > 8) && (!isset($info['avdataend_tmp']) || ($info['quicktime'][$atomname]['size'] > ($info['avdataend_tmp'] - $info['avdataoffset'])))) {
@@ -1397,22 +1517,53 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				break;
 
 			case "\x00\x00\x00\x00":
-			case 'meta': // METAdata atom
 				// some kind of metacontainer, may contain a big data dump such as:
-				// mdta keys  mdtacom.apple.quicktime.make (mdtacom.apple.quicktime.creationdate ,mdtacom.apple.quicktime.location.ISO6709 $mdtacom.apple.quicktime.software !mdtacom.apple.quicktime.model ilst   data DEApple 0  (data DE2011-05-11T17:54:04+0200 2  *data DE+52.4936+013.3897+040.247/   data DE4.3.1  data DEiPhone 4
+				// mdta keys \005 mdtacom.apple.quicktime.make (mdtacom.apple.quicktime.creationdate ,mdtacom.apple.quicktime.location.ISO6709 $mdtacom.apple.quicktime.software !mdtacom.apple.quicktime.model ilst \01D \001 \015data \001DE\010Apple 0 \002 (data \001DE\0102011-05-11T17:54:04+0200 2 \003 *data \001DE\010+52.4936+013.3897+040.247/ \01D \004 \015data \001DE\0104.3.1 \005 \018data \001DE\010iPhone 4
 				// http://www.geocities.com/xhelmboyx/quicktime/formats/qti-layout.txt
 
-	            $atom_structure['version']   =          getid3_lib::BigEndian2Int(substr($atom_data, 0, 1));
-	            $atom_structure['flags_raw'] =          getid3_lib::BigEndian2Int(substr($atom_data, 1, 3));
-	            $atom_structure['subatoms']  = $this->QuicktimeParseContainerAtom(substr($atom_data, 4), $baseoffset + 8, $atomHierarchy, $ParseAllPossibleAtoms);
+				$atom_structure['version']   =          getid3_lib::BigEndian2Int(substr($atom_data, 0, 1));
+				$atom_structure['flags_raw'] =          getid3_lib::BigEndian2Int(substr($atom_data, 1, 3));
+				$atom_structure['subatoms']  = $this->QuicktimeParseContainerAtom(substr($atom_data, 4), $baseoffset + 8, $atomHierarchy, $ParseAllPossibleAtoms);
 				//$atom_structure['subatoms']  = $this->QuicktimeParseContainerAtom($atom_data, $baseoffset + 8, $atomHierarchy, $ParseAllPossibleAtoms);
 				break;
 
+			case 'meta': // METAdata atom
+				// https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/Metadata/Metadata.html
+
+				$atom_structure['version']   =          getid3_lib::BigEndian2Int(substr($atom_data, 0, 1));
+				$atom_structure['flags_raw'] =          getid3_lib::BigEndian2Int(substr($atom_data, 1, 3));
+				$atom_structure['subatoms']  = $this->QuicktimeParseContainerAtom($atom_data, $baseoffset + 8, $atomHierarchy, $ParseAllPossibleAtoms);
+				break;
+
 			case 'data': // metaDATA atom
+				static $metaDATAkey = 1; // real ugly, but so is the QuickTime structure that stores keys and values in different multinested locations that are hard to relate to each other
 				// seems to be 2 bytes language code (ASCII), 2 bytes unknown (set to 0x10B5 in sample I have), remainder is useful data
 				$atom_structure['language'] =                           substr($atom_data, 4 + 0, 2);
 				$atom_structure['unknown']  = getid3_lib::BigEndian2Int(substr($atom_data, 4 + 2, 2));
 				$atom_structure['data']     =                           substr($atom_data, 4 + 4);
+				$atom_structure['key_name'] = @$info['quicktime']['temp_meta_key_names'][$metaDATAkey++];
+
+				if ($atom_structure['key_name'] && $atom_structure['data']) {
+					@$info['quicktime']['comments'][str_replace('com.apple.quicktime.', '', $atom_structure['key_name'])][] = $atom_structure['data'];
+				}
+				break;
+
+			case 'keys': // KEYS that may be present in the metadata atom.
+				// https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/Metadata/Metadata.html#//apple_ref/doc/uid/TP40000939-CH1-SW21
+				// The metadata item keys atom holds a list of the metadata keys that may be present in the metadata atom.
+				// This list is indexed starting with 1; 0 is a reserved index value. The metadata item keys atom is a full atom with an atom type of "keys".
+				$atom_structure['version']       = getid3_lib::BigEndian2Int(substr($atom_data,  0, 1));
+				$atom_structure['flags_raw']     = getid3_lib::BigEndian2Int(substr($atom_data,  1, 3));
+				$atom_structure['entry_count']   = getid3_lib::BigEndian2Int(substr($atom_data,  4, 4));
+				$keys_atom_offset = 8;
+				for ($i = 1; $i <= $atom_structure['entry_count']; $i++) {
+					$atom_structure['keys'][$i]['key_size']      = getid3_lib::BigEndian2Int(substr($atom_data, $keys_atom_offset + 0, 4));
+					$atom_structure['keys'][$i]['key_namespace'] =                           substr($atom_data, $keys_atom_offset + 4, 4);
+					$atom_structure['keys'][$i]['key_value']     =                           substr($atom_data, $keys_atom_offset + 8, $atom_structure['keys'][$i]['key_size'] - 8);
+					$keys_atom_offset += $atom_structure['keys'][$i]['key_size']; // key_size includes the 4+4 bytes for key_size and key_namespace
+
+					$info['quicktime']['temp_meta_key_names'][$i] = $atom_structure['keys'][$i]['key_value'];
+				}
 				break;
 
 			default:
@@ -1440,6 +1591,10 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				// Furthermore, for historical reasons the list of atoms is optionally
 				// terminated by a 32-bit integer set to 0. If you are writing a program
 				// to read user data atoms, you should allow for the terminating 0.
+				if (strlen($atom_data) > 12) {
+					$subatomoffset += 4;
+					continue;
+				}
 				return $atom_structure;
 			}
 
@@ -1753,56 +1908,56 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 		static $QuicktimeIODSaudioProfileNameLookup = array();
 		if (empty($QuicktimeIODSaudioProfileNameLookup)) {
 			$QuicktimeIODSaudioProfileNameLookup = array(
-			    0x00 => 'ISO Reserved (0x00)',
-			    0x01 => 'Main Audio Profile @ Level 1',
-			    0x02 => 'Main Audio Profile @ Level 2',
-			    0x03 => 'Main Audio Profile @ Level 3',
-			    0x04 => 'Main Audio Profile @ Level 4',
-			    0x05 => 'Scalable Audio Profile @ Level 1',
-			    0x06 => 'Scalable Audio Profile @ Level 2',
-			    0x07 => 'Scalable Audio Profile @ Level 3',
-			    0x08 => 'Scalable Audio Profile @ Level 4',
-			    0x09 => 'Speech Audio Profile @ Level 1',
-			    0x0A => 'Speech Audio Profile @ Level 2',
-			    0x0B => 'Synthetic Audio Profile @ Level 1',
-			    0x0C => 'Synthetic Audio Profile @ Level 2',
-			    0x0D => 'Synthetic Audio Profile @ Level 3',
-			    0x0E => 'High Quality Audio Profile @ Level 1',
-			    0x0F => 'High Quality Audio Profile @ Level 2',
-			    0x10 => 'High Quality Audio Profile @ Level 3',
-			    0x11 => 'High Quality Audio Profile @ Level 4',
-			    0x12 => 'High Quality Audio Profile @ Level 5',
-			    0x13 => 'High Quality Audio Profile @ Level 6',
-			    0x14 => 'High Quality Audio Profile @ Level 7',
-			    0x15 => 'High Quality Audio Profile @ Level 8',
-			    0x16 => 'Low Delay Audio Profile @ Level 1',
-			    0x17 => 'Low Delay Audio Profile @ Level 2',
-			    0x18 => 'Low Delay Audio Profile @ Level 3',
-			    0x19 => 'Low Delay Audio Profile @ Level 4',
-			    0x1A => 'Low Delay Audio Profile @ Level 5',
-			    0x1B => 'Low Delay Audio Profile @ Level 6',
-			    0x1C => 'Low Delay Audio Profile @ Level 7',
-			    0x1D => 'Low Delay Audio Profile @ Level 8',
-			    0x1E => 'Natural Audio Profile @ Level 1',
-			    0x1F => 'Natural Audio Profile @ Level 2',
-			    0x20 => 'Natural Audio Profile @ Level 3',
-			    0x21 => 'Natural Audio Profile @ Level 4',
-			    0x22 => 'Mobile Audio Internetworking Profile @ Level 1',
-			    0x23 => 'Mobile Audio Internetworking Profile @ Level 2',
-			    0x24 => 'Mobile Audio Internetworking Profile @ Level 3',
-			    0x25 => 'Mobile Audio Internetworking Profile @ Level 4',
-			    0x26 => 'Mobile Audio Internetworking Profile @ Level 5',
-			    0x27 => 'Mobile Audio Internetworking Profile @ Level 6',
-			    0x28 => 'AAC Profile @ Level 1',
-			    0x29 => 'AAC Profile @ Level 2',
-			    0x2A => 'AAC Profile @ Level 4',
-			    0x2B => 'AAC Profile @ Level 5',
-			    0x2C => 'High Efficiency AAC Profile @ Level 2',
-			    0x2D => 'High Efficiency AAC Profile @ Level 3',
-			    0x2E => 'High Efficiency AAC Profile @ Level 4',
-			    0x2F => 'High Efficiency AAC Profile @ Level 5',
-			    0xFE => 'Not part of MPEG-4 audio profiles',
-			    0xFF => 'No audio capability required',
+				0x00 => 'ISO Reserved (0x00)',
+				0x01 => 'Main Audio Profile @ Level 1',
+				0x02 => 'Main Audio Profile @ Level 2',
+				0x03 => 'Main Audio Profile @ Level 3',
+				0x04 => 'Main Audio Profile @ Level 4',
+				0x05 => 'Scalable Audio Profile @ Level 1',
+				0x06 => 'Scalable Audio Profile @ Level 2',
+				0x07 => 'Scalable Audio Profile @ Level 3',
+				0x08 => 'Scalable Audio Profile @ Level 4',
+				0x09 => 'Speech Audio Profile @ Level 1',
+				0x0A => 'Speech Audio Profile @ Level 2',
+				0x0B => 'Synthetic Audio Profile @ Level 1',
+				0x0C => 'Synthetic Audio Profile @ Level 2',
+				0x0D => 'Synthetic Audio Profile @ Level 3',
+				0x0E => 'High Quality Audio Profile @ Level 1',
+				0x0F => 'High Quality Audio Profile @ Level 2',
+				0x10 => 'High Quality Audio Profile @ Level 3',
+				0x11 => 'High Quality Audio Profile @ Level 4',
+				0x12 => 'High Quality Audio Profile @ Level 5',
+				0x13 => 'High Quality Audio Profile @ Level 6',
+				0x14 => 'High Quality Audio Profile @ Level 7',
+				0x15 => 'High Quality Audio Profile @ Level 8',
+				0x16 => 'Low Delay Audio Profile @ Level 1',
+				0x17 => 'Low Delay Audio Profile @ Level 2',
+				0x18 => 'Low Delay Audio Profile @ Level 3',
+				0x19 => 'Low Delay Audio Profile @ Level 4',
+				0x1A => 'Low Delay Audio Profile @ Level 5',
+				0x1B => 'Low Delay Audio Profile @ Level 6',
+				0x1C => 'Low Delay Audio Profile @ Level 7',
+				0x1D => 'Low Delay Audio Profile @ Level 8',
+				0x1E => 'Natural Audio Profile @ Level 1',
+				0x1F => 'Natural Audio Profile @ Level 2',
+				0x20 => 'Natural Audio Profile @ Level 3',
+				0x21 => 'Natural Audio Profile @ Level 4',
+				0x22 => 'Mobile Audio Internetworking Profile @ Level 1',
+				0x23 => 'Mobile Audio Internetworking Profile @ Level 2',
+				0x24 => 'Mobile Audio Internetworking Profile @ Level 3',
+				0x25 => 'Mobile Audio Internetworking Profile @ Level 4',
+				0x26 => 'Mobile Audio Internetworking Profile @ Level 5',
+				0x27 => 'Mobile Audio Internetworking Profile @ Level 6',
+				0x28 => 'AAC Profile @ Level 1',
+				0x29 => 'AAC Profile @ Level 2',
+				0x2A => 'AAC Profile @ Level 4',
+				0x2B => 'AAC Profile @ Level 5',
+				0x2C => 'High Efficiency AAC Profile @ Level 2',
+				0x2D => 'High Efficiency AAC Profile @ Level 3',
+				0x2E => 'High Efficiency AAC Profile @ Level 4',
+				0x2F => 'High Efficiency AAC Profile @ Level 5',
+				0xFE => 'Not part of MPEG-4 audio profiles',
+				0xFF => 'No audio capability required',
 			);
 		}
 		return (isset($QuicktimeIODSaudioProfileNameLookup[$audio_profile_id]) ? $QuicktimeIODSaudioProfileNameLookup[$audio_profile_id] : 'ISO Reserved / User Private');
@@ -2111,8 +2266,18 @@ echo 'QuicktimeParseNikonNCTG()::unknown $data_size_type: '.$data_size_type.'<br
 	public function CopyToAppropriateCommentsSection($keyname, $data, $boxname='') {
 		static $handyatomtranslatorarray = array();
 		if (empty($handyatomtranslatorarray)) {
+			// http://www.geocities.com/xhelmboyx/quicktime/formats/qtm-layout.txt
+			// http://www.geocities.com/xhelmboyx/quicktime/formats/mp4-layout.txt
+			// http://atomicparsley.sourceforge.net/mpeg-4files.html
+			// https://code.google.com/p/mp4v2/wiki/iTunesMetadata
+			$handyatomtranslatorarray["\xA9".'alb'] = 'album';               // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'ART'] = 'artist';
+			$handyatomtranslatorarray["\xA9".'art'] = 'artist';              // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'aut'] = 'author';
+			$handyatomtranslatorarray["\xA9".'cmt'] = 'comment';             // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'com'] = 'comment';
 			$handyatomtranslatorarray["\xA9".'cpy'] = 'copyright';
-			$handyatomtranslatorarray["\xA9".'day'] = 'creation_date';    // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'day'] = 'creation_date';       // iTunes 4.0
 			$handyatomtranslatorarray["\xA9".'dir'] = 'director';
 			$handyatomtranslatorarray["\xA9".'ed1'] = 'edit1';
 			$handyatomtranslatorarray["\xA9".'ed2'] = 'edit2';
@@ -2123,64 +2288,60 @@ echo 'QuicktimeParseNikonNCTG()::unknown $data_size_type: '.$data_size_type.'<br
 			$handyatomtranslatorarray["\xA9".'ed7'] = 'edit7';
 			$handyatomtranslatorarray["\xA9".'ed8'] = 'edit8';
 			$handyatomtranslatorarray["\xA9".'ed9'] = 'edit9';
+			$handyatomtranslatorarray["\xA9".'enc'] = 'encoded_by';
 			$handyatomtranslatorarray["\xA9".'fmt'] = 'format';
+			$handyatomtranslatorarray["\xA9".'gen'] = 'genre';               // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'grp'] = 'grouping';            // iTunes 4.2
+			$handyatomtranslatorarray["\xA9".'hst'] = 'host_computer';
 			$handyatomtranslatorarray["\xA9".'inf'] = 'information';
+			$handyatomtranslatorarray["\xA9".'lyr'] = 'lyrics';              // iTunes 5.0
+			$handyatomtranslatorarray["\xA9".'mak'] = 'make';
+			$handyatomtranslatorarray["\xA9".'mod'] = 'model';
+			$handyatomtranslatorarray["\xA9".'nam'] = 'title';               // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'ope'] = 'composer';
 			$handyatomtranslatorarray["\xA9".'prd'] = 'producer';
+			$handyatomtranslatorarray["\xA9".'PRD'] = 'product';
 			$handyatomtranslatorarray["\xA9".'prf'] = 'performers';
 			$handyatomtranslatorarray["\xA9".'req'] = 'system_requirements';
 			$handyatomtranslatorarray["\xA9".'src'] = 'source_credit';
-			$handyatomtranslatorarray["\xA9".'wrt'] = 'writer';
-
-			// http://www.geocities.com/xhelmboyx/quicktime/formats/qtm-layout.txt
-			$handyatomtranslatorarray["\xA9".'nam'] = 'title';           // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'cmt'] = 'comment';         // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'wrn'] = 'warning';
-			$handyatomtranslatorarray["\xA9".'hst'] = 'host_computer';
-			$handyatomtranslatorarray["\xA9".'mak'] = 'make';
-			$handyatomtranslatorarray["\xA9".'mod'] = 'model';
-			$handyatomtranslatorarray["\xA9".'PRD'] = 'product';
 			$handyatomtranslatorarray["\xA9".'swr'] = 'software';
-			$handyatomtranslatorarray["\xA9".'aut'] = 'author';
-			$handyatomtranslatorarray["\xA9".'ART'] = 'artist';
+			$handyatomtranslatorarray["\xA9".'too'] = 'encoding_tool';       // iTunes 4.0
 			$handyatomtranslatorarray["\xA9".'trk'] = 'track';
-			$handyatomtranslatorarray["\xA9".'alb'] = 'album';           // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'com'] = 'comment';
-			$handyatomtranslatorarray["\xA9".'gen'] = 'genre';           // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'ope'] = 'composer';
 			$handyatomtranslatorarray["\xA9".'url'] = 'url';
-			$handyatomtranslatorarray["\xA9".'enc'] = 'encoder';
-
-			// http://atomicparsley.sourceforge.net/mpeg-4files.html
-			$handyatomtranslatorarray["\xA9".'art'] = 'artist';           // iTunes 4.0
+			$handyatomtranslatorarray["\xA9".'wrn'] = 'warning';
+			$handyatomtranslatorarray["\xA9".'wrt'] = 'composer';
 			$handyatomtranslatorarray['aART'] = 'album_artist';
-			$handyatomtranslatorarray['trkn'] = 'track_number';     // iTunes 4.0
-			$handyatomtranslatorarray['disk'] = 'disc_number';      // iTunes 4.0
-			$handyatomtranslatorarray['gnre'] = 'genre';            // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'too'] = 'encoder';          // iTunes 4.0
-			$handyatomtranslatorarray['tmpo'] = 'bpm';              // iTunes 4.0
-			$handyatomtranslatorarray['cprt'] = 'copyright';        // iTunes 4.0?
-			$handyatomtranslatorarray['cpil'] = 'compilation';      // iTunes 4.0
-			$handyatomtranslatorarray['covr'] = 'picture';          // iTunes 4.0
-			$handyatomtranslatorarray['rtng'] = 'rating';           // iTunes 4.0
-			$handyatomtranslatorarray["\xA9".'grp'] = 'grouping';         // iTunes 4.2
-			$handyatomtranslatorarray['stik'] = 'stik';             // iTunes 4.9
-			$handyatomtranslatorarray['pcst'] = 'podcast';          // iTunes 4.9
-			$handyatomtranslatorarray['catg'] = 'category';         // iTunes 4.9
-			$handyatomtranslatorarray['keyw'] = 'keyword';          // iTunes 4.9
-			$handyatomtranslatorarray['purl'] = 'podcast_url';      // iTunes 4.9
-			$handyatomtranslatorarray['egid'] = 'episode_guid';     // iTunes 4.9
-			$handyatomtranslatorarray['desc'] = 'description';      // iTunes 5.0
-			$handyatomtranslatorarray["\xA9".'lyr'] = 'lyrics';           // iTunes 5.0
-			$handyatomtranslatorarray['tvnn'] = 'tv_network_name';  // iTunes 6.0
-			$handyatomtranslatorarray['tvsh'] = 'tv_show_name';     // iTunes 6.0
-			$handyatomtranslatorarray['tvsn'] = 'tv_season';        // iTunes 6.0
-			$handyatomtranslatorarray['tves'] = 'tv_episode';       // iTunes 6.0
-			$handyatomtranslatorarray['purd'] = 'purchase_date';    // iTunes 6.0.2
-			$handyatomtranslatorarray['pgap'] = 'gapless_playback'; // iTunes 7.0
-
-			// http://www.geocities.com/xhelmboyx/quicktime/formats/mp4-layout.txt
-
-
+			$handyatomtranslatorarray['apID'] = 'purchase_account';
+			$handyatomtranslatorarray['catg'] = 'category';            // iTunes 4.9
+			$handyatomtranslatorarray['covr'] = 'picture';             // iTunes 4.0
+			$handyatomtranslatorarray['cpil'] = 'compilation';         // iTunes 4.0
+			$handyatomtranslatorarray['cprt'] = 'copyright';           // iTunes 4.0?
+			$handyatomtranslatorarray['desc'] = 'description';         // iTunes 5.0
+			$handyatomtranslatorarray['disk'] = 'disc_number';         // iTunes 4.0
+			$handyatomtranslatorarray['egid'] = 'episode_guid';        // iTunes 4.9
+			$handyatomtranslatorarray['gnre'] = 'genre';               // iTunes 4.0
+			$handyatomtranslatorarray['hdvd'] = 'hd_video';            // iTunes 4.0
+			$handyatomtranslatorarray['ldes'] = 'description_long';    //
+			$handyatomtranslatorarray['keyw'] = 'keyword';             // iTunes 4.9
+			$handyatomtranslatorarray['pcst'] = 'podcast';             // iTunes 4.9
+			$handyatomtranslatorarray['pgap'] = 'gapless_playback';    // iTunes 7.0
+			$handyatomtranslatorarray['purd'] = 'purchase_date';       // iTunes 6.0.2
+			$handyatomtranslatorarray['purl'] = 'podcast_url';         // iTunes 4.9
+			$handyatomtranslatorarray['rtng'] = 'rating';              // iTunes 4.0
+			$handyatomtranslatorarray['soaa'] = 'sort_album_artist';   //
+			$handyatomtranslatorarray['soal'] = 'sort_album';          //
+			$handyatomtranslatorarray['soar'] = 'sort_artist';         //
+			$handyatomtranslatorarray['soco'] = 'sort_composer';       //
+			$handyatomtranslatorarray['sonm'] = 'sort_title';          //
+			$handyatomtranslatorarray['sosn'] = 'sort_show';           //
+			$handyatomtranslatorarray['stik'] = 'stik';                // iTunes 4.9
+			$handyatomtranslatorarray['tmpo'] = 'bpm';                 // iTunes 4.0
+			$handyatomtranslatorarray['trkn'] = 'track_number';        // iTunes 4.0
+			$handyatomtranslatorarray['tven'] = 'tv_episode_id';       //
+			$handyatomtranslatorarray['tves'] = 'tv_episode';          // iTunes 6.0
+			$handyatomtranslatorarray['tvnn'] = 'tv_network_name';     // iTunes 6.0
+			$handyatomtranslatorarray['tvsh'] = 'tv_show_name';        // iTunes 6.0
+			$handyatomtranslatorarray['tvsn'] = 'tv_season';           // iTunes 6.0
 
 			// boxnames:
 			/*
@@ -2225,7 +2386,14 @@ echo 'QuicktimeParseNikonNCTG()::unknown $data_size_type: '.$data_size_type.'<br
 					$data = array('data'=>$data, 'image_mime'=>$image_mime);
 				}
 			}
-			$info['quicktime']['comments'][$comment_key][] = $data;
+			$gooddata = array($data);
+			if ($comment_key == 'genre') {
+				// some other taggers separate multiple genres with semicolon, e.g. "Heavy Metal;Thrash Metal;Metal"
+				$gooddata = explode(';', $data);
+			}
+			foreach ($gooddata as $data) {
+				$info['quicktime']['comments'][$comment_key][] = $data;
+			}
 		}
 		return true;
 	}
@@ -2242,5 +2410,80 @@ echo 'QuicktimeParseNikonNCTG()::unknown $data_size_type: '.$data_size_type.'<br
 		// Pascal strings have 1 unsigned byte at the beginning saying how many chars (1-255) are in the string
 		return substr($pascalstring, 1);
 	}
+
+
+	/*
+	// helper functions for m4b audiobook chapters
+	// code by Steffen Hartmann 2015-Nov-08
+	*/
+	public function search_tag_by_key($info, $tag, $history, &$result) {
+		foreach ($info as $key => $value) {
+			$key_history = $history.'/'.$key;
+			if ($key === $tag) {
+				$result[] = array($key_history, $info);
+			} else {
+				if (is_array($value)) {
+					$this->search_tag_by_key($value, $tag, $key_history, $result);
+				}
+			}
+		}
+	}
+
+	public function search_tag_by_pair($info, $k, $v, $history, &$result) {
+		foreach ($info as $key => $value) {
+			$key_history = $history.'/'.$key;
+			if (($key === $k) && ($value === $v)) {
+				$result[] = array($key_history, $info);
+			} else {
+				if (is_array($value)) {
+					$this->search_tag_by_pair($value, $k, $v, $key_history, $result);
+				}
+			}
+		}
+	}
+
+	public function quicktime_time_to_sample_table($info) {
+		$res = array();
+		$this->search_tag_by_pair($info['quicktime']['moov'], 'name', 'stbl', 'quicktime/moov', $res);
+		foreach ($res as $value) {
+			$stbl_res = array();
+			$this->search_tag_by_pair($value[1], 'data_format', 'text', $value[0], $stbl_res);
+			if (count($stbl_res) > 0) {
+				$stts_res = array();
+				$this->search_tag_by_key($value[1], 'time_to_sample_table', $value[0], $stts_res);
+				if (count($stts_res) > 0) {
+					return $stts_res[0][1]['time_to_sample_table'];
+				}
+			}
+		}
+		return array();
+	}
+
+	function quicktime_bookmark_time_scale($info) {
+		$time_scale = '';
+		$ts_prefix_len = 0;
+		$res = array();
+		$this->search_tag_by_pair($info['quicktime']['moov'], 'name', 'stbl', 'quicktime/moov', $res);
+		foreach ($res as $value) {
+			$stbl_res = array();
+			$this->search_tag_by_pair($value[1], 'data_format', 'text', $value[0], $stbl_res);
+			if (count($stbl_res) > 0) {
+				$ts_res = array();
+				$this->search_tag_by_key($info['quicktime']['moov'], 'time_scale', 'quicktime/moov', $ts_res);
+				foreach ($ts_res as $value) {
+					$prefix = substr($value[0], 0, -12);
+					if ((substr($stbl_res[0][0], 0, strlen($prefix)) === $prefix) && ($ts_prefix_len < strlen($prefix))) {
+						$time_scale = $value[1]['time_scale'];
+						$ts_prefix_len = strlen($prefix);
+					}
+				}
+			}
+		}
+		return $time_scale;
+	}
+	/*
+	// END helper functions for m4b audiobook chapters
+	*/
+
 
 }

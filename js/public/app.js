@@ -330,6 +330,16 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
+	$scope.showSidebar = function() {
+		OC.Apps.showAppSidebar();
+		$timeout(onViewWidthChange, 300);
+	};
+
+	$scope.hideSidebar = function() {
+		OC.Apps.hideAppSidebar();
+		$timeout(onViewWidthChange, 300);
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
@@ -344,8 +354,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}
 	};
 
-	// adjust controls bar width to not overlap with the scroll bar
-	function adjustControlsBarWidth() {
+	function onViewWidthChange() {
+		// adjust controls bar width to not overlap with the scroll bar
 		var appViewWidth = $('#app-view').outerWidth();
 		if (appViewWidth) {
 			// Subtrack one pixel from the width because outerWidth() seems to
@@ -354,12 +364,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
 		}
+
+		// expanded details pane pushes the alphabet navigation to left
+		alphaNavRight = 10;
+		var detailsPane = $('#app-sidebar');
+		if (!detailsPane.hasClass('disappear')) {
+			alphaNavRight += detailsPane.outerWidth();
+		}
+		$('.alphabet-navigation').css('right', alphaNavRight);
 	}
-	$rootScope.$watch('started', adjustControlsBarWidth);
+	$rootScope.$watch('started', onViewWidthChange);
 	$($window).resize(function() {
 		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
 		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
-		$timeout(adjustControlsBarWidth, 300);
+		$timeout(onViewWidthChange, 300);
 		$rootScope.$emit('windowResized');
 	});
 
@@ -486,7 +504,7 @@ angular.module('Music').controller('OverviewController', [
 			if (track.artistId !== artist.id) {
 				var artistName = ' (' + track.artistName + ') ';
 				if (!plaintext) {
-					artistName = ' <div class="muted">' + artistName + '</div>';
+					artistName = ' <span class="muted">' + artistName + '</span>';
 				}
 				att += artistName;
 			}
@@ -1394,6 +1412,7 @@ function ($rootScope, $interpolate) {
 			var tracks = scope.$eval(attrs.tracks);
 			var getTrackData = scope.$eval(attrs.getTrackData);
 			var playTrack = scope.$eval(attrs.playTrack);
+			var showTrackDetails = scope.$eval(attrs.showTrackDetails);
 			var getDraggable = scope.$eval(attrs.getDraggable);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
@@ -1484,14 +1503,21 @@ function ($rootScope, $interpolate) {
 			 */
 			function getTrackNode (track, index, className) {
 				var listItem = document.createElement('li');
+
+				var listItemContent = document.createElement('div');
 				var trackData = getTrackData(track, index, scope);
-				var newElement = trackRenderer(trackData);
+				listItemContent.innerHTML = trackRenderer(trackData);
+				listItemContent.setAttribute('draggable', true);
+				listItem.appendChild(listItemContent);
+
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				listItem.appendChild(detailsButton);
+
 				listItem.id = 'track-' + trackData.id;
-				listItem.setAttribute('draggable', true);
 				if (className) {
 					listItem.className = className;
 				}
-				listItem.innerHTML = newElement;
 				return listItem;
 			}
 
@@ -1522,8 +1548,12 @@ function ($rootScope, $interpolate) {
 			element.on('click', 'li', function (event) {
 				var trackId = trackIdFromElementId(this.id);
 				if (trackId) {
-					playTrack(trackId);
-					scope.$apply();
+					if (event.target.className == 'icon-details') {
+						showTrackDetails(trackId);
+					} else {
+						playTrack(trackId);
+						scope.$apply();
+					}
 				}
 				else { // "show more/less" item
 					if (!hiddenTracksRendered) {

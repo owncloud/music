@@ -125,7 +125,7 @@ angular.module('Music').controller('OverviewController', [
 			if (track.artistId !== artist.id) {
 				var artistName = ' (' + track.artistName + ') ';
 				if (!plaintext) {
-					artistName = ' <div class="muted">' + artistName + '</div>';
+					artistName = ' <span class="muted">' + artistName + '</span>';
 				}
 				att += artistName;
 			}

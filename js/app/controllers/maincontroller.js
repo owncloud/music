@@ -186,6 +186,16 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
+	$scope.showSidebar = function() {
+		OC.Apps.showAppSidebar();
+		$timeout(onViewWidthChange, 300);
+	};
+
+	$scope.hideSidebar = function() {
+		OC.Apps.hideAppSidebar();
+		$timeout(onViewWidthChange, 300);
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
@@ -200,8 +210,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}
 	};
 
-	// adjust controls bar width to not overlap with the scroll bar
-	function adjustControlsBarWidth() {
+	function onViewWidthChange() {
+		// adjust controls bar width to not overlap with the scroll bar
 		var appViewWidth = $('#app-view').outerWidth();
 		if (appViewWidth) {
 			// Subtrack one pixel from the width because outerWidth() seems to
@@ -210,12 +220,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
 		}
+
+		// expanded details pane pushes the alphabet navigation to left
+		alphaNavRight = 10;
+		var detailsPane = $('#app-sidebar');
+		if (!detailsPane.hasClass('disappear')) {
+			alphaNavRight += detailsPane.outerWidth();
+		}
+		$('.alphabet-navigation').css('right', alphaNavRight);
 	}
-	$rootScope.$watch('started', adjustControlsBarWidth);
+	$rootScope.$watch('started', onViewWidthChange);
 	$($window).resize(function() {
 		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
 		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
-		$timeout(adjustControlsBarWidth, 300);
+		$timeout(onViewWidthChange, 300);
 		$rootScope.$emit('windowResized');
 	});
 

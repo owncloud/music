@@ -9,6 +9,7 @@
 		tracks="tracks"
 		get-track-data="getTrackData"
 		play-track="playTrack"
+		show-track-details="showSidebar"
 		get-draggable="getDraggable"
 	/>
 </div>

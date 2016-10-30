@@ -19,6 +19,7 @@
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'settings-user');
+\OCP\Util::addStyle('music', 'style-navigation');
 \OCP\Util::addStyle('music', 'style-sidebar');
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');
@@ -153,6 +154,11 @@
 				<h2 translate>Scanning music …</h2>
 				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
 			</div>
+
+			<div id="app-sidebar" class="detailsView disappear">
+				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
+			</div>
+
 		</div>
 
 	</div>

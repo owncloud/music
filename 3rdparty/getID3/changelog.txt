@@ -18,6 +18,10 @@
 Version History
 ===============
 
+1.9.12-oc_music_app: [2016-10-30] Pauli Järvinen
+    A patched version for the ownCloud Music app. Consists of 1.9.12 + commit 0e6c1a3bcef
+    which fixes parsing of non-regular files (like the "oc://" paths used in ownCloud).
+
 1.9.12: [2016-03-02] James Heinrich
     Â» Add support for Direct Stream Digital (DSD) /
       DSD Storage Facility (DSF) file format

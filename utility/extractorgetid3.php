@@ -14,6 +14,9 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
+// Only include when needed. Better ways to do this, but this
+// allow apps which use getID3 to be enabled at the same time.
+require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 /**
  * an extractor class for getID3
  */

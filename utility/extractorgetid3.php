@@ -14,6 +14,10 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
+// #551. Include get3ID only as needed. Moving this from
+// apps/music.php to the code that uses it.
+require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+
 /**
  * an extractor class for getID3
  */

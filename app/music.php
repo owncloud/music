@@ -45,8 +45,6 @@ use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
 use OCP\AppFramework\IAppContainer;
 
-require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
-
 class Music extends App {
 
 	public function __construct(array $urlParams=array()){

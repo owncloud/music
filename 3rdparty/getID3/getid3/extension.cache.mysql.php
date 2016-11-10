@@ -80,7 +80,7 @@ class getID3_cached_mysql extends getID3
 
 
 	// public: constructor - see top of this file for cache type and cache_options
-	public function getID3_cached_mysql($host, $database, $username, $password, $table='getid3_cache') {
+	public function __construct($host, $database, $username, $password, $table='getid3_cache') {
 
 		// Check for mysql support
 		if (!function_exists('mysql_pconnect')) {
@@ -134,7 +134,7 @@ class getID3_cached_mysql extends getID3
 
 
 	// public: analyze file
-	public function analyze($filename) {
+	public function analyze($filename, $filesize=null, $original_filename='') {
 
 		if (file_exists($filename)) {
 
@@ -157,7 +157,7 @@ class getID3_cached_mysql extends getID3
 		}
 
 		// Miss
-		$analysis = parent::analyze($filename);
+		$analysis = parent::analyze($filename, $filesize, $original_filename);
 
 		// Save result
 		if (file_exists($filename)) {
@@ -178,11 +178,11 @@ class getID3_cached_mysql extends getID3
 	private function create_table($drop=false) {
 
 		$SQLquery  = 'CREATE TABLE IF NOT EXISTS `'.mysql_real_escape_string($this->table).'` (';
-		$SQLquery .=   '`filename` VARCHAR(255) NOT NULL DEFAULT \'\'';
+		$SQLquery .=   '`filename` VARCHAR(500) NOT NULL DEFAULT \'\'';
 		$SQLquery .= ', `filesize` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `filetime` INT(11) NOT NULL DEFAULT \'0\'';
 		$SQLquery .= ', `analyzetime` INT(11) NOT NULL DEFAULT \'0\'';
-		$SQLquery .= ', `value` TEXT NOT NULL';
+		$SQLquery .= ', `value` LONGTEXT NOT NULL';
 		$SQLquery .= ', PRIMARY KEY (`filename`, `filesize`, `filetime`)) ENGINE=MyISAM';
 		$this->cursor = mysql_query($SQLquery, $this->connection);
 		echo mysql_error($this->connection);

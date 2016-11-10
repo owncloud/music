@@ -45,10 +45,7 @@ use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
 use OCP\AppFramework\IAppContainer;
 
-// in stable5 getid3 is already loaded
-if(!class_exists('getid3_exception')) {
-	require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
-}
+require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 
 class Music extends App {
 

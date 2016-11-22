@@ -198,7 +198,7 @@
 }
 
 #scanning, #toScan {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	background-color: rgba(255,255,255,0.95);
 	padding: 20px 50px;

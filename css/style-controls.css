@@ -10,7 +10,7 @@
 
 #controls {
 	height: 66px;
-	padding: 0 270px 0 20px;
+	padding: 0 20px 0 20px;
 }
 
 #controls, #controls * {
@@ -24,7 +24,7 @@
 #controls > img.right {
 	position: absolute;
 	top: 0;
-	right: 250px;
+	right: 0;
 }
 
 #controls .control {
@@ -88,12 +88,13 @@
 }
 
 #controls .progress-info {
-	width: 25%;
 	position: absolute;
 	top: 0px;
-	right: 375px;
+	left: 710px;
+	right: 170px;
+	max-width: 350px;
 	text-align: center;
-	margin: 7px 0 14px 0;
+	margin: 7px auto 14px auto;
 }
 
 #controls .progress-info span {

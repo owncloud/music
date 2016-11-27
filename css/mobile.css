@@ -12,113 +12,113 @@
 
 @media only screen and (max-width: 768px) {
 
-#app-view {
-	left: 0px;
-}
+	#app-view {
+		left: 0px;
+	}
 
-.artist-area {
-	padding-top: 15px;
-}
+	.artist-area {
+		padding-top: 15px;
+	}
 
-.artist-area > h1 {
-	margin-left: 8px;
-}
+	.artist-area > h1 {
+		margin-left: 8px;
+	}
 
-/* adjust album area to screen width */
-.album-area {
-	width: 100%;
-	padding: 10px 30px 0 10px;
-}
+	/* adjust album area to screen width */
+	.album-area {
+		width: 100%;
+		padding: 10px 30px 0 10px;
+	}
 
-/* smaller album art */
-.album-area > .albumart,
-.album-area > img {
-	line-height: 50px;
-	font-size: 30px;
-	width: 50px;
-	height: 50px;
-	float: left;
-}
-/* also adjust the overlay */
-.album-area > img.overlay {
-	margin-left: -37px;
-	padding: 0;
-	width: 25px;
-	height: 25px;
-	margin-top: 13px;
-}
+	/* smaller album art */
+	.album-area > .albumart,
+	.album-area > img {
+		line-height: 50px;
+		font-size: 30px;
+		width: 50px;
+		height: 50px;
+		float: left;
+	}
+	/* also adjust the overlay */
+	.album-area > img.overlay {
+		margin-left: -37px;
+		padding: 0;
+		width: 25px;
+		height: 25px;
+		margin-top: 13px;
+	}
 
-/* nicely display album name next to cover */
-.album-area h2 {
-	padding: 0px 15px;
-	position: absolute;
-	left: 56px;
-	max-width: 75%;
-	white-space: normal;
-	height: 50px;
-	line-height: 50px;
-}
+	/* nicely display album name next to cover */
+	.album-area h2 {
+		padding: 0px 15px;
+		position: absolute;
+		left: 56px;
+		max-width: 75%;
+		white-space: normal;
+		height: 50px;
+		line-height: 50px;
+	}
 
-.album-area > h2 > div {
-	display: inline-block;
-	vertical-align: middle;
-	line-height: normal;
-}
-/* move track list to the left so it’s visible on small screens */
-.track-list {
-	margin-left: 0;
-	padding-top: 15px;
-	clear: both;
-}
-/* align track title to the left with album title */
-.track-list > li {
-	padding-left: 40px;
-}
-.track-list > li.more-less {
-	padding-left: 59px;
-}
+	.album-area > h2 > div {
+		display: inline-block;
+		vertical-align: middle;
+		line-height: normal;
+	}
+	/* move track list to the left so it’s visible on small screens */
+	.track-list {
+		margin-left: 0;
+		padding-top: 15px;
+		clear: both;
+	}
+	/* align track title to the left with album title */
+	.track-list > li {
+		padding-left: 40px;
+	}
+	.track-list > li.more-less {
+		padding-left: 59px;
+	}
 
-.track-list > li > .play.playing {
-	height: 10px;
-	cursor: pointer;
-}
+	.track-list > li > .play.playing {
+		height: 10px;
+		cursor: pointer;
+	}
 
-/* layout the play bar elements for less space */
-#play-controls {
-	margin-left: 0;
-}
-#play-controls img:first-child {
-	display: none;
-}
-#controls .albumart {
-	left: 155px;
-	margin-left: 0;
-}
-#controls .song-info {
-	left: 200px;
-	max-width: 45%;
-}
-#controls .title {
-	font-size: 14px;
-}
-#controls.started .progress {
-	display: none;
-}
+	/* layout the play bar elements for less space */
+	#play-controls {
+		margin-left: 0;
+	}
+	#play-controls img:first-child {
+		display: none;
+	}
+	#controls .albumart {
+		left: 155px;
+		margin-left: 0;
+	}
+	#controls .song-info {
+		left: 200px;
+		max-width: 45%;
+	}
+	#controls .title {
+		font-size: 14px;
+	}
+	#controls.started .progress {
+		display: none;
+	}
 
-#controls #repeat {
-	right: 0;
-}
-#controls #shuffle {
-	right: 40px;
-}
+	#controls #repeat {
+		right: 0;
+	}
+	#controls #shuffle {
+		right: 40px;
+	}
 
-#controls .volume-control {
-	display: none;
-}
+	#controls .volume-control {
+		display: none;
+	}
 
-#app-view:not(.started) {
-	padding-top: 66px;
-}
+	#app-view:not(.started) {
+		padding-top: 66px;
+	}
 
 }
 
@@ -126,6 +126,7 @@
 
 	#controls .progress-info {
 		right: 115px;
+		left: auto;
 		padding-top: 12px;
 		text-align: right;
 		width: inherit;

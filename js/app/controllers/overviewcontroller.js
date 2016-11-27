@@ -12,11 +12,14 @@ angular.module('Music').controller('OverviewController',
 	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
 
-		// Prevent controller reload when the URL is updated with window.location.hash.
+		// Prevent controller reload when the URL is updated with window.location.hash,
+		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
 		var lastRoute = $route.current;
 		$scope.$on('$locationChangeSuccess', function(event) {
-			$route.current = lastRoute;
+			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
+				$route.current = lastRoute;
+			}
 		});
 
 		$scope.playTrack = function(track) {

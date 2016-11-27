@@ -21,9 +21,11 @@ use \OCP\IRequest;
 use \OCP\IURLGenerator;
 use \OCP\Files\Folder;
 
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PlaylistMapper;
-use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
@@ -31,14 +33,18 @@ class PlaylistApiController extends Controller {
 	private $playlistMapper;
 	private $userId;
 	private $userFolder;
-	private $trackMapper;
+	private $artistBusinessLayer;
+	private $albumBusinessLayer;
+	private $trackBusinessLayer;
 	private $urlGenerator;
 
 	public function __construct($appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								PlaylistMapper $playlistMapper,
-								TrackMapper $trackMapper,
+								ArtistBusinessLayer $artistBusinessLayer,
+								AlbumBusinessLayer $albumBusinessLayer,
+								TrackBusinessLayer $trackBusinessLayer,
 								Folder $userFolder,
 								$userId){
 		parent::__construct($appname, $request);
@@ -46,8 +52,9 @@ class PlaylistApiController extends Controller {
 		$this->userFolder = $userFolder;
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistMapper = $playlistMapper;
-		$this->trackMapper = $trackMapper;
-
+		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->trackBusinessLayer = $trackBusinessLayer;
 	}
 
 	/**
@@ -60,7 +67,7 @@ class PlaylistApiController extends Controller {
 		$playlists = $this->playlistMapper->findAll($this->userId);
 		$serializer = new APISerializer();
 
-		return  $serializer->serialize($playlists);
+		return $serializer->serialize($playlists);
 	}
 
 	/**
@@ -128,7 +135,9 @@ class PlaylistApiController extends Controller {
 
 			// Get all track information after finding them by their IDs
 			foreach($tracks as $track) {
-				$song = $this->trackMapper->find($track, $this->userId);
+				$song = $this->trackBusinessLayer->find($track, $this->userId);
+				$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
+				$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
 				$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder);
 			}
 

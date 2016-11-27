@@ -45,16 +45,18 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 				templateUrl:'overview.html'
 			};
 
+			var playlistControllerConfig = {
+				controller:'PlaylistController',
+				templateUrl:'playlistview.html'
+			};
+
 			$routeProvider
-				.when('/',				overviewControllerConfig)
-				.when('/artist/:id',	overviewControllerConfig)
-				.when('/album/:id',		overviewControllerConfig)
-				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig)
-				.when('/playlist/:playlistId', {
-					controller:'PlaylistController',
-					templateUrl:'playlistview.html'
-				});
+				.when('/',                     overviewControllerConfig)
+				.when('/artist/:id',           overviewControllerConfig)
+				.when('/album/:id',            overviewControllerConfig)
+				.when('/track/:id',            overviewControllerConfig)
+				.when('/file/:id',             overviewControllerConfig)
+				.when('/playlist/:playlistId', playlistControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',

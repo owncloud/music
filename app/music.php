@@ -101,7 +101,9 @@ class Music extends App {
 				$c->query('Request'),
 				$c->query('URLGenerator'),
 				$c->query('PlaylistMapper'),
-				$c->query('TrackMapper'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('UserFolder'),
 				$c->query('UserId')
 			);

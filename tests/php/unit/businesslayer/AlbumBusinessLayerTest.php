@@ -127,15 +127,15 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->albumBusinessLayer->deleteById($albumIds);
 	}
 
-	public function testUpdateCover(){
+	public function testUpdateFolderCover(){
 		$coverFileId = 1;
 		$parentFolderId = 2;
 
 		$this->mapper->expects($this->once())
-			->method('updateCover')
+			->method('updateFolderCover')
 			->with($this->equalTo($coverFileId), $this->equalTo($parentFolderId));
 
-		$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
+		$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 	}
 
 	public function testAddAlbumIfNotExistAdd(){

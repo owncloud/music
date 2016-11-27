@@ -107,7 +107,7 @@ class Scanner extends PublicEmitter {
 		if(substr($mimetype, 0, 5) === 'image') {
 			$coverFileId = $file->getId();
 			$parentFolderId = $file->getParent()->getId();
-			$this->albumBusinessLayer->updateCover($coverFileId, $parentFolderId);
+			$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 			return;
 		}
 
@@ -251,9 +251,20 @@ class Scanner extends PublicEmitter {
 			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $discNumber, $albumArtistId, $userId);
 			$albumId = $album->getId();
 
-			// add track and get track entity
+			// add track and get track entity; the track gets updated if it already exists
 			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
+
+			// if present, use the embedded album art as cover for the respective album
+			if($this->getId3Tag($fileInfo, 'picture') != null) {
+				$this->albumBusinessLayer->setCover($fileId, $albumId);
+			}
+			// if this file is an existing file which previously was used as cover for an album but now
+			// the file no longer contains any embedded album art
+			else if($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
+				$this->albumBusinessLayer->removeCover($fileId);
+				$this->findEmbeddedCoverForAlbum($albumId, $userId);
+			}
 
 			// debug logging
 			$this->logger->log('imported entities - ' .
@@ -261,6 +272,15 @@ class Scanner extends PublicEmitter {
 				'debug');
 		}
 
+	}
+
+	/**
+	 * @param \OCP\Files\Node $musicFile
+	 * @return Array with image MIME and content or null
+	 */
+	public function parseEmbeddedCoverArt($musicFile){
+		$fileInfo = $this->extractor->extract('oc://' . $musicFile->getPath());
+		return $this->getId3Tag($fileInfo, 'picture');
 	}
 
 	/**
@@ -277,16 +297,28 @@ class Scanner extends PublicEmitter {
 			$userId = $this->userId;
 		}
 
-		$remaining = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 
-		$this->albumBusinessLayer->deleteById($remaining['albumIds']);
-		$this->artistBusinessLayer->deleteById($remaining['artistIds']);
+		if ($result) { // this was a track file
+			// remove obsolete artists and albums
+			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
+			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
 
-		// debug logging
-		$this->logger->log('removed entities - albums: [' . implode(',', $remaining ['albumIds']) .
-			'], artists: [' . implode(',', $remaining['artistIds']) . ']' , 'debug');
+			// check if the removed track was used as embedded cover art file for a remaining album
+			foreach ($result['remainingAlbums'] as $albumId) {
+				if ($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
+					$this->albumBusinessLayer->removeCover($fileId);
+					$this->findEmbeddedCoverForAlbum($albumId, $userId);
+				}
+			}
 
-		$this->albumBusinessLayer->removeCover($fileId);
+			// debug logging
+			$this->logger->log('removed entities - albums: [' . implode(',', $result['obsoleteAlbums']) .
+				'], artists: [' . implode(',', $result['obsoleteArtists']) . ']' , 'debug');
+		}
+		else { // maybe this was an image file
+			$this->albumBusinessLayer->removeCover($fileId);
+		}
 	}
 
 	/**
@@ -443,5 +475,33 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $ordinal;
+	}
+
+	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+		return ($album != null && $album->getCoverFileId() == $fileId);
+	}
+
+	/**
+	 * Loop through the tracks of an album and set the first track containing embedded cover art
+	 * as cover file for the album
+	 * @param int $albumId
+	 * @param int $userId
+	 */
+	private function findEmbeddedCoverForAlbum($albumId, $userId) {
+		if ($this->userFolder != null) {
+			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+			foreach ($tracks as $track) {
+				$nodes = $this->userFolder->getById($track->getFileId());
+				if(count($nodes) > 0) {
+					// parse the first valid node and check if it contains embedded cover art
+					$image = $this->parseEmbeddedCoverArt($nodes[0]);
+					if ($image != null) {
+						$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
+						break;
+					}
+				}
+			}
+		}
 	}
 }

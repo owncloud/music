@@ -123,39 +123,55 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Deletes a track
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user
-	 * @return array of two arrays (named 'albumIds', 'artistIds') containing all album ids
-	 *		   and artist ids of the deleted track(s)
+	 * @return False if no such track was found; otherwise array of four arrays
+	 *         (named 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
+	 *         and 'obsoleteArtists') containing all album IDs and artist IDs of
+	 *         the deleted track(s). The 'obsolete' entities are such which no longer
+	 *         have any tracks while 'remaining' entities have some left.
 	 */
 	public function deleteTrack($fileId, $userId){
 		$tracks = $this->mapper->findAllByFileId($fileId);
 
-		$remaining = array(
-			'albumIds' => array(),
-			'artistIds' => array()
-		);
+		if(count($tracks) === 0){
+			$result = false;
+		}
+		else{
+			$remainingAlbums = [];
+			$remainingArtists = [];
+			$obsoleteAlbums = [];
+			$obsoleteArtists = [];
 
-		foreach($tracks as $track) {
-			$artistId = $track->getArtistId();
-			$albumId = $track->getAlbumId();
-			$this->mapper->delete($track);
-			if(!in_array($artistId, $remaining['artistIds'])){
-				// only add artists which have no tracks left
+			foreach($tracks as $track){
+				$artistId = $track->getArtistId();
+				$albumId = $track->getAlbumId();
+				$this->mapper->delete($track);
+
+				// check if artist became obsolete
 				$result = $this->mapper->countByArtist($artistId, $userId);
-				if($result === '0') {
-					$remaining['artistIds'][] = $artistId;
-				}
-			}
-			if(!in_array($albumId, $remaining['albumIds'])){
-				// only add albums which have no tracks left
-				$result = $this->mapper->countByAlbum($albumId, $userId);
-				if($result === '0') {
-					$remaining['albumIds'][] = $albumId;
+				if($result === '0'){
+					$this->addUnique($obsoleteArtists, $artistId);
+				}else{
+					$this->addUnique($remainingArtists, $artistId);
 				}
 
+				// check if album became obsolete
+				$result = $this->mapper->countByAlbum($albumId, $userId);
+				if($result === '0'){
+					$this->addUnique($obsoleteAlbums, $albumId);
+				}else{
+					$this->addUnique($remainingAlbums, $albumId);
+				}
 			}
+
+			$result = [
+				'remainingAlbums'  => $remainingAlbums,
+				'remainingArtists' => $remainingArtists,
+				'obsoleteAlbums'   => $obsoleteAlbums,
+				'obsoleteArtists'  => $obsoleteArtists
+			];
 		}
 
-		return $remaining;
+		return $result;
 	}
 
 	/**
@@ -166,5 +182,16 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByNameRecursive($name, $userId){
 		return $this->mapper->findAllByNameRecursive($name, $userId);
+	}
+
+	/**
+	 * Append value to array if is not already there
+	 * @param array $array
+	 * @param any $value
+	 */
+	private function addUnique(&$array, $value){
+		if(!in_array($value, $array)){
+			$array[] = $value;
+		}
 	}
 }

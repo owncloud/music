@@ -190,9 +190,9 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * @param integer $coverFileId
-	 * @param integer $parentFolderId
+	 * @param integer $folderId
 	 */
-	public function updateCover($coverFileId, $parentFolderId){
+	public function updateFolderCover($coverFileId, $folderId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = ?
 				WHERE `cover_file_id` IS NULL AND `id` IN (
@@ -201,7 +201,19 @@ class AlbumMapper extends BaseMapper {
 					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
 					WHERE `files`.`parent` = ?
 				)';
-		$params = array($coverFileId, $parentFolderId);
+		$params = array($coverFileId, $folderId);
+		$this->execute($sql, $params);
+	}
+
+	/**
+	 * @param integer $coverFileId
+	 * @param integer $albumId
+	 */
+	public function setCover($coverFileId, $albumId){
+		$sql = 'UPDATE `*PREFIX*music_albums`
+				SET `cover_file_id` = ?
+				WHERE `id` = ?';
+		$params = array($coverFileId, $albumId);
 		$this->execute($sql, $params);
 	}
 
@@ -217,7 +229,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @return array
+	 * @return array of [albumId, parentFolderId] pairs
 	 */
 	public function getAlbumsWithoutCover(){
 		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
@@ -246,7 +258,6 @@ class AlbumMapper extends BaseMapper {
 		$params = array($parentFolderId);
 		$result = $this->execute($imagesSql, $params);
 		$images = $result->fetchAll();
-		$imageId = null;
 		if (count($images)) {
 			usort($images, function ($imageA, $imageB) use ($coverNames) {
 				$nameA = strtolower($imageA['name']);
@@ -267,11 +278,8 @@ class AlbumMapper extends BaseMapper {
 				return $indexA > $indexB;
 			});
 			$imageId = $images[0]['fileid'];
+			$this->setCover($imageId, $albumId);
 		}
-		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = ? WHERE `id` = ?';
-		$params = array($imageId, $albumId);
-		$this->execute($sql, $params);
 	}
 
 	/**

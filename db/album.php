@@ -120,8 +120,11 @@ class Album extends Entity {
 	 * @return array collection API object
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n) {
-		$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
-					array('albumIdOrSlug' => $this->getId()));
+		$coverUrl = null;
+		if ($this->getCoverFileId() > 0) {
+			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
+				array('albumIdOrSlug' => $this->getId()));
+		}
 
 		return array(
 			'name' => $this->getNameString($l10n),

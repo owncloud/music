@@ -117,16 +117,25 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * updates the cover for albums without cover
+	 * updates the cover for albums in the specified folder without cover
 	 * @param integer $coverFileId the file id of the cover image
-	 * @param integer $parentFolderId the file id of the parent of this image
+	 * @param integer $folderId the file id of the folder where the albums are looked from
 	 */
-	public function updateCover($coverFileId, $parentFolderId){
-		$this->mapper->updateCover($coverFileId, $parentFolderId);
+	public function updateFolderCover($coverFileId, $folderId){
+		$this->mapper->updateFolderCover($coverFileId, $folderId);
 	}
 
 	/**
-	 * removes the cover from albums and search for new ones
+	 * set cover file for a specified album
+	 * @param integer $coverFileId the file id of the cover image
+	 * @param integer $albumId the id of the album to be modified
+	 */
+	public function setCover($coverFileId, $albumId){
+		$this->mapper->setCover($coverFileId, $albumId);
+	}
+
+	/**
+	 * removes the cover art from albums, replacement covers will be searched in a background task
 	 * @param integer $coverFileId the file id of the cover image
 	 */
 	public function removeCover($coverFileId){
@@ -134,7 +143,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * try to find covers from albums without covers
+	 * try to find cover arts for albums without covers
 	 */
 	public function findCovers(){
 		$albums = $this->mapper->getAlbumsWithoutCover();

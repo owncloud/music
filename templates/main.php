@@ -22,7 +22,6 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
-\OCP\Util::addScript('music', 'vendor/ngQueue/ngQueue.min');
 \OCP\Util::addScript('music', 'vendor/aurora/aurora');
 \OCP\Util::addScript('music', 'vendor/aurora/flac');
 \OCP\Util::addScript('music', 'vendor/aurora/mp3');

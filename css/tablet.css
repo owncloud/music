@@ -34,6 +34,8 @@
 	font-size: 14px;
 }
 
+#controls #volume-icon {
+	display: none;
 }
 
 @media only screen and (min-width: 769px) and (max-width: 1000px) {
@@ -47,8 +49,6 @@
 		text-align: right;
 		width: inherit;
 	}
-#controls #volume-icon {
-	display: none;
 }
 
 @media only screen and (min-width: 769px) and (max-width: 870px) {

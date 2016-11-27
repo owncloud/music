@@ -625,6 +625,7 @@ angular.module('Music').controller('PlaylistController',
 		$scope.load();
 
 }]);
+
 angular.module('Music').directive('albumart', [function() {
 
 	function setCoverImage(element, imageUrl) {

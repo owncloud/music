@@ -14,6 +14,8 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
+require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+
 /**
  * an extractor class for getID3
  */
@@ -22,10 +24,16 @@ class ExtractorGetID3 implements Extractor {
 	private $getID3;
 	private $logger;
 
-	public function __construct(\getID3 $getID3,
-								Logger $logger){
-		$this->getID3 = $getID3;
+	public function __construct(Logger $logger){
 		$this->logger = $logger;
+
+		$this->getID3 = new \getID3();
+		$this->getID3->encoding = 'UTF-8';
+		// On 32-bit systems, getid3 tries to make a 2GB size check,
+		// which does not work with fopen. Disable it.
+		// Therefore the filesize (determined by getID3) could be wrong
+		// (for files over ~2 GB) but this isn't used in any way.
+		$this->getID3->option_max_2gb_check = false;
 	}
 
 	/**

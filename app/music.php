@@ -250,20 +250,8 @@ class Music extends App {
 
 		$container->registerService('ExtractorGetID3', function($c) {
 			return new ExtractorGetID3(
-				$c->query('getID3'),
 				$c->query('Logger')
 			);
-		});
-
-		$container->registerService('getID3', function() {
-			$getID3 = new \getID3();
-			$getID3->encoding = 'UTF-8';
-			// On 32-bit systems, getid3 tries to make a 2GB size check,
-			// which does not work with fopen. Disable it.
-			// Therefore the filesize (determined by getID3) could be wrong
-			// (for files over ~2 GB) but this isn't used in any way.
-			$getID3->option_max_2gb_check = false;
-			return $getID3;
 		});
 
 		$container->registerService('Helper', function(IAppContainer $c) {

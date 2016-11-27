@@ -124,6 +124,9 @@ angular.module('Music').controller('MainController',
 	function adjustControlsBarWidth() {
 		try {
 			var controlsWidth = $window.innerWidth - getScrollBarWidth();
+			if($(window).width() > 768) {
+				controlsWidth -= $('#app-navigation').width();
+			}
 			$('#controls').css('width', controlsWidth);
 			$('#controls').css('min-width', controlsWidth);
 		}

@@ -29,31 +29,16 @@ angular.module('Music').controller('OverviewController',
 			var artist = _.find($scope.$parent.artists,
 				function(artist) {
 					return artist.id === track.albumArtistId;
-				}),
-				album = _.find(artist.albums,
+				});
+			var album = _.find(artist.albums,
 				function(album) {
 					return album.id === track.albumId;
-				}),
-				tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			// determine index of clicked track
-			var index = -1;
-			for (var i = 0; i < tracks.length; i++) {
-				if(tracks[i].id == track.id) {
-					index = i;
-					break;
-				}
-			}
-			if(index > 0) {
-				// slice array in two parts and interchange them
-				var begin = tracks.slice(0, index);
-				var end = tracks.slice(index);
-				tracks = end.concat(begin);
-			}
-			playlistService.setPlaylist(tracks);
+				});
+			var tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				});
+			playlistService.setPlaylist(tracks, track);
 			playlistService.publish('play');
 		};
 

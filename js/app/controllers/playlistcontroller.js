@@ -91,15 +91,15 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
-		// Call playlistService to play all songs in the current playlist
+		// Call playlistService to play all songs in the current playlist from the beginning
 		$scope.playAll = function() {
 			playlistService.setPlaylist($scope.currentPlaylist.trackIds);
 			playlistService.publish('play');
 		};
 
-		// Play only one song from the playlist
+		// Play the list, starting from a specific track
 		$scope.playTrack = function(track) {
-			playlistService.setPlaylist([track]);
+			playlistService.setPlaylist($scope.currentPlaylist.trackIds, track);
 			playlistService.publish('play');
 		};
 

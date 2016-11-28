@@ -204,31 +204,16 @@ angular.module('Music').controller('OverviewController',
 			var artist = _.find($scope.$parent.artists,
 				function(artist) {
 					return artist.id === track.albumArtistId;
-				}),
-				album = _.find(artist.albums,
+				});
+			var album = _.find(artist.albums,
 				function(album) {
 					return album.id === track.albumId;
-				}),
-				tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			// determine index of clicked track
-			var index = -1;
-			for (var i = 0; i < tracks.length; i++) {
-				if(tracks[i].id == track.id) {
-					index = i;
-					break;
-				}
-			}
-			if(index > 0) {
-				// slice array in two parts and interchange them
-				var begin = tracks.slice(0, index);
-				var end = tracks.slice(index);
-				tracks = end.concat(begin);
-			}
-			playlistService.setPlaylist(tracks);
+				});
+			var tracks = _.sortBy(album.tracks,
+				function(track) {
+					return track.number;
+				});
+			playlistService.setPlaylist(tracks, track);
 			playlistService.publish('play');
 		};
 
@@ -607,15 +592,15 @@ angular.module('Music').controller('PlaylistController',
 			});
 		};
 
-		// Call playlistService to play all songs in the current playlist
+		// Call playlistService to play all songs in the current playlist from the beginning
 		$scope.playAll = function() {
 			playlistService.setPlaylist($scope.currentPlaylist.trackIds);
 			playlistService.publish('play');
 		};
 
-		// Play only one song from the playlist
+		// Play the list, starting from a specific track
 		$scope.playTrack = function(track) {
-			playlistService.setPlaylist([track]);
+			playlistService.setPlaylist($scope.currentPlaylist.trackIds, track);
 			playlistService.publish('play');
 		};
 
@@ -927,6 +912,25 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	var playlist = null;
 	var currentTrackId = null;
 	var played = [];
+
+	function wrapTrackToStartOfList(list, track) {
+		// determine index of the first track
+		var index = -1;
+		for (var i = 0; i < list.length; i++) {
+			if(list[i].id == track.id) {
+				index = i;
+				break;
+			}
+		}
+		if(index > 0) {
+			// slice array in two parts and interchange them
+			var begin = list.slice(0, index);
+			var end = list.slice(index);
+			list = end.concat(begin);
+		}
+		return list;
+	}
+
 	return {
 		getCurrentTrack: function() {
 			if(currentTrackId !== null && playlist !== null) {
@@ -983,7 +987,10 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			return playlist[currentTrackId];
 		},
-		setPlaylist: function(pl) {
+		setPlaylist: function(pl, startTrack /*optional*/) {
+			if (startTrack) {
+				pl = wrapTrackToStartOfList(pl, startTrack);
+			}
 			playlist = pl;
 			currentTrackId = null;
 			played = [];

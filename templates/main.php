@@ -30,6 +30,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-controls');
+\OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'style-sidebar');
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');

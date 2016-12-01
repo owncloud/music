@@ -9,14 +9,12 @@
  */
 
 #app-navigation {
-/* 	padding-top: 66px; */
 	position: fixed;
 	z-index: 999;
 }
 
 #app-navigation li > img {
 	float: right;
-	height: 21px;
 	display: none;
 }
 
@@ -25,14 +23,13 @@
 }
 
 .playlist .svg.action {
-	margin-top: -25px;
 	margin-right: 5px;
 	float: right;
 	width: 24px;
 	height: 24px;
 }
 
-.icon-checkmark {
+.icon-checkmark, .icon-close {
   margin-top: 8px !important;
 }
 
@@ -41,6 +38,9 @@
 }
 
 .playlist .actions {
+	position: absolute;
+	top: 7px;
+	right: 0;
 	display: none;
 }
 
@@ -53,30 +53,13 @@
 	height: 24px;
 }
 
-#new-playlist, li.input {
-	padding: 6px 8px;
-}
-
-#new-playlist input, li.input input {
-	margin: 0;
-	height: 32px;
-}
-
 input[type="text"] {
 	width: 170px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
-#new-playlist input[type="button"] {
-	position: absolute;
-	bottom: 5px;
-
-	width: 24px;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-}
-
-li.input input {
-	width: 100%;
+input.edit-list, input.new-list {
+	margin: 6px;
+	height: 32px;
 }

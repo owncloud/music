@@ -58,7 +58,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				<li ng-hide="showCreateForm"><a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a></li>
 				<form name="newPlaylistForm" ng-show="showCreateForm">
 					<li id="new-playlist">
-						<input type="text" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
+						<input type="text" class="new-list" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
 						<div class="actions">
 							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()" />
 							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm" />
@@ -68,7 +68,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist)">
 					<a ng-hide="showEditForm == playlist.id" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="showEditForm == playlist.id">
-						<input type="text" ng-enter="update(playlist)" ng-model="playlist.name" />
+						<input type="text" class="edit-list" ng-enter="update(playlist)" ng-model="playlist.name" />
 						<button class="svg action icon-checkmark" ng-click="update(playlist)" />
 					</div>
 					<div class="actions">

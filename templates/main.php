@@ -54,8 +54,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
-				<li><a href="#/" translate>All</a></li>
-				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
+				<li class="app-navigation-separator"><a href="#/" translate>All</a></li>
 				<li ng-hide="showCreateForm"><a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a></li>
 				<form name="newPlaylistForm" ng-show="showCreateForm">
 					<li id="new-playlist">

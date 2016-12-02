@@ -22,7 +22,7 @@
 	height: 66px;
 }
 
-.playlist .svg.action {
+#app-navigation .svg.action {
 	margin-right: 5px;
 	float: right;
 	width: 24px;
@@ -46,11 +46,6 @@
 
 #new-playlist .actions {
   float: right;
-}
-
-#new-playlist .svg.action {
-	width: 24px;
-	height: 24px;
 }
 
 input[type="text"] {

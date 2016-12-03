@@ -41,6 +41,11 @@
 	vertical-align: top;
 }
 
+.playlist-area .track-list > li > div,
+.playlist-area .track-list > li > div * {
+	cursor: pointer;
+}
+
 .playlist-area .track-list > li > div {
 	display: inline-block;
 	white-space: nowrap;

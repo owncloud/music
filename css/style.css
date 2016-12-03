@@ -128,9 +128,10 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+	cursor: pointer
 }
 
-.track-list li:hover, li *:hover {
+.album-area .track-list li * {
 	cursor: pointer;
 }
 

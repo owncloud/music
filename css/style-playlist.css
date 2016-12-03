@@ -15,7 +15,7 @@
 
 .playlist-area > h1 {
 	margin-left: 28px;
-    margin-bottom: 11px;
+	margin-bottom: 11px;
 	font-size: 34px;
 	line-height: 36px;
 }
@@ -24,6 +24,38 @@
 	cursor: pointer;
 }
 
-.playlist-area > .track-list {
+.playlist-area .track-list {
 	margin-left: 15px;
+}
+
+.playlist-area .track-list > li {
+	padding-bottom: 11px;
+	white-space: nowrap;
+}
+
+.playlist-area .track-list .play {
+	margin-top: 5px;
+}
+
+.playlist-area .track-list * {
+	vertical-align: top;
+}
+
+.playlist-area .track-list > li > div {
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 7px;
+}
+
+.playlist-area .track-list > li > div > div {
+	display: inline-block;
+	white-space: normal;
+}
+
+.playlist-area .track-list li .action {
+	visibility: hidden;
+}
+
+.playlist-area .track-list li:hover .action {
+	visibility: visible;
 }

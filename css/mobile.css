@@ -65,20 +65,20 @@
 		line-height: normal;
 	}
 	/* move track list to the left so it’s visible on small screens */
-	.track-list {
+	.album-area .track-list {
 		margin-left: 0;
 		padding-top: 15px;
 		clear: both;
 	}
 	/* align track title to the left with album title */
-	.track-list > li {
+	.album-area .track-list > li {
 		padding-left: 40px;
 	}
-	.track-list > li.more-less {
+	.album-area .track-list > li.more-less {
 		padding-left: 59px;
 	}
 
-	.track-list > li > .play.playing {
+	.album-area .track-list > li > .play.playing {
 		height: 10px;
 		cursor: pointer;
 	}

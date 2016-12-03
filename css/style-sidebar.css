@@ -29,7 +29,7 @@
 	height: 24px;
 }
 
-.icon-checkmark, .icon-close {
+#app-navigation .icon-checkmark, #app-navigation .icon-close {
   margin-top: 8px !important;
 }
 

@@ -118,11 +118,11 @@
 	cursor: pointer;
 }
 
-.track-list {
+.album-area .track-list {
 	margin-left: 195px;
 }
 
-.track-list > li {
+.album-area .track-list > li {
 	padding-left: 2px;
 	padding-bottom: 11px;
 	text-overflow: ellipsis;
@@ -130,7 +130,7 @@
 	white-space: nowrap;
 }
 
-.track-list > li:hover, li *:hover {
+.track-list li:hover, li *:hover {
 	cursor: pointer;
 }
 
@@ -138,8 +138,8 @@
 	padding-left: 21px;
 }
 
-.track-list > li > .play.playing,
-.track-list > li:hover > .play {
+.track-list li .play.playing,
+.track-list li:hover .play {
 	visibility: visible;
 }
 

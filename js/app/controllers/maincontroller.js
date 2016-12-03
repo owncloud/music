@@ -23,8 +23,8 @@ angular.module('Music').controller('MainController',
 	});
 
 	// Broadcast an event in case of a drop on a playlist
-	$scope.dropSong = function($event, $data, playlistId){
-		$rootScope.$broadcast('droppedSong', $data, playlistId);
+	$scope.dropOnPlaylist = function($event, $data, playlistId){
+		$rootScope.$broadcast('droppedOnPlaylist', $data, playlistId);
 	};
 
 	$scope.currentTrack = null;

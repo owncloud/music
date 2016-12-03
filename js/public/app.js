@@ -60,8 +60,8 @@ angular.module('Music').controller('MainController',
 	});
 
 	// Broadcast an event in case of a drop on a playlist
-	$scope.dropSong = function($event, $data, playlistId){
-		$rootScope.$broadcast('droppedSong', $data, playlistId);
+	$scope.dropOnPlaylist = function($event, $data, playlistId){
+		$rootScope.$broadcast('droppedOnPlaylist', $data, playlistId);
 	};
 
 	$scope.currentTrack = null;
@@ -578,10 +578,17 @@ angular.module('Music').controller('PlaylistController',
 
 		// Add track to the playlist
 		$scope.addTrack = function(playlist, song) {
+			addTracks(playlist, [song.id]);
+		};
 
-			playlist.all("add").post({trackIds: song.id}).then(function() {
-				playlist.trackIds.push(song);
-			});
+		// Add all tracks on an album to the playlist
+		$scope.addAlbum = function(playlist, album) {
+			addTracks(playlist, trackIdsFromAlbum(album));
+		};
+
+		// Add all tracks on all albums by an artist to the playlist
+		$scope.addArtist = function(playlist, artist) {
+			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
 		// Remove chosen track from the list
@@ -609,10 +616,40 @@ angular.module('Music').controller('PlaylistController',
 			$scope.getPlaylist($routeParams.playlistId);
 		}
 
-		// Emitted by MainController after dropping a song on a playlist
-		$scope.$on('droppedSong', function(event, song, playlist) {
-			$scope.addTrack(playlist, song);
+		// Emitted by MainController after dropping a track/album/artist on a playlist
+		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
+			if ('files' in droppedItem) {
+				$scope.addTrack(playlist, droppedItem);
+			} else if ('tracks' in droppedItem) {
+				$scope.addAlbum(playlist, droppedItem);
+			} else if ('albums' in droppedItem) {
+				$scope.addArtist(playlist, droppedItem);
+			} else {
+				console.error("Unknwon entity dropped on playlist");
+			}
 		});
+
+		function trackIdsFromAlbum(album) {
+			var ids = [];
+			for (var i = 0, count = album.tracks.length; i < count; ++i) {
+				ids.push(album.tracks[i].id);
+			}
+			return ids;
+		}
+
+		function trackIdsFromArtist(artist) {
+			var ids = [];
+			for (var i = 0, count = artist.albums.length; i < count; ++i) {
+				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
+			}
+			return ids;
+		}
+
+		function addTracks(playlist, trackIds) {
+			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function() {
+				playlist.trackIds = playlist.trackIds.concat(trackIds);
+			});
+		}
 
 		// load all playlists in sidebar
 		$scope.load();

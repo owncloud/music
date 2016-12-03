@@ -23,11 +23,14 @@
 
 <div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
 	<span id="{{ letter }}" ng-show="letterAvailable[letter]"></span> <!-- TODO: use ng-if - introduced in 1.1.5 -->
-	<h1 id="{{ 'artist-' + artist.id }}" ng-click="playArtist(artist)">{{ artist.name }} <img class="play svg" alt="{{ 'Play' | translate }}"
-		src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" /></h1>
+	<h1 id="{{ 'artist-' + artist.id }}" ng-click="playArtist(artist)" ui-draggable="true" drag="artist">
+		{{ artist.name }}
+		<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
+	</h1>
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:['year', 'name', 'disk']">
-		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year }})"><div>{{ album.name }}
-			<span ng-show="album.year" class="muted">({{ album.year }})</span></div>
+		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year }})"
+			ui-draggable="true" drag="album">
+			<div>{{ album.name }}<span ng-show="album.year" class="muted">({{ album.year }})</span></div>
 		</h2>
 		<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"

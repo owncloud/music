@@ -65,7 +65,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 						</div>
 					</li>
 				</form>
-				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropSong($event, $data, playlist)">
+				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropOnPlaylist($event, $data, playlist)">
 					<a ng-hide="showEditForm == playlist.id" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="showEditForm == playlist.id">
 						<input type="text" class="edit-list" ng-enter="update(playlist)" ng-model="playlist.name" />

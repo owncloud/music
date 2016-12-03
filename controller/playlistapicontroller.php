@@ -112,7 +112,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function delete($id) {
-		$this->playlistMapper->delete($id);
+		$this->playlistMapper->deleteById([$id]);
 
 		return array();
 	}

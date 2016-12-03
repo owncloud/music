@@ -14,11 +14,10 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
 use OCP\AppFramework\Db\Entity;
 use OCP\IDb;
 
-class PlaylistMapper extends Mapper {
+class PlaylistMapper extends BaseMapper {
 
 	public function __construct(IDb $db){
 		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
@@ -97,17 +96,23 @@ class PlaylistMapper extends Mapper {
 
 	/**
 	 * deletes a playlist
-	 * @param Entity $entity the playlist entity
+	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
-	public function delete(Entity $entity) {
-		// remove all tracks in it
-		$this->removeTracks($entity->getId());
+	public function deleteById($ids){
+		$count = count($ids);
+		if($count === 0) {
+			return;
+		}
+		// delete from oc_music_playlists
+		parent::deleteById($ids);
 
-		// then remove playlist
-		$sql = 'DELETE FROM `*PREFIX*music_playlists` ' .
-					'WHERE `id` = ?';
-		$this->execute($sql, array($entity->getId()));
-
+		// delete from oc_music_playlist_tracks
+		$questionMarks = '?';
+		for($i = 1; $i < $count; $i++){
+			$questionMarks .= ',?';
+		}
+		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` IN ('. $questionMarks . ')';
+		$this->execute($sql, $ids);
 	}
 
 	/**

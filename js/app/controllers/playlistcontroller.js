@@ -25,7 +25,6 @@ angular.module('Music').controller('PlaylistController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.playlistSongs = [];
 		$scope.playlists = [];
 
 		$scope.newPlaylistName = null;
@@ -56,6 +55,7 @@ angular.module('Music').controller('PlaylistController',
 		$scope.getPlaylist = function(id) {
 			Restangular.one('playlists', id).get().then(function(playlist){
 				$scope.currentPlaylist = playlist;
+				$rootScope.currentView = 'playlist' + playlist.id;
 			});
 		};
 

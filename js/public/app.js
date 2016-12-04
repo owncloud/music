@@ -187,6 +187,8 @@ angular.module('Music').controller('OverviewController',
 	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
 
+		$rootScope.currentView = 'albums';
+
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
@@ -526,7 +528,6 @@ angular.module('Music').controller('PlaylistController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.playlistSongs = [];
 		$scope.playlists = [];
 
 		$scope.newPlaylistName = null;
@@ -557,6 +558,7 @@ angular.module('Music').controller('PlaylistController',
 		$scope.getPlaylist = function(id) {
 			Restangular.one('playlists', id).get().then(function(playlist){
 				$scope.currentPlaylist = playlist;
+				$rootScope.currentView = 'playlist' + playlist.id;
 			});
 		};
 

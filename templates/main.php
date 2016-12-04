@@ -54,8 +54,12 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
-				<li class="app-navigation-separator"><a href="#/" translate>All</a></li>
-				<li ng-hide="showCreateForm"><a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a></li>
+				<li class="app-navigation-separator" ng-class="{active: currentView == 'albums'}">
+					<a href="#/" translate>All</a>
+				</li>
+				<li ng-hide="showCreateForm">
+					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>
+				</li>
 				<form name="newPlaylistForm" ng-show="showCreateForm">
 					<li id="new-playlist">
 						<input type="text" class="new-list" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
@@ -65,7 +69,8 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 						</div>
 					</li>
 				</form>
-				<li class="playlist" ng-repeat="playlist in playlists" ui-on-Drop="dropOnPlaylist($event, $data, playlist)">
+				<li class="playlist" ng-class="{active: currentView == 'playlist' + playlist.id}"
+					ng-repeat="playlist in playlists" ui-on-Drop="dropOnPlaylist($event, $data, playlist)">
 					<a ng-hide="showEditForm == playlist.id" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="showEditForm == playlist.id">
 						<input type="text" class="edit-list" ng-enter="update(playlist)" ng-model="playlist.name" />

@@ -12,6 +12,8 @@ angular.module('Music').controller('OverviewController',
 	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
 
+		$rootScope.currentView = 'albums';
+
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976

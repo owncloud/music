@@ -30,7 +30,7 @@
 	<div class="album-area" ng-repeat="album in artist.albums | orderBy:['year', 'name', 'disk']">
 		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year }})"
 			ui-draggable="true" drag="album">
-			<div>{{ album.name }}<span ng-show="album.year" class="muted">({{ album.year }})</span></div>
+			<div>{{ album.name }} <span ng-show="album.year" class="muted">({{ album.year }})</span></div>
 		</h2>
 		<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"

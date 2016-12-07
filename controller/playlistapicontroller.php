@@ -130,27 +130,37 @@ class PlaylistApiController extends Controller {
 	public function get($id) {
 		try {
 			$playlist = $this->playlistMapper->find($id, $this->userId);
+			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
 
-			// set trackIds in model
-			$tracks = $this->playlistMapper->getTracks($id);
-
-			$songs = [];
-
-			// Get all track information after finding them by their IDs
-			foreach($tracks as $track) {
-				$song = $this->trackBusinessLayer->find($track, $this->userId);
-				$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
-				$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
-				$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder);
+			$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
+			if ($fulltree) {
+				return $this->toFullTree($playlist);
+			} else {
+				return $playlist->toAPI();
 			}
 
-			$playlist->setTrackIds($songs);
-
-			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);
 		}
+	}
+
+	private function toFullTree($playlist) {
+		$songs = [];
+
+		// Get all track information for all the tracks of the playlist
+		foreach($playlist->getTrackIds() as $trackId) {
+			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
+			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
+			$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
+			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder);
+		}
+
+		return array(
+			'name' => $playlist->getName(),
+			'tracks' => $songs,
+			'id' => $playlist->getId(),
+		);
 	}
 
 	/**

@@ -556,7 +556,7 @@ angular.module('Music').controller('PlaylistController',
 
 		// fetch playlist and its songs
 		$scope.getPlaylist = function(id) {
-			Restangular.one('playlists', id).get().then(function(playlist){
+			Restangular.one('playlists', id).get({fulltree: true}).then(function(playlist){
 				$scope.currentPlaylist = playlist;
 				$rootScope.currentView = 'playlist' + playlist.id;
 			});
@@ -597,19 +597,19 @@ angular.module('Music').controller('PlaylistController',
 		$scope.removeTrack = function(track) {
 			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function() {
 				// remove the element also from the JS array
-				$scope.currentPlaylist.trackIds.splice($scope.currentPlaylist.trackIds.indexOf(track), 1);
+				$scope.currentPlaylist.tracks.splice($scope.currentPlaylist.tracks.indexOf(track), 1);
 			});
 		};
 
 		// Call playlistService to play all songs in the current playlist from the beginning
 		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.currentPlaylist.trackIds);
+			playlistService.setPlaylist($scope.currentPlaylist.tracks);
 			playlistService.publish('play');
 		};
 
 		// Play the list, starting from a specific track
 		$scope.playTrack = function(track) {
-			playlistService.setPlaylist($scope.currentPlaylist.trackIds, track);
+			playlistService.setPlaylist($scope.currentPlaylist.tracks, track);
 			playlistService.publish('play');
 		};
 

@@ -65,6 +65,9 @@ class PlaylistApiController extends Controller {
 	 */
 	public function getAll() {
 		$playlists = $this->playlistMapper->findAll($this->userId);
+		foreach ($playlists as $list) {
+			$list->setTrackIds($this->playlistMapper->getTracks($list->getId()));
+		}
 		$serializer = new APISerializer();
 
 		return $serializer->serialize($playlists);
@@ -162,10 +165,9 @@ class PlaylistApiController extends Controller {
 
 		try {
 			$playlist = $this->playlistMapper->find($id, $this->userId);
-
 			$playlist->setName($name);
-
 			$this->playlistMapper->update($playlist);
+			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
 
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
@@ -189,12 +191,8 @@ class PlaylistApiController extends Controller {
 
 		try {
 			$playlist = $this->playlistMapper->find($id, $this->userId);
-
 			$this->playlistMapper->addTracks($newTrackIds, $id);
-
-			$oldTrackIds = $playlist->getTrackIds();
-			$trackIds = array_merge($oldTrackIds, $newTrackIds);
-			$playlist->setTrackIds($trackIds);
+			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
 
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
@@ -217,9 +215,11 @@ class PlaylistApiController extends Controller {
 		}
 
 		try {
+			$playlist = $this->playlistMapper->find($id, $this->userId);
 			$this->playlistMapper->removeTracks($id, $trackIds);
+			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
 
-			// TODO what should be returned here - the state of the playlist after the removal?
+			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);

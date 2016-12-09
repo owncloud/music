@@ -3,7 +3,7 @@
 	<h1 ng-click="playAll()" ng-if="currentView == 'tracks'" translate>All tracks</h1>
 	<ul class="track-list">
 		<li ng-repeat="song in currentTracks">
-			<div ng-click="playTrack(song)">
+			<div ng-click="playTrack(song)" ui-draggable="true" drag="song">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == song.id}" />
 				<span class="muted">{{ $index + 1 }}.</span>

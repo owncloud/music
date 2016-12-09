@@ -51,6 +51,7 @@ angular.module('Music').controller('MainController',
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.loading = false;
 			$scope.artists = artists;
+			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
@@ -136,6 +137,24 @@ angular.module('Music').controller('MainController',
 	}
 	$($window).resize(adjustControlsBarWidth);
 	adjustControlsBarWidth();
+
+	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
+	function createTracksIndex(artists) {
+		var tracksDict = {};
+
+		for (var i = 0; i < artists.length; ++i) {
+			var albums = artists[i].albums;
+			for (var j = 0; j < albums.length; ++j) {
+				var tracks = albums[j].tracks;
+				for (var k = 0; k < tracks.length; ++k) {
+					var track = tracks[k];
+					tracksDict[track.id] = track;
+				}
+			}
+		}
+
+		return tracksDict;
+	}
 
 	// initial lookup if new files are available
 	$scope.processNextScanStep(1);

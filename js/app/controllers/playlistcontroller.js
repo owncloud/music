@@ -129,7 +129,7 @@ angular.module('Music').controller('PlaylistController',
 				$rootScope.currentView = 'playlist' + playlist.id;
 				$scope.currentTracks = createTracksArray(playlist.trackIds);
 			}
-			else {
+			else if (window.location.hash == '#/alltracks') {
 				$scope.currentPlaylist = null;
 				$rootScope.currentView = 'tracks';
 				$scope.currentTracks = createAllTracksArray();

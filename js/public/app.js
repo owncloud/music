@@ -35,7 +35,8 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 				.when('/album/:id',            overviewControllerConfig)
 				.when('/track/:id',            overviewControllerConfig)
 				.when('/file/:id',             overviewControllerConfig)
-				.when('/playlist/:playlistId', playlistControllerConfig);
+				.when('/playlist/:playlistId', playlistControllerConfig)
+				.when('/alltracks',            playlistControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',
@@ -646,11 +647,20 @@ angular.module('Music').controller('PlaylistController',
 
 		function initPlaylistViewFromRoute() {
 			if ($routeParams.playlistId && $scope.playlists) {
-				var playlist = _.find($scope.playlists, function(pl) { return pl.id == $routeParams.playlistId; });
+				var playlist = findPlaylist($routeParams.playlistId);
 				$scope.currentPlaylist = playlist;
 				$rootScope.currentView = 'playlist' + playlist.id;
 				$scope.currentTracks = createTracksArray(playlist.trackIds);
 			}
+			else {
+				$scope.currentPlaylist = null;
+				$rootScope.currentView = 'tracks';
+				$scope.currentTracks = createAllTracksArray();
+			}
+		}
+
+		function findPlaylist(id) {
+			return _.find($scope.playlists, function(pl) { return pl.id == id; });
 		}
 
 		function trackIdsFromAlbum(album) {
@@ -682,6 +692,20 @@ angular.module('Music').controller('PlaylistController',
 				for (var i = 0; i < trackIds.length; ++i) {
 					tracks[i] = $scope.$parent.allTracks[trackIds[i]];
 				}
+			}
+			return tracks;
+		}
+
+		function createAllTracksArray() {
+			var tracks = null;
+			if ($scope.$parent.allTracks) {
+				tracks = [];
+				for (var trackId in $scope.$parent.allTracks) {
+					tracks.push($scope.$parent.allTracks[trackId]);
+				}
+
+				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
 			}
 			return tracks;
 		}

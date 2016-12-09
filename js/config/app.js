@@ -56,7 +56,8 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 				.when('/album/:id',            overviewControllerConfig)
 				.when('/track/:id',            overviewControllerConfig)
 				.when('/file/:id',             overviewControllerConfig)
-				.when('/playlist/:playlistId', playlistControllerConfig);
+				.when('/playlist/:playlistId', playlistControllerConfig)
+				.when('/alltracks',            playlistControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',

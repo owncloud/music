@@ -55,7 +55,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<div id="app-navigation">
 			<ul ng-controller="PlaylistController">
 				<li ng-class="{active: currentView == 'albums'}">
-					<a href="#/" translate>Albums</a>
+					<a ng-click="navigateToAlbums()" translate>Albums</a>
 				</li>
 				<li class="app-navigation-separator" ng-class="{active: currentView == 'tracks'}">
 					<a href="#/alltracks" translate>All tracks</a>

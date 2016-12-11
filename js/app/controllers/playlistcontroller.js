@@ -47,6 +47,7 @@ angular.module('Music').controller('PlaylistController',
 
 		// load all playlists
 		$scope.load = function() {
+			$rootScope.loading = true;
 			Restangular.all('playlists').getList().then(function(playlists){
 				$scope.playlists = playlists;
 				initPlaylistViewFromRoute();
@@ -104,6 +105,15 @@ angular.module('Music').controller('PlaylistController',
 			playlistService.publish('play');
 		};
 
+		$scope.navigateToAlbums = function() {
+			if ($rootScope.currentView != 'albums') {
+				$rootScope.loading = true;
+				$timeout(function() {
+					window.location.hash = '#/';
+				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
+			}
+		};
+
 		// Emitted by MainController after dropping a track/album/artist on a playlist
 		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
 			if ('files' in droppedItem) {
@@ -128,11 +138,17 @@ angular.module('Music').controller('PlaylistController',
 				$scope.currentPlaylist = playlist;
 				$rootScope.currentView = 'playlist' + playlist.id;
 				$scope.currentTracks = createTracksArray(playlist.trackIds);
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
 			}
 			else if (window.location.hash == '#/alltracks') {
 				$scope.currentPlaylist = null;
 				$rootScope.currentView = 'tracks';
 				$scope.currentTracks = createAllTracksArray();
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
 			}
 		}
 

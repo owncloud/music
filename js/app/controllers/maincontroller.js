@@ -15,13 +15,6 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	$scope.loading = true;
-
-	// will be invoked by the artist factory
-	$rootScope.$on('artistsLoaded', function() {
-		$scope.loading = false;
-	});
-
 	// Broadcast an event in case of a drop on a playlist
 	$scope.dropOnPlaylist = function($event, $data, playlistId){
 		$rootScope.$broadcast('droppedOnPlaylist', $data, playlistId);
@@ -47,9 +40,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
-		$scope.loading = true;
 		ArtistFactory.getArtists().then(function(artists){
-			$scope.loading = false;
 			$scope.artists = artists;
 			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {

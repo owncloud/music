@@ -9,9 +9,10 @@
  */
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
-	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
+	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
+		$rootScope.loading = true;
 		$rootScope.currentView = 'albums';
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
@@ -21,6 +22,8 @@ angular.module('Music').controller('OverviewController',
 		$scope.$on('$locationChangeSuccess', function(event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
+			} else {
+				$rootScope.loading = true;
 			}
 		});
 
@@ -112,10 +115,6 @@ angular.module('Music').controller('OverviewController',
 			$scope.scrollToItem('album-' + albumId);
 		});
 
-		$rootScope.$on('artistsLoaded', function () {
-			$scope.initializePlayerStateFromURL();
-		});
-
 		$scope.initializePlayerStateFromURL = function() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -155,5 +154,17 @@ angular.module('Music').controller('OverviewController',
 					}
 				}
 			}
+			$rootScope.loading = false;
 		};
+
+		// initialize either immedately or once the parent view has finished loading the collection
+		if ($scope.$parent.artists) {
+			$timeout(function() {
+				$scope.initializePlayerStateFromURL();
+			});
+		}
+
+		$rootScope.$on('artistsLoaded', function () {
+			$scope.initializePlayerStateFromURL();
+		});
 }]);

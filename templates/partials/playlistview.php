@@ -1,4 +1,4 @@
-<div class="playlist-area">
+<div class="playlist-area" ng-show="!loading">
 	<h1 ng-click="playAll()" ng-if="currentPlaylist">{{currentPlaylist.name}}</h1>
 	<h1 ng-click="playAll()" ng-if="currentView == 'tracks'" translate>All tracks</h1>
 	<ul class="track-list">

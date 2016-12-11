@@ -53,13 +53,6 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	$scope.loading = true;
-
-	// will be invoked by the artist factory
-	$rootScope.$on('artistsLoaded', function() {
-		$scope.loading = false;
-	});
-
 	// Broadcast an event in case of a drop on a playlist
 	$scope.dropOnPlaylist = function($event, $data, playlistId){
 		$rootScope.$broadcast('droppedOnPlaylist', $data, playlistId);
@@ -85,9 +78,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
-		$scope.loading = true;
 		ArtistFactory.getArtists().then(function(artists){
-			$scope.loading = false;
 			$scope.artists = artists;
 			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
@@ -204,9 +195,10 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
-	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
+	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
+		$rootScope.loading = true;
 		$rootScope.currentView = 'albums';
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
@@ -216,6 +208,8 @@ angular.module('Music').controller('OverviewController',
 		$scope.$on('$locationChangeSuccess', function(event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
+			} else {
+				$rootScope.loading = true;
 			}
 		});
 
@@ -307,10 +301,6 @@ angular.module('Music').controller('OverviewController',
 			$scope.scrollToItem('album-' + albumId);
 		});
 
-		$rootScope.$on('artistsLoaded', function () {
-			$scope.initializePlayerStateFromURL();
-		});
-
 		$scope.initializePlayerStateFromURL = function() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -350,7 +340,19 @@ angular.module('Music').controller('OverviewController',
 					}
 				}
 			}
+			$rootScope.loading = false;
 		};
+
+		// initialize either immedately or once the parent view has finished loading the collection
+		if ($scope.$parent.artists) {
+			$timeout(function() {
+				$scope.initializePlayerStateFromURL();
+			});
+		}
+
+		$rootScope.$on('artistsLoaded', function () {
+			$scope.initializePlayerStateFromURL();
+		});
 }]);
 
 angular.module('Music').controller('PlayerController',
@@ -570,6 +572,7 @@ angular.module('Music').controller('PlaylistController',
 
 		// load all playlists
 		$scope.load = function() {
+			$rootScope.loading = true;
 			Restangular.all('playlists').getList().then(function(playlists){
 				$scope.playlists = playlists;
 				initPlaylistViewFromRoute();
@@ -627,6 +630,15 @@ angular.module('Music').controller('PlaylistController',
 			playlistService.publish('play');
 		};
 
+		$scope.navigateToAlbums = function() {
+			if ($rootScope.currentView != 'albums') {
+				$rootScope.loading = true;
+				$timeout(function() {
+					window.location.hash = '#/';
+				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
+			}
+		};
+
 		// Emitted by MainController after dropping a track/album/artist on a playlist
 		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
 			if ('files' in droppedItem) {
@@ -651,11 +663,17 @@ angular.module('Music').controller('PlaylistController',
 				$scope.currentPlaylist = playlist;
 				$rootScope.currentView = 'playlist' + playlist.id;
 				$scope.currentTracks = createTracksArray(playlist.trackIds);
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
 			}
 			else if (window.location.hash == '#/alltracks') {
 				$scope.currentPlaylist = null;
 				$rootScope.currentView = 'tracks';
 				$scope.currentTracks = createAllTracksArray();
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
 			}
 		}
 

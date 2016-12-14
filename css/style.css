@@ -207,7 +207,8 @@
 	padding: 20px 50px;
 	z-index: 1;
 	width: auto;
-	margin-left: 50%;
+	left: 50%;
+	margin-left: 125px;
 	transform: translateX(-50%);
 	-ms-transform: translateX(-50%);
 }
@@ -226,7 +227,7 @@
 	height: 40px;
 	padding: 10px;
 	bottom: 0;
-	left: 0;
+	left: 250px;
 	z-index: 101;
 	background-color: rgba(255,255,255,0.5);
 

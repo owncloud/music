@@ -120,6 +120,13 @@
 		padding-top: 66px;
 	}
 
+	#updateData {
+		left: 0;
+	}
+	
+	#scanning, #toScan {
+		margin-left: 0;
+	}
 }
 
 @media only screen and (min-width: 570px) and (max-width: 768px) {

@@ -33,7 +33,7 @@ class ResetDatabase extends Command {
 	protected function configure() {
 		$this
 			->setName('music:reset-database')
-			->setDescription('will drop all metadata gathered by the music app (artists, albums, tracks)')
+			->setDescription('will drop all metadata gathered by the music app (artists, albums, tracks, playlists)')
 			->addArgument(
 				'user_id',
 				InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
@@ -60,12 +60,12 @@ class ResetDatabase extends Command {
 			}
 		}
 
-		$output->writeln("Clean up relations (album/artist and playlist/track)");
+		$output->writeln("Clean up relations");
 		$this->cleanupRelation();
 	}
 
 	private function dropTables($userID=null) {
-		$tables = array('tracks', 'albums', 'artists');
+		$tables = array('tracks', 'albums', 'artists', 'playlists');
 		foreach($tables as $table) {
 			$sql = 'DELETE FROM `*PREFIX*music_' . $table . '` ';
 			$params = array();
@@ -79,13 +79,8 @@ class ResetDatabase extends Command {
 	}
 
 	private function cleanupRelation() {
-		$sql = 'DELETE FROM `*PREFIX*music_artists` ' .
-			'WHERE `id` NOT IN (SELECT `album_artist_id` FROM `*PREFIX*music_albums`)' .
-			'OR `id` NOT IN (SELECT `artist_id` FROM `*PREFIX*music_tracks`)';
-		$this->db->prepare($sql)->execute();
-
 		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` ' .
-			'WHERE `track_id` NOT IN (SELECT `id` FROM `*PREFIX*music_tracks`)';
+			'WHERE `playlist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_playlists`)';
 		$this->db->prepare($sql)->execute();
 	}
 

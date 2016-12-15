@@ -40,6 +40,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
+		$rootScope.loading = true;
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = artists;
 			$scope.allTracks = createTracksIndex(artists);
@@ -77,6 +78,8 @@ angular.module('Music').controller('MainController',
 		}
 		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
 			var scan = scanItems[0];
+
+			$scope.noMusicAvailable = (scan.total === 0);
 
 			// if it was not a dry run and the processed count is bigger than
 			// the previous value there are new music files available

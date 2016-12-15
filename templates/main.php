@@ -142,6 +142,28 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">
 			</div>
 
+			<div id="emptycontent" ng-show="noMusicAvailable">
+				<div class="icon-audio svg"></div>
+				<h2 translate>No music found</h2>
+				<p translate>Upload music in the files app to listen to it here</p>
+			</div>
+
+			<img id="updateData" ng-show="updateAvailable"
+				 class="svg clickable" src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>"  ng-click="update()"
+				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
+				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
+
+			<div id="toScan" ng-show="toScan" class="emptycontent clickable" ng-click="processNextScanStep(0)">
+				<div class="icon-audio svg"></div>
+				<h2 translate>New music available</h2>
+				<p translate>Click here to start the scan</p>
+			</div>
+
+			<div id="scanning" class="emptycontent" ng-show="scanning">
+				<div class="icon-loading svg"></div>
+				<h2 translate>Scanning music …</h2>
+				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
+			</div>
 		</div>
 
 	</div>

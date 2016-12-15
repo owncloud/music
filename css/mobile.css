@@ -124,7 +124,7 @@
 		left: 0;
 	}
 	
-	#scanning, #toScan {
+	#scanning, #toScan, #emptycontent {
 		margin-left: 0;
 	}
 }

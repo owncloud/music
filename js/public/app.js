@@ -25,7 +25,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 			};
 
 			var playlistControllerConfig = {
-				controller:'PlaylistController',
+				controller:'PlaylistViewController',
 				templateUrl:'playlistview.html'
 			};
 
@@ -101,13 +101,19 @@ angular.module('Music').controller('MainController',
 				$rootScope.$emit('artistsLoaded');
 			});
 		});
+
+		// load all playlists
+		Restangular.all('playlists').getList().then(function(playlists){
+			$scope.playlists = playlists;
+			$rootScope.$emit('playlistsLoaded');
+		});
 	};
 
 	// initial loading of artists
 	$scope.update();
 
 	$scope.totalTrackCount = function() {
-		return Object.keys($scope.allTracks).length;
+		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
 	};
 
 	$scope.processNextScanStep = function(dry) {
@@ -150,6 +156,16 @@ angular.module('Music').controller('MainController',
 				$scope.update();
 			}
 		});
+	};
+
+	$scope.updatePlaylist = function(playlist) {
+		for (var i = 0; i < $scope.playlists.length; ++i) {
+			if ($scope.playlists[i].id == playlist.id) {
+				$scope.playlists[i].name = playlist.name;
+				$scope.playlists[i].trackIds = playlist.trackIds;
+				break;
+			}
+		}
 	};
 
 	var controls = document.getElementById('controls');
@@ -553,74 +569,18 @@ angular.module('Music').controller('PlayerController',
 	};
 }]);
 
-angular.module('Music').controller('PlaylistController',
+angular.module('Music').controller('PlaylistViewController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.playlists = [];
 		$scope.currentTracks = [];
-
-		$scope.newPlaylistName = null;
-
-		// holds the state of the editor (visible or not)
-		$scope.showCreateForm = false;
-		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
-		$scope.showEditForm = null;
-
-		// create playlist
-		$scope.create = function(playlist) {
-			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-				$scope.playlists.push(playlist);
-				$scope.newPlaylistName = null;
-			});
-
-			$scope.showCreateForm = false;
-		};
-
-		// load all playlists
-		$scope.load = function() {
-			$rootScope.loading = true;
-			Restangular.all('playlists').getList().then(function(playlists){
-				$scope.playlists = playlists;
-				initPlaylistViewFromRoute();
-			});
-		};
-
-		// Rename playlist
-		$scope.update = function(playlist) {
-			// change of the attribute happens in form
-			playlist.put();
-
-			$scope.showEditForm = false;
-		};
-
-		// Remove playlist
-		$scope.remove = function(playlist) {
-			playlist.remove();
-
-			// remove the elemnt also from the AngularJS list
-			$scope.playlists.splice($scope.playlists.indexOf(playlist), 1);
-		};
-
-		// Add track to the playlist
-		$scope.addTrack = function(playlist, song) {
-			addTracks(playlist, [song.id]);
-		};
-
-		// Add all tracks on an album to the playlist
-		$scope.addAlbum = function(playlist, album) {
-			addTracks(playlist, trackIdsFromAlbum(album));
-		};
-
-		// Add all tracks on all albums by an artist to the playlist
-		$scope.addArtist = function(playlist, artist) {
-			addTracks(playlist, trackIdsFromArtist(artist));
-		};
+		$rootScope.loading = true;
 
 		// Remove chosen track from the list
 		$scope.removeTrack = function(track) {
-			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function() {
-				// remove the element also from the JS array
+			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function(updatedList) {
+				$scope.$parent.updatePlaylist(updatedList);
+				// remove the element also from our internal array, without recreating the whole array
 				$scope.currentTracks.splice($scope.currentTracks.indexOf(track), 1);
 			});
 		};
@@ -637,35 +597,23 @@ angular.module('Music').controller('PlaylistController',
 			playlistService.publish('play');
 		};
 
-		$scope.navigateToAlbums = function() {
-			if ($rootScope.currentView != 'albums') {
-				$rootScope.loading = true;
-				$timeout(function() {
-					window.location.hash = '#/';
-				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
-			}
-		};
-
-		// Emitted by MainController after dropping a track/album/artist on a playlist
-		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
-			if ('files' in droppedItem) {
-				$scope.addTrack(playlist, droppedItem);
-			} else if ('tracks' in droppedItem) {
-				$scope.addAlbum(playlist, droppedItem);
-			} else if ('albums' in droppedItem) {
-				$scope.addArtist(playlist, droppedItem);
-			} else {
-				console.error("Unknwon entity dropped on playlist");
-			}
-		});
-
-		// Init the view when the collection has been loaded
+		// Init happens either immediately (after making the loading animation visible)
+		// or once both aritsts and playlists have been loaded
+		$timeout(function() {
+			initViewFromRoute();
+		}, 100); // Firefox requires here a small delay to correctly show the laoding animation
 		$rootScope.$on('artistsLoaded', function () {
-			initPlaylistViewFromRoute();
+			initViewFromRoute();
+		});
+		$rootScope.$on('playlistsLoaded', function () {
+			initViewFromRoute();
 		});
 
-		function initPlaylistViewFromRoute() {
-			if ($routeParams.playlistId && $scope.playlists) {
+		function initViewFromRoute() {
+			if (!$scope.$parent.artists || !$scope.$parent.playlists) {
+				return;
+			}
+			else if ($routeParams.playlistId) {
 				var playlist = findPlaylist($routeParams.playlistId);
 				$scope.currentPlaylist = playlist;
 				$rootScope.currentView = 'playlist' + playlist.id;
@@ -685,29 +633,7 @@ angular.module('Music').controller('PlaylistController',
 		}
 
 		function findPlaylist(id) {
-			return _.find($scope.playlists, function(pl) { return pl.id == id; });
-		}
-
-		function trackIdsFromAlbum(album) {
-			var ids = [];
-			for (var i = 0, count = album.tracks.length; i < count; ++i) {
-				ids.push(album.tracks[i].id);
-			}
-			return ids;
-		}
-
-		function trackIdsFromArtist(artist) {
-			var ids = [];
-			for (var i = 0, count = artist.albums.length; i < count; ++i) {
-				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
-			}
-			return ids;
-		}
-
-		function addTracks(playlist, trackIds) {
-			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function() {
-				playlist.trackIds = playlist.trackIds.concat(trackIds);
-			});
+			return _.find($scope.$parent.playlists, function(pl) { return pl.id == id; });
 		}
 
 		function createTracksArray(trackIds) {
@@ -735,8 +661,103 @@ angular.module('Music').controller('PlaylistController',
 			return tracks;
 		}
 
-		// load all playlists in sidebar
-		$scope.load();
+}]);
+
+angular.module('Music').controller('SidebarController',
+	['$rootScope', '$scope', 'Restangular', '$timeout',
+	function ($rootScope, $scope, Restangular , $timeout) {
+
+		$scope.newPlaylistName = null;
+
+		// holds the state of the editor (visible or not)
+		$scope.showCreateForm = false;
+		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
+		$scope.showEditForm = null;
+
+		// create playlist
+		$scope.create = function(playlist) {
+			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
+				$scope.$parent.playlists.push(playlist);
+				$scope.newPlaylistName = null;
+			});
+
+			$scope.showCreateForm = false;
+		};
+
+		// Rename playlist
+		$scope.update = function(playlist) {
+			// change of the attribute happens in form
+			playlist.put();
+
+			$scope.showEditForm = false;
+		};
+
+		// Remove playlist
+		$scope.remove = function(playlist) {
+			playlist.remove();
+
+			// remove the elemnt also from the AngularJS list
+			$scope.$parent.playlists.splice($scope.$parent.playlists.indexOf(playlist), 1);
+		};
+
+		// Add track to the playlist
+		$scope.addTrack = function(playlist, song) {
+			addTracks(playlist, [song.id]);
+		};
+
+		// Add all tracks on an album to the playlist
+		$scope.addAlbum = function(playlist, album) {
+			addTracks(playlist, trackIdsFromAlbum(album));
+		};
+
+		// Add all tracks on all albums by an artist to the playlist
+		$scope.addArtist = function(playlist, artist) {
+			addTracks(playlist, trackIdsFromArtist(artist));
+		};
+
+		$scope.navigateToAlbums = function() {
+			if ($rootScope.currentView != 'albums') {
+				$rootScope.loading = true;
+				$timeout(function() {
+					window.location.hash = '#/';
+				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
+			}
+		};
+
+		// Emitted by MainController after dropping a track/album/artist on a playlist
+		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
+			if ('files' in droppedItem) {
+				$scope.addTrack(playlist, droppedItem);
+			} else if ('tracks' in droppedItem) {
+				$scope.addAlbum(playlist, droppedItem);
+			} else if ('albums' in droppedItem) {
+				$scope.addArtist(playlist, droppedItem);
+			} else {
+				console.error("Unknwon entity dropped on playlist");
+			}
+		});
+
+		function trackIdsFromAlbum(album) {
+			var ids = [];
+			for (var i = 0, count = album.tracks.length; i < count; ++i) {
+				ids.push(album.tracks[i].id);
+			}
+			return ids;
+		}
+
+		function trackIdsFromArtist(artist) {
+			var ids = [];
+			for (var i = 0, count = artist.albums.length; i < count; ++i) {
+				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
+			}
+			return ids;
+		}
+
+		function addTracks(playlist, trackIds) {
+			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
+				$scope.$parent.updatePlaylist(updatedList);
+			});
+		}
 
 }]);
 

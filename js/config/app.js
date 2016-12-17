@@ -46,7 +46,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngDra
 			};
 
 			var playlistControllerConfig = {
-				controller:'PlaylistController',
+				controller:'PlaylistViewController',
 				templateUrl:'playlistview.html'
 			};
 

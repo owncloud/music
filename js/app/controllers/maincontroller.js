@@ -63,13 +63,19 @@ angular.module('Music').controller('MainController',
 				$rootScope.$emit('artistsLoaded');
 			});
 		});
+
+		// load all playlists
+		Restangular.all('playlists').getList().then(function(playlists){
+			$scope.playlists = playlists;
+			$rootScope.$emit('playlistsLoaded');
+		});
 	};
 
 	// initial loading of artists
 	$scope.update();
 
 	$scope.totalTrackCount = function() {
-		return Object.keys($scope.allTracks).length;
+		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
 	};
 
 	$scope.processNextScanStep = function(dry) {
@@ -112,6 +118,16 @@ angular.module('Music').controller('MainController',
 				$scope.update();
 			}
 		});
+	};
+
+	$scope.updatePlaylist = function(playlist) {
+		for (var i = 0; i < $scope.playlists.length; ++i) {
+			if ($scope.playlists[i].id == playlist.id) {
+				$scope.playlists[i].name = playlist.name;
+				$scope.playlists[i].trackIds = playlist.trackIds;
+				break;
+			}
+		}
 	};
 
 	var controls = document.getElementById('controls');

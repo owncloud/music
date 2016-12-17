@@ -53,7 +53,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
-			<ul ng-controller="PlaylistController">
+			<ul ng-controller="SidebarController">
 				<li ng-class="{active: currentView == 'albums'}">
 					<a ng-click="navigateToAlbums()" translate>Albums</a>
 				</li>

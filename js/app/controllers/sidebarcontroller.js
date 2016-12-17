@@ -21,12 +21,9 @@
  */
 
 
-angular.module('Music').controller('PlaylistController',
-	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
-
-		$scope.playlists = [];
-		$scope.currentTracks = [];
+angular.module('Music').controller('SidebarController',
+	['$rootScope', '$scope', 'Restangular', '$timeout',
+	function ($rootScope, $scope, Restangular , $timeout) {
 
 		$scope.newPlaylistName = null;
 
@@ -38,20 +35,11 @@ angular.module('Music').controller('PlaylistController',
 		// create playlist
 		$scope.create = function(playlist) {
 			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-				$scope.playlists.push(playlist);
+				$scope.$parent.playlists.push(playlist);
 				$scope.newPlaylistName = null;
 			});
 
 			$scope.showCreateForm = false;
-		};
-
-		// load all playlists
-		$scope.load = function() {
-			$rootScope.loading = true;
-			Restangular.all('playlists').getList().then(function(playlists){
-				$scope.playlists = playlists;
-				initPlaylistViewFromRoute();
-			});
 		};
 
 		// Rename playlist
@@ -67,7 +55,7 @@ angular.module('Music').controller('PlaylistController',
 			playlist.remove();
 
 			// remove the elemnt also from the AngularJS list
-			$scope.playlists.splice($scope.playlists.indexOf(playlist), 1);
+			$scope.$parent.playlists.splice($scope.$parent.playlists.indexOf(playlist), 1);
 		};
 
 		// Add track to the playlist
@@ -83,26 +71,6 @@ angular.module('Music').controller('PlaylistController',
 		// Add all tracks on all albums by an artist to the playlist
 		$scope.addArtist = function(playlist, artist) {
 			addTracks(playlist, trackIdsFromArtist(artist));
-		};
-
-		// Remove chosen track from the list
-		$scope.removeTrack = function(track) {
-			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function() {
-				// remove the element also from the JS array
-				$scope.currentTracks.splice($scope.currentTracks.indexOf(track), 1);
-			});
-		};
-
-		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.currentTracks);
-			playlistService.publish('play');
-		};
-
-		// Play the list, starting from a specific track
-		$scope.playTrack = function(track) {
-			playlistService.setPlaylist($scope.currentTracks, track);
-			playlistService.publish('play');
 		};
 
 		$scope.navigateToAlbums = function() {
@@ -127,35 +95,6 @@ angular.module('Music').controller('PlaylistController',
 			}
 		});
 
-		// Init the view when the collection has been loaded
-		$rootScope.$on('artistsLoaded', function () {
-			initPlaylistViewFromRoute();
-		});
-
-		function initPlaylistViewFromRoute() {
-			if ($routeParams.playlistId && $scope.playlists) {
-				var playlist = findPlaylist($routeParams.playlistId);
-				$scope.currentPlaylist = playlist;
-				$rootScope.currentView = 'playlist' + playlist.id;
-				$scope.currentTracks = createTracksArray(playlist.trackIds);
-				$timeout(function() {
-					$rootScope.loading = false;
-				});
-			}
-			else if (window.location.hash == '#/alltracks') {
-				$scope.currentPlaylist = null;
-				$rootScope.currentView = 'tracks';
-				$scope.currentTracks = createAllTracksArray();
-				$timeout(function() {
-					$rootScope.loading = false;
-				});
-			}
-		}
-
-		function findPlaylist(id) {
-			return _.find($scope.playlists, function(pl) { return pl.id == id; });
-		}
-
 		function trackIdsFromAlbum(album) {
 			var ids = [];
 			for (var i = 0, count = album.tracks.length; i < count; ++i) {
@@ -173,37 +112,9 @@ angular.module('Music').controller('PlaylistController',
 		}
 
 		function addTracks(playlist, trackIds) {
-			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function() {
-				playlist.trackIds = playlist.trackIds.concat(trackIds);
+			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
+				$scope.$parent.updatePlaylist(updatedList);
 			});
 		}
-
-		function createTracksArray(trackIds) {
-			var tracks = null;
-			if ($scope.$parent.allTracks) {
-				tracks = new Array(trackIds.length);
-				for (var i = 0; i < trackIds.length; ++i) {
-					tracks[i] = $scope.$parent.allTracks[trackIds[i]];
-				}
-			}
-			return tracks;
-		}
-
-		function createAllTracksArray() {
-			var tracks = null;
-			if ($scope.$parent.allTracks) {
-				tracks = [];
-				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push($scope.$parent.allTracks[trackId]);
-				}
-
-				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
-			}
-			return tracks;
-		}
-
-		// load all playlists in sidebar
-		$scope.load();
 
 }]);

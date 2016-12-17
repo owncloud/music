@@ -79,6 +79,8 @@ angular.module('Music').controller('MainController',
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loading = true;
+
+		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = artists;
 			$scope.allTracks = createTracksIndex(artists);
@@ -221,8 +223,7 @@ angular.module('Music').controller('OverviewController',
 	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
-		$rootScope.loading = true;
-		$rootScope.currentView = 'albums';
+		$rootScope.currentView = '#';
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
@@ -231,8 +232,6 @@ angular.module('Music').controller('OverviewController',
 		$scope.$on('$locationChangeSuccess', function(event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
-			} else {
-				$rootScope.loading = true;
 			}
 		});
 
@@ -573,27 +572,27 @@ angular.module('Music').controller('PlaylistViewController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.currentTracks = [];
-		$rootScope.loading = true;
+		$scope.tracks = [];
+		$rootScope.currentView = window.location.hash;
 
 		// Remove chosen track from the list
 		$scope.removeTrack = function(track) {
-			$scope.currentPlaylist.all("remove").post({trackIds: track.id}).then(function(updatedList) {
+			$scope.playlist.all("remove").post({trackIds: track.id}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
 				// remove the element also from our internal array, without recreating the whole array
-				$scope.currentTracks.splice($scope.currentTracks.indexOf(track), 1);
+				$scope.tracks.splice($scope.tracks.indexOf(track), 1);
 			});
 		};
 
 		// Call playlistService to play all songs in the current playlist from the beginning
 		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.currentTracks);
+			playlistService.setPlaylist($scope.tracks);
 			playlistService.publish('play');
 		};
 
 		// Play the list, starting from a specific track
 		$scope.playTrack = function(track) {
-			playlistService.setPlaylist($scope.currentTracks, track);
+			playlistService.setPlaylist($scope.tracks, track);
 			playlistService.publish('play');
 		};
 
@@ -601,7 +600,7 @@ angular.module('Music').controller('PlaylistViewController',
 		// or once both aritsts and playlists have been loaded
 		$timeout(function() {
 			initViewFromRoute();
-		}, 100); // Firefox requires here a small delay to correctly show the laoding animation
+		});
 		$rootScope.$on('artistsLoaded', function () {
 			initViewFromRoute();
 		});
@@ -610,22 +609,17 @@ angular.module('Music').controller('PlaylistViewController',
 		});
 
 		function initViewFromRoute() {
-			if (!$scope.$parent.artists || !$scope.$parent.playlists) {
-				return;
-			}
-			else if ($routeParams.playlistId) {
-				var playlist = findPlaylist($routeParams.playlistId);
-				$scope.currentPlaylist = playlist;
-				$rootScope.currentView = 'playlist' + playlist.id;
-				$scope.currentTracks = createTracksArray(playlist.trackIds);
-				$timeout(function() {
-					$rootScope.loading = false;
-				});
-			}
-			else if (window.location.hash == '#/alltracks') {
-				$scope.currentPlaylist = null;
-				$rootScope.currentView = 'tracks';
-				$scope.currentTracks = createAllTracksArray();
+			if ($scope.$parent.artists && $scope.$parent.playlists) {
+				if ($routeParams.playlistId) {
+					var playlist = findPlaylist($routeParams.playlistId);
+					$scope.playlist = playlist;
+					$scope.tracks = createTracksArray(playlist.trackIds);
+				}
+				else {
+					$scope.playlist = null;
+					$scope.tracks = createAllTracksArray();
+				}
+
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
@@ -715,11 +709,11 @@ angular.module('Music').controller('SidebarController',
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
-		$scope.navigateToAlbums = function() {
-			if ($rootScope.currentView != 'albums') {
+		$scope.navigateTo = function(destination) {
+			if ($rootScope.currentView != destination) {
 				$rootScope.loading = true;
 				$timeout(function() {
-					window.location.hash = '#/';
+					window.location.hash = destination;
 				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
 			}
 		};

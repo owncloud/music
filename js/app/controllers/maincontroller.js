@@ -41,6 +41,8 @@ angular.module('Music').controller('MainController',
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loading = true;
+
+		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = artists;
 			$scope.allTracks = createTracksIndex(artists);

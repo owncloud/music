@@ -73,11 +73,11 @@ angular.module('Music').controller('SidebarController',
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
-		$scope.navigateToAlbums = function() {
-			if ($rootScope.currentView != 'albums') {
+		$scope.navigateTo = function(destination) {
+			if ($rootScope.currentView != destination) {
 				$rootScope.loading = true;
 				$timeout(function() {
-					window.location.hash = '#/';
+					window.location.hash = destination;
 				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
 			}
 		};

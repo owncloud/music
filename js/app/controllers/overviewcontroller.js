@@ -12,8 +12,7 @@ angular.module('Music').controller('OverviewController',
 	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
-		$rootScope.loading = true;
-		$rootScope.currentView = 'albums';
+		$rootScope.currentView = '#';
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
@@ -22,8 +21,6 @@ angular.module('Music').controller('OverviewController',
 		$scope.$on('$locationChangeSuccess', function(event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
-			} else {
-				$rootScope.loading = true;
 			}
 		});
 

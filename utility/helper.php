@@ -63,6 +63,10 @@ class Helper {
 					FROM `*PREFIX*music_tracks` `track`
 				) as tmp
 			);',
+			'DELETE FROM `*PREFIX*music_playlist_tracks`
+				WHERE `playlist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_playlists`)',
+			'DELETE FROM `*PREFIX*music_playlist_tracks`
+				WHERE `track_id` NOT IN (SELECT `id` FROM `*PREFIX*music_tracks`)'
 		);
 
 		foreach ($sqls as $sql) {

@@ -32,11 +32,7 @@ class BaseMapper extends Mapper {
 		if($count === 0) {
 			return;
 		}
-		$questionMarks = array();
-		for($i = 0; $i < $count; $i++){
-			$questionMarks[] = '?';
-		}
-		$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` IN ('. implode(',', $questionMarks) . ')';
+		$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
 		$this->execute($sql, $ids);
 	}
 
@@ -50,6 +46,18 @@ class BaseMapper extends Mapper {
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return $row['count'];
+	}
+
+	/**
+	 * helper creating a string like '(?,?,?)' with the specified number of elements
+	 * @param int $count
+	 */
+	protected function questionMarks($count) {
+		$questionMarks = array();
+		for($i = 0; $i < $count; $i++){
+			$questionMarks[] = '?';
+		}
+		return '(' . implode(',', $questionMarks) . ')';
 	}
 
 }

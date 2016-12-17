@@ -67,14 +67,9 @@ class AlbumMapper extends BaseMapper {
 	 * 				by the album ID inside of this array
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
-		$questionMarks = array();
-		for($i = 0, $count = count($albumIds); $i < $count; $i++){
-			$questionMarks[] = '?';
-		}
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
 			'FROM `*PREFIX*music_tracks` `track`'.
-			' WHERE `track`.`album_id` IN (' . implode(',', $questionMarks) .
-			')';
+			' WHERE `track`.`album_id` IN ' . $this->questionMarks(count($albumIds));
 		$result = $this->execute($sql, $albumIds);
 		$artists = array();
 		while($row = $result->fetch()){

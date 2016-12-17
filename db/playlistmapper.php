@@ -100,19 +100,14 @@ class PlaylistMapper extends BaseMapper {
 	 */
 	public function deleteById($ids){
 		$count = count($ids);
-		if($count === 0) {
-			return;
-		}
-		// delete from oc_music_playlists
-		parent::deleteById($ids);
+		if($count) {
+			// delete from oc_music_playlists
+			parent::deleteById($ids);
 
-		// delete from oc_music_playlist_tracks
-		$questionMarks = '?';
-		for($i = 1; $i < $count; $i++){
-			$questionMarks .= ',?';
+			// delete from oc_music_playlist_tracks
+			$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` IN ' . $this->questionMarks($count);
+			$this->execute($sql, $ids);
 		}
-		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` IN ('. $questionMarks . ')';
-		$this->execute($sql, $ids);
 	}
 
 	/**
@@ -121,19 +116,28 @@ class PlaylistMapper extends BaseMapper {
 	 * @param int[] $trackIds array of all track IDs to remove - if empty all tracks will be removed
 	 */
 	public function removeTracks($id, $trackIds = null) {
-		// TODO delete multiple per SQL statement
-		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` ' .
-					'WHERE `playlist_id` = ?';
+		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` = ?';
 
 		if(is_null($trackIds)) {
 			$this->execute($sql, array($id));
 		} else {
-			$sql .= ' AND `track_id` = ?';
-			foreach ($trackIds as $trackId) {
-				$this->execute($sql, array($id, $trackId));
+			$count = count($trackIds);
+			if ($count) {
+				$sql .= ' AND `track_id` IN ' . $this->questionMarks($count);
+				$this->execute($sql, array_merge([$id], $trackIds));
 			}
 		}
-
 	}
 
+	/**
+	 * removes tracks from all available playlists
+	 * @param int[] $trackIds array of all track IDs to remove
+	 */
+	public function removeTracksFromAllLists($trackIds) {
+		$count = count($trackIds);
+		if($count) {
+			$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `track_id` IN ' . $this->questionMarks($count);
+			$this->execute($sql, $trackIds);
+		}
+	}
 }

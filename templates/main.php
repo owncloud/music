@@ -109,11 +109,11 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				</div>
 
 
-				<div ng-show="currentAlbum" ng-click="scrollToCurrentAlbum()"
+				<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
 					class="albumart clickable" cover="{{ currentAlbum.cover }}"
 					albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
 
-				<div class="song-info clickable" ng-click="scrollToCurrentAlbum()">
+				<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
 					<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
 					<span class="artist" title="{{ currentTrack.artistName }}">{{ currentTrack.artistName }}</span>
 				</div>

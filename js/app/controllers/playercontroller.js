@@ -204,9 +204,9 @@ angular.module('Music').controller('PlayerController',
 		$scope.next();
 	});
 
-	$scope.scrollToCurrentAlbum = function() {
-		if ($scope.currentAlbum) {
-			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+	$scope.scrollToCurrentTrack = function() {
+		if ($scope.currentTrack) {
+			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 		}
 	};
 }]);

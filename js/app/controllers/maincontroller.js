@@ -137,6 +137,15 @@ angular.module('Music').controller('MainController',
 		return controls ? controls.offsetHeight : 0;
 	};
 
+	$scope.scrollToItem = function(itemId) {
+		var container = document.getElementById('app-content');
+		var element = document.getElementById(itemId);
+		if(container && element) {
+			angular.element(container).scrollToElement(
+					angular.element(element), $scope.scrollOffset(), 500);
+		}
+	};
+
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {

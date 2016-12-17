@@ -175,6 +175,15 @@ angular.module('Music').controller('MainController',
 		return controls ? controls.offsetHeight : 0;
 	};
 
+	$scope.scrollToItem = function(itemId) {
+		var container = document.getElementById('app-content');
+		var element = document.getElementById(itemId);
+		if(container && element) {
+			angular.element(container).scrollToElement(
+					angular.element(element), $scope.scrollOffset(), 500);
+		}
+	};
+
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {
@@ -299,7 +308,7 @@ angular.module('Music').controller('OverviewController',
 					.then(function(result){
 						playlistService.setPlaylist([result]);
 						playlistService.publish('play');
-						$scope.scrollToItem('album-' + result.albumId);
+						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}
 		};
@@ -310,17 +319,11 @@ angular.module('Music').controller('OverviewController',
 			window.location.hash = '#/';
 		});
 
-		$scope.scrollToItem = function(itemId) {
-			var container = angular.element(document.getElementById('app-content'));
-			var element = angular.element(document.getElementById(itemId));
-			var controls = document.getElementById('controls');
-			if(container && controls && element) {
-				container.scrollToElement(element, controls.offsetHeight, 500);
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			var track = $scope.$parent.allTracks[trackId];
+			if (track) {
+				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
-		};
-
-		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
-			$scope.scrollToItem('album-' + albumId);
 		});
 
 		$scope.initializePlayerStateFromURL = function() {
@@ -339,7 +342,7 @@ angular.module('Music').controller('OverviewController',
 					});
 					// trigger play
 					$scope.playArtist(object);
-					$scope.scrollToItem('artist-' + object.id);
+					$scope.$parent.scrollToItem('artist-' + object.id);
 				} else {
 					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
 					if (type == 'album') {
@@ -349,7 +352,7 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playAlbum(object);
-						$scope.scrollToItem('album-' + object.id);
+						$scope.$parent.scrollToItem('album-' + object.id);
 					} else if (type == 'track') {
 						var tracks = _.flatten(_.pluck(albums, 'tracks'));
 						// search for the track by id
@@ -358,7 +361,7 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playTrack(object);
-						$scope.scrollToItem('album-' + object.albumId);
+						$scope.$parent.scrollToItem('album-' + object.albumId);
 					}
 				}
 			}
@@ -561,9 +564,9 @@ angular.module('Music').controller('PlayerController',
 		$scope.next();
 	});
 
-	$scope.scrollToCurrentAlbum = function() {
-		if ($scope.currentAlbum) {
-			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+	$scope.scrollToCurrentTrack = function() {
+		if ($scope.currentTrack) {
+			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 		}
 	};
 }]);
@@ -595,6 +598,12 @@ angular.module('Music').controller('PlaylistViewController',
 			playlistService.setPlaylist($scope.tracks, track);
 			playlistService.publish('play');
 		};
+
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			if ($scope.$parent) {
+				$scope.$parent.scrollToItem('track-' + trackId);
+			}
+		});
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once both aritsts and playlists have been loaded

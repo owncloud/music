@@ -49,6 +49,12 @@ angular.module('Music').controller('PlaylistViewController',
 			playlistService.publish('play');
 		};
 
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			if ($scope.$parent) {
+				$scope.$parent.scrollToItem('track-' + trackId);
+			}
+		});
+
 		// Init happens either immediately (after making the loading animation visible)
 		// or once both aritsts and playlists have been loaded
 		$timeout(function() {

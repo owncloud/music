@@ -88,7 +88,7 @@ angular.module('Music').controller('OverviewController',
 					.then(function(result){
 						playlistService.setPlaylist([result]);
 						playlistService.publish('play');
-						$scope.scrollToItem('album-' + result.albumId);
+						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}
 		};
@@ -99,17 +99,11 @@ angular.module('Music').controller('OverviewController',
 			window.location.hash = '#/';
 		});
 
-		$scope.scrollToItem = function(itemId) {
-			var container = angular.element(document.getElementById('app-content'));
-			var element = angular.element(document.getElementById(itemId));
-			var controls = document.getElementById('controls');
-			if(container && controls && element) {
-				container.scrollToElement(element, controls.offsetHeight, 500);
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			var track = $scope.$parent.allTracks[trackId];
+			if (track) {
+				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
-		};
-
-		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
-			$scope.scrollToItem('album-' + albumId);
 		});
 
 		$scope.initializePlayerStateFromURL = function() {
@@ -128,7 +122,7 @@ angular.module('Music').controller('OverviewController',
 					});
 					// trigger play
 					$scope.playArtist(object);
-					$scope.scrollToItem('artist-' + object.id);
+					$scope.$parent.scrollToItem('artist-' + object.id);
 				} else {
 					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
 					if (type == 'album') {
@@ -138,7 +132,7 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playAlbum(object);
-						$scope.scrollToItem('album-' + object.id);
+						$scope.$parent.scrollToItem('album-' + object.id);
 					} else if (type == 'track') {
 						var tracks = _.flatten(_.pluck(albums, 'tracks'));
 						// search for the track by id
@@ -147,7 +141,7 @@ angular.module('Music').controller('OverviewController',
 						});
 						// trigger play
 						$scope.playTrack(object);
-						$scope.scrollToItem('album-' + object.albumId);
+						$scope.$parent.scrollToItem('album-' + object.albumId);
 					}
 				}
 			}

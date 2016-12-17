@@ -57,7 +57,8 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				<li ng-class="{active: currentView == 'albums'}">
 					<a ng-click="navigateToAlbums()" translate>Albums</a>
 				</li>
-				<li class="app-navigation-separator" ng-class="{active: currentView == 'tracks'}">
+				<li class="app-navigation-separator" ng-class="{active: currentView == 'tracks'}"
+					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}">
 					<a href="#/alltracks" translate>All tracks</a>
 				</li>
 				<li ng-hide="showCreateForm">
@@ -73,7 +74,9 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					</li>
 				</form>
 				<li class="playlist" ng-class="{active: currentView == 'playlist' + playlist.id}"
-					ng-repeat="playlist in playlists" ui-on-Drop="dropOnPlaylist($event, $data, playlist)">
+					ng-repeat="playlist in playlists"
+					ui-on-Drop="dropOnPlaylist($event, $data, playlist)"
+					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}">
 					<a ng-hide="showEditForm == playlist.id" href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
 					<div ng-if="showEditForm == playlist.id">
 						<input type="text" class="edit-list" ng-enter="update(playlist)" ng-model="playlist.name" />

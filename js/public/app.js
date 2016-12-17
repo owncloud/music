@@ -106,6 +106,10 @@ angular.module('Music').controller('MainController',
 	// initial loading of artists
 	$scope.update();
 
+	$scope.totalTrackCount = function() {
+		return Object.keys($scope.allTracks).length;
+	};
+
 	$scope.processNextScanStep = function(dry) {
 		$scope.toScan = false;
 		$scope.dryScanRun = dry;

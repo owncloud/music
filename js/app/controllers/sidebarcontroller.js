@@ -42,12 +42,17 @@ angular.module('Music').controller('SidebarController',
 			$scope.showCreateForm = false;
 		};
 
-		// Rename playlist
-		$scope.update = function(playlist) {
+		// Start renaming playlist
+		$scope.startEdit = function(playlist) {
+			$scope.showEditForm = playlist.id;
+		};
+
+		// Commit renaming of playlist
+		$scope.commitEdit = function(playlist) {
 			// change of the attribute happens in form
 			playlist.put();
 
-			$scope.showEditForm = false;
+			$scope.showEditForm = null;
 		};
 
 		// Remove playlist
@@ -96,11 +101,11 @@ angular.module('Music').controller('SidebarController',
 		});
 
 		playlistService.subscribe('play', function() {
-			$scope.playingFromView = $rootScope.currentView;
+			$scope.playingView = $rootScope.currentView;
 		});
 
 		playlistService.subscribe('playlistEnded', function(){
-			$scope.playingFromView = null;
+			$scope.playingView = null;
 		});
 
 		function trackIdsFromAlbum(album) {

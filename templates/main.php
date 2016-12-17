@@ -47,6 +47,9 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>
+	<script type="text/ng-template" id="sidebarlistitem.html">
+		<?php print_unescaped($this->inc('partials/sidebarlistitem')) ?>
+	</script>
 
 
 	<div ng-controller="MainController">
@@ -54,21 +57,10 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="SidebarController">
-				<li ng-class="{active: currentView == '#'}">
-					<a ng-click="navigateTo('#')">
-						<img class="play svg" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-							ng-class="{playing: playingFromView == '#'}" />
-						<span translate>Albums</span>
-					</a>
-				</li>
-				<li class="app-navigation-separator" ng-class="{active: currentView == '#/alltracks'}"
-					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}">
-					<a ng-click="navigateTo('#/alltracks')">
-						<img class="play svg" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-							ng-class="{playing: playingFromView == '#/alltracks'}" />
-						<span translate>All tracks</span>
-					</a>
-				</li>
+				<li sidebar-list-item text="'Albums' | translate" destination="'#'" />
+				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
+					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}" />
+				<li class="app-navigation-separator" />
 				<li ng-hide="showCreateForm">
 					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>
 				</li>
@@ -81,28 +73,11 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 						</div>
 					</li>
 				</form>
-				<li class="playlist" ng-class="{active: currentView == '#/playlist/' + playlist.id}"
+				<li sidebar-list-item
+					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"
 					ui-on-Drop="dropOnPlaylist($event, $data, playlist)"
-					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}">
-					<a ng-hide="showEditForm == playlist.id" ng-click="navigateTo('#/playlist/' + playlist.id)">
-						<img class="play svg" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-							ng-class="{playing: playingFromView == '#/playlist/' + playlist.id}" />
-						{{playlist.name}}
-					</a>
-					<div ng-if="showEditForm == playlist.id">
-						<input type="text" class="edit-list" ng-enter="update(playlist)" ng-model="playlist.name" />
-						<button class="svg action icon-checkmark" ng-click="update(playlist)" />
-					</div>
-					<div class="actions">
-						<button ng-hide="$parent.showEditForm == playlist.id" class="svg action icon-delete"
-							ng-click="remove(playlist)"
-							alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}" />
-						<button class="svg action icon-edit" ng-hide="$parent.showEditForm == playlist.id"
-							ng-click="$parent.showEditForm=playlist.id"
-							alt="{{ 'Rename' | translate }}" title="{{ 'Rename' | translate }}" />
-					</div>
-				</li>
+					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}" />
 			</ul>
 		</div>
 

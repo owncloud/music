@@ -667,8 +667,8 @@ angular.module('Music').controller('PlaylistViewController',
 }]);
 
 angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout',
-	function ($rootScope, $scope, Restangular , $timeout) {
+	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
 
 		$scope.newPlaylistName = null;
 
@@ -738,6 +738,14 @@ angular.module('Music').controller('SidebarController',
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
+		});
+
+		playlistService.subscribe('play', function() {
+			$scope.playingFromView = $rootScope.currentView;
+		});
+
+		playlistService.subscribe('playlistEnded', function(){
+			$scope.playingFromView = null;
 		});
 
 		function trackIdsFromAlbum(album) {

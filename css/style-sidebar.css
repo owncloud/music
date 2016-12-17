@@ -33,6 +33,21 @@
   margin-top: 8px !important;
 }
 
+#app-navigation img.play {
+	display: inline;
+	visibility: hidden;
+	float: none;
+	margin-right: 3px;
+}
+
+#app-navigation img.play.playing {
+	visibility: visible;
+}
+
+#app-navigation li > a#create {
+	margin-left: 6px;
+}
+
 .playlist:hover .actions {
 	display: block;
 }
@@ -49,12 +64,14 @@
 }
 
 input[type="text"] {
-	width: 170px;
+	width: 166px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
 input.edit-list, input.new-list {
-	margin: 6px;
+	margin-left: 21px;
+	margin-bottom: 8px;
+	margin-top: 4px;
 	height: 32px;
 }

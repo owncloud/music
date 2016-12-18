@@ -76,7 +76,8 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				<li sidebar-list-item
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"
-					ui-on-Drop="dropOnPlaylist($event, $data, playlist)"
+					ui-on-drop="dropOnPlaylist($event, $data, playlist)"
+					drag-hover-class="active"
 					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}"></li>
 			</ul>
 		</div>

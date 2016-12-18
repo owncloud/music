@@ -19,7 +19,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
-\OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop');
+\OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
@@ -57,10 +57,10 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="SidebarController">
-				<li sidebar-list-item text="'Albums' | translate" destination="'#'" />
+				<li sidebar-list-item text="'Albums' | translate" destination="'#'"></li>
 				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
-					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}" />
-				<li class="app-navigation-separator" />
+					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}"></li>
+				<li class="app-navigation-separator"></li>
 				<li ng-hide="showCreateForm">
 					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>
 				</li>
@@ -68,8 +68,8 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					<li id="new-playlist">
 						<input type="text" class="new-list" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
 						<div class="actions">
-							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()" />
-							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm" />
+							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
+							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
 						</div>
 					</li>
 				</form>
@@ -77,7 +77,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"
 					ui-on-Drop="dropOnPlaylist($event, $data, playlist)"
-					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}" />
+					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}"></li>
 			</ul>
 		</div>
 

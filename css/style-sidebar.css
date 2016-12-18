@@ -45,7 +45,7 @@
 }
 
 #app-navigation li > a#create {
-	margin-left: 6px;
+	padding-left: 18px;
 }
 
 .playlist:hover .actions {

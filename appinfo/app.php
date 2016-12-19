@@ -33,10 +33,7 @@ $c = $app->getContainer();
  * register regular task
  */
 
-// TODO: this is temporarily static because core jobs are not public
-// yet, therefore legacy code
-
-\OCP\BackgroundJob::addRegularTask('OCA\Music\Backgroundjob\CleanUp', 'run');
+\OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\CleanUp', 'run']);
 
 /**
  * register hooks

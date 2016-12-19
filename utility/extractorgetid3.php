@@ -39,11 +39,11 @@ class ExtractorGetID3 implements Extractor {
 	/**
 	 * get metadata info for a media file
 	 *
-	 * @param $path the path to the file
+	 * @param \OCP\Files\Node $file the file
 	 * @return array extracted data
 	 */
-	public function extract($path) {
-		$metadata = $this->getID3->analyze($path);
+	public function extract($file) {
+		$metadata = $this->getID3->analyze($file->getPath(), $file->fopen('r'), $file->getSize());
 
 		// TODO make non static
 		\getid3_lib::CopyTagsToComments($metadata);

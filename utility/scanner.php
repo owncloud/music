@@ -131,7 +131,7 @@ class Scanner extends PublicEmitter {
 			}
 
 
-			$fileInfo = $this->extractor->extract('oc://' . $file->getPath());
+			$fileInfo = $this->extractor->extract($file);
 
 			if(!array_key_exists('comments', $fileInfo)) {
 				// TODO: fix this dirty fallback
@@ -279,7 +279,7 @@ class Scanner extends PublicEmitter {
 	 * @return Array with image MIME and content or null
 	 */
 	public function parseEmbeddedCoverArt($musicFile){
-		$fileInfo = $this->extractor->extract('oc://' . $musicFile->getPath());
+		$fileInfo = $this->extractor->extract($musicFile);
 		return $this->getId3Tag($fileInfo, 'picture');
 	}
 

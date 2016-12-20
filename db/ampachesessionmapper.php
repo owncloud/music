@@ -33,7 +33,7 @@ class AmpacheSessionMapper extends Mapper {
 		$result = $this->execute($sql, $params);
 
 		// false if no row could be fetched
-		return $result->fetchRow();
+		return $result->fetch();
 	}
 
 	/**

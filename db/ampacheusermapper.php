@@ -55,9 +55,9 @@ class AmpacheUserMapper extends Mapper {
 				'WHERE `user_id` = ? AND `hash` = ?';
 		$params = array($userId, $hash);
 		$result = $this->execute($sql, $params, 1);
-		$row = $result->fetchRow();
+		$row = $result->fetch();
 
-		if($row === null){
+		if($row === false){
 			return null;
 		}
 

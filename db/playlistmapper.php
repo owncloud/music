@@ -87,7 +87,7 @@ class PlaylistMapper extends Mapper {
 		$result = $this->execute($sql, array($id));
 
 		$trackIds = array();
-		while($row = $result->fetchRow()){
+		while($row = $result->fetch()){
 			$trackIds[] = (int) $row['track_id'];
 		}
 

@@ -1,3 +1,8 @@
+# Maintainers
+
+* [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
+* [Pauli Järvinen](https://github.com/paulijar): <pauli.jarvinen@gmail.com>
+
 # Authors
 
 * [Morris Jobke](https://github.com/MorrisJobke): <hey@morrisjobke.de>
@@ -25,3 +30,19 @@
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
 * [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
+* [apotek](https://github.com/apotek)
+* Armin
+* [Ashot Nazaryan](https://github.com/AshotN)
+* [Bernhard Posselt](https://github.com/BernhardPosselt)
+* [cbxk1xg](https://github.com/cbxk1xg)
+* [ChristophWurst](https://github.com/ChristophWurst)
+* [David Prevot](https://github.com/DavidPrevot)
+* [Jérôme Pouiller](https://github.com/jerome-pouiller)
+* [Jonathan Kawohl](https://github.com/Kawohl)
+* [Lukas Reschke](https://github.com/LukasReschke)
+* [ndurchx](https://github.com/ndurchx)
+* [Pellaeon Lin](https://github.com/pellaeon)
+* [RealRancor](https://github.com/RealRancor)
+* [Roland Hager](https://github.com/roha4000)
+* [Thomas Pulzer](https://github.com/Faldon)
+* [Vincent Petry](https://github.com/PVince81)

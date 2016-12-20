@@ -13,14 +13,14 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Mapper;
-use OCP\IDb;
+use OCP\IDBConnection;
 
 /**
  * Common base class for data access classes of the Music app
  */
 class BaseMapper extends Mapper {
 
-	public function __construct(IDb $db, $tableName, $entityClass=null){
+	public function __construct(IDBConnection $db, $tableName, $entityClass=null){
 		parent::__construct($db, $tableName, $entityClass);
 	}
 

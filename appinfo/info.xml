@@ -7,7 +7,7 @@
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
 	<version>0.3.12</version>
 	<dependencies>
-		<owncloud min-version="7.0" max-version="9.2" />
+		<owncloud min-version="8.1" max-version="9.2" />
 		<nextcloud min-version="9" max-version="12" />
 	</dependencies>
 	<types>

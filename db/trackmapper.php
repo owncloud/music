@@ -12,11 +12,11 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IDb;
+use OCP\IDBConnection;
 
 class TrackMapper extends BaseMapper {
 
-	public function __construct(IDb $db){
+	public function __construct(IDBConnection $db){
 		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
 	}
 

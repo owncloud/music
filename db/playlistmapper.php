@@ -15,11 +15,11 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Mapper;
-use OCP\IDb;
+use OCP\IDBConnection;
 
 class PlaylistMapper extends Mapper {
 
-	public function __construct(IDb $db){
+	public function __construct(IDBConnection $db){
 		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
 	}
 

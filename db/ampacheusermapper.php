@@ -13,11 +13,11 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Mapper;
-use OCP\IDb;
+use OCP\IDBConnection;
 
 class AmpacheUserMapper extends Mapper {
 
-	public function __construct(IDb $db){
+	public function __construct(IDBConnection $db){
 		// there is no entity for this mapper -> '' as entity class name
 		parent::__construct($db, 'music_ampache_users', '');
 	}

@@ -158,43 +158,37 @@ class Music extends App {
 
 		$container->registerService('AlbumMapper', function(IAppContainer $c) {
 			return new AlbumMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
 		$container->registerService('AmpacheSessionMapper', function(IAppContainer $c) {
 			return new AmpacheSessionMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
 		$container->registerService('AmpacheUserMapper', function(IAppContainer $c) {
 			return new AmpacheUserMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
 		$container->registerService('ArtistMapper', function(IAppContainer $c) {
 			return new ArtistMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
 		$container->registerService('PlaylistMapper', function(IAppContainer $c) {
 			return new PlaylistMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
 		$container->registerService('TrackMapper', function(IAppContainer $c) {
 			return new TrackMapper(
-				// TODO: replace this with IDBConnection (only 8.1+)
-				$c->getServer()->getDb()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 

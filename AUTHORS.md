@@ -41,7 +41,6 @@
 * [Jonathan Kawohl](https://github.com/Kawohl)
 * [Lukas Reschke](https://github.com/LukasReschke)
 * [ndurchx](https://github.com/ndurchx)
-* [Pellaeon Lin](https://github.com/pellaeon)
 * [RealRancor](https://github.com/RealRancor)
 * [Roland Hager](https://github.com/roha4000)
 * [Thomas Pulzer](https://github.com/Faldon)

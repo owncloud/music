@@ -22,7 +22,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,7 +33,7 @@ class Scanner extends PublicEmitter {
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
-	private $playlistMapper;
+	private $playlistBusinessLayer;
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
@@ -46,7 +46,7 @@ class Scanner extends PublicEmitter {
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
-								PlaylistMapper $playlistMapper,
+								PlaylistBusinessLayer $playlistBusinessLayer,
 								Logger $logger,
 								IDBConnection $db,
 								$userId,
@@ -57,7 +57,7 @@ class Scanner extends PublicEmitter {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->playlistMapper = $playlistMapper;
+		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->userId = $userId;
@@ -307,7 +307,7 @@ class Scanner extends PublicEmitter {
 			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
-			$this->playlistMapper->removeTracksFromAllLists($result['deletedTracks']);
+			$this->playlistBusinessLayer->removeTracksFromAllLists($result['deletedTracks']);
 
 			// check if the removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
@@ -444,7 +444,8 @@ class Scanner extends PublicEmitter {
 		$sqls = array(
 			'DELETE FROM `*PREFIX*music_tracks` WHERE `user_id` = ?;',
 			'DELETE FROM `*PREFIX*music_albums` WHERE `user_id` = ?;',
-			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;'
+			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;',
+			'UPDATE *PREFIX*music_playlists SET track_ids=NULL WHERE `user_id` = ?;'
 		);
 
 		foreach ($sqls as $sql) {

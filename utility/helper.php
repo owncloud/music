@@ -62,11 +62,7 @@ class Helper {
 					`artist`.`id` = `album`.`album_artist_id` UNION SELECT `track`.`artist_id`
 					FROM `*PREFIX*music_tracks` `track`
 				) as tmp
-			);',
-			'DELETE FROM `*PREFIX*music_playlist_tracks`
-				WHERE `playlist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_playlists`)',
-			'DELETE FROM `*PREFIX*music_playlist_tracks`
-				WHERE `track_id` NOT IN (SELECT `id` FROM `*PREFIX*music_tracks`)'
+			);'
 		);
 
 		foreach ($sqls as $sql) {

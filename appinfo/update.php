@@ -57,3 +57,9 @@ if (version_compare($installedVersion, '0.3.12', '<')) {
 		$query->execute();
 	}
 }
+
+if (version_compare($installedVersion, '0.3.14', '<')) {
+	$sql = 'DROP TABLE `*PREFIX*music_playlist_tracks`;';
+	$query = \OCP\DB::prepare($sql);
+	$query->execute();
+}

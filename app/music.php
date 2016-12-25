@@ -273,7 +273,7 @@ class Music extends App {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('PlaylistMapper'),
+				$c->query('PlaylistBusinessLayer'),
 				$c->query('Logger'),
 				$c->query('Db'),
 				$c->query('UserId'),

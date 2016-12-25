@@ -77,7 +77,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function create() {
-		$playlist = $this->playlistBusinessLayer->insert($this->params('name'), $this->userId);
+		$playlist = $this->playlistBusinessLayer->create($this->params('name'), $this->userId);
 
 		// add trackIds to the newly created playlist if provided
 		if (!empty($this->params('trackIds'))){

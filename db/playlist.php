@@ -17,8 +17,8 @@ use \OCP\AppFramework\Db\Entity;
 /**
  * @method string getName()
  * @method setName(string $name)
- * @method int[] getTrackIds()
- * @method setTrackIds(int[] $trackIds)
+ * @method string getTrackIds()
+ * @method setTrackIds(string $trackIds)
  * @method string getUserId()
  * @method setUserId(string $userId)
  */
@@ -26,12 +26,33 @@ class Playlist extends Entity {
 
 	public $name;
 	public $userId;
-	public $trackIds = array();
+	public $trackIds;
+
+	/**
+	 * @return int[]
+	 */
+	public function getTrackIdsAsArray() {
+		if (!$this->trackIds || strlen($this->trackIds) < 3) {
+			// the list is empty if there is nothing between the leading and trailing '|'
+			return [];
+		} else {
+			$encoded = substr($this->trackIds, 1, -1); // omit leading and trailing '|'
+			return array_map('intval', explode('|', $encoded));
+		}
+	}
+
+	/**
+	 * @param int[] $trackIds
+	 */
+	public function setTrackIdsFromArray($trackIds) {
+		// encode to format like "|123|45|667|"
+		$this->setTrackIds('|' . implode('|', $trackIds) . '|');
+	}
 
 	public function toAPI() {
 		return array(
 			'name' => $this->getName(),
-			'trackIds' => $this->getTrackIds(),
+			'trackIds' => $this->getTrackIdsAsArray(),
 			'id' => $this->getId(),
 		);
 	}

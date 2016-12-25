@@ -59,9 +59,6 @@ class ResetDatabase extends Command {
 				$this->dropTables($user);
 			}
 		}
-
-		$output->writeln("Clean up relations");
-		$this->cleanupRelation();
 	}
 
 	private function dropTables($userID=null) {
@@ -76,12 +73,6 @@ class ResetDatabase extends Command {
 			$query = $this->db->prepare($sql);
 			$query->execute($params);
 		}
-	}
-
-	private function cleanupRelation() {
-		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` ' .
-			'WHERE `playlist_id` NOT IN (SELECT `id` FROM `*PREFIX*music_playlists`)';
-		$this->db->prepare($sql)->execute();
 	}
 
 }

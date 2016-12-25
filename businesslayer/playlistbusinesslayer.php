@@ -38,9 +38,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @return Playlist playlist
 	 */
 	public function find($playlistId, $userId) {
-		$playlist = $this->mapper->find($playlistId, $userId);
-		$playlist->setTrackIds($this->mapper->getTracks($playlistId));
-		return $playlist;
+		return $this->mapper->find($playlistId, $userId);
 	}
 
 	/**
@@ -49,24 +47,22 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * @return Playlist[] playlists
 	 */
 	public function findAll($userId) {
-		$playlists = $this->mapper->findAll($userId);
-		foreach ($playlists as $list) {
-			$list->setTrackIds($this->mapper->getTracks($list->getId()));
-		}
-		return $playlists;
+		return $this->mapper->findAll($userId);
 	}
 
 	public function addTracks($trackIds, $playlistId, $userId) {
-		$playlist = $this->mapper->find($playlistId, $userId);
-		$this->mapper->addTracks($trackIds, $playlistId);
-		$playlist->setTrackIds($this->mapper->getTracks($playlistId));
+		$playlist = $this->find($playlistId, $userId);
+		$prevTrackIds = $playlist->getTrackIdsAsArray();
+		$playlist->setTrackIdsFromArray(array_merge($prevTrackIds, $trackIds));
+		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
 	public function removeTracks($trackIds, $playlistId, $userId) {
-		$playlist = $this->mapper->find($playlistId, $userId);
-		$this->mapper->removeTracks($playlistId, $trackIds);
-		$playlist->setTrackIds($this->mapper->getTracks($playlistId));
+		$playlist = $this->find($playlistId, $userId);
+		$prevTrackIds = $playlist->getTrackIdsAsArray();
+		$playlist->setTrackIdsFromArray(array_diff($prevTrackIds, $trackIds));
+		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
@@ -79,15 +75,25 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	}
 
 	public function rename($name, $playlistId, $userId) {
-		$playlist = $this->mapper->find($playlistId, $userId);
+		$playlist = $this->find($playlistId, $userId);
 		$playlist->setName($name);
 		$this->mapper->update($playlist);
-		$playlist->setTrackIds($this->mapper->getTracks($playlistId));
 		return $playlist;
 	}
 
-	public function delete($playlistId, $userId) {
-		parent::delete($playlistId, $userId);
-		$this->mapper->removeTracks($playlistId);
+	/**
+	 * removes tracks from all available playlists
+	 * @param int[] $trackIds array of all track IDs to remove
+	 */
+	public function removeTracksFromAllLists($trackIds) {
+		foreach ($trackIds as $trackId) {
+			$affectedLists = $this->mapper->findListsContainingTrack($trackId);
+
+			foreach ($affectedLists as $playlist) {
+				$prevTrackIds = $playlist->getTrackIdsAsArray();
+				$playlist->setTrackIdsFromArray(array_diff($prevTrackIds, [$trackId]));
+				$this->mapper->update($playlist);
+			}
+		}
 	}
 }

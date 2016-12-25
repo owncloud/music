@@ -27,7 +27,7 @@ class PlaylistMapper extends BaseMapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `name`, `id` ' .
+		return 'SELECT `name`, `id`, `track_ids` ' .
 			'FROM `*PREFIX*music_playlists` ' .
 			'WHERE `user_id` = ? ' . $condition;
 	}
@@ -56,72 +56,14 @@ class PlaylistMapper extends BaseMapper {
 	}
 
 	/**
-	 * adds tracks to a playlist
-	 * @param int[] $trackIds array of all track IDs to add
-	 * @param int $id       playlist ID
+	 * @param int $trackId
+	 * @return Playlist[]
 	 */
-	public function addTracks($trackIds, $id) {
-		$currentTrackIds = $this->getTracks($id);
-
-		// returns elements of $trackIds that are not in $currentTrackIds
-		$newTrackIds = array_diff($trackIds, $currentTrackIds);
-
-		$sql = 'INSERT INTO `*PREFIX*music_playlist_tracks` (`playlist_id`, ' .
-					'`track_id`) VALUES ( ?, ? )';
-
-		// this is called for each track ID, because the is no identical way
-		// to do a multi insert for all supported databases
-		foreach ($newTrackIds as $trackId) {
-			$this->execute($sql, array($id, $trackId));
-		}
-	}
-
-	/**
-	 * gets track of a playlist
-	 * @param  int $id ID of the playlist
-	 * @return int[] list of all track IDs
-	 */
-	public function getTracks($id) {
-		$sql = 'SELECT `track_id` FROM `*PREFIX*music_playlist_tracks` '.
-				'WHERE `playlist_id` = ?';
-		$result = $this->execute($sql, array($id));
-
-		$trackIds = array();
-		while($row = $result->fetch()){
-			$trackIds[] = (int) $row['track_id'];
-		}
-
-		return $trackIds;
-	}
-
-	/**
-	 * removes tracks from a playlist
-	 * @param int $id       playlist ID
-	 * @param int[] $trackIds array of all track IDs to remove - if empty all tracks will be removed
-	 */
-	public function removeTracks($id, $trackIds = null) {
-		$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` = ?';
-
-		if(is_null($trackIds)) {
-			$this->execute($sql, array($id));
-		} else {
-			$count = count($trackIds);
-			if ($count) {
-				$sql .= ' AND `track_id` IN ' . $this->questionMarks($count);
-				$this->execute($sql, array_merge([$id], $trackIds));
-			}
-		}
-	}
-
-	/**
-	 * removes tracks from all available playlists
-	 * @param int[] $trackIds array of all track IDs to remove
-	 */
-	public function removeTracksFromAllLists($trackIds) {
-		$count = count($trackIds);
-		if($count) {
-			$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `track_id` IN ' . $this->questionMarks($count);
-			$this->execute($sql, $trackIds);
-		}
+	 public function findListsContainingTrack($trackId) {
+		$sql = 'SELECT * ' .
+			'FROM `*PREFIX*music_playlists` ' .
+			'WHERE `track_ids` LIKE ?';
+		$params = array('%|' . $trackId . '|%');
+		return $this->findEntities($sql, $params);
 	}
 }

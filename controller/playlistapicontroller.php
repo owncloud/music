@@ -23,14 +23,14 @@ use \OCP\Files\Folder;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
-use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
 
-	private $playlistMapper;
+	private $playlistBusinessLayer;
 	private $userId;
 	private $userFolder;
 	private $artistBusinessLayer;
@@ -41,7 +41,7 @@ class PlaylistApiController extends Controller {
 	public function __construct($appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
-								PlaylistMapper $playlistMapper,
+								PlaylistBusinessLayer $playlistBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
@@ -51,7 +51,7 @@ class PlaylistApiController extends Controller {
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
 		$this->urlGenerator = $urlGenerator;
-		$this->playlistMapper = $playlistMapper;
+		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
@@ -64,10 +64,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getAll() {
-		$playlists = $this->playlistMapper->findAll($this->userId);
-		foreach ($playlists as $list) {
-			$list->setTrackIds($this->playlistMapper->getTracks($list->getId()));
-		}
+		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
 		$serializer = new APISerializer();
 
 		return $serializer->serialize($playlists);
@@ -80,30 +77,14 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function create() {
-		$name = $this->params('name');
+		$playlist = $this->playlistBusinessLayer->insert($this->params('name'), $this->userId);
 
-		$playlist = new Playlist();
-		$playlist->setName($name);
-		$playlist->setUserId($this->userId);
-
-		$playlist = $this->playlistMapper->insert($playlist);
-
-		// if trackIds is provided just add them to the playlist
-		$trackIds = $this->params('trackIds');
-		if (!empty($trackIds)){
-			$newTrackIds = array();
-			foreach (explode(',', $trackIds) as $trackId) {
-				$newTrackIds[] = (int) $trackId;
-			}
-
-			$this->playlistMapper->addTracks($newTrackIds, $playlist->getId());
-
-			// set trackIds in model
-			$tracks = $this->playlistMapper->getTracks($playlist->getId());
-			$playlist->setTrackIds($tracks);
-
+		// add trackIds to the newly created playlist if provided
+		if (!empty($this->params('trackIds'))){
+			$playlist = $this->playlistBusinessLayer->addTracks(
+					$this->getParamTrackIds(), $playlist->getId(), $this->userId);
 		}
-
+		
 		return $playlist->toAPI();
 	}
 
@@ -115,8 +96,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function delete($id) {
-		$this->playlistMapper->deleteById([$id]);
-
+		$this->playlistBusinessLayer->delete($id, $this->userId);
 		return array();
 	}
 
@@ -129,8 +109,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function get($id) {
 		try {
-			$playlist = $this->playlistMapper->find($id, $this->userId);
-			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
+			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
 			$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
 			if ($fulltree) {
@@ -171,14 +150,8 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function update($id) {
-		$name = $this->params('name');
-
 		try {
-			$playlist = $this->playlistMapper->find($id, $this->userId);
-			$playlist->setName($name);
-			$this->playlistMapper->update($playlist);
-			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
-
+			$playlist = $this->playlistBusinessLayer->rename($this->params('name'), $id, $this->userId);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
@@ -194,16 +167,8 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function addTracks($id) {
-		$newTrackIds = array();
-		foreach (explode(',', $this->params('trackIds')) as $trackId) {
-			$newTrackIds[] = (int) $trackId;
-		}
-
 		try {
-			$playlist = $this->playlistMapper->find($id, $this->userId);
-			$this->playlistMapper->addTracks($newTrackIds, $id);
-			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
-
+			$playlist = $this->playlistBusinessLayer->addTracks($this->getParamTrackIds(), $id, $this->userId);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
@@ -219,20 +184,20 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function removeTracks($id) {
-		$trackIds = array();
-		foreach (explode(',', $this->params('trackIds')) as $trackId) {
-			$trackIds[] = (int) $trackId;
-		}
-
 		try {
-			$playlist = $this->playlistMapper->find($id, $this->userId);
-			$this->playlistMapper->removeTracks($id, $trackIds);
-			$playlist->setTrackIds($this->playlistMapper->getTracks($id));
-
+			$playlist = $this->playlistBusinessLayer->removeTracks($this->getParamTrackIds(), $id, $this->userId);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);
 		}
+	}
+
+	private function getParamTrackIds() {
+		$trackIds = array();
+		foreach (explode(',', $this->params('trackIds')) as $trackId) {
+			$trackIds[] = (int) $trackId;
+		}
+		return $trackIds;
 	}
 }

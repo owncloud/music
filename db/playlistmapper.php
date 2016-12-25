@@ -95,22 +95,6 @@ class PlaylistMapper extends BaseMapper {
 	}
 
 	/**
-	 * deletes a playlist
-	 * @param integer[] $ids  IDs of the entities to be deleted
-	 */
-	public function deleteById($ids){
-		$count = count($ids);
-		if($count) {
-			// delete from oc_music_playlists
-			parent::deleteById($ids);
-
-			// delete from oc_music_playlist_tracks
-			$sql = 'DELETE FROM `*PREFIX*music_playlist_tracks` WHERE `playlist_id` IN ' . $this->questionMarks($count);
-			$this->execute($sql, $ids);
-		}
-	}
-
-	/**
 	 * removes tracks from a playlist
 	 * @param int $id       playlist ID
 	 * @param int[] $trackIds array of all track IDs to remove - if empty all tracks will be removed

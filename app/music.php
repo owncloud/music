@@ -19,6 +19,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Controller\AmpacheController;
@@ -100,7 +101,7 @@ class Music extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('URLGenerator'),
-				$c->query('PlaylistMapper'),
+				$c->query('PlaylistBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
@@ -153,6 +154,13 @@ class Music extends App {
 		$container->registerService('AlbumBusinessLayer', function($c) {
 			return new AlbumBusinessLayer(
 				$c->query('AlbumMapper'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PlaylistBusinessLayer', function($c) {
+			return new PlaylistBusinessLayer(
+				$c->query('PlaylistMapper'),
 				$c->query('Logger')
 			);
 		});

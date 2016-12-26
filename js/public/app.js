@@ -579,11 +579,11 @@ angular.module('Music').controller('PlaylistViewController',
 		$rootScope.currentView = window.location.hash;
 
 		// Remove chosen track from the list
-		$scope.removeTrack = function(track) {
-			$scope.playlist.all("remove").post({trackIds: track.id}).then(function(updatedList) {
+		$scope.removeTrack = function(trackIndex) {
+			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
 				// remove the element also from our internal array, without recreating the whole array
-				$scope.tracks.splice($scope.tracks.indexOf(track), 1);
+				$scope.tracks.splice(trackIndex, 1);
 			});
 		};
 

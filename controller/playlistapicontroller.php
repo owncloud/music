@@ -82,7 +82,7 @@ class PlaylistApiController extends Controller {
 		// add trackIds to the newly created playlist if provided
 		if (!empty($this->params('trackIds'))){
 			$playlist = $this->playlistBusinessLayer->addTracks(
-					$this->getParamTrackIds(), $playlist->getId(), $this->userId);
+					$this->paramArray('trackIds'), $playlist->getId(), $this->userId);
 		}
 		
 		return $playlist->toAPI();
@@ -168,7 +168,8 @@ class PlaylistApiController extends Controller {
 	 */
 	public function addTracks($id) {
 		try {
-			$playlist = $this->playlistBusinessLayer->addTracks($this->getParamTrackIds(), $id, $this->userId);
+			$playlist = $this->playlistBusinessLayer->addTracks(
+					$this->paramArray('trackIds'), $id, $this->userId);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
@@ -185,7 +186,8 @@ class PlaylistApiController extends Controller {
 	 */
 	public function removeTracks($id) {
 		try {
-			$playlist = $this->playlistBusinessLayer->removeTracks($this->getParamTrackIds(), $id, $this->userId);
+			$playlist = $this->playlistBusinessLayer->removeTracks(
+					$this->paramArray('indices'), $id, $this->userId);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
@@ -193,11 +195,11 @@ class PlaylistApiController extends Controller {
 		}
 	}
 
-	private function getParamTrackIds() {
-		$trackIds = array();
-		foreach (explode(',', $this->params('trackIds')) as $trackId) {
-			$trackIds[] = (int) $trackId;
+	private function paramArray($name) {
+		$array = array();
+		foreach (explode(',', $this->params($name)) as $item) {
+			$array[] = (int) $item;
 		}
-		return $trackIds;
+		return $array;
 	}
 }

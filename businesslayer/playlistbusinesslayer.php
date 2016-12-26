@@ -58,10 +58,11 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	public function removeTracks($trackIds, $playlistId, $userId) {
+	public function removeTracks($trackIndices, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
-		$prevTrackIds = $playlist->getTrackIdsAsArray();
-		$playlist->setTrackIdsFromArray(array_diff($prevTrackIds, $trackIds));
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$trackIds = array_diff_key($trackIds, array_flip($trackIndices));
+		$playlist->setTrackIdsFromArray($trackIds);
 		$this->mapper->update($playlist);
 		return $playlist;
 	}

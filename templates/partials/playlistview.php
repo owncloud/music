@@ -9,7 +9,7 @@
 				<span class="muted">{{ $index + 1 }}.</span>
 				<div>{{ song.artistName }} - {{song.title}}</div>
 			</div>
-			<button class="svg action icon-close" ng-click="removeTrack(song)" ng-if="playlist"
+			<button class="svg action icon-close" ng-click="removeTrack($index)" ng-if="playlist"
 				alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}" />
 		</li>
 	</ul>

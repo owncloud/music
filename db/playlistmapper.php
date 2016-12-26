@@ -15,11 +15,11 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Entity;
-use OCP\IDb;
+use OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
 
-	public function __construct(IDb $db){
+	public function __construct(IDBConnection $db){
 		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
 	}
 
@@ -87,7 +87,7 @@ class PlaylistMapper extends BaseMapper {
 		$result = $this->execute($sql, array($id));
 
 		$trackIds = array();
-		while($row = $result->fetchRow()){
+		while($row = $result->fetch()){
 			$trackIds[] = (int) $row['track_id'];
 		}
 

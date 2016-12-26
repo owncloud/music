@@ -26,7 +26,7 @@ cd /tmp/downloadedData
 for url in $urls
 do
     name=`echo $url | cut -d "/" -f 6`
-    if [ ! -d "$name" ];
+    if [ ! -f "$name.mp3" ];
     then
         echo "Downloading $name ..."
         wget $url -q --no-check-certificate -O $name.mp3

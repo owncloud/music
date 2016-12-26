@@ -1,3 +1,24 @@
+v0.3.13 2016-12-20
+ * refactored scanner.php
+ * improved album art extraction performance
+ * improved metadata extraction (use custom patched getID3, having track and album artist as fallback for each other)
+ * improved behaviour of scroll links
+ * fixed bug in AlbumMapper.findAlbumCover
+ * fixed album deletion
+ * fixed layout (new music availability, scanning, overlapping scrollbar, autoscrolling to album, album-art resizing on window resize, mobile style fixes, viewBox to app icon)
+ * fixed inclusion of getID3 when required #551 - thanks @apotek
+ * fixed usage of deprecated APIs
+ * fixed playback order when playing album
+ * fixed disc number extraction
+ * fixed UI glitches #522
+ * improved metadata display (view track artist if different from album artist)
+ * add support for HTTP Range requests allowing Ampache API clients to seek files #528
+ * improved playback by preffering SoundManager2 and falling back to Aurora.js if the former is not available
+ * fixed seeking during playback
+ * fixed file delete hook
+ * fixed volume control and improved its layout
+ * dropped support for ownCloud <= 8.0
+
 v0.3.12 2016-07-26
 
  * provide bitrate and mime information in the Ampache API's song endpoint

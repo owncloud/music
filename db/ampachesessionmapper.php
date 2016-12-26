@@ -13,11 +13,11 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\Mapper;
-use OCP\IDb;
+use OCP\IDBConnection;
 
 class AmpacheSessionMapper extends Mapper {
 
-	public function __construct(IDb $db){
+	public function __construct(IDBConnection $db){
 		parent::__construct($db, 'music_ampache_sessions', '\OCA\Music\Db\AmpacheSession');
 	}
 
@@ -33,7 +33,7 @@ class AmpacheSessionMapper extends Mapper {
 		$result = $this->execute($sql, $params);
 
 		// false if no row could be fetched
-		return $result->fetchRow();
+		return $result->fetch();
 	}
 
 	/**

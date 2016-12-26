@@ -92,7 +92,7 @@ class FileResponse extends Response {
 				return null;
 			}
 
-			$handle = fopen('oc://' . $this->file->getPath(), 'r');
+			$handle = $this->file->fopen('r');
 			fseek($handle, $this->start);
 			$content = '';
 			$rangeSize = $this->end - $this->start + 1;

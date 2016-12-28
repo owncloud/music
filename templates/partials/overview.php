@@ -1,10 +1,10 @@
-<div class="artist-area" ng-repeat="artist in artists | orderBy:'name'" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
+<div class="artist-area" ng-repeat="artist in artists" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
 	<span id="{{ letter }}" ng-show="letterAvailable[letter]"></span> <!-- TODO: use ng-if - introduced in 1.1.5 -->
 	<h1 id="{{ 'artist-' + artist.id }}" ng-click="playArtist(artist)" ui-draggable="true" drag="artist">
 		{{ artist.name }}
 		<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
 	</h1>
-	<div class="album-area" ng-repeat="album in artist.albums | orderBy:['year', 'name', 'disk']">
+	<div class="album-area" ng-repeat="album in artist.albums">
 		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year }})"
 			ui-draggable="true" drag="album">
 			<div>{{ album.name }} <span ng-show="album.year" class="muted">({{ album.year }})</span></div>
@@ -17,7 +17,7 @@
 			<li id="{{ 'track-' + track.id }}" 
 				ng-click="playTrack(track)"
 				ui-draggable="true" drag="track"
-				ng-repeat="track in album.tracks | orderBy:'number' | limitTo:limit.count"
+				ng-repeat="track in album.tracks | limitTo:limit.count"
 				title="{{ track.title + ((track.artistId != track.albumArtistId) ? '  (' + track.artistName + ')' : '') }}">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == track.id}" />

@@ -36,11 +36,7 @@ angular.module('Music').controller('OverviewController',
 				function(album) {
 					return album.id === track.albumId;
 				});
-			var tracks = _.sortBy(album.tracks,
-				function(track) {
-					return track.number;
-				});
-			playlistService.setPlaylist(tracks, track);
+			playlistService.setPlaylist(album.tracks, track);
 			playlistService.publish('play');
 		};
 
@@ -48,12 +44,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
 
-			var tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			playlistService.setPlaylist(tracks);
+			playlistService.setPlaylist(album.tracks);
 			playlistService.publish('play');
 		};
 
@@ -61,20 +52,11 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
 
-			var albums = _.sortBy(artist.albums,
-				function(album) {
-					return album.year;
-				}),
-				playlist = _.union.apply(null,
+			var playlist = _.union.apply(null,
 					_.map(
-						albums,
+						artist.albums,
 						function(album){
-							var tracks = _.sortBy(album.tracks,
-								function(track) {
-									return track.number;
-								}
-							);
-							return tracks;
+							return album.tracks;
 						}
 					)
 				);

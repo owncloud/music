@@ -63,8 +63,6 @@ angular.module('Music').controller('MainController',
 		$scope.currentTrack = track;
 	});
 
-	$scope.anchorArtists = [];
-
 	$scope.letters = [
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 		'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
@@ -82,16 +80,13 @@ angular.module('Music').controller('MainController',
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
-			$scope.artists = artists;
+			$scope.artists = sortCollection(artists);
 			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
-				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-					if($scope.letterAvailable[letter] === false) {
-						$scope.anchorArtists.push(artist.name);
-					}
+				if($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
 				}
 
@@ -219,6 +214,39 @@ angular.module('Music').controller('MainController',
 		return tracksDict;
 	}
 
+	function sortByName(items) {
+		return _.sortBy(items, function(i) { return i.name.toLowerCase(); });
+	}
+
+	function sortByYearNameAndDisc(albums) {
+		albums = _.sortBy(albums, "disk");
+		albums = sortByName(albums);
+		albums = _.sortBy(albums, "year");
+		return albums;
+	}
+
+	function sortByNumberAndTitle(tracks) {
+		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+		tracks = _.sortBy(tracks, "number");
+		return tracks;
+	}
+
+	function sortCollection(artists) {
+		artists = sortByName(artists);
+
+		for (var i = 0; i < artists.length; ++i) {
+			var artist = artists[i];
+			artist.albums = sortByYearNameAndDisc(artist.albums); 
+
+			for (var j = 0; j < artist.albums.length; ++j) {
+				var album = artist.albums[j];
+				album.tracks = sortByNumberAndTitle(album.tracks);
+			}
+		}
+
+		return artists;
+	}
+
 	// initial lookup if new files are available
 	$scope.processNextScanStep(1);
 
@@ -268,12 +296,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
 
-			var tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			playlistService.setPlaylist(tracks);
+			playlistService.setPlaylist(album.tracks);
 			playlistService.publish('play');
 		};
 
@@ -281,20 +304,11 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
 
-			var albums = _.sortBy(artist.albums,
-				function(album) {
-					return album.year;
-				}),
-				playlist = _.union.apply(null,
+			var playlist = _.union.apply(null,
 					_.map(
-						albums,
+						artist.albums,
 						function(album){
-							var tracks = _.sortBy(album.tracks,
-								function(track) {
-									return track.number;
-								}
-							);
-							return tracks;
+							return album.tracks;
 						}
 					)
 				);

@@ -58,15 +58,17 @@ angular.module('Music').controller('PlaylistViewController',
 			};
 		};
 
-		$scope.reorderDrop = function(event, draggable, dstIndex) {
-			if ($scope.playlist && draggable.srcIndex != dstIndex) {
-				moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
-				$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
-					function(updatedList) {
-						$scope.$parent.updatePlaylist(updatedList);
-					}
-				);
-			}
+		$scope.reorderDrop = function(draggable, dstIndex) {
+			moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+			$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
+				function(updatedList) {
+					$scope.$parent.updatePlaylist(updatedList);
+				}
+			);
+		};
+
+		$scope.allowDrop = function(draggable, dstIndex) {
+			return $scope.playlist && draggable.srcIndex != dstIndex;
 		};
 
 		$rootScope.$on('scrollToTrack', function(event, trackId) {

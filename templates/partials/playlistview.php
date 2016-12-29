@@ -3,7 +3,8 @@
 	<h1 ng-click="playAll()" ng-if="currentView == '#/alltracks'" translate>All tracks</h1>
 	<ul class="track-list">
 		<li ng-repeat="song in tracks track by $index" id="{{ 'track-' + song.id }}"
-			ui-on-drop="reorderDrop($event, $data, $index)">
+			ui-on-drop="reorderDrop($data, $index)"
+			drop-validate="allowDrop($data, $index)">
 			<div ng-click="playTrack(song)" ui-draggable="true" drag="getDraggable($index)">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == song.id}" />

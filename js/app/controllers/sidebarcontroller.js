@@ -78,17 +78,18 @@ angular.module('Music').controller('SidebarController',
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
+		// Navigate to a view selected from the sidebar
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
 				$rootScope.loading = true;
 				$timeout(function() {
 					window.location.hash = destination;
-				}, 100); // Firefox requires here a small delay to correctly show the laoding animation
+				}, 100); // Firefox requires here a small delay to correctly show the loading animation
 			}
 		};
 
-		// Emitted by MainController after dropping a track/album/artist on a playlist
-		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
+		// An item dragged and dropped on a sidebar playlist item
+		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
 				$scope.addTrack(playlist, droppedItem.track);
 			} else if ('album' in droppedItem) {
@@ -98,13 +99,18 @@ angular.module('Music').controller('SidebarController',
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
-		});
+		};
+
+		$scope.allowDrop = function(playlist) {
+			// Don't allow dragging a track from a playlist back to the same playlist
+			return $rootScope.currentView != '#/playlist/' + playlist.id;
+		};
 
 		playlistService.subscribe('play', function() {
 			$scope.playingView = $rootScope.currentView;
 		});
 
-		playlistService.subscribe('playlistEnded', function(){
+		playlistService.subscribe('playlistEnded', function() {
 			$scope.playingView = null;
 		});
 

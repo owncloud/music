@@ -15,11 +15,6 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	// Broadcast an event in case of a drop on a playlist
-	$scope.dropOnPlaylist = function($event, $data, playlistId){
-		$rootScope.$broadcast('droppedOnPlaylist', $data, playlistId);
-	};
-
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
 		$scope.currentTrack = track;

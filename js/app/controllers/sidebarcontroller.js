@@ -89,12 +89,12 @@ angular.module('Music').controller('SidebarController',
 
 		// Emitted by MainController after dropping a track/album/artist on a playlist
 		$scope.$on('droppedOnPlaylist', function(event, droppedItem, playlist) {
-			if ('files' in droppedItem) {
-				$scope.addTrack(playlist, droppedItem);
-			} else if ('tracks' in droppedItem) {
-				$scope.addAlbum(playlist, droppedItem);
-			} else if ('albums' in droppedItem) {
-				$scope.addArtist(playlist, droppedItem);
+			if ('track' in droppedItem) {
+				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('album' in droppedItem) {
+				$scope.addAlbum(playlist, droppedItem.album);
+			} else if ('artist' in droppedItem) {
+				$scope.addArtist(playlist, droppedItem.artist);
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}

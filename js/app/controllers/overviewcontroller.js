@@ -75,6 +75,12 @@ angular.module('Music').controller('OverviewController',
 			}
 		};
 
+		$scope.getDraggable = function(type, draggedElement) {
+			var draggable = {};
+			draggable[type] = draggedElement;
+			return draggable;
+		};
+
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
 			// update URL hash

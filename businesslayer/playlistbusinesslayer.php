@@ -6,8 +6,8 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016
+ * @author Pauli JÃ¤rvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli JÃ¤rvinen 2016
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -62,6 +62,16 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$trackIds = array_diff_key($trackIds, array_flip($trackIndices));
+		$playlist->setTrackIdsFromArray($trackIds);
+		$this->mapper->update($playlist);
+		return $playlist;
+	}
+
+	public function moveTrack($fromIndex, $toIndex, $playlistId, $userId) {
+		$playlist = $this->find($playlistId, $userId);
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$movedTrack = array_splice($trackIds, $fromIndex, 1);
+		array_splice($trackIds, $toIndex, 0, $movedTrack);
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->mapper->update($playlist);
 		return $playlist;

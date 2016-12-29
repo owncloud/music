@@ -195,6 +195,24 @@ class PlaylistApiController extends Controller {
 		}
 	}
 
+	/**
+	 * moves single track on playlist to a new position
+	 * @param  int $id playlist ID
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function reorder($id) {
+		try {
+			$playlist = $this->playlistBusinessLayer->moveTrack(
+					$this->params('fromIndex'), $this->params('toIndex'), $id, $this->userId);
+			return $playlist->toAPI();
+		} catch(DoesNotExistException $ex) {
+			return new JSONResponse(array('message' => $ex->getMessage()),
+					Http::STATUS_NOT_FOUND);
+		}
+	}
+
 	private function paramArray($name) {
 		$array = array();
 		foreach (explode(',', $this->params($name)) as $item) {

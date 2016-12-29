@@ -30,10 +30,12 @@ angular.module('Music').controller('PlaylistViewController',
 
 		// Remove chosen track from the list
 		$scope.removeTrack = function(trackIndex) {
+			// Remove the element first from our internal array, without recreating the whole array.
+			// Doing this before the HTTP request improves the perceived performance.
+			$scope.tracks.splice(trackIndex, 1);
+
 			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
-				// remove the element also from our internal array, without recreating the whole array
-				$scope.tracks.splice(trackIndex, 1);
 			});
 		};
 
@@ -47,6 +49,24 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.playTrack = function(track) {
 			playlistService.setPlaylist($scope.tracks, track);
 			playlistService.publish('play');
+		};
+
+		$scope.getDraggable = function(index) {
+			return {
+				track: $scope.tracks[index],
+				srcIndex: index
+			};
+		};
+
+		$scope.reorderDrop = function(event, draggable, dstIndex) {
+			if ($scope.playlist && draggable.srcIndex != dstIndex) {
+				moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+				$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
+					function(updatedList) {
+						$scope.$parent.updatePlaylist(updatedList);
+					}
+				);
+			}
 		};
 
 		$rootScope.$on('scrollToTrack', function(event, trackId) {
@@ -83,6 +103,10 @@ angular.module('Music').controller('PlaylistViewController',
 					$rootScope.loading = false;
 				});
 			}
+		}
+
+		function moveArrayElement(array, from, to) {
+			array.splice(to, 0, array.splice(from, 1)[0]);
 		}
 
 		function findPlaylist(id) {

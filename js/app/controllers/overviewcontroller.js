@@ -83,8 +83,10 @@ angular.module('Music').controller('OverviewController',
 
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
-			// update URL hash
-			window.location.hash = '#/';
+			// update URL hash if this view is active
+			if ($rootScope.currentView == '#') {
+				window.location.hash = '#/';
+			}
 		});
 
 		$rootScope.$on('scrollToTrack', function(event, trackId) {

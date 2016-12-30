@@ -52,6 +52,7 @@ angular.module('Music').controller('PlaylistViewController',
 		};
 
 		$scope.getDraggable = function(index) {
+			$scope.draggedIndex = index;
 			return {
 				track: $scope.tracks[index],
 				srcIndex: index
@@ -69,6 +70,20 @@ angular.module('Music').controller('PlaylistViewController',
 
 		$scope.allowDrop = function(draggable, dstIndex) {
 			return $scope.playlist && draggable.srcIndex != dstIndex;
+		};
+
+		$scope.updateHoverStyle = function(dstIndex) {
+			var element = $('.playlist-area .track-list');
+			if ($scope.draggedIndex > dstIndex) {
+				element.removeClass('insert-below');
+				element.addClass('insert-above');
+			} else if ($scope.draggedIndex < dstIndex) {
+				element.removeClass('insert-above');
+				element.addClass('insert-below');
+			} else {
+				element.removeClass('insert-above');
+				element.removeClass('insert-below');
+			}
 		};
 
 		$rootScope.$on('scrollToTrack', function(event, trackId) {

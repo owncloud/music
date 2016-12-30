@@ -27,11 +27,22 @@
 
 .playlist-area .track-list {
 	margin-left: 15px;
+	margin-bottom: 15px;
 }
 
 .playlist-area .track-list > li {
-	padding-bottom: 11px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	border: 1px solid transparent;
 	white-space: nowrap;
+}
+
+.playlist-area .track-list.insert-above > li.drag-hover {
+	border-top-color: LightGray;
+}
+
+.playlist-area .track-list.insert-below > li.drag-hover {
+	border-bottom-color: LightGray;
 }
 
 .playlist-area .track-list .play {

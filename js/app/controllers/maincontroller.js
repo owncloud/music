@@ -18,6 +18,15 @@ angular.module('Music').controller('MainController',
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
 		$scope.currentTrack = track;
+		$scope.currentTrackIndex = playlistService.getCurrentIndex();
+	});
+
+	playlistService.subscribe('play', function() {
+		$rootScope.playingView = $rootScope.currentView;
+	});
+
+	playlistService.subscribe('playlistEnded', function() {
+		$rootScope.playingView = null;
 	});
 
 	$scope.letters = [

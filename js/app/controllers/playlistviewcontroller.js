@@ -28,6 +28,11 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.tracks = [];
 		$rootScope.currentView = window.location.hash;
 
+		$scope.getCurrentTrackIndex = function() {
+			return ($rootScope.playingView === $rootScope.currentView) ?
+				$scope.$parent.currentTrackIndex : null;
+		};
+
 		// Remove chosen track from the list
 		$scope.removeTrack = function(trackIndex) {
 			// Remove the element first from our internal array, without recreating the whole array.

@@ -22,26 +22,18 @@
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
 	var currentIndex = null;
+	var startOffset = 0;
 	var played = [];
-
-	function wrapIndexToStart(list, index) {
-		if(index > 0) {
-			// slice array in two parts and interchange them
-			var begin = list.slice(0, index);
-			var end = list.slice(index);
-			list = end.concat(begin);
-		}
-		return list;
-	}
 
 	return {
 		getCurrentIndex: function() {
-			return currentIndex;
+			return (currentIndex !== null && playlist !== null) ?
+				(startOffset + currentIndex) % playlist.length : null;
 		},
 		jumpToPrevTrack: function() {
 			if(played.length > 0) {
 				currentIndex = played.pop();
-				return playlist[currentIndex];
+				return playlist[this.getCurrentIndex()];
 			}
 			return null;
 		},
@@ -85,10 +77,11 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				currentIndex = null;
 				return null;
 			}
-			return playlist[currentIndex];
+			return playlist[this.getCurrentIndex()];
 		},
 		setPlaylist: function(pl, startIndex /*optional*/) {
-			playlist = wrapIndexToStart(pl, startIndex);
+			playlist = pl;
+			startOffset = startIndex || 0;
 			currentIndex = null;
 			played = [];
 		},

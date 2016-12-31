@@ -22,8 +22,8 @@
 
 
 angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
+	['$rootScope', '$scope', 'Restangular', '$timeout',
+	function ($rootScope, $scope, Restangular, $timeout) {
 
 		$scope.newPlaylistName = null;
 
@@ -105,14 +105,6 @@ angular.module('Music').controller('SidebarController',
 			// Don't allow dragging a track from a playlist back to the same playlist
 			return $rootScope.currentView != '#/playlist/' + playlist.id;
 		};
-
-		playlistService.subscribe('play', function() {
-			$scope.playingView = $rootScope.currentView;
-		});
-
-		playlistService.subscribe('playlistEnded', function() {
-			$scope.playingView = null;
-		});
 
 		function trackIdsFromAlbum(album) {
 			var ids = [];

@@ -9,7 +9,7 @@
 			drag-hover-class="drag-hover">
 			<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-					ng-class="{playing: currentTrack.id == song.id}" />
+					ng-class="{playing: getCurrentTrackIndex() === $index}" />
 				<span class="muted">{{ $index + 1 }}.</span>
 				<div>{{ song.artistName }} - {{song.title}}</div>
 			</div>

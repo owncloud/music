@@ -95,26 +95,26 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	$scope.$watch('currentTrack', function(newValue, oldValue) {
-		playlistService.publish('playing', newValue);
+	function setCurrentTrack(track) {
+		$scope.currentTrack = track;
+		playlistService.publish('playing', track);
 		$scope.player.stop();
 		$scope.setPlay(false);
-		$scope.setLoading(true);
-		if(newValue !== null) {
+		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.albumArtistId;
+											return artist.id === track.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.albumId;
+											return album.id === track.albumId;
 										});
 
-			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.fromURL($scope.getPlayableFileURL(track));
 			$scope.setLoading(true);
 			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
@@ -129,7 +129,7 @@ angular.module('Music').controller('PlayerController',
 			$rootScope.started = false;
 			playlistService.publish('playlistEnded');
 		}
-	}, true);
+	}
 
 	$scope.setPlay = function(playing) {
 		$scope.playing = playing;
@@ -183,13 +183,13 @@ angular.module('Music').controller('PlayerController',
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 			$timeout(OC.Notification.hide, 10000);
 		}
-		$scope.currentTrack = track;
+		setCurrentTrack(track);
 	};
 
 	$scope.prev = function() {
 		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
-			$scope.currentTrack = track;
+			setCurrentTrack(track);
 		}
 	};
 

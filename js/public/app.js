@@ -56,6 +56,15 @@ angular.module('Music').controller('MainController',
 	$scope.currentTrack = null;
 	playlistService.subscribe('playing', function(e, track){
 		$scope.currentTrack = track;
+		$scope.currentTrackIndex = playlistService.getCurrentIndex();
+	});
+
+	playlistService.subscribe('play', function() {
+		$rootScope.playingView = $rootScope.currentView;
+	});
+
+	playlistService.subscribe('playlistEnded', function() {
+		$rootScope.playingView = null;
 	});
 
 	$scope.letters = [
@@ -468,26 +477,26 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	$scope.$watch('currentTrack', function(newValue, oldValue) {
-		playlistService.publish('playing', newValue);
+	function setCurrentTrack(track) {
+		$scope.currentTrack = track;
+		playlistService.publish('playing', track);
 		$scope.player.stop();
 		$scope.setPlay(false);
-		$scope.setLoading(true);
-		if(newValue !== null) {
+		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.albumArtistId;
+											return artist.id === track.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.albumId;
+											return album.id === track.albumId;
 										});
 
-			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.fromURL($scope.getPlayableFileURL(track));
 			$scope.setLoading(true);
 			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
@@ -502,7 +511,7 @@ angular.module('Music').controller('PlayerController',
 			$rootScope.started = false;
 			playlistService.publish('playlistEnded');
 		}
-	}, true);
+	}
 
 	$scope.setPlay = function(playing) {
 		$scope.playing = playing;
@@ -556,13 +565,13 @@ angular.module('Music').controller('PlayerController',
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 			$timeout(OC.Notification.hide, 10000);
 		}
-		$scope.currentTrack = track;
+		setCurrentTrack(track);
 	};
 
 	$scope.prev = function() {
 		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
-			$scope.currentTrack = track;
+			setCurrentTrack(track);
 		}
 	};
 
@@ -590,6 +599,11 @@ angular.module('Music').controller('PlaylistViewController',
 
 		$scope.tracks = [];
 		$rootScope.currentView = window.location.hash;
+
+		$scope.getCurrentTrackIndex = function() {
+			return ($rootScope.playingView === $rootScope.currentView) ?
+				$scope.$parent.currentTrackIndex : null;
+		};
 
 		// Remove chosen track from the list
 		$scope.removeTrack = function(trackIndex) {
@@ -721,8 +735,8 @@ angular.module('Music').controller('PlaylistViewController',
 }]);
 
 angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
+	['$rootScope', '$scope', 'Restangular', '$timeout',
+	function ($rootScope, $scope, Restangular, $timeout) {
 
 		$scope.newPlaylistName = null;
 
@@ -804,14 +818,6 @@ angular.module('Music').controller('SidebarController',
 			// Don't allow dragging a track from a playlist back to the same playlist
 			return $rootScope.currentView != '#/playlist/' + playlist.id;
 		};
-
-		playlistService.subscribe('play', function() {
-			$scope.playingView = $rootScope.currentView;
-		});
-
-		playlistService.subscribe('playlistEnded', function() {
-			$scope.playingView = null;
-		});
 
 		function trackIdsFromAlbum(album) {
 			var ids = [];
@@ -1140,26 +1146,18 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
 	var currentIndex = null;
+	var startOffset = 0;
 	var played = [];
-
-	function wrapIndexToStart(list, index) {
-		if(index > 0) {
-			// slice array in two parts and interchange them
-			var begin = list.slice(0, index);
-			var end = list.slice(index);
-			list = end.concat(begin);
-		}
-		return list;
-	}
 
 	return {
 		getCurrentIndex: function() {
-			return currentIndex;
+			return (currentIndex !== null && playlist !== null) ?
+				(startOffset + currentIndex) % playlist.length : null;
 		},
 		jumpToPrevTrack: function() {
 			if(played.length > 0) {
 				currentIndex = played.pop();
-				return playlist[currentIndex];
+				return playlist[this.getCurrentIndex()];
 			}
 			return null;
 		},
@@ -1203,10 +1201,11 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				currentIndex = null;
 				return null;
 			}
-			return playlist[currentIndex];
+			return playlist[this.getCurrentIndex()];
 		},
 		setPlaylist: function(pl, startIndex /*optional*/) {
-			playlist = wrapIndexToStart(pl, startIndex);
+			playlist = pl;
+			startOffset = startIndex || 0;
 			currentIndex = null;
 			played = [];
 		},

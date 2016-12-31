@@ -46,8 +46,8 @@ angular.module('Music').controller('PlaylistViewController',
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(track) {
-			playlistService.setPlaylist($scope.tracks, track);
+		$scope.playTrack = function(trackIndex) {
+			playlistService.setPlaylist($scope.tracks, trackIndex);
 			playlistService.publish('play');
 		};
 

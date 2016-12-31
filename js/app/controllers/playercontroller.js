@@ -170,14 +170,14 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+		var track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			tracksSkipped = true;
-			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped === true) {
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
@@ -187,7 +187,7 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.prev = function() {
-		var track = playlistService.getPrevTrack();
+		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
 			$scope.currentTrack = track;
 		}

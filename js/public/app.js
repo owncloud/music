@@ -279,7 +279,7 @@ angular.module('Music').controller('OverviewController',
 				function(album) {
 					return album.id === track.albumId;
 				});
-			playlistService.setPlaylist(album.tracks, track);
+			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
 			playlistService.publish('play');
 		};
 
@@ -543,14 +543,14 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+		var track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			tracksSkipped = true;
-			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped === true) {
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
@@ -560,7 +560,7 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.prev = function() {
-		var track = playlistService.getPrevTrack();
+		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
 			$scope.currentTrack = track;
 		}
@@ -609,8 +609,8 @@ angular.module('Music').controller('PlaylistViewController',
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(track) {
-			playlistService.setPlaylist($scope.tracks, track);
+		$scope.playTrack = function(trackIndex) {
+			playlistService.setPlaylist($scope.tracks, trackIndex);
 			playlistService.publish('play');
 		};
 
@@ -1139,18 +1139,10 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
-	var currentTrackId = null;
+	var currentIndex = null;
 	var played = [];
 
-	function wrapTrackToStartOfList(list, track) {
-		// determine index of the first track
-		var index = -1;
-		for (var i = 0; i < list.length; i++) {
-			if(list[i].id == track.id) {
-				index = i;
-				break;
-			}
-		}
+	function wrapIndexToStart(list, index) {
 		if(index > 0) {
 			// slice array in two parts and interchange them
 			var begin = list.slice(0, index);
@@ -1161,33 +1153,30 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	}
 
 	return {
-		getCurrentTrack: function() {
-			if(currentTrackId !== null && playlist !== null) {
-				return playlist[currentTrackId];
-			}
-			return null;
+		getCurrentIndex: function() {
+			return currentIndex;
 		},
-		getPrevTrack: function() {
+		jumpToPrevTrack: function() {
 			if(played.length > 0) {
-				currentTrackId = played.pop();
-				return playlist[currentTrackId];
+				currentIndex = played.pop();
+				return playlist[currentIndex];
 			}
 			return null;
 		},
-		getNextTrack: function(repeat, shuffle) {
+		jumpToNextTrack: function(repeat, shuffle) {
 			if(playlist === null) {
 				return null;
 			}
-			if(currentTrackId !== null) {
+			if(currentIndex !== null) {
 				// add previous track id to the played list
-				played.push(currentTrackId);
+				played.push(currentIndex);
 			}
 			if(shuffle === true) {
 				if(playlist.length === played.length) {
 					if(repeat === true) {
 						played = [];
 					} else {
-						currentTrackId = null;
+						currentIndex = null;
 						return null;
 					}
 				}
@@ -1199,29 +1188,26 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				// remove the already played track ids
 				all = _.difference(all, played);
 				// determine a random integer out of this set
-				currentTrackId = all[Math.round(Math.random() * (all.length - 1))];
+				currentIndex = all[Math.round(Math.random() * (all.length - 1))];
 			} else {
-				if(currentTrackId === null ||
-					currentTrackId === (playlist.length - 1) && repeat === true) {
-					currentTrackId = 0;
+				if(currentIndex === null ||
+					currentIndex === (playlist.length - 1) && repeat === true) {
+					currentIndex = 0;
 				} else {
-					currentTrackId++;
+					currentIndex++;
 				}
 			}
 			// repeat is disabled and the end of the playlist is reached
 			// -> abort
-			if(currentTrackId >= playlist.length) {
-				currentTrackId = null;
+			if(currentIndex >= playlist.length) {
+				currentIndex = null;
 				return null;
 			}
-			return playlist[currentTrackId];
+			return playlist[currentIndex];
 		},
-		setPlaylist: function(pl, startTrack /*optional*/) {
-			if (startTrack) {
-				pl = wrapTrackToStartOfList(pl, startTrack);
-			}
-			playlist = pl;
-			currentTrackId = null;
+		setPlaylist: function(pl, startIndex /*optional*/) {
+			playlist = wrapIndexToStart(pl, startIndex);
+			currentIndex = null;
 			played = [];
 		},
 		publish: function(name, parameters) {

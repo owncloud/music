@@ -36,7 +36,7 @@ angular.module('Music').controller('OverviewController',
 				function(album) {
 					return album.id === track.albumId;
 				});
-			playlistService.setPlaylist(album.tracks, track);
+			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
 			playlistService.publish('play');
 		};
 

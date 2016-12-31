@@ -7,7 +7,7 @@
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover">
-			<div ng-click="playTrack(song)" ui-draggable="true" drag="getDraggable($index)">
+			<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 					ng-class="{playing: currentTrack.id == song.id}" />
 				<span class="muted">{{ $index + 1 }}.</span>

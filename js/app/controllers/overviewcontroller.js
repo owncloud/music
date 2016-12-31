@@ -28,14 +28,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var artist = _.find($scope.$parent.artists,
-				function(artist) {
-					return artist.id === track.albumArtistId;
-				});
-			var album = _.find(artist.albums,
-				function(album) {
-					return album.id === track.albumId;
-				});
+			var album = findAlbum(track.albumId);
 			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
 			playlistService.publish('play');
 		};
@@ -52,14 +45,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
 
-			var playlist = _.union.apply(null,
-					_.map(
-						artist.albums,
-						function(album){
-							return album.tracks;
-						}
-					)
-				);
+			var playlist = _.flatten(_.pluck(artist.albums, 'tracks'));
 			playlistService.setPlaylist(playlist);
 			playlistService.publish('play');
 		};
@@ -90,62 +76,56 @@ angular.module('Music').controller('OverviewController',
 		});
 
 		$rootScope.$on('scrollToTrack', function(event, trackId) {
-			var track = $scope.$parent.allTracks[trackId];
+			var track = findTrack(trackId);
 			if (track) {
 				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
 		});
 
-		$scope.initializePlayerStateFromURL = function() {
-			var hashParts = window.location.hash.substr(1).split('/');
-			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
-				type = hashParts[1];
-				var id = hashParts[2];
-
-				if (type == 'file') {
-					// trigger play
-					$scope.playFile(id);
-				} else if (type == 'artist') {
-					// search for the artist by id
-					object = _.find($scope.$parent.artists, function(artist) {
-						return artist.id == id;
-					});
-					// trigger play
-					$scope.playArtist(object);
-					$scope.$parent.scrollToItem('artist-' + object.id);
-				} else {
-					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
-					if (type == 'album') {
-						// search for the album by id
-						object = _.find(albums, function(album) {
-							return album.id == id;
-						});
-						// trigger play
-						$scope.playAlbum(object);
-						$scope.$parent.scrollToItem('album-' + object.id);
-					} else if (type == 'track') {
-						var tracks = _.flatten(_.pluck(albums, 'tracks'));
-						// search for the track by id
-						object = _.find(tracks, function(track) {
-							return track.id == id;
-						});
-						// trigger play
-						$scope.playTrack(object);
-						$scope.$parent.scrollToItem('album-' + object.albumId);
-					}
-				}
-			}
-			$rootScope.loading = false;
-		};
-
-		// initialize either immedately or once the parent view has finished loading the collection
-		if ($scope.$parent.artists) {
-			$timeout(function() {
-				$scope.initializePlayerStateFromURL();
+		function findArtist(id) {
+			return _.find($scope.$parent.artists, function(artist) {
+				return artist.id == id;
 			});
 		}
 
-		$rootScope.$on('artistsLoaded', function () {
-			$scope.initializePlayerStateFromURL();
-		});
+		function findAlbum(id) {
+			var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
+			return _.find(albums, function(album) {
+				return album.id == id;
+			});
+		}
+
+		function findTrack(id) {
+			return $scope.$parent.allTracks[id];
+		}
+
+		function initializePlayerStateFromURL() {
+			var hashParts = window.location.hash.substr(1).split('/');
+			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
+				var type = hashParts[1];
+				var id = hashParts[2];
+
+				if (type == 'file') {
+					$scope.playFile(id);
+				} else if (type == 'artist') {
+					$scope.playArtist(findArtist(id));
+					$scope.$parent.scrollToItem('artist-' + id);
+				} else if (type == 'album') {
+					$scope.playAlbum(findAlbum(id));
+					$scope.$parent.scrollToItem('album-' + id);
+				} else if (type == 'track') {
+					var track = findTrack(id);
+					$scope.playTrack(track);
+					$scope.$parent.scrollToItem('album-' + track.albumId);
+				}
+			}
+			$rootScope.loading = false;
+		}
+
+		// initialize either immedately or once the parent view has finished loading the collection
+		if ($scope.$parent.artists) {
+			$timeout(initializePlayerStateFromURL);
+		}
+
+		$rootScope.$on('artistsLoaded', initializePlayerStateFromURL);
 }]);

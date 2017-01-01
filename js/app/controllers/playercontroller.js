@@ -97,7 +97,6 @@ angular.module('Music').controller('PlayerController',
 
 	function setCurrentTrack(track) {
 		$scope.currentTrack = track;
-		playlistService.publish('playing', track);
 		$scope.player.stop();
 		$scope.setPlay(false);
 		if(track !== null) {
@@ -127,7 +126,6 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;
-			playlistService.publish('playlistEnded');
 		}
 	}
 
@@ -179,7 +177,7 @@ angular.module('Music').controller('PlayerController',
 			tracksSkipped = true;
 			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
-		if(tracksSkipped === true) {
+		if(tracksSkipped) {
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 			$timeout(OC.Notification.hide, 10000);
 		}

@@ -21,69 +21,122 @@
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
-	var currentIndex = null;
-	var startOffset = 0;
-	var played = [];
+	var playOrder = [];
+	var playOrderIter = -1;
+	var startFromIndex = null;
+	var prevShuffleState = false;
+
+	function shuffledIndices() {
+		var indices = _.range(playlist.length);
+		return _.shuffle(indices);
+	}
+
+	function shuffledIndicesExcluding(toExclude) {
+		var indices = _.range(playlist.length);
+		indices.splice(toExclude, 1);
+		return _.shuffle(indices);
+	}
+
+	function wrapIndexToStart(list, index) {
+		if (index > 0) {
+			// slice array in two parts and interchange them
+			var begin = list.slice(0, index);
+			var end = list.slice(index);
+			list = end.concat(begin);
+		}
+		return list;
+	}
+
+	function initPlayOrder(shuffle) {
+		if (shuffle) {
+			if (startFromIndex !== null) {
+				playOrder = [startFromIndex].concat(shuffledIndicesExcluding(startFromIndex));
+			} else {
+				playOrder = shuffledIndices();
+			}
+		}
+		else {
+			playOrder = _.range(playlist.length);
+			if (startFromIndex !== null) {
+				playOrder = wrapIndexToStart(playOrder, startFromIndex);
+			}
+		}
+		prevShuffleState = shuffle;
+	}
+
+	function enqueueIndices(shuffle) {
+		var prevIndex = _.last(playOrder);
+		var nextIndices = null;
+
+		// Append playlist indices in suitable order, excluding the previously played index
+		// to prevent the same track from playing twice in row. Playlist containing only a
+		// single track is a special case as there we cannot exclude our only track.
+		if (playlist.length === 1) {
+			nextIndices = [0];
+		} else if (shuffle) {
+			nextIndices = shuffledIndicesExcluding(prevIndex);
+		} else {
+			nextIndices = wrapIndexToStart(_.range(playlist.length), prevIndex);
+			nextIndices = _.rest(nextIndices);
+		}
+
+		playOrder = playOrder.concat(nextIndices);
+	}
+
+	function checkShuffleStateChange(currentShuffleState) {
+		if (currentShuffleState != prevShuffleState) {
+			// Drop any future indices from the play order when the shuffle state changes
+			// and enqueue one playlist worth of indices according the new state.
+			playOrder = _.first(playOrder, playOrderIter);
+			enqueueIndices(currentShuffleState);
+			prevShuffleState = currentShuffleState;
+		}
+	}
 
 	return {
 		getCurrentIndex: function() {
-			return (currentIndex !== null && playlist !== null) ?
-				(startOffset + currentIndex) % playlist.length : null;
+			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
 		},
 		jumpToPrevTrack: function() {
-			if(played.length > 0) {
-				currentIndex = played.pop();
-				return playlist[this.getCurrentIndex()];
+			if(playlist && playOrderIter > 0) {
+				--playOrderIter;
+				track = playlist[this.getCurrentIndex()];
+				this.publish('playing', track);
+				return track;
 			}
 			return null;
 		},
 		jumpToNextTrack: function(repeat, shuffle) {
-			if(playlist === null) {
+			if (playlist === null) {
 				return null;
 			}
-			if(currentIndex !== null) {
-				// add previous track id to the played list
-				played.push(currentIndex);
+			if (!playOrder) {
+				initPlayOrder(shuffle);
 			}
-			if(shuffle === true) {
-				if(playlist.length === played.length) {
-					if(repeat === true) {
-						played = [];
-					} else {
-						currentIndex = null;
-						return null;
-					}
-				}
-				// generate a list with all integers between 0 and playlist.length
-				var all = [];
-				for(var i = 0; i < playlist.length; i++) {
-					all.push(i);
-				}
-				// remove the already played track ids
-				all = _.difference(all, played);
-				// determine a random integer out of this set
-				currentIndex = all[Math.round(Math.random() * (all.length - 1))];
-			} else {
-				if(currentIndex === null ||
-					currentIndex === (playlist.length - 1) && repeat === true) {
-					currentIndex = 0;
-				} else {
-					currentIndex++;
+			++playOrderIter;
+			checkShuffleStateChange(shuffle);
+
+			// check if we have run to the end of the enqueued tracks
+			if (playOrderIter >= playOrder.length) {
+				if (repeat) { // start another round
+					enqueueIndices(shuffle);
+				} else { // we are done
+					playOrderIter = -1;
+					playlist = null;
+					this.publish('playlistEnded');
+					return null;
 				}
 			}
-			// repeat is disabled and the end of the playlist is reached
-			// -> abort
-			if(currentIndex >= playlist.length) {
-				currentIndex = null;
-				return null;
-			}
-			return playlist[this.getCurrentIndex()];
+
+			var track = playlist[this.getCurrentIndex()];
+			this.publish('playing', track);
+			return track;
 		},
 		setPlaylist: function(pl, startIndex /*optional*/) {
 			playlist = pl;
-			startOffset = startIndex || 0;
-			currentIndex = null;
-			played = [];
+			playOrder = null;
+			playOrderIter = -1;
+			startFromIndex = startIndex || null;
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

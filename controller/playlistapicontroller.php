@@ -128,7 +128,7 @@ class PlaylistApiController extends Controller {
 		$songs = [];
 
 		// Get all track information for all the tracks of the playlist
-		foreach($playlist->getTrackIds() as $trackId) {
+		foreach($playlist->getTrackIdsAsArray() as $trackId) {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
 			$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
@@ -150,13 +150,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function update($id) {
-		try {
-			$playlist = $this->playlistBusinessLayer->rename($this->params('name'), $id, $this->userId);
-			return $playlist->toAPI();
-		} catch(DoesNotExistException $ex) {
-			return new JSONResponse(array('message' => $ex->getMessage()),
-				Http::STATUS_NOT_FOUND);
-		}
+		return $this->modifyPlaylist('rename', [$this->params('name'), $id, $this->userId]);
 	}
 
 	/**
@@ -167,14 +161,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function addTracks($id) {
-		try {
-			$playlist = $this->playlistBusinessLayer->addTracks(
-					$this->paramArray('trackIds'), $id, $this->userId);
-			return $playlist->toAPI();
-		} catch(DoesNotExistException $ex) {
-			return new JSONResponse(array('message' => $ex->getMessage()),
-				Http::STATUS_NOT_FOUND);
-		}
+		return $this->modifyPlaylist('addTracks', [$this->paramArray('trackIds'), $id, $this->userId]);
 	}
 
 	/**
@@ -185,14 +172,7 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function removeTracks($id) {
-		try {
-			$playlist = $this->playlistBusinessLayer->removeTracks(
-					$this->paramArray('indices'), $id, $this->userId);
-			return $playlist->toAPI();
-		} catch(DoesNotExistException $ex) {
-			return new JSONResponse(array('message' => $ex->getMessage()),
-				Http::STATUS_NOT_FOUND);
-		}
+		return $this->modifyPlaylist('removeTracks', [$this->paramArray('indices'), $id, $this->userId]);
 	}
 
 	/**
@@ -203,9 +183,19 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function reorder($id) {
+		return $this->modifyPlaylist('moveTrack',
+				[$this->params('fromIndex'), $this->params('toIndex'), $id, $this->userId]);
+	}
+
+	/**
+	 * Modify playlist by calling a supplied method from PlaylistBusinessLayer
+	 * @param string funcName   Name of a function to call from PlaylistBusinessLayer
+	 * @param array $funcParams Parameters to pass to the function 'funcName'
+	 * @return \OCP\AppFramework\Http\JSONResponse JSON representation of the modified playlist
+	 */
+	private function modifyPlaylist($funcName, $funcParams) {
 		try {
-			$playlist = $this->playlistBusinessLayer->moveTrack(
-					$this->params('fromIndex'), $this->params('toIndex'), $id, $this->userId);
+			$playlist = call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
 			return $playlist->toAPI();
 		} catch(DoesNotExistException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
@@ -213,6 +203,11 @@ class PlaylistApiController extends Controller {
 		}
 	}
 
+	/**
+	 * Get integer array passed as parameter to the Playlist API
+	 * @param string $name Name of the parameter
+	 * @return int[]
+	 */
 	private function paramArray($name) {
 		$array = array();
 		foreach (explode(',', $this->params($name)) as $item) {

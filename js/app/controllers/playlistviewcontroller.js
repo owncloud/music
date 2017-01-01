@@ -29,8 +29,7 @@ angular.module('Music').controller('PlaylistViewController',
 		$rootScope.currentView = window.location.hash;
 
 		$scope.getCurrentTrackIndex = function() {
-			return ($rootScope.playingView === $rootScope.currentView) ?
-				$scope.$parent.currentTrackIndex : null;
+			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
 		};
 
 		// Remove chosen track from the list
@@ -38,6 +37,14 @@ angular.module('Music').controller('PlaylistViewController',
 			// Remove the element first from our internal array, without recreating the whole array.
 			// Doing this before the HTTP request improves the perceived performance.
 			$scope.tracks.splice(trackIndex, 1);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (trackIndex <= playingIndex) {
+					--playingIndex;
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
 
 			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
@@ -66,6 +73,23 @@ angular.module('Music').controller('PlaylistViewController',
 
 		$scope.reorderDrop = function(draggable, dstIndex) {
 			moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (playingIndex === draggable.srcIndex) {
+					playingIndex = dstIndex;
+				}
+				else {
+					if (playingIndex > draggable.srcIndex) {
+						--playingIndex;
+					}
+					if (playingIndex >= dstIndex) {
+						++playingIndex;
+					}
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
+
 			$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
 				function(updatedList) {
 					$scope.$parent.updatePlaylist(updatedList);
@@ -109,6 +133,10 @@ angular.module('Music').controller('PlaylistViewController',
 			initViewFromRoute();
 		});
 
+		function listIsPlaying() {
+			return ($rootScope.playingView === $rootScope.currentView);
+		}
+
 		function initViewFromRoute() {
 			if ($scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
@@ -136,14 +164,9 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function createTracksArray(trackIds) {
-			var tracks = null;
-			if ($scope.$parent.allTracks) {
-				tracks = new Array(trackIds.length);
-				for (var i = 0; i < trackIds.length; ++i) {
-					tracks[i] = $scope.$parent.allTracks[trackIds[i]];
-				}
-			}
-			return tracks;
+			return _.map(trackIds, function(trackId) {
+				return $scope.$parent.allTracks[trackId];
+			});
 		}
 
 		function createAllTracksArray() {

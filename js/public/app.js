@@ -54,7 +54,7 @@ angular.module('Music').controller('MainController',
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
 	$scope.currentTrack = null;
-	playlistService.subscribe('playing', function(e, track){
+	playlistService.subscribe('trackChanged', function(e, track){
 		$scope.currentTrack = track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
@@ -579,8 +579,7 @@ angular.module('Music').controller('PlaylistViewController',
 		$rootScope.currentView = window.location.hash;
 
 		$scope.getCurrentTrackIndex = function() {
-			return ($rootScope.playingView === $rootScope.currentView) ?
-				$scope.$parent.currentTrackIndex : null;
+			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
 		};
 
 		// Remove chosen track from the list
@@ -588,6 +587,14 @@ angular.module('Music').controller('PlaylistViewController',
 			// Remove the element first from our internal array, without recreating the whole array.
 			// Doing this before the HTTP request improves the perceived performance.
 			$scope.tracks.splice(trackIndex, 1);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (trackIndex <= playingIndex) {
+					--playingIndex;
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
 
 			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
@@ -616,6 +623,23 @@ angular.module('Music').controller('PlaylistViewController',
 
 		$scope.reorderDrop = function(draggable, dstIndex) {
 			moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (playingIndex === draggable.srcIndex) {
+					playingIndex = dstIndex;
+				}
+				else {
+					if (playingIndex > draggable.srcIndex) {
+						--playingIndex;
+					}
+					if (playingIndex >= dstIndex) {
+						++playingIndex;
+					}
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
+
 			$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
 				function(updatedList) {
 					$scope.$parent.updatePlaylist(updatedList);
@@ -659,6 +683,10 @@ angular.module('Music').controller('PlaylistViewController',
 			initViewFromRoute();
 		});
 
+		function listIsPlaying() {
+			return ($rootScope.playingView === $rootScope.currentView);
+		}
+
 		function initViewFromRoute() {
 			if ($scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
@@ -686,14 +714,9 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function createTracksArray(trackIds) {
-			var tracks = null;
-			if ($scope.$parent.allTracks) {
-				tracks = new Array(trackIds.length);
-				for (var i = 0; i < trackIds.length; ++i) {
-					tracks[i] = $scope.$parent.allTracks[trackIds[i]];
-				}
-			}
-			return tracks;
+			return _.map(trackIds, function(trackId) {
+				return $scope.$parent.allTracks[trackId];
+			});
 		}
 
 		function createAllTracksArray() {
@@ -1203,7 +1226,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
 				track = playlist[this.getCurrentIndex()];
-				this.publish('playing', track);
+				this.publish('trackChanged', track);
 				return track;
 			}
 			return null;
@@ -1231,14 +1254,32 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 
 			var track = playlist[this.getCurrentIndex()];
-			this.publish('playing', track);
+			this.publish('trackChanged', track);
 			return track;
 		},
 		setPlaylist: function(pl, startIndex /*optional*/) {
-			playlist = pl;
+			playlist = pl.slice(); // copy
 			playOrder = null;
 			playOrderIter = -1;
 			startFromIndex = startIndex || null;
+		},
+		onPlaylistModified: function(pl, currentIndex) {
+			var currentTrack = playlist[this.getCurrentIndex()];
+			// check if the track being played is still available in the list
+			if (pl[currentIndex] === currentTrack) {
+				// re-init the play-order, erasing any history data
+				playlist = pl.slice(); // copy
+				playOrderIter = 0;
+				startFromIndex = currentIndex;
+				initPlayOrder(prevShuffleState);
+			}
+			// if not, then we no longer have a valid list position
+			else {
+				playlist = null;
+				playOrder = null;
+				playOrderIter = -1;
+			}
+			this.publish('trackChanged', currentTrack);
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

@@ -16,7 +16,7 @@ angular.module('Music').controller('MainController',
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
 	$scope.currentTrack = null;
-	playlistService.subscribe('playing', function(e, track){
+	playlistService.subscribe('trackChanged', function(e, track){
 		$scope.currentTrack = track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});

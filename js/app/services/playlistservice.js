@@ -101,7 +101,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
 				track = playlist[this.getCurrentIndex()];
-				this.publish('playing', track);
+				this.publish('trackChanged', track);
 				return track;
 			}
 			return null;
@@ -129,14 +129,32 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 
 			var track = playlist[this.getCurrentIndex()];
-			this.publish('playing', track);
+			this.publish('trackChanged', track);
 			return track;
 		},
 		setPlaylist: function(pl, startIndex /*optional*/) {
-			playlist = pl;
+			playlist = pl.slice(); // copy
 			playOrder = null;
 			playOrderIter = -1;
 			startFromIndex = startIndex || null;
+		},
+		onPlaylistModified: function(pl, currentIndex) {
+			var currentTrack = playlist[this.getCurrentIndex()];
+			// check if the track being played is still available in the list
+			if (pl[currentIndex] === currentTrack) {
+				// re-init the play-order, erasing any history data
+				playlist = pl.slice(); // copy
+				playOrderIter = 0;
+				startFromIndex = currentIndex;
+				initPlayOrder(prevShuffleState);
+			}
+			// if not, then we no longer have a valid list position
+			else {
+				playlist = null;
+				playOrder = null;
+				playOrderIter = -1;
+			}
+			this.publish('trackChanged', currentTrack);
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

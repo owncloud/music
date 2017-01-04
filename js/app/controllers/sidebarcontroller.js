@@ -22,8 +22,8 @@
 
 
 angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout',
-	function ($rootScope, $scope, Restangular, $timeout) {
+	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
 
 		$scope.newPlaylistName = null;
 
@@ -125,6 +125,13 @@ angular.module('Music').controller('SidebarController',
 		function addTracks(playlist, trackIds) {
 			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
+				// Update the currently playing list if necessary
+				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
+					var newTracks = _.map(trackIds, function(trackId) {
+						return $scope.$parent.allTracks[trackId];
+					});
+					playlistService.onTracksAdded(newTracks);
+				}
 			});
 		}
 

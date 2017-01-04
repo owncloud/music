@@ -736,8 +736,8 @@ angular.module('Music').controller('PlaylistViewController',
 }]);
 
 angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout',
-	function ($rootScope, $scope, Restangular, $timeout) {
+	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
 
 		$scope.newPlaylistName = null;
 
@@ -839,6 +839,13 @@ angular.module('Music').controller('SidebarController',
 		function addTracks(playlist, trackIds) {
 			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
 				$scope.$parent.updatePlaylist(updatedList);
+				// Update the currently playing list if necessary
+				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
+					var newTracks = _.map(trackIds, function(trackId) {
+						return $scope.$parent.allTracks[trackId];
+					});
+					playlistService.onTracksAdded(newTracks);
+				}
 			});
 		}
 
@@ -1218,6 +1225,10 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		}
 	}
 
+	function insertMany(hostArray, targetIndex, insertedItems) {
+		hostArray.splice.apply(hostArray, [targetIndex, 0].concat(insertedItems));
+	}
+
 	return {
 		getCurrentIndex: function() {
 			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
@@ -1280,6 +1291,28 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				playOrderIter = -1;
 			}
 			this.publish('trackChanged', currentTrack);
+		},
+		onTracksAdded: function(newTracks) {
+			var prevListSize = playlist.length;
+			playlist = playlist.concat(newTracks);
+			var newIndices = _.range(prevListSize, playlist.length);
+			if (prevShuffleState) {
+				// Shuffle the new tracks with the remaining tracks on the list
+				var remaining = _.tail(playOrder, playOrderIter+1);
+				remaining = _.shuffle(remaining.concat(newIndices));
+				playOrder = _.first(playOrder, playOrderIter+1).concat(remaining);
+			}
+			else {
+				// Try to find the next position of the previously last track of the list,
+				// and insert the new tracks in play order after that. If the index is not
+				// found, then we have already wrapped over the last track and the new tracks
+				// do not need to be added.
+				var insertPos = _.indexOf(playOrder, prevListSize-1, playOrderIter);
+				if (insertPos >= 0) {
+					++insertPos;
+					insertMany(playOrder, insertPos, newIndices);
+				}
+			}
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

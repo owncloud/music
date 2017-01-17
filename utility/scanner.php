@@ -144,10 +144,18 @@ class Scanner extends PublicEmitter {
 			$artist = $this->getId3Tag($fileInfo, 'artist');
 			$albumArtist = $this->getId3Tag($fileInfo, 'band');
 
+			// FLAC files have different tags for albumartists
+			$keys = ['albumartist', 'album artist', 'album_artist'];
+
+			for ($i = 0; $i < count($keys) && $this->isNullOrEmpty($albumArtist); $i++){
+				$albumArtist = $this->getId3Tag($fileInfo, $keys[$i]);
+			}
+
 			// use artist and albumArtist as fallbacks for each other
 			if($this->isNullOrEmpty($albumArtist)){
 				$albumArtist = $artist;
 			}
+
 			if($this->isNullOrEmpty($artist)){
 				$artist = $albumArtist;
 			}

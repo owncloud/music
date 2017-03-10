@@ -9,11 +9,69 @@
  */
 
 #app-navigation {
-	padding-top: 66px;
+	position: fixed;
+	z-index: 999;
 }
 
 #app-navigation li > img {
 	float: right;
-	height: 21px;
 	display: none;
+}
+
+#app-navigation-toggle {
+	height: 66px;
+}
+
+#app-navigation .svg.action {
+	margin-right: 5px;
+	float: right;
+	width: 24px;
+	height: 24px;
+}
+
+#app-navigation .icon-checkmark, #app-navigation .icon-close {
+  margin-top: 8px !important;
+}
+
+#app-navigation img.play {
+	display: inline;
+	visibility: hidden;
+	float: none;
+	margin-right: 3px;
+}
+
+#app-navigation img.play.playing {
+	visibility: visible;
+}
+
+#app-navigation li > a#create {
+	padding-left: 18px;
+}
+
+.playlist:hover .actions {
+	display: block;
+}
+
+.playlist .actions {
+	position: absolute;
+	top: 7px;
+	right: 0;
+	display: none;
+}
+
+#new-playlist .actions {
+  float: right;
+}
+
+input[type="text"] {
+	width: 166px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+input.edit-list, input.new-list {
+	margin-left: 21px;
+	margin-bottom: 8px;
+	margin-top: 4px;
+	height: 32px;
 }

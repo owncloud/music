@@ -9,49 +9,27 @@
  */
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
-	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
+	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
-		// Prevent controller reload when the URL is updated with window.location.hash.
+		$rootScope.currentView = '#';
+
+		// Prevent controller reload when the URL is updated with window.location.hash,
+		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
 		var lastRoute = $route.current;
 		$scope.$on('$locationChangeSuccess', function(event) {
-			$route.current = lastRoute;
+			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
+				$route.current = lastRoute;
+			}
 		});
 
 		$scope.playTrack = function(track) {
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var artist = _.find($scope.$parent.artists,
-				function(artist) {
-					return artist.id === track.albumArtistId;
-				}),
-				album = _.find(artist.albums,
-				function(album) {
-					return album.id === track.albumId;
-				}),
-				tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			// determine index of clicked track
-			var index = -1;
-			for (var i = 0; i < tracks.length; i++) {
-				if(tracks[i].id == track.id) {
-					index = i;
-					break;
-				}
-			}
-
-			if(index > 0) {
-				// slice array in two parts and interchange them
-				var begin = tracks.slice(0, index);
-				var end = tracks.slice(index);
-				tracks = end.concat(begin);
-			}
-			playlistService.setPlaylist(tracks);
+			var album = findAlbum(track.albumId);
+			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
 			playlistService.publish('play');
 		};
 
@@ -59,12 +37,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
 
-			var tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			playlistService.setPlaylist(tracks);
+			playlistService.setPlaylist(album.tracks);
 			playlistService.publish('play');
 		};
 
@@ -72,23 +45,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
 
-			var albums = _.sortBy(artist.albums,
-				function(album) {
-					return album.year;
-				}),
-				playlist = _.union.apply(null,
-					_.map(
-						albums,
-						function(album){
-							var tracks = _.sortBy(album.tracks,
-								function(track) {
-									return track.number;
-								}
-							);
-							return tracks;
-						}
-					)
-				);
+			var playlist = _.flatten(_.pluck(artist.albums, 'tracks'));
 			playlistService.setPlaylist(playlist);
 			playlistService.publish('play');
 		};
@@ -99,72 +56,76 @@ angular.module('Music').controller('OverviewController',
 					.then(function(result){
 						playlistService.setPlaylist([result]);
 						playlistService.publish('play');
-						$scope.scrollToItem('album-' + result.albumId);
+						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}
+		};
+
+		$scope.getDraggable = function(type, draggedElement) {
+			var draggable = {};
+			draggable[type] = draggedElement;
+			return draggable;
 		};
 
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
-			// update URL hash
-			window.location.hash = '#/';
-		});
-
-		$scope.scrollToItem = function(itemId) {
-			var container = angular.element(document.getElementById('app-content'));
-			var element = angular.element(document.getElementById(itemId));
-			var controls = document.getElementById('controls');
-			if(container && controls && element) {
-				container.scrollToElement(element, controls.offsetHeight, 500);
+			// update URL hash if this view is active
+			if ($rootScope.currentView == '#') {
+				window.location.hash = '#/';
 			}
-		};
-
-		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
-			$scope.scrollToItem('album-' + albumId);
 		});
 
-		$rootScope.$on('artistsLoaded', function () {
-			$scope.initializePlayerStateFromURL();
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			var track = findTrack(trackId);
+			if (track) {
+				$scope.$parent.scrollToItem('album-' + track.albumId);
+			}
 		});
 
-		$scope.initializePlayerStateFromURL = function() {
+		function findArtist(id) {
+			return _.find($scope.$parent.artists, function(artist) {
+				return artist.id == id;
+			});
+		}
+
+		function findAlbum(id) {
+			var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
+			return _.find(albums, function(album) {
+				return album.id == id;
+			});
+		}
+
+		function findTrack(id) {
+			return $scope.$parent.allTracks[id];
+		}
+
+		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
-				type = hashParts[1];
+				var type = hashParts[1];
 				var id = hashParts[2];
 
 				if (type == 'file') {
-					// trigger play
 					$scope.playFile(id);
 				} else if (type == 'artist') {
-					// search for the artist by id
-					object = _.find($scope.$parent.artists, function(artist) {
-						return artist.id == id;
-					});
-					// trigger play
-					$scope.playArtist(object);
-					$scope.scrollToItem('artist-' + object.id);
-				} else {
-					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
-					if (type == 'album') {
-						// search for the album by id
-						object = _.find(albums, function(album) {
-							return album.id == id;
-						});
-						// trigger play
-						$scope.playAlbum(object);
-						$scope.scrollToItem('album-' + object.id);
-					} else if (type == 'track') {
-						var tracks = _.flatten(_.pluck(albums, 'tracks'));
-						// search for the track by id
-						object = _.find(tracks, function(track) {
-							return track.id == id;
-						});
-						// trigger play
-						$scope.playTrack(object);
-						$scope.scrollToItem('album-' + object.albumId);
-					}
+					$scope.playArtist(findArtist(id));
+					$scope.$parent.scrollToItem('artist-' + id);
+				} else if (type == 'album') {
+					$scope.playAlbum(findAlbum(id));
+					$scope.$parent.scrollToItem('album-' + id);
+				} else if (type == 'track') {
+					var track = findTrack(id);
+					$scope.playTrack(track);
+					$scope.$parent.scrollToItem('album-' + track.albumId);
 				}
 			}
-		};
+			$rootScope.loading = false;
+		}
+
+		// initialize either immedately or once the parent view has finished loading the collection
+		if ($scope.$parent.artists) {
+			$timeout(initializePlayerStateFromURL);
+		}
+
+		$rootScope.$on('artistsLoaded', initializePlayerStateFromURL);
 }]);

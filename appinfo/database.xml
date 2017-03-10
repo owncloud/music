@@ -66,41 +66,12 @@
 				<notnull>false</notnull>
 				<length>256</length>
 			</field>
-		</declaration>
-	</table>
-
-	<table>
-		<name>*dbprefix*music_playlist_tracks</name>
-		<declaration>
 			<field>
-				<name>playlist_id</name>
-				<type>integer</type>
-				<notnull>true</notnull>
-				<unsigned>true</unsigned>
+				<name>track_ids</name>
+				<type>clob</type>
+				<notnull>false</notnull>
+				<comments>|-delimited list of track IDs</comments>
 			</field>
-			<field>
-				<name>track_id</name>
-				<type>integer</type>
-				<notnull>true</notnull>
-				<unsigned>true</unsigned>
-			</field>
-			<index>
-				<name>music_playlist_tracks_idx</name>
-				<field>
-					<name>playlist_id</name>
-				</field>
-			</index>
-
-			<index>
-				<name>music_playlist_tracks_unique_idx</name>
-				<unique>true</unique>
-				<field>
-					<name>playlist_id</name>
-				</field>
-				<field>
-					<name>track_id</name>
-				</field>
-			</index>
 		</declaration>
 	</table>
 

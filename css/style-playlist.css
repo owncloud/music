@@ -1,0 +1,78 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2016
+ */
+
+.playlist-area {
+	clear: both;
+	padding-top: 15px;
+}
+
+.playlist-area > h1 {
+	margin-left: 28px;
+	margin-bottom: 11px;
+	font-size: 34px;
+	line-height: 36px;
+}
+
+.playlist-area > h1:hover,
+.playlist-area > h1:hover * {
+	cursor: pointer;
+}
+
+.playlist-area .track-list {
+	margin-left: 15px;
+	margin-bottom: 15px;
+}
+
+.playlist-area .track-list > li {
+	padding-bottom: 5px;
+	padding-top: 5px;
+	border: 1px solid transparent;
+	white-space: nowrap;
+}
+
+.playlist-area .track-list.insert-above > li.drag-hover {
+	border-top-color: LightGray;
+}
+
+.playlist-area .track-list.insert-below > li.drag-hover {
+	border-bottom-color: LightGray;
+}
+
+.playlist-area .track-list .play {
+	margin-top: 5px;
+}
+
+.playlist-area .track-list * {
+	vertical-align: top;
+}
+
+.playlist-area .track-list > li > div,
+.playlist-area .track-list > li > div * {
+	cursor: pointer;
+}
+
+.playlist-area .track-list > li > div {
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 7px;
+}
+
+.playlist-area .track-list > li > div > div {
+	display: inline-block;
+	white-space: normal;
+}
+
+.playlist-area .track-list li .action {
+	visibility: hidden;
+}
+
+.playlist-area .track-list li:hover .action {
+	visibility: visible;
+}

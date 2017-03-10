@@ -33,7 +33,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -45,12 +45,19 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute'])
 				templateUrl:'overview.html'
 			};
 
+			var playlistControllerConfig = {
+				controller:'PlaylistViewController',
+				templateUrl:'playlistview.html'
+			};
+
 			$routeProvider
-				.when('/',				overviewControllerConfig)
-				.when('/artist/:id',	overviewControllerConfig)
-				.when('/album/:id',		overviewControllerConfig)
-				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/',                     overviewControllerConfig)
+				.when('/artist/:id',           overviewControllerConfig)
+				.when('/album/:id',            overviewControllerConfig)
+				.when('/track/:id',            overviewControllerConfig)
+				.when('/file/:id',             overviewControllerConfig)
+				.when('/playlist/:playlistId', playlistControllerConfig)
+				.when('/alltracks',            playlistControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',

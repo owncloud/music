@@ -62,7 +62,7 @@ class Helper {
 					`artist`.`id` = `album`.`album_artist_id` UNION SELECT `track`.`artist_id`
 					FROM `*PREFIX*music_tracks` `track`
 				) as tmp
-			);',
+			);'
 		);
 
 		foreach ($sqls as $sql) {

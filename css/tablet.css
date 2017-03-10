@@ -10,38 +10,56 @@
  * @copyright Jan-Christoph Borchardt 2014
  */
 
-@media only screen and (min-width: 769px) and (max-width: 1100px) {
+@media only screen and (min-width: 769px) and (max-width: 1300px) {
 
-.album-area {
-	width: 100%;
+	.album-area {
+		width: 100%;
+	}
+
+	#play-controls {
+		margin-left: 0;
+	}
+
+	#controls .albumart {
+		left: 180px;
+		margin-left: 0;
+	}
+
+	#controls .song-info {
+		max-width: 240px;
+		left: 230px;
+	}
+
+	#controls .title {
+		font-size: 14px;
+	}
+
+	#controls #volume-icon {
+		display: none;
+	}
+
+	#controls .progress-info {
+		left: 480px;
+		right: 140px;
+		max-width: 250px;
+	}
+
 }
 
-#play-controls {
-	margin-left: 0;
+@media only screen and (min-width: 769px) and (max-width: 1000px) {
+
+	#controls .progress-info {
+		padding-top: 12px;
+	}
+
+	#controls.started .progress {
+		display: none;
+	}
 }
 
-#controls .albumart {
-	left: 180px;
-	margin-left: 0;
-}
+@media only screen and (min-width: 769px) and (max-width: 940px) {
 
-#controls .song-info {
-	max-width: 25%;
-	left: 230px;
-}
-
-#controls .title {
-	font-size: 14px;
-}
-
-#controls .progress-info {
-	width: 25%;
-	left: initial;
-	right: 150px;
-}
-
-#controls #volume-icon {
-	display: none;
-}
-
+	#controls .progress-info {
+		display: none;
+	}
 }

@@ -22,6 +22,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -32,6 +33,7 @@ class Scanner extends PublicEmitter {
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
+	private $playlistBusinessLayer;
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
@@ -44,6 +46,7 @@ class Scanner extends PublicEmitter {
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
+								PlaylistBusinessLayer $playlistBusinessLayer,
 								Logger $logger,
 								IDBConnection $db,
 								$userId,
@@ -54,6 +57,7 @@ class Scanner extends PublicEmitter {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->userId = $userId;
@@ -293,7 +297,7 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Get called by 'unshare' hook and 'delete' hook
-	 * @param int $fileId the file id of the track
+	 * @param int $fileId the id of the deleted file
 	 * @param string $userId the user id of the user to delete the track from
 	 */
 	public function delete($fileId, $userId = null){
@@ -308,9 +312,10 @@ class Scanner extends PublicEmitter {
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 
 		if ($result) { // this was a track file
-			// remove obsolete artists and albums
+			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
+			$this->playlistBusinessLayer->removeTracksFromAllLists($result['deletedTracks']);
 
 			// check if the removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
@@ -321,8 +326,7 @@ class Scanner extends PublicEmitter {
 			}
 
 			// debug logging
-			$this->logger->log('removed entities - albums: [' . implode(',', $result['obsoleteAlbums']) .
-				'], artists: [' . implode(',', $result['obsoleteArtists']) . ']' , 'debug');
+			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
 		else { // maybe this was an image file
 			$this->albumBusinessLayer->removeCover($fileId);
@@ -448,7 +452,8 @@ class Scanner extends PublicEmitter {
 		$sqls = array(
 			'DELETE FROM `*PREFIX*music_tracks` WHERE `user_id` = ?;',
 			'DELETE FROM `*PREFIX*music_albums` WHERE `user_id` = ?;',
-			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;'
+			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;',
+			'UPDATE *PREFIX*music_playlists SET track_ids=NULL WHERE `user_id` = ?;'
 		);
 
 		foreach ($sqls as $sql) {

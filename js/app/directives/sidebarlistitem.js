@@ -1,9 +1,8 @@
-
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * @author Pauli Järvinen
+ * @copyright 2016 Pauli Järvinen <pauli.jarvinen@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -20,10 +19,13 @@
  *
  */
 
-
-angular.module('Music').controller('PlaylistController',
-	['$scope', 'playlists', function ($scope, playlists) {
-
-	$scope.playlists = playlists;
-
-}]);
+angular.module('Music').directive('sidebarListItem', function() {
+	return {
+		scope: {
+			text: '=',
+			destination: '=',
+			playlist: '='
+		},
+		templateUrl: 'sidebarlistitem.html'
+	};
+});

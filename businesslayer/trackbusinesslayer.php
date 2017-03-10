@@ -123,11 +123,11 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Deletes a track
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user
-	 * @return False if no such track was found; otherwise array of four arrays
-	 *         (named 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
-	 *         and 'obsoleteArtists') containing all album IDs and artist IDs of
-	 *         the deleted track(s). The 'obsolete' entities are such which no longer
-	 *         have any tracks while 'remaining' entities have some left.
+	 * @return False if no such track was found; otherwise array of five arrays
+	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
+	 *         and 'obsoleteArtists'). These contain the track IDs of the deleted tracks and
+	 *         all album IDs and artist IDs of the deleted track(s). The 'obsolete' entities are
+	 *         such which no longer have any tracks while 'remaining' entities have some left.
 	 */
 	public function deleteTrack($fileId, $userId){
 		$tracks = $this->mapper->findAllByFileId($fileId);
@@ -136,12 +136,14 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result = false;
 		}
 		else{
+			$deletedTracks = [];
 			$remainingAlbums = [];
 			$remainingArtists = [];
 			$obsoleteAlbums = [];
 			$obsoleteArtists = [];
 
 			foreach($tracks as $track){
+				$deletedTracks[] = $track->getId();
 				$artistId = $track->getArtistId();
 				$albumId = $track->getAlbumId();
 				$this->mapper->delete($track);
@@ -164,6 +166,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			}
 
 			$result = [
+				'deletedTracks'    => $deletedTracks,
 				'remainingAlbums'  => $remainingAlbums,
 				'remainingArtists' => $remainingArtists,
 				'obsoleteAlbums'   => $obsoleteAlbums,

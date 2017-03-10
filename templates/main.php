@@ -19,6 +19,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
+\OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
@@ -29,6 +30,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'public/app');
 
 \OCP\Util::addStyle('music', 'style-controls');
+\OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'style-sidebar');
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');
@@ -42,20 +44,44 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
+	<script type="text/ng-template" id="playlistview.html">
+		<?php print_unescaped($this->inc('partials/playlistview')) ?>
+	</script>
+	<script type="text/ng-template" id="sidebarlistitem.html">
+		<?php print_unescaped($this->inc('partials/sidebarlistitem')) ?>
+	</script>
+
 
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
-		<!--<div id="app-navigation">
-			<ul ng-controller="PlaylistController">
-				<li><a href="#/" translate>All</a></li>
-				<li class="app-navigation-separator"><a href="#/" translate>Favorites</a></li>
-				<li><a href="#/" translate>+ New Playlist</a></li>
-				<li ng-repeat="playlist in playlists">
-					<a href="#/playlist/{{playlist.id}}">{{playlist.name}}</a>
+		<div id="app-navigation">
+			<ul ng-controller="SidebarController">
+				<li sidebar-list-item text="'Albums' | translate" destination="'#'"></li>
+				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
+					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}"></li>
+				<li class="app-navigation-separator"></li>
+				<li ng-hide="showCreateForm">
+					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>
 				</li>
+				<form name="newPlaylistForm" ng-show="showCreateForm">
+					<li id="new-playlist">
+						<input type="text" class="new-list" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
+						<div class="actions">
+							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
+							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
+						</div>
+					</li>
+				</form>
+				<li sidebar-list-item
+					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
+					ng-repeat="playlist in playlists"
+					ui-on-drop="dropOnPlaylist($data, playlist)"
+					drop-validate="allowDrop(playlist)"
+					drag-hover-class="active"
+					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}"></li>
 			</ul>
-		</div>-->
+		</div>
 
 		<div id="app-content" du-scroll-container>
 
@@ -72,11 +98,11 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				</div>
 
 
-				<div ng-show="currentAlbum" ng-click="scrollToCurrentAlbum()"
+				<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
 					class="albumart clickable" cover="{{ currentAlbum.cover }}"
 					albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
 
-				<div class="song-info clickable" ng-click="scrollToCurrentAlbum()">
+				<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
 					<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
 					<span class="artist" title="{{ currentTrack.artistName }}">{{ currentTrack.artistName }}</span>
 				</div>
@@ -108,14 +134,28 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">
 			</div>
 
-			<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
-				<a du-smooth-scroll="{{ letter }}" offset="{{ scrollOffset() }}"
-					ng-repeat="letter in letters" 
-					ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
-					<span class="letter-content">{{ letter }}</span>
-				</a>
+			<div id="emptycontent" ng-show="noMusicAvailable">
+				<div class="icon-audio svg"></div>
+				<h2 translate>No music found</h2>
+				<p translate>Upload music in the files app to listen to it here</p>
 			</div>
 
+			<img id="updateData" ng-show="updateAvailable"
+				 class="svg clickable" src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>"  ng-click="update()"
+				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
+				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
+
+			<div id="toScan" ng-show="toScan" class="emptycontent clickable" ng-click="processNextScanStep(0)">
+				<div class="icon-audio svg"></div>
+				<h2 translate>New music available</h2>
+				<p translate>Click here to start the scan</p>
+			</div>
+
+			<div id="scanning" class="emptycontent" ng-show="scanning">
+				<div class="icon-loading svg"></div>
+				<h2 translate>Scanning music …</h2>
+				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
+			</div>
 		</div>
 
 	</div>

@@ -95,26 +95,25 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	$scope.$watch('currentTrack', function(newValue, oldValue) {
-		playlistService.publish('playing', newValue);
+	function setCurrentTrack(track) {
+		$scope.currentTrack = track;
 		$scope.player.stop();
 		$scope.setPlay(false);
-		$scope.setLoading(true);
-		if(newValue !== null) {
+		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.albumArtistId;
+											return artist.id === track.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.albumId;
+											return album.id === track.albumId;
 										});
 
-			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.fromURL($scope.getPlayableFileURL(track));
 			$scope.setLoading(true);
 			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
@@ -127,9 +126,8 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;
-			playlistService.publish('playlistEnded');
 		}
-	}, true);
+	}
 
 	$scope.setPlay = function(playing) {
 		$scope.playing = playing;
@@ -170,26 +168,26 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+		var track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			tracksSkipped = true;
-			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
-		if(tracksSkipped === true) {
+		if(tracksSkipped) {
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 			$timeout(OC.Notification.hide, 10000);
 		}
-		$scope.currentTrack = track;
+		setCurrentTrack(track);
 	};
 
 	$scope.prev = function() {
-		var track = playlistService.getPrevTrack();
+		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
-			$scope.currentTrack = track;
+			setCurrentTrack(track);
 		}
 	};
 
@@ -204,9 +202,9 @@ angular.module('Music').controller('PlayerController',
 		$scope.next();
 	});
 
-	$scope.scrollToCurrentAlbum = function() {
-		if ($scope.currentAlbum) {
-			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+	$scope.scrollToCurrentTrack = function() {
+		if ($scope.currentTrack) {
+			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 		}
 	};
 }]);

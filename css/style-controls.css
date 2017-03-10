@@ -88,12 +88,13 @@
 }
 
 #controls .progress-info {
-	width: 300px;
 	position: absolute;
 	top: 0px;
-	left: 620px;
+	left: 710px;
+	right: 170px;
+	max-width: 350px;
 	text-align: center;
-	margin: 7px 0 14px 0;
+	margin: 7px auto 14px auto;
 }
 
 #controls .progress-info span {

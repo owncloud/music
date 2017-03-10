@@ -23,14 +23,16 @@
 }
 
 #app-view {
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 250px;
 	position: absolute;
-	height: 100%;
-	width: 100%;
 	padding-right: 50px;
 }
 
 #app-view.started {
-	padding-top: 65px;
+	padding-top: 66px;
 }
 
 .play {
@@ -116,19 +118,20 @@
 	cursor: pointer;
 }
 
-.track-list {
+.album-area .track-list {
 	margin-left: 195px;
 }
 
-.track-list > li {
+.album-area .track-list > li {
 	padding-left: 2px;
 	padding-bottom: 11px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+	cursor: pointer
 }
 
-.track-list > li:hover, li *:hover {
+.album-area .track-list li * {
 	cursor: pointer;
 }
 
@@ -136,8 +139,8 @@
 	padding-left: 21px;
 }
 
-.track-list > li > .play.playing,
-.track-list > li:hover > .play {
+.track-list li .play.playing,
+.track-list li:hover .play {
 	visibility: visible;
 }
 
@@ -197,14 +200,15 @@
 	cursor: pointer;
 }
 
-#scanning, #toScan {
+#scanning, #toScan, #emptycontent {
 	position: fixed;
 	top: 0;
 	background-color: rgba(255,255,255,0.95);
 	padding: 20px 50px;
 	z-index: 1;
 	width: auto;
-	margin-left: 50%;
+	left: 50%;
+	margin-left: 125px;
 	transform: translateX(-50%);
 	-ms-transform: translateX(-50%);
 }
@@ -223,7 +227,7 @@
 	height: 40px;
 	padding: 10px;
 	bottom: 0;
-	left: 0;
+	left: 250px;
 	z-index: 101;
 	background-color: rgba(255,255,255,0.5);
 

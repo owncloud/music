@@ -15,19 +15,19 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	$scope.loading = true;
-
-	// will be invoked by the artist factory
-	$rootScope.$on('artistsLoaded', function() {
-		$scope.loading = false;
-	});
-
 	$scope.currentTrack = null;
-	playlistService.subscribe('playing', function(e, track){
+	playlistService.subscribe('trackChanged', function(e, track){
 		$scope.currentTrack = track;
+		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
-	$scope.anchorArtists = [];
+	playlistService.subscribe('play', function() {
+		$rootScope.playingView = $rootScope.currentView;
+	});
+
+	playlistService.subscribe('playlistEnded', function() {
+		$rootScope.playingView = null;
+	});
 
 	$scope.letters = [
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
@@ -42,18 +42,17 @@ angular.module('Music').controller('MainController',
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
-		$scope.loading = true;
+		$rootScope.loading = true;
+
+		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
-			$scope.loading = false;
-			$scope.artists = artists;
+			$scope.artists = sortCollection(artists);
+			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
-				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-					if($scope.letterAvailable[letter] === false) {
-						$scope.anchorArtists.push(artist.name);
-					}
+				if($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
 				}
 
@@ -65,10 +64,20 @@ angular.module('Music').controller('MainController',
 				$rootScope.$emit('artistsLoaded');
 			});
 		});
+
+		// load all playlists
+		Restangular.all('playlists').getList().then(function(playlists){
+			$scope.playlists = playlists;
+			$rootScope.$emit('playlistsLoaded');
+		});
 	};
 
 	// initial loading of artists
 	$scope.update();
+
+	$scope.totalTrackCount = function() {
+		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
+	};
 
 	$scope.processNextScanStep = function(dry) {
 		$scope.toScan = false;
@@ -80,6 +89,8 @@ angular.module('Music').controller('MainController',
 		}
 		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
 			var scan = scanItems[0];
+
+			$scope.noMusicAvailable = (scan.total === 0);
 
 			// if it was not a dry run and the processed count is bigger than
 			// the previous value there are new music files available
@@ -110,15 +121,37 @@ angular.module('Music').controller('MainController',
 		});
 	};
 
+	$scope.updatePlaylist = function(playlist) {
+		for (var i = 0; i < $scope.playlists.length; ++i) {
+			if ($scope.playlists[i].id == playlist.id) {
+				$scope.playlists[i].name = playlist.name;
+				$scope.playlists[i].trackIds = playlist.trackIds;
+				break;
+			}
+		}
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
+	};
+
+	$scope.scrollToItem = function(itemId) {
+		var container = document.getElementById('app-content');
+		var element = document.getElementById(itemId);
+		if(container && element) {
+			angular.element(container).scrollToElement(
+					angular.element(element), $scope.scrollOffset(), 500);
+		}
 	};
 
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {
 			var controlsWidth = $window.innerWidth - getScrollBarWidth();
+			if($(window).width() > 768) {
+				controlsWidth -= $('#app-navigation').width();
+			}
 			$('#controls').css('width', controlsWidth);
 			$('#controls').css('min-width', controlsWidth);
 		}
@@ -128,6 +161,57 @@ angular.module('Music').controller('MainController',
 	}
 	$($window).resize(adjustControlsBarWidth);
 	adjustControlsBarWidth();
+
+	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
+	function createTracksIndex(artists) {
+		var tracksDict = {};
+
+		for (var i = 0; i < artists.length; ++i) {
+			var albums = artists[i].albums;
+			for (var j = 0; j < albums.length; ++j) {
+				var tracks = albums[j].tracks;
+				for (var k = 0; k < tracks.length; ++k) {
+					var track = tracks[k];
+					tracksDict[track.id] = track;
+				}
+			}
+		}
+
+		return tracksDict;
+	}
+
+	function sortByName(items) {
+		return _.sortBy(items, function(i) { return i.name.toLowerCase(); });
+	}
+
+	function sortByYearNameAndDisc(albums) {
+		albums = _.sortBy(albums, "disk");
+		albums = sortByName(albums);
+		albums = _.sortBy(albums, "year");
+		return albums;
+	}
+
+	function sortByNumberAndTitle(tracks) {
+		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+		tracks = _.sortBy(tracks, "number");
+		return tracks;
+	}
+
+	function sortCollection(artists) {
+		artists = sortByName(artists);
+
+		for (var i = 0; i < artists.length; ++i) {
+			var artist = artists[i];
+			artist.albums = sortByYearNameAndDisc(artist.albums); 
+
+			for (var j = 0; j < artist.albums.length; ++j) {
+				var album = artist.albums[j];
+				album.tracks = sortByNumberAndTitle(album.tracks);
+			}
+		}
+
+		return artists;
+	}
 
 	// initial lookup if new files are available
 	$scope.processNextScanStep(1);

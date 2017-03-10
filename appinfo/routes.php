@@ -48,6 +48,7 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'playlistApi#update',		'url' => '/api/playlists/{id}',			'verb' => 'PUT'),
 	array('name' => 'playlistApi#addTracks',	'url' => '/api/playlists/{id}/add',		'verb' => 'POST'),
 	array('name' => 'playlistApi#removeTracks',	'url' => '/api/playlists/{id}/remove',	'verb' => 'POST'),
+	array('name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'),
 
 	// settings
 	array('name' => 'setting#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),

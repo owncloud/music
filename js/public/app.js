@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -24,12 +24,19 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute'])
 				templateUrl:'overview.html'
 			};
 
+			var playlistControllerConfig = {
+				controller:'PlaylistViewController',
+				templateUrl:'playlistview.html'
+			};
+
 			$routeProvider
-				.when('/',				overviewControllerConfig)
-				.when('/artist/:id',	overviewControllerConfig)
-				.when('/album/:id',		overviewControllerConfig)
-				.when('/track/:id',		overviewControllerConfig)
-				.when('/file/:id',		overviewControllerConfig);
+				.when('/',                     overviewControllerConfig)
+				.when('/artist/:id',           overviewControllerConfig)
+				.when('/album/:id',            overviewControllerConfig)
+				.when('/track/:id',            overviewControllerConfig)
+				.when('/file/:id',             overviewControllerConfig)
+				.when('/playlist/:playlistId', playlistControllerConfig)
+				.when('/alltracks',            playlistControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',
@@ -46,19 +53,19 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	$scope.loading = true;
-
-	// will be invoked by the artist factory
-	$rootScope.$on('artistsLoaded', function() {
-		$scope.loading = false;
-	});
-
 	$scope.currentTrack = null;
-	playlistService.subscribe('playing', function(e, track){
+	playlistService.subscribe('trackChanged', function(e, track){
 		$scope.currentTrack = track;
+		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
-	$scope.anchorArtists = [];
+	playlistService.subscribe('play', function() {
+		$rootScope.playingView = $rootScope.currentView;
+	});
+
+	playlistService.subscribe('playlistEnded', function() {
+		$rootScope.playingView = null;
+	});
 
 	$scope.letters = [
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
@@ -73,18 +80,17 @@ angular.module('Music').controller('MainController',
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
-		$scope.loading = true;
+		$rootScope.loading = true;
+
+		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
-			$scope.loading = false;
-			$scope.artists = artists;
+			$scope.artists = sortCollection(artists);
+			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
-				if($scope.letterAvailable.hasOwnProperty(letter) === true) {
-					if($scope.letterAvailable[letter] === false) {
-						$scope.anchorArtists.push(artist.name);
-					}
+				if($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
 				}
 
@@ -96,10 +102,20 @@ angular.module('Music').controller('MainController',
 				$rootScope.$emit('artistsLoaded');
 			});
 		});
+
+		// load all playlists
+		Restangular.all('playlists').getList().then(function(playlists){
+			$scope.playlists = playlists;
+			$rootScope.$emit('playlistsLoaded');
+		});
 	};
 
 	// initial loading of artists
 	$scope.update();
+
+	$scope.totalTrackCount = function() {
+		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
+	};
 
 	$scope.processNextScanStep = function(dry) {
 		$scope.toScan = false;
@@ -111,6 +127,8 @@ angular.module('Music').controller('MainController',
 		}
 		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
 			var scan = scanItems[0];
+
+			$scope.noMusicAvailable = (scan.total === 0);
 
 			// if it was not a dry run and the processed count is bigger than
 			// the previous value there are new music files available
@@ -141,15 +159,37 @@ angular.module('Music').controller('MainController',
 		});
 	};
 
+	$scope.updatePlaylist = function(playlist) {
+		for (var i = 0; i < $scope.playlists.length; ++i) {
+			if ($scope.playlists[i].id == playlist.id) {
+				$scope.playlists[i].name = playlist.name;
+				$scope.playlists[i].trackIds = playlist.trackIds;
+				break;
+			}
+		}
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
+	};
+
+	$scope.scrollToItem = function(itemId) {
+		var container = document.getElementById('app-content');
+		var element = document.getElementById(itemId);
+		if(container && element) {
+			angular.element(container).scrollToElement(
+					angular.element(element), $scope.scrollOffset(), 500);
+		}
 	};
 
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
 		try {
 			var controlsWidth = $window.innerWidth - getScrollBarWidth();
+			if($(window).width() > 768) {
+				controlsWidth -= $('#app-navigation').width();
+			}
 			$('#controls').css('width', controlsWidth);
 			$('#controls').css('min-width', controlsWidth);
 		}
@@ -159,6 +199,57 @@ angular.module('Music').controller('MainController',
 	}
 	$($window).resize(adjustControlsBarWidth);
 	adjustControlsBarWidth();
+
+	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
+	function createTracksIndex(artists) {
+		var tracksDict = {};
+
+		for (var i = 0; i < artists.length; ++i) {
+			var albums = artists[i].albums;
+			for (var j = 0; j < albums.length; ++j) {
+				var tracks = albums[j].tracks;
+				for (var k = 0; k < tracks.length; ++k) {
+					var track = tracks[k];
+					tracksDict[track.id] = track;
+				}
+			}
+		}
+
+		return tracksDict;
+	}
+
+	function sortByName(items) {
+		return _.sortBy(items, function(i) { return i.name.toLowerCase(); });
+	}
+
+	function sortByYearNameAndDisc(albums) {
+		albums = _.sortBy(albums, "disk");
+		albums = sortByName(albums);
+		albums = _.sortBy(albums, "year");
+		return albums;
+	}
+
+	function sortByNumberAndTitle(tracks) {
+		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+		tracks = _.sortBy(tracks, "number");
+		return tracks;
+	}
+
+	function sortCollection(artists) {
+		artists = sortByName(artists);
+
+		for (var i = 0; i < artists.length; ++i) {
+			var artist = artists[i];
+			artist.albums = sortByYearNameAndDisc(artist.albums); 
+
+			for (var j = 0; j < artist.albums.length; ++j) {
+				var album = artist.albums[j];
+				album.tracks = sortByNumberAndTitle(album.tracks);
+			}
+		}
+
+		return artists;
+	}
 
 	// initial lookup if new files are available
 	$scope.processNextScanStep(1);
@@ -170,49 +261,27 @@ angular.module('Music').controller('MainController',
 }]);
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window',
-	function ($scope, $rootScope, playlistService, Restangular, $route, $window) {
+	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
+	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
-		// Prevent controller reload when the URL is updated with window.location.hash.
+		$rootScope.currentView = '#';
+
+		// Prevent controller reload when the URL is updated with window.location.hash,
+		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
 		var lastRoute = $route.current;
 		$scope.$on('$locationChangeSuccess', function(event) {
-			$route.current = lastRoute;
+			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
+				$route.current = lastRoute;
+			}
 		});
 
 		$scope.playTrack = function(track) {
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var artist = _.find($scope.$parent.artists,
-				function(artist) {
-					return artist.id === track.albumArtistId;
-				}),
-				album = _.find(artist.albums,
-				function(album) {
-					return album.id === track.albumId;
-				}),
-				tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			// determine index of clicked track
-			var index = -1;
-			for (var i = 0; i < tracks.length; i++) {
-				if(tracks[i].id == track.id) {
-					index = i;
-					break;
-				}
-			}
-
-			if(index > 0) {
-				// slice array in two parts and interchange them
-				var begin = tracks.slice(0, index);
-				var end = tracks.slice(index);
-				tracks = end.concat(begin);
-			}
-			playlistService.setPlaylist(tracks);
+			var album = findAlbum(track.albumId);
+			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
 			playlistService.publish('play');
 		};
 
@@ -220,12 +289,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
 
-			var tracks = _.sortBy(album.tracks,
-					function(track) {
-						return track.number;
-					}
-				);
-			playlistService.setPlaylist(tracks);
+			playlistService.setPlaylist(album.tracks);
 			playlistService.publish('play');
 		};
 
@@ -233,23 +297,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
 
-			var albums = _.sortBy(artist.albums,
-				function(album) {
-					return album.year;
-				}),
-				playlist = _.union.apply(null,
-					_.map(
-						albums,
-						function(album){
-							var tracks = _.sortBy(album.tracks,
-								function(track) {
-									return track.number;
-								}
-							);
-							return tracks;
-						}
-					)
-				);
+			var playlist = _.flatten(_.pluck(artist.albums, 'tracks'));
 			playlistService.setPlaylist(playlist);
 			playlistService.publish('play');
 		};
@@ -260,74 +308,78 @@ angular.module('Music').controller('OverviewController',
 					.then(function(result){
 						playlistService.setPlaylist([result]);
 						playlistService.publish('play');
-						$scope.scrollToItem('album-' + result.albumId);
+						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}
+		};
+
+		$scope.getDraggable = function(type, draggedElement) {
+			var draggable = {};
+			draggable[type] = draggedElement;
+			return draggable;
 		};
 
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
-			// update URL hash
-			window.location.hash = '#/';
-		});
-
-		$scope.scrollToItem = function(itemId) {
-			var container = angular.element(document.getElementById('app-content'));
-			var element = angular.element(document.getElementById(itemId));
-			var controls = document.getElementById('controls');
-			if(container && controls && element) {
-				container.scrollToElement(element, controls.offsetHeight, 500);
+			// update URL hash if this view is active
+			if ($rootScope.currentView == '#') {
+				window.location.hash = '#/';
 			}
-		};
-
-		$rootScope.$on('requestScrollToAlbum', function(event, albumId) {
-			$scope.scrollToItem('album-' + albumId);
 		});
 
-		$rootScope.$on('artistsLoaded', function () {
-			$scope.initializePlayerStateFromURL();
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			var track = findTrack(trackId);
+			if (track) {
+				$scope.$parent.scrollToItem('album-' + track.albumId);
+			}
 		});
 
-		$scope.initializePlayerStateFromURL = function() {
+		function findArtist(id) {
+			return _.find($scope.$parent.artists, function(artist) {
+				return artist.id == id;
+			});
+		}
+
+		function findAlbum(id) {
+			var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
+			return _.find(albums, function(album) {
+				return album.id == id;
+			});
+		}
+
+		function findTrack(id) {
+			return $scope.$parent.allTracks[id];
+		}
+
+		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
-				type = hashParts[1];
+				var type = hashParts[1];
 				var id = hashParts[2];
 
 				if (type == 'file') {
-					// trigger play
 					$scope.playFile(id);
 				} else if (type == 'artist') {
-					// search for the artist by id
-					object = _.find($scope.$parent.artists, function(artist) {
-						return artist.id == id;
-					});
-					// trigger play
-					$scope.playArtist(object);
-					$scope.scrollToItem('artist-' + object.id);
-				} else {
-					var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
-					if (type == 'album') {
-						// search for the album by id
-						object = _.find(albums, function(album) {
-							return album.id == id;
-						});
-						// trigger play
-						$scope.playAlbum(object);
-						$scope.scrollToItem('album-' + object.id);
-					} else if (type == 'track') {
-						var tracks = _.flatten(_.pluck(albums, 'tracks'));
-						// search for the track by id
-						object = _.find(tracks, function(track) {
-							return track.id == id;
-						});
-						// trigger play
-						$scope.playTrack(object);
-						$scope.scrollToItem('album-' + object.albumId);
-					}
+					$scope.playArtist(findArtist(id));
+					$scope.$parent.scrollToItem('artist-' + id);
+				} else if (type == 'album') {
+					$scope.playAlbum(findAlbum(id));
+					$scope.$parent.scrollToItem('album-' + id);
+				} else if (type == 'track') {
+					var track = findTrack(id);
+					$scope.playTrack(track);
+					$scope.$parent.scrollToItem('album-' + track.albumId);
 				}
 			}
-		};
+			$rootScope.loading = false;
+		}
+
+		// initialize either immedately or once the parent view has finished loading the collection
+		if ($scope.$parent.artists) {
+			$timeout(initializePlayerStateFromURL);
+		}
+
+		$rootScope.$on('artistsLoaded', initializePlayerStateFromURL);
 }]);
 
 angular.module('Music').controller('PlayerController',
@@ -405,26 +457,25 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	$scope.$watch('currentTrack', function(newValue, oldValue) {
-		playlistService.publish('playing', newValue);
+	function setCurrentTrack(track) {
+		$scope.currentTrack = track;
 		$scope.player.stop();
 		$scope.setPlay(false);
-		$scope.setLoading(true);
-		if(newValue !== null) {
+		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			// find artist
 			$scope.currentArtist = _.find($scope.artists,
 										function(artist){
-											return artist.id === newValue.albumArtistId;
+											return artist.id === track.albumArtistId;
 										});
 			// find album
 			$scope.currentAlbum = _.find($scope.currentArtist.albums,
 										function(album){
-											return album.id === newValue.albumId;
+											return album.id === track.albumId;
 										});
 
-			$scope.player.fromURL($scope.getPlayableFileURL($scope.currentTrack));
+			$scope.player.fromURL($scope.getPlayableFileURL(track));
 			$scope.setLoading(true);
 			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
@@ -437,9 +488,8 @@ angular.module('Music').controller('PlayerController',
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;
-			playlistService.publish('playlistEnded');
 		}
-	}, true);
+	}
 
 	$scope.setPlay = function(playing) {
 		$scope.playing = playing;
@@ -480,26 +530,26 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.getNextTrack($scope.repeat, $scope.shuffle),
+		var track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
 		while(track !== null && !$scope.getPlayableFileURL(track)) {
 			tracksSkipped = true;
-			track = playlistService.getNextTrack($scope.repeat, $scope.shuffle);
+			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
-		if(tracksSkipped === true) {
+		if(tracksSkipped) {
 			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 			$timeout(OC.Notification.hide, 10000);
 		}
-		$scope.currentTrack = track;
+		setCurrentTrack(track);
 	};
 
 	$scope.prev = function() {
-		var track = playlistService.getPrevTrack();
+		var track = playlistService.jumpToPrevTrack();
 		if(track !== null) {
-			$scope.currentTrack = track;
+			setCurrentTrack(track);
 		}
 	};
 
@@ -514,19 +564,293 @@ angular.module('Music').controller('PlayerController',
 		$scope.next();
 	});
 
-	$scope.scrollToCurrentAlbum = function() {
-		if ($scope.currentAlbum) {
-			$rootScope.$emit('requestScrollToAlbum', $scope.currentAlbum.id);
+	$scope.scrollToCurrentTrack = function() {
+		if ($scope.currentTrack) {
+			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 		}
 	};
 }]);
 
-angular.module('Music').controller('PlaylistController',
-	['$scope', 'playlists', function ($scope, playlists) {
+angular.module('Music').controller('PlaylistViewController',
+	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
+	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-	$scope.playlists = playlists;
+		$scope.tracks = [];
+		$rootScope.currentView = window.location.hash;
+
+		$scope.getCurrentTrackIndex = function() {
+			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
+		};
+
+		// Remove chosen track from the list
+		$scope.removeTrack = function(trackIndex) {
+			// Remove the element first from our internal array, without recreating the whole array.
+			// Doing this before the HTTP request improves the perceived performance.
+			$scope.tracks.splice(trackIndex, 1);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (trackIndex <= playingIndex) {
+					--playingIndex;
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
+
+			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
+				$scope.$parent.updatePlaylist(updatedList);
+			});
+		};
+
+		// Call playlistService to play all songs in the current playlist from the beginning
+		$scope.playAll = function() {
+			playlistService.setPlaylist($scope.tracks);
+			playlistService.publish('play');
+		};
+
+		// Play the list, starting from a specific track
+		$scope.playTrack = function(trackIndex) {
+			playlistService.setPlaylist($scope.tracks, trackIndex);
+			playlistService.publish('play');
+		};
+
+		$scope.getDraggable = function(index) {
+			$scope.draggedIndex = index;
+			return {
+				track: $scope.tracks[index],
+				srcIndex: index
+			};
+		};
+
+		$scope.reorderDrop = function(draggable, dstIndex) {
+			moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+
+			if (listIsPlaying()) {
+				var playingIndex = $scope.getCurrentTrackIndex();
+				if (playingIndex === draggable.srcIndex) {
+					playingIndex = dstIndex;
+				}
+				else {
+					if (playingIndex > draggable.srcIndex) {
+						--playingIndex;
+					}
+					if (playingIndex >= dstIndex) {
+						++playingIndex;
+					}
+				}
+				playlistService.onPlaylistModified($scope.tracks, playingIndex);
+			}
+
+			$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
+				function(updatedList) {
+					$scope.$parent.updatePlaylist(updatedList);
+				}
+			);
+		};
+
+		$scope.allowDrop = function(draggable, dstIndex) {
+			return $scope.playlist && draggable.srcIndex != dstIndex;
+		};
+
+		$scope.updateHoverStyle = function(dstIndex) {
+			var element = $('.playlist-area .track-list');
+			if ($scope.draggedIndex > dstIndex) {
+				element.removeClass('insert-below');
+				element.addClass('insert-above');
+			} else if ($scope.draggedIndex < dstIndex) {
+				element.removeClass('insert-above');
+				element.addClass('insert-below');
+			} else {
+				element.removeClass('insert-above');
+				element.removeClass('insert-below');
+			}
+		};
+
+		$rootScope.$on('scrollToTrack', function(event, trackId) {
+			if ($scope.$parent) {
+				$scope.$parent.scrollToItem('track-' + trackId);
+			}
+		});
+
+		// Init happens either immediately (after making the loading animation visible)
+		// or once both aritsts and playlists have been loaded
+		$timeout(function() {
+			initViewFromRoute();
+		});
+		$rootScope.$on('artistsLoaded', function () {
+			initViewFromRoute();
+		});
+		$rootScope.$on('playlistsLoaded', function () {
+			initViewFromRoute();
+		});
+
+		function listIsPlaying() {
+			return ($rootScope.playingView === $rootScope.currentView);
+		}
+
+		function initViewFromRoute() {
+			if ($scope.$parent.artists && $scope.$parent.playlists) {
+				if ($routeParams.playlistId) {
+					var playlist = findPlaylist($routeParams.playlistId);
+					$scope.playlist = playlist;
+					$scope.tracks = createTracksArray(playlist.trackIds);
+				}
+				else {
+					$scope.playlist = null;
+					$scope.tracks = createAllTracksArray();
+				}
+
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
+			}
+		}
+
+		function moveArrayElement(array, from, to) {
+			array.splice(to, 0, array.splice(from, 1)[0]);
+		}
+
+		function findPlaylist(id) {
+			return _.find($scope.$parent.playlists, function(pl) { return pl.id == id; });
+		}
+
+		function createTracksArray(trackIds) {
+			return _.map(trackIds, function(trackId) {
+				return $scope.$parent.allTracks[trackId];
+			});
+		}
+
+		function createAllTracksArray() {
+			var tracks = null;
+			if ($scope.$parent.allTracks) {
+				tracks = [];
+				for (var trackId in $scope.$parent.allTracks) {
+					tracks.push($scope.$parent.allTracks[trackId]);
+				}
+
+				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
+			}
+			return tracks;
+		}
 
 }]);
+
+angular.module('Music').controller('SidebarController',
+	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
+
+		$scope.newPlaylistName = null;
+
+		// holds the state of the editor (visible or not)
+		$scope.showCreateForm = false;
+		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
+		$scope.showEditForm = null;
+
+		// create playlist
+		$scope.create = function(playlist) {
+			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
+				$scope.$parent.playlists.push(playlist);
+				$scope.newPlaylistName = null;
+			});
+
+			$scope.showCreateForm = false;
+		};
+
+		// Start renaming playlist
+		$scope.startEdit = function(playlist) {
+			$scope.showEditForm = playlist.id;
+		};
+
+		// Commit renaming of playlist
+		$scope.commitEdit = function(playlist) {
+			// change of the attribute happens in form
+			playlist.put();
+
+			$scope.showEditForm = null;
+		};
+
+		// Remove playlist
+		$scope.remove = function(playlist) {
+			playlist.remove();
+
+			// remove the elemnt also from the AngularJS list
+			$scope.$parent.playlists.splice($scope.$parent.playlists.indexOf(playlist), 1);
+		};
+
+		// Add track to the playlist
+		$scope.addTrack = function(playlist, song) {
+			addTracks(playlist, [song.id]);
+		};
+
+		// Add all tracks on an album to the playlist
+		$scope.addAlbum = function(playlist, album) {
+			addTracks(playlist, trackIdsFromAlbum(album));
+		};
+
+		// Add all tracks on all albums by an artist to the playlist
+		$scope.addArtist = function(playlist, artist) {
+			addTracks(playlist, trackIdsFromArtist(artist));
+		};
+
+		// Navigate to a view selected from the sidebar
+		$scope.navigateTo = function(destination) {
+			if ($rootScope.currentView != destination) {
+				$rootScope.loading = true;
+				$timeout(function() {
+					window.location.hash = destination;
+				}, 100); // Firefox requires here a small delay to correctly show the loading animation
+			}
+		};
+
+		// An item dragged and dropped on a sidebar playlist item
+		$scope.dropOnPlaylist = function(droppedItem, playlist) {
+			if ('track' in droppedItem) {
+				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('album' in droppedItem) {
+				$scope.addAlbum(playlist, droppedItem.album);
+			} else if ('artist' in droppedItem) {
+				$scope.addArtist(playlist, droppedItem.artist);
+			} else {
+				console.error("Unknwon entity dropped on playlist");
+			}
+		};
+
+		$scope.allowDrop = function(playlist) {
+			// Don't allow dragging a track from a playlist back to the same playlist
+			return $rootScope.currentView != '#/playlist/' + playlist.id;
+		};
+
+		function trackIdsFromAlbum(album) {
+			var ids = [];
+			for (var i = 0, count = album.tracks.length; i < count; ++i) {
+				ids.push(album.tracks[i].id);
+			}
+			return ids;
+		}
+
+		function trackIdsFromArtist(artist) {
+			var ids = [];
+			for (var i = 0, count = artist.albums.length; i < count; ++i) {
+				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
+			}
+			return ids;
+		}
+
+		function addTracks(playlist, trackIds) {
+			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
+				$scope.$parent.updatePlaylist(updatedList);
+				// Update the currently playing list if necessary
+				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
+					var newTracks = _.map(trackIds, function(trackId) {
+						return $scope.$parent.allTracks[trackId];
+					});
+					playlistService.onTracksAdded(newTracks);
+				}
+			});
+		}
+
+}]);
+
 angular.module('Music').directive('albumart', [function() {
 
 	function setCoverImage(element, imageUrl) {
@@ -577,6 +901,19 @@ angular.module('Music').directive('albumart', [function() {
 }]);
 
 
+angular.module('Music').directive('ngEnter', function () {
+	return function (scope, element, attrs) {
+		element.bind("keydown keypress", function (event) {
+			if(event.which === 13) {
+				scope.$apply(function (){
+					scope.$eval(attrs.ngEnter);
+				});
+				event.preventDefault();
+			}
+		});
+	};
+});
+
 angular.module('Music').directive('resize', ['$window', '$rootScope', function($window, $rootScope) {
 	return function(scope, element, attrs, ctrl) {
 		var resizeNavigation = function() {
@@ -623,6 +960,17 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 	};
 }]);
 
+angular.module('Music').directive('sidebarListItem', function() {
+	return {
+		scope: {
+			text: '=',
+			destination: '=',
+			playlist: '='
+		},
+		templateUrl: 'sidebarlistitem.html'
+	};
+});
+
 angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
 	return {
 		getArtists: function() { return Restangular.all('collection').getList(); }
@@ -633,15 +981,6 @@ angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
 	$rootScope.$emit('SoundManagerReady');
 	return new PlayerWrapper();
 }]);
-
-angular.module('Music').factory('playlists', function(){
-	return [
-		{name: 'test playlist 1', id: 1},
-		{name: 'test playlist 2', id: 2},
-		{name: 'test playlist 3', id: 3},
-		{name: 'test playlist 4', id: 4}
-	];
-});
 
 angular.module('Music').factory('Token', [function () {
 	return document.getElementsByTagName('head')[0].getAttribute('data-requesttoken');
@@ -814,68 +1153,166 @@ PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
-	var currentTrackId = null;
-	var played = [];
-	return {
-		getCurrentTrack: function() {
-			if(currentTrackId !== null && playlist !== null) {
-				return playlist[currentTrackId];
-			}
-			return null;
-		},
-		getPrevTrack: function() {
-			if(played.length > 0) {
-				currentTrackId = played.pop();
-				return playlist[currentTrackId];
-			}
-			return null;
-		},
-		getNextTrack: function(repeat, shuffle) {
-			if(playlist === null) {
-				return null;
-			}
-			if(currentTrackId !== null) {
-				// add previous track id to the played list
-				played.push(currentTrackId);
-			}
-			if(shuffle === true) {
-				if(playlist.length === played.length) {
-					if(repeat === true) {
-						played = [];
-					} else {
-						currentTrackId = null;
-						return null;
-					}
-				}
-				// generate a list with all integers between 0 and playlist.length
-				var all = [];
-				for(var i = 0; i < playlist.length; i++) {
-					all.push(i);
-				}
-				// remove the already played track ids
-				all = _.difference(all, played);
-				// determine a random integer out of this set
-				currentTrackId = all[Math.round(Math.random() * (all.length - 1))];
+	var playOrder = [];
+	var playOrderIter = -1;
+	var startFromIndex = null;
+	var prevShuffleState = false;
+
+	function shuffledIndices() {
+		var indices = _.range(playlist.length);
+		return _.shuffle(indices);
+	}
+
+	function shuffledIndicesExcluding(toExclude) {
+		var indices = _.range(playlist.length);
+		indices.splice(toExclude, 1);
+		return _.shuffle(indices);
+	}
+
+	function wrapIndexToStart(list, index) {
+		if (index > 0) {
+			// slice array in two parts and interchange them
+			var begin = list.slice(0, index);
+			var end = list.slice(index);
+			list = end.concat(begin);
+		}
+		return list;
+	}
+
+	function initPlayOrder(shuffle) {
+		if (shuffle) {
+			if (startFromIndex !== null) {
+				playOrder = [startFromIndex].concat(shuffledIndicesExcluding(startFromIndex));
 			} else {
-				if(currentTrackId === null ||
-					currentTrackId === (playlist.length - 1) && repeat === true) {
-					currentTrackId = 0;
-				} else {
-					currentTrackId++;
-				}
+				playOrder = shuffledIndices();
 			}
-			// repeat is disabled and the end of the playlist is reached
-			// -> abort
-			if(currentTrackId >= playlist.length) {
-				currentTrackId = null;
+		}
+		else {
+			playOrder = _.range(playlist.length);
+			if (startFromIndex !== null) {
+				playOrder = wrapIndexToStart(playOrder, startFromIndex);
+			}
+		}
+		prevShuffleState = shuffle;
+	}
+
+	function enqueueIndices(shuffle) {
+		var prevIndex = _.last(playOrder);
+		var nextIndices = null;
+
+		// Append playlist indices in suitable order, excluding the previously played index
+		// to prevent the same track from playing twice in row. Playlist containing only a
+		// single track is a special case as there we cannot exclude our only track.
+		if (playlist.length === 1) {
+			nextIndices = [0];
+		} else if (shuffle) {
+			nextIndices = shuffledIndicesExcluding(prevIndex);
+		} else {
+			nextIndices = wrapIndexToStart(_.range(playlist.length), prevIndex);
+			nextIndices = _.rest(nextIndices);
+		}
+
+		playOrder = playOrder.concat(nextIndices);
+	}
+
+	function checkShuffleStateChange(currentShuffleState) {
+		if (currentShuffleState != prevShuffleState) {
+			// Drop any future indices from the play order when the shuffle state changes
+			// and enqueue one playlist worth of indices according the new state.
+			playOrder = _.first(playOrder, playOrderIter);
+			enqueueIndices(currentShuffleState);
+			prevShuffleState = currentShuffleState;
+		}
+	}
+
+	function insertMany(hostArray, targetIndex, insertedItems) {
+		hostArray.splice.apply(hostArray, [targetIndex, 0].concat(insertedItems));
+	}
+
+	return {
+		getCurrentIndex: function() {
+			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
+		},
+		jumpToPrevTrack: function() {
+			if(playlist && playOrderIter > 0) {
+				--playOrderIter;
+				track = playlist[this.getCurrentIndex()];
+				this.publish('trackChanged', track);
+				return track;
+			}
+			return null;
+		},
+		jumpToNextTrack: function(repeat, shuffle) {
+			if (playlist === null) {
 				return null;
 			}
-			return playlist[currentTrackId];
+			if (!playOrder) {
+				initPlayOrder(shuffle);
+			}
+			++playOrderIter;
+			checkShuffleStateChange(shuffle);
+
+			// check if we have run to the end of the enqueued tracks
+			if (playOrderIter >= playOrder.length) {
+				if (repeat) { // start another round
+					enqueueIndices(shuffle);
+				} else { // we are done
+					playOrderIter = -1;
+					playlist = null;
+					this.publish('playlistEnded');
+					return null;
+				}
+			}
+
+			var track = playlist[this.getCurrentIndex()];
+			this.publish('trackChanged', track);
+			return track;
 		},
-		setPlaylist: function(pl) {
-			playlist = pl;
-			currentTrackId = null;
-			played = [];
+		setPlaylist: function(pl, startIndex /*optional*/) {
+			playlist = pl.slice(); // copy
+			playOrder = null;
+			playOrderIter = -1;
+			startFromIndex = startIndex || null;
+		},
+		onPlaylistModified: function(pl, currentIndex) {
+			var currentTrack = playlist[this.getCurrentIndex()];
+			// check if the track being played is still available in the list
+			if (pl[currentIndex] === currentTrack) {
+				// re-init the play-order, erasing any history data
+				playlist = pl.slice(); // copy
+				playOrderIter = 0;
+				startFromIndex = currentIndex;
+				initPlayOrder(prevShuffleState);
+			}
+			// if not, then we no longer have a valid list position
+			else {
+				playlist = null;
+				playOrder = null;
+				playOrderIter = -1;
+			}
+			this.publish('trackChanged', currentTrack);
+		},
+		onTracksAdded: function(newTracks) {
+			var prevListSize = playlist.length;
+			playlist = playlist.concat(newTracks);
+			var newIndices = _.range(prevListSize, playlist.length);
+			if (prevShuffleState) {
+				// Shuffle the new tracks with the remaining tracks on the list
+				var remaining = _.tail(playOrder, playOrderIter+1);
+				remaining = _.shuffle(remaining.concat(newIndices));
+				playOrder = _.first(playOrder, playOrderIter+1).concat(remaining);
+			}
+			else {
+				// Try to find the next position of the previously last track of the list,
+				// and insert the new tracks in play order after that. If the index is not
+				// found, then we have already wrapped over the last track and the new tracks
+				// do not need to be added.
+				var insertPos = _.indexOf(playOrder, prevListSize-1, playOrderIter);
+				if (insertPos >= 0) {
+					++insertPos;
+					insertMany(playOrder, insertPos, newIndices);
+				}
+			}
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

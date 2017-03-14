@@ -43,8 +43,6 @@ before_install:
   - if [[ "$DB" == 'mysql' ]]; then mysql -u root -e "CREATE USER 'oc_autotest'@'localhost' IDENTIFIED BY '';"; fi
   - if [[ "$DB" == 'mysql' ]]; then mysql -u root -e "GRANT ALL ON oc_autotest.* TO 'oc_autotest'@'localhost';"; fi
 
-  - sh -c "if [ '$TRAVIS_PHP_VERSION' = '5.4' ]; then curl -s -o $HOME/.phpenv/versions/5.4/bin/phpunit https://phar.phpunit.de/phpunit-4.8.9.phar; fi;"
-  - sh -c "if [ '$TRAVIS_PHP_VERSION' = '5.4' ]; then chmod +x $HOME/.phpenv/versions/5.4/bin/phpunit; fi;"
   - composer self-update
   - composer install
   - cd ..
@@ -73,8 +71,8 @@ before_script:
   - cp tests/behat.yml.travis tests/behat.yml
 
 script:
-  - phpunit --coverage-clover clover-unit.xml --configuration tests/php/unit/phpunit.xml tests/php/unit
-  - phpunit --coverage-clover clover-integration.xml --configuration tests/php/integration/phpunit.xml tests/php/integration
+  - vendor/bin/phpunit --coverage-clover clover-unit.xml --configuration tests/php/unit/phpunit.xml tests/php/unit
+  - vendor/bin/phpunit --coverage-clover clover-integration.xml --configuration tests/php/integration/phpunit.xml tests/php/integration
   - cd tests && ../vendor/bin/behat
 
   # Create coverage report

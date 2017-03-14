@@ -166,6 +166,7 @@
 	position: absolute;
 	width: 58px;
 	height: 3px;
+	min-height: 3px;
 	top: 31px;
 	left: 21px;
 	margin: 0;

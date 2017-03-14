@@ -18,6 +18,14 @@
 	display: none;
 }
 
+#app-navigation li > a {
+	padding: 0;
+}
+
+#app-navigation .active a {
+	opacity: 1.0;
+}
+
 #app-navigation-toggle {
 	height: 66px;
 }
@@ -27,6 +35,7 @@
 	float: right;
 	width: 24px;
 	height: 24px;
+	padding: 5px;
 }
 
 #app-navigation .icon-checkmark, #app-navigation .icon-close {
@@ -46,6 +55,12 @@
 
 #app-navigation li > a#create {
 	padding-left: 18px;
+}
+
+#app-navigation li > a:first-child img {
+	margin-bottom: 0;
+	width: 10px;
+	margin-left: 5px;
 }
 
 .playlist:hover .actions {

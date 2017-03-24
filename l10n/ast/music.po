@@ -4,21 +4,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Asturian (http://www.transifex.com/projects/p/owncloud/language/ast/)\n"
+"Language-Team: Asturian (http://www.transifex.com/owncloud-org/owncloud/language/ast/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ast\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "Álbumes"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "Artistes"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -55,27 +67,39 @@ msgstr "Recuerda que la API d'Ampache namái ye un prototipu y ye inestable. Inf
 msgid "Music"
 msgstr "Música"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "Siguiente"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "Camín a la to coleición de música"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "Posa"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "Reproducir"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "Repitir"
 
@@ -83,17 +107,21 @@ msgstr "Repitir"
 msgid "Revoke API password"
 msgstr "Revocar contraseña pa la API"
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "Mecer"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
-msgstr "Nun pudieron reproducise dalgunes canciones."
+msgstr ""
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr "Esta configuración especifica la carpeta na que va escanease la música"
+msgstr ""
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
@@ -107,14 +135,30 @@ msgstr "Álbum desconocíu"
 msgid "Unknown artist"
 msgstr "Artista desconocíu"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr "Usa esta direición pa esplorar la to coleición de música dende cualquier reproductor compatible con Ampache."
+msgstr ""
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
 msgstr "Usa'l to nome d'usuariu y la siguiente contraseña pa coneutate con esta instancia d'Ampache:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

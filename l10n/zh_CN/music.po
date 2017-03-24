@@ -1,27 +1,39 @@
 # 
 # Translators:
 # Kaijia Feng <fengkaijia@gmail.com>, 2014
-# phy <transifex@phy25.com>, 2014
+# phy, 2014
 # csslayer <wengxt@gmail.com>, 2014
 # zhangguangpan <zhangguangpan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/owncloud/language/zh_CN/)\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/owncloud-org/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "专辑页"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "艺术家"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -58,27 +70,39 @@ msgstr ""
 msgid "Music"
 msgstr "音乐"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "下一个"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "音乐集路径"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "暂停"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "播放"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "前一首"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "重复"
 
@@ -86,11 +110,15 @@ msgstr "重复"
 msgid "Revoke API password"
 msgstr "撤销 API 密码"
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "随机"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
 msgstr "部分无法播放的音轨已被跳过。"
 
@@ -110,6 +138,10 @@ msgstr "未知专辑"
 msgid "Unknown artist"
 msgstr "未知艺术家"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
@@ -121,3 +153,15 @@ msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
 msgstr "使用您的用户名和密码连接到此 Ampache 服务："
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

@@ -25,4 +25,4 @@ $TRANSLATIONS = array(
 "Use this address to browse your music collection from any Ampache compatible player." => "Użyj tego adresu aby przeglądać swoją kolekcję muzyczną na dowolnym odtwarzaczu kompatybilnym z Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Użyj nazwy użytkownika i następującego hasła do połączenia do tej instancji Ampache:"
 );
-$PLURAL_FORMS = "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);";
+$PLURAL_FORMS = "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);";

@@ -1,46 +1,59 @@
 # 
 # Translators:
+# Sveinn í Felli <sv1@fellsnet.is>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Icelandic (http://www.transifex.com/projects/p/owncloud/language/is/)\n"
+"Language-Team: Icelandic (http://www.transifex.com/owncloud-org/owncloud/language/is/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: is\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
+msgstr "Albúm"
+
+#: ../templates/main.php:61
+msgid "All tracks"
 msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
+msgstr "Flytjandi"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
 msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
-msgstr ""
+msgstr "Lýsing"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Lýsing (t.d. heiti á appi)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr ""
+msgstr "Framleiða API-lykilorð"
 
 #: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Hér geturðu útbúið lykilorð til að nota með Ampache API, því ekki er hægt að geyma þau á algerlega öruggan máta vegna uppbyggingar Ampache API-samskiptareglnanna. Þú getur búið til eins mörg lykilorð og þér sýnist, og afturkallað þau hvenær sem er."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
-msgstr ""
+msgstr "Ógild slóð"
 
 #: ../templates/fake-template.php:19
 msgid ""
@@ -48,72 +61,104 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Hafðu í huga að Ampache API er bara sýnishorn og að það er óstöðugt. Þú mátt alveg segja frá reynslu þinni af notkun þess á tilheyrandi <a href=\"https://github.com/owncloud/music/issues/60\">færslu</a>. Það væri einnig gott að fá með lista yfir þau forrit sem hafa verið prófuð. Takk fyrir"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "Tónlist"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "Næst"
 
-#: ../templates/fake-template.php:9
-msgid "Path to your music collection"
+#: ../templates/main.php:139
+msgid "No music found"
 msgstr ""
 
-#: ../templates/main.php:62
-msgid "Pause"
-msgstr "Pása"
+#: ../templates/fake-template.php:9
+msgid "Path to your music collection"
+msgstr "Slóð á tónlistarsafnið þitt"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:94
+msgid "Pause"
+msgstr "Í bið"
+
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "Spila"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "Fyrra"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
-msgstr ""
+msgstr "Endurtaka"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
+msgstr "Afturkalla API-lykilorð"
+
+#: ../templates/main.php:156
+msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:87
+#: ../templates/main.php:121
 msgid "Shuffle"
-msgstr ""
+msgstr "Stokka"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Sumum óspilanlegum hljóðsporum var sleppt."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Þetta tilgreinir möppuna þar sem leitað verður að tónlist."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr ""
+msgstr "Hljóðspor"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
-msgstr ""
+msgstr "Óþekkt albúm"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
+msgstr "Óþekktur flytjandi"
+
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Notaðu þetta vistfang til að vafra um tónlistarsafnið þitt í öllum Ampache-samhæfðum spilurum."
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
+msgstr "Notaðu notandanafn þitt og eftirfarandi aðgangsorð til að tengjast þessu Ampache-tilviki:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

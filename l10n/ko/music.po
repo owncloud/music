@@ -6,21 +6,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
-"Last-Translator: Shinjo Park <kde@peremen.name>\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/owncloud/language/ko/)\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
+"Last-Translator: I Robot\n"
+"Language-Team: Korean (http://www.transifex.com/owncloud-org/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "앨범"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "음악가"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -57,27 +69,39 @@ msgstr "Ampache API는 아직까지 완전하지 않습니다. 이 기능을 사
 msgid "Music"
 msgstr "음악"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "다음"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "내 음악 모음집 경로"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "일시 정지"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "재생"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "이전"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "반복"
 
@@ -85,11 +109,15 @@ msgstr "반복"
 msgid "Revoke API password"
 msgstr "API 암호 취소"
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "임의 재생"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
 msgstr "재생할 수 없는 곡을 건너뛰었습니다."
 
@@ -109,6 +137,10 @@ msgstr "알 수 없는 앨범"
 msgid "Unknown artist"
 msgstr "알 수 없는 음악가"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
@@ -120,3 +152,15 @@ msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
 msgstr "이 Ampache 인스턴스에 연결하려면 사용자 이름과 다음 암호를 사용하십시오:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

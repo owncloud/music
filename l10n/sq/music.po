@@ -1,47 +1,60 @@
 # 
 # Translators:
 # Ardit Dani <ardit.dani@gmail.com>, 2014
+# Besnik <besnik@programeshqip.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Albanian (http://www.transifex.com/projects/p/owncloud/language/sq/)\n"
+"Language-Team: Albanian (http://www.transifex.com/owncloud-org/owncloud/language/sq/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
+msgstr "Albume"
+
+#: ../templates/main.php:61
+msgid "All tracks"
 msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
+msgstr "Artistë"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
 msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
-msgstr "Përshkrimi"
+msgstr "Përshkrim"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "Përshkrim (p.sh. Emër aplikacioni)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr ""
+msgstr "Prodhoni fjalëkalim API"
 
 #: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Këtu mund të proshoni fjalëkalime për përdoruim me API-n e Ampache-it, ngaqë këta s’mund të depozitohen në mënyrë vërtet të sigurt, për shkak të konceptimit të API-t të Ampache-it. Mund të prodhoni as fjalëkalime të doni, dhe t’i shfuqizoni kur të doni."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
-msgstr ""
+msgstr "Shteg i pavlefshëm"
 
 #: ../templates/fake-template.php:19
 msgid ""
@@ -49,72 +62,104 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Mbani parasysh që API i Ampache-it është thjesht paraprak dhe i paqëndrueshëm. Mos ngurroni të njoftoni përvojën tuaj me këtë veçori te <a href=\"https://github.com/owncloud/music/issues/60\">tema</a> përkatëse. Do të doja të kisha edhe një listë klientësh me të cilën ta testoj. Faleminderit!"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "Muzikë"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
-msgstr "Mëpasshëm"
+msgstr "Pasuesja"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
-msgstr ""
+msgstr "Shteg te koleksioni juaj muzikor"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
-msgstr "Pauzë"
+msgstr "Pushim"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
-msgstr "Luaj"
+msgstr "Luaje"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
-msgstr "Mëparshëm"
+msgstr "E mëparshmja"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
-msgstr "Përsëritet"
+msgstr "Përsërite"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
+msgstr "Shfuqizojeni fjalëkalimin API"
+
+#: ../templates/main.php:156
+msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:87
+#: ../templates/main.php:121
 msgid "Shuffle"
-msgstr "Përziej"
+msgstr "Përzieji"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "Disa pjesë që s’luheshin dot u anashkaluan."
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "Ky rregullim përcakton dosjen që do të kontrollohet për muzikë."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr ""
+msgstr "Pjesë"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
-msgstr ""
+msgstr "Album i panjohur"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
+msgstr "Artist i panjohur"
+
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "Përdoreni këtë adresë që të shfletoni koleksionin tuaj muzikor prej cilitdo luajtësi muzike që funksionon për Ampache."
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
+msgstr "Përdorni emrin tuaj të përdoruesit dhe fjalëkalimin që të lidheni te kjo instancë Ampache-i:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

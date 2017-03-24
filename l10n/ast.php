@@ -17,12 +17,9 @@ $TRANSLATIONS = array(
 "Repeat" => "Repitir",
 "Revoke API password" => "Revocar contraseña pa la API",
 "Shuffle" => "Mecer",
-"Some not playable tracks were skipped." => "Nun pudieron reproducise dalgunes canciones.",
-"This setting specifies the folder which will be scanned for music." => "Esta configuración especifica la carpeta na que va escanease la música",
 "Tracks" => "Canciones",
 "Unknown album" => "Álbum desconocíu",
 "Unknown artist" => "Artista desconocíu",
-"Use this address to browse your music collection from any Ampache compatible player." => "Usa esta direición pa esplorar la to coleición de música dende cualquier reproductor compatible con Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Usa'l to nome d'usuariu y la siguiente contraseña pa coneutate con esta instancia d'Ampache:"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

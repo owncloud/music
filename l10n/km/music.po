@@ -5,21 +5,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Khmer (http://www.transifex.com/projects/p/owncloud/language/km/)\n"
+"Language-Team: Khmer (http://www.transifex.com/owncloud-org/owncloud/language/km/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: km\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "អាល់ប៊ុម"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "សិល្បករ"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -56,27 +68,39 @@ msgstr ""
 msgid "Music"
 msgstr "តន្ត្រី"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "បន្ទាប់"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "ផ្អាក"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "លេង"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "មុន"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "ធ្វើម្ដងទៀត"
 
@@ -84,11 +108,15 @@ msgstr "ធ្វើម្ដងទៀត"
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "បង្អូស"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -108,6 +136,10 @@ msgstr "អាល់ប៊ុមអត់​ឈ្មោះ"
 msgid "Unknown artist"
 msgstr "សិល្បករអត់​ឈ្មោះ"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
@@ -118,4 +150,16 @@ msgstr ""
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
+msgstr ""
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

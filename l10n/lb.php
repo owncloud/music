@@ -1,5 +1,7 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Album",
+"Artists" => "Artist",
 "Description" => "Beschreiwung",
 "Music" => "Musek",
 "Next" => "Weider",

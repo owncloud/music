@@ -1,26 +1,39 @@
 # 
 # Translators:
-# zedascouves <duartegrilo@gmail.com>, 2014
-# Helder Meneses <helder.meneses@gmail.com>, 2013-2014
+# zedascouves <inactive+zedascouves@transifex.com>, 2014
+# Helder Meneses <helder.meneses@gmail.com>, 2013-2016
+# Manuela Silva <manuela.silva@sky.com>, 2017
 # rtbfreitas, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/owncloud/language/pt_PT/)\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/owncloud-org/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "Álbuns"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "Artistas"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -28,7 +41,7 @@ msgstr "Descrição"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr "Descrição (ex: Nome da App)"
+msgstr "Descrição (ex: Nome da Aplicação)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
@@ -55,29 +68,41 @@ msgstr "Lembre-se que a API do Ampache é apenas provisória e instável. Esteja
 
 #: ../templates/fake-template.php:3
 msgid "Music"
-msgstr "Musica"
+msgstr "Música"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
-msgstr "Próxima"
+msgstr "Seguinte"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
-msgstr "Caminho para a sua colecção de música"
+msgstr "Caminho para a sua coleção de música"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "Reproduzir"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "Repetir"
 
@@ -85,11 +110,15 @@ msgstr "Repetir"
 msgid "Revoke API password"
 msgstr "Revogar palavra-passe da API"
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "Baralhar"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
 msgstr "Foram ignoradas algumas faixas com problemas"
 
@@ -109,14 +138,30 @@ msgstr "Álbum desconhecido"
 msgid "Unknown artist"
 msgstr "Artista desconhecido"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr "Utilize este endereço para navegar na sua colecção de música em qualquer leitor compativel com o Ampache."
+msgstr "Utilize este endereço para navegar na sua coleção de música em qualquer leitor compatível com o Ampache."
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
-msgstr "Utilize o seu nome de utilizador e a seguinte palavra-passe para ligar a esta instancia do Ampache:"
+msgstr "Use o seu nome de utilizador e a seguinte palavra-passe para ligar a esta instância do Ampache:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

@@ -1,29 +1,41 @@
 # 
 # Translators:
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
-# タカハシ <gomidori@live.jp>, 2014
-# kuromabo <md81bird@hitaki.net>, 2014
+# タカハシ <indexial@outlook.jp>, 2014
+# kuromabo <md81bird@hitaki.net>, 2014-2015
 # Mika Kobayashi, 2014
-# Shinozaki Ippei <shino.ip.1231@gmail.com>, 2014
+# Ippei Shinozaki <shino.ip.1231@gmail.com>, 2014
 # YANO Tetsu <tetuyano+transi@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:24+0000\n"
-"Last-Translator: Shinozaki Ippei <shino.ip.1231@gmail.com>\n"
-"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/owncloud/language/ja_JP/)\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
+"Last-Translator: I Robot\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/owncloud-org/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
 msgstr "アルバム"
+
+#: ../templates/main.php:61
+msgid "All tracks"
+msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr "アーティスト"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
+msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -60,27 +72,39 @@ msgstr "Ampache APIはまだプレビュー版で、まだ不安定ですので�
 msgid "Music"
 msgstr "ミュージック"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "次"
+
+#: ../templates/main.php:139
+msgid "No music found"
+msgstr ""
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
 msgstr "音楽コレクションのパス"
 
-#: ../templates/main.php:62
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "一時停止"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "再生"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "前"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "繰り返し"
 
@@ -88,13 +112,17 @@ msgstr "繰り返し"
 msgid "Revoke API password"
 msgstr "API パスワードを無効にする"
 
-#: ../templates/main.php:87
+#: ../templates/main.php:156
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "シャッフル"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
-msgstr "いくつかの再生不可能なトラックを飛ばしました。"
+msgstr "一部の再生不可能なトラックをスキップしました。"
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
@@ -112,6 +140,10 @@ msgstr "不明なアルバム"
 msgid "Unknown artist"
 msgstr "不明なアーティスト"
 
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
@@ -123,3 +155,15 @@ msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
 msgstr "このAmpacheインスタンスに接続するには、あなたのユーザー名と以下のパスワードを使用してください:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

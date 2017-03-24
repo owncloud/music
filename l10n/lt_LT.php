@@ -1,6 +1,10 @@
 <?php
 $TRANSLATIONS = array(
+"Albums" => "Albumai",
+"Artists" => "Atlikėjai",
 "Description" => "Aprašymas",
+"Generate API password" => "Sugeneruoti API slaptažodį",
+"Invalid path" => "Netinkamas kelias",
 "Music" => "Muzika",
 "Next" => "Kitas",
 "Pause" => "Pristabdyti",

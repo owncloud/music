@@ -1,22 +1,35 @@
 # 
 # Translators:
+# Sunchai Paejaroenchai, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2015-02-05 19:23+0000\n"
+"PO-Revision-Date: 2017-03-24 11:20+0000\n"
 "Last-Translator: I Robot\n"
-"Language-Team: Thai (Thailand) (http://www.transifex.com/projects/p/owncloud/language/th_TH/)\n"
+"Language-Team: Thai (Thailand) (http://www.transifex.com/owncloud-org/owncloud/language/th_TH/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: th_TH\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../templates/fake-template.php:7
+#: ../templates/main.php:65
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
+msgstr "อัลบัม"
+
+#: ../templates/main.php:61
+msgid "All tracks"
 msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
+msgstr "ศิลปิน"
+
+#: ../templates/main.php:151
+msgid "Click here to start the scan"
 msgstr ""
 
 #: ../templates/fake-template.php:13
@@ -25,22 +38,22 @@ msgstr "คำอธิบาย"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr ""
+msgstr "รายละเอียด (ยกตัวอย่าง ชื่อแอพฯ)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"
-msgstr ""
+msgstr "สุ่มรหัสผ่าน API"
 
 #: ../templates/fake-template.php:18
 msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "ที่นี่คุณสามารถสร้างรหัสผ่านที่จะใช้กับ Ampache API เพราะไม่สามารถเก็บไว้ในที่mujปลอดภัย เนื่องจากการออกแบบของ Ampache API คุณสามารถสร้างรหัสผ่านให้มากที่สุดเท่าที่คุณต้องการและยกเลิกได้ตลอดเวลา"
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
-msgstr ""
+msgstr "เส้นทางไม่ถูกต้อง"
 
 #: ../templates/fake-template.php:19
 msgid ""
@@ -48,72 +61,104 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "โปรดทราบว่า Ampache API เป็นเพียงตัวอย่างและไม่เสถียร อย่าลังเลที่จะมาช่วยกันรายงานบัค <a href=\"https://github.com/owncloud/music/issues/60\"> ที่นี่ </a> เรายังต้องการผู้ที่จะร่วมทดสอบ ขอบคุณ"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
 msgstr "เพลง"
 
-#: ../templates/main.php:64
+#: ../templates/main.php:150
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:145 ../templates/main.php:146
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:96
 msgid "Next"
 msgstr "ถัดไป"
 
-#: ../templates/fake-template.php:9
-msgid "Path to your music collection"
+#: ../templates/main.php:139
+msgid "No music found"
 msgstr ""
 
-#: ../templates/main.php:62
+#: ../templates/fake-template.php:9
+msgid "Path to your music collection"
+msgstr "เส้นทางที่จะเก็บเพลงของคุณ"
+
+#: ../templates/main.php:94
 msgid "Pause"
 msgstr "หยุดชั่วคราว"
 
-#: ../templates/main.php:60
+#: ../templates/main.php:92
 msgid "Play"
 msgstr "เล่น"
 
-#: ../templates/main.php:58
+#: ../templates/main.php:90
 msgid "Previous"
 msgstr "ก่อนหน้า"
 
-#: ../templates/main.php:89
+#: ../templates/main.php:123
 msgid "Repeat"
 msgstr "ทำซ้ำ"
 
 #: ../templates/fake-template.php:16
 msgid "Revoke API password"
+msgstr "ยกเลิกรหัสผ่าน API"
+
+#: ../templates/main.php:156
+msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:87
+#: ../templates/main.php:121
 msgid "Shuffle"
-msgstr ""
+msgstr "สับเปลี่ยน"
 
-#: ../js/public/app.js:458
+#: ../js/public/app.js:543
 msgid "Some not playable tracks were skipped."
-msgstr ""
+msgstr "บางเพลงที่ไม่สามารถเล่นได้จะถูกข้ามไป"
 
 #: ../templates/fake-template.php:11
 msgid "This setting specifies the folder which will be scanned for music."
-msgstr ""
+msgstr "ตั้งค่าเพื่อระบุโฟลเดอร์ที่จะสแกนหาเพลงฟัง"
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr ""
+msgstr "เพลง"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
-msgstr ""
+msgstr "ไม่ทราบอัลบั้ม"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
+msgstr "ไม่รู้จักศิลปิน"
+
+#: ../templates/main.php:140
+msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
 #: ../templates/fake-template.php:12
 msgid ""
 "Use this address to browse your music collection from any Ampache compatible"
 " player."
-msgstr ""
+msgstr "ใช้ที่อยู่นี้เพื่อเรียกคอลเลคชันเพลงจากเครื่องเล่น Ampache ที่เข้ากันได้"
 
 #: ../templates/fake-template.php:17
 msgid ""
 "Use your username and following password to connect to this Ampache "
 "instance:"
+msgstr "ใช้ชื่อผู้ใช้และรหัสผ่านของคุณต่อไปนี้เพื่อเชื่อมต่อไปยัง Ampache ตัวอย่างเช่น:"
+
+#: ../templates/main.php:126 ../templates/main.php:128
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:62 ../templates/main.php:82
+msgid "tracks"
+msgstr ""
+
+#: ../templates/main.php:157
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

@@ -10,7 +10,7 @@ $TRANSLATIONS = array(
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Mějte na paměti, že Ampache API je stále ve vývoji a není stabilní. Můžete nás bez obav informovat o zkušenostech s touto funkcí odesláním hlášení v příslušném <a href=\"https://github.com/owncloud/music/issues/60\">tiketu</a>. Chtěl bych také sestavit seznam zájemců o testování. Díky",
 "Music" => "Hudba",
 "Next" => "Následující",
-"Path to your music collection" => "Cesta k vaší sbírce hudby",
+"Path to your music collection" => "Cesta k vlastní sbírce hudby",
 "Pause" => "Pozastavit",
 "Play" => "Přehrát",
 "Previous" => "Předchozí",

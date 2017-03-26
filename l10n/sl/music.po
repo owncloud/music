@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Matej Urbančič <>, 2013-2014,2016
+# Matej Urbančič <>, 2013-2014,2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-26 17:57+0000\n"
+"Last-Translator: Matej Urbančič <>\n"
 "Language-Team: Slovenian (http://www.transifex.com/owncloud-org/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nov seznam predvajanja"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -30,7 +30,7 @@ msgstr "Izvajalci"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Kliknite za začetek preiskovanja za nove predmete"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -69,11 +69,11 @@ msgstr "Glasba"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Na voljo je nova glasba"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Na voljo je nova glasba. Kliknite za ponovno nalaganje glasbene zbirke."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -81,7 +81,7 @@ msgstr "Naslednja"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Ni zaznanih glasbenih datotek"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -109,7 +109,7 @@ msgstr "Razveljavi geslo API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Poteka preiskovanje glasbe ..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -153,7 +153,7 @@ msgstr "Uporabite uporabniško ime in navedeno geslo za povezavo z Ampache:"
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Glasnost"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"

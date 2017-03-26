@@ -1,12 +1,12 @@
 # 
 # Translators:
 # pinzerbib <pinzerbib@gmail.com>, 2014
-# duvdevan, 2015-2016
+# duvdevan, 2015-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-26 13:17+0000\n"
+"Last-Translator: duvdevan\n"
 "Language-Team: Hebrew (http://www.transifex.com/owncloud-org/owncloud/language/he/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ רשימת השמעה חדשה"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -23,7 +23,7 @@ msgstr "אלבומים"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "כל רצועות המוזיקה"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +31,7 @@ msgstr "אומנים"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "לחיצה כאן להתחלת הסריקה"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -70,11 +70,11 @@ msgstr "מוזיקה"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "קיימת מוזיקה חדשה"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "קיימת מוזיקה חדשה. יש ללחוץ כאן לטעינה מחדש של ספריית המוזיקה."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -82,7 +82,7 @@ msgstr "הבא"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "לא נמצאה מוזיקה"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +110,7 @@ msgstr "ביטול סיסמת API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "סורק מוזיקה..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -138,7 +138,7 @@ msgstr "אמן לא ידוע"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "יש להעלות מוזיקה ביישום הקבצים להשמעה שלה כאן"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -154,12 +154,12 @@ msgstr "השתמשו בשם המשתמש שלכם ובסיסמא הבאה לחי
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "עוצמת שמע"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "רצועות מוזיקה"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} מתוך {{ scanningTotal }}"

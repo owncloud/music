@@ -59,7 +59,15 @@ if (version_compare($installedVersion, '0.3.12', '<')) {
 }
 
 if (version_compare($installedVersion, '0.3.14', '<')) {
-	$sql = 'DROP TABLE `*PREFIX*music_playlist_tracks`;';
-	$query = \OCP\DB::prepare($sql);
-	$query->execute();
+	$sqls = array(
+		'DELETE FROM `*PREFIX*music_artists`;',
+		'DELETE FROM `*PREFIX*music_albums`;',
+		'DELETE FROM `*PREFIX*music_tracks`;',
+		'DELETE FROM `*PREFIX*music_playlists`',
+		'DROP TABLE `*PREFIX*music_playlist_tracks`;',
+	);
+	foreach ($sqls as $sql) {
+		$query = \OCP\DB::prepare($sql);
+		$query->execute();
+	}
 }

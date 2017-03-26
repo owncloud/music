@@ -2,11 +2,12 @@
 # Translators:
 # Ardit Dani <ardit.dani@gmail.com>, 2014
 # Besnik <besnik@programeshqip.org>, 2015
+# Besnik <besnik@programeshqip.org>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-25 08:44+0000\n"
+"Last-Translator: Besnik <besnik@programeshqip.org>\n"
 "Language-Team: Albanian (http://www.transifex.com/owncloud-org/owncloud/language/sq/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +16,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Luajlistë e Re"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -23,7 +24,7 @@ msgstr "Albume"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Krejt pjesët"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +32,7 @@ msgstr "Artistë"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Klikoni që të fillojë skanimi"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -70,11 +71,11 @@ msgstr "Muzikë"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Ka gati muzikë të re"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Ka gati muzikë të re. Klikoni këtu që të ringarkohet fonoteka. "
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -82,7 +83,7 @@ msgstr "Pasuesja"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "S’u gjet muzikë"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +111,7 @@ msgstr "Shfuqizojeni fjalëkalimin API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Po skanohet muzika…"
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -138,7 +139,7 @@ msgstr "Artist i panjohur"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Ngarkoni muzikë te aplikacioni i kartelave që ta dëgjoni këtu"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -154,12 +155,12 @@ msgstr "Përdorni emrin tuaj të përdoruesit dhe fjalëkalimin që të lidheni 
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Volum"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "gjurmë"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} nga {{ scanningTotal }} gjithsej"

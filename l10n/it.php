@@ -1,7 +1,10 @@
 <?php
 $TRANSLATIONS = array(
+"+ New Playlist" => "+ Nuova scaletta",
 "Albums" => "Album",
+"All tracks" => "Tutte le tracce",
 "Artists" => "Artisti",
+"Click here to start the scan" => "Fai clic qui per iniziare la scansione",
 "Description" => "Descrizione",
 "Description (e.g. App name)" => "Descrizione (ad es. Nome applicazione)",
 "Generate API password" => "Genera una password API",
@@ -9,13 +12,17 @@ $TRANSLATIONS = array(
 "Invalid path" => "Percorso non valido",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Ricorda, l'API di Ampache è solo un'anteprima e non è stabile. Sentiti libero di segnalare la tua esperienza con questa funzionalità nel corrispondente <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. Preferirei inoltre avere un elenco di client da provare. Grazie.",
 "Music" => "Musica",
+"New music available" => "Nuova musica disponibile",
+"New music available. Click here to reload the music library." => "Nuova musica disponibile. Fai clic qui per ricaricare la raccolta musicale.",
 "Next" => "Successivo",
+"No music found" => "Nessun musica trovata",
 "Path to your music collection" => "Percorso alla tua collezione musicale",
 "Pause" => "Pausa",
 "Play" => "Riproduci",
 "Previous" => "Precedente",
 "Repeat" => "Ripeti",
 "Revoke API password" => "Revoca la password API",
+"Scanning music …" => "Scansione della musica...",
 "Shuffle" => "Mescola",
 "Some not playable tracks were skipped." => "Alcune tracce non riproducibili sono state saltate.",
 "This setting specifies the folder which will be scanned for music." => "Questa impostazione specifica la cartella che sarà analizzata alla ricerca di musica.",
@@ -23,6 +30,8 @@ $TRANSLATIONS = array(
 "Unknown album" => "Album sconosciuto",
 "Unknown artist" => "Artista sconosciuto",
 "Use this address to browse your music collection from any Ampache compatible player." => "Usa questo indirizzo per sfogliare le tue raccolte musicali da qualsiasi lettore compatibile con Ampache.",
-"Use your username and following password to connect to this Ampache instance:" => "Utilizza il tuo nome utente e la password per collegarti a questa istanza di Ampache:"
+"Use your username and following password to connect to this Ampache instance:" => "Utilizza il tuo nome utente e la password per collegarti a questa istanza di Ampache:",
+"Volume" => "Volume",
+"tracks" => "tracce"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

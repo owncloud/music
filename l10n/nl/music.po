@@ -1,12 +1,12 @@
 # 
 # Translators:
-# André Koot <meneer@tken.net>, 2013-2014
+# André Koot <meneer@tken.net>, 2013-2014,2017
 # cvthoff <cvthoff@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-25 17:43+0000\n"
+"Last-Translator: André Koot <meneer@tken.net>\n"
 "Language-Team: Dutch (http://www.transifex.com/owncloud-org/owncloud/language/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nieuwe afspeellijst"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -23,7 +23,7 @@ msgstr "Albums"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Alle nummers"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +31,7 @@ msgstr "Artiesten"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Klik hier om de scan te starten"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -70,11 +70,11 @@ msgstr "Muziek"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Nieuwe muziek beschikbaar"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Nieuwe muziek beschikbaar. Klik hier om de muziekbibliotheek te herladen."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -82,7 +82,7 @@ msgstr "Volgende"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Geen muziek gevonden"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +110,7 @@ msgstr "Intrekken API wachtwoord"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Scannen muziek …"
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -138,7 +138,7 @@ msgstr "Onbekende artiest"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Upload muziek in de bestandsapp, om hier te luisteren"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -154,12 +154,12 @@ msgstr "Gebruik uw gebruikersnaam en het volgende wachtwoord om te verbinden met
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "nummers"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} van {{ scanningTotal }}"

@@ -3,12 +3,12 @@
 # dimariaj87 <dimariaj87@gmail.com>, 2014
 # idetao <marcxosm@gmail.com>, 2014
 # Paolo Velati <paolo.velati@gmail.com>, 2014
-# Vincenzo Reale <vinx.reale@gmail.com>, 2013-2014
+# Vincenzo Reale <vinx.reale@gmail.com>, 2013-2014,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-25 08:01+0000\n"
+"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/owncloud-org/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nuova scaletta"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -25,7 +25,7 @@ msgstr "Album"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Tutte le tracce"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -33,7 +33,7 @@ msgstr "Artisti"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Fai clic qui per iniziare la scansione"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -72,11 +72,11 @@ msgstr "Musica"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Nuova musica disponibile"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Nuova musica disponibile. Fai clic qui per ricaricare la raccolta musicale."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -84,7 +84,7 @@ msgstr "Successivo"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Nessun musica trovata"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -112,7 +112,7 @@ msgstr "Revoca la password API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Scansione della musica..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -156,11 +156,11 @@ msgstr "Utilizza il tuo nome utente e la password per collegarti a questa istanz
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "tracce"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"

@@ -1,6 +1,8 @@
 <?php
 $TRANSLATIONS = array(
+"+ New Playlist" => "+ Nova playlist",
 "Albums" => "Albuns",
+"All tracks" => "Todas as faixas",
 "Artists" => "Artistas",
 "Description" => "Descrição",
 "Description (e.g. App name)" => "Descrição (por exemplo, nome do App)",
@@ -9,7 +11,10 @@ $TRANSLATIONS = array(
 "Invalid path" => "Caminho inválido",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Tenha em mente, que a API Ampache é apenas uma pré-visualização e é instável. Sinta-se livre para relatar sua experiência com esse recurso na questão correspondente <a href=\"https://github.com/owncloud/music/issues/60\">assunto</a>. Eu também gostaria de ter uma lista de clientes para testar. obrigado",
 "Music" => "Música",
+"New music available" => "Nova música disponível",
+"New music available. Click here to reload the music library." => "Nova música disponível. Clique aqui para recarregar a coleção.",
 "Next" => "Próxima",
+"No music found" => "Nenhuma música encontrada",
 "Path to your music collection" => "Caminho para a sua coleção de músicas",
 "Pause" => "Pausa",
 "Play" => "Reproduzir",
@@ -22,7 +27,11 @@ $TRANSLATIONS = array(
 "Tracks" => "Trilhas",
 "Unknown album" => "Album desconhecido",
 "Unknown artist" => "Artista desconhecido",
+"Upload music in the files app to listen to it here" => "Envie músicas com o aplicativo de arquivos para escutá-las aqui",
 "Use this address to browse your music collection from any Ampache compatible player." => "Utilize este endereço para navegar por sua coleção de música a partir de qualquer leitor compatível com Ampache.",
-"Use your username and following password to connect to this Ampache instance:" => "Use o seu nome de usuário e senha a seguir para se conectar a essa instância Ampache:"
+"Use your username and following password to connect to this Ampache instance:" => "Use o seu nome de usuário e senha a seguir para se conectar a essa instância Ampache:",
+"Volume" => "Volume",
+"tracks" => "faixas",
+"{{ scanningScanned }} of {{ scanningTotal }}" => "{{ scanningScanned }} de {{ scanningTotal }}"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n > 1);";

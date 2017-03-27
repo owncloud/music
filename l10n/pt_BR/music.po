@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Flávio Veras <flaviove@gmail.com>, 2013-2014
+# Vitor A. Vale <contatovitorvale@hotmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-27 19:53+0000\n"
+"Last-Translator: Vitor A. Vale <contatovitorvale@hotmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/owncloud-org/owncloud/language/pt_BR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +15,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nova playlist"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -22,7 +23,7 @@ msgstr "Albuns"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Todas as faixas"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -69,11 +70,11 @@ msgstr "Música"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Nova música disponível"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Nova música disponível. Clique aqui para recarregar a coleção."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -81,7 +82,7 @@ msgstr "Próxima"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Nenhuma música encontrada"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -137,7 +138,7 @@ msgstr "Artista desconhecido"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Envie músicas com o aplicativo de arquivos para escutá-las aqui"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -153,12 +154,12 @@ msgstr "Use o seu nome de usuário e senha a seguir para se conectar a essa inst
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "faixas"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} de {{ scanningTotal }}"

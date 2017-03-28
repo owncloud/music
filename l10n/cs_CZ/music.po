@@ -4,12 +4,13 @@
 # Jaroslav Lichtblau <dragonlord@seznam.cz>, 2016
 # Jaroslav Lichtblau <dragonlord@seznam.cz>, 2014
 # MICHAL D. <black23@gmail.com>, 2014
+# Petr Slavíček <pslavicek@seznam.cz>, 2017
 # Petr Šťastný <petr@stastny.eu>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-28 12:54+0000\n"
+"Last-Translator: Petr Slavíček <pslavicek@seznam.cz>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/owncloud-org/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nový seznam"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -26,7 +27,7 @@ msgstr "Alba"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Všechny stopy"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -34,7 +35,7 @@ msgstr "Umělci"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Klikněte zde pro začátek hledání"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -73,11 +74,11 @@ msgstr "Hudba"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Nová hudba k dispozici"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Nová hudba k dispozici. Klikněte pro znovunačtení hudební knihovny."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -85,7 +86,7 @@ msgstr "Následující"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Hudba nenalezena"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -113,7 +114,7 @@ msgstr "Odvolat heslo API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Hledám hudbu …"
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -157,12 +158,12 @@ msgstr "Použijte Vaše uživatelské jméno a následující heslo pro připoje
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Hlasitost"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "stopy"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} z {{ scanningTotal }}"

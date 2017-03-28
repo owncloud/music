@@ -1,7 +1,7 @@
 # 
 # Translators:
 # Alex <__sashok@mail.ru>, 2014
-# andreiacob <andrei.iacob@y7mail.com>, 2014
+# andreiacob, 2014
 # corneliu.e <corneliueva@yahoo.com>, 2016
 # Manuel Pacurar, 2015
 msgid ""

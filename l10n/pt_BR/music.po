@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Alexandre Almeida <alexandre_gsc@yahoo.com.br>, 2017
 # Flávio Veras <flaviove@gmail.com>, 2013-2014
 # Vitor A. Vale <contatovitorvale@hotmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-27 19:53+0000\n"
-"Last-Translator: Vitor A. Vale <contatovitorvale@hotmail.com>\n"
+"PO-Revision-Date: 2017-03-29 14:06+0000\n"
+"Last-Translator: Alexandre Almeida <alexandre_gsc@yahoo.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/owncloud-org/owncloud/language/pt_BR/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +32,7 @@ msgstr "Artistas"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Clique aqui para iniciar a busca"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -110,7 +111,7 @@ msgstr "Revogar senha API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Buscando música ..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"

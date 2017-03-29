@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Abderraouf Mehdi Bouhali <armbouhali@gmail.com>, 2014
+# Abderraouf Mehdi Bouhali (ARMBouhali) <armbouhali@gmail.com>, 2014
 # suliman al-ajlan <291101251@std.qu.edu.sa>, 2014
 # Yousra Fakhrey <yousra.fakhrey@gmail.com>, 2015
 msgid ""

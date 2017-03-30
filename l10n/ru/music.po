@@ -2,6 +2,7 @@
 # Translators:
 # Alexander Savchenko, 2014
 # Dmitry <dmitrymq@gmail.com>, 2013
+# Dmitry Popov <popov@krista.ru>, 2017
 # jekader <jekader@gmail.com>, 2013
 # John Doe <twisted_tits@mail.ru>, 2015
 # Kalyuzhniy Aleksey, 2014
@@ -12,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-30 12:14+0000\n"
+"Last-Translator: Dmitry Popov <popov@krista.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +23,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "Новый список проигрывания"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -30,7 +31,7 @@ msgstr "Альбомы"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Все дорожки"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -38,7 +39,7 @@ msgstr "Исполнители"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Кликните здесь, чтобы начать сканирование"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -77,11 +78,11 @@ msgstr "Музыка"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Доступна новая музыка"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Доступна новая музыка. Кликните здесь, чтобы перезагрузить музыкальную библиотеку."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -89,7 +90,7 @@ msgstr "Следующий"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Музыка не найдена"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -117,7 +118,7 @@ msgstr "Отозвать пароль для API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Сканирую музыку…"
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -145,7 +146,7 @@ msgstr "Неизвестный исполнитель"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Закачайте музыку в приложении Файлы, чтобы послушать её здесь"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -161,12 +162,12 @@ msgstr "Используйте свой логин и пароль ниже дл
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Громкость"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "дорожки"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} из {{ scanningTotal }}"

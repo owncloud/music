@@ -6,12 +6,13 @@
 # joses <jose_mari_s@hotmail.com>, 2014
 # Maenso <balero_arana@hotmail.com>, 2013
 # Miguel Reyes Canales <mreyesca@luthcueit.onmicrosoft.com>, 2014
+# Raul Fernandez Garcia <raulfg3@gmail.com>, 2017
 # Rubén del Campo Gómez <yo@rubendelcampo.es>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-03-30 18:24+0000\n"
+"Last-Translator: Raul Fernandez Garcia <raulfg3@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/owncloud-org/owncloud/language/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +21,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nueva Lista de reproducción"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -28,7 +29,7 @@ msgstr "Álbumes"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Todas las pistas"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -36,7 +37,7 @@ msgstr "Artistas"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Clic para iniciar la busqueda"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -75,11 +76,11 @@ msgstr "Música"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Nueva musica disponible"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Nueva musica disponible. Clic para recargar la libreria de musica."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -87,7 +88,7 @@ msgstr "Siguiente"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "No se ha encontrado musica"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -115,7 +116,7 @@ msgstr "Revocar contraseña para la API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Buscando Musica ..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -143,7 +144,7 @@ msgstr "Artista desconocido"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Suba musica en la aplicación para escucharla desde aqui."
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -159,12 +160,12 @@ msgstr "Use su nombre de usuario y la siguiente contraseña para conectarse con 
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Volumen"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "Pistas"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} de {{ scanningTotal }}"

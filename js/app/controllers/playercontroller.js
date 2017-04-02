@@ -178,8 +178,7 @@ angular.module('Music').controller('PlayerController',
 			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped) {
-			OC.Notification.show(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
-			$timeout(OC.Notification.hide, 10000);
+			OC.Notification.showTemporary(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 		}
 		setCurrentTrack(track);
 	};

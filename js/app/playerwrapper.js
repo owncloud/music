@@ -84,6 +84,12 @@ PlayerWrapper.prototype.setVolume = function(percentage) {
 	}
 };
 
+PlayerWrapper.prototype.canPlayMIME = function(mime) {
+	// in addition to types played by SM2 (which depends on available codecs),
+	// we can play flac and mp3 files using aurora.js
+	return soundManager.canPlayMIME(mime) || mime=='audio/flac' || mime=='audio/mpeg';
+};
+
 PlayerWrapper.prototype.fromURL = function(typeAndURL) {
 	var self = this;
 	var url = typeAndURL.url;

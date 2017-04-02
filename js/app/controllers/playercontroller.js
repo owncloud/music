@@ -84,7 +84,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.getPlayableFileURL = function (track) {
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
+			if($scope.player.canPlayMIME(mimeType)) {
 				return {
 					'type': mimeType,
 					'url': track.files[mimeType] + '?requesttoken=' + encodeURIComponent(OC.requestToken)

@@ -9,11 +9,14 @@
 * MP3 (`audio/mpeg`)
 * Vorbis in OGG container (`audio/ogg`)
 * Opus in OGG container (`audio/ogg` or `audio/opus`)
-* All formats listed for your browser on [this table](https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats#Browser_compatibility)
+* WAV (`audio/wav`)
+* M4A (`audio/mp4`)
+* M4B (`audio/m4b`)
 
-_Note: it might be unable to play some particular files._
+_Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files.
 
-_Note: sometimes it might be unable to play all FLAC and MP3 files (especially in Firefox), in this case restarting the browser may help._
+_Note: It might be unable to play some particular files (on some browsers)._
+
 
 ### Detail
 

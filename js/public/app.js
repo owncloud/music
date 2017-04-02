@@ -446,7 +446,7 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.getPlayableFileURL = function (track) {
 		for(var mimeType in track.files) {
-			if(mimeType=='audio/flac' || mimeType=='audio/mpeg' || mimeType=='audio/ogg') {
+			if($scope.player.canPlayMIME(mimeType)) {
 				return {
 					'type': mimeType,
 					'url': track.files[mimeType] + '?requesttoken=' + encodeURIComponent(OC.requestToken)
@@ -1076,6 +1076,12 @@ PlayerWrapper.prototype.setVolume = function(percentage) {
 			this.aurora.volume = this.volume;
 			break;
 	}
+};
+
+PlayerWrapper.prototype.canPlayMIME = function(mime) {
+	// in addition to types played by SM2 (which depends on available codecs),
+	// we can play flac and mp3 files using aurora.js
+	return soundManager.canPlayMIME(mime) || mime=='audio/flac' || mime=='audio/mpeg';
 };
 
 PlayerWrapper.prototype.fromURL = function(typeAndURL) {

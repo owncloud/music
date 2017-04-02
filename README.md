@@ -13,7 +13,7 @@
 * M4A (`audio/mp4`)
 * M4B (`audio/m4b`)
 
-_Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files.
+_Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
 _Note: It might be unable to play some particular files (on some browsers)._
 

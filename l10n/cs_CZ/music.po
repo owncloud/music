@@ -1,5 +1,6 @@
 # 
 # Translators:
+# Adam Kettner <cetnerix@gmail.com>, 2017
 # Jan Liska, 2013-2014
 # Jaroslav Lichtblau <dragonlord@seznam.cz>, 2016
 # Jaroslav Lichtblau <dragonlord@seznam.cz>, 2014
@@ -9,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-28 12:54+0000\n"
-"Last-Translator: Petr Slavíček <pslavicek@seznam.cz>\n"
+"PO-Revision-Date: 2017-04-05 18:55+0000\n"
+"Last-Translator: Adam Kettner <cetnerix@gmail.com>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/owncloud-org/owncloud/language/cs_CZ/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -142,7 +143,7 @@ msgstr "Neznámý umělec"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Nahrát hudbu v aplikaci soubory k poslechu zde"
 
 #: ../templates/fake-template.php:12
 msgid ""

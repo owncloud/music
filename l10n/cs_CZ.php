@@ -29,6 +29,7 @@ $TRANSLATIONS = array(
 "Tracks" => "Stopy",
 "Unknown album" => "Neznámé album",
 "Unknown artist" => "Neznámý umělec",
+"Upload music in the files app to listen to it here" => "Nahrát hudbu v aplikaci soubory k poslechu zde",
 "Use this address to browse your music collection from any Ampache compatible player." => "Použijte tuto adresu pro přístup k hudební sbírce z jakéhokoliv přehrávače podporujícího Ampache.",
 "Use your username and following password to connect to this Ampache instance:" => "Použijte Vaše uživatelské jméno a následující heslo pro připojení k této instanci Ampache:",
 "Volume" => "Hlasitost",

@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 20:46+0000\n"
-"Last-Translator: António Ribeiro <contact@antonioribeiro.xyz>\n"
+"PO-Revision-Date: 2017-04-05 17:35+0000\n"
+"Last-Translator: Manuela Silva <manuela.silva@sky.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/owncloud-org/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,7 +34,7 @@ msgstr "Artistas"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr "Clique aqui para começar a pesquisa"
+msgstr "Clique aqui para iniciar a pesquisa"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -53,7 +53,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr "Aqui pode gerar palavras-passe para usar com a API do Ampache, porque elas não podem ser realmente guardadas de uma maneira segura devido ao desenho da API do Ampache. Pode gerar quantas palavras-passe quiser e revoga-las em qualquer altura."
+msgstr "Aqui pode gerar as palavras-passe para utilizar com a API do Ampache, porque elas não podem ser guardadas de um modo realmente seguro devido ao desenho da API do Ampache. Pode gerar as palavras-passe que quiser e revogá-las em qualquer altura."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"

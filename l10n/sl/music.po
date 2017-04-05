@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-26 17:57+0000\n"
+"PO-Revision-Date: 2017-04-05 12:49+0000\n"
 "Last-Translator: Matej Urbančič <>\n"
 "Language-Team: Slovenian (http://www.transifex.com/owncloud-org/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -161,4 +161,4 @@ msgstr ""
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} od {{ scanningTotal }}"

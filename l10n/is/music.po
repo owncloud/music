@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Sveinn í Felli <sv1@fellsnet.is>, 2016
+# Sveinn í Felli <sv1@fellsnet.is>, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-04-07 08:33+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic (http://www.transifex.com/owncloud-org/owncloud/language/is/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -38,7 +38,7 @@ msgstr "Lýsing"
 
 #: ../templates/fake-template.php:14
 msgid "Description (e.g. App name)"
-msgstr "Lýsing (t.d. heiti á appi)"
+msgstr "Lýsing (t.d. heiti á forriti)"
 
 #: ../templates/fake-template.php:15
 msgid "Generate API password"

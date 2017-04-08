@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014
+# Efstathios Iosifidis <iefstathios@gmail.com>, 2013-2014,2017
 # thea_rad <inactive+thea_rad@transifex.com>, 2014
 # Marios Bekatoros <>, 2013
 # Spyros Melissovas <peppe@cs.uoi.gr>, 2014
@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-04-08 16:10+0000\n"
+"Last-Translator: Efstathios Iosifidis <iefstathios@gmail.com>\n"
 "Language-Team: Greek (http://www.transifex.com/owncloud-org/owncloud/language/el/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Νέα λίστα αναπαραγωγής"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -26,7 +26,7 @@ msgstr "Άλμπουμ"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Όλα τα κομμάτια"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -34,7 +34,7 @@ msgstr "Καλλιτέχνες"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Κάντε κλικ εδώ για την εκκίνηση σάρωσης"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -73,11 +73,11 @@ msgstr "Μουσική"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Διαθέσιμη νέα μουσική"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Διαθέσιμη νέα μουσική. Κάντε κλικ εδώ για να φορτώσετε ξανά τη βιβλιοθήκη μουσικής."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -85,7 +85,7 @@ msgstr "Επόμενο"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Δεν βρέθηκε μουσική"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -113,7 +113,7 @@ msgstr "Ανάκληση κωδικού πρόσβασης API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Σάρωση μουσικής ..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -141,7 +141,7 @@ msgstr "Άγνωστος καλλιτέχνης"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Μεταφόρτωση μουσικής στην εφαρμογή μουσικής για ακρόαση εδώ"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -157,12 +157,12 @@ msgstr "Χρησιμοποιήστε το όνομα χρήστη σας και 
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Ένταση"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "κομμάτια"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} από {{ scanningTotal }}"

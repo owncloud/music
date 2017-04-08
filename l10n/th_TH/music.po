@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Sunchai Paejaroenchai, 2015
+# Sunchai Paejaroenchai, 2015,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-04-08 07:46+0000\n"
+"Last-Translator: Sunchai Paejaroenchai\n"
 "Language-Team: Thai (Thailand) (http://www.transifex.com/owncloud-org/owncloud/language/th_TH/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ เพลย์ลิสต์ใหม่"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -22,7 +22,7 @@ msgstr "อัลบัม"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "แทร็กทั้งหมด"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -30,7 +30,7 @@ msgstr "ศิลปิน"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "คลิกที่นี่เพื่อเริ่มการสแกน"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -69,11 +69,11 @@ msgstr "เพลง"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "มีเพลงใหม่มาแล้ว"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "มีเพลงใหม่ คลิกที่นี่เพื่อโหลดไลบรารีเพลงใหม่"
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -81,7 +81,7 @@ msgstr "ถัดไป"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "ไม่พบเพลง"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -109,7 +109,7 @@ msgstr "ยกเลิกรหัสผ่าน API"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "กำลังสแกนเพลง..."
 
 #: ../templates/main.php:121
 msgid "Shuffle"
@@ -137,7 +137,7 @@ msgstr "ไม่รู้จักศิลปิน"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "อัพโหลดเพลงในไฟล์แอพฯเพื่อฟังได้ที่นี่"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -153,12 +153,12 @@ msgstr "ใช้ชื่อผู้ใช้และรหัสผ่าน
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "ปริมาณ"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "เพลง"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} จากทั้งหมด {{ scanningTotal }}"

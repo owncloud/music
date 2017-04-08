@@ -1,7 +1,10 @@
 <?php
 $TRANSLATIONS = array(
+"+ New Playlist" => "+ เพลย์ลิสต์ใหม่",
 "Albums" => "อัลบัม",
+"All tracks" => "แทร็กทั้งหมด",
 "Artists" => "ศิลปิน",
+"Click here to start the scan" => "คลิกที่นี่เพื่อเริ่มการสแกน",
 "Description" => "คำอธิบาย",
 "Description (e.g. App name)" => "รายละเอียด (ยกตัวอย่าง ชื่อแอพฯ)",
 "Generate API password" => "สุ่มรหัสผ่าน API",
@@ -9,20 +12,28 @@ $TRANSLATIONS = array(
 "Invalid path" => "เส้นทางไม่ถูกต้อง",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "โปรดทราบว่า Ampache API เป็นเพียงตัวอย่างและไม่เสถียร อย่าลังเลที่จะมาช่วยกันรายงานบัค <a href=\"https://github.com/owncloud/music/issues/60\"> ที่นี่ </a> เรายังต้องการผู้ที่จะร่วมทดสอบ ขอบคุณ",
 "Music" => "เพลง",
+"New music available" => "มีเพลงใหม่มาแล้ว",
+"New music available. Click here to reload the music library." => "มีเพลงใหม่ คลิกที่นี่เพื่อโหลดไลบรารีเพลงใหม่",
 "Next" => "ถัดไป",
+"No music found" => "ไม่พบเพลง",
 "Path to your music collection" => "เส้นทางที่จะเก็บเพลงของคุณ",
 "Pause" => "หยุดชั่วคราว",
 "Play" => "เล่น",
 "Previous" => "ก่อนหน้า",
 "Repeat" => "ทำซ้ำ",
 "Revoke API password" => "ยกเลิกรหัสผ่าน API",
+"Scanning music …" => "กำลังสแกนเพลง...",
 "Shuffle" => "สับเปลี่ยน",
 "Some not playable tracks were skipped." => "บางเพลงที่ไม่สามารถเล่นได้จะถูกข้ามไป",
 "This setting specifies the folder which will be scanned for music." => "ตั้งค่าเพื่อระบุโฟลเดอร์ที่จะสแกนหาเพลงฟัง",
 "Tracks" => "เพลง",
 "Unknown album" => "ไม่ทราบอัลบั้ม",
 "Unknown artist" => "ไม่รู้จักศิลปิน",
+"Upload music in the files app to listen to it here" => "อัพโหลดเพลงในไฟล์แอพฯเพื่อฟังได้ที่นี่",
 "Use this address to browse your music collection from any Ampache compatible player." => "ใช้ที่อยู่นี้เพื่อเรียกคอลเลคชันเพลงจากเครื่องเล่น Ampache ที่เข้ากันได้",
-"Use your username and following password to connect to this Ampache instance:" => "ใช้ชื่อผู้ใช้และรหัสผ่านของคุณต่อไปนี้เพื่อเชื่อมต่อไปยัง Ampache ตัวอย่างเช่น:"
+"Use your username and following password to connect to this Ampache instance:" => "ใช้ชื่อผู้ใช้และรหัสผ่านของคุณต่อไปนี้เพื่อเชื่อมต่อไปยัง Ampache ตัวอย่างเช่น:",
+"Volume" => "ปริมาณ",
+"tracks" => "เพลง",
+"{{ scanningScanned }} of {{ scanningTotal }}" => "{{ scanningScanned }} จากทั้งหมด {{ scanningTotal }}"
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

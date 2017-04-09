@@ -30,7 +30,7 @@ class getid3_zip extends getid3_handler
 		$info['zip']['entries_count']     = 0;
 
 		if (!getid3_lib::intValueSupported($info['filesize'])) {
-			$info['error'][] = 'File is larger than '.round(PHP_INT_MAX / 1073741824).'GB, not supported by PHP';
+			$this->error('File is larger than '.round(PHP_INT_MAX / 1073741824).'GB, not supported by PHP');
 			return false;
 		} else {
 			$EOCDsearchData    = '';
@@ -61,7 +61,7 @@ class getid3_zip extends getid3_handler
 					}
 
 					if ($info['zip']['entries_count'] == 0) {
-						$info['error'][] = 'No Central Directory entries found (truncated file?)';
+						$this->error('No Central Directory entries found (truncated file?)');
 						return false;
 					}
 
@@ -86,7 +86,7 @@ class getid3_zip extends getid3_handler
 						if ($fileentry = $this->ZIPparseLocalFileHeader()) {
 							$info['zip']['entries'][] = $fileentry;
 						} else {
-							$info['warning'][] = 'Error parsing Local File Header at offset '.$central_directory_entry['entry_offset'];
+							$this->warning('Error parsing Local File Header at offset '.$central_directory_entry['entry_offset']);
 						}
 					}
 
@@ -113,16 +113,16 @@ class getid3_zip extends getid3_handler
 		if (!$this->getZIPentriesFilepointer()) {
 			unset($info['zip']);
 			$info['fileformat'] = '';
-			$info['error'][] = 'Cannot find End Of Central Directory (truncated file?)';
+			$this->error('Cannot find End Of Central Directory (truncated file?)');
 			return false;
 		}
 
 		// central directory couldn't be found and/or parsed
 		// scan through actual file data entries, recover as much as possible from probable trucated file
 		if ($info['zip']['compressed_size'] > ($info['filesize'] - 46 - 22)) {
-			$info['error'][] = 'Warning: Truncated file! - Total compressed file sizes ('.$info['zip']['compressed_size'].' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures ('.($info['filesize'] - 46 - 22).' bytes)';
+			$this->error('Warning: Truncated file! - Total compressed file sizes ('.$info['zip']['compressed_size'].' bytes) is greater than filesize minus Central Directory and End Of Central Directory structures ('.($info['filesize'] - 46 - 22).' bytes)');
 		}
-		$info['error'][] = 'Cannot find End Of Central Directory - returned list of files in [zip][entries] array may not be complete';
+		$this->error('Cannot find End Of Central Directory - returned list of files in [zip][entries] array may not be complete');
 		foreach ($info['zip']['entries'] as $key => $valuearray) {
 			$info['zip']['files'][$valuearray['filename']] = $valuearray['uncompressed_size'];
 		}
@@ -145,7 +145,7 @@ class getid3_zip extends getid3_handler
 			$info['zip']['entries_count']++;
 		}
 		if ($info['zip']['entries_count'] == 0) {
-			$info['error'][] = 'No Local File Header entries found';
+			$this->error('No Local File Header entries found');
 			return false;
 		}
 
@@ -157,14 +157,14 @@ class getid3_zip extends getid3_handler
 			$info['zip']['uncompressed_size'] += $centraldirectoryentry['uncompressed_size'];
 		}
 		if ($info['zip']['entries_count'] == 0) {
-			$info['error'][] = 'No Central Directory entries found (truncated file?)';
+			$this->error('No Central Directory entries found (truncated file?)');
 			return false;
 		}
 
 		if ($EOCD = $this->ZIPparseEndOfCentralDirectory()) {
 			$info['zip']['end_central_directory'] = $EOCD;
 		} else {
-			$info['error'][] = 'No End Of Central Directory entry found (truncated file?)';
+			$this->error('No End Of Central Directory entry found (truncated file?)');
 			return false;
 		}
 
@@ -191,7 +191,7 @@ class getid3_zip extends getid3_handler
 			$info['zip']['uncompressed_size'] += $fileentry['uncompressed_size'];
 		}
 		if ($info['zip']['entries_count'] == 0) {
-			$info['error'][] = 'No Local File Header entries found';
+			$this->error('No Local File Header entries found');
 			return false;
 		}
 
@@ -278,13 +278,13 @@ class getid3_zip extends getid3_handler
 						if ($LocalFileHeader['data_descriptor']['compressed_size'] == $central_directory_entry['compressed_size']) {
 							// $LocalFileHeader['compressed_size'] already set from Central Directory
 						} else {
-							$this->getid3->info['warning'][] = 'conflicting compressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['compressed_size'].') vs Central Directory ('.$central_directory_entry['compressed_size'].') for file at offset '.$LocalFileHeader['offset'];
+							$this->warning('conflicting compressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['compressed_size'].') vs Central Directory ('.$central_directory_entry['compressed_size'].') for file at offset '.$LocalFileHeader['offset']);
 						}
 
 						if ($LocalFileHeader['data_descriptor']['uncompressed_size'] == $central_directory_entry['uncompressed_size']) {
 							$LocalFileHeader['uncompressed_size'] = $LocalFileHeader['data_descriptor']['uncompressed_size'];
 						} else {
-							$this->getid3->info['warning'][] = 'conflicting uncompressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['uncompressed_size'].') vs Central Directory ('.$central_directory_entry['uncompressed_size'].') for file at offset '.$LocalFileHeader['offset'];
+							$this->warning('conflicting uncompressed_size from data_descriptor ('.$LocalFileHeader['data_descriptor']['uncompressed_size'].') vs Central Directory ('.$central_directory_entry['uncompressed_size'].') for file at offset '.$LocalFileHeader['offset']);
 						}
 						break;
 					}

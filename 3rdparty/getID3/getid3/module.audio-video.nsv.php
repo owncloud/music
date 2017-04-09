@@ -47,13 +47,13 @@ class getid3_nsv extends getid3_handler
 				break;
 
 			default:
-				$info['error'][] = 'Expecting "NSVs" or "NSVf" at offset '.$info['avdataoffset'].', found "'.getid3_lib::PrintHexBytes($NSVheader).'"';
+				$this->error('Expecting "NSVs" or "NSVf" at offset '.$info['avdataoffset'].', found "'.getid3_lib::PrintHexBytes($NSVheader).'"');
 				return false;
 				break;
 		}
 
 		if (!isset($info['nsv']['NSVf'])) {
-			$info['warning'][] = 'NSVf header not present - cannot calculate playtime or bitrate';
+			$this->warning('NSVf header not present - cannot calculate playtime or bitrate');
 		}
 
 		return true;
@@ -69,7 +69,7 @@ class getid3_nsv extends getid3_handler
 		$offset += 4;
 
 		if ($info['nsv']['NSVs']['identifier'] != 'NSVs') {
-			$info['error'][] = 'expected "NSVs" at offset ('.$fileoffset.'), found "'.$info['nsv']['NSVs']['identifier'].'" instead';
+			$this->error('expected "NSVs" at offset ('.$fileoffset.'), found "'.$info['nsv']['NSVs']['identifier'].'" instead');
 			unset($info['nsv']['NSVs']);
 			return false;
 		}
@@ -142,7 +142,7 @@ class getid3_nsv extends getid3_handler
 		$offset += 4;
 
 		if ($info['nsv']['NSVf']['identifier'] != 'NSVf') {
-			$info['error'][] = 'expected "NSVf" at offset ('.$fileoffset.'), found "'.$info['nsv']['NSVf']['identifier'].'" instead';
+			$this->error('expected "NSVf" at offset ('.$fileoffset.'), found "'.$info['nsv']['NSVf']['identifier'].'" instead');
 			unset($info['nsv']['NSVf']);
 			return false;
 		}
@@ -155,7 +155,7 @@ class getid3_nsv extends getid3_handler
 		$offset += 4;
 
 		if ($info['nsv']['NSVf']['file_size'] > $info['avdataend']) {
-			$info['warning'][] = 'truncated file - NSVf header indicates '.$info['nsv']['NSVf']['file_size'].' bytes, file actually '.$info['avdataend'].' bytes';
+			$this->warning('truncated file - NSVf header indicates '.$info['nsv']['NSVf']['file_size'].' bytes, file actually '.$info['avdataend'].' bytes');
 		}
 
 		$info['nsv']['NSVf']['playtime_ms']   = getid3_lib::LittleEndian2Int(substr($NSVfheader, $offset, 4));
@@ -168,7 +168,7 @@ class getid3_nsv extends getid3_handler
 		$offset += 4;
 
 		if ($info['nsv']['NSVf']['playtime_ms'] == 0) {
-			$info['error'][] = 'Corrupt NSV file: NSVf.playtime_ms == zero';
+			$this->error('Corrupt NSV file: NSVf.playtime_ms == zero');
 			return false;
 		}
 

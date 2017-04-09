@@ -39,7 +39,7 @@ class getid3_png extends getid3_handler
 		$offset += 8;
 
 		if ($PNGidentifier != "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
-			$info['error'][] = 'First 8 bytes of file ('.getid3_lib::PrintHexBytes($PNGidentifier).') did not match expected PNG identifier';
+			$this->error('First 8 bytes of file ('.getid3_lib::PrintHexBytes($PNGidentifier).') did not match expected PNG identifier');
 			unset($info['fileformat']);
 			return false;
 		}
@@ -47,7 +47,7 @@ class getid3_png extends getid3_handler
 		while ((($this->ftell() - (strlen($PNGfiledata) - $offset)) < $info['filesize'])) {
 			$chunk['data_length'] = getid3_lib::BigEndian2Int(substr($PNGfiledata, $offset, 4));
 			if ($chunk['data_length'] === false) {
-				$info['error'][] = 'Failed to read data_length at offset '.$offset;
+				$this->error('Failed to read data_length at offset '.$offset);
 				return false;
 			}
 			$offset += 4;
@@ -56,7 +56,7 @@ class getid3_png extends getid3_handler
 				if (strlen($PNGfiledata) < $this->max_data_bytes) {
 					$PNGfiledata .= $this->fread($this->getid3->fread_buffer_size());
 				} else {
-					$info['warning'][] = 'At offset '.$offset.' chunk "'.substr($PNGfiledata, $offset, 4).'" exceeded max_data_bytes value of '.$this->max_data_bytes.', data chunk will be truncated at '.(strlen($PNGfiledata) - 8).' bytes';
+					$this->warning('At offset '.$offset.' chunk "'.substr($PNGfiledata, $offset, 4).'" exceeded max_data_bytes value of '.$this->max_data_bytes.', data chunk will be truncated at '.(strlen($PNGfiledata) - 8).' bytes');
 					break;
 				}
 			}
@@ -137,10 +137,10 @@ class getid3_png extends getid3_handler
 
 						case 4:
 						case 6:
-							$info['error'][] = 'Invalid color_type in tRNS chunk: '.$thisfile_png['IHDR']['raw']['color_type'];
+							$this->error('Invalid color_type in tRNS chunk: '.$thisfile_png['IHDR']['raw']['color_type']);
 
 						default:
-							$info['warning'][] = 'Unhandled color_type in tRNS chunk: '.$thisfile_png['IHDR']['raw']['color_type'];
+							$this->warning('Unhandled color_type in tRNS chunk: '.$thisfile_png['IHDR']['raw']['color_type']);
 							break;
 					}
 					break;
@@ -443,7 +443,7 @@ class getid3_png extends getid3_handler
 				default:
 					//unset($chunk['data']);
 					$thisfile_png_chunk_type_text['header'] = $chunk;
-					$info['warning'][] = 'Unhandled chunk type: '.$chunk['type_text'];
+					$this->warning('Unhandled chunk type: '.$chunk['type_text']);
 					break;
 			}
 		}

@@ -29,7 +29,7 @@ class getid3_bonk extends getid3_handler
 
 		if (!getid3_lib::intValueSupported($thisfile_bonk['dataend'])) {
 
-			$info['warning'][] = 'Unable to parse BONK file from end (v0.6+ preferred method) because PHP filesystem functions only support up to '.round(PHP_INT_MAX / 1073741824).'GB';
+			$this->warning('Unable to parse BONK file from end (v0.6+ preferred method) because PHP filesystem functions only support up to '.round(PHP_INT_MAX / 1073741824).'GB');
 
 		} else {
 
@@ -42,7 +42,7 @@ class getid3_bonk extends getid3_handler
 				$BonkTagOffset = $this->ftell();
 				$TagHeaderTest = $this->fread(5);
 				if (($TagHeaderTest{0} != "\x00") || (substr($PossibleBonkTag, 4, 4) != strtolower(substr($PossibleBonkTag, 4, 4)))) {
-					$info['error'][] = 'Expecting "'.getid3_lib::PrintHexBytes("\x00".strtoupper(substr($PossibleBonkTag, 4, 4))).'" at offset '.$BonkTagOffset.', found "'.getid3_lib::PrintHexBytes($TagHeaderTest).'"';
+					$this->error('Expecting "'.getid3_lib::PrintHexBytes("\x00".strtoupper(substr($PossibleBonkTag, 4, 4))).'" at offset '.$BonkTagOffset.', found "'.getid3_lib::PrintHexBytes($TagHeaderTest).'"');
 					return false;
 				}
 				$BonkTagName = substr($TagHeaderTest, 1, 4);
@@ -207,7 +207,7 @@ class getid3_bonk extends getid3_handler
 				break;
 
 			default:
-				$info['warning'][] = 'Unexpected Bonk tag "'.$BonkTagName.'" at offset '.$info['bonk'][$BonkTagName]['offset'];
+				$this->warning('Unexpected Bonk tag "'.$BonkTagName.'" at offset '.$info['bonk'][$BonkTagName]['offset']);
 				break;
 
 		}

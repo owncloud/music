@@ -108,14 +108,14 @@ class Scanner extends PublicEmitter {
 		$this->logger->log('update - mimetype '. $mimetype , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($file->getPath()));
 
-		if(substr($mimetype, 0, 5) === 'image') {
+		if(self::startsWith($mimetype, 'image')) {
 			$coverFileId = $file->getId();
 			$parentFolderId = $file->getParent()->getId();
 			$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 			return;
 		}
 
-		if(substr($mimetype, 0, 5) !== 'audio' && substr($mimetype, 0, 15) !== 'application/ogg' ) {
+		if(!self::startsWith($mimetype, 'audio') && !self::startsWith($mimetype, 'application/ogg')) {
 			return;
 		}
 
@@ -128,7 +128,7 @@ class Scanner extends PublicEmitter {
 				// TODO verify
 				$musicPath = $this->userFolder->get($musicPath)->getPath();
 				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
-				if(!$isSharee && substr($file->getPath(), 0, strlen($musicPath)) !== $musicPath) {
+				if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
 					$this->logger->log('skipped - outside of specified path' , 'debug');
 					return;
 				}
@@ -145,35 +145,28 @@ class Scanner extends PublicEmitter {
 			}
 
 			// Track artist and album artist
-			$artist = $this->getId3Tag($fileInfo, 'artist');
-			$albumArtist = $this->getId3Tag($fileInfo, 'band');
-
-			// FLAC files have different tags for albumartists
-			$keys = ['albumartist', 'album artist', 'album_artist'];
-
-			for ($i = 0; $i < count($keys) && $this->isNullOrEmpty($albumArtist); $i++){
-				$albumArtist = $this->getId3Tag($fileInfo, $keys[$i]);
-			}
+			$artist = self::getId3Tag($fileInfo, 'artist');
+			$albumArtist = $this->getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 			// use artist and albumArtist as fallbacks for each other
-			if($this->isNullOrEmpty($albumArtist)){
+			if(self::isNullOrEmpty($albumArtist)){
 				$albumArtist = $artist;
 			}
 
-			if($this->isNullOrEmpty($artist)){
+			if(self::isNullOrEmpty($artist)){
 				$artist = $albumArtist;
 			}
 
 			// set 'Unknown Artist' in case neither artist nor albumArtist was found
-			if($this->isNullOrEmpty($artist)){
+			if(self::isNullOrEmpty($artist)){
 				$artist = 'Unknown Artist';
 				$albumArtist = 'Unknown Artist';
 			}
 
 			$alternativeTrackNumber = null;
 			// title
-			$title = $this->getId3Tag($fileInfo, 'title');
-			if($this->isNullOrEmpty($title)){
+			$title = self::getId3Tag($fileInfo, 'title');
+			if(self::isNullOrEmpty($title)){
 				// fallback to file name
 				$title = $file->getName();
 				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
@@ -187,8 +180,8 @@ class Scanner extends PublicEmitter {
 			}
 
 			// album
-			$album = $this->getId3Tag($fileInfo, 'album');
-			if($this->isNullOrEmpty($album)){
+			$album = self::getId3Tag($fileInfo, 'album');
+			if(self::isNullOrEmpty($album)){
 				// album name not set in fileinfo, use parent folder name as album name
 				if ( $this->userFolder->getId() === $file->getParent()->getId() ) {
 					// if the file is in user home, still set album name to unknown
@@ -199,33 +192,15 @@ class Scanner extends PublicEmitter {
 			}
 
 			// track number
-			$trackNumber = $this->getId3Tag($fileInfo, 'track_number');
-			if($this->isNullOrEmpty($trackNumber)) {
-				$trackNumber = $this->getId3Tag($fileInfo, 'tracknumber');
-			}
-			if($this->isNullOrEmpty($trackNumber)) {
-				$trackNumber = $this->getId3Tag($fileInfo, 'track');
-			}
-			if($this->isNullOrEmpty($trackNumber)) {
-				$trackNumber = $alternativeTrackNumber;
-			}
+			$trackNumber = $this->getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], $alternativeTrackNumber);
 			$trackNumber = $this->normalizeOrdinal($trackNumber);
 
 			// disc number
-			$discNumber = $this->getId3Tag($fileInfo, 'discnumber');
-			if($this->isNullOrEmpty($discNumber)) {
-				$discNumber = $this->getId3Tag($fileInfo, 'part_of_a_set');
-			}
-			if($this->isNullOrEmpty($discNumber)) {
-				$discNumber = "1";
-			}
+			$discNumber = $this->getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
 			$discNumber = $this->normalizeOrdinal($discNumber);
 
 			// year
-			$year = $this->getId3Tag($fileInfo, 'year');
-			if($this->isNullOrEmpty($year)) {
-				$year = $this->getId3Tag($fileInfo, 'date');
-			}
+			$year = $this->getFirstOfId3Tags($fileInfo, ['year', 'date']);
 			if(!ctype_digit($year)) {
 				$year = null;
 			}
@@ -268,7 +243,7 @@ class Scanner extends PublicEmitter {
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
 
 			// if present, use the embedded album art as cover for the respective album
-			if($this->getId3Tag($fileInfo, 'picture') != null) {
+			if(self::getId3Tag($fileInfo, 'picture') != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
@@ -292,7 +267,7 @@ class Scanner extends PublicEmitter {
 	 */
 	public function parseEmbeddedCoverArt($musicFile){
 		$fileInfo = $this->extractor->extract($musicFile);
-		return $this->getId3Tag($fileInfo, 'picture');
+		return self::getId3Tag($fileInfo, 'picture');
 	}
 
 	/**
@@ -461,6 +436,10 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
+	private static function startsWith($string, $potentialStart) {
+		return substr($string, 0, strlen($potentialStart)) === $potentialStart;
+	}
+
 	private static function isNullOrEmpty($string) {
 		return $string === null || $string === '';
 	}
@@ -473,6 +452,16 @@ class Scanner extends PublicEmitter {
 			}
 		}
 		return null;
+	}
+
+	private static function getFirstOfId3Tags($fileInfo, array $tags, $defaultValue = null) {
+		foreach ($tags as $tag) {
+			$value = self::getId3Tag($fileInfo, $tag);
+			if (!self::isNullOrEmpty($value)) {
+				return $value;
+			}
+		}
+		return $defaultValue;
 	}
 
 	private static function normalizeOrdinal($ordinal) {

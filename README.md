@@ -36,7 +36,7 @@ Following commands are available(see script occ in your ownCloud root folder):
 
 	./occ music:scan USERNAME1 USERNAME2 ...
 
-This scans all not scanned music files of the user USERNAME and saves the extracted metadata into the music tables in the database. This is also done if you browse the music app web interface. There the scan is done in steps of 20 tracks and the current state is visible at the bottom of the interface.
+This scans all not scanned music files of the user USERNAME and saves the extracted metadata into the music tables in the database. This is also done if you browse the music app web interface. There the scan is done in steps of 20 tracks and the current state is visible at the user interface.
 
 	./occ music:scan --all
 

@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Martin Srebotnjak <miles@filmsi.net>, 2017
 # Matej Urbančič <>, 2013-2014,2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-04-05 12:49+0000\n"
-"Last-Translator: Matej Urbančič <>\n"
+"PO-Revision-Date: 2017-04-10 14:29+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian (http://www.transifex.com/owncloud-org/owncloud/language/sl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +23,7 @@ msgstr "Albumi"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Vsi posnetki"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"

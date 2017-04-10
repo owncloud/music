@@ -2,6 +2,7 @@
 $TRANSLATIONS = array(
 "+ New Playlist" => "+ Nov seznam predvajanja",
 "Albums" => "Albumi",
+"All tracks" => "Vsi posnetki",
 "Artists" => "Izvajalci",
 "Click here to start the scan" => "Kliknite za začetek preiskovanja za nove predmete",
 "Description" => "Opis",

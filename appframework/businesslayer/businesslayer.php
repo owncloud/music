@@ -67,4 +67,11 @@ abstract class BusinessLayer {
 		return $this->mapper->findAll($userId);
 	}
 
+	/**
+	 * Get the number of entities
+	 * @param string $userId
+	 */
+	public function count($userId){
+		return $this->mapper->count($userId);
+	}
 }

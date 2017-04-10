@@ -72,7 +72,7 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	public function updateById($fileId, $userId = null) {
+	public function updateById($fileId, $userId) {
 		// TODO properly initialize the user folder for external events (upload to public share)
 		if ($this->userFolder === null) {
 			return;
@@ -82,7 +82,7 @@ class Scanner extends PublicEmitter {
 			$files = $this->userFolder->getById($fileId);
 			if(count($files) > 0) {
 				// use first result
-				$this->update($files[0], $userId);
+				$this->update($files[0], $userId, $this->userFolder);
 			}
 		} catch (\OCP\Files\NotFoundException $e) {
 			// just ignore the error
@@ -91,10 +91,10 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * Get called by 'post_write' hook (file creation, file update)
+	 * Gets called by 'post_write' hook (file creation, file update)
 	 * @param \OCP\Files\Node $file the file
 	 */
-	public function update($file, $userId){
+	public function update($file, $userId, $userHome){
 		// debug logging
 		$this->logger->log('update - '. $file->getPath() , 'debug');
 
@@ -123,10 +123,18 @@ class Scanner extends PublicEmitter {
 			// TODO find a way to get this for a sharee
 			$isSharee = $userId && $this->userId !== $userId;
 
-			$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
+			if(!$userId) {
+				$userId = $this->userId;
+			}
+
+			if(!$userHome) {
+				$userHome = $this->userFolder;
+			}
+
+			$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
 			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
 				// TODO verify
-				$musicPath = $this->userFolder->get($musicPath)->getPath();
+				$musicPath = $userHome->get($musicPath)->getPath();
 				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
 				if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
 					$this->logger->log('skipped - outside of specified path' , 'debug');
@@ -136,13 +144,6 @@ class Scanner extends PublicEmitter {
 
 
 			$fileInfo = $this->extractor->extract($file);
-
-			if(!array_key_exists('comments', $fileInfo)) {
-				// TODO: fix this dirty fallback
-				// fallback to local file path removed
-				$this->logger->log('fallback metadata extraction - removed code', 'debug');
-				// $fileInfo = $this->extractor->extract($this->api->getLocalFilePath($path));
-			}
 
 			// Track artist and album artist
 			$artist = self::getId3Tag($fileInfo, 'artist');
@@ -182,9 +183,8 @@ class Scanner extends PublicEmitter {
 			// album
 			$album = self::getId3Tag($fileInfo, 'album');
 			if(self::isNullOrEmpty($album)){
-				// album name not set in fileinfo, use parent folder name as album name
-				if ( $this->userFolder->getId() === $file->getParent()->getId() ) {
-					// if the file is in user home, still set album name to unknown
+				// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
+				if ( $userHome->getId() === $file->getParent()->getId() ) {
 					$album = null;
 				} else {
 					$album = $file->getParent()->getName();
@@ -221,10 +221,6 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('extracted metadata - ' .
 				sprintf('artist: %s, albumArtist: %s, album: %s, title: %s, track#: %s, disc#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
 					$artist, $albumArtist, $album, $title, $trackNumber, $discNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
-
-			if(!$userId) {
-				$userId = $this->userId;
-			}
 
 			// add artist and get artist entity
 			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
@@ -313,13 +309,12 @@ class Scanner extends PublicEmitter {
 	 *
 	 * @return \OCP\Files\Node[]
 	 */
-	public function getMusicFiles() {
-		$musicPath = $this->configManager->getUserValue($this->userId, $this->appName, 'path');
+	public function getMusicFiles($userId, $folder) {
+		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
 
-		$folder = $this->userFolder;
 		if($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
 			try {
-				$folder = $this->userFolder->get($musicPath);
+				$folder = $folder->get($musicPath);
 			} catch (\OCP\Files\NotFoundException $e) {
 				return array();
 			}
@@ -331,45 +326,49 @@ class Scanner extends PublicEmitter {
 		return array_merge($audio, $ogg);
 	}
 
-	public function getScannedFiles($userId = NULL) {
-		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks`';
-		$params = array();
-		if($userId) {
-			$sql .= ' WHERE `user_id` = ?';
-			$params = array($userId);
-		}
+	public function getScannedFiles($userId) {
+		return $this->trackBusinessLayer->findAllFileIds($userId);
+	}
 
-		$query = $this->db->prepare($sql);
-		// TODO: switch to executeQuery with 8.0
-		$query->execute($params);
-		$fileIds = array_map(function($i) { return $i['file_id']; }, $query->fetchAll());
+	public function rescan() {
+		$this->logger->log('Rescan: process next 20 tracks of user ' . $this->userId, 'debug');
 
-		return $fileIds;
+		$result = $this->doRescan($this->userId, $this->userFolder, 20);
+
+		// Log each step on 'debug' level and the final step on 'info' level
+		$logLevel = ($result['processed'] >= $result['total']) ? 'info' : 'debug';
+
+		$this->logger->log(sprintf('Rescan for user %s finished (%d/%d)',
+				$this->userId, $result['processed'], $result['total']), $logLevel);
+		return $result;
+	}
+
+	public function batchRescan($userId, $userHome, OutputInterface $debugOutput) {
+		$this->logger->log('Batch rescan started for user ' . $userId, 'info');
+
+		$result = $this->doRescan($userId, $userHome, 1000000, $debugOutput);
+
+		$this->logger->log(sprintf('Batch rescan for user %s finished (%d/%d), %d new tracks',
+				$userId, $result['processed'], $result['total'], $result['scanned']), 'info');
+		return $result;
 	}
 
 	/**
-	 * Rescan the whole file base for new files
+	 * Scan the filebase of the given user for unindexed music files and add those to the database.
 	 */
-	public function rescan($userId = null, $batch = false, $userHome = null, $debug = false, OutputInterface $output = null) {
-		$this->logger->log('Rescan triggered', 'info');
-
-		if($userHome !== null){
-			// $userHome can be injected by batch scan process
-			$this->userFolder = $userHome;
-		}
-
-		// get execution time limit
+	private function doRescan($userId, $userHome, $maxTracksToProcess, OutputInterface $debugOutput = null) {
+		// back up the execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
 		set_time_limit(0);
 
 		$fileIds = $this->getScannedFiles($userId);
-		$music = $this->getMusicFiles();
+		$music = $this->getMusicFiles($userId, $userHome);
 
 		$count = 0;
 		foreach ($music as $file) {
-			if(!$batch && $count >= 20) {
-				// break scan - 20 files are already scanned
+			if($count >= $maxTracksToProcess) {
+				// break scan - maximum number of files are already scanned
 				break;
 			}
 			try {
@@ -382,11 +381,11 @@ class Scanner extends PublicEmitter {
 				$this->logger->log('updateById - file not found - '. $file , 'debug');
 				continue;
 			}
-			if($debug) {
+			if($debugOutput) {
 				$before = memory_get_usage(true);
 			}
-			$this->update($file, $userId);
-			if($debug && $output) {
+			$this->update($file, $userId, $userHome);
+			if($debugOutput) {
 				$after = memory_get_usage(true);
 				$diff = $after - $before;
 				$afterFileSize = new FileSize($after);
@@ -394,7 +393,7 @@ class Scanner extends PublicEmitter {
 				$humanFilesizeAfter = $afterFileSize->getHumanReadable();
 				$humanFilesizeDiff = $diffFileSize->getHumanReadable();
 				$path = $file->getPath();
-				$output->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+				$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
 			}
 			$count++;
 		}
@@ -404,14 +403,23 @@ class Scanner extends PublicEmitter {
 		// reset execution time limit
 		set_time_limit($executionTime);
 
-		$totalCount = count($music);
-		$processedCount = $count;
-		if(!$batch) {
-			$processedCount += count($fileIds);
-		}
-		$this->logger->log(sprintf('Rescan finished (%d/%d)', $processedCount, $totalCount), 'info');
+		return [
+			'processed' => count($fileIds) + $count,
+			'scanned' => $count,
+			'total' => count($music)
+		];
+	}
 
-		return array('processed' => $processedCount, 'scanned' => $count, 'total' => $totalCount);
+	/**
+	 * Return the state of the scanning for the current user 
+	 * in the same format as the rescan functions
+	 */
+	public function getScanState() {
+		return [
+			'processed' => $this->trackBusinessLayer->count($this->userId),
+			'scanned' => 0,
+			'total' => count($this->getMusicFiles($this->userId, $this->userFolder))
+		];
 	}
 
 	/**

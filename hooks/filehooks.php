@@ -50,7 +50,7 @@ class FileHooks {
 		$app = new Music();
 
 		$container = $app->getContainer();
-		$container->query('Scanner')->update($node, null);
+		$container->query('Scanner')->update($node, null, null);
 	}
 
 	public function register() {

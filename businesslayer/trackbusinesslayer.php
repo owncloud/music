@@ -74,6 +74,15 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns file IDs of all indexed tracks of the user
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function findAllFileIds($userId){
+		return $this->mapper->findAllFileIds($userId);
+	}
+
+	/**
 	 * Adds a track (if it does not exist already) and returns the new track
 	 * @param string $title the title of the track
 	 * @param string $number the number of the track

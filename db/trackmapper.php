@@ -80,6 +80,17 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function findAllFileIds($userId){
+		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
+		$result = $this->execute($sql, [$userId]);
+
+		return array_map(function($i) { return $i['file_id']; }, $result->fetchAll());
+	}
+
+	/**
 	 * @param integer $id
 	 * @param string $userId
 	 * @return Track

@@ -90,7 +90,7 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$this->scanner->rescan($user, true, $this->resolveUserFolder($user), $input->getOption('debug'), $output);
+			$this->scanner->batchRescan($user, $this->resolveUserFolder($user), $input->getOption('debug') ? $output : null);
 		}
 	}
 

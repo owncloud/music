@@ -304,13 +304,9 @@ class ApiController extends Controller {
 	public function scan() {
 		$dry = (boolean) $this->params('dry');
 		if($dry) {
-			$result = array(
-				'processed' => count($this->scanner->getScannedFiles($this->userId)),
-				'scanned' => 0,
-				'total' => count($this->scanner->getMusicFiles())
-			);
+			$result = $this->scanner->getScanState();
 		} else {
-			$result = $this->scanner->rescan($this->userId);
+			$result = $this->scanner->rescan();
 		}
 		return new JSONResponse(array($result));
 	}

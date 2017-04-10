@@ -37,6 +37,7 @@ class PlaylistApiController extends Controller {
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
 	private $urlGenerator;
+	private $l10n;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -46,7 +47,8 @@ class PlaylistApiController extends Controller {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Folder $userFolder,
-								$userId){
+								$userId,
+								$l10n){
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
@@ -55,6 +57,7 @@ class PlaylistApiController extends Controller {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->l10n = $l10n;
 	}
 
 	/**
@@ -132,7 +135,7 @@ class PlaylistApiController extends Controller {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
 			$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
-			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder);
+			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
 		}
 
 		return array(

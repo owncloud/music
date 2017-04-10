@@ -160,8 +160,8 @@ class Scanner extends PublicEmitter {
 
 			// set 'Unknown Artist' in case neither artist nor albumArtist was found
 			if(self::isNullOrEmpty($artist)){
-				$artist = 'Unknown Artist';
-				$albumArtist = 'Unknown Artist';
+				$artist = null;
+				$albumArtist = null;
 			}
 
 			$alternativeTrackNumber = null;

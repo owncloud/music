@@ -92,7 +92,7 @@ class Track extends Entity {
 		);
 	}
 
-	public function toCollection(IURLGenerator $urlGenerator, $userFolder) {
+	public function toCollection(IURLGenerator $urlGenerator, $userFolder, $l10n) {
 		$nodes = $userFolder->getById($this->getFileId());
 		if(count($nodes) == 0 ) {
 			throw new \OCP\Files\NotFoundException();
@@ -107,7 +107,7 @@ class Track extends Entity {
 		return array(
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
-			'artistName' => $this->getArtist()->getName(),
+			'artistName' => $this->getArtist()->getNameString($l10n),
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
 			'albumArtistId' => $this->getAlbum()->getAlbumArtistId(),

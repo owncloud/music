@@ -106,7 +106,8 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('UserFolder'),
-				$c->query('UserId')
+				$c->query('UserId'),
+				$c->query('L10N')
 			);
 		});
 

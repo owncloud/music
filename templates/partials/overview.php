@@ -5,7 +5,8 @@
 		<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
 	</h1>
 	<div class="album-area" ng-repeat="album in artist.albums">
-		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)" title="{{ album.name }} ({{ album.year }})"
+		<h2 id="{{ 'album-' + album.id }}" ng-click="playAlbum(album)"
+			title="{{ album.name + ((album.year) ? ' (' + album.year + ')' : '') }}"
 			ui-draggable="true" drag="getDraggable('album', album)">
 			<div>{{ album.name }} <span ng-show="album.year" class="muted">({{ album.year }})</span></div>
 		</h2>

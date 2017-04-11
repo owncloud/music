@@ -147,7 +147,7 @@ class Scanner extends PublicEmitter {
 
 			// Track artist and album artist
 			$artist = self::getId3Tag($fileInfo, 'artist');
-			$albumArtist = $this->getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
+			$albumArtist = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 			// use artist and albumArtist as fallbacks for each other
 			if(self::isNullOrEmpty($albumArtist)){
@@ -192,18 +192,16 @@ class Scanner extends PublicEmitter {
 			}
 
 			// track number
-			$trackNumber = $this->getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], $alternativeTrackNumber);
-			$trackNumber = $this->normalizeOrdinal($trackNumber);
+			$trackNumber = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], $alternativeTrackNumber);
+			$trackNumber = self::normalizeOrdinal($trackNumber);
 
 			// disc number
-			$discNumber = $this->getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
-			$discNumber = $this->normalizeOrdinal($discNumber);
+			$discNumber = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
+			$discNumber = self::normalizeOrdinal($discNumber);
 
 			// year
-			$year = $this->getFirstOfId3Tags($fileInfo, ['year', 'date']);
-			if(!ctype_digit($year)) {
-				$year = null;
-			}
+			$year = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
+			$year = self::normalizeYear($year);
 
 			$fileId = $file->getId();
 
@@ -485,6 +483,16 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $ordinal;
+	}
+
+	private static function normalizeYear($date) {
+		if(ctype_digit($date)) {
+			return $date; // the date is a valid year as-is
+		} else if(preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
+			return $matches[1]; // year from ISO-formatted date yyyy-mm-dd
+		} else {
+			return null;
+		}
 	}
 
 	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {

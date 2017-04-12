@@ -81,7 +81,7 @@ script:
   - bash -c "if [ '$TRAVIS_PHP_VERSION' == '7' ] && [ '$DB' == 'mysql' ] && [ '$CLOUD' = 'owncloud' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-integration.xml; fi"
 
   # debug section to check what went wrong
-  - curl http://admin:admin@localhost:8888/index.php
-  - curl http://admin:admin@localhost:8888/index.php/apps/music/
+  - curl --max-time 10 http://admin:admin@localhost:8888/index.php
+  - curl --max-time 10 http://admin:admin@localhost:8888/index.php/apps/music/
   - cat ../../../data/${CLOUD}.log
 

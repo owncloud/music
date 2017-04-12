@@ -22,13 +22,19 @@ _Note: It might be unable to play some particular files (on some browsers)._
 
 This app utilizes 2 backend players: Aurora.js and SoundManager2.
 
-SoundManager2 utilizes the browser's built-in codec. Aurora.js uses Javascript and HTML5 Audio API to decode and play music, and it doesn't use the browser's built-in codec.
+SoundManager2 utilizes the browser's built-in codecs. Aurora.js, on the other hand, uses Javascript and HTML5 Audio API to decode and play music and doesn't require codecs from browser. The Music app ships with FLAC and MP3 plugins for Aurora.js. Aurora.js does not work on any version of Internet Explorer and fails to play some MP3 files on other browsers, too.
 
-This app choose SoundManager2 if the browser has a suitable codec available and Aurora.js otherwise. In practice, SoundManager is used for OGG files, Aurora.js for FLAC files, and playback backend for MP3 files varies by the browser.
+The Music app uses SoundManager2 if the browser has a suitable codec available for the file in question and Aurora.js otherwise. In practice, Aurora.js is always used for FLAC files and also for MP3 files if the browser has no suitable codec available (e.g. Chromium). SoundManager2 is used for everything else, including OGG, MP4, WAV, etc.
 
 ## Usage hints
 
+Normally, the Music app detects any new audio files in the filesystem on application start and scans metadata from those to its database tables when the user clicks the prompt. The Music app also detects file removals and modifications on the background and makes the required database changes automatically.
+
+If the database would somehow get corrupted, the user can force it to be rebuilt by navigating to the Personal settings and changing the option "Music" > "Path to your music collection".
+
 ### Commands
+
+If preferred, it is also possible to use the command line tool for the database maintenance as described below. This may be quicker than scanning via the web UI in case of large music library, and optionally allows targeting more than one user at once.
 
 Following commands are available(see script occ in your ownCloud root folder):
 
@@ -36,7 +42,7 @@ Following commands are available(see script occ in your ownCloud root folder):
 
 	./occ music:scan USERNAME1 USERNAME2 ...
 
-This scans all not scanned music files of the user USERNAME and saves the extracted metadata into the music tables in the database. This is also done if you browse the music app web interface. There the scan is done in steps of 20 tracks and the current state is visible at the user interface.
+This scans all not scanned music files of the user USERNAME and saves the extracted metadata into the music tables in the database.
 
 	./occ music:scan --all
 
@@ -152,6 +158,10 @@ All the frontend javascript sources of the Music app, excluding the vendor libra
 	cd build
 	make
 
+To automatically regenerate the app.js bundle whenever the source .js files change, use
+
+    make watch
+
 ### Build appstore package
 
 	git archive HEAD --format=zip --prefix=music/ > build/music.zip
@@ -164,7 +174,7 @@ All the frontend javascript sources of the Music app, excluding the vendor libra
 
 PHP unit tests
 
-	phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
+	vendor/bin/phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
 
 PHP integration tests
 
@@ -172,7 +182,7 @@ PHP integration tests
 	./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
 	./occ app:enable music
 	cd apps/music
-	phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
+	vendor/bin/phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
 
 Behat acceptance tests
 

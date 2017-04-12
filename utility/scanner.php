@@ -143,6 +143,7 @@ class Scanner extends PublicEmitter {
 			}
 
 
+			$fieldsFromFileName = self::parseFileName($file->getName());
 			$fileInfo = $this->extractor->extract($file);
 
 			// Track artist and album artist
@@ -164,20 +165,10 @@ class Scanner extends PublicEmitter {
 				$albumArtist = null;
 			}
 
-			$alternativeTrackNumber = null;
 			// title
 			$title = self::getId3Tag($fileInfo, 'title');
 			if(self::isNullOrEmpty($title)){
-				// fallback to file name
-				$title = $file->getName();
-				if(preg_match('/^(\d+)\W*[.-]\W*(.*)/', $title, $matches) === 1) {
-					$alternativeTrackNumber = $matches[1];
-					if(preg_match('/(.*)(\.(mp3|ogg|flac))$/', $matches[2], $titleMatches) === 1) {
-						$title = $titleMatches[1];
-					} else {
-						$title = $matches[2];
-					}
-				}
+				$title = $fieldsFromFileName['title'];
 			}
 
 			// album
@@ -192,7 +183,8 @@ class Scanner extends PublicEmitter {
 			}
 
 			// track number
-			$trackNumber = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], $alternativeTrackNumber);
+			$trackNumber = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], 
+					$fieldsFromFileName['track_number']);
 			$trackNumber = self::normalizeOrdinal($trackNumber);
 
 			// disc number
@@ -483,6 +475,18 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $ordinal;
+	}
+
+	private static function parseFileName($fileName) {
+		// If the file name starts e.g like "12 something" or "12. something" or "12 - something",
+		// the preceeding number is extracted as track number. Everything after the optional track
+		// number + delimiters part but before the file extension is extracted as title.
+		// The file extension consists of a '.' followed by 1-4 "word characters".
+		if(preg_match('/^((\d+)\s*[\s.-]\s*)?(.+)\.(\w{1,4})$/', $fileName, $matches) === 1) {
+			return ['track_number' => $matches[2], 'title' => $matches[3]];
+		} else {
+			return ['track_number' => null, 'title' => $fileName];
+		}
 	}
 
 	private static function normalizeYear($date) {

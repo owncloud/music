@@ -1,7 +1,9 @@
 <?php
 $TRANSLATIONS = array(
+"+ New Playlist" => "+ Ny spilleliste",
 "Albums" => "Album",
 "Artists" => "Artister",
+"Click here to start the scan" => "Klikk her for å starte skanningen",
 "Description" => "Beskrivelse",
 "Description (e.g. App name)" => "Beskrivelse (f.eks. applikasjonsnavn)",
 "Generate API password" => "Generer API-passord",
@@ -9,7 +11,9 @@ $TRANSLATIONS = array(
 "Invalid path" => "Individuell sti",
 "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks" => "Vær klar over at Ampache API bare er en forhåndsversjon og er ustabil. Rapporter gjerne dine erfaringer med denne funksjonen i den tilhørende <a href=\"https://github.com/owncloud/music/issues/60\">saken</a>. Jeg vil også gjerne ha en liste over klienter som jeg kan teste med. Takk",
 "Music" => "Musikk",
+"New music available" => "ny musikk tilgjengelig",
 "Next" => "Neste",
+"No music found" => "Ingen musikk funnet",
 "Path to your music collection" => "Sti til din musikksamling",
 "Pause" => "Pause",
 "Play" => "Spill",
@@ -23,6 +27,8 @@ $TRANSLATIONS = array(
 "Unknown album" => "Ukjent album",
 "Unknown artist" => "Ukjent artist",
 "Use this address to browse your music collection from any Ampache compatible player." => "Bruk denne adressen til å bla gjennom din musikksamling fra hvilket som helst Ampache-kompitabelt lag.",
-"Use your username and following password to connect to this Ampache instance:" => "Benytt ditt brukernavn og følgende passord for å koble til denne Ampache-forekomsten:"
+"Use your username and following password to connect to this Ampache instance:" => "Benytt ditt brukernavn og følgende passord for å koble til denne Ampache-forekomsten:",
+"Volume" => "Lydstyrke",
+"tracks" => "spor"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n != 1);";

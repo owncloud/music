@@ -341,7 +341,7 @@ class Scanner extends PublicEmitter {
 		return $result;
 	}
 
-	public function batchRescan($userId, $userHome, OutputInterface $debugOutput) {
+	public function batchRescan($userId, $userHome, OutputInterface $debugOutput = null) {
 		$this->logger->log('Batch rescan started for user ' . $userId, 'info');
 
 		$result = $this->doRescan($userId, $userHome, 1000000, $debugOutput);

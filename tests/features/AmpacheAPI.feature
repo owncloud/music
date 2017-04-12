@@ -33,10 +33,10 @@ Feature: Ampache API
     When I request the "albums" resource
     Then I should get:
       | name                                                | artist                   | tracks | year |
-      | Instrumental Film Music Vol 1                       | SimonBowman              | 2      | 2013 |
+      | Instrumental Film Music Vol. 1                      | SimonBowman              | 2      | 2013 |
       | Nuance                                              | Pascal Boiseau - Pascalb | 3      | 2006 |
-      | Orchestral Film Music Vol 1                         | SimonBowman              | 3      | 2013 |
-      | The Butcher s Ballroom                              | Diablo Swing Orchestra   | 5      | 2009 |
+      | Orchestral Film Music Vol. 1                        | SimonBowman              | 3      | 2013 |
+      | The Butcher's Ballroom                              | Diablo Swing Orchestra   | 5      | 2009 |
 
   Scenario: List filtered albums
     Given I am logged in with an auth token
@@ -61,15 +61,15 @@ Feature: Ampache API
     Then I should get:
       | title                          | artist      | album                             | time | track |
       | Aç                             | Pascal Boiseau - Pascalb | Nuance               | 187  | 7     |
-      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher s Ballroom | 234  | 1     |
-      | Forgotten Days                 | SimonBowman | Instrumental Film Music Vol 1     | 195  | 1     |
-      | Gunpowder Chant                | Diablo Swing Orchestra | The Butcher s Ballroom | 111  | 7     |
-      | Heroines                       | Diablo Swing Orchestra | The Butcher s Ballroom | 322  | 2     |
+      | Balrog Boogie                  | Diablo Swing Orchestra | The Butcher's Ballroom | 234  | 1     |
+      | Forgotten Days                 | SimonBowman | Instrumental Film Music Vol. 1    | 195  | 1     |
+      | Gunpowder Chant                | Diablo Swing Orchestra | The Butcher's Ballroom | 111  | 7     |
+      | Heroines                       | Diablo Swing Orchestra | The Butcher's Ballroom | 322  | 2     |
       | Médiane                        | Pascal Boiseau - Pascalb | Nuance               | 203  | 1     |
-      | Nocturne                       | SimonBowman | Instrumental Film Music Vol 1     | 142  | 2     |
-      | Poetic Pitbull Revolutions     | Diablo Swing Orchestra | The Butcher s Ballroom | 288  | 3     |
-      | Rag Doll Physics               | Diablo Swing Orchestra | The Butcher s Ballroom | 233  | 4     |
-      | Reverie                        | SimonBowman | Orchestral Film Music Vol 1       | 109  | 9     |
+      | Nocturne                       | SimonBowman | Instrumental Film Music Vol. 1    | 142  | 2     |
+      | Poetic Pitbull Revolutions     | Diablo Swing Orchestra | The Butcher's Ballroom | 288  | 3     |
+      | Rag Doll Physics               | Diablo Swing Orchestra | The Butcher's Ballroom | 233  | 4     |
+      | Reverie                        | SimonBowman | Orchestral Film Music Vol. 1      | 109  | 9     |
 
   Scenario: List songs that contain "an"
     Given I am logged in with an auth token
@@ -77,7 +77,7 @@ Feature: Ampache API
     And I request the "songs" resource
     Then I should get:
       | title                            | artist                   | album                          | time | track |
-      | Gunpowder Chant                  | Diablo Swing Orchestra   | The Butcher s Ballroom         | 111  | 7     |
+      | Gunpowder Chant                  | Diablo Swing Orchestra   | The Butcher's Ballroom         | 111  | 7     |
       | Médiane                          | Pascal Boiseau - Pascalb | Nuance                         | 203  | 1     |
 
   Scenario: List songs that contain "Mediane"

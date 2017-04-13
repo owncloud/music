@@ -83,7 +83,7 @@ class AmpacheClient {
 
 
 		try {
-			$xml = $response->xml();
+			$xml = self::getXml($response);
 		} catch (\GuzzleHttp\Exception\ParseException $e) {
 			throw new AmpacheClientException('Could not parse XML', 0, $e);
 		}
@@ -97,4 +97,34 @@ class AmpacheClient {
 		return $xml;
 	}
 
+	/**
+	 * Get XML from HTTP response. There used to be method $response->xml() in Guzzle 5.x but not
+	 * anymore in 6.x. The logic below is copied from the old xml() method.
+	 */
+	private static function getXml($response, array $config = []) {
+		$disableEntities = libxml_disable_entity_loader(true);
+		$internalErrors = libxml_use_internal_errors(true);
+		try {
+			// Allow XML to be retrieved even if there is no response body
+			$xml = new \SimpleXMLElement(
+				(string) $response->getBody() ?: '<root />',
+				isset($config['libxml_options']) ? $config['libxml_options'] : LIBXML_NONET,
+				false,
+				isset($config['ns']) ? $config['ns'] : '',
+				isset($config['ns_is_prefix']) ? $config['ns_is_prefix'] : false
+			);
+			libxml_disable_entity_loader($disableEntities);
+			libxml_use_internal_errors($internalErrors);
+		} catch (\Exception $e) {
+			libxml_disable_entity_loader($disableEntities);
+			libxml_use_internal_errors($internalErrors);
+			throw new XmlParseException(
+				'Unable to parse response body into XML: ' . $e->getMessage(),
+				$this,
+				$e,
+				(libxml_get_last_error()) ?: null
+			);
+		}
+		return $xml;
+	}
 }

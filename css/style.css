@@ -58,18 +58,19 @@
 	line-height: 36px;
 }
 
-.artist-area > h1:hover {
+.artist-area > h1 span:hover,
+.artist-area > h1 span *:hover {
 	cursor: pointer;
 }
 
-.artist-area > h1 > .play {
+h1 .play {
 	margin-bottom: 2px;
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
 }
 
-.artist-area > h1:hover > .play {
+h1 span:hover .play {
     visibility: visible
 }
 

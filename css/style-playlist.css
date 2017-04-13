@@ -20,8 +20,8 @@
 	line-height: 36px;
 }
 
-.playlist-area > h1:hover,
-.playlist-area > h1:hover * {
+.playlist-area > h1 > span:hover,
+.playlist-area > h1 > span:hover * {
 	cursor: pointer;
 }
 

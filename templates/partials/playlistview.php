@@ -1,6 +1,11 @@
 <div class="playlist-area" ng-show="!loading">
-	<h1 ng-click="playAll()" ng-if="playlist">{{playlist.name}}</h1>
-	<h1 ng-click="playAll()" ng-if="currentView == '#/alltracks'" translate>All tracks</h1>
+	<h1>
+		<span ng-click="playAll()">
+			<span ng-if="playlist">{{ playlist.name }}</span>
+			<span ng-if="currentView == '#/alltracks'" translate>All tracks</span>
+			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
+		</span>
+	</h1>
 	<ul class="track-list">
 		<li ng-repeat="song in tracks track by $index" id="{{ 'track-' + song.id }}"
 			ui-on-drop="reorderDrop($data, $index)"

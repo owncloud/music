@@ -14,7 +14,7 @@
 		<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
 			src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
 		<!-- variable "limit" toogles length of track list for each album -->
-		<ul class="track-list" ng-init="limit.count = 5; trackcount = album.tracks.length">
+		<ul class="track-list" ng-init="trackcount = album.tracks.length; limit.count = (trackcount == 6) ? 6 : 5">
 			<li id="{{ 'track-' + track.id }}" 
 				ng-click="playTrack(track)"
 				ui-draggable="true" drag="getDraggable('track', track)"
@@ -29,11 +29,11 @@
 			<li class="muted more-less" translate translate-n="trackcount"
 				translate-plural="Show all {{ trackcount }} songs ..."
 				ng-click="limit.count = trackcount"
-				ng-hide="trackcount <= limit.count || limit.count != 5"
+				ng-hide="trackcount <= 6 || limit.count > 6"
 				>Show all {{ trackcount }} songs ...</li>
 			<li class="muted more-less"
 				ng-click="limit.count = 5"
-				ng-hide="limit.count == 5" translate>Show less ...</li>
+				ng-hide="limit.count <= 6" translate>Show less ...</li>
 		</ul>
 	</div>
 </div>

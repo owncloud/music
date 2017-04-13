@@ -139,8 +139,8 @@
 	padding-left: 21px;
 }
 
-.track-list li .play.playing,
-.track-list li:hover .play {
+.album-area .track-list li .play.playing,
+.album-area .track-list li:hover .play {
 	visibility: visible;
 }
 

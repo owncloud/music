@@ -55,24 +55,28 @@
 
 .playlist-area .track-list > li > div,
 .playlist-area .track-list > li > div * {
+	display: inline-block;
 	cursor: pointer;
 }
 
-.playlist-area .track-list > li > div {
+.playlist-area .track-list > li > div > div {
 	display: inline-block;
 	white-space: nowrap;
 	margin-right: 7px;
 }
 
-.playlist-area .track-list > li > div > div {
+.playlist-area .track-list > li > div > div > div {
 	display: inline-block;
 	white-space: normal;
 }
 
+.playlist-area .track-list li .play,
 .playlist-area .track-list li .action {
 	visibility: hidden;
 }
 
-.playlist-area .track-list li:hover .action {
+.playlist-area .track-list li .play.playing,
+.playlist-area .track-list li div:hover .play,
+.playlist-area .track-list li div:hover .action {
 	visibility: visible;
 }

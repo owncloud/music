@@ -7,14 +7,16 @@
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover">
-			<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
-				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-					ng-class="{playing: getCurrentTrackIndex() === $index}" />
-				<span class="muted">{{ $index + 1 }}.</span>
-				<div>{{ song.artistName }} - {{song.title}}</div>
+			<div>
+				<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
+					<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
+						ng-class="{playing: getCurrentTrackIndex() === $index}" />
+					<span class="muted">{{ $index + 1 }}.</span>
+					<div>{{ song.artistName }} - {{song.title}}</div>
+				</div>
+				<button class="svg action icon-close" ng-click="removeTrack($index)" ng-if="playlist"
+					alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}"></button>
 			</div>
-			<button class="svg action icon-close" ng-click="removeTrack($index)" ng-if="playlist"
-				alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}" />
 		</li>
 	</ul>
 

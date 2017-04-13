@@ -117,7 +117,7 @@ msgstr "Po skanohet muzika…"
 msgid "Shuffle"
 msgstr "Përzieji"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "Disa pjesë që s’luheshin dot u anashkaluan."
 

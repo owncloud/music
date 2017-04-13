@@ -124,7 +124,7 @@ msgstr "Balayage de la musique …"
 msgid "Shuffle"
 msgstr "Lecture aléatoire"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "Certaines pistes non jouables ont été ignorées."
 

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-04-07 08:33+0000\n"
+"PO-Revision-Date: 2017-04-13 20:59+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic (http://www.transifex.com/owncloud-org/owncloud/language/is/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: ../templates/main.php:65
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nýr spilunarlisti"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:60
 msgid "Albums"
@@ -22,7 +22,7 @@ msgstr "Albúm"
 
 #: ../templates/main.php:61
 msgid "All tracks"
-msgstr ""
+msgstr "Öll lög"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -30,7 +30,7 @@ msgstr "Flytjandi"
 
 #: ../templates/main.php:151
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Smelltu hér til að hefja skönnun"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -69,11 +69,11 @@ msgstr "Tónlist"
 
 #: ../templates/main.php:150
 msgid "New music available"
-msgstr ""
+msgstr "Ný tónlist í boði"
 
 #: ../templates/main.php:145 ../templates/main.php:146
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Ný tónlist í boði. Smelltu hér til að endurhlaða tónlistarsafninu."
 
 #: ../templates/main.php:96
 msgid "Next"
@@ -81,7 +81,7 @@ msgstr "Næst"
 
 #: ../templates/main.php:139
 msgid "No music found"
-msgstr ""
+msgstr "Engin tónlist fannst"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -109,13 +109,13 @@ msgstr "Afturkalla API-lykilorð"
 
 #: ../templates/main.php:156
 msgid "Scanning music …"
-msgstr ""
+msgstr "Skanna tónlist …"
 
 #: ../templates/main.php:121
 msgid "Shuffle"
 msgstr "Stokka"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "Sumum óspilanlegum hljóðsporum var sleppt."
 
@@ -137,7 +137,7 @@ msgstr "Óþekktur flytjandi"
 
 #: ../templates/main.php:140
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Sendu inn tónlist í skráaforritinu til að hlusta á hana hér"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -153,12 +153,12 @@ msgstr "Notaðu notandanafn þitt og eftirfarandi aðgangsorð til að tengjast 
 
 #: ../templates/main.php:126 ../templates/main.php:128
 msgid "Volume"
-msgstr ""
+msgstr "Hljóðstyrkur"
 
 #: ../templates/main.php:62 ../templates/main.php:82
 msgid "tracks"
-msgstr ""
+msgstr "lög"
 
 #: ../templates/main.php:157
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} af {{ scanningTotal }}"

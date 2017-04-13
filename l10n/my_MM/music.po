@@ -114,7 +114,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "ရောမွှေ"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "တချို့ သော အပုဒ်များ ဖွင့်မရ၍ ကျော်ခဲ့သည်။"
 

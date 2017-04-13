@@ -118,7 +118,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Keverés"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "Néhány szám kimaradt, amit a rendszer nem tud lejátszani."
 

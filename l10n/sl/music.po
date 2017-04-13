@@ -116,7 +116,7 @@ msgstr "Poteka preiskovanje glasbe ..."
 msgid "Shuffle"
 msgstr "Premešaj"
 
-#: ../js/public/app.js:543
+#: ../js/public/app.js:563
 msgid "Some not playable tracks were skipped."
 msgstr "Nekateri posnetki, ki jih ni mogoče predvajati, so bili preskočeni."
 

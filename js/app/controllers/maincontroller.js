@@ -15,6 +15,7 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
+	$rootScope.playingView = null;
 	$scope.currentTrack = null;
 	playlistService.subscribe('trackChanged', function(e, track){
 		$scope.currentTrack = track;
@@ -27,6 +28,8 @@ angular.module('Music').controller('MainController',
 
 	playlistService.subscribe('playlistEnded', function() {
 		$rootScope.playingView = null;
+		$scope.currentTrack = null;
+		$scope.currentTrackIndex = -1;
 	});
 
 	$scope.letters = [
@@ -115,7 +118,11 @@ angular.module('Music').controller('MainController',
 				$scope.scanning = false;
 			}
 
-			if($scope.updateAvailable && $scope.artists.length === 0) {
+			// Update the newly scanned tracks to UI automatically when
+			// a) the first batch is ready
+			// b) the scanning process is completed.
+			// Otherwise the UI state is updated only when the user hits the 'update' button
+			if($scope.updateAvailable && ($scope.artists.length === 0 || !$scope.scanning)) {
 				$scope.update();
 			}
 		});

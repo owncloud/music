@@ -99,6 +99,10 @@ angular.module('Music').controller('OverviewController',
 			return $scope.$parent.allTracks[id];
 		}
 
+		function isPlaying() {
+			return $rootScope.playingView !== null;
+		}
+
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -127,5 +131,14 @@ angular.module('Music').controller('OverviewController',
 			$timeout(initializePlayerStateFromURL);
 		}
 
-		$rootScope.$on('artistsLoaded', initializePlayerStateFromURL);
+		$rootScope.$on('artistsLoaded', function() {
+			// Do not reinitialize the player state if it is already playing.
+			// This is the case when the user has started playing music while scanning is ongoing,
+			// and then hits the 'update' button. Reinitializing would stop and restart the playback.
+			if (!isPlaying()) {
+				initializePlayerStateFromURL();
+			} else {
+				$rootScope.loading = false;
+			}
+		});
 }]);

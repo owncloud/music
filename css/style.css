@@ -62,14 +62,16 @@
 	cursor: pointer;
 }
 
-.artist-area > h1:hover > .play {
-	display: inline;
+.artist-area > h1 > .play {
 	margin-bottom: 2px;
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
 }
 
+.artist-area > h1:hover > .play {
+    visibility: visible
+}
 
 .album-area {
 	padding: 14px 28px;

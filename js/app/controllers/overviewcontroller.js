@@ -13,6 +13,7 @@ angular.module('Music').controller('OverviewController',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
 		$rootScope.currentView = '#';
+		$scope.incrementalLoadLimit = 2;
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
@@ -128,19 +129,28 @@ angular.module('Music').controller('OverviewController',
 			$rootScope.loading = false;
 		}
 
+		function showMore() {
+			$scope.incrementalLoadLimit += 2;
+			if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
+				$timeout(showMore);
+			} else {
+				// Do not reinitialize the player state if it is already playing.
+				// This is the case when the user has started playing music while scanning is ongoing,
+				// and then hits the 'update' button. Reinitializing would stop and restart the playback.
+				if (!isPlaying()) {
+					initializePlayerStateFromURL();
+				} else {
+					$rootScope.loading = false;
+				}
+			}
+		}
+
 		// initialize either immedately or once the parent view has finished loading the collection
 		if ($scope.$parent.artists) {
-			$timeout(initializePlayerStateFromURL);
+			$timeout(showMore);
 		}
 
 		$rootScope.$on('artistsLoaded', function() {
-			// Do not reinitialize the player state if it is already playing.
-			// This is the case when the user has started playing music while scanning is ongoing,
-			// and then hits the 'update' button. Reinitializing would stop and restart the playback.
-			if (!isPlaying()) {
-				initializePlayerStateFromURL();
-			} else {
-				$rootScope.loading = false;
-			}
+			showMore();
 		});
 }]);

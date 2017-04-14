@@ -25,6 +25,7 @@ angular.module('Music').controller('PlaylistViewController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
+		$scope.incrementalLoadLimit = 100;
 		$scope.tracks = [];
 		$rootScope.currentView = window.location.hash;
 
@@ -137,6 +138,15 @@ angular.module('Music').controller('PlaylistViewController',
 			return ($rootScope.playingView === $rootScope.currentView);
 		}
 
+		function showMore() {
+			$scope.incrementalLoadLimit += 100;
+			if ($scope.incrementalLoadLimit < $scope.tracks.length) {
+				$timeout(showMore);
+			} else {
+				$rootScope.loading = false;
+			}
+		}
+
 		function initViewFromRoute() {
 			if ($scope.$parent && $scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
@@ -148,10 +158,7 @@ angular.module('Music').controller('PlaylistViewController',
 					$scope.playlist = null;
 					$scope.tracks = createAllTracksArray();
 				}
-
-				$timeout(function() {
-					$rootScope.loading = false;
-				});
+				$timeout(showMore);
 			}
 		}
 

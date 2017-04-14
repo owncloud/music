@@ -7,7 +7,7 @@
 		</span>
 	</h1>
 	<ul class="track-list">
-		<li ng-repeat="song in tracks track by $index" id="{{ 'track-' + song.id }}"
+		<li ng-repeat="entry in tracks" ng-init="song = entry.track" id="{{ 'track-' + song.id }}"
 			ui-on-drop="reorderDrop($data, $index)"
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"

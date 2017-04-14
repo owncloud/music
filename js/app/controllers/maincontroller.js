@@ -17,8 +17,8 @@ angular.module('Music').controller('MainController',
 
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, track){
-		$scope.currentTrack = track;
+	playlistService.subscribe('trackChanged', function(e, listEntry){
+		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
@@ -112,7 +112,7 @@ angular.module('Music').controller('MainController',
 					$scope.toScan = true;
 				}
 			} else {
-				if(scan.processed !== scan.total) {
+				if(scan.processed > scan.total) {
 					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
 				}
 				$scope.scanning = false;
@@ -122,7 +122,7 @@ angular.module('Music').controller('MainController',
 			// a) the first batch is ready
 			// b) the scanning process is completed.
 			// Otherwise the UI state is updated only when the user hits the 'update' button
-			if($scope.updateAvailable && ($scope.artists.length === 0 || !$scope.scanning)) {
+			if($scope.updateAvailable && $scope.artists && ($scope.artists.length === 0 || !$scope.scanning)) {
 				$scope.update();
 			}
 		});

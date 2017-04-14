@@ -24,38 +24,40 @@ angular.module('Music').controller('OverviewController',
 			}
 		});
 
+		// Wrap the supplied tracks as a playlist and pass it to the service for playing
+		function playTracks(tracks, startIndex /*optional*/) {
+			var playlist = _.map(tracks, function(track) {
+				return { track: track };
+			});
+			playlistService.setPlaylist(playlist, startIndex);
+			playlistService.publish('play');
+		}
+
 		$scope.playTrack = function(track) {
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
 			var album = findAlbum(track.albumId);
-			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
-			playlistService.publish('play');
+			playTracks(album.tracks, album.tracks.indexOf(track));
 		};
 
 		$scope.playAlbum = function(album) {
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
-
-			playlistService.setPlaylist(album.tracks);
-			playlistService.publish('play');
+			playTracks(album.tracks);
 		};
 
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-
-			var playlist = _.flatten(_.pluck(artist.albums, 'tracks'));
-			playlistService.setPlaylist(playlist);
-			playlistService.publish('play');
+			playTracks(_.flatten(_.pluck(artist.albums, 'tracks')));
 		};
 
 		$scope.playFile = function (fileid) {
 			if (fileid) {
 				Restangular.one('file', fileid).get()
 					.then(function(result){
-						playlistService.setPlaylist([result]);
-						playlistService.publish('play');
+						playTracks([result]);
 						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}

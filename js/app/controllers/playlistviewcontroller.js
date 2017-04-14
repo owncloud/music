@@ -138,7 +138,7 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function initViewFromRoute() {
-			if ($scope.$parent.artists && $scope.$parent.playlists) {
+			if ($scope.$parent && $scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
 					var playlist = findPlaylist($routeParams.playlistId);
 					$scope.playlist = playlist;
@@ -165,7 +165,7 @@ angular.module('Music').controller('PlaylistViewController',
 
 		function createTracksArray(trackIds) {
 			return _.map(trackIds, function(trackId) {
-				return $scope.$parent.allTracks[trackId];
+				return { track: $scope.$parent.allTracks[trackId] };
 			});
 		}
 
@@ -174,11 +174,11 @@ angular.module('Music').controller('PlaylistViewController',
 			if ($scope.$parent.allTracks) {
 				tracks = [];
 				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push($scope.$parent.allTracks[trackId]);
+					tracks.push( { track: $scope.$parent.allTracks[trackId] } );
 				}
 
-				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
 			}
 			return tracks;
 		}

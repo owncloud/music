@@ -55,8 +55,8 @@ angular.module('Music').controller('MainController',
 
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, track){
-		$scope.currentTrack = track;
+	playlistService.subscribe('trackChanged', function(e, listEntry){
+		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
@@ -150,7 +150,7 @@ angular.module('Music').controller('MainController',
 					$scope.toScan = true;
 				}
 			} else {
-				if(scan.processed !== scan.total) {
+				if(scan.processed > scan.total) {
 					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
 				}
 				$scope.scanning = false;
@@ -160,7 +160,7 @@ angular.module('Music').controller('MainController',
 			// a) the first batch is ready
 			// b) the scanning process is completed.
 			// Otherwise the UI state is updated only when the user hits the 'update' button
-			if($scope.updateAvailable && ($scope.artists.length === 0 || !$scope.scanning)) {
+			if($scope.updateAvailable && $scope.artists && ($scope.artists.length === 0 || !$scope.scanning)) {
 				$scope.update();
 			}
 		});
@@ -283,38 +283,40 @@ angular.module('Music').controller('OverviewController',
 			}
 		});
 
+		// Wrap the supplied tracks as a playlist and pass it to the service for playing
+		function playTracks(tracks, startIndex /*optional*/) {
+			var playlist = _.map(tracks, function(track) {
+				return { track: track };
+			});
+			playlistService.setPlaylist(playlist, startIndex);
+			playlistService.publish('play');
+		}
+
 		$scope.playTrack = function(track) {
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
 			var album = findAlbum(track.albumId);
-			playlistService.setPlaylist(album.tracks, album.tracks.indexOf(track));
-			playlistService.publish('play');
+			playTracks(album.tracks, album.tracks.indexOf(track));
 		};
 
 		$scope.playAlbum = function(album) {
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
-
-			playlistService.setPlaylist(album.tracks);
-			playlistService.publish('play');
+			playTracks(album.tracks);
 		};
 
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-
-			var playlist = _.flatten(_.pluck(artist.albums, 'tracks'));
-			playlistService.setPlaylist(playlist);
-			playlistService.publish('play');
+			playTracks(_.flatten(_.pluck(artist.albums, 'tracks')));
 		};
 
 		$scope.playFile = function (fileid) {
 			if (fileid) {
 				Restangular.one('file', fileid).get()
 					.then(function(result){
-						playlistService.setPlaylist([result]);
-						playlistService.publish('play');
+						playTracks([result]);
 						$scope.$parent.scrollToItem('album-' + result.albumId);
 					});
 			}
@@ -477,7 +479,8 @@ angular.module('Music').controller('PlayerController',
 		return null;
 	};
 
-	function setCurrentTrack(track) {
+	function setCurrentTrack(playlistEntry) {
+		var track = playlistEntry ? playlistEntry.track : null;
 		$scope.currentTrack = track;
 		$scope.player.stop();
 		$scope.setPlay(false);
@@ -550,19 +553,19 @@ angular.module('Music').controller('PlayerController',
 	};
 
 	$scope.next = function() {
-		var track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
+		var entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
-		while(track !== null && !$scope.getPlayableFileURL(track)) {
+		while(entry !== null && !$scope.getPlayableFileURL(entry.track)) {
 			tracksSkipped = true;
-			track = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
+			entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped) {
 			OC.Notification.showTemporary(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
 		}
-		setCurrentTrack(track);
+		setCurrentTrack(entry);
 	};
 
 	$scope.prev = function() {
@@ -707,7 +710,7 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function initViewFromRoute() {
-			if ($scope.$parent.artists && $scope.$parent.playlists) {
+			if ($scope.$parent && $scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
 					var playlist = findPlaylist($routeParams.playlistId);
 					$scope.playlist = playlist;
@@ -734,7 +737,7 @@ angular.module('Music').controller('PlaylistViewController',
 
 		function createTracksArray(trackIds) {
 			return _.map(trackIds, function(trackId) {
-				return $scope.$parent.allTracks[trackId];
+				return { track: $scope.$parent.allTracks[trackId] };
 			});
 		}
 
@@ -743,11 +746,11 @@ angular.module('Music').controller('PlaylistViewController',
 			if ($scope.$parent.allTracks) {
 				tracks = [];
 				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push($scope.$parent.allTracks[trackId]);
+					tracks.push( { track: $scope.$parent.allTracks[trackId] } );
 				}
 
-				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
 			}
 			return tracks;
 		}

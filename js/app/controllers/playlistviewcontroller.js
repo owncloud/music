@@ -26,7 +26,7 @@ angular.module('Music').controller('PlaylistViewController',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
 		$scope.incrementalLoadLimit = 100;
-		$scope.tracks = [];
+		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
 
 		$scope.getCurrentTrackIndex = function() {

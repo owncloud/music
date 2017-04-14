@@ -7,20 +7,22 @@
 		</span>
 	</h1>
 	<ul class="track-list">
-		<li ng-repeat="entry in tracks | limitTo: incrementalLoadLimit" ng-init="song = entry.track" id="{{ 'track-' + song.id }}"
+		<li bindonce ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
+			ng-init="song = entry.track"
+			bo-id="'track-' + song.id"
 			ui-on-drop="reorderDrop($data, $index)"
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover">
 			<div>
 				<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
-					<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
+					<img class="play svg" bo-alt="'Play' | translate" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 						ng-class="{playing: getCurrentTrackIndex() === $index}" />
 					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ song.artistName }} - {{song.title}}</div>
+					<div bo-text="song.artistName + ' - ' + song.title"></div>
 				</div>
-				<button class="svg action icon-close" ng-click="removeTrack($index)" ng-if="playlist"
-					alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}"></button>
+				<button class="svg action icon-close" ng-click="removeTrack($index)" bo-if="playlist"
+					bo-alt="'Remove' | translate" bo-title="'Remove track from playlist' | translate"></button>
 			</div>
 		</li>
 	</ul>

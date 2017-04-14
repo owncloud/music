@@ -11,6 +11,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 }
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
+\OCP\Util::addScript('music', 'vendor/angular-bindonce/bindonce.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');

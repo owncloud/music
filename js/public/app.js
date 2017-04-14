@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop', 'pasvaz.bindonce'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -608,7 +608,7 @@ angular.module('Music').controller('PlaylistViewController',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
 		$scope.incrementalLoadLimit = 100;
-		$scope.tracks = [];
+		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
 
 		$scope.getCurrentTrackIndex = function() {

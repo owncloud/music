@@ -13,7 +13,9 @@ angular.module('Music').controller('OverviewController',
 	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
 
 		$rootScope.currentView = '#';
-		$scope.incrementalLoadLimit = 2;
+
+		var INCREMENTAL_LOAD_STEP = 4;
+		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
@@ -130,7 +132,7 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += 2;
+			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
 			if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
 				$timeout(showMore);
 			} else {

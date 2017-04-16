@@ -25,7 +25,8 @@ angular.module('Music').controller('PlaylistViewController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.incrementalLoadLimit = 100;
+		var INCREMENTAL_LOAD_STEP = 1000;
+		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
 
@@ -139,7 +140,7 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += 100;
+			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
 			if ($scope.incrementalLoadLimit < $scope.tracks.length) {
 				$timeout(showMore);
 			} else {

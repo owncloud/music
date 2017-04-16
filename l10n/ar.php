@@ -5,6 +5,7 @@ $TRANSLATIONS = array(
 "Description" => "الوصف",
 "Description (e.g. App name)" => "الوصف (مثل اسم التطبيق)",
 "Generate API password" => "أنشِئ كلمة سر لواجهة برمجة التطبيقات ( API)",
+"Invalid path" => "مسار غير صحيح",
 "Music" => "الموسيقى",
 "Next" => "التالي",
 "Pause" => "إيقاف",

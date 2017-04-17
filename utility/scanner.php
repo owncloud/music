@@ -23,6 +23,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\Db\Cache;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -34,6 +35,7 @@ class Scanner extends PublicEmitter {
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
 	private $playlistBusinessLayer;
+	private $cache;
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
@@ -47,6 +49,7 @@ class Scanner extends PublicEmitter {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								Cache $cache,
 								Logger $logger,
 								IDBConnection $db,
 								$userId,
@@ -58,6 +61,7 @@ class Scanner extends PublicEmitter {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->cache = $cache;
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->userId = $userId;
@@ -239,6 +243,9 @@ class Scanner extends PublicEmitter {
 				$this->findEmbeddedCoverForAlbum($albumId, $userId);
 			}
 
+			// invalidate the cache as the music collection was changed
+			$this->cache->remove($userId);
+
 			// debug logging
 			$this->logger->log('imported entities - ' .
 				sprintf('artist: %d, albumArtist: %d, album: %d, track: %d', $artistId, $albumArtistId, $albumId, $track->getId()),
@@ -286,11 +293,15 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
+			// invalidate the cache as the music collection was changed
+			$this->cache->remove($userId);
+
 			// debug logging
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
-		else { // maybe this was an image file
-			$this->albumBusinessLayer->removeCover($fileId);
+		// maybe this was an image file
+		else if ($this->albumBusinessLayer->removeCover($fileId)) {
+			$this->cache->remove($userId);
 		}
 	}
 
@@ -432,6 +443,8 @@ class Scanner extends PublicEmitter {
 		foreach ($sqls as $sql) {
 			$this->db->executeUpdate($sql, array($userId));
 		}
+
+		$this->cache->remove($userId);
 	}
 
 	private static function startsWith($string, $potentialStart) {

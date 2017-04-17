@@ -214,13 +214,15 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * @param integer $coverFileId
+	 * @return true if the given file was cover for some album
 	 */
 	public function removeCover($coverFileId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = NULL
 				WHERE `cover_file_id` = ?';
 		$params = array($coverFileId);
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		return $result->rowCount() > 0;
 	}
 
 	/**

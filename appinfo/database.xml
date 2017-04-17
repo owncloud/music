@@ -232,7 +232,6 @@
 					<name>album_id</name>
 				</field>
 			</index>
-
 			<index>
 				<name>music_tracks_file_user_id_idx</name>
 				<unique>true</unique>
@@ -263,14 +262,12 @@
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
-
 			<field>
 				<name>token</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
-
 			<field>
 				<name>expiry</name>
 				<type>integer</type>
@@ -299,20 +296,17 @@
 				<autoincrement>1</autoincrement>
 				<length>4</length>
 			</field>
-
 			<field>
 				<name>user_id</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>64</length>
 			</field>
-
 			<field>
 				<name>description</name>
 				<type>text</type>
 				<length>64</length>
 			</field>
-
 			<field>
 				<name>hash</name>
 				<type>text</type>
@@ -333,4 +327,34 @@
 		</declaration>
 	</table>
 
+	<table>
+		<name>*dbprefix*music_cache</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>key</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>data</name>
+				<type>clob</type>
+				<notnull>false</notnull>
+			</field>
+		</declaration>
+	</table>
 </database>

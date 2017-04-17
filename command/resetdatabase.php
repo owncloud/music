@@ -62,7 +62,7 @@ class ResetDatabase extends Command {
 	}
 
 	private function dropTables($userID=null) {
-		$tables = array('tracks', 'albums', 'artists', 'playlists');
+		$tables = array('tracks', 'albums', 'artists', 'playlists', 'cache');
 		foreach($tables as $table) {
 			$sql = 'DELETE FROM `*PREFIX*music_' . $table . '` ';
 			$params = array();

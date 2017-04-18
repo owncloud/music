@@ -186,6 +186,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer $coverFileId
 	 * @param integer $folderId
+	 * @return true if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
@@ -197,7 +198,8 @@ class AlbumMapper extends BaseMapper {
 					WHERE `files`.`parent` = ?
 				)';
 		$params = array($coverFileId, $folderId);
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		return $result->rowCount() > 0;
 	}
 
 	/**

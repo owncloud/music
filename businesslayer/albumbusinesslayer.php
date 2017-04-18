@@ -120,9 +120,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * updates the cover for albums in the specified folder without cover
 	 * @param integer $coverFileId the file id of the cover image
 	 * @param integer $folderId the file id of the folder where the albums are looked from
+	 * @return true if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId){
-		$this->mapper->updateFolderCover($coverFileId, $folderId);
+		return $this->mapper->updateFolderCover($coverFileId, $folderId);
 	}
 
 	/**

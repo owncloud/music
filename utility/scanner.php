@@ -106,6 +106,28 @@ class Scanner extends PublicEmitter {
 			return;
 		}
 
+		// TODO find a way to get this for a sharee
+		$isSharee = $userId && $this->userId !== $userId;
+
+		if(!$userId) {
+			$userId = $this->userId;
+		}
+
+		if(!$userHome) {
+			$userHome = $this->userFolder;
+		}
+
+		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
+		if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
+			// TODO verify
+			$musicPath = $userHome->get($musicPath)->getPath();
+			// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
+			if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
+				$this->logger->log('skipped - outside of specified path' , 'debug');
+				return;
+			}
+		}
+
 		$mimetype = $file->getMimeType();
 
 		// debug logging
@@ -115,7 +137,10 @@ class Scanner extends PublicEmitter {
 		if(self::startsWith($mimetype, 'image')) {
 			$coverFileId = $file->getId();
 			$parentFolderId = $file->getParent()->getId();
-			$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
+			if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
+				$this->logger->log('update - the image was set as cover for some album(s)', 'debug');
+				$this->cache->remove($userId);
+			}
 			return;
 		}
 
@@ -124,28 +149,6 @@ class Scanner extends PublicEmitter {
 		}
 
 		if(ini_get('allow_url_fopen')) {
-			// TODO find a way to get this for a sharee
-			$isSharee = $userId && $this->userId !== $userId;
-
-			if(!$userId) {
-				$userId = $this->userId;
-			}
-
-			if(!$userHome) {
-				$userHome = $this->userFolder;
-			}
-
-			$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
-				// TODO verify
-				$musicPath = $userHome->get($musicPath)->getPath();
-				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
-				if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
-					$this->logger->log('skipped - outside of specified path' , 'debug');
-					return;
-				}
-			}
-
 
 			$fieldsFromFileName = self::parseFileName($file->getName());
 			$fileInfo = $this->extractor->extract($file);

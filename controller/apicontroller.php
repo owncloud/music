@@ -97,53 +97,57 @@ class ApiController extends Controller {
 		$collectionJson = $this->cache->get($this->userId, 'collection');
 
 		if ($collectionJson == null) {
-			/** @var Artist[] $allArtists */
-			$allArtists = $this->artistBusinessLayer->findAll($this->userId);
-			$allArtistsByIdAsObj = array();
-			$allArtistsByIdAsArr = array();
-			foreach ($allArtists as &$artist) {
-				$allArtistsByIdAsObj[$artist->getId()] = $artist;
-				$allArtistsByIdAsArr[$artist->getId()] = $artist->toCollection($this->l10n);
-			}
-
-			$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-			$allAlbumsByIdAsObj = array();
-			$allAlbumsByIdAsArr = array();
-			foreach ($allAlbums as &$album) {
-				$allAlbumsByIdAsObj[$album->getId()] = $album;
-				$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
-			}
-
-			/** @var Track[] $allTracks */
-			$allTracks = $this->trackBusinessLayer->findAll($this->userId);
-
-			$artists = array();
-			foreach ($allTracks as $track) {
-				$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
-				$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
-				$track->setAlbum($albumObj);
-				$track->setArtist($trackArtistObj);
-
-				$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
-				if (!isset($albumArtist['albums'])) {
-					$albumArtist['albums'] = array();
-					$artists[] = &$albumArtist;
-				}
-				$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
-				if (!isset($album['tracks'])) {
-					$album['tracks'] = array();
-					$albumArtist['albums'][] = &$album;
-				}
-				try {
-					$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
-				} catch (\OCP\Files\NotFoundException $e) {
-					//ignore not found
-				}
-			}
-			$collectionJson = json_encode($artists);
+			$collectionJson = $this->buildCollectionJson();
 			$this->cache->add($this->userId, 'collection', $collectionJson);
 		}
 		return new DataDisplayResponse($collectionJson);
+	}
+
+	private function buildCollectionJson() {
+		/** @var Artist[] $allArtists */
+		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
+		$allArtistsByIdAsObj = array();
+		$allArtistsByIdAsArr = array();
+		foreach ($allArtists as &$artist) {
+			$allArtistsByIdAsObj[$artist->getId()] = $artist;
+			$allArtistsByIdAsArr[$artist->getId()] = $artist->toCollection($this->l10n);
+		}
+		
+		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
+		$allAlbumsByIdAsObj = array();
+		$allAlbumsByIdAsArr = array();
+		foreach ($allAlbums as &$album) {
+			$allAlbumsByIdAsObj[$album->getId()] = $album;
+			$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
+		}
+
+		/** @var Track[] $allTracks */
+		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
+
+		$artists = array();
+		foreach ($allTracks as $track) {
+			$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
+			$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
+			$track->setAlbum($albumObj);
+			$track->setArtist($trackArtistObj);
+
+			$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
+			if (!isset($albumArtist['albums'])) {
+				$albumArtist['albums'] = array();
+				$artists[] = &$albumArtist;
+			}
+			$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
+			if (!isset($album['tracks'])) {
+				$album['tracks'] = array();
+				$albumArtist['albums'][] = &$album;
+			}
+			try {
+				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
+			} catch (\OCP\Files\NotFoundException $e) {
+				//ignore not found
+			}
+		}
+		return json_encode($artists);
 	}
 
 	/**

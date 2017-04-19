@@ -6,8 +6,8 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @author Pauli Jï¿½rvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Jï¿½rvinen 2017
  */
 
 namespace OCA\Music\Db;
@@ -41,7 +41,7 @@ class Cache extends Mapper {
 	public function remove($userId, $key = null){
 		$sql = 'DELETE FROM `*PREFIX*music_cache` WHERE `user_id` = ?';
 		$params = [$userId];
-		if ($key != null) {
+		if ($key !== null) {
 			$sql .= 'AND `key` = ?';
 			$params[] = $key;
 		}

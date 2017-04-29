@@ -27,7 +27,7 @@ class CleanUp {
 		// remove orphaned entities
 		$container->query('Helper')->cleanUp();
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query('AlbumBusinessLayer')->findCovers();
+		$container->query('Scanner')->findCovers();
 
 		// remove expired sessions
 		$container->query('AmpacheSessionMapper')->cleanUp();

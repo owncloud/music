@@ -450,6 +450,15 @@ class Scanner extends PublicEmitter {
 		$this->cache->remove($userId);
 	}
 
+	public function findCovers() {
+		$affectedUsers = $this->albumBusinessLayer->findCovers();
+		// scratch the cache for those users whose music collection was touched
+		foreach ($affectedUsers as $user) {
+			$this->cache->remove($user);
+			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
+		}
+	}
+
 	private static function startsWith($string, $potentialStart) {
 		return substr($string, 0, strlen($potentialStart)) === $potentialStart;
 	}

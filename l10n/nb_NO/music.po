@@ -15,15 +15,15 @@ msgstr ""
 "Language: nb_NO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Ny spilleliste"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Album"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Alle spor"
 
@@ -31,7 +31,7 @@ msgstr "Alle spor"
 msgid "Artists"
 msgstr "Artister"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Klikk her for å starte skanningen"
 
@@ -70,19 +70,19 @@ msgstr "Vær klar over at Ampache API bare er en forhåndsversjon og er ustabil.
 msgid "Music"
 msgstr "Musikk"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "ny musikk tilgjengelig"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Ny musikk er tilgengelig. Klikk her for å laste biblioteket på nytt."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Neste"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Ingen musikk funnet"
 
@@ -90,19 +90,19 @@ msgstr "Ingen musikk funnet"
 msgid "Path to your music collection"
 msgstr "Sti til din musikksamling"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Spill"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Forrige"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Gjenta"
 
@@ -110,11 +110,11 @@ msgstr "Gjenta"
 msgid "Revoke API password"
 msgstr "Tilbakestill API-passord"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Skanner musikk ..."
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Tilfeldig"
 
@@ -138,7 +138,7 @@ msgstr "Ukjent album"
 msgid "Unknown artist"
 msgstr "Ukjent artist"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "Last opp musikk i Filer-appen for å lytte til den her"
 
@@ -154,14 +154,14 @@ msgid ""
 "instance:"
 msgstr "Benytt ditt brukernavn og følgende passord for å koble til denne Ampache-forekomsten:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Lydstyrke"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "spor"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} av {{ scanningTotal }}"

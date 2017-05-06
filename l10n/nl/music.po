@@ -13,15 +13,15 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Nieuwe afspeellijst"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Albums"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Alle nummers"
 
@@ -29,7 +29,7 @@ msgstr "Alle nummers"
 msgid "Artists"
 msgstr "Artiesten"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Klik hier om de scan te starten"
 
@@ -68,19 +68,19 @@ msgstr "Vergeet niet dat de Ampache API volop in ontwikkeling is en dus instabie
 msgid "Music"
 msgstr "Muziek"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "Nieuwe muziek beschikbaar"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Nieuwe muziek beschikbaar. Klik hier om de muziekbibliotheek te herladen."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Volgende"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Geen muziek gevonden"
 
@@ -88,19 +88,19 @@ msgstr "Geen muziek gevonden"
 msgid "Path to your music collection"
 msgstr "Pad naar uw muziekverzameling"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Pause"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Vorige"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Herhaling"
 
@@ -108,11 +108,11 @@ msgstr "Herhaling"
 msgid "Revoke API password"
 msgstr "Intrekken API wachtwoord"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Scannen muziek …"
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Shuffle"
 
@@ -136,7 +136,7 @@ msgstr "Onbekend album"
 msgid "Unknown artist"
 msgstr "Onbekende artiest"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "Upload muziek in de bestandsapp, om hier te luisteren"
 
@@ -152,14 +152,14 @@ msgid ""
 "instance:"
 msgstr "Gebruik uw gebruikersnaam en het volgende wachtwoord om te verbinden met deze Ampache installatie:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Volume"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "nummers"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} van {{ scanningTotal }}"

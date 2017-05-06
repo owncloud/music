@@ -14,15 +14,15 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Альбоми"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr ""
 
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Artists"
 msgstr "Виконавці"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr ""
 
@@ -69,19 +69,19 @@ msgstr "Пам'ятайте, що Ampache API є демо-версією і то
 msgid "Music"
 msgstr "Музика"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Наступний"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr ""
 
@@ -89,19 +89,19 @@ msgstr ""
 msgid "Path to your music collection"
 msgstr "Шлях до вашої музичної колекції"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Грати"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Попередній"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Повторювати"
 
@@ -109,11 +109,11 @@ msgstr "Повторювати"
 msgid "Revoke API password"
 msgstr "Відкликати API пароль"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Перемішати"
 
@@ -137,7 +137,7 @@ msgstr "Невідомий альбом"
 msgid "Unknown artist"
 msgstr "Невідомий виконавець"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
@@ -153,14 +153,14 @@ msgid ""
 "instance:"
 msgstr "Використовуйте власний логін та пароль для з'єднання з даним Ampache:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr ""
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

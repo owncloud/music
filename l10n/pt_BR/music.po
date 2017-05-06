@@ -14,15 +14,15 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Nova playlist"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Albuns"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Todas as faixas"
 
@@ -30,7 +30,7 @@ msgstr "Todas as faixas"
 msgid "Artists"
 msgstr "Artistas"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Clique aqui para iniciar a busca"
 
@@ -69,19 +69,19 @@ msgstr "Tenha em mente, que a API Ampache é apenas uma pré-visualização e é
 msgid "Music"
 msgstr "Música"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "Nova música disponível"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Nova música disponível. Clique aqui para recarregar a coleção."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Próxima"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Nenhuma música encontrada"
 
@@ -89,19 +89,19 @@ msgstr "Nenhuma música encontrada"
 msgid "Path to your music collection"
 msgstr "Caminho para a sua coleção de músicas"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Reproduzir"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Repetir"
 
@@ -109,11 +109,11 @@ msgstr "Repetir"
 msgid "Revoke API password"
 msgstr "Revogar senha API"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Buscando música ..."
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Embaralhar"
 
@@ -137,7 +137,7 @@ msgstr "Album desconhecido"
 msgid "Unknown artist"
 msgstr "Artista desconhecido"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "Envie músicas com o aplicativo de arquivos para escutá-las aqui"
 
@@ -153,14 +153,14 @@ msgid ""
 "instance:"
 msgstr "Use o seu nome de usuário e senha a seguir para se conectar a essa instância Ampache:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Volume"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "faixas"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} de {{ scanningTotal }}"

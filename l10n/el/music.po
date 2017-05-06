@@ -16,15 +16,15 @@ msgstr ""
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Νέα λίστα αναπαραγωγής"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Άλμπουμ"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Όλα τα κομμάτια"
 
@@ -32,7 +32,7 @@ msgstr "Όλα τα κομμάτια"
 msgid "Artists"
 msgstr "Καλλιτέχνες"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Κάντε κλικ εδώ για την εκκίνηση σάρωσης"
 
@@ -71,19 +71,19 @@ msgstr "Θυμηθείτε ότι το API του Ampache είναι απλά μ
 msgid "Music"
 msgstr "Μουσική"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "Διαθέσιμη νέα μουσική"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Διαθέσιμη νέα μουσική. Κάντε κλικ εδώ για να φορτώσετε ξανά τη βιβλιοθήκη μουσικής."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Επόμενο"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Δεν βρέθηκε μουσική"
 
@@ -91,19 +91,19 @@ msgstr "Δεν βρέθηκε μουσική"
 msgid "Path to your music collection"
 msgstr "Διαδρομή για τη μουσική σας συλλογή"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Παύση"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Αναπαραγωγή"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Επανάληψη"
 
@@ -111,11 +111,11 @@ msgstr "Επανάληψη"
 msgid "Revoke API password"
 msgstr "Ανάκληση κωδικού πρόσβασης API"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Σάρωση μουσικής ..."
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Τυχαία αναπαραγωγή"
 
@@ -139,7 +139,7 @@ msgstr "Άγνωστο άλμπουμ"
 msgid "Unknown artist"
 msgstr "Άγνωστος καλλιτέχνης"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "Μεταφόρτωση μουσικής στην εφαρμογή μουσικής για ακρόαση εδώ"
 
@@ -155,14 +155,14 @@ msgid ""
 "instance:"
 msgstr "Χρησιμοποιήστε το όνομα χρήστη σας και τον παρακάτω κωδικό πρόσβασης για να συνδεθείτε σε αυτή την εγκατάσταση του Ampache:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Ένταση"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "κομμάτια"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} από {{ scanningTotal }}"

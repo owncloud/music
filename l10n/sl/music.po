@@ -13,15 +13,15 @@ msgstr ""
 "Language: sl\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Nov seznam predvajanja"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Albumi"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Vsi posnetki"
 
@@ -29,7 +29,7 @@ msgstr "Vsi posnetki"
 msgid "Artists"
 msgstr "Izvajalci"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Kliknite za začetek preiskovanja za nove predmete"
 
@@ -68,19 +68,19 @@ msgstr "Imejte v mislih, da je Ampache API namenjen le predogledu in ni povsem s
 msgid "Music"
 msgstr "Glasba"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "Na voljo je nova glasba"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Na voljo je nova glasba. Kliknite za ponovno nalaganje glasbene zbirke."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Naslednja"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Ni zaznanih glasbenih datotek"
 
@@ -88,19 +88,19 @@ msgstr "Ni zaznanih glasbenih datotek"
 msgid "Path to your music collection"
 msgstr "Pot do zbirke glasbe"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Premor"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Predvajaj"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Predhodna"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Ponovi"
 
@@ -108,11 +108,11 @@ msgstr "Ponovi"
 msgid "Revoke API password"
 msgstr "Razveljavi geslo API"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Poteka preiskovanje glasbe ..."
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Premešaj"
 
@@ -136,7 +136,7 @@ msgstr "Neznan album"
 msgid "Unknown artist"
 msgstr "Neznan izvajalec"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
@@ -152,14 +152,14 @@ msgid ""
 "instance:"
 msgstr "Uporabite uporabniško ime in navedeno geslo za povezavo z Ampache:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Glasnost"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr ""
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} od {{ scanningTotal }}"

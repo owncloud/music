@@ -18,15 +18,15 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ Nový seznam"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "Alba"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "Všechny stopy"
 
@@ -34,7 +34,7 @@ msgstr "Všechny stopy"
 msgid "Artists"
 msgstr "Umělci"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "Klikněte zde pro začátek hledání"
 
@@ -73,19 +73,19 @@ msgstr "Mějte na paměti, že Ampache API je stále ve vývoji a není stabiln�
 msgid "Music"
 msgstr "Hudba"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "Nová hudba k dispozici"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "Nová hudba k dispozici. Klikněte pro znovunačtení hudební knihovny."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "Následující"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "Hudba nenalezena"
 
@@ -93,19 +93,19 @@ msgstr "Hudba nenalezena"
 msgid "Path to your music collection"
 msgstr "Cesta k vlastní sbírce hudby"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "Předchozí"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "Opakovat"
 
@@ -113,11 +113,11 @@ msgstr "Opakovat"
 msgid "Revoke API password"
 msgstr "Odvolat heslo API"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "Hledám hudbu …"
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "Promíchat"
 
@@ -141,7 +141,7 @@ msgstr "Neznámé album"
 msgid "Unknown artist"
 msgstr "Neznámý umělec"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "Nahrát hudbu v aplikaci soubory k poslechu zde"
 
@@ -157,14 +157,14 @@ msgid ""
 "instance:"
 msgstr "Použijte Vaše uživatelské jméno a následující heslo pro připojení k této instanci Ampache:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "Hlasitost"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "stopy"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} z {{ scanningTotal }}"

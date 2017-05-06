@@ -13,15 +13,15 @@ msgstr ""
 "Language: he\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:65
+#: ../templates/main.php:59
 msgid "+ New Playlist"
 msgstr "+ רשימת השמעה חדשה"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:60
+#: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
 msgstr "אלבומים"
 
-#: ../templates/main.php:61
+#: ../templates/main.php:55
 msgid "All tracks"
 msgstr "כל רצועות המוזיקה"
 
@@ -29,7 +29,7 @@ msgstr "כל רצועות המוזיקה"
 msgid "Artists"
 msgstr "אומנים"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:145
 msgid "Click here to start the scan"
 msgstr "לחיצה כאן להתחלת הסריקה"
 
@@ -68,19 +68,19 @@ msgstr "יש לזכור שה- Ampache API הוא רק קדימון והוא אי
 msgid "Music"
 msgstr "מוזיקה"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:144
 msgid "New music available"
 msgstr "קיימת מוזיקה חדשה"
 
-#: ../templates/main.php:145 ../templates/main.php:146
+#: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
 msgstr "קיימת מוזיקה חדשה. יש ללחוץ כאן לטעינה מחדש של ספריית המוזיקה."
 
-#: ../templates/main.php:96
+#: ../templates/main.php:90
 msgid "Next"
 msgstr "הבא"
 
-#: ../templates/main.php:139
+#: ../templates/main.php:133
 msgid "No music found"
 msgstr "לא נמצאה מוזיקה"
 
@@ -88,19 +88,19 @@ msgstr "לא נמצאה מוזיקה"
 msgid "Path to your music collection"
 msgstr "נתיב לאוסף המוזיקה שלך"
 
-#: ../templates/main.php:94
+#: ../templates/main.php:88
 msgid "Pause"
 msgstr "השהה"
 
-#: ../templates/main.php:92
+#: ../templates/main.php:86
 msgid "Play"
 msgstr "נגן"
 
-#: ../templates/main.php:90
+#: ../templates/main.php:84
 msgid "Previous"
 msgstr "קודם"
 
-#: ../templates/main.php:123
+#: ../templates/main.php:117
 msgid "Repeat"
 msgstr "חזרה"
 
@@ -108,11 +108,11 @@ msgstr "חזרה"
 msgid "Revoke API password"
 msgstr "ביטול סיסמת API"
 
-#: ../templates/main.php:156
+#: ../templates/main.php:150
 msgid "Scanning music …"
 msgstr "סורק מוזיקה..."
 
-#: ../templates/main.php:121
+#: ../templates/main.php:115
 msgid "Shuffle"
 msgstr "ערבב"
 
@@ -136,7 +136,7 @@ msgstr "אלבום לא ידוע"
 msgid "Unknown artist"
 msgstr "אמן לא ידוע"
 
-#: ../templates/main.php:140
+#: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
 msgstr "יש להעלות מוזיקה ביישום הקבצים להשמעה שלה כאן"
 
@@ -152,14 +152,14 @@ msgid ""
 "instance:"
 msgstr "השתמשו בשם המשתמש שלכם ובסיסמא הבאה לחיבור למריץ אפצ'י זה:"
 
-#: ../templates/main.php:126 ../templates/main.php:128
+#: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
 msgstr "עוצמת שמע"
 
-#: ../templates/main.php:62 ../templates/main.php:82
+#: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
 msgstr "רצועות מוזיקה"
 
-#: ../templates/main.php:157
+#: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} מתוך {{ scanningTotal }}"

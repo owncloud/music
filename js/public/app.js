@@ -652,7 +652,7 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.getDraggable = function(index) {
 			$scope.draggedIndex = index;
 			return {
-				track: $scope.tracks[index],
+				track: $scope.tracks[index].track,
 				srcIndex: index
 			};
 		};
@@ -884,7 +884,7 @@ angular.module('Music').controller('SidebarController',
 				// Update the currently playing list if necessary
 				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
 					var newTracks = _.map(trackIds, function(trackId) {
-						return $scope.$parent.allTracks[trackId];
+						return { track: $scope.$parent.allTracks[trackId] };
 					});
 					playlistService.onTracksAdded(newTracks);
 				}

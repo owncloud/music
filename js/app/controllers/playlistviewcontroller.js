@@ -68,7 +68,7 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.getDraggable = function(index) {
 			$scope.draggedIndex = index;
 			return {
-				track: $scope.tracks[index],
+				track: $scope.tracks[index].track,
 				srcIndex: index
 			};
 		};

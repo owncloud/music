@@ -163,6 +163,26 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		}
 
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		$rootScope.$on('deactivateView', function() {
+			if (thisViewActive()) {
+				$timeout(showLess);
+			}
+		});
+
+		function thisViewActive() {
+			return $scope.$parent !== null;
+		}
+
 		function moveArrayElement(array, from, to) {
 			array.splice(to, 0, array.splice(from, 1)[0]);
 		}

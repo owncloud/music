@@ -75,7 +75,7 @@ angular.module('Music').controller('OverviewController',
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
 			// update URL hash if this view is active
-			if ($rootScope.currentView == '#') {
+			if (thisViewActive()) {
 				window.location.hash = '#/';
 			}
 		});
@@ -86,6 +86,10 @@ angular.module('Music').controller('OverviewController',
 				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
 		});
+
+		function thisViewActive() {
+			return $scope.$parent !== null;
+		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -154,5 +158,21 @@ angular.module('Music').controller('OverviewController',
 
 		$rootScope.$on('artistsLoaded', function() {
 			showMore();
+		});
+
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		$rootScope.$on('deactivateView', function() {
+			if (thisViewActive()) {
+				$timeout(showLess);
+			}
 		});
 }]);

@@ -334,7 +334,7 @@ angular.module('Music').controller('OverviewController',
 		// emited on end of playlist by playerController
 		playlistService.subscribe('playlistEnded', function(){
 			// update URL hash if this view is active
-			if ($rootScope.currentView == '#') {
+			if (thisViewActive()) {
 				window.location.hash = '#/';
 			}
 		});
@@ -345,6 +345,10 @@ angular.module('Music').controller('OverviewController',
 				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
 		});
+
+		function thisViewActive() {
+			return $scope.$parent !== null;
+		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -413,6 +417,22 @@ angular.module('Music').controller('OverviewController',
 
 		$rootScope.$on('artistsLoaded', function() {
 			showMore();
+		});
+
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		$rootScope.$on('deactivateView', function() {
+			if (thisViewActive()) {
+				$timeout(showLess);
+			}
 		});
 }]);
 
@@ -747,6 +767,26 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		}
 
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		$rootScope.$on('deactivateView', function() {
+			if (thisViewActive()) {
+				$timeout(showLess);
+			}
+		});
+
+		function thisViewActive() {
+			return $scope.$parent !== null;
+		}
+
 		function moveArrayElement(array, from, to) {
 			array.splice(to, 0, array.splice(from, 1)[0]);
 		}
@@ -835,14 +875,20 @@ angular.module('Music').controller('SidebarController',
 		};
 
 		// Navigate to a view selected from the sidebar
+		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
+				navigationDestination = destination;
 				$rootScope.loading = true;
-				$timeout(function() {
-					window.location.hash = destination;
-				}, 100); // Firefox requires here a small delay to correctly show the loading animation
+				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
+				$rootScope.$emit('deactivateView');
 			}
 		};
+
+		$rootScope.$on('viewDeactivated', function() {
+			// carry on with the navigation once the previous view is deactivated
+			window.location.hash = navigationDestination;
+		});
 
 		// An item dragged and dropped on a sidebar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {

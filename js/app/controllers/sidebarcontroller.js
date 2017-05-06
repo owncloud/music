@@ -79,14 +79,20 @@ angular.module('Music').controller('SidebarController',
 		};
 
 		// Navigate to a view selected from the sidebar
+		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
+				navigationDestination = destination;
 				$rootScope.loading = true;
-				$timeout(function() {
-					window.location.hash = destination;
-				}, 100); // Firefox requires here a small delay to correctly show the loading animation
+				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
+				$rootScope.$emit('deactivateView');
 			}
 		};
+
+		$rootScope.$on('viewDeactivated', function() {
+			// carry on with the navigation once the previous view is deactivated
+			window.location.hash = navigationDestination;
+		});
 
 		// An item dragged and dropped on a sidebar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {

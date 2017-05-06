@@ -3,12 +3,6 @@
 $version = \OCP\Util::getVersion();
 
 \OCP\Util::addScript('core', 'placeholder');
-if (version_compare(implode('.', $version), '7.8', '<=')) {
-	\OCP\Util::addScript('3rdparty', 'md5/md5.min');
-	\OCP\Util::addScript('music', 'vendor/underscore/underscore-min');
-} else {
-	vendor_script('blueimp-md5/js/md5');
-}
 
 // until ownCloud 8.2 OC.Backbone was not present
 if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {

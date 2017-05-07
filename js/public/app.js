@@ -402,17 +402,20 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
-				$timeout(showMore);
-			} else {
-				// Do not reinitialize the player state if it is already playing.
-				// This is the case when the user has started playing music while scanning is ongoing,
-				// and then hits the 'update' button. Reinitializing would stop and restart the playback.
-				if (!isPlaying()) {
-					initializePlayerStateFromURL();
+			// show more entries only if the view is not already (being) deactivated
+			if ($rootScope.currentView && $scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
+					$timeout(showMore);
 				} else {
-					$rootScope.loading = false;
+					// Do not reinitialize the player state if it is already playing.
+					// This is the case when the user has started playing music while scanning is ongoing,
+					// and then hits the 'update' button. Reinitializing would stop and restart the playback.
+					if (!isPlaying()) {
+						initializePlayerStateFromURL();
+					} else {
+						$rootScope.loading = false;
+					}
 				}
 			}
 		}
@@ -760,11 +763,14 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit < $scope.tracks.length) {
-				$timeout(showMore);
-			} else {
-				$rootScope.loading = false;
+			// show more entries only if the view is not already (being) deactivated
+			if ($rootScope.currentView && $scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.tracks.length) {
+					$timeout(showMore);
+				} else {
+					$rootScope.loading = false;
+				}
 			}
 		}
 
@@ -888,6 +894,7 @@ angular.module('Music').controller('SidebarController',
 		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
+				$rootScope.currentView = null;
 				navigationDestination = destination;
 				$rootScope.loading = true;
 				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.

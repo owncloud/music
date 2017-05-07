@@ -82,6 +82,7 @@ angular.module('Music').controller('SidebarController',
 		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
+				$rootScope.currentView = null;
 				navigationDestination = destination;
 				$rootScope.loading = true;
 				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.

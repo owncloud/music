@@ -151,11 +151,14 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit < $scope.tracks.length) {
-				$timeout(showMore);
-			} else {
-				$rootScope.loading = false;
+			// show more entries only if the view is not already (being) deactivated
+			if ($rootScope.currentView && $scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.tracks.length) {
+					$timeout(showMore);
+				} else {
+					$rootScope.loading = false;
+				}
 			}
 		}
 

@@ -140,17 +140,20 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function showMore() {
-			$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
-				$timeout(showMore);
-			} else {
-				// Do not reinitialize the player state if it is already playing.
-				// This is the case when the user has started playing music while scanning is ongoing,
-				// and then hits the 'update' button. Reinitializing would stop and restart the playback.
-				if (!isPlaying()) {
-					initializePlayerStateFromURL();
+			// show more entries only if the view is not already (being) deactivated
+			if ($rootScope.currentView && $scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
+					$timeout(showMore);
 				} else {
-					$rootScope.loading = false;
+					// Do not reinitialize the player state if it is already playing.
+					// This is the case when the user has started playing music while scanning is ongoing,
+					// and then hits the 'update' button. Reinitializing would stop and restart the playback.
+					if (!isPlaying()) {
+						initializePlayerStateFromURL();
+					} else {
+						$rootScope.loading = false;
+					}
 				}
 			}
 		}

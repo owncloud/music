@@ -30,6 +30,17 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
 
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
+
 		$scope.getCurrentTrackIndex = function() {
 			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
 		};
@@ -117,7 +128,7 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		};
 
-		$rootScope.$on('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
 				$scope.$parent.scrollToItem('track-' + trackId);
 			}
@@ -128,10 +139,10 @@ angular.module('Music').controller('PlaylistViewController',
 		$timeout(function() {
 			initViewFromRoute();
 		});
-		$rootScope.$on('artistsLoaded', function () {
+		subscribe('artistsLoaded', function () {
 			initViewFromRoute();
 		});
-		$rootScope.$on('playlistsLoaded', function () {
+		subscribe('playlistsLoaded', function () {
 			initViewFromRoute();
 		});
 
@@ -173,15 +184,9 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		}
 
-		$rootScope.$on('deactivateView', function() {
-			if (thisViewActive()) {
-				$timeout(showLess);
-			}
+		subscribe('deactivateView', function() {
+			$timeout(showLess);
 		});
-
-		function thisViewActive() {
-			return $scope.$parent !== null;
-		}
 
 		function moveArrayElement(array, from, to) {
 			array.splice(to, 0, array.splice(from, 1)[0]);

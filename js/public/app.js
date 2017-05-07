@@ -204,7 +204,10 @@ angular.module('Music').controller('MainController',
 			console.log("No getScrollBarWidth() in core");
 		}
 	}
-	$($window).resize(adjustControlsBarWidth);
+	$($window).resize(function() {
+		adjustControlsBarWidth();
+		$rootScope.$emit('windowResized');
+	});
 	adjustControlsBarWidth();
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
@@ -276,6 +279,17 @@ angular.module('Music').controller('OverviewController',
 		var INCREMENTAL_LOAD_STEP = 4;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
+
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
@@ -332,23 +346,16 @@ angular.module('Music').controller('OverviewController',
 		};
 
 		// emited on end of playlist by playerController
-		playlistService.subscribe('playlistEnded', function(){
-			// update URL hash if this view is active
-			if (thisViewActive()) {
-				window.location.hash = '#/';
-			}
+		subscribe('playlistEnded', function() {
+			window.location.hash = '#/';
 		});
 
-		$rootScope.$on('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId) {
 			var track = findTrack(trackId);
 			if (track) {
 				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
 		});
-
-		function thisViewActive() {
-			return $scope.$parent !== null;
-		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -415,7 +422,7 @@ angular.module('Music').controller('OverviewController',
 			$timeout(showMore);
 		}
 
-		$rootScope.$on('artistsLoaded', function() {
+		subscribe('artistsLoaded', function() {
 			showMore();
 		});
 
@@ -429,10 +436,8 @@ angular.module('Music').controller('OverviewController',
 			}
 		}
 
-		$rootScope.$on('deactivateView', function() {
-			if (thisViewActive()) {
-				$timeout(showLess);
-			}
+		subscribe('deactivateView', function() {
+			$timeout(showLess);
 		});
 }]);
 
@@ -634,6 +639,17 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
 
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
+
 		$scope.getCurrentTrackIndex = function() {
 			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
 		};
@@ -721,7 +737,7 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		};
 
-		$rootScope.$on('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
 				$scope.$parent.scrollToItem('track-' + trackId);
 			}
@@ -732,10 +748,10 @@ angular.module('Music').controller('PlaylistViewController',
 		$timeout(function() {
 			initViewFromRoute();
 		});
-		$rootScope.$on('artistsLoaded', function () {
+		subscribe('artistsLoaded', function () {
 			initViewFromRoute();
 		});
-		$rootScope.$on('playlistsLoaded', function () {
+		subscribe('playlistsLoaded', function () {
 			initViewFromRoute();
 		});
 
@@ -777,15 +793,9 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		}
 
-		$rootScope.$on('deactivateView', function() {
-			if (thisViewActive()) {
-				$timeout(showLess);
-			}
+		subscribe('deactivateView', function() {
+			$timeout(showLess);
 		});
-
-		function thisViewActive() {
-			return $scope.$parent !== null;
-		}
 
 		function moveArrayElement(array, from, to) {
 			array.splice(to, 0, array.splice(from, 1)[0]);
@@ -1034,17 +1044,18 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 			}
 		};
 
-		// trigger resize on window resize
-		$($window).resize(function() {
-			resizeNavigation();
-		});
-
-		// trigger resize on player status changes
-		$rootScope.$watch('started', function() {
-			resizeNavigation();
-		});
-
 		resizeNavigation();
+
+		// trigger resize on window resize and player status changes
+		var unsubscribeFuncs = [
+			$rootScope.$on('windowResized', resizeNavigation),
+			$rootScope.$watch('started', resizeNavigation)
+		];
+
+		// unsubscribe listeners when the scope is destroyed
+		scope.$on('$destroy', function () {
+			_.each(unsubscribeFuncs, function(func) { func(); });
+		});
 	};
 }]);
 
@@ -1412,7 +1423,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			$rootScope.$emit(name, parameters);
 		},
 		subscribe: function(name, listener) {
-			$rootScope.$on(name, listener);
+			return $rootScope.$on(name, listener);
 		}
 	};
 }]);

@@ -17,6 +17,17 @@ angular.module('Music').controller('OverviewController',
 		var INCREMENTAL_LOAD_STEP = 4;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
+
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
@@ -73,23 +84,16 @@ angular.module('Music').controller('OverviewController',
 		};
 
 		// emited on end of playlist by playerController
-		playlistService.subscribe('playlistEnded', function(){
-			// update URL hash if this view is active
-			if (thisViewActive()) {
-				window.location.hash = '#/';
-			}
+		subscribe('playlistEnded', function() {
+			window.location.hash = '#/';
 		});
 
-		$rootScope.$on('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId) {
 			var track = findTrack(trackId);
 			if (track) {
 				$scope.$parent.scrollToItem('album-' + track.albumId);
 			}
 		});
-
-		function thisViewActive() {
-			return $scope.$parent !== null;
-		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -156,7 +160,7 @@ angular.module('Music').controller('OverviewController',
 			$timeout(showMore);
 		}
 
-		$rootScope.$on('artistsLoaded', function() {
+		subscribe('artistsLoaded', function() {
 			showMore();
 		});
 
@@ -170,9 +174,7 @@ angular.module('Music').controller('OverviewController',
 			}
 		}
 
-		$rootScope.$on('deactivateView', function() {
-			if (thisViewActive()) {
-				$timeout(showLess);
-			}
+		subscribe('deactivateView', function() {
+			$timeout(showLess);
 		});
 }]);

@@ -166,7 +166,10 @@ angular.module('Music').controller('MainController',
 			console.log("No getScrollBarWidth() in core");
 		}
 	}
-	$($window).resize(adjustControlsBarWidth);
+	$($window).resize(function() {
+		adjustControlsBarWidth();
+		$rootScope.$emit('windowResized');
+	});
 	adjustControlsBarWidth();
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)

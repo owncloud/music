@@ -1,5 +1,6 @@
 # 
 # Translators:
+# Alberto Pinardi <pinardi.alberto@gmail.com>, 2017
 # dimariaj87 <dimariaj87@gmail.com>, 2014
 # idetao <marcxosm@gmail.com>, 2014
 # Paolo Velati <paolo.velati@gmail.com>, 2014
@@ -7,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-25 08:01+0000\n"
-"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
+"PO-Revision-Date: 2017-05-08 12:52+0000\n"
+"Last-Translator: Alberto Pinardi <pinardi.alberto@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/owncloud-org/owncloud/language/it/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -140,7 +141,7 @@ msgstr "Artista sconosciuto"
 
 #: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Carica la musica nella App File per sentirla da qui"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -164,4 +165,4 @@ msgstr "tracce"
 
 #: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} di {{ scanningTotal }}"

@@ -1,6 +1,7 @@
 <?php
 $TRANSLATIONS = array(
 "Albums" => "アルバム",
+"All tracks" => "すべてのトラック",
 "Artists" => "アーティスト",
 "Description" => "説明",
 "Description (e.g. App name)" => "説明 (例えばアプリケーション名)",

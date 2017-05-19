@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Pisike Sipelgas <pisike.sipelgas@gmail.com>, 2013-2014
-# Rivo Zängov <eraser@eraser.ee>, 2013-2014
+# Rivo Zängov <eraser@eraser.ee>, 2013-2014,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-05-19 07:50+0000\n"
+"Last-Translator: Rivo Zängov <eraser@eraser.ee>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/owncloud-org/owncloud/language/et_EE/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: ../templates/main.php:59
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Uus esitusloend"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
@@ -23,7 +23,7 @@ msgstr "Albumid"
 
 #: ../templates/main.php:55
 msgid "All tracks"
-msgstr ""
+msgstr "Kõik lood"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +31,7 @@ msgstr "Artistid"
 
 #: ../templates/main.php:145
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Skännimise alustamiseks kliki siia"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -62,7 +62,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr "Pea meeles, et Ampache APi ei ole küps ning on ebastabiilne. Anna teada oma kogemustest selle funktsionaalsusega vastavalt <a href=\"https://github.com/owncloud/music/issues/60\">teemaarendusele</a>. Ühtlasi soovin nimistut klientidest, mida testida. Tänan."
+msgstr "Pea meeles, et Ampache APi on lihtsalt eelvaade ning see pole stabiilne. Anna teada oma kogemustest selle funktsionaalsusega vastavalt <a href=\"https://github.com/owncloud/music/issues/60\">teemaarendusele</a>. Ühtlasi soovin nimistut klientidest, mida testida. Tänan."
 
 #: ../templates/fake-template.php:3
 msgid "Music"
@@ -70,11 +70,11 @@ msgstr "Muusika"
 
 #: ../templates/main.php:144
 msgid "New music available"
-msgstr ""
+msgstr "Saadaval on uut muusikat"
 
 #: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Saadaval on uut muusikat. Kliki siia, et muusikakogu uuesti laadida."
 
 #: ../templates/main.php:90
 msgid "Next"
@@ -82,7 +82,7 @@ msgstr "Järgmine"
 
 #: ../templates/main.php:133
 msgid "No music found"
-msgstr ""
+msgstr "Muusikat ei leitud"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +110,7 @@ msgstr "Keeldu API paroolist"
 
 #: ../templates/main.php:150
 msgid "Scanning music …"
-msgstr ""
+msgstr "Muusika otsimine ..."
 
 #: ../templates/main.php:115
 msgid "Shuffle"
@@ -126,7 +126,7 @@ msgstr "See seade määrab kausta, kust muusikat otsitakse."
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
-msgstr "Rajad"
+msgstr "Lood"
 
 #: ../templates/fake-template.php:4
 msgid "Unknown album"
@@ -138,7 +138,7 @@ msgstr "Tundmatu esitaja"
 
 #: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Laadi muusika üles failide rakenduses, et seda siin kuulata"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -154,12 +154,12 @@ msgstr "Kasuta oma kasutajatunnust ja järgmist parooli ühendumaks selle Ampach
 
 #: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
-msgstr ""
+msgstr "Helitugevus"
 
 #: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
-msgstr ""
+msgstr "lugu"
 
 #: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} / {{ scanningTotal }}"

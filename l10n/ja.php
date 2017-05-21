@@ -1,5 +1,6 @@
 <?php
 $TRANSLATIONS = array(
+"+ New Playlist" => "＋新しいプレイリスト",
 "Albums" => "アルバム",
 "All tracks" => "すべてのトラック",
 "Artists" => "アーティスト",
@@ -24,6 +25,8 @@ $TRANSLATIONS = array(
 "Unknown album" => "不明なアルバム",
 "Unknown artist" => "不明なアーティスト",
 "Use this address to browse your music collection from any Ampache compatible player." => "あなたの音楽コレクションをAmpache対応プレイヤーから閲覧するには、このアドレスを使用してください。",
-"Use your username and following password to connect to this Ampache instance:" => "このAmpacheインスタンスに接続するには、あなたのユーザー名と以下のパスワードを使用してください:"
+"Use your username and following password to connect to this Ampache instance:" => "このAmpacheインスタンスに接続するには、あなたのユーザー名と以下のパスワードを使用してください:",
+"Volume" => "音量",
+"tracks" => "トラック"
 );
 $PLURAL_FORMS = "nplurals=1; plural=0;";

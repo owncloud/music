@@ -2,6 +2,7 @@
 # Translators:
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
 # タカハシ <indexial@outlook.jp>, 2014
+# Ippei Shinozaki <shino.ip.1231@gmail.com>, 2017
 # kuromabo <md81bird@hitaki.net>, 2014-2015,2017
 # Mika Kobayashi, 2014
 # Ippei Shinozaki <shino.ip.1231@gmail.com>, 2014
@@ -9,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-05-15 13:27+0000\n"
-"Last-Translator: kuromabo <md81bird@hitaki.net>\n"
+"PO-Revision-Date: 2017-05-21 12:04+0000\n"
+"Last-Translator: Ippei Shinozaki <shino.ip.1231@gmail.com>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/owncloud-org/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +20,7 @@ msgstr ""
 
 #: ../templates/main.php:59
 msgid "+ New Playlist"
-msgstr ""
+msgstr "＋新しいプレイリスト"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
@@ -158,11 +159,11 @@ msgstr "このAmpacheインスタンスに接続するには、あなたのユ�
 
 #: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
-msgstr ""
+msgstr "音量"
 
 #: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
-msgstr ""
+msgstr "トラック"
 
 #: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"

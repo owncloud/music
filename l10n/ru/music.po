@@ -7,7 +7,7 @@
 # John Doe <twisted_tits@mail.ru>, 2015
 # Kalyuzhniy Aleksey, 2014
 # lifeslice <root@lifeslice.ru>, 2014
-# Sergei Shuykov <n1nj4p0w3r@gmail.com>, 2015
+# Sugaroverdose, 2015
 # Void Ayanami <hex.void@gmail.com>, 2013
 # Дмитрий <me@imthecat.ru>, 2014
 msgid ""

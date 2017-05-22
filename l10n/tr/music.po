@@ -1,12 +1,13 @@
 # 
 # Translators:
 # Emre Saracoglu <hello@emresaracoglu.com>, 2014
+# Mehmed Naim <mehmednaim@gmail.com>, 2017
 # Volkan Gezer <volkangezer@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-05-22 13:12+0000\n"
+"Last-Translator: Mehmed Naim <mehmednaim@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/owncloud-org/owncloud/language/tr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +16,7 @@ msgstr ""
 
 #: ../templates/main.php:59
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+Yeni Çalma Listesi"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
@@ -23,7 +24,7 @@ msgstr "Albümler"
 
 #: ../templates/main.php:55
 msgid "All tracks"
-msgstr ""
+msgstr "Tüm Parçalar"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +32,7 @@ msgstr "Sanatçılar"
 
 #: ../templates/main.php:145
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Taramayı başlatmak için buraya tıklayın"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -70,11 +71,11 @@ msgstr "Müzik"
 
 #: ../templates/main.php:144
 msgid "New music available"
-msgstr ""
+msgstr "Yeni müzik mevcut"
 
 #: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Yeni müzik mevcut. Kütüphaneyi yeniden taramak için buraya tıklayın."
 
 #: ../templates/main.php:90
 msgid "Next"
@@ -82,7 +83,7 @@ msgstr "Sonraki"
 
 #: ../templates/main.php:133
 msgid "No music found"
-msgstr ""
+msgstr "Müzik bulunamadı"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +111,7 @@ msgstr "API parolasını geçersiz kıl"
 
 #: ../templates/main.php:150
 msgid "Scanning music …"
-msgstr ""
+msgstr "Müzik taranıyor ..."
 
 #: ../templates/main.php:115
 msgid "Shuffle"
@@ -138,7 +139,7 @@ msgstr "Bilinmeyen sanatçı"
 
 #: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Müziği burada dinlemek için dosya uygulaması içinde yükleyin"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -154,12 +155,12 @@ msgstr "Bu Ampache örneğine bağlanmak için kullanıcı adınızı ve aşağ�
 
 #: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
-msgstr ""
+msgstr "Ses"
 
 #: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
-msgstr ""
+msgstr "parçalar"
 
 #: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "Toplam {{ scanningTotal }} parçanın {{ scanningScanned }} tanesi tarandı"

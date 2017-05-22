@@ -2,11 +2,12 @@
 # Translators:
 # Cyryl Sochacki <cyrylsochacki@gmail.com>, 2013-2014
 # Maciej Przybecki <maciej.przybecki@gmail.com>, 2014
+# Przemyslaw Ka. <przemyslaw.karpeta@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-05-22 22:22+0000\n"
+"Last-Translator: Przemyslaw Ka. <przemyslaw.karpeta@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/owncloud-org/owncloud/language/pl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,7 +16,7 @@ msgstr ""
 
 #: ../templates/main.php:59
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Nowa Lista odtwarzania"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:54
 msgid "Albums"
@@ -23,7 +24,7 @@ msgstr "Albumy"
 
 #: ../templates/main.php:55
 msgid "All tracks"
-msgstr ""
+msgstr "Wszystkie ściezki"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -31,7 +32,7 @@ msgstr "Artyści"
 
 #: ../templates/main.php:145
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Kliknij tutaj aby rozpocząć skanowanie"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -70,11 +71,11 @@ msgstr "Muzyka"
 
 #: ../templates/main.php:144
 msgid "New music available"
-msgstr ""
+msgstr "Dostępne są nowe utwory"
 
 #: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Dostępne są nowe utwory. Kliknij tutaj aby załadować ponownie bibliotekę muzyki."
 
 #: ../templates/main.php:90
 msgid "Next"
@@ -82,7 +83,7 @@ msgstr "Następny"
 
 #: ../templates/main.php:133
 msgid "No music found"
-msgstr ""
+msgstr "Nie znaleziono muzyki"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -110,7 +111,7 @@ msgstr "Odwołaj hasło API"
 
 #: ../templates/main.php:150
 msgid "Scanning music …"
-msgstr ""
+msgstr "Skanowanie muzyki ..."
 
 #: ../templates/main.php:115
 msgid "Shuffle"
@@ -154,12 +155,12 @@ msgstr "Użyj nazwy użytkownika i następującego hasła do połączenia do tej
 
 #: ../templates/main.php:120 ../templates/main.php:122
 msgid "Volume"
-msgstr ""
+msgstr "Głośność"
 
 #: ../templates/main.php:56 ../templates/main.php:76
 msgid "tracks"
-msgstr ""
+msgstr "ścieżki"
 
 #: ../templates/main.php:151
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} z {{ scanningTotal }}"

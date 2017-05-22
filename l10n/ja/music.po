@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-05-21 12:04+0000\n"
+"PO-Revision-Date: 2017-05-22 11:59+0000\n"
 "Last-Translator: Ippei Shinozaki <shino.ip.1231@gmail.com>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/owncloud-org/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,7 +36,7 @@ msgstr "アーティスト"
 
 #: ../templates/main.php:145
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "ここをクリックしてスキャン開始"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -75,11 +75,11 @@ msgstr "ミュージック"
 
 #: ../templates/main.php:144
 msgid "New music available"
-msgstr ""
+msgstr "新しいミュージックが利用可能です"
 
 #: ../templates/main.php:139 ../templates/main.php:140
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "新しいミュージックが利用可能です。ここをクリックしてミュージックライブラリをリロード。"
 
 #: ../templates/main.php:90
 msgid "Next"
@@ -87,7 +87,7 @@ msgstr "次"
 
 #: ../templates/main.php:133
 msgid "No music found"
-msgstr ""
+msgstr "ミュージックが見つかりません"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -115,7 +115,7 @@ msgstr "API パスワードを無効にする"
 
 #: ../templates/main.php:150
 msgid "Scanning music …"
-msgstr ""
+msgstr "ミュージックをスキャン中..."
 
 #: ../templates/main.php:115
 msgid "Shuffle"
@@ -143,7 +143,7 @@ msgstr "不明なアーティスト"
 
 #: ../templates/main.php:134
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "ファイルアプリからミュージックをアップロードするとここで聴けます。"
 
 #: ../templates/fake-template.php:12
 msgid ""

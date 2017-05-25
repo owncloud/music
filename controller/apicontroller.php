@@ -54,6 +54,8 @@ class ApiController extends Controller {
 	private $urlGenerator;
 	/** @var Folder */
 	private $userFolder;
+	/** @var Logger */
+	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -65,7 +67,8 @@ class ApiController extends Controller {
 								Scanner $scanner,
 								$userId,
 								$l10n,
-								Folder $userFolder){
+								Folder $userFolder,
+								Logger $logger){
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackbusinesslayer;
@@ -76,6 +79,7 @@ class ApiController extends Controller {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -317,14 +321,34 @@ class ApiController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
+	public function getScanState() {
+		return new JSONResponse([
+			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId, $this->userFolder),
+			'scannedCount' => count($this->scanner->getScannedFiles($this->userId))
+		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
 	public function scan() {
-		$dry = (boolean) $this->params('dry');
-		if($dry) {
-			$result = $this->scanner->getScanState();
-		} else {
-			$result = $this->scanner->rescan();
+		// extract the parameters
+		$fileIds = array_map('intval', explode(',', $this->params('files')));
+		$finalize = filter_var($this->params('finalize'), FILTER_VALIDATE_BOOLEAN);
+
+		$filesScanned = $this->scanner->scanFiles($this->userId, $this->userFolder, $fileIds);
+
+		$coversUpdated = false;
+		if ($finalize) {
+			$coversUpdated = $this->scanner->findCovers();
+			$totalCount = count($this->scanner->getScannedFiles($this->userId));
+			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}
-		return new JSONResponse(array($result));
+
+		return new JSONResponse([
+			'filesScanned' => $filesScanned,
+			'coversUpdated' => $coversUpdated
+		]);
 	}
 
 	/**

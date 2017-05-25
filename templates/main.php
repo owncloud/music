@@ -140,7 +140,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 
-			<div id="toScan" ng-show="toScan" class="emptycontent clickable" ng-click="processNextScanStep(0)">
+			<div id="toScan" ng-show="toScan" class="emptycontent clickable" ng-click="processNextScanStep()">
 				<div class="icon-audio svg"></div>
 				<h2 translate>New music available</h2>
 				<p translate>Click here to start the scan</p>

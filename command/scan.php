@@ -90,7 +90,20 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$this->scanner->batchRescan($user, $this->resolveUserFolder($user), $input->getOption('debug') ? $output : null);
+			$userHome = $this->resolveUserFolder($user);
+			$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
+			$output->writeln('Found ' . count($unscanned) . ' new music files');
+			
+			if (count($unscanned)) {
+				$processedCount = $this->scanner->scanFiles(
+						$user, $userHome, $unscanned,
+						$input->getOption('debug') ? $output : null);
+				$output->writeln("Added $processedCount files to database");
+			}
+
+			if ($this->scanner->findCovers()) {
+				$output->writeln("Some cover image(s) were found and added");
+			}
 		}
 	}
 

@@ -25,6 +25,10 @@ $app->registerRoutes($this, array('routes' => array(
 
 	// api
 	array('name' => 'api#collection', 'url' => '/api/collection', 'verb' => 'GET'),
+	array('name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'),
+	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
+	array('name' => 'api#getScanState', 'url' => '/api/scanstate', 'verb' => 'GET'),
+	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'POST'),
 
 	// Shiva api https://github.com/tooxie/shiva-server#resources
 	array('name' => 'api#artists', 'url' => '/api/artists', 'verb' => 'GET'),
@@ -36,9 +40,6 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'),
 	array('name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'),
 	// array('name' => 'api#trackLyrics', 'url' => '/api/track/{trackIdOrSlug}/lyrics', 'verb' => 'GET'),
-	array('name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'),
-	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
-	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'GET'),
 
 	// playlist API
 	array('name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'),

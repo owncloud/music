@@ -85,7 +85,8 @@ class Music extends App {
 				$c->query('Scanner'),
 				$c->query('UserId'),
 				$c->query('L10N'),
-				$c->query('UserFolder')
+				$c->query('UserFolder'),
+				$c->query('Logger')
 			);
 		});
 

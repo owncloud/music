@@ -334,96 +334,61 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function rescan() {
-		$this->logger->log('Rescan: process next 20 tracks of user ' . $this->userId, 'debug');
+	public function getUnscannedMusicFileIds($userId, $userHome) {
+		$scannedIds = $this->getScannedFiles($userId);
+		$musicFiles = $this->getMusicFiles($userId, $userHome);
+		$allIds = array_map(function($f) { return $f->getId(); }, $musicFiles);
+		$unscannedIds = array_values(array_diff($allIds, $scannedIds));
 
-		$result = $this->doRescan($this->userId, $this->userFolder, 20);
+		$count = count($unscannedIds);
+		if ($count) {
+			$this->logger->log("Found $count unscanned music files for user $userId", 'info');
+		} else {
+			$this->logger->log("No unscanned music files for user $userId", 'debug');
+		}
 
-		// Log each step on 'debug' level and the final step on 'info' level
-		$logLevel = ($result['processed'] >= $result['total']) ? 'info' : 'debug';
-
-		$this->logger->log(sprintf('Rescan for user %s finished (%d/%d)',
-				$this->userId, $result['processed'], $result['total']), $logLevel);
-		return $result;
+		return $unscannedIds;
 	}
 
-	public function batchRescan($userId, $userHome, OutputInterface $debugOutput = null) {
-		$this->logger->log('Batch rescan started for user ' . $userId, 'info');
+	public function scanFiles($userId, $userHome, $fileIds, OutputInterface $debugOutput = null) {
+		$count = count($fileIds);
+		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
-		$result = $this->doRescan($userId, $userHome, 1000000, $debugOutput);
-
-		$this->logger->log(sprintf('Batch rescan for user %s finished (%d/%d), %d new tracks',
-				$userId, $result['processed'], $result['total'], $result['scanned']), 'info');
-		return $result;
-	}
-
-	/**
-	 * Scan the filebase of the given user for unindexed music files and add those to the database.
-	 */
-	private function doRescan($userId, $userHome, $maxTracksToProcess, OutputInterface $debugOutput = null) {
 		// back up the execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
 		set_time_limit(0);
 
-		$fileIds = $this->getScannedFiles($userId);
-		$music = $this->getMusicFiles($userId, $userHome);
-
 		$count = 0;
-		foreach ($music as $file) {
-			if($count >= $maxTracksToProcess) {
-				// break scan - maximum number of files are already scanned
-				break;
-			}
-			try {
-				if(in_array($file->getId(), $fileIds)) {
-					// skip this file as it's already scanned
-					continue;
+		foreach ($fileIds as $fileId) {
+			$fileNodes = $userHome->getById($fileId);
+			if (count($fileNodes) > 0) {
+				$file = $fileNodes[0];
+				if($debugOutput) {
+					$before = memory_get_usage(true);
 				}
-			} catch (\OCP\Files\NotFoundException $e) {
-				// just ignore the error
-				$this->logger->log('updateById - file not found - '. $file , 'debug');
-				continue;
+				$this->update($file, $userId, $userHome);
+				if($debugOutput) {
+					$after = memory_get_usage(true);
+					$diff = $after - $before;
+					$afterFileSize = new FileSize($after);
+					$diffFileSize = new FileSize($diff);
+					$humanFilesizeAfter = $afterFileSize->getHumanReadable();
+					$humanFilesizeDiff = $diffFileSize->getHumanReadable();
+					$path = $file->getPath();
+					$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+				}
+				$count++;
 			}
-			if($debugOutput) {
-				$before = memory_get_usage(true);
+			else {
+				$this->logger->log("File with id $fileId not found for user $userId", 'warn');
 			}
-			$this->update($file, $userId, $userHome);
-			if($debugOutput) {
-				$after = memory_get_usage(true);
-				$diff = $after - $before;
-				$afterFileSize = new FileSize($after);
-				$diffFileSize = new FileSize($diff);
-				$humanFilesizeAfter = $afterFileSize->getHumanReadable();
-				$humanFilesizeDiff = $diffFileSize->getHumanReadable();
-				$path = $file->getPath();
-				$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
-			}
-			$count++;
 		}
-		// find album covers
-		$this->albumBusinessLayer->findCovers();
 
 		// reset execution time limit
 		set_time_limit($executionTime);
 
-		return [
-			'processed' => count($fileIds) + $count,
-			'scanned' => $count,
-			'total' => count($music)
-		];
-	}
-
-	/**
-	 * Return the state of the scanning for the current user 
-	 * in the same format as the rescan functions
-	 */
-	public function getScanState() {
-		return [
-			'processed' => $this->trackBusinessLayer->count($this->userId),
-			'scanned' => 0,
-			'total' => count($this->getMusicFiles($this->userId, $this->userFolder))
-		];
+		return $count;
 	}
 
 	/**
@@ -457,6 +422,7 @@ class Scanner extends PublicEmitter {
 			$this->cache->remove($user);
 			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
 		}
+		return !empty($affectedUsers);
 	}
 
 	private static function startsWith($string, $potentialStart) {

@@ -82,39 +82,42 @@ angular.module('Music').controller('MainController',
 		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
 	};
 
-	$scope.processNextScanStep = function(dry) {
+	var FILES_TO_SCAN_PER_STEP = 10;
+	var filesToScan = null;
+	var filesToScanIterator = 0;
+
+	function updateFilesToScan() {
+		Restangular.one('scanstate').get().then(function(state) {
+			filesToScan = state.unscannedFiles;
+			filesToScanIterator = 0;
+			$scope.toScan = (filesToScan.length > 0);
+			$scope.noMusicAvailable = (state.scannedCount === 0 && !$scope.toScan);
+		});
+	}
+
+	$scope.processNextScanStep = function() {
 		$scope.toScan = false;
-		$scope.dryScanRun = dry;
+		$scope.scanning = true;
+		$scope.scanningTotal = filesToScan.length;
 
-		// if it's not a dry run it will scan
-		if(dry === 0) {
-			$scope.scanning = true;
-		}
-		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
-			var scan = scanItems[0];
+		var sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
+		var filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
+		var params = {
+				files: filesForStep.join(','),
+				finalize: sliceEnd >= filesToScan.length
+		};
+		Restangular.all('scan').post(params).then(function(result){
+			filesToScanIterator = sliceEnd;
 
-			$scope.noMusicAvailable = (scan.total === 0);
-
-			// if it was not a dry run and the processed count is bigger than
-			// the previous value there are new music files available
-			if(scan.processed > $scope.scanningScanned && $scope.dryScanRun === 0) {
+			if(result.filesScanned || result.coversUpdated) {
 				$scope.updateAvailable = true;
 			}
 
-			$scope.scanningScanned = scan.processed;
-			$scope.scanningTotal = scan.total;
+			$scope.scanningScanned = filesToScanIterator;
 
-			if(scan.processed < scan.total) {
-				// allow recursion but just if it was not a dry run previously
-				if($scope.dryScanRun === 0) {
-					$scope.processNextScanStep(0);
-				} else {
-					$scope.toScan = true;
-				}
+			if(filesToScanIterator < filesToScan.length) {
+				$scope.processNextScanStep();
 			} else {
-				if(scan.processed > scan.total) {
-					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
-				}
 				$scope.scanning = false;
 			}
 
@@ -224,7 +227,7 @@ angular.module('Music').controller('MainController',
 	}
 
 	// initial lookup if new files are available
-	$scope.processNextScanStep(1);
+	updateFilesToScan();
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

@@ -212,10 +212,6 @@ class PlaylistApiController extends Controller {
 	 * @return int[]
 	 */
 	private function paramArray($name) {
-		$array = array();
-		foreach (explode(',', $this->params($name)) as $item) {
-			$array[] = (int) $item;
-		}
-		return $array;
+		return array_map('intval', explode(',', $this->params($name)));
 	}
 }

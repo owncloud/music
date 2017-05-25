@@ -1297,7 +1297,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			playlist = pl.slice(); // copy
 			playOrder = null;
 			playOrderIter = -1;
-			startFromIndex = startIndex || null;
+			startFromIndex = (startIndex === undefined) ? null : startIndex;
 		},
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];

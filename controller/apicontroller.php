@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\Cache;
 use OCA\Music\Db\Track;

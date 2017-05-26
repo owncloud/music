@@ -33,6 +33,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $l10n;
 	private $scanner;
 	private $userFolder;
+	private $logger;
 
 	protected function getController($urlParams){
 		return new ApiController(
@@ -46,12 +47,12 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->scanner,
 			$this->userId,
 			$this->l10n,
-			$this->userFolder);
+			$this->userFolder,
+			$this->logger);
 	}
 
 	protected function setUp(){
-		$this->request = $this->getMockBuilder(
-			'\OCP\IRequest')
+		$this->request = $this->getMockBuilder('\OCP\IRequest')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
@@ -63,7 +64,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
 			->disableOriginalConstructor()
 			->getMock();
-
 		$this->trackBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\TrackBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
@@ -79,6 +79,9 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->controller = new ApiController(
 			$this->appname,
 			$this->request,
@@ -90,7 +93,8 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->scanner,
 			$this->userId,
 			$this->l10n,
-			$this->userFolder);
+			$this->userFolder,
+			$this->logger);
 	}
 
 	/**

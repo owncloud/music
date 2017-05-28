@@ -509,12 +509,12 @@ angular.module('Music').controller('PlayerController',
 		}
 	});
 
-	$scope.getPlayableFileURL = function (track) {
+	$scope.getPlayableFileId = function (track) {
 		for(var mimeType in track.files) {
 			if($scope.player.canPlayMIME(mimeType)) {
 				return {
 					'type': mimeType,
-					'url': track.files[mimeType] + '?requesttoken=' + encodeURIComponent(OC.requestToken)
+					'id': track.files[mimeType]
 				};
 			}
 		}
@@ -541,13 +541,22 @@ angular.module('Music').controller('PlayerController',
 											return album.id === track.albumId;
 										});
 
-			$scope.player.fromURL($scope.getPlayableFileURL(track));
 			$scope.setLoading(true);
-			$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
-			$scope.player.play();
+			// get webDAV URL to the track and start playing it
+			var mimeAndId = $scope.getPlayableFileId(track);
+			Restangular.one('file', mimeAndId.id).one('webdav').get().then(function(result) {
+				// It is possible that the active track has already changed again by the time we get
+				// the URI. Do not start playback in that case.
+				if (track == $scope.currentTrack) {
+					var url = result.url + '?requesttoken=' + encodeURIComponent(OC.requestToken);
+					$scope.player.fromURL(url, mimeAndId.mime);
+					$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
-			$scope.setPlay(true);
+					$scope.player.play();
+					$scope.setPlay(true);
+				}
+			});
 
 		} else {
 			$scope.currentArtist = null;
@@ -601,7 +610,7 @@ angular.module('Music').controller('PlayerController',
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
-		while(entry !== null && !$scope.getPlayableFileURL(entry.track)) {
+		while(entry !== null && !$scope.getPlayableFileId(entry.track)) {
 			tracksSkipped = true;
 			entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
@@ -1194,17 +1203,18 @@ PlayerWrapper.prototype.canPlayMIME = function(mime) {
 	return soundManager.canPlayMIME(mime) || mime=='audio/flac' || mime=='audio/mpeg';
 };
 
-PlayerWrapper.prototype.fromURL = function(typeAndURL) {
+PlayerWrapper.prototype.fromURL = function(url, mime) {
+	// ensure there are no active playback before starting new
+	this.stop();
+
 	var self = this;
-	var url = typeAndURL.url;
-	var type = typeAndURL.type;
 
 	if (soundManager.canPlayURL(url)) {
 		this.underlyingPlayer = 'sm2';
 	} else {
 		this.underlyingPlayer = 'aurora';
 	}
-	console.log('Using ' + this.underlyingPlayer + ' for type ' + type + ' URL ' + url);
+	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 
 	switch(this.underlyingPlayer) {
 		case 'sm2':

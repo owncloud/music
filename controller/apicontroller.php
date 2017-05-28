@@ -147,7 +147,7 @@ class ApiController extends Controller {
 				$albumArtist['albums'][] = &$album;
 			}
 			try {
-				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
+				$album['tracks'][] = $track->toCollection($this->l10n);
 			} catch (\OCP\Files\NotFoundException $e) {
 				//ignore not found
 			}
@@ -316,7 +316,26 @@ class ApiController extends Controller {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
-		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n));
+		return new JSONResponse($track->toCollection($this->l10n));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function fileWebDavUrl() {
+		$fileId = $this->params('fileId');
+		$nodes = $this->userFolder->getById($fileId);
+		if(count($nodes) == 0 ) {
+			throw new \OCP\Files\NotFoundException();
+		}
+
+		$node = $nodes[0];
+		$relativePath = $this->userFolder->getRelativePath($node->getPath());
+
+		return new JSONResponse([
+				'url' => $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)
+		]);
 	}
 
 	/**

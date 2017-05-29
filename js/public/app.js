@@ -123,20 +123,23 @@ angular.module('Music').controller('MainController',
 	var FILES_TO_SCAN_PER_STEP = 10;
 	var filesToScan = null;
 	var filesToScanIterator = 0;
+	var previouslyScannedCount = 0;
 
 	function updateFilesToScan() {
 		Restangular.one('scanstate').get().then(function(state) {
+			previouslyScannedCount = state.scannedCount;
 			filesToScan = state.unscannedFiles;
 			filesToScanIterator = 0;
 			$scope.toScan = (filesToScan.length > 0);
-			$scope.noMusicAvailable = (state.scannedCount === 0 && !$scope.toScan);
+			$scope.scanningScanned = previouslyScannedCount;
+			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
+			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
 		});
 	}
 
 	$scope.processNextScanStep = function() {
 		$scope.toScan = false;
 		$scope.scanning = true;
-		$scope.scanningTotal = filesToScan.length;
 
 		var sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
 		var filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
@@ -151,7 +154,7 @@ angular.module('Music').controller('MainController',
 				$scope.updateAvailable = true;
 			}
 
-			$scope.scanningScanned = filesToScanIterator;
+			$scope.scanningScanned = previouslyScannedCount + filesToScanIterator;
 
 			if(filesToScanIterator < filesToScan.length) {
 				$scope.processNextScanStep();
@@ -264,13 +267,12 @@ angular.module('Music').controller('MainController',
 		return artists;
 	}
 
-	// initial lookup if new files are available
-	updateFilesToScan();
-
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;
 	$scope.scanningTotal = 0;
 
+	// initial lookup if new files are available
+	updateFilesToScan();
 }]);
 
 angular.module('Music').controller('OverviewController',

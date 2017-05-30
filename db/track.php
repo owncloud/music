@@ -92,18 +92,7 @@ class Track extends Entity {
 		);
 	}
 
-	public function toCollection(IURLGenerator $urlGenerator, $userFolder, $l10n) {
-		$nodes = $userFolder->getById($this->getFileId());
-		if(count($nodes) == 0 ) {
-			throw new \OCP\Files\NotFoundException();
-		}
-
-		// get the first valid node
-		$node = $nodes[0];
-		$path = $node->getPath();
-
-		$relativePath = $userFolder->getRelativePath($path);
-
+	public function toCollection($l10n) {
 		return array(
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
@@ -111,7 +100,7 @@ class Track extends Entity {
 			'artistId' => $this->getArtistId(),
 			'albumId' => $this->getAlbumId(),
 			'albumArtistId' => $this->getAlbum()->getAlbumArtistId(),
-			'files' => array($this->getMimetype() => $urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)),
+			'files' => [$this->getMimetype() => $this->getFileId()],
 			'id' => $this->getId(),
 		);
 	}

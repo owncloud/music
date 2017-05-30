@@ -120,9 +120,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * updates the cover for albums in the specified folder without cover
 	 * @param integer $coverFileId the file id of the cover image
 	 * @param integer $folderId the file id of the folder where the albums are looked from
+	 * @return true if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId){
-		$this->mapper->updateFolderCover($coverFileId, $folderId);
+		return $this->mapper->updateFolderCover($coverFileId, $folderId);
 	}
 
 	/**
@@ -137,18 +138,24 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * removes the cover art from albums, replacement covers will be searched in a background task
 	 * @param integer $coverFileId the file id of the cover image
+	 * @return true if the given file was cover for some album
 	 */
 	public function removeCover($coverFileId){
-		$this->mapper->removeCover($coverFileId);
+		return $this->mapper->removeCover($coverFileId);
 	}
 
 	/**
 	 * try to find cover arts for albums without covers
+	 * @return array of users whose collections got modified
 	 */
 	public function findCovers(){
+		$affectedUsers = [];
 		$albums = $this->mapper->getAlbumsWithoutCover();
-		foreach ($albums as $album) {
-			$this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId']);
+		foreach ($albums as $album){
+			if ($this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId'])){
+				$affectedUsers[$album['userId']] = 1;
+			}
 		}
+		return array_keys($affectedUsers);
 	}
 }

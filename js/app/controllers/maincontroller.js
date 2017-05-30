@@ -17,8 +17,8 @@ angular.module('Music').controller('MainController',
 
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, track){
-		$scope.currentTrack = track;
+	playlistService.subscribe('trackChanged', function(e, listEntry){
+		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
@@ -82,39 +82,45 @@ angular.module('Music').controller('MainController',
 		return $scope.allTracks ? Object.keys($scope.allTracks).length : 0;
 	};
 
-	$scope.processNextScanStep = function(dry) {
+	var FILES_TO_SCAN_PER_STEP = 10;
+	var filesToScan = null;
+	var filesToScanIterator = 0;
+	var previouslyScannedCount = 0;
+
+	function updateFilesToScan() {
+		Restangular.one('scanstate').get().then(function(state) {
+			previouslyScannedCount = state.scannedCount;
+			filesToScan = state.unscannedFiles;
+			filesToScanIterator = 0;
+			$scope.toScan = (filesToScan.length > 0);
+			$scope.scanningScanned = previouslyScannedCount;
+			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
+			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
+		});
+	}
+
+	$scope.processNextScanStep = function() {
 		$scope.toScan = false;
-		$scope.dryScanRun = dry;
+		$scope.scanning = true;
 
-		// if it's not a dry run it will scan
-		if(dry === 0) {
-			$scope.scanning = true;
-		}
-		Restangular.all('scan').getList({dry: dry}).then(function(scanItems){
-			var scan = scanItems[0];
+		var sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
+		var filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
+		var params = {
+				files: filesForStep.join(','),
+				finalize: sliceEnd >= filesToScan.length
+		};
+		Restangular.all('scan').post(params).then(function(result){
+			filesToScanIterator = sliceEnd;
 
-			$scope.noMusicAvailable = (scan.total === 0);
-
-			// if it was not a dry run and the processed count is bigger than
-			// the previous value there are new music files available
-			if(scan.processed > $scope.scanningScanned && $scope.dryScanRun === 0) {
+			if(result.filesScanned || result.coversUpdated) {
 				$scope.updateAvailable = true;
 			}
 
-			$scope.scanningScanned = scan.processed;
-			$scope.scanningTotal = scan.total;
+			$scope.scanningScanned = previouslyScannedCount + filesToScanIterator;
 
-			if(scan.processed < scan.total) {
-				// allow recursion but just if it was not a dry run previously
-				if($scope.dryScanRun === 0) {
-					$scope.processNextScanStep(0);
-				} else {
-					$scope.toScan = true;
-				}
+			if(filesToScanIterator < filesToScan.length) {
+				$scope.processNextScanStep();
 			} else {
-				if(scan.processed !== scan.total) {
-					Restangular.all('log').post({message: 'Processed more files than available ' + scan.processed + '/' + scan.total });
-				}
 				$scope.scanning = false;
 			}
 
@@ -122,7 +128,7 @@ angular.module('Music').controller('MainController',
 			// a) the first batch is ready
 			// b) the scanning process is completed.
 			// Otherwise the UI state is updated only when the user hits the 'update' button
-			if($scope.updateAvailable && ($scope.artists.length === 0 || !$scope.scanning)) {
+			if($scope.updateAvailable && $scope.artists && ($scope.artists.length === 0 || !$scope.scanning)) {
 				$scope.update();
 			}
 		});
@@ -166,7 +172,10 @@ angular.module('Music').controller('MainController',
 			console.log("No getScrollBarWidth() in core");
 		}
 	}
-	$($window).resize(adjustControlsBarWidth);
+	$($window).resize(function() {
+		adjustControlsBarWidth();
+		$rootScope.$emit('windowResized');
+	});
 	adjustControlsBarWidth();
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
@@ -220,11 +229,10 @@ angular.module('Music').controller('MainController',
 		return artists;
 	}
 
-	// initial lookup if new files are available
-	$scope.processNextScanStep(1);
-
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;
 	$scope.scanningTotal = 0;
 
+	// initial lookup if new files are available
+	updateFilesToScan();
 }]);

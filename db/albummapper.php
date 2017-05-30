@@ -186,6 +186,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer $coverFileId
 	 * @param integer $folderId
+	 * @return true if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
@@ -197,7 +198,8 @@ class AlbumMapper extends BaseMapper {
 					WHERE `files`.`parent` = ?
 				)';
 		$params = array($coverFileId, $folderId);
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		return $result->rowCount() > 0;
 	}
 
 	/**
@@ -214,20 +216,22 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * @param integer $coverFileId
+	 * @return true if the given file was cover for some album
 	 */
 	public function removeCover($coverFileId){
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = NULL
 				WHERE `cover_file_id` = ?';
 		$params = array($coverFileId);
-		$this->execute($sql, $params);
+		$result = $this->execute($sql, $params);
+		return $result->rowCount() > 0;
 	}
 
 	/**
-	 * @return array of [albumId, parentFolderId] pairs
+	 * @return array of dictionaries with keys [albumId, userId, parentFolderId]
 	 */
 	public function getAlbumsWithoutCover(){
-		$sql = 'SELECT DISTINCT `albums`.`id`, `files`.`parent`
+		$sql = 'SELECT DISTINCT `albums`.`id`, `albums`.`user_id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
@@ -235,7 +239,11 @@ class AlbumMapper extends BaseMapper {
 		$result = $this->execute($sql);
 		$return = Array();
 		while($row = $result->fetch()){
-			array_push($return, Array('albumId' => $row['id'], 'parentFolderId' => $row['parent']));
+			$return[] = [
+				'albumId' => $row['id'],
+				'userId' => $row['user_id'],
+				'parentFolderId' => $row['parent']
+			];
 		}
 		return $return;
 	}
@@ -243,8 +251,10 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer $albumId
 	 * @param integer $parentFolderId
+	 * @return true if a cover image was found and added for the album
 	 */
 	public function findAlbumCover($albumId, $parentFolderId){
+		$return = false;
 		$coverNames = array('cover', 'albumart', 'front', 'folder');
 		$imagesSql = 'SELECT `fileid`, `name`
 					FROM `*PREFIX*filecache`
@@ -274,7 +284,9 @@ class AlbumMapper extends BaseMapper {
 			});
 			$imageId = $images[0]['fileid'];
 			$this->setCover($imageId, $albumId);
+			$return = true;
 		}
+		return $return;
 	}
 
 	/**

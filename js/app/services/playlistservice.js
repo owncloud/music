@@ -186,7 +186,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			$rootScope.$emit(name, parameters);
 		},
 		subscribe: function(name, listener) {
-			$rootScope.$on(name, listener);
+			return $rootScope.$on(name, listener);
 		}
 	};
 }]);

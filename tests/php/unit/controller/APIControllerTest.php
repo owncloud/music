@@ -24,6 +24,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
+	private $cache;
 	private $request;
 	private $controller;
 	private $userId = 'john';
@@ -32,6 +33,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $l10n;
 	private $scanner;
 	private $userFolder;
+	private $logger;
 
 	protected function getController($urlParams){
 		return new ApiController(
@@ -41,15 +43,16 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
+			$this->cache,
 			$this->scanner,
 			$this->userId,
 			$this->l10n,
-			$this->userFolder);
+			$this->userFolder,
+			$this->logger);
 	}
 
 	protected function setUp(){
-		$this->request = $this->getMockBuilder(
-			'\OCP\IRequest')
+		$this->request = $this->getMockBuilder('\OCP\IRequest')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
@@ -61,7 +64,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
 			->disableOriginalConstructor()
 			->getMock();
-
 		$this->trackBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\TrackBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
@@ -71,7 +73,13 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->cache = $this->getMockBuilder('\OCA\Music\Db\Cache')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->controller = new ApiController(
@@ -81,10 +89,12 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
+			$this->cache,
 			$this->scanner,
 			$this->userId,
 			$this->l10n,
-			$this->userFolder);
+			$this->userFolder,
+			$this->logger);
 	}
 
 	/**
@@ -1060,32 +1070,12 @@ class APIControllerTest extends ControllerTestUtility {
 			'albumId' => 1,
 			'albumArtistId' => 1,
 			'files' => array(
-				'audio/mp3' => 'relative/funny/path'
+				'audio/mp3' => $fileId
 			)
 		);
 
 		$urlParams = array('fileId' => $fileId);
 		$this->controller = $this->getController($urlParams);
-
-
-		$node = $this->getMockBuilder('\OCP\Files\Node')
-			->disableOriginalConstructor()
-			->getMock();
-		$node->expects($this->once())
-			->method('getPath')
-			->will($this->returnValue('funny/path'));
-		$this->userFolder->expects($this->once())
-			->method('getById')
-			->with($this->equalTo($fileId))
-			->will($this->returnValue(array($node)));
-		$this->userFolder->expects($this->once())
-			->method('getRelativePath')
-			->with($this->equalTo('funny/path'))
-			->will($this->returnValue('/relative/funny/path'));
-		$this->urlGenerator->expects($this->once())
-			->method('getAbsoluteURL')
-			->with($this->equalTo('remote.php/webdav/relative/funny/path'))
-			->will($this->returnValue('relative/funny/path'));
 
 		$response = $this->controller->trackByFileId();
 

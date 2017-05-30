@@ -51,16 +51,17 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 			}
 		};
 
-		// trigger resize on window resize
-		$($window).resize(function() {
-			resizeNavigation();
-		});
-
-		// trigger resize on player status changes
-		$rootScope.$watch('started', function() {
-			resizeNavigation();
-		});
-
 		resizeNavigation();
+
+		// trigger resize on window resize and player status changes
+		var unsubscribeFuncs = [
+			$rootScope.$on('windowResized', resizeNavigation),
+			$rootScope.$watch('started', resizeNavigation)
+		];
+
+		// unsubscribe listeners when the scope is destroyed
+		scope.$on('$destroy', function () {
+			_.each(unsubscribeFuncs, function(func) { func(); });
+		});
 	};
 }]);

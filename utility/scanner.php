@@ -23,6 +23,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\Db\Cache;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -34,6 +35,7 @@ class Scanner extends PublicEmitter {
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
 	private $playlistBusinessLayer;
+	private $cache;
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
@@ -47,6 +49,7 @@ class Scanner extends PublicEmitter {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								Cache $cache,
 								Logger $logger,
 								IDBConnection $db,
 								$userId,
@@ -58,6 +61,7 @@ class Scanner extends PublicEmitter {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->cache = $cache;
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->userId = $userId;
@@ -102,6 +106,28 @@ class Scanner extends PublicEmitter {
 			return;
 		}
 
+		// TODO find a way to get this for a sharee
+		$isSharee = $userId && $this->userId !== $userId;
+
+		if(!$userId) {
+			$userId = $this->userId;
+		}
+
+		if(!$userHome) {
+			$userHome = $this->userFolder;
+		}
+
+		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
+		if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
+			// TODO verify
+			$musicPath = $userHome->get($musicPath)->getPath();
+			// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
+			if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
+				$this->logger->log('skipped - outside of specified path' , 'debug');
+				return;
+			}
+		}
+
 		$mimetype = $file->getMimeType();
 
 		// debug logging
@@ -111,7 +137,10 @@ class Scanner extends PublicEmitter {
 		if(self::startsWith($mimetype, 'image')) {
 			$coverFileId = $file->getId();
 			$parentFolderId = $file->getParent()->getId();
-			$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
+			if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
+				$this->logger->log('update - the image was set as cover for some album(s)', 'debug');
+				$this->cache->remove($userId);
+			}
 			return;
 		}
 
@@ -120,28 +149,6 @@ class Scanner extends PublicEmitter {
 		}
 
 		if(ini_get('allow_url_fopen')) {
-			// TODO find a way to get this for a sharee
-			$isSharee = $userId && $this->userId !== $userId;
-
-			if(!$userId) {
-				$userId = $this->userId;
-			}
-
-			if(!$userHome) {
-				$userHome = $this->userFolder;
-			}
-
-			$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-			if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
-				// TODO verify
-				$musicPath = $userHome->get($musicPath)->getPath();
-				// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
-				if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
-					$this->logger->log('skipped - outside of specified path' , 'debug');
-					return;
-				}
-			}
-
 
 			$fieldsFromFileName = self::parseFileName($file->getName());
 			$fileInfo = $this->extractor->extract($file);
@@ -239,6 +246,9 @@ class Scanner extends PublicEmitter {
 				$this->findEmbeddedCoverForAlbum($albumId, $userId);
 			}
 
+			// invalidate the cache as the music collection was changed
+			$this->cache->remove($userId);
+
 			// debug logging
 			$this->logger->log('imported entities - ' .
 				sprintf('artist: %d, albumArtist: %d, album: %d, track: %d', $artistId, $albumArtistId, $albumId, $track->getId()),
@@ -286,11 +296,15 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
+			// invalidate the cache as the music collection was changed
+			$this->cache->remove($userId);
+
 			// debug logging
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
-		else { // maybe this was an image file
-			$this->albumBusinessLayer->removeCover($fileId);
+		// maybe this was an image file
+		else if ($this->albumBusinessLayer->removeCover($fileId)) {
+			$this->cache->remove($userId);
 		}
 	}
 
@@ -320,96 +334,61 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function rescan() {
-		$this->logger->log('Rescan: process next 20 tracks of user ' . $this->userId, 'debug');
+	public function getUnscannedMusicFileIds($userId, $userHome) {
+		$scannedIds = $this->getScannedFiles($userId);
+		$musicFiles = $this->getMusicFiles($userId, $userHome);
+		$allIds = array_map(function($f) { return $f->getId(); }, $musicFiles);
+		$unscannedIds = array_values(array_diff($allIds, $scannedIds));
 
-		$result = $this->doRescan($this->userId, $this->userFolder, 20);
+		$count = count($unscannedIds);
+		if ($count) {
+			$this->logger->log("Found $count unscanned music files for user $userId", 'info');
+		} else {
+			$this->logger->log("No unscanned music files for user $userId", 'debug');
+		}
 
-		// Log each step on 'debug' level and the final step on 'info' level
-		$logLevel = ($result['processed'] >= $result['total']) ? 'info' : 'debug';
-
-		$this->logger->log(sprintf('Rescan for user %s finished (%d/%d)',
-				$this->userId, $result['processed'], $result['total']), $logLevel);
-		return $result;
+		return $unscannedIds;
 	}
 
-	public function batchRescan($userId, $userHome, OutputInterface $debugOutput = null) {
-		$this->logger->log('Batch rescan started for user ' . $userId, 'info');
+	public function scanFiles($userId, $userHome, $fileIds, OutputInterface $debugOutput = null) {
+		$count = count($fileIds);
+		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
-		$result = $this->doRescan($userId, $userHome, 1000000, $debugOutput);
-
-		$this->logger->log(sprintf('Batch rescan for user %s finished (%d/%d), %d new tracks',
-				$userId, $result['processed'], $result['total'], $result['scanned']), 'info');
-		return $result;
-	}
-
-	/**
-	 * Scan the filebase of the given user for unindexed music files and add those to the database.
-	 */
-	private function doRescan($userId, $userHome, $maxTracksToProcess, OutputInterface $debugOutput = null) {
 		// back up the execution time limit
 		$executionTime = intval(ini_get('max_execution_time'));
 		// set execution time limit to unlimited
 		set_time_limit(0);
 
-		$fileIds = $this->getScannedFiles($userId);
-		$music = $this->getMusicFiles($userId, $userHome);
-
 		$count = 0;
-		foreach ($music as $file) {
-			if($count >= $maxTracksToProcess) {
-				// break scan - maximum number of files are already scanned
-				break;
-			}
-			try {
-				if(in_array($file->getId(), $fileIds)) {
-					// skip this file as it's already scanned
-					continue;
+		foreach ($fileIds as $fileId) {
+			$fileNodes = $userHome->getById($fileId);
+			if (count($fileNodes) > 0) {
+				$file = $fileNodes[0];
+				if($debugOutput) {
+					$before = memory_get_usage(true);
 				}
-			} catch (\OCP\Files\NotFoundException $e) {
-				// just ignore the error
-				$this->logger->log('updateById - file not found - '. $file , 'debug');
-				continue;
+				$this->update($file, $userId, $userHome);
+				if($debugOutput) {
+					$after = memory_get_usage(true);
+					$diff = $after - $before;
+					$afterFileSize = new FileSize($after);
+					$diffFileSize = new FileSize($diff);
+					$humanFilesizeAfter = $afterFileSize->getHumanReadable();
+					$humanFilesizeDiff = $diffFileSize->getHumanReadable();
+					$path = $file->getPath();
+					$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+				}
+				$count++;
 			}
-			if($debugOutput) {
-				$before = memory_get_usage(true);
+			else {
+				$this->logger->log("File with id $fileId not found for user $userId", 'warn');
 			}
-			$this->update($file, $userId, $userHome);
-			if($debugOutput) {
-				$after = memory_get_usage(true);
-				$diff = $after - $before;
-				$afterFileSize = new FileSize($after);
-				$diffFileSize = new FileSize($diff);
-				$humanFilesizeAfter = $afterFileSize->getHumanReadable();
-				$humanFilesizeDiff = $diffFileSize->getHumanReadable();
-				$path = $file->getPath();
-				$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
-			}
-			$count++;
 		}
-		// find album covers
-		$this->albumBusinessLayer->findCovers();
 
 		// reset execution time limit
 		set_time_limit($executionTime);
 
-		return [
-			'processed' => count($fileIds) + $count,
-			'scanned' => $count,
-			'total' => count($music)
-		];
-	}
-
-	/**
-	 * Return the state of the scanning for the current user 
-	 * in the same format as the rescan functions
-	 */
-	public function getScanState() {
-		return [
-			'processed' => $this->trackBusinessLayer->count($this->userId),
-			'scanned' => 0,
-			'total' => count($this->getMusicFiles($this->userId, $this->userFolder))
-		];
+		return $count;
 	}
 
 	/**
@@ -432,6 +411,18 @@ class Scanner extends PublicEmitter {
 		foreach ($sqls as $sql) {
 			$this->db->executeUpdate($sql, array($userId));
 		}
+
+		$this->cache->remove($userId);
+	}
+
+	public function findCovers() {
+		$affectedUsers = $this->albumBusinessLayer->findCovers();
+		// scratch the cache for those users whose music collection was touched
+		foreach ($affectedUsers as $user) {
+			$this->cache->remove($user);
+			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
+		}
+		return !empty($affectedUsers);
 	}
 
 	private static function startsWith($string, $potentialStart) {

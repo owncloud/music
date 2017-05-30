@@ -90,17 +90,18 @@ PlayerWrapper.prototype.canPlayMIME = function(mime) {
 	return soundManager.canPlayMIME(mime) || mime=='audio/flac' || mime=='audio/mpeg';
 };
 
-PlayerWrapper.prototype.fromURL = function(typeAndURL) {
+PlayerWrapper.prototype.fromURL = function(url, mime) {
+	// ensure there are no active playback before starting new
+	this.stop();
+
 	var self = this;
-	var url = typeAndURL.url;
-	var type = typeAndURL.type;
 
 	if (soundManager.canPlayURL(url)) {
 		this.underlyingPlayer = 'sm2';
 	} else {
 		this.underlyingPlayer = 'aurora';
 	}
-	console.log('Using ' + this.underlyingPlayer + ' for type ' + type + ' URL ' + url);
+	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 
 	switch(this.underlyingPlayer) {
 		case 'sm2':

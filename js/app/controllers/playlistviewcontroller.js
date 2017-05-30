@@ -25,8 +25,21 @@ angular.module('Music').controller('PlaylistViewController',
 	['$rootScope', '$scope', '$routeParams', 'playlistService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, gettextCatalog, Restangular , $timeout) {
 
-		$scope.tracks = [];
+		var INCREMENTAL_LOAD_STEP = 1000;
+		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
+		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
+
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
 
 		$scope.getCurrentTrackIndex = function() {
 			return listIsPlaying() ? $scope.$parent.currentTrackIndex : null;
@@ -66,7 +79,7 @@ angular.module('Music').controller('PlaylistViewController',
 		$scope.getDraggable = function(index) {
 			$scope.draggedIndex = index;
 			return {
-				track: $scope.tracks[index],
+				track: $scope.tracks[index].track,
 				srcIndex: index
 			};
 		};
@@ -115,7 +128,7 @@ angular.module('Music').controller('PlaylistViewController',
 			}
 		};
 
-		$rootScope.$on('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
 				$scope.$parent.scrollToItem('track-' + trackId);
 			}
@@ -126,10 +139,10 @@ angular.module('Music').controller('PlaylistViewController',
 		$timeout(function() {
 			initViewFromRoute();
 		});
-		$rootScope.$on('artistsLoaded', function () {
+		subscribe('artistsLoaded', function () {
 			initViewFromRoute();
 		});
-		$rootScope.$on('playlistsLoaded', function () {
+		subscribe('playlistsLoaded', function () {
 			initViewFromRoute();
 		});
 
@@ -137,8 +150,20 @@ angular.module('Music').controller('PlaylistViewController',
 			return ($rootScope.playingView === $rootScope.currentView);
 		}
 
+		function showMore() {
+			// show more entries only if the view is not already (being) deactivated
+			if ($rootScope.currentView && $scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.tracks.length) {
+					$timeout(showMore);
+				} else {
+					$rootScope.loading = false;
+				}
+			}
+		}
+
 		function initViewFromRoute() {
-			if ($scope.$parent.artists && $scope.$parent.playlists) {
+			if ($scope.$parent && $scope.$parent.artists && $scope.$parent.playlists) {
 				if ($routeParams.playlistId) {
 					var playlist = findPlaylist($routeParams.playlistId);
 					$scope.playlist = playlist;
@@ -148,12 +173,23 @@ angular.module('Music').controller('PlaylistViewController',
 					$scope.playlist = null;
 					$scope.tracks = createAllTracksArray();
 				}
-
-				$timeout(function() {
-					$rootScope.loading = false;
-				});
+				$timeout(showMore);
 			}
 		}
+
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		subscribe('deactivateView', function() {
+			$timeout(showLess);
+		});
 
 		function moveArrayElement(array, from, to) {
 			array.splice(to, 0, array.splice(from, 1)[0]);
@@ -165,7 +201,7 @@ angular.module('Music').controller('PlaylistViewController',
 
 		function createTracksArray(trackIds) {
 			return _.map(trackIds, function(trackId) {
-				return $scope.$parent.allTracks[trackId];
+				return { track: $scope.$parent.allTracks[trackId] };
 			});
 		}
 
@@ -174,11 +210,11 @@ angular.module('Music').controller('PlaylistViewController',
 			if ($scope.$parent.allTracks) {
 				tracks = [];
 				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push($scope.$parent.allTracks[trackId]);
+					tracks.push( { track: $scope.$parent.allTracks[trackId] } );
 				}
 
-				tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-				tracks = _.sortBy(tracks, function(t) { return t.artistName.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
+				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
 			}
 			return tracks;
 		}

@@ -33,6 +33,7 @@ use \OCA\Music\DB\AlbumMapper;
 use \OCA\Music\DB\AmpacheSessionMapper;
 use \OCA\Music\DB\AmpacheUserMapper;
 use \OCA\Music\DB\ArtistMapper;
+use \OCA\Music\DB\Cache;
 use \OCA\Music\DB\PlaylistMapper;
 use \OCA\Music\DB\TrackMapper;
 
@@ -80,10 +81,12 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('Cache'),
 				$c->query('Scanner'),
 				$c->query('UserId'),
 				$c->query('L10N'),
-				$c->query('UserFolder')
+				$c->query('UserFolder'),
+				$c->query('Logger')
 			);
 		});
 
@@ -194,6 +197,12 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('Cache', function(IAppContainer $c) {
+			return new Cache(
+					$c->getServer()->getDatabaseConnection()
+			);
+		});
+
 		$container->registerService('PlaylistMapper', function(IAppContainer $c) {
 			return new PlaylistMapper(
 				$c->getServer()->getDatabaseConnection()
@@ -275,6 +284,7 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('Cache'),
 				$c->query('Logger'),
 				$c->query('Db'),
 				$c->query('UserId'),

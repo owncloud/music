@@ -12,10 +12,13 @@
 
 namespace OCA\Music\Controller;
 
+use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\Cache;
 use OCA\Music\Db\Track;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
+use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\AppFramework\Http\Response;
 use \OCP\Files\Folder;
@@ -42,6 +45,8 @@ class ApiController extends Controller {
 	private $artistBusinessLayer;
 	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
+	/** @var Cache */
+	private $cache;
 	/** @var Scanner */
 	private $scanner;
 	/** @var string */
@@ -50,6 +55,8 @@ class ApiController extends Controller {
 	private $urlGenerator;
 	/** @var Folder */
 	private $userFolder;
+	/** @var Logger */
+	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -57,19 +64,23 @@ class ApiController extends Controller {
 								TrackBusinessLayer $trackbusinesslayer,
 								ArtistBusinessLayer $artistbusinesslayer,
 								AlbumBusinessLayer $albumbusinesslayer,
+								Cache $cache,
 								Scanner $scanner,
 								$userId,
 								$l10n,
-								Folder $userFolder){
+								Folder $userFolder,
+								Logger $logger){
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
+		$this->cache = $cache;
 		$this->scanner = $scanner;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -88,6 +99,19 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
+		$collectionJson = $this->cache->get($this->userId, 'collection');
+
+		if ($collectionJson == null) {
+			$collectionJson = $this->buildCollectionJson();
+			$this->cache->add($this->userId, 'collection', $collectionJson);
+		}
+
+		$response = new DataDisplayResponse($collectionJson);
+		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
+		return $response;
+	}
+
+	private function buildCollectionJson() {
 		/** @var Artist[] $allArtists */
 		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
 		$allArtistsByIdAsObj = array();
@@ -96,7 +120,7 @@ class ApiController extends Controller {
 			$allArtistsByIdAsObj[$artist->getId()] = $artist;
 			$allArtistsByIdAsArr[$artist->getId()] = $artist->toCollection($this->l10n);
 		}
-
+		
 		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
 		$allAlbumsByIdAsObj = array();
 		$allAlbumsByIdAsArr = array();
@@ -126,12 +150,12 @@ class ApiController extends Controller {
 				$albumArtist['albums'][] = &$album;
 			}
 			try {
-				$album['tracks'][] = $track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
+				$album['tracks'][] = $track->toCollection($this->l10n);
 			} catch (\OCP\Files\NotFoundException $e) {
 				//ignore not found
 			}
 		}
-		return new JSONResponse($artists);
+		return json_encode($artists);
 	}
 
 	/**
@@ -295,20 +319,59 @@ class ApiController extends Controller {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
-		return new JSONResponse($track->toCollection($this->urlGenerator, $this->userFolder, $this->l10n));
+		return new JSONResponse($track->toCollection($this->l10n));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function fileWebDavUrl() {
+		$fileId = $this->params('fileId');
+		$nodes = $this->userFolder->getById($fileId);
+		if(count($nodes) == 0 ) {
+			throw new \OCP\Files\NotFoundException();
+		}
+
+		$node = $nodes[0];
+		$relativePath = $this->userFolder->getRelativePath($node->getPath());
+
+		return new JSONResponse([
+				'url' => $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)
+		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getScanState() {
+		return new JSONResponse([
+			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId, $this->userFolder),
+			'scannedCount' => count($this->scanner->getScannedFiles($this->userId))
+		]);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 */
 	public function scan() {
-		$dry = (boolean) $this->params('dry');
-		if($dry) {
-			$result = $this->scanner->getScanState();
-		} else {
-			$result = $this->scanner->rescan();
+		// extract the parameters
+		$fileIds = array_map('intval', explode(',', $this->params('files')));
+		$finalize = filter_var($this->params('finalize'), FILTER_VALIDATE_BOOLEAN);
+
+		$filesScanned = $this->scanner->scanFiles($this->userId, $this->userFolder, $fileIds);
+
+		$coversUpdated = false;
+		if ($finalize) {
+			$coversUpdated = $this->scanner->findCovers();
+			$totalCount = count($this->scanner->getScannedFiles($this->userId));
+			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}
-		return new JSONResponse(array($result));
+
+		return new JSONResponse([
+			'filesScanned' => $filesScanned,
+			'coversUpdated' => $coversUpdated
+		]);
 	}
 
 	/**

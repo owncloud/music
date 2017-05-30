@@ -105,7 +105,10 @@ class ApiController extends Controller {
 			$collectionJson = $this->buildCollectionJson();
 			$this->cache->add($this->userId, 'collection', $collectionJson);
 		}
-		return new DataDisplayResponse($collectionJson);
+
+		$response = new DataDisplayResponse($collectionJson);
+		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
+		return $response;
 	}
 
 	private function buildCollectionJson() {

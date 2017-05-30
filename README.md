@@ -213,7 +213,10 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/log`
 * `/api/collection`
 * `/api/file/{fileId}`
+* `/api/file/{fileId}/webdav`
+* `/api/download`
 * `/api/scan`
+* `/api/scanstate`
 * Playlist API at `/api/playlist/`
 * Settings API at `/api/settings`
 * [Ampache API](https://github.com/ampache/ampache/wiki/XML-API) at `/ampache/server/xml.server.php`
@@ -239,7 +242,7 @@ Response:
 
 ### `/api/collection`
 
-Returns all artists with nested albums and each album with nested tracks.
+Returns all artists with nested albums and each album with nested tracks. The tracks carry file IDs which can be used to obtain WebDAV link for playing with /api/file/{fileId}/webdav.
 
 	GET /api/collection
 
@@ -265,7 +268,7 @@ Response:
 							"albumId": 16,
 							"albumArtistId": 2,
 							"files": {
-								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/21 - A Dark Passage.mp3"
+								"audio/mpeg": 1001
 							},
 							"id": 202
 						},
@@ -277,7 +280,7 @@ Response:
 							"albumId": 16,
 							"albumArtistId": 2,
 							"files": {
-								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/Blind Guardian/1998 - Nightfall in Middle-Earth/12 - Battle of Sudden Flame.mp3"
+								"audio/mpeg": 1002
 							},
 							"id": 212
 						}
@@ -304,7 +307,7 @@ Response:
 							"albumId": 22,
 							"albumArtistId": 3,
 							"files": {
-								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/01 - Stay Together for the Kids.mp3"
+								"audio/ogg": 1051
 							},
 							"id": 243
 						},
@@ -316,7 +319,7 @@ Response:
 							"albumId": 22,
 							"albumArtistId": 3,
 							"files": {
-								"audio/mpeg": "https://own.cloud.example.org/remote.php/webdav/blink-182/2002 - Stay Together for the Kids/02 - The Rock Show (live).mp3"
+								"audio/ogg": 1052
 							},
 							"id": 244
 						}

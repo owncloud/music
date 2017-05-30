@@ -29,32 +29,6 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 		$this->db = \OC::$server->getDatabaseConnection();
 	}
 
-	/**
-	 * TODO: remove with drop of stable7 support
-	 */
-	protected function loadDataStable7($data) {
-		foreach($data as $table => $dataSets) {
-			foreach($dataSets as $dataSet) {
-				$columns = array();
-				$values = array();
-				$placeholder = array();
-
-				foreach($dataSet as $column => $value) {
-					$columns[] = '`' . $column . '`';
-					$values[] = $value;
-					$placeholder[] = '?';
-				}
-
-				$columns = join(', ', $columns);
-				$placeholder = join(', ', $placeholder);
-
-				$sql = 'INSERT INTO `*PREFIX*' . $table . '` (' . $columns . ') VALUES (' . $placeholder . ')';
-				$stmt = $this->db->prepare($sql);
-				$stmt->execute($values);
-			}
-		}
-	}
-
 	protected function loadData($filename) {
 		$filename = join(DIRECTORY_SEPARATOR, array(dirname(__DIR__), 'data', $filename));
 		if(!file_exists($filename)) {
@@ -62,11 +36,6 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 		}
 
 		$data = json_decode(file_get_contents($filename));
-
-		if(version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
-			$this->loadDataStable7($data);
-			return;
-		}
 
 		foreach($data as $table => $dataSets) {
 			foreach($dataSets as $dataSet) {
@@ -82,41 +51,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 		}
 	}
 
-	/**
-	 * TODO: remove with drop of stable7 support
-	 */
-	protected function checkForEmptyTablesStable7($user) {
-		$tables = array(
-			'music_artists',
-			'music_albums',
-			'music_tracks',
-		);
-
-		foreach($tables as $table) {
-			$sql = 'SELECT COUNT(*) FROM `*PREFIX*' . $table . '` WHERE `user_id` = ?';
-			$stmt = $this->db->prepare($sql);
-			$stmt->execute(array($user));
-			$row = $stmt->fetch();
-			$count = $row['COUNT(*)'];
-
-			$this->assertEquals(0, $count);
-		}
-
-		$sql = 'SELECT COUNT(*) FROM `*PREFIX*music_album_artists` `album_artists` JOIN `*PREFIX*music_albums` `albums` ON `album_artists`.`album_id` = `albums`.`id` WHERE `user_id` = ?';
-		$stmt = $this->db->prepare($sql);
-		$stmt->execute(array($user));
-		$row = $stmt->fetch();
-		$count = $row['COUNT(*)'];
-
-		$this->assertEquals(0, $count);
-	}
-
 	protected function checkForEmptyTables($user) {
-		if(version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
-			$this->checkForEmptyTablesStable7($user);
-			return;
-		}
-
 		$tables = array(
 			'music_artists',
 			'music_albums',

@@ -71,15 +71,7 @@ $c->query('FileHooks')->register();
  * load styles and scripts
  */
 
-$appName = $c->query('AppName');
-if (version_compare(implode('.', \OCP\Util::getVersion()), '7.8', '<=')) {
-	// fileactions
-	$c->query('API')->addScript('public/fileactions', $appName);
-	// file player for public sharing page
-	$c->query('API')->addScript('public/musicFilePlayer', $appName);
-} else {
-	// fileactions
-	\OCP\Util::addScript($appName, 'public/fileactions');
-	// file player for public sharing page
-	\OCP\Util::addScript($appName, 'public/musicFilePlayer');
-}
+// fileactions
+\OCP\Util::addScript($c->query('AppName'), 'public/fileactions');
+// file player for public sharing page
+\OCP\Util::addScript($c->query('AppName'), 'public/musicFilePlayer');

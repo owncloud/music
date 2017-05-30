@@ -14,15 +14,15 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../templates/main.php:59
+#: ../templates/main.php:60
 msgid "+ New Playlist"
 msgstr "+Yeni Çalma Listesi"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:54
+#: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
 msgstr "Albümler"
 
-#: ../templates/main.php:55
+#: ../templates/main.php:56
 msgid "All tracks"
 msgstr "Tüm Parçalar"
 
@@ -30,7 +30,7 @@ msgstr "Tüm Parçalar"
 msgid "Artists"
 msgstr "Sanatçılar"
 
-#: ../templates/main.php:145
+#: ../templates/main.php:146
 msgid "Click here to start the scan"
 msgstr "Taramayı başlatmak için buraya tıklayın"
 
@@ -69,19 +69,19 @@ msgstr "Ampache API'nin henüz bir önizleme olup, kararlı olmadığını unutm
 msgid "Music"
 msgstr "Müzik"
 
-#: ../templates/main.php:144
+#: ../templates/main.php:145
 msgid "New music available"
 msgstr "Yeni müzik mevcut"
 
-#: ../templates/main.php:139 ../templates/main.php:140
+#: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
 msgstr "Yeni müzik mevcut. Kütüphaneyi yeniden taramak için buraya tıklayın."
 
-#: ../templates/main.php:90
+#: ../templates/main.php:91
 msgid "Next"
 msgstr "Sonraki"
 
-#: ../templates/main.php:133
+#: ../templates/main.php:134
 msgid "No music found"
 msgstr "Müzik bulunamadı"
 
@@ -89,19 +89,19 @@ msgstr "Müzik bulunamadı"
 msgid "Path to your music collection"
 msgstr "Müzik koleksiyonunuzun yolu"
 
-#: ../templates/main.php:88
+#: ../templates/main.php:89
 msgid "Pause"
 msgstr "Beklet"
 
-#: ../templates/main.php:86
+#: ../templates/main.php:87
 msgid "Play"
 msgstr "Oynat"
 
-#: ../templates/main.php:84
+#: ../templates/main.php:85
 msgid "Previous"
 msgstr "Önceki"
 
-#: ../templates/main.php:117
+#: ../templates/main.php:118
 msgid "Repeat"
 msgstr "Tekrarla"
 
@@ -109,15 +109,15 @@ msgstr "Tekrarla"
 msgid "Revoke API password"
 msgstr "API parolasını geçersiz kıl"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:151
 msgid "Scanning music …"
 msgstr "Müzik taranıyor ..."
 
-#: ../templates/main.php:115
+#: ../templates/main.php:116
 msgid "Shuffle"
 msgstr "Karıştır"
 
-#: ../js/public/app.js:563
+#: ../js/public/app.js:620
 msgid "Some not playable tracks were skipped."
 msgstr "Bazı oynatılamayan parçalar atlandı."
 
@@ -137,7 +137,7 @@ msgstr "Bilinmeyen albüm"
 msgid "Unknown artist"
 msgstr "Bilinmeyen sanatçı"
 
-#: ../templates/main.php:134
+#: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
 msgstr "Müziği burada dinlemek için dosya uygulaması içinde yükleyin"
 
@@ -153,14 +153,14 @@ msgid ""
 "instance:"
 msgstr "Bu Ampache örneğine bağlanmak için kullanıcı adınızı ve aşağıdaki parolayı kullanın:"
 
-#: ../templates/main.php:120 ../templates/main.php:122
+#: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
 msgstr "Ses"
 
-#: ../templates/main.php:56 ../templates/main.php:76
+#: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
 msgstr "parçalar"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "Toplam {{ scanningTotal }} parçanın {{ scanningScanned }} tanesi tarandı"

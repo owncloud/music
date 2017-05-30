@@ -14,15 +14,15 @@ msgstr ""
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:59
+#: ../templates/main.php:60
 msgid "+ New Playlist"
 msgstr "+ Luajlistë e Re"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:54
+#: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
 msgstr "Albume"
 
-#: ../templates/main.php:55
+#: ../templates/main.php:56
 msgid "All tracks"
 msgstr "Krejt pjesët"
 
@@ -30,7 +30,7 @@ msgstr "Krejt pjesët"
 msgid "Artists"
 msgstr "Artistë"
 
-#: ../templates/main.php:145
+#: ../templates/main.php:146
 msgid "Click here to start the scan"
 msgstr "Klikoni që të fillojë skanimi"
 
@@ -69,19 +69,19 @@ msgstr "Mbani parasysh që API i Ampache-it është thjesht paraprak dhe i paqë
 msgid "Music"
 msgstr "Muzikë"
 
-#: ../templates/main.php:144
+#: ../templates/main.php:145
 msgid "New music available"
 msgstr "Ka gati muzikë të re"
 
-#: ../templates/main.php:139 ../templates/main.php:140
+#: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
 msgstr "Ka gati muzikë të re. Klikoni këtu që të ringarkohet fonoteka. "
 
-#: ../templates/main.php:90
+#: ../templates/main.php:91
 msgid "Next"
 msgstr "Pasuesja"
 
-#: ../templates/main.php:133
+#: ../templates/main.php:134
 msgid "No music found"
 msgstr "S’u gjet muzikë"
 
@@ -89,19 +89,19 @@ msgstr "S’u gjet muzikë"
 msgid "Path to your music collection"
 msgstr "Shteg te koleksioni juaj muzikor"
 
-#: ../templates/main.php:88
+#: ../templates/main.php:89
 msgid "Pause"
 msgstr "Pushim"
 
-#: ../templates/main.php:86
+#: ../templates/main.php:87
 msgid "Play"
 msgstr "Luaje"
 
-#: ../templates/main.php:84
+#: ../templates/main.php:85
 msgid "Previous"
 msgstr "E mëparshmja"
 
-#: ../templates/main.php:117
+#: ../templates/main.php:118
 msgid "Repeat"
 msgstr "Përsërite"
 
@@ -109,15 +109,15 @@ msgstr "Përsërite"
 msgid "Revoke API password"
 msgstr "Shfuqizojeni fjalëkalimin API"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:151
 msgid "Scanning music …"
 msgstr "Po skanohet muzika…"
 
-#: ../templates/main.php:115
+#: ../templates/main.php:116
 msgid "Shuffle"
 msgstr "Përzieji"
 
-#: ../js/public/app.js:563
+#: ../js/public/app.js:620
 msgid "Some not playable tracks were skipped."
 msgstr "Disa pjesë që s’luheshin dot u anashkaluan."
 
@@ -137,7 +137,7 @@ msgstr "Album i panjohur"
 msgid "Unknown artist"
 msgstr "Artist i panjohur"
 
-#: ../templates/main.php:134
+#: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
 msgstr "Ngarkoni muzikë te aplikacioni i kartelave që ta dëgjoni këtu"
 
@@ -153,14 +153,14 @@ msgid ""
 "instance:"
 msgstr "Përdorni emrin tuaj të përdoruesit dhe fjalëkalimin që të lidheni te kjo instancë Ampache-i:"
 
-#: ../templates/main.php:120 ../templates/main.php:122
+#: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
 msgstr "Volum"
 
-#: ../templates/main.php:56 ../templates/main.php:76
+#: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
 msgstr "gjurmë"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} nga {{ scanningTotal }} gjithsej"

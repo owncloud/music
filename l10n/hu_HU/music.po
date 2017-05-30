@@ -15,15 +15,15 @@ msgstr ""
 "Language: hu_HU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../templates/main.php:59
+#: ../templates/main.php:60
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../templates/fake-template.php:7 ../templates/main.php:54
+#: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
 msgstr "Albumok"
 
-#: ../templates/main.php:55
+#: ../templates/main.php:56
 msgid "All tracks"
 msgstr ""
 
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Artists"
 msgstr "Előadók"
 
-#: ../templates/main.php:145
+#: ../templates/main.php:146
 msgid "Click here to start the scan"
 msgstr ""
 
@@ -70,19 +70,19 @@ msgstr "Kérjük vegye figyelembe, hogy az Ampache támogatás még nem tekinthe
 msgid "Music"
 msgstr "Zene"
 
-#: ../templates/main.php:144
+#: ../templates/main.php:145
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:139 ../templates/main.php:140
+#: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ../templates/main.php:90
+#: ../templates/main.php:91
 msgid "Next"
 msgstr "Következő"
 
-#: ../templates/main.php:133
+#: ../templates/main.php:134
 msgid "No music found"
 msgstr ""
 
@@ -90,19 +90,19 @@ msgstr ""
 msgid "Path to your music collection"
 msgstr "A zenegyűjtemény útvonala"
 
-#: ../templates/main.php:88
+#: ../templates/main.php:89
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../templates/main.php:86
+#: ../templates/main.php:87
 msgid "Play"
 msgstr "Lejátszás"
 
-#: ../templates/main.php:84
+#: ../templates/main.php:85
 msgid "Previous"
 msgstr "Előző"
 
-#: ../templates/main.php:117
+#: ../templates/main.php:118
 msgid "Repeat"
 msgstr "Ismétlés"
 
@@ -110,15 +110,15 @@ msgstr "Ismétlés"
 msgid "Revoke API password"
 msgstr "API-jelszó visszavonása"
 
-#: ../templates/main.php:150
+#: ../templates/main.php:151
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:115
+#: ../templates/main.php:116
 msgid "Shuffle"
 msgstr "Keverés"
 
-#: ../js/public/app.js:563
+#: ../js/public/app.js:620
 msgid "Some not playable tracks were skipped."
 msgstr "Néhány szám kimaradt, amit a rendszer nem tud lejátszani."
 
@@ -138,7 +138,7 @@ msgstr "Ismeretlen album"
 msgid "Unknown artist"
 msgstr "Ismeretlen előadó"
 
-#: ../templates/main.php:134
+#: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
@@ -154,14 +154,14 @@ msgid ""
 "instance:"
 msgstr "Használja a felhasználónevét és a következő jelszót, ha csatlakozni kíván ehhez az Ampache kiszolgálóhoz:"
 
-#: ../templates/main.php:120 ../templates/main.php:122
+#: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:56 ../templates/main.php:76
+#: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
 msgstr ""
 
-#: ../templates/main.php:151
+#: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

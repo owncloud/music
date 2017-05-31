@@ -9,7 +9,7 @@
 # Romain DEP. <rom1dep@gmail.com>, 2013
 # themen <themen2004@gmail.com>, 2014
 # tcit <thomas.citharet@gmail.com>, 2014
-# Thomas Imbreckx <zinks@member.fsf.org>, 2015
+# Thomas Imbreckx <zinks@linux.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"

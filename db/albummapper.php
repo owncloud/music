@@ -105,31 +105,6 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns album that matches a name and year
-	 *
-	 * @param string $albumName name of the album
-	 * @param string|integer $albumYear year of the album release
-	 * @param string $userId the user ID
-	 * @return Album
-	 */
-	public function findByNameAndYear($albumName, $albumYear, $userId){
-		if($albumName === null && $albumYear === null) {
-			$params = array($userId);
-			$sql = $this->makeSelectQuery('AND `album`.`name` IS NULL AND `album`.`year` IS NULL');
-		} else if($albumYear === null) {
-			$params = array($userId, $albumName);
-			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` IS NULL');
-		} else if($albumName === null) {
-			$params = array($userId, $albumYear);
-			$sql = $this->makeSelectQuery('AND `album`.`name` IS NULL AND `album`.`year` = ?');
-		} else {
-			$params = array($userId, $albumName, $albumYear);
-			$sql = $this->makeSelectQuery('AND `album`.`name` = ? AND `album`.`year` = ?');
-		}
-		return $this->findEntity($sql, $params);
-	}
-
-	/**
 	 * returns album that matches a name, a year and an album artist ID
 	 *
 	 * @param string|null $albumName name of the album

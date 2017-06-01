@@ -214,7 +214,7 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/collection`
 * `/api/file/{fileId}`
 * `/api/file/{fileId}/webdav`
-* `/api/download`
+* `/api/file/{fileId}/download`
 * `/api/scan`
 * `/api/scanstate`
 * Playlist API at `/api/playlist/`

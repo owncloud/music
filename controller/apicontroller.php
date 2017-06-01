@@ -329,16 +329,17 @@ class ApiController extends Controller {
 	public function fileWebDavUrl() {
 		$fileId = $this->params('fileId');
 		$nodes = $this->userFolder->getById($fileId);
-		if(count($nodes) == 0 ) {
-			throw new \OCP\Files\NotFoundException();
+		if (count($nodes) == 0) {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
 		}
-
-		$node = $nodes[0];
-		$relativePath = $this->userFolder->getRelativePath($node->getPath());
-
-		return new JSONResponse([
-				'url' => $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath)
-		]);
+		else {
+			$node = $nodes[0];
+			$relativePath = $this->userFolder->getRelativePath($node->getPath());
+			$url = $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath);
+			return new JSONResponse(['url' => $url]);
+		}
 	}
 
 	/**

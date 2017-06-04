@@ -32,9 +32,8 @@ angular.module('Music').controller('PlayerController',
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
 	$scope.volume = Cookies.get('oc_music_volume') || 75;  // volume can be 0~100
-
-	$scope.repeat = false;
-	$scope.shuffle = false;
+	$scope.repeat = Cookies.get('oc_music_repeat') == 'true';
+	$scope.shuffle = Cookies.get('oc_music_shuffle') == 'true';
 	$scope.position = {
 		bufferPercent: '0%',
 		currentPercent: '0%',
@@ -151,6 +150,16 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.setVolume(newValue);
 		Cookies.set('oc_music_volume', newValue, { expires: 3650 });
 	});
+
+	$scope.toggleShuffle = function() {
+		$scope.shuffle = !$scope.shuffle;
+		Cookies.set('oc_music_shuffle', $scope.shuffle.toString(), { expires: 3650 });
+	};
+
+	$scope.toggleRepeat = function() {
+		$scope.repeat = !$scope.repeat;
+		Cookies.set('oc_music_repeat', $scope.repeat.toString(), { expires: 3650 });
+	};
 
 	$scope.setTime = function(position, duration) {
 		$scope.position.current = position;

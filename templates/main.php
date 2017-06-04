@@ -114,9 +114,9 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 				</div>
 
 				<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
-					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="shuffle=!shuffle" />
+					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
-					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="repeat=!repeat" />
+					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 				<div class="volume-control">
 					<img id="volume-icon" class="control small svg" alt="{{'Volume' | translate }}" ng-show="volume > 0"
 						src="<?php p(OCP\image_path('music', 'sound.svg')) ?>" />

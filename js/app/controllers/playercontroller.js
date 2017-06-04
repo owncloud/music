@@ -86,7 +86,7 @@ angular.module('Music').controller('PlayerController',
 		for(var mimeType in track.files) {
 			if($scope.player.canPlayMIME(mimeType)) {
 				return {
-					'type': mimeType,
+					'mime': mimeType,
 					'id': track.files[mimeType]
 				};
 			}

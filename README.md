@@ -24,7 +24,7 @@ This app utilizes 2 backend players: Aurora.js and SoundManager2.
 
 SoundManager2 utilizes the browser's built-in codecs. Aurora.js, on the other hand, uses Javascript and HTML5 Audio API to decode and play music and doesn't require codecs from browser. The Music app ships with FLAC and MP3 plugins for Aurora.js. Aurora.js does not work on any version of Internet Explorer and fails to play some MP3 files on other browsers, too.
 
-The Music app uses SoundManager2 if the browser has a suitable codec available for the file in question and Aurora.js otherwise. In practice, Aurora.js is always used for FLAC files and also for MP3 files if the browser has no suitable codec available (e.g. Chromium). SoundManager2 is used for everything else, including OGG, MP4, WAV, etc.
+The Music app uses SoundManager2 if the browser has a suitable codec available for the file in question and Aurora.js otherwise. In practice, Firefox and Chrome use SoundManager2 for all supported audio formats. Chromium uses Aurora.js for MP3 and FLAC and doesn't play any other formats. Edge uses Aurora.js for FLAC and SoundManager2 for everything else (ogg and m4b not supported). Internet Explorer plays MP3 with SoundManager2 and doesn's play any other formats.
 
 ## Usage hints
 

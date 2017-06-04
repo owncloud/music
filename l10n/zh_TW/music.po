@@ -116,7 +116,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "隨機播放"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "部份無法播放的曲目已跳過"
 

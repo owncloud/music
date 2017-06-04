@@ -119,7 +119,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Blanda"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Några icke spelbara spår hoppades över"
 

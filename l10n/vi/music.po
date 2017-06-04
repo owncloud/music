@@ -118,7 +118,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Ngẫu nhiên"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Một số bài không thể phát đã được bỏ qua"
 

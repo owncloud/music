@@ -116,7 +116,7 @@ msgstr "Scannen muziek …"
 msgid "Shuffle"
 msgstr "Shuffle"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Sommige niet af te spelen nummers werden overgeslagen."
 

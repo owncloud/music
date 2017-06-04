@@ -119,7 +119,7 @@ msgstr "Σάρωση μουσικής ..."
 msgid "Shuffle"
 msgstr "Τυχαία αναπαραγωγή"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Μερικά μη αναγνώσιμα τραγούδια έχουν παρακαμφθεί."
 

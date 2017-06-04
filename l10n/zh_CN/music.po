@@ -119,7 +119,7 @@ msgstr "扫描音乐中……"
 msgid "Shuffle"
 msgstr "随机"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "部分无法播放的音轨已被跳过。"
 

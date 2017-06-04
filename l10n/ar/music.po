@@ -117,7 +117,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "اختيار عشوائي"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "جرى تخطى بعض المقاطع غير العاملة"
 

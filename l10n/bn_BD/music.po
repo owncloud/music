@@ -115,7 +115,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "এলোমেলো কর"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "বাজানোর অনুপযোগী কিছু ট্র্যাক এড়িয়ে যাওয়া হয়েছে।"
 

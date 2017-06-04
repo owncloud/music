@@ -119,7 +119,7 @@ msgstr "Untersuche Musik ..."
 msgid "Shuffle"
 msgstr "Zufallswiedergabe"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Einige nicht abspielbare Titel wurden übersprungen."
 

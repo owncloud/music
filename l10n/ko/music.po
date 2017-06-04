@@ -117,7 +117,7 @@ msgstr "음악 검색 중 …"
 msgid "Shuffle"
 msgstr "임의 재생"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "재생할 수 없는 곡을 건너뛰었습니다."
 

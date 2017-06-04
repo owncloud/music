@@ -119,7 +119,7 @@ msgstr "A pesquisar música..."
 msgid "Shuffle"
 msgstr "Baralhar"
 
-#: ../js/public/app.js:620
+#: ../js/public/app.js:629
 msgid "Some not playable tracks were skipped."
 msgstr "Foram ignoradas algumas faixas com problemas"
 

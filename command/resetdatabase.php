@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Command;
 
-use OCP\IDBConnection;
+use OCA\Music\Utility\Scanner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,11 +22,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetDatabase extends Command {
 
-	/** @var IDBConnection */
-	private $db;
+	/** @var Scanner */
+	private $scanner;
 
-	public function __construct(IDBConnection $db) {
-		$this->db = $db;
+	public function __construct($scanner) {
+		$this->scanner = $scanner;
 		parent::__construct();
 	}
 
@@ -51,27 +51,13 @@ class ResetDatabase extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop tables for <info>all users</info>");
-			$this->dropTables();
+			$this->scanner->resetDb(null, true);
 		} else {
 			$users = $input->getArgument('user_id');
 			foreach($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
-				$this->dropTables($user);
+				$this->scanner->resetDb($user);
 			}
-		}
-	}
-
-	private function dropTables($userID=null) {
-		$tables = array('tracks', 'albums', 'artists', 'playlists', 'cache');
-		foreach($tables as $table) {
-			$sql = 'DELETE FROM `*PREFIX*music_' . $table . '` ';
-			$params = array();
-			if($userID) {
-				$sql .= 'WHERE `user_id` = ?';
-				$params[] = $userID;
-			}
-			$query = $this->db->prepare($sql);
-			$query->execute($params);
 		}
 	}
 

@@ -392,6 +392,40 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
+	 * Wipe clean the music database of the given user, or all users
+	 * @param string $userId
+	 * @param boolean $allUsers
+	 */
+	public function resetDb($userId, $allUsers = false) {
+		if ($userId && $allUsers) {
+			throw new InvalidArgumentException('userId should be null if allUsers targeted');
+		}
+
+		$sqls = array(
+				'DELETE FROM `*PREFIX*music_tracks`',
+				'DELETE FROM `*PREFIX*music_albums`',
+				'DELETE FROM `*PREFIX*music_artists`',
+				'UPDATE *PREFIX*music_playlists SET track_ids=NULL',
+				'DELETE FROM `*PREFIX*music_cache`'
+		);
+
+		foreach ($sqls as $sql) {
+			$params = [];
+			if (!$allUsers) {
+				$sql .=  ' WHERE `user_id` = ?';
+				$params[] = $userId;
+			}
+			$this->db->executeUpdate($sql, $params);
+		}
+
+		if ($allUsers) {
+			$this->logger->log("Erased music databases of all users", 'info');
+		} else {
+			$this->logger->log("Erased music database of user $userId", 'info');
+		}
+	}
+
+	/**
 	 * Update music path
 	 */
 	public function updatePath($path, $userId = null) {
@@ -400,19 +434,8 @@ class Scanner extends PublicEmitter {
 		if ($userId === null) {
 			$userId = $this->userId;
 		}
-
-		$sqls = array(
-			'DELETE FROM `*PREFIX*music_tracks` WHERE `user_id` = ?;',
-			'DELETE FROM `*PREFIX*music_albums` WHERE `user_id` = ?;',
-			'DELETE FROM `*PREFIX*music_artists` WHERE `user_id` = ?;',
-			'UPDATE *PREFIX*music_playlists SET track_ids=NULL WHERE `user_id` = ?;'
-		);
-
-		foreach ($sqls as $sql) {
-			$this->db->executeUpdate($sql, array($userId));
-		}
-
-		$this->cache->remove($userId);
+		$this->logger->log("Changing music collection path of user $userId to $path", 'info');
+		$this->resetDb($userId);
 	}
 
 	public function findCovers() {

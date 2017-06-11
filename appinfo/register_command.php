@@ -22,4 +22,4 @@ $rootFolder = $c->query('RootFolder');
 $db = $c->query('Db');
 
 $application->add(new OCA\Music\Command\Scan($userManager, $scanner, $rootFolder));
-$application->add(new OCA\Music\Command\ResetDatabase($db));
+$application->add(new OCA\Music\Command\ResetDatabase($scanner));

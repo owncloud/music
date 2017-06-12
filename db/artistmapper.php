@@ -25,7 +25,7 @@ class ArtistMapper extends BaseMapper {
 	 */
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id`, '.
-			'`artist`.`mbid` FROM `*PREFIX*music_artists` `artist` '.
+			'`artist`.`mbid`, `artist`.`hash` FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition;
 	}
 
@@ -110,4 +110,10 @@ class ArtistMapper extends BaseMapper {
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
 	}
 
+	public function findUniqueEntity(Artist $artist){
+		return $this->findEntity(
+				'SELECT * FROM `*PREFIX*music_artists` WHERE `user_id` = ? AND `hash` = ?',
+				[$artist->getUserId(), $artist->getHash()]
+		);
+	}
 }

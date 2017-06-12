@@ -24,11 +24,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-
 
 use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Db\Track;
@@ -94,38 +90,19 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param int $length track length in seconds
 	 * @param int $bitrate track bitrate in bits (not kbits)
 	 * @return \OCA\Music\Db\Track track
-	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
-		try {
-			$track = $this->mapper->findByFileId($fileId, $userId);
-			$track->setTitle($title);
-			$track->setNumber($number);
-			$track->setArtistId($artistId);
-			$track->setAlbumId($albumId);
-			$track->setMimetype($mimetype);
-			$track->setUserId($userId);
-			$this->mapper->update($track);
-			$track->setLength($length);
-			$track->setBitrate($bitrate);
-			$this->logger->log('addTrackIfNotExist - exists & updated - ID: ' . $track->getId(), 'debug');
-		} catch(DoesNotExistException $ex){
-			$track = new Track();
-			$track->setTitle($title);
-			$track->setNumber($number);
-			$track->setArtistId($artistId);
-			$track->setAlbumId($albumId);
-			$track->setFileId($fileId);
-			$track->setMimetype($mimetype);
-			$track->setUserId($userId);
-			$track->setLength($length);
-			$track->setBitrate($bitrate);
-			$track = $this->mapper->insert($track);
-			$this->logger->log('addTrackIfNotExist - added - ID: ' . $track->getId(), 'debug');
-		} catch(MultipleObjectsReturnedException $ex){
-			throw new BusinessLayerException($ex->getMessage());
-		}
-		return $track;
+		$track = new Track();
+		$track->setTitle($title);
+		$track->setNumber($number);
+		$track->setArtistId($artistId);
+		$track->setAlbumId($albumId);
+		$track->setFileId($fileId);
+		$track->setMimetype($mimetype);
+		$track->setUserId($userId);
+		$track->setLength($length);
+		$track->setBitrate($bitrate);
+		return $this->mapper->insertOrUpdate($track);
 	}
 
 	/**

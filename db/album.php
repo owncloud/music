@@ -37,6 +37,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method setAlbumArtistId(int $albumArtistId)
  * @method Artist getAlbumArtist()
  * @method setArtist(Artist $albumArtist)
+ * @method string getHash()
+ * @method setHash(string $hash)
  * @method int getTrackCount()
  * @method setTrackCount(int $trackCount)
  */
@@ -52,6 +54,7 @@ class Album extends Entity {
 	public $userId;
 	public $albumArtistId;
 	public $albumArtist;
+	public $hash;
 
 	// the following attributes aren't filled automatically
 	public $trackCount;
@@ -60,7 +63,6 @@ class Album extends Entity {
 		$this->addType('year', 'int');
 		$this->addType('disk', 'int');
 		$this->addType('coverFileId', 'int');
-		$this->addType('disk', 'int');
 		$this->addType('albumArtistId', 'int');
 	}
 

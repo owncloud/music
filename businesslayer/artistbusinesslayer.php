@@ -13,10 +13,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
@@ -44,23 +41,15 @@ class ArtistBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds an artist (if it does not exist already) and returns the new artist
 	 * @param string $name the name of the artist
+	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Artist artist
-	 * @throws \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException
 	 */
 	public function addArtistIfNotExist($name, $userId){
-		try {
-			$artist = $this->mapper->findByName($name, $userId);
-			$this->logger->log('addArtistIfNotExist - exists - ID: ' . $artist->getId(), 'debug');
-		} catch(DoesNotExistException $ex){
-			$artist = new Artist();
-			$artist->setName($name);
-			$artist->setUserId($userId);
-			$artist = $this->mapper->insert($artist);
-			$this->logger->log('addArtistIfNotExist - added - ID: ' . $artist->getId(), 'debug');
-		} catch(MultipleObjectsReturnedException $ex){
-			throw new BusinessLayerException($ex->getMessage());
-		}
-		return $artist;
+		$artist = new Artist();
+		$artist->setName($name);
+		$artist->setUserId($userId);
+		$artist->setHash(hash('md5', $name));
+		return $this->mapper->insertOrUpdate($artist);
 	}
 
 	/**

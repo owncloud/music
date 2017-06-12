@@ -13,11 +13,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\Album;
@@ -87,25 +83,20 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $albumArtistId
 	 * @param string $userId
 	 * @return Album
-	 * @throws BusinessLayerException
 	 */
 	public function addAlbumIfNotExist($name, $year, $discnumber, $albumArtistId, $userId){
-		try {
-			$album = $this->mapper->findAlbum($name, $year, $discnumber, $albumArtistId, $userId);
-			$this->logger->log('addAlbumIfNotExist - exists - ID: ' . $album->getId(), 'debug');
-		} catch(DoesNotExistException $ex){
-			$album = new Album();
-			$album->setName($name);
-			$album->setYear($year);
-			$album->setDisk($discnumber);
-			$album->setUserId($userId);
-			$album->setAlbumArtistId($albumArtistId);
-			$album = $this->mapper->insert($album);
-			$this->logger->log('addAlbumIfNotExist - added - ID: ' . $album->getId(), 'debug');
-		} catch(MultipleObjectsReturnedException $ex){
-			throw new BusinessLayerException($ex->getMessage());
-		}
-		return $album;
+		$album = new Album();
+		$album->setName($name);
+		$album->setYear($year);
+		$album->setDisk($discnumber);
+		$album->setUserId($userId);
+		$album->setAlbumArtistId($albumArtistId);
+
+		// generate hash from the set of fields forming the album identity to prevent duplicates
+		$hash = hash('md5', "$name|$year|$discnumber|$albumArtistId");
+		$album->setHash($hash);
+
+		return $this->mapper->insertOrUpdate($album);
 	}
 
 	/**

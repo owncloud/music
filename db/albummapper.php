@@ -28,7 +28,7 @@ class AlbumMapper extends BaseMapper {
 	private function makeSelectQuery($condition=null){
 		return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, '.
+			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
 			'`album`.`album_artist_id` FROM `*PREFIX*music_albums` `album`'.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
@@ -92,7 +92,7 @@ class AlbumMapper extends BaseMapper {
 	public function findAllByArtist($artistId, $userId){
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
 			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, '.
+			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
 			'`album`.`album_artist_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`id` IN (SELECT DISTINCT `album`.`id` FROM '.
@@ -117,7 +117,7 @@ class AlbumMapper extends BaseMapper {
 	public function findAlbum($albumName, $albumYear, $discNumber, $albumArtistId, $userId) {
 		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
 			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, '.
+			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
 			'`album`.`album_artist_id` '.
 			'FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ';
@@ -299,5 +299,12 @@ class AlbumMapper extends BaseMapper {
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`album`.`name`)');
 		$params = array($userId, $name);
 		return $this->findEntities($sql, $params);
+	}
+
+	public function findUniqueEntity(Album $album){
+		return $this->findEntity(
+				'SELECT * FROM `*PREFIX*music_albums` WHERE `user_id` = ? AND `hash` = ?',
+				[$album->getUserId(), $album->getHash()]
+		);
 	}
 }

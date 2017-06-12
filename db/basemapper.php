@@ -15,6 +15,8 @@ namespace OCA\Music\Db;
 use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
+use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+
 /**
  * Common base class for data access classes of the Music app
  */
@@ -46,6 +48,22 @@ class BaseMapper extends Mapper {
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return $row['count'];
+	}
+
+	/**
+	 * Insert an entity, or if an entity with the same identity already exists,
+	 * update the existing entity.
+	 * @param Entity $entity
+	 * @return Entity
+	 */
+	public function insertOrUpdate(Entity $entity) {
+		try {
+			return $this->insert($entity);
+		} catch (UniqueConstraintViolationException $ex) {
+			$existingEntity = $this->findUniqueEntity($entity); // this should be implemented by the derived class
+			$entity->setId($existingEntity->getId());
+			return $this->update($entity);
+		}
 	}
 
 	/**

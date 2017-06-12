@@ -40,6 +40,24 @@
 				<notnull>false</notnull>
 				<length>36</length>
 			</field>
+			<field>
+				<name>hash</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>32</length>
+				<comments>Unique hash formed from the artist name. The name field as such is too long to be indexed.</comments>
+			</field>
+
+			<index>
+				<name>user_id_hash_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>hash</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
 
@@ -133,6 +151,13 @@
 				<type>integer</type>
 				<notnull>false</notnull>
 			</field>
+			<field>
+				<name>hash</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>32</length>
+				<comments>Unique hash formed from the fields composing the identity of the album</comments>
+			</field>
 
 			<index>
 				<name>ma_cover_file_id_idx</name>
@@ -144,6 +169,16 @@
 				<name>ma_album_artist_id_idx</name>
 				<field>
 					<name>album_artist_id</name>
+				</field>
+			</index>
+			<index>
+				<name>ma_user_id_hash_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>hash</name>
 				</field>
 			</index>
 		</declaration>

@@ -12,43 +12,8 @@
 
 $installedVersion = \OCP\Config::getAppValue('music', 'installed_version');
 
-if (version_compare($installedVersion, '0.1.6-alpha', '<')) {
-	$sqls = array(
-		'DELETE FROM `*PREFIX*music_artists`;',
-		'DELETE FROM `*PREFIX*music_albums`;',
-		'DELETE FROM `*PREFIX*music_album_artists`;',
-		'DELETE FROM `*PREFIX*music_tracks`;',
-	);
-	foreach ($sqls as $sql) {
-		$query = \OCP\DB::prepare($sql);
-		$query->execute();
-	}
-}
-
-if (version_compare($installedVersion, '0.1.8.2-beta', '<')) {
-	//convert 'ownCloud unknown xxx' to null
-	$sqls = array(
-		'UPDATE `*PREFIX*music_albums` SET `name` = NULL WHERE `name` = \'ownCloud unknown album\'',
-		'UPDATE `*PREFIX*music_artists` SET `name` = NULL WHERE `name` = \'ownCloud unknown artist\'',
-	);
-	foreach ($sqls as $sql) {
-		$query = \OCP\DB::prepare($sql);
-		$query->execute();
-	}
-}
-
-if (version_compare($installedVersion, '0.3.2', '<')) {
-	// drop all sessions, because a primary key is introduced
-	$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`';
-	$query = \OCP\DB::prepare($sql);
-	$query->execute();
-}
-
 if (version_compare($installedVersion, '0.3.12', '<')) {
 	$sqls = array(
-		'DELETE FROM `*PREFIX*music_artists`;',
-		'DELETE FROM `*PREFIX*music_albums`;',
-		'DELETE FROM `*PREFIX*music_tracks`;',
 		'DELETE FROM `*PREFIX*music_ampache_sessions`',
 		'DROP TABLE `*PREFIX*music_album_artists`;',
 	);
@@ -60,11 +25,20 @@ if (version_compare($installedVersion, '0.3.12', '<')) {
 
 if (version_compare($installedVersion, '0.3.14', '<')) {
 	$sqls = array(
+		'DROP TABLE `*PREFIX*music_playlist_tracks`;',
+	);
+	foreach ($sqls as $sql) {
+		$query = \OCP\DB::prepare($sql);
+		$query->execute();
+	}
+}
+
+if (version_compare($installedVersion, '0.3.16', '<')) {
+	$sqls = array(
 		'DELETE FROM `*PREFIX*music_artists`;',
 		'DELETE FROM `*PREFIX*music_albums`;',
 		'DELETE FROM `*PREFIX*music_tracks`;',
 		'DELETE FROM `*PREFIX*music_playlists`',
-		'DROP TABLE `*PREFIX*music_playlist_tracks`;',
 	);
 	foreach ($sqls as $sql) {
 		$query = \OCP\DB::prepare($sql);

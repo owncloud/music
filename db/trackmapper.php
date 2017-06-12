@@ -183,4 +183,8 @@ class TrackMapper extends BaseMapper {
 		$params = array($userId, $name, $name, $name);
 		return $this->findEntities($sql, $params);
 	}
+
+	public function findUniqueEntity(Track $track) {
+		return $this->findByFileId($track->getFileId(), $track->getUserId());
+	}
 }

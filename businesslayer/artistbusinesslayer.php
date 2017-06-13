@@ -48,7 +48,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 		$artist = new Artist();
 		$artist->setName($name);
 		$artist->setUserId($userId);
-		$artist->setHash(hash('md5', $name));
+		$artist->setHash(hash('md5', mb_strtolower($name)));
 		return $this->mapper->insertOrUpdate($artist);
 	}
 

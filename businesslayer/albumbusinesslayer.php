@@ -92,8 +92,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
 
-		// generate hash from the set of fields forming the album identity to prevent duplicates
-		$hash = hash('md5', "$name|$year|$discnumber|$albumArtistId");
+		// Generate hash from the set of fields forming the album identity to prevent duplicates.
+		// The uniqueness of album name is evaluated in case-insensitive manner.
+		$lowerName = mb_strtolower($name);
+		$hash = hash('md5', "$lowerName|$year|$discnumber|$albumArtistId");
 		$album->setHash($hash);
 
 		return $this->mapper->insertOrUpdate($album);

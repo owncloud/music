@@ -138,71 +138,18 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 	}
 
-	public function testAddAlbumIfNotExistAdd(){
+	public function testAddOrUpdateAlbum(){
 		$name = 'test';
 		$year = 2002;
 		$artistId = 1;
 		$disc = 1;
 
 		$this->mapper->expects($this->once())
-			->method('findAlbum')
-			->with($this->equalTo($name),
-				$this->equalTo($year),
-				$this->equalTo($disc),
-				$this->equalTo($artistId),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new DoesNotExistException('bla')));
-
-		$this->mapper->expects($this->once())
-			->method('insert')
+			->method('insertOrUpdate')
 			->will($this->returnValue($this->albums[0]));
 
-		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
+		$album = $this->albumBusinessLayer->addOrUpdateAlbum($name, $year, $disc, $artistId, $this->userId);
 		$this->assertEquals($this->albums[0], $album);
-	}
-
-	public function testAddAlbumIfNotExistNoAdd(){
-		$name = 'test';
-		$year = 2002;
-		$disc = 1;
-		$artistId = 1;
-
-		$this->mapper->expects($this->once())
-			->method('findAlbum')
-			->with($this->equalTo($name),
-				$this->equalTo($year),
-				$this->equalTo($disc),
-				$this->equalTo($artistId),
-				$this->equalTo($this->userId))
-			->will($this->returnValue($this->albums[0]));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$album = $this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
-		$this->assertEquals($this->albums[0], $album);
-	}
-
-	public function testAddAlbumIfNotExistException(){
-		$name = 'test';
-		$year = 2002;
-		$disc = 1;
-		$artistId = 1;
-
-		$this->mapper->expects($this->once())
-			->method('findAlbum')
-			->with($this->equalTo($name),
-				$this->equalTo($year),
-				$this->equalTo($disc),
-				$this->equalTo($artistId),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
-		$this->albumBusinessLayer->addAlbumIfNotExist($name, $year, $disc, $artistId, $this->userId);
 	}
 
 	public function testRemoveAndFindCovers(){

@@ -61,7 +61,7 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->artistBusinessLayer->deleteById($artistIds);
 	}
 
-	public function testAddArtistIfNotExistAdd(){
+	public function testAddOrUpdateArtist(){
 		$name = 'test';
 
 		$artist = new Artist();
@@ -69,52 +69,10 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$artist->setId(1);
 
 		$this->mapper->expects($this->once())
-			->method('findByName')
-			->with($this->equalTo($name),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new DoesNotExistException('bla')));
-
-		$this->mapper->expects($this->once())
-			->method('insert')
+			->method('insertOrUpdate')
 			->will($this->returnValue($artist));
 
-		$result = $this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
+		$result = $this->artistBusinessLayer->addOrUpdateArtist($name, $this->userId);
 		$this->assertEquals($artist, $result);
-	}
-
-	public function testAddArtistIfNotExistNoAdd(){
-		$name = 'test';
-
-		$artist = new Artist();
-		$artist->setName($name);
-		$artist->setId(1);
-
-		$this->mapper->expects($this->once())
-			->method('findByName')
-			->with($this->equalTo($name),
-				$this->equalTo($this->userId))
-			->will($this->returnValue($artist));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$result = $this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
-		$this->assertEquals($artist, $result);
-	}
-
-	public function testAddArtistIfNotExistException(){
-		$name = 'test';
-
-		$this->mapper->expects($this->once())
-			->method('findByName')
-			->with($this->equalTo($name),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
-		$this->artistBusinessLayer->addArtistIfNotExist($name, $this->userId);
 	}
 }

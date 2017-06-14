@@ -54,9 +54,9 @@ class BaseMapper extends Mapper {
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
 	 * @param Entity $entity
-	 * @return Entity
+	 * @return Entity The inserted or updated entity, containing also the id field
 	 */
-	public function insertOrUpdate(Entity $entity) {
+	public function insertOrUpdate($entity) {
 		try {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {

@@ -84,7 +84,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($response, $result);
 	}
 
-	public function testAddTrackIfNotExistAdd(){
+	public function testAddOrUpdateTrack(){
 		$title = 'test';
 		$fileId = 2;
 
@@ -93,58 +93,11 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$track->setId(1);
 
 		$this->mapper->expects($this->once())
-			->method('findByFileId')
-			->with($this->equalTo($fileId),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new DoesNotExistException('bla')));
-
-		$this->mapper->expects($this->once())
-			->method('insert')
+			->method('insertOrUpdate')
 			->will($this->returnValue($track));
 
-		$result = $this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
+		$result = $this->trackBusinessLayer->addOrUpdateTrack(null, null, null, null, $fileId, null, $this->userId);
 		$this->assertEquals($track, $result);
-	}
-
-	public function testAddTrackIfNotExistNoAdd(){
-		$title = 'test';
-		$fileId = 2;
-
-		$track = new Track();
-		$track->setTitle($title);
-		$track->setId(1);
-
-		$this->mapper->expects($this->once())
-			->method('findByFileId')
-			->with($this->equalTo($fileId),
-				$this->equalTo($this->userId))
-			->will($this->returnValue($track));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$this->mapper->expects($this->once())
-			->method('update')
-			->will($this->returnValue($track));
-
-		$result = $this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
-		$this->assertEquals($track, $result);
-	}
-
-	public function testAddTrackIfNotExistException(){
-		$fileId = 2;
-
-		$this->mapper->expects($this->once())
-			->method('findByFileId')
-			->with($this->equalTo($fileId),
-				$this->equalTo($this->userId))
-			->will($this->throwException(new MultipleObjectsReturnedException('bla')));
-
-		$this->mapper->expects($this->never())
-			->method('insert');
-
-		$this->setExpectedException('\OCA\Music\AppFramework\BusinessLayer\BusinessLayerException');
-		$this->trackBusinessLayer->addTrackIfNotExist(null, null, null, null, $fileId, null, $this->userId);
 	}
 
 	public function testDeleteTrackEmpty(){

@@ -79,7 +79,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Adds a track (if it does not exist already) and returns the new track
+	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
 	 * @param string $number the number of the track
 	 * @param string $artistId the artist id of the track
@@ -89,9 +89,11 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @param int $length track length in seconds
 	 * @param int $bitrate track bitrate in bits (not kbits)
-	 * @return \OCA\Music\Db\Track track
+	 * @return \OCA\Music\Db\Track The added/updated track
 	 */
-	public function addTrackIfNotExist($title, $number, $artistId, $albumId, $fileId, $mimetype, $userId, $length=null, $bitrate=null){
+	public function addOrUpdateTrack(
+			$title, $number, $artistId, $albumId, $fileId,
+			$mimetype, $userId, $length=null, $bitrate=null){
 		$track = new Track();
 		$track->setTitle($title);
 		$track->setNumber($number);

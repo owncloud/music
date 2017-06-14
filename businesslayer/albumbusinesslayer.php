@@ -76,15 +76,15 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Adds an album (if it does not exist already) and returns the new album
+	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
 	 * @param string $year the year of the release
 	 * @param string $discnumber the disk number of this album's disk
 	 * @param integer $albumArtistId
 	 * @param string $userId
-	 * @return Album
+	 * @return Album The added/updated album
 	 */
-	public function addAlbumIfNotExist($name, $year, $discnumber, $albumArtistId, $userId){
+	public function addOrUpdateAlbum($name, $year, $discnumber, $albumArtistId, $userId){
 		$album = new Album();
 		$album->setName($name);
 		$album->setYear($year);

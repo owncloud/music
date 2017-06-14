@@ -216,23 +216,24 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('extracted metadata - ' .
-				sprintf('artist: %s, albumArtist: %s, album: %s, title: %s, track#: %s, disc#: %s, year: %s, mimetype: %s, length: %s, bitrate: %s, fileId: %i, this->userId: %s, userId: %s',
-					$artist, $albumArtist, $album, $title, $trackNumber, $discNumber, $year, $mimetype, $length, $bitrate, $fileId, $this->userId, $userId), 'debug');
+				"artist: $artist, albumArtist: $albumArtist, album: $album, title: $title, track#: $trackNumber, ".
+				"disc#: $discNumber, year: $year, mimetype: $mimetype, length: $length, bitrate: $bitrate, ".
+				"fileId: $fileId, this->userId: $this->userId, userId: $userId", 'debug');
 
-			// add artist and get artist entity
-			$artist = $this->artistBusinessLayer->addArtistIfNotExist($artist, $userId);
+			// add/update artist and get artist entity
+			$artist = $this->artistBusinessLayer->addOrUpdateArtist($artist, $userId);
 			$artistId = $artist->getId();
 
-			// add albumArtist and get artist entity
-			$albumArtist = $this->artistBusinessLayer->addArtistIfNotExist($albumArtist, $userId);
+			// add/update albumArtist and get artist entity
+			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($albumArtist, $userId);
 			$albumArtistId = $albumArtist->getId();
 
-			// add album and get album entity
-			$album = $this->albumBusinessLayer->addAlbumIfNotExist($album, $year, $discNumber, $albumArtistId, $userId);
+			// add/update album and get album entity
+			$album = $this->albumBusinessLayer->addOrUpdateAlbum($album, $year, $discNumber, $albumArtistId, $userId);
 			$albumId = $album->getId();
 
-			// add track and get track entity; the track gets updated if it already exists
-			$track = $this->trackBusinessLayer->addTrackIfNotExist($title, $trackNumber, $artistId,
+			// add/update track and get track entity
+			$track = $this->trackBusinessLayer->addOrUpdateTrack($title, $trackNumber, $artistId,
 				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
 
 			// if present, use the embedded album art as cover for the respective album
@@ -251,7 +252,7 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('imported entities - ' .
-				sprintf('artist: %d, albumArtist: %d, album: %d, track: %d', $artistId, $albumArtistId, $albumId, $track->getId()),
+				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {${$track->getId()}}",
 				'debug');
 		}
 

@@ -39,12 +39,12 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Adds an artist (if it does not exist already) and returns the new artist
+	 * Adds an artist if it does not exist already or updates an existing artist
 	 * @param string $name the name of the artist
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Artist artist
+	 * @return \OCA\Music\Db\Artist The added/updated artist
 	 */
-	public function addArtistIfNotExist($name, $userId){
+	public function addOrUpdateArtist($name, $userId){
 		$artist = new Artist();
 		$artist->setName($name);
 		$artist->setUserId($userId);

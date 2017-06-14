@@ -252,7 +252,7 @@ class Scanner extends PublicEmitter {
 
 			// debug logging
 			$this->logger->log('imported entities - ' .
-				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {${$track->getId()}}",
+				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
 				'debug');
 		}
 

@@ -43,10 +43,13 @@ class Share {
 
 		$container = $app->getContainer();
 		if ($params['itemType'] === 'folder') {
+			// Do not auto-update database when a folder is shared. The folder might contain
+			// thousands of audio files, and indexing them could take minutes or hours.
+			/*
 			$backend = new \OC_Share_Backend_Folder();
 			foreach ($backend->getChildren($params['itemSource']) as $child) {
 				$container->query('Scanner')->updateById((int)$child['source'], $params['shareWith']);
-			}
+			}*/
 		} else if ($params['itemType'] === 'file') {
 			$container->query('Scanner')->updateById((int)$params['itemSource'], $params['shareWith']);
 		}

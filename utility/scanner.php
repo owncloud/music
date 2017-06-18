@@ -106,9 +106,6 @@ class Scanner extends PublicEmitter {
 			return;
 		}
 
-		// TODO find a way to get this for a sharee
-		$isSharee = $userId && $this->userId !== $userId;
-
 		if(!$userId) {
 			$userId = $this->userId;
 		}
@@ -121,8 +118,8 @@ class Scanner extends PublicEmitter {
 		if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
 			// TODO verify
 			$musicPath = $userHome->get($musicPath)->getPath();
-			// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
-			if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
+			// skip files that aren't inside the user specified path
+			if(!self::startsWith($file->getPath(), $musicPath)) {
 				$this->logger->log('skipped - outside of specified path' , 'debug');
 				return;
 			}

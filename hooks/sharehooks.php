@@ -14,7 +14,7 @@ namespace OCA\Music\Hooks;
 
 use \OCA\Music\App\Music;
 
-class Share {
+class ShareHooks {
 
 	/**
 	 * Invoke auto update of music database after item gets unshared

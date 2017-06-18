@@ -45,12 +45,12 @@ $c->query('FileHooks')->register();
 // proof, therefore legacy code in here
 \OCP\Util::connectHook(
 	'OCP\Share', 'post_unshare',
-	'OCA\Music\Hooks\Share', 'itemUnshared'
+	'OCA\Music\Hooks\ShareHooks', 'itemUnshared'
 );
 
 \OCP\Util::connectHook(
 	'OCP\Share', 'post_shared',
-	'OCA\Music\Hooks\Share', 'itemShared'
+	'OCA\Music\Hooks\ShareHooks', 'itemShared'
 );
 
 /**

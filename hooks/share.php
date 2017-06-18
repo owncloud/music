@@ -24,13 +24,26 @@ class Share {
 		$app = new Music();
 
 		$container = $app->getContainer();
+		$scanner = $container->query('Scanner');
+		$sharedFileId = $params['itemSource'];
+		$shareWithUser = $params['shareWith'];
+
 		if ($params['itemType'] === 'folder') {
-			$backend = new \OC_Share_Backend_Folder();
-			foreach ($backend->getChildren($params['itemSource']) as $child) {
-				$container->query('Scanner')->delete((int)$child['source'], $params['shareWith']);
+			$ownerHome = $container->query('UserFolder');
+			$sharedFolderNodes = $ownerHome->getById($sharedFileId);
+			if (count($sharedFolderNodes) > 0) {
+				$sharedFolder = $sharedFolderNodes[0];
+				$audioFiles = array_merge(
+					$sharedFolder->searchByMime('audio'),
+					$sharedFolder->searchByMime('application/ogg')
+				);
+				foreach ($audioFiles as $child) {
+					$scanner->delete($child->getId(), $shareWithUser);
+				}
 			}
-		} else if ($params['itemType'] === 'file') {
-			$container->query('Scanner')->delete((int)$params['itemSource'], $params['shareWith']);
+		}
+		else if ($params['itemType'] === 'file') {
+			$scanner->delete((int)$sharedFileId, $shareWithUser);
 		}
 	}
 

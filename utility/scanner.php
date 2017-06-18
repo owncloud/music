@@ -114,15 +114,15 @@ class Scanner extends PublicEmitter {
 			$userHome = $this->userFolder;
 		}
 
-		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-		if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
-			// TODO verify
-			$musicPath = $userHome->get($musicPath)->getPath();
-			// skip files that aren't inside the user specified path
-			if(!self::startsWith($file->getPath(), $musicPath)) {
-				$this->logger->log('skipped - outside of specified path' , 'debug');
-				return;
-			}
+		if(!$userHome) {
+			return;
+		}
+
+		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
+		// skip files that aren't inside the user specified path
+		if(!self::startsWith($file->getPath(), $musicFolder->getPath())) {
+			$this->logger->log('skipped - outside of specified path' , 'debug');
+			return;
 		}
 
 		$mimetype = $file->getMimeType();
@@ -306,20 +306,26 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
+	public function getUserMusicFolder($userId, $userHome) {
+		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
+		
+		if ($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
+			return $userHome->get($musicPath);
+		} else {
+			return $userHome;
+		}
+	}
+
 	/**
 	 * search for files by mimetype inside an optional user specified path
 	 *
 	 * @return \OCP\Files\Node[]
 	 */
-	public function getMusicFiles($userId, $folder) {
-		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-
-		if($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
-			try {
-				$folder = $folder->get($musicPath);
-			} catch (\OCP\Files\NotFoundException $e) {
-				return array();
-			}
+	public function getMusicFiles($userId, $userHome) {
+		try {
+			$folder = $this->getUserMusicFolder($userId, $userHome);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return array();
 		}
 
 		$audio = $folder->searchByMime('audio');

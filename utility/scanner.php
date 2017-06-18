@@ -39,7 +39,6 @@ class Scanner extends PublicEmitter {
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
-	private $userId;
 	private $configManager;
 	private $appName;
 	private $userFolder;
@@ -52,7 +51,6 @@ class Scanner extends PublicEmitter {
 								Cache $cache,
 								Logger $logger,
 								IDBConnection $db,
-								$userId,
 								IConfig $configManager,
 								$appName,
 								$userFolder = null){
@@ -64,7 +62,6 @@ class Scanner extends PublicEmitter {
 		$this->cache = $cache;
 		$this->logger = $logger;
 		$this->db = $db;
-		$this->userId = $userId;
 		$this->configManager = $configManager;
 		$this->appName = $appName;
 		$this->userFolder = $userFolder;
@@ -104,10 +101,6 @@ class Scanner extends PublicEmitter {
 
 		if(!($file instanceof \OCP\Files\File)) {
 			return;
-		}
-
-		if(!$userId) {
-			$userId = $this->userId;
 		}
 
 		if(!$userHome) {
@@ -215,7 +208,7 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('extracted metadata - ' .
 				"artist: $artist, albumArtist: $albumArtist, album: $album, title: $title, track#: $trackNumber, ".
 				"disc#: $discNumber, year: $year, mimetype: $mimetype, length: $length, bitrate: $bitrate, ".
-				"fileId: $fileId, this->userId: $this->userId, userId: $userId", 'debug');
+				"fileId: $fileId, userId: $userId", 'debug');
 
 			// add/update artist and get artist entity
 			$artist = $this->artistBusinessLayer->addOrUpdateArtist($artist, $userId);
@@ -269,14 +262,10 @@ class Scanner extends PublicEmitter {
 	 * @param int $fileId the id of the deleted file
 	 * @param string $userId the user id of the user to delete the track from
 	 */
-	public function delete($fileId, $userId = null){
+	public function delete($fileId, $userId){
 		// debug logging
 		$this->logger->log('delete - '. $fileId , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
-
-		if ($userId === null) {
-			$userId = $this->userId;
-		}
 
 		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 
@@ -432,12 +421,9 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Update music path
 	 */
-	public function updatePath($path, $userId = null) {
+	public function updatePath($path, $userId) {
 		// TODO currently this function is quite dumb
 		// it just drops all entries of an user from the tables
-		if ($userId === null) {
-			$userId = $this->userId;
-		}
 		$this->logger->log("Changing music collection path of user $userId to $path", 'info');
 		$this->resetDb($userId);
 	}

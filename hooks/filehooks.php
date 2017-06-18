@@ -33,7 +33,9 @@ class FileHooks {
 
 		$container = $app->getContainer();
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$container->query('Scanner')->delete($node->getId(), null);
+			$scanner = $container->query('Scanner');
+			$userId = $container->query('UserId');
+			$scanner->delete($node->getId(), $userId);
 		}
 		else {
 			foreach ($node->getDirectoryListing() as $child) {
@@ -50,7 +52,10 @@ class FileHooks {
 		$app = new Music();
 
 		$container = $app->getContainer();
-		$container->query('Scanner')->update($node, null, null);
+		$scanner = $container->query('Scanner');
+		$userId = $container->query('UserId');
+		$userFolder = $container->query('UserFolder');
+		$scanner->update($node, $userId, $userFolder);
 	}
 
 	public function register() {

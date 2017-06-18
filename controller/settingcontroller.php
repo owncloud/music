@@ -75,7 +75,7 @@ class SettingController extends Controller {
 			}
 			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
 			$success = true;
-			$this->scanner->updatePath($path);
+			$this->scanner->updatePath($path, $this->userId);
 		}
 		return new JSONResponse(array('success' => $success));
 	}

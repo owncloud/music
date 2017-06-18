@@ -287,7 +287,6 @@ class Music extends App {
 				$c->query('Cache'),
 				$c->query('Logger'),
 				$c->query('Db'),
-				$c->query('UserId'),
 				$c->query('Config'),
 				$c->query('AppName'),
 				$c->query('UserFolder')

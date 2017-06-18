@@ -34,15 +34,10 @@ class Scan extends Command {
 	 * @var  Scanner
 	 */
 	private $scanner;
-	/**
-	 * @var \OCP\Files\Folder $rootFolder
-	 */
-	private $rootFolder;
 
-	public function __construct(\OCP\IUserManager $userManager, $scanner, \OCP\Files\Folder $rootFolder) {
+	public function __construct(\OCP\IUserManager $userManager, $scanner) {
 		$this->userManager = $userManager;
 		$this->scanner = $scanner;
-		$this->rootFolder = $rootFolder;
 		parent::__construct();
 	}
 
@@ -90,7 +85,7 @@ class Scan extends Command {
 			\OC_Util::tearDownFS();
 			\OC_Util::setupFS($user);
 			$output->writeln("Start scan for <info>$user</info>");
-			$userHome = $this->resolveUserFolder($user);
+			$userHome = $this->scanner->resolveUserFolder($user);
 			$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
 			$output->writeln('Found ' . count($unscanned) . ' new music files');
 			
@@ -105,28 +100,5 @@ class Scan extends Command {
 				$output->writeln("Some cover image(s) were found and added");
 			}
 		}
-	}
-
-	private function resolveUserFolder($userId) {
-		$dir = '/' . $userId;
-		$root = $this->rootFolder;
-
-		// copy of getUserServer of server container
-		$folder = null;
-
-		if (!$root->nodeExists($dir)) {
-			$folder = $root->newFolder($dir);
-		} else {
-			$folder = $root->get($dir);
-		}
-
-		$dir = '/files';
-		if (!$folder->nodeExists($dir)) {
-			$folder = $folder->newFolder($dir);
-		} else {
-			$folder = $folder->get($dir);
-		}
-
-		return $folder;
 	}
 }

@@ -289,7 +289,7 @@ class Music extends App {
 				$c->query('Db'),
 				$c->query('Config'),
 				$c->query('AppName'),
-				$c->query('UserFolder')
+				$c->query('RootFolder')
 			);
 		});
 

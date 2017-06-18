@@ -41,7 +41,7 @@ class Scanner extends PublicEmitter {
 	private $db;
 	private $configManager;
 	private $appName;
-	private $userFolder;
+	private $rootFolder;
 
 	public function __construct(Extractor $extractor,
 								ArtistBusinessLayer $artistBusinessLayer,
@@ -53,7 +53,7 @@ class Scanner extends PublicEmitter {
 								IDBConnection $db,
 								IConfig $configManager,
 								$appName,
-								$userFolder = null){
+								Folder $rootFolder){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -64,7 +64,7 @@ class Scanner extends PublicEmitter {
 		$this->db = $db;
 		$this->configManager = $configManager;
 		$this->appName = $appName;
-		$this->userFolder = $userFolder;
+		$this->rootFolder = $rootFolder;
 
 		// Trying to enable stream support
 		if(ini_get('allow_url_fopen') !== '1') {
@@ -74,20 +74,18 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function updateById($fileId, $userId) {
-		// TODO properly initialize the user folder for external events (upload to public share)
-		if ($this->userFolder === null) {
-			return;
-		}
+		$userFolder = $this->resolveUserFolder($userId);
 
 		try {
-			$files = $this->userFolder->getById($fileId);
-			if(count($files) > 0) {
-				// use first result
-				$this->update($files[0], $userId, $this->userFolder);
-			}
+			$files = $userFolder->getById($fileId);
 		} catch (\OCP\Files\NotFoundException $e) {
 			// just ignore the error
-			$this->logger->log('updateById - file not found - '. $fileId , 'debug');
+		}
+
+		if(count($files) > 0) {
+			$this->update($files[0], $userId, $userFolder);
+		} else {
+			$this->logger->log('updateById - file not found - '. $fileId , 'warn');
 		}
 	}
 
@@ -99,22 +97,16 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log('update - '. $file->getPath() , 'debug');
 
-		if(!($file instanceof \OCP\Files\File)) {
+		if(!($file instanceof \OCP\Files\File) || !$userId || !$userHome) {
+			$this->logger->log('Invalid arguments given to Scanner.update()', 'warn');
 			return;
 		}
 
-		if(!$userHome) {
-			$userHome = $this->userFolder;
-		}
-
-		if(!$userHome) {
-			return;
-		}
-
-		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
 		// skip files that aren't inside the user specified path
-		if(!self::startsWith($file->getPath(), $musicFolder->getPath())) {
-			$this->logger->log('skipped - outside of specified path' , 'debug');
+		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
+		$musicPath = $musicFolder->getPath();
+		if(!self::startsWith($file->getPath(), $musicPath)) {
+			$this->logger->log("skipped - file is outside of specified path $musicPath", 'debug');
 			return;
 		}
 
@@ -234,7 +226,7 @@ class Scanner extends PublicEmitter {
 			// the file no longer contains any embedded album art
 			else if($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
 				$this->albumBusinessLayer->removeCover($fileId);
-				$this->findEmbeddedCoverForAlbum($albumId, $userId);
+				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			}
 
 			// invalidate the cache as the music collection was changed
@@ -279,7 +271,7 @@ class Scanner extends PublicEmitter {
 			foreach ($result['remainingAlbums'] as $albumId) {
 				if ($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
 					$this->albumBusinessLayer->removeCover($fileId);
-					$this->findEmbeddedCoverForAlbum($albumId, $userId);
+					$this->findEmbeddedCoverForAlbum($albumId, $userId, $this->resolveUserFolder($userId));
 				}
 			}
 
@@ -438,6 +430,29 @@ class Scanner extends PublicEmitter {
 		return !empty($affectedUsers);
 	}
 
+	public function resolveUserFolder($userId) {
+		$dir = '/' . $userId;
+		$root = $this->rootFolder;
+
+		// copy of getUserServer of server container
+		$folder = null;
+
+		if (!$root->nodeExists($dir)) {
+			$folder = $root->newFolder($dir);
+		} else {
+			$folder = $root->get($dir);
+		}
+
+		$dir = '/files';
+		if (!$folder->nodeExists($dir)) {
+			$folder = $folder->newFolder($dir);
+		} else {
+			$folder = $folder->get($dir);
+		}
+	
+		return $folder;
+	}
+
 	private static function startsWith($string, $potentialStart) {
 		return substr($string, 0, strlen($potentialStart)) === $potentialStart;
 	}
@@ -512,20 +527,19 @@ class Scanner extends PublicEmitter {
 	 * Loop through the tracks of an album and set the first track containing embedded cover art
 	 * as cover file for the album
 	 * @param int $albumId
-	 * @param int $userId
+	 * @param string $userId
+	 * @param Node $userFolder
 	 */
-	private function findEmbeddedCoverForAlbum($albumId, $userId) {
-		if ($this->userFolder != null) {
-			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-			foreach ($tracks as $track) {
-				$nodes = $this->userFolder->getById($track->getFileId());
-				if(count($nodes) > 0) {
-					// parse the first valid node and check if it contains embedded cover art
-					$image = $this->parseEmbeddedCoverArt($nodes[0]);
-					if ($image != null) {
-						$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
-						break;
-					}
+	private function findEmbeddedCoverForAlbum($albumId, $userId, $userFolder) {
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+		foreach ($tracks as $track) {
+			$nodes = $userFolder->getById($track->getFileId());
+			if(count($nodes) > 0) {
+				// parse the first valid node and check if it contains embedded cover art
+				$image = $this->parseEmbeddedCoverArt($nodes[0]);
+				if ($image != null) {
+					$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
+					break;
 				}
 			}
 		}

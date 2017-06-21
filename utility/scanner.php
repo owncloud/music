@@ -104,114 +104,54 @@ class Scanner extends PublicEmitter {
 		$mimetype = $file->getMimeType();
 
 		// debug logging
-		$this->logger->log('update - mimetype '. $mimetype , 'debug');
+		$this->logger->log("update - mimetype $mimetype", 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($filePath));
 
 		if(self::startsWith($mimetype, 'image')) {
-			$coverFileId = $file->getId();
-			$parentFolderId = $file->getParent()->getId();
-			if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
-				$this->logger->log('update - the image was set as cover for some album(s)', 'debug');
-				$this->cache->remove($userId);
-			}
-			return;
+			$this->updateImage($file, $userId);
 		}
-
-		if(!self::startsWith($mimetype, 'audio') && !self::startsWith($mimetype, 'application/ogg')) {
-			return;
+		else if(self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
+			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
+	}
 
+	private function updateImage($file, $userId) {
+		$coverFileId = $file->getId();
+		$parentFolderId = $file->getParent()->getId();
+		if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
+			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
+			$this->cache->remove($userId);
+		}
+	}
+
+	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
 		if(ini_get('allow_url_fopen')) {
 
-			$fieldsFromFileName = self::parseFileName($file->getName());
-			$fileInfo = $this->extractor->extract($file);
-
-			// Track artist and album artist
-			$artist = self::getId3Tag($fileInfo, 'artist');
-			$albumArtist = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
-
-			// use artist and albumArtist as fallbacks for each other
-			if(self::isNullOrEmpty($albumArtist)){
-				$albumArtist = $artist;
-			}
-
-			if(self::isNullOrEmpty($artist)){
-				$artist = $albumArtist;
-			}
-
-			// set 'Unknown Artist' in case neither artist nor albumArtist was found
-			if(self::isNullOrEmpty($artist)){
-				$artist = null;
-				$albumArtist = null;
-			}
-
-			// title
-			$title = self::getId3Tag($fileInfo, 'title');
-			if(self::isNullOrEmpty($title)){
-				$title = $fieldsFromFileName['title'];
-			}
-
-			// album
-			$album = self::getId3Tag($fileInfo, 'album');
-			if(self::isNullOrEmpty($album)){
-				// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
-				$dirPath = dirname($filePath);
-				if ($userHome->getPath() === $dirPath) {
-					$album = null;
-				} else {
-					$album = basename($dirPath);
-				}
-			}
-
-			// track number
-			$trackNumber = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], 
-					$fieldsFromFileName['track_number']);
-			$trackNumber = self::normalizeOrdinal($trackNumber);
-
-			// disc number
-			$discNumber = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
-			$discNumber = self::normalizeOrdinal($discNumber);
-
-			// year
-			$year = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
-			$year = self::normalizeYear($year);
-
+			$meta = $this->extractMetadata($file, $userHome, $filePath);
 			$fileId = $file->getId();
 
-			$length = null;
-			if (array_key_exists('playtime_seconds', $fileInfo)) {
-				$length = ceil($fileInfo['playtime_seconds']);
-			}
-
-			$bitrate = null;
-			if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
-				$bitrate = $fileInfo['audio']['bitrate'];
-			}
-
 			// debug logging
-			$this->logger->log('extracted metadata - ' .
-				"artist: $artist, albumArtist: $albumArtist, album: $album, title: $title, track#: $trackNumber, ".
-				"disc#: $discNumber, year: $year, mimetype: $mimetype, length: $length, bitrate: $bitrate, ".
-				"fileId: $fileId, userId: $userId", 'debug');
+			$this->logger->log('extracted metadata - ' . json_encode($meta), 'debug');
 
 			// add/update artist and get artist entity
-			$artist = $this->artistBusinessLayer->addOrUpdateArtist($artist, $userId);
+			$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);
 			$artistId = $artist->getId();
 
 			// add/update albumArtist and get artist entity
-			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($albumArtist, $userId);
+			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($meta['albumArtist'], $userId);
 			$albumArtistId = $albumArtist->getId();
 
 			// add/update album and get album entity
-			$album = $this->albumBusinessLayer->addOrUpdateAlbum($album, $year, $discNumber, $albumArtistId, $userId);
+			$album = $this->albumBusinessLayer->addOrUpdateAlbum(
+					$meta['album'], $meta['year'], $meta['discNumber'], $albumArtistId, $userId);
 			$albumId = $album->getId();
 
 			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack($title, $trackNumber, $artistId,
-				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
+			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'],
+					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
-			if(self::getId3Tag($fileInfo, 'picture') != null) {
+			if($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
@@ -223,13 +163,84 @@ class Scanner extends PublicEmitter {
 
 			// invalidate the cache as the music collection was changed
 			$this->cache->remove($userId);
-
+		
 			// debug logging
 			$this->logger->log('imported entities - ' .
-				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
-				'debug');
+					"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
+					'debug');
+		}
+	}
+
+	private function extractMetadata($file, $userHome, $filePath) {
+		$fieldsFromFileName = self::parseFileName($file->getName());
+		$fileInfo = $this->extractor->extract($file);
+		$meta = [];
+
+		// Track artist and album artist
+		$meta['artist'] = self::getId3Tag($fileInfo, 'artist');
+		$meta['albumArtist'] = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
+
+		// use artist and albumArtist as fallbacks for each other
+		if(self::isNullOrEmpty($meta['albumArtist'])){
+			$meta['albumArtist'] = $meta['artist'];
 		}
 
+		if(self::isNullOrEmpty($meta['artist'])){
+			$meta['artist'] = $meta['albumArtist'];
+		}
+
+		// set 'Unknown Artist' in case neither artist nor albumArtist was found
+		if(self::isNullOrEmpty($meta['artist'])){
+			$meta['artist'] = null;
+			$meta['albumArtist'] = null;
+		}
+
+		// title
+		$meta['title'] = self::getId3Tag($fileInfo, 'title');
+		if(self::isNullOrEmpty($meta['title'])){
+			$meta['title'] = $fieldsFromFileName['title'];
+		}
+
+		// album
+		$meta['album'] = self::getId3Tag($fileInfo, 'album');
+		if(self::isNullOrEmpty($meta['album'])){
+			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
+			$dirPath = dirname($filePath);
+			if ($userHome->getPath() === $dirPath) {
+				$meta['album'] = null;
+			} else {
+				$meta['album'] = basename($dirPath);
+			}
+		}
+
+		// track number
+		$meta['trackNumber'] = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'],
+				$fieldsFromFileName['track_number']);
+		$meta['trackNumber'] = self::normalizeOrdinal($meta['trackNumber']);
+
+		// disc number
+		$meta['discNumber'] = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
+		$meta['discNumber'] = self::normalizeOrdinal($meta['discNumber']);
+
+		// year
+		$meta['year'] = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
+		$meta['year'] = self::normalizeYear($meta['year']);
+
+		$meta['picture'] = self::getId3Tag($fileInfo, 'picture');
+
+		if (array_key_exists('playtime_seconds', $fileInfo)) {
+			$meta['length'] = ceil($fileInfo['playtime_seconds']);
+		} else {
+			$meta['length'] = null;
+		}
+
+		if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
+			$meta['bitrate'] = $fileInfo['audio']['bitrate'];
+		} else {
+			$meta['bitrate'] = null;
+		}
+
+		return $meta;
 	}
 
 	/**

@@ -73,29 +73,20 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	public function updateById($fileId, $userId) {
-		$userFolder = $this->resolveUserFolder($userId);
-
-		try {
-			$files = $userFolder->getById($fileId);
-		} catch (\OCP\Files\NotFoundException $e) {
-			// just ignore the error
-		}
-
-		if(count($files) > 0) {
-			$this->update($files[0], $userId, $userFolder);
-		} else {
-			$this->logger->log('updateById - file not found - '. $fileId , 'warn');
-		}
-	}
-
 	/**
-	 * Gets called by 'post_write' hook (file creation, file update)
-	 * @param \OCP\Files\Node $file the file
+	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
+	 * @param \OCP\Files\File $file the file
+	 * @param string userId
+	 * @param \OCP\Files\Folder $userHome
+	 * @param string|null $filePath Deducted from $file if not given
 	 */
-	public function update($file, $userId, $userHome){
+	public function update($file, $userId, $userHome, $filePath = null){
+		if (!$filePath) {
+			$filePath = $file->getPath();
+		}
+
 		// debug logging
-		$this->logger->log('update - '. $file->getPath() , 'debug');
+		$this->logger->log("update - $filePath", 'debug');
 
 		if(!($file instanceof \OCP\Files\File) || !$userId || !$userHome) {
 			$this->logger->log('Invalid arguments given to Scanner.update()', 'warn');
@@ -105,7 +96,7 @@ class Scanner extends PublicEmitter {
 		// skip files that aren't inside the user specified path
 		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
 		$musicPath = $musicFolder->getPath();
-		if(!self::startsWith($file->getPath(), $musicPath)) {
+		if(!self::startsWith($filePath, $musicPath)) {
 			$this->logger->log("skipped - file is outside of specified path $musicPath", 'debug');
 			return;
 		}
@@ -114,7 +105,7 @@ class Scanner extends PublicEmitter {
 
 		// debug logging
 		$this->logger->log('update - mimetype '. $mimetype , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($file->getPath()));
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($filePath));
 
 		if(self::startsWith($mimetype, 'image')) {
 			$coverFileId = $file->getId();
@@ -164,10 +155,11 @@ class Scanner extends PublicEmitter {
 			$album = self::getId3Tag($fileInfo, 'album');
 			if(self::isNullOrEmpty($album)){
 				// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
-				if ( $userHome->getId() === $file->getParent()->getId() ) {
+				$dirPath = dirname($filePath);
+				if ($userHome->getPath() === $dirPath) {
 					$album = null;
 				} else {
-					$album = $file->getParent()->getName();
+					$album = basename($dirPath);
 				}
 			}
 

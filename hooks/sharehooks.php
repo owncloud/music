@@ -52,19 +52,20 @@ class ShareHooks {
 	 * @param array $params contains the params of the added share
 	 */
 	static public function itemShared($params){
-		$app = new Music();
-
-		$container = $app->getContainer();
 		if ($params['itemType'] === 'folder') {
 			// Do not auto-update database when a folder is shared. The folder might contain
-			// thousands of audio files, and indexing them could take minutes or hours.
-			/*
-			$backend = new \OC_Share_Backend_Folder();
-			foreach ($backend->getChildren($params['itemSource']) as $child) {
-				$container->query('Scanner')->updateById((int)$child['source'], $params['shareWith']);
-			}*/
+			// thousands of audio files, and indexing them could take minutes or hours. The sharee
+			// user will be prompted to update database the next time she opens the Music app.
 		} else if ($params['itemType'] === 'file') {
-			$container->query('Scanner')->updateById((int)$params['itemSource'], $params['shareWith']);
+			$app = new Music();
+			$container = $app->getContainer();
+			$scanner = $container->query('Scanner');
+			$sharerFolder = $container->query('UserFolder');
+			$file = $sharerFolder->getById($params['itemSource'])[0]; // file object with sharer path
+			$userId = $params['shareWith'];
+			$userFolder = $scanner->resolveUserFolder($userId);
+			$filePath = $userFolder->getPath() . $params['itemTarget']; // file path for sharee
+			$scanner->update($file, $userId, $userFolder, $filePath);
 		}
 	}
 }

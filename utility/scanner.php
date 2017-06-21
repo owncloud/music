@@ -290,6 +290,23 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
+	/**
+	 * Remove all audio files in the given folder from the database.
+	 * This gets called when a folder is deleted or unshared from the user.
+	 * 
+	 * @param \OCP\Files\Folder $folder
+	 * @param string $userId
+	 */
+	public function deleteFolder($folder, $userId) {
+		$filesToHandle = array_merge(
+				$folder->searchByMime('audio'),
+				$folder->searchByMime('application/ogg')
+		);
+		foreach ($filesToHandle as $file) {
+			$this->delete($file->getId(), $userId);
+		}
+	}
+
 	public function getUserMusicFolder($userId, $userHome) {
 		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
 		
@@ -303,7 +320,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * search for files by mimetype inside an optional user specified path
 	 *
-	 * @return \OCP\Files\Node[]
+	 * @return \OCP\Files\File[]
 	 */
 	public function getMusicFiles($userId, $userHome) {
 		try {

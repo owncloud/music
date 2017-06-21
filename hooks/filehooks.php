@@ -25,22 +25,19 @@ class FileHooks {
 	}
 
 	/**
-	 * Invoke auto update of music database after file deletion
-	 * @param \OCP\Files\Node $node pointing to the file
+	 * Invoke auto update of music database after file or folder deletion
+	 * @param \OCP\Files\Node $node pointing to the file or folder
 	 */
 	public static function deleted($node){
 		$app = new Music();
-
 		$container = $app->getContainer();
+		$scanner = $container->query('Scanner');
+		$userId = $container->query('UserId');
+
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$scanner = $container->query('Scanner');
-			$userId = $container->query('UserId');
 			$scanner->delete($node->getId(), $userId);
-		}
-		else {
-			foreach ($node->getDirectoryListing() as $child) {
-				FileHooks::deleted($child);
-			}
+		} else {
+			$scanner->deleteFolder($node, $userId);
 		}
 	}
 

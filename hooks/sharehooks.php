@@ -30,16 +30,10 @@ class ShareHooks {
 
 		if ($params['itemType'] === 'folder') {
 			$ownerHome = $container->query('UserFolder');
-			$sharedFolderNodes = $ownerHome->getById($sharedFileId);
-			if (count($sharedFolderNodes) > 0) {
-				$sharedFolder = $sharedFolderNodes[0];
-				$audioFiles = array_merge(
-					$sharedFolder->searchByMime('audio'),
-					$sharedFolder->searchByMime('application/ogg')
-				);
-				foreach ($audioFiles as $child) {
-					$scanner->delete($child->getId(), $shareWithUser);
-				}
+			$nodes = $ownerHome->getById($sharedFileId);
+			if (count($nodes) > 0) {
+				$sharedFolder = $nodes[0];
+				$scanner->deleteFolder($sharedFolder, $shareWithUser);
 			}
 		}
 		else if ($params['itemType'] === 'file') {

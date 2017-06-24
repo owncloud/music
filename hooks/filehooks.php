@@ -32,13 +32,11 @@ class FileHooks {
 		$app = new Music();
 		$container = $app->getContainer();
 		$scanner = $container->query('Scanner');
-		$userId = $container->query('UserId');
-		$fromAllUsers = true;
 
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$scanner->delete($node->getId(), $userId, $fromAllUsers);
+			$scanner->delete($node->getId());
 		} else {
-			$scanner->deleteFolder($node, $userId, $fromAllUsers);
+			$scanner->deleteFolder($node);
 		}
 	}
 

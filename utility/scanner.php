@@ -157,7 +157,7 @@ class Scanner extends PublicEmitter {
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
-			else if($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
+			else if($this->albumBusinessLayer->fileIsCoverForAlbum($fileId, $albumId)) {
 				$this->albumBusinessLayer->removeCover($fileId);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			}
@@ -256,16 +256,15 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Get called by 'unshare' hook and 'delete' hook
 	 * @param int $fileId the id of the deleted file
-	 * @param string $userId the user id of the user to remove the file from
-	 * @param bool $fromAllUsers if true, the file is removed from all users (ie. owner and sharees);
-	 *                           in this case, the $userId should be the owner of the file
+	 * @param string|null $userId the id of the user to remove the file from; if omitted,
+	 *                            the file is removed from all users (ie. owner and sharees)
 	 */
-	public function delete($fileId, $userId, $fromAllUsers){
+	public function delete($fileId, $userId=null){
 		// debug logging
 		$this->logger->log('delete - '. $fileId , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
 
-		$result = $this->trackBusinessLayer->deleteTrack($fileId, $fromAllUsers ? null : $userId);
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
 
 		if ($result) { // this was a track file
 			// remove obsolete artists and albums, and track references in playlists
@@ -275,9 +274,11 @@ class Scanner extends PublicEmitter {
 
 			// check if the removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
-				if ($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
-					$this->albumBusinessLayer->removeCover($fileId);
-					$this->findEmbeddedCoverForAlbum($albumId, $userId, $this->resolveUserFolder($userId));
+				if ($this->albumBusinessLayer->fileIsCoverForAlbum($fileId, $albumId)) {
+					$affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId);
+					foreach ($affectedUsers as $affectedUser) {
+						$this->findEmbeddedCoverForAlbum($albumId, $affectedUser, $this->resolveUserFolder($affectedUser));
+					}
 				}
 			}
 
@@ -290,8 +291,10 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
 		// maybe this was an image file
-		else if ($this->albumBusinessLayer->removeCover($fileId)) {
-			$this->cache->remove($userId);
+		else if ($affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId)) {
+			foreach ($affectedUsers as $affectedUser) {
+				$this->findEmbeddedCoverForAlbum($albumId, $affectedUser, $this->resolveUserFolder($affectedUser));
+			}
 		}
 	}
 
@@ -300,17 +303,16 @@ class Scanner extends PublicEmitter {
 	 * This gets called when a folder is deleted or unshared from the user.
 	 * 
 	 * @param \OCP\Files\Folder $folder
-	 * @param string $userId the user id of the user to remove the folder from
-	 * @param bool $fromAllUsers if true, the folder is removed from all users (ie. owner and sharees);
-	 *                           in this case, the $userId should be the owner of the file
+	 * @param string|null $userId the id of the user to remove the file from; if omitted,
+	 *                            the file is removed from all users (ie. owner and sharees)
 	 */
-	public function deleteFolder($folder, $userId, $fromAllUsers) {
+	public function deleteFolder($folder, $userId=null) {
 		$filesToHandle = array_merge(
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
 		foreach ($filesToHandle as $file) {
-			$this->delete($file->getId(), $userId, $fromAllUsers);
+			$this->delete($file->getId(), $userId);
 		}
 	}
 
@@ -543,16 +545,6 @@ class Scanner extends PublicEmitter {
 		} else {
 			return null;
 		}
-	}
-
-	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {
-		try {
-			$album = $this->albumBusinessLayer->find($albumId, $userId);
-		}
-		catch (\OCP\AppFramework\Db\DoesNotExistException $ex) {
-			$album = null;
-		}
-		return ($album != null && $album->getCoverFileId() == $fileId);
 	}
 
 	/**

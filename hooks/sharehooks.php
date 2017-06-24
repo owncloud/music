@@ -27,18 +27,17 @@ class ShareHooks {
 		$scanner = $container->query('Scanner');
 		$sharedFileId = $params['itemSource'];
 		$shareWithUser = $params['shareWith'];
-		$fromAllUsers = false;
 
 		if ($params['itemType'] === 'folder') {
 			$ownerHome = $container->query('UserFolder');
 			$nodes = $ownerHome->getById($sharedFileId);
 			if (count($nodes) > 0) {
 				$sharedFolder = $nodes[0];
-				$scanner->deleteFolder($sharedFolder, $shareWithUser, $fromAllUsers);
+				$scanner->deleteFolder($sharedFolder, $shareWithUser);
 			}
 		}
 		else if ($params['itemType'] === 'file') {
-			$scanner->delete((int)$sharedFileId, $shareWithUser, $fromAllUsers);
+			$scanner->delete((int)$sharedFileId, $shareWithUser);
 		}
 	}
 

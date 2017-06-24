@@ -51,12 +51,4 @@ class ArtistBusinessLayer extends BusinessLayer {
 		$artist->setHash(hash('md5', mb_strtolower($name)));
 		return $this->mapper->insertOrUpdate($artist);
 	}
-
-	/**
-	 * Deletes artists
-	 * @param array $artistIds the ids of the artist which should be deleted
-	 */
-	public function deleteById($artistIds){
-		$this->mapper->deleteById($artistIds);
-	}
 }

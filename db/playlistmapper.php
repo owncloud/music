@@ -14,7 +14,6 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Entity;
 use OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
@@ -42,17 +41,6 @@ class PlaylistMapper extends BaseMapper {
 		$sql = $this->makeSelectQuery();
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
-	}
-
-	/**
-	 * @param integer $id
-	 * @param string $userId
-	 * @return Playlist
-	 */
-	public function find($id, $userId){
-		$sql = $this->makeSelectQuery('AND `id` = ?');
-		$params = array($userId, $id);
-		return $this->findEntity($sql, $params);
 	}
 
 	/**

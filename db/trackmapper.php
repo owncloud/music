@@ -88,20 +88,11 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $id
-	 * @param string $userId
-	 * @return Track
-	 */
-	public function find($id, $userId){
-		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
-		$params = array($userId, $id);
-		return $this->findEntity($sql, $params);
-	}
-
-	/**
+	 * Find a track of user matching a file ID
 	 * @param integer $fileId
 	 * @param string $userId
 	 * @return Track
+	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
 	 */
 	public function findByFileId($fileId, $userId){
 		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');

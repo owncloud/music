@@ -33,11 +33,12 @@ class FileHooks {
 		$container = $app->getContainer();
 		$scanner = $container->query('Scanner');
 		$userId = $container->query('UserId');
+		$fromAllUsers = true;
 
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$scanner->delete($node->getId(), $userId);
+			$scanner->delete($node->getId(), $userId, $fromAllUsers);
 		} else {
-			$scanner->deleteFolder($node, $userId);
+			$scanner->deleteFolder($node, $userId, $fromAllUsers);
 		}
 	}
 
@@ -56,7 +57,6 @@ class FileHooks {
 	}
 
 	public function register() {
-
 		$this->filesystemRoot->listen('\OC\Files', 'postWrite', array(__CLASS__, 'updated'));
 		$this->filesystemRoot->listen('\OC\Files', 'preDelete', array(__CLASS__, 'deleted'));
 	}

@@ -29,6 +29,8 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Db\Track;
 
+use \OCP\AppFramework\Db\DoesNotExistException;
+
 
 class TrackBusinessLayer extends BusinessLayer {
 
@@ -110,15 +112,25 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Deletes a track
 	 * @param int $fileId the file id of the track
-	 * @param string $userId the name of the user
-	 * @return False if no such track was found; otherwise array of five arrays
+	 * @param string|null $userId the name of the user; if omitted, the tracks matching the
+	 *                            $fileId are deleted from all users
+	 * @return False if no such track was found; otherwise array of six arrays
 	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
-	 *         and 'obsoleteArtists'). These contain the track IDs of the deleted tracks and
-	 *         all album IDs and artist IDs of the deleted track(s). The 'obsolete' entities are
-	 *         such which no longer have any tracks while 'remaining' entities have some left.
+	 *         'obsoleteArtists', and 'affectedUsers'). These contain the track, album, artist, and
+	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer
+	 *         have any tracks while 'remaining' entities have some left.
 	 */
-	public function deleteTrack($fileId, $userId){
-		$tracks = $this->mapper->findAllByFileId($fileId);
+	public function deleteTrack($fileId, $userId = null){
+		if ($userId !== null) {
+			try {
+				$tracks = [$this->mapper->findByFileId($fileId, $userId)];
+			} catch (DoesNotExistException $ex) {
+				$tracks = [];
+			}
+		}
+		else {
+			$tracks = $this->mapper->findAllByFileId($fileId);
+		}
 
 		if(count($tracks) === 0){
 			$result = false;
@@ -129,28 +141,33 @@ class TrackBusinessLayer extends BusinessLayer {
 			$remainingArtists = [];
 			$obsoleteAlbums = [];
 			$obsoleteArtists = [];
+			$affectedUsers = [];
 
 			foreach($tracks as $track){
 				$deletedTracks[] = $track->getId();
 				$artistId = $track->getArtistId();
 				$albumId = $track->getAlbumId();
+				$userId = $track->getUserId();
+
 				$this->mapper->delete($track);
 
 				// check if artist became obsolete
 				$result = $this->mapper->countByArtist($artistId, $userId);
 				if($result === '0'){
-					$this->addUnique($obsoleteArtists, $artistId);
+					self::addUnique($obsoleteArtists, $artistId);
 				}else{
-					$this->addUnique($remainingArtists, $artistId);
+					self::addUnique($remainingArtists, $artistId);
 				}
 
 				// check if album became obsolete
 				$result = $this->mapper->countByAlbum($albumId, $userId);
 				if($result === '0'){
-					$this->addUnique($obsoleteAlbums, $albumId);
+					self::addUnique($obsoleteAlbums, $albumId);
 				}else{
-					$this->addUnique($remainingAlbums, $albumId);
+					self::addUnique($remainingAlbums, $albumId);
 				}
+
+				self::addUnique($affectedUsers, $userId);
 			}
 
 			$result = [
@@ -158,7 +175,8 @@ class TrackBusinessLayer extends BusinessLayer {
 				'remainingAlbums'  => $remainingAlbums,
 				'remainingArtists' => $remainingArtists,
 				'obsoleteAlbums'   => $obsoleteAlbums,
-				'obsoleteArtists'  => $obsoleteArtists
+				'obsoleteArtists'  => $obsoleteArtists,
+				'affectedUsers'    => $affectedUsers
 			];
 		}
 
@@ -180,7 +198,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param array $array
 	 * @param any $value
 	 */
-	private function addUnique(&$array, $value){
+	private static function addUnique(&$array, $value){
 		if(!in_array($value, $array)){
 			$array[] = $value;
 		}

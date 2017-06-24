@@ -88,8 +88,9 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
-		if(!($file instanceof \OCP\Files\File) || !$userId || !$userHome) {
-			$this->logger->log('Invalid arguments given to Scanner.update()', 'warn');
+		if(!($file instanceof \OCP\Files\File) || !$userId || !($userHome instanceof \OCP\Files\Folder)) {
+			$this->logger->log('Invalid arguments given to Scanner.update - file='.get_class($file).
+					", userId=$userId, userHome=".get_class($userHome), 'warn');
 			return;
 		}
 
@@ -255,14 +256,16 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Get called by 'unshare' hook and 'delete' hook
 	 * @param int $fileId the id of the deleted file
-	 * @param string $userId the user id of the user to delete the track from
+	 * @param string $userId the user id of the user to remove the file from
+	 * @param bool $fromAllUsers if true, the file is removed from all users (ie. owner and sharees);
+	 *                           in this case, the $userId should be the owner of the file
 	 */
-	public function delete($fileId, $userId){
+	public function delete($fileId, $userId, $fromAllUsers){
 		// debug logging
 		$this->logger->log('delete - '. $fileId , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
 
-		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
+		$result = $this->trackBusinessLayer->deleteTrack($fileId, $fromAllUsers ? null : $userId);
 
 		if ($result) { // this was a track file
 			// remove obsolete artists and albums, and track references in playlists
@@ -278,8 +281,10 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
-			// invalidate the cache as the music collection was changed
-			$this->cache->remove($userId);
+			// invalidate the cache of all affected users as their music collections were changed
+			foreach ($result['affectedUsers'] as $affectedUser) {
+				$this->cache->remove($affectedUser);
+			}
 
 			// debug logging
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
@@ -295,15 +300,17 @@ class Scanner extends PublicEmitter {
 	 * This gets called when a folder is deleted or unshared from the user.
 	 * 
 	 * @param \OCP\Files\Folder $folder
-	 * @param string $userId
+	 * @param string $userId the user id of the user to remove the folder from
+	 * @param bool $fromAllUsers if true, the folder is removed from all users (ie. owner and sharees);
+	 *                           in this case, the $userId should be the owner of the file
 	 */
-	public function deleteFolder($folder, $userId) {
+	public function deleteFolder($folder, $userId, $fromAllUsers) {
 		$filesToHandle = array_merge(
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
 		foreach ($filesToHandle as $file) {
-			$this->delete($file->getId(), $userId);
+			$this->delete($file->getId(), $userId, $fromAllUsers);
 		}
 	}
 
@@ -539,7 +546,12 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {
-		$album = $this->albumBusinessLayer->find($albumId, $userId);
+		try {
+			$album = $this->albumBusinessLayer->find($albumId, $userId);
+		}
+		catch (\OCP\AppFramework\Db\DoesNotExistException $ex) {
+			$album = null;
+		}
 		return ($album != null && $album->getCoverFileId() == $fileId);
 	}
 

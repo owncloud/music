@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 
 class AlbumMapper extends BaseMapper {
@@ -26,10 +25,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
-			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
-			'`album`.`album_artist_id` FROM `*PREFIX*music_albums` `album`'.
+		return 'SELECT * FROM `*PREFIX*music_albums` `album`'.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
 
@@ -271,16 +267,14 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * Returns the count of albums an Artist is featured in
 	 * @param integer $artistId
-	 * @param string $userId
 	 * @return integer
 	 */
-	public function countByArtist($artistId, $userId){
-		$sql = 'SELECT COUNT(*) AS count '.
-			'FROM (SELECT DISTINCT `track`.`album_id` FROM '.
+	public function countByArtist($artistId){
+		$sql = 'SELECT COUNT(*) AS count FROM '.
+			'(SELECT DISTINCT `track`.`album_id` FROM '.
 			'`*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? '.
-			'AND `track`.`user_id` = ? UNION SELECT `album`.`id` FROM '.
-			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ? '.
-			'AND `album`.`user_id` = ?) tmp';
+			'UNION SELECT `album`.`id` FROM '.
+			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ?) tmp';
 		$params = array($artistId, $userId, $artistId, $userId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();

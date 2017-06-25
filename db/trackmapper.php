@@ -101,40 +101,52 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $fileId
+	 * Find tracks of user with multiple file IDs
+	 * @param integer[] $fileIds
+	 * @param string $userId
 	 * @return Track[]
 	 */
-	public function findAllByFileId($fileId){
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` = ? '.
-			'ORDER BY LOWER(`track`.`title`)');
-		$params = array($fileId);
+	public function findByFileIds($fileIds, $userId){
+		$count = count($fileIds);
+		$sql = $this->makeSelectQuery('AND `track`.`file_id` IN '.$this->questionMarks($count));
+		$params = array_merge([$userId], $fileIds);
 		return $this->findEntities($sql, $params);
 	}
 
 	/**
+	 * Finds tracks of all users matching one or multiple file IDs
+	 * @param integer|integer[] $fileIds One or multiple file IDs
+	 * @return Track[]
+	 */
+	public function findAllByFileIds($fileIds){
+		if (!is_array($fileIds)) {
+			$fileIds = [$fileIds];
+		}
+		$count = count($fileIds);
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` IN '.$this->questionMarks($count));
+		return $this->findEntities($sql, $fileIds);
+	}
+
+	/**
 	 * @param integer $artistId
-	 * @param string $userId
 	 * @return integer
 	 */
-	public function countByArtist($artistId, $userId){
+	public function countByArtist($artistId){
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? AND `track`.`artist_id` = ?';
-		$params = array($userId, $artistId);
-		$result = $this->execute($sql, $params);
+			'WHERE `track`.`artist_id` = ?';
+		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
 		return $row['count'];
 	}
 
 	/**
 	 * @param integer $albumId
-	 * @param string $userId
 	 * @return integer
 	 */
-	public function countByAlbum($albumId, $userId){
+	public function countByAlbum($albumId){
 		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? AND `track`.`album_id` = ?';
-		$params = array($userId, $albumId);
-		$result = $this->execute($sql, $params);
+			'WHERE `track`.`album_id` = ?';
+		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
 		return $row['count'];
 	}

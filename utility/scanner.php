@@ -157,7 +157,7 @@ class Scanner extends PublicEmitter {
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
-			else if($this->albumBusinessLayer->fileIsCoverForAlbum($fileId, $albumId)) {
+			else if($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
 				$this->albumBusinessLayer->removeCover($fileId);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			}
@@ -255,16 +255,20 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Get called by 'unshare' hook and 'delete' hook
-	 * @param int $fileId the id of the deleted file
-	 * @param string|null $userId the id of the user to remove the file from; if omitted,
+	 * @param int|int[] $fileIds one or many IDs of deleted files
+	 * @param string|null $userId the ID of the user to remove the file from; if omitted,
 	 *                            the file is removed from all users (ie. owner and sharees)
 	 */
-	public function delete($fileId, $userId=null){
-		// debug logging
-		$this->logger->log('delete - '. $fileId , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
+	public function delete($fileIds, $userId=null){
+		if (!is_array($fileIds)) {
+			$filesIds = [$fileIds];
+		}
 
-		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
+		// debug logging
+		$this->logger->log('delete - '. implode(', ', $fileIds) , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileIds, $userId));
+
+		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userId);
 
 		if ($result) { // this was a track file
 			// remove obsolete artists and albums, and track references in playlists
@@ -272,13 +276,11 @@ class Scanner extends PublicEmitter {
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
 			$this->playlistBusinessLayer->removeTracksFromAllLists($result['deletedTracks']);
 
-			// check if the removed track was used as embedded cover art file for a remaining album
+			// check if a removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
-				if ($this->albumBusinessLayer->fileIsCoverForAlbum($fileId, $albumId)) {
-					$affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId);
-					foreach ($affectedUsers as $affectedUser) {
-						$this->findEmbeddedCoverForAlbum($albumId, $affectedUser, $this->resolveUserFolder($affectedUser));
-					}
+				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
+					$this->albumBusinessLayer->setCover(null, $albumId);
+					$this->findEmbeddedCoverForAlbum($albumId);
 				}
 			}
 
@@ -291,9 +293,13 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
 		// maybe this was an image file
-		else if ($affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId)) {
-			foreach ($affectedUsers as $affectedUser) {
-				$this->findEmbeddedCoverForAlbum($albumId, $affectedUser, $this->resolveUserFolder($affectedUser));
+		else {
+			foreach ($fileIds as $fileId) {
+				if ($affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId)) {
+					foreach ($affectedUsers as $affectedUser) {
+						$this->cache->remove($affectedUser);
+					}
+				}
 			}
 		}
 	}
@@ -311,9 +317,8 @@ class Scanner extends PublicEmitter {
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
-		foreach ($filesToHandle as $file) {
-			$this->delete($file->getId(), $userId);
-		}
+		$fileIds = array_map(function($f) { return $f->getId(); }, $filesToHandle);
+		$this->delete($fileIds, $userId);
 	}
 
 	public function getUserMusicFolder($userId, $userHome) {
@@ -551,10 +556,17 @@ class Scanner extends PublicEmitter {
 	 * Loop through the tracks of an album and set the first track containing embedded cover art
 	 * as cover file for the album
 	 * @param int $albumId
-	 * @param string $userId
-	 * @param Node $userFolder
+	 * @param string|null $userId, deducted from $albumId if omitted
+	 * @param Folder|null $userFolder, deducted from $userId if omitted
 	 */
-	private function findEmbeddedCoverForAlbum($albumId, $userId, $userFolder) {
+	private function findEmbeddedCoverForAlbum($albumId, $userId=null, $userFolder=null) {
+		if (!$userId) {
+			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
+		}
+		if (!$userFolder) {
+			$userFolder = $this->resolveUserFolder($userId);
+		}
+
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 		foreach ($tracks as $track) {
 			$nodes = $userFolder->getById($track->getFileId());

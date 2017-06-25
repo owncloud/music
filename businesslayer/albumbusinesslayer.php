@@ -13,6 +13,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\AlbumMapper;
@@ -75,6 +76,17 @@ class AlbumBusinessLayer extends BusinessLayer {
 		return $albums;
 	}
 
+	public function findAlbumOwner($albumId){
+		$entities = $this->mapper->findById([$albumId]);
+		if (count($entities) != 1) {
+			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
+					'Expected to find on album but got ' . count($entities));
+		}
+		else {
+			return $entities[0]->getUserId();
+		}
+	}
+
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
@@ -103,13 +115,13 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Check if given file is used as cover for the given album
-	 * @param int $fileId
 	 * @param int $albumId
+	 * @param int[] $fileIds
 	 * @return boolean
 	 */
-	public function fileIsCoverForAlbum($fileId, $albumId) {
+	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
 		$albums = $this->mapper->findById([$albumId]);
-		return (count($albums) && $albums[0]->getCoverFileId() == $fileId);
+		return (count($albums) && in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
 
 	/**

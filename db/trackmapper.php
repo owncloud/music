@@ -107,23 +107,20 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findByFileIds($fileIds, $userId){
-		$count = count($fileIds);
-		$sql = $this->makeSelectQuery('AND `track`.`file_id` IN '.$this->questionMarks($count));
+		$sql = $this->makeSelectQuery('AND `track`.`file_id` IN '.
+				$this->questionMarks(count($fileIds)));
 		$params = array_merge([$userId], $fileIds);
 		return $this->findEntities($sql, $params);
 	}
 
 	/**
 	 * Finds tracks of all users matching one or multiple file IDs
-	 * @param integer|integer[] $fileIds One or multiple file IDs
+	 * @param integer[] $fileIds
 	 * @return Track[]
 	 */
 	public function findAllByFileIds($fileIds){
-		if (!is_array($fileIds)) {
-			$fileIds = [$fileIds];
-		}
-		$count = count($fileIds);
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` IN '.$this->questionMarks($count));
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` IN '.
+				$this->questionMarks(count($fileIds)));
 		return $this->findEntities($sql, $fileIds);
 	}
 

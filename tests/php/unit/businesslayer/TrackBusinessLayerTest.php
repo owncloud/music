@@ -104,9 +104,9 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$fileId = 2;
 
 		$this->mapper->expects($this->once())
-			->method('findAllByFileId')
-			->with($this->equalTo($fileId))
-			->will($this->returnValue(array()));
+			->method('findAllByFileIds')
+			->with($this->equalTo([$fileId]))
+			->will($this->returnValue([]));
 
 		$this->mapper->expects($this->never())
 			->method('delete');
@@ -117,7 +117,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->mapper->expects($this->never())
 			->method('countByAlbum');
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId, $this->userId);
+		$result = $this->trackBusinessLayer->deleteTracks($fileId);
 		$this->assertEquals(false, $result);
 	}
 
@@ -128,15 +128,16 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$track->setArtistId(2);
 		$track->setAlbumId(3);
 		$track->setId(1);
+		$track->setUserId($this->userId);
 
 		$this->mapper->expects($this->once())
-			->method('findAllByFileId')
-			->with($this->equalTo($fileId))
-			->will($this->returnValue(array($track)));
+			->method('findAllByFileIds')
+			->with($this->equalTo([$fileId]))
+			->will($this->returnValue([$track]));
 
 		$this->mapper->expects($this->once())
-			->method('delete')
-			->with($this->equalTo($track));
+			->method('deleteById')
+			->with($this->equalTo([$track->getId()]));
 
 		$this->mapper->expects($this->once())
 			->method('countByArtist')
@@ -148,7 +149,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo(3))
 			->will($this->returnValue('1'));
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId, $this->userId);
+		$result = $this->trackBusinessLayer->deleteTracks($fileId);
 		$this->assertEquals([],              $result['obsoleteAlbums']);
 		$this->assertEquals([2],             $result['obsoleteArtists']);
 		$this->assertEquals([3],             $result['remainingAlbums']);
@@ -163,15 +164,16 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$track->setArtistId(2);
 		$track->setAlbumId(3);
 		$track->setId(1);
+		$track->setUserId($this->userId);
 
 		$this->mapper->expects($this->once())
-			->method('findAllByFileId')
-			->with($this->equalTo($fileId))
-			->will($this->returnValue(array($track)));
+			->method('findAllByFileIds')
+			->with($this->equalTo([$fileId]))
+			->will($this->returnValue([$track]));
 
 		$this->mapper->expects($this->once())
-			->method('delete')
-			->with($this->equalTo($track));
+			->method('deleteById')
+			->with($this->equalTo([$track->getId()]));
 
 		$this->mapper->expects($this->once())
 			->method('countByArtist')
@@ -183,7 +185,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo(3))
 			->will($this->returnValue('0'));
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId, $this->userId);
+		$result = $this->trackBusinessLayer->deleteTracks($fileId);
 		$this->assertEquals([3],             $result['obsoleteAlbums']);
 		$this->assertEquals([],              $result['obsoleteArtists']);
 		$this->assertEquals([],              $result['remainingAlbums']);

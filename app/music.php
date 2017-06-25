@@ -38,6 +38,7 @@ use \OCA\Music\DB\PlaylistMapper;
 use \OCA\Music\DB\TrackMapper;
 
 use \OCA\Music\Hooks\FileHooks;
+use \OCA\Music\Hooks\ShareHooks;
 
 use \OCA\Music\Middleware\AmpacheMiddleware;
 
@@ -315,6 +316,10 @@ class Music extends App {
 			return new FileHooks(
 				$c->query('ServerContainer')->getRootFolder()
 			);
+		});
+
+		$container->registerService('ShareHooks', function($c) {
+			return new ShareHooks();
 		});
 	}
 }

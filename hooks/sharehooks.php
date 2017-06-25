@@ -20,7 +20,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared
 	 * @param array $params contains the params of the removed share
 	 */
-	static public function itemUnshared($params){
+	static public function itemUnshared($params) {
 		$app = new Music();
 
 		$container = $app->getContainer();
@@ -45,7 +45,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets shared
 	 * @param array $params contains the params of the added share
 	 */
-	static public function itemShared($params){
+	static public function itemShared($params) {
 		if ($params['itemType'] === 'folder') {
 			// Do not auto-update database when a folder is shared. The folder might contain
 			// thousands of audio files, and indexing them could take minutes or hours. The sharee
@@ -61,5 +61,12 @@ class ShareHooks {
 			$filePath = $userFolder->getPath() . $params['itemTarget']; // file path for sharee
 			$scanner->update($file, $userId, $userFolder, $filePath);
 		}
+	}
+
+	public function register() {
+		// FIXME: this is temporarily static because core emitters are not future
+		// proof, therefore legacy code in here
+		\OCP\Util::connectHook('OCP\Share', 'post_unshare', __CLASS__, 'itemUnshared');
+		\OCP\Util::connectHook('OCP\Share', 'post_shared',  __CLASS__, 'itemShared');
 	}
 }

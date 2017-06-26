@@ -158,7 +158,7 @@ class Scanner extends PublicEmitter {
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
 			else if($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
-				$this->albumBusinessLayer->removeCover($fileId);
+				$this->albumBusinessLayer->removeCovers([$fileId]);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			}
 
@@ -253,24 +253,13 @@ class Scanner extends PublicEmitter {
 		return self::getId3Tag($fileInfo, 'picture');
 	}
 
-	/**
-	 * Get called by 'unshare' hook and 'delete' hook
-	 * @param int|int[] $fileIds one or many IDs of deleted files
-	 * @param string|null $userId the ID of the user to remove the file from; if omitted,
-	 *                            the file is removed from all users (ie. owner and sharees)
-	 */
-	public function delete($fileIds, $userId=null){
-		if (!is_array($fileIds)) {
-			$filesIds = [$fileIds];
-		}
-
-		// debug logging
-		$this->logger->log('delete - '. implode(', ', $fileIds) , 'debug');
+	private function deleteAudio($fileIds, $userId=null){
+		$this->logger->log('deleteAudio - '. implode(', ', $fileIds) , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileIds, $userId));
 
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userId);
 
-		if ($result) { // this was a track file
+		if ($result) { // one or more tracks were removed
 			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
@@ -289,23 +278,42 @@ class Scanner extends PublicEmitter {
 				$this->cache->remove($affectedUser);
 			}
 
-			// debug logging
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
-		// maybe this was an image file
-		else {
-			foreach ($fileIds as $fileId) {
-				if ($affectedUsers = $this->albumBusinessLayer->removeCover($fileId, $userId)) {
-					foreach ($affectedUsers as $affectedUser) {
-						$this->cache->remove($affectedUser);
-					}
-				}
+
+		return $result !== false; // true if anything was removed
+	}
+
+	private function deleteImage($fileIds, $userId=null){
+		$this->logger->log('deleteImage - '. implode(', ', $fileIds) , 'debug');
+
+		$affectedUsers = $this->albumBusinessLayer->removeCovers($fileIds, $userId);
+		$deleted = (count($affectedUsers) > 0);
+		if ($deleted) {
+			foreach ($affectedUsers as $affectedUser) {
+				$this->cache->remove($affectedUser);
 			}
+		}
+
+		return $deleted;
+	}
+
+	/**
+	 * Gets called by 'unshare' hook and 'delete' hook
+	 *
+	 * @param int $fileId ID of the deleted files
+	 * @param string|null $userId the ID of the user to remove the file from; if omitted,
+	 *                            the file is removed from all users (ie. owner and sharees)
+	 */
+	public function delete($fileId, $userId=null){
+		if (!$this->deleteAudio([$fileId], $userId) && !$this->deleteImage([$fileId], $userId)) {
+			$this->logger->log("deleted file $fileId was not an indexed " .
+					'audio file or a cover image' , 'debug');
 		}
 	}
 
 	/**
-	 * Remove all audio files in the given folder from the database.
+	 * Remove all audio files and cover images in the given folder from the database.
 	 * This gets called when a folder is deleted or unshared from the user.
 	 * 
 	 * @param \OCP\Files\Folder $folder
@@ -313,17 +321,19 @@ class Scanner extends PublicEmitter {
 	 *                            the file is removed from all users (ie. owner and sharees)
 	 */
 	public function deleteFolder($folder, $userId=null) {
-		$filesToHandle = array_merge(
+		$audioFiles = array_merge(
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
-		$fileIds = array_map(function($f) { return $f->getId(); }, $filesToHandle);
-		$this->delete($fileIds, $userId);
+		$this->deleteAudio(self::idsFromArray($audioFiles), $userId);
+
+		$imageFiles = $folder->searchByMime('image');
+		$this->deleteImage(self::idsFromArray($imageFiles), $userId);
 	}
 
 	public function getUserMusicFolder($userId, $userHome) {
 		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-		
+
 		if ($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
 			return $userHome->get($musicPath);
 		} else {
@@ -356,7 +366,7 @@ class Scanner extends PublicEmitter {
 	public function getUnscannedMusicFileIds($userId, $userHome) {
 		$scannedIds = $this->getScannedFiles($userId);
 		$musicFiles = $this->getMusicFiles($userId, $userHome);
-		$allIds = array_map(function($f) { return $f->getId(); }, $musicFiles);
+		$allIds = self::idsFromArray($musicFiles);
 		$unscannedIds = array_values(array_diff($allIds, $scannedIds));
 
 		$count = count($unscannedIds);
@@ -485,6 +495,10 @@ class Scanner extends PublicEmitter {
 		}
 	
 		return $folder;
+	}
+
+	private static function idsFromArray(array $arr) {
+		return array_map(function($i) { return $i->getId(); }, $arr);
 	}
 
 	private static function startsWith($string, $potentialStart) {

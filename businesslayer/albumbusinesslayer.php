@@ -145,12 +145,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * removes the cover art from albums, replacement covers will be searched in a background task
-	 * @param integer $coverFileId the file id of the cover image
+	 * @param integer[] $coverFileIds the file IDs of the cover images
 	 * @param string|null $userId the user whose music library is targeted; all users are targeted if omitted
 	 * @return string[] user IDs of the affected users; empty array if no album was modified
 	 */
-	public function removeCover($coverFileId, $userId=null){
-		return $this->mapper->removeCover($coverFileId, $userId);
+	public function removeCovers($coverFileIds, $userId=null){
+		return $this->mapper->removeCovers($coverFileIds, $userId);
 	}
 
 	/**

@@ -81,7 +81,7 @@ class Scanner extends PublicEmitter {
 	 * @param string|null $filePath Deducted from $file if not given
 	 */
 	public function update($file, $userId, $userHome, $filePath = null){
-		if (!$filePath) {
+		if ($filePath === null) {
 			$filePath = $file->getPath();
 		}
 
@@ -253,6 +253,11 @@ class Scanner extends PublicEmitter {
 		return self::getId3Tag($fileInfo, 'picture');
 	}
 
+	/**
+	 * @param int[] $fileIds
+	 * @param string|null $userId
+	 * @return boolean true if anything was removed
+	 */
 	private function deleteAudio($fileIds, $userId=null){
 		$this->logger->log('deleteAudio - '. implode(', ', $fileIds) , 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileIds, $userId));
@@ -281,9 +286,14 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
 
-		return $result !== false; // true if anything was removed
+		return $result !== false;
 	}
 
+	/**
+	 * @param int[] $fileIds
+	 * @param string|null $userId
+	 * @return boolean true if anything was removed
+	 */
 	private function deleteImage($fileIds, $userId=null){
 		$this->logger->log('deleteImage - '. implode(', ', $fileIds) , 'debug');
 
@@ -570,14 +580,14 @@ class Scanner extends PublicEmitter {
 	 * Loop through the tracks of an album and set the first track containing embedded cover art
 	 * as cover file for the album
 	 * @param int $albumId
-	 * @param string|null $userId, deducted from $albumId if omitted
-	 * @param Folder|null $userFolder, deducted from $userId if omitted
+	 * @param string|null $userId name of user, deducted from $albumId if omitted
+	 * @param Folder|null $userFolder home folder of user, deducted from $userId if omitted
 	 */
 	private function findEmbeddedCoverForAlbum($albumId, $userId=null, $userFolder=null) {
-		if (!$userId) {
+		if ($userId === null) {
 			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
 		}
-		if (!$userFolder) {
+		if ($userFolder === null) {
 			$userFolder = $this->resolveUserFolder($userId);
 		}
 

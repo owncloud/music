@@ -182,7 +182,7 @@ class AlbumMapper extends BaseMapper {
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_albums` WHERE `cover_file_id` IN ' .
 			$this->questionMarks(count($coverFileIds));
 		$params = $coverFileIds;
-		if ($userId) {
+		if ($userId !== null) {
 			$sql .= ' AND `user_id` = ?';
 			$params[] = $userId;
 		}
@@ -195,7 +195,7 @@ class AlbumMapper extends BaseMapper {
 				SET `cover_file_id` = NULL
 				WHERE `id` IN ' . $this->questionMarks($count);
 			$params = array_map(function($a) { return $a->getId(); }, $albums);
-			$result = $this->execute($sql, $params);
+			$this->execute($sql, $params);
 		}
 
 		// get unique users from the modified albums

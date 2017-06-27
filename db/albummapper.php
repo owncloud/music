@@ -276,7 +276,7 @@ class AlbumMapper extends BaseMapper {
 			'`*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? '.
 			'UNION SELECT `album`.`id` FROM '.
 			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ?) tmp';
-		$params = array($artistId, $userId, $artistId, $userId);
+		$params = array($artistId, $artistId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return $row['count'];

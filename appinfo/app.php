@@ -32,30 +32,13 @@ $c = $app->getContainer();
 /**
  * register regular task
  */
-
 \OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\CleanUp', 'run']);
 
 /**
  * register hooks
  */
-
 $c->query('FileHooks')->register();
-
-// FIXME: this is temporarily static because core emitters are not future
-// proof, therefore legacy code in here
-\OCP\Util::connectHook(
-	'OCP\Share', 'post_unshare',
-	'OCA\Music\Hooks\Share', 'itemUnshared'
-);
-
-
-// TODO: disabled because it can delay the share a lot
-/*
-\OCP\Util::connectHook(
-	'OCP\Share', 'post_shared',
-	'OCA\Music\Hooks\Share', 'itemShared'
-);
-*/
+$c->query('ShareHooks')->register();
 
 /**
  * register search provider
@@ -70,7 +53,6 @@ $c->query('FileHooks')->register();
 /**
  * load styles and scripts
  */
-
 // fileactions
 \OCP\Util::addScript($c->query('AppName'), 'public/fileactions');
 // file player for public sharing page

@@ -27,6 +27,29 @@ class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Find a single entity by id and user_id
+	 * @param integer $id
+	 * @param string $userId
+	 * @return Entity
+	 */
+	public function find($id, $userId){
+		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` = ? AND `user_id` = ?';
+		return $this->findEntity($sql, [$id, $userId]);
+	}
+
+	/**
+	 * Find all entities matching the given IDs without specifying the user
+	 * @param integer[] $ids  IDs of the entities to be found
+	 * @return Entity[]
+	 */
+	public function findById($ids){
+		$count = count($ids);
+		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
+		return $this->findEntities($sql, $ids);
+	}
+
+	/**
+	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
 	public function deleteById($ids){
@@ -39,13 +62,13 @@ class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Count all entities of a user
 	 * @param string $userId
 	 */
 	public function count($userId){
 		$sql = 'SELECT COUNT(*) AS count FROM `' . $this->getTableName() . '` '.
 			'WHERE `user_id` = ?';
-		$params = array($userId);
-		$result = $this->execute($sql, $params);
+		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
 		return $row['count'];
 	}

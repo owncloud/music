@@ -39,10 +39,9 @@ class Scanner extends PublicEmitter {
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
-	private $userId;
 	private $configManager;
 	private $appName;
-	private $userFolder;
+	private $rootFolder;
 
 	public function __construct(Extractor $extractor,
 								ArtistBusinessLayer $artistBusinessLayer,
@@ -52,10 +51,9 @@ class Scanner extends PublicEmitter {
 								Cache $cache,
 								Logger $logger,
 								IDBConnection $db,
-								$userId,
 								IConfig $configManager,
 								$appName,
-								$userFolder = null){
+								Folder $rootFolder){
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -64,10 +62,9 @@ class Scanner extends PublicEmitter {
 		$this->cache = $cache;
 		$this->logger = $logger;
 		$this->db = $db;
-		$this->userId = $userId;
 		$this->configManager = $configManager;
 		$this->appName = $appName;
-		$this->userFolder = $userFolder;
+		$this->rootFolder = $rootFolder;
 
 		// Trying to enable stream support
 		if(ini_get('allow_url_fopen') !== '1') {
@@ -76,186 +73,175 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	public function updateById($fileId, $userId) {
-		// TODO properly initialize the user folder for external events (upload to public share)
-		if ($this->userFolder === null) {
-			return;
-		}
-
-		try {
-			$files = $this->userFolder->getById($fileId);
-			if(count($files) > 0) {
-				// use first result
-				$this->update($files[0], $userId, $this->userFolder);
-			}
-		} catch (\OCP\Files\NotFoundException $e) {
-			// just ignore the error
-			$this->logger->log('updateById - file not found - '. $fileId , 'debug');
-		}
-	}
-
 	/**
-	 * Gets called by 'post_write' hook (file creation, file update)
-	 * @param \OCP\Files\Node $file the file
+	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
+	 * @param \OCP\Files\File $file the file
+	 * @param string userId
+	 * @param \OCP\Files\Folder $userHome
+	 * @param string|null $filePath Deducted from $file if not given
 	 */
-	public function update($file, $userId, $userHome){
-		// debug logging
-		$this->logger->log('update - '. $file->getPath() , 'debug');
+	public function update($file, $userId, $userHome, $filePath = null){
+		if ($filePath === null) {
+			$filePath = $file->getPath();
+		}
 
-		if(!($file instanceof \OCP\Files\File)) {
+		// debug logging
+		$this->logger->log("update - $filePath", 'debug');
+
+		if(!($file instanceof \OCP\Files\File) || !$userId || !($userHome instanceof \OCP\Files\Folder)) {
+			$this->logger->log('Invalid arguments given to Scanner.update - file='.get_class($file).
+					", userId=$userId, userHome=".get_class($userHome), 'warn');
 			return;
 		}
 
-		// TODO find a way to get this for a sharee
-		$isSharee = $userId && $this->userId !== $userId;
-
-		if(!$userId) {
-			$userId = $this->userId;
-		}
-
-		if(!$userHome) {
-			$userHome = $this->userFolder;
-		}
-
-		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-		if($musicPath !== null || $musicPath !== '/' || $musicPath !== '') {
-			// TODO verify
-			$musicPath = $userHome->get($musicPath)->getPath();
-			// skip files that aren't inside the user specified path (and also for sharees - TODO remove this)
-			if(!$isSharee && !self::startsWith($file->getPath(), $musicPath)) {
-				$this->logger->log('skipped - outside of specified path' , 'debug');
-				return;
-			}
+		// skip files that aren't inside the user specified path
+		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
+		$musicPath = $musicFolder->getPath();
+		if(!self::startsWith($filePath, $musicPath)) {
+			$this->logger->log("skipped - file is outside of specified path $musicPath", 'debug');
+			return;
 		}
 
 		$mimetype = $file->getMimeType();
 
 		// debug logging
-		$this->logger->log('update - mimetype '. $mimetype , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($file->getPath()));
+		$this->logger->log("update - mimetype $mimetype", 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($filePath));
 
 		if(self::startsWith($mimetype, 'image')) {
-			$coverFileId = $file->getId();
-			$parentFolderId = $file->getParent()->getId();
-			if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
-				$this->logger->log('update - the image was set as cover for some album(s)', 'debug');
-				$this->cache->remove($userId);
-			}
-			return;
+			$this->updateImage($file, $userId);
 		}
-
-		if(!self::startsWith($mimetype, 'audio') && !self::startsWith($mimetype, 'application/ogg')) {
-			return;
+		else if(self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
+			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
+	}
 
+	private function updateImage($file, $userId) {
+		$coverFileId = $file->getId();
+		$parentFolderId = $file->getParent()->getId();
+		if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
+			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
+			$this->cache->remove($userId);
+		}
+	}
+
+	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
 		if(ini_get('allow_url_fopen')) {
 
-			$fieldsFromFileName = self::parseFileName($file->getName());
-			$fileInfo = $this->extractor->extract($file);
-
-			// Track artist and album artist
-			$artist = self::getId3Tag($fileInfo, 'artist');
-			$albumArtist = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
-
-			// use artist and albumArtist as fallbacks for each other
-			if(self::isNullOrEmpty($albumArtist)){
-				$albumArtist = $artist;
-			}
-
-			if(self::isNullOrEmpty($artist)){
-				$artist = $albumArtist;
-			}
-
-			// set 'Unknown Artist' in case neither artist nor albumArtist was found
-			if(self::isNullOrEmpty($artist)){
-				$artist = null;
-				$albumArtist = null;
-			}
-
-			// title
-			$title = self::getId3Tag($fileInfo, 'title');
-			if(self::isNullOrEmpty($title)){
-				$title = $fieldsFromFileName['title'];
-			}
-
-			// album
-			$album = self::getId3Tag($fileInfo, 'album');
-			if(self::isNullOrEmpty($album)){
-				// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
-				if ( $userHome->getId() === $file->getParent()->getId() ) {
-					$album = null;
-				} else {
-					$album = $file->getParent()->getName();
-				}
-			}
-
-			// track number
-			$trackNumber = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'], 
-					$fieldsFromFileName['track_number']);
-			$trackNumber = self::normalizeOrdinal($trackNumber);
-
-			// disc number
-			$discNumber = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
-			$discNumber = self::normalizeOrdinal($discNumber);
-
-			// year
-			$year = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
-			$year = self::normalizeYear($year);
-
+			$meta = $this->extractMetadata($file, $userHome, $filePath);
 			$fileId = $file->getId();
 
-			$length = null;
-			if (array_key_exists('playtime_seconds', $fileInfo)) {
-				$length = ceil($fileInfo['playtime_seconds']);
-			}
-
-			$bitrate = null;
-			if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
-				$bitrate = $fileInfo['audio']['bitrate'];
-			}
-
 			// debug logging
-			$this->logger->log('extracted metadata - ' .
-				"artist: $artist, albumArtist: $albumArtist, album: $album, title: $title, track#: $trackNumber, ".
-				"disc#: $discNumber, year: $year, mimetype: $mimetype, length: $length, bitrate: $bitrate, ".
-				"fileId: $fileId, this->userId: $this->userId, userId: $userId", 'debug');
+			$this->logger->log('extracted metadata - ' . json_encode($meta), 'debug');
 
 			// add/update artist and get artist entity
-			$artist = $this->artistBusinessLayer->addOrUpdateArtist($artist, $userId);
+			$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);
 			$artistId = $artist->getId();
 
 			// add/update albumArtist and get artist entity
-			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($albumArtist, $userId);
+			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($meta['albumArtist'], $userId);
 			$albumArtistId = $albumArtist->getId();
 
 			// add/update album and get album entity
-			$album = $this->albumBusinessLayer->addOrUpdateAlbum($album, $year, $discNumber, $albumArtistId, $userId);
+			$album = $this->albumBusinessLayer->addOrUpdateAlbum(
+					$meta['album'], $meta['year'], $meta['discNumber'], $albumArtistId, $userId);
 			$albumId = $album->getId();
 
 			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack($title, $trackNumber, $artistId,
-				$albumId, $fileId, $mimetype, $userId, $length, $bitrate);
+			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'],
+					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
-			if(self::getId3Tag($fileInfo, 'picture') != null) {
+			if($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
-			else if($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
-				$this->albumBusinessLayer->removeCover($fileId);
-				$this->findEmbeddedCoverForAlbum($albumId, $userId);
+			else if($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
+				$this->albumBusinessLayer->removeCovers([$fileId]);
+				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			}
 
 			// invalidate the cache as the music collection was changed
 			$this->cache->remove($userId);
-
+		
 			// debug logging
 			$this->logger->log('imported entities - ' .
-				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
-				'debug');
+					"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
+					'debug');
+		}
+	}
+
+	private function extractMetadata($file, $userHome, $filePath) {
+		$fieldsFromFileName = self::parseFileName($file->getName());
+		$fileInfo = $this->extractor->extract($file);
+		$meta = [];
+
+		// Track artist and album artist
+		$meta['artist'] = self::getId3Tag($fileInfo, 'artist');
+		$meta['albumArtist'] = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
+
+		// use artist and albumArtist as fallbacks for each other
+		if(self::isNullOrEmpty($meta['albumArtist'])){
+			$meta['albumArtist'] = $meta['artist'];
 		}
 
+		if(self::isNullOrEmpty($meta['artist'])){
+			$meta['artist'] = $meta['albumArtist'];
+		}
+
+		// set 'Unknown Artist' in case neither artist nor albumArtist was found
+		if(self::isNullOrEmpty($meta['artist'])){
+			$meta['artist'] = null;
+			$meta['albumArtist'] = null;
+		}
+
+		// title
+		$meta['title'] = self::getId3Tag($fileInfo, 'title');
+		if(self::isNullOrEmpty($meta['title'])){
+			$meta['title'] = $fieldsFromFileName['title'];
+		}
+
+		// album
+		$meta['album'] = self::getId3Tag($fileInfo, 'album');
+		if(self::isNullOrEmpty($meta['album'])){
+			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
+			$dirPath = dirname($filePath);
+			if ($userHome->getPath() === $dirPath) {
+				$meta['album'] = null;
+			} else {
+				$meta['album'] = basename($dirPath);
+			}
+		}
+
+		// track number
+		$meta['trackNumber'] = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'],
+				$fieldsFromFileName['track_number']);
+		$meta['trackNumber'] = self::normalizeOrdinal($meta['trackNumber']);
+
+		// disc number
+		$meta['discNumber'] = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
+		$meta['discNumber'] = self::normalizeOrdinal($meta['discNumber']);
+
+		// year
+		$meta['year'] = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
+		$meta['year'] = self::normalizeYear($meta['year']);
+
+		$meta['picture'] = self::getId3Tag($fileInfo, 'picture');
+
+		if (array_key_exists('playtime_seconds', $fileInfo)) {
+			$meta['length'] = ceil($fileInfo['playtime_seconds']);
+		} else {
+			$meta['length'] = null;
+		}
+
+		if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
+			$meta['bitrate'] = $fileInfo['audio']['bitrate'];
+		} else {
+			$meta['bitrate'] = null;
+		}
+
+		return $meta;
 	}
 
 	/**
@@ -268,61 +254,113 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * Get called by 'unshare' hook and 'delete' hook
-	 * @param int $fileId the id of the deleted file
-	 * @param string $userId the user id of the user to delete the track from
+	 * @param int[] $fileIds
+	 * @param string|null $userId
+	 * @return boolean true if anything was removed
 	 */
-	public function delete($fileId, $userId = null){
-		// debug logging
-		$this->logger->log('delete - '. $fileId , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileId, $userId));
+	private function deleteAudio($fileIds, $userId=null){
+		$this->logger->log('deleteAudio - '. implode(', ', $fileIds) , 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileIds, $userId));
 
-		if ($userId === null) {
-			$userId = $this->userId;
-		}
+		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userId);
 
-		$result = $this->trackBusinessLayer->deleteTrack($fileId, $userId);
-
-		if ($result) { // this was a track file
+		if ($result) { // one or more tracks were removed
 			// remove obsolete artists and albums, and track references in playlists
 			$this->albumBusinessLayer->deleteById($result['obsoleteAlbums']);
 			$this->artistBusinessLayer->deleteById($result['obsoleteArtists']);
 			$this->playlistBusinessLayer->removeTracksFromAllLists($result['deletedTracks']);
 
-			// check if the removed track was used as embedded cover art file for a remaining album
+			// check if a removed track was used as embedded cover art file for a remaining album
 			foreach ($result['remainingAlbums'] as $albumId) {
-				if ($this->fileIsCoverForAlbum($fileId, $albumId, $userId)) {
-					$this->albumBusinessLayer->removeCover($fileId);
-					$this->findEmbeddedCoverForAlbum($albumId, $userId);
+				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
+					$this->albumBusinessLayer->setCover(null, $albumId);
+					$this->findEmbeddedCoverForAlbum($albumId);
 				}
 			}
 
-			// invalidate the cache as the music collection was changed
-			$this->cache->remove($userId);
+			// invalidate the cache of all affected users as their music collections were changed
+			foreach ($result['affectedUsers'] as $affectedUser) {
+				$this->cache->remove($affectedUser);
+			}
 
-			// debug logging
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
 		}
-		// maybe this was an image file
-		else if ($this->albumBusinessLayer->removeCover($fileId)) {
-			$this->cache->remove($userId);
+
+		return $result !== false;
+	}
+
+	/**
+	 * @param int[] $fileIds
+	 * @param string|null $userId
+	 * @return boolean true if anything was removed
+	 */
+	private function deleteImage($fileIds, $userId=null){
+		$this->logger->log('deleteImage - '. implode(', ', $fileIds) , 'debug');
+
+		$affectedUsers = $this->albumBusinessLayer->removeCovers($fileIds, $userId);
+		$deleted = (count($affectedUsers) > 0);
+		if ($deleted) {
+			foreach ($affectedUsers as $affectedUser) {
+				$this->cache->remove($affectedUser);
+			}
+		}
+
+		return $deleted;
+	}
+
+	/**
+	 * Gets called by 'unshare' hook and 'delete' hook
+	 *
+	 * @param int $fileId ID of the deleted files
+	 * @param string|null $userId the ID of the user to remove the file from; if omitted,
+	 *                            the file is removed from all users (ie. owner and sharees)
+	 */
+	public function delete($fileId, $userId=null){
+		if (!$this->deleteAudio([$fileId], $userId) && !$this->deleteImage([$fileId], $userId)) {
+			$this->logger->log("deleted file $fileId was not an indexed " .
+					'audio file or a cover image' , 'debug');
+		}
+	}
+
+	/**
+	 * Remove all audio files and cover images in the given folder from the database.
+	 * This gets called when a folder is deleted or unshared from the user.
+	 * 
+	 * @param \OCP\Files\Folder $folder
+	 * @param string|null $userId the id of the user to remove the file from; if omitted,
+	 *                            the file is removed from all users (ie. owner and sharees)
+	 */
+	public function deleteFolder($folder, $userId=null) {
+		$audioFiles = array_merge(
+				$folder->searchByMime('audio'),
+				$folder->searchByMime('application/ogg')
+		);
+		$this->deleteAudio(self::idsFromArray($audioFiles), $userId);
+
+		$imageFiles = $folder->searchByMime('image');
+		$this->deleteImage(self::idsFromArray($imageFiles), $userId);
+	}
+
+	public function getUserMusicFolder($userId, $userHome) {
+		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
+
+		if ($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
+			return $userHome->get($musicPath);
+		} else {
+			return $userHome;
 		}
 	}
 
 	/**
 	 * search for files by mimetype inside an optional user specified path
 	 *
-	 * @return \OCP\Files\Node[]
+	 * @return \OCP\Files\File[]
 	 */
-	public function getMusicFiles($userId, $folder) {
-		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-
-		if($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
-			try {
-				$folder = $folder->get($musicPath);
-			} catch (\OCP\Files\NotFoundException $e) {
-				return array();
-			}
+	public function getMusicFiles($userId, $userHome) {
+		try {
+			$folder = $this->getUserMusicFolder($userId, $userHome);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return array();
 		}
 
 		$audio = $folder->searchByMime('audio');
@@ -338,7 +376,7 @@ class Scanner extends PublicEmitter {
 	public function getUnscannedMusicFileIds($userId, $userHome) {
 		$scannedIds = $this->getScannedFiles($userId);
 		$musicFiles = $this->getMusicFiles($userId, $userHome);
-		$allIds = array_map(function($f) { return $f->getId(); }, $musicFiles);
+		$allIds = self::idsFromArray($musicFiles);
 		$unscannedIds = array_values(array_diff($allIds, $scannedIds));
 
 		$count = count($unscannedIds);
@@ -429,12 +467,9 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Update music path
 	 */
-	public function updatePath($path, $userId = null) {
+	public function updatePath($path, $userId) {
 		// TODO currently this function is quite dumb
 		// it just drops all entries of an user from the tables
-		if ($userId === null) {
-			$userId = $this->userId;
-		}
 		$this->logger->log("Changing music collection path of user $userId to $path", 'info');
 		$this->resetDb($userId);
 	}
@@ -447,6 +482,33 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
 		}
 		return !empty($affectedUsers);
+	}
+
+	public function resolveUserFolder($userId) {
+		$dir = '/' . $userId;
+		$root = $this->rootFolder;
+
+		// copy of getUserServer of server container
+		$folder = null;
+
+		if (!$root->nodeExists($dir)) {
+			$folder = $root->newFolder($dir);
+		} else {
+			$folder = $root->get($dir);
+		}
+
+		$dir = '/files';
+		if (!$folder->nodeExists($dir)) {
+			$folder = $folder->newFolder($dir);
+		} else {
+			$folder = $folder->get($dir);
+		}
+	
+		return $folder;
+	}
+
+	private static function idsFromArray(array $arr) {
+		return array_map(function($i) { return $i->getId(); }, $arr);
 	}
 
 	private static function startsWith($string, $potentialStart) {
@@ -514,29 +576,30 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function fileIsCoverForAlbum($fileId, $albumId, $userId) {
-		$album = $this->albumBusinessLayer->find($albumId, $userId);
-		return ($album != null && $album->getCoverFileId() == $fileId);
-	}
-
 	/**
 	 * Loop through the tracks of an album and set the first track containing embedded cover art
 	 * as cover file for the album
 	 * @param int $albumId
-	 * @param int $userId
+	 * @param string|null $userId name of user, deducted from $albumId if omitted
+	 * @param Folder|null $userFolder home folder of user, deducted from $userId if omitted
 	 */
-	private function findEmbeddedCoverForAlbum($albumId, $userId) {
-		if ($this->userFolder != null) {
-			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-			foreach ($tracks as $track) {
-				$nodes = $this->userFolder->getById($track->getFileId());
-				if(count($nodes) > 0) {
-					// parse the first valid node and check if it contains embedded cover art
-					$image = $this->parseEmbeddedCoverArt($nodes[0]);
-					if ($image != null) {
-						$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
-						break;
-					}
+	private function findEmbeddedCoverForAlbum($albumId, $userId=null, $userFolder=null) {
+		if ($userId === null) {
+			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
+		}
+		if ($userFolder === null) {
+			$userFolder = $this->resolveUserFolder($userId);
+		}
+
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+		foreach ($tracks as $track) {
+			$nodes = $userFolder->getById($track->getFileId());
+			if(count($nodes) > 0) {
+				// parse the first valid node and check if it contains embedded cover art
+				$image = $this->parseEmbeddedCoverArt($nodes[0]);
+				if ($image != null) {
+					$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
+					break;
 				}
 			}
 		}

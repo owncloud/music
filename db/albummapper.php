@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 
 class AlbumMapper extends BaseMapper {
@@ -26,10 +25,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return string
 	 */
 	private function makeSelectQuery($condition=null){
-		return 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
-			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
-			'`album`.`album_artist_id` FROM `*PREFIX*music_albums` `album`'.
+		return 'SELECT * FROM `*PREFIX*music_albums` `album`'.
 			'WHERE `album`.`user_id` = ? ' . $condition;
 	}
 
@@ -43,19 +39,6 @@ class AlbumMapper extends BaseMapper {
 		$sql = $this->makeSelectQuery('ORDER BY LOWER(`album`.`name`)');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
-	}
-
-	/**
-	 * finds an album by ID
-	 *
-	 * @param integer $albumId ID of the album
-	 * @param string $userId the user ID
-	 * @return Album
-	 */
-	public function find($albumId, $userId){
-		$sql = $this->makeSelectQuery('AND `album`.`id` = ?');
-		$params = array($userId, $albumId);
-		return $this->findEntity($sql, $params);
 	}
 
 	/**
@@ -190,16 +173,34 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $coverFileId
-	 * @return true if the given file was cover for some album
+	 * @param integer[] $coverFileIds
+	 * @param string|null $userId the user whose music library is targeted; all users are targeted if omitted
+	 * @return string[] user IDs of the affected users; empty array if no album was modified
 	 */
-	public function removeCover($coverFileId){
-		$sql = 'UPDATE `*PREFIX*music_albums`
+	public function removeCovers($coverFileIds, $userId=null){
+		// find albums using the given file as cover
+		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_albums` WHERE `cover_file_id` IN ' .
+			$this->questionMarks(count($coverFileIds));
+		$params = $coverFileIds;
+		if ($userId !== null) {
+			$sql .= ' AND `user_id` = ?';
+			$params[] = $userId;
+		}
+		$albums = $this->findEntities($sql, $params);
+
+		// if any albums found, remove the cover from those
+		$count = count($albums);
+		if ($count) {
+			$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = NULL
-				WHERE `cover_file_id` = ?';
-		$params = array($coverFileId);
-		$result = $this->execute($sql, $params);
-		return $result->rowCount() > 0;
+				WHERE `id` IN ' . $this->questionMarks($count);
+			$params = array_map(function($a) { return $a->getId(); }, $albums);
+			$this->execute($sql, $params);
+		}
+
+		// get unique users from the modified albums
+		$users = array_map(function($a) { return $a->getUserId(); }, $albums);
+		return array_unique($users);
 	}
 
 	/**
@@ -267,17 +268,15 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * Returns the count of albums an Artist is featured in
 	 * @param integer $artistId
-	 * @param string $userId
 	 * @return integer
 	 */
-	public function countByArtist($artistId, $userId){
-		$sql = 'SELECT COUNT(*) AS count '.
-			'FROM (SELECT DISTINCT `track`.`album_id` FROM '.
+	public function countByArtist($artistId){
+		$sql = 'SELECT COUNT(*) AS count FROM '.
+			'(SELECT DISTINCT `track`.`album_id` FROM '.
 			'`*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? '.
-			'AND `track`.`user_id` = ? UNION SELECT `album`.`id` FROM '.
-			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ? '.
-			'AND `album`.`user_id` = ?) tmp';
-		$params = array($artistId, $userId, $artistId, $userId);
+			'UNION SELECT `album`.`id` FROM '.
+			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ?) tmp';
+		$params = array($artistId, $artistId);
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return $row['count'];

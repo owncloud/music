@@ -13,8 +13,9 @@
 
 namespace OCA\Music\AppFramework\BusinessLayer;
 
+use \OCA\Music\Db\BaseMapper;
+
 use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\Mapper;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 
@@ -22,10 +23,9 @@ abstract class BusinessLayer {
 
 	protected $mapper;
 
-	public function __construct(Mapper $mapper){
+	public function __construct(BaseMapper $mapper){
 		$this->mapper = $mapper;
 	}
-
 
 	/**
 	 * Delete an entity
@@ -39,6 +39,15 @@ abstract class BusinessLayer {
 		$this->mapper->delete($entity);
 	}
 
+	/**
+	 * Deletes entities without specifying the owning user.
+	 * This should never be called directly from the HTML API, but only in case
+	 * we can actually trust the passed IDs (e.g. file deleted hook).
+	 * @param array $ids the ids of the entities which should be deleted
+	 */
+	public function deleteById($ids){
+		$this->mapper->deleteById($ids);
+	}
 
 	/**
 	 * Finds an entity by id

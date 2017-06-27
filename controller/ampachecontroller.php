@@ -234,8 +234,8 @@ class AmpacheController extends Controller {
 
 		// set album and track count for artists
 		foreach($artists as &$artist) {
-			$artist->setAlbumCount($this->albumMapper->countByArtist($artist->getId(), $userId));
-			$artist->setTrackCount($this->trackMapper->countByArtist($artist->getId(), $userId));
+			$artist->setAlbumCount($this->albumMapper->countByArtist($artist->getId()));
+			$artist->setTrackCount($this->trackMapper->countByArtist($artist->getId()));
 		}
 
 		return $this->render(
@@ -256,8 +256,8 @@ class AmpacheController extends Controller {
 
 		// set album and track count for artists
 		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
-			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId(), $userId);
+			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId()));
+			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId());
 			$album->setAlbumArtist($albumArtist);
 		}
 
@@ -421,7 +421,7 @@ class AmpacheController extends Controller {
 
 		// set track count for artists
 		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId(), $userId));
+			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId()));
 			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId(), $userId);
 			$album->setAlbumArtist($albumArtist);
 		}

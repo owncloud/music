@@ -109,56 +109,76 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Deletes a track
-	 * @param int $fileId the file id of the track
-	 * @param string $userId the name of the user
-	 * @return False if no such track was found; otherwise array of five arrays
+	 * @param int|int[] $fileIds one or multiple tracks
+	 * @param string|null $userId the name of the user; if omitted, the tracks matching the
+	 *                            $fileId are deleted from all users
+	 * @return False if no such track was found; otherwise array of six arrays
 	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
-	 *         and 'obsoleteArtists'). These contain the track IDs of the deleted tracks and
-	 *         all album IDs and artist IDs of the deleted track(s). The 'obsolete' entities are
-	 *         such which no longer have any tracks while 'remaining' entities have some left.
+	 *         'obsoleteArtists', and 'affectedUsers'). These contain the track, album, artist, and
+	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer
+	 *         have any tracks while 'remaining' entities have some left.
 	 */
-	public function deleteTrack($fileId, $userId){
-		$tracks = $this->mapper->findAllByFileId($fileId);
+	public function deleteTracks($fileIds, $userId = null){
+		if(!is_array($fileIds)){
+			$fileIds = [$fileIds];
+		}
+
+		$tracks = ($userId !== null)
+			? $this->mapper->findByFileIds($fileIds, $userId)
+			: $this->mapper->findAllByFileIds($fileIds);
 
 		if(count($tracks) === 0){
 			$result = false;
 		}
 		else{
-			$deletedTracks = [];
-			$remainingAlbums = [];
-			$remainingArtists = [];
-			$obsoleteAlbums = [];
-			$obsoleteArtists = [];
+			// delete all the matching tracks
+			$trackIds = array_map(function($t) { return $t->getId(); }, $tracks);
+			$this->deleteById($trackIds);
 
+			// find all distinct albums, artists, and users of the deleted tracks
+			$artists = [];
+			$albums = [];
+			$users = [];
 			foreach($tracks as $track){
-				$deletedTracks[] = $track->getId();
-				$artistId = $track->getArtistId();
-				$albumId = $track->getAlbumId();
-				$this->mapper->delete($track);
+				$artists[$track->getArtistId()] = 1;
+				$albums[$track->getAlbumId()] = 1;
+				$users[$track->getUserId()] = 1;
+			}
+			$artists = array_keys($artists);
+			$albums = array_keys($albums);
+			$users = array_keys($users);
 
-				// check if artist became obsolete
-				$result = $this->mapper->countByArtist($artistId, $userId);
+			// categorize each artist as 'remaining' or 'obsolete'
+			$remainingArtists = [];
+			$obsoleteArtists = [];
+			foreach($artists as $artistId){
+				$result = $this->mapper->countByArtist($artistId);
 				if($result === '0'){
-					$this->addUnique($obsoleteArtists, $artistId);
+					$obsoleteArtists[] = $artistId;
 				}else{
-					$this->addUnique($remainingArtists, $artistId);
+					$remainingArtists[] = $artistId;
 				}
+			}
 
-				// check if album became obsolete
-				$result = $this->mapper->countByAlbum($albumId, $userId);
+			// categorize each album as 'remaining' or 'obsolete'
+			$remainingAlbums = [];
+			$obsoleteAlbums = [];
+			foreach($albums as $albumId){
+				$result = $this->mapper->countByAlbum($albumId);
 				if($result === '0'){
-					$this->addUnique($obsoleteAlbums, $albumId);
+					$obsoleteAlbums[] = $albumId;
 				}else{
-					$this->addUnique($remainingAlbums, $albumId);
+					$remainingAlbums[] = $albumId;
 				}
 			}
 
 			$result = [
-				'deletedTracks'    => $deletedTracks,
+				'deletedTracks'    => $trackIds,
 				'remainingAlbums'  => $remainingAlbums,
 				'remainingArtists' => $remainingArtists,
 				'obsoleteAlbums'   => $obsoleteAlbums,
-				'obsoleteArtists'  => $obsoleteArtists
+				'obsoleteArtists'  => $obsoleteArtists,
+				'affectedUsers'    => $users
 			];
 		}
 
@@ -173,16 +193,5 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByNameRecursive($name, $userId){
 		return $this->mapper->findAllByNameRecursive($name, $userId);
-	}
-
-	/**
-	 * Append value to array if is not already there
-	 * @param array $array
-	 * @param any $value
-	 */
-	private function addUnique(&$array, $value){
-		if(!in_array($value, $array)){
-			$array[] = $value;
-		}
 	}
 }

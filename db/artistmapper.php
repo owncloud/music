@@ -53,18 +53,6 @@ class ArtistMapper extends BaseMapper {
 		return $this->findEntities($sql, $params);
 	}
 
-
-	/**
-	 * @param integer $artistId
-	 * @param string $userId
-	 * @return Artist
-	 */
-	public function find($artistId, $userId){
-		$sql = $this->makeSelectQuery('AND `artist`.`id` = ?');
-		$params = array($userId, $artistId);
-		return $this->findEntity($sql, $params);
-	}
-
 	/**
 	 * @param string|null $artistName
 	 * @param string $userId

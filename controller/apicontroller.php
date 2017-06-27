@@ -441,6 +441,7 @@ class ApiController extends Controller {
 			}
 		}
 
+		$this->logger->log("Requested cover not found for album $albumId, coverFileId={$album->getCoverFileId()}", 'error');
 		$r = new Response();
 		$r->setStatus(Http::STATUS_NOT_FOUND);
 		return $r;

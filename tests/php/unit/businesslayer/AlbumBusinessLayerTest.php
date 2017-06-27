@@ -156,10 +156,10 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$fileId = 1;
 
 		$this->mapper->expects($this->once())
-			->method('removeCover')
-			->with($this->equalTo($fileId));
+			->method('removeCovers')
+			->with($this->equalTo([$fileId]));
 
-		$this->albumBusinessLayer->removeCover($fileId);
+		$this->albumBusinessLayer->removeCovers([$fileId]);
 
 	}
 }

@@ -13,6 +13,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\AlbumMapper;
@@ -75,6 +76,17 @@ class AlbumBusinessLayer extends BusinessLayer {
 		return $albums;
 	}
 
+	public function findAlbumOwner($albumId){
+		$entities = $this->mapper->findById([$albumId]);
+		if (count($entities) != 1) {
+			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
+					'Expected to find on album but got ' . count($entities));
+		}
+		else {
+			return $entities[0]->getUserId();
+		}
+	}
+
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
@@ -102,11 +114,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Deletes albums
-	 * @param array $albumIds the ids of the albums which should be deleted
+	 * Check if given file is used as cover for the given album
+	 * @param int $albumId
+	 * @param int[] $fileIds
+	 * @return boolean
 	 */
-	public function deleteById($albumIds){
-		$this->mapper->deleteById($albumIds);
+	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
+		$albums = $this->mapper->findById([$albumId]);
+		return (count($albums) && in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
 
 	/**
@@ -130,11 +145,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * removes the cover art from albums, replacement covers will be searched in a background task
-	 * @param integer $coverFileId the file id of the cover image
-	 * @return true if the given file was cover for some album
+	 * @param integer[] $coverFileIds the file IDs of the cover images
+	 * @param string|null $userId the user whose music library is targeted; all users are targeted if omitted
+	 * @return string[] user IDs of the affected users; empty array if no album was modified
 	 */
-	public function removeCover($coverFileId){
-		return $this->mapper->removeCover($coverFileId);
+	public function removeCovers($coverFileIds, $userId=null){
+		return $this->mapper->removeCovers($coverFileIds, $userId);
 	}
 
 	/**

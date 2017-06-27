@@ -25,20 +25,18 @@ class FileHooks {
 	}
 
 	/**
-	 * Invoke auto update of music database after file deletion
-	 * @param \OCP\Files\Node $node pointing to the file
+	 * Invoke auto update of music database after file or folder deletion
+	 * @param \OCP\Files\Node $node pointing to the file or folder
 	 */
 	public static function deleted($node){
 		$app = new Music();
-
 		$container = $app->getContainer();
+		$scanner = $container->query('Scanner');
+
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$container->query('Scanner')->delete($node->getId(), null);
-		}
-		else {
-			foreach ($node->getDirectoryListing() as $child) {
-				FileHooks::deleted($child);
-			}
+			$scanner->delete($node->getId());
+		} else {
+			$scanner->deleteFolder($node);
 		}
 	}
 
@@ -50,11 +48,13 @@ class FileHooks {
 		$app = new Music();
 
 		$container = $app->getContainer();
-		$container->query('Scanner')->update($node, null, null);
+		$scanner = $container->query('Scanner');
+		$userId = $container->query('UserId');
+		$userFolder = $container->query('UserFolder');
+		$scanner->update($node, $userId, $userFolder);
 	}
 
 	public function register() {
-
 		$this->filesystemRoot->listen('\OC\Files', 'postWrite', array(__CLASS__, 'updated'));
 		$this->filesystemRoot->listen('\OC\Files', 'preDelete', array(__CLASS__, 'deleted'));
 	}

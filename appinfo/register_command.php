@@ -18,8 +18,7 @@ $app = new Music();
 $c = $app->getContainer();
 $userManager = $c->getServer()->getUserManager();
 $scanner = $c->query('Scanner');
-$rootFolder = $c->query('RootFolder');
 $db = $c->query('Db');
 
-$application->add(new OCA\Music\Command\Scan($userManager, $scanner, $rootFolder));
+$application->add(new OCA\Music\Command\Scan($userManager, $scanner));
 $application->add(new OCA\Music\Command\ResetDatabase($scanner));

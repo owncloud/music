@@ -15,4 +15,9 @@
 		<filesystem/>
 	</types>
 	<ocsid>164319</ocsid>
+	<repair-steps>
+		<pre-migration>
+			<step>OCA\Music\Migration\PreMigration</step>
+		</pre-migration>
+	</repair-steps>
 </info>

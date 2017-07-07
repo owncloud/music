@@ -6,42 +6,20 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Morris Jobke <hey@morrisjobke.de>
- * @copyright Morris Jobke 2013
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2017
  */
 
-$installedVersion = \OCP\Config::getAppValue('music', 'installed_version');
+/*
+ * This update.php file is the legacy way of running the migration code on
+ * application version update. Starting from OC 9.1.0, the migration logic
+ * should be wrapped in a class implementing OCP\Migration\IRepairStep and 
+ * registered in info.xml, and the use of update.php is deprecated.
+ * 
+ * This file is just a thin wrapper for the new migration mechanism and needed
+ * to support OC versions older than 9.1.0. This should be removed once support
+ * for the old server versions is dropped.
+ */
 
-if (version_compare($installedVersion, '0.3.12', '<')) {
-	$sqls = array(
-		'DELETE FROM `*PREFIX*music_ampache_sessions`',
-		'DROP TABLE `*PREFIX*music_album_artists`;',
-	);
-	foreach ($sqls as $sql) {
-		$query = \OCP\DB::prepare($sql);
-		$query->execute();
-	}
-}
-
-if (version_compare($installedVersion, '0.3.14', '<')) {
-	$sqls = array(
-		'DROP TABLE `*PREFIX*music_playlist_tracks`;',
-	);
-	foreach ($sqls as $sql) {
-		$query = \OCP\DB::prepare($sql);
-		$query->execute();
-	}
-}
-
-if (version_compare($installedVersion, '0.3.16', '<')) {
-	$sqls = array(
-		'DELETE FROM `*PREFIX*music_artists`;',
-		'DELETE FROM `*PREFIX*music_albums`;',
-		'DELETE FROM `*PREFIX*music_tracks`;',
-		'DELETE FROM `*PREFIX*music_playlists`',
-	);
-	foreach ($sqls as $sql) {
-		$query = \OCP\DB::prepare($sql);
-		$query->execute();
-	}
-}
+$migration = new OCA\Music\Migration\PreMigration();
+$migration->run(null);

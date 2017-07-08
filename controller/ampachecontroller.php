@@ -16,17 +16,16 @@ use \OCP\AppFramework\Controller;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
-
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\Middleware\AmpacheException;
+
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
-use \OCA\Music\Db\AlbumMapper;
-use \OCA\Music\Db\ArtistMapper;
-use \OCA\Music\Db\TrackMapper;
-
 
 use \OCA\Music\Http\FileResponse;
 
@@ -37,9 +36,9 @@ class AmpacheController extends Controller {
 
 	private $ampacheUserMapper;
 	private $ampacheSessionMapper;
-	private $albumMapper;
-	private $artistMapper;
-	private $trackMapper;
+	private $albumBusinessLayer;
+	private $artistBusinessLayer;
+	private $trackBusinessLayer;
 	private $ampacheUser;
 	private $urlGenerator;
 	private $rootFolder;
@@ -53,18 +52,18 @@ class AmpacheController extends Controller {
 								IURLGenerator $urlGenerator,
 								AmpacheUserMapper $ampacheUserMapper,
 								AmpacheSessionMapper $ampacheSessionMapper,
-								AlbumMapper $albumMapper,
-								ArtistMapper $artistMapper,
-								TrackMapper $trackMapper,
+								AlbumBusinessLayer $albumBusinessLayer,
+								ArtistBusinessLayer $artistBusinessLayer,
+								TrackBusinessLayer $trackBusinessLayer,
 								AmpacheUser $ampacheUser,
 								$rootFolder){
 		parent::__construct($appname, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
-		$this->albumMapper = $albumMapper;
-		$this->artistMapper = $artistMapper;
-		$this->trackMapper = $trackMapper;
+		$this->albumBusinessLayer = $albumBusinessLayer;
+		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
 
@@ -180,9 +179,9 @@ class AmpacheController extends Controller {
 		$this->ampacheSessionMapper->insert($session);
 
 		// return counts
-		$artistCount = $this->artistMapper->count($userId);
-		$albumCount = $this->albumMapper->count($userId);
-		$trackCount = $this->trackMapper->count($userId);
+		$artistCount = $this->artistBusinessLayer->count($userId);
+		$albumCount = $this->albumBusinessLayer->count($userId);
+		$trackCount = $this->trackBusinessLayer->count($userId);
 
 		return $this->render(
 			'ampache/handshake',
@@ -227,15 +226,15 @@ class AmpacheController extends Controller {
 		// TODO add & update
 
 		if ($filter) {
-			$artists = $this->artistMapper->findAllByName($filter, $userId, $fuzzy);
+			$artists = $this->artistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$artists = $this->artistMapper->findAll($userId);
+			$artists = $this->artistBusinessLayer->findAll($userId);
 		}
 
 		// set album and track count for artists
 		foreach($artists as &$artist) {
-			$artist->setAlbumCount($this->albumMapper->countByArtist($artist->getId()));
-			$artist->setTrackCount($this->trackMapper->countByArtist($artist->getId()));
+			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
+			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
 		}
 
 		return $this->render(
@@ -250,14 +249,12 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$artistId = $this->params('filter');
 
-		// this is used to fill in the artist information for each album
-		$artist = $this->artistMapper->find($artistId, $userId);
-		$albums = $this->albumMapper->findAllByArtist($artistId, $userId);
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $userId);
 
 		// set album and track count for artists
 		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId()));
-			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId());
+			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
+			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 			$album->setAlbumArtist($albumArtist);
 		}
 
@@ -275,14 +272,14 @@ class AmpacheController extends Controller {
 		$artistId = $this->params('filter');
 
 		// this is used to fill in the artist information for each album
-		$artist = $this->artistMapper->find($artistId, $userId);
-		$tracks = $this->trackMapper->findAllByArtist($artistId, $userId);
+		$artist = $this->artistBusinessLayer->find($artistId, $userId);
+		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
 
 		// set album and track count for artists
 		foreach($tracks as &$track) {
 			$track->setArtist($artist);
-			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 			$track->setAlbum($album);
 		}
 
@@ -300,13 +297,13 @@ class AmpacheController extends Controller {
 		$albumId = $this->params('filter');
 
 		// this is used to fill in the album information for each track
-		$album = $this->albumMapper->find($albumId, $userId);
-		$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
-		$tracks = $this->trackMapper->findAllByAlbum($albumId, $userId);
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 
 		// set album and track count for artists
 		foreach($tracks as &$track) {
-			$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
+			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
 			$track->setAlbum($album);
 		}
 
@@ -323,12 +320,12 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$trackId = $this->params('filter');
 
-		$track = $this->trackMapper->find($trackId, $userId);
+		$track = $this->trackBusinessLayer->find($trackId, $userId);
 
 		// set album and track count for artists
-		$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-		$album = $this->albumMapper->find($track->getAlbumId(), $userId);
-		$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
+		$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 		$track->setAlbum($album);
 
 		return $this->render(
@@ -350,7 +347,7 @@ class AmpacheController extends Controller {
 		// TODO add & update
 
 		if ($filter) {
-			$tracks = $this->trackMapper->findAllByName($filter, $userId, $fuzzy);
+			$tracks = $this->trackBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
 			$limit = intval($this->params('limit'));
 			if($limit === 0) {
@@ -361,14 +358,14 @@ class AmpacheController extends Controller {
 				$offset = null;
 			}
 
-			$tracks = $this->trackMapper->findAll($userId, $limit, $offset);
+			$tracks = $this->trackBusinessLayer->findAll($userId, $limit, $offset);
 		}
 
 		// set album and artist for tracks
 		foreach($tracks as &$track) {
-			$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistMapper->find($album->getAlbumArtistId(), $userId));
+			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 			$track->setAlbum($album);
 		}
 
@@ -386,13 +383,13 @@ class AmpacheController extends Controller {
 		// filter
 		$filter = $this->params('filter');
 
-		$tracks = $this->trackMapper->findAllByNameRecursive($filter, $userId);
+		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
 
 		// set album and artist for tracks
 		foreach($tracks as &$track) {
-			$track->setArtist($this->artistMapper->find($track->getArtistId(), $userId));
-			$album = $this->albumMapper->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistMapper->find($track->getArtistId(), $userId));
+			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
 			$track->setAlbum($album);
 		}
 
@@ -414,15 +411,15 @@ class AmpacheController extends Controller {
 		// TODO add & update
 
 		if ($filter) {
-			$albums = $this->albumMapper->findAllByName($filter, $userId, $fuzzy);
+			$albums = $this->albumBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$albums = $this->albumMapper->findAll($userId);
+			$albums = $this->albumBusinessLayer->findAll($userId);
 		}
 
 		// set track count for artists
 		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackMapper->countByAlbum($album->getId()));
-			$albumArtist = $this->artistMapper->find($album->getAlbumArtistId(), $userId);
+			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
+			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 			$album->setAlbumArtist($albumArtist);
 		}
 
@@ -439,8 +436,8 @@ class AmpacheController extends Controller {
 		$trackId = $this->params('filter');
 
 		try {
-			$track = $this->trackMapper->find($trackId, $userId);
-		} catch(DoesNotExistException $e) {
+			$track = $this->trackBusinessLayer->find($trackId, $userId);
+		} catch(BusinessLayerException $e) {
 			$r = new Response();
 			$r->setStatus(Http::STATUS_NOT_FOUND);
 			return $r;
@@ -463,8 +460,8 @@ class AmpacheController extends Controller {
 		$albumId = $this->params('filter');
 
 		try {
-			$album = $this->albumMapper->find($albumId, $userId);
-		} catch(DoesNotExistException $e) {
+			$album = $this->albumBusinessLayer->find($albumId, $userId);
+		} catch(BusinessLayerException $e) {
 			$r = new Response();
 			$r->setStatus(Http::STATUS_NOT_FOUND);
 			return $r;

@@ -60,6 +60,16 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns all tracks filtered by name (of track/album/artist)
+	 * @param string $name the name of the track/album/artist
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track[] tracks
+	 */
+	public function findAllByNameRecursive($name, $userId){
+		return $this->mapper->findAllByNameRecursive($name, $userId);
+	}
+
+	/**
 	 * Returns the track for a file id
 	 * @param string $fileId the file id of the track
 	 * @param string $userId the name of the user
@@ -79,9 +89,26 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @param integer $artistId
+	 * @return integer
+	 */
+	public function countByArtist($artistId){
+		return $this->mapper->countByArtist($artistId);
+	}
+
+	/**
+	 * @param integer $albumId
+	 * @return integer
+	 */
+	public function countByAlbum($albumId){
+		return $this->mapper->countByAlbum($albumId);
+	}
+
+	/**
 	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
 	 * @param string $number the number of the track
+	 * @param string $year the year of the release
 	 * @param string $artistId the artist id of the track
 	 * @param string $albumId the album id of the track
 	 * @param string $fileId the file id of the track
@@ -92,11 +119,12 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $artistId, $albumId, $fileId,
+			$title, $number, $year, $artistId, $albumId, $fileId,
 			$mimetype, $userId, $length=null, $bitrate=null){
 		$track = new Track();
 		$track->setTitle($title);
 		$track->setNumber($number);
+		$track->setYear($year);
 		$track->setArtistId($artistId);
 		$track->setAlbumId($albumId);
 		$track->setFileId($fileId);
@@ -185,13 +213,4 @@ class TrackBusinessLayer extends BusinessLayer {
 		return $result;
 	}
 
-	/**
-	 * Returns all tracks filtered by name (of track/album/artist)
-	 * @param string $name the name of the track/album/artist
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] tracks
-	 */
-	public function findAllByNameRecursive($name, $userId){
-		return $this->mapper->findAllByNameRecursive($name, $userId);
-	}
 }

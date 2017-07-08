@@ -33,9 +33,11 @@ class AlbumMapper extends BaseMapper {
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAll($userId){
+	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery('ORDER BY LOWER(`album`.`name`)');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);
@@ -46,8 +48,7 @@ class AlbumMapper extends BaseMapper {
 	 * does not include album_artist_id
 	 *
 	 * @param integer[] $albumIds IDs of the albums
-	 * @return array the artist IDs of an album are accessible
-	 * 				by the album ID inside of this array
+	 * @return array the artist IDs of an album are accessible by the album ID inside of this array
 	 */
 	public function getAlbumArtistsByAlbumId($albumIds){
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
@@ -65,6 +66,28 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns release years mapped to album IDs
+	 *
+	 * @param integer[] $albumIds IDs of the albums
+	 * @return array the years of an album are accessible by the album ID inside of this array
+	 */
+	public function getYearsByAlbumId($albumIds){
+		$sql = 'SELECT DISTINCT `track`.`year`, `track`.`album_id` '.
+				'FROM `*PREFIX*music_tracks` `track` '.
+				'WHERE `track`.`year` IS NOT NULL '.
+				'AND `track`.`album_id` IN ' . $this->questionMarks(count($albumIds));
+		$result = $this->execute($sql, $albumIds);
+		$yearsByAlbum = array();
+		while($row = $result->fetch()){
+			if(!array_key_exists($row['album_id'], $yearsByAlbum)){
+				$yearsByAlbum[$row['album_id']] = array();
+			}
+			$yearsByAlbum[$row['album_id']][] = $row['year'];
+		}
+		return $yearsByAlbum;
+	}
+
+	/**
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *
@@ -73,11 +96,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[]
 	 */
 	public function findAllByArtist($artistId, $userId){
-		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`id`, '.
-			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
-			'`album`.`album_artist_id` '.
-			'FROM `*PREFIX*music_albums` `album` '.
+		$sql = 'SELECT * FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`id` IN (SELECT DISTINCT `album`.`id` FROM '.
 			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ? AND '.
 			'`album`.`user_id` = ? UNION SELECT `track`.`album_id` '.
@@ -88,21 +107,16 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns album that matches a name, a year and an album artist ID
+	 * returns album that matches a name, a disc number and an album artist ID
 	 *
 	 * @param string|null $albumName name of the album
-	 * @param string|integer|null $albumYear year of the album release
 	 * @param string|integer|null $discNumber disk number of this album's disk
 	 * @param integer|null $albumArtistId ID of the album artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAlbum($albumName, $albumYear, $discNumber, $albumArtistId, $userId) {
-		$sql = 'SELECT `album`.`name`, `album`.`year`, `album`.`disk`, `album`.`id`, '.
-			'`album`.`cover_file_id`, `album`.`mbid`, `album`.`disk`, '.
-			'`album`.`mbid_group`, `album`.`mbid_group`, `album`.`hash`, '.
-			'`album`.`album_artist_id` '.
-			'FROM `*PREFIX*music_albums` `album` '.
+	public function findAlbum($albumName, $discNumber, $albumArtistId, $userId) {
+		$sql = 'SELECT * FROM `*PREFIX*music_albums` `album` '.
 			'WHERE `album`.`user_id` = ? ';
 		$params = array($userId);
 
@@ -120,14 +134,6 @@ class AlbumMapper extends BaseMapper {
 		} else {
 			$sql .= 'AND `album`.`name` = ? ';
 			array_push($params, $albumName);
-		}
-
-		// add album year check
-		if ($albumYear === null) {
-			$sql .= 'AND `album`.`year` IS NULL ';
-		} else {
-			$sql .= 'AND `album`.`year` = ? ';
-			array_push($params, $albumYear);
 		}
 
 		// add disc number check

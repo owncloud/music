@@ -5,9 +5,9 @@
     { "id" : 1003, "name": "The Third Artist",  "user_id": "integration", "hash": "57543454357564563456536754465434" }
   ],
   "music_albums" : [
-    { "id" : 1001, "name": "Testalbum",  "user_id": "integration", "year":"2016", "cover_file_id":"0", "album_artist_id": 1001, "hash": "23905689023734908234345983498572"}
+    { "id" : 1001, "name": "Testalbum",  "user_id": "integration", "cover_file_id":"0", "album_artist_id": 1001, "hash": "23905689023734908234345983498572"}
   ],
   "music_tracks" : [
-    { "id" : "1001", "user_id": "integration", "title" : "Testtitel 1", "number" : "1", "artist_id" : "1001", "album_id": "1001" , "length" : "100", "file_id" : "0", "bitrate" : "123", "mimetype" : "audio/mpeg"}
+    { "id" : "1001", "user_id": "integration", "title" : "Testtitel 1", "number" : "1", "year":"2016", "artist_id" : "1001", "album_id": "1001" , "length" : "100", "file_id" : "0", "bitrate" : "123", "mimetype" : "audio/mpeg"}
   ]
 }

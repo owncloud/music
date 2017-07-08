@@ -12,9 +12,6 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-
 use \OCA\Music\Db\Track;
 
 
@@ -96,7 +93,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('insertOrUpdate')
 			->will($this->returnValue($track));
 
-		$result = $this->trackBusinessLayer->addOrUpdateTrack(null, null, null, null, $fileId, null, $this->userId);
+		$result = $this->trackBusinessLayer->addOrUpdateTrack(null, null, null, null, null, $fileId, null, $this->userId);
 		$this->assertEquals($track, $result);
 	}
 

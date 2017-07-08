@@ -117,12 +117,6 @@
 				<length>256</length>
 			</field>
 			<field>
-				<name>year</name>
-				<type>integer</type>
-				<notnull>false</notnull>
-				<unsigned>true</unsigned>
-			</field>
-			<field>
 				<name>cover_file_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>
@@ -209,6 +203,12 @@
 			</field>
 			<field>
 				<name>number</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>year</name>
 				<type>integer</type>
 				<notnull>false</notnull>
 				<unsigned>true</unsigned>

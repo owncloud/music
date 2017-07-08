@@ -69,11 +69,24 @@ abstract class BusinessLayer {
 
 	/**
 	 * Finds all entities
-	 * @param string $userId the name of the user for security reasons
-	 * @return array the entities
+	 * @param string $userId the name of the user
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return Entity[]
 	 */
-	public function findAll($userId){
-		return $this->mapper->findAll($userId);
+	public function findAll($userId, $limit=null, $offset=null){
+		return $this->mapper->findAll($userId, $limit, $offset);
+	}
+
+	/**
+	 * Return all entities with name matching the search criteria
+	 * @param string $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 * @return Entity[]
+	 */
+	public function findAllByName($name, $userId, $fuzzy = false){
+		return $this->mapper->findAllByName($name, $userId, $fuzzy);
 	}
 
 	/**

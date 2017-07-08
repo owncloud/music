@@ -327,18 +327,22 @@ class Scanner extends PublicEmitter {
 	 * This gets called when a folder is deleted or unshared from the user.
 	 * 
 	 * @param \OCP\Files\Folder $folder
-	 * @param string|null $userId the id of the user to remove the file from; if omitted,
-	 *                            the file is removed from all users (ie. owner and sharees)
+	 * @param string|null $userId the id of the user to remove the folder from; if omitted,
+	 *                            the folder is removed from all users (ie. owner and sharees)
 	 */
 	public function deleteFolder($folder, $userId=null) {
 		$audioFiles = array_merge(
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
-		$this->deleteAudio(self::idsFromArray($audioFiles), $userId);
+		if (count($audioFiles) > 0) {
+			$this->deleteAudio(self::idsFromArray($audioFiles), $userId);
+		}
 
 		$imageFiles = $folder->searchByMime('image');
-		$this->deleteImage(self::idsFromArray($imageFiles), $userId);
+		if (count($imageFiles) > 0) {
+			$this->deleteImage(self::idsFromArray($imageFiles), $userId);
+		}
 	}
 
 	public function getUserMusicFolder($userId, $userHome) {

@@ -113,14 +113,14 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 					</div>
 				</div>
 
-				<img id="shuffle" class="control small svg" alt="{{'Shuffle' | translate }}"
+				<img id="shuffle" class="control small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
 					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
-				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}"
+				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
-				<div class="volume-control">
-					<img id="volume-icon" class="control small svg" alt="{{'Volume' | translate }}" ng-show="volume > 0"
+				<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
+					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
 						src="<?php p(OCP\image_path('music', 'sound.svg')) ?>" />
-					<img id="volume-icon" class="control small svg" alt="{{'Volume' | translate }}" ng-show="volume == 0"
+					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume == 0"
 						src="<?php p(OCP\image_path('music', 'sound-off.svg')) ?>" />
 					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 				</div>

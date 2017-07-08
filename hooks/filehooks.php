@@ -45,13 +45,15 @@ class FileHooks {
 	 * @param \OCP\Files\Node $node pointing to the file
 	 */
 	public static function updated($node){
-		$app = new Music();
-
-		$container = $app->getContainer();
-		$scanner = $container->query('Scanner');
-		$userId = $container->query('UserId');
-		$userFolder = $container->query('UserFolder');
-		$scanner->update($node, $userId, $userFolder);
+		// we are interested only about updates on files, not on folders
+		if ($node->getType() == FileInfo::TYPE_FILE) {
+			$app = new Music();
+			$container = $app->getContainer();
+			$scanner = $container->query('Scanner');
+			$userId = $container->query('UserId');
+			$userFolder = $container->query('UserFolder');
+			$scanner->update($node, $userId, $userFolder);
+		}
 	}
 
 	public function register() {

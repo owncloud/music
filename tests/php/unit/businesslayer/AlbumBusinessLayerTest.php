@@ -12,9 +12,6 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-
 use \OCA\Music\Db\Album;
 
 
@@ -140,7 +137,6 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 
 	public function testAddOrUpdateAlbum(){
 		$name = 'test';
-		$year = 2002;
 		$artistId = 1;
 		$disc = 1;
 
@@ -148,7 +144,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->method('insertOrUpdate')
 			->will($this->returnValue($this->albums[0]));
 
-		$album = $this->albumBusinessLayer->addOrUpdateAlbum($name, $year, $disc, $artistId, $this->userId);
+		$album = $this->albumBusinessLayer->addOrUpdateAlbum($name, $disc, $artistId, $this->userId);
 		$this->assertEquals($this->albums[0], $album);
 	}
 

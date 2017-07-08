@@ -66,9 +66,9 @@ class Music extends App {
 				$c->query('URLGenerator'),
 				$c->query('AmpacheUserMapper'),
 				$c->query('AmpacheSessionMapper'),
-				$c->query('AlbumMapper'),
-				$c->query('ArtistMapper'),
-				$c->query('TrackMapper'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('AmpacheUser'),
 				$c->query('RootFolder')
 			);

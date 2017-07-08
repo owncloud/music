@@ -144,11 +144,11 @@ class Scanner extends PublicEmitter {
 
 			// add/update album and get album entity
 			$album = $this->albumBusinessLayer->addOrUpdateAlbum(
-					$meta['album'], $meta['year'], $meta['discNumber'], $albumArtistId, $userId);
+					$meta['album'], $meta['discNumber'], $albumArtistId, $userId);
 			$albumId = $album->getId();
 
 			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'],
+			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'], $meta['year'],
 					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album

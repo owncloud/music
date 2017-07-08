@@ -168,7 +168,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(4);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([2011, 2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(3));
@@ -303,7 +303,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(4);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(3));
@@ -418,7 +418,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(3));
@@ -502,7 +502,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1 = new Album();
 		$album1->setId(3);
 		$album1->setName('The name');
-		$album1->setYear(2013);
+		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
 		$album1->setDisk(1);
 		$album1->setArtistIds(array(1));
@@ -510,7 +510,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2 = new Album();
 		$album2->setId(4);
 		$album2->setName('The album name');
-		$album2->setYear(2003);
+		$album2->setYears([]);
 		$album2->setCoverFileId(7);
 		$album2->setDisk(1);
 		$album2->setArtistIds(array(3,5));
@@ -541,7 +541,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'uri' => null,
 				'slug' => '4-the-album-name',
 				'id' => 4,
-				'year' => 2003,
+				'year' => null,
 				'disk' => 1,
 				'artists' => array(
 					array('id' => 3, 'uri' => null),
@@ -561,7 +561,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1 = new Album();
 		$album1->setId(3);
 		$album1->setName('The name');
-		$album1->setYear(2013);
+		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
 		$album1->setDisk(1);
 		$album1->setArtistIds(array(1));
@@ -569,7 +569,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2 = new Album();
 		$album2->setId(4);
 		$album2->setName('The album name');
-		$album2->setYear(2003);
+		$album2->setYears([2003]);
 		$album2->setCoverFileId(7);
 		$album2->setDisk(1);
 		$album2->setArtistIds(array(3,5));
@@ -711,7 +711,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(1));
@@ -795,7 +795,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(1));
@@ -909,7 +909,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(1));

@@ -31,9 +31,11 @@ class ArtistMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Artist[]
 	 */
-	public function findAll($userId){
+	public function findAll($userId, $limit=null, $offset=null){
 		$sql = $this->makeSelectQuery('ORDER BY LOWER(`artist`.`name`)');
 		$params = array($userId);
 		return $this->findEntities($sql, $params);

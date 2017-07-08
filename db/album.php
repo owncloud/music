@@ -21,8 +21,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method setName(string $name)
  * @method string getMbid()
  * @method setMbid(string $mbid)
- * @method int getYear()
- * @method setYear(int $year)
+ * @method array getYears()
+ * @method setYears(array $years)
  * @method int getDisk()
  * @method setDisk(int $discnumber)
  * @method string getMbidGroup()
@@ -46,7 +46,7 @@ class Album extends Entity {
 
 	public $name;
 	public $mbid;
-	public $year;
+	public $years;
 	public $disk;
 	public $mbidGroup;
 	public $coverFileId;
@@ -60,7 +60,6 @@ class Album extends Entity {
 	public $trackCount;
 
 	public function __construct(){
-		$this->addType('year', 'int');
 		$this->addType('disk', 'int');
 		$this->addType('coverFileId', 'int');
 		$this->addType('albumArtistId', 'int');
@@ -98,6 +97,33 @@ class Album extends Entity {
 	}
 
 	/**
+	 * Returns the years(s) of the album.
+	 * The album may have zero, one, or multiple years as people may tag tracks of
+	 * colletion albums with their original release dates. The respective formatted
+	 * year ranges could be e.g. null, '2016', and '1995 - 2000'.
+	 * @return string|null
+	 */
+	public function getYearRange() {
+		$count = count($this->years);
+		if ($count == 0) {
+			return null;
+		} else if ($count == 1) {
+			return (string)$this->years[0];
+		} else {
+			return min($this->years) . ' - ' . max($this->years);
+		}
+	}
+
+	/**
+	 * The Shiva and Ampache API definitions require the year to be a single numeric value.
+	 * In case the album has multiple years, output the largest of these in the API.
+	 * @return int|null
+	 */
+	public function yearToAPI() {
+		return (count($this->years) > 0) ? max($this->years) : null;
+	}
+
+	/**
 	 * Returns the name of the album - if empty it returns the translated
 	 * version of "Unknown album"
 	 * @param object $l10n
@@ -116,7 +142,7 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Creates object used for collection API (array with name, year, cover URL and ID)
+	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URLGenerator
 	 * @param  object $l10n L10n handler
 	 * @return array collection API object
@@ -130,7 +156,7 @@ class Album extends Entity {
 
 		return array(
 			'name' => $this->getNameString($l10n),
-			'year' => $this->getYear(),
+			'year' => $this->getYearRange(),
 			'disk' => $this->getDisk(),
 			'cover' => $coverUrl,
 			'id' => $this->getId(),
@@ -138,7 +164,7 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Creates object used by the shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
+	 * Creates object used by the shiva API (array with name, year, disk, cover URL, ID, slug, URI and artists Array)
 	 * @param  IURLGenerator $urlGenerator URLGenerator
 	 * @param  object $l10n L10n handler
 	 * @return array shiva API object
@@ -149,6 +175,7 @@ class Album extends Entity {
 		$collection["slug"] = $this->getid() . '-' .$this->slugify('name');
 		$collection["albumArtistId"] = $this->getAlbumArtistId();
 		$collection["artists"] = $this->getArtists($urlGenerator);
+		$collection["year"] = $this->yearToAPI();
 
 		return $collection;
 	}

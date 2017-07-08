@@ -36,19 +36,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function find($albumId, $userId){
 		$album = $this->mapper->find($albumId, $userId);
-		$albumArtists = $this->mapper->getAlbumArtistsByAlbumId(array($album->getId()));
-		$album->setArtistIds($albumArtists[$album->getId()]);
-		return $album;
+		return $this->injectArtistsAndYears([$album])[0];
 	}
 
 	/**
 	 * Returns all albums
 	 * @param string $userId the name of the user
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[] albums
 	 */
-	public function findAll($userId){
-		$albums = $this->mapper->findAll($userId);
-		return $this->injectArtists($albums);
+	public function findAll($userId, $limit=null, $offset=null){
+		$albums = $this->mapper->findAll($userId, $limit, $offset);
+		return $this->injectArtistsAndYears($albums);
 	}
 
 	/**
@@ -58,29 +58,48 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByArtist($artistId, $userId){
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
-		return $this->injectArtists($albums);
+		return $this->injectArtistsAndYears($albums);
 	}
 
-	private function injectArtists($albums){
-		if(count($albums) === 0) {
-			return array();
-		}
-		$albumIds = array();
-		foreach ($albums as $album) {
-			$albumIds[] = $album->getId();
-		}
-		$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
-		foreach ($albums as $key => $album) {
-			$albums[$key]->setArtistIds($albumArtists[$album->getId()]);
+	/**
+	 * Return all albums with name matching the search criteria
+	 * @param string $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 * @return Album[]
+	 */
+	public function findAllByName($name, $userId, $fuzzy = false){
+		$albums = parent::findAllByName($name, $userId, $fuzzy);
+		return $this->injectArtistsAndYears($albums);
+	}
+
+	private function injectArtistsAndYears($albums){
+		if (count($albums) > 0) {
+			$albumIds = array_map(function($a) {return $a->getId();}, $albums);
+			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
+			$years = $this->mapper->getYearsByAlbumId($albumIds);
+			foreach ($albums as &$album) {
+				$album->setArtistIds($albumArtists[$album->getId()]);
+				$album->setYears($years[$album->getId()]);
+			}
 		}
 		return $albums;
+	}
+
+	/**
+	 * Returns the count of albums an Artist is featured in
+	 * @param integer $artistId
+	 * @return integer
+	 */
+	public function countByArtist($artistId){
+		return $this->mapper->countByArtist($artistId);
 	}
 
 	public function findAlbumOwner($albumId){
 		$entities = $this->mapper->findById([$albumId]);
 		if (count($entities) != 1) {
 			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
-					'Expected to find on album but got ' . count($entities));
+					'Expected to find one album but got ' . count($entities));
 		}
 		else {
 			return $entities[0]->getUserId();
@@ -90,16 +109,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
-	 * @param string $year the year of the release
 	 * @param string $discnumber the disk number of this album's disk
 	 * @param integer $albumArtistId
 	 * @param string $userId
 	 * @return Album The added/updated album
 	 */
-	public function addOrUpdateAlbum($name, $year, $discnumber, $albumArtistId, $userId){
+	public function addOrUpdateAlbum($name, $discnumber, $albumArtistId, $userId){
 		$album = new Album();
 		$album->setName($name);
-		$album->setYear($year);
 		$album->setDisk($discnumber);
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
@@ -107,7 +124,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		// Generate hash from the set of fields forming the album identity to prevent duplicates.
 		// The uniqueness of album name is evaluated in case-insensitive manner.
 		$lowerName = mb_strtolower($name);
-		$hash = hash('md5', "$lowerName|$year|$discnumber|$albumArtistId");
+		$hash = hash('md5', "$lowerName|$discnumber|$albumArtistId");
 		$album->setHash($hash);
 
 		return $this->mapper->insertOrUpdate($album);

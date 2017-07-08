@@ -27,7 +27,7 @@ class AlbumTest extends \PHPUnit_Framework_TestCase {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
-		$album->setYear(2013);
+		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
 		$album->setArtistIds(array(1,2));

@@ -41,7 +41,7 @@ class PreMigration implements IRepairStep {
 		}
 
 		// DB schema for tracks/albums/artists has been changed for 0.3.16
-		if (version_compare($installedVersion, '0.3.16', '<')) {
+		if (version_compare($installedVersion, '0.3.16.1', '<')) {
 			$sqls[] = 'DELETE FROM `*PREFIX*music_artists`';
 			$sqls[] = 'DELETE FROM `*PREFIX*music_albums`';
 			$sqls[] = 'DELETE FROM `*PREFIX*music_tracks`';
@@ -49,7 +49,7 @@ class PreMigration implements IRepairStep {
 		}
 
 		// Invalidate the cache if the previous version is new enough to have one.
-		// Even if this wasn't strictly necessary, it will anyway do no harm.
+		// This might not be strictly necessary on all migrations, but it will anyway do no harm.
 		if (version_compare($installedVersion, '0.3.15', '>=')) {
 			$sqls[] = 'DELETE FROM `*PREFIX*music_cache`';
 		}

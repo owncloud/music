@@ -23,21 +23,38 @@ class ShareHooks {
 	static public function itemUnshared($params) {
 		$app = new Music();
 
-		$container = $app->getContainer();
-		$scanner = $container->query('Scanner');
-		$sharedFileId = $params['itemSource'];
+		$scanner = $app->getContainer()->query('Scanner');
+		$sharedNodeId = $params['itemSource'];
 		$shareWithUser = $params['shareWith'];
 
 		if ($params['itemType'] === 'folder') {
-			$ownerHome = $container->query('UserFolder');
-			$nodes = $ownerHome->getById($sharedFileId);
+			$ownerHome = $scanner->resolveUserFolder($params['uidOwner']);
+			$nodes = $ownerHome->getById($sharedNodeId);
 			if (count($nodes) > 0) {
 				$sharedFolder = $nodes[0];
 				$scanner->deleteFolder($sharedFolder, $shareWithUser);
 			}
 		}
 		else if ($params['itemType'] === 'file') {
-			$scanner->delete((int)$sharedFileId, $shareWithUser);
+			$scanner->delete((int)$sharedNodeId, $shareWithUser);
+		}
+	}
+
+	/**
+	 * Invoke auto update of music database after item gets unshared by the share recipient
+	 * @param array $params contains the params of the removed share
+	 */
+	static public function itemUnsharedFromSelf($params) {
+		// In Share 1.0 used before OC 9.0, the parameter data of this signal
+		// did not contain all the needed fields, and updating our database based
+		// on such signal would be basically impossible. Handle the signal only
+		// if the needed fields are present.
+		// See: https://github.com/owncloud/core/issues/28337
+		if (array_key_exists('itemSource', $params)
+			&& array_key_exists('shareWith', $params)
+			&& array_key_exists('itemType', $params)
+			&& array_key_exists('uidOwner', $params)) {
+			self::itemUnshared($params);
 		}
 	}
 
@@ -66,7 +83,8 @@ class ShareHooks {
 	public function register() {
 		// FIXME: this is temporarily static because core emitters are not future
 		// proof, therefore legacy code in here
-		\OCP\Util::connectHook('OCP\Share', 'post_unshare', __CLASS__, 'itemUnshared');
-		\OCP\Util::connectHook('OCP\Share', 'post_shared',  __CLASS__, 'itemShared');
+		\OCP\Util::connectHook('OCP\Share', 'post_unshare',         __CLASS__, 'itemUnshared');
+		\OCP\Util::connectHook('OCP\Share', 'post_unshareFromSelf', __CLASS__, 'itemUnsharedFromSelf');
+		\OCP\Util::connectHook('OCP\Share', 'post_shared',          __CLASS__, 'itemShared');
 	}
 }

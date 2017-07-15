@@ -498,16 +498,24 @@ angular.module('Music').controller('PlayerController',
 		$scope.setTime($scope.position.current, $scope.player.duration/1000);
 	});
 
+	var titleApp = $('title').html().trim();
+	var titleSong = '';
+	var titleIcon = '';
+
+	function updateWindowTitle() {
+		$('title').html(titleIcon + titleSong + titleApp);
+	}
+
 	// display a play icon in the title if a song is playing
 	$scope.$watch('playing', function(newValue) {
-		var title = $('title').html().trim();
-		if(newValue) {
-			$('title').html('▶ ' + title);
-		} else {
-			if(title.substr(0, 1) === '▶') {
-				$('title').html(title.substr(1).trim());
-			}
-		}
+		titleIcon = newValue ? '▶ ' : '';
+		updateWindowTitle();
+	});
+
+	// display the song name and artist in the title when there is current track
+	$scope.$watch('currentTrack', function(newTrack) {
+		titleSong = newTrack ? newTrack.title + ' (' + newTrack.artistName + ') - ' : '';
+		updateWindowTitle();
 	});
 
 	$scope.getPlayableFileId = function (track) {

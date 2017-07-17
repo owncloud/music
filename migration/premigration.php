@@ -24,7 +24,7 @@ class PreMigration implements IRepairStep {
 	/**
 	 * @inheritdoc
 	 */
-	public function run(IOutput $output) {
+	public function run(IOutput $output = null) {
 		$installedVersion = \OCP\Config::getAppValue('music', 'installed_version');
 
 		$sqls = [];

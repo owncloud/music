@@ -22,4 +22,4 @@
  */
 
 $migration = new OCA\Music\Migration\PreMigration();
-$migration->run(null);
+$migration->run();

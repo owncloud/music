@@ -1,6 +1,5 @@
 # Maintainers
 
-* [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
 * [Pauli Järvinen](https://github.com/paulijar): <pauli.jarvinen@gmail.com>
 
 # Authors
@@ -14,34 +13,36 @@
 
 ## Contributors
 
-* [Leizh](https://github.com/eizh): <leizh@free.fr>
-* [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
-* [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>
 * [7ebra](https://github.com/7ebra)
-* [Felix Böhm](https://github.com/felixboehm)
-* [selpelt](https://github.com/selpelt)
-* [Xefir](https://github.com/Xefir)
-* [Ralf Pietsch](https://github.com/AlZiBa)
-* [Glandos](https://github.com/Glandos)
-* [jbtbnl](https://github.com/jbtbnl)
-* [arboss](https://github.com/arboss)
-* [Volkan Gezer](https://github.com/wakeup)
-* [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
-* [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
-* [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
-* [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
-* [apotek](https://github.com/apotek)
-* Armin
+* [Arboss](https://github.com/arboss)
+* [Armin]
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
-* [cbxk1xg](https://github.com/cbxk1xg)
+* [Cbxk1xg](https://github.com/cbxk1xg)
 * [ChristophWurst](https://github.com/ChristophWurst)
+* [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)
-* [Jérôme Pouiller](https://github.com/jerome-pouiller)
+* [Felix Böhm](https://github.com/felixboehm)
+* [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
+* [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
+* [Glandos](https://github.com/Glandos)
+* [Jbtbnl](https://github.com/jbtbnl)
 * [Jonathan Kawohl](https://github.com/Kawohl)
+* [Jérôme Pouiller](https://github.com/jerome-pouiller)
+* [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>
+* [K Widholm](https://github.com/apotek)
+* [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
+* [Leizh](https://github.com/eizh): <leizh@free.fr>
 * [Lukas Reschke](https://github.com/LukasReschke)
-* [ndurchx](https://github.com/ndurchx)
+* [Ndurchx](https://github.com/ndurchx)
+* [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
+* [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
+* [Rello] (https://github.com/rello)
 * [Roland Hager](https://github.com/roha4000)
+* [Selpelt](https://github.com/selpelt)
+* [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
 * [Thomas Pulzer](https://github.com/Faldon)
 * [Vincent Petry](https://github.com/PVince81)
+* [Volkan Gezer](https://github.com/wakeup)
+* [Xefir](https://github.com/Xefir)

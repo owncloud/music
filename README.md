@@ -3,6 +3,10 @@
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
+## General
+
+Music player and server for ownCloud and Nextcloud.
+
 ## Supported formats
 
 * FLAC (`audio/flac`)
@@ -131,18 +135,13 @@ Music App can be installed using the App Management in ownCloud. Instructions ca
 
 ### Known issues
 
+#### Unshare from self
+
+When the recipient of a shared audio file unshares it, the file reference is left in the music database of the recipient. To get rid of it, the database has to be regenerated. Fixing this requires a change into ownCloud/Nextcloud core. #567
+
 #### Huge music collections
 
-The current version doesn't scale well for huge music collections. There are plans for a kind of paginated version, which hides the pagination and should be useable as known before. #78
-
-#### Application can not be activated because of illegal code
-
-The current music app can't be installed and ownCloud prints following error message:
-"Application can not be activated because of illegal code". This is due to the appcodechecker in core (which is kind of broken), but you can do the installation if the appcodechecker is deactivated:
-
-* set `appcodechecker` to `false` in `config.php` (see the [config.sample.php](https://github.com/owncloud/core/blob/a8861c70c8e5876a961f00e49db88843432bf7ba/config/config.sample.php#L164) )
-* now you can install the app
-* afterwards re-enable the appcodechecker
+The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough (say, more than 10000 tracks), you probably find the performance dissatisfactory.
 
 ## Development
 

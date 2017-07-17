@@ -2,10 +2,14 @@
 <info>
 	<id>music</id>
 	<name>Music</name>
-	<description>Music player and server for ownCloud</description>
+	<description>Music player and server for ownCloud and Nextcloud</description>
 	<licence>AGPLv3</licence>
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
-	<version>0.3.16.1</version>
+	<version>0.4.0</version>
+	<category>multimedia</category>
+	<website>https://github.com/owncloud/music</website>
+	<bugs>https://github.com/owncloud/music/issues</bugs>
+	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
 		<owncloud min-version="8.1" max-version="10" />
 		<nextcloud min-version="9" max-version="13" />

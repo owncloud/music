@@ -1,3 +1,20 @@
+v0.4.0 2017-07-17
+ * support for playlists (#555)
+ * improved performance and scalability (#564)
+ * prevent database corruption on simultaneous updates (#322, #480)
+ * fixed handling of local shares and improved the performance of the related hooks (#566)
+ * made the album and artist grouping case insensitive (#316)
+ * support for new file formats (when browser support available): WAV, M4A, M4B
+ * seeking supported also for FLAC files (when browser support available)
+ * fixed parsing of album artist tag from FLAC files
+ * fixed some charset issues by updating getid3 library to version 1.9.14 (#410)
+ * allowed one album to cover several release years (#279, #307)
+ * support ISO-formatted date tags (#430)
+ * improved the heuristics of deducting track number and name from file name when not given in tags
+ * refresh the UI automatically when the scanning process is done
+ * show the currently playing track in the window title
+ * lot of internal refactoring and small UI fixes and tweaks
+
 v0.3.13 2016-12-20
  * refactored scanner.php
  * improved album art extraction performance

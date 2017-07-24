@@ -1,14 +1,6 @@
 <?php
-// scripts/stylesheets for different OC versions
-$version = \OCP\Util::getVersion();
-
+// scripts
 \OCP\Util::addScript('core', 'placeholder');
-
-// until ownCloud 8.2 OC.Backbone was not present
-if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
-	\OCP\Util::addScript('music', 'vendor/backbone/backbone-min');
-	\OCP\Util::addScript('music', 'public/pre-stable8.2-fixes');
-}
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-bindonce/bindonce.min');
@@ -24,6 +16,7 @@ if($version[0] < 8 || $version[0] === 8 && $version[1] < 2) {
 \OCP\Util::addScript('music', 'vendor/js-cookie/src/js.cookie');
 \OCP\Util::addScript('music', 'public/app');
 
+// stylesheets
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'style-sidebar');

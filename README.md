@@ -3,9 +3,11 @@
 [![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
-## General
+## Overview
 
-Music player and server for ownCloud and Nextcloud.
+Music player and server for ownCloud and Nextcloud. Shows audio files stored in your cloud categorized by artists and albums. Supports mp3, and depending on the browser, many other audio formats too. Supports shuffle play and playlists. The application includes an experimental Ampache server.
+
+![screenshot](https://user-images.githubusercontent.com/8565946/28543434-6eb12de0-70c8-11e7-966e-65f4c3a90531.png)
 
 ## Supported formats
 
@@ -19,7 +21,7 @@ Music player and server for ownCloud and Nextcloud.
 
 _Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
-_Note: It might be unable to play some particular files (on some browsers)._
+_Note: It might be unable to play some particular files on some browsers._
 
 
 ### Detail
@@ -142,6 +144,10 @@ When the recipient of a shared audio file unshares it, the file reference is lef
 #### Huge music collections
 
 The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough (say, more than 10000 tracks), you probably find the performance dissatisfactory.
+
+#### Localization
+
+The Music application does not currently respect the UI language selected in your personal settings, the application is always in English.
 
 ## Development
 

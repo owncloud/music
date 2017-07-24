@@ -2,16 +2,23 @@
 <info>
 	<id>music</id>
 	<name>Music</name>
-	<description>Music player and server for ownCloud and Nextcloud</description>
-	<licence>AGPLv3</licence>
+	<summary>Music player and server</summary>
+	<description>
+		Shows audio files stored in your cloud categorized by artists and albums.
+		Depending on the browser, supports filetypes mp3, ogg, m4a, m4b, flac, wav.
+		All browsers should be able to play at least mp3. Support for shuffle play
+		and playlists. Includes an experimental Ampache server.
+	</description>
+	<licence>AGPL</licence>
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
 	<version>0.4.0</version>
 	<category>multimedia</category>
+	<screenshot>https://user-images.githubusercontent.com/8565946/28543434-6eb12de0-70c8-11e7-966e-65f4c3a90531.png</screenshot>
 	<website>https://github.com/owncloud/music</website>
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<owncloud min-version="8.1" max-version="10" />
+		<owncloud min-version="8.1" max-version="10.0" />
 		<nextcloud min-version="9" max-version="13" />
 	</dependencies>
 	<types>

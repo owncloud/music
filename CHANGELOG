@@ -1,3 +1,6 @@
+v0.4.1 2017-07-24
+ * dropped support for ownCloud 8.1
+
 v0.4.0 2017-07-17
  * support for playlists (#555)
  * improved performance and scalability (#564)

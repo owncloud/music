@@ -13,6 +13,7 @@
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -179,9 +180,9 @@ class AmpacheController extends Controller {
 		$albumCount = $this->albumBusinessLayer->count($user);
 		$trackCount = $this->trackBusinessLayer->count($user);
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/handshake',
-			array(
+			[
 				'token' => $token,
 				'songCount' => $trackCount,
 				'artistCount' => $artistCount,
@@ -191,9 +192,7 @@ class AmpacheController extends Controller {
 				'cleanDate' => $currentTime,
 				'addDate' => $currentTime,
 				'expireDate' => $expiryDate
-			),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			]
 		);
 	}
 
@@ -202,12 +201,7 @@ class AmpacheController extends Controller {
 			$this->ampacheSessionMapper->extend($auth, time() + $this->sessionExpiryTime);
 		}
 
-		return $this->render(
-			'ampache/ping',
-			array(),
-			'blank',
-			array('Content-Type' => 'text/xml')
-		);
+		return $this->renderXml('ampache/ping', []);
 	}
 
 	protected function artists($filter, $exact) {
@@ -228,12 +222,7 @@ class AmpacheController extends Controller {
 			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
 		}
 
-		return $this->render(
-			'ampache/artists',
-			array('artists' => $artists),
-			'blank',
-			array('Content-Type' => 'text/xml')
-		);
+		return $this->renderXml('ampache/artists', ['artists' => $artists]);
 	}
 
 	protected function artist_albums($artistId, $auth) {
@@ -248,11 +237,9 @@ class AmpacheController extends Controller {
 			$album->setAlbumArtist($albumArtist);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 
 	}
@@ -272,11 +259,9 @@ class AmpacheController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 
 	}
@@ -295,11 +280,9 @@ class AmpacheController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 
 	}
@@ -315,11 +298,9 @@ class AmpacheController extends Controller {
 		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 		$track->setAlbum($album);
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/songs',
-			array('songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 
 	}
@@ -351,11 +332,9 @@ class AmpacheController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 	}
 
@@ -372,11 +351,9 @@ class AmpacheController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 	}
 
@@ -399,11 +376,9 @@ class AmpacheController extends Controller {
 			$album->setAlbumArtist($albumArtist);
 		}
 
-		return $this->render(
+		return $this->renderXml(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
-			'blank',
-			array('Content-Type' => 'text/xml')
+			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 	}
 
@@ -450,5 +425,11 @@ class AmpacheController extends Controller {
 			$r->setStatus(Http::STATUS_NOT_FOUND);
 			return $r;
 		}
+	}
+
+	protected function renderXml($templateName, $params) {
+		$response = new TemplateResponse($this->appName, $templateName, $params, 'blank');
+		$response->setHeaders(['Content-Type' => 'text/xml']);
+		return $response;
 	}
 }

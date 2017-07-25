@@ -35,22 +35,6 @@ class APIControllerTest extends ControllerTestUtility {
 	private $userFolder;
 	private $logger;
 
-	protected function getController($urlParams){
-		return new ApiController(
-			$this->appname,
-			$this->getRequest(array('urlParams' => $urlParams)),
-			$this->urlGenerator,
-			$this->trackBusinessLayer,
-			$this->artistBusinessLayer,
-			$this->albumBusinessLayer,
-			$this->cache,
-			$this->scanner,
-			$this->userId,
-			$this->l10n,
-			$this->userFolder,
-			$this->logger);
-	}
-
 	protected function setUp(){
 		$this->request = $this->getMockBuilder('\OCP\IRequest')
 			->disableOriginalConstructor()
@@ -146,7 +130,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$response = $this->controller->artists();
+		$response = $this->controller->artists(false /*fulltree*/, false /*albums*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -282,10 +266,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('fulltree' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->artists();
+		$response = $this->controller->artists(true /*fulltree*/, false /*albums*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -371,10 +352,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('albums' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->artists();
+		$response = $this->controller->artists(false /*fultree*/, true /*albums*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -401,10 +379,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'id' => 3
 		);
 
-		$urlParams = array('artistIdOrSlug' => $artistId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->artist();
+		$response = $this->controller->artist($artistId, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -489,10 +464,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('artistIdOrSlug' => $artistId, 'fulltree' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->artist();
+		$response = $this->controller->artist($artistId, true /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -551,7 +523,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$response = $this->controller->albums();
+		$response = $this->controller->albums(false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -698,10 +670,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('fulltree' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->albums();
+		$response = $this->controller->albums(true /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -782,10 +751,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('albumIdOrSlug' => $albumId, 'fulltree' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->album();
+		$response = $this->controller->album($albumId, true /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -822,10 +788,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'albumArtistId' => 2
 		);
 
-		$urlParams = array('albumIdOrSlug' => $albumId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->album();
+		$response = $this->controller->album($albumId, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -889,7 +852,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$response = $this->controller->tracks();
+		$response = $this->controller->tracks(null /*artist*/, null /*album*/, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -971,10 +934,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('fulltree' => true);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->tracks();
+		$response = $this->controller->tracks(null /*artist*/, null /*album*/, true /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -1014,10 +974,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('trackIdOrSlug' => $trackId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->track();
+		$response = $this->controller->track($trackId);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -1074,10 +1031,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('fileId' => $fileId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->trackByFileId();
+		$response = $this->controller->trackByFileId($fileId);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -1147,10 +1101,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('artist' => $artistId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->tracks();
+		$response = $this->controller->tracks($artistId, null /*album*/, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -1216,10 +1167,7 @@ class APIControllerTest extends ControllerTestUtility {
 			)
 		);
 
-		$urlParams = array('album' => $albumId);
-		$this->controller = $this->getController($urlParams);
-
-		$response = $this->controller->tracks();
+		$response = $this->controller->tracks(null /*artist*/, $albumId, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);

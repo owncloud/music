@@ -79,13 +79,13 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function create() {
-		$playlist = $this->playlistBusinessLayer->create($this->params('name'), $this->userId);
+	public function create($name, $trackIds) {
+		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
 
 		// add trackIds to the newly created playlist if provided
-		if (!empty($this->params('trackIds'))){
+		if (!empty($trackIds)) {
 			$playlist = $this->playlistBusinessLayer->addTracks(
-					$this->paramArray('trackIds'), $playlist->getId(), $this->userId);
+					self::toIntArray($trackIds), $playlist->getId(), $this->userId);
 		}
 		
 		return $playlist->toAPI();
@@ -110,11 +110,11 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get($id) {
+	public function get($id, $fulltree) {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
-			$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
+			$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 			if ($fulltree) {
 				return $this->toFullTree($playlist);
 			} else {
@@ -152,8 +152,8 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update($id) {
-		return $this->modifyPlaylist('rename', [$this->params('name'), $id, $this->userId]);
+	public function update($id, $name) {
+		return $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
 	}
 
 	/**
@@ -163,8 +163,8 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function addTracks($id) {
-		return $this->modifyPlaylist('addTracks', [$this->paramArray('trackIds'), $id, $this->userId]);
+	public function addTracks($id, $trackIds) {
+		return $this->modifyPlaylist('addTracks', [self::toIntArray($trackIds), $id, $this->userId]);
 	}
 
 	/**
@@ -174,8 +174,8 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeTracks($id) {
-		return $this->modifyPlaylist('removeTracks', [$this->paramArray('indices'), $id, $this->userId]);
+	public function removeTracks($id, $indices) {
+		return $this->modifyPlaylist('removeTracks', [self::toIntArray($indices), $id, $this->userId]);
 	}
 
 	/**
@@ -185,9 +185,9 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function reorder($id) {
+	public function reorder($id, $fromIndex, $toIndex) {
 		return $this->modifyPlaylist('moveTrack',
-				[$this->params('fromIndex'), $this->params('toIndex'), $id, $this->userId]);
+				[$fromIndex, $toIndex, $id, $this->userId]);
 	}
 
 	/**
@@ -208,10 +208,10 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * Get integer array passed as parameter to the Playlist API
-	 * @param string $name Name of the parameter
+	 * @param string $listAsString Comma-separated integer values in string
 	 * @return int[]
 	 */
-	private function paramArray($name) {
-		return array_map('intval', explode(',', $this->params($name)));
+	private static function toIntArray($listAsString) {
+		return array_map('intval', explode(',', $listAsString));
 	}
 }

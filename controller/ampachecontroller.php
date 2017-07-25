@@ -81,33 +81,33 @@ class AmpacheController extends Controller {
 	 * @NoCSRFRequired
 	 * @AmpacheAPI
 	 */
-	public function ampache() {
-		switch($this->params('action')) {
+	public function ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+		switch($action) {
 			case 'handshake':
-				return $this->handshake();
+				return $this->handshake($user, $timestamp, $auth);
 			case 'ping':
-				return $this->ping();
+				return $this->ping($auth);
 			case 'artists':
-				return $this->artists();
+				return $this->artists($filter, $exact);
 			case 'artist_albums':
-				return $this->artist_albums();
+				return $this->artist_albums($filter, $auth);
 			case 'album_songs':
-				return $this->album_songs();
+				return $this->album_songs($filter, $auth);
 			case 'albums':
-				return $this->albums();
+				return $this->albums($filter, $exact, $auth);
 			case 'artist_songs':
-				return $this->artist_songs();
+				return $this->artist_songs($filter, $auth);
 			case 'songs':
-				return $this->songs();
+				return $this->songs($filter, $exact, $limit, $offset, $auth);
 			case 'song':
-				return $this->song();
+				return $this->song($filter, $auth);
 			case 'search_songs':
-				return $this->search_songs();
+				return $this->search_songs($filter, $auth);
 			# non Ampache API action - used for provide the file
 			case 'play':
-				return $this->play();
+				return $this->play($filter);
 			case '_get_cover':
-				return $this->get_cover();
+				return $this->get_cover($filter);
 		}
 		throw new AmpacheException('Action not supported', 405);
 	}
@@ -123,17 +123,13 @@ class AmpacheController extends Controller {
 	 * @NoCSRFRequired
 	 * @AmpacheAPI
 	 */
-	public function ampache2() {
-		return $this->ampache();
+	public function ampache2($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+		return $this->ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset);
 	}
 
-	protected function handshake() {
-		$userId = $this->params('user');
-		$timestamp = $this->params('timestamp');
-		$authToken = $this->params('auth');
-
+	protected function handshake($user, $timestamp, $auth) {
 		// prepare hash check
-		$hashes = $this->ampacheUserMapper->getPasswordHashes($userId);
+		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
 
 		// prepare time check
 		$currentTime = time();
@@ -155,7 +151,7 @@ class AmpacheController extends Controller {
 		foreach ($hashes as $hash) {
 			$expectedHash = hash('sha256', $timestamp . $hash);
 
-			if($expectedHash === $authToken) {
+			if($expectedHash === $auth) {
 				$validTokenFound = true;
 				break;
 			}
@@ -201,11 +197,9 @@ class AmpacheController extends Controller {
 		);
 	}
 
-	protected function ping() {
-		$token = $this->params('auth');
-
-		if($token !== null && $token !== '') {
-			$this->ampacheSessionMapper->extend($token, time() + $this->sessionExpiryTime);
+	protected function ping($auth) {
+		if($auth !== null && $auth !== '') {
+			$this->ampacheSessionMapper->extend($auth, time() + $this->sessionExpiryTime);
 		}
 
 		return $this->render(
@@ -216,16 +210,13 @@ class AmpacheController extends Controller {
 		);
 	}
 
-	protected function artists() {
+	protected function artists($filter, $exact) {
 		$userId = $this->ampacheUser->getUserId();
-
-		// filter
-		$filter = $this->params('filter');
-		$fuzzy = !((boolean) $this->params('exact'));
 
 		// TODO add & update
 
 		if ($filter) {
+			$fuzzy = !((boolean) $exact);
 			$artists = $this->artistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
 			$artists = $this->artistBusinessLayer->findAll($userId);
@@ -245,9 +236,8 @@ class AmpacheController extends Controller {
 		);
 	}
 
-	protected function artist_albums() {
+	protected function artist_albums($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-		$artistId = $this->params('filter');
 
 		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $userId);
 
@@ -260,16 +250,15 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 
 	}
 
-	protected function artist_songs() {
+	protected function artist_songs($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-		$artistId = $this->params('filter');
 
 		// this is used to fill in the artist information for each album
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
@@ -285,16 +274,15 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 
 	}
 
-	protected function album_songs() {
+	protected function album_songs($albumId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-		$albumId = $this->params('filter');
 
 		// this is used to fill in the album information for each track
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
@@ -309,16 +297,15 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 
 	}
 
-	protected function song() {
+	protected function song($trackId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-		$trackId = $this->params('filter');
 
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 
@@ -330,30 +317,25 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 
 	}
 
-	protected function songs() {
+	protected function songs($filter, $exact, $limit, $offset, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
-		// filter
-		$filter = $this->params('filter');
-		$fuzzy = !((boolean) $this->params('exact'));
 
 		// TODO add & update
 
 		if ($filter) {
+			$fuzzy = !((boolean) $exact);
 			$tracks = $this->trackBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$limit = intval($this->params('limit'));
 			if($limit === 0) {
 				$limit = null;
 			}
-			$offset = intval($this->params('offset'));
 			if($offset === 0) {
 				$offset = null;
 			}
@@ -371,17 +353,14 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 	}
 
-	protected function search_songs() {
+	protected function search_songs($filter, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
-		// filter
-		$filter = $this->params('filter');
 
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
 
@@ -395,22 +374,19 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/songs',
-			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 	}
 
-	protected function albums() {
+	protected function albums($filter, $exact, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
-		// filter
-		$filter = $this->params('filter');
-		$fuzzy = !((boolean) $this->params('exact'));
 
 		// TODO add & update
 
 		if ($filter) {
+			$fuzzy = !((boolean) $exact);
 			$albums = $this->albumBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
 			$albums = $this->albumBusinessLayer->findAll($userId);
@@ -425,15 +401,14 @@ class AmpacheController extends Controller {
 
 		return $this->render(
 			'ampache/albums',
-			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $this->params('auth')),
+			array('albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth),
 			'blank',
 			array('Content-Type' => 'text/xml')
 		);
 	}
 
-	protected function play() {
+	protected function play($trackId) {
 		$userId = $this->ampacheUser->getUserId();
-		$trackId = $this->params('filter');
 
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $userId);
@@ -455,9 +430,8 @@ class AmpacheController extends Controller {
 	}
 
 	/* this is not ampache proto */
-	protected function get_cover() {
+	protected function get_cover($albumId) {
 		$userId = $this->ampacheUser->getUserId();
-		$albumId = $this->params('filter');
 
 		try {
 			$album = $this->albumBusinessLayer->find($albumId, $userId);

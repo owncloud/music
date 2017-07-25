@@ -33,8 +33,7 @@ class LogController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function log() {
-		$message = $this->params('message');
+	public function log($message) {
 		$this->logger->log('JS: ' . $message, 'debug');
 		return new JSONResponse(array('success' => true));
 	}

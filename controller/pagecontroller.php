@@ -13,6 +13,7 @@
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 
 use \OCA\Music\Utility\Scanner;
@@ -41,6 +42,6 @@ class PageController extends Controller {
 	 */
 	public function index() {
 		$userLang = $this->l10n->getLanguageCode();
-		return $this->render('main', array('lang' => $userLang));
+		return new TemplateResponse($this->appName, 'main', array('lang' => $userLang));
 	}
 }

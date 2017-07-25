@@ -61,9 +61,9 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function userPath() {
+	public function userPath($value) {
 		$success = false;
-		$path = $this->params('value');
+		$path = $value;
 		// TODO check for validity
 		$element = $this->userFolder->get($path);
 		if ($element instanceof \OCP\Files\Folder) {
@@ -83,16 +83,10 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function addUserKey() {
-		$success = false;
-		$description = $this->params('description');
-		$password = $this->params('password');
-
+	public function addUserKey($description, $password) {
 		$hash = hash('sha256', $password);
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
-		if($id !== null) {
-			$success = true;
-		}
+		$success = ($id !== null);
 		return new JSONResponse(array('success' => $success, 'id' => $id));
 	}
 
@@ -127,8 +121,7 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function removeUserKey() {
-		$id = $this->params('id');
+	public function removeUserKey($id) {
 		$this->ampacheUserMapper->removeUserKey($this->userId, $id);
 		return new JSONResponse(array('success' => true));
 	}

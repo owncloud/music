@@ -162,17 +162,17 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artists() {
-		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
-		$includeAlbums = filter_var($this->params('albums'), FILTER_VALIDATE_BOOLEAN);
+	public function artists($fulltree, $albums) {
+		$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+		$includeAlbums = filter_var($albums, FILTER_VALIDATE_BOOLEAN);
 		/** @var Artist[] $artists */
 		$artists = $this->artistBusinessLayer->findAll($this->userId);
 		foreach($artists as &$artist) {
 			$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
 			if($fulltree || $includeAlbums) {
 				$artistId = $artist['id'];
-				$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
-				foreach($albums as &$album) {
+				$artistAlbums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+				foreach($artistAlbums as &$album) {
 					$album = $album->toAPI($this->urlGenerator, $this->l10n);
 					if($fulltree) {
 						$albumId = $album['id'];
@@ -183,7 +183,7 @@ class ApiController extends Controller {
 						$album['tracks'] = $tracks;
 					}
 				}
-				$artist['albums'] = $albums;
+				$artist['albums'] = $artistAlbums;
 			}
 		}
 		return new JSONResponse($artists);
@@ -193,9 +193,9 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artist() {
-		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
-		$artistId = $this->getIdFromSlug($this->params('artistIdOrSlug'));
+	public function artist($artistIdOrSlug, $fulltree) {
+		$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+		$artistId = $this->getIdFromSlug($artistIdOrSlug);
 		/** @var Artist $artist */
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 		$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
@@ -220,8 +220,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums() {
-		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
+	public function albums($fulltree) {
+		$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$albums = $this->albumBusinessLayer->findAll($this->userId);
 		foreach($albums as &$album) {
 			$artistIds = $album->getArtistIds();
@@ -247,9 +247,9 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function album() {
-		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
-		$albumId = $this->getIdFromSlug($this->params('albumIdOrSlug'));
+	public function album($albumIdOrSlug, $fulltree) {
+		$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 
 		$artistIds = $album->getArtistIds();
@@ -275,12 +275,12 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function tracks() {
-		$fulltree = filter_var($this->params('fulltree'), FILTER_VALIDATE_BOOLEAN);
-		if($artistId = $this->params('artist')) {
-			$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $this->userId);
-		} elseif($albumId = $this->params('album')) {
-			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+	public function tracks($artist, $album, $fulltree) {
+		$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+		if($artist) {
+			$tracks = $this->trackBusinessLayer->findAllByArtist($artist, $this->userId);
+		} elseif($album) {
+			$tracks = $this->trackBusinessLayer->findAllByAlbum($album, $this->userId);
 		} else {
 			$tracks = $this->trackBusinessLayer->findAll($this->userId);
 		}
@@ -303,8 +303,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function track() {
-		$trackId = $this->getIdFromSlug($this->params('trackIdOrSlug'));
+	public function track($trackIdOrSlug) {
+		$trackId = $this->getIdFromSlug($trackIdOrSlug);
 		/** @var Track $track */
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		return new JSONResponse($track->toAPI($this->urlGenerator));
@@ -314,8 +314,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function trackByFileId() {
-		$fileId = $this->params('fileId');
+	public function trackByFileId($fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
@@ -326,8 +325,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileWebDavUrl() {
-		$fileId = $this->params('fileId');
+	public function fileWebDavUrl($fileId) {
 		$nodes = $this->userFolder->getById($fileId);
 		if (count($nodes) == 0) {
 			$r = new Response();
@@ -355,10 +353,10 @@ class ApiController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function scan() {
+	public function scan($files, $finalize) {
 		// extract the parameters
-		$fileIds = array_map('intval', explode(',', $this->params('files')));
-		$finalize = filter_var($this->params('finalize'), FILTER_VALIDATE_BOOLEAN);
+		$fileIds = array_map('intval', explode(',', $files));
+		$finalize = filter_var($finalize, FILTER_VALIDATE_BOOLEAN);
 
 		$filesScanned = $this->scanner->scanFiles($this->userId, $this->userFolder, $fileIds);
 
@@ -379,11 +377,9 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function download() {
+	public function download($fileId) {
 		// we no longer need the session to be kept open
 		session_write_close();
-
-		$fileId = $this->params('fileId');
 
 		try {
 			$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
@@ -412,11 +408,11 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function cover() {
+	public function cover($albumIdOrSlug) {
 		// we no longer need the session to be kept open
 		session_write_close();
 
-		$albumId = $this->getIdFromSlug($this->params('albumIdOrSlug'));
+		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 
 		$nodes = $this->userFolder->getById($album->getCoverFileId());

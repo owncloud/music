@@ -167,7 +167,7 @@ class AmpacheController extends Controller {
 
 		// create new session
 		$session = new AmpacheSession();
-		$session->setUserId($userId);
+		$session->setUserId($user);
 		$session->setToken($token);
 		$session->setExpiry($expiryDate);
 
@@ -175,9 +175,9 @@ class AmpacheController extends Controller {
 		$this->ampacheSessionMapper->insert($session);
 
 		// return counts
-		$artistCount = $this->artistBusinessLayer->count($userId);
-		$albumCount = $this->albumBusinessLayer->count($userId);
-		$trackCount = $this->trackBusinessLayer->count($userId);
+		$artistCount = $this->artistBusinessLayer->count($user);
+		$albumCount = $this->albumBusinessLayer->count($user);
+		$trackCount = $this->trackBusinessLayer->count($user);
 
 		return $this->render(
 			'ampache/handshake',

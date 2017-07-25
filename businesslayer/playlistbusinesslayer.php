@@ -31,25 +31,6 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
-	/**
-	 * Return a playlist
-	 * @param int $playlistId the id of the playlist
-	 * @param string $userId the name of the user
-	 * @return Playlist playlist
-	 */
-	public function find($playlistId, $userId) {
-		return $this->mapper->find($playlistId, $userId);
-	}
-
-	/**
-	 * Returns all playlists
-	 * @param string $userId the name of the user
-	 * @return Playlist[] playlists
-	 */
-	public function findAll($userId) {
-		return $this->mapper->findAll($userId);
-	}
-
 	public function addTracks($trackIds, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$prevTrackIds = $playlist->getTrackIdsAsArray();

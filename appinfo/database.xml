@@ -120,7 +120,7 @@
 				<name>cover_file_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>
-				<length>4</length>
+				<length>10</length>
 			</field>
 			<field>
 				<name>mbid</name>
@@ -233,7 +233,7 @@
 				<name>file_id</name>
 				<type>integer</type>
 				<notnull>true</notnull>
-				<length>4</length>
+				<length>10</length>
 			</field>
 			<field>
 				<name>bitrate</name>

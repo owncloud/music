@@ -142,41 +142,72 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
-	 * @param  IURLGenerator $urlGenerator URLGenerator
-	 * @param  object $l10n L10n handler
-	 * @return array collection API object
+	 * Return the cover URL to be used in the Shiva API
+	 * @param IURLGenerator $urlGenerator
+	 * @return string|null
 	 */
-	public function toCollection(IURLGenerator $urlGenerator, $l10n) {
+	public function coverToAPI(IURLGenerator $urlGenerator) {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
-				array('albumIdOrSlug' => $this->getId()));
+					array('albumIdOrSlug' => $this->getId()));
 		}
+		return $coverUrl;
+	}
 
+	/**
+	 * If the cover image is already cached, the collection contains the image data encoded as base64.
+	 * Otherwise the collection contains URL of the image.
+	 * @param  IURLGenerator $urlGenerator URL Generator
+	 * @param  array $cachedCoverData Cached cover image data if available
+	 * $return string|null
+	 */
+	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverData) {
+		if ($this->getCoverFileId() > 0) {
+			if ($cachedCoverData !== null) {
+				return 'data:' . $cachedCoverData['mimetype'] . ';base64,' .
+						base64_encode($cachedCoverData['content']);
+			} else {
+				return $this->coverToAPI($urlGenerator);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
+	 * @param  IURLGenerator $urlGenerator URL Generator
+	 * @param  object $l10n Localization handler
+	 * @param  array $cachedCoverData Cached cover image data if available
+	 * @return array collection API object
+	 */
+	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverData) {
 		return array(
-			'name' => $this->getNameString($l10n),
-			'year' => $this->getYearRange(),
-			'disk' => $this->getDisk(),
-			'cover' => $coverUrl,
-			'id' => $this->getId(),
+			'name'  => $this->getNameString($l10n),
+			'year'  => $this->getYearRange(),
+			'disk'  => $this->getDisk(),
+			'cover' => $this->coverToCollection($urlGenerator, $cachedCoverData),
+			'id'    => $this->getId(),
 		);
 	}
 
 	/**
 	 * Creates object used by the shiva API (array with name, year, disk, cover URL, ID, slug, URI and artists Array)
-	 * @param  IURLGenerator $urlGenerator URLGenerator
-	 * @param  object $l10n L10n handler
+	 * @param  IURLGenerator $urlGenerator URL Generator
+	 * @param  object $l10n Localization handler
 	 * @return array shiva API object
 	 */
 	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
-		$collection = $this->toCollection($urlGenerator, $l10n);
-		$collection["uri"] = $this->getUri($urlGenerator);
-		$collection["slug"] = $this->getid() . '-' .$this->slugify('name');
-		$collection["albumArtistId"] = $this->getAlbumArtistId();
-		$collection["artists"] = $this->getArtists($urlGenerator);
-		$collection["year"] = $this->yearToAPI();
-
-		return $collection;
+		return array(
+			'name'          => $this->getNameString($l10n),
+			'year'          => $this->yearToAPI(),
+			'disk'          => $this->getDisk(),
+			'cover'         => $this->coverToAPI($urlGenerator),
+			'id'            => $this->getId(),
+			'uri'           => $this->getUri($urlGenerator),
+			'slug'          => $this->getid() . '-' .$this->slugify('name'),
+			'albumArtistId' => $this->getAlbumArtistId(),
+			'artists'       => $this->getArtists($urlGenerator)
+		);
 	}
 }

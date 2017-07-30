@@ -386,9 +386,20 @@
 			</field>
 			<field>
 				<name>data</name>
-				<type>clob</type>
+				<type>blob</type>
 				<notnull>false</notnull>
 			</field>
+
+			<index>
+				<name>music_cache_index</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>key</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
 </database>

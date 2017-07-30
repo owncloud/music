@@ -131,7 +131,8 @@ class ApiController extends Controller {
 		$allAlbumsByIdAsArr = array();
 		foreach ($allAlbums as &$album) {
 			$allAlbumsByIdAsObj[$album->getId()] = $album;
-			$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n);
+			$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n,
+					$this->coverHelper->getCoverFromCache($album->getId(), $this->userId));
 		}
 
 		/** @var Track[] $allTracks */

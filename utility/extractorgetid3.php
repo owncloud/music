@@ -39,7 +39,7 @@ class ExtractorGetID3 implements Extractor {
 	/**
 	 * get metadata info for a media file
 	 *
-	 * @param \OCP\Files\Node $file the file
+	 * @param \OCP\Files\File $file the file
 	 * @return array extracted data
 	 */
 	public function extract($file) {
@@ -59,4 +59,36 @@ class ExtractorGetID3 implements Extractor {
 
 		return $metadata;
 	}
+
+	/**
+	 * extract embedded cover art image from media file
+	 * 
+	 * @param \OCP\Files\File $file the media file
+	 * @return array with keys 'mimetype' and 'content'
+	 */
+	public function parseEmbeddedCoverArt($file){
+		$fileInfo = $this->extract($file);
+		return self::getTag($fileInfo, 'picture');
+	}
+
+	public static function getTag($fileInfo, $tag) {
+		if(array_key_exists('comments', $fileInfo)) {
+			$comments = $fileInfo['comments'];
+			if(array_key_exists($tag, $comments)) {
+				return $comments[$tag][0];
+			}
+		}
+		return null;
+	}
+
+	public static function getFirstOfTags($fileInfo, array $tags, $defaultValue = null) {
+		foreach ($tags as $tag) {
+			$value = self::getTag($fileInfo, $tag);
+			if ($value !== null || $value !== '') {
+				return $value;
+			}
+		}
+		return $defaultValue;
+	}
+
 }

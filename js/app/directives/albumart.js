@@ -26,8 +26,6 @@ angular.module('Music').directive('albumart', [function() {
 		element.html('');
 		element.css('background-color', '');
 		// add background image
-		element.css('filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='scale')");
-		element.css('-ms-filter', "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='scale')");
 		element.css('background-image', 'url(' + imageUrl + ')');
 	}
 

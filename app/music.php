@@ -272,7 +272,8 @@ class Music extends App {
 		$container->registerService('CoverHelper', function($c) {
 			return new CoverHelper(
 				$c->query('AlbumBusinessLayer'),
-				$c->query('Scanner'),
+				$c->query('ExtractorGetID3'),
+				$c->query('Cache'),
 				$c->query('Logger')
 			);
 		});
@@ -297,6 +298,7 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('Cache'),
+				$c->query('CoverHelper'),
 				$c->query('Logger'),
 				$c->query('Db'),
 				$c->query('Config'),

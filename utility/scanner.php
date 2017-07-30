@@ -36,6 +36,7 @@ class Scanner extends PublicEmitter {
 	private $trackBusinessLayer;
 	private $playlistBusinessLayer;
 	private $cache;
+	private $coverHelper;
 	private $logger;
 	/** @var IDBConnection  */
 	private $db;
@@ -49,6 +50,7 @@ class Scanner extends PublicEmitter {
 								TrackBusinessLayer $trackBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								Cache $cache,
+								CoverHelper $coverHelper,
 								Logger $logger,
 								IDBConnection $db,
 								IConfig $configManager,
@@ -60,6 +62,7 @@ class Scanner extends PublicEmitter {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->cache = $cache;
+		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->configManager = $configManager;
@@ -154,16 +157,19 @@ class Scanner extends PublicEmitter {
 			// if present, use the embedded album art as cover for the respective album
 			if($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
+				$this->coverHelper->removeCoverFromCache($albumId, $userId);
+				$this->coverHelper->addCoverToCache($albumId, $userId, $meta['picture']);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
 			else if($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
 				$this->albumBusinessLayer->removeCovers([$fileId]);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
+				$this->coverHelper->removeCoverFromCache($albumId, $userId);
 			}
 
 			// invalidate the cache as the music collection was changed
-			$this->cache->remove($userId);
+			$this->cache->remove($userId, 'collection');
 		
 			// debug logging
 			$this->logger->log('imported entities - ' .
@@ -178,8 +184,8 @@ class Scanner extends PublicEmitter {
 		$meta = [];
 
 		// Track artist and album artist
-		$meta['artist'] = self::getId3Tag($fileInfo, 'artist');
-		$meta['albumArtist'] = self::getFirstOfId3Tags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
+		$meta['artist'] = ExtractorGetID3::getTag($fileInfo, 'artist');
+		$meta['albumArtist'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 		// use artist and albumArtist as fallbacks for each other
 		if(self::isNullOrEmpty($meta['albumArtist'])){
@@ -197,13 +203,13 @@ class Scanner extends PublicEmitter {
 		}
 
 		// title
-		$meta['title'] = self::getId3Tag($fileInfo, 'title');
+		$meta['title'] = ExtractorGetID3::getTag($fileInfo, 'title');
 		if(self::isNullOrEmpty($meta['title'])){
 			$meta['title'] = $fieldsFromFileName['title'];
 		}
 
 		// album
-		$meta['album'] = self::getId3Tag($fileInfo, 'album');
+		$meta['album'] = ExtractorGetID3::getTag($fileInfo, 'album');
 		if(self::isNullOrEmpty($meta['album'])){
 			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
 			$dirPath = dirname($filePath);
@@ -215,19 +221,19 @@ class Scanner extends PublicEmitter {
 		}
 
 		// track number
-		$meta['trackNumber'] = self::getFirstOfId3Tags($fileInfo, ['track_number', 'tracknumber', 'track'],
+		$meta['trackNumber'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['track_number', 'tracknumber', 'track'],
 				$fieldsFromFileName['track_number']);
 		$meta['trackNumber'] = self::normalizeOrdinal($meta['trackNumber']);
 
 		// disc number
-		$meta['discNumber'] = self::getFirstOfId3Tags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
+		$meta['discNumber'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
 		$meta['discNumber'] = self::normalizeOrdinal($meta['discNumber']);
 
 		// year
-		$meta['year'] = self::getFirstOfId3Tags($fileInfo, ['year', 'date']);
+		$meta['year'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['year', 'date']);
 		$meta['year'] = self::normalizeYear($meta['year']);
 
-		$meta['picture'] = self::getId3Tag($fileInfo, 'picture');
+		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture');
 
 		if (array_key_exists('playtime_seconds', $fileInfo)) {
 			$meta['length'] = ceil($fileInfo['playtime_seconds']);
@@ -242,15 +248,6 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $meta;
-	}
-
-	/**
-	 * @param \OCP\Files\Node $musicFile
-	 * @return Array with image MIME and content or null
-	 */
-	public function parseEmbeddedCoverArt($musicFile){
-		$fileInfo = $this->extractor->extract($musicFile);
-		return self::getId3Tag($fileInfo, 'picture');
 	}
 
 	/**
@@ -275,12 +272,13 @@ class Scanner extends PublicEmitter {
 				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
 					$this->albumBusinessLayer->setCover(null, $albumId);
 					$this->findEmbeddedCoverForAlbum($albumId);
+					$this->coverHelper->removeCoverFromCache($albumId, $userId);
 				}
 			}
 
 			// invalidate the cache of all affected users as their music collections were changed
 			foreach ($result['affectedUsers'] as $affectedUser) {
-				$this->cache->remove($affectedUser);
+				$this->cache->remove($affectedUser, 'collection');
 			}
 
 			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
@@ -523,26 +521,6 @@ class Scanner extends PublicEmitter {
 		return $string === null || $string === '';
 	}
 
-	private static function getId3Tag($fileInfo, $tag) {
-		if(array_key_exists('comments', $fileInfo)) {
-			$comments = $fileInfo['comments'];
-			if(array_key_exists($tag, $comments)) {
-				return $comments[$tag][0];
-			}
-		}
-		return null;
-	}
-
-	private static function getFirstOfId3Tags($fileInfo, array $tags, $defaultValue = null) {
-		foreach ($tags as $tag) {
-			$value = self::getId3Tag($fileInfo, $tag);
-			if (!self::isNullOrEmpty($value)) {
-				return $value;
-			}
-		}
-		return $defaultValue;
-	}
-
 	private static function normalizeOrdinal($ordinal) {
 		// convert format '1/10' to '1'
 		$tmp = explode('/', $ordinal);
@@ -600,7 +578,7 @@ class Scanner extends PublicEmitter {
 			$nodes = $userFolder->getById($track->getFileId());
 			if(count($nodes) > 0) {
 				// parse the first valid node and check if it contains embedded cover art
-				$image = $this->parseEmbeddedCoverArt($nodes[0]);
+				$image = $this->extractor->parseEmbeddedCoverArt($nodes[0]);
 				if ($image != null) {
 					$this->albumBusinessLayer->setCover($track->getFileId(), $albumId);
 					break;

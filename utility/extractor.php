@@ -17,8 +17,16 @@ interface Extractor {
 	/**
 	 * get metadata info for a media file
 	 *
-	 * @param string $path the path to the file
+	 * @param \OCP\Files\File $file the file
 	 * @return array extracted data
 	 */
-	public function extract($path);
+	public function extract($file);
+
+	/**
+	 * extract embedded cover art image from media file
+	 * 
+	 * @param \OCP\Files\File $file the media file
+	 * @return array with keys 'mimetype' and 'content'
+	 */
+	public function parseEmbeddedCoverArt($file);
 }

@@ -33,6 +33,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\CoverHelper;
 
 
 class ApiController extends Controller {
@@ -49,6 +50,8 @@ class ApiController extends Controller {
 	private $cache;
 	/** @var Scanner */
 	private $scanner;
+	/** @var CoverHelper */
+	private $coverHelper;
 	/** @var string */
 	private $userId;
 	/** @var IURLGenerator */
@@ -66,6 +69,7 @@ class ApiController extends Controller {
 								AlbumBusinessLayer $albumbusinesslayer,
 								Cache $cache,
 								Scanner $scanner,
+								CoverHelper $coverHelper,
 								$userId,
 								$l10n,
 								Folder $userFolder,
@@ -77,6 +81,7 @@ class ApiController extends Controller {
 		$this->albumBusinessLayer = $albumbusinesslayer;
 		$this->cache = $cache;
 		$this->scanner = $scanner;
+		$this->coverHelper = $coverHelper;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
@@ -413,33 +418,14 @@ class ApiController extends Controller {
 		session_write_close();
 
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$coverData = $this->coverHelper->getCover($albumId, $this->userId, $this->userFolder);
 
-		$nodes = $this->userFolder->getById($album->getCoverFileId());
-		if(count($nodes) > 0 ) {
-			// get the first valid node
-			$node = $nodes[0];
-			$mime = $node->getMimeType();
-
-			if (0 === strpos($mime, 'audio')) { // embedded cover image
-				$cover = $this->scanner->parseEmbeddedCoverArt($node);
-
-				if($cover != null) {
-					return new FileResponse(array(
-							'mimetype' => $cover["image_mime"],
-							'content' => $cover["data"]
-					));
-				}
-			}
-			else { // separate image file
-				$content = $node->getContent();
-				return new FileResponse(array('mimetype' => $mime, 'content' => $content));
-			}
+		if ($coverData !== NULL) {
+			return new FileResponse($coverData);
+		} else {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
 		}
-
-		$this->logger->log("Requested cover not found for album $albumId, coverFileId={$album->getCoverFileId()}", 'error');
-		$r = new Response();
-		$r->setStatus(Http::STATUS_NOT_FOUND);
-		return $r;
 	}
 }

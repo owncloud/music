@@ -43,6 +43,7 @@ use \OCA\Music\Hooks\ShareHooks;
 use \OCA\Music\Middleware\AmpacheMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
+use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
@@ -70,7 +71,8 @@ class Music extends App {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('AmpacheUser'),
-				$c->query('RootFolder')
+				$c->query('RootFolder'),
+				$c->query('CoverHelper')
 			);
 		});
 
@@ -84,6 +86,7 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('Cache'),
 				$c->query('Scanner'),
+				$c->query('CoverHelper'),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('UserFolder'),
@@ -264,6 +267,14 @@ class Music extends App {
 
 		$container->registerService('AmpacheUser', function() {
 			return new AmpacheUser();
+		});
+
+		$container->registerService('CoverHelper', function($c) {
+			return new CoverHelper(
+				$c->query('AlbumBusinessLayer'),
+				$c->query('Scanner'),
+				$c->query('Logger')
+			);
 		});
 
 		$container->registerService('ExtractorGetID3', function($c) {

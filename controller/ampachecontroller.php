@@ -31,6 +31,7 @@ use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Http\FileResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
+use \OCA\Music\Utility\CoverHelper;
 
 
 class AmpacheController extends Controller {
@@ -44,6 +45,7 @@ class AmpacheController extends Controller {
 	private $urlGenerator;
 	private $rootFolder;
 	private $l10n;
+	private $coverHelper;
 
 	private $sessionExpiryTime = 6000;
 
@@ -57,7 +59,8 @@ class AmpacheController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								AmpacheUser $ampacheUser,
-								$rootFolder){
+								$rootFolder,
+								CoverHelper $coverHelper) {
 		parent::__construct($appname, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
@@ -73,6 +76,8 @@ class AmpacheController extends Controller {
 
 		// used to deliver actual media file
 		$this->rootFolder = $rootFolder;
+
+		$this->coverHelper = $coverHelper;
 	}
 
 
@@ -409,22 +414,19 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		try {
-			$album = $this->albumBusinessLayer->find($albumId, $userId);
-		} catch(BusinessLayerException $e) {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			$coverData = $this->coverHelper->getCover($albumId, $userId, $this->rootFolder);
+			if ($coverData !== NULL) {
+				return new FileResponse($coverData);
+			}
+		}
+		catch(BusinessLayerException $e) {
+			// album not found
 		}
 
-		$files = $this->rootFolder->getById($album->getCoverFileId());
-
-		if(count($files) === 1) {
-			return new FileResponse($files[0]);
-		} else {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
-		}
+		// no cover found
+		$r = new Response();
+		$r->setStatus(Http::STATUS_NOT_FOUND);
+		return $r;
 	}
 
 	protected function renderXml($templateName, $params) {

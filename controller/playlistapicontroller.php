@@ -192,7 +192,7 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * Modify playlist by calling a supplied method from PlaylistBusinessLayer
-	 * @param string funcName   Name of a function to call from PlaylistBusinessLayer
+	 * @param string $funcName  Name of a function to call from PlaylistBusinessLayer
 	 * @param array $funcParams Parameters to pass to the function 'funcName'
 	 * @return \OCP\AppFramework\Http\JSONResponse JSON representation of the modified playlist
 	 */

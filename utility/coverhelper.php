@@ -111,6 +111,12 @@ class CoverHelper {
 		$this->cache->remove($userId, 'cover_' . $albumId);
 	}
 
+	/**
+	 * @param integer $albumId
+	 * @param string $userId
+	 * @parma Folder $rootFolder
+	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
+	 */
 	private function readCover($albumId, $userId, $rootFolder) {
 		$response = null;
 		$album = $this->albumBusinessLayer->find($albumId, $userId);

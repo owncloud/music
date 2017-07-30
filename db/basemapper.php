@@ -22,6 +22,11 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  */
 class BaseMapper extends Mapper {
 
+	/**
+	 * @param IDBConnection $db
+	 * @param string $tableName
+	 * @param string $entityClass
+	 */
 	public function __construct(IDBConnection $db, $tableName, $entityClass=null){
 		parent::__construct($db, $tableName, $entityClass);
 	}

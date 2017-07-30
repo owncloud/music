@@ -106,7 +106,7 @@ class ApiController extends Controller {
 	public function collection() {
 		$collectionJson = $this->cache->get($this->userId, 'collection');
 
-		if ($collectionJson == null) {
+		if ($collectionJson === null) {
 			$collectionJson = $this->buildCollectionJson();
 			$this->cache->add($this->userId, 'collection', $collectionJson);
 		}

@@ -65,16 +65,19 @@ class CoverHelper {
 	 * 
 	 * @param int $albumId
 	 * @param string $userId
+	 * @param bool $asBase64
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCoverFromCache($albumId, $userId) {
+	public function getCoverFromCache($albumId, $userId, $asBase64 = false) {
 		$cached = $this->cache->get($userId, 'cover_' . $albumId);
 		if ($cached !== null) {
 			$delimPos = strpos($cached, '|');
-			return [
-				'mimetype' => substr($cached, 0, $delimPos),
-				'content' => substr($cached, $delimPos + 1)
-			];
+			$mime = substr($cached, 0, $delimPos);
+			$content = substr($cached, $delimPos + 1);
+			if (!$asBase64) {
+				$content = base64_decode($content);
+			}
+			return ['mimetype' => $mime, 'content' => $content];
 		}
 		return null;
 	}
@@ -92,7 +95,7 @@ class CoverHelper {
 			$content = array_key_exists('content', $coverData) ? $coverData['content'] : $coverData['data'];
 
 			if ($mime && $content) {
-				$this->cache->add($userId, 'cover_' . $albumId, $mime . '|' . $content);
+				$this->cache->add($userId, 'cover_' . $albumId, $mime . '|' . base64_encode($content));
 				$this->cache->remove($userId, 'collection');
 			}
 		}

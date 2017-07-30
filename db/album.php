@@ -156,17 +156,16 @@ class Album extends Entity {
 	}
 
 	/**
-	 * If the cover image is already cached, the collection contains the image data encoded as base64.
-	 * Otherwise the collection contains URL of the image.
+	 * If the cover image is already cached, the image data is embedded into collection as data URI.
+	 * Otherwise the collection contains URL which can be used to fetch the image data.
 	 * @param  IURLGenerator $urlGenerator URL Generator
-	 * @param  array $cachedCoverData Cached cover image data if available
+	 * @param  array $cachedCoverData Cached cover image data if available (mime and base64 encoded content)
 	 * $return string|null
 	 */
 	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverData) {
 		if ($this->getCoverFileId() > 0) {
 			if ($cachedCoverData !== null) {
-				return 'data:' . $cachedCoverData['mimetype'] . ';base64,' .
-						base64_encode($cachedCoverData['content']);
+				return 'data:' . $cachedCoverData['mimetype'] . ';base64,' . $cachedCoverData['content'];
 			} else {
 				return $this->coverToAPI($urlGenerator);
 			}
@@ -178,7 +177,7 @@ class Album extends Entity {
 	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  object $l10n Localization handler
-	 * @param  array $cachedCoverData Cached cover image data if available
+	 * @param  array $cachedCoverData Cached cover image data if available (mime and base64 encoded content)
 	 * @return array collection API object
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverData) {

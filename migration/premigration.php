@@ -12,51 +12,76 @@
 
 namespace OCA\Music\Migration;
 
+use OCP\IConfig;
+use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 
 class PreMigration implements IRepairStep {
 
+	/** @var IDBConnection */
+	private $db;
+
+	/** @var IConfig */
+	private $config;
+
+	public function __construct(IDBConnection $connection, IConfig $config) {
+		$this->db = $connection;
+		$this->config = $config;
+	}
+
 	public function getName() {
-		return 'Drop incompatible music database entries';
+		return 'Drop any incompatible music database entries';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function run(IOutput $output = null) {
-		$installedVersion = \OCP\Config::getAppValue('music', 'installed_version');
+	public function run(IOutput $output) {
+		$installedVersion = $this->config->getAppValue('music', 'installed_version');
 
-		$sqls = [];
+		// Drop obsolete tables created by previous versions if they still exist.
+		// No need to check version numbers here.
+		$this->dropTables([
+				'music_album_artists',
+				'music_playlist_tracks'
+		]);
 
-		// Versions prior to 0.3.12 had a separate table for album artists
+		// Wipe clean the tables which have chenged so that the old data does not
+		// fulfill the new schema.
+		$tablesToErase = [];
+
 		if (version_compare($installedVersion, '0.3.12', '<')) {
-			$sqls[] = 'DELETE FROM `*PREFIX*music_ampache_sessions`';
-			$sqls[] = 'DROP TABLE `*PREFIX*music_album_artists`';
+			$tablesToErase[] = 'music_ampache_sessions';
 		}
 
-		// Versions prior to 0.3.14 had a separate table for playlist tracks
-		if (version_compare($installedVersion, '0.3.14', '<')) {
-			$sqls[] = 'DROP TABLE `*PREFIX*music_playlist_tracks`;';
-		}
-
-		// Clear the tracks/albums/artists tables if the DB schema has changed since the previous version
 		if (version_compare($installedVersion, '0.3.16.1', '<')) {
-			$sqls[] = 'DELETE FROM `*PREFIX*music_artists`';
-			$sqls[] = 'DELETE FROM `*PREFIX*music_albums`';
-			$sqls[] = 'DELETE FROM `*PREFIX*music_tracks`';
-			$sqls[] = 'DELETE FROM `*PREFIX*music_playlists`';
+			$tablesToErase[] = 'music_artists';
+			$tablesToErase[] = 'music_albums';
+			$tablesToErase[] = 'music_tracks';
+			$tablesToErase[] = 'music_playlists';
 		}
 
-		// Invalidate the cache if the previous version is new enough to have one.
+		// Invalidate the cache on each update (if there is one).
 		// This might not be strictly necessary on all migrations, but it will do no harm.
-		if (version_compare($installedVersion, '0.3.15', '>=')) {
-			$sqls[] = 'DELETE FROM `*PREFIX*music_cache`';
-		}
+		$tablesToErase[] = 'music_cache';
 
-		foreach ($sqls as $sql) {
-			$query = \OCP\DB::prepare($sql);
-			$query->execute();
+		$this->eraseTables($tablesToErase);
+	}
+
+	private function dropTables(array $tables) {
+		foreach ($tables as $table) {
+			if ($this->db->tableExists($table)) {
+				$this->db->dropTable($table);
+			}
+		}
+	}
+
+	private function eraseTables(array $tables) {
+		foreach ($tables as $table) {
+			if ($this->db->tableExists($table)) {
+				$this->db->executeQuery("DELETE FROM `*PREFIX*$table`");
+			}
 		}
 	}
 }

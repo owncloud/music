@@ -1,3 +1,7 @@
+v0.4.3 2017-08-01
+ * fixed app not loading with too large cover images (regression in 0.4.2)
+ * fixed metadata parsing issue: extracting album artist, track #, disc #, or year could fail on some files (regression in 0.4.2)
+
 v0.4.2 2017-07-31
  * fixed updating from versions <= 0.3.13 (#571)
  * fixed loading of embedded cover images via Ampache API

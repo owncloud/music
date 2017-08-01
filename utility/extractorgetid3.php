@@ -84,7 +84,7 @@ class ExtractorGetID3 implements Extractor {
 	public static function getFirstOfTags($fileInfo, array $tags, $defaultValue = null) {
 		foreach ($tags as $tag) {
 			$value = self::getTag($fileInfo, $tag);
-			if ($value !== null || $value !== '') {
+			if ($value !== null && $value !== '') {
 				return $value;
 			}
 		}

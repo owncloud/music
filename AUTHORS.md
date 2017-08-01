@@ -43,6 +43,7 @@
 * [Selpelt](https://github.com/selpelt)
 * [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
 * [Thomas Pulzer](https://github.com/Faldon)
+* [VicDeo] (https://github.com/VicDeo)
 * [Vincent Petry](https://github.com/PVince81)
 * [Volkan Gezer](https://github.com/wakeup)
 * [Xefir](https://github.com/Xefir)

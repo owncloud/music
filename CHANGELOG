@@ -1,3 +1,10 @@
+v0.4.2 2017-07-31
+ * fixed updating from versions <= 0.3.13 (#571)
+ * fixed loading of embedded cover images via Ampache API
+ * fixed compatibility with recent Nextcloud 13 development versions
+ * use bigint when storing file_ids to database (#569)
+ * improved performance of cover image loading (#570)
+
 v0.4.1 2017-07-24
  * dropped support for ownCloud 8.1
 

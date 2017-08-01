@@ -79,8 +79,11 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
 			$years = $this->mapper->getYearsByAlbumId($albumIds);
 			foreach ($albums as &$album) {
-				$album->setArtistIds($albumArtists[$album->getId()]);
-				$album->setYears($years[$album->getId()]);
+				$albumId = $album->getId();
+				$album->setArtistIds($albumArtists[$albumId]);
+				if (array_key_exists($albumId, $years)) {
+					$album->setYears($years[$albumId]);
+				}
 			}
 		}
 		return $albums;

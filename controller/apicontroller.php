@@ -116,23 +116,47 @@ class ApiController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * Small cached images are embedded directly to the collection to limit the number of PHP queries.
+	 * However, the total size of all embedded covers is limited to avoid the size of the collection
+	 * from getting out of control with large music libraries.
+	 * @param int $albumId
+	 * @return string|null
+	 */
+	private function coverToEmbed($albumId) {
+		$cover = $this->coverHelper->getCoverFromCache($albumId, $this->userId, true);
+		if ($cover != null) {
+			$size = strlen($cover['content']);
+			if ($size + $this->embeddedCoversTotalSize > self::EMBEDDED_COVERS_MAX_TOTAL_SIZE) {
+				$cover = null;
+			} else {
+				$this->embeddedCoversTotalSize += $size;
+			}
+		}
+		return $cover;
+	}
+	const EMBEDDED_COVERS_MAX_TOTAL_SIZE = 3145728; // 3 MB
+	private $embeddedCoversTotalSize = 0;
+
 	private function buildCollectionJson() {
 		/** @var Artist[] $allArtists */
 		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
 		$allArtistsByIdAsObj = array();
 		$allArtistsByIdAsArr = array();
 		foreach ($allArtists as &$artist) {
-			$allArtistsByIdAsObj[$artist->getId()] = $artist;
-			$allArtistsByIdAsArr[$artist->getId()] = $artist->toCollection($this->l10n);
+			$artistId = $artist->getId();
+			$allArtistsByIdAsObj[$artistId] = $artist;
+			$allArtistsByIdAsArr[$artistId] = $artist->toCollection($this->l10n);
 		}
-		
+
 		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
 		$allAlbumsByIdAsObj = array();
 		$allAlbumsByIdAsArr = array();
 		foreach ($allAlbums as &$album) {
-			$allAlbumsByIdAsObj[$album->getId()] = $album;
-			$allAlbumsByIdAsArr[$album->getId()] = $album->toCollection($this->urlGenerator, $this->l10n,
-					$this->coverHelper->getCoverFromCache($album->getId(), $this->userId, true));
+			$albumId = $album->getId();
+			$allAlbumsByIdAsObj[$albumId] = $album;
+			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
+					$this->urlGenerator, $this->l10n, $this->coverToEmbed($albumId));
 		}
 
 		/** @var Track[] $allTracks */

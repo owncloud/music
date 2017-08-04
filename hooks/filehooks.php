@@ -52,7 +52,20 @@ class FileHooks {
 			$scanner = $container->query('Scanner');
 			$userId = $container->query('UserId');
 			$userFolder = $container->query('UserFolder');
-			$scanner->update($node, $userId, $userFolder);
+
+			// When a file is uploaded to a folder shared by link, we end up here without current user.
+			// In that case, fall back to using file owner (available from Node in OC >= 9.0)
+			if (!$userId) {
+				$version = \OCP\Util::getVersion();
+				if ($version[0] >= 9) {
+					$userId = $node->getOwner()->getUID();
+					$userFolder = $scanner->resolveUserFolder($userId);
+				}
+			}
+
+			if ($userId) {
+				$scanner->update($node, $userId, $userFolder);
+			}
 		}
 	}
 

@@ -88,6 +88,7 @@ angular.module('Music').controller('MainController',
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = sortCollection(artists);
+			$scope.albums = _.flatten(_.pluck($scope.artists, 'albums'));
 			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
@@ -194,6 +195,12 @@ angular.module('Music').controller('MainController',
 			angular.element(container).scrollToElement(
 					angular.element(element), $scope.scrollOffset(), 500);
 		}
+	};
+
+	$scope.findAlbumOfTrack = function(trackId) {
+		return _.find($scope.albums, function(album) {
+			return _.findWhere(album.tracks, {id : trackId});
+		});
 	};
 
 	// adjust controls bar width to not overlap with the scroll bar
@@ -318,7 +325,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var album = findAlbum(track.albumId);
+			var album = $scope.$parent.findAlbumOfTrack(track.id);
 			playTracks(album.tracks, album.tracks.indexOf(track));
 		};
 
@@ -339,7 +346,7 @@ angular.module('Music').controller('OverviewController',
 				Restangular.one('file', fileid).get()
 					.then(function(result){
 						playTracks([result]);
-						$scope.$parent.scrollToItem('album-' + result.albumId);
+						scrollToAlbumOfTrack(result.id);
 					});
 			}
 		};
@@ -358,9 +365,16 @@ angular.module('Music').controller('OverviewController',
 		subscribe('scrollToTrack', function(event, trackId) {
 			var track = findTrack(trackId);
 			if (track) {
-				$scope.$parent.scrollToItem('album-' + track.albumId);
+				scrollToAlbumOfTrack(trackId);
 			}
 		});
+
+		function scrollToAlbumOfTrack(trackId) {
+			var album = $scope.$parent.findAlbumOfTrack(trackId);
+			if (album) {
+				$scope.$parent.scrollToItem('album-' + album.id);
+			}
+		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -369,8 +383,7 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function findAlbum(id) {
-			var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
-			return _.find(albums, function(album) {
+			return _.find($scope.parent.albums, function(album) {
 				return album.id == id;
 			});
 		}
@@ -400,7 +413,7 @@ angular.module('Music').controller('OverviewController',
 				} else if (type == 'track') {
 					var track = findTrack(id);
 					$scope.playTrack(track);
-					$scope.$parent.scrollToItem('album-' + track.albumId);
+					scrollToAlbumOfTrack(id);
 				}
 			}
 			$rootScope.loading = false;
@@ -457,7 +470,6 @@ angular.module('Music').controller('PlayerController',
 	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
-	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
 	$scope.volume = Cookies.get('oc_music_volume') || 75;  // volume can be 0~100
@@ -539,17 +551,7 @@ angular.module('Music').controller('PlayerController',
 		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			// find artist
-			$scope.currentArtist = _.find($scope.artists,
-										function(artist){
-											return artist.id === track.albumArtistId;
-										});
-			// find album
-			$scope.currentAlbum = _.find($scope.currentArtist.albums,
-										function(album){
-											return album.id === track.albumId;
-										});
-
+			$scope.currentAlbum = $scope.findAlbumOfTrack(track.id);
 			$scope.setLoading(true);
 
 			// get webDAV URL to the track and start playing it
@@ -568,7 +570,6 @@ angular.module('Music').controller('PlayerController',
 			});
 
 		} else {
-			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;

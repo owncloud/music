@@ -271,8 +271,6 @@ Response:
 							"number": 21,
 							"artistName": "Blind Guardian",
 							"artistId": 2,
-							"albumId": 16,
-							"albumArtistId": 2,
 							"files": {
 								"audio/mpeg": 1001
 							},
@@ -283,8 +281,6 @@ Response:
 							"number": 12,
 							"artistName": "Blind Guardian",
 							"artistId": 2,
-							"albumId": 16,
-							"albumArtistId": 2,
 							"files": {
 								"audio/mpeg": 1002
 							},
@@ -310,8 +306,6 @@ Response:
 							"number": 1,
 							"artistName": "blink-182",
 							"artistId": 3,
-							"albumId": 22,
-							"albumArtistId": 3,
 							"files": {
 								"audio/ogg": 1051
 							},
@@ -322,8 +316,6 @@ Response:
 							"number": 2,
 							"artistName": "blink-182",
 							"artistId": 3,
-							"albumId": 22,
-							"albumArtistId": 3,
 							"files": {
 								"audio/ogg": 1052
 							},

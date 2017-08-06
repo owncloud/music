@@ -28,7 +28,6 @@ angular.module('Music').controller('PlayerController',
 	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
-	$scope.currentArtist = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
 	$scope.volume = Cookies.get('oc_music_volume') || 75;  // volume can be 0~100
@@ -110,17 +109,7 @@ angular.module('Music').controller('PlayerController',
 		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			// find artist
-			$scope.currentArtist = _.find($scope.artists,
-										function(artist){
-											return artist.id === track.albumArtistId;
-										});
-			// find album
-			$scope.currentAlbum = _.find($scope.currentArtist.albums,
-										function(album){
-											return album.id === track.albumId;
-										});
-
+			$scope.currentAlbum = $scope.findAlbumOfTrack(track.id);
 			$scope.setLoading(true);
 
 			// get webDAV URL to the track and start playing it
@@ -139,7 +128,6 @@ angular.module('Music').controller('PlayerController',
 			});
 
 		} else {
-			$scope.currentArtist = null;
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;

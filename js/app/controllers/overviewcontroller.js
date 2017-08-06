@@ -51,7 +51,7 @@ angular.module('Music').controller('OverviewController',
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var album = findAlbum(track.albumId);
+			var album = $scope.$parent.findAlbumOfTrack(track.id);
 			playTracks(album.tracks, album.tracks.indexOf(track));
 		};
 
@@ -72,7 +72,7 @@ angular.module('Music').controller('OverviewController',
 				Restangular.one('file', fileid).get()
 					.then(function(result){
 						playTracks([result]);
-						$scope.$parent.scrollToItem('album-' + result.albumId);
+						scrollToAlbumOfTrack(result.id);
 					});
 			}
 		};
@@ -91,9 +91,16 @@ angular.module('Music').controller('OverviewController',
 		subscribe('scrollToTrack', function(event, trackId) {
 			var track = findTrack(trackId);
 			if (track) {
-				$scope.$parent.scrollToItem('album-' + track.albumId);
+				scrollToAlbumOfTrack(trackId);
 			}
 		});
+
+		function scrollToAlbumOfTrack(trackId) {
+			var album = $scope.$parent.findAlbumOfTrack(trackId);
+			if (album) {
+				$scope.$parent.scrollToItem('album-' + album.id);
+			}
+		}
 
 		function findArtist(id) {
 			return _.find($scope.$parent.artists, function(artist) {
@@ -102,8 +109,7 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function findAlbum(id) {
-			var albums = _.flatten(_.pluck($scope.$parent.artists, 'albums'));
-			return _.find(albums, function(album) {
+			return _.find($scope.parent.albums, function(album) {
 				return album.id == id;
 			});
 		}
@@ -133,7 +139,7 @@ angular.module('Music').controller('OverviewController',
 				} else if (type == 'track') {
 					var track = findTrack(id);
 					$scope.playTrack(track);
-					$scope.$parent.scrollToItem('album-' + track.albumId);
+					scrollToAlbumOfTrack(id);
 				}
 			}
 			$rootScope.loading = false;

@@ -25,12 +25,12 @@
 					ng-click="playTrack(track)"
 					ui-draggable="true" drag="getDraggable('track', track)"
 					ng-repeat="track in album.tracks | limitTo:limit.count"
-					bo-title="track.title + ((track.artistId != track.albumArtistId) ? '  (' + track.artistName + ')' : '')">
+					bo-title="track.title + ((track.artistId != artist.id) ? '  (' + track.artistName + ')' : '')">
 					<img class="play svg" bo-alt="'Play' | translate" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
 						ng-class="{playing: currentTrack.id == track.id}" />
 					<span bo-if="track.number" class="muted" bo-text="track.number + '.'"></span>
 					<span bo-text="track.title"></span>
-					<span bo-if="track.artistId != track.albumArtistId" class="muted" bo-text="'&nbsp;(' + track.artistName +')'"></span>
+					<span bo-if="track.artistId != artist.id" class="muted" bo-text="'&nbsp;(' + track.artistName +')'"></span>
 				</li>
 				<li class="muted more-less" translate translate-n="trackcount"
 					translate-plural="Show all {{ trackcount }} songs ..."

@@ -50,6 +50,7 @@ angular.module('Music').controller('MainController',
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = sortCollection(artists);
+			$scope.albums = _.flatten(_.pluck($scope.artists, 'albums'));
 			$scope.allTracks = createTracksIndex(artists);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
@@ -156,6 +157,12 @@ angular.module('Music').controller('MainController',
 			angular.element(container).scrollToElement(
 					angular.element(element), $scope.scrollOffset(), 500);
 		}
+	};
+
+	$scope.findAlbumOfTrack = function(trackId) {
+		return _.find($scope.albums, function(album) {
+			return _.findWhere(album.tracks, {id : trackId});
+		});
 	};
 
 	// adjust controls bar width to not overlap with the scroll bar

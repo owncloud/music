@@ -102,8 +102,6 @@ class Track extends Entity {
 			'number' => $this->getNumber(),
 			'artistName' => $this->getArtist()->getNameString($l10n),
 			'artistId' => $this->getArtistId(),
-			'albumId' => $this->getAlbumId(),
-			'albumArtistId' => $this->getAlbum()->getAlbumArtistId(),
 			'files' => [$this->getMimetype() => $this->getFileId()],
 			'id' => $this->getId(),
 		);

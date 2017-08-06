@@ -199,7 +199,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.findAlbumOfTrack = function(trackId) {
 		return _.find($scope.albums, function(album) {
-			return _.findWhere(album.tracks, {id : trackId});
+			return _.findWhere(album.tracks, {id : Number(trackId)});
 		});
 	};
 
@@ -377,15 +377,11 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function findArtist(id) {
-			return _.find($scope.$parent.artists, function(artist) {
-				return artist.id == id;
-			});
+			return _.findWhere($scope.$parent.artists, { id: Number(id) });
 		}
 
 		function findAlbum(id) {
-			return _.find($scope.parent.albums, function(album) {
-				return album.id == id;
-			});
+			return _.findWhere($scope.$parent.albums, { id: Number(id) });
 		}
 
 		function findTrack(id) {
@@ -840,7 +836,7 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function findPlaylist(id) {
-			return _.find($scope.$parent.playlists, function(pl) { return pl.id == id; });
+			return _.findWhere($scope.$parent.playlists, { id: Number(id) });
 		}
 
 		function createTracksArray(trackIds) {

@@ -161,7 +161,7 @@ angular.module('Music').controller('MainController',
 
 	$scope.findAlbumOfTrack = function(trackId) {
 		return _.find($scope.albums, function(album) {
-			return _.findWhere(album.tracks, {id : trackId});
+			return _.findWhere(album.tracks, {id : Number(trackId)});
 		});
 	};
 

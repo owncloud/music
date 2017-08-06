@@ -196,7 +196,7 @@ angular.module('Music').controller('PlaylistViewController',
 		}
 
 		function findPlaylist(id) {
-			return _.find($scope.$parent.playlists, function(pl) { return pl.id == id; });
+			return _.findWhere($scope.$parent.playlists, { id: Number(id) });
 		}
 
 		function createTracksArray(trackIds) {

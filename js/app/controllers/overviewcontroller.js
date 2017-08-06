@@ -103,15 +103,11 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		function findArtist(id) {
-			return _.find($scope.$parent.artists, function(artist) {
-				return artist.id == id;
-			});
+			return _.findWhere($scope.$parent.artists, { id: Number(id) });
 		}
 
 		function findAlbum(id) {
-			return _.find($scope.parent.albums, function(album) {
-				return album.id == id;
-			});
+			return _.findWhere($scope.$parent.albums, { id: Number(id) });
 		}
 
 		function findTrack(id) {

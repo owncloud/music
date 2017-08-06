@@ -72,7 +72,7 @@ class TrackMapper extends BaseMapper {
 			$sql .= 'AND `track`.`artist_id` = ? ';
 			array_push($params, $artistId);
 		}
-		$sql .= 'ORDER BY LOWER(`track`.`title`)';
+		$sql .= 'ORDER BY `track`.`number`, LOWER(`track`.`title`)';
 		return $this->findEntities($sql, $params);
 	}
 

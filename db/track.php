@@ -112,7 +112,7 @@ class Track extends Entity {
 	public function toAPI(IURLGenerator $urlGenerator) {
 		return array(
 			'title' => $this->getTitle(),
-			'number' => $this->getNumber(),
+			'ordinal' => $this->getNumber(),
 			'artist' => $this->getArtistWithUri($urlGenerator),
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),

@@ -38,7 +38,7 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(
 			'id' => 1,
 			'title' => 'The title',
-			'number' => 4,
+			'ordinal' => 4,
 			'artist' => array('id' => 3, 'uri' => null),
 			'album' => array('id' => 1, 'uri' => null),
 			'length' => 123,

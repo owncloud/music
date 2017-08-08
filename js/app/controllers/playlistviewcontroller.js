@@ -208,10 +208,9 @@ angular.module('Music').controller('PlaylistViewController',
 		function createAllTracksArray() {
 			var tracks = null;
 			if ($scope.$parent.allTracks) {
-				tracks = [];
-				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push( { track: $scope.$parent.allTracks[trackId] } );
-				}
+				tracks = _.map($scope.$parent.allTracks, function(track) {
+					return { track: track };
+				});
 
 				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
 				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });

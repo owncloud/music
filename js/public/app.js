@@ -89,7 +89,7 @@ angular.module('Music').controller('MainController',
 		ArtistFactory.getArtists().then(function(artists){
 			$scope.artists = sortCollection(artists);
 			$scope.albums = _.flatten(_.pluck($scope.artists, 'albums'));
-			$scope.allTracks = createTracksIndex(artists);
+			$scope.allTracks = createTracksIndex($scope.albums);
 			for(var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
@@ -224,19 +224,12 @@ angular.module('Music').controller('MainController',
 	adjustControlsBarWidth();
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
-	function createTracksIndex(artists) {
+	function createTracksIndex(albums) {
 		var tracksDict = {};
-
-		for (var i = 0; i < artists.length; ++i) {
-			var albums = artists[i].albums;
-			for (var j = 0; j < albums.length; ++j) {
-				var tracks = albums[j].tracks;
-				for (var k = 0; k < tracks.length; ++k) {
-					var track = tracks[k];
-					tracksDict[track.id] = track;
-				}
-			}
-		}
+		var tracks = _.flatten(_.pluck(albums, 'tracks'));
+		_.forEach(tracks, function(track) {
+			tracksDict[track.id] = track;
+		});
 
 		return tracksDict;
 	}
@@ -260,17 +253,12 @@ angular.module('Music').controller('MainController',
 
 	function sortCollection(artists) {
 		artists = sortByName(artists);
-
-		for (var i = 0; i < artists.length; ++i) {
-			var artist = artists[i];
-			artist.albums = sortByYearNameAndDisc(artist.albums); 
-
-			for (var j = 0; j < artist.albums.length; ++j) {
-				var album = artist.albums[j];
+		_.forEach(artists, function(artist) {
+			artist.albums = sortByYearNameAndDisc(artist.albums);
+			_.forEach(artist.albums, function(album) {
 				album.tracks = sortByNumberAndTitle(album.tracks);
-			}
-		}
-
+			});
+		});
 		return artists;
 	}
 
@@ -848,10 +836,9 @@ angular.module('Music').controller('PlaylistViewController',
 		function createAllTracksArray() {
 			var tracks = null;
 			if ($scope.$parent.allTracks) {
-				tracks = [];
-				for (var trackId in $scope.$parent.allTracks) {
-					tracks.push( { track: $scope.$parent.allTracks[trackId] } );
-				}
+				tracks = _.map($scope.$parent.allTracks, function(track) {
+					return { track: track };
+				});
 
 				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
 				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });

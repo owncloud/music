@@ -787,7 +787,7 @@ OggDemuxer.plugins.push({
   }
 });
 
-},{}]},{},[1])
+},{}]},{},[1]);
 
 
 //# sourceMappingURL=flac.js.map

@@ -10,9 +10,7 @@
 \OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
-\OCP\Util::addScript('music', 'vendor/aurora/aurora');
-\OCP\Util::addScript('music', 'vendor/aurora/flac');
-\OCP\Util::addScript('music', 'vendor/aurora/mp3');
+\OCP\Util::addScript('music', 'vendor/aurora/aurora-bundle.min');
 \OCP\Util::addScript('music', 'vendor/js-cookie/src/js.cookie');
 \OCP\Util::addScript('music', 'public/app');
 

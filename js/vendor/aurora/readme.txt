@@ -1,0 +1,1 @@
+aurora-bundle.min.js is compiled from aurora.js, mp3.js, and flac.js with uglify-js-es6 (npm install mishoo/UglifyJS2#harmony)

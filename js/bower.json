@@ -3,12 +3,13 @@
   "version": "0.2",
   "dependencies": {
     "angular" : "",
-    "angular-route" : "",
     "angular-gettext" : "",
+    "angular-route" : "",
     "backbone": "",
+    "javascript-detect-element-resize" : "",
+    "js-cookie" :"",
     "restangular" : "",
     "soundmanager": "",
-    "underscore" : "",
-    "js-cookie" :""
+    "underscore" : ""
   }
 }

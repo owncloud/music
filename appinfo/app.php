@@ -53,7 +53,17 @@ $c->query('ShareHooks')->register();
 /**
  * load styles and scripts
  */
-// fileactions
-\OCP\Util::addScript($c->query('AppName'), 'public/fileactions');
-// file player for public sharing page
-\OCP\Util::addScript($c->query('AppName'), 'public/musicFilePlayer');
+$request = \OC::$server->getRequest();
+
+if (isset($request->server['REQUEST_URI'])) {
+	$url = $request->server['REQUEST_URI'];
+	if (preg_match('%/apps/files(/.*)?%', $url)	|| preg_match('%/s/.+%', $url)) {
+		// simple player integrated to the Files app
+		\OCP\Util::addScript($c->query('AppName'), 'vendor/soundmanager/script/soundmanager2-jsmin');
+		\OCP\Util::addScript($c->query('AppName'), 'vendor/aurora/aurora-bundle.min');
+		\OCP\Util::addScript($c->query('AppName'), 'vendor/javascript-detect-element-resize/jquery.resize');
+		\OCP\Util::addScript($c->query('AppName'), 'app/playerwrapper');
+		\OCP\Util::addScript($c->query('AppName'), 'public/files-music-player');
+		\OCP\Util::addStyle('music', 'files-music-player');
+	}
+}

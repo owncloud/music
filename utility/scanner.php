@@ -233,7 +233,7 @@ class Scanner extends PublicEmitter {
 		$meta['year'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['year', 'date']);
 		$meta['year'] = self::normalizeYear($meta['year']);
 
-		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture');
+		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);
 
 		if (array_key_exists('playtime_seconds', $fileInfo)) {
 			$meta['length'] = ceil($fileInfo['playtime_seconds']);

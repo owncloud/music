@@ -1,3 +1,11 @@
+v0.4.4 2017-08-17
+ * fixed scanning breaking if file metadata contains invalid UTF-8 characters (#576)
+ * updated aurora.js and its plugins to latest versions; this fixes some (but not all) playback problems on Chromium
+ * update database automatically when audio file uploaded to a publicly shared folder
+ * Ampache and Shiva APIs: return album tracks sorted by track number
+ * Shiva API: track now has field 'ordinal' instead of 'number' to follow the API specification (#453)
+ * the release package in github is now unsigned (v0.4.3 was signed with ownCloud certificate)
+
 v0.4.3 2017-08-01
  * fixed app not loading with too large cover images (regression in 0.4.2)
  * fixed metadata parsing issue: extracting album artist, track #, disc #, or year could fail on some files (regression in 0.4.2)

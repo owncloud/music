@@ -3,10 +3,10 @@
 	<id>music</id>
 	<name>Music</name>
 	<summary>Music player and server</summary>
-	<description>Shows audio files stored in your cloud categorized by artists and albums. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. Support for shuffle play and playlists. Includes an experimental Ampache server. NOTE: ownCloud version 9.1.0 or newer is recommended. On older cloud versions, you need to manually erase the music database before updating from version &lt;= 0.3.16.</description>
+	<description>Shows audio files stored in your cloud categorized by artists and albums. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. Support for shuffle play and playlists. Includes an Ampache-compatible server. NOTE: ownCloud version 9.1.0 or newer is recommended. On older cloud versions, you need to manually erase the music database before updating from version &lt;= 0.3.16.</description>
 	<licence>AGPL</licence>
 	<author>Morris Jobke, Jan-Christoph Borchardt (design)</author>
-	<version>0.4.3</version>
+	<version>0.4.4</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/28543434-6eb12de0-70c8-11e7-966e-65f4c3a90531.png</screenshot>
 	<website>https://github.com/owncloud/music</website>

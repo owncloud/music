@@ -62,6 +62,7 @@ if (isset($request->server['REQUEST_URI'])) {
 		\OCP\Util::addScript($c->query('AppName'), 'vendor/soundmanager/script/soundmanager2-jsmin');
 		\OCP\Util::addScript($c->query('AppName'), 'vendor/aurora/aurora-bundle.min');
 		\OCP\Util::addScript($c->query('AppName'), 'vendor/javascript-detect-element-resize/jquery.resize');
+		\OCP\Util::addScript($c->query('AppName'), 'vendor/jquery-initialize/jquery.initialize.min');
 		\OCP\Util::addScript($c->query('AppName'), 'app/playerwrapper');
 		\OCP\Util::addScript($c->query('AppName'), 'public/files-music-player');
 		\OCP\Util::addStyle('music', 'files-music-player');

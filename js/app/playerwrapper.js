@@ -96,7 +96,7 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 
 	var self = this;
 
-	if (soundManager.canPlayURL(url)) {
+	if (soundManager.canPlayMIME(mime)) {
 		this.underlyingPlayer = 'sm2';
 	} else {
 		this.underlyingPlayer = 'aurora';

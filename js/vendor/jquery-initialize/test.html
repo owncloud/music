@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jquery.initialize test</title>
+	<!-- Load MutationObserver and WeakMap polyfill for IE9 and 10 -->
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="jquery.initialize.js"></script>
+</head>
+<body>
+
+	<h2>We want every .initialize-me item to have color changed to blue by js - no matter how and when item with this class is added</h2>
+
+	<div class="wrong-class">
+		This elem has .wrong-class and will not be initialized
+	</div>
+
+	<div class="initialize-me">
+		This class has .initialize-me class so it will be initialized
+	</div>
+
+	<button id="add-new">Add new item</button>
+
+	<button id="change-class">Just add .initialize-me to .wrong-class</button>
+
+	<p>You can even add item with .initialize-me class via browser inspector - proper js will be executed on it just when you finish edition.</p>
+
+	<script>
+
+		$(function() {
+			
+			// Deprecated API (does not work with jQuery >= 3.1.1):
+			// $('.initialize-me').initialize(function() {
+			// 	$(this).css('color', 'blue');
+			// });
+			
+			$.initialize('.initialize-me', function() {
+				$(this).css('color', 'blue');
+			});
+
+			$('#add-new').click(function(){
+				$('<div>').addClass('initialize-me').text('New item that was just appended to body and it’s color is automatically changed to blue without any additional js.').appendTo('body');
+			});
+
+			$('#change-class').click(function(){
+				$('.wrong-class').addClass('initialize-me');
+			});
+
+		});
+
+	</script>
+	
+</body>
+</html>

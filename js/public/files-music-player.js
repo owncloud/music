@@ -73,7 +73,7 @@ $(document).ready(function () {
 		musicControls.append(closeButton);
 
 		var parentContainer = $('div#app-content');
-		if (parentContainer.length == 0) {
+		if (parentContainer.length === 0) {
 			shareView = true;
 			parentContainer = $('div#preview');
 			musicControls.css('left', '0');
@@ -90,12 +90,16 @@ $(document).ready(function () {
 		player.on('end', stop);
 	}
 
-	// Handle 'play' action on file row
-	function onFilePlay(filename, context) {
+	function showMusicControls() {
 		if (!musicControls) {
 			createUi();
 		}
 		musicControls.css('display', 'inline-block');
+	}
+
+	// Handle 'play' action on file row
+	function onFilePlay(filename, context) {
+		showMusicControls();
 
 		// Check if playing file changes
 		var filerow = context.$file;
@@ -114,9 +118,9 @@ $(document).ready(function () {
 
 		// Play/Pause
 		togglePlayback();
-	};
+	}
 
-	// add play button here
+	// add play action to file rows with mime type 'audio/*'
 	OCA.Files.fileActions.register(
 			'audio',
 			'music-play',
@@ -126,6 +130,28 @@ $(document).ready(function () {
 			t('music', 'Play')
 	);
 	OCA.Files.fileActions.setDefault('audio', 'music-play');
+
+	// on single-file-share page, add click handler to the file preview if it is an audio file
+	if ($('#header').hasClass('share-file')) {
+		var mime = $('#mimetype').val();
+		if (mime.startsWith('audio')) {
+			var url = $('#downloadURL').val();
+
+			// The #publicpreview is added dynamically by another script.
+			// Augment it with the click handler once it gets added.
+			$.initialize('img.publicpreview', function() {
+				$(this).css('cursor', 'pointer');
+				$(this).click(function() {
+					showMusicControls();
+					if (!currentFile) {
+						currentFile = 1; // bogus id
+						player.fromURL(url, mime);
+					}
+					togglePlayback();
+				});
+			});
+		}
+	}
 
 	return true;
 });

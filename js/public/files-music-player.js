@@ -42,32 +42,91 @@ $(document).ready(function () {
 		currentFile = null;
 	}
 
-	function createUi() {
-		musicControls = $(document.createElement('div'))
-			.attr('id', 'music-controls');
-
-		playButton = $(document.createElement('img'))
+	function createPlayButton() {
+		return $(document.createElement('img'))
 			.attr('id', 'play')
 			.attr('class', 'control svg')
 			.attr('src', OC.imagePath('music', 'play-big'))
 			.attr('alt', t('music', 'Play'))
 			.css('display', 'inline-block')
 			.click(togglePlayback);
+	}
 
-		pauseButton = $(document.createElement('img'))
+	function createPauseButton() {
+		return $(document.createElement('img'))
 			.attr('id', 'pause')
 			.attr('class', 'control svg')
 			.attr('src', OC.imagePath('music', 'pause-big'))
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(togglePlayback);
+	}
 
-		coverImage = $(document.createElement('div'))
-			.attr('id', 'albumart');
+	function createCoverImage() {
+		return $(document.createElement('div')).attr('id', 'albumart');
+	}
 
-		titleText = $(document.createElement('span'))
-			.attr('id', 'title');
+	function createTitleText() {
+		return $(document.createElement('span')).attr('id', 'title');
+	}
 
+	function createProgressInfo() {
+		var container = $(document.createElement('div')).attr('class', 'progress-info');
+
+		var text = $(document.createElement('span')).attr('class', 'progress-text');
+
+		var seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
+		var playBar = $(document.createElement('div')).attr('class', 'play-bar');
+		var bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
+
+		seekBar.append(playBar);
+		seekBar.append(bufferBar);
+
+		container.append(text);
+		container.append(seekBar);
+
+		var playTime_s = 0;
+		var songLength_s = 0;
+
+		function formatTime(seconds) {
+			var minutes = Math.floor(seconds/60);
+			seconds = Math.floor(seconds - (minutes * 60));
+			return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+		}
+
+		function updateProgress() {
+			var ratio = 0;
+			if (songLength_s == 0) {
+				text.text(t('music', 'Loading...'));
+			} else {
+				text.text(formatTime(playTime_s) + '/' + formatTime(songLength_s));
+				ratio = playTime_s / songLength_s;
+			}
+			playBar.css('width', 100 * ratio + '%');
+		}
+
+		player.on('loading', function () {
+			playTime_s = 0;
+			songLength_s = 0;
+			updateProgress();
+			bufferBar.css('width', '0');
+		});
+		player.on('buffer', function (percent) {
+			bufferBar.css('width', Math.round(percent) + '%');
+		});
+		player.on('progress', function (msecs) {
+			playTime_s = Math.round(msecs/1000);
+			updateProgress();
+		});
+		player.on('duration', function(msecs) {
+			songLength_s = Math.round(msecs/1000);
+			updateProgress();
+		});
+
+		return container;
+	}
+
+	function createVolumeControl() {
 		var volumeControl = $(document.createElement('div'))
 			.attr('class', 'volume-control');
 
@@ -85,22 +144,36 @@ $(document).ready(function () {
 				player.setVolume($(this).val());
 			});
 
-		var closeButton = $(document.createElement('img'))
+		volumeControl.append(volumeIcon);
+		volumeControl.append(volumeSlider);
+
+		return volumeControl;
+	}
+
+	function createCloseButton() {
+		return $(document.createElement('img'))
 			.attr('id', 'close')
 			.attr('class', 'control small svg')
 			.attr('src', OC.imagePath('music', 'close'))
 			.attr('alt', t('music', 'Close'))
 			.click(stop);
+	}
 
-		volumeControl.append(volumeIcon);
-		volumeControl.append(volumeSlider);
+	function createUi() {
+		musicControls = $(document.createElement('div')).attr('id', 'music-controls');
+
+		playButton = createPlayButton();
+		pauseButton = createPauseButton();
+		coverImage = createCoverImage();
+		titleText = createTitleText();
 
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
 		musicControls.append(titleText);
-		musicControls.append(volumeControl);
-		musicControls.append(closeButton);
+		musicControls.append(createProgressInfo())
+		musicControls.append(createVolumeControl());
+		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
 		if (parentContainer.length === 0) {

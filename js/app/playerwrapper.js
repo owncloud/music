@@ -94,7 +94,7 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	// ensure there are no active playback before starting new
 	this.stop();
 
-	var self = this;
+	this.trigger('loading');
 
 	if (soundManager.canPlayMIME(mime)) {
 		this.underlyingPlayer = 'sm2';
@@ -103,7 +103,8 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	}
 	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 
-	switch(this.underlyingPlayer) {
+	var self = this;
+	switch (this.underlyingPlayer) {
 		case 'sm2':
 			this.sm2 = soundManager.setup({
 				html5PollingInterval: 200
@@ -136,6 +137,7 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 				}
 			});
 			break;
+
 		case 'aurora':
 			this.aurora = AV.Player.fromURL(url);
 			this.aurora.asset.source.chunkSize=524288;

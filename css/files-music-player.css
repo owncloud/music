@@ -20,12 +20,8 @@
 }
 
 #music-controls, #music-controls * {
-	/*display: none;*/
-	box-sizing: border-box;
-}
-
-#music-controls.started, #music-controls.started * {
 	display: inline-block;
+	box-sizing: border-box;
 }
 
 #music-controls > img.right {
@@ -45,6 +41,12 @@
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
 	filter: alpha(opacity = 40);
 	opacity: .4;
+}
+
+#music-controls .control.small {
+	height: 44px;
+	width: 44px;
+	margin: 13px 2px 9px;
 }
 
 #music-controls .control#close {
@@ -144,7 +146,7 @@
 
 #music-controls .volume-control {
 	position: absolute;
-	right: 172px;
+	right: 120px;
 }
 
 .ie.lte9 #music-controls .volume-control {

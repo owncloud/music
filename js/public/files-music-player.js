@@ -68,6 +68,23 @@ $(document).ready(function () {
 		titleText = $(document.createElement('span'))
 			.attr('id', 'title');
 
+		var volumeControl = $(document.createElement('div'))
+			.attr('class', 'volume-control');
+
+		var volumeIcon = $(document.createElement('img'))
+			.attr('id', 'volume-icon')
+			.attr('class', 'control small svg')
+			.attr('src', OC.imagePath('music', 'sound'));
+
+		var volumeSlider = $(document.createElement('input'))
+			.attr('id', 'volume-slider')
+			.attr('min', '0')
+			.attr('max', '100')
+			.attr('type', 'range')
+			.on('input', function() {
+				player.setVolume($(this).val());
+			});
+
 		var closeButton = $(document.createElement('img'))
 			.attr('id', 'close')
 			.attr('class', 'control small svg')
@@ -75,10 +92,14 @@ $(document).ready(function () {
 			.attr('alt', t('music', 'Close'))
 			.click(stop);
 
+		volumeControl.append(volumeIcon);
+		volumeControl.append(volumeSlider);
+
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
 		musicControls.append(titleText);
+		musicControls.append(volumeControl);
 		musicControls.append(closeButton);
 
 		var parentContainer = $('div#app-content');

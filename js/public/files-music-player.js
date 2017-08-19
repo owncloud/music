@@ -20,7 +20,8 @@ $(document).ready(function () {
 	var musicControls = null;
 	var playButton = null;
 	var pauseButton = null;
-	var closeButton = null;
+	var coverImage = null;
+	var titleText = null;
 
 	function togglePlayback() {
 		player.togglePlayback();
@@ -61,7 +62,13 @@ $(document).ready(function () {
 			.css('display', 'none')
 			.click(togglePlayback);
 
-		closeButton = $(document.createElement('img'))
+		coverImage = $(document.createElement('div'))
+			.attr('id', 'albumart');
+
+		titleText = $(document.createElement('span'))
+			.attr('id', 'title');
+
+		var closeButton = $(document.createElement('img'))
 			.attr('id', 'close')
 			.attr('class', 'control small svg')
 			.attr('src', OC.imagePath('music', 'close'))
@@ -70,6 +77,8 @@ $(document).ready(function () {
 
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
+		musicControls.append(coverImage);
+		musicControls.append(titleText);
 		musicControls.append(closeButton);
 
 		var parentContainer = $('div#app-content');
@@ -102,6 +111,15 @@ $(document).ready(function () {
 		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
+	function initPlayer(url, mime, title, cover) {
+		if (!shareView) {
+			url = appendRequestToken(url);
+		}
+		player.fromURL(url, mime);
+		coverImage.css('background-image', cover);
+		titleText.text(title);
+	}
+
 	// Handle 'play' action on file row
 	function onFilePlay(filename, context) {
 		showMusicControls();
@@ -110,15 +128,15 @@ $(document).ready(function () {
 		var filerow = context.$file;
 		if (currentFile != filerow.attr('data-id')) {
 			currentFile = filerow.attr('data-id');
-
 			player.stop();
 			playing = false;
-			var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
-			if (!shareView) {
-				fileURL = appendRequestToken(fileURL);
-			}
-			var fileMIME = filerow.attr('data-mime');
-			player.fromURL(fileURL, fileMIME);
+
+			initPlayer(
+					context.fileList.getDownloadUrl(filename, context.dir),
+					filerow.attr('data-mime'),
+					filename,
+					filerow.find('.thumbnail').css('background-image')
+			);
 		}
 
 		// Play/Pause
@@ -140,7 +158,6 @@ $(document).ready(function () {
 	if ($('#header').hasClass('share-file')) {
 		var mime = $('#mimetype').val();
 		if (mime.startsWith('audio')) {
-			var url = $('#downloadURL').val();
 
 			// The #publicpreview is added dynamically by another script.
 			// Augment it with the click handler once it gets added.
@@ -150,7 +167,13 @@ $(document).ready(function () {
 					showMusicControls();
 					if (!currentFile) {
 						currentFile = 1; // bogus id
-						player.fromURL(url, mime);
+
+						initPlayer(
+								$('#downloadURL').val(),
+								mime,
+								$('#filename').val(),
+								'url(' + $(this).attr('src') + ')'
+						);
 					}
 					togglePlayback();
 				});

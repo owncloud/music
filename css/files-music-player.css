@@ -16,6 +16,7 @@
 	bottom: 0;
 	background-color: rgba(255, 255, 255, 0.95);
 	z-index: 50;
+	text-align: left;
 }
 
 #music-controls, #music-controls * {
@@ -39,7 +40,6 @@
 	padding: 10px;
 	margin: 9px 2px 5px;
 	cursor: pointer;
-	position: absolute;
 
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
@@ -47,15 +47,12 @@
 	opacity: .4;
 }
 
-#music-controls .control#play, .control#pause {
-	left: 20px;
-}
-
 #music-controls .control#close {
 	height: 46px;
 	width: 46px;
 	margin: 0;
 	padding: 15px;
+	position: absolute;
 	right: 0;
 	top: 0;
 }
@@ -67,15 +64,15 @@
 	opacity: 1;
 }
 
-#music-controls .albumart {
-	position: absolute;
-	left: 213px;
-	top: 0;
+#music-controls #albumart {
 	height: 50px;
 	width: 50px;
 	margin: 8px 12px 8px 46px;
 	line-height: 50px;
 	font-size: 28px;
+	background-size: cover;
+	display: inline-block;
+	border: solid #eee 1px;
 }
 
 #music-controls .song-info {
@@ -91,9 +88,12 @@
 	overflow: hidden;
 }
 
-#music-controls .title {
+#music-controls #title {
 	font-weight: bold;
 	font-size: 21px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-bottom: 60px;
 }
 
 #music-controls .progress-info {

@@ -97,6 +97,11 @@ $(document).ready(function () {
 		musicControls.css('display', 'inline-block');
 	}
 
+	function appendRequestToken(url) {
+		var delimiter = url.includes('?') ? '&' : '?';
+		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+	}
+
 	// Handle 'play' action on file row
 	function onFilePlay(filename, context) {
 		showMusicControls();
@@ -110,7 +115,7 @@ $(document).ready(function () {
 			playing = false;
 			var fileURL = context.fileList.getDownloadUrl(filename, context.dir);
 			if (!shareView) {
-				fileURL = fileURL + '?requesttoken=' + encodeURIComponent(OC.requestToken);
+				fileURL = appendRequestToken(fileURL);
 			}
 			var fileMIME = filerow.attr('data-mime');
 			player.fromURL(fileURL, fileMIME);

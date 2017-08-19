@@ -191,7 +191,7 @@ $(document).ready(function () {
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
 		musicControls.append(titleText);
-		musicControls.append(createProgressInfo())
+		musicControls.append(createProgressInfo());
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
@@ -230,7 +230,12 @@ $(document).ready(function () {
 			url = appendRequestToken(url);
 		}
 		player.fromURL(url, mime);
+
+		// If the cover URL given contains image dimensions as URL arguments,
+		// replace those with more suitable values
+		cover = cover.replace(/(url\(.+\?.*)(x=\d+&y=\d+)(.*\))/, '$1x=100&y=100$3');
 		coverImage.css('background-image', cover);
+
 		titleText.text(title);
 	}
 

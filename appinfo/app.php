@@ -15,17 +15,18 @@ namespace OCA\Music\App;
 $app = new Music();
 
 $c = $app->getContainer();
+$appName = $c->query('AppName');
 
 /**
  * add navigation
  */
-\OC::$server->getNavigationManager()->add(function () use($c) {
+\OC::$server->getNavigationManager()->add(function () use($c, $appName) {
 	return [
-		'id' => $c->query('AppName'),
+		'id' => $appName,
 		'order' => 10,
 		'name' => $c->query('L10N')->t('Music'),
 		'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
-		'icon' => $c->query('URLGenerator')->imagePath($c->query('AppName'), 'music.svg')
+		'icon' => $c->query('URLGenerator')->imagePath($appName, 'music.svg')
 	];
 });
 
@@ -48,23 +49,25 @@ $c->query('ShareHooks')->register();
 /**
  * register settings
  */
-\OCP\App::registerPersonal($c->query('AppName'), 'settings/user');
+\OCP\App::registerPersonal($appName, 'settings/user');
 
 /**
  * load styles and scripts
  */
+
+// Load embedded player for Files and Sharing apps
 $request = \OC::$server->getRequest();
 
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
 	if (preg_match('%/apps/files(/.*)?%', $url)	|| preg_match('%/s/.+%', $url)) {
-		// simple player integrated to the Files app
-		\OCP\Util::addScript($c->query('AppName'), 'vendor/soundmanager/script/soundmanager2-jsmin');
-		\OCP\Util::addScript($c->query('AppName'), 'vendor/aurora/aurora-bundle.min');
-		\OCP\Util::addScript($c->query('AppName'), 'vendor/javascript-detect-element-resize/jquery.resize');
-		\OCP\Util::addScript($c->query('AppName'), 'vendor/jquery-initialize/jquery.initialize.min');
-		\OCP\Util::addScript($c->query('AppName'), 'app/playerwrapper');
-		\OCP\Util::addScript($c->query('AppName'), 'public/files-music-player');
-		\OCP\Util::addStyle('music', 'files-music-player');
+		\OCP\Util::addScript($appName, 'vendor/soundmanager/script/soundmanager2-jsmin');
+		\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
+		\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
+		\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');
+		\OCP\Util::addScript($appName, 'app/playerwrapper');
+		\OCP\Util::addScript($appName, 'public/files-music-player');
+
+		\OCP\Util::addStyle($appName, 'files-music-player');
 	}
 }

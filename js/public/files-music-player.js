@@ -85,6 +85,7 @@ $(document).ready(function () {
 		container.append(text);
 		container.append(seekBar);
 
+		// Progress updating
 		var playTime_s = 0;
 		var songLength_s = 0;
 
@@ -105,11 +106,23 @@ $(document).ready(function () {
 			playBar.css('width', 100 * ratio + '%');
 		}
 
+		function setCursorType(type) {
+			seekBar.css('cursor', type);
+			playBar.css('cursor', type);
+			bufferBar.css('cursor', type);
+		}
+
 		player.on('loading', function () {
 			playTime_s = 0;
 			songLength_s = 0;
 			updateProgress();
 			bufferBar.css('width', '0');
+			setCursorType('default');
+		});
+		player.on('ready', function () {
+			if (player.seekingSupported) {
+				setCursorType('pointer');
+			}
 		});
 		player.on('buffer', function (percent) {
 			bufferBar.css('width', Math.round(percent) + '%');
@@ -121,6 +134,13 @@ $(document).ready(function () {
 		player.on('duration', function(msecs) {
 			songLength_s = Math.round(msecs/1000);
 			updateProgress();
+		});
+
+		// Seeking
+		seekBar.click(function (event) {
+			var posX = $(this).offset().left;
+			var percentage = (event.pageX - posX) / seekBar.width();
+			player.seek(percentage);
 		});
 
 		return container;

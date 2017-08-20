@@ -187,11 +187,14 @@ $(document).ready(function () {
 		coverImage = createCoverImage();
 		titleText = createTitleText();
 
+		var titleProgressContainer = $(document.createElement('div')).attr('id', 'title-and-progress');
+		titleProgressContainer.append(titleText);
+		titleProgressContainer.append(createProgressInfo());
+
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
-		musicControls.append(titleText);
-		musicControls.append(createProgressInfo());
+		musicControls.append(titleProgressContainer);
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 

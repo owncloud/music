@@ -90,20 +90,29 @@
 	overflow: hidden;
 }
 
+#music-controls #title-and-progress {
+	display: inline-block;
+	position: absolute;
+	left: 180px;
+	right: 180px;
+	width: auto;
+	height: 100%;
+}
+
 #music-controls #title {
 	font-weight: bold;
 	font-size: 21px;
+	line-height: 30px;
 	display: inline-block;
 	vertical-align: middle;
-	margin-bottom: 60px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow-x: hidden;
+	width: 65%;
 }
 
 #music-controls .progress-info {
-	position: absolute;
-	top: 0px;
-	left: 710px;
-	right: 170px;
-	max-width: 350px;
+	width: 35%;
 	text-align: center;
 	margin: 7px auto 14px auto;
 }
@@ -114,7 +123,9 @@
 
 #music-controls .seek-bar {
 	width: 100%;
+	max-width: 350px;
 	height: 15px;
+	margin: 0 auto 0 auto;
 	position: relative;
 	background-color: #eee;
 }
@@ -200,3 +211,37 @@
 :hover::-moz-range-thumb {
 	cursor: pointer;
 }
+
+/* "Tablet" style */
+@media only screen and (max-width: 1024px) {
+	#music-controls {
+		padding: 0;
+	}
+	#music-controls #albumart {
+		margin-left: 10px;
+	}
+	#music-controls #title-and-progress {
+		left: 130px;
+		right: 140px;
+	}
+	#music-controls #title {
+		font-size: 14px;
+	}
+}
+
+/* "Portrait phone" style */
+@media only screen and (max-width: 570px) {
+	#music-controls #title-and-progress {
+		right: 50px;
+	}
+	#music-controls .volume-control {
+		display: none;
+	}
+}
+
+/* Hide the music controls when menu on left is in collapsible mode (on portrait phone)
+ * and the menu is open */
+body.snapjs-left #music-controls {
+	display: none;
+}
+	

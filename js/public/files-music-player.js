@@ -67,14 +67,6 @@ $(document).ready(function () {
 		return $(document.createElement('div')).attr('id', 'albumart');
 	}
 
-	function createTitleText() {
-		return $(document.createElement('span')).attr('id', 'title');
-	}
-
-	function createArtistText() {
-		return $(document.createElement('span')).attr('id', 'artist');
-	}
-
 	function createProgressInfo() {
 		var container = $(document.createElement('div')).attr('class', 'progress-info');
 
@@ -151,16 +143,18 @@ $(document).ready(function () {
 		return container;
 	}
 
-	function createInfoProgressContainer(titleElem, artistElem, progressElem) {
-		var infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
+	function createInfoProgressContainer() {
+		titleText = $(document.createElement('span')).attr('id', 'title');
+		artistText = $(document.createElement('span')).attr('id', 'artist');
 
 		var songInfo = $(document.createElement('div')).attr('id', 'song-info');
-		songInfo.append(titleElem);
+		songInfo.append(titleText);
 		songInfo.append($(document.createElement('br')));
-		songInfo.append(artistElem);
+		songInfo.append(artistText);
 
+		var infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
 		infoProgressContainer.append(songInfo);
-		infoProgressContainer.append(progressElem);
+		infoProgressContainer.append(createProgressInfo());
 		return infoProgressContainer;
 	}
 
@@ -203,13 +197,11 @@ $(document).ready(function () {
 		playButton = createPlayButton();
 		pauseButton = createPauseButton();
 		coverImage = createCoverImage();
-		titleText = createTitleText();
-		artistText = createArtistText();
 
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
-		musicControls.append(createInfoProgressContainer(titleText, artistText, createProgressInfo()));
+		musicControls.append(createInfoProgressContainer());
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
@@ -243,6 +235,10 @@ $(document).ready(function () {
 		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
+	function musicAppLinkElements() {
+		return $('#song-info *, #albumart');
+	}
+
 	function initPlayer(url, mime, title, cover) {
 		if (!shareView) {
 			url = appendRequestToken(url);
@@ -256,6 +252,8 @@ $(document).ready(function () {
 
 		titleText.text(title);
 		artistText.text('');
+
+		musicAppLinkElements().css('cursor', 'default').off("click");
 	}
 
 	// Handle 'play' action on file row
@@ -288,10 +286,23 @@ $(document).ready(function () {
 	}
 
 	function loadFileInfo(fileId, fileName) {
-		var url  = OC.generateUrl('apps/music/api/file/{file}/info', {'file':fileId}, {escape:false});
+		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
+
+			if (data.in_library) {
+				function navigateToMusicApp() {
+					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
+				}
+				musicAppLinkElements()
+					.css('cursor', 'pointer')
+					.click(navigateToMusicApp)
+					.attr('title', t('music', 'Go to album'));
+			}
+			else {
+				musicAppLinkElements().attr('title', t('music', '(file is not within your music collection folder)'));
+			}
 		}).fail(function() {
 			titleText.text(titleFromFilename(fileName));
 		});

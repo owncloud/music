@@ -77,20 +77,7 @@
 	border: solid #eee 1px;
 }
 
-#music-controls .song-info {
-	height: 58px;
-	margin: 4px;
-	padding: 8px;
-	max-width: 400px;
-	position: absolute;
-	top: 0;
-	left: 313px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-}
-
-#music-controls #title-and-progress {
+#music-controls #info-and-progress {
 	display: inline-block;
 	position: absolute;
 	left: 180px;
@@ -99,22 +86,26 @@
 	height: 100%;
 }
 
+#music-controls #song-info {
+	height: 100%;
+	width: 60%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-top: 10px;
+}
+
 #music-controls #title {
 	font-weight: bold;
 	font-size: 21px;
-	line-height: 30px;
-	display: inline-block;
-	vertical-align: middle;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow-x: hidden;
-	width: 65%;
+	line-height: 25px;
 }
 
 #music-controls .progress-info {
-	width: 35%;
+	width: 40%;
 	text-align: center;
-	margin: 7px auto 14px auto;
+	margin: 0 auto 25px auto;
+	overflow: hidden;
 }
 
 #music-controls .progress-info span {
@@ -220,7 +211,7 @@
 	#music-controls #albumart {
 		margin-left: 10px;
 	}
-	#music-controls #title-and-progress {
+	#music-controls #info-and-progress {
 		left: 130px;
 		right: 140px;
 	}
@@ -231,7 +222,7 @@
 
 /* "Portrait phone" style */
 @media only screen and (max-width: 570px) {
-	#music-controls #title-and-progress {
+	#music-controls #info-and-progress {
 		right: 50px;
 	}
 	#music-controls .volume-control {
@@ -242,6 +233,6 @@
 /* Hide the music controls when menu on left is in collapsible mode (on portrait phone)
  * and the menu is open */
 body.snapjs-left #music-controls {
-	display: none;
+	visibility: hidden;
 }
 	

@@ -98,10 +98,8 @@ class Scanner extends PublicEmitter {
 		}
 
 		// skip files that aren't inside the user specified path
-		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
-		$musicPath = $musicFolder->getPath();
-		if(!self::startsWith($filePath, $musicPath)) {
-			$this->logger->log("skipped - file is outside of specified path $musicPath", 'debug');
+		if(!$this->pathIsUnderMusicFolder($filePath, $userId, $userHome)) {
+			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 			return;
 		}
 
@@ -117,6 +115,12 @@ class Scanner extends PublicEmitter {
 		else if(self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
 			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
+	}
+
+	private function pathIsUnderMusicFolder($filePath, $userId, $userHome) {
+		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
+		$musicPath = $musicFolder->getPath();
+		return self::startsWith($filePath, $musicPath);
 	}
 
 	private function updateImage($file, $userId) {
@@ -430,6 +434,26 @@ class Scanner extends PublicEmitter {
 		set_time_limit($executionTime);
 
 		return $count;
+	}
+
+	/**
+	 * Parse and get basic info about a file. The file does not have to be indexed in the database.
+	 * @param string $fileId
+	 * @param string $userId
+	 * @param Folder $userFolder
+	 */
+	public function getFileInfo($fileId, $userId, $userFolder) {
+		$fileNodes = $userFolder->getById($fileId);
+		if (count($fileNodes) > 0) {
+			$file = $fileNodes[0];
+			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath());
+			return [
+					'title' => $metadata['title'],
+					'artist' => $metadata['artist'],
+					'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId, $userFolder)
+			];
+		}
+		return null;
 	}
 
 	/**

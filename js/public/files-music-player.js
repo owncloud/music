@@ -22,6 +22,7 @@ $(document).ready(function () {
 	var pauseButton = null;
 	var coverImage = null;
 	var titleText = null;
+	var artistText = null;
 
 	function togglePlayback() {
 		player.togglePlayback();
@@ -68,6 +69,10 @@ $(document).ready(function () {
 
 	function createTitleText() {
 		return $(document.createElement('span')).attr('id', 'title');
+	}
+
+	function createArtistText() {
+		return $(document.createElement('span')).attr('id', 'artist');
 	}
 
 	function createProgressInfo() {
@@ -146,6 +151,19 @@ $(document).ready(function () {
 		return container;
 	}
 
+	function createInfoProgressContainer(titleElem, artistElem, progressElem) {
+		var infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
+
+		var songInfo = $(document.createElement('div')).attr('id', 'song-info');
+		songInfo.append(titleElem);
+		songInfo.append($(document.createElement('br')));
+		songInfo.append(artistElem);
+
+		infoProgressContainer.append(songInfo);
+		infoProgressContainer.append(progressElem);
+		return infoProgressContainer;
+	}
+
 	function createVolumeControl() {
 		var volumeControl = $(document.createElement('div'))
 			.attr('class', 'volume-control');
@@ -186,15 +204,12 @@ $(document).ready(function () {
 		pauseButton = createPauseButton();
 		coverImage = createCoverImage();
 		titleText = createTitleText();
-
-		var titleProgressContainer = $(document.createElement('div')).attr('id', 'title-and-progress');
-		titleProgressContainer.append(titleText);
-		titleProgressContainer.append(createProgressInfo());
+		artistText = createArtistText();
 
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
 		musicControls.append(coverImage);
-		musicControls.append(titleProgressContainer);
+		musicControls.append(createInfoProgressContainer(titleText, artistText, createProgressInfo()));
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
@@ -240,10 +255,11 @@ $(document).ready(function () {
 		coverImage.css('background-image', cover);
 
 		titleText.text(title);
+		artistText.text('');
 	}
 
 	// Handle 'play' action on file row
-	function onFilePlay(filename, context) {
+	function onFilePlay(fileName, context) {
 		showMusicControls();
 
 		// Check if playing file changes
@@ -254,15 +270,37 @@ $(document).ready(function () {
 			playing = false;
 
 			initPlayer(
-					context.fileList.getDownloadUrl(filename, context.dir),
+					context.fileList.getDownloadUrl(fileName, context.dir),
 					filerow.attr('data-mime'),
-					filename,
+					t('music', 'Loading...'), // actual title is filled later
 					filerow.find('.thumbnail').css('background-image')
 			);
+
+			if (!shareView) {
+				loadFileInfo(currentFile, fileName);
+			} else {
+				titleText.text(titleFromFilename(fileName));
+			}
 		}
 
 		// Play/Pause
 		togglePlayback();
+	}
+
+	function loadFileInfo(fileId, fileName) {
+		var url  = OC.generateUrl('apps/music/api/file/{file}/info', {'file':fileId}, {escape:false});
+		$.get(url, function(data) {
+			titleText.text(data.title);
+			artistText.text(data.artist);
+		}).fail(function() {
+			titleText.text(titleFromFilename(fileName));
+		});
+	}
+
+	function titleFromFilename(filename) {
+		// parsing logic is ported form parseFileName in utility/scanner.php
+		var match = filename.match(/^((\d+)\s*[\s.-]\s*)?(.+)\.(\w{1,4})$/);
+		return match ? match[3] : filename;
 	}
 
 	// add play action to file rows with mime type 'audio/*'
@@ -293,7 +331,7 @@ $(document).ready(function () {
 						initPlayer(
 								$('#downloadURL').val(),
 								mime,
-								$('#filename').val(),
+								titleFromFilename($('#filename').val()),
 								'url(' + $(this).attr('src') + ')'
 						);
 					}

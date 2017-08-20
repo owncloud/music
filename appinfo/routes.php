@@ -28,6 +28,7 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'),
 	array('name' => 'api#fileWebDavUrl', 'url' => '/api/file/{fileId}/webdav', 'verb' => 'GET'),
 	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
+	array('name' => 'api#fileInfo', 'url' => '/api/file/{fileId}/info', 'verb' => 'GET'),
 	array('name' => 'api#getScanState', 'url' => '/api/scanstate', 'verb' => 'GET'),
 	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'POST'),
 

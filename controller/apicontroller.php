@@ -438,6 +438,24 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function fileInfo($fileId) {
+		// we no longer need the session to be kept open
+		session_write_close();
+
+		$info = $this->scanner->getFileInfo($fileId, $this->userId, $this->userFolder);
+		if ($info) {
+			return new JSONResponse($info);
+		} else {
+			$r = new Response();
+			$r->setStatus(Http::STATUS_NOT_FOUND);
+			return $r;
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function cover($albumIdOrSlug) {
 		// we no longer need the session to be kept open
 		session_write_close();

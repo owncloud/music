@@ -125,7 +125,7 @@ $(document).ready(function () {
 			setCursorType('default');
 		});
 		player.on('ready', function () {
-			if (player.seekingSupported) {
+			if (player.seekingSupported()) {
 				setCursorType('pointer');
 			}
 		});

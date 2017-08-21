@@ -11,7 +11,8 @@
 $(document).ready(function () {
 
 	var player = new PlayerWrapper();
-	player.setVolume(50);
+	var volume = Cookies.get('oc_music_volume') || 50;
+	player.setVolume(volume);
 	var currentFile = null;
 	var playing = false;
 	var shareView = false;
@@ -172,8 +173,11 @@ $(document).ready(function () {
 			.attr('min', '0')
 			.attr('max', '100')
 			.attr('type', 'range')
+			.attr('value', volume)
 			.on('input', function() {
-				player.setVolume($(this).val());
+				volume = $(this).val();
+				player.setVolume(volume);
+				Cookies.set('oc_music_volume', volume, { expires: 3650 });
 			});
 
 		volumeControl.append(volumeIcon);

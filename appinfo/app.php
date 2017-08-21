@@ -65,6 +65,7 @@ if (isset($request->server['REQUEST_URI'])) {
 		\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
 		\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
 		\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');
+		\OCP\Util::addScript($appName, 'vendor/js-cookie/src/js.cookie');
 		\OCP\Util::addScript($appName, 'app/playerwrapper');
 		\OCP\Util::addScript($appName, 'public/files-music-player');
 

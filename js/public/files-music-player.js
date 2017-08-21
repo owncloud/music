@@ -292,9 +292,9 @@ $(document).ready(function () {
 			artistText.text(data.artist);
 
 			if (data.in_library) {
-				function navigateToMusicApp() {
+				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
-				}
+				};
 				musicAppLinkElements()
 					.css('cursor', 'pointer')
 					.click(navigateToMusicApp)

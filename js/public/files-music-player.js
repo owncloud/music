@@ -247,7 +247,7 @@ $(document).ready(function () {
 
 		// If the cover URL given contains image dimensions as URL arguments,
 		// replace those with more suitable values
-		cover = cover.replace(/(url\(.+\?.*)(x=\d+&y=\d+)(.*\))/, '$1x=100&y=100$3');
+		cover = cover.replace(/(url\(.+\?.*)(x=\d+&y=\d+)(.*\))/, '$1x=75&y=75$3');
 		coverImage.css('background-image', cover);
 
 		titleText.text(title);
@@ -343,7 +343,7 @@ $(document).ready(function () {
 								$('#downloadURL').val(),
 								mime,
 								titleFromFilename($('#filename').val()),
-								'url(' + $(this).attr('src') + ')'
+								'url("' + $(this).attr('src') + '")'
 						);
 					}
 					togglePlayback();

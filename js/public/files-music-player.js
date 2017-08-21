@@ -174,7 +174,7 @@ $(document).ready(function () {
 			.attr('max', '100')
 			.attr('type', 'range')
 			.attr('value', volume)
-			.on('input', function() {
+			.on('input change', function() {
 				volume = $(this).val();
 				player.setVolume(volume);
 				Cookies.set('oc_music_volume', volume, { expires: 3650 });
@@ -235,7 +235,7 @@ $(document).ready(function () {
 	}
 
 	function appendRequestToken(url) {
-		var delimiter = url.includes('?') ? '&' : '?';
+		var delimiter = _.includes(url, '?') ? '&' : '?';
 		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
@@ -329,10 +329,12 @@ $(document).ready(function () {
 	);
 	OCA.Files.fileActions.setDefault('audio', 'music-play');
 
-	// on single-file-share page, add click handler to the file preview if it is an audio file
-	if ($('#header').hasClass('share-file')) {
+	// On single-file-share page, add click handler to the file preview if this is an audio file.
+	// The feature is disabled on old IE versions where there's no MutationObserver and
+	// $.initialize would not work.
+	if ($('#header').hasClass('share-file') && typeof MutationObserver !== "undefined") {
 		var mime = $('#mimetype').val();
-		if (mime.startsWith('audio')) {
+		if (mime.indexOf('audio') === 0) {
 
 			// The #publicpreview is added dynamically by another script.
 			// Augment it with the click handler once it gets added.

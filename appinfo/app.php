@@ -60,7 +60,9 @@ $request = \OC::$server->getRequest();
 
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
-	if (preg_match('%/apps/files(/.*)?%', $url)	|| preg_match('%/s/.+%', $url)) {
+	$isFilesUrl = preg_match('%/apps/files(/.*)?%', $url);
+	$isShareUrl = preg_match('%/s/.+%', $url) && !preg_match('%/apps/.*%', $url);
+	if ($isFilesUrl || $isShareUrl) {
 		\OCP\Util::addScript($appName, 'vendor/soundmanager/script/soundmanager2-jsmin');
 		\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
 		\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');

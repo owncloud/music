@@ -38,12 +38,12 @@
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
-* [Rello] (https://github.com/rello)
+* [Rello](https://github.com/rello)
 * [Roland Hager](https://github.com/roha4000)
 * [Selpelt](https://github.com/selpelt)
 * [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
 * [Thomas Pulzer](https://github.com/Faldon)
-* [VicDeo] (https://github.com/VicDeo)
+* [VicDeo](https://github.com/VicDeo)
 * [Vincent Petry](https://github.com/PVince81)
 * [Volkan Gezer](https://github.com/wakeup)
 * [Xefir](https://github.com/Xefir)

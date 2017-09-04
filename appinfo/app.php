@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\App;
@@ -15,17 +17,18 @@ namespace OCA\Music\App;
 $app = new Music();
 
 $c = $app->getContainer();
+$appName = $c->query('AppName');
 
 /**
  * add navigation
  */
-\OC::$server->getNavigationManager()->add(function () use($c) {
+\OC::$server->getNavigationManager()->add(function () use($c, $appName) {
 	return [
-		'id' => $c->query('AppName'),
+		'id' => $appName,
 		'order' => 10,
 		'name' => $c->query('L10N')->t('Music'),
 		'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
-		'icon' => $c->query('URLGenerator')->imagePath($c->query('AppName'), 'music.svg')
+		'icon' => $c->query('URLGenerator')->imagePath($appName, 'music.svg')
 	];
 });
 
@@ -48,12 +51,39 @@ $c->query('ShareHooks')->register();
 /**
  * register settings
  */
-\OCP\App::registerPersonal($c->query('AppName'), 'settings/user');
+\OCP\App::registerPersonal($appName, 'settings/user');
 
 /**
- * load styles and scripts
+ * Load embedded music player for Files and Sharing apps
+ * 
+ * The nice way to do this would be
+ * \OC::$server->getEventDispatcher()->addListener('OCA\Files::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
+ * \OC::$server->getEventDispatcher()->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
+ * ... but this doesn't work for shared files on ownCloud 9.0, at least. Hence, we load the scripts
+ * directly if the requested URL seems to be for Files or Sharing.
+ * 
+ * Furthermore, it would be sensible to load majority of the needed scripts within the main js file (files-music-player)
+ * with OC.addScript() only when the player is actually used. However, this doesn't seem to work on Nextcloud 12.0.0,
+ * probably because of https://github.com/nextcloud/server/issues/5314.
  */
-// fileactions
-\OCP\Util::addScript($c->query('AppName'), 'public/fileactions');
-// file player for public sharing page
-\OCP\Util::addScript($c->query('AppName'), 'public/musicFilePlayer');
+$loadEmbeddedMusicPlayer = function() use ($appName) {
+	\OCP\Util::addScript($appName, 'vendor/soundmanager/script/soundmanager2-jsmin');
+	\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
+	\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
+	\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');
+	\OCP\Util::addScript($appName, 'vendor/js-cookie/src/js.cookie');
+	\OCP\Util::addScript($appName, 'app/playerwrapper');
+	\OCP\Util::addScript($appName, 'public/files-music-player');
+
+	\OCP\Util::addStyle($appName, 'files-music-player');
+};
+
+$request = \OC::$server->getRequest();
+if (isset($request->server['REQUEST_URI'])) {
+	$url = $request->server['REQUEST_URI'];
+	$isFilesUrl = preg_match('%/apps/files(/.*)?%', $url);
+	$isShareUrl = preg_match('%/s/.+%', $url) && !preg_match('%/apps/.*%', $url);
+	if ($isFilesUrl || $isShareUrl) {
+		$loadEmbeddedMusicPlayer();
+	}
+}

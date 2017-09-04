@@ -1,14 +1,15 @@
 {
-  "name": "ownCloud music",
-  "version": "0.2",
+  "name": "owncloud-music",
+  "version": "0.4.4",
   "dependencies": {
     "angular" : "",
-    "angular-route" : "",
     "angular-gettext" : "",
+    "angular-route" : "",
     "backbone": "",
+    "javascript-detect-element-resize" : "",
+    "js-cookie" : "",
     "restangular" : "",
     "soundmanager": "",
-    "underscore" : "",
-    "js-cookie" :""
+    "underscore" : ""
   }
 }

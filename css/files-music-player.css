@@ -222,7 +222,12 @@
 
 /* "Portrait phone" style */
 @media only screen and (max-width: 570px) {
+	#music-controls #albumart {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
 	#music-controls #info-and-progress {
+		left: 115px;
 		right: 50px;
 	}
 	#music-controls .volume-control {

@@ -1,3 +1,6 @@
+v0.5.0 2017-09-04
+ * added a small stand-alone music player which plays audio files in the Files and Share views
+
 v0.4.4 2017-08-17
  * fixed scanning breaking if file metadata contains invalid UTF-8 characters (#576)
  * updated aurora.js and its plugins to latest versions; this fixes some (but not all) playback problems on Chromium

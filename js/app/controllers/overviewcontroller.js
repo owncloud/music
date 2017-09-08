@@ -48,11 +48,19 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		$scope.playTrack = function(track) {
-			// update URL hash
-			window.location.hash = '#/track/' + track.id;
+			// play/pause if currently playing track clicked
+			var currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && track.id === currentTrack.id) {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other track, start playing the album from this track
+			else {
+				// update URL hash
+				window.location.hash = '#/track/' + track.id;
 
-			var album = $scope.$parent.findAlbumOfTrack(track.id);
-			playTracks(album.tracks, album.tracks.indexOf(track));
+				var album = $scope.$parent.findAlbumOfTrack(track.id);
+				playTracks(album.tracks, album.tracks.indexOf(track));
+			}
 		};
 
 		$scope.playAlbum = function(album) {

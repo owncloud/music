@@ -310,11 +310,19 @@ angular.module('Music').controller('OverviewController',
 		}
 
 		$scope.playTrack = function(track) {
-			// update URL hash
-			window.location.hash = '#/track/' + track.id;
+			// play/pause if currently playing track clicked
+			var currentTrack = $scope.$parent.currentTrack;
+			if (currentTrack && track.id === currentTrack.id) {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other track, start playing the album from this track
+			else {
+				// update URL hash
+				window.location.hash = '#/track/' + track.id;
 
-			var album = $scope.$parent.findAlbumOfTrack(track.id);
-			playTracks(album.tracks, album.tracks.indexOf(track));
+				var album = $scope.$parent.findAlbumOfTrack(track.id);
+				playTracks(album.tracks, album.tracks.indexOf(track));
+			}
 		};
 
 		$scope.playAlbum = function(album) {
@@ -637,9 +645,13 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.seek(percentage);
 	};
 
-	playlistService.subscribe('play', function(){
+	playlistService.subscribe('play', function() {
 		// fetch track and start playing
 		$scope.next();
+	});
+
+	playlistService.subscribe('togglePlayback', function() {
+		$scope.toggle();
 	});
 
 	$scope.scrollToCurrentTrack = function() {
@@ -700,8 +712,15 @@ angular.module('Music').controller('PlaylistViewController',
 
 		// Play the list, starting from a specific track
 		$scope.playTrack = function(trackIndex) {
-			playlistService.setPlaylist($scope.tracks, trackIndex);
-			playlistService.publish('play');
+			// play/pause if currently playing list item clicked
+			if ($scope.getCurrentTrackIndex() === trackIndex) {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other list item, start playing the list from this item
+			else {
+				playlistService.setPlaylist($scope.tracks, trackIndex);
+				playlistService.publish('play');
+			}
 		};
 
 		$scope.getDraggable = function(index) {
@@ -1208,7 +1227,7 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	// ensure there are no active playback before starting new
 	this.stop();
 
-	var self = this;
+	this.trigger('loading');
 
 	if (soundManager.canPlayMIME(mime)) {
 		this.underlyingPlayer = 'sm2';
@@ -1217,7 +1236,8 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	}
 	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 
-	switch(this.underlyingPlayer) {
+	var self = this;
+	switch (this.underlyingPlayer) {
 		case 'sm2':
 			this.sm2 = soundManager.setup({
 				html5PollingInterval: 200
@@ -1250,6 +1270,7 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 				}
 			});
 			break;
+
 		case 'aurora':
 			this.aurora = AV.Player.fromURL(url);
 			this.aurora.asset.source.chunkSize=524288;

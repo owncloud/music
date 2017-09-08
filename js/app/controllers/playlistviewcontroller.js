@@ -72,8 +72,15 @@ angular.module('Music').controller('PlaylistViewController',
 
 		// Play the list, starting from a specific track
 		$scope.playTrack = function(trackIndex) {
-			playlistService.setPlaylist($scope.tracks, trackIndex);
-			playlistService.publish('play');
+			// play/pause if currently playing list item clicked
+			if ($scope.getCurrentTrackIndex() === trackIndex) {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other list item, start playing the list from this item
+			else {
+				playlistService.setPlaylist($scope.tracks, trackIndex);
+				playlistService.publish('play');
+			}
 		};
 
 		$scope.getDraggable = function(index) {

@@ -211,9 +211,13 @@ angular.module('Music').controller('PlayerController',
 		$scope.player.seek(percentage);
 	};
 
-	playlistService.subscribe('play', function(){
+	playlistService.subscribe('play', function() {
 		// fetch track and start playing
 		$scope.next();
+	});
+
+	playlistService.subscribe('togglePlayback', function() {
+		$scope.toggle();
 	});
 
 	$scope.scrollToCurrentTrack = function() {

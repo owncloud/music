@@ -1,3 +1,6 @@
+v0.5.1 2017-09-08
+ * fixed Music app breaking the authentication page of password protected public shares (regression in 0.5.0)
+
 v0.5.0 2017-09-04
  * added a small stand-alone music player which plays audio files in the Files and Share views
 

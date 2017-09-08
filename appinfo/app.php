@@ -82,7 +82,9 @@ $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
 	$isFilesUrl = preg_match('%/apps/files(/.*)?%', $url);
-	$isShareUrl = preg_match('%/s/.+%', $url) && !preg_match('%/apps/.*%', $url);
+	$isShareUrl = preg_match('%/s/.+%', $url)
+		&& !preg_match('%/apps/.*%', $url)
+		&& !preg_match('%.*/authenticate%', $url);
 	if ($isFilesUrl || $isShareUrl) {
 		$loadEmbeddedMusicPlayer();
 	}

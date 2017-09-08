@@ -318,16 +318,19 @@ $(document).ready(function () {
 		return match ? match[3] : filename;
 	}
 
-	// add play action to file rows with mime type 'audio/*'
-	OCA.Files.fileActions.register(
-			'audio',
-			'music-play',
-			OC.PERMISSION_READ,
-			OC.imagePath('music', 'play-big'),
-			onFilePlay,
-			t('music', 'Play')
-	);
-	OCA.Files.fileActions.setDefault('audio', 'music-play');
+	// Add play action to file rows with mime type 'audio/*'.
+	// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
+	if (typeof OCA.Files !== 'undefined') {
+		OCA.Files.fileActions.register(
+				'audio',
+				'music-play',
+				OC.PERMISSION_READ,
+				OC.imagePath('music', 'play-big'),
+				onFilePlay,
+				t('music', 'Play')
+		);
+		OCA.Files.fileActions.setDefault('audio', 'music-play');
+	}
 
 	// On single-file-share page, add click handler to the file preview if this is an audio file.
 	// The feature is disabled on old IE versions where there's no MutationObserver and

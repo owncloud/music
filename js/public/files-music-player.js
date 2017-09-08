@@ -95,7 +95,7 @@ $(document).ready(function () {
 
 		function updateProgress() {
 			var ratio = 0;
-			if (songLength_s == 0) {
+			if (songLength_s === 0) {
 				text.text(t('music', 'Loading...'));
 			} else {
 				text.text(formatTime(playTime_s) + '/' + formatTime(songLength_s));

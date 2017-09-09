@@ -15,9 +15,10 @@
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover">
 			<div>
-				<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)">
-					<img class="play svg" bo-alt="'Play' | translate" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-						ng-class="{playing: getCurrentTrackIndex() === $index}" />
+				<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)"
+					ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}"
+				>
+					<div class="play-pause" />
 					<span class="muted">{{ $index + 1 }}.</span>
 					<div bo-text="song.artistName + ' - ' + song.title"></div>
 				</div>

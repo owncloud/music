@@ -53,6 +53,7 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
+	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
 	playlistService.subscribe('trackChanged', function(e, listEntry){
@@ -458,7 +459,6 @@ angular.module('Music').controller('PlayerController',
 	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
 	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $timeout) {
 
-	$scope.playing = false;
 	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
@@ -569,7 +569,7 @@ angular.module('Music').controller('PlayerController',
 	}
 
 	$scope.setPlay = function(playing) {
-		$scope.playing = playing;
+		$rootScope.playing = playing;
 	};
 
 	$scope.setLoading = function(loading) {
@@ -617,7 +617,7 @@ angular.module('Music').controller('PlayerController',
 			$scope.setPlay(true);
 		} else {
 			$scope.player.togglePlayback();
-			$scope.playing = !$scope.playing;
+			$rootScope.playing = !$rootScope.playing;
 		}
 	};
 

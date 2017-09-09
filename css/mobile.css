@@ -78,11 +78,6 @@
 		padding-left: 59px;
 	}
 
-	.album-area .track-list > li > .play.playing {
-		height: 10px;
-		cursor: pointer;
-	}
-
 	/* layout the play bar elements for less space */
 	#play-controls {
 		margin-left: 0;

@@ -45,7 +45,7 @@
 	border-bottom-color: LightGray;
 }
 
-.playlist-area .track-list .play {
+.playlist-area .track-list .play-pause {
 	margin-top: 5px;
 }
 
@@ -70,13 +70,10 @@
 	white-space: normal;
 }
 
-.playlist-area .track-list li .play,
 .playlist-area .track-list li .action {
 	visibility: hidden;
 }
 
-.playlist-area .track-list li .play.playing,
-.playlist-area .track-list li div:hover .play,
 .playlist-area .track-list li div:hover .action {
 	visibility: visible;
 }

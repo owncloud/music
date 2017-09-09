@@ -15,6 +15,7 @@ angular.module('Music').controller('MainController',
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
+	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
 	playlistService.subscribe('trackChanged', function(e, listEntry){

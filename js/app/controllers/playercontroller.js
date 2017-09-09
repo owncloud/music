@@ -140,6 +140,10 @@ angular.module('Music').controller('PlayerController',
 
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
+		if (loading) {
+			$scope.position.currentPercent = 0;
+			$scope.position.bufferPercent = 0;
+		}
 	};
 
 	$scope.$watch('volume', function(newValue, oldValue) {
@@ -160,11 +164,12 @@ angular.module('Music').controller('PlayerController',
 	$scope.setTime = function(position, duration) {
 		$scope.position.current = position;
 		$scope.position.total = duration;
-		$scope.position.currentPercent = Math.round(position/duration*100) + '%';
+		$scope.position.currentPercent = (duration > 0 && position <= duration) ?
+				Math.round(position/duration*100) + '%' : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.round(percent) + '%';
+		$scope.position.bufferPercent = Math.min(100, Math.round(percent)) + '%';
 	};
 
 	$scope.toggle = function(forcePlay) {

@@ -89,16 +89,22 @@
 #music-controls #song-info {
 	height: 100%;
 	width: 60%;
-	white-space: nowrap;
+	margin-top: 7px;
+	vertical-align: top;
+}
+
+#music-controls #song-info span {
+	width: 100%;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 	overflow: hidden;
-	margin-top: 10px;
+	vertical-align: top;
 }
 
 #music-controls #title {
 	font-weight: bold;
 	font-size: 21px;
-	line-height: 25px;
+	line-height: 29px;
 }
 
 #music-controls .progress-info {

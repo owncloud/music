@@ -71,20 +71,26 @@
 
 #controls .song-info {
 	height: 58px;
-	margin: 4px;
+	margin: 0 4px 4px 4px;
 	padding: 8px;
 	max-width: 400px;
 	position: absolute;
 	top: 0;
 	left: 313px;
+}
+
+#controls .song-info span {
+	width: 100%;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	vertical-align: top;
 }
 
 #controls .title {
 	font-weight: bold;
 	font-size: 21px;
+	line-height: 29px;
 }
 
 #controls .progress-info {

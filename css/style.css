@@ -159,11 +159,11 @@ h1 span:hover .play {
 }
 
 .current > .play-pause,
-:hover > .play-pause {
+#app-view :hover > .play-pause {
 	visibility: visible;
 }
 
-:hover > .play-pause {
+#app-view :hover > .play-pause {
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);
@@ -171,11 +171,11 @@ h1 span:hover .play {
 }
 
 .current:not(.playing) > .play-pause,
-.current.playing:hover > .play-pause {
+#app-view .current.playing:hover > .play-pause {
 	background-image: url(../img/pause-big.svg)
 }
 
-.current:not(.playing):hover > .play-pause {
+#app-view .current:not(.playing):hover > .play-pause {
 	background-image: url(../img/play-big.svg);
 }
 

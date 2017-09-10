@@ -1,7 +1,8 @@
 <li ng-class="{active: $parent.currentView == destination, playlist: playlist}">
-	<a ng-click="$parent.navigateTo(destination)" ng-hide="playlist && $parent.showEditForm == playlist.id">
-		<img class="play svg" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"
-			ng-class="{playing: $parent.playingView == destination}" />
+	<a ng-click="$parent.navigateTo(destination)" ng-hide="playlist && $parent.showEditForm == playlist.id"
+		ng-class="{current: $parent.playingView == destination, playing: $parent.$parent.playing}" 
+	>
+		<div class="play-pause" />
 		<span>{{ text }}</span>
 	</a>
 	<div ng-if="playlist && $parent.showEditForm == playlist.id">

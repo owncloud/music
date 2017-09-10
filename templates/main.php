@@ -73,13 +73,13 @@
 
 			<div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 				<div id="play-controls">
-					<img ng-click="prev()" class="control small svg" alt="{{'Previous' | translate }}"
+					<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 						src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
-					<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{'Play' | translate }}"
+					<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
 						src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
-					<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{'Pause' | translate }}"
+					<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
 						src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
-					<img ng-click="next()" class="control small svg" alt="{{'Next' | translate }}"
+					<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
 						src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
 				</div>
 
@@ -106,7 +106,7 @@
 
 				<img id="shuffle" class="control small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
 					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
-				<img id="repeat" class="control small svg" alt="{{'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
+				<img id="repeat" class="control small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
 					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 				<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"

@@ -26,6 +26,7 @@ angular.module('Music').directive('sidebarListItem', function() {
 			destination: '=',
 			playlist: '='
 		},
-		templateUrl: 'sidebarlistitem.html'
+		templateUrl: 'sidebarlistitem.html',
+		replace: true
 	};
 });

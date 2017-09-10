@@ -22,10 +22,6 @@
 	padding: 0;
 }
 
-#app-navigation .active a {
-	opacity: 1.0;
-}
-
 #app-navigation-toggle {
 	height: 66px;
 }

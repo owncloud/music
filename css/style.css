@@ -148,7 +148,7 @@ h1 span:hover .play {
 	margin-left: 0px;
 	margin-right: 6px;
 	background-image: url(../img/play-big.svg);
-	background-size: cover;
+	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
 	

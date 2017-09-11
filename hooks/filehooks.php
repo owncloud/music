@@ -69,8 +69,31 @@ class FileHooks {
 		}
 	}
 
+	public static function preRenamed($source, $target)
+	{
+		// We are interested only if the path of the folder of the file changes:
+		// that could move a music file out of the scanned folder or remove a
+		// cover image file from album folder.
+		if ($source->getParent()->getId() != $target->getParent()->getId()) {
+			self::deleted($source);
+			// $target here doesn't point to an existing file, hence we need also
+			// the postRenamed hook
+		}
+	}
+
+	public static function postRenamed($source, $target)
+	{
+		// Renaming/moving file may
+		// a) move it into the folder scanned by Music app
+		// b) have influence on the display name of the track
+		// Both of these cases can be handled like file addition/modification.
+		self::updated($target);
+	}
+
 	public function register() {
-		$this->filesystemRoot->listen('\OC\Files', 'postWrite', array(__CLASS__, 'updated'));
-		$this->filesystemRoot->listen('\OC\Files', 'preDelete', array(__CLASS__, 'deleted'));
+		$this->filesystemRoot->listen('\OC\Files', 'postWrite', [__CLASS__, 'updated']);
+		$this->filesystemRoot->listen('\OC\Files', 'preDelete', [__CLASS__, 'deleted']);
+		$this->filesystemRoot->listen('\OC\Files', 'preRename', [__CLASS__, 'preRenamed']);
+		$this->filesystemRoot->listen('\OC\Files', 'postRename', [__CLASS__, 'postRenamed']);
 	}
 }

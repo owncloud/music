@@ -49,15 +49,13 @@ angular.module('Music').controller('SidebarController', [
 
 		// Commit renaming of playlist
 		$scope.commitEdit = function(playlist) {
-			// change of the attribute happens in form
-			playlist.put();
-
+			Restangular.one('playlists', playlist.id).put({name: playlist.name});
 			$scope.showEditForm = null;
 		};
 
 		// Remove playlist
 		$scope.remove = function(playlist) {
-			playlist.remove();
+			Restangular.one('playlists', playlist.id).remove();
 
 			// remove the elemnt also from the AngularJS list
 			libraryService.removePlaylist(playlist);
@@ -114,32 +112,27 @@ angular.module('Music').controller('SidebarController', [
 		};
 
 		function trackIdsFromAlbum(album) {
-			var ids = [];
-			for (var i = 0, count = album.tracks.length; i < count; ++i) {
-				ids.push(album.tracks[i].id);
-			}
-			return ids;
+			return _.pluck(album.tracks, 'id');
 		}
 
 		function trackIdsFromArtist(artist) {
-			var ids = [];
-			for (var i = 0, count = artist.albums.length; i < count; ++i) {
-				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
-			}
-			return ids;
+			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
 		}
 
 		function addTracks(playlist, trackIds) {
-			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
-				libraryService.updatePlaylist(updatedList);
-				// Update the currently playing list if necessary
-				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
-					var newTracks = _.map(trackIds, function(trackId) {
-						return { track: libraryService.getTrack(trackId) };
-					});
-					playlistService.onTracksAdded(newTracks);
-				}
+			_.forEach(trackIds, function(trackId) {
+				libraryService.addToPlaylist(playlist.id, trackId);
 			});
+
+			// Update the currently playing list if necessary
+			if ($rootScope.playingView == "#/playlist/" + playlist.id) {
+				var newTracks = _.map(trackIds, function(trackId) {
+					return { track: libraryService.getTrack(trackId) };
+				});
+				playlistService.onTracksAdded(newTracks);
+			}
+
+			Restangular.one('playlists', playlist.id).all("add").post({trackIds: trackIds.join(',')});
 		}
 	}
 ]);

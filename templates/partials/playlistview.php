@@ -28,7 +28,7 @@
 		</li>
 	</ul>
 
-	<div id="emptycontent" ng-show="playlist && playlist.trackIds.length == 0 && !scanning && !toScan && !noMusicAvailable">
+	<div id="emptycontent" ng-show="playlist && playlist.tracks.length == 0 && !scanning && !toScan && !noMusicAvailable">
 		<div class="icon-audio svg"></div>
 		<h2 translate>No tracks</h2>
 		<p translate>Add tracks with drag and drop from Albums or other playlists</p>

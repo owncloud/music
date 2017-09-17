@@ -65,7 +65,7 @@
 					ui-on-drop="dropOnPlaylist($data, playlist)"
 					drop-validate="allowDrop(playlist)"
 					drag-hover-class="active"
-					title="{{ playlist.trackIds.length }} {{ 'tracks' | translate }}"></li>
+					title="{{ playlist.tracks.length }} {{ 'tracks' | translate }}"></li>
 			</ul>
 		</div>
 

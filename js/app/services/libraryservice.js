@@ -23,18 +23,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 	var artists = null;
 	var albums = null;
-	var allTracks = null;
+	var tracksIndex = {};
 	var playlists = null;
+	var allTracks = null;
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
-	function createTracksIndex(albums) {
-		var tracksDict = {};
+	function populateTracksIndex() {
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
 		_.forEach(tracks, function(track) {
-			tracksDict[track.id] = track;
+			tracksIndex[track.id] = track;
 		});
-
-		return tracksDict;
 	}
 
 	function sortByName(items) {
@@ -42,15 +40,15 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function sortByYearNameAndDisc(albums) {
-		albums = _.sortBy(albums, "disk");
+		albums = _.sortBy(albums, 'disk');
 		albums = sortByName(albums);
-		albums = _.sortBy(albums, "year");
+		albums = _.sortBy(albums, 'year');
 		return albums;
 	}
 
 	function sortByNumberAndTitle(tracks) {
 		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-		tracks = _.sortBy(tracks, "number");
+		tracks = _.sortBy(tracks, 'number');
 		return tracks;
 	}
 
@@ -65,27 +63,62 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return collection;
 	}
 
+	function moveArrayElement(array, from, to) {
+		array.splice(to, 0, array.splice(from, 1)[0]);
+	}
+
+	function playlistEntry(trackId) {
+		return { track: tracksIndex[trackId] };
+	}
+
+	function wrapPlaylist(playlist) {
+		return {
+			id: playlist.id,
+			name: playlist.name,
+			tracks: _.map(playlist.trackIds, playlistEntry)
+		};
+	}
+
+	function createAllTracksArray() {
+		var tracks = null;
+		if (tracksIndex) {
+			tracks = _.map(tracksIndex, function(track) {
+				return { track: track };
+			});
+
+			tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
+			tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
+		}
+		return tracks;
+	}
+
 	return {
 		setCollection: function(collection) {
 			artists = sortCollection(collection);
 			albums = _.flatten(_.pluck(artists, 'albums'));
-			allTracks = createTracksIndex(albums);
+			populateTracksIndex();
+			allTracks = createAllTracksArray();
 		},
 		setPlaylists: function(lists) {
-			playlists = lists;
-		},
-		updatePlaylist: function(list) {
-			playlist = this.getPlaylist(list.id);
-			if (playlist) {
-				playlist.name = list.name;
-				playlist.trackIds = list.trackIds;
-			}
+			playlists = _.map(lists, wrapPlaylist);
 		},
 		addPlaylist: function(playlist) {
-			playlists.push(playlist);
+			playlists.push(wrapPlaylist(playlist));
 		},
 		removePlaylist: function(playlist) {
 			playlists.splice(playlists.indexOf(playlist), 1);
+		},
+		addToPlaylist: function(playlistId, trackId) {
+			playlist = this.getPlaylist(playlistId);
+			playlist.tracks.push(playlistEntry(trackId));
+		},
+		removeFromPlaylist: function(playlistId, indexToRemove) {
+			playlist = this.getPlaylist(playlistId);
+			playlist.tracks.splice(indexToRemove, 1);
+		},
+		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
+			playlist = this.getPlaylist(playlistId);
+			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {
 			return _.findWhere(artists, { id: Number(id) });
@@ -97,13 +130,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			return _.findWhere(albums, { id: Number(id) });
 		},
 		getTrack: function(id) {
-			return allTracks[id];
+			return tracksIndex[id];
 		},
 		getAllTracks: function() {
 			return allTracks;
 		},
 		getTrackCount: function() {
-			return allTracks ? Object.keys(allTracks).length : 0;
+			return tracksIndex ? Object.keys(tracksIndex).length : 0;
 		},
 		getPlaylist: function(id) {
 			return _.findWhere(playlists, { id: Number(id) });

@@ -98,7 +98,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
-				if($scope.letterAvailable.hasOwnProperty(letter)) {
+				if ($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
 				}
 			}
@@ -108,14 +108,15 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			$timeout(function() {
 				$rootScope.$emit('artistsLoaded');
 			});
+
+			// Load playlist once the collection has been loaded
+			Restangular.all('playlists').getList().then(function(playlists) {
+				libraryService.setPlaylists(playlists);
+				$scope.playlists = libraryService.getAllPlaylists();
+				$rootScope.$emit('playlistsLoaded');
+			});
 		});
 
-		// load all playlists
-		Restangular.all('playlists').getList().then(function(playlists) {
-			libraryService.setPlaylists(playlists);
-			$scope.playlists = libraryService.getAllPlaylists();
-			$rootScope.$emit('playlistsLoaded');
-		});
 	};
 
 	// initial loading of artists
@@ -628,9 +629,11 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		// Remove chosen track from the list
 		$scope.removeTrack = function(trackIndex) {
+			var listId = $scope.playlist.id;
+
 			// Remove the element first from our internal array, without recreating the whole array.
 			// Doing this before the HTTP request improves the perceived performance.
-			$scope.tracks.splice(trackIndex, 1);
+			libraryService.removeFromPlaylist(listId, trackIndex);
 
 			if (listIsPlaying()) {
 				var playingIndex = $scope.getCurrentTrackIndex();
@@ -640,9 +643,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			$scope.playlist.all("remove").post({indices: trackIndex}).then(function(updatedList) {
-				libraryService.updatePlaylist(updatedList);
-			});
+			Restangular.one('playlists', listId).all("remove").post({indices: trackIndex});
 		};
 
 		// Call playlistService to play all songs in the current playlist from the beginning
@@ -673,15 +674,18 @@ angular.module('Music').controller('PlaylistViewController', [
 		};
 
 		$scope.reorderDrop = function(draggable, dstIndex) {
-			moveArrayElement($scope.tracks, draggable.srcIndex, dstIndex);
+			var listId = $scope.playlist.id;
+			var srcIndex = draggable.srcIndex;
+
+			libraryService.reorderPlaylist($scope.playlist.id, srcIndex, dstIndex);
 
 			if (listIsPlaying()) {
 				var playingIndex = $scope.getCurrentTrackIndex();
-				if (playingIndex === draggable.srcIndex) {
+				if (playingIndex === srcIndex) {
 					playingIndex = dstIndex;
 				}
 				else {
-					if (playingIndex > draggable.srcIndex) {
+					if (playingIndex > srcIndex) {
 						--playingIndex;
 					}
 					if (playingIndex >= dstIndex) {
@@ -691,11 +695,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			$scope.playlist.all("reorder").post({fromIndex: draggable.srcIndex, toIndex: dstIndex}).then(
-				function(updatedList) {
-					libraryService.updatePlaylist(updatedList);
-				}
-			);
+			Restangular.one('playlists', listId).all("reorder").post({fromIndex: srcIndex, toIndex: dstIndex});
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {
@@ -755,11 +755,11 @@ angular.module('Music').controller('PlaylistViewController', [
 				if ($routeParams.playlistId) {
 					var playlist = libraryService.getPlaylist($routeParams.playlistId);
 					$scope.playlist = playlist;
-					$scope.tracks = createTracksArray(playlist.trackIds);
+					$scope.tracks = playlist.tracks;
 				}
 				else {
 					$scope.playlist = null;
-					$scope.tracks = createAllTracksArray();
+					$scope.tracks = libraryService.getAllTracks();
 				}
 				$timeout(showMore);
 			}
@@ -779,28 +779,6 @@ angular.module('Music').controller('PlaylistViewController', [
 			$timeout(showLess);
 		});
 
-		function moveArrayElement(array, from, to) {
-			array.splice(to, 0, array.splice(from, 1)[0]);
-		}
-
-		function createTracksArray(trackIds) {
-			return _.map(trackIds, function(trackId) {
-				return { track: libraryService.getTrack(trackId) };
-			});
-		}
-
-		function createAllTracksArray() {
-			var tracks = libraryService.getAllTracks();
-			if (tracks) {
-				tracks = _.map(tracks, function(track) {
-					return { track: track };
-				});
-
-				tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
-				tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
-			}
-			return tracks;
-		}
 	}
 ]);
 
@@ -832,15 +810,13 @@ angular.module('Music').controller('SidebarController', [
 
 		// Commit renaming of playlist
 		$scope.commitEdit = function(playlist) {
-			// change of the attribute happens in form
-			playlist.put();
-
+			Restangular.one('playlists', playlist.id).put({name: playlist.name});
 			$scope.showEditForm = null;
 		};
 
 		// Remove playlist
 		$scope.remove = function(playlist) {
-			playlist.remove();
+			Restangular.one('playlists', playlist.id).remove();
 
 			// remove the elemnt also from the AngularJS list
 			libraryService.removePlaylist(playlist);
@@ -897,32 +873,27 @@ angular.module('Music').controller('SidebarController', [
 		};
 
 		function trackIdsFromAlbum(album) {
-			var ids = [];
-			for (var i = 0, count = album.tracks.length; i < count; ++i) {
-				ids.push(album.tracks[i].id);
-			}
-			return ids;
+			return _.pluck(album.tracks, 'id');
 		}
 
 		function trackIdsFromArtist(artist) {
-			var ids = [];
-			for (var i = 0, count = artist.albums.length; i < count; ++i) {
-				ids = ids.concat(trackIdsFromAlbum(artist.albums[i]));
-			}
-			return ids;
+			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
 		}
 
 		function addTracks(playlist, trackIds) {
-			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
-				libraryService.updatePlaylist(updatedList);
-				// Update the currently playing list if necessary
-				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
-					var newTracks = _.map(trackIds, function(trackId) {
-						return { track: libraryService.getTrack(trackId) };
-					});
-					playlistService.onTracksAdded(newTracks);
-				}
+			_.forEach(trackIds, function(trackId) {
+				libraryService.addToPlaylist(playlist.id, trackId);
 			});
+
+			// Update the currently playing list if necessary
+			if ($rootScope.playingView == "#/playlist/" + playlist.id) {
+				var newTracks = _.map(trackIds, function(trackId) {
+					return { track: libraryService.getTrack(trackId) };
+				});
+				playlistService.onTracksAdded(newTracks);
+			}
+
+			Restangular.one('playlists', playlist.id).all("add").post({trackIds: trackIds.join(',')});
 		}
 	}
 ]);
@@ -1240,18 +1211,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 	var artists = null;
 	var albums = null;
-	var allTracks = null;
+	var tracksIndex = {};
 	var playlists = null;
+	var allTracks = null;
 
 	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
-	function createTracksIndex(albums) {
-		var tracksDict = {};
+	function populateTracksIndex() {
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
 		_.forEach(tracks, function(track) {
-			tracksDict[track.id] = track;
+			tracksIndex[track.id] = track;
 		});
-
-		return tracksDict;
 	}
 
 	function sortByName(items) {
@@ -1259,15 +1228,15 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function sortByYearNameAndDisc(albums) {
-		albums = _.sortBy(albums, "disk");
+		albums = _.sortBy(albums, 'disk');
 		albums = sortByName(albums);
-		albums = _.sortBy(albums, "year");
+		albums = _.sortBy(albums, 'year');
 		return albums;
 	}
 
 	function sortByNumberAndTitle(tracks) {
 		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
-		tracks = _.sortBy(tracks, "number");
+		tracks = _.sortBy(tracks, 'number');
 		return tracks;
 	}
 
@@ -1282,27 +1251,62 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return collection;
 	}
 
+	function moveArrayElement(array, from, to) {
+		array.splice(to, 0, array.splice(from, 1)[0]);
+	}
+
+	function playlistEntry(trackId) {
+		return { track: tracksIndex[trackId] };
+	}
+
+	function wrapPlaylist(playlist) {
+		return {
+			id: playlist.id,
+			name: playlist.name,
+			tracks: _.map(playlist.trackIds, playlistEntry)
+		};
+	}
+
+	function createAllTracksArray() {
+		var tracks = null;
+		if (tracksIndex) {
+			tracks = _.map(tracksIndex, function(track) {
+				return { track: track };
+			});
+
+			tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
+			tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
+		}
+		return tracks;
+	}
+
 	return {
 		setCollection: function(collection) {
 			artists = sortCollection(collection);
 			albums = _.flatten(_.pluck(artists, 'albums'));
-			allTracks = createTracksIndex(albums);
+			populateTracksIndex();
+			allTracks = createAllTracksArray();
 		},
 		setPlaylists: function(lists) {
-			playlists = lists;
-		},
-		updatePlaylist: function(list) {
-			playlist = this.getPlaylist(list.id);
-			if (playlist) {
-				playlist.name = list.name;
-				playlist.trackIds = list.trackIds;
-			}
+			playlists = _.map(lists, wrapPlaylist);
 		},
 		addPlaylist: function(playlist) {
-			playlists.push(playlist);
+			playlists.push(wrapPlaylist(playlist));
 		},
 		removePlaylist: function(playlist) {
 			playlists.splice(playlists.indexOf(playlist), 1);
+		},
+		addToPlaylist: function(playlistId, trackId) {
+			playlist = this.getPlaylist(playlistId);
+			playlist.tracks.push(playlistEntry(trackId));
+		},
+		removeFromPlaylist: function(playlistId, indexToRemove) {
+			playlist = this.getPlaylist(playlistId);
+			playlist.tracks.splice(indexToRemove, 1);
+		},
+		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
+			playlist = this.getPlaylist(playlistId);
+			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {
 			return _.findWhere(artists, { id: Number(id) });
@@ -1314,13 +1318,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			return _.findWhere(albums, { id: Number(id) });
 		},
 		getTrack: function(id) {
-			return allTracks[id];
+			return tracksIndex[id];
 		},
 		getAllTracks: function() {
 			return allTracks;
 		},
 		getTrackCount: function() {
-			return allTracks ? Object.keys(allTracks).length : 0;
+			return tracksIndex ? Object.keys(tracksIndex).length : 0;
 		},
 		getPlaylist: function(id) {
 			return _.findWhere(playlists, { id: Number(id) });

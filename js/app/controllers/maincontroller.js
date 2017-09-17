@@ -60,7 +60,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
-				if($scope.letterAvailable.hasOwnProperty(letter)) {
+				if ($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
 				}
 			}
@@ -70,14 +70,15 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			$timeout(function() {
 				$rootScope.$emit('artistsLoaded');
 			});
+
+			// Load playlist once the collection has been loaded
+			Restangular.all('playlists').getList().then(function(playlists) {
+				libraryService.setPlaylists(playlists);
+				$scope.playlists = libraryService.getAllPlaylists();
+				$rootScope.$emit('playlistsLoaded');
+			});
 		});
 
-		// load all playlists
-		Restangular.all('playlists').getList().then(function(playlists) {
-			libraryService.setPlaylists(playlists);
-			$scope.playlists = libraryService.getAllPlaylists();
-			$rootScope.$emit('playlistsLoaded');
-		});
 	};
 
 	// initial loading of artists

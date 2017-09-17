@@ -8,9 +8,11 @@
  * @copyright Morris Jobke  2014
  */
 
-angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular', '$route', '$window', '$timeout',
-	function ($scope, $rootScope, playlistService, libraryService, Restangular, $route, $window, $timeout) {
+angular.module('Music').controller('OverviewController', [
+	'$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular',
+	'$route', '$window', '$timeout', 'gettext', 'gettextCatalog',
+	function ($scope, $rootScope, playlistService, libraryService, Restangular,
+			$route, $window, $timeout, gettext, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -120,17 +122,23 @@ angular.module('Music').controller('OverviewController',
 				var type = hashParts[1];
 				var id = hashParts[2];
 
-				if (type == 'file') {
-					$scope.playFile(id);
-				} else if (type == 'artist') {
-					$scope.playArtist(libraryService.getArtist(id));
-					$scope.$parent.scrollToItem('artist-' + id);
-				} else if (type == 'album') {
-					$scope.playAlbum(libraryService.getAlbum(id));
-					$scope.$parent.scrollToItem('album-' + id);
-				} else if (type == 'track') {
-					$scope.playTrack(libraryService.getTrack(id));
-					scrollToAlbumOfTrack(id);
+				try {
+					if (type == 'file') {
+						$scope.playFile(id);
+					} else if (type == 'artist') {
+						$scope.playArtist(libraryService.getArtist(id));
+						$scope.$parent.scrollToItem('artist-' + id);
+					} else if (type == 'album') {
+						$scope.playAlbum(libraryService.getAlbum(id));
+						$scope.$parent.scrollToItem('album-' + id);
+					} else if (type == 'track') {
+						$scope.playTrack(libraryService.getTrack(id));
+						scrollToAlbumOfTrack(id);
+					}
+				}
+				catch (exception) {
+					OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+					window.location.hash = '#/';
 				}
 			}
 			$rootScope.loading = false;
@@ -177,5 +185,5 @@ angular.module('Music').controller('OverviewController',
 		subscribe('deactivateView', function() {
 			$timeout(showLess);
 		});
-	}]
-);
+	}
+]);

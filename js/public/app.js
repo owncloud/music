@@ -216,9 +216,11 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 	updateFilesToScan();
 }]);
 
-angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular', '$route', '$window', '$timeout',
-	function ($scope, $rootScope, playlistService, libraryService, Restangular, $route, $window, $timeout) {
+angular.module('Music').controller('OverviewController', [
+	'$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular',
+	'$route', '$window', '$timeout', 'gettext', 'gettextCatalog',
+	function ($scope, $rootScope, playlistService, libraryService, Restangular,
+			$route, $window, $timeout, gettext, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -328,17 +330,23 @@ angular.module('Music').controller('OverviewController',
 				var type = hashParts[1];
 				var id = hashParts[2];
 
-				if (type == 'file') {
-					$scope.playFile(id);
-				} else if (type == 'artist') {
-					$scope.playArtist(libraryService.getArtist(id));
-					$scope.$parent.scrollToItem('artist-' + id);
-				} else if (type == 'album') {
-					$scope.playAlbum(libraryService.getAlbum(id));
-					$scope.$parent.scrollToItem('album-' + id);
-				} else if (type == 'track') {
-					$scope.playTrack(libraryService.getTrack(id));
-					scrollToAlbumOfTrack(id);
+				try {
+					if (type == 'file') {
+						$scope.playFile(id);
+					} else if (type == 'artist') {
+						$scope.playArtist(libraryService.getArtist(id));
+						$scope.$parent.scrollToItem('artist-' + id);
+					} else if (type == 'album') {
+						$scope.playAlbum(libraryService.getAlbum(id));
+						$scope.$parent.scrollToItem('album-' + id);
+					} else if (type == 'track') {
+						$scope.playTrack(libraryService.getTrack(id));
+						scrollToAlbumOfTrack(id);
+					}
+				}
+				catch (exception) {
+					OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+					window.location.hash = '#/';
 				}
 			}
 			$rootScope.loading = false;
@@ -385,8 +393,8 @@ angular.module('Music').controller('OverviewController',
 		subscribe('deactivateView', function() {
 			$timeout(showLess);
 		});
-	}]
-);
+	}
+]);
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'libraryService',
@@ -602,10 +610,10 @@ function ($scope, $rootScope, playlistService, libraryService,
 }]);
 
 angular.module('Music').controller('PlaylistViewController', [
-	'$rootScope', '$scope', '$routeParams', 'playlistService', 
-	'libraryService', 'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, $routeParams, playlistService,
-			libraryService, gettextCatalog, Restangular , $timeout) {
+	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
+	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
+	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
+			gettext, gettextCatalog, Restangular , $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -754,8 +762,14 @@ angular.module('Music').controller('PlaylistViewController', [
 			if (libraryService.collectionLoaded() && libraryService.playlistsLoaded()) {
 				if ($routeParams.playlistId) {
 					var playlist = libraryService.getPlaylist($routeParams.playlistId);
-					$scope.playlist = playlist;
-					$scope.tracks = playlist.tracks;
+					if (playlist) {
+						$scope.playlist = playlist;
+						$scope.tracks = playlist.tracks;
+					}
+					else {
+						OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+						window.location.hash = '#/';
+					}
 				}
 				else {
 					$scope.playlist = null;

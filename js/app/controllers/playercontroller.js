@@ -20,9 +20,11 @@
  */
 
 
-angular.module('Music').controller('PlayerController',
-	['$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
-	function ($scope, $rootScope, playlistService, Audio, Restangular, gettext, gettextCatalog, $timeout) {
+angular.module('Music').controller('PlayerController', [
+'$scope', '$rootScope', 'playlistService', 'libraryService',
+'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
+function ($scope, $rootScope, playlistService, libraryService,
+		Audio, Restangular, gettext, gettextCatalog, $timeout) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -108,7 +110,7 @@ angular.module('Music').controller('PlayerController',
 		if(track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			$scope.currentAlbum = $scope.findAlbumOfTrack(track.id);
+			$scope.currentAlbum = libraryService.findAlbumOfTrack(track.id);
 			$scope.setLoading(true);
 
 			// get webDAV URL to the track and start playing it

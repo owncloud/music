@@ -45,7 +45,7 @@
 			<ul ng-controller="SidebarController">
 				<li sidebar-list-item text="'Albums' | translate" destination="'#'"></li>
 				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
-					title="{{ totalTrackCount() }} {{ 'tracks' | translate }}"></li>
+					title="{{ totalTrackCount }} {{ 'tracks' | translate }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li ng-hide="showCreateForm">
 					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>

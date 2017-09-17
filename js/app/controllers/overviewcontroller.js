@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('OverviewController',
-	['$scope', '$rootScope', 'playlistService', 'Restangular', '$route', '$window', '$timeout',
-	function ($scope, $rootScope, playlistService, Restangular, $route, $window, $timeout) {
+	['$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular', '$route', '$window', '$timeout',
+	function ($scope, $rootScope, playlistService, libraryService, Restangular, $route, $window, $timeout) {
 
 		$rootScope.currentView = '#';
 
@@ -58,7 +58,7 @@ angular.module('Music').controller('OverviewController',
 				// update URL hash
 				window.location.hash = '#/track/' + track.id;
 
-				var album = $scope.$parent.findAlbumOfTrack(track.id);
+				var album = libraryService.findAlbumOfTrack(track.id);
 				playTracks(album.tracks, album.tracks.indexOf(track));
 			}
 		};
@@ -97,29 +97,17 @@ angular.module('Music').controller('OverviewController',
 		});
 
 		subscribe('scrollToTrack', function(event, trackId) {
-			var track = findTrack(trackId);
+			var track = libraryService.getTrack(trackId);
 			if (track) {
 				scrollToAlbumOfTrack(trackId);
 			}
 		});
 
 		function scrollToAlbumOfTrack(trackId) {
-			var album = $scope.$parent.findAlbumOfTrack(trackId);
+			var album = libraryService.findAlbumOfTrack(trackId);
 			if (album) {
 				$scope.$parent.scrollToItem('album-' + album.id);
 			}
-		}
-
-		function findArtist(id) {
-			return _.findWhere($scope.$parent.artists, { id: Number(id) });
-		}
-
-		function findAlbum(id) {
-			return _.findWhere($scope.$parent.albums, { id: Number(id) });
-		}
-
-		function findTrack(id) {
-			return $scope.$parent.allTracks[id];
 		}
 
 		function isPlaying() {
@@ -135,14 +123,13 @@ angular.module('Music').controller('OverviewController',
 				if (type == 'file') {
 					$scope.playFile(id);
 				} else if (type == 'artist') {
-					$scope.playArtist(findArtist(id));
+					$scope.playArtist(libraryService.getArtist(id));
 					$scope.$parent.scrollToItem('artist-' + id);
 				} else if (type == 'album') {
-					$scope.playAlbum(findAlbum(id));
+					$scope.playAlbum(libraryService.getAlbum(id));
 					$scope.$parent.scrollToItem('album-' + id);
 				} else if (type == 'track') {
-					var track = findTrack(id);
-					$scope.playTrack(track);
+					$scope.playTrack(libraryService.getTrack(id));
 					scrollToAlbumOfTrack(id);
 				}
 			}
@@ -190,4 +177,5 @@ angular.module('Music').controller('OverviewController',
 		subscribe('deactivateView', function() {
 			$timeout(showLess);
 		});
-}]);
+	}]
+);

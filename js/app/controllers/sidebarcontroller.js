@@ -21,9 +21,9 @@
  */
 
 
-angular.module('Music').controller('SidebarController',
-	['$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService) {
+angular.module('Music').controller('SidebarController', [
+	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService) {
 
 		$scope.newPlaylistName = null;
 
@@ -35,7 +35,7 @@ angular.module('Music').controller('SidebarController',
 		// create playlist
 		$scope.create = function(playlist) {
 			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-				$scope.$parent.playlists.push(playlist);
+				libraryService.addPlaylist(playlist);
 				$scope.newPlaylistName = null;
 			});
 
@@ -60,7 +60,7 @@ angular.module('Music').controller('SidebarController',
 			playlist.remove();
 
 			// remove the elemnt also from the AngularJS list
-			$scope.$parent.playlists.splice($scope.$parent.playlists.indexOf(playlist), 1);
+			libraryService.removePlaylist(playlist);
 		};
 
 		// Add track to the playlist
@@ -131,15 +131,15 @@ angular.module('Music').controller('SidebarController',
 
 		function addTracks(playlist, trackIds) {
 			playlist.all("add").post({trackIds: trackIds.join(',')}).then(function(updatedList) {
-				$scope.$parent.updatePlaylist(updatedList);
+				libraryService.updatePlaylist(updatedList);
 				// Update the currently playing list if necessary
 				if ($rootScope.playingView == "#/playlist/" + updatedList.id) {
 					var newTracks = _.map(trackIds, function(trackId) {
-						return { track: $scope.$parent.allTracks[trackId] };
+						return { track: libraryService.getTrack(trackId) };
 					});
 					playlistService.onTracksAdded(newTracks);
 				}
 			});
 		}
-
-}]);
+	}
+]);

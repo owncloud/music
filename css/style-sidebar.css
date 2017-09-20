@@ -38,23 +38,21 @@
   margin-top: 8px !important;
 }
 
+#app-navigation .play-pause-button {
+	display: inline-block;
+	width: 25px;
+	height: 100%;
+}
+
 #app-navigation .play-pause {
 	margin-left: 9px;
 }
 
-#app-navigation .play-pause:hover {
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity = 100);
-	opacity: 1.0;
-}
-
-#app-navigation .play-pause:hover,
-#app-navigation .current:not(.playing) > .play-pause:hover {
+#app-navigation .current:not(.playing) :hover .play-pause {
 	background-image: url(../img/play-big.svg);
 }
 
-#app-navigation .current.playing > .play-pause:hover {
+#app-navigation .current.playing :hover .play-pause {
 	background-image: url(../img/pause-big.svg)
 }
 

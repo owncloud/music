@@ -164,13 +164,13 @@ h1 span:hover .play {
 	opacity: 1.0;
 }
 
-.current.playing > .play-pause,
-#app-view :hover > .play-pause,
+.current.playing .play-pause,
+:hover > .play-pause,
 #app-view .current:not(.playing):hover > .play-pause {
 	background-image: url(../img/play-big.svg);
 }
 
-.current:not(.playing) > .play-pause,
+.current:not(.playing) .play-pause,
 #app-view .current.playing:hover > .play-pause {
 	background-image: url(../img/pause-big.svg)
 }

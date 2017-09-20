@@ -61,6 +61,25 @@ angular.module('Music').controller('SidebarController', [
 			libraryService.removePlaylist(playlist);
 		};
 
+		// Play/pause playlist
+		$scope.togglePlay = function(destination, playlist) {
+			if ($rootScope.playingView == destination) {
+				playlistService.publish('togglePlayback');
+			}
+			else {
+				var tracks = null;
+				if (destination == '#') {
+					tracks = libraryService.getTracksInAlbumOrder();
+				} else if (destination == '#/alltracks') {
+					tracks = libraryService.getTracksInAlphaOrder();
+				} else {
+					tracks = playlist.tracks;
+				}
+				playlistService.setPlaylist(tracks);
+				playlistService.publish('play', destination);
+			}
+		};
+
 		// Add track to the playlist
 		$scope.addTrack = function(playlist, song) {
 			addTracks(playlist, [song.id]);

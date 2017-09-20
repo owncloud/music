@@ -185,7 +185,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				}
 				else {
 					$scope.playlist = null;
-					$scope.tracks = libraryService.getAllTracks();
+					$scope.tracks = libraryService.getTracksInAlphaOrder();
 				}
 				$timeout(showMore);
 			}

@@ -25,8 +25,9 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
 
-	playlistService.subscribe('play', function() {
-		$rootScope.playingView = $rootScope.currentView;
+	playlistService.subscribe('play', function(e, playingView) {
+		// assume that the play started from current view if no other view given
+		$rootScope.playingView = playingView || $rootScope.currentView;
 	});
 
 	playlistService.subscribe('playlistEnded', function() {

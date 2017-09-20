@@ -142,12 +142,11 @@ h1 span:hover .play {
 
 .play-pause {
 	display: inline-block;
-	visibility: hidden;
 	width: 10px;
 	height: 10px;
 	margin-left: 0px;
 	margin-right: 6px;
-	background-image: url(../img/play-big.svg);
+	background-image: none;
 	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -158,11 +157,6 @@ h1 span:hover .play {
 	opacity: .6;
 }
 
-.current > .play-pause,
-#app-view :hover > .play-pause {
-	visibility: visible;
-}
-
 #app-view :hover > .play-pause {
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
@@ -170,13 +164,15 @@ h1 span:hover .play {
 	opacity: 1.0;
 }
 
+.current.playing > .play-pause,
+#app-view :hover > .play-pause,
+#app-view .current:not(.playing):hover > .play-pause {
+	background-image: url(../img/play-big.svg);
+}
+
 .current:not(.playing) > .play-pause,
 #app-view .current.playing:hover > .play-pause {
 	background-image: url(../img/pause-big.svg)
-}
-
-#app-view .current:not(.playing):hover > .play-pause {
-	background-image: url(../img/play-big.svg);
 }
 
 .muted {

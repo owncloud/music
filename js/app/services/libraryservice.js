@@ -24,36 +24,29 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var artists = null;
 	var albums = null;
 	var tracksIndex = {};
+	var tracksInAlbumOrder = null;
+	var tracksInAlphaOrder = null;
 	var playlists = null;
-	var allTracks = null;
 
-	// index tracks in a collection (which has tree-like structure artists > albums > tracks)
-	function populateTracksIndex() {
-		var tracks = _.flatten(_.pluck(albums, 'tracks'));
-		_.forEach(tracks, function(track) {
-			tracksIndex[track.id] = track;
-		});
-	}
-
-	function sortByName(items) {
-		return _.sortBy(items, function(i) { return i.name.toLowerCase(); });
+	function sortCaseInsensitive(items, field) {
+		return _.sortBy(items, function(i) { return i[field].toLowerCase(); });
 	}
 
 	function sortByYearNameAndDisc(albums) {
 		albums = _.sortBy(albums, 'disk');
-		albums = sortByName(albums);
+		albums = sortCaseInsensitive(albums, 'name');
 		albums = _.sortBy(albums, 'year');
 		return albums;
 	}
 
 	function sortByNumberAndTitle(tracks) {
-		tracks = _.sortBy(tracks, function(t) { return t.title.toLowerCase(); });
+		tracks = sortCaseInsensitive(tracks, 'title');
 		tracks = _.sortBy(tracks, 'number');
 		return tracks;
 	}
 
 	function sortCollection(collection) {
-		collection = sortByName(collection);
+		collection = sortCaseInsensitive(collection, 'name');
 		_.forEach(collection, function(artist) {
 			artist.albums = sortByYearNameAndDisc(artist.albums);
 			_.forEach(artist.albums, function(album) {
@@ -67,37 +60,43 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		array.splice(to, 0, array.splice(from, 1)[0]);
 	}
 
-	function playlistEntry(trackId) {
-		return { track: tracksIndex[trackId] };
+	function playlistEntry(track) {
+		return { track: track };
+	}
+
+	function playlistEntryFromId(trackId) {
+		return playlistEntry(tracksIndex[trackId]);
 	}
 
 	function wrapPlaylist(playlist) {
 		return {
 			id: playlist.id,
 			name: playlist.name,
-			tracks: _.map(playlist.trackIds, playlistEntry)
+			tracks: _.map(playlist.trackIds, playlistEntryFromId)
 		};
 	}
 
-	function createAllTracksArray() {
-		var tracks = null;
-		if (tracksIndex) {
-			tracks = _.map(tracksIndex, function(track) {
-				return { track: track };
-			});
+	function createTrackContainers() {
+		// album order "playlist"
+		var tracks = _.flatten(_.pluck(albums, 'tracks'));
+		tracksInAlbumOrder = _.map(tracks, playlistEntry);
 
-			tracks = _.sortBy(tracks, function(t) { return t.track.title.toLowerCase(); });
-			tracks = _.sortBy(tracks, function(t) { return t.track.artistName.toLowerCase(); });
-		}
-		return tracks;
+		// alphabetic order "playlist"
+		tracks = sortCaseInsensitive(tracks, 'title');
+		tracks = sortCaseInsensitive(tracks, 'artistName');
+		tracksInAlphaOrder = _.map(tracks, playlistEntry);
+
+		// tracks index
+		_.forEach(tracks, function(track) {
+			tracksIndex[track.id] = track;
+		});
 	}
 
 	return {
 		setCollection: function(collection) {
 			artists = sortCollection(collection);
 			albums = _.flatten(_.pluck(artists, 'albums'));
-			populateTracksIndex();
-			allTracks = createAllTracksArray();
+			createTrackContainers();
 		},
 		setPlaylists: function(lists) {
 			playlists = _.map(lists, wrapPlaylist);
@@ -110,7 +109,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		addToPlaylist: function(playlistId, trackId) {
 			playlist = this.getPlaylist(playlistId);
-			playlist.tracks.push(playlistEntry(trackId));
+			playlist.tracks.push(playlistEntryFromId(trackId));
 		},
 		removeFromPlaylist: function(playlistId, indexToRemove) {
 			playlist = this.getPlaylist(playlistId);
@@ -132,11 +131,14 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getTrack: function(id) {
 			return tracksIndex[id];
 		},
-		getAllTracks: function() {
-			return allTracks;
+		getTracksInAlphaOrder: function() {
+			return tracksInAlphaOrder;
+		},
+		getTracksInAlbumOrder: function() {
+			return tracksInAlbumOrder;
 		},
 		getTrackCount: function() {
-			return tracksIndex ? Object.keys(tracksIndex).length : 0;
+			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
 		},
 		getPlaylist: function(id) {
 			return _.findWhere(playlists, { id: Number(id) });

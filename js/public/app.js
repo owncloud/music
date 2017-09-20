@@ -94,6 +94,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
 			$scope.totalTrackCount = libraryService.getTrackCount();
+			$scope.totalAlbumCount = libraryService.getAlbumCount();
 
 			for (var i=0; i < artists.length; i++) {
 				var artist = artists[i],
@@ -1349,6 +1350,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		getAlbum: function(id) {
 			return _.findWhere(albums, { id: Number(id) });
+		},
+		getAlbumCount: function() {
+			return albums ? albums.length : 0;
 		},
 		getTrack: function(id) {
 			return tracksIndex[id];

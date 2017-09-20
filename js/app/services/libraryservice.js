@@ -128,6 +128,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getAlbum: function(id) {
 			return _.findWhere(albums, { id: Number(id) });
 		},
+		getAlbumCount: function() {
+			return albums ? albums.length : 0;
+		},
 		getTrack: function(id) {
 			return tracksIndex[id];
 		},

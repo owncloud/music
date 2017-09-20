@@ -43,7 +43,8 @@
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="SidebarController">
-				<li sidebar-list-item text="'Albums' | translate" destination="'#'"></li>
+				<li sidebar-list-item text="'Albums' | translate" destination="'#'"
+					title="{{ totalAlbumCount }} {{ 'albums' | translate }}"></li>
 				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
 					title="{{ totalTrackCount }} {{ 'tracks' | translate }}"></li>
 				<li class="app-navigation-separator"></li>

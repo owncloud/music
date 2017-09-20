@@ -2,7 +2,10 @@
 	<a ng-click="$parent.navigateTo(destination)" ng-hide="playlist && $parent.showEditForm == playlist.id"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
 	>
-		<div class="play-pause-button" ng-click="$parent.togglePlay(destination, playlist); $event.stopPropagation()" >
+		<div class="play-pause-button"
+			ng-click="$parent.togglePlay(destination, playlist); $event.stopPropagation()"
+			title="{{ (($parent.playingView == destination && $parent.playing) ? 'Pause' : 'Play list') | translate }}"
+		>
 			<div class="play-pause" />
 		</div>
 		<span>{{ text }}</span>

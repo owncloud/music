@@ -1,17 +1,17 @@
-# Maintainers
+# Author
 
 * [Pauli Järvinen](https://github.com/paulijar): <pauli.jarvinen@gmail.com>
 
-# Authors
+# Original author
 
 * [Morris Jobke](https://github.com/MorrisJobke): <hey@morrisjobke.de>
 
-## Designers
+# Original design
 
 * [Jan-Christoph Borchardt](https://github.com/jancborchardt): <hey@jancborchardt.net>
 * [Morris Jobke](https://github.com/MorrisJobke): <hey@morrisjobke.de>
 
-## Contributors
+# Other contributors
 
 * [7ebra](https://github.com/7ebra)
 * [Arboss](https://github.com/arboss)

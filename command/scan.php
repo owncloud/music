@@ -9,9 +9,11 @@
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Bart Visscher <bartv@thisnet.nl>
  * @author Leizh <leizh@free.fr>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Thomas Müller 2013
  * @copyright Bart Visscher 2013
  * @copyright Leizh 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Command;
@@ -44,17 +46,17 @@ class Scan extends Command {
 	protected function configure() {
 		$this
 			->setName('music:scan')
-			->setDescription('rescan music')
+			->setDescription('scan and index any unindexed audio files')
 			->addArgument(
 					'user_id',
 					InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-					'will rescan all music files of the given user(s)'
+					'scan new music files of the given user(s)'
 			)
 			->addOption(
 					'all',
 					null,
 					InputOption::VALUE_NONE,
-					'will rescan all music files of all known users'
+					'scan new music files of all known users'
 			)
 			->addOption(
 					'debug',
@@ -76,6 +78,10 @@ class Scan extends Command {
 			$users = $this->userManager->search('');
 		} else {
 			$users = $input->getArgument('user_id');
+
+			if (count($users) === 0) {
+				$output->writeln("Specify either the target user(s) or --all");
+			}
 		}
 
 		foreach ($users as $user) {

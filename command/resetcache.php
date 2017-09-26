@@ -6,8 +6,8 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Morris Jobke <hey@morrisjobke.de>
- * @copyright Morris Jobke 2014
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Command;
@@ -33,17 +33,17 @@ class ResetCache extends Command {
 	protected function configure() {
 		$this
 			->setName('music:reset-cache')
-			->setDescription('will drop data cached by the music app for performance reasons')
+			->setDescription('drop data cached by the music app for performance reasons')
 			->addArgument(
 				'user_id',
 				InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-				'specify the user'
+				'specify the targeted user(s)'
 			)
 			->addOption(
 				'all',
 				null,
 				InputOption::VALUE_NONE,
-				'use all known users'
+				'target all known users'
 			)
 		;
 	}
@@ -54,6 +54,9 @@ class ResetCache extends Command {
 			$this->cache->remove();
 		} else {
 			$users = $input->getArgument('user_id');
+			if (count($users) === 0) {
+				$output->writeln("Specify either the target user(s) or --all");
+			}
 			foreach($users as $user) {
 				$output->writeln("Drop cache for <info>$user</info>");
 				$this->cache->remove($user);

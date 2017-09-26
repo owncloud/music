@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Command;
@@ -33,17 +35,17 @@ class ResetDatabase extends Command {
 	protected function configure() {
 		$this
 			->setName('music:reset-database')
-			->setDescription('will drop all metadata gathered by the music app (artists, albums, tracks, playlists)')
+			->setDescription('drop metadata indexed by the music app (artists, albums, tracks, playlists)')
 			->addArgument(
 				'user_id',
 				InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-				'specify the user'
+				'specify the targeted user(s)'
 			)
 			->addOption(
 				'all',
 				null,
 				InputOption::VALUE_NONE,
-				'use all known users'
+				'target all known users'
 			)
 		;
 	}
@@ -54,6 +56,9 @@ class ResetDatabase extends Command {
 			$this->scanner->resetDb(null, true);
 		} else {
 			$users = $input->getArgument('user_id');
+			if (count($users) === 0) {
+				$output->writeln("Specify either the target user(s) or --all");
+			}
 			foreach($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
 				$this->scanner->resetDb($user);

@@ -125,6 +125,11 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 					var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
 					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
 				},
+				onsuspend: function() {
+					// Work around an issue in Firefox where the last buffered position will never equal the duration.
+					// This fixes the buffer progress bar not reaching 100% despite the file being fully buffered.
+					if (typeof InstallTrigger !== 'undefined') self.trigger('buffer', 100);
+				},
 				onfinish: function() {
 					self.trigger('end');
 				},

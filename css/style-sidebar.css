@@ -18,8 +18,8 @@
 	display: none;
 }
 
-#app-navigation li > a {
-	padding: 0;
+#app-navigation > ul > li.music-navigation-item > a {
+	padding-left: 0 !important;
 }
 
 #app-navigation-toggle {
@@ -57,7 +57,7 @@
 }
 
 #app-navigation li > a#create {
-	padding-left: 18px;
+	padding-left: 18px !important;
 }
 
 #app-navigation li > a:first-child img {
@@ -68,6 +68,7 @@
 
 .playlist:hover .actions {
 	display: block;
+	z-index: 200;
 }
 
 .playlist .actions {

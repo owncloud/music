@@ -1,4 +1,4 @@
-<li ng-class="{active: $parent.currentView == destination, playlist: playlist}">
+<li class="music-navigation-item" ng-class="{active: $parent.currentView == destination, playlist: playlist}">
 	<a ng-click="$parent.navigateTo(destination)" ng-hide="playlist && $parent.showEditForm == playlist.id"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
 	>

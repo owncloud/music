@@ -48,18 +48,14 @@
 				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
 					title="{{ totalTrackCount }} {{ 'tracks' | translate }}"></li>
 				<li class="app-navigation-separator"></li>
-				<li ng-hide="showCreateForm">
-					<a href="" id="create" ng-click="showCreateForm=!showCreateForm" translate>+ New Playlist</a>
+				<li id="new-playlist" class="music-navigation-item">
+					<a id="create" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
+					<input type="text" class="new-list" ng-show="showCreateForm" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
+					<div class="actions" ng-show="showCreateForm">
+						<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
+						<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
+					</div>
 				</li>
-				<form name="newPlaylistForm" ng-show="showCreateForm">
-					<li id="new-playlist">
-						<input type="text" class="new-list" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
-						<div class="actions">
-							<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
-							<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
-						</div>
-					</li>
-				</form>
 				<li sidebar-list-item
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"

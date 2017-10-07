@@ -1203,9 +1203,14 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
 				},
 				onsuspend: function() {
-					// Work around an issue in Firefox where the last buffered position will never equal the duration.
-					// This fixes the buffer progress bar not reaching 100% despite the file being fully buffered.
-					if (typeof InstallTrigger !== 'undefined') self.trigger('buffer', 100);
+					// Work around an issue in Firefox where the last buffered position will almost
+					// never equal the duration. See https://github.com/scottschiller/SoundManager2/issues/114.
+					// On Firefox, the buffering is *usually* not suspended and this event fires only when the
+					// downloading is completed.
+					var isFirefox = (typeof InstallTrigger !== 'undefined');
+					if (isFirefox) {
+						self.trigger('buffer', 100);
+					}
 				},
 				onfinish: function() {
 					self.trigger('end');

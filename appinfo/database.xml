@@ -267,6 +267,12 @@
 				</field>
 			</index>
 			<index>
+				<name>music_tracks_user_id_idx</name>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
+			<index>
 				<name>music_tracks_file_user_id_idx</name>
 				<unique>true</unique>
 				<field>

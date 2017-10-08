@@ -179,11 +179,7 @@ class ApiController extends Controller {
 				$album['tracks'] = array();
 				$albumArtist['albums'][] = &$album;
 			}
-			try {
-				$album['tracks'][] = $track->toCollection($this->l10n);
-			} catch (\OCP\Files\NotFoundException $e) {
-				//ignore not found
-			}
+			$album['tracks'][] = $track->toCollection($this->l10n);
 		}
 		return json_encode($artists);
 	}

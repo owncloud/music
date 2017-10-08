@@ -24,8 +24,7 @@ class TrackMapper extends BaseMapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQueryWithoutUserId($condition){
-		return 'SELECT * FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE ' . $condition;
+		return 'SELECT * FROM `*PREFIX*music_tracks` `track` WHERE ' . $condition;
 	}
 
 	/**
@@ -42,7 +41,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery('ORDER BY LOWER(`track`.`title`)');
+		$sql = $this->makeSelectQuery();
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}

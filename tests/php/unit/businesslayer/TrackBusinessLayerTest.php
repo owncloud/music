@@ -114,7 +114,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->mapper->expects($this->never())
 			->method('countByAlbum');
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId);
+		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
 		$this->assertEquals(false, $result);
 	}
 
@@ -146,7 +146,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo(3))
 			->will($this->returnValue('1'));
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId);
+		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
 		$this->assertEquals([],              $result['obsoleteAlbums']);
 		$this->assertEquals([2],             $result['obsoleteArtists']);
 		$this->assertEquals([3],             $result['remainingAlbums']);
@@ -182,7 +182,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo(3))
 			->will($this->returnValue('0'));
 
-		$result = $this->trackBusinessLayer->deleteTracks($fileId);
+		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
 		$this->assertEquals([3],             $result['obsoleteAlbums']);
 		$this->assertEquals([],              $result['obsoleteArtists']);
 		$this->assertEquals([],              $result['remainingAlbums']);

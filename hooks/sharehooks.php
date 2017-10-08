@@ -16,7 +16,7 @@ use \OCA\Music\App\Music;
 
 class ShareHooks {
 
-	static private function removeSharedItem($app, $itemType, $nodeId, $owner, $removeFromUser) {
+	static private function removeSharedItem($app, $itemType, $nodeId, $owner, $removeFromUsers) {
 		$scanner = $app->getContainer()->query('Scanner');
 
 		if ($itemType === 'folder') {
@@ -24,11 +24,11 @@ class ShareHooks {
 			$nodes = $ownerHome->getById($nodeId);
 			if (count($nodes) > 0) {
 				$sharedFolder = $nodes[0];
-				$scanner->deleteFolder($sharedFolder, $removeFromUser);
+				$scanner->deleteFolder($sharedFolder, $removeFromUsers);
 			}
 		}
 		else if ($itemType === 'file') {
-			$scanner->delete($nodeId, $removeFromUser);
+			$scanner->delete($nodeId, $removeFromUsers);
 		}
 	}
 
@@ -37,17 +37,23 @@ class ShareHooks {
 	 * @param array $params contains the params of the removed share
 	 */
 	static public function itemUnshared($params) {
-		// react only on user and group shares
 		$shareType = $params['shareType'];
-		if ($shareType == \OCP\Share::SHARE_TYPE_USER || $shareType == \OCP\Share::SHARE_TYPE_GROUP) {
-			// When a group share is removed, delete the track(s) from all users. This is suboptimal
-			// because the file gets removed also from the file owner and possible unrelated sharees,
-			// but at least no-one is left with dangling references to unavailable tracks.
-			// The users having still access to the files are prompted to rescan the next time they
-			// open the Music app and the database gets fixed.
-			$removeFromUser = ($shareType == \OCP\Share::SHARE_TYPE_GROUP) ? null : $params['shareWith'];
+		$app = new Music();
 
-			self::removeSharedItem(new Music(), $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUser);
+		// react only on user and group shares
+		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
+			$userIds = [ $params['shareWith'] ];
+		}
+		else if ($shareType == \OCP\Share::SHARE_TYPE_GROUP) {
+			$groupManager = $app->getContainer()->query('ServerContainer')->getGroupManager();
+			$groupMembers = $groupManager->displayNamesInGroup($params['shareWith']);
+			$userIds = array_keys($groupMembers);
+			// remove the item owner from the list of targeted users if present
+			$userIds = array_diff($userIds, [ $params['uidOwner'] ]);
+		}
+
+		if ($userIds) {
+			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $userIds);
 		}
 	}
 
@@ -69,9 +75,9 @@ class ShareHooks {
 			// The share recipient may be an individual user or a group, but the item is always removed from
 			// the current user alone.
 			$app = new Music();
-			$removeFromUser = $app->getContainer()->query('UserId');
+			$removeFromUsers = [ $app->getContainer()->query('UserId') ];
 
-			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUser);
+			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 		}
 	}
 

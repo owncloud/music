@@ -137,22 +137,18 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Deletes a track
-	 * @param int|int[] $fileIds one or multiple tracks
-	 * @param string|null $userId the name of the user; if omitted, the tracks matching the
-	 *                            $fileId are deleted from all users
+	 * @param int[] $fileIds file IDs of the tracks to delete
+	 * @param string[]|null $userId the name of the user; if omitted, the tracks matching the
+	 *                      $fileIds are deleted from all users
 	 * @return False if no such track was found; otherwise array of six arrays
 	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
 	 *         'obsoleteArtists', and 'affectedUsers'). These contain the track, album, artist, and
 	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer
 	 *         have any tracks while 'remaining' entities have some left.
 	 */
-	public function deleteTracks($fileIds, $userId = null){
-		if(!is_array($fileIds)){
-			$fileIds = [$fileIds];
-		}
-
-		$tracks = ($userId !== null)
-			? $this->mapper->findByFileIds($fileIds, $userId)
+	public function deleteTracks($fileIds, $userIds = null){
+		$tracks = ($userIds !== null)
+			? $this->mapper->findByFileIds($fileIds, $userIds)
 			: $this->mapper->findAllByFileIds($fileIds);
 
 		if(count($tracks) === 0){

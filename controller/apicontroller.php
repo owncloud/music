@@ -27,6 +27,7 @@ use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
+use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -108,7 +109,12 @@ class ApiController extends Controller {
 
 		if ($collectionJson === null) {
 			$collectionJson = $this->buildCollectionJson();
-			$this->cache->add($this->userId, 'collection', $collectionJson);
+			try {
+				$this->cache->add($this->userId, 'collection', $collectionJson);
+			} catch (UniqueConstraintViolationException $ex) {
+				$this->logger->log("Race condition: collection.json for user {$this->userId} ".
+						"cached twice, ignoring latter.", 'warn');
+			}
 		}
 
 		$response = new DataDisplayResponse($collectionJson);

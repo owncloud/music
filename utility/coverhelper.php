@@ -150,6 +150,21 @@ class CoverHelper {
 				else { // separate image file
 					$response = ['mimetype' => $mime, 'content' => $node->getContent()];
 				}
+				// limit the cover image size in the back end. See #572
+				$imgsize = getimagesizefromstring($response['content']);
+				if($imgsize[0]>200 || $imgsize[1]>200) {
+					$img = imagecreatefromstring($response['content']);
+					$img = imagescale($img, 200, $imgsize[1]*200/$imgsize[0], IMG_BICUBIC_FIXED);
+					ob_start();
+					ob_clean();
+					header('Content-type: image/jpeg');
+					imagejpeg($img, NULL, 50);
+					$content = ob_get_contents();
+					ob_end_clean();
+					imagedestroy($img);
+					$response['mimetype'] = 'image/jpeg';
+					$response['content'] = $content;
+				}
 			}
 
 			if ($response === null) {

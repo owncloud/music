@@ -162,7 +162,6 @@ class Scanner extends PublicEmitter {
 			if($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
 				$this->coverHelper->removeCoverFromCache($albumId, $userId);
-				$this->coverHelper->addCoverToCache($albumId, $userId, $meta['picture']);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art

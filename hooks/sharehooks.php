@@ -52,7 +52,7 @@ class ShareHooks {
 			$userIds = array_diff($userIds, [ $params['uidOwner'] ]);
 		}
 
-		if ($userIds) {
+		if (!empty($userIds)) {
 			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $userIds);
 		}
 	}

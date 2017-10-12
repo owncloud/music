@@ -138,7 +138,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Deletes a track
 	 * @param int[] $fileIds file IDs of the tracks to delete
-	 * @param string[]|null $userId the name of the user; if omitted, the tracks matching the
+	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
 	 *                      $fileIds are deleted from all users
 	 * @return False if no such track was found; otherwise array of six arrays
 	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 

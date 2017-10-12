@@ -329,8 +329,8 @@ class Scanner extends PublicEmitter {
 	 * This gets called when a folder is deleted or unshared from the user.
 	 * 
 	 * @param \OCP\Files\Folder $folder
-	 * @param string[]|null $userId the id of the user to remove the folder from; if omitted,
-	 *                              the folder is removed from all users (ie. owner and sharees)
+	 * @param string[]|null $userIds the IDs of the users to remove the folder from; if omitted,
+	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
 	public function deleteFolder($folder, $userIds=null) {
 		$audioFiles = array_merge(

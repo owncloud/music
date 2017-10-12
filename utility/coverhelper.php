@@ -17,6 +17,7 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\Db\Cache;
 
 use \OCP\Files\Folder;
+use \OCP\Files\File;
 
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
@@ -123,9 +124,10 @@ class CoverHelper {
 	}
 
 	/**
+	 * Read cover image from back-end
 	 * @param integer $albumId
 	 * @param string $userId
-	 * @parma Folder $rootFolder
+	 * @param Folder $rootFolder
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	private function readCover($albumId, $userId, $rootFolder) {
@@ -137,6 +139,7 @@ class CoverHelper {
 			$nodes = $rootFolder->getById($coverId);
 			if (count($nodes) > 0) {
 				// get the first valid node (there shouldn't be more than one node anyway)
+				/* @var $node File */
 				$node = $nodes[0];
 				$mime = $node->getMimeType();
 
@@ -150,29 +153,61 @@ class CoverHelper {
 				else { // separate image file
 					$response = ['mimetype' => $mime, 'content' => $node->getContent()];
 				}
-				// limit the cover image size in the back end. See #572
-				$imgsize = getimagesizefromstring($response['content']);
-				if($imgsize[0]>200 || $imgsize[1]>200) {
-					$img = imagecreatefromstring($response['content']);
-					$img = imagescale($img, 200, $imgsize[1]*200/$imgsize[0], IMG_BICUBIC_FIXED);
-					ob_start();
-					ob_clean();
-					header('Content-type: image/jpeg');
-					imagejpeg($img, NULL, 50);
-					$content = ob_get_contents();
-					ob_end_clean();
-					imagedestroy($img);
-					$response['mimetype'] = 'image/jpeg';
-					$response['content'] = $content;
-				}
 			}
 
 			if ($response === null) {
 				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
+			} else {
+				$response['content'] = self::scaleDownIfLarge($response['content'], 200);
 			}
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Scale down images to reduce size
+	 * Scale down an image keeping it's aspect ratio, if both sides of the image
+	 * exceeds the given target size.
+	 * @param string $image The image to be scaled down as string
+	 * @param integer $size The target size of the smaller side in pixels
+	 * @return string The processed image as string
+	 */
+	private static function scaleDownIfLarge($image, $size) {
+		// limit the cover image size in the back end. See #572
+		$meta = getimagesizefromstring($image);
+		// only process pictures with a width and height greater than 200px
+		if($meta[0]>$size && $meta[1]>$size) {
+			$img = imagecreatefromstring($image);
+			// scale down the picture so that the smaller dimension will be 200px
+			$ratio = $meta[0]/$meta[1];
+			if(1.0 <=  $ratio) {
+				$img = imagescale($img, $meta[0]*$size/$meta[1], $size, IMG_BICUBIC_FIXED);
+			} else {
+				$img = imagescale($img, $size, $meta[1]*$size/$meta[0], IMG_BICUBIC_FIXED);
+			};
+			ob_start();
+			ob_clean();
+			switch($meta['mime']) {
+				case "image/jpeg":
+					imagejpeg($img, NULL, 75);
+					$image = ob_get_contents();
+					break;
+				case "image/png":
+					imagepng($img, NULL, 7, PNG_ALL_FILTERS);
+					$image = ob_get_contents();
+					break;
+				case "image/gif":
+					imagegif($img, NULL);
+					$image = ob_get_contents();
+					break;
+				default:
+					break;
+			}
+			ob_end_clean();
+			imagedestroy($img);
+		}
+		return $image;
 	}
 
 }

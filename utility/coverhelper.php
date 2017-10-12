@@ -174,17 +174,16 @@ class CoverHelper {
 	 * @return string The processed image as string
 	 */
 	private static function scaleDownIfLarge($image, $size) {
-		// limit the cover image size in the back end. See #572
 		$meta = getimagesizefromstring($image);
-		// only process pictures with a width and height greater than 200px
+		// only process pictures with width and height greater than $size pixels
 		if($meta[0]>$size && $meta[1]>$size) {
 			$img = imagecreatefromstring($image);
-			// scale down the picture so that the smaller dimension will be 200px
+			// scale down the picture so that the smaller dimension will be $sixe pixels
 			$ratio = $meta[0]/$meta[1];
 			if(1.0 <=  $ratio) {
-				$img = imagescale($img, $meta[0]*$size/$meta[1], $size, IMG_BICUBIC_FIXED);
+				$img = imagescale($img, $size*$ratio, $size, IMG_BICUBIC_FIXED);
 			} else {
-				$img = imagescale($img, $size, $meta[1]*$size/$meta[0], IMG_BICUBIC_FIXED);
+				$img = imagescale($img, $size, $size/$ratio, IMG_BICUBIC_FIXED);
 			};
 			ob_start();
 			ob_clean();

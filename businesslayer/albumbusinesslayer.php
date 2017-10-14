@@ -18,6 +18,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\Album;
+use \OCA\Music\Db\SortBy;
 
 class AlbumBusinessLayer extends BusinessLayer {
 
@@ -46,8 +47,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $offset
 	 * @return Album[] albums
 	 */
-	public function findAll($userId, $limit=null, $offset=null){
-		$albums = $this->mapper->findAll($userId, $limit, $offset);
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+		$albums = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums);
 	}
 

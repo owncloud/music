@@ -27,6 +27,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
+use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\FileResponse;
 
@@ -218,7 +219,7 @@ class AmpacheController extends Controller {
 			$fuzzy = !((boolean) $exact);
 			$artists = $this->artistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$artists = $this->artistBusinessLayer->findAll($userId);
+			$artists = $this->artistBusinessLayer->findAll($userId, SortBy::Name);
 		}
 
 		// set album and track count for artists
@@ -326,7 +327,7 @@ class AmpacheController extends Controller {
 				$offset = null;
 			}
 
-			$tracks = $this->trackBusinessLayer->findAll($userId, $limit, $offset);
+			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Name, $limit, $offset);
 		}
 
 		// set album and artist for tracks
@@ -371,7 +372,7 @@ class AmpacheController extends Controller {
 			$fuzzy = !((boolean) $exact);
 			$albums = $this->albumBusinessLayer->findAllByName($filter, $userId, $fuzzy);
 		} else {
-			$albums = $this->albumBusinessLayer->findAll($userId);
+			$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Name);
 		}
 
 		// set track count for artists

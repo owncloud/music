@@ -36,12 +36,14 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
+	 * @param SortBy $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Track[]
 	 */
-	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery();
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+		$sql = $this->makeSelectQuery(
+				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`track`.`title`)' : null);
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}

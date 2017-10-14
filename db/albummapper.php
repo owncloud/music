@@ -33,12 +33,14 @@ class AlbumMapper extends BaseMapper {
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
+	 * @param SortBy $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery();
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+		$sql = $this->makeSelectQuery(
+				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`album`.`name`)' : null);
 		$params = array($userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}

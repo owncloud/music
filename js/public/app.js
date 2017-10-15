@@ -48,9 +48,9 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$route', '$timeout', '$window', 'ArtistFactory',
-'playlistService', 'libraryService', 'gettextCatalog', 'Restangular',
+'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
-		playlistService, libraryService, gettextCatalog, Restangular) {
+		playlistService, libraryService, gettext, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -117,6 +117,24 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
 			});
+		},
+		function(response) { // error handling
+			$rootScope.loading = false;
+
+			var reason = null;
+			switch (response.status) {
+			case 500:
+				reason = gettextCatalog.getString(gettext('Internal server error'));
+				break;
+			case 504:
+				reason = gettextCatalog.getString(gettext('Timeout'));
+				break;
+			default:
+				reason = response.status;
+				break;
+			}
+			OC.Notification.showTemporary(
+					gettextCatalog.getString(gettext('Failed to load the collection: ')) + reason);
 		});
 
 	};

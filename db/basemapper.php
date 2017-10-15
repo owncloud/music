@@ -75,7 +75,7 @@ class BaseMapper extends Mapper {
 			'WHERE `user_id` = ?';
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
-		return $row['count'];
+		return intval($row['count']);
 	}
 
 	/**

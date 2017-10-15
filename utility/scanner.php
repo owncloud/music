@@ -79,7 +79,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
 	 * @param \OCP\Files\File $file the file
-	 * @param string userId
+	 * @param string $userId
 	 * @param \OCP\Files\Folder $userHome
 	 * @param string|null $filePath Deducted from $file if not given
 	 */
@@ -382,7 +382,7 @@ class Scanner extends PublicEmitter {
 		$scannedIds = $this->getScannedFiles($userId);
 		$musicFiles = $this->getMusicFiles($userId, $userHome);
 		$allIds = self::idsFromArray($musicFiles);
-		$unscannedIds = array_values(array_diff($allIds, $scannedIds));
+		$unscannedIds = self::fast_array_diff($allIds, $scannedIds);
 
 		$count = count($unscannedIds);
 		if ($count) {
@@ -530,6 +530,27 @@ class Scanner extends PublicEmitter {
 		}
 	
 		return $folder;
+	}
+
+	/**
+	 * Get difference of two arrays, i.e. elements belonging to $b but not $a.
+	 * This function is faster than the built-in array_diff for large arrays but
+	 * at the expense of higher RAM usage and can be used only for arrays of
+	 * integers or strings.
+	 * From https://stackoverflow.com/a/8827033
+	 * @param array $b
+	 * @param array $a
+	 * @return array
+	 */
+	private static function fast_array_diff($b, $a) {
+		$at = array_flip($a);
+		$d = array();
+		foreach ($b as $i) {
+			if (!isset($at[$i])) {
+				$d[] = $i;
+			}
+		}
+		return $d;
 	}
 
 	private static function idsFromArray(array $arr) {

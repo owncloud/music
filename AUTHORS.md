@@ -47,3 +47,4 @@
 * [Vincent Petry](https://github.com/PVince81)
 * [Volkan Gezer](https://github.com/wakeup)
 * [Xefir](https://github.com/Xefir)
+* [Yurifag](https://github.com/Yurifag)

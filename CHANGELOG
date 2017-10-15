@@ -1,3 +1,12 @@
+v0.5.3 2017-10-15
+ * workaround for buffer progress bug on Firefox (#587)
+ * downscale cover images on the server to save bandwidth (#589)
+ * fix track being removed from all users when unshared from a group (#581)
+ * fix broken navigation bar layout on recent development versions of Nextcloud 13
+ * slightly improve the performance of the /collection and /scanstate endpoints with large music libraries (related to #588)
+ * fix /collection endpoint occasionally failing with code 500 when called during scanning
+ * do not show the loading indicator indefinitely if getting the /collection endpoint fails for any reason
+
 v0.5.2 2017-09-26
  * possibility to start playing a playlist without opening the respective view
  * clicking the playing track again now pauses the playback

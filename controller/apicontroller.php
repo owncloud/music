@@ -145,8 +145,16 @@ class ApiController extends Controller {
 	private $embeddedCoversTotalSize = 0;
 
 	private function buildCollectionJson() {
+		// Get all the entities from the DB first. The order of queries is important if we are in
+		// the middle of a scanning process: we don't want to get tracks which do not yet have
+		// an album entry or albums which do not yet have artist entry.
+		/** @var Track[] $allTracks */
+		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
+		/** @var Album[] $allAlbums */
+		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
 		/** @var Artist[] $allArtists */
 		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
+
 		$allArtistsByIdAsObj = array();
 		$allArtistsByIdAsArr = array();
 		foreach ($allArtists as &$artist) {
@@ -155,7 +163,6 @@ class ApiController extends Controller {
 			$allArtistsByIdAsArr[$artistId] = $artist->toCollection($this->l10n);
 		}
 
-		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
 		$allAlbumsByIdAsObj = array();
 		$allAlbumsByIdAsArr = array();
 		foreach ($allAlbums as &$album) {
@@ -164,9 +171,6 @@ class ApiController extends Controller {
 			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
 					$this->urlGenerator, $this->l10n, $this->coverToEmbed($albumId));
 		}
-
-		/** @var Track[] $allTracks */
-		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
 
 		$artists = array();
 		foreach ($allTracks as $track) {

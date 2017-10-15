@@ -76,8 +76,8 @@ abstract class BusinessLayer {
 	 * @param integer $offset
 	 * @return Entity[]
 	 */
-	public function findAll($userId, $sortyBy=SortBy::None, $limit=null, $offset=null){
-		return $this->mapper->findAll($userId, $sortyBy, $limit, $offset);
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+		return $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 	}
 
 	/**

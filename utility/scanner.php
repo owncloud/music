@@ -14,6 +14,7 @@ namespace OCA\Music\Utility;
 
 use OC\Hooks\PublicEmitter;
 
+use \OCP\Files\File;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
 
@@ -91,7 +92,7 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
-		if(!($file instanceof \OCP\Files\File) || !$userId || !($userHome instanceof \OCP\Files\Folder)) {
+		if(!($file instanceof File) || !$userId || !($userHome instanceof Folder)) {
 			$this->logger->log('Invalid arguments given to Scanner.update - file='.get_class($file).
 					", userId=$userId, userHome=".get_class($userHome), 'warn');
 			return;

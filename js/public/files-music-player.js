@@ -314,7 +314,7 @@ $(document).ready(function () {
 
 	function titleFromFilename(filename) {
 		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[\s.-]\s*)?(.+)\.(\w{1,4})$/);
+		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
 		return match ? match[3] : filename;
 	}
 

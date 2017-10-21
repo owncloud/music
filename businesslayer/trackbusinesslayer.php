@@ -29,6 +29,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Db\Track;
 
+use \OCP\AppFramework\Db\DoesNotExistException;
 
 class TrackBusinessLayer extends BusinessLayer {
 
@@ -73,10 +74,14 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns the track for a file id
 	 * @param string $fileId the file id of the track
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track track
+	 * @return \OCA\Music\Db\Track|null track
 	 */
 	public function findByFileId($fileId, $userId){
-		return $this->mapper->findByFileId($fileId, $userId);
+		try{
+			return $this->mapper->findByFileId($fileId, $userId);
+		} catch (DoesNotExistException $e){
+			return null;
+		}
 	}
 
 	/**

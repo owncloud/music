@@ -73,6 +73,7 @@
 	line-height: 50px;
 	font-size: 28px;
 	background-size: cover;
+	background-position: center;
 	display: inline-block;
 	border: solid #eee 1px;
 }

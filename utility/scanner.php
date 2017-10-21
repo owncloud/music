@@ -441,16 +441,53 @@ class Scanner extends PublicEmitter {
 	 * @param string $fileId
 	 * @param string $userId
 	 * @param Folder $userFolder
+	 * $return array|null
 	 */
 	public function getFileInfo($fileId, $userId, $userFolder) {
+		$info = $this->getIndexedFileInfo($fileId, $userId, $userFolder)
+			?: $this->getUnindexedFileInfo($fileId, $userId, $userFolder);
+
+		// base64-encode and wrap the cover image if available
+		if ($info !== null && $info['cover'] !== null) {
+			$mime = $info['cover']['mimetype'];
+			$content = $info['cover']['content'];
+			$info['cover'] = 'data:' . $mime. ';base64,' . base64_encode($content); 
+		}
+
+		return $info;
+	}
+
+	private function getIndexedFileInfo($fileId, $userId, $userFolder) {
+		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
+		if ($track !== null) {
+			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+			return [
+				'title'      => $track->getTitle(),
+				'artist'     => $artist->getName(),
+				'cover'      => $this->coverHelper->getCover($track->getAlbumId(), $userId, $userFolder),
+				'in_library' => true
+			];
+		}
+		return null;
+	}
+
+	private function getUnindexedFileInfo($fileId, $userId, $userFolder) {
 		$fileNodes = $userFolder->getById($fileId);
 		if (count($fileNodes) > 0) {
 			$file = $fileNodes[0];
 			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath());
+			$cover = $metadata['picture'];
+			if ($cover != null) {
+				$cover = [
+					'mimetype' => $cover['image_mime'],
+					'content' => $this->coverHelper->scaleDownIfLarge($cover['data'], 200)
+				];
+			}
 			return [
-					'title' => $metadata['title'],
-					'artist' => $metadata['artist'],
-					'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId, $userFolder)
+				'title'      => $metadata['title'],
+				'artist'     => $metadata['artist'],
+				'cover'      => $cover,
+				'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId, $userFolder)
 			];
 		}
 		return null;

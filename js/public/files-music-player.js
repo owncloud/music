@@ -249,11 +249,7 @@ $(document).ready(function () {
 		}
 		player.fromURL(url, mime);
 
-		// If the cover URL given contains image dimensions as URL arguments,
-		// replace those with more suitable values
-		cover = cover.replace(/(url\(.+\?.*)(x=\d+&y=\d+)(.*\))/, '$1x=75&y=75$3');
 		coverImage.css('background-image', cover);
-
 		titleText.text(title);
 		artistText.text('');
 
@@ -294,6 +290,10 @@ $(document).ready(function () {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
+
+			if (data.cover) {
+				coverImage.css('background-image', 'url("' + data.cover + '")');
+			}
 
 			if (data.in_library) {
 				var navigateToMusicApp = function() {

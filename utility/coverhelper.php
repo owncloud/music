@@ -173,7 +173,7 @@ class CoverHelper {
 	 * @param integer $size The target size of the smaller side in pixels
 	 * @return string The processed image as string
 	 */
-	private static function scaleDownIfLarge($image, $size) {
+	public static function scaleDownIfLarge($image, $size) {
 		$meta = getimagesizefromstring($image);
 		// only process pictures with width and height greater than $size pixels
 		if($meta[0]>$size && $meta[1]>$size) {

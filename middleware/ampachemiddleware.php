@@ -62,13 +62,13 @@ class AmpacheMiddleware extends Middleware {
 		$this->isAmpacheCall = $annotationReader->hasAnnotation('AmpacheAPI');
 
 		// don't try to authenticate for the handshake request
-        if($this->isAmpacheCall && $this->request['action'] !== 'handshake'){
-            $token = null;
-            if (!empty($this->request['auth'])) {
-                $token = $this->request['auth'];
-            } else if (!empty($this->request['ssid'])) {
-                $token = $this->request['ssid'];
-            }
+		if($this->isAmpacheCall && $this->request['action'] !== 'handshake') {
+			$token = null;
+			if (!empty($this->request['auth'])) {
+				$token = $this->request['auth'];
+			} else if (!empty($this->request['ssid'])) {
+				$token = $this->request['ssid'];
+			}
 
 			if($token !== null && $token !== '') {
 				$user = $this->ampacheSessionMapper->findByToken($token);

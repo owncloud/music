@@ -11,6 +11,7 @@
 $(document).ready(function () {
 
 	var player = new PlayerWrapper();
+	player.init(registerFileActions);
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
 	var currentFile = null;
@@ -318,46 +319,61 @@ $(document).ready(function () {
 		return match ? match[3] : filename;
 	}
 
-	// Add play action to file rows with mime type 'audio/*'.
-	// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
-	if (typeof OCA.Files !== 'undefined') {
-		OCA.Files.fileActions.register(
-				'audio',
-				'music-play',
-				OC.PERMISSION_READ,
-				OC.imagePath('music', 'play-big'),
-				onFilePlay,
-				t('music', 'Play')
-		);
-		OCA.Files.fileActions.setDefault('audio', 'music-play');
-	}
+	function registerFileActions() {
+		var audioMimes = [
+			'audio/flac',
+			'audio/mp4',
+			'audio/m4b',
+			'audio/mpeg',
+			'audio/ogg',
+			'audio/wav'
+		];
+		var supportedMimes = _.filter(audioMimes, player.canPlayMIME, player);
 
-	// On single-file-share page, add click handler to the file preview if this is an audio file.
-	// The feature is disabled on old IE versions where there's no MutationObserver and
-	// $.initialize would not work.
-	if ($('#header').hasClass('share-file') && typeof MutationObserver !== "undefined") {
-		var mime = $('#mimetype').val();
-		if (mime.indexOf('audio') === 0) {
+		// Add play action to file rows with supported mime type.
+		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
+		if (typeof OCA.Files !== 'undefined') {
+			var registerPlayerForMime = function(mime) {
+				OCA.Files.fileActions.register(
+						mime,
+						'music-play',
+						OC.PERMISSION_READ,
+						OC.imagePath('music', 'play-big'),
+						onFilePlay,
+						t('music', 'Play')
+				);
+				OCA.Files.fileActions.setDefault(mime, 'music-play');
+			};
+			_.forEach(supportedMimes, registerPlayerForMime);
+		}
 
-			// The #publicpreview is added dynamically by another script.
-			// Augment it with the click handler once it gets added.
-			$.initialize('img.publicpreview', function() {
-				$(this).css('cursor', 'pointer');
-				$(this).click(function() {
-					showMusicControls();
-					if (!currentFile) {
-						currentFile = 1; // bogus id
+		// On single-file-share page, add click handler to the file preview if this is a supported file.
+		// The feature is disabled on old IE versions where there's no MutationObserver and
+		// $.initialize would not work.
+		if ($('#header').hasClass('share-file') && typeof MutationObserver !== "undefined") {
+			var mime = $('#mimetype').val();
+			if (_.contains(supportedMimes, mime)) {
 
-						initPlayer(
-								$('#downloadURL').val(),
-								mime,
-								titleFromFilename($('#filename').val()),
-								'url("' + $(this).attr('src') + '")'
-						);
-					}
-					togglePlayback();
+				// The #publicpreview is added dynamically by another script.
+				// Augment it with the click handler once it gets added.
+				$.initialize('img.publicpreview', function() {
+					$(this).css('cursor', 'pointer');
+					$(this).click(function() {
+						showMusicControls();
+						if (!currentFile) {
+							currentFile = 1; // bogus id
+
+							initPlayer(
+									$('#downloadURL').val(),
+									mime,
+									titleFromFilename($('#filename').val()),
+									'url("' + $(this).attr('src') + '")'
+							);
+						}
+						togglePlayback();
+					});
 				});
-			});
+			}
 		}
 	}
 

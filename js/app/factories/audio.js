@@ -20,6 +20,9 @@
  */
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	$rootScope.$emit('SoundManagerReady');
-	return new PlayerWrapper();
+	var wrapper = new PlayerWrapper();
+	wrapper.init(function() {
+		$rootScope.$emit('SoundManagerReady');
+	});
+	return wrapper;
 }]);

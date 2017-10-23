@@ -1078,8 +1078,11 @@ angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', f
 }]);
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	$rootScope.$emit('SoundManagerReady');
-	return new PlayerWrapper();
+	var wrapper = new PlayerWrapper();
+	wrapper.init(function() {
+		$rootScope.$emit('SoundManagerReady');
+	});
+	return wrapper;
 }]);
 
 angular.module('Music').factory('Token', [function () {
@@ -1104,6 +1107,13 @@ var PlayerWrapper = function() {
 };
 
 PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
+
+PlayerWrapper.prototype.init = function(onReadyCallback) {
+	this.sm2 = soundManager.setup({
+		html5PollingInterval: 200,
+		onready: onReadyCallback
+	});
+};
 
 PlayerWrapper.prototype.play = function() {
 	switch(this.underlyingPlayer) {
@@ -1201,9 +1211,6 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	var self = this;
 	switch (this.underlyingPlayer) {
 		case 'sm2':
-			this.sm2 = soundManager.setup({
-				html5PollingInterval: 200
-			});
 			this.sm2.html5Only = true;
 			this.sm2.createSound({
 				id: 'ownCloudSound',

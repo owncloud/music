@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 
@@ -232,7 +234,7 @@ class Music extends App {
 		});
 
 		$container->registerService('L10N', function($c) {
-			return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+			return $c->getServer()->getL10N($c->query('AppName'));
 		});
 
 		$container->registerService('Logger', function($c) {
@@ -327,7 +329,7 @@ class Music extends App {
 		 */
 		$container->registerService('FileHooks', function($c) {
 			return new FileHooks(
-				$c->query('ServerContainer')->getRootFolder()
+				$c->getServer()->getRootFolder()
 			);
 		});
 

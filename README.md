@@ -150,10 +150,6 @@ When the recipient of a shared audio file unshares it, the file reference is lef
 
 The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough (say, more than 10000 tracks), you probably find the performance dissatisfactory.
 
-#### Localization
-
-The Music application does not currently respect the UI language selected in your personal settings, the application is always in English.
-
 ## Development
 
 ### L10n hints
@@ -223,6 +219,7 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/log`
 * `/api/collection`
 * `/api/file/{fileId}`
+* `/api/file/{fileId}/info`
 * `/api/file/{fileId}/webdav`
 * `/api/file/{fileId}/download`
 * `/api/scan`

@@ -1,0 +1,8 @@
+{ "translations": {
+    "Albums" : "एलबम",
+    "Artists" : "कलाकारों",
+    "Description" : "विवरण",
+    "Music" : "गाना",
+    "Next" : "अगला"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

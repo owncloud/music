@@ -1,0 +1,10 @@
+{ "translations": {
+    "Description" : "விவரிப்பு",
+    "Music" : "இசை",
+    "Next" : "அடுத்த",
+    "Pause" : "இடைநிறுத்துக",
+    "Play" : "Play",
+    "Previous" : "முன்தைய",
+    "Repeat" : "மீண்டும்"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

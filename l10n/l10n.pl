@@ -118,9 +118,10 @@ elsif( $task eq 'write' ){
       my $array = Locale::PO->load_file_asarray( $input );
       # Create array
       my @strings = ();
+      my @js_strings = ();
       my $plurals;
 
-      foreach my $string ( @{$array} ){
+      TRANSLATIONS: foreach my $string ( @{$array} ){
         if( $string->msgid() eq '""' ){
           # Translator information
           $plurals = getPluralInfo( $string->msgstr());
@@ -128,28 +129,49 @@ elsif( $task eq 'write' ){
         elsif( defined( $string->msgstr_n() )){
           # plural translations
           my @variants = ();
-          my $identifier = $string->msgid()."::".$string->msgid_plural();
-          $identifier =~ s/"/_/g;
+          my $msgid = $string->msgid();
+          $msgid =~ s/^"(.*)"$/$1/;
+          my $msgid_plural = $string->msgid_plural();
+          $msgid_plural =~ s/^"(.*)"$/$1/;
+          my $identifier = "_" . $msgid."_::_".$msgid_plural . "_";
 
           foreach my $variant ( sort { $a <=> $b} keys( %{$string->msgstr_n()} )){
+            next TRANSLATIONS if $string->msgstr_n()->{$variant} eq '""';
             push( @variants, $string->msgstr_n()->{$variant} );
           }
 
           push( @strings, "\"$identifier\" => array(".join(",", @variants).")");
+          push( @js_strings, "\"$identifier\" : [".join(",", @variants)."]");
         }
         else{
           # singular translations
-          next if $string->msgstr() eq '""';
+          next TRANSLATIONS if $string->msgstr() eq '""';
           push( @strings, $string->msgid()." => ".$string->msgstr());
+          push( @js_strings, $string->msgid()." : ".$string->msgstr());
         }
       }
       next if $#strings == -1; # Skip empty files
 
-      # Write PHP file
-      open( OUT, ">$language.php" );
-      print OUT "<?php\n\$TRANSLATIONS = array(\n";
-      print OUT join( ",\n", @strings );
-      print OUT "\n);\n\$PLURAL_FORMS = \"$plurals\";\n";
+      for (@strings) {
+        s/\$/\\\$/g;
+      }
+
+      # delete old php file
+      unlink "$language.php";
+
+      # Write js file
+      open( OUT, ">$language.js" );
+      print OUT "OC.L10N.register(\n    \"$app\",\n    {\n    ";
+      print OUT join( ",\n    ", @js_strings );
+      print OUT "\n},\n\"$plurals\");\n";
+      close( OUT );
+
+      # Write json file
+      open( OUT, ">$language.json" );
+      print OUT "{ \"translations\": ";
+      print OUT "{\n    ";
+      print OUT join( ",\n    ", @js_strings );
+      print OUT "\n},\"pluralForm\" :\"$plurals\"\n}";
       close( OUT );
     }
     chdir( $whereami );

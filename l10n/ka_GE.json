@@ -1,0 +1,10 @@
+{ "translations": {
+    "Description" : "გვერდის დახასიათება",
+    "Music" : "მუსიკა",
+    "Next" : "შემდეგი",
+    "Pause" : "პაუზა",
+    "Play" : "დაკვრა",
+    "Previous" : "წინა",
+    "Repeat" : "გამეორება"
+},"pluralForm" :"nplurals=1; plural=0;"
+}

@@ -20,7 +20,7 @@
 ?>
 
 <div class="section" id="music-user">
-	<h2><?php p($l->t('Music')); ?></h2>
+	<h2 data-anchor-name="music"><?php p($l->t('Music')); ?></h2>
 	<div>
 		<label for="music-path"><?php p($l->t('Path to your music collection')); ?>:</label>
 		<input type="text" id="music-path" value="<?php p($_['path']); ?>" />

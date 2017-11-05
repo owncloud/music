@@ -18,3 +18,9 @@ while extraction, because this string is located in PHP code -->
 <span translate>Use your username and following password to connect to this Ampache instance:</span>
 <span translate>Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime.</span>
 <span translate>Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href="https://github.com/owncloud/music/issues/60">issue</a>. I would also like to have a list of clients to test with. Thanks</span>
+
+<!-- localizations for files-music-plalyer -->
+<span translate>Loading…</span>
+<span translate>Close</span>
+<span translate>Go to album</span>
+<span translate>(file is not within your music collection folder)</span>

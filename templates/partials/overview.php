@@ -34,13 +34,13 @@
 					<span bo-if="track.artistId != artist.id" class="muted" bo-text="'&nbsp;(' + track.artistName +')'"></span>
 				</li>
 				<li class="muted more-less" translate translate-n="trackcount"
-					translate-plural="Show all {{ trackcount }} songs ..."
+					translate-plural="Show all {{ trackcount }} songs …"
 					ng-click="limit.count = trackcount"
 					ng-hide="trackcount <= 6 || limit.count > 6"
-					>Show all {{ trackcount }} songs ...</li>
+					>Show all {{ trackcount }} songs …</li>
 				<li class="muted more-less"
 					ng-click="limit.count = 5"
-					ng-hide="limit.count <= 6" translate>Show less ...</li>
+					ng-hide="limit.count <= 6" translate>Show less …</li>
 			</ul>
 		</div>
 	</div>

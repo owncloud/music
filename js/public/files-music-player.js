@@ -97,7 +97,7 @@ $(document).ready(function () {
 		function updateProgress() {
 			var ratio = 0;
 			if (songLength_s === 0) {
-				text.text(t('music', 'Loading...'));
+				text.text(t('music', 'Loading…'));
 			} else {
 				text.text(formatTime(playTime_s) + '/' + formatTime(songLength_s));
 				ratio = playTime_s / songLength_s;
@@ -271,7 +271,7 @@ $(document).ready(function () {
 			initPlayer(
 					context.fileList.getDownloadUrl(fileName, context.dir),
 					filerow.attr('data-mime'),
-					t('music', 'Loading...'), // actual title is filled later
+					t('music', 'Loading…'), // actual title is filled later
 					filerow.find('.thumbnail').css('background-image')
 			);
 

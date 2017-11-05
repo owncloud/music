@@ -33,6 +33,9 @@ watch: build
 deps:
 	npm install --deps
 
+l10n-clone:
+	python ./duplicate-lang.py --path=../l10n bg_BG:bg cs_CZ:cs fi_FI:fi hu_HU:hu nb_NO:nb sk_SK:sk th_TH:th
+
 l10n-extract: deps
 	$(grunt_dir) --config=$(gruntfile_dir) nggettext_extract
 

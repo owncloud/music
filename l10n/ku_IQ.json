@@ -1,0 +1,9 @@
+{ "translations": {
+    "Description" : "پێناسه",
+    "Music" : "مۆسیقا",
+    "Next" : "دوواتر",
+    "Pause" : "وه‌ستان",
+    "Play" : "لێدان",
+    "Previous" : "پێشووتر"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

@@ -72,7 +72,7 @@ class ApiController extends Controller {
 								Scanner $scanner,
 								CoverHelper $coverHelper,
 								$userId,
-								$l10n,
+								IL10N $l10n,
 								Folder $userFolder,
 								Logger $logger){
 		parent::__construct($appname, $request);

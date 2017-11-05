@@ -1,0 +1,10 @@
+{ "translations": {
+    "Description" : "Deskripzioa",
+    "Music" : "Musika",
+    "Next" : "Aurrera",
+    "Pause" : "geldi",
+    "Play" : "jolastu",
+    "Previous" : "Atzera",
+    "Repeat" : "Errepikatu"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

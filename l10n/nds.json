@@ -1,0 +1,7 @@
+{ "translations": {
+    "Next" : "Nächtes",
+    "Pause" : "Pause",
+    "Play" : "Play",
+    "Previous" : "Vorheriges"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

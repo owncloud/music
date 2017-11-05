@@ -50,7 +50,8 @@
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
 					<a id="create" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
-					<input type="text" class="new-list" ng-show="showCreateForm" placeholder="New Playlist" ng-enter="create()" ng-model="newPlaylistName" />
+					<input type="text" class="new-list" ng-show="showCreateForm" 
+						placeholder="{{ 'New Playlist' | translate }}" ng-enter="create()" ng-model="newPlaylistName" />
 					<div class="actions" ng-show="showCreateForm">
 						<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
 						<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>

@@ -44,9 +44,9 @@
 		<div id="app-navigation">
 			<ul ng-controller="SidebarController">
 				<li sidebar-list-item text="'Albums' | translate" destination="'#'"
-					title="{{ totalAlbumCount }} {{ 'albums' | translate }}"></li>
+					title="{{ albumCountText() }}"></li>
 				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
-					title="{{ totalTrackCount }} {{ 'tracks' | translate }}"></li>
+					title="{{ trackCountText() }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
 					<a id="create" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
@@ -62,7 +62,7 @@
 					ui-on-drop="dropOnPlaylist($data, playlist)"
 					drop-validate="allowDrop(playlist)"
 					drag-hover-class="active"
-					title="{{ playlist.tracks.length }} {{ 'tracks' | translate }}"></li>
+					title="{{ trackCountText(playlist) }}"></li>
 			</ul>
 		</div>
 

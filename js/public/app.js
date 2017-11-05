@@ -74,6 +74,16 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		$scope.currentTrackIndex = -1;
 	});
 
+	$scope.trackCountText = function(playlist) {
+		var trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
+		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+	};
+
+	$scope.albumCountText = function() {
+		var albumCount = libraryService.getAlbumCount();
+		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
+	};
+
 	$scope.letters = [
 		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 		'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
@@ -93,8 +103,6 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
-			$scope.totalTrackCount = libraryService.getTrackCount();
-			$scope.totalAlbumCount = libraryService.getAlbumCount();
 
 			for (var i=0; i < artists.length; i++) {
 				var artist = artists[i],

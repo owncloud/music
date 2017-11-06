@@ -33,14 +33,16 @@ class PlaylistMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
+	 * @param SortBy $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Playlist[]
 	 */
-	public function findAll($userId, $limit=null, $offset=null){
-		$sql = $this->makeSelectQuery();
-		$params = array($userId);
-		return $this->findEntities($sql, $params, $limit, $offset);
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+		$sql = $this->makeSelectQuery(
+				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
+		);
+		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
 	/**

@@ -176,20 +176,27 @@ class ApiController extends Controller {
 		foreach ($allTracks as $track) {
 			$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
 			$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
-			$track->setAlbum($albumObj);
-			$track->setArtist($trackArtistObj);
-
 			$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
-			if (!isset($albumArtist['albums'])) {
-				$albumArtist['albums'] = array();
-				$artists[] = &$albumArtist;
+
+			if (empty($albumObj) || empty($trackArtistObj) || empty($albumArtist)) {
+				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
+						"album or artist missing. Skipping the track.", 'warn');
 			}
-			$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
-			if (!isset($album['tracks'])) {
-				$album['tracks'] = array();
-				$albumArtist['albums'][] = &$album;
+			else {
+				$track->setAlbum($albumObj);
+				$track->setArtist($trackArtistObj);
+
+				if (!isset($albumArtist['albums'])) {
+					$albumArtist['albums'] = array();
+					$artists[] = &$albumArtist;
+				}
+				$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
+				if (!isset($album['tracks'])) {
+					$album['tracks'] = array();
+					$albumArtist['albums'][] = &$album;
+				}
+				$album['tracks'][] = $track->toCollection($this->l10n);
 			}
-			$album['tracks'][] = $track->toCollection($this->l10n);
 		}
 		return json_encode($artists);
 	}

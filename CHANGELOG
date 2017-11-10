@@ -1,3 +1,11 @@
+v0.5.4 2017-11-10
+ * workaround for an authentication issue on Ampache Plugin for Rhythmbox (#590)
+ * improved the cover image handling in the files music player (#582)
+ * launch the files music player only for those audio files supported in the current browser (#582)
+ * enable the localization of the app (many UI strings are still unlocalized, though) (#592)
+ * fix previously created playlists disappearing each time the app is loaded (regression introduced in v0.5.3)
+ * when creating collection.json, skip tracks with DB problems insted of failing the whole process (related to #588)
+
 v0.5.3 2017-10-15
  * workaround for buffer progress bug on Firefox (#587)
  * downscale cover images on the server to save bandwidth (#589)

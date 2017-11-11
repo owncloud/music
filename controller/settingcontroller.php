@@ -17,7 +17,6 @@ use OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
-use \OCP\IL10N;
 use \OCP\IRequest;
 use \OCP\Security\ISecureRandom;
 
@@ -35,7 +34,6 @@ class SettingController extends Controller {
 	private $userFolder;
 	private $configManager;
 	private $secureRandom;
-	private $l10n;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -44,8 +42,7 @@ class SettingController extends Controller {
 								$userId,
 								Folder $userFolder,
 								IConfig $configManager,
-								ISecureRandom $secureRandom,
-								$l10n){
+								ISecureRandom $secureRandom){
 		parent::__construct($appname, $request);
 
 		$this->appname = $appname;
@@ -55,7 +52,6 @@ class SettingController extends Controller {
 		$this->userFolder = $userFolder;
 		$this->configManager = $configManager;
 		$this->secureRandom = $secureRandom;
-		$this->l10n = $l10n;
 	}
 
 	/**
@@ -97,7 +93,7 @@ class SettingController extends Controller {
 	 */
 	public function generateUserKey($length, $description) {
 		if($description == NULL) {
-			return new JSONResponse(['message' => $this->l10n->t('Please provide a description')], Http::STATUS_BAD_REQUEST);
+			return new JSONResponse(['message' => 'Please provide a description'], Http::STATUS_BAD_REQUEST);
 		}
 
 		if($length == NULL || $length < self::DEFAULT_PASSWORD_LENGTH) {
@@ -112,7 +108,7 @@ class SettingController extends Controller {
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 
 		if(is_null($id)) {
-			return new JSONResponse(['message' => $this->l10n->t('Error while saving the credentials')], Http::STATUS_INTERNAL_SERVER_ERROR);
+			return new JSONResponse(['message' => 'Error while saving the credentials'], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
 		return new JSONResponse(['id' => $id, 'password' => $password, 'description' => $description], Http::STATUS_CREATED);

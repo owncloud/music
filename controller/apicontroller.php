@@ -7,34 +7,35 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Controller;
 
-use OCA\Music\AppFramework\Core\Logger;
-use OCA\Music\Db\Artist;
-use OCA\Music\Db\Cache;
-use OCA\Music\Db\Track;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\Response;
 use \OCP\Files\Folder;
 use \OCP\IL10N;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Cache;
+use \OCA\Music\Db\Track;
+use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\Scanner;
 
 
 class ApiController extends Controller {
@@ -364,9 +365,7 @@ class ApiController extends Controller {
 			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
 			return new JSONResponse($track->toCollection($this->l10n));
 		} else {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -377,9 +376,7 @@ class ApiController extends Controller {
 	public function fileWebDavUrl($fileId) {
 		$nodes = $this->userFolder->getById($fileId);
 		if (count($nodes) == 0) {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 		else {
 			$node = $nodes[0];
@@ -430,12 +427,9 @@ class ApiController extends Controller {
 		// we no longer need the session to be kept open
 		session_write_close();
 
-		try {
-			$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
-		} catch(DoesNotExistException $e) {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
+		if ($track === null) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'track not found');
 		}
 
 		$nodes = $this->userFolder->getById($track->getFileId());
@@ -448,9 +442,7 @@ class ApiController extends Controller {
 			return new FileResponse(array('mimetype' => $mime, 'content' => $content));
 		}
 
-		$r = new Response();
-		$r->setStatus(Http::STATUS_NOT_FOUND);
-		return $r;
+		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'file not found');
 	}
 
 	/**
@@ -465,9 +457,7 @@ class ApiController extends Controller {
 		if ($info) {
 			return new JSONResponse($info);
 		} else {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -485,9 +475,7 @@ class ApiController extends Controller {
 		if ($coverData !== NULL) {
 			return new FileResponse($coverData);
 		} else {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 }

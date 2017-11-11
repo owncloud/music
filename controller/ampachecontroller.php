@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Controller;
@@ -29,6 +31,7 @@ use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\SortBy;
 
+use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
@@ -389,9 +392,7 @@ class AmpacheController extends Controller {
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $userId);
 		} catch(BusinessLayerException $e) {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 		}
 
 		$files = $this->rootFolder->getById($track->getFileId());
@@ -399,9 +400,7 @@ class AmpacheController extends Controller {
 		if(count($files) === 1) {
 			return new FileResponse($files[0]);
 		} else {
-			$r = new Response();
-			$r->setStatus(Http::STATUS_NOT_FOUND);
-			return $r;
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -416,13 +415,10 @@ class AmpacheController extends Controller {
 			}
 		}
 		catch(BusinessLayerException $e) {
-			// album not found
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album not found');
 		}
 
-		// no cover found
-		$r = new Response();
-		$r->setStatus(Http::STATUS_NOT_FOUND);
-		return $r;
+		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album has no cover');
 	}
 
 	protected function renderXml($templateName, $params) {

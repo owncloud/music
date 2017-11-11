@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Controller;
@@ -26,6 +28,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
+use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
@@ -122,8 +125,7 @@ class PlaylistApiController extends Controller {
 			}
 
 		} catch(BusinessLayerException $ex) {
-			return new JSONResponse(array('message' => $ex->getMessage()),
-				Http::STATUS_NOT_FOUND);
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
 
@@ -201,8 +203,7 @@ class PlaylistApiController extends Controller {
 			$playlist = call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
 			return $playlist->toAPI();
 		} catch(BusinessLayerException $ex) {
-			return new JSONResponse(array('message' => $ex->getMessage()),
-					Http::STATUS_NOT_FOUND);
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
 

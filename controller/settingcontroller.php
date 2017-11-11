@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Controller;
@@ -93,7 +95,7 @@ class SettingController extends Controller {
 	 */
 	public function generateUserKey($length, $description) {
 		if($description == NULL) {
-			return new JSONResponse(['message' => 'Please provide a description'], Http::STATUS_BAD_REQUEST);
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Please provide a description');
 		}
 
 		if($length == NULL || $length < self::DEFAULT_PASSWORD_LENGTH) {
@@ -108,7 +110,7 @@ class SettingController extends Controller {
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 
 		if(is_null($id)) {
-			return new JSONResponse(['message' => 'Error while saving the credentials'], Http::STATUS_INTERNAL_SERVER_ERROR);
+			return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, 'Error while saving the credentials');
 		}
 
 		return new JSONResponse(['id' => $id, 'password' => $password, 'description' => $description], Http::STATUS_CREATED);

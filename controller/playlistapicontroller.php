@@ -15,12 +15,12 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 use \OCP\Files\Folder;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
@@ -121,7 +121,7 @@ class PlaylistApiController extends Controller {
 				return $playlist->toAPI();
 			}
 
-		} catch(DoesNotExistException $ex) {
+		} catch(BusinessLayerException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 				Http::STATUS_NOT_FOUND);
 		}
@@ -200,7 +200,7 @@ class PlaylistApiController extends Controller {
 		try {
 			$playlist = call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
 			return $playlist->toAPI();
-		} catch(DoesNotExistException $ex) {
+		} catch(BusinessLayerException $ex) {
 			return new JSONResponse(array('message' => $ex->getMessage()),
 					Http::STATUS_NOT_FOUND);
 		}

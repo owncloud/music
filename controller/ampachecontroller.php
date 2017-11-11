@@ -222,7 +222,6 @@ class AmpacheController extends Controller {
 			$artists = $this->artistBusinessLayer->findAll($userId, SortBy::Name);
 		}
 
-		// set album and track count for artists
 		foreach($artists as &$artist) {
 			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
 			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
@@ -236,7 +235,6 @@ class AmpacheController extends Controller {
 
 		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $userId);
 
-		// set album and track count for artists
 		foreach($albums as &$album) {
 			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
 			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
@@ -257,7 +255,6 @@ class AmpacheController extends Controller {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
 
-		// set album and track count for artists
 		foreach($tracks as &$track) {
 			$track->setArtist($artist);
 			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
@@ -280,7 +277,6 @@ class AmpacheController extends Controller {
 		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 
-		// set album and track count for artists
 		foreach($tracks as &$track) {
 			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
 			$track->setAlbum($album);
@@ -298,7 +294,6 @@ class AmpacheController extends Controller {
 
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 
-		// set album and track count for artists
 		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
 		$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
 		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));

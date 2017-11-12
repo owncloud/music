@@ -13,10 +13,6 @@
 namespace OCA\Music\Utility;
 
 use Doctrine\DBAL\Connection;
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-
-use \OCA\Music\Db\Album;
 
 
 class HelperTest extends \PHPUnit_Framework_TestCase {

@@ -33,6 +33,13 @@ $appName = $c->query('AppName');
 });
 
 /**
+ * set default content security policy to allow loading media from data URL
+ */
+$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+$policy->addAllowedMediaDomain('data:');
+\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+
+/**
  * register regular task
  */
 \OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\CleanUp', 'run']);

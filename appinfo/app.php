@@ -33,11 +33,14 @@ $appName = $c->query('AppName');
 });
 
 /**
- * set default content security policy to allow loading media from data URL
+ * Set default content security policy to allow loading media from data URL.
+ * The needed API is not available on ownCloud 8.2.
  */
-$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-$policy->addAllowedMediaDomain('data:');
-\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+if (method_exists(\OC::$server, 'getContentSecurityPolicyManager')) {
+	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+	$policy->addAllowedMediaDomain('data:');
+	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+}
 
 /**
  * register regular task

@@ -381,6 +381,8 @@ class ApiController extends Controller {
 		else {
 			$node = $nodes[0];
 			$relativePath = $this->userFolder->getRelativePath($node->getPath());
+			// URL encode each part of the file path
+			$relativePath = join('/', array_map('rawurlencode', explode('/', $relativePath)));
 			$url = $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath);
 			return new JSONResponse(['url' => $url]);
 		}

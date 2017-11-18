@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+
+#: ../templates/fake-template.php:26
+msgid "(file is not within your music collection folder)"
+msgstr ""
+
+#: ../templates/main.php:52
+msgid "+ New Playlist"
+msgstr ""
+
+#: ../js/public/app.js:84
+msgid "1 album"
+msgid_plural "{{ count }} albums"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../js/public/app.js:79
+msgid "1 track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../templates/partials/playlistview.php:34
+msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr ""
+
+#: ../templates/fake-template.php:7
+#: ../templates/main.php:46
+msgid "Albums"
+msgstr ""
+
+#: ../templates/main.php:48
+#: ../templates/partials/playlistview.php:5
+msgid "All tracks"
+msgstr ""
+
+#: ../templates/fake-template.php:6
+msgid "Artists"
+msgstr ""
+
+#: ../templates/main.php:135
+msgid "Click here to start the scan"
+msgstr ""
+
+#: ../templates/fake-template.php:24
+msgid "Close"
+msgstr ""
+
+#: ../templates/partials/sidebarlistitem.php:20
+msgid "Delete"
+msgstr ""
+
+#: ../templates/fake-template.php:14
+msgid "Description"
+msgstr ""
+
+#: ../templates/fake-template.php:15
+msgid "Description (e.g. App name)"
+msgstr ""
+
+#: ../js/public/app.js:145
+msgid "Failed to load the collection:"
+msgstr ""
+
+#: ../templates/fake-template.php:16
+msgid "Generate API password"
+msgstr ""
+
+#: ../templates/fake-template.php:25
+msgid "Go to album"
+msgstr ""
+
+#: ../templates/fake-template.php:19
+msgid "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime."
+msgstr ""
+
+#: ../templates/fake-template.php:13
+msgid "If this URL doesn't work try to append '/server/xml.server.php'."
+msgstr ""
+
+#: ../js/public/app.js:135
+msgid "Internal server error"
+msgstr ""
+
+#: ../templates/fake-template.php:10
+msgid "Invalid path"
+msgstr ""
+
+#: ../templates/fake-template.php:20
+msgid "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks"
+msgstr ""
+
+#: ../templates/fake-template.php:23
+msgid "Loading…"
+msgstr ""
+
+#: ../templates/fake-template.php:3
+msgid "Music"
+msgstr ""
+
+#: ../templates/main.php:54
+msgid "New Playlist"
+msgstr ""
+
+#: ../templates/main.php:134
+msgid "New music available"
+msgstr ""
+
+#: ../templates/main.php:129
+#: ../templates/main.php:130
+msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/main.php:80
+msgid "Next"
+msgstr ""
+
+#: ../templates/main.php:123
+msgid "No music found"
+msgstr ""
+
+#: ../templates/partials/playlistview.php:33
+msgid "No tracks"
+msgstr ""
+
+#: ../templates/fake-template.php:9
+msgid "Path to your music collection"
+msgstr ""
+
+#: ../templates/main.php:78
+msgid "Pause"
+msgstr ""
+
+#: ../templates/main.php:76
+#: ../templates/partials/overview.php:19
+#: ../templates/partials/overview.php:7
+#: ../templates/partials/playlistview.php:6
+msgid "Play"
+msgstr ""
+
+#: ../templates/main.php:74
+msgid "Previous"
+msgstr ""
+
+#: ../templates/partials/playlistview.php:25
+msgid "Remove"
+msgstr ""
+
+#: ../templates/partials/playlistview.php:25
+msgid "Remove track from playlist"
+msgstr ""
+
+#: ../templates/partials/sidebarlistitem.php:23
+msgid "Rename"
+msgstr ""
+
+#: ../templates/main.php:107
+msgid "Repeat"
+msgstr ""
+
+#: ../js/public/app.js:376
+#: ../js/public/app.js:798
+msgid "Requested entry was not found"
+msgstr ""
+
+#: ../templates/fake-template.php:17
+msgid "Revoke API password"
+msgstr ""
+
+#: ../templates/main.php:140
+msgid "Scanning music …"
+msgstr ""
+
+#: ../templates/partials/overview.php:36
+msgid "Show all {{ trackcount }} songs …"
+msgid_plural "Show all {{ trackcount }} songs …"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../templates/partials/overview.php:41
+msgid "Show less …"
+msgstr ""
+
+#: ../templates/main.php:105
+msgid "Shuffle"
+msgstr ""
+
+#: ../js/public/app.js:606
+msgid "Some not playable tracks were skipped."
+msgstr ""
+
+#: ../templates/fake-template.php:11
+msgid "This setting specifies the folder which will be scanned for music."
+msgstr ""
+
+#: ../js/public/app.js:138
+msgid "Timeout"
+msgstr ""
+
+#: ../templates/fake-template.php:8
+msgid "Tracks"
+msgstr ""
+
+#: ../templates/fake-template.php:4
+msgid "Unknown album"
+msgstr ""
+
+#: ../templates/fake-template.php:5
+msgid "Unknown artist"
+msgstr ""
+
+#: ../templates/main.php:124
+msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
+#: ../templates/fake-template.php:12
+msgid "Use this address to browse your music collection from any Ampache compatible player."
+msgstr ""
+
+#: ../templates/fake-template.php:18
+msgid "Use your username and following password to connect to this Ampache instance:"
+msgstr ""
+
+#: ../templates/main.php:109
+#: ../templates/main.php:110
+#: ../templates/main.php:112
+msgid "Volume"
+msgstr ""
+
+#: ../templates/main.php:141
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr ""

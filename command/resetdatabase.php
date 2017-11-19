@@ -27,7 +27,7 @@ class ResetDatabase extends Command {
 	/** @var Maintenance */
 	private $maintenance;
 
-	public function __construct($maintenance) {
+	public function __construct(Maintenance $maintenance) {
 		$this->maintenance = $maintenance;
 		parent::__construct();
 	}

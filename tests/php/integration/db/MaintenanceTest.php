@@ -10,12 +10,13 @@
  * @copyright Morris Jobke 2013, 2014
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Db;
 
+use \OCA\Music\AppFramework\Core\Logger;
 use Doctrine\DBAL\Connection;
 
 
-class HelperTest extends \PHPUnit_Framework_TestCase {
+class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 
 	/** @var Connection */
 	private $db;
@@ -23,6 +24,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp(){
 		/** @var Connection db */
 		$this->db = \OC::$server->getDatabaseConnection();
+		$this->logger = new Logger('music');
 	}
 
 	protected function loadData($filename) {
@@ -71,10 +73,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase {
 	public function testCleanup(){
 		$user = 'integration';
 		$this->checkForEmptyTables($user);
-		$this->loadData('HelperCleanupData.json');
+		$this->loadData('MaintenanceCleanupData.json');
 
-		$helper = new Helper($this->db);
-		$helper->cleanUp();
+		$maintenance = new Maintenance($this->db, $this->logger);
+		$maintenance->cleanUp();
 		$this->checkForEmptyTables($user);
 	}
 }

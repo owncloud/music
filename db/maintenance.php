@@ -16,14 +16,19 @@ namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
+use \OCA\Music\AppFramework\Core\Logger;
+
 
 class Maintenance {
 
 	/** @var IDBConnection */
 	private $db;
+	/** @var Logger */
+	private $logger;
 
-	public function __construct(IDBConnection $db){
+	public function __construct(IDBConnection $db, Logger $logger){
 		$this->db = $db;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -73,5 +78,39 @@ class Maintenance {
 		}
 
 		return $updatedRows;
+	}
+
+	/**
+	 * Wipe clean the music database of the given user, or all users
+	 * @param string $userId
+	 * @param boolean $allUsers
+	 */
+	public function resetDb($userId, $allUsers = false) {
+		if ($userId && $allUsers) {
+			throw new InvalidArgumentException('userId should be null if allUsers targeted');
+		}
+	
+		$sqls = array(
+				'DELETE FROM `*PREFIX*music_tracks`',
+				'DELETE FROM `*PREFIX*music_albums`',
+				'DELETE FROM `*PREFIX*music_artists`',
+				'UPDATE *PREFIX*music_playlists SET track_ids=NULL',
+				'DELETE FROM `*PREFIX*music_cache`'
+		);
+	
+		foreach ($sqls as $sql) {
+			$params = [];
+			if (!$allUsers) {
+				$sql .=  ' WHERE `user_id` = ?';
+				$params[] = $userId;
+			}
+			$this->db->executeUpdate($sql, $params);
+		}
+	
+		if ($allUsers) {
+			$this->logger->log("Erased music databases of all users", 'info');
+		} else {
+			$this->logger->log("Erased music database of user $userId", 'info');
+		}
 	}
 }

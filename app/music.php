@@ -287,7 +287,8 @@ class Music extends App {
 
 		$container->registerService('Maintenance', function(IAppContainer $c) {
 			return new Maintenance(
-				$c->query('Db')
+				$c->query('Db'),
+				$c->query('Logger')
 			);
 		});
 
@@ -301,7 +302,7 @@ class Music extends App {
 				$c->query('Cache'),
 				$c->query('CoverHelper'),
 				$c->query('Logger'),
-				$c->query('Db'),
+				$c->query('Maintenance'),
 				$c->query('Config'),
 				$c->query('AppName'),
 				$c->query('RootFolder')

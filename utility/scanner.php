@@ -19,13 +19,13 @@ use \OCP\Files\Folder;
 use \OCP\IConfig;
 
 use \OCA\Music\AppFramework\Core\Logger;
-
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\Db\Cache;
-use OCP\IDBConnection;
+use \OCA\Music\Db\Maintenance;
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -39,8 +39,7 @@ class Scanner extends PublicEmitter {
 	private $cache;
 	private $coverHelper;
 	private $logger;
-	/** @var IDBConnection  */
-	private $db;
+	private $maintenance;
 	private $configManager;
 	private $appName;
 	private $rootFolder;
@@ -53,7 +52,7 @@ class Scanner extends PublicEmitter {
 								Cache $cache,
 								CoverHelper $coverHelper,
 								Logger $logger,
-								IDBConnection $db,
+								Maintenance $maintenance,
 								IConfig $configManager,
 								$appName,
 								Folder $rootFolder){
@@ -65,7 +64,7 @@ class Scanner extends PublicEmitter {
 		$this->cache = $cache;
 		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
-		$this->db = $db;
+		$this->maintenance = $maintenance;
 		$this->configManager = $configManager;
 		$this->appName = $appName;
 		$this->rootFolder = $rootFolder;
@@ -494,47 +493,13 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * Wipe clean the music database of the given user, or all users
-	 * @param string $userId
-	 * @param boolean $allUsers
-	 */
-	public function resetDb($userId, $allUsers = false) {
-		if ($userId && $allUsers) {
-			throw new InvalidArgumentException('userId should be null if allUsers targeted');
-		}
-
-		$sqls = array(
-				'DELETE FROM `*PREFIX*music_tracks`',
-				'DELETE FROM `*PREFIX*music_albums`',
-				'DELETE FROM `*PREFIX*music_artists`',
-				'UPDATE *PREFIX*music_playlists SET track_ids=NULL',
-				'DELETE FROM `*PREFIX*music_cache`'
-		);
-
-		foreach ($sqls as $sql) {
-			$params = [];
-			if (!$allUsers) {
-				$sql .=  ' WHERE `user_id` = ?';
-				$params[] = $userId;
-			}
-			$this->db->executeUpdate($sql, $params);
-		}
-
-		if ($allUsers) {
-			$this->logger->log("Erased music databases of all users", 'info');
-		} else {
-			$this->logger->log("Erased music database of user $userId", 'info');
-		}
-	}
-
-	/**
 	 * Update music path
 	 */
 	public function updatePath($path, $userId) {
 		// TODO currently this function is quite dumb
 		// it just drops all entries of an user from the tables
 		$this->logger->log("Changing music collection path of user $userId to $path", 'info');
-		$this->resetDb($userId);
+		$this->maintenance->resetDb($userId);
 	}
 
 	public function findCovers() {

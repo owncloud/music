@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Command;
 
-use OCA\Music\Utility\Scanner;
+use OCA\Music\Db\Maintenance;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,11 +24,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ResetDatabase extends Command {
 
-	/** @var Scanner */
-	private $scanner;
+	/** @var Maintenance */
+	private $maintenance;
 
-	public function __construct($scanner) {
-		$this->scanner = $scanner;
+	public function __construct($maintenance) {
+		$this->maintenance = $maintenance;
 		parent::__construct();
 	}
 
@@ -53,7 +53,7 @@ class ResetDatabase extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop tables for <info>all users</info>");
-			$this->scanner->resetDb(null, true);
+			$this->maintenance->resetDb(null, true);
 		} else {
 			$users = $input->getArgument('user_id');
 			if (count($users) === 0) {
@@ -61,7 +61,7 @@ class ResetDatabase extends Command {
 			}
 			foreach($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
-				$this->scanner->resetDb($user);
+				$this->maintenance->resetDb($user);
 			}
 		}
 	}

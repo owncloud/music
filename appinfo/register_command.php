@@ -8,18 +8,24 @@
  *
  * @author Leizh <leizh@free.fr>
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Leizh 2014
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 use \OCA\Music\App\Music;
 
 $app = new Music();
 $c = $app->getContainer();
-$userManager = $c->getServer()->getUserManager();
-$scanner = $c->query('Scanner');
-$cache = $c->query('Cache');
 
-$application->add(new OCA\Music\Command\Scan($userManager, $scanner));
-$application->add(new OCA\Music\Command\ResetDatabase($scanner));
-$application->add(new OCA\Music\Command\ResetCache($cache));
+$application->add(new OCA\Music\Command\Scan(
+		$c->getServer()->getUserManager(),
+		$c->query('Scanner')
+));
+$application->add(new OCA\Music\Command\ResetDatabase(
+		$c->query('Maintenance')
+));
+$application->add(new OCA\Music\Command\ResetCache(
+		$c->query('Cache')
+));

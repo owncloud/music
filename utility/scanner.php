@@ -107,7 +107,6 @@ class Scanner extends PublicEmitter {
 
 		// debug logging
 		$this->logger->log("update - mimetype $mimetype", 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'update', array($filePath));
 
 		if(self::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
@@ -135,11 +134,10 @@ class Scanner extends PublicEmitter {
 	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
 		if(ini_get('allow_url_fopen')) {
 
+			$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
+
 			$meta = $this->extractMetadata($file, $userHome, $filePath);
 			$fileId = $file->getId();
-
-			// debug logging
-			$this->logger->log('extracted metadata - ' . json_encode($meta), 'debug');
 
 			// add/update artist and get artist entity
 			$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);

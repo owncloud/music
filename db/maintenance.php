@@ -63,12 +63,9 @@ class Maintenance {
 				) as tmp
 			);',
 			'DELETE FROM `*PREFIX*music_artists` WHERE `id` NOT IN (
-				SELECT DISTINCT * FROM (
-					SELECT `artist`.`id` FROM `*PREFIX*music_artists` `artist`
-					JOIN `*PREFIX*music_albums` `album` ON
-					`artist`.`id` = `album`.`album_artist_id` UNION SELECT `track`.`artist_id`
-					FROM `*PREFIX*music_tracks` `track`
-				) as tmp
+				SELECT `album_artist_id` FROM `*PREFIX*music_albums`
+				UNION
+				SELECT `artist_id` FROM `*PREFIX*music_tracks`
 			);'
 		);
 

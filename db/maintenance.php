@@ -31,28 +31,35 @@ class Maintenance {
 		$this->logger = $logger;
 	}
 
-	/**
-	 * Removes orphaned data from the database
-	 */
-	public function cleanUp() {
-		$sqls = array(
+	private function removeObsoleteCoverImages() {
+		return $this->db->executeUpdate(
 			'UPDATE `*PREFIX*music_albums` SET `cover_file_id` = NULL
-				WHERE `cover_file_id` IS NOT NULL AND `cover_file_id` IN (
-					SELECT `cover_file_id` FROM (
-						SELECT `cover_file_id` FROM `*PREFIX*music_albums`
-						LEFT JOIN `*PREFIX*filecache`
-							ON `cover_file_id`=`fileid`
-						WHERE `fileid` IS NULL
-					) mysqlhack
-				);',
+			WHERE `cover_file_id` IS NOT NULL AND `cover_file_id` IN (
+				SELECT `cover_file_id` FROM (
+					SELECT `cover_file_id` FROM `*PREFIX*music_albums`
+					LEFT JOIN `*PREFIX*filecache`
+						ON `cover_file_id`=`fileid`
+					WHERE `fileid` IS NULL
+				) mysqlhack
+			)'
+		);
+	}
+
+	private function removeObsoleteTracks() {
+		return $this->db->executeUpdate(
 			'DELETE FROM `*PREFIX*music_tracks` WHERE `file_id` IN (
 				SELECT `file_id` FROM (
 					SELECT `file_id` FROM `*PREFIX*music_tracks`
 					LEFT JOIN `*PREFIX*filecache`
 						ON `file_id`=`fileid`
 					WHERE `fileid` IS NULL
-					) mysqlhack
-				);',
+				) mysqlhack
+			)'
+		);
+	}
+
+	private function removeObsoleteAlbums() {
+		return $this->db->executeUpdate(
 			'DELETE FROM `*PREFIX*music_albums` WHERE `id` IN (
 				SELECT `id` FROM (
 					SELECT `*PREFIX*music_albums`.`id`
@@ -61,20 +68,30 @@ class Maintenance {
 						ON `*PREFIX*music_tracks`.`album_id` = `*PREFIX*music_albums`.`id`
 					WHERE `*PREFIX*music_tracks`.`album_id` IS NULL
 				) as tmp
-			);',
+			)'
+		);
+	}
+
+	private function removeObsoleteArtists() {
+		return $this->db->executeUpdate(
 			'DELETE FROM `*PREFIX*music_artists` WHERE `id` NOT IN (
 				SELECT `album_artist_id` FROM `*PREFIX*music_albums`
 				UNION
 				SELECT `artist_id` FROM `*PREFIX*music_tracks`
-			);'
+			)'
 		);
+	}
 
-		$updatedRows = 0;
-		foreach ($sqls as $sql) {
-			$updatedRows += $this->db->executeUpdate($sql);
-		}
-
-		return $updatedRows;
+	/**
+	 * Removes orphaned data from the database
+	 */
+	public function cleanUp() {
+		return [
+			'covers' => $this->removeObsoleteCoverImages(),
+			'tracks' => $this->removeObsoleteTracks(),
+			'albums' => $this->removeObsoleteAlbums(),
+			'artists' => $this->removeObsoleteArtists()
+		];
 	}
 
 	/**

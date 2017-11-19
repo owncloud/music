@@ -39,8 +39,8 @@ class Cleanup extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$output->writeln('Running cleanup task...');
-		$count = $this->maintenance->cleanUp();
-		$output->writeln("Updated $count DB rows");
+		$removedEtries = $this->maintenance->cleanUp();
+		$output->writeln("Removed entries: " . json_encode($removedEtries));
 	}
 
 }

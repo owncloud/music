@@ -25,11 +25,12 @@ class CleanUp {
 		$container = $app->getContainer();
 
 		// remove orphaned entities
-		$container->query('Helper')->cleanUp();
-		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query('Scanner')->findCovers();
+		$container->query('Maintenance')->cleanUp();
 
 		// remove expired sessions
 		$container->query('AmpacheSessionMapper')->cleanUp();
+
+		// find covers - TODO performance stuff - maybe just call this once in an hour
+		$container->query('Scanner')->findCovers();
 	}
 }

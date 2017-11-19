@@ -7,15 +7,17 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017
  */
 
-namespace OCA\Music\Utility;
+namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
 
-class Helper {
+class Maintenance {
 
 	/** @var IDBConnection */
 	private $db;
@@ -65,9 +67,11 @@ class Helper {
 			);'
 		);
 
+		$updatedRows = 0;
 		foreach ($sqls as $sql) {
-			$query = $this->db->prepare($sql);
-			$query->execute();
+			$updatedRows += $this->db->executeUpdate($sql);
 		}
+
+		return $updatedRows;
 	}
 }

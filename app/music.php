@@ -16,6 +16,7 @@
 namespace OCA\Music\App;
 
 use \OCP\AppFramework\App;
+use \OCP\AppFramework\IAppContainer;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
@@ -31,13 +32,14 @@ use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
 
-use \OCA\Music\DB\AlbumMapper;
-use \OCA\Music\DB\AmpacheSessionMapper;
-use \OCA\Music\DB\AmpacheUserMapper;
-use \OCA\Music\DB\ArtistMapper;
-use \OCA\Music\DB\Cache;
-use \OCA\Music\DB\PlaylistMapper;
-use \OCA\Music\DB\TrackMapper;
+use \OCA\Music\Db\AlbumMapper;
+use \OCA\Music\Db\AmpacheSessionMapper;
+use \OCA\Music\Db\AmpacheUserMapper;
+use \OCA\Music\Db\ArtistMapper;
+use \OCA\Music\Db\Cache;
+use \OCA\Music\Db\Maintenance;
+use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Hooks\FileHooks;
 use \OCA\Music\Hooks\ShareHooks;
@@ -47,9 +49,7 @@ use \OCA\Music\Middleware\AmpacheMiddleware;
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
-use \OCA\Music\Utility\Helper;
 use \OCA\Music\Utility\Scanner;
-use OCP\AppFramework\IAppContainer;
 
 class Music extends App {
 
@@ -285,8 +285,8 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('Helper', function(IAppContainer $c) {
-			return new Helper(
+		$container->registerService('Maintenance', function(IAppContainer $c) {
+			return new Maintenance(
 				$c->query('Db')
 			);
 		});

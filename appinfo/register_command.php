@@ -29,3 +29,6 @@ $application->add(new OCA\Music\Command\ResetDatabase(
 $application->add(new OCA\Music\Command\ResetCache(
 		$c->query('Cache')
 ));
+$application->add(new OCA\Music\Command\Cleanup(
+		$c->query('Maintenance')
+));

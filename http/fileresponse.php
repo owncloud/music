@@ -33,13 +33,16 @@ class FileResponse extends Response {
 
 		if (is_array($file)) {
 			$this->file = $file['content'];
-			$this->addHeader('Content-type', $file['mimetype'] .'; charset=utf-8');
+			$mime = $file['mimetype'];
+			$size = strlen($file['content']);
 		} else {
 			$this->file = $file;
-			$this->addHeader('Content-type', $file->getMimetype() .'; charset=utf-8');
-		}
-		if (isset($_SERVER['HTTP_RANGE'])) {
+			$mime = $file->getMimetype();
 			$size = $file->getSize();
+		}
+		$this->addHeader('Content-type', "$mime; charset=utf-8");
+
+		if (isset($_SERVER['HTTP_RANGE'])) {
 			// Note that we do not support Range Header of the type
 			// bytes=x-x,y-y
 			if (!preg_match('/^bytes=\d*-\d*$/', $_SERVER['HTTP_RANGE'])) {
@@ -48,8 +51,8 @@ class FileResponse extends Response {
 			} else {
 				$parts = explode('-', substr($_SERVER['HTTP_RANGE'], 6));
 				$this->start = $parts[0] != '' ? (int)$parts[0] : 0;
-				$this->end = $parts[1] != '' ? (int)$parts[1] : $size;
-				$this->end = $size < $this->end ? $size : $this->end;
+				$this->end = $parts[1] != '' ? (int)$parts[1] : $size - 1;
+				$this->end = min($this->end, $size - 1);
 
 				if ($this->start > $this->end) {
 					$this->addHeader('Content-Range: bytes */' . $size);
@@ -74,32 +77,35 @@ class FileResponse extends Response {
 	 * Returns the rendered json
 	 * @return string the file
 	 */
-	public function render(){
-		if (is_string($this->file)) {
-			if ($this->rangeRequest) {
-				// Request Range Not Satisfiable
-				if (!isset($this->start) && !isset($this->end) || $this->start > $this->end) {
-					return null;
-				}
-
-				return substr($this->file, $this->start, $this->end - $this->start + 1);
-			}
-			return $this->file;
-		}
+	public function render() {
 		if ($this->rangeRequest) {
 			// Request Range Not Satisfiable
-			if (!isset($this->start) && !isset($this->end) || $this->start > $this->end) {
+			if (!isset($this->start) || !isset($this->end) || $this->start > $this->end) {
 				return null;
 			}
+		}
 
+		return is_string($this->file)
+			? $this->renderFromString()
+			: $this->renderFromFile();
+	}
+
+	private function renderFromString() {
+		return $this->rangeRequest
+			? substr($this->file, $this->start, $this->partialSize())
+			: $this->file;
+	}
+
+	private function renderFromFile() {
+		if ($this->rangeRequest) {
 			$handle = $this->file->fopen('r');
 			fseek($handle, $this->start);
 			$content = '';
-			$rangeSize = $this->end - $this->start + 1;
+			$rangeSize = $this->partialSize();
 			while(!feof($handle)) {
 				$content .= fread($handle, 8192); // 8k chunk
 				if (strlen($content) > $rangeSize) {
-					$content = substr($content, $rangeSize);
+					$content = substr($content, 0, $rangeSize);
 					break;
 				}
 			}
@@ -108,4 +114,9 @@ class FileResponse extends Response {
 		}
 		return $this->file->getContent();
 	}
+
+	private function partialSize() {
+		return $this->end - $this->start + 1;
+	}
+
 }

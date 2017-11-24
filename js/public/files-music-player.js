@@ -11,7 +11,14 @@
 $(document).ready(function () {
 
 	var player = new PlayerWrapper();
+	// Register the play action for the supported mime types both synchronously
+	// and asynchronously once the player init is done. This is necessary because
+	// the types supported by SoundManager2 are known only in the callback but
+	// the callback does not fire at all on Chromium where we still can support
+	// mp3 and flac formats using aurora.js.
 	player.init(registerFileActions);
+	registerFileActions();
+
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
 	var currentFile = null;

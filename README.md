@@ -144,11 +144,11 @@ Music App can be installed using the App Management in ownCloud. Instructions ca
 
 #### Unshare from self
 
-When the recipient of a shared audio file unshares it, the file reference is left in the music database of the recipient. To get rid of it, the database has to be regenerated. Fixing this requires a change into ownCloud/Nextcloud core. #567
+When the recipient of a shared audio file unshares it, the file reference is left in the music database of the recipient. To get rid of it, the database has to be regenerated. The fix for this has been merged to ownCloud and Nextcloud cores, but it may not yet be included in your release of the cloud. #567
 
 #### Huge music collections
 
-The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough (say, more than 10000 tracks), you probably find the performance dissatisfactory.
+The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough, it may fail to load. The maximum number of tracks supported depends on your server but should be around 50'000. Also, when there are tens of thousands of tracks, loading the applicatin view takes pretty long time and the responsiveness of the UI may be poor. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. 
 
 ## Development
 

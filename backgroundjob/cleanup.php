@@ -17,7 +17,7 @@ use \OCA\Music\App\Music;
 class CleanUp {
 
 	/**
-	 * Calls the cleanup method of the scanner
+	 * Run background cleanup task
 	 */
 	public static function run() {
 		$app = new Music();

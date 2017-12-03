@@ -11,13 +11,6 @@
 $(document).ready(function () {
 
 	var player = new PlayerWrapper();
-	// Register the play action for the supported mime types both synchronously
-	// and asynchronously once the player init is done. This is necessary because
-	// the types supported by SoundManager2 are known only in the callback but
-	// the callback does not fire at all on Chromium where we still can support
-	// mp3 and flac formats using aurora.js.
-	player.init(registerFileActions);
-	registerFileActions();
 
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
@@ -326,6 +319,7 @@ $(document).ready(function () {
 		return match ? match[3] : filename;
 	}
 
+	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 	function registerFileActions() {
 		var audioMimes = [
 			'audio/flac',
@@ -356,10 +350,15 @@ $(document).ready(function () {
 
 		// On single-file-share page, add click handler to the file preview if this is a supported file.
 		// The feature is disabled on old IE versions where there's no MutationObserver and
-		// $.initialize would not work.
-		if ($('#header').hasClass('share-file') && typeof MutationObserver !== "undefined") {
+		// $.initialize would not work. Also, make sure to add the handler only once even if this method
+		// gets called multiple times.
+		if ($('#header').hasClass('share-file')
+				&& typeof MutationObserver !== "undefined"
+				&& !actionRegisteredForSingleShare)
+		{
 			var mime = $('#mimetype').val();
 			if (_.contains(supportedMimes, mime)) {
+				actionRegisteredForSingleShare = true;
 
 				// The #publicpreview is added dynamically by another script.
 				// Augment it with the click handler once it gets added.
@@ -393,6 +392,14 @@ $(document).ready(function () {
 			}
 		}
 	}
+
+	// Register the play action for the supported mime types both synchronously
+	// and asynchronously once the player init is done. This is necessary because
+	// the types supported by SoundManager2 are known only in the callback but
+	// the callback does not fire at all on browsers with no codecs (some versions
+	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
+	player.init(registerFileActions);
+	registerFileActions();
 
 	return true;
 });

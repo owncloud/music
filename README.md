@@ -218,6 +218,7 @@ Beside those mentioned resources following additional resources are implemented:
 
 * `/api/log`
 * `/api/collection`
+* `/api/cover/{hash}`
 * `/api/file/{fileId}`
 * `/api/file/{fileId}/info`
 * `/api/file/{fileId}/webdav`

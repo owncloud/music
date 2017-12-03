@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017
  */
 
 namespace OCA\Music\Db;
@@ -159,33 +161,32 @@ class Album extends Entity {
 	 * If the cover image is already cached, the image data is embedded into collection as data URI.
 	 * Otherwise the collection contains URL which can be used to fetch the image data.
 	 * @param  IURLGenerator $urlGenerator URL Generator
-	 * @param  array $cachedCoverData Cached cover image data if available (mime and base64 encoded content)
+	 * @param  string|null $cachedCoverHash Cached cover image hash if available
 	 * $return string|null
 	 */
-	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverData) {
-		if ($this->getCoverFileId() > 0) {
-			if ($cachedCoverData !== null) {
-				return 'data:' . $cachedCoverData['mimetype'] . ';base64,' . $cachedCoverData['content'];
-			} else {
-				return $this->coverToAPI($urlGenerator);
-			}
+	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverHash) {
+		if (!empty($cachedCoverHash)) {
+			return $urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $cachedCoverHash]);
+		} else if ($this->getCoverFileId() > 0) {
+			return $this->coverToAPI($urlGenerator);
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	/**
 	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  object $l10n Localization handler
-	 * @param  array $cachedCoverData Cached cover image data if available (mime and base64 encoded content)
+	 * @param  string|null $cachedCoverHash Cached cover image hash if available
 	 * @return array collection API object
 	 */
-	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverData) {
+	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash) {
 		return array(
 			'name'  => $this->getNameString($l10n),
 			'year'  => $this->getYearRange(),
 			'disk'  => $this->getDisk(),
-			'cover' => $this->coverToCollection($urlGenerator, $cachedCoverData),
+			'cover' => $this->coverToCollection($urlGenerator, $cachedCoverHash),
 			'id'    => $this->getId(),
 		);
 	}

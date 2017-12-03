@@ -123,28 +123,6 @@ class ApiController extends Controller {
 		return $response;
 	}
 
-	/**
-	 * Small cached images are embedded directly to the collection to limit the number of PHP queries.
-	 * However, the total size of all embedded covers is limited to avoid the size of the collection
-	 * from getting out of control with large music libraries.
-	 * @param int $albumId
-	 * @return string|null
-	 */
-	private function coverToEmbed($albumId) {
-		$cover = $this->coverHelper->getCoverFromCache($albumId, $this->userId, true);
-		if ($cover != null) {
-			$size = strlen($cover['content']);
-			if ($size + $this->embeddedCoversTotalSize > self::EMBEDDED_COVERS_MAX_TOTAL_SIZE) {
-				$cover = null;
-			} else {
-				$this->embeddedCoversTotalSize += $size;
-			}
-		}
-		return $cover;
-	}
-	const EMBEDDED_COVERS_MAX_TOTAL_SIZE = 3145728; // 3 MB
-	private $embeddedCoversTotalSize = 0;
-
 	private function buildCollectionJson() {
 		// Get all the entities from the DB first. The order of queries is important if we are in
 		// the middle of a scanning process: we don't want to get tracks which do not yet have
@@ -169,8 +147,9 @@ class ApiController extends Controller {
 		foreach ($allAlbums as &$album) {
 			$albumId = $album->getId();
 			$allAlbumsByIdAsObj[$albumId] = $album;
+			$coverHash = $this->coverHelper->getCachedCoverHash($albumId, $this->userId);
 			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
-					$this->urlGenerator, $this->l10n, $this->coverToEmbed($albumId));
+					$this->urlGenerator, $this->l10n, $coverHash);
 		}
 
 		$artists = array();
@@ -476,6 +455,28 @@ class ApiController extends Controller {
 
 		if ($coverData !== NULL) {
 			return new FileResponse($coverData);
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function cachedCover($hash) {
+		// we no longer need the session to be kept open
+		session_write_close();
+
+		$coverData = $this->coverHelper->getCoverFromCache($hash, $this->userId);
+
+		if ($coverData !== NULL) {
+			$response =  new FileResponse($coverData);
+			// instruct also the client-side to cache the result, this is safe
+			// as the resource URI contains the image hash
+			$response->cacheFor(31536000); // 1 year as seconds
+			$response->addHeader('Pragma', 'cache');
+			return $response;
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

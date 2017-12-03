@@ -31,6 +31,7 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#fileInfo', 'url' => '/api/file/{fileId}/info', 'verb' => 'GET'),
 	array('name' => 'api#getScanState', 'url' => '/api/scanstate', 'verb' => 'GET'),
 	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'POST'),
+	array('name' => 'api#cachedCover', 'url' => '/api/cover/{hash}', 'verb' => 'GET'),
 
 	// Shiva api https://github.com/tooxie/shiva-server#resources
 	array('name' => 'api#artists', 'url' => '/api/artists', 'verb' => 'GET'),

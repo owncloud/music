@@ -45,7 +45,7 @@ class CoverHelper {
 	}
 
 	/**
-	 * get cover image of the album
+	 * Get cover image of the album
 	 *
 	 * @param int $albumId
 	 * @param string $userId
@@ -53,7 +53,8 @@ class CoverHelper {
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	public function getCover($albumId, $userId, $rootFolder) {
-		$response = $this->getCoverFromCache($albumId, $userId);
+		$hash = $this->getCachedCoverHash($albumId, $userId);
+		$response = ($hash === null) ? null : $this->getCoverFromCache($hash, $userId);
 		if ($response === null) {
 			$response = $this->readCover($albumId, $userId, $rootFolder);
 			if ($response !== null) {
@@ -64,15 +65,26 @@ class CoverHelper {
 	}
 
 	/**
-	 * get cover image of the album if it is cached
+	 * Get hash of the album cover if it is in the cache
 	 * 
 	 * @param int $albumId
+	 * @param string $userId
+	 * @return string|null
+	 */
+	public function getCachedCoverHash($albumId, $userId) {
+		return $this->cache->get($userId, 'coverhash_' . $albumId);
+	}
+
+	/**
+	 * Get cover image with given hash from the cache
+	 * 
+	 * @param string $hash
 	 * @param string $userId
 	 * @param bool $asBase64
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCoverFromCache($albumId, $userId, $asBase64 = false) {
-		$cached = $this->cache->get($userId, 'cover_' . $albumId);
+	public function getCoverFromCache($hash, $userId, $asBase64 = false) {
+		$cached = $this->cache->get($userId, 'cover_' . $hash);
 		if ($cached !== null) {
 			$delimPos = strpos($cached, '|');
 			$mime = substr($cached, 0, $delimPos);
@@ -98,13 +110,21 @@ class CoverHelper {
 		if ($mime && $content) {
 			$size = strlen($content);
 			if ($size < self::MAX_SIZE_TO_CACHE) {
+				$hash = hash('md5', $content);
+				// cache the data with hash as a key
 				try {
-					$this->cache->add($userId, 'cover_' . $albumId, $mime . '|' . base64_encode($content));
-					$this->cache->remove($userId, 'collection');
+					$this->cache->add($userId, 'cover_' . $hash, $mime . '|' . base64_encode($content));
+				} catch (UniqueConstraintViolationException $ex) {
+					$this->logger->log("Cover with hash $hash is already cached", 'debug');
 				}
-				catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Tried to cache cover of album $albumId which is already cached. Ignoring.", 'warn');
+				// cache the hash with albumId as a key
+				try {
+					$this->cache->add($userId, 'coverhash_' . $albumId, $hash);
+				} catch (UniqueConstraintViolationException $ex) {
+					$this->logger->log("Cover hash for album $albumId is already cached", 'debug');
 				}
+				// collection.json needs to be regenrated the next time it's fetched
+				$this->cache->remove($userId, 'collection');
 			}
 			else {
 				$this->logger->log("Cover image of album $albumId is large ($size B), skip caching", 'debug');
@@ -119,11 +139,11 @@ class CoverHelper {
 	 * @param string $userId
 	 */
 	public function removeCoverFromCache($albumId, $userId) {
-		$this->cache->remove($userId, 'cover_' . $albumId);
+		$this->cache->remove($userId, 'coverhash_' . $albumId);
 	}
 
 	/**
-	 * Read cover image from back-end
+	 * Read cover image from the file system
 	 * @param integer $albumId
 	 * @param string $userId
 	 * @param Folder $rootFolder

@@ -364,8 +364,9 @@ $(document).ready(function () {
 				// The #publicpreview is added dynamically by another script.
 				// Augment it with the click handler once it gets added.
 				$.initialize('img.publicpreview', function() {
-					$(this).css('cursor', 'pointer');
-					$(this).click(function() {
+					var previewImg = $(this);
+					previewImg.css('cursor', 'pointer');
+					previewImg.click(function() {
 						showMusicControls();
 						if (!currentFile) {
 							currentFile = 1; // bogus id
@@ -374,10 +375,19 @@ $(document).ready(function () {
 									$('#downloadURL').val(),
 									mime,
 									titleFromFilename($('#filename').val()),
-									'url("' + $(this).attr('src') + '")'
+									'url("' + previewImg.attr('src') + '")'
 							);
 						}
 						togglePlayback();
+					});
+
+					// At least in ownCloud 10 and Nextcloud 11-13, there is such an oversight
+					// that if MP3 file has no embedded cover, then the placeholder is not shown
+					// either. Fix that on our own.
+					previewImg.error(function() {
+						previewImg.attr('src', OC.imagePath('core', 'filetypes/audio'));
+						previewImg.css('width', '128px');
+						previewImg.css('height', '128px');
 					});
 				});
 			}

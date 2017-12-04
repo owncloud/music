@@ -127,7 +127,7 @@ class Scanner extends PublicEmitter {
 		$parentFolderId = $file->getParent()->getId();
 		if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
 			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
-			$this->cache->remove($userId);
+			$this->cache->remove($userId, 'collection');
 		}
 	}
 
@@ -296,11 +296,27 @@ class Scanner extends PublicEmitter {
 	private function deleteImage($fileIds, $userIds=null){
 		$this->logger->log('deleteImage - '. implode(', ', $fileIds) , 'debug');
 
-		$affectedUsers = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
-		$deleted = (count($affectedUsers) > 0);
-		if ($deleted) {
-			foreach ($affectedUsers as $affectedUser) {
-				$this->cache->remove($affectedUser);
+		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
+		$affectedUsers = array_map(function($a) { return $a->getUserId(); }, $affectedAlbums);
+		$affectedUsers = array_unique($affectedUsers);
+
+		// Delete may be for one file or for a folder containing thousands of albums.
+		// If loads of albums got affected, then ditch the whole cache of the affected
+		// users because removing the cached covers one-by-one could delay the delete
+		// operation significantly.
+		if (count($affectedAlbums) > 100) {
+			foreach ($affectedUsers as $user) {
+				$this->cache->remove($user);
+			}
+		}
+		else {
+			// remove the cached covers
+			foreach ($affectedAlbums as $album) {
+				$this->coverHelper->removeCoverFromCache($album->getId(), $album->getUserId());
+			}
+			// remove the cached collection
+			foreach ($affectedUsers as $user) {
+				$this->cache->remove($user, 'collection');
 			}
 		}
 
@@ -504,7 +520,7 @@ class Scanner extends PublicEmitter {
 		$affectedUsers = $this->albumBusinessLayer->findCovers();
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
-			$this->cache->remove($user);
+			$this->cache->remove($user, 'collection');
 			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
 		}
 		return !empty($affectedUsers);

@@ -183,7 +183,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer[] $coverFileIds
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
-	 * @return string[] user IDs of the affected users; empty array if no album was modified
+	 * @return Album[] albums which got modified, empty array if none
 	 */
 	public function removeCovers($coverFileIds, $userIds=null){
 		// find albums using the given file as cover
@@ -206,9 +206,7 @@ class AlbumMapper extends BaseMapper {
 			$this->execute($sql, $params);
 		}
 
-		// get unique users from the modified albums
-		$users = array_map(function($a) { return $a->getUserId(); }, $albums);
-		return array_unique($users);
+		return $albums;
 	}
 
 	/**

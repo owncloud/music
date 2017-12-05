@@ -12,9 +12,6 @@
 
 @media only screen and (min-width: 769px) and (max-width: 1300px) {
 
-	.album-area {
-		width: 100%;
-	}
 
 	#play-controls {
 		margin-left: 0;

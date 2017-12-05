@@ -1,4 +1,3 @@
-
 // fix SVGs in IE because the scaling is a real PITA
 // https://github.com/owncloud/music/issues/126
 if($('html').hasClass('ie')) {
@@ -12,7 +11,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop', 'pasvaz.bindonce'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop', 'pasvaz.bindonce','vs-repeat'])
 	.config(['RestangularProvider', '$routeProvider',
 		function (RestangularProvider, $routeProvider) {
 
@@ -48,9 +47,9 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$route', '$timeout', '$window', 'ArtistFactory',
-'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
+'playlistService', 'libraryService', 'albumGridService', 'gettext', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
-		playlistService, libraryService, gettext, gettextCatalog, Restangular) {
+		playlistService, libraryService, albumGridService, gettext, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -95,6 +94,10 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		$scope.letterAvailable[$scope.letters[i]] = false;
 	}
 
+	$scope.albumHeight = albumGridService.getAlbumHeight();
+	$scope.artistHeight = albumGridService.getArtistHeight();
+	$scope.albumBreakpoints = albumGridService.getBreakpoints();
+
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loading = true;
@@ -107,6 +110,8 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			for (var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
+
+				artist.dimensions = albumGridService.getDimensionsForArtist(artist);
 
 				if ($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;
@@ -1007,6 +1012,55 @@ angular.module('Music').directive('albumart', [function() {
 }]);
 
 
+angular.module('Music').directive('vsResize', ['$window', '$rootScope', function ($window, $rootScope) {
+	return {
+		link: {
+			post: function (scope, element, attrs, ctrl) {
+
+				var breakpoints = scope.$eval(attrs.vsResize);
+
+				if (!breakpoints) {
+					return;
+				}
+
+				var resetGrid = _.debounce(function () {
+					var width = $window.innerWidth;
+					var currentBreakpoint = element[0].getAttribute('data-size');
+					for (var breakpoint in breakpoints) {
+						if (width > breakpoints[breakpoint].width) {
+							continue;
+						}
+						if (currentBreakpoint !== breakpoint) {
+							element[0].setAttribute('data-size', breakpoint);
+							scope.currentLayout = breakpoint;
+							attrs.$set('vsSize', 'dimensions.' + breakpoint);
+							scope.$apply();
+							console.log('triggering');
+							scope.$emit('vsRepeatTrigger');
+						}
+						break;
+					}
+				}, 60);
+
+				resetGrid();
+
+				// trigger resize on window resize and player status changes
+				var unsubscribeFuncs = [
+					$rootScope.$on('windowResized', resetGrid),
+					$rootScope.$watch('started', resetGrid)
+				];
+
+				// unsubscribe listeners when the scope is destroyed
+				scope.$on('$destroy', function () {
+					_.each(unsubscribeFuncs, function (func) {
+						func();
+					});
+				});
+			}
+		}
+	};
+}]);
+
 angular.module('Music').directive('ngEnter', function () {
 	return function (scope, element, attrs) {
 		element.bind("keydown keypress", function (event) {
@@ -1284,6 +1338,55 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 	// Set the current volume to the newly created player instance
 	this.setVolume(this.volume);
 };
+
+angular.module('Music').service('albumGridService', ['$rootScope', function ($rootScope) {
+
+	var breakpoints = {
+		phone: {columns: 1, width: 768},
+		tablet: {columns: 1, width: 1300},
+		desktop: {columns: 2, width: 1800},
+		ultrawide: {columns: 3, width: 9999}
+	};
+
+	var albumHeight = 282;
+	var artistHeight = 36;
+
+	return {
+		getBreakpoints: function () {
+			return breakpoints;
+		},
+
+		getColumns: function () {
+			return columns;
+		},
+
+		getDimensionsForArtist: function (artist) {
+			var dimensions = {};
+
+			for (var breakpoint in breakpoints) {
+				var numAlbums = artist.albums.length;
+				var columns = breakpoints[breakpoint].columns;
+				var rows = Math.floor(numAlbums / columns);
+				if (numAlbums % columns) { // Add a row for remaining albums
+					rows++;
+				}
+				dimensions[breakpoint] = artistHeight + (rows * albumHeight); // We now have the total height of an artist's album list for this breakpoint
+			}
+
+			return dimensions;
+		},
+
+		getAlbumHeight: function () {
+			return albumHeight;
+		},
+
+		getArtistHeight: function () {
+			return artistHeight;
+		}
+	};
+
+}
+]);
 
 angular.module('Music').service('libraryService', ['$rootScope', function($rootScope) {
 

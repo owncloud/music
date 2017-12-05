@@ -4,6 +4,7 @@
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-bindonce/bindonce.min');
+\OCP\Util::addScript('music', 'vendor/angular-vs-repeat/src/angular-vs-repeat');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
@@ -67,7 +68,7 @@
 			</ul>
 		</div>
 
-		<div id="app-content" du-scroll-container>
+		<div id="app-content" du-scroll-container class="scroll-container">
 
 			<div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 				<div id="play-controls">

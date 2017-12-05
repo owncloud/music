@@ -10,9 +10,9 @@
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$route', '$timeout', '$window', 'ArtistFactory',
-'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
+'playlistService', 'libraryService', 'albumGridService', 'gettext', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
-		playlistService, libraryService, gettext, gettextCatalog, Restangular) {
+		playlistService, libraryService, albumGridService, gettext, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -57,6 +57,10 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		$scope.letterAvailable[$scope.letters[i]] = false;
 	}
 
+	$scope.albumHeight = albumGridService.getAlbumHeight();
+	$scope.artistHeight = albumGridService.getArtistHeight();
+	$scope.albumBreakpoints = albumGridService.getBreakpoints();
+
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loading = true;
@@ -69,6 +73,8 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			for (var i=0; i < artists.length; i++) {
 				var artist = artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
+
+				artist.dimensions = albumGridService.getDimensionsForArtist(artist);
 
 				if ($scope.letterAvailable.hasOwnProperty(letter)) {
 					$scope.letterAvailable[letter] = true;

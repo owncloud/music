@@ -53,6 +53,7 @@
 .artist-area > h1 {
 	margin-left: 28px;
 	font-size: 34px;
+	font-size: calc(16px + 0.5vw);
 	line-height: 36px;
 }
 
@@ -72,14 +73,37 @@ h1 span:hover .play {
     visibility: visible
 }
 
+.album-list{
+	display: flex;
+	flex-flow: row wrap;
+}
+
+[data-size="ultrawide"] .album-area{
+	flex: 1 0 33.33%;
+}
+
+[data-size="desktop"] .album-area{
+	flex: 1 0 50%;
+}
+
+[data-size="tablet"] .album-area{
+	flex: 1 0 100%;
+
+}
+
+[data-size="phone"] .album-area{
+	flex: 1 0 100%;
+}
+
 .album-area {
 	padding: 14px 28px;
-	width: 480px;
+	/*width: 480px;*/
 	float: left;
 }
 
 .album-area > h2 {
 	font-size: 21px;
+	font-size: calc(16px + 0.4vw);
 	padding-bottom: 21px;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -121,6 +145,29 @@ h1 span:hover .play {
 
 .album-area .track-list {
 	margin-left: 195px;
+	padding: 0 10px;
+	background: white;
+	transition: all 0.2s;
+}
+
+.album-area .track-list.expanded {
+	position: relative;
+	z-index: 99;
+	margin-top: -100px;
+	padding: 10px;
+	box-shadow: 0px 10px 35px -5px rgba(0,0,0,0.75);
+	transition: all 0.3s;
+}
+
+.backdrop {
+	position: fixed;
+	top: 0;
+	height:100%;
+	left: 0;
+	right: 0;
+	z-index: 98;
+	transition: all 0.2s;
+	background: rgba(0, 0, 0, 0.18);
 }
 
 .album-area .track-list > li {
@@ -150,7 +197,7 @@ h1 span:hover .play {
 	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
-	
+
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
 	filter: alpha(opacity = 60);

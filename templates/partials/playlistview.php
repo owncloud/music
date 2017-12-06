@@ -6,7 +6,7 @@
 			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
-	<ul class="track-list">
+	<ul class="track-list" vs-repeat vs-scroll-parent=".scroll-container">
 		<li bindonce ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
 			ng-init="song = entry.track"
 			bo-id="'track-' + song.id"

@@ -147,20 +147,21 @@ h1 span:hover .play {
 	margin-left: 195px;
 	padding: 0 10px;
 	background: white;
-	transition: all 0.2s;
+	transition: box-shadow 0.2s, margin-top 0.4s;
 }
 
 .album-area .track-list.expanded {
 	position: relative;
 	z-index: 99;
 	margin-top: -100px;
-	padding: 10px;
+	padding: 30px 10px;
 	box-shadow: 0px 10px 35px -5px rgba(0,0,0,0.75);
-	transition: all 0.3s;
+	transition: box-shadow 0.2s, margin-top 0.4s;
 }
 
 .backdrop {
 	position: fixed;
+	pointer-events:none;
 	top: 0;
 	height:100%;
 	left: 0;

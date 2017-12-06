@@ -24,9 +24,9 @@ angular.module('Music').service('albumGridService', ['$rootScope', function ($ro
 
 	var breakpoints = {
 		phone: {columns: 1, width: 768},
-		tablet: {columns: 1, width: 1300},
-		desktop: {columns: 2, width: 1800},
-		ultrawide: {columns: 3, width: 9999}
+		tablet: {columns: 2, width: 1300},
+		desktop: {columns: 3, width: 1800},
+		ultrawide: {columns: 4, width: 9999}
 	};
 
 	var albumHeight = 282;

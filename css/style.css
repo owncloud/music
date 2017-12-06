@@ -79,15 +79,15 @@ h1 span:hover .play {
 }
 
 [data-size="ultrawide"] .album-area{
-	flex: 1 0 33.33%;
+	flex: 1 0 25%;
 }
 
 [data-size="desktop"] .album-area{
-	flex: 1 0 50%;
+	flex: 1 0 33.33%;
 }
 
 [data-size="tablet"] .album-area{
-	flex: 1 0 100%;
+	flex: 1 0 50%;
 
 }
 

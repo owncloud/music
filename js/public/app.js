@@ -1343,7 +1343,7 @@ angular.module('Music').service('albumGridService', ['$rootScope', function ($ro
 	var breakpoints = {
 		phone: {columns: 1, width: 768},
 		tablet: {columns: 2, width: 1300},
-		desktop: {columns: 3, width: 1800},
+		desktop: {columns: 3, width: 2000},
 		ultrawide: {columns: 4, width: 9999}
 	};
 

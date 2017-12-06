@@ -168,7 +168,7 @@ h1 span:hover .play {
 	max-height: 700px;
 	overflow-y: scroll;
 	z-index: 99;
-	margin-top: -100px;
+	margin-top: -61px;
 	padding: 30px 40px 30px 10px;
 	box-shadow: 0px 10px 35px -5px rgba(0,0,0,0.75);
 	transition: margin-top 0.4s;

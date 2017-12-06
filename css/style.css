@@ -75,30 +75,42 @@ h1 span:hover .play {
 
 .album-list{
 	display: flex;
-	flex-flow: row wrap;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 [data-size="ultrawide"] .album-area{
-	flex: 1 0 25%;
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 25%;
+	min-width: 25%;
 }
 
 [data-size="desktop"] .album-area{
-	flex: 1 0 33.33%;
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 33.33%;
+	min-width: 33.33%;
 }
 
 [data-size="tablet"] .album-area{
-	flex: 1 0 50%;
-
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 50%;
+	min-width: 50%;
 }
 
 [data-size="phone"] .album-area{
-	flex: 1 0 100%;
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 100%;
+	min-width: 100%;
 }
 
 .album-area {
 	padding: 14px 28px;
-	/*width: 480px;*/
-	float: left;
+	width: 480px;
+	/*float: left;*/
 }
 
 .album-area > h2 {

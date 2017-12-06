@@ -42,7 +42,6 @@ angular.module('Music').directive('vsResize', ['$window', '$rootScope', function
 							scope.currentLayout = breakpoint;
 							attrs.$set('vsSize', 'dimensions.' + breakpoint);
 							scope.$apply();
-							console.log('triggering');
 							scope.$emit('vsRepeatTrigger');
 						}
 						break;

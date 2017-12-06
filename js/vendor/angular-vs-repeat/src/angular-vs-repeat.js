@@ -266,7 +266,6 @@
                         });
 
                         function refresh() {
-                            console.log('refresh');
                             if (!originalCollection || originalCollection.length < 1) {
                                 $scope[collectionName] = [];
                                 originalLength = 0;
@@ -275,7 +274,6 @@
                             else {
                                 originalLength = originalCollection.length;
                                 if (sizesPropertyExists) {
-                                    console.log($attrs.vsSize);
                                     $scope.sizes = originalCollection.map(function(item) {
                                         var s = $scope.$new(false);
                                         angular.extend(s, item);

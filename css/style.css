@@ -165,7 +165,7 @@ h1 span:hover .play {
 .album-area .track-list.expanded {
 	position: absolute;
 	border-radius: 2px;
-	height: 700px;
+	max-height: 700px;
 	overflow-y: scroll;
 	z-index: 99;
 	margin-top: -100px;
@@ -176,12 +176,13 @@ h1 span:hover .play {
 
 .backdrop {
 	position: absolute;
-	height: 500px;
+	margin-top: -5000px;
+	height: 10000px;
 	left: 0;
 	right: 0;
 	z-index: 98;
-	background: rgba(0,0,0,0.1);
-	box-shadow: 0px 0px 40px 60px rgba(0,0,0,0.1);
+	background: rgba(0,0,0,0.15);
+	/*box-shadow: 0px 0px 40px 60px rgba(0,0,0,0.1);*/
 }
 
 .album-area .track-list > li {

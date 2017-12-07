@@ -70,14 +70,16 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
 
-			for (var i=0; i < artists.length; i++) {
-				var artist = artists[i],
+			for (var i=0; i < $scope.artists.length; i++) {
+				var artist = $scope.artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
 				artist.dimensions = albumGridService.getDimensionsForArtist(artist);
 
 				if ($scope.letterAvailable.hasOwnProperty(letter)) {
-					$scope.letterAvailable[letter] = true;
+					if (!$scope.letterAvailable[letter] || i < $scope.letterAvailable[letter]) {
+						$scope.letterAvailable[letter] = i;
+					}
 				}
 			}
 

@@ -107,14 +107,16 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
 
-			for (var i=0; i < artists.length; i++) {
-				var artist = artists[i],
+			for (var i=0; i < $scope.artists.length; i++) {
+				var artist = $scope.artists[i],
 					letter = artist.name.substr(0,1).toUpperCase();
 
 				artist.dimensions = albumGridService.getDimensionsForArtist(artist);
 
 				if ($scope.letterAvailable.hasOwnProperty(letter)) {
-					$scope.letterAvailable[letter] = true;
+					if (!$scope.letterAvailable[letter] || i < $scope.letterAvailable[letter]) {
+						$scope.letterAvailable[letter] = i;
+					}
 				}
 			}
 
@@ -1131,6 +1133,33 @@ angular.module('Music').directive('sidebarListItem', function() {
 		replace: true
 	};
 });
+
+angular.module('Music').directive('vsScrollTo', ['$window', '$rootScope', function ($window, $rootScope) {
+	return {
+		link: {
+			post: function (scope, element, attrs, ctrl) {
+
+				var vsScrollInstance = attrs.vsScrollTarget;
+
+				var container = document.getElementById(vsScrollInstance);
+				var targetElementScope = angular.element(container).scope();
+				element.on('click', function () {
+					var target = attrs.vsScrollTo;
+					targetElementScope.$apply(function () {
+						var scrollParent = targetElementScope.$scrollParent;
+						var sizes = targetElementScope.sizesCumulative;
+
+						if (target < sizes.length) {
+							scrollParent.animate({scrollTop: sizes[target]}, "slow");
+
+						}
+					});
+				});
+
+			}
+		}
+	};
+}]);
 
 angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
 	return {

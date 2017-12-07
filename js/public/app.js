@@ -1014,54 +1014,6 @@ angular.module('Music').directive('albumart', [function() {
 }]);
 
 
-angular.module('Music').directive('vsResize', ['$window', '$rootScope', function ($window, $rootScope) {
-	return {
-		link: {
-			post: function (scope, element, attrs, ctrl) {
-
-				var breakpoints = scope.$eval(attrs.vsResize);
-
-				if (!breakpoints) {
-					return;
-				}
-
-				var resetGrid = _.debounce(function () {
-					var width = $window.innerWidth;
-					var currentBreakpoint = element[0].getAttribute('data-size');
-					for (var breakpoint in breakpoints) {
-						if (width > breakpoints[breakpoint].width) {
-							continue;
-						}
-						if (currentBreakpoint !== breakpoint) {
-							element[0].setAttribute('data-size', breakpoint);
-							scope.currentLayout = breakpoint;
-							attrs.$set('vsSize', 'dimensions.' + breakpoint);
-							scope.$apply();
-							scope.$emit('vsRepeatTrigger');
-						}
-						break;
-					}
-				}, 60);
-
-				resetGrid();
-
-				// trigger resize on window resize and player status changes
-				var unsubscribeFuncs = [
-					$rootScope.$on('windowResized', resetGrid),
-					$rootScope.$watch('started', resetGrid)
-				];
-
-				// unsubscribe listeners when the scope is destroyed
-				scope.$on('$destroy', function () {
-					_.each(unsubscribeFuncs, function (func) {
-						func();
-					});
-				});
-			}
-		}
-	};
-}]);
-
 angular.module('Music').directive('ngEnter', function () {
 	return function (scope, element, attrs) {
 		element.bind("keydown keypress", function (event) {
@@ -1133,6 +1085,57 @@ angular.module('Music').directive('sidebarListItem', function() {
 		replace: true
 	};
 });
+
+/**
+ * This custom directive handles the responsive album grid for an artist. As we're using virtual scrolling,
+ * we need to tell angular-vs-scroll that the item height has changed depending on how many albums there are
+ * and how many columns they're displayed in.
+ */
+
+angular.module('Music').directive('vsResize', ['$window', '$rootScope', function ($window, $rootScope) {
+	return function (scope, element, attrs, ctrl) {
+
+		var breakpoints = scope.$eval(attrs.vsResize);
+
+		if (!breakpoints) {
+			return;
+		}
+
+		var resetGrid = _.debounce(function () {
+			var width = $window.innerWidth;
+			var currentBreakpoint = element[0].getAttribute('data-size');
+			for (var breakpoint in breakpoints) {
+				if (width > breakpoints[breakpoint].width) {
+					continue;
+				}
+				if (currentBreakpoint !== breakpoint) {
+					element[0].setAttribute('data-size', breakpoint);
+					scope.currentLayout = breakpoint;
+					attrs.$set('vsSize', 'dimensions.' + breakpoint);
+					scope.$apply();
+					scope.$emit('vsRepeatTrigger');
+				}
+				break;
+			}
+		}, 60);
+
+		resetGrid();
+
+		// trigger resize on window resize and player status changes
+		var unsubscribeFuncs = [
+			$rootScope.$on('windowResized', resetGrid),
+			$rootScope.$watch('started', resetGrid)
+		];
+
+		// unsubscribe listeners when the scope is destroyed
+		scope.$on('$destroy', function () {
+			_.each(unsubscribeFuncs, function (func) {
+				func();
+			});
+		});
+
+	};
+}]);
 
 angular.module('Music').directive('vsScrollTo', ['$window', '$rootScope', function ($window, $rootScope) {
 	return {

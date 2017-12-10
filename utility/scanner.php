@@ -320,7 +320,7 @@ class Scanner extends PublicEmitter {
 			}
 		}
 
-		return $deleted;
+		return (count($affectedAlbums) > 0);
 	}
 
 	/**

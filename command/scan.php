@@ -85,26 +85,31 @@ class Scan extends Command {
 		}
 
 		foreach ($users as $user) {
-			if (is_object($user)) {
-				$user = $user->getUID();
-			}
-			\OC_Util::tearDownFS();
-			\OC_Util::setupFS($user);
-			$output->writeln("Start scan for <info>$user</info>");
-			$userHome = $this->scanner->resolveUserFolder($user);
-			$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
-			$output->writeln('Found ' . count($unscanned) . ' new music files');
-			
-			if (count($unscanned)) {
-				$processedCount = $this->scanner->scanFiles(
-						$user, $userHome, $unscanned,
-						$input->getOption('debug') ? $output : null);
-				$output->writeln("Added $processedCount files to database");
-			}
+			$this->scanUser($user, $output, $input->getOption('debug'));
+		}
 
-			if ($this->scanner->findCovers()) {
-				$output->writeln("Some cover image(s) were found and added");
-			}
+		$output->writeln("Searching cover images for albums with no cover art set...");
+		if ($this->scanner->findCovers()) {
+			$output->writeln("Some cover image(s) were found and added");
+		}
+	}
+
+	protected function scanUser($user, OutputInterface $output, $debug) {
+		if (is_object($user)) {
+			$user = $user->getUID();
+		}
+		\OC_Util::tearDownFS();
+		\OC_Util::setupFS($user);
+		$output->writeln("Start scan for <info>$user</info>");
+		$userHome = $this->scanner->resolveUserFolder($user);
+		$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
+		$output->writeln('Found ' . count($unscanned) . ' new music files');
+
+		if (count($unscanned)) {
+			$processedCount = $this->scanner->scanFiles(
+					$user, $userHome, $unscanned,
+					$debug ? $output : null);
+			$output->writeln("Added $processedCount files to database of <info>$user</info>");
 		}
 	}
 }

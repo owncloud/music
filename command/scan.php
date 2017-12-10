@@ -64,6 +64,12 @@ class Scan extends Command {
 					InputOption::VALUE_NONE,
 					'will run the scan in debug mode (memory usage)'
 			)
+			->addOption(
+					'clean-obsolete',
+					null,
+					InputOption::VALUE_NONE,
+					'check availability of previously scanned tracks, removing obsolete entries'
+		)
 		;
 	}
 
@@ -85,7 +91,11 @@ class Scan extends Command {
 		}
 
 		foreach ($users as $user) {
-			$this->scanUser($user, $output, $input->getOption('debug'));
+			$this->scanUser(
+					$user,
+					$output,
+					$input->getOption('clean-obsolete'),
+					$input->getOption('debug'));
 		}
 
 		$output->writeln("Searching cover images for albums with no cover art set...");
@@ -94,14 +104,23 @@ class Scan extends Command {
 		}
 	}
 
-	protected function scanUser($user, OutputInterface $output, $debug) {
+	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
 		if (is_object($user)) {
 			$user = $user->getUID();
 		}
 		\OC_Util::tearDownFS();
 		\OC_Util::setupFS($user);
-		$output->writeln("Start scan for <info>$user</info>");
 		$userHome = $this->scanner->resolveUserFolder($user);
+
+		if ($cleanObsolete) {
+			$output->writeln("Checking availability of previously scanned files of <info>$user</info>...");
+			$removedCount = $this->scanner->removeUnavailableFiles($user, $userHome);
+			if ($removedCount > 0) {
+				$output->writeln("Removed $removedCount tracks which are no longer accessible by $user");
+			}
+		}
+
+		$output->writeln("Start scan for <info>$user</info>");
 		$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
 		$output->writeln('Found ' . count($unscanned) . ' new music files');
 

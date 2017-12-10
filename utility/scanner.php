@@ -450,6 +450,31 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
+	 * The the availability of all the index audio files of the user. Remove
+	 * from the index any which are not available
+	 * @param string $userId
+	 * @param Folder $userHome
+	 * @return Number of removed files
+	 */
+	public function removeUnavailableFiles($userId, $userHome) {
+		$indexedFiles = $this->getScannedFiles($userId);
+		$unavailableFiles = [];
+		foreach ($indexedFiles as $fileId) {
+			$fileNodes = $userHome->getById($fileId);
+			if (empty($fileNodes)) {
+				$this->logger->log("File $fileId is not available for user $userId, removing", 'info');
+				$unavailableFiles[] = $fileId;
+			}
+		}
+
+		$count = count($unavailableFiles);
+		if ($count > 0) {
+			$this->deleteAudio($unavailableFiles, [$userId]);
+		}
+		return $count;
+	}
+
+	/**
 	 * Parse and get basic info about a file. The file does not have to be indexed in the database.
 	 * @param string $fileId
 	 * @param string $userId

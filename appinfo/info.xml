@@ -6,7 +6,7 @@
 	<description>Plays audio files directly in the Files view or in a separate library view. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. In the library view, you can play tracks by album or artist or create custom playlists. Includes an Ampache-compatible server. NOTE: ownCloud version 9.1.0 or newer is recommended. On older cloud versions, you need to manually erase the music database before updating from version &lt;= 0.3.16.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen, Morris Jobke (original author), Jan-Christoph Borchardt (original design)</author>
-	<version>0.5.4</version>
+	<version>0.5.5</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/28543434-6eb12de0-70c8-11e7-966e-65f4c3a90531.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/30036348-2a173c38-91bb-11e7-89fb-39cab9180081.png</screenshot>

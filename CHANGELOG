@@ -1,3 +1,14 @@
+v0.5.5 2017-12-10
+ * fix Content Security Policy error being printed to browser console when starting playback on Chrome (#498)
+ * fix playing files which have '%' character followed by two digits in their name by using URL encoding (#299)
+ * enable running the background cleanup task on request with the `occ music:cleanup` command
+ * fix range requests on the endpoint `/api/file/{fileId}`
+ * fix files music player not being used on Chromium installations with no audio codecs (regression introduced in v0.5.4)
+ * remove any "broken" track entries in the background cleanup task (#588)
+ * workaround for not being able to play mp3 file on the "shared file" page if the file has no embedded cover (#596)
+ * enable client-side caching of the album cover art
+ * add option `--remove-obsolete` to the command `occ music:scan` to remove any inaccessible previously scanned files (#567)
+
 v0.5.4 2017-11-10
  * workaround for an authentication issue on Ampache Plugin for Rhythmbox (#590)
  * improved the cover image handling in the files music player (#582)

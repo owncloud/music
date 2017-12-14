@@ -50,6 +50,11 @@ angular.module('Music').controller('OverviewController', [
 		}
 
 		$scope.playTrack = function(track) {
+			// Allow passing an ID as well as a track object
+			if (!isNaN(track)) {
+				track = libraryService.getTrack(track);
+			}
+
 			// play/pause if currently playing track clicked
 			var currentTrack = $scope.$parent.currentTrack;
 			if (currentTrack && track.id === currentTrack.id) {
@@ -61,9 +66,14 @@ angular.module('Music').controller('OverviewController', [
 				window.location.hash = '#/track/' + track.id;
 
 				var album = libraryService.findAlbumOfTrack(track.id);
+
 				playTracks(album.tracks, album.tracks.indexOf(track));
 			}
 		};
+
+		$scope.$on('playTrack', function (event, trackId) {
+			$scope.playTrack(trackId);
+		});
 
 		$scope.playAlbum = function(album) {
 			// update URL hash

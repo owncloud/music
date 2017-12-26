@@ -74,4 +74,28 @@ class Cache extends Mapper {
 
 		return count($rows) ? $rows[0]['data'] : null;
 	}
+
+	/**
+	 * Get all key-value pairs of one user, optionally limitting to keys with a given prefix.
+	 * @param string $userId
+	 * @param string|null $prefix
+	 * @return array of arrays with keys 'key', 'data'
+	 */
+	public function getAll($userId, $prefix = null) {
+		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache` '.
+				'WHERE `user_id` = ?';
+		$params = [$userId];
+
+		if (!empty($prefix)) {
+			$sql .= ' AND `key` LIKE ?';
+			$params[] = $prefix . '%';
+		}
+
+		$result = $this->execute($sql, $params);
+		$rows = $result->fetchAll();
+		$result->closeCursor();
+
+		return $rows;
+	}
+
 }

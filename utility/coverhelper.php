@@ -76,6 +76,21 @@ class CoverHelper {
 	}
 
 	/**
+	 * Get all album cover hashes for one user.
+	 * @param string $userId
+	 * @return array with album IDs as keys and hashes as values
+	 */
+	public function getAllCachedCoverHashes($userId) {
+		$rows = $this->cache->getAll($userId, 'coverhash_');
+		$hashes = [];
+		foreach ($rows as $row) {
+			$albumId = explode('_', $row['key'])[1];
+			$hashes[$albumId] = $row['data'];
+		}
+		return $hashes;
+	}
+
+	/**
 	 * Get cover image with given hash from the cache
 	 * 
 	 * @param string $hash

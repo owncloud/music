@@ -144,10 +144,11 @@ class ApiController extends Controller {
 
 		$allAlbumsByIdAsObj = array();
 		$allAlbumsByIdAsArr = array();
+		$coverHashes = $this->coverHelper->getAllCachedCoverHashes($this->userId);
 		foreach ($allAlbums as &$album) {
 			$albumId = $album->getId();
 			$allAlbumsByIdAsObj[$albumId] = $album;
-			$coverHash = $this->coverHelper->getCachedCoverHash($albumId, $this->userId);
+			$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
 			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
 					$this->urlGenerator, $this->l10n, $coverHash);
 		}

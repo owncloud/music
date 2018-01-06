@@ -13,7 +13,7 @@
  * @copyright Thomas Müller 2013
  * @copyright Bart Visscher 2013
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\Command;
@@ -80,34 +80,50 @@ class Scan extends Command {
 			});
 		}
 
+		$argsValid = true;
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
+			$users = array_map(function($u){return $u->getUID();}, $users);
 		} else {
 			$users = $input->getArgument('user_id');
 
 			if (count($users) === 0) {
 				$output->writeln("Specify either the target user(s) or --all");
+				$argsValid = false;
+			}
+			else {
+				$argsValid = $this->validateUsers($users, $output);
 			}
 		}
 
-		foreach ($users as $user) {
-			$this->scanUser(
-					$user,
-					$output,
-					$input->getOption('clean-obsolete'),
-					$input->getOption('debug'));
-		}
+		if ($argsValid) {
+			foreach ($users as $user) {
+				$this->scanUser(
+						$user,
+						$output,
+						$input->getOption('clean-obsolete'),
+						$input->getOption('debug'));
+			}
 
-		$output->writeln("Searching cover images for albums with no cover art set...");
-		if ($this->scanner->findCovers()) {
-			$output->writeln("Some cover image(s) were found and added");
+			$output->writeln("Searching cover images for albums with no cover art set...");
+			if ($this->scanner->findCovers()) {
+				$output->writeln("Some cover image(s) were found and added");
+			}
 		}
 	}
 
-	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
-		if (is_object($user)) {
-			$user = $user->getUID();
+	protected function validateUsers($users, OutputInterface $output) {
+		$allOk = true;
+		foreach ($users as $user) {
+			if (!$this->userManager->userExists($user)) {
+				$output->writeln("User <error>$user</error> does not exist!");
+				$allOk = false;
+			}
 		}
+		return $allOk;
+	}
+
+	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
 		\OC_Util::tearDownFS();
 		\OC_Util::setupFS($user);
 		$userHome = $this->scanner->resolveUserFolder($user);

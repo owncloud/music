@@ -20,13 +20,15 @@ $app = new Music();
 $c = $app->getContainer();
 
 $application->add(new OCA\Music\Command\Scan(
-		$c->getServer()->getUserManager(),
+		$c->query('UserManager'),
 		$c->query('Scanner')
 ));
 $application->add(new OCA\Music\Command\ResetDatabase(
+		$c->query('UserManager'),
 		$c->query('Maintenance')
 ));
 $application->add(new OCA\Music\Command\ResetCache(
+		$c->query('UserManager'),
 		$c->query('Cache')
 ));
 $application->add(new OCA\Music\Command\Cleanup(

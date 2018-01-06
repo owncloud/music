@@ -18,46 +18,27 @@
 
 namespace OCA\Music\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 use OCA\Music\Utility\Scanner;
 
-class Scan extends Command {
-	/**
-	 * @var \OCP\IUserManager $userManager
-	 */
-	private $userManager;
+class Scan extends BaseCommand {
 	/**
 	 * @var  Scanner
 	 */
 	private $scanner;
 
 	public function __construct(\OCP\IUserManager $userManager, $scanner) {
-		$this->userManager = $userManager;
 		$this->scanner = $scanner;
-		parent::__construct();
+		parent::__construct($userManager);
 	}
 
-	protected function configure() {
+	protected function doConfigure() {
 		$this
 			->setName('music:scan')
 			->setDescription('scan and index any unindexed audio files')
-			->addArgument(
-					'user_id',
-					InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-					'scan new music files of the given user(s)'
-			)
-			->addOption(
-					'all',
-					null,
-					InputOption::VALUE_NONE,
-					'scan new music files of all known users'
-			)
 			->addOption(
 					'debug',
 					null,
@@ -68,59 +49,37 @@ class Scan extends Command {
 					'clean-obsolete',
 					null,
 					InputOption::VALUE_NONE,
-					'check availability of previously scanned tracks, removing obsolete entries'
-		)
+					'also check availability of any previously scanned tracks, removing obsolete entries'
+			)
 		;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function doExecute(InputInterface $input, OutputInterface $output) {
 		if (!$input->getOption('debug')) {
 			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 				$output->writeln("Scanning <info>$path</info>");
 			});
 		}
 
-		$argsValid = true;
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
 			$users = array_map(function($u){return $u->getUID();}, $users);
 		} else {
 			$users = $input->getArgument('user_id');
-
-			if (count($users) === 0) {
-				$output->writeln("Specify either the target user(s) or --all");
-				$argsValid = false;
-			}
-			else {
-				$argsValid = $this->validateUsers($users, $output);
-			}
 		}
 
-		if ($argsValid) {
-			foreach ($users as $user) {
-				$this->scanUser(
-						$user,
-						$output,
-						$input->getOption('clean-obsolete'),
-						$input->getOption('debug'));
-			}
-
-			$output->writeln("Searching cover images for albums with no cover art set...");
-			if ($this->scanner->findCovers()) {
-				$output->writeln("Some cover image(s) were found and added");
-			}
-		}
-	}
-
-	protected function validateUsers($users, OutputInterface $output) {
-		$allOk = true;
 		foreach ($users as $user) {
-			if (!$this->userManager->userExists($user)) {
-				$output->writeln("User <error>$user</error> does not exist!");
-				$allOk = false;
-			}
+			$this->scanUser(
+					$user,
+					$output,
+					$input->getOption('clean-obsolete'),
+					$input->getOption('debug'));
 		}
-		return $allOk;
+
+		$output->writeln("Searching cover images for albums with no cover art set...");
+		if ($this->scanner->findCovers()) {
+			$output->writeln("Some cover image(s) were found and added");
+		}
 	}
 
 	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {

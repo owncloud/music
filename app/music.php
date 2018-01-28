@@ -71,10 +71,12 @@ class Music extends App {
 				$c->query('AmpacheSessionMapper'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('AmpacheUser'),
 				$c->query('RootFolder'),
-				$c->query('CoverHelper')
+				$c->query('CoverHelper'),
+				$c->query('Logger')
 			);
 		});
 

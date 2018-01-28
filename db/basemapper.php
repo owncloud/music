@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016
+ * @copyright Pauli Järvinen 2016 - 2018
  */
 
 namespace OCA\Music\Db;
@@ -35,6 +35,8 @@ class BaseMapper extends Mapper {
 	 * Find a single entity by id and user_id
 	 * @param integer $id
 	 * @param string $userId
+	 * @throws DoesNotExistException if the entity does not exist
+	 * @throws MultipleObjectsReturnedException if more than one entity exists
 	 * @return Entity
 	 */
 	public function find($id, $userId){
@@ -43,13 +45,18 @@ class BaseMapper extends Mapper {
 	}
 
 	/**
-	 * Find all entities matching the given IDs without specifying the user
+	 * Find all entities matching the given IDs. Specifying the owning user is optional.
 	 * @param integer[] $ids  IDs of the entities to be found
+	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids){
+	public function findById($ids, $userId=null){
 		$count = count($ids);
 		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
+		if (!empty($userId)) {
+			$sql .= ' AND `user_id` = ?';
+			$ids[] = $userId;
+		}
 		return $this->findEntities($sql, $ids);
 	}
 

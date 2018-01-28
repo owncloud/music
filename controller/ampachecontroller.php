@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\Controller;
@@ -20,10 +20,12 @@ use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Middleware\AmpacheException;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\AmpacheUserMapper;
@@ -44,12 +46,14 @@ class AmpacheController extends Controller {
 	private $ampacheSessionMapper;
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
+	private $playlistBusinessLayer;
 	private $trackBusinessLayer;
 	private $ampacheUser;
 	private $urlGenerator;
 	private $rootFolder;
 	private $l10n;
 	private $coverHelper;
+	private $logger;
 
 	private $sessionExpiryTime = 6000;
 
@@ -61,16 +65,19 @@ class AmpacheController extends Controller {
 								AmpacheSessionMapper $ampacheSessionMapper,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
+								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								AmpacheUser $ampacheUser,
 								$rootFolder,
-								CoverHelper $coverHelper) {
+								CoverHelper $coverHelper,
+								Logger $logger) {
 		parent::__construct($appname, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
@@ -82,6 +89,7 @@ class AmpacheController extends Controller {
 		$this->rootFolder = $rootFolder;
 
 		$this->coverHelper = $coverHelper;
+		$this->logger = $logger;
 	}
 
 
@@ -113,12 +121,19 @@ class AmpacheController extends Controller {
 				return $this->song($filter, $auth);
 			case 'search_songs':
 				return $this->search_songs($filter, $auth);
+			case 'playlists':
+				return $this->playlists($filter, $exact);
+			case 'playlist':
+				return $this->playlist($filter);
+			case 'playlist_songs':
+				return $this->playlist_songs($filter, $auth);
 			# non Ampache API action - used for provide the file
 			case 'play':
 				return $this->play($filter);
 			case '_get_cover':
 				return $this->get_cover($filter);
 		}
+		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
 		throw new AmpacheException('Action not supported', 405);
 	}
 
@@ -383,6 +398,51 @@ class AmpacheController extends Controller {
 		return $this->renderXml(
 			'ampache/albums',
 			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+		);
+	}
+
+	protected function playlists($filter, $exact) {
+		$userId = $this->ampacheUser->getUserId();
+
+		if ($filter) {
+			$fuzzy = !((boolean) $exact);
+			$playlists = $this->playlistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
+		} else {
+			$playlists = $this->playlistBusinessLayer->findAll($userId);
+		}
+		
+		return $this->renderXml(
+				'ampache/playlists',
+				['playlists' => $playlists, 'userId' => $userId]
+		);
+	}
+
+	protected function playlist($listId) {
+		$userId = $this->ampacheUser->getUserId();
+		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
+		return $this->renderXml(
+				'ampache/playlists',
+				['playlists' => [$playlist], 'userId' => $userId]
+		);
+	}
+
+	protected function playlist_songs($listId, $auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
+
+		// set album and artist for tracks
+		foreach($tracks as &$track) {
+			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
+			$track->setAlbum($album);
+		}
+
+		return $this->renderXml(
+				'ampache/songs',
+				['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 	}
 

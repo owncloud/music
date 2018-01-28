@@ -46,6 +46,23 @@ class PlaylistMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 * @return Playlist[]
+	 */
+	public function findAllByName($name, $userId, $fuzzy = false){
+		if ($fuzzy) {
+			$condition = 'AND LOWER(`name`) LIKE LOWER(?) ';
+			$name = '%' . $name . '%';
+		} else {
+			$condition = 'AND `name` = ? ';
+		}
+		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`name`)');
+		return $this->findEntities($sql, [$userId, $name]);
+	}
+
+	/**
 	 * @param int $trackId
 	 * @return Playlist[]
 	 */

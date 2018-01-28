@@ -18,7 +18,7 @@ Feature: Ampache API
     And I request the "artists" resource
     Then I should get:
       | name                     | albums | songs |
-      | SimonBowman | 2      | 5     |
+      | SimonBowman              | 2      | 5     |
 
   Scenario: List exact filtered artists
     Given I am logged in with an auth token

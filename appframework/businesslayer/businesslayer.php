@@ -7,8 +7,10 @@
  *
  * @author Alessandro Cosentino <cosenal@gmail.com>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -54,8 +56,7 @@ abstract class BusinessLayer {
 	 * Finds an entity by id
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
-	 * @throws DoesNotExistException if the entity does not exist
-	 * @throws MultipleObjectsReturnedException if more than one entity exists
+	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 * @return Entity the entity
 	 */
 	public function find($id, $userId){
@@ -66,6 +67,18 @@ abstract class BusinessLayer {
 		} catch(MultipleObjectsReturnedException $ex){
 			throw new BusinessLayerException($ex->getMessage());
 		}
+	}
+
+	/**
+	 * Find all entities matching the given IDs.
+	 * Specifying the user is optional; if omitted, the caller should make sure that
+	 * user's data is not leaked to unauthorized users.
+	 * @param integer[] $ids  IDs of the entities to be found
+	 * @param string|null $userId
+	 * @return Entity[]
+	 */
+	public function findById($ids, $userId=null){
+		return $this->mapper->findById($ids, $userId);
 	}
 
 	/**

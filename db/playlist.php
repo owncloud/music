@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\Db;
@@ -27,6 +29,13 @@ class Playlist extends Entity {
 	public $name;
 	public $userId;
 	public $trackIds;
+
+	/**
+	 * @return integer
+	 */
+	public function getTrackCount() {
+		return count($this->getTrackIdsAsArray());
+	}
 
 	/**
 	 * @return int[]

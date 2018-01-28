@@ -19,6 +19,7 @@ use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Middleware\AmpacheException;
@@ -233,17 +234,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function artists($filter, $exact) {
-		$userId = $this->ampacheUser->getUserId();
-
-		// TODO add & update
-
-		if ($filter) {
-			$fuzzy = !((boolean) $exact);
-			$artists = $this->artistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
-		} else {
-			$artists = $this->artistBusinessLayer->findAll($userId, SortBy::Name);
-		}
-
+		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact);
 		return $this->renderArtists($artists);
 	}
 
@@ -284,24 +275,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function songs($filter, $exact, $limit, $offset, $auth) {
-		$userId = $this->ampacheUser->getUserId();
-
-		// TODO add & update
-
-		if ($filter) {
-			$fuzzy = !((boolean) $exact);
-			$tracks = $this->trackBusinessLayer->findAllByName($filter, $userId, $fuzzy);
-		} else {
-			if($limit === 0) {
-				$limit = null;
-			}
-			if($offset === 0) {
-				$offset = null;
-			}
-
-			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Name, $limit, $offset);
-		}
-
+		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -312,17 +286,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function albums($filter, $exact, $auth) {
-		$userId = $this->ampacheUser->getUserId();
-
-		// TODO add & update
-
-		if ($filter) {
-			$fuzzy = !((boolean) $exact);
-			$albums = $this->albumBusinessLayer->findAllByName($filter, $userId, $fuzzy);
-		} else {
-			$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Name);
-		}
-
+		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact);
 		return $this->renderAlbums($albums, $auth);
 	}
 
@@ -333,14 +297,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function playlists($filter, $exact) {
-		$userId = $this->ampacheUser->getUserId();
-
-		if ($filter) {
-			$fuzzy = !((boolean) $exact);
-			$playlists = $this->playlistBusinessLayer->findAllByName($filter, $userId, $fuzzy);
-		} else {
-			$playlists = $this->playlistBusinessLayer->findAll($userId);
-		}
+		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact);
 
 		return $this->renderXml(
 				'ampache/playlists',
@@ -399,6 +356,24 @@ class AmpacheController extends Controller {
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album has no cover');
+	}
+
+	protected function findEntities(BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null) {
+		$userId = $this->ampacheUser->getUserId();
+
+		if ($filter) {
+			$fuzzy = !((boolean) $exact);
+			return $businessLayer->findAllByName($filter, $userId, $fuzzy);
+		}
+		else {
+			if ($limit === 0) {
+				$limit = null;
+			}
+			if ($offset === 0) {
+				$offset = null;
+			}
+			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset);
+		}
 	}
 
 	protected function renderArtists($artists) {

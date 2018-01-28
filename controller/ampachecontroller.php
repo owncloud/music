@@ -244,96 +244,43 @@ class AmpacheController extends Controller {
 			$artists = $this->artistBusinessLayer->findAll($userId, SortBy::Name);
 		}
 
-		foreach($artists as &$artist) {
-			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
-			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
-		}
-
-		return $this->renderXml('ampache/artists', ['artists' => $artists]);
+		return $this->renderArtists($artists);
 	}
 
 	protected function artist($artistId) {
 		$userId = $this->ampacheUser->getUserId();
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
-		$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
-		$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
-		return $this->renderXml('ampache/artists', ['artists' => [$artist]]);
+		return $this->renderArtists([$artist]);
 	}
 
 	protected function artist_albums($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
 		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $userId);
-
-		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
-			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
-			$album->setAlbumArtist($albumArtist);
-		}
-
-		return $this->renderXml(
-			'ampache/albums',
-			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
-
+		return $this->renderAlbums($albums, $auth);
 	}
 
 	protected function artist_songs($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
-		// this is used to fill in the artist information for each album
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
-
-		foreach($tracks as &$track) {
-			$track->setArtist($artist);
-			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-			$track->setAlbum($album);
-		}
-
-		return $this->renderXml(
-			'ampache/songs',
-			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
-
+		return $this->renderSongs($tracks, $auth, $artist);
 	}
 
 	protected function album_songs($albumId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 
-		// this is used to fill in the album information for each track
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
+
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 
-		foreach($tracks as &$track) {
-			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-			$track->setAlbum($album);
-		}
-
-		return $this->renderXml(
-			'ampache/songs',
-			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
-
+		return $this->renderSongs($tracks, $auth, null, $album);
 	}
 
 	protected function song($trackId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
-
-		$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-		$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-		$track->setAlbum($album);
-
-		return $this->renderXml(
-			'ampache/songs',
-			['songs' => array($track), 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
-
+		return $this->renderSongs([$track], $auth);
 	}
 
 	protected function songs($filter, $exact, $limit, $offset, $auth) {
@@ -355,37 +302,13 @@ class AmpacheController extends Controller {
 			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Name, $limit, $offset);
 		}
 
-		// set album and artist for tracks
-		foreach($tracks as &$track) {
-			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-			$track->setAlbum($album);
-		}
-
-		return $this->renderXml(
-			'ampache/songs',
-			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function search_songs($filter, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
-
-		// set album and artist for tracks
-		foreach($tracks as &$track) {
-			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-			$track->setAlbum($album);
-		}
-
-		return $this->renderXml(
-			'ampache/songs',
-			['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function albums($filter, $exact, $auth) {
@@ -400,30 +323,13 @@ class AmpacheController extends Controller {
 			$albums = $this->albumBusinessLayer->findAll($userId, SortBy::Name);
 		}
 
-		// set track count for artists
-		foreach($albums as &$album) {
-			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
-			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
-			$album->setAlbumArtist($albumArtist);
-		}
-
-		return $this->renderXml(
-			'ampache/albums',
-			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
+		return $this->renderAlbums($albums, $auth);
 	}
 
 	protected function album($albumId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
-		$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
-		$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
-		$album->setAlbumArtist($albumArtist);
-
-		return $this->renderXml(
-				'ampache/albums',
-				['albums' => [$album], 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
+		return $this->renderAlbums([$album], $auth);
 	}
 
 	protected function playlists($filter, $exact) {
@@ -435,7 +341,7 @@ class AmpacheController extends Controller {
 		} else {
 			$playlists = $this->playlistBusinessLayer->findAll($userId);
 		}
-		
+
 		return $this->renderXml(
 				'ampache/playlists',
 				['playlists' => $playlists, 'userId' => $userId]
@@ -457,18 +363,7 @@ class AmpacheController extends Controller {
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
 
-		// set album and artist for tracks
-		foreach($tracks as &$track) {
-			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $userId));
-			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-			$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-			$track->setAlbum($album);
-		}
-
-		return $this->renderXml(
-				'ampache/songs',
-				['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
-		);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function play($trackId) {
@@ -504,6 +399,54 @@ class AmpacheController extends Controller {
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album has no cover');
+	}
+
+	protected function renderArtists($artists) {
+		foreach($artists as &$artist) {
+			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
+			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
+		}
+
+		return $this->renderXml('ampache/artists', ['artists' => $artists]);
+	}
+
+	protected function renderAlbums($albums, $auth) {
+		$userId = $this->ampacheUser->getUserId();
+
+		foreach($albums as &$album) {
+			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
+			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
+			$album->setAlbumArtist($albumArtist);
+		}
+
+		return $this->renderXml(
+				'ampache/albums',
+				['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+		);
+	}
+
+	protected function renderSongs($tracks, $auth, $commonArtist=null, $commonAlbum=null) {
+		$userId = $this->ampacheUser->getUserId();
+
+		// set album and artist for tracks
+		foreach($tracks as &$track) {
+			$artist = $commonArtist ?: $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+			$track->setArtist($artist);
+
+			if (!empty($commonAlbum)) {
+				$track->setAlbum($commonAlbum);
+			}
+			else {
+				$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
+				$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
+				$track->setAlbum($album);
+			}
+		}
+
+		return $this->renderXml(
+				'ampache/songs',
+				['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+		);
 	}
 
 	protected function renderXml($templateName, $params) {

@@ -107,12 +107,16 @@ class AmpacheController extends Controller {
 				return $this->ping($auth);
 			case 'artists':
 				return $this->artists($filter, $exact);
+			case 'artist':
+				return $this->artist($filter);
 			case 'artist_albums':
 				return $this->artist_albums($filter, $auth);
 			case 'album_songs':
 				return $this->album_songs($filter, $auth);
 			case 'albums':
 				return $this->albums($filter, $exact, $auth);
+			case 'album':
+				return $this->album($filter, $auth);
 			case 'artist_songs':
 				return $this->artist_songs($filter, $auth);
 			case 'songs':
@@ -246,6 +250,14 @@ class AmpacheController extends Controller {
 		}
 
 		return $this->renderXml('ampache/artists', ['artists' => $artists]);
+	}
+
+	protected function artist($artistId) {
+		$userId = $this->ampacheUser->getUserId();
+		$artist = $this->artistBusinessLayer->find($artistId, $userId);
+		$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
+		$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
+		return $this->renderXml('ampache/artists', ['artists' => [$artist]]);
 	}
 
 	protected function artist_albums($artistId, $auth) {
@@ -398,6 +410,19 @@ class AmpacheController extends Controller {
 		return $this->renderXml(
 			'ampache/albums',
 			['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+		);
+	}
+
+	protected function album($albumId, $auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+		$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
+		$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
+		$album->setAlbumArtist($albumArtist);
+
+		return $this->renderXml(
+				'ampache/albums',
+				['albums' => [$album], 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
 		);
 	}
 

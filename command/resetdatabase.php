@@ -24,9 +24,10 @@ class ResetDatabase extends BaseCommand {
 	/** @var Maintenance */
 	private $maintenance;
 
-	public function __construct(\OCP\IUserManager $userManager, Maintenance $maintenance) {
+	public function __construct(\OCP\IUserManager $userManager,
+			\OCP\IGroupManager $groupManager, Maintenance $maintenance) {
 		$this->maintenance = $maintenance;
-		parent::__construct($userManager);
+		parent::__construct($userManager, $groupManager);
 	}
 
 	protected function doConfigure() {
@@ -35,12 +36,11 @@ class ResetDatabase extends BaseCommand {
 			->setDescription('drop metadata indexed by the music app (artists, albums, tracks, playlists)');
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop tables for <info>all users</info>");
 			$this->maintenance->resetDb(null, true);
 		} else {
-			$users = $input->getArgument('user_id');
 			foreach($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
 				$this->maintenance->resetDb($user);

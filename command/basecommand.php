@@ -24,9 +24,15 @@ abstract class BaseCommand extends Command {
 	 * @var \OCP\IUserManager $userManager
 	 */
 	protected $userManager;
+	/**
+	 * @var \OCP\IGroupManager $groupManager
+	 */
+	protected $groupManager;
 
-	public function __construct(\OCP\IUserManager $userManager) {
+	public function __construct(\OCP\IUserManager $userManager,
+			\OCP\IGroupManager $groupManager) {
 		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 		parent::__construct();
 	}
 
@@ -43,6 +49,12 @@ abstract class BaseCommand extends Command {
 				InputOption::VALUE_NONE,
 				'target all known users'
 			)
+			->addOption(
+				'group',
+				null,
+				InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+				'specify a targeted group to include all users of that group'
+			)
 		;
 		$this->doConfigure();
 	}
@@ -50,27 +62,47 @@ abstract class BaseCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$argsValid = true;
 		if (!$input->getOption('all')) {
-			$users = $input->getArgument('user_id');
-
-			if (count($users) === 0) {
-				$output->writeln("Specify either the target user(s) or --all");
+			if (count($input->getArgument('user_id'))===0
+					&& count($input->getOption('group'))===0) {
+				$output->writeln("Specify either the target user(s), --group or --all");
 				$argsValid = false;
 			}
 			else {
-				foreach ($users as $user) {
-					if (!$this->userManager->userExists($user)) {
-						$output->writeln("User <error>$user</error> does not exist!");
-						$argsValid = false;
+				$users = $input->getArgument('user_id');
+				if ($input->hasOption('group')) {
+					foreach (array_unique($input->getOption('group')) as $group) {
+						if (!$this->groupManager->groupExists($group)) {
+							$output->writeln("Group <error>$group</error> does not exist!");
+							$argsValid = false;
+						}
+						else {
+							foreach ($this->groupManager->get($group)->getUsers() as $user) {
+								array_push($users, $user->getUID());
+							}
+						}
+					}
+				}
+				$users = array_unique($users);
+				if (count($users) === 0) {
+					$output->writeln("No users in selected groups");
+					$argsValid = false;
+				}
+				else {
+					foreach ($users as $user) {
+						if (!$this->userManager->userExists($user)) {
+							$output->writeln("User <error>$user</error> does not exist!");
+							$argsValid = false;
+						}
 					}
 				}
 			}
 		}
 
 		if ($argsValid) {
-			$this->doExecute($input, $output);
+			$this->doExecute($input, $output, $users);
 		}
 	}
 
 	abstract protected function doConfigure();
-	abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+	abstract protected function doExecute(InputInterface $input, OutputInterface $output, $users);
 }

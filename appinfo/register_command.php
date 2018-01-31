@@ -21,14 +21,17 @@ $c = $app->getContainer();
 
 $application->add(new OCA\Music\Command\Scan(
 		$c->query('UserManager'),
+		$c->query('GroupManager'),
 		$c->query('Scanner')
 ));
 $application->add(new OCA\Music\Command\ResetDatabase(
 		$c->query('UserManager'),
+		$c->query('GroupManager'),
 		$c->query('Maintenance')
 ));
 $application->add(new OCA\Music\Command\ResetCache(
 		$c->query('UserManager'),
+		$c->query('GroupManager'),
 		$c->query('Cache')
 ));
 $application->add(new OCA\Music\Command\Cleanup(

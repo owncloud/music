@@ -61,6 +61,7 @@ abstract class BaseCommand extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$argsValid = true;
+		$users = [];
 		if (!$input->getOption('all')) {
 			if (count($input->getArgument('user_id'))===0
 					&& count($input->getOption('group'))===0) {

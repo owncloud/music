@@ -60,48 +60,56 @@ abstract class BaseCommand extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$argsValid = true;
-		$users = [];
+		$users = array();
 		if (!$input->getOption('all')) {
 			if (count($input->getArgument('user_id'))===0
 					&& count($input->getOption('group'))===0) {
 				$output->writeln("Specify either the target user(s), --group or --all");
-				$argsValid = false;
+				return;
 			}
 			else {
 				$users = $input->getArgument('user_id');
+				if (!$this->validateUsers($output, $users))
+					return;
 				if ($input->hasOption('group')) {
-					foreach (array_unique($input->getOption('group')) as $group) {
-						if (!$this->groupManager->groupExists($group)) {
-							$output->writeln("Group <error>$group</error> does not exist!");
-							$argsValid = false;
-						}
-						else {
-							foreach ($this->groupManager->get($group)->getUsers() as $user) {
-								array_push($users, $user->getUID());
-							}
-						}
-					}
+					if (!$this->validateGroups($output, $input->getOption('group'), $groups_users))
+						return;
+					$users = array_merge($users, $groups_users);
 				}
 				$users = array_unique($users);
 				if (count($users) === 0) {
 					$output->writeln("No users in selected groups");
-					$argsValid = false;
-				}
-				else {
-					foreach ($users as $user) {
-						if (!$this->userManager->userExists($user)) {
-							$output->writeln("User <error>$user</error> does not exist!");
-							$argsValid = false;
-						}
-					}
+					return;
 				}
 			}
 		}
+		$this->doExecute($input, $output, $users);
+	}
 
-		if ($argsValid) {
-			$this->doExecute($input, $output, $users);
+	private function validateUsers($output, $users) {
+		foreach ($users as $user) {
+			if (!$this->userManager->userExists($user)) {
+				$output->writeln("User <error>$user</error> does not exist!");
+				return false;
+			}
 		}
+		return true;
+	}
+
+	private function validateGroups($output, $groups, &$users) {
+		$users = array();
+		foreach (array_unique($groups) as $group) {
+			if (!$this->groupManager->groupExists($group)) {
+				$output->writeln("Group <error>$group</error> does not exist!");
+				return false;
+			}
+			else {
+				foreach ($this->groupManager->get($group)->getUsers() as $user) {
+					array_push($users, $user->getUID());
+				}
+			}
+		}
+		return true;
 	}
 
 	abstract protected function doConfigure();

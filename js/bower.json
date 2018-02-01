@@ -2,7 +2,7 @@
   "name": "owncloud-music",
   "version": "0.4.4",
   "dependencies": {
-    "angular" : "",
+    "angular" : "1.2.22",
     "angular-gettext" : "",
     "angular-route" : "",
     "backbone": "",

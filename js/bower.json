@@ -2,9 +2,9 @@
   "name": "owncloud-music",
   "version": "0.4.4",
   "dependencies": {
-    "angular" : "1.2.23",
+    "angular" : "1.2.24",
     "angular-gettext" : "",
-    "angular-route" : "1.2.23",
+    "angular-route" : "1.2.24",
     "backbone": "",
     "javascript-detect-element-resize" : "",
     "js-cookie" : "",

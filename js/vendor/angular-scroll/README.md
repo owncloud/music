@@ -102,7 +102,7 @@ Provides smooth anchor scrolling.
 <a href="#anchor" du-smooth-scroll>Scroll it!</a>
 ```
 
-If you for some reason you do not want to use the `href` attribute as fallback, just use the `du-smooth-scroll` attribute instead but without leading #. Example: `<a du-smooth-scroll="anchor">`.
+If you, for some reason, do not want to use the `href` attribute as fallback, just use the `du-smooth-scroll` attribute instead but without leading #. Example: `<a du-smooth-scroll="anchor">`.
 
 ### `du-scrollspy`
 Observes whether the target element is at the top of the viewport (or container) and adds an `active` class if so. Takes optional `offset` and `duration` attributes which is passed on to `.scrollTo`,
@@ -212,6 +212,13 @@ angular.module('myApp', ['duScroll']).value('duScrollEasing', invertedEasingFunc
 ```
 
 You can also pass a custom easing function as the fourth argument in `scrollTo`.
+
+### Debounce Scroll Events
+Set the `duScrollSpyWait` value in milliseconds to debounce the handler and prevent it from triggering frequent events and increase performance for large pages and/or navigations with expanding nodes.
+
+```js
+angular.module('myApp', ['duScroll']).value('duScrollSpyWait', 1000);
+```
 
 ### Greedy option
 Set the `duScrollGreedy` value to `true` if the elements you are observing are not wrapping the whole section you want to observe, but merely the first one in the section (such as headlines).

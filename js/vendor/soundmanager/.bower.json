@@ -1,13 +1,33 @@
 {
-  "name": "soundmanager",
+  "name": "SoundManager2",
   "homepage": "https://github.com/scottschiller/SoundManager2",
-  "_release": "b7ad5f5ace",
+  "main": [
+    "script/soundmanager2.js",
+    "swf/soundmanager2.swf",
+    "swf/soundmanager2_flash9.swf"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "demo",
+    "doc",
+    "test",
+    "tests",
+    "tasks",
+    "component.json",
+    "composer.json",
+    "CONTRIBUTING.md",
+    "package.js",
+    "package.json"
+  ],
+  "_release": "f432aa9ed9",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "b7ad5f5ace7b319e2864cab9fb92e662f8f0e39d"
+    "commit": "f432aa9ed96a0f9022e72fc4a1b977ba0643ed71"
   },
-  "_source": "git://github.com/scottschiller/SoundManager2.git",
+  "_source": "https://github.com/scottschiller/SoundManager2.git",
   "_target": "*",
   "_originalSource": "soundmanager"
 }

@@ -450,8 +450,8 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * The the availability of all the index audio files of the user. Remove
-	 * from the index any which are not available
+	 * Check the availability of all the indexed audio files of the user. Remove
+	 * from the index any which are not available.
 	 * @param string $userId
 	 * @param Folder $userHome
 	 * @return Number of removed files

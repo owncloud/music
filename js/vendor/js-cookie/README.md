@@ -2,7 +2,7 @@
   <img src="https://cloud.githubusercontent.com/assets/835857/14581711/ba623018-0436-11e6-8fce-d2ccd4d379c9.gif">
 </p>
 
-# JavaScript Cookie [![Build Status](https://travis-ci.org/js-cookie/js-cookie.svg?branch=master)](https://travis-ci.org/js-cookie/js-cookie) [![Code Climate](https://codeclimate.com/github/js-cookie/js-cookie.svg)](https://codeclimate.com/github/js-cookie/js-cookie)
+# JavaScript Cookie [![Build Status](https://travis-ci.org/js-cookie/js-cookie.svg?branch=master)](https://travis-ci.org/js-cookie/js-cookie) [![Code Climate](https://codeclimate.com/github/js-cookie/js-cookie.svg)](https://codeclimate.com/github/js-cookie/js-cookie) [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/js-cookie/badge?style=rounded)](https://www.jsdelivr.com/package/npm/js-cookie)
 
 A simple, lightweight JavaScript API for handling cookies
 
@@ -32,6 +32,12 @@ Download the script [here](https://github.com/js-cookie/js-cookie/blob/latest/sr
 
 ```html
 <script src="/path/to/js.cookie.js"></script>
+```
+
+Or include it via [jsDelivr CDN](https://www.jsdelivr.com/package/npm/js-cookie):
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 ```
 
 **Do not include the script directly from GitHub (http://raw.github.com/...).** The file is being served as text/plain and as such being blocked
@@ -94,6 +100,8 @@ Cookies.remove('name', { path: '' }); // removed!
 
 *IMPORTANT! when deleting a cookie, you must pass the exact same path and domain attributes that was used to set the cookie, unless you're relying on the [default attributes](#cookie-attributes).*
 
+*Note: Removing unexisting cookie does not raise any exception nor return any value*
+
 ## Namespace conflicts
 
 If there is any danger of a conflict with the namespace `Cookies`, the `noConflict` method will allow you to define a new namespace and preserve the original one. This is especially useful when running the script on third party sites e.g. as part of a widget or SDK.
@@ -142,7 +150,7 @@ Cookies.getJSON(); // => { name: { foo: 'bar' } }
 
 This project is [RFC 6265](http://tools.ietf.org/html/rfc6265#section-4.1.1) compliant. All special characters that are not allowed in the cookie-name or cookie-value are encoded with each one's UTF-8 Hex equivalent using [percent-encoding](http://en.wikipedia.org/wiki/Percent-encoding).  
 The only character in cookie-name or cookie-value that is allowed and still encoded is the percent `%` character, it is escaped in order to interpret percent input as literal.  
-Please note that the default encoding/decoding strategy is meant to be interoperable [only between cookies that are read/written by js-cookie](https://github.com/js-cookie/js-cookie/pull/200#discussion_r63270778). To override the default encoding/decoding strategy you need to use a [converter](#converter).
+Please note that the default encoding/decoding strategy is meant to be interoperable [only between cookies that are read/written by js-cookie](https://github.com/js-cookie/js-cookie/pull/200#discussion_r63270778). To override the default encoding/decoding strategy you need to use a [converter](#converters).
 
 ## Cookie Attributes
 
@@ -222,7 +230,7 @@ Either `true` or `false`, indicating if the cookie transmission requires a secur
 ```javascript
 Cookies.set('name', 'value', { secure: true });
 Cookies.get('name'); // => 'value'
-Cookies.remove('name', { secure: true });
+Cookies.remove('name');
 ```
 
 ## Converters
@@ -271,17 +279,22 @@ Check out the [Servers Docs](SERVER_SIDE.md)
 
 Check out the [Contributing Guidelines](CONTRIBUTING.md)
 
+## Security
+
+For vulnerability reports, send an e-mail to `jscookie at gmail dot com`
+
 ## Manual release steps
 
 * Increment the "version" attribute of `package.json`
 * Increment the version number in the `src/js.cookie.js` file
+* If `major` bump, update jsDelivr CDN major version link on README
 * Commit with the message "Release version x.x.x"
 * Create version tag in git
 * Create a github release and upload the minified file
 * Change the `latest` tag pointer to the latest commit
-  * `git tag -fa latest`
+  * `git tag -f latest`
   * `git push <remote> :refs/tags/latest`
-* Commit with the message "Prepare for the next development iteration"
+  * `git push origin master --tags`
 * Release on npm
 
 ## Authors

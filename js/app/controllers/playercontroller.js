@@ -31,7 +31,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 	$scope.currentTrack = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = Cookies.get('oc_music_volume') || 50;  // volume can be 0~100
+	$scope.volume = parseInt(Cookies.get('oc_music_volume' || 50));  // volume can be 0~100
 	$scope.repeat = Cookies.get('oc_music_repeat') == 'true';
 	$scope.shuffle = Cookies.get('oc_music_shuffle') == 'true';
 	$scope.position = {

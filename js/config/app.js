@@ -34,8 +34,8 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop', 'pasvaz.bindonce'])
-	.config(['RestangularProvider', '$routeProvider',
-		function (RestangularProvider, $routeProvider) {
+	.config(['RestangularProvider', '$routeProvider', '$locationProvider',
+		function (RestangularProvider, $routeProvider, $locationProvider) {
 
 			// configure RESTAngular path
 			RestangularProvider.setBaseUrl('api');
@@ -49,6 +49,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				controller:'PlaylistViewController',
 				templateUrl:'playlistview.html'
 			};
+
+			/**
+			 * @see https://stackoverflow.com/questions/38455077/angular-force-an-undesired-exclamation-mark-in-url/41223197#41223197
+			 */
+			$locationProvider.hashPrefix('');
 
 			$routeProvider
 				.when('/',                     overviewControllerConfig)

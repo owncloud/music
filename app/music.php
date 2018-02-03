@@ -268,6 +268,10 @@ class Music extends App {
 			return $c->getServer()->getUserManager();
 		});
 
+		$container->registerService('GroupManager', function($c) {
+			return $c->getServer()->getGroupManager();
+		});
+
 		/**
 		 * Utility
 		 */

@@ -24,9 +24,15 @@ abstract class BaseCommand extends Command {
 	 * @var \OCP\IUserManager $userManager
 	 */
 	protected $userManager;
+	/**
+	 * @var \OCP\IGroupManager $groupManager
+	 */
+	protected $groupManager;
 
-	public function __construct(\OCP\IUserManager $userManager) {
+	public function __construct(\OCP\IUserManager $userManager,
+			\OCP\IGroupManager $groupManager) {
 		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 		parent::__construct();
 	}
 
@@ -43,34 +49,65 @@ abstract class BaseCommand extends Command {
 				InputOption::VALUE_NONE,
 				'target all known users'
 			)
+			->addOption(
+				'group',
+				null,
+				InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+				'specify a targeted group to include all users of that group'
+			)
 		;
 		$this->doConfigure();
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$argsValid = true;
-		if (!$input->getOption('all')) {
-			$users = $input->getArgument('user_id');
+		try {
+			self::ensureUsersGiven($input);
+			$argUsers = $this->getArgumentUsers($input);
+			$groupUsers = $this->getArgumentGroups($input);
+			$users = array_unique(array_merge($argUsers, $groupUsers));
+			if (!$input->getOption('all') && !count($users)) {
+				throw new \InvalidArgumentException("No users in selected groups!");
+			}
+			$this->doExecute($input, $output, $users);
+		}
+		catch (\InvalidArgumentException $e) {
+			$output->writeln($e->getMessage());
+		}
+	}
 
-			if (count($users) === 0) {
-				$output->writeln("Specify either the target user(s) or --all");
-				$argsValid = false;
+	private function getArgumentUsers($input) {
+		$users = $input->getArgument('user_id');
+		foreach ($users as $user) {
+			if (!$this->userManager->userExists($user)) {
+				throw new \InvalidArgumentException("User <error>$user</error> does not exist!");
+			}
+		}
+		return $users;
+	}
+
+	private function getArgumentGroups($input) {
+		$users = array();
+		foreach (array_unique($input->getOption('group')) as $group) {
+			if (!$this->groupManager->groupExists($group)) {
+				throw new \InvalidArgumentException("Group <error>$group</error> does not exist!");
 			}
 			else {
-				foreach ($users as $user) {
-					if (!$this->userManager->userExists($user)) {
-						$output->writeln("User <error>$user</error> does not exist!");
-						$argsValid = false;
-					}
+				foreach ($this->groupManager->get($group)->getUsers() as $user) {
+					array_push($users, $user->getUID());
 				}
 			}
 		}
+		return $users;
+	}
 
-		if ($argsValid) {
-			$this->doExecute($input, $output);
+	protected static function ensureUsersGiven($input) {
+		if (!$input->getArgument('user_id')
+			&& !$input->getOption('all')
+			&& !$input->getOption('group')) {
+			throw new \InvalidArgumentException("Specify either the target user(s), --group or --all");
 		}
 	}
 
 	abstract protected function doConfigure();
-	abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+	abstract protected function doExecute(InputInterface $input, OutputInterface $output, $users);
 }

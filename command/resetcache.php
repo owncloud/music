@@ -22,9 +22,10 @@ class ResetCache extends BaseCommand {
 	/** @var Cache */
 	private $cache;
 
-	public function __construct(\OCP\IUserManager $userManager, Cache $cache) {
+	public function __construct(\OCP\IUserManager $userManager,
+			\OCP\IGroupManager $groupManager,  Cache $cache) {
 		$this->cache = $cache;
-		parent::__construct($userManager);
+		parent::__construct($userManager, $groupManager);
 	}
 
 	protected function doConfigure() {
@@ -33,12 +34,11 @@ class ResetCache extends BaseCommand {
 			->setDescription('drop data cached by the music app for performance reasons');
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop cache for <info>all users</info>");
 			$this->cache->remove();
 		} else {
-			$users = $input->getArgument('user_id');
 			foreach($users as $user) {
 				$output->writeln("Drop cache for <info>$user</info>");
 				$this->cache->remove($user);

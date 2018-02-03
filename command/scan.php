@@ -30,9 +30,10 @@ class Scan extends BaseCommand {
 	 */
 	private $scanner;
 
-	public function __construct(\OCP\IUserManager $userManager, $scanner) {
+	public function __construct(\OCP\IUserManager $userManager,
+			\OCP\IGroupManager $groupManager, $scanner) {
 		$this->scanner = $scanner;
-		parent::__construct($userManager);
+		parent::__construct($userManager, $groupManager);
 	}
 
 	protected function doConfigure() {
@@ -54,7 +55,7 @@ class Scan extends BaseCommand {
 		;
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if (!$input->getOption('debug')) {
 			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
 				$output->writeln("Scanning <info>$path</info>");
@@ -64,8 +65,6 @@ class Scan extends BaseCommand {
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
 			$users = array_map(function($u){return $u->getUID();}, $users);
-		} else {
-			$users = $input->getArgument('user_id');
 		}
 
 		foreach ($users as $user) {

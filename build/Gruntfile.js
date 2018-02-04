@@ -64,11 +64,7 @@ module.exports = function(grunt) {
 				'!../js/public/app.js'
 			],
 			options: {
-				// options here to override JSHint defaults
-				globals: {
-					console: true,
-					sub: true
-				}
+				laxbreak: true // switch off jshint's stupid default rule for location of linebreaks
 			}
 		},
 

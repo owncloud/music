@@ -136,8 +136,16 @@ h1 span:hover .play {
 	cursor: pointer;
 }
 
+track-list.collapsed .collapsible {
+	display: none;
+}
+
 .track-list > li.more-less {
 	padding-left: 21px;
+}
+
+track-list:not(.collapsed) li.more-less:not(.collapsible) {
+	display: none;
 }
 
 .play-pause {
@@ -171,6 +179,7 @@ h1 span:hover .play {
 }
 
 .current:not(.playing) .play-pause,
+#app-view .current.playing:hover .play-pause,
 #app-view .current.playing:hover > .play-pause {
 	background-image: url(../img/pause-big.svg)
 }
@@ -180,6 +189,7 @@ h1 span:hover .play {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	filter: alpha(opacity = 50);
 	opacity: .5;
+	display: inline;
 }
 
 .alphabet-navigation {

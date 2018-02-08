@@ -10,45 +10,25 @@
 		<div bindonce class="album-area" ng-repeat="album in artist.albums">
 			<h2 bo-id="'album-' + album.id">
 				<div ng-click="playAlbum(album)"
-					bo-title="album.name + ((album.year) ? ' (' + album.year + ')' : '')"
-					ui-draggable="true" drag="getDraggable('album', album)">
+					 bo-title="album.name + ((album.year) ? ' (' + album.year + ')' : '')"
+					 ui-draggable="true" drag="getDraggable('album', album)">
 					<span bo-text="album.name"></span> <span bo-if="album.year" class="muted" bo-text="'(' + album.year + ')'"></span>
 				</div>
 			</h2>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
-			<!-- variable "limit" toogles length of track list for each album -->
-			<ul class="track-list" ng-init="trackcount = album.tracks.length; limit.count = (trackcount == 6) ? 6 : 5">
-				<li bindonce
-					bo-id="'track-' + track.id" 
-					ng-click="playTrack(track)"
-					ui-draggable="true" drag="getDraggable('track', track)"
-					ng-repeat="track in album.tracks | limitTo:limit.count"
-					bo-title="track.title + ((track.artistId != artist.id) ? '  (' + track.artistName + ')' : '')"
-					ng-class="{current: currentTrack.id == track.id, playing: playing}"
-				>
-					<div class="play-pause" />
-					<span bo-if="track.number" class="muted" bo-text="track.number + '.'"></span>
-					<span bo-text="track.title"></span>
-					<span bo-if="track.artistId != artist.id" class="muted" bo-text="'&nbsp;(' + track.artistName +')'"></span>
-				</li>
-				<li class="muted more-less" translate translate-n="trackcount"
-					translate-plural="Show all {{ trackcount }} songs …"
-					ng-click="limit.count = trackcount"
-					ng-hide="trackcount <= 6 || limit.count > 6"
-					>Show all {{ trackcount }} songs …</li>
-				<li class="muted more-less"
-					ng-click="limit.count = 5"
-					ng-hide="limit.count <= 6" translate>Show less …</li>
-			</ul>
+				 src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
+			<track-list
+					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
+					less-text="'Show less …' | translate"
+			/>
 		</div>
 	</div>
 
 	<div ng-show="artists" class="alphabet-navigation" ng-class="{started: started}" resize>
 		<a du-smooth-scroll="{{ letter }}" offset="{{ scrollOffset() }}"
-			ng-repeat="letter in letters" 
-			ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
+		   ng-repeat="letter in letters"
+		   ng-class="{available: letterAvailable[letter], filler: ($index % 2) == 1}">
 			<span class="letter-content">{{ letter }}</span>
 		</a>
 	</div>

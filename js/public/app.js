@@ -1,3 +1,4 @@
+
 // fix SVGs in IE because the scaling is a real PITA
 // https://github.com/owncloud/music/issues/126
 if($('html').hasClass('ie')) {
@@ -449,7 +450,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 	$scope.currentTrack = null;
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = parseInt(Cookies.get('oc_music_volume' || 50));  // volume can be 0~100
+	$scope.volume = parseInt(Cookies.get('oc_music_volume')) || 50;  // volume can be 0~100
 	$scope.repeat = Cookies.get('oc_music_repeat') == 'true';
 	$scope.shuffle = Cookies.get('oc_music_shuffle') == 'true';
 	$scope.position = {

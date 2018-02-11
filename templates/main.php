@@ -3,7 +3,6 @@
 \OCP\Util::addScript('core', 'placeholder');
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
-\OCP\Util::addScript('music', 'vendor/angular-bindonce/bindonce.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
@@ -43,15 +42,15 @@
 		<div id="sm2-container" ng-class="{started: started}"></div>
 		<div id="app-navigation">
 			<ul ng-controller="SidebarController">
-				<li sidebar-list-item text="'Albums' | translate" destination="'#'"
+				<li sidebar-list-item text="::'Albums' | translate" destination="'#'"
 					title="{{ albumCountText() }}"></li>
-				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
+				<li sidebar-list-item text="::'All tracks' | translate" destination="'#/alltracks'"
 					title="{{ trackCountText() }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
 					<a id="create" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
 					<input type="text" class="new-list" ng-show="showCreateForm" 
-						placeholder="{{ 'New Playlist' | translate }}" ng-enter="create()" ng-model="newPlaylistName" />
+						placeholder="{{ ::'New Playlist' | translate }}" ng-enter="create()" ng-model="newPlaylistName" />
 					<div class="actions" ng-show="showCreateForm">
 						<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
 						<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
@@ -59,7 +58,7 @@
 				</li>
 				<li sidebar-list-item
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
-					ng-repeat="playlist in playlists"
+					ng-repeat="playlist in ::playlists track by playlist.id"
 					ui-on-drop="dropOnPlaylist($data, playlist)"
 					drop-validate="allowDrop(playlist)"
 					drag-hover-class="active"

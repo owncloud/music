@@ -117,7 +117,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 	var filesToScanIterator = 0;
 	var previouslyScannedCount = 0;
 
-	function updateFilesToScan() {
+	$scope.updateFilesToScan = function() {
 		Restangular.one('scanstate').get().then(function(state) {
 			previouslyScannedCount = state.scannedCount;
 			filesToScan = state.unscannedFiles;
@@ -127,7 +127,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
 			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
 		});
-	}
+	};
 
 	$scope.processNextScanStep = function() {
 		$scope.toScan = false;
@@ -203,5 +203,5 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 	$scope.scanningTotal = 0;
 
 	// initial lookup if new files are available
-	updateFilesToScan();
+	$scope.updateFilesToScan();
 }]);

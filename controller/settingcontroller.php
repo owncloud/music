@@ -36,6 +36,7 @@ class SettingController extends Controller {
 	private $userFolder;
 	private $configManager;
 	private $secureRandom;
+	private $urlGenerator;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -44,7 +45,8 @@ class SettingController extends Controller {
 								$userId,
 								Folder $userFolder,
 								IConfig $configManager,
-								ISecureRandom $secureRandom){
+								ISecureRandom $secureRandom,
+								IURLGenerator $urlGenerator){
 		parent::__construct($appname, $request);
 
 		$this->appname = $appname;
@@ -54,6 +56,7 @@ class SettingController extends Controller {
 		$this->userFolder = $userFolder;
 		$this->configManager = $configManager;
 		$this->secureRandom = $secureRandom;
+		$this->urlGenerator = $urlGenerator;
 	}
 
 	/**
@@ -76,6 +79,17 @@ class SettingController extends Controller {
 			$this->scanner->updatePath($path, $this->userId);
 		}
 		return new JSONResponse(array('success' => $success));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getAll() {
+		return array(
+			'path' => $this->configManager->getUserValue($this->userId, $this->appname, 'path'),
+			'ampacheUrl' => str_replace('/server/xml.server.php', '', $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache'))),
+			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
+		);
 	}
 
 	/**

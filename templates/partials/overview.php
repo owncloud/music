@@ -4,7 +4,7 @@
 		<h1 bo-id="'artist-' + artist.id">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span bo-text="artist.name"></span>
-				<img class="play svg" bo-alt="'Play' | translate" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
+				<img class="play svg" bo-alt="'Play' | translate" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
 		<div bindonce class="album-area" ng-repeat="album in artist.albums">
@@ -17,7 +17,7 @@
 			</h2>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				 src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
+				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 			<track-list
 					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
 					less-text="'Show less …' | translate"

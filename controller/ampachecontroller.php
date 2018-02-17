@@ -138,7 +138,7 @@ class AmpacheController extends Controller {
 			case '_get_cover':
 				return $this->get_cover($filter);
 		}
-		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
+		$this->logger->log("Unsupported Ampache action '$action' requested", 'debug');
 		throw new AmpacheException('Action not supported', 405);
 	}
 

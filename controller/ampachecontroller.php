@@ -208,6 +208,7 @@ class AmpacheController extends Controller {
 		$artistCount = $this->artistBusinessLayer->count($user);
 		$albumCount = $this->albumBusinessLayer->count($user);
 		$trackCount = $this->trackBusinessLayer->count($user);
+		$playlistCount = $this->playlistBusinessLayer->count($user);
 
 		return $this->renderXml(
 			'ampache/handshake',
@@ -216,7 +217,7 @@ class AmpacheController extends Controller {
 				'songCount' => $trackCount,
 				'artistCount' => $artistCount,
 				'albumCount' => $albumCount,
-				'playlistCount' => 0,
+				'playlistCount' => $playlistCount,
 				'updateDate' => $currentTime,
 				'cleanDate' => $currentTime,
 				'addDate' => $currentTime,
@@ -297,6 +298,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function playlists($filter, $exact) {
+		$userId = $this->ampacheUser->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact);
 
 		return $this->renderXml(

@@ -1,3 +1,13 @@
+v0.5.6 2018-02-17
+ * front-end optimizations (#614, #615 by @Biont)
+ * optimize number of DB queries when building collection.json (may help on #601)
+ * check validity of the passed user names in the occ command line tool (#602)
+ * support for `--group` option in all occ commands (#613 by @greku)
+ * remote playlist support on the Ampache API (#611)
+ * support for actions `artist` and `album` on the Ampache API (used at least by Power Ampache)
+ * support for Nextcloud 14
+ * fix controls pane layout on Nextcloud 13 and 14 (#617)
+
 v0.5.5 2017-12-10
  * fix Content Security Policy error being printed to browser console when starting playback on Chrome (#498)
  * fix playing files which have '%' character followed by two digits in their name by using URL encoding (#299)

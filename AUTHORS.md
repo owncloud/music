@@ -26,6 +26,7 @@
 * [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
 * [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
 * [Glandos](https://github.com/Glandos)
+* [Gregory Baudet](https://github.com/greku): <gregory.baudet@gmail.com>
 * [Jbtbnl](https://github.com/jbtbnl)
 * [Jonathan Kawohl](https://github.com/Kawohl)
 * [Jérôme Pouiller](https://github.com/jerome-pouiller)
@@ -34,6 +35,7 @@
 * [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
 * [Leizh](https://github.com/eizh): <leizh@free.fr>
 * [Lukas Reschke](https://github.com/LukasReschke)
+* [Moritz Meißelbach](https://github.com/Biont): <moritz@meisselba.ch>
 * [Ndurchx](https://github.com/ndurchx)
 * [Nico Boehr](https://github.com/youknow0): <nico@nicoboehr.de>
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>

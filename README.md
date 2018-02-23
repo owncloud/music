@@ -40,7 +40,7 @@ The Music app uses SoundManager2 if the browser has a suitable codec available f
 
 Normally, the Music app detects any new audio files in the filesystem on application start and scans metadata from those to its database tables when the user clicks the prompt. The Music app also detects file removals and modifications on the background and makes the required database changes automatically.
 
-If the database would somehow get corrupted, the user can force it to be rebuilt by navigating to the Personal settings and changing the option "Music" > "Path to your music collection".
+If the database would somehow get corrupted, the user can force it to be rebuilt by opening the settings (at the bottom of the left pane) and changing the option "Path to your music collection".
 
 ### Commands
 
@@ -75,7 +75,7 @@ Music app caches some results for performance reasons. Normally, there should be
 
 ### Ampache
 
-The URL you need for Ampache is listed in the Personal settings and looks like this:
+The URL you need for Ampache is listed in the settings and looks like this:
 
 ```
 https://cloud.domain.org/index.php/apps/music/ampache/
@@ -86,7 +86,7 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 #### Authentication
 
 Ampache doesn't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY for Ampache.
-The APIKEY is generated through the Music app settings accessible from the link at the bottom left within the app, or from your personal settings ("Your username" → "Personal").
+The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app.
 In your Ampache client, use your ownCloud username and the generated key as password.
 
 You may use the `/api/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.

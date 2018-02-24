@@ -21,6 +21,7 @@ use \OCP\Files\Folder;
 use \OCP\IConfig;
 use \OCP\IRequest;
 use \OCP\Security\ISecureRandom;
+use \OCP\IURLGenerator;
 
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;

@@ -69,14 +69,12 @@
 					drop-validate="allowDrop(playlist)"
 					drag-hover-class="active"
 					title="{{ trackCountText(playlist) }}"></li>
-			</ul>
-			<div id="app-settings">
-				<div id="app-settings-header">
-					<button class="settings-button" ng-click="navigateTo('#/settings')">
+				<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
+					<a class="" ng-click="navigateTo('#/settings')">
 						{{ 'Settings' | translate }}
-					</button>
-				</div>
-			</div>
+					</a>
+				</li>
+			</ul>
 		</div>
 
 		<div id="app-content" du-scroll-container>

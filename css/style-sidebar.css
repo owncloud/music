@@ -9,7 +9,7 @@
  */
 
 #app-navigation {
-	position: fixed;
+	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
 	z-index: 999;
 }
 
@@ -93,4 +93,19 @@ input.edit-list, input.new-list {
 	margin-bottom: 8px;
 	margin-top: 4px;
 	height: 32px;
+}
+
+.music-nav-settings {
+	position: fixed !important;
+	width: inherit !important;
+	bottom: 0;
+	z-index: 140;
+}
+
+.music-nav-settings a {
+	padding-left: 44px !important;
+	background-size: 16px 16px;
+	background-position: 14px center;
+	background-repeat: no-repeat;
+	background-image: url('../img/settings.svg');
 }

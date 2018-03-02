@@ -34,6 +34,7 @@ angular.module('Music').controller('SettingsViewController', [
 							if (data.success) {
 								$scope.errorPath = false;
 								$scope.settings.path = path;
+								$scope.$parent.update();
 								$scope.$parent.updateFilesToScan();
 							} else {
 								$scope.errorPath = true;

@@ -59,7 +59,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
-		$rootScope.loading = true;
+		$rootScope.loadingCollection = true;
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
@@ -87,9 +87,10 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
 			});
+			$rootScope.loadingCollection = false;
 		},
 		function(response) { // error handling
-			$rootScope.loading = false;
+			$rootScope.loadingCollection = false;
 
 			var reason = null;
 			switch (response.status) {

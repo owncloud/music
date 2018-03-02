@@ -125,7 +125,7 @@
 				</div>
 			</div>
 
-			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading}">
+			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading || (loadingCollection && currentView!='#/settings')}">
 			</div>
 
 			<div id="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">

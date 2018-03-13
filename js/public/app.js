@@ -1360,6 +1360,7 @@ var PlayerWrapper = function() {
 	this.underlyingPlayer = 'aurora';
 	this.aurora = {};
 	this.sm2 = {};
+	this.sm2ready = false;
 	this.duration = 0;
 	this.volume = 100;
 
@@ -1371,7 +1372,10 @@ PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
 PlayerWrapper.prototype.init = function(onReadyCallback) {
 	this.sm2 = soundManager.setup({
 		html5PollingInterval: 200,
-		onready: onReadyCallback
+		onready: function() {
+			PlayerWrapper.sm2ready = true;
+			onReadyCallback();
+		}
 	});
 };
 
@@ -1450,9 +1454,11 @@ PlayerWrapper.prototype.setVolume = function(percentage) {
 };
 
 PlayerWrapper.prototype.canPlayMIME = function(mime) {
-	// in addition to types played by SM2 (which depends on available codecs),
-	// we can play flac and mp3 files using aurora.js
-	return soundManager.canPlayMIME(mime) || mime=='audio/flac' || mime=='audio/mpeg';
+	// Function soundManager.canPlayMIME should not be called if SM2 is still in the process
+	// of being initialized, as it may lead to dereferencing an uninitialized member (see #629).
+	var canPlayWithSm2 = (this.sm2ready && soundManager.canPlayMIME(mime));
+	var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
+	return canPlayWithSm2 || canPlayWithAurora;
 };
 
 PlayerWrapper.prototype.fromURL = function(url, mime) {

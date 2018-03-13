@@ -3,7 +3,7 @@
 		<span ng-click="playAll()">
 			<span ng-if="playlist">{{ playlist.name }}</span>
 			<span ng-if="currentView == '#/alltracks'" translate>All tracks</span>
-			<img class="play svg" alt="{{ ::'Play' | translate }}" src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>"/>
+			<img class="play svg" alt="{{ ::'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
 	<ul class="track-list">

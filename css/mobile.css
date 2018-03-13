@@ -6,8 +6,10 @@
  *
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Jan-Christoph Borchardt, http://jancborchardt.net
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 @media only screen and (max-width: 768px) {
@@ -124,7 +126,11 @@
 	}
 }
 
-@media only screen and (min-width: 570px) and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
+
+	#controls {
+		left: 0;
+	}
 
 	#controls .progress-info {
 		right: 115px;

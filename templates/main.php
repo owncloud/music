@@ -48,12 +48,12 @@
 					title="{{ trackCountText() }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
-					<a id="create" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
+					<a id="create" class="app-navigation-noclose" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
 					<input type="text" class="new-list" ng-show="showCreateForm" 
 						placeholder="{{ ::'New Playlist' | translate }}" ng-enter="create()" ng-model="newPlaylistName" />
 					<div class="actions" ng-show="showCreateForm">
-						<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark" ng-click="create()"></button>
-						<button class="svg action icon-close" ng-click="showCreateForm=!showCreateForm"></button>
+						<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark app-navigation-noclose" ng-click="create()"></button>
+						<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=!showCreateForm"></button>
 					</div>
 				</li>
 				<li sidebar-list-item
@@ -71,13 +71,13 @@
 			<div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 				<div id="play-controls">
 					<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
-						src="<?php p(OCP\image_path('music', 'play-previous.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'play-previous.svg')) ?>" />
 					<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
-						src="<?php p(OCP\image_path('music', 'play-big.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 					<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
-						src="<?php p(OCP\image_path('music', 'pause-big.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'pause-big.svg')) ?>" />
 					<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
-						src="<?php p(OCP\image_path('music', 'play-next.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'play-next.svg')) ?>" />
 				</div>
 
 
@@ -102,14 +102,14 @@
 				</div>
 
 				<img id="shuffle" class="control small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
-					src="<?php p(OCP\image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
+					src="<?php p(OCP\Template::image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 				<img id="repeat" class="control small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
-					src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
+					src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 				<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
-						src="<?php p(OCP\image_path('music', 'sound.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'sound.svg')) ?>" />
 					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume == 0"
-						src="<?php p(OCP\image_path('music', 'sound-off.svg')) ?>" />
+						src="<?php p(OCP\Template::image_path('music', 'sound-off.svg')) ?>" />
 					<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 				</div>
 			</div>
@@ -124,7 +124,7 @@
 			</div>
 
 			<img id="updateData" ng-show="updateAvailable"
-				 class="svg clickable" src="<?php p(OCP\image_path('music', 'repeat.svg')) ?>"  ng-click="update()"
+				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>"  ng-click="update()"
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 

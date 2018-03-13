@@ -5,12 +5,15 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 #controls {
 	height: 66px;
 	padding: 0 20px 0 20px;
+	left: 250px;
 }
 
 #controls, #controls * {

@@ -7,7 +7,7 @@
 		</span>
 	</h1>
 	<ul class="track-list">
-		<li ng-repeat="entry in tracks track by $index | limitTo: incrementalLoadLimit"
+		<li ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
 			ng-init="song = entry.track"
 			id="track-{{ ::song.id }}"
 			ui-on-drop="reorderDrop($data, $index)"

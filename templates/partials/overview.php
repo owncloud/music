@@ -7,7 +7,7 @@
 				<img class="play svg" alt="{{ ::'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
-		<div class="album-area" ng-repeat="album in ::artist.albums track by album.id">
+		<div class="album-area" ng-repeat="album in ::artist.albums | limitTo: incrementalLoadLimit track by album.id">
 			<h2 id="album-{{  ::album.id }}">
 				<div ng-click="playAlbum(album)"
 					 title="{{ ::(album.name + ((album.year) ? ' (' + album.year + ')' : '')) }}"

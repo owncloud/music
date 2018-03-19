@@ -1,4 +1,4 @@
-<div class="playlist-area" ng-show="!loading">
+<div class="playlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="playAll()">
 			<span ng-if="playlist">{{ playlist.name }}</span>

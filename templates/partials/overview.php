@@ -1,7 +1,7 @@
-<div id="overview"  ng-show="!loading">
-	<div class="artist-area" ng-repeat="artist in ::artists track by artist.id | limitTo: incrementalLoadLimit" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
-		<span id="{{ ::letter }}" ng-if="::!!letterAvailable[letter]"></span>
-		<h1 id="artist-{{  ::artist.id }}">
+<div id="overview"  ng-show="!loading && !loadingCollection">
+	<div bindonce class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
+		<span bo-id="letter" bo-if="letterAvailable[letter]"></span>
+		<h1 bo-id="'artist-' + artist.id">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span>{{ ::artist.name }}</span>
 				<img class="play svg" alt="{{ ::'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>

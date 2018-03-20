@@ -4,21 +4,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 
-#: ../templates/fake-template.php:26
+#: ../templates/fake-template.php:14
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: ../templates/main.php:52
+#: ../templates/main.php:57
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:84
+#: ../js/public/app.js:95
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:79
+#: ../js/public/app.js:90
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -29,11 +29,11 @@ msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
 #: ../templates/fake-template.php:7
-#: ../templates/main.php:46
+#: ../templates/main.php:51
 msgid "Albums"
 msgstr ""
 
-#: ../templates/main.php:48
+#: ../templates/main.php:53
 #: ../templates/partials/playlistview.php:5
 msgid "All tracks"
 msgstr ""
@@ -42,11 +42,11 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:135
+#: ../templates/main.php:147
 msgid "Click here to start the scan"
 msgstr ""
 
-#: ../templates/fake-template.php:24
+#: ../templates/fake-template.php:12
 msgid "Close"
 msgstr ""
 
@@ -54,47 +54,51 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../templates/fake-template.php:14
+#: ../templates/partials/settingsview.php:22
 msgid "Description"
 msgstr ""
 
-#: ../templates/fake-template.php:15
+#: ../templates/partials/settingsview.php:35
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../js/public/app.js:145
+#: ../templates/partials/settingsview.php:37
+msgid "Failed to generated new Ampache key"
+msgstr ""
+
+#: ../js/public/app.js:156
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../templates/fake-template.php:16
+#: ../templates/partials/settingsview.php:6
+msgid "Failed to save music path"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:36
 msgid "Generate API password"
 msgstr ""
 
-#: ../templates/fake-template.php:25
+#: ../templates/fake-template.php:13
 msgid "Go to album"
 msgstr ""
 
-#: ../templates/fake-template.php:19
+#: ../templates/partials/settingsview.php:17
 msgid "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime."
 msgstr ""
 
-#: ../templates/fake-template.php:13
+#: ../templates/partials/settingsview.php:15
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:135
+#: ../js/public/app.js:146
 msgid "Internal server error"
 msgstr ""
 
-#: ../templates/fake-template.php:10
-msgid "Invalid path"
-msgstr ""
-
-#: ../templates/fake-template.php:20
+#: ../templates/partials/settingsview.php:10
 msgid "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks"
 msgstr ""
 
-#: ../templates/fake-template.php:23
+#: ../templates/fake-template.php:11
 msgid "Loading…"
 msgstr ""
 
@@ -102,24 +106,24 @@ msgstr ""
 msgid "Music"
 msgstr ""
 
-#: ../templates/main.php:54
+#: ../templates/main.php:59
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:134
+#: ../templates/main.php:146
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:129
-#: ../templates/main.php:130
+#: ../templates/main.php:141
+#: ../templates/main.php:142
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ../templates/main.php:80
+#: ../templates/main.php:92
 msgid "Next"
 msgstr ""
 
-#: ../templates/main.php:123
+#: ../templates/main.php:135
 msgid "No music found"
 msgstr ""
 
@@ -127,22 +131,22 @@ msgstr ""
 msgid "No tracks"
 msgstr ""
 
-#: ../templates/fake-template.php:9
+#: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/main.php:78
+#: ../templates/main.php:90
 msgid "Pause"
 msgstr ""
 
-#: ../templates/main.php:76
+#: ../templates/main.php:88
 #: ../templates/partials/overview.php:19
 #: ../templates/partials/overview.php:7
 #: ../templates/partials/playlistview.php:6
 msgid "Play"
 msgstr ""
 
-#: ../templates/main.php:74
+#: ../templates/main.php:86
 msgid "Previous"
 msgstr ""
 
@@ -158,46 +162,49 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: ../templates/main.php:107
+#: ../templates/main.php:119
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:376
-#: ../js/public/app.js:798
+#: ../js/public/app.js:397
+#: ../js/public/app.js:819
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../templates/fake-template.php:17
+#: ../templates/partials/settingsview.php:23
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:140
+#: ../templates/main.php:152
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/partials/overview.php:36
-msgid "Show all {{ trackcount }} songs …"
-msgid_plural "Show all {{ trackcount }} songs …"
-msgstr[0] ""
-msgstr[1] ""
+#: ../templates/main.php:76
+#: ../templates/partials/settingsview.php:2
+msgid "Settings"
+msgstr ""
 
-#: ../templates/partials/overview.php:41
+#: ../templates/partials/overview.php:21
+msgid "Show all {{ album.tracks.length }} songs …"
+msgstr ""
+
+#: ../templates/partials/overview.php:21
 msgid "Show less …"
 msgstr ""
 
-#: ../templates/main.php:105
+#: ../templates/main.php:117
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:606
+#: ../js/public/app.js:627
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ../templates/fake-template.php:11
+#: ../templates/partials/settingsview.php:7
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:138
+#: ../js/public/app.js:149
 msgid "Timeout"
 msgstr ""
 
@@ -213,24 +220,24 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/main.php:124
+#: ../templates/main.php:136
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
-#: ../templates/fake-template.php:12
+#: ../templates/partials/settingsview.php:15
 msgid "Use this address to browse your music collection from any Ampache compatible player."
 msgstr ""
 
-#: ../templates/fake-template.php:18
+#: ../templates/partials/settingsview.php:39
 msgid "Use your username and following password to connect to this Ampache instance:"
 msgstr ""
 
-#: ../templates/main.php:109
-#: ../templates/main.php:110
-#: ../templates/main.php:112
+#: ../templates/main.php:121
+#: ../templates/main.php:122
+#: ../templates/main.php:124
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:141
+#: ../templates/main.php:153
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

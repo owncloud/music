@@ -55,10 +55,11 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'),
 
 	// settings
-	array('name' => 'setting#userPath', 'url' => '/settings/user/path', 'verb' => 'POST'),
-	array('name' => 'setting#addUserKey', 'url' => '/settings/userkey/add', 'verb' => 'POST'),
-	array('name' => 'setting#generateUserKey', 'url' => '/settings/userkey/generate', 'verb' => 'POST'),
-	array('name' => 'setting#removeUserKey', 'url' => '/settings/userkey/remove', 'verb' => 'POST'),
+	array('name' => 'setting#userPath', 'url' => '/api/settings/user/path', 'verb' => 'POST'),
+	array('name' => 'setting#getAll', 'url' => '/api/settings', 'verb' => 'GET'),
+	array('name' => 'setting#addUserKey', 'url' => '/api/settings/userkey/add', 'verb' => 'POST'),
+	array('name' => 'setting#generateUserKey', 'url' => '/api/settings/userkey/generate', 'verb' => 'POST'),
+	array('name' => 'setting#removeUserKey', 'url' => '/api/settings/userkey/remove', 'verb' => 'POST'),
 
 	// ampache
 	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'),

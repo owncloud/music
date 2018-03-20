@@ -40,7 +40,7 @@ The Music app uses SoundManager2 if the browser has a suitable codec available f
 
 Normally, the Music app detects any new audio files in the filesystem on application start and scans metadata from those to its database tables when the user clicks the prompt. The Music app also detects file removals and modifications on the background and makes the required database changes automatically.
 
-If the database would somehow get corrupted, the user can force it to be rebuilt by navigating to the Personal settings and changing the option "Music" > "Path to your music collection".
+If the database would somehow get corrupted, the user can force it to be rebuilt by opening the settings (at the bottom of the left pane) and changing the option "Path to your music collection".
 
 ### Commands
 
@@ -75,7 +75,7 @@ Music app caches some results for performance reasons. Normally, there should be
 
 ### Ampache
 
-In the settings the URL you need for Ampache is listed and looks like this:
+The URL you need for Ampache is listed in the settings and looks like this:
 
 ```
 https://cloud.domain.org/index.php/apps/music/ampache/
@@ -85,14 +85,15 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 
 #### Authentication
 
-To use Ampache you can't use your ownCloud password. Instead, you need to generate APIKEY for Ampache.
-Go to "Your username" → "Personal", and check section Music/Ampache, where you can generate your key. Enter your ownCloud username and the generated key as password to your client.
+Ampache doesn't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY for Ampache.
+The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app.
+In your Ampache client, use your ownCloud username and the generated key as password.
 
-You may use the `/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
+You may use the `/api/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
 
 ```
-POST /settings/userkey/generate
+POST /api/settings/userkey/generate
 ```
 
 Parameters:
@@ -138,7 +139,9 @@ HTTP/1.1 500 Internal Server Error
 
 ### Installation
 
-Music App can be installed using the App Management in ownCloud. Instructions can be found [here](https://doc.owncloud.org/server/8.1/admin_manual/installation/apps_management_installation.html).
+The Music app can be installed using the App Management in ownCloud. Instructions can be found [here](https://doc.owncloud.org/server/8.1/admin_manual/installation/apps_management_installation.html).
+
+After installation, you may want to select a specific sub-folder containing your music files through the settings of the application. This can be useful to prevent unwanted audio files to be included in the music library.
 
 ### Known issues
 
@@ -212,7 +215,7 @@ update JavaScript libraries
 
 ## API
 
-The music app implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
+The Music app implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
 
 Beside those mentioned resources following additional resources are implemented:
 

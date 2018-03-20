@@ -59,11 +59,6 @@ $c->query('ShareHooks')->register();
 \OC::$server->getSearch()->registerProvider('OCA\Music\Utility\Search');
 
 /**
- * register settings
- */
-\OCP\App::registerPersonal($appName, 'settings/user');
-
-/**
  * Load embedded music player for Files and Sharing apps
  * 
  * The nice way to do this would be

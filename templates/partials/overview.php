@@ -1,5 +1,5 @@
 <div id="overview"  ng-show="!loading && !loadingCollection">
-	<div bindonce class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
+	<div bindonce class="artist-area" ng-repeat="artist in ::artists | limitTo: incrementalLoadLimit" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
 		<span bo-id="letter" bo-if="letterAvailable[letter]"></span>
 		<h1 bo-id="'artist-' + artist.id">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
@@ -7,7 +7,7 @@
 				<img class="play svg" alt="{{ ::'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
-		<div class="album-area" ng-repeat="album in ::artist.albums | limitTo: incrementalLoadLimit track by album.id">
+		<div class="album-area" ng-repeat="album in ::artist.albums">
 			<h2 id="album-{{  ::album.id }}">
 				<div ng-click="playAlbum(album)"
 					 title="{{ ::(album.name + ((album.year) ? ' (' + album.year + ')' : '')) }}"

@@ -19,7 +19,7 @@
 					ng-class="::{current: getCurrentTrackIndex() === $index, playing: playing}"
 				>
 					<div class="play-pause" />
-					<span class="muted">{{ ::$index + 1 }}.</span>
+					<span class="muted">{{ $index + 1 }}.</span>
 					<div>{{ ::song.artistName }} - {{ ::song.title }}</div>
 				</div>
 				<button class="svg action icon-close" ng-click="removeTrack($index)" ng-if="::!!playlist"

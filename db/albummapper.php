@@ -155,19 +155,25 @@ class AlbumMapper extends BaseMapper {
 	 * @return true if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId){
-		$sql = 'UPDATE `*PREFIX*music_albums`
-				SET `cover_file_id` = ?
-				WHERE `cover_file_id` IS NULL AND `id` IN (
-					SELECT DISTINCT `tracks`.`album_id`
+		$sql = 'SELECT DISTINCT `tracks`.`album_id`
 					FROM `*PREFIX*music_tracks` `tracks`
 					JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
-					WHERE `files`.`parent` = ?
-				)';
-		$params = array($coverFileId, $folderId);
+					WHERE `files`.`parent` = ?';
+		$params = array($folderId);
 		$result = $this->execute($sql, $params);
-		return $result->rowCount() > 0;
+	
+		if ($result->rowCount()){
+			$sql = 'UPDATE `*PREFIX*music_albums`
+					SET `cover_file_id` = ?
+					WHERE `cover_file_id` IS NULL AND `id` IN (?)';
+			$params = array($coverFileId, join(",", $result->fetchAll(\PDO::FETCH_COLUMN)));
+			$result = $this->execute($sql, $params);
+			return $result->rowCount() > 0;
+		}
+		
+		return false;
 	}
-
+	
 	/**
 	 * @param integer $coverFileId
 	 * @param integer $albumId

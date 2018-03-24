@@ -184,7 +184,7 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 		try {
 			var controlsWidth = $window.innerWidth - getScrollBarWidth();
 			if($(window).width() > 768) {
-				controlsWidth -= $('#app-navigation').width();
+				controlsWidth -= $('#app-navigation').outerWidth();
 			}
 			$('#controls').css('width', controlsWidth);
 			$('#controls').css('min-width', controlsWidth);

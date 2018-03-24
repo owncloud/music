@@ -45,9 +45,23 @@ class FileHooks {
 	 * @param \OCP\Files\Node $node pointing to the file
 	 */
 	public static function updated($node){
+		// At least on Nextcloud 13, it sometimes happens that this hook is triggered
+		// when the core creates some temporary file and trying to access the provided
+		// node throws an exception, probably because the temp file is already removed
+		// by the time the execution gets here.
+		$app = new Music();
+		try {
+			self::handleUpdated($node, $app);
+		}
+		catch (\OCP\Files\NotFoundException $e) {
+			$logger = $app->getContainer()->query('Logger');
+			$logger->log('FileHooks::updated triggered for non-existing file', 'warn');
+		}
+	}
+
+	private static function handleUpdated($node, $app){
 		// we are interested only about updates on files, not on folders
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$app = new Music();
 			$container = $app->getContainer();
 			$scanner = $container->query('Scanner');
 			$userId = $container->query('UserId');

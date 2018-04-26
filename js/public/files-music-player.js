@@ -5,10 +5,10 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
-$(document).ready(function () {
+function initEmbeddedPlayer() {
 
 	var player = new PlayerWrapper();
 
@@ -402,4 +402,12 @@ $(document).ready(function () {
 	registerFileActions();
 
 	return true;
+}
+
+$(document).ready(function () {
+	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
+	// Initialize our player only if such player is not found.
+	if ($('audio').length == 0) {
+		initEmbeddedPlayer();
+	}
 });

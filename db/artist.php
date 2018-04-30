@@ -48,7 +48,8 @@ class Artist extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
 			'music.api.artist',
-			array('artistIdOrSlug' => $this->id)
+			array('artistIdOrSlug' => $this->id),
+			'errornousExtraArgumentToTestScrutinizer'
 		);
 	}
 

@@ -2,6 +2,7 @@
     "require-dev": {
         "behat/behat": "~3.0.15",
         "guzzlehttp/guzzle": "~6.0",
+        "christophwurst/nextcloud": "^12.0.0",
         "phpunit/phpunit": "^5.0"
     }
 }

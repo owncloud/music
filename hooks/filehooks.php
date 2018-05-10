@@ -48,14 +48,22 @@ class FileHooks {
 		// At least on Nextcloud 13, it sometimes happens that this hook is triggered
 		// when the core creates some temporary file and trying to access the provided
 		// node throws an exception, probably because the temp file is already removed
-		// by the time the execution gets here.
+		// by the time the execution gets here. See #636.
+		// Furthermore, when the core opens a file in stream mode for writing using
+		// File::fopen, this hook gets triggered immediately after the opening succeeds,
+		// before anything is actually written and while the file is *exlusively locked
+		// because of the write mode*. See #638.
 		$app = new Music();
 		try {
 			self::handleUpdated($node, $app);
 		}
 		catch (\OCP\Files\NotFoundException $e) {
 			$logger = $app->getContainer()->query('Logger');
-			$logger->log('FileHooks::updated triggered for non-existing file', 'warn');
+			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
+		}
+		catch (\OCP\Lock\LockedException $e) {
+			$logger = $app->getContainer()->query('Logger');
+			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
 

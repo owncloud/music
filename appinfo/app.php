@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\App;
@@ -52,6 +52,7 @@ if (method_exists(\OC::$server, 'getContentSecurityPolicyManager')) {
  */
 $c->query('FileHooks')->register();
 $c->query('ShareHooks')->register();
+$c->query('UserHooks')->register();
 
 /**
  * register search provider

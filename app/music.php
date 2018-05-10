@@ -43,6 +43,7 @@ use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Hooks\FileHooks;
 use \OCA\Music\Hooks\ShareHooks;
+use \OCA\Music\Hooks\UserHooks;
 
 use \OCA\Music\Middleware\AmpacheMiddleware;
 
@@ -346,6 +347,13 @@ class Music extends App {
 
 		$container->registerService('ShareHooks', function($c) {
 			return new ShareHooks();
+		});
+
+		$container->registerService('UserHooks', function($c) {
+			return new UserHooks(
+				$c->query('ServerContainer')->getUserManager(),
+				$c->query('Maintenance')
+			);
 		});
 	}
 }

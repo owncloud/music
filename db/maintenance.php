@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\Db;
@@ -148,10 +148,10 @@ class Maintenance {
 				'DELETE FROM `*PREFIX*music_tracks`',
 				'DELETE FROM `*PREFIX*music_albums`',
 				'DELETE FROM `*PREFIX*music_artists`',
-				'UPDATE *PREFIX*music_playlists SET track_ids=NULL',
+				'DELETE FROM `*PREFIX*music_playlists`',
 				'DELETE FROM `*PREFIX*music_cache`'
 		);
-	
+
 		foreach ($sqls as $sql) {
 			$params = [];
 			if (!$allUsers) {
@@ -160,7 +160,7 @@ class Maintenance {
 			}
 			$this->db->executeUpdate($sql, $params);
 		}
-	
+
 		if ($allUsers) {
 			$this->logger->log("Erased music databases of all users", 'info');
 		} else {

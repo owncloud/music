@@ -28,6 +28,7 @@
 * [Glandos](https://github.com/Glandos)
 * [Gregory Baudet](https://github.com/greku): <gregory.baudet@gmail.com>
 * [Jbtbnl](https://github.com/jbtbnl)
+* [Jean-Marie de Boer] (https://github.com/jmdeboer-surfsara): <jean-marie.deboer@surfsara.nl>
 * [Jonathan Kawohl](https://github.com/Kawohl)
 * [Jérôme Pouiller](https://github.com/jerome-pouiller)
 * [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>

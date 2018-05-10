@@ -5,7 +5,8 @@
 		<input type="text" id="music-path" ng-model="settings.path" ng-click="selectPath()"/>
 		<span style="color:red" ng-show="errorPath">{{ 'Failed to save music path' | translate}}</span>
 		<p><em>{{ 'This setting specifies the folder which will be scanned for music.' | translate }}</em></p>
-	</div>
+		<p><em>{{ 'The music library has to be rescanned after changing this setting.' | translate }}</em></p>
+		</div>
 	<h3>Ampache</h3>
 	<div class="warning" translate>
 		Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href="https://github.com/owncloud/music/issues/60">issue</a>. I would also like to have a list of clients to test with. Thanks

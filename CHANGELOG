@@ -1,3 +1,6 @@
+v0.6.1 2018-05-13
+ * fix not being able to play file types other than mp3 and flac (regression from 0.6.0)
+
 v0.6.0 2018-05-10
  * settings view moved from the "personal settings" to the Music app itself (#625 by @greku)
  * improve performance of updateFolderCover on large installations (#637 by @jmdeboer-surfsara)

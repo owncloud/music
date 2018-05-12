@@ -12,10 +12,11 @@ var PlayerWrapper = function() {
 PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
 
 PlayerWrapper.prototype.init = function(onReadyCallback) {
+	var self = this;
 	this.sm2 = soundManager.setup({
 		html5PollingInterval: 200,
 		onready: function() {
-			PlayerWrapper.sm2ready = true;
+			self.sm2ready = true;
 			onReadyCallback();
 		}
 	});

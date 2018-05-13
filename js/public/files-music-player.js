@@ -275,10 +275,10 @@ function initEmbeddedPlayer() {
 					filerow.find('.thumbnail').css('background-image')
 			);
 
-			if (!shareView) {
-				loadFileInfo(currentFile, fileName);
+			if (shareView) {
+				loadSharedFileInfo($('#sharingToken').val(), currentFile, fileName);
 			} else {
-				titleText.text(titleFromFilename(fileName));
+				loadFileInfo(currentFile, fileName);
 			}
 		}
 
@@ -286,8 +286,7 @@ function initEmbeddedPlayer() {
 		togglePlayback();
 	}
 
-	function loadFileInfo(fileId, fileName) {
-		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
+	function loadFileInfoFromUrl(url, fileName, callback=null) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -296,6 +295,17 @@ function initEmbeddedPlayer() {
 				coverImage.css('background-image', 'url("' + data.cover + '")');
 			}
 
+			if (callback) {
+				callback(data);
+			}
+		}).fail(function() {
+			titleText.text(titleFromFilename(fileName));
+		});
+	}
+
+	function loadFileInfo(fileId, fileName) {
+		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
+		loadFileInfoFromUrl(url, fileName, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -308,9 +318,13 @@ function initEmbeddedPlayer() {
 			else {
 				musicAppLinkElements().attr('title', t('music', '(file is not within your music collection folder)'));
 			}
-		}).fail(function() {
-			titleText.text(titleFromFilename(fileName));
 		});
+	}
+
+	function loadSharedFileInfo(shareToken, fileId, fileName) {
+		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
+				{'token':shareToken, 'fileId':fileId});
+		loadFileInfoFromUrl(url, fileName);
 	}
 
 	function titleFromFilename(filename) {
@@ -373,8 +387,13 @@ function initEmbeddedPlayer() {
 							initPlayer(
 									$('#downloadURL').val(),
 									mime,
-									titleFromFilename($('#filename').val()),
+									t('music', 'Loading…'), // actual title is filled later
 									'url("' + previewImg.attr('src') + '")'
+							);
+							loadSharedFileInfo(
+									$('#sharingToken').val(),
+									0,
+									titleFromFilename($('#filename').val())
 							);
 						}
 						togglePlayback();

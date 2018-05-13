@@ -31,6 +31,7 @@ use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
+use \OCA\Music\Controller\ShareController;
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\AmpacheSessionMapper;
@@ -145,6 +146,15 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('ShareController', function($c) {
+			return new ShareController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('ShareManager'),
+				$c->query('Scanner'),
+				$c->query('Logger')
+			);
+		});
 
 		/**
 		 * Business Layer
@@ -272,6 +282,10 @@ class Music extends App {
 
 		$container->registerService('GroupManager', function($c) {
 			return $c->getServer()->getGroupManager();
+		});
+
+		$container->registerService('ShareManager', function($c) {
+			return $c->getServer()->getShareManager();
 		});
 
 		/**

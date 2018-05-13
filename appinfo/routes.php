@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music;
@@ -43,6 +45,8 @@ $app->registerRoutes($this, array('routes' => array(
 	array('name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'),
 	array('name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'),
 	// array('name' => 'api#trackLyrics', 'url' => '/api/track/{trackIdOrSlug}/lyrics', 'verb' => 'GET'),
+
+	array('name' => 'share#fileInfo', 'url' => '/api/share/{token}/{fileId}/info', 'verb' => 'GET'),
 
 	// playlist API
 	array('name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'),

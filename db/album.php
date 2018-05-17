@@ -86,7 +86,7 @@ class Album extends Entity {
 	 */
 	public function getArtists(IURLGenerator $urlGenerator) {
 		$artists = array();
-		foreach($this->artistIds as $artistId) {
+		foreach ($this->artistIds as $artistId) {
 			$artists[] = array(
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
@@ -106,7 +106,8 @@ class Album extends Entity {
 	 * @return string|null
 	 */
 	public function getYearRange() {
-		$count = count($this->years);
+		$count = empty($this->years) ? 0 : count($this->years);
+
 		if ($count == 0) {
 			return null;
 		} else if ($count == 1) {
@@ -135,7 +136,7 @@ class Album extends Entity {
 		$name = $this->getName();
 		if ($name === null) {
 			$name = $l10n->t('Unknown album');
-			if(!is_string($name)) {
+			if (!is_string($name)) {
 				/** @var \OC_L10N_String $name */
 				$name = $name->__toString();
 			}

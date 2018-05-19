@@ -8,15 +8,13 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		<artist id='<?php p($song->getArtist()->getId());?>'><?php p($song->getArtist()->getName());?></artist>
 		<albumartist id='<?php p($song->getAlbum()->getAlbumArtist()->getId());?>'><?php p($song->getAlbum()->getAlbumArtist()->getName());?></albumartist>
 		<album id='<?php p($song->getAlbum()->getId());?>'><?php p($song->getAlbum()->getName());?></album>
-		<url><?php p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=play&amp;filter=<?php p($song->getId());?>&amp;auth=<?php p($_['authtoken']); ?></url>
+		<url><?php p($_['createPlayUrl']($song));?></url>
 		<time><?php p($song->getLength());?></time>
 		<track><?php p($song->getNumber());?></track>
 		<bitrate><?php p($song->getBitrate());?></bitrate>
 		<mime><?php p($song->getMimetype());?></mime>
 		<size>0</size>
-		<art><?php $cid = $song->getAlbum()->getCoverFileId(); if ($cid) {
-	p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=_get_cover&amp;filter=<?php p($song->getAlbum()->getId()); ?>&amp;auth=<?php p($_['authtoken']);
-} ?></art>
+		<art><?php p($_['createCoverUrl']($song));?></art>
 		<rating>0</rating>
 		<preciserating>0</preciserating>
 	</song>

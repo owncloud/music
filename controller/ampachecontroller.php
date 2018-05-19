@@ -386,6 +386,15 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	protected static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
+		return $urlGenerator->getAbsoluteURL($urlGenerator->linkToRoute('music.ampache.ampache'))
+				. "?action=$action&filter=$filter&auth=$auth";
+	}
+
+	protected static function createAlbumCoverUrl($urlGenerator, $album, $auth) {
+		return self::createAmpacheActionUrl($urlGenerator, '_get_cover', $album->getId(), $auth);
+	}
+
 	protected function renderArtists($artists) {
 		foreach ($artists as &$artist) {
 			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
@@ -404,14 +413,34 @@ class AmpacheController extends Controller {
 			$album->setAlbumArtist($albumArtist);
 		}
 
+		$createCoverUrl = function($album) use ($auth) {
+			if ($album->getCoverFileId()) {
+				return self::createAlbumCoverUrl($this->urlGenerator, $album, $auth);
+			} else {
+				return '';
+			}
+		};
+
 		return $this->renderXml(
 				'ampache/albums',
-				['albums' => $albums, 'l10n' => $this->l10n, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+				['albums' => $albums, 'l10n' => $this->l10n, 'createCoverUrl' => $createCoverUrl]
 		);
 	}
 
 	protected function renderSongs($tracks, $auth, $commonArtist=null, $commonAlbum=null) {
 		$userId = $this->ampacheUser->getUserId();
+
+		// URL creation callbacks
+		$createPlayUrl = function($track) use ($auth) {
+			return self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth);
+		};
+		$createCoverUrl = function($track) use ($auth) {
+			if ($track->getAlbum()->getCoverFileId()) {
+				return self::createAlbumCoverUrl($this->urlGenerator, $track->getAlbum(), $auth);
+			} else {
+				return '';
+			}
+		};
 
 		// set album and artist for tracks
 		foreach ($tracks as &$track) {
@@ -429,7 +458,7 @@ class AmpacheController extends Controller {
 
 		return $this->renderXml(
 				'ampache/songs',
-				['songs' => $tracks, 'urlGenerator' => $this->urlGenerator, 'authtoken' => $auth]
+				['songs' => $tracks, 'createPlayUrl' => $createPlayUrl, 'createCoverUrl' => $createCoverUrl]
 		);
 	}
 

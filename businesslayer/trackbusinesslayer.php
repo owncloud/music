@@ -29,6 +29,8 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Db\Track;
 
+use \OCA\Music\Utility\Util;
+
 use \OCP\AppFramework\Db\DoesNotExistException;
 
 class TrackBusinessLayer extends BusinessLayer {
@@ -159,9 +161,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result = false;
 		} else {
 			// delete all the matching tracks
-			$trackIds = \array_map(function ($t) {
-				return $t->getId();
-			}, $tracks);
+			$trackIds = Util::extractIds($tracks);
 			$this->deleteById($trackIds);
 
 			// find all distinct albums, artists, and users of the deleted tracks

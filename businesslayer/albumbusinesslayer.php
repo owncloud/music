@@ -20,6 +20,8 @@ use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\SortBy;
 
+use \OCA\Music\Utility\Util;
+
 class AlbumBusinessLayer extends BusinessLayer {
 	private $logger;
 
@@ -75,9 +77,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	private function injectArtistsAndYears($albums) {
 		if (\count($albums) > 0) {
-			$albumIds = \array_map(function ($a) {
-				return $a->getId();
-			}, $albums);
+			$albumIds = Util::extractIds($albums);
 			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
 			$years = $this->mapper->getYearsByAlbumId($albumIds);
 			foreach ($albums as &$album) {

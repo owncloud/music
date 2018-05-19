@@ -12,6 +12,8 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\Utility\Util;
+
 use OCP\IDBConnection;
 
 class AlbumMapper extends BaseMapper {
@@ -208,9 +210,7 @@ class AlbumMapper extends BaseMapper {
 			$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = NULL
 				WHERE `id` IN ' . $this->questionMarks($count);
-			$params = \array_map(function ($a) {
-				return $a->getId();
-			}, $albums);
+			$params = Util::extractIds($albums);
 			$this->execute($sql, $params);
 		}
 

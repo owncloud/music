@@ -106,9 +106,9 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - mimetype $mimetype", 'debug');
 
-		if (self::startsWith($mimetype, 'image')) {
+		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
+		} elseif (Util::startsWith($mimetype, 'audio') || Util::startsWith($mimetype, 'application/ogg')) {
 			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
 	}
@@ -116,7 +116,7 @@ class Scanner extends PublicEmitter {
 	private function pathIsUnderMusicFolder($filePath, $userId, $userHome) {
 		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
 		$musicPath = $musicFolder->getPath();
-		return self::startsWith($filePath, $musicPath);
+		return Util::startsWith($filePath, $musicPath);
 	}
 
 	private function updateImage($file, $userId) {
@@ -348,12 +348,12 @@ class Scanner extends PublicEmitter {
 				$folder->searchByMime('application/ogg')
 		);
 		if (\count($audioFiles) > 0) {
-			$this->deleteAudio(self::idsFromArray($audioFiles), $userIds);
+			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
 		}
 
 		$imageFiles = $folder->searchByMime('image');
 		if (\count($imageFiles) > 0) {
-			$this->deleteImage(self::idsFromArray($imageFiles), $userIds);
+			$this->deleteImage(Util::extractIds($imageFiles), $userIds);
 		}
 	}
 
@@ -392,8 +392,8 @@ class Scanner extends PublicEmitter {
 	public function getUnscannedMusicFileIds($userId, $userHome) {
 		$scannedIds = $this->getScannedFiles($userId);
 		$musicFiles = $this->getMusicFiles($userId, $userHome);
-		$allIds = self::idsFromArray($musicFiles);
-		$unscannedIds = self::fast_array_diff($allIds, $scannedIds);
+		$allIds = Util::extractIds($musicFiles);
+		$unscannedIds = Util::arrayDiff($allIds, $scannedIds);
 
 		$count = \count($unscannedIds);
 		if ($count) {
@@ -568,37 +568,6 @@ class Scanner extends PublicEmitter {
 		}
 	
 		return $folder;
-	}
-
-	/**
-	 * Get difference of two arrays, i.e. elements belonging to $b but not $a.
-	 * This function is faster than the built-in array_diff for large arrays but
-	 * at the expense of higher RAM usage and can be used only for arrays of
-	 * integers or strings.
-	 * From https://stackoverflow.com/a/8827033
-	 * @param array $b
-	 * @param array $a
-	 * @return array
-	 */
-	private static function fast_array_diff($b, $a) {
-		$at = \array_flip($a);
-		$d = [];
-		foreach ($b as $i) {
-			if (!isset($at[$i])) {
-				$d[] = $i;
-			}
-		}
-		return $d;
-	}
-
-	private static function idsFromArray(array $arr) {
-		return \array_map(function ($i) {
-			return $i->getId();
-		}, $arr);
-	}
-
-	private static function startsWith($string, $potentialStart) {
-		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
 	}
 
 	private static function isNullOrEmpty($string) {

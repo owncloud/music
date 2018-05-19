@@ -1,0 +1,13 @@
+<?php
+
+$config = new OC\CodingStandard\Config();
+
+$config
+    ->setUsingCache(true)
+    ->getFinder()
+    ->exclude('3rdparty')
+    ->exclude('build')
+    ->exclude('vendor')
+    ->in(__DIR__);
+
+return $config;

@@ -32,7 +32,6 @@ use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
 
 class PlaylistApiController extends Controller {
-
 	private $playlistBusinessLayer;
 	private $userId;
 	private $userFolder;
@@ -51,7 +50,7 @@ class PlaylistApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								Folder $userFolder,
 								$userId,
-								$l10n){
+								$l10n) {
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
@@ -103,7 +102,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function delete($id) {
 		$this->playlistBusinessLayer->delete($id, $this->userId);
-		return array();
+		return [];
 	}
 
 	/**
@@ -117,14 +116,13 @@ class PlaylistApiController extends Controller {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
-			$fulltree = filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+			$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 			if ($fulltree) {
 				return $this->toFullTree($playlist);
 			} else {
 				return $playlist->toAPI();
 			}
-
-		} catch(BusinessLayerException $ex) {
+		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
@@ -133,18 +131,18 @@ class PlaylistApiController extends Controller {
 		$songs = [];
 
 		// Get all track information for all the tracks of the playlist
-		foreach($playlist->getTrackIdsAsArray() as $trackId) {
+		foreach ($playlist->getTrackIdsAsArray() as $trackId) {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
 			$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
 			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
 		}
 
-		return array(
+		return [
 			'name' => $playlist->getName(),
 			'tracks' => $songs,
 			'id' => $playlist->getId(),
-		);
+		];
 	}
 
 	/**
@@ -200,9 +198,9 @@ class PlaylistApiController extends Controller {
 	 */
 	private function modifyPlaylist($funcName, $funcParams) {
 		try {
-			$playlist = call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
+			$playlist = \call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
 			return $playlist->toAPI();
-		} catch(BusinessLayerException $ex) {
+		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
@@ -213,6 +211,6 @@ class PlaylistApiController extends Controller {
 	 * @return int[]
 	 */
 	private static function toIntArray($listAsString) {
-		return array_map('intval', explode(',', $listAsString));
+		return \array_map('intval', \explode(',', $listAsString));
 	}
 }

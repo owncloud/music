@@ -27,7 +27,7 @@ class BaseMapper extends Mapper {
 	 * @param string $tableName
 	 * @param string $entityClass
 	 */
-	public function __construct(IDBConnection $db, $tableName, $entityClass=null){
+	public function __construct(IDBConnection $db, $tableName, $entityClass=null) {
 		parent::__construct($db, $tableName, $entityClass);
 	}
 
@@ -39,7 +39,7 @@ class BaseMapper extends Mapper {
 	 * @throws MultipleObjectsReturnedException if more than one entity exists
 	 * @return Entity
 	 */
-	public function find($id, $userId){
+	public function find($id, $userId) {
 		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` = ? AND `user_id` = ?';
 		return $this->findEntity($sql, [$id, $userId]);
 	}
@@ -50,8 +50,8 @@ class BaseMapper extends Mapper {
 	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids, $userId=null){
-		$count = count($ids);
+	public function findById($ids, $userId=null) {
+		$count = \count($ids);
 		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
 		if (!empty($userId)) {
 			$sql .= ' AND `user_id` = ?';
@@ -64,9 +64,9 @@ class BaseMapper extends Mapper {
 	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
-	public function deleteById($ids){
-		$count = count($ids);
-		if($count === 0) {
+	public function deleteById($ids) {
+		$count = \count($ids);
+		if ($count === 0) {
 			return;
 		}
 		$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
@@ -77,12 +77,12 @@ class BaseMapper extends Mapper {
 	 * Count all entities of a user
 	 * @param string $userId
 	 */
-	public function count($userId){
+	public function count($userId) {
 		$sql = 'SELECT COUNT(*) AS count FROM `' . $this->getTableName() . '` '.
 			'WHERE `user_id` = ?';
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
-		return intval($row['count']);
+		return \intval($row['count']);
 	}
 
 	/**
@@ -106,11 +106,10 @@ class BaseMapper extends Mapper {
 	 * @param int $count
 	 */
 	protected function questionMarks($count) {
-		$questionMarks = array();
-		for($i = 0; $i < $count; $i++){
+		$questionMarks = [];
+		for ($i = 0; $i < $count; $i++) {
 			$questionMarks[] = '?';
 		}
-		return '(' . implode(',', $questionMarks) . ')';
+		return '(' . \implode(',', $questionMarks) . ')';
 	}
-
 }

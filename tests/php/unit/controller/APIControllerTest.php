@@ -20,7 +20,6 @@ use OCA\Music\DB\Album;
 use OCA\Music\DB\Track;
 
 class APIControllerTest extends ControllerTestUtility {
-
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
@@ -36,7 +35,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $userFolder;
 	private $logger;
 
-	protected function setUp(){
+	protected function setUp() {
 		$this->request = $this->getMockBuilder('\OCP\IRequest')
 			->disableOriginalConstructor()
 			->getMock();
@@ -89,12 +88,12 @@ class APIControllerTest extends ControllerTestUtility {
 	/**
 	 * @param string $methodName
 	 */
-	private function assertAPIControllerAnnotations($methodName){
-		$annotations = array('NoAdminRequired', 'NoCSRFRequired');
+	private function assertAPIControllerAnnotations($methodName) {
+		$annotations = ['NoAdminRequired', 'NoCSRFRequired'];
 		$this->assertAnnotations($this->controller, $methodName, $annotations);
 	}
 
-	public function testAnnotations(){
+	public function testAnnotations() {
 		$this->assertAPIControllerAnnotations('artists');
 		$this->assertAPIControllerAnnotations('artist');
 		$this->assertAPIControllerAnnotations('albums');
@@ -103,7 +102,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertAPIControllerAnnotations('track');
 	}
 
-	public function testArtists(){
+	public function testArtists() {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
@@ -116,24 +115,24 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($artist1, $artist2)));
+			->will($this->returnValue([$artist1, $artist2]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'name' => 'The artist name',
 				'image' => 'The image url',
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3
-			),
-			array(
+			],
+			[
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4
-			)
-		);
+			]
+		];
 
 		$response = $this->controller->artists(false /*fulltree*/, false /*albums*/);
 
@@ -141,7 +140,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testArtistsFulltree(){
+	public function testArtistsFulltree() {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
@@ -160,7 +159,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setYears([2011, 2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(3));
+		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(5);
 		$track = new Track();
 		$track->setId(1);
@@ -178,29 +177,29 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($artist1, $artist2)));
+			->will($this->returnValue([$artist1, $artist2]));
 		$this->albumBusinessLayer->expects($this->at(0))
 			->method('findAllByArtist')
 			->with($this->equalTo(3), $this->equalTo($this->userId))
-			->will($this->returnValue(array($album)));
+			->will($this->returnValue([$album]));
 		$this->albumBusinessLayer->expects($this->at(1))
 			->method('findAllByArtist')
 			->with($this->equalTo(4), $this->equalTo($this->userId))
-			->will($this->returnValue(array($album)));
+			->will($this->returnValue([$album]));
 		$this->trackBusinessLayer->expects($this->exactly(2))
 			->method('findAllByAlbum')
 			->with($this->equalTo($albumId))
-			->will($this->returnValue(array($track)));
+			->will($this->returnValue([$track]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'name' => 'The artist name',
 				'image' => 'The image url',
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
-				'albums' => array(
-					array(
+				'albums' => [
+					[
 						'name' => 'The name',
 						'cover' => null,
 						'uri' => null,
@@ -208,12 +207,12 @@ class APIControllerTest extends ControllerTestUtility {
 						'id' => 4,
 						'year' => 2013,
 						'disk' => 1,
-						'artists' => array(
-							array('id' => 3, 'uri' => null)
-						),
+						'artists' => [
+							['id' => 3, 'uri' => null]
+						],
 						'albumArtistId' => 5,
-						'tracks' => array(
-							array(
+						'tracks' => [
+							[
 								'title' => 'The title',
 								'uri' => null,
 								'slug' => '1-the-title',
@@ -221,24 +220,24 @@ class APIControllerTest extends ControllerTestUtility {
 								'ordinal' => 4,
 								'bitrate' => 123,
 								'length' => 123,
-								'artist' => array('id' => 3, 'uri' => null),
-								'album' => array('id' => 4, 'uri' => null),
-								'files' => array(
+								'artist' => ['id' => 3, 'uri' => null],
+								'album' => ['id' => 4, 'uri' => null],
+								'files' => [
 									'audio/mp3' => null
-								)
-							)
-						)
-					)
-				)
-			),
-			array(
+								]
+							]
+						]
+					]
+				]
+			],
+			[
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
-				'albums' => array(
-					array(
+				'albums' => [
+					[
 						'name' => 'The name',
 						'cover' => null,
 						'uri' => null,
@@ -246,12 +245,12 @@ class APIControllerTest extends ControllerTestUtility {
 						'id' => 4,
 						'year' => 2013,
 						'disk' => 1,
-						'artists' => array(
-							array('id' => 3, 'uri' => null)
-						),
+						'artists' => [
+							['id' => 3, 'uri' => null]
+						],
 						'albumArtistId' => 5,
-						'tracks' => array(
-							array(
+						'tracks' => [
+							[
 								'title' => 'The title',
 								'uri' => null,
 								'slug' => '1-the-title',
@@ -259,17 +258,17 @@ class APIControllerTest extends ControllerTestUtility {
 								'ordinal' => 4,
 								'bitrate' => 123,
 								'length' => 123,
-								'artist' => array('id' => 3, 'uri' => null),
-								'album' => array('id' => 4, 'uri' => null),
-								'files' => array(
+								'artist' => ['id' => 3, 'uri' => null],
+								'album' => ['id' => 4, 'uri' => null],
+								'files' => [
 									'audio/mp3' => null
-								)
-							)
-						)
-					)
-				)
-			)
-		);
+								]
+							]
+						]
+					]
+				]
+			]
+		];
 
 		$response = $this->controller->artists(true /*fulltree*/, false /*albums*/);
 
@@ -277,7 +276,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testArtistsAlbumsOnlyFulltree(){
+	public function testArtistsAlbumsOnlyFulltree() {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
@@ -292,33 +291,33 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(3));
+		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(3);
 
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($artist1, $artist2)));
+			->will($this->returnValue([$artist1, $artist2]));
 		$this->albumBusinessLayer->expects($this->at(0))
 			->method('findAllByArtist')
 			->with($this->equalTo(3), $this->equalTo($this->userId))
-			->will($this->returnValue(array($album)));
+			->will($this->returnValue([$album]));
 		$this->albumBusinessLayer->expects($this->at(1))
 			->method('findAllByArtist')
 			->with($this->equalTo(4), $this->equalTo($this->userId))
-			->will($this->returnValue(array($album)));
+			->will($this->returnValue([$album]));
 		$this->trackBusinessLayer->expects($this->never())
 			->method('findAllByAlbum');
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'name' => 'The artist name',
 				'image' => 'The image url',
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
-				'albums' => array(
-					array(
+				'albums' => [
+					[
 						'name' => 'The name',
 						'cover' => null,
 						'uri' => null,
@@ -326,21 +325,21 @@ class APIControllerTest extends ControllerTestUtility {
 						'id' => 4,
 						'year' => 2013,
 						'disk' => 1,
-						'artists' => array(
-							array('id' => 3, 'uri' => null)
-						),
+						'artists' => [
+							['id' => 3, 'uri' => null]
+						],
 						'albumArtistId' => 3
-					),
-				)
-			),
-			array(
+					],
+				]
+			],
+			[
 				'name' => 'The other artist name',
 				'image' => 'The image url number 2',
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
-				'albums' => array(
-					array(
+				'albums' => [
+					[
 						'name' => 'The name',
 						'cover' => null,
 						'uri' => null,
@@ -348,14 +347,14 @@ class APIControllerTest extends ControllerTestUtility {
 						'id' => 4,
 						'year' => 2013,
 						'disk' => 1,
-						'artists' => array(
-							array('id' => 3, 'uri' => null)
-						),
+						'artists' => [
+							['id' => 3, 'uri' => null]
+						],
 						'albumArtistId' => 3
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 
 		$response = $this->controller->artists(false /*fultree*/, true /*albums*/);
 
@@ -363,7 +362,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testArtist(){
+	public function testArtist() {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The artist name');
@@ -376,13 +375,13 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($artistId), $this->equalTo($this->userId))
 			->will($this->returnValue($artist));
 
-		$result = array(
+		$result = [
 			'name' => 'The artist name',
 			'image' => 'The image url',
 			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3
-		);
+		];
 
 		$response = $this->controller->artist($artistId, false /*fulltree*/);
 
@@ -390,7 +389,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testArtistFulltree(){
+	public function testArtistFulltree() {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The artist name');
@@ -401,7 +400,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(3));
+		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(3);
 		$track = new Track();
 		$track->setId(1);
@@ -424,20 +423,20 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAllByArtist')
 			->with($this->equalTo($artistId), $this->equalTo($this->userId))
-			->will($this->returnValue(array($album)));
+			->will($this->returnValue([$album]));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
 			->with($this->equalTo($albumId))
-			->will($this->returnValue(array($track)));
+			->will($this->returnValue([$track]));
 
-		$result = array(
+		$result = [
 			'name' => 'The artist name',
 			'image' => 'The image url',
 			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3,
-			'albums' => array(
-				array(
+			'albums' => [
+				[
 					'name' => 'The name',
 					'cover' => null,
 					'uri' => null,
@@ -445,12 +444,12 @@ class APIControllerTest extends ControllerTestUtility {
 					'id' => 3,
 					'year' => 2013,
 					'disk' => 1,
-					'artists' => array(
-						array('id' => 3, 'uri' => null)
-					),
+					'artists' => [
+						['id' => 3, 'uri' => null]
+					],
 					'albumArtistId' => 3,
-					'tracks' => array(
-						array(
+					'tracks' => [
+						[
 							'title' => 'The title',
 							'uri' => null,
 							'slug' => '1-the-title',
@@ -458,16 +457,16 @@ class APIControllerTest extends ControllerTestUtility {
 							'ordinal' => 4,
 							'bitrate' => 123,
 							'length' => 123,
-							'artist' => array('id' => 3, 'uri' => null),
-							'album' => array('id' => 1, 'uri' => null),
-							'files' => array(
+							'artist' => ['id' => 3, 'uri' => null],
+							'album' => ['id' => 1, 'uri' => null],
+							'files' => [
 								'audio/mp3' => null
-							)
-						)
-					)
-				)
-			)
-		);
+							]
+						]
+					]
+				]
+			]
+		];
 
 		$response = $this->controller->artist($artistId, true /*fulltree*/);
 
@@ -475,14 +474,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testAlbums(){
+	public function testAlbums() {
 		$album1 = new Album();
 		$album1->setId(3);
 		$album1->setName('The name');
 		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
 		$album1->setDisk(1);
-		$album1->setArtistIds(array(1));
+		$album1->setArtistIds([1]);
 		$album1->setAlbumArtistId(1);
 		$album2 = new Album();
 		$album2->setId(4);
@@ -490,16 +489,16 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2->setYears([]);
 		$album2->setCoverFileId(7);
 		$album2->setDisk(1);
-		$album2->setArtistIds(array(3,5));
+		$album2->setArtistIds([3,5]);
 		$album2->setAlbumArtistId(2);
 
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($album1, $album2)));
+			->will($this->returnValue([$album1, $album2]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'name' => 'The name',
 				'cover' => null,
 				'uri' => null,
@@ -507,12 +506,12 @@ class APIControllerTest extends ControllerTestUtility {
 				'id' => 3,
 				'year' => 2013,
 				'disk' => 1,
-				'artists' => array(
-					array('id' => 1, 'uri' => null)
-				),
+				'artists' => [
+					['id' => 1, 'uri' => null]
+				],
 				'albumArtistId' => 1
-			),
-			array(
+			],
+			[
 				'name' => 'The album name',
 				'cover' => null,
 				'uri' => null,
@@ -520,13 +519,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'id' => 4,
 				'year' => null,
 				'disk' => 1,
-				'artists' => array(
-					array('id' => 3, 'uri' => null),
-					array('id' => 5, 'uri' => null)
-				),
+				'artists' => [
+					['id' => 3, 'uri' => null],
+					['id' => 5, 'uri' => null]
+				],
 				'albumArtistId' => 2
-			)
-		);
+			]
+		];
 
 		$response = $this->controller->albums(false /*fulltree*/);
 
@@ -534,14 +533,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testAlbumsFulltree(){
+	public function testAlbumsFulltree() {
 		$album1 = new Album();
 		$album1->setId(3);
 		$album1->setName('The name');
 		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
 		$album1->setDisk(1);
-		$album1->setArtistIds(array(1));
+		$album1->setArtistIds([1]);
 		$album1->setAlbumArtistId(5);
 		$album2 = new Album();
 		$album2->setId(4);
@@ -549,7 +548,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2->setYears([2003]);
 		$album2->setCoverFileId(7);
 		$album2->setDisk(1);
-		$album2->setArtistIds(array(3,5));
+		$album2->setArtistIds([3,5]);
 		$album2->setAlbumArtistId(1);
 		$artist1 = new Artist();
 		$artist1->setId(1);
@@ -577,26 +576,26 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($album1, $album2)));
+			->will($this->returnValue([$album1, $album2]));
 		$this->artistBusinessLayer->expects($this->at(0))
 			->method('findMultipleById')
-			->with($this->equalTo(array(1)), $this->equalTo($this->userId))
-			->will($this->returnValue(array($artist1)));
+			->with($this->equalTo([1]), $this->equalTo($this->userId))
+			->will($this->returnValue([$artist1]));
 		$this->artistBusinessLayer->expects($this->at(1))
 			->method('findMultipleById')
-			->with($this->equalTo(array(3,5)), $this->equalTo($this->userId))
-			->will($this->returnValue(array($artist2, $artist3)));
+			->with($this->equalTo([3,5]), $this->equalTo($this->userId))
+			->will($this->returnValue([$artist2, $artist3]));
 		$this->trackBusinessLayer->expects($this->at(0))
 			->method('findAllByAlbum')
 			->with($this->equalTo(3))
-			->will($this->returnValue(array($track)));
+			->will($this->returnValue([$track]));
 		$this->trackBusinessLayer->expects($this->at(1))
 			->method('findAllByAlbum')
 			->with($this->equalTo(4))
-			->will($this->returnValue(array($track)));
+			->will($this->returnValue([$track]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'name' => 'The name',
 				'cover' => null,
 				'uri' => null,
@@ -604,18 +603,18 @@ class APIControllerTest extends ControllerTestUtility {
 				'id' => 3,
 				'year' => 2013,
 				'disk' => 1,
-				'artists' => array(
-					array(
+				'artists' => [
+					[
 						'name' => 'The artist name',
 						'image' => 'The image url',
 						'uri' => null,
 						'slug' => '1-the-artist-name',
 						'id' => 1
-					)
-				),
+					]
+				],
 				'albumArtistId' => 5,
-				'tracks' => array(
-					array(
+				'tracks' => [
+					[
 						'title' => 'The title',
 						'uri' => null,
 						'slug' => '1-the-title',
@@ -623,15 +622,15 @@ class APIControllerTest extends ControllerTestUtility {
 						'ordinal' => 4,
 						'bitrate' => 123,
 						'length' => 123,
-						'artist' => array('id' => 3, 'uri' => null),
-						'album' => array('id' => 4, 'uri' => null),
-						'files' => array(
+						'artist' => ['id' => 3, 'uri' => null],
+						'album' => ['id' => 4, 'uri' => null],
+						'files' => [
 							'audio/mp3' => null
-						)
-					)
-				)
-			),
-			array(
+						]
+					]
+				]
+			],
+			[
 				'name' => 'The album name',
 				'cover' => null,
 				'uri' => null,
@@ -639,25 +638,25 @@ class APIControllerTest extends ControllerTestUtility {
 				'id' => 4,
 				'year' => 2003,
 				'disk' => 1,
-				'artists' => array(
-					array(
+				'artists' => [
+					[
 						'name' => 'The artist name3',
 						'image' => 'The image url3',
 						'uri' => null,
 						'slug' => '3-the-artist-name3',
 						'id' => 3
-					),
-					array(
+					],
+					[
 						'name' => 'The artist name5',
 						'image' => 'The image url5',
 						'uri' => null,
 						'slug' => '5-the-artist-name5',
 						'id' => 5
-					)
-				),
+					]
+				],
 				'albumArtistId' => 1,
-				'tracks' => array(
-					array(
+				'tracks' => [
+					[
 						'title' => 'The title',
 						'uri' => null,
 						'slug' => '1-the-title',
@@ -665,15 +664,15 @@ class APIControllerTest extends ControllerTestUtility {
 						'ordinal' => 4,
 						'bitrate' => 123,
 						'length' => 123,
-						'artist' => array('id' => 3, 'uri' => null),
-						'album' => array('id' => 4, 'uri' => null),
-						'files' => array(
+						'artist' => ['id' => 3, 'uri' => null],
+						'album' => ['id' => 4, 'uri' => null],
+						'files' => [
 							'audio/mp3' => null
-						)
-					)
-				)
-			)
-		);
+						]
+					]
+				]
+			]
+		];
 
 		$response = $this->controller->albums(true /*fulltree*/);
 
@@ -681,14 +680,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testAlbum(){
+	public function testAlbum() {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(1));
+		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(1);
 		$artist = new Artist();
 		$artist->setId(1);
@@ -713,14 +712,14 @@ class APIControllerTest extends ControllerTestUtility {
 			->will($this->returnValue($album));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findMultipleById')
-			->with($this->equalTo(array(1)), $this->equalTo($this->userId))
-			->will($this->returnValue(array($artist)));
+			->with($this->equalTo([1]), $this->equalTo($this->userId))
+			->will($this->returnValue([$artist]));
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
 			->with($this->equalTo($albumId))
-			->will($this->returnValue(array($track)));
+			->will($this->returnValue([$track]));
 
-		$result = array(
+		$result = [
 			'name' => 'The name',
 			'cover' => null,
 			'uri' => null,
@@ -728,18 +727,18 @@ class APIControllerTest extends ControllerTestUtility {
 			'id' => 3,
 			'year' => 2013,
 			'disk' => 1,
-			'artists' => array(
-				array(
+			'artists' => [
+				[
 					'name' => 'The artist name',
 					'image' => 'The image url',
 					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1
-				)
-			),
+				]
+			],
 			'albumArtistId' => 1,
-			'tracks' => array(
-				array(
+			'tracks' => [
+				[
 					'title' => 'The title',
 					'uri' => null,
 					'slug' => '1-the-title',
@@ -747,14 +746,14 @@ class APIControllerTest extends ControllerTestUtility {
 					'ordinal' => 4,
 					'bitrate' => 123,
 					'length' => 123,
-					'artist' => array('id' => 3, 'uri' => null),
-					'album' => array('id' => 4, 'uri' => null),
-					'files' => array(
+					'artist' => ['id' => 3, 'uri' => null],
+					'album' => ['id' => 4, 'uri' => null],
+					'files' => [
 						'audio/mp3' => null
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 
 		$response = $this->controller->album($albumId, true /*fulltree*/);
 
@@ -762,14 +761,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testAlbumFulltree(){
+	public function testAlbumFulltree() {
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(1));
+		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(2);
 
 		$albumId = 3;
@@ -779,7 +778,7 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
 
-		$result = array(
+		$result = [
 			'name' => 'The name',
 			'cover' => null,
 			'uri' => null,
@@ -787,11 +786,11 @@ class APIControllerTest extends ControllerTestUtility {
 			'id' => 3,
 			'year' => 2013,
 			'disk' => 1,
-			'artists' => array(
-				array('id' => 1, 'uri' => null)
-			),
+			'artists' => [
+				['id' => 1, 'uri' => null]
+			],
 			'albumArtistId' => 2
-		);
+		];
 
 		$response = $this->controller->album($albumId, false /*fulltree*/);
 
@@ -799,7 +798,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTracks(){
+	public function testTracks() {
 		$track1 = new Track();
 		$track1->setId(1);
 		$track1->setTitle('The title');
@@ -824,10 +823,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($track1, $track2)));
+			->will($this->returnValue([$track1, $track2]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'title' => 'The title',
 				'uri' => null,
 				'slug' => '1-the-title',
@@ -835,13 +834,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => null),
-				'album' => array('id' => 1, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 3, 'uri' => null],
+				'album' => ['id' => 1, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			),
-			array(
+				]
+			],
+			[
 				'title' => 'The second title',
 				'uri' => null,
 				'slug' => '2-the-second-title',
@@ -849,13 +848,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 2, 'uri' => null),
-				'album' => array('id' => 3, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 2, 'uri' => null],
+				'album' => ['id' => 3, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			)
-		);
+				]
+			]
+		];
 
 		$response = $this->controller->tracks(null /*artist*/, null /*album*/, false /*fulltree*/);
 
@@ -863,7 +862,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTracksFulltree(){
+	public function testTracksFulltree() {
 		$track1 = new Track();
 		$track1->setId(1);
 		$track1->setTitle('The title');
@@ -880,7 +879,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
 		$album->setDisk(1);
-		$album->setArtistIds(array(1));
+		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(2);
 		$artist = new Artist();
 		$artist->setId(1);
@@ -894,7 +893,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array($track1)));
+			->will($this->returnValue([$track1]));
 		$this->artistBusinessLayer->expects($this->once())
 			->method('find')
 			->with($this->equalTo(3), $this->equalTo($this->userId))
@@ -902,10 +901,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer->expects($this->once())
 			->method('find')
 			->with($this->equalTo(1), $this->equalTo($this->userId))
-			->will($this->returnValue($album ));
+			->will($this->returnValue($album));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'title' => 'The title',
 				'uri' => null,
 				'slug' => '1-the-title',
@@ -913,14 +912,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array(
+				'artist' => [
 					'name' => 'The artist name',
 					'image' => 'The image url',
 					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1
-				),
-				'album' => array(
+				],
+				'album' => [
 					'name' => 'The name',
 					'cover' => null,
 					'uri' => null,
@@ -928,16 +927,16 @@ class APIControllerTest extends ControllerTestUtility {
 					'id' => 3,
 					'year' => 2013,
 					'disk' => 1,
-					'artists' => array(
-						array('id' => 1, 'uri' => null)
-					),
+					'artists' => [
+						['id' => 1, 'uri' => null]
+					],
 					'albumArtistId' => 2
-				),
-				'files' => array(
+				],
+				'files' => [
 					'audio/mp3' => null
-				)
-			)
-		);
+				]
+			]
+		];
 
 		$response = $this->controller->tracks(null /*artist*/, null /*album*/, true /*fulltree*/);
 
@@ -945,7 +944,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTrack(){
+	public function testTrack() {
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -964,7 +963,7 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($trackId), $this->equalTo($this->userId))
 			->will($this->returnValue($track));
 
-		$result = array(
+		$result = [
 			'title' => 'The title',
 			'uri' => null,
 			'slug' => '1-the-title',
@@ -972,12 +971,12 @@ class APIControllerTest extends ControllerTestUtility {
 			'ordinal' => 4,
 			'bitrate' => 123,
 			'length' => 123,
-			'artist' => array('id' => 3, 'uri' => null),
-			'album' => array('id' => 1, 'uri' => null),
-			'files' => array(
+			'artist' => ['id' => 3, 'uri' => null],
+			'album' => ['id' => 1, 'uri' => null],
+			'files' => [
 				'audio/mp3' => null
-			)
-		);
+			]
+		];
 
 		$response = $this->controller->track($trackId);
 
@@ -985,7 +984,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTrackByFileId(){
+	public function testTrackByFileId() {
 		$trackId = 1;
 		$fileId = 3;
 
@@ -1023,16 +1022,16 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($track->getArtistId()), $this->equalTo($this->userId))
 			->will($this->returnValue($artist));
 
-		$result = array(
+		$result = [
 			'title' => 'The title',
 			'artistName' => 'The track artist',
 			'id' => 1,
 			'number' => 4,
 			'artistId' => 3,
-			'files' => array(
+			'files' => [
 				'audio/mp3' => $fileId
-			)
-		);
+			]
+		];
 
 		$response = $this->controller->trackByFileId($fileId);
 
@@ -1040,11 +1039,11 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTrackFulltree(){
+	public function testTrackFulltree() {
 		$this->markTestSkipped();
 	}
 
-	public function testTracksByArtist(){
+	public function testTracksByArtist() {
 		$track1 = new Track();
 		$track1->setId(1);
 		$track1->setTitle('The title');
@@ -1071,10 +1070,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByArtist')
 			->with($this->equalTo($artistId), $this->equalTo($this->userId))
-			->will($this->returnValue(array($track1, $track2)));
+			->will($this->returnValue([$track1, $track2]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'title' => 'The title',
 				'uri' => null,
 				'slug' => '1-the-title',
@@ -1082,13 +1081,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => null),
-				'album' => array('id' => 1, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 3, 'uri' => null],
+				'album' => ['id' => 1, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			),
-			array(
+				]
+			],
+			[
 				'title' => 'The second title',
 				'uri' => null,
 				'slug' => '2-the-second-title',
@@ -1096,13 +1095,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 3, 'uri' => null),
-				'album' => array('id' => 3, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 3, 'uri' => null],
+				'album' => ['id' => 3, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			)
-		);
+				]
+			]
+		];
 
 		$response = $this->controller->tracks($artistId, null /*album*/, false /*fulltree*/);
 
@@ -1110,7 +1109,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->assertTrue($response instanceof JSONResponse);
 	}
 
-	public function testTracksByAlbum(){
+	public function testTracksByAlbum() {
 		$track1 = new Track();
 		$track1->setId(1);
 		$track1->setTitle('The title');
@@ -1137,10 +1136,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAllByAlbum')
 			->with($this->equalTo($albumId), $this->equalTo($this->userId))
-			->will($this->returnValue(array($track1, $track2)));
+			->will($this->returnValue([$track1, $track2]));
 
-		$result = array(
-			array(
+		$result = [
+			[
 				'title' => 'The title',
 				'uri' => null,
 				'slug' => '1-the-title',
@@ -1148,13 +1147,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 4,
 				'bitrate' => 123,
 				'length' => 123,
-				'artist' => array('id' => 3, 'uri' => null),
-				'album' => array('id' => 1, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 3, 'uri' => null],
+				'album' => ['id' => 1, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			),
-			array(
+				]
+			],
+			[
 				'title' => 'The second title',
 				'uri' => null,
 				'slug' => '2-the-second-title',
@@ -1162,13 +1161,13 @@ class APIControllerTest extends ControllerTestUtility {
 				'ordinal' => 5,
 				'bitrate' => 123,
 				'length' => 103,
-				'artist' => array('id' => 2, 'uri' => null),
-				'album' => array('id' => 1, 'uri' => null),
-				'files' => array(
+				'artist' => ['id' => 2, 'uri' => null],
+				'album' => ['id' => 1, 'uri' => null],
+				'files' => [
 					'audio/mp3' => null
-				)
-			)
-		);
+				]
+			]
+		];
 
 		$response = $this->controller->tracks(null /*artist*/, $albumId, false /*fulltree*/);
 

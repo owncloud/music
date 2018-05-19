@@ -17,16 +17,15 @@ namespace OCA\Music\Utility;
  * returned as any response (JSON, XML, ...)
  */
 class APISerializer {
-
 	public function serialize($data) {
-		$result = array();
+		$result = [];
 
 		// wrap response in an array if its just a single item
-		if(!is_array($data)) {
-			$data = array($data);
+		if (!\is_array($data)) {
+			$data = [$data];
 		}
 
-		foreach($data as $item) {
+		foreach ($data as $item) {
 			$result[] = $item->toApi();
 		}
 

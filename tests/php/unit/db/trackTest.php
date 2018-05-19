@@ -12,9 +12,7 @@
 
 namespace OCA\Music\Db;
 
-
 class TrackTest extends \PHPUnit_Framework_TestCase {
-
 	private $urlGenerator;
 
 	protected function setUp() {
@@ -35,18 +33,17 @@ class TrackTest extends \PHPUnit_Framework_TestCase {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'id' => 1,
 			'title' => 'The title',
 			'ordinal' => 4,
-			'artist' => array('id' => 3, 'uri' => null),
-			'album' => array('id' => 1, 'uri' => null),
+			'artist' => ['id' => 3, 'uri' => null],
+			'album' => ['id' => 1, 'uri' => null],
 			'length' => 123,
-			'files' => array('audio/mp3' => null),
+			'files' => ['audio/mp3' => null],
 			'bitrate' => 123,
 			'slug' => '1-the-title',
 			'uri' => null
-			), $track->toAPI($this->urlGenerator));
+			], $track->toAPI($this->urlGenerator));
 	}
-
 }

@@ -12,7 +12,6 @@
  * @copyright Pauli Järvinen 2017, 2018
  */
 
-
 namespace OCA\Music\App;
 
 use \OCP\AppFramework\App;
@@ -54,8 +53,7 @@ use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
 
 class Music extends App {
-
-	public function __construct(array $urlParams=array()){
+	public function __construct(array $urlParams=[]) {
 		parent::__construct('music', $urlParams);
 
 		$container = $this->getContainer();
@@ -63,7 +61,7 @@ class Music extends App {
 		/**
 		 * Controllers
 		 */
-		$container->registerService('AmpacheController', function($c) {
+		$container->registerService('AmpacheController', function ($c) {
 			return new AmpacheController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -82,7 +80,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ApiController', function($c) {
+		$container->registerService('ApiController', function ($c) {
 			return new ApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -100,7 +98,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('PageController', function($c) {
+		$container->registerService('PageController', function ($c) {
 			return new PageController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -109,7 +107,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('PlaylistApiController', function($c) {
+		$container->registerService('PlaylistApiController', function ($c) {
 			return new PlaylistApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -124,7 +122,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('LogController', function($c) {
+		$container->registerService('LogController', function ($c) {
 			return new LogController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -132,7 +130,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('SettingController', function($c) {
+		$container->registerService('SettingController', function ($c) {
 			return new SettingController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -146,7 +144,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ShareController', function($c) {
+		$container->registerService('ShareController', function ($c) {
 			return new ShareController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -160,28 +158,28 @@ class Music extends App {
 		 * Business Layer
 		 */
 
-		$container->registerService('TrackBusinessLayer', function($c) {
+		$container->registerService('TrackBusinessLayer', function ($c) {
 			return new TrackBusinessLayer(
 				$c->query('TrackMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('ArtistBusinessLayer', function($c) {
+		$container->registerService('ArtistBusinessLayer', function ($c) {
 			return new ArtistBusinessLayer(
 				$c->query('ArtistMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('AlbumBusinessLayer', function($c) {
+		$container->registerService('AlbumBusinessLayer', function ($c) {
 			return new AlbumBusinessLayer(
 				$c->query('AlbumMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('PlaylistBusinessLayer', function($c) {
+		$container->registerService('PlaylistBusinessLayer', function ($c) {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
 				$c->query('Logger')
@@ -192,43 +190,43 @@ class Music extends App {
 		 * Mappers
 		 */
 
-		$container->registerService('AlbumMapper', function(IAppContainer $c) {
+		$container->registerService('AlbumMapper', function (IAppContainer $c) {
 			return new AlbumMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('AmpacheSessionMapper', function(IAppContainer $c) {
+		$container->registerService('AmpacheSessionMapper', function (IAppContainer $c) {
 			return new AmpacheSessionMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('AmpacheUserMapper', function(IAppContainer $c) {
+		$container->registerService('AmpacheUserMapper', function (IAppContainer $c) {
 			return new AmpacheUserMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('ArtistMapper', function(IAppContainer $c) {
+		$container->registerService('ArtistMapper', function (IAppContainer $c) {
 			return new ArtistMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('Cache', function(IAppContainer $c) {
+		$container->registerService('Cache', function (IAppContainer $c) {
 			return new Cache(
 					$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('PlaylistMapper', function(IAppContainer $c) {
+		$container->registerService('PlaylistMapper', function (IAppContainer $c) {
 			return new PlaylistMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
-		$container->registerService('TrackMapper', function(IAppContainer $c) {
+		$container->registerService('TrackMapper', function (IAppContainer $c) {
 			return new TrackMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
@@ -238,53 +236,53 @@ class Music extends App {
 		 * Core
 		 */
 
-		$container->registerService('Config', function($c){
+		$container->registerService('Config', function ($c) {
 			return $c->getServer()->getConfig();
 		});
 
-		$container->registerService('Db', function(IAppContainer $c) {
+		$container->registerService('Db', function (IAppContainer $c) {
 			return $c->getServer()->getDatabaseConnection();
 		});
 
-		$container->registerService('L10N', function($c) {
+		$container->registerService('L10N', function ($c) {
 			return $c->getServer()->getL10N($c->query('AppName'));
 		});
 
-		$container->registerService('Logger', function($c) {
+		$container->registerService('Logger', function ($c) {
 			return new Logger(
 				$c->query('AppName')
 			);
 		});
 
-		$container->registerService('URLGenerator', function($c) {
+		$container->registerService('URLGenerator', function ($c) {
 			return $c->getServer()->getURLGenerator();
 		});
 
-		$container->registerService('UserFolder', function($c){
+		$container->registerService('UserFolder', function ($c) {
 			return $c->getServer()->getUserFolder();
 		});
 
-		$container->registerService('RootFolder', function($c){
+		$container->registerService('RootFolder', function ($c) {
 			return $c->getServer()->getRootFolder();
 		});
 
-		$container->registerService('UserId', function() {
+		$container->registerService('UserId', function () {
 			return \OCP\User::getUser();
 		});
 
-		$container->registerService('SecureRandom', function($c) {
+		$container->registerService('SecureRandom', function ($c) {
 			return $c->getServer()->getSecureRandom();
 		});
 
-		$container->registerService('UserManager', function($c) {
+		$container->registerService('UserManager', function ($c) {
 			return $c->getServer()->getUserManager();
 		});
 
-		$container->registerService('GroupManager', function($c) {
+		$container->registerService('GroupManager', function ($c) {
 			return $c->getServer()->getGroupManager();
 		});
 
-		$container->registerService('ShareManager', function($c) {
+		$container->registerService('ShareManager', function ($c) {
 			return $c->getServer()->getShareManager();
 		});
 
@@ -292,11 +290,11 @@ class Music extends App {
 		 * Utility
 		 */
 
-		$container->registerService('AmpacheUser', function() {
+		$container->registerService('AmpacheUser', function () {
 			return new AmpacheUser();
 		});
 
-		$container->registerService('CoverHelper', function($c) {
+		$container->registerService('CoverHelper', function ($c) {
 			return new CoverHelper(
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ExtractorGetID3'),
@@ -305,20 +303,20 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ExtractorGetID3', function($c) {
+		$container->registerService('ExtractorGetID3', function ($c) {
 			return new ExtractorGetID3(
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('Maintenance', function(IAppContainer $c) {
+		$container->registerService('Maintenance', function (IAppContainer $c) {
 			return new Maintenance(
 				$c->query('Db'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('Scanner', function($c) {
+		$container->registerService('Scanner', function ($c) {
 			return new Scanner(
 				$c->query('ExtractorGetID3'),
 				$c->query('ArtistBusinessLayer'),
@@ -339,7 +337,7 @@ class Music extends App {
 		 * Middleware
 		 */
 
-		$container->registerService('AmpacheMiddleware', function($c) {
+		$container->registerService('AmpacheMiddleware', function ($c) {
 			return new AmpacheMiddleware(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -353,17 +351,17 @@ class Music extends App {
 		/**
 		 * Hooks
 		 */
-		$container->registerService('FileHooks', function($c) {
+		$container->registerService('FileHooks', function ($c) {
 			return new FileHooks(
 				$c->getServer()->getRootFolder()
 			);
 		});
 
-		$container->registerService('ShareHooks', function($c) {
+		$container->registerService('ShareHooks', function ($c) {
 			return new ShareHooks();
 		});
 
-		$container->registerService('UserHooks', function($c) {
+		$container->registerService('UserHooks', function ($c) {
 			return new UserHooks(
 				$c->query('ServerContainer')->getUserManager(),
 				$c->query('Maintenance')

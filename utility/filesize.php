@@ -16,7 +16,6 @@ namespace OCA\Music\Utility;
  * This class is used to convert bytes to a human readable format
  */
 class FileSize {
-
 	private $bytes;
 	private $units = 'BKMGTP';
 
@@ -25,7 +24,7 @@ class FileSize {
 	}
 
 	public function getHumanReadable($decimals = 1) {
-		$factor = floor((strlen($this->bytes) - 1) / 3);
-		return sprintf("%.{$decimals}f", $this->bytes / pow(1024, $factor)) . @$this->units[(int)$factor];
+		$factor = \floor((\strlen($this->bytes) - 1) / 3);
+		return \sprintf("%.{$decimals}f", $this->bytes / \pow(1024, $factor)) . @$this->units[(int)$factor];
 	}
 }

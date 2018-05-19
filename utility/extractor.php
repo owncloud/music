@@ -24,7 +24,7 @@ interface Extractor {
 
 	/**
 	 * extract embedded cover art image from media file
-	 * 
+	 *
 	 * @param \OCP\Files\File $file the media file
 	 * @return array with keys 'mimetype' and 'content'
 	 */

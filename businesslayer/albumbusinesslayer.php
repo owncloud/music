@@ -21,10 +21,9 @@ use \OCA\Music\Db\Album;
 use \OCA\Music\Db\SortBy;
 
 class AlbumBusinessLayer extends BusinessLayer {
-
 	private $logger;
 
-	public function __construct(AlbumMapper $albumMapper, Logger $logger){
+	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
 		$this->logger = $logger;
 	}
@@ -35,7 +34,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return Album album
 	 */
-	public function find($albumId, $userId){
+	public function find($albumId, $userId) {
 		$album = $this->mapper->find($albumId, $userId);
 		return $this->injectArtistsAndYears([$album])[0];
 	}
@@ -47,7 +46,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $offset
 	 * @return Album[] albums
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		$albums = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums);
 	}
@@ -57,7 +56,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $artistId the id of the artist
 	 * @return Album[] albums
 	 */
-	public function findAllByArtist($artistId, $userId){
+	public function findAllByArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
 		return $this->injectArtistsAndYears($albums);
 	}
@@ -69,20 +68,22 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param bool $fuzzy
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false) {
 		$albums = parent::findAllByName($name, $userId, $fuzzy);
 		return $this->injectArtistsAndYears($albums);
 	}
 
-	private function injectArtistsAndYears($albums){
-		if (count($albums) > 0) {
-			$albumIds = array_map(function($a) {return $a->getId();}, $albums);
+	private function injectArtistsAndYears($albums) {
+		if (\count($albums) > 0) {
+			$albumIds = \array_map(function ($a) {
+				return $a->getId();
+			}, $albums);
 			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
 			$years = $this->mapper->getYearsByAlbumId($albumIds);
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($albumArtists[$albumId]);
-				if (array_key_exists($albumId, $years)) {
+				if (\array_key_exists($albumId, $years)) {
 					$album->setYears($years[$albumId]);
 				}
 			}
@@ -95,17 +96,16 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByArtist($artistId){
+	public function countByArtist($artistId) {
 		return $this->mapper->countByArtist($artistId);
 	}
 
-	public function findAlbumOwner($albumId){
+	public function findAlbumOwner($albumId) {
 		$entities = $this->mapper->findById([$albumId]);
-		if (count($entities) != 1) {
+		if (\count($entities) != 1) {
 			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
-					'Expected to find one album but got ' . count($entities));
-		}
-		else {
+					'Expected to find one album but got ' . \count($entities));
+		} else {
 			return $entities[0]->getUserId();
 		}
 	}
@@ -118,7 +118,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId
 	 * @return Album The added/updated album
 	 */
-	public function addOrUpdateAlbum($name, $discnumber, $albumArtistId, $userId){
+	public function addOrUpdateAlbum($name, $discnumber, $albumArtistId, $userId) {
 		$album = new Album();
 		$album->setName($name);
 		$album->setDisk($discnumber);
@@ -127,8 +127,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 		// Generate hash from the set of fields forming the album identity to prevent duplicates.
 		// The uniqueness of album name is evaluated in case-insensitive manner.
-		$lowerName = mb_strtolower($name);
-		$hash = hash('md5', "$lowerName|$discnumber|$albumArtistId");
+		$lowerName = \mb_strtolower($name);
+		$hash = \hash('md5', "$lowerName|$discnumber|$albumArtistId");
 		$album->setHash($hash);
 
 		return $this->mapper->insertOrUpdate($album);
@@ -142,7 +142,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
 		$albums = $this->mapper->findById([$albumId]);
-		return (count($albums) && in_array($albums[0]->getCoverFileId(), $fileIds));
+		return (\count($albums) && \in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
 
 	/**
@@ -151,7 +151,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $folderId the file id of the folder where the albums are looked from
 	 * @return true if one or more albums were influenced
 	 */
-	public function updateFolderCover($coverFileId, $folderId){
+	public function updateFolderCover($coverFileId, $folderId) {
 		return $this->mapper->updateFolderCover($coverFileId, $folderId);
 	}
 
@@ -160,7 +160,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $coverFileId the file id of the cover image
 	 * @param integer $albumId the id of the album to be modified
 	 */
-	public function setCover($coverFileId, $albumId){
+	public function setCover($coverFileId, $albumId) {
 		$this->mapper->setCover($coverFileId, $albumId);
 	}
 
@@ -170,7 +170,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Album[] albums which got modified, empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null){
+	public function removeCovers($coverFileIds, $userIds=null) {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 
@@ -178,14 +178,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * try to find cover arts for albums without covers
 	 * @return array of users whose collections got modified
 	 */
-	public function findCovers(){
+	public function findCovers() {
 		$affectedUsers = [];
 		$albums = $this->mapper->getAlbumsWithoutCover();
-		foreach ($albums as $album){
-			if ($this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId'])){
+		foreach ($albums as $album) {
+			if ($this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId'])) {
 				$affectedUsers[$album['userId']] = 1;
 			}
 		}
-		return array_keys($affectedUsers);
+		return \array_keys($affectedUsers);
 	}
 }

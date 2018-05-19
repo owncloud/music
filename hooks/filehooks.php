@@ -17,7 +17,6 @@ use \OCP\Files\FileInfo;
 use \OCA\Music\App\Music;
 
 class FileHooks {
-
 	private $filesystemRoot;
 
 	public function __construct($filesystemRoot) {
@@ -56,12 +55,10 @@ class FileHooks {
 		$app = new Music();
 		try {
 			self::handleUpdated($node, $app);
-		}
-		catch (\OCP\Files\NotFoundException $e) {
+		} catch (\OCP\Files\NotFoundException $e) {
 			$logger = $app->getContainer()->query('Logger');
 			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
-		}
-		catch (\OCP\Lock\LockedException $e) {
+		} catch (\OCP\Lock\LockedException $e) {
 			$logger = $app->getContainer()->query('Logger');
 			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
 		}

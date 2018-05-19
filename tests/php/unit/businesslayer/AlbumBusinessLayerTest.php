@@ -14,9 +14,7 @@ namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\Db\Album;
 
-
 class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
-
 	private $mapper;
 	private $logger;
 	private $albumBusinessLayer;
@@ -24,8 +22,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 	private $albums;
 	private $artistIds;
 
-
-	protected function setUp(){
+	protected function setUp() {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
 			->disableOriginalConstructor()
 			->getMock();
@@ -40,50 +37,50 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$album1->setId(1);
 		$album2->setId(2);
 		$album3->setId(3);
-		$this->albums = array($album1, $album2, $album3);
-		$this->albumsByArtist3 = array($album1, $album2);
-		$this->artistIds = array(
-			1 => array(3, 5, 7),
-			2 => array(3, 7, 9),
-			3 => array(9, 13)
-		);
+		$this->albums = [$album1, $album2, $album3];
+		$this->albumsByArtist3 = [$album1, $album2];
+		$this->artistIds = [
+			1 => [3, 5, 7],
+			2 => [3, 7, 9],
+			3 => [9, 13]
+		];
 
 		$album1->setArtistIds($this->artistIds[1]);
 		$album2->setArtistIds($this->artistIds[1]);
 		$album3->setArtistIds($this->artistIds[1]);
-		$this->response = array($album1, $album2, $album3);
-		$this->responseByArtist3 = array($album1, $album2);
+		$this->response = [$album1, $album2, $album3];
+		$this->responseByArtist3 = [$album1, $album2];
 	}
 
-	public function testFindAll(){
+	public function testFindAll() {
 		$this->mapper->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue($this->albums));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo(array(1,2,3)))
+			->with($this->equalTo([1,2,3]))
 			->will($this->returnValue($this->artistIds));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo(array(1,2,3)))
+			->with($this->equalTo([1,2,3]))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
 		$this->assertEquals($this->response, $result);
 	}
 
-	public function testFindAllWithoutResult(){
+	public function testFindAllWithoutResult() {
 		$this->mapper->expects($this->once())
 			->method('findAll')
 			->with($this->equalTo($this->userId))
-			->will($this->returnValue(array()));
+			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
-		$this->assertEquals(array(), $result);
+		$this->assertEquals([], $result);
 	}
 
-	public function testFind(){
+	public function testFind() {
 		$albumId = 2;
 
 		$this->mapper->expects($this->once())
@@ -92,18 +89,18 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue($this->albums[$albumId-1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo(array($albumId)))
-			->will($this->returnValue(array($albumId => $this->artistIds[$albumId-1])));
+			->with($this->equalTo([$albumId]))
+			->will($this->returnValue([$albumId => $this->artistIds[$albumId-1]]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo(array($albumId)))
+			->with($this->equalTo([$albumId]))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->find($albumId, $this->userId);
 		$this->assertEquals($this->response[$albumId-1], $result);
 	}
 
-	public function testFindAllByArtist(){
+	public function testFindAllByArtist() {
 		$artistId = 3;
 
 		$this->mapper->expects($this->once())
@@ -112,22 +109,22 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue($this->albumsByArtist3));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo(array(1, 2)))
-			->will($this->returnValue(array(
+			->with($this->equalTo([1, 2]))
+			->will($this->returnValue([
 				1 => $this->artistIds[1],
 				2 => $this->artistIds[2]
-			)));
+			]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo(array(1, 2)))
+			->with($this->equalTo([1, 2]))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 		$this->assertEquals($this->responseByArtist3, $result);
 	}
 
-	public function testDeleteById(){
-		$albumIds = array(1, 2, 3);
+	public function testDeleteById() {
+		$albumIds = [1, 2, 3];
 
 		$this->mapper->expects($this->once())
 			->method('deleteById')
@@ -136,7 +133,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->albumBusinessLayer->deleteById($albumIds);
 	}
 
-	public function testUpdateFolderCover(){
+	public function testUpdateFolderCover() {
 		$coverFileId = 1;
 		$parentFolderId = 2;
 
@@ -147,7 +144,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId);
 	}
 
-	public function testAddOrUpdateAlbum(){
+	public function testAddOrUpdateAlbum() {
 		$name = 'test';
 		$artistId = 1;
 		$disc = 1;
@@ -160,7 +157,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->albums[0], $album);
 	}
 
-	public function testRemoveAndFindCovers(){
+	public function testRemoveAndFindCovers() {
 		$fileId = 1;
 
 		$this->mapper->expects($this->once())
@@ -168,6 +165,5 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo([$fileId]));
 
 		$this->albumBusinessLayer->removeCovers([$fileId]);
-
 	}
 }

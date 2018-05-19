@@ -57,14 +57,16 @@ class Scan extends BaseCommand {
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if (!$input->getOption('debug')) {
-			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function($path) use ($output) {
+			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function ($path) use ($output) {
 				$output->writeln("Scanning <info>$path</info>");
 			});
 		}
 
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
-			$users = array_map(function($u){return $u->getUID();}, $users);
+			$users = \array_map(function ($u) {
+				return $u->getUID();
+			}, $users);
 		}
 
 		foreach ($users as $user) {
@@ -96,9 +98,9 @@ class Scan extends BaseCommand {
 
 		$output->writeln("Start scan for <info>$user</info>");
 		$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
-		$output->writeln('Found ' . count($unscanned) . ' new music files');
+		$output->writeln('Found ' . \count($unscanned) . ' new music files');
 
-		if (count($unscanned)) {
+		if (\count($unscanned)) {
 			$processedCount = $this->scanner->scanFiles(
 					$user, $userHome, $unscanned,
 					$debug ? $output : null);

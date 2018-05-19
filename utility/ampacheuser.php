@@ -17,7 +17,6 @@ namespace OCA\Music\Utility;
  * the AmpacheController
  */
 class AmpacheUser {
-
 	private $userId;
 
 	public function getUserId() {

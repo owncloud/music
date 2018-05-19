@@ -16,19 +16,18 @@ use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
 class AmpacheSessionMapper extends Mapper {
-
-	public function __construct(IDBConnection $db){
+	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_ampache_sessions', '\OCA\Music\Db\AmpacheSession');
 	}
 
 	/**
 	 * @param string $token
 	 */
-	public function findByToken($token){
+	public function findByToken($token) {
 		$sql = 'SELECT `user_id` '.
 			'FROM `*PREFIX*music_ampache_sessions` '.
 			'WHERE `token` = ? AND `expiry` > ?';
-		$params = array($token, time());
+		$params = [$token, \time()];
 
 		$result = $this->execute($sql, $params);
 
@@ -40,19 +39,19 @@ class AmpacheSessionMapper extends Mapper {
 	 * @param string $token
 	 * @param integer $expiry
 	 */
-	public function extend($token, $expiry){
+	public function extend($token, $expiry) {
 		$sql = 'UPDATE `*PREFIX*music_ampache_sessions` '.
 			'SET `expiry` = ? '.
 			'WHERE `token` = ?';
 
-		$params = array($expiry, $token);
+		$params = [$expiry, $token];
 		$this->execute($sql, $params);
 	}
 
-	public function cleanUp(){
+	public function cleanUp() {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions` '.
 			'WHERE `expiry` < ?';
-		$params = array(time());
+		$params = [\time()];
 		$this->execute($sql, $params);
 	}
 }

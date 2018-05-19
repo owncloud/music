@@ -13,7 +13,6 @@
 namespace OCA\Music\Hooks;
 
 class UserHooks {
-
 	private $userManager;
 	private $maintenance;
 
@@ -24,10 +23,9 @@ class UserHooks {
 
 	public function register() {
 		$maintenance = $this->maintenance;
-		$callback = function($user) use ($maintenance) {
+		$callback = function ($user) use ($maintenance) {
 			$maintenance->resetDb($user->getUID());
 		};
 		$this->userManager->listen('\OC\User', 'postDelete', $callback);
 	}
-
 }

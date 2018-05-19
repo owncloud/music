@@ -16,8 +16,7 @@ use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
 class Cache extends Mapper {
-
-	public function __construct(IDBConnection $db){
+	public function __construct(IDBConnection $db) {
 		// there is no entity for this mapper -> '' as entity class name
 		parent::__construct($db, 'music_cache', '');
 	}
@@ -27,7 +26,7 @@ class Cache extends Mapper {
 	 * @param string $key
 	 * @param string $data
 	 */
-	public function add($userId, $key, $data){
+	public function add($userId, $key, $data) {
 		$sql = 'INSERT INTO `*PREFIX*music_cache` '.
 			'(`user_id`, `key`, `data`) VALUES (?, ?, ?)';
 		$result = $this->execute($sql, [$userId, $key, $data]);
@@ -36,11 +35,11 @@ class Cache extends Mapper {
 
 	/**
 	 * Remove one or several key-value pairs
-	 * 
+	 *
 	 * @param string $userId User to target, omit to target all users
 	 * @param string $key Key to target, omit to target all keys
 	 */
-	public function remove($userId = null, $key = null){
+	public function remove($userId = null, $key = null) {
 		$sql = 'DELETE FROM `*PREFIX*music_cache`';
 		$params = [];
 		if ($userId !== null) {
@@ -51,8 +50,7 @@ class Cache extends Mapper {
 				$sql .= ' AND `key` = ?';
 				$params[] = $key;
 			}
-		}
-		else if ($key !== null) {
+		} elseif ($key !== null) {
 			$sql .= ' WHERE `key` = ?';
 			$params[] = $key;
 		}
@@ -72,7 +70,7 @@ class Cache extends Mapper {
 		$rows = $result->fetchAll();
 		$result->closeCursor();
 
-		return count($rows) ? $rows[0]['data'] : null;
+		return \count($rows) ? $rows[0]['data'] : null;
 	}
 
 	/**
@@ -97,5 +95,4 @@ class Cache extends Mapper {
 
 		return $rows;
 	}
-
 }

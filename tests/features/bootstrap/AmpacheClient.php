@@ -33,9 +33,9 @@ class AmpacheClient {
 	public function __construct($baseUrl, $userName, $password) {
 		$this->baseUrl = $baseUrl;
 
-		$time = time();
-		$key = hash('sha256', $password);
-		$passphrase = hash('sha256', $time . $key);
+		$time = \time();
+		$key = \hash('sha256', $password);
+		$passphrase = \hash('sha256', $time . $key);
 
 		$xml = $this->request('handshake', [
 			'auth' => $passphrase,
@@ -69,18 +69,17 @@ class AmpacheClient {
 	 * @throws Exception if the method isn't supported
 	 */
 	public function request($method, $options = []) {
-		if (!in_array($method, ['artists', 'handshake', 'albums', 'songs'])) {
+		if (!\in_array($method, ['artists', 'handshake', 'albums', 'songs'])) {
 			throw new Exception('Unsupported method: ' . $method);
 		}
 
 		$client = new Client();
 		$response = $client->get($this->baseUrl, [
-			'query' => array_merge([
+			'query' => \array_merge([
 				'action' => $method,
 				'auth' => $this->authToken,
 			], $options)
 		]);
-
 
 		try {
 			$xml = self::getXml($response);
@@ -102,8 +101,8 @@ class AmpacheClient {
 	 * anymore in 6.x. The logic below is copied from the old xml() method.
 	 */
 	private static function getXml($response, array $config = []) {
-		$disableEntities = libxml_disable_entity_loader(true);
-		$internalErrors = libxml_use_internal_errors(true);
+		$disableEntities = \libxml_disable_entity_loader(true);
+		$internalErrors = \libxml_use_internal_errors(true);
 		try {
 			// Allow XML to be retrieved even if there is no response body
 			$xml = new \SimpleXMLElement(
@@ -113,16 +112,16 @@ class AmpacheClient {
 				isset($config['ns']) ? $config['ns'] : '',
 				isset($config['ns_is_prefix']) ? $config['ns_is_prefix'] : false
 			);
-			libxml_disable_entity_loader($disableEntities);
-			libxml_use_internal_errors($internalErrors);
+			\libxml_disable_entity_loader($disableEntities);
+			\libxml_use_internal_errors($internalErrors);
 		} catch (\Exception $e) {
-			libxml_disable_entity_loader($disableEntities);
-			libxml_use_internal_errors($internalErrors);
+			\libxml_disable_entity_loader($disableEntities);
+			\libxml_use_internal_errors($internalErrors);
 			throw new XmlParseException(
 				'Unable to parse response body into XML: ' . $e->getMessage(),
 				$this,
 				$e,
-				(libxml_get_last_error()) ?: null
+				(\libxml_get_last_error()) ?: null
 			);
 		}
 		return $xml;

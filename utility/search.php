@@ -28,13 +28,13 @@ class Search extends \OCP\Search\Provider {
 		$l10n = $c->query('L10N');
 		$pattern = $query;
 
-		$results=array();
+		$results=[];
 		$artists = $artistMapper->findAllByName($pattern, $userId, true);
 
 		$container = '';
 		$text = '';
 
-		foreach($artists as $artist) {
+		foreach ($artists as $artist) {
 			$name = $artist->name;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/artist/' . $artist->id;
 			$type = (string)$l10n->t('Artists');
@@ -42,7 +42,7 @@ class Search extends \OCP\Search\Provider {
 		}
 
 		$albums = $albumMapper->findAllByName($pattern, $userId, true);
-		foreach($albums as $album) {
+		foreach ($albums as $album) {
 			$name = $album->name;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/album/' . $album->id;
 			$type = (string)$l10n->t('Albums');
@@ -50,7 +50,7 @@ class Search extends \OCP\Search\Provider {
 		}
 
 		$tracks = $trackMapper->findAllByName($pattern, $userId, true);
-		foreach($tracks as $track) {
+		foreach ($tracks as $track) {
 			$name = $track->title;
 			$link = $urlGenerator->linkToRoute('music.page.index') . '#/track/' . $track->id;
 			$type = (string)$l10n->t('Tracks');

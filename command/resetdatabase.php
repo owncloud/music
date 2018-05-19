@@ -18,7 +18,6 @@ use OCA\Music\Db\Maintenance;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class ResetDatabase extends BaseCommand {
 
 	/** @var Maintenance */
@@ -41,11 +40,10 @@ class ResetDatabase extends BaseCommand {
 			$output->writeln("Drop tables for <info>all users</info>");
 			$this->maintenance->resetDb(null, true);
 		} else {
-			foreach($users as $user) {
+			foreach ($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
 				$this->maintenance->resetDb($user);
 			}
 		}
 	}
-
 }

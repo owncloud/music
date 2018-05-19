@@ -18,7 +18,6 @@ use OCP\IDBConnection;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
-
 class Maintenance {
 
 	/** @var IDBConnection */
@@ -26,7 +25,7 @@ class Maintenance {
 	/** @var Logger */
 	private $logger;
 
-	public function __construct(IDBConnection $db, Logger $logger){
+	public function __construct(IDBConnection $db, Logger $logger) {
 		$this->db = $db;
 		$this->logger = $logger;
 	}
@@ -144,13 +143,13 @@ class Maintenance {
 			throw new InvalidArgumentException('userId should be null if allUsers targeted');
 		}
 	
-		$sqls = array(
+		$sqls = [
 				'DELETE FROM `*PREFIX*music_tracks`',
 				'DELETE FROM `*PREFIX*music_albums`',
 				'DELETE FROM `*PREFIX*music_artists`',
 				'DELETE FROM `*PREFIX*music_playlists`',
 				'DELETE FROM `*PREFIX*music_cache`'
-		);
+		];
 
 		foreach ($sqls as $sql) {
 			$params = [];

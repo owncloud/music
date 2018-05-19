@@ -10,7 +10,6 @@
  * @copyright Morris Jobke 2015
  */
 
-
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
@@ -65,7 +64,6 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 		$this->options[$option] = $value;
 	}
 
-
 	/**
 	 * @When I request the :resource resource
 	 */
@@ -86,24 +84,23 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 			$expectedElement = $expectedIterator->current();
 			$expectedIterator->next();
 
-			if (is_null($expectedElement)) {
+			if ($expectedElement === null) {
 				throw new Exception('More results than expected');
 			}
 
 			foreach ($expectedElement as $key => $expectedValue) {
 				$actualValue = $element->xpath($key)[0]->__toString();
 				if ($actualValue !== $expectedValue) {
-					throw new Exception(ucfirst($key) . ' does not match - expected: ' . $expectedValue . ' got: ' . $actualValue . PHP_EOL . $this->xml->asXML());
+					throw new Exception(\ucfirst($key) . ' does not match - expected: ' . $expectedValue . ' got: ' . $actualValue . PHP_EOL . $this->xml->asXML());
 				}
 			}
 		}
 
 		// getHash() doesn't return the header of the table
-		$expectedCount = count($table->getHash());
-		$actualCount = count($elements);
+		$expectedCount = \count($table->getHash());
+		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
 			throw new Exception('Not all elements are in the result set - ' . $actualCount . ' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
-
 }

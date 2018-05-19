@@ -40,9 +40,7 @@ use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
 
-
 class AmpacheController extends Controller {
-
 	private $ampacheUserMapper;
 	private $ampacheSessionMapper;
 	private $albumBusinessLayer;
@@ -93,7 +91,6 @@ class AmpacheController extends Controller {
 		$this->logger = $logger;
 	}
 
-
 	/**
 	 * @NoAdminRequired
 	 * @PublicPage
@@ -101,7 +98,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	public function ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
-		switch($action) {
+		switch ($action) {
 			case 'handshake':
 				return $this->handshake($user, $timestamp, $auth);
 			case 'ping':
@@ -162,37 +159,37 @@ class AmpacheController extends Controller {
 		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
 
 		// prepare time check
-		$currentTime = time();
-		$providedTime = intval($timestamp);
+		$currentTime = \time();
+		$providedTime = \intval($timestamp);
 
-		if($providedTime === 0) {
+		if ($providedTime === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
-		if($providedTime < ($currentTime - $this->sessionExpiryTime)) {
+		if ($providedTime < ($currentTime - $this->sessionExpiryTime)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
 		// TODO - while testing with tomahawk it sometimes is $currenttime+1 ... needs further investigation
-		if($providedTime > $currentTime + 100) {
+		if ($providedTime > $currentTime + 100) {
 			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
 		}
 
 		$validTokenFound = false;
 
 		foreach ($hashes as $hash) {
-			$expectedHash = hash('sha256', $timestamp . $hash);
+			$expectedHash = \hash('sha256', $timestamp . $hash);
 
-			if($expectedHash === $auth) {
+			if ($expectedHash === $auth) {
 				$validTokenFound = true;
 				break;
 			}
 		}
 
-		if($validTokenFound === false) {
+		if ($validTokenFound === false) {
 			throw new AmpacheException('Invalid Login - passphrase does not match', 401);
 		}
 
 		// this can cause collision, but it's just a temporary token
-		$token = md5(uniqid(rand(), true));
+		$token = \md5(\uniqid(\rand(), true));
 		$expiryDate = $currentTime + $this->sessionExpiryTime;
 
 		// create new session
@@ -227,8 +224,8 @@ class AmpacheController extends Controller {
 	}
 
 	protected function ping($auth) {
-		if($auth !== null && $auth !== '') {
-			$this->ampacheSessionMapper->extend($auth, time() + $this->sessionExpiryTime);
+		if ($auth !== null && $auth !== '') {
+			$this->ampacheSessionMapper->extend($auth, \time() + $this->sessionExpiryTime);
 		}
 
 		return $this->renderXml('ampache/ping', []);
@@ -331,7 +328,7 @@ class AmpacheController extends Controller {
 		$playlistTracks = [];
 		foreach ($trackIds as $trackId) {
 			$track = $tracksById[$trackId];
-			$track->setNumber(count($playlistTracks) + 1); // override track # with the ordinal on the list
+			$track->setNumber(\count($playlistTracks) + 1); // override track # with the ordinal on the list
 			$playlistTracks[] = $track;
 		}
 
@@ -343,13 +340,13 @@ class AmpacheController extends Controller {
 
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $userId);
-		} catch(BusinessLayerException $e) {
+		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 		}
 
 		$files = $this->rootFolder->getById($track->getFileId());
 
-		if(count($files) === 1) {
+		if (\count($files) === 1) {
 			return new FileResponse($files[0]);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
@@ -362,11 +359,10 @@ class AmpacheController extends Controller {
 
 		try {
 			$coverData = $this->coverHelper->getCover($albumId, $userId, $this->rootFolder);
-			if ($coverData !== NULL) {
+			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}
-		}
-		catch(BusinessLayerException $e) {
+		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album not found');
 		}
 
@@ -379,8 +375,7 @@ class AmpacheController extends Controller {
 		if ($filter) {
 			$fuzzy = !((boolean) $exact);
 			return $businessLayer->findAllByName($filter, $userId, $fuzzy);
-		}
-		else {
+		} else {
 			if ($limit === 0) {
 				$limit = null;
 			}
@@ -392,7 +387,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function renderArtists($artists) {
-		foreach($artists as &$artist) {
+		foreach ($artists as &$artist) {
 			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
 			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
 		}
@@ -403,7 +398,7 @@ class AmpacheController extends Controller {
 	protected function renderAlbums($albums, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 
-		foreach($albums as &$album) {
+		foreach ($albums as &$album) {
 			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
 			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 			$album->setAlbumArtist($albumArtist);
@@ -419,14 +414,13 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		// set album and artist for tracks
-		foreach($tracks as &$track) {
+		foreach ($tracks as &$track) {
 			$artist = $commonArtist ?: $this->artistBusinessLayer->find($track->getArtistId(), $userId);
 			$track->setArtist($artist);
 
 			if (!empty($commonAlbum)) {
 				$track->setAlbum($commonAlbum);
-			}
-			else {
+			} else {
 				$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
 				$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 				$track->setAlbum($album);

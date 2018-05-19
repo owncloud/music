@@ -18,57 +18,56 @@ use \OCA\Music\App\Music;
 
 $app = new Music();
 
-$app->registerRoutes($this, array('routes' => array(
+$app->registerRoutes($this, ['routes' => [
 	// page
-	array('name' => 'page#index', 'url' => '/', 'verb' => 'GET'),
+	['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
 
 	// log
-	array('name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'),
+	['name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'],
 
 	// api
-	array('name' => 'api#collection', 'url' => '/api/collection', 'verb' => 'GET'),
-	array('name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'),
-	array('name' => 'api#fileWebDavUrl', 'url' => '/api/file/{fileId}/webdav', 'verb' => 'GET'),
-	array('name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'),
-	array('name' => 'api#fileInfo', 'url' => '/api/file/{fileId}/info', 'verb' => 'GET'),
-	array('name' => 'api#getScanState', 'url' => '/api/scanstate', 'verb' => 'GET'),
-	array('name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'POST'),
-	array('name' => 'api#cachedCover', 'url' => '/api/cover/{hash}', 'verb' => 'GET'),
+	['name' => 'api#collection', 'url' => '/api/collection', 'verb' => 'GET'],
+	['name' => 'api#trackByFileId', 'url' => '/api/file/{fileId}', 'verb' => 'GET'],
+	['name' => 'api#fileWebDavUrl', 'url' => '/api/file/{fileId}/webdav', 'verb' => 'GET'],
+	['name' => 'api#download', 'url' => '/api/file/{fileId}/download', 'verb' => 'GET'],
+	['name' => 'api#fileInfo', 'url' => '/api/file/{fileId}/info', 'verb' => 'GET'],
+	['name' => 'api#getScanState', 'url' => '/api/scanstate', 'verb' => 'GET'],
+	['name' => 'api#scan', 'url' => '/api/scan', 'verb' => 'POST'],
+	['name' => 'api#cachedCover', 'url' => '/api/cover/{hash}', 'verb' => 'GET'],
 
 	// Shiva api https://github.com/tooxie/shiva-server#resources
-	array('name' => 'api#artists', 'url' => '/api/artists', 'verb' => 'GET'),
-	array('name' => 'api#artist', 'url' => '/api/artist/{artistIdOrSlug}', 'verb' => 'GET'),
+	['name' => 'api#artists', 'url' => '/api/artists', 'verb' => 'GET'],
+	['name' => 'api#artist', 'url' => '/api/artist/{artistIdOrSlug}', 'verb' => 'GET'],
 	// array('name' => 'api#artistShows', 'url' => '/api/artist/{artistIdOrSlug}/shows', 'verb' => 'GET'),
-	array('name' => 'api#albums', 'url' => '/api/albums', 'verb' => 'GET'),
-	array('name' => 'api#album', 'url' => '/api/album/{albumIdOrSlug}', 'verb' => 'GET'),
-	array('name' => 'api#cover', 'url' => '/api/album/{albumIdOrSlug}/cover', 'verb' => 'GET'),
-	array('name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'),
-	array('name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'),
+	['name' => 'api#albums', 'url' => '/api/albums', 'verb' => 'GET'],
+	['name' => 'api#album', 'url' => '/api/album/{albumIdOrSlug}', 'verb' => 'GET'],
+	['name' => 'api#cover', 'url' => '/api/album/{albumIdOrSlug}/cover', 'verb' => 'GET'],
+	['name' => 'api#tracks', 'url' => '/api/tracks', 'verb' => 'GET'],
+	['name' => 'api#track', 'url' => '/api/track/{trackIdOrSlug}', 'verb' => 'GET'],
 	// array('name' => 'api#trackLyrics', 'url' => '/api/track/{trackIdOrSlug}/lyrics', 'verb' => 'GET'),
 
-	array('name' => 'share#fileInfo', 'url' => '/api/share/{token}/{fileId}/info', 'verb' => 'GET'),
+	['name' => 'share#fileInfo', 'url' => '/api/share/{token}/{fileId}/info', 'verb' => 'GET'],
 
 	// playlist API
-	array('name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'),
-	array('name' => 'playlistApi#create',		'url' => '/api/playlists',				'verb' => 'POST'),
-	array('name' => 'playlistApi#get',			'url' => '/api/playlists/{id}',			'verb' => 'GET'),
-	array('name' => 'playlistApi#delete',		'url' => '/api/playlists/{id}',			'verb' => 'DELETE'),
-	array('name' => 'playlistApi#update',		'url' => '/api/playlists/{id}',			'verb' => 'PUT'),
-	array('name' => 'playlistApi#addTracks',	'url' => '/api/playlists/{id}/add',		'verb' => 'POST'),
-	array('name' => 'playlistApi#removeTracks',	'url' => '/api/playlists/{id}/remove',	'verb' => 'POST'),
-	array('name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'),
+	['name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'],
+	['name' => 'playlistApi#create',		'url' => '/api/playlists',				'verb' => 'POST'],
+	['name' => 'playlistApi#get',			'url' => '/api/playlists/{id}',			'verb' => 'GET'],
+	['name' => 'playlistApi#delete',		'url' => '/api/playlists/{id}',			'verb' => 'DELETE'],
+	['name' => 'playlistApi#update',		'url' => '/api/playlists/{id}',			'verb' => 'PUT'],
+	['name' => 'playlistApi#addTracks',	'url' => '/api/playlists/{id}/add',		'verb' => 'POST'],
+	['name' => 'playlistApi#removeTracks',	'url' => '/api/playlists/{id}/remove',	'verb' => 'POST'],
+	['name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'],
 
 	// settings
-	array('name' => 'setting#userPath', 'url' => '/api/settings/user/path', 'verb' => 'POST'),
-	array('name' => 'setting#getAll', 'url' => '/api/settings', 'verb' => 'GET'),
-	array('name' => 'setting#addUserKey', 'url' => '/api/settings/userkey/add', 'verb' => 'POST'),
-	array('name' => 'setting#generateUserKey', 'url' => '/api/settings/userkey/generate', 'verb' => 'POST'),
-	array('name' => 'setting#removeUserKey', 'url' => '/api/settings/userkey/remove', 'verb' => 'POST'),
+	['name' => 'setting#userPath', 'url' => '/api/settings/user/path', 'verb' => 'POST'],
+	['name' => 'setting#getAll', 'url' => '/api/settings', 'verb' => 'GET'],
+	['name' => 'setting#addUserKey', 'url' => '/api/settings/userkey/add', 'verb' => 'POST'],
+	['name' => 'setting#generateUserKey', 'url' => '/api/settings/userkey/generate', 'verb' => 'POST'],
+	['name' => 'setting#removeUserKey', 'url' => '/api/settings/userkey/remove', 'verb' => 'POST'],
 
 	// ampache
-	array('name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'),
+	['name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'],
 	// Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
-	array('name' => 'ampache#ampache2', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST')
+	['name' => 'ampache#ampache2', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST']
 
-
-)));
+]]);

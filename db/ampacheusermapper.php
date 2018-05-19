@@ -16,8 +16,7 @@ use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
 class AmpacheUserMapper extends Mapper {
-
-	public function __construct(IDBConnection $db){
+	public function __construct(IDBConnection $db) {
 		// there is no entity for this mapper -> '' as entity class name
 		parent::__construct($db, 'music_ampache_users', '');
 	}
@@ -25,14 +24,14 @@ class AmpacheUserMapper extends Mapper {
 	/**
 	 * @param string $userId
 	 */
-	public function getPasswordHashes($userId){
+	public function getPasswordHashes($userId) {
 		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';
-		$params = array($userId);
+		$params = [$userId];
 		$result = $this->execute($sql, $params);
 		$rows = $result->fetchAll();
 
-		$hashes = array();
+		$hashes = [];
 		foreach ($rows as $value) {
 			$hashes[] = $value['hash'];
 		}
@@ -45,19 +44,19 @@ class AmpacheUserMapper extends Mapper {
 	 * @param string $hash
 	 * @param string $description
 	 */
-	public function addUserKey($userId, $hash, $description){
+	public function addUserKey($userId, $hash, $description) {
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users` '.
 			'(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
-		$params = array($userId, $hash, $description);
+		$params = [$userId, $hash, $description];
 		$this->execute($sql, $params);
 
 		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users` '.
 				'WHERE `user_id` = ? AND `hash` = ?';
-		$params = array($userId, $hash);
+		$params = [$userId, $hash];
 		$result = $this->execute($sql, $params, 1);
 		$row = $result->fetch();
 
-		if($row === false){
+		if ($row === false) {
 			return null;
 		}
 
@@ -68,10 +67,10 @@ class AmpacheUserMapper extends Mapper {
 	 * @param string $userId
 	 * @param integer|string $id
 	 */
-	public function removeUserKey($userId, $id){
+	public function removeUserKey($userId, $id) {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_users` '.
 				'WHERE `user_id` = ? AND `id` = ?';
-		$params = array($userId, $id);
+		$params = [$userId, $id];
 		$this->execute($sql, $params);
 	}
 
@@ -81,7 +80,7 @@ class AmpacheUserMapper extends Mapper {
 	public function getAll($userId) {
 		$sql = 'SELECT `id`, `hash`, `description` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';
-		$params = array($userId);
+		$params = [$userId];
 		$result = $this->execute($sql, $params);
 		$rows = $result->fetchAll();
 

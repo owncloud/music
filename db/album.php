@@ -45,7 +45,6 @@ use \OCP\AppFramework\Db\Entity;
  * @method setTrackCount(int $trackCount)
  */
 class Album extends Entity {
-
 	public $name;
 	public $mbid;
 	public $years;
@@ -61,7 +60,7 @@ class Album extends Entity {
 	// the following attributes aren't filled automatically
 	public $trackCount;
 
-	public function __construct(){
+	public function __construct() {
 		$this->addType('disk', 'int');
 		$this->addType('coverFileId', 'int');
 		$this->addType('albumArtistId', 'int');
@@ -75,7 +74,7 @@ class Album extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
 			'music.api.album',
-			array('albumIdOrSlug' => $this->id)
+			['albumIdOrSlug' => $this->id]
 		);
 	}
 
@@ -85,15 +84,15 @@ class Album extends Entity {
 	 * @return array
 	 */
 	public function getArtists(IURLGenerator $urlGenerator) {
-		$artists = array();
+		$artists = [];
 		foreach ($this->artistIds as $artistId) {
-			$artists[] = array(
+			$artists[] = [
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
 					'music.api.artist',
-					array('artistIdOrSlug' => $artistId)
+					['artistIdOrSlug' => $artistId]
 				)
-			);
+			];
 		}
 		return $artists;
 	}
@@ -106,14 +105,14 @@ class Album extends Entity {
 	 * @return string|null
 	 */
 	public function getYearRange() {
-		$count = empty($this->years) ? 0 : count($this->years);
+		$count = empty($this->years) ? 0 : \count($this->years);
 
 		if ($count == 0) {
 			return null;
-		} else if ($count == 1) {
+		} elseif ($count == 1) {
 			return (string)$this->years[0];
 		} else {
-			return min($this->years) . ' - ' . max($this->years);
+			return \min($this->years) . ' - ' . \max($this->years);
 		}
 	}
 
@@ -123,7 +122,7 @@ class Album extends Entity {
 	 * @return int|null
 	 */
 	public function yearToAPI() {
-		return (count($this->years) > 0) ? max($this->years) : null;
+		return (\count($this->years) > 0) ? \max($this->years) : null;
 	}
 
 	/**
@@ -136,7 +135,7 @@ class Album extends Entity {
 		$name = $this->getName();
 		if ($name === null) {
 			$name = $l10n->t('Unknown album');
-			if (!is_string($name)) {
+			if (!\is_string($name)) {
 				/** @var \OC_L10N_String $name */
 				$name = $name->__toString();
 			}
@@ -153,7 +152,7 @@ class Album extends Entity {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
-					array('albumIdOrSlug' => $this->getId()));
+					['albumIdOrSlug' => $this->getId()]);
 		}
 		return $coverUrl;
 	}
@@ -168,7 +167,7 @@ class Album extends Entity {
 	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverHash) {
 		if (!empty($cachedCoverHash)) {
 			return $urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $cachedCoverHash]);
-		} else if ($this->getCoverFileId() > 0) {
+		} elseif ($this->getCoverFileId() > 0) {
 			return $this->coverToAPI($urlGenerator);
 		} else {
 			return null;
@@ -183,13 +182,13 @@ class Album extends Entity {
 	 * @return array collection API object
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash) {
-		return array(
+		return [
 			'name'  => $this->getNameString($l10n),
 			'year'  => $this->getYearRange(),
 			'disk'  => $this->getDisk(),
 			'cover' => $this->coverToCollection($urlGenerator, $cachedCoverHash),
 			'id'    => $this->getId(),
-		);
+		];
 	}
 
 	/**
@@ -199,7 +198,7 @@ class Album extends Entity {
 	 * @return array shiva API object
 	 */
 	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
-		return array(
+		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
 			'disk'          => $this->getDisk(),
@@ -209,6 +208,6 @@ class Album extends Entity {
 			'slug'          => $this->getid() . '-' .$this->slugify('name'),
 			'albumArtistId' => $this->getAlbumArtistId(),
 			'artists'       => $this->getArtists($urlGenerator)
-		);
+		];
 	}
 }

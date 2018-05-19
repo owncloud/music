@@ -34,7 +34,6 @@ use \OCP\AppFramework\Db\Entity;
  * @method setTrackCount(int $trackCount)
  */
 class Artist extends Entity {
-
 	public $name;
 	public $image; // URL
 	public $userId;
@@ -48,7 +47,7 @@ class Artist extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
 			'music.api.artist',
-			array('artistIdOrSlug' => $this->id)
+			['artistIdOrSlug' => $this->id]
 		);
 	}
 
@@ -56,7 +55,7 @@ class Artist extends Entity {
 		$name = $this->getName();
 		if ($name === null) {
 			$name = $l10n->t('Unknown artist');
-			if(!is_string($name)) {
+			if (!\is_string($name)) {
 				/** @var \OC_L10N_String $name */
 				$name = $name->__toString();
 			}
@@ -65,19 +64,19 @@ class Artist extends Entity {
 	}
 
 	public function toCollection(IL10N $l10n) {
-		return array(
+		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n)
-		);
+		];
 	}
 
 	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
-		return array(
+		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
 			'image' => $this->getImage(),
 			'slug' => $this->getId() . '-' . $this->slugify('name'),
 			'uri' => $this->getUri($urlGenerator)
-		);
+		];
 	}
 }

@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 abstract class BaseCommand extends Command {
 	/**
 	 * @var \OCP\IUserManager $userManager
@@ -64,13 +63,12 @@ abstract class BaseCommand extends Command {
 			self::ensureUsersGiven($input);
 			$argUsers = $this->getArgumentUsers($input);
 			$groupUsers = $this->getArgumentGroups($input);
-			$users = array_unique(array_merge($argUsers, $groupUsers));
-			if (!$input->getOption('all') && !count($users)) {
+			$users = \array_unique(\array_merge($argUsers, $groupUsers));
+			if (!$input->getOption('all') && !\count($users)) {
 				throw new \InvalidArgumentException("No users in selected groups!");
 			}
 			$this->doExecute($input, $output, $users);
-		}
-		catch (\InvalidArgumentException $e) {
+		} catch (\InvalidArgumentException $e) {
 			$output->writeln($e->getMessage());
 		}
 	}
@@ -86,14 +84,13 @@ abstract class BaseCommand extends Command {
 	}
 
 	private function getArgumentGroups($input) {
-		$users = array();
-		foreach (array_unique($input->getOption('group')) as $group) {
+		$users = [];
+		foreach (\array_unique($input->getOption('group')) as $group) {
 			if (!$this->groupManager->groupExists($group)) {
 				throw new \InvalidArgumentException("Group <error>$group</error> does not exist!");
-			}
-			else {
+			} else {
 				foreach ($this->groupManager->get($group)->getUsers() as $user) {
-					array_push($users, $user->getUID());
+					\array_push($users, $user->getUID());
 				}
 			}
 		}

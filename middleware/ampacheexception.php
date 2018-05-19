@@ -13,5 +13,4 @@
 namespace OCA\Music\Middleware;
 
 class AmpacheException extends \Exception {
-
 }

@@ -16,14 +16,13 @@ use OCA\Music\Db\Cache;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class ResetCache extends BaseCommand {
 
 	/** @var Cache */
 	private $cache;
 
 	public function __construct(\OCP\IUserManager $userManager,
-			\OCP\IGroupManager $groupManager,  Cache $cache) {
+			\OCP\IGroupManager $groupManager, Cache $cache) {
 		$this->cache = $cache;
 		parent::__construct($userManager, $groupManager);
 	}
@@ -39,11 +38,10 @@ class ResetCache extends BaseCommand {
 			$output->writeln("Drop cache for <info>all users</info>");
 			$this->cache->remove();
 		} else {
-			foreach($users as $user) {
+			foreach ($users as $user) {
 				$output->writeln("Drop cache for <info>$user</info>");
 				$this->cache->remove($user);
 			}
 		}
 	}
-
 }

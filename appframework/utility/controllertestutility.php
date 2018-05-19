@@ -15,12 +15,10 @@ namespace OCA\Music\AppFramework\Utility;
 
 use OCP\AppFramework\Http\Response;
 
-
 /**
  * Simple utility class for testing controllers
  */
 abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
-
 
 	/**
 	 * Checks if a controllermethod has the expected annotations
@@ -29,40 +27,38 @@ abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 	 * @param array $valid if you define your own annotations, pass them here
 	 */
 	protected function assertAnnotations($controller, $method, array $expected,
-										array $valid=array()){
-		$standard = array(
+										array $valid=[]) {
+		$standard = [
 			'PublicPage',
 			'NoAdminRequired',
 			'NoCSRFRequired',
 			'API'
-		);
+		];
 
-		$possible = array_merge($standard, $valid);
+		$possible = \array_merge($standard, $valid);
 
 		// check if expected annotations are valid
-		foreach($expected as $annotation){
-			$this->assertTrue(in_array($annotation, $possible));
+		foreach ($expected as $annotation) {
+			$this->assertTrue(\in_array($annotation, $possible));
 		}
 
 		$reader = new MethodAnnotationReader($controller, $method);
-		foreach($expected as $annotation){
+		foreach ($expected as $annotation) {
 			$this->assertTrue($reader->hasAnnotation($annotation));
 		}
 	}
-
 
 	/**
 	 * Shortcut for testing expected headers of a response
 	 * @param array $expected an array with the expected headers
 	 * @param Response $response the response which we want to test for headers
 	 */
-	protected function assertHeaders(array $expected=array(), Response $response){
+	protected function assertHeaders(array $expected=[], Response $response) {
 		$headers = $response->getHeaders();
-		foreach($expected as $header){
-			$this->assertTrue(in_array($header, $headers));
+		foreach ($expected as $header) {
+			$this->assertTrue(\in_array($header, $headers));
 		}
 	}
-
 
 	/**
 	 * Instead of using positional parameters this function instantiates
@@ -70,20 +66,20 @@ abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 	 * @param array $params a hashmap with the parameters for request
 	 * @return Request a request instance
 	 */
-	protected function getRequest(array $params=array()) {
+	protected function getRequest(array $params=[]) {
 		$mock = $this->getMockBuilder('\OCP\IRequest')
 			->getMock();
 
-		$merged = array();
+		$merged = [];
 
 		foreach ($params as $key => $value) {
-			$merged = array_merge($value, $merged);
+			$merged = \array_merge($value, $merged);
 		}
 
 		$mock->expects($this->any())
 			->method('getParam')
-			->will($this->returnCallback(function($index, $default) use ($merged) {
-				if (array_key_exists($index, $merged)) {
+			->will($this->returnCallback(function ($index, $default) use ($merged) {
+				if (\array_key_exists($index, $merged)) {
 					return $merged[$index];
 				} else {
 					return $default;
@@ -91,11 +87,10 @@ abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 			}));
 
 		// attribute access
-		if(array_key_exists('server', $params)) {
+		if (\array_key_exists('server', $params)) {
 			$mock->server = $params['server'];
 		}
 
 		return $mock;
 	}
-
 }

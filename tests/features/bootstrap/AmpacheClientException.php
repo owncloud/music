@@ -11,5 +11,4 @@
  */
 
 class AmpacheClientException extends \Exception {
-
 }

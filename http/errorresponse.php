@@ -30,5 +30,4 @@ class ErrorResponse extends JSONResponse {
 				$statusCode
 		);
 	}
-
 }

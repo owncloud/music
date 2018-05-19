@@ -26,7 +26,6 @@ use \OCA\Music\Db\AmpacheSessionMapper;
  * ampache authentification stuff has to be done.
  */
 class AmpacheMiddleware extends Middleware {
-
 	private $appname;
 	private $request;
 	private $ampacheSessionMapper;
@@ -36,7 +35,7 @@ class AmpacheMiddleware extends Middleware {
 	/**
 	 * @param Request $request an instance of the request
 	 */
-	public function __construct($appname, IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, $ampacheUser){
+	public function __construct($appname, IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, $ampacheUser) {
 		$this->appname = $appname;
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
@@ -44,7 +43,6 @@ class AmpacheMiddleware extends Middleware {
 		// used to share user info with controller
 		$this->ampacheUser = $ampacheUser;
 	}
-
 
 	/**
 	 * This runs all the security checks before a method call. The
@@ -54,7 +52,7 @@ class AmpacheMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws AmpacheException when a security check fails
 	 */
-	public function beforeController($controller, $methodName){
+	public function beforeController($controller, $methodName) {
 
 		// get annotations from comments
 		$annotationReader = new MethodAnnotationReader($controller, $methodName);
@@ -62,17 +60,17 @@ class AmpacheMiddleware extends Middleware {
 		$this->isAmpacheCall = $annotationReader->hasAnnotation('AmpacheAPI');
 
 		// don't try to authenticate for the handshake request
-		if($this->isAmpacheCall && $this->request['action'] !== 'handshake') {
+		if ($this->isAmpacheCall && $this->request['action'] !== 'handshake') {
 			$token = null;
 			if (!empty($this->request['auth'])) {
 				$token = $this->request['auth'];
-			} else if (!empty($this->request['ssid'])) {
+			} elseif (!empty($this->request['ssid'])) {
 				$token = $this->request['ssid'];
 			}
 
-			if($token !== null && $token !== '') {
+			if ($token !== null && $token !== '') {
 				$user = $this->ampacheSessionMapper->findByToken($token);
-				if($user !== false && array_key_exists('user_id', $user)) {
+				if ($user !== false && \array_key_exists('user_id', $user)) {
 					// setup the filesystem for the user - actual login isn't really needed
 					\OC_Util::setupFS($user['user_id']);
 					$this->ampacheUser->setUserId($user['user_id']);
@@ -80,7 +78,7 @@ class AmpacheMiddleware extends Middleware {
 				}
 			} else {
 				// for ping action without token the version information is provided
-				if($this->request['action'] === 'ping') {
+				if ($this->request['action'] === 'ping') {
 					return;
 				}
 			}
@@ -98,18 +96,17 @@ class AmpacheMiddleware extends Middleware {
 	 * @throws \Exception the passed in exception if it cant handle it
 	 * @return Response a Response object or null in case that the exception could not be handled
 	 */
-	public function afterException($controller, $methodName, \Exception $exception){
-		if($exception instanceof AmpacheException && $this->isAmpacheCall){
+	public function afterException($controller, $methodName, \Exception $exception) {
+		if ($exception instanceof AmpacheException && $this->isAmpacheCall) {
 			$response = new TemplateResponse($this->appname, 'ampache/error');
 			$response->renderAs('blank');
 			$response->addHeader('Content-Type', 'text/xml; charset=UTF-8');
-			$response->setParams(array(
+			$response->setParams([
 				'code' => $exception->getCode(),
 				'message' => $exception->getMessage()
-			));
+			]);
 			return $response;
 		}
 		throw $exception;
 	}
-
 }

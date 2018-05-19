@@ -28,9 +28,7 @@ use \OCA\Music\Db\Maintenance;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class Scanner extends PublicEmitter {
-
 	private $extractor;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
@@ -55,7 +53,7 @@ class Scanner extends PublicEmitter {
 								Maintenance $maintenance,
 								IConfig $configManager,
 								$appName,
-								Folder $rootFolder){
+								Folder $rootFolder) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -70,9 +68,9 @@ class Scanner extends PublicEmitter {
 		$this->rootFolder = $rootFolder;
 
 		// Trying to enable stream support
-		if(ini_get('allow_url_fopen') !== '1') {
+		if (\ini_get('allow_url_fopen') !== '1') {
 			$this->logger->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
-			@ini_set('allow_url_fopen', '1');
+			@\ini_set('allow_url_fopen', '1');
 		}
 	}
 
@@ -83,7 +81,7 @@ class Scanner extends PublicEmitter {
 	 * @param \OCP\Files\Folder $userHome
 	 * @param string|null $filePath Deducted from $file if not given
 	 */
-	public function update($file, $userId, $userHome, $filePath = null){
+	public function update($file, $userId, $userHome, $filePath = null) {
 		if ($filePath === null) {
 			$filePath = $file->getPath();
 		}
@@ -91,14 +89,14 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
-		if(!($file instanceof File) || !$userId || !($userHome instanceof Folder)) {
-			$this->logger->log('Invalid arguments given to Scanner.update - file='.get_class($file).
-					", userId=$userId, userHome=".get_class($userHome), 'warn');
+		if (!($file instanceof File) || !$userId || !($userHome instanceof Folder)) {
+			$this->logger->log('Invalid arguments given to Scanner.update - file='.\get_class($file).
+					", userId=$userId, userHome=".\get_class($userHome), 'warn');
 			return;
 		}
 
 		// skip files that aren't inside the user specified path
-		if(!$this->pathIsUnderMusicFolder($filePath, $userId, $userHome)) {
+		if (!$this->pathIsUnderMusicFolder($filePath, $userId, $userHome)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 			return;
 		}
@@ -108,10 +106,9 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - mimetype $mimetype", 'debug');
 
-		if(self::startsWith($mimetype, 'image')) {
+		if (self::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		}
-		else if(self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
+		} elseif (self::startsWith($mimetype, 'audio') || self::startsWith($mimetype, 'application/ogg')) {
 			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
 	}
@@ -132,8 +129,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
-		if(ini_get('allow_url_fopen')) {
-
+		if (\ini_get('allow_url_fopen')) {
 			$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
 			$meta = $this->extractMetadata($file, $userHome, $filePath);
@@ -157,13 +153,13 @@ class Scanner extends PublicEmitter {
 					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
-			if($meta['picture'] != null) {
+			if ($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
 				$this->coverHelper->removeCoverFromCache($albumId, $userId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
-			else if($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
+			elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
 				$this->albumBusinessLayer->removeCovers([$fileId]);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 				$this->coverHelper->removeCoverFromCache($albumId, $userId);
@@ -189,35 +185,35 @@ class Scanner extends PublicEmitter {
 		$meta['albumArtist'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 		// use artist and albumArtist as fallbacks for each other
-		if(self::isNullOrEmpty($meta['albumArtist'])){
+		if (self::isNullOrEmpty($meta['albumArtist'])) {
 			$meta['albumArtist'] = $meta['artist'];
 		}
 
-		if(self::isNullOrEmpty($meta['artist'])){
+		if (self::isNullOrEmpty($meta['artist'])) {
 			$meta['artist'] = $meta['albumArtist'];
 		}
 
 		// set 'Unknown Artist' in case neither artist nor albumArtist was found
-		if(self::isNullOrEmpty($meta['artist'])){
+		if (self::isNullOrEmpty($meta['artist'])) {
 			$meta['artist'] = null;
 			$meta['albumArtist'] = null;
 		}
 
 		// title
 		$meta['title'] = ExtractorGetID3::getTag($fileInfo, 'title');
-		if(self::isNullOrEmpty($meta['title'])){
+		if (self::isNullOrEmpty($meta['title'])) {
 			$meta['title'] = $fieldsFromFileName['title'];
 		}
 
 		// album
 		$meta['album'] = ExtractorGetID3::getTag($fileInfo, 'album');
-		if(self::isNullOrEmpty($meta['album'])){
+		if (self::isNullOrEmpty($meta['album'])) {
 			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
-			$dirPath = dirname($filePath);
+			$dirPath = \dirname($filePath);
 			if ($userHome->getPath() === $dirPath) {
 				$meta['album'] = null;
 			} else {
-				$meta['album'] = basename($dirPath);
+				$meta['album'] = \basename($dirPath);
 			}
 		}
 
@@ -236,13 +232,13 @@ class Scanner extends PublicEmitter {
 
 		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);
 
-		if (array_key_exists('playtime_seconds', $fileInfo)) {
-			$meta['length'] = ceil($fileInfo['playtime_seconds']);
+		if (\array_key_exists('playtime_seconds', $fileInfo)) {
+			$meta['length'] = \ceil($fileInfo['playtime_seconds']);
 		} else {
 			$meta['length'] = null;
 		}
 
-		if (array_key_exists('audio', $fileInfo) && array_key_exists('bitrate', $fileInfo['audio'])) {
+		if (\array_key_exists('audio', $fileInfo) && \array_key_exists('bitrate', $fileInfo['audio'])) {
 			$meta['bitrate'] = $fileInfo['audio']['bitrate'];
 		} else {
 			$meta['bitrate'] = null;
@@ -256,9 +252,9 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteAudio($fileIds, $userIds=null){
-		$this->logger->log('deleteAudio - '. implode(', ', $fileIds) , 'debug');
-		$this->emit('\OCA\Music\Utility\Scanner', 'delete', array($fileIds, $userIds));
+	private function deleteAudio($fileIds, $userIds=null) {
+		$this->logger->log('deleteAudio - '. \implode(', ', $fileIds), 'debug');
+		$this->emit('\OCA\Music\Utility\Scanner', 'delete', [$fileIds, $userIds]);
 
 		$result = $this->trackBusinessLayer->deleteTracks($fileIds, $userIds);
 
@@ -282,7 +278,7 @@ class Scanner extends PublicEmitter {
 				$this->cache->remove($affectedUser, 'collection');
 			}
 
-			$this->logger->log('removed entities - ' . json_encode($result), 'debug');
+			$this->logger->log('removed entities - ' . \json_encode($result), 'debug');
 		}
 
 		return $result !== false;
@@ -293,23 +289,24 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteImage($fileIds, $userIds=null){
-		$this->logger->log('deleteImage - '. implode(', ', $fileIds) , 'debug');
+	private function deleteImage($fileIds, $userIds=null) {
+		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
 
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
-		$affectedUsers = array_map(function($a) { return $a->getUserId(); }, $affectedAlbums);
-		$affectedUsers = array_unique($affectedUsers);
+		$affectedUsers = \array_map(function ($a) {
+			return $a->getUserId();
+		}, $affectedAlbums);
+		$affectedUsers = \array_unique($affectedUsers);
 
 		// Delete may be for one file or for a folder containing thousands of albums.
 		// If loads of albums got affected, then ditch the whole cache of the affected
 		// users because removing the cached covers one-by-one could delay the delete
 		// operation significantly.
-		if (count($affectedAlbums) > 100) {
+		if (\count($affectedAlbums) > 100) {
 			foreach ($affectedUsers as $user) {
 				$this->cache->remove($user);
 			}
-		}
-		else {
+		} else {
 			// remove the cached covers
 			foreach ($affectedAlbums as $album) {
 				$this->coverHelper->removeCoverFromCache($album->getId(), $album->getUserId());
@@ -320,7 +317,7 @@ class Scanner extends PublicEmitter {
 			}
 		}
 
-		return (count($affectedAlbums) > 0);
+		return (\count($affectedAlbums) > 0);
 	}
 
 	/**
@@ -330,32 +327,32 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds the IDs of the users to remove the file from; if omitted,
 	 *                               the file is removed from all users (ie. owner and sharees)
 	 */
-	public function delete($fileId, $userIds=null){
+	public function delete($fileId, $userIds=null) {
 		if (!$this->deleteAudio([$fileId], $userIds) && !$this->deleteImage([$fileId], $userIds)) {
 			$this->logger->log("deleted file $fileId was not an indexed " .
-					'audio file or a cover image' , 'debug');
+					'audio file or a cover image', 'debug');
 		}
 	}
 
 	/**
 	 * Remove all audio files and cover images in the given folder from the database.
 	 * This gets called when a folder is deleted or unshared from the user.
-	 * 
+	 *
 	 * @param \OCP\Files\Folder $folder
 	 * @param string[]|null $userIds the IDs of the users to remove the folder from; if omitted,
 	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
 	public function deleteFolder($folder, $userIds=null) {
-		$audioFiles = array_merge(
+		$audioFiles = \array_merge(
 				$folder->searchByMime('audio'),
 				$folder->searchByMime('application/ogg')
 		);
-		if (count($audioFiles) > 0) {
+		if (\count($audioFiles) > 0) {
 			$this->deleteAudio(self::idsFromArray($audioFiles), $userIds);
 		}
 
 		$imageFiles = $folder->searchByMime('image');
-		if (count($imageFiles) > 0) {
+		if (\count($imageFiles) > 0) {
 			$this->deleteImage(self::idsFromArray($imageFiles), $userIds);
 		}
 	}
@@ -379,13 +376,13 @@ class Scanner extends PublicEmitter {
 		try {
 			$folder = $this->getUserMusicFolder($userId, $userHome);
 		} catch (\OCP\Files\NotFoundException $e) {
-			return array();
+			return [];
 		}
 
 		$audio = $folder->searchByMime('audio');
 		$ogg = $folder->searchByMime('application/ogg');
 
-		return array_merge($audio, $ogg);
+		return \array_merge($audio, $ogg);
 	}
 
 	public function getScannedFiles($userId) {
@@ -398,7 +395,7 @@ class Scanner extends PublicEmitter {
 		$allIds = self::idsFromArray($musicFiles);
 		$unscannedIds = self::fast_array_diff($allIds, $scannedIds);
 
-		$count = count($unscannedIds);
+		$count = \count($unscannedIds);
 		if ($count) {
 			$this->logger->log("Found $count unscanned music files for user $userId", 'info');
 		} else {
@@ -409,25 +406,25 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function scanFiles($userId, $userHome, $fileIds, OutputInterface $debugOutput = null) {
-		$count = count($fileIds);
+		$count = \count($fileIds);
 		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
 		// back up the execution time limit
-		$executionTime = intval(ini_get('max_execution_time'));
+		$executionTime = \intval(\ini_get('max_execution_time'));
 		// set execution time limit to unlimited
-		set_time_limit(0);
+		\set_time_limit(0);
 
 		$count = 0;
 		foreach ($fileIds as $fileId) {
 			$fileNodes = $userHome->getById($fileId);
-			if (count($fileNodes) > 0) {
+			if (\count($fileNodes) > 0) {
 				$file = $fileNodes[0];
-				if($debugOutput) {
-					$before = memory_get_usage(true);
+				if ($debugOutput) {
+					$before = \memory_get_usage(true);
 				}
 				$this->update($file, $userId, $userHome);
-				if($debugOutput) {
-					$after = memory_get_usage(true);
+				if ($debugOutput) {
+					$after = \memory_get_usage(true);
 					$diff = $after - $before;
 					$afterFileSize = new FileSize($after);
 					$diffFileSize = new FileSize($diff);
@@ -437,14 +434,13 @@ class Scanner extends PublicEmitter {
 					$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
 				}
 				$count++;
-			}
-			else {
+			} else {
 				$this->logger->log("File with id $fileId not found for user $userId", 'warn');
 			}
 		}
 
 		// reset execution time limit
-		set_time_limit($executionTime);
+		\set_time_limit($executionTime);
 
 		return $count;
 	}
@@ -467,7 +463,7 @@ class Scanner extends PublicEmitter {
 			}
 		}
 
-		$count = count($unavailableFiles);
+		$count = \count($unavailableFiles);
 		if ($count > 0) {
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
@@ -489,7 +485,7 @@ class Scanner extends PublicEmitter {
 		if ($info !== null && $info['cover'] !== null) {
 			$mime = $info['cover']['mimetype'];
 			$content = $info['cover']['content'];
-			$info['cover'] = 'data:' . $mime. ';base64,' . base64_encode($content); 
+			$info['cover'] = 'data:' . $mime. ';base64,' . \base64_encode($content);
 		}
 
 		return $info;
@@ -511,7 +507,7 @@ class Scanner extends PublicEmitter {
 
 	private function getUnindexedFileInfo($fileId, $userId, $userFolder) {
 		$fileNodes = $userFolder->getById($fileId);
-		if (count($fileNodes) > 0) {
+		if (\count($fileNodes) > 0) {
 			$file = $fileNodes[0];
 			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath());
 			$cover = $metadata['picture'];
@@ -546,7 +542,7 @@ class Scanner extends PublicEmitter {
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
 			$this->cache->remove($user, 'collection');
-			$this->logger->log('album cover(s) were found for user '. $user , 'debug');
+			$this->logger->log('album cover(s) were found for user '. $user, 'debug');
 		}
 		return !empty($affectedUsers);
 	}
@@ -585,8 +581,8 @@ class Scanner extends PublicEmitter {
 	 * @return array
 	 */
 	private static function fast_array_diff($b, $a) {
-		$at = array_flip($a);
-		$d = array();
+		$at = \array_flip($a);
+		$d = [];
 		foreach ($b as $i) {
 			if (!isset($at[$i])) {
 				$d[] = $i;
@@ -596,11 +592,13 @@ class Scanner extends PublicEmitter {
 	}
 
 	private static function idsFromArray(array $arr) {
-		return array_map(function($i) { return $i->getId(); }, $arr);
+		return \array_map(function ($i) {
+			return $i->getId();
+		}, $arr);
 	}
 
 	private static function startsWith($string, $potentialStart) {
-		return substr($string, 0, strlen($potentialStart)) === $potentialStart;
+		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
 	}
 
 	private static function isNullOrEmpty($string) {
@@ -609,11 +607,11 @@ class Scanner extends PublicEmitter {
 
 	private static function normalizeOrdinal($ordinal) {
 		// convert format '1/10' to '1'
-		$tmp = explode('/', $ordinal);
+		$tmp = \explode('/', $ordinal);
 		$ordinal = $tmp[0];
 
 		// check for numeric values - cast them to int and verify it's a natural number above 0
-		if(is_numeric($ordinal) && ((int)$ordinal) > 0) {
+		if (\is_numeric($ordinal) && ((int)$ordinal) > 0) {
 			$ordinal = (int)$ordinal;
 		} else {
 			$ordinal = null;
@@ -627,7 +625,7 @@ class Scanner extends PublicEmitter {
 		// preceeding number is extracted as track number. Everything after the optional
 		// track number + delimiters part but before the file extension is extracted as title.
 		// The file extension consists of a '.' followed by 1-4 "word characters".
-		if(preg_match('/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/', $fileName, $matches) === 1) {
+		if (\preg_match('/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/', $fileName, $matches) === 1) {
 			return ['track_number' => $matches[2], 'title' => $matches[3]];
 		} else {
 			return ['track_number' => null, 'title' => $fileName];
@@ -635,9 +633,9 @@ class Scanner extends PublicEmitter {
 	}
 
 	private static function normalizeYear($date) {
-		if(ctype_digit($date)) {
+		if (\ctype_digit($date)) {
 			return $date; // the date is a valid year as-is
-		} else if(preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
+		} elseif (\preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
 			return $matches[1]; // year from ISO-formatted date yyyy-mm-dd
 		} else {
 			return null;
@@ -662,7 +660,7 @@ class Scanner extends PublicEmitter {
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 		foreach ($tracks as $track) {
 			$nodes = $userFolder->getById($track->getFileId());
-			if(count($nodes) > 0) {
+			if (\count($nodes) > 0) {
 				// parse the first valid node and check if it contains embedded cover art
 				$image = $this->extractor->parseEmbeddedCoverArt($nodes[0]);
 				if ($image != null) {

@@ -51,7 +51,7 @@ class ShareController extends Controller {
 	 */
 	public function fileInfo($token, $fileId) {
 		// we no longer need the session to be kept open
-		session_write_close();
+		\session_write_close();
 
 		$share = $this->shareManager->getShareByToken($token);
 
@@ -66,8 +66,7 @@ class ShareController extends Controller {
 		// be the file's parent directory. Otherwise the share is the target file.
 		if ($fileId == 0) {
 			$fileId = $share->getNodeId();
-		}
-		else {
+		} else {
 			$folderId = $share->getNodeId();
 			$matchingFolders = $fileOwnerHome->getById($folderId);
 			if (empty($matchingFolders)
@@ -84,5 +83,4 @@ class ShareController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
-
 }

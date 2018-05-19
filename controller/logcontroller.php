@@ -19,12 +19,11 @@ use \OCP\IRequest;
 use \OCA\Music\AppFramework\Core\Logger;
 
 class LogController extends Controller {
-
 	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
-								Logger $logger){
+								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->logger = $logger;
 	}
@@ -35,6 +34,6 @@ class LogController extends Controller {
 	 */
 	public function log($message) {
 		$this->logger->log('JS: ' . $message, 'debug');
-		return new JSONResponse(array('success' => true));
+		return new JSONResponse(['success' => true]);
 	}
 }

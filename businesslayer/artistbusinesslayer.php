@@ -18,12 +18,10 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
 
-
 class ArtistBusinessLayer extends BusinessLayer {
-
 	private $logger;
 
-	public function __construct(ArtistMapper $artistMapper, Logger $logger){
+	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
 		$this->logger = $logger;
 	}
@@ -34,7 +32,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Artist[] artists
 	 */
-	public function findMultipleById($artistIds, $userId){
+	public function findMultipleById($artistIds, $userId) {
 		return $this->mapper->findMultipleById($artistIds, $userId);
 	}
 
@@ -44,11 +42,11 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Artist The added/updated artist
 	 */
-	public function addOrUpdateArtist($name, $userId){
+	public function addOrUpdateArtist($name, $userId) {
 		$artist = new Artist();
 		$artist->setName($name);
 		$artist->setUserId($userId);
-		$artist->setHash(hash('md5', mb_strtolower($name)));
+		$artist->setHash(\hash('md5', \mb_strtolower($name)));
 		return $this->mapper->insertOrUpdate($artist);
 	}
 }

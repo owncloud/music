@@ -25,7 +25,6 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  * utility to get cover image for album
  */
 class CoverHelper {
-
 	private $albumBusinessLayer;
 	private $extractor;
 	private $cache;
@@ -66,7 +65,7 @@ class CoverHelper {
 
 	/**
 	 * Get hash of the album cover if it is in the cache
-	 * 
+	 *
 	 * @param int $albumId
 	 * @param string $userId
 	 * @return string|null
@@ -84,7 +83,7 @@ class CoverHelper {
 		$rows = $this->cache->getAll($userId, 'coverhash_');
 		$hashes = [];
 		foreach ($rows as $row) {
-			$albumId = explode('_', $row['key'])[1];
+			$albumId = \explode('_', $row['key'])[1];
 			$hashes[$albumId] = $row['data'];
 		}
 		return $hashes;
@@ -92,7 +91,7 @@ class CoverHelper {
 
 	/**
 	 * Get cover image with given hash from the cache
-	 * 
+	 *
 	 * @param string $hash
 	 * @param string $userId
 	 * @param bool $asBase64
@@ -101,11 +100,11 @@ class CoverHelper {
 	public function getCoverFromCache($hash, $userId, $asBase64 = false) {
 		$cached = $this->cache->get($userId, 'cover_' . $hash);
 		if ($cached !== null) {
-			$delimPos = strpos($cached, '|');
-			$mime = substr($cached, 0, $delimPos);
-			$content = substr($cached, $delimPos + 1);
+			$delimPos = \strpos($cached, '|');
+			$mime = \substr($cached, 0, $delimPos);
+			$content = \substr($cached, $delimPos + 1);
 			if (!$asBase64) {
-				$content = base64_decode($content);
+				$content = \base64_decode($content);
 			}
 			return ['mimetype' => $mime, 'content' => $content];
 		}
@@ -123,12 +122,12 @@ class CoverHelper {
 		$content = $coverData['content'];
 
 		if ($mime && $content) {
-			$size = strlen($content);
+			$size = \strlen($content);
 			if ($size < self::MAX_SIZE_TO_CACHE) {
-				$hash = hash('md5', $content);
+				$hash = \hash('md5', $content);
 				// cache the data with hash as a key
 				try {
-					$this->cache->add($userId, 'cover_' . $hash, $mime . '|' . base64_encode($content));
+					$this->cache->add($userId, 'cover_' . $hash, $mime . '|' . \base64_encode($content));
 				} catch (UniqueConstraintViolationException $ex) {
 					$this->logger->log("Cover with hash $hash is already cached", 'debug');
 				}
@@ -140,8 +139,7 @@ class CoverHelper {
 				}
 				// collection.json needs to be regenrated the next time it's fetched
 				$this->cache->remove($userId, 'collection');
-			}
-			else {
+			} else {
 				$this->logger->log("Cover image of album $albumId is large ($size B), skip caching", 'debug');
 			}
 		}
@@ -171,20 +169,19 @@ class CoverHelper {
 
 		if ($coverId > 0) {
 			$nodes = $rootFolder->getById($coverId);
-			if (count($nodes) > 0) {
+			if (\count($nodes) > 0) {
 				// get the first valid node (there shouldn't be more than one node anyway)
 				/* @var $node File */
 				$node = $nodes[0];
 				$mime = $node->getMimeType();
 
-				if (0 === strpos($mime, 'audio')) { // embedded cover image
+				if (\strpos($mime, 'audio') === 0) { // embedded cover image
 					$cover = $this->extractor->parseEmbeddedCoverArt($node);
 
 					if ($cover !== null) {
 						$response = ['mimetype' => $cover['image_mime'], 'content' => $cover['data']];
 					}
-				}
-				else { // separate image file
+				} else { // separate image file
 					$response = ['mimetype' => $mime, 'content' => $node->getContent()];
 				}
 			}
@@ -208,39 +205,38 @@ class CoverHelper {
 	 * @return string The processed image as string
 	 */
 	public static function scaleDownIfLarge($image, $size) {
-		$meta = getimagesizefromstring($image);
+		$meta = \getimagesizefromstring($image);
 		// only process pictures with width and height greater than $size pixels
-		if($meta[0]>$size && $meta[1]>$size) {
+		if ($meta[0]>$size && $meta[1]>$size) {
 			$img = imagecreatefromstring($image);
 			// scale down the picture so that the smaller dimension will be $sixe pixels
 			$ratio = $meta[0]/$meta[1];
-			if(1.0 <=  $ratio) {
+			if (1.0 <=  $ratio) {
 				$img = imagescale($img, $size*$ratio, $size, IMG_BICUBIC_FIXED);
 			} else {
 				$img = imagescale($img, $size, $size/$ratio, IMG_BICUBIC_FIXED);
 			};
-			ob_start();
-			ob_clean();
-			switch($meta['mime']) {
+			\ob_start();
+			\ob_clean();
+			switch ($meta['mime']) {
 				case "image/jpeg":
-					imagejpeg($img, NULL, 75);
-					$image = ob_get_contents();
+					imagejpeg($img, null, 75);
+					$image = \ob_get_contents();
 					break;
 				case "image/png":
-					imagepng($img, NULL, 7, PNG_ALL_FILTERS);
-					$image = ob_get_contents();
+					imagepng($img, null, 7, PNG_ALL_FILTERS);
+					$image = \ob_get_contents();
 					break;
 				case "image/gif":
-					imagegif($img, NULL);
-					$image = ob_get_contents();
+					imagegif($img, null);
+					$image = \ob_get_contents();
 					break;
 				default:
 					break;
 			}
-			ob_end_clean();
+			\ob_end_clean();
 			imagedestroy($img);
 		}
 		return $image;
 	}
-
 }

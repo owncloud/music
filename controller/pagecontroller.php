@@ -18,9 +18,7 @@ use \OCP\IRequest;
 
 use \OCA\Music\Utility\Scanner;
 
-
 class PageController extends Controller {
-
 	private $l10n;
 	private $scanner;
 	private $status;
@@ -28,13 +26,12 @@ class PageController extends Controller {
 	public function __construct($appname,
 								IRequest $request,
 								$l10n,
-								Scanner $scanner){
+								Scanner $scanner) {
 		parent::__construct($appname, $request);
 
 		$this->l10n = $l10n;
 		$this->scanner = $scanner;
 	}
-
 
 	/**
 	 * @NoAdminRequired
@@ -42,6 +39,6 @@ class PageController extends Controller {
 	 */
 	public function index() {
 		$userLang = $this->l10n->getLanguageCode();
-		return new TemplateResponse($this->appName, 'main', array('lang' => $userLang));
+		return new TemplateResponse($this->appName, 'main', ['lang' => $userLang]);
 	}
 }

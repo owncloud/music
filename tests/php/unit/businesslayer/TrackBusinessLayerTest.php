@@ -14,9 +14,7 @@ namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\Db\Track;
 
-
 class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
-
 	private $mapper;
 	private $logger;
 	private $trackBusinessLayer;
@@ -24,8 +22,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 	private $artistId;
 	private $albumId;
 
-
-	protected function setUp(){
+	protected function setUp() {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\TrackMapper')
 			->disableOriginalConstructor()
 			->getMock();
@@ -39,7 +36,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->fileId = 2;
 	}
 
-	public function testFindAllByArtist(){
+	public function testFindAllByArtist() {
 		$response = '';
 		$this->mapper->expects($this->once())
 			->method('findAllByArtist')
@@ -53,7 +50,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($response, $result);
 	}
 
-	public function testFindAllByAlbum(){
+	public function testFindAllByAlbum() {
 		$response = '';
 		$this->mapper->expects($this->once())
 			->method('findAllByAlbum')
@@ -67,7 +64,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($response, $result);
 	}
 
-	public function testFindByFileId(){
+	public function testFindByFileId() {
 		$response = '';
 		$this->mapper->expects($this->once())
 			->method('findByFileId')
@@ -81,7 +78,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($response, $result);
 	}
 
-	public function testAddOrUpdateTrack(){
+	public function testAddOrUpdateTrack() {
 		$title = 'test';
 		$fileId = 2;
 
@@ -97,7 +94,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($track, $result);
 	}
 
-	public function testDeleteTracksEmpty(){
+	public function testDeleteTracksEmpty() {
 		$fileId = 2;
 
 		$this->mapper->expects($this->once())
@@ -118,7 +115,7 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(false, $result);
 	}
 
-	public function testDeleteTracksDeleteArtist(){
+	public function testDeleteTracksDeleteArtist() {
 		$fileId = 2;
 
 		$track = new Track();
@@ -147,14 +144,14 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue('1'));
 
 		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
-		$this->assertEquals([],              $result['obsoleteAlbums']);
-		$this->assertEquals([2],             $result['obsoleteArtists']);
-		$this->assertEquals([3],             $result['remainingAlbums']);
-		$this->assertEquals([],              $result['remainingArtists']);
+		$this->assertEquals([], $result['obsoleteAlbums']);
+		$this->assertEquals([2], $result['obsoleteArtists']);
+		$this->assertEquals([3], $result['remainingAlbums']);
+		$this->assertEquals([], $result['remainingArtists']);
 		$this->assertEquals([$this->userId], $result['affectedUsers']);
 	}
 
-	public function testDeleteTracksDeleteAlbum(){
+	public function testDeleteTracksDeleteAlbum() {
 		$fileId = 2;
 
 		$track = new Track();
@@ -183,12 +180,10 @@ class TrackBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue('0'));
 
 		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
-		$this->assertEquals([3],             $result['obsoleteAlbums']);
-		$this->assertEquals([],              $result['obsoleteArtists']);
-		$this->assertEquals([],              $result['remainingAlbums']);
-		$this->assertEquals([2],             $result['remainingArtists']);
+		$this->assertEquals([3], $result['obsoleteAlbums']);
+		$this->assertEquals([], $result['obsoleteArtists']);
+		$this->assertEquals([], $result['remainingAlbums']);
+		$this->assertEquals([2], $result['remainingArtists']);
 		$this->assertEquals([$this->userId], $result['affectedUsers']);
 	}
 }
-
-

@@ -32,10 +32,9 @@ use \OCA\Music\Db\Track;
 use \OCP\AppFramework\Db\DoesNotExistException;
 
 class TrackBusinessLayer extends BusinessLayer {
-
 	private $logger;
 
-	public function __construct(TrackMapper $trackMapper, Logger $logger){
+	public function __construct(TrackMapper $trackMapper, Logger $logger) {
 		parent::__construct($trackMapper);
 		$this->logger = $logger;
 	}
@@ -46,7 +45,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return array of tracks
 	 */
-	public function findAllByArtist($artistId, $userId){
+	public function findAllByArtist($artistId, $userId) {
 		return $this->mapper->findAllByArtist($artistId, $userId);
 	}
 
@@ -56,7 +55,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
-	public function findAllByAlbum($albumId, $userId, $artistId = null){
+	public function findAllByAlbum($albumId, $userId, $artistId = null) {
 		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
 	}
 
@@ -66,7 +65,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
-	public function findAllByNameRecursive($name, $userId){
+	public function findAllByNameRecursive($name, $userId) {
 		return $this->mapper->findAllByNameRecursive($name, $userId);
 	}
 
@@ -76,10 +75,10 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track|null track
 	 */
-	public function findByFileId($fileId, $userId){
-		try{
+	public function findByFileId($fileId, $userId) {
+		try {
 			return $this->mapper->findByFileId($fileId, $userId);
-		} catch (DoesNotExistException $e){
+		} catch (DoesNotExistException $e) {
 			return null;
 		}
 	}
@@ -89,7 +88,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId
 	 * @return int[]
 	 */
-	public function findAllFileIds($userId){
+	public function findAllFileIds($userId) {
 		return $this->mapper->findAllFileIds($userId);
 	}
 
@@ -97,7 +96,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByArtist($artistId){
+	public function countByArtist($artistId) {
 		return $this->mapper->countByArtist($artistId);
 	}
 
@@ -105,7 +104,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param integer $albumId
 	 * @return integer
 	 */
-	public function countByAlbum($albumId){
+	public function countByAlbum($albumId) {
 		return $this->mapper->countByAlbum($albumId);
 	}
 
@@ -125,7 +124,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateTrack(
 			$title, $number, $year, $artistId, $albumId, $fileId,
-			$mimetype, $userId, $length=null, $bitrate=null){
+			$mimetype, $userId, $length=null, $bitrate=null) {
 		$track = new Track();
 		$track->setTitle($title);
 		$track->setNumber($number);
@@ -146,45 +145,46 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
 	 *                      $fileIds are deleted from all users
 	 * @return False if no such track was found; otherwise array of six arrays
-	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums', 
+	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums',
 	 *         'obsoleteArtists', and 'affectedUsers'). These contain the track, album, artist, and
 	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer
 	 *         have any tracks while 'remaining' entities have some left.
 	 */
-	public function deleteTracks($fileIds, $userIds = null){
+	public function deleteTracks($fileIds, $userIds = null) {
 		$tracks = ($userIds !== null)
 			? $this->mapper->findByFileIds($fileIds, $userIds)
 			: $this->mapper->findAllByFileIds($fileIds);
 
-		if(count($tracks) === 0){
+		if (\count($tracks) === 0) {
 			$result = false;
-		}
-		else{
+		} else {
 			// delete all the matching tracks
-			$trackIds = array_map(function($t) { return $t->getId(); }, $tracks);
+			$trackIds = \array_map(function ($t) {
+				return $t->getId();
+			}, $tracks);
 			$this->deleteById($trackIds);
 
 			// find all distinct albums, artists, and users of the deleted tracks
 			$artists = [];
 			$albums = [];
 			$users = [];
-			foreach($tracks as $track){
+			foreach ($tracks as $track) {
 				$artists[$track->getArtistId()] = 1;
 				$albums[$track->getAlbumId()] = 1;
 				$users[$track->getUserId()] = 1;
 			}
-			$artists = array_keys($artists);
-			$albums = array_keys($albums);
-			$users = array_keys($users);
+			$artists = \array_keys($artists);
+			$albums = \array_keys($albums);
+			$users = \array_keys($users);
 
 			// categorize each artist as 'remaining' or 'obsolete'
 			$remainingArtists = [];
 			$obsoleteArtists = [];
-			foreach($artists as $artistId){
+			foreach ($artists as $artistId) {
 				$result = $this->mapper->countByArtist($artistId);
-				if($result === '0'){
+				if ($result === '0') {
 					$obsoleteArtists[] = $artistId;
-				}else{
+				} else {
 					$remainingArtists[] = $artistId;
 				}
 			}
@@ -192,11 +192,11 @@ class TrackBusinessLayer extends BusinessLayer {
 			// categorize each album as 'remaining' or 'obsolete'
 			$remainingAlbums = [];
 			$obsoleteAlbums = [];
-			foreach($albums as $albumId){
+			foreach ($albums as $albumId) {
 				$result = $this->mapper->countByAlbum($albumId);
-				if($result === '0'){
+				if ($result === '0') {
 					$obsoleteAlbums[] = $albumId;
-				}else{
+				} else {
 					$remainingAlbums[] = $albumId;
 				}
 			}
@@ -213,5 +213,4 @@ class TrackBusinessLayer extends BusinessLayer {
 
 		return $result;
 	}
-
 }

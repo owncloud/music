@@ -51,11 +51,11 @@ class PreMigration implements IRepairStep {
 		// fulfill the new schema.
 		$tablesToErase = [];
 
-		if (version_compare($installedVersion, '0.3.12', '<')) {
+		if (\version_compare($installedVersion, '0.3.12', '<')) {
 			$tablesToErase[] = 'music_ampache_sessions';
 		}
 
-		if (version_compare($installedVersion, '0.3.16.1', '<')) {
+		if (\version_compare($installedVersion, '0.3.16.1', '<')) {
 			$tablesToErase[] = 'music_artists';
 			$tablesToErase[] = 'music_albums';
 			$tablesToErase[] = 'music_tracks';

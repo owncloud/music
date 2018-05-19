@@ -15,32 +15,31 @@ namespace OCA\Music\Db;
 use \OCA\Music\AppFramework\Core\Logger;
 use Doctrine\DBAL\Connection;
 
-
 class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 
 	/** @var Connection */
 	private $db;
 
-	protected function setUp(){
+	protected function setUp() {
 		/** @var Connection db */
 		$this->db = \OC::$server->getDatabaseConnection();
 		$this->logger = new Logger('music');
 	}
 
 	protected function loadData($filename) {
-		$filename = join(DIRECTORY_SEPARATOR, array(dirname(__DIR__), 'data', $filename));
-		if(!file_exists($filename)) {
+		$filename = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'data', $filename]);
+		if (!\file_exists($filename)) {
 			throw new \Exception("Can't find file $filename to load data.");
 		}
 
-		$data = json_decode(file_get_contents($filename));
+		$data = \json_decode(\file_get_contents($filename));
 
-		foreach($data as $table => $dataSets) {
-			foreach($dataSets as $dataSet) {
+		foreach ($data as $table => $dataSets) {
+			foreach ($dataSets as $dataSet) {
 				$qb = $this->db->createQueryBuilder();
 				$q = $qb->insert('`*PREFIX*' . $table . '`');
 
-				foreach($dataSet as $column => $value) {
+				foreach ($dataSet as $column => $value) {
 					$q->setValue('`' . $column . '`', $qb->createNamedParameter($value));
 				}
 
@@ -50,13 +49,13 @@ class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function checkForEmptyTables($user) {
-		$tables = array(
+		$tables = [
 			'music_artists',
 			'music_albums',
 			'music_tracks',
-		);
+		];
 
-		foreach($tables as $table) {
+		foreach ($tables as $table) {
 			$qb = $this->db->createQueryBuilder();
 			$qb->select('COUNT(*)')
 				->from('`*PREFIX*' . $table . '`')
@@ -70,7 +69,7 @@ class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 		}
 	}
 
-	public function testCleanup(){
+	public function testCleanup() {
 		$user = 'integration';
 		$this->checkForEmptyTables($user);
 		$this->loadData('MaintenanceCleanupData.json');

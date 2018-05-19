@@ -43,7 +43,6 @@ use \OCP\AppFramework\Db\Entity;
  * @method setUserId(string $userId)
  */
 class Track extends Entity {
-
 	public $title;
 	public $number;
 	public $year;
@@ -59,7 +58,7 @@ class Track extends Entity {
 	public $userId;
 	public $mbid;
 
-	public function __construct(){
+	public function __construct() {
 		$this->addType('number', 'int');
 		$this->addType('year', 'int');
 		$this->addType('artistId', 'int');
@@ -72,57 +71,56 @@ class Track extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
 			'music.api.track',
-			array('trackIdOrSlug' => $this->id)
+			['trackIdOrSlug' => $this->id]
 		);
 	}
 
 	public function getArtistWithUri(IURLGenerator $urlGenerator) {
-		return array(
+		return [
 			'id' => $this->artistId,
 			'uri' => $urlGenerator->linkToRoute(
 				'music.api.artist',
-				array('artistIdOrSlug' => $this->artistId)
+				['artistIdOrSlug' => $this->artistId]
 			)
-		);
+		];
 	}
 
 	public function getAlbumWithUri(IURLGenerator $urlGenerator) {
-		return array(
+		return [
 			'id' => $this->albumId,
 			'uri' => $urlGenerator->linkToRoute(
 				'music.api.album',
-				array('albumIdOrSlug' => $this->albumId)
+				['albumIdOrSlug' => $this->albumId]
 			)
-		);
+		];
 	}
 
 	public function toCollection($l10n) {
-		return array(
+		return [
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
 			'artistName' => $this->getArtist()->getNameString($l10n),
 			'artistId' => $this->getArtistId(),
 			'files' => [$this->getMimetype() => $this->getFileId()],
 			'id' => $this->getId(),
-		);
+		];
 	}
 
 	public function toAPI(IURLGenerator $urlGenerator) {
-		return array(
+		return [
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getNumber(),
 			'artist' => $this->getArtistWithUri($urlGenerator),
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
-			'files' => array($this->getMimetype() => $urlGenerator->linkToRoute(
+			'files' => [$this->getMimetype() => $urlGenerator->linkToRoute(
 				'music.api.download',
-				array('fileId' => $this->getFileId())
-			)),
+				['fileId' => $this->getFileId()]
+			)],
 			'bitrate' => $this->getBitrate(),
 			'id' => $this->getId(),
 			'slug' => $this->getId() . '-' . $this->slugify('title'),
 			'uri' => $this->getUri($urlGenerator)
-		);
+		];
 	}
-
 }

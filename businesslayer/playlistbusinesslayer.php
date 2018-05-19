@@ -18,12 +18,10 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
-
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Playlist;
 
 class PlaylistBusinessLayer extends BusinessLayer {
-
 	private $logger;
 
 	public function __construct(PlaylistMapper $playlistMapper, Logger $logger) {
@@ -34,7 +32,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	public function addTracks($trackIds, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$prevTrackIds = $playlist->getTrackIdsAsArray();
-		$playlist->setTrackIdsFromArray(array_merge($prevTrackIds, $trackIds));
+		$playlist->setTrackIdsFromArray(\array_merge($prevTrackIds, $trackIds));
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
@@ -42,7 +40,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	public function removeTracks($trackIndices, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
-		$trackIds = array_diff_key($trackIds, array_flip($trackIndices));
+		$trackIds = \array_diff_key($trackIds, \array_flip($trackIndices));
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->mapper->update($playlist);
 		return $playlist;
@@ -51,8 +49,8 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	public function moveTrack($fromIndex, $toIndex, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
-		$movedTrack = array_splice($trackIds, $fromIndex, 1);
-		array_splice($trackIds, $toIndex, 0, $movedTrack);
+		$movedTrack = \array_splice($trackIds, $fromIndex, 1);
+		\array_splice($trackIds, $toIndex, 0, $movedTrack);
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->mapper->update($playlist);
 		return $playlist;
@@ -83,7 +81,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 			foreach ($affectedLists as $playlist) {
 				$prevTrackIds = $playlist->getTrackIdsAsArray();
-				$playlist->setTrackIdsFromArray(array_diff($prevTrackIds, [$trackId]));
+				$playlist->setTrackIdsFromArray(\array_diff($prevTrackIds, [$trackId]));
 				$this->mapper->update($playlist);
 			}
 		}

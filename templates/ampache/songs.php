@@ -14,7 +14,9 @@ print '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		<bitrate><?php p($song->getBitrate());?></bitrate>
 		<mime><?php p($song->getMimetype());?></mime>
 		<size>0</size>
-		<art><?php $cid = $song->getAlbum()->getCoverFileId(); if ($cid){p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=_get_cover&amp;filter=<?php p($song->getAlbum()->getId());?>&amp;auth=<?php p($_['authtoken']);} ?></art>
+		<art><?php $cid = $song->getAlbum()->getCoverFileId(); if ($cid) {
+	p($_['urlGenerator']->getAbsoluteURL($_['urlGenerator']->linkToRoute('music.ampache.ampache'))); ?>?action=_get_cover&amp;filter=<?php p($song->getAlbum()->getId()); ?>&amp;auth=<?php p($_['authtoken']);
+} ?></art>
 		<rating>0</rating>
 		<preciserating>0</preciserating>
 	</song>

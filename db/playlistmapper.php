@@ -17,15 +17,14 @@ namespace OCA\Music\Db;
 use OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
-
-	public function __construct(IDBConnection $db){
+	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
 	}
 
 	/**
 	 * @param string $condition
 	 */
-	private function makeSelectQuery($condition=null){
+	private function makeSelectQuery($condition=null) {
 		return 'SELECT `name`, `id`, `track_ids` ' .
 			'FROM `*PREFIX*music_playlists` ' .
 			'WHERE `user_id` = ? ' . $condition;
@@ -38,7 +37,7 @@ class PlaylistMapper extends BaseMapper {
 	 * @param integer $offset
 	 * @return Playlist[]
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		$sql = $this->makeSelectQuery(
 				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
 		);
@@ -51,7 +50,7 @@ class PlaylistMapper extends BaseMapper {
 	 * @param bool $fuzzy
 	 * @return Playlist[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -66,11 +65,11 @@ class PlaylistMapper extends BaseMapper {
 	 * @param int $trackId
 	 * @return Playlist[]
 	 */
-	 public function findListsContainingTrack($trackId) {
+	public function findListsContainingTrack($trackId) {
 		$sql = 'SELECT * ' .
 			'FROM `*PREFIX*music_playlists` ' .
 			'WHERE `track_ids` LIKE ?';
-		$params = array('%|' . $trackId . '|%');
+		$params = ['%|' . $trackId . '|%'];
 		return $this->findEntities($sql, $params);
 	}
 }

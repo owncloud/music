@@ -14,15 +14,12 @@ namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\Db\Artist;
 
-
 class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
-
 	private $mapper;
 	private $logger;
 	private $artistBusinessLayer;
 
-
-	protected function setUp(){
+	protected function setUp() {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\ArtistMapper')
 			->disableOriginalConstructor()
 			->getMock();
@@ -33,8 +30,8 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->userId = 'john';
 	}
 
-	public function testFindMultipleById(){
-		$artistIds = array(1,2,3);
+	public function testFindMultipleById() {
+		$artistIds = [1,2,3];
 		$response = '';
 		$this->mapper->expects($this->once())
 			->method('findMultipleById')
@@ -48,8 +45,8 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($response, $result);
 	}
 
-	public function testDeleteById(){
-		$artistIds = array(1, 2, 3);
+	public function testDeleteById() {
+		$artistIds = [1, 2, 3];
 
 		$this->mapper->expects($this->once())
 			->method('deleteById')
@@ -58,7 +55,7 @@ class ArtistBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 		$this->artistBusinessLayer->deleteById($artistIds);
 	}
 
-	public function testAddOrUpdateArtist(){
+	public function testAddOrUpdateArtist() {
 		$name = 'test';
 
 		$artist = new Artist();

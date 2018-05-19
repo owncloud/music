@@ -19,7 +19,6 @@ use OCP\AppFramework\Http;
  * A renderer for files
  */
 class FileResponse extends Response {
-
 	protected $file;
 	protected $start;
 	protected $end;
@@ -30,11 +29,10 @@ class FileResponse extends Response {
 	 * @param int $statusCode the Http status code, defaults to 200
 	 */
 	public function __construct($file, $statusCode=Http::STATUS_OK) {
-
-		if (is_array($file)) {
+		if (\is_array($file)) {
 			$this->file = $file['content'];
 			$mime = $file['mimetype'];
-			$size = strlen($file['content']);
+			$size = \strlen($file['content']);
 		} else {
 			$this->file = $file;
 			$mime = $file->getMimetype();
@@ -45,14 +43,14 @@ class FileResponse extends Response {
 		if (isset($_SERVER['HTTP_RANGE'])) {
 			// Note that we do not support Range Header of the type
 			// bytes=x-x,y-y
-			if (!preg_match('/^bytes=\d*-\d*$/', $_SERVER['HTTP_RANGE'])) {
+			if (!\preg_match('/^bytes=\d*-\d*$/', $_SERVER['HTTP_RANGE'])) {
 				$this->addHeader('Content-Range: bytes */' . $size);
 				$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 			} else {
-				$parts = explode('-', substr($_SERVER['HTTP_RANGE'], 6));
+				$parts = \explode('-', \substr($_SERVER['HTTP_RANGE'], 6));
 				$this->start = $parts[0] != '' ? (int)$parts[0] : 0;
 				$this->end = $parts[1] != '' ? (int)$parts[1] : $size - 1;
-				$this->end = min($this->end, $size - 1);
+				$this->end = \min($this->end, $size - 1);
 
 				if ($this->start > $this->end) {
 					$this->addHeader('Content-Range: bytes */' . $size);
@@ -85,31 +83,31 @@ class FileResponse extends Response {
 			}
 		}
 
-		return is_string($this->file)
+		return \is_string($this->file)
 			? $this->renderFromString()
 			: $this->renderFromFile();
 	}
 
 	private function renderFromString() {
 		return $this->rangeRequest
-			? substr($this->file, $this->start, $this->partialSize())
+			? \substr($this->file, $this->start, $this->partialSize())
 			: $this->file;
 	}
 
 	private function renderFromFile() {
 		if ($this->rangeRequest) {
 			$handle = $this->file->fopen('r');
-			fseek($handle, $this->start);
+			\fseek($handle, $this->start);
 			$content = '';
 			$rangeSize = $this->partialSize();
-			while(!feof($handle)) {
-				$content .= fread($handle, 8192); // 8k chunk
-				if (strlen($content) > $rangeSize) {
-					$content = substr($content, 0, $rangeSize);
+			while (!\feof($handle)) {
+				$content .= \fread($handle, 8192); // 8k chunk
+				if (\strlen($content) > $rangeSize) {
+					$content = \substr($content, 0, $rangeSize);
 					break;
 				}
 			}
-			fclose($handle);
+			\fclose($handle);
 			return $content;
 		}
 		return $this->file->getContent();
@@ -118,5 +116,4 @@ class FileResponse extends Response {
 	private function partialSize() {
 		return $this->end - $this->start + 1;
 	}
-
 }

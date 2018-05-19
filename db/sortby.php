@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Db;
 
-
 /**
  * Enum-like class to define sort order
  */

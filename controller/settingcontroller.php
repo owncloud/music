@@ -27,7 +27,6 @@ use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;
 
 class SettingController extends Controller {
-
 	const DEFAULT_PASSWORD_LENGTH = 10;
 
 	private $appname;
@@ -47,7 +46,7 @@ class SettingController extends Controller {
 								Folder $userFolder,
 								IConfig $configManager,
 								ISecureRandom $secureRandom,
-								IURLGenerator $urlGenerator){
+								IURLGenerator $urlGenerator) {
 		parent::__construct($appname, $request);
 
 		$this->appname = $appname;
@@ -72,35 +71,35 @@ class SettingController extends Controller {
 			if ($path[0] !== '/') {
 				$path = '/' . $path;
 			}
-			if ($path[strlen($path)-1] !== '/') {
+			if ($path[\strlen($path)-1] !== '/') {
 				$path .= '/';
 			}
 			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
 			$success = true;
 			$this->scanner->updatePath($path, $this->userId);
 		}
-		return new JSONResponse(array('success' => $success));
+		return new JSONResponse(['success' => $success]);
 	}
 
 	/**
 	 * @NoAdminRequired
 	 */
 	public function getAll() {
-		return array(
+		return [
 			'path' => $this->configManager->getUserValue($this->userId, $this->appname, 'path'),
-			'ampacheUrl' => str_replace('/server/xml.server.php', '', $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache'))),
+			'ampacheUrl' => \str_replace('/server/xml.server.php', '', $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache'))),
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
-		);
+		];
 	}
 
 	/**
 	 * @NoAdminRequired
 	 */
 	public function addUserKey($description, $password) {
-		$hash = hash('sha256', $password);
+		$hash = \hash('sha256', $password);
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 		$success = ($id !== null);
-		return new JSONResponse(array('success' => $success, 'id' => $id));
+		return new JSONResponse(['success' => $success, 'id' => $id]);
 	}
 
 	/**
@@ -109,11 +108,11 @@ class SettingController extends Controller {
 	 * @CORS
 	 */
 	public function generateUserKey($length, $description) {
-		if($description == NULL) {
+		if ($description == null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Please provide a description');
 		}
 
-		if($length == NULL || $length < self::DEFAULT_PASSWORD_LENGTH) {
+		if ($length == null || $length < self::DEFAULT_PASSWORD_LENGTH) {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}
 
@@ -121,10 +120,10 @@ class SettingController extends Controller {
 			$length,
 			ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_UPPER . ISecureRandom::CHAR_DIGITS);
 
-		$hash = hash('sha256', $password);
+		$hash = \hash('sha256', $password);
 		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
 
-		if(is_null($id)) {
+		if ($id === null) {
 			return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, 'Error while saving the credentials');
 		}
 
@@ -136,6 +135,6 @@ class SettingController extends Controller {
 	 */
 	public function removeUserKey($id) {
 		$this->ampacheUserMapper->removeUserKey($this->userId, $id);
-		return new JSONResponse(array('success' => true));
+		return new JSONResponse(['success' => true]);
 	}
 }

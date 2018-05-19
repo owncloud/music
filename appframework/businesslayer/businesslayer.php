@@ -21,12 +21,10 @@ use \OCA\Music\Db\SortBy;
 use \OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
-
 abstract class BusinessLayer {
-
 	protected $mapper;
 
-	public function __construct(BaseMapper $mapper){
+	public function __construct(BaseMapper $mapper) {
 		$this->mapper = $mapper;
 	}
 
@@ -37,7 +35,7 @@ abstract class BusinessLayer {
 	 * @throws DoesNotExistException if the entity does not exist
 	 * @throws MultipleObjectsReturnedException if more than one entity exists
 	 */
-	public function delete($id, $userId){
+	public function delete($id, $userId) {
 		$entity = $this->find($id, $userId);
 		$this->mapper->delete($entity);
 	}
@@ -48,7 +46,7 @@ abstract class BusinessLayer {
 	 * we can actually trust the passed IDs (e.g. file deleted hook).
 	 * @param array $ids the ids of the entities which should be deleted
 	 */
-	public function deleteById($ids){
+	public function deleteById($ids) {
 		$this->mapper->deleteById($ids);
 	}
 
@@ -59,12 +57,12 @@ abstract class BusinessLayer {
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 * @return Entity the entity
 	 */
-	public function find($id, $userId){
+	public function find($id, $userId) {
 		try {
 			return $this->mapper->find($id, $userId);
-		} catch(DoesNotExistException $ex){
+		} catch (DoesNotExistException $ex) {
 			throw new BusinessLayerException($ex->getMessage());
-		} catch(MultipleObjectsReturnedException $ex){
+		} catch (MultipleObjectsReturnedException $ex) {
 			throw new BusinessLayerException($ex->getMessage());
 		}
 	}
@@ -77,7 +75,7 @@ abstract class BusinessLayer {
 	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids, $userId=null){
+	public function findById($ids, $userId=null) {
 		return $this->mapper->findById($ids, $userId);
 	}
 
@@ -89,7 +87,7 @@ abstract class BusinessLayer {
 	 * @param integer $offset
 	 * @return Entity[]
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null){
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		return $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 	}
 
@@ -100,7 +98,7 @@ abstract class BusinessLayer {
 	 * @param bool $fuzzy
 	 * @return Entity[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false){
+	public function findAllByName($name, $userId, $fuzzy = false) {
 		return $this->mapper->findAllByName($name, $userId, $fuzzy);
 	}
 
@@ -108,7 +106,7 @@ abstract class BusinessLayer {
 	 * Get the number of entities
 	 * @param string $userId
 	 */
-	public function count($userId){
+	public function count($userId) {
 		return $this->mapper->count($userId);
 	}
 }

@@ -12,9 +12,7 @@
 
 namespace OCA\Music\Db;
 
-
 class ArtistTest extends \PHPUnit_Framework_TestCase {
-
 	private $urlGenerator;
 
 	protected function setUp() {
@@ -30,16 +28,16 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist->setImage('The image url');
 
 		$l10n = $this->getMockBuilder('\OCP\IL10N')
-			->setMethods(array('t', 'n', 'l', 'getLanguageCode'))
+			->setMethods(['t', 'n', 'l', 'getLanguageCode'])
 			->getMock();
 
-		$this->assertEquals(array(
+		$this->assertEquals([
 			'id' => 3,
 			'name' => 'The name',
 			'image' => 'The image url',
 			'slug' => $artist->getId() . '-the-name',
 			'uri' => ''
-			), $artist->toAPI($this->urlGenerator, $l10n));
+			], $artist->toAPI($this->urlGenerator, $l10n));
 	}
 
 	public function testNullNameLocalisation() {
@@ -47,11 +45,11 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist->setName(null);
 
 		$l10n = $this->getMockBuilder('\OCP\IL10N')
-			->setMethods(array('t', 'n', 'l', 'getLanguageCode'))
+			->setMethods(['t', 'n', 'l', 'getLanguageCode'])
 			->getMock();
 		$l10nString = $this->getMockBuilder('\OC_L10N_String')
 			->disableOriginalConstructor()
-			->setMethods(array('__toString'))
+			->setMethods(['__toString'])
 			->getMock();
 		$l10nString->expects($this->any())
 			->method('__toString')
@@ -64,5 +62,4 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist->setName('Artist name');
 		$this->assertEquals('Artist name', $artist->getNameString($l10n));
 	}
-
 }

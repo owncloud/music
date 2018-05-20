@@ -286,7 +286,7 @@ function initEmbeddedPlayer() {
 		togglePlayback();
 	}
 
-	function loadFileInfoFromUrl(url, fileName, callback=null) {
+	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -426,7 +426,7 @@ function initEmbeddedPlayer() {
 $(document).ready(function () {
 	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
-	if ($('audio').length == 0) {
+	if ($('audio').length === 0) {
 		initEmbeddedPlayer();
 	}
 });

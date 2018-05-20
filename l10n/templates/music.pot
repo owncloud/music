@@ -131,6 +131,10 @@ msgstr ""
 msgid "No tracks"
 msgstr ""
 
+#: ../templates/partials/settingsview.php:8
+msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
+msgstr ""
+
 #: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
@@ -166,8 +170,8 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:398
-#: ../js/public/app.js:820
+#: ../js/public/app.js:409
+#: ../js/public/app.js:831
 msgid "Requested entry was not found"
 msgstr ""
 
@@ -196,12 +200,8 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:628
+#: ../js/public/app.js:639
 msgid "Some not playable tracks were skipped."
-msgstr ""
-
-#: ../templates/partials/settingsview.php:8
-msgid "The music library has to be rescanned after changing this setting."
 msgstr ""
 
 #: ../templates/partials/settingsview.php:7

@@ -5,7 +5,7 @@
 		<input type="text" id="music-path" ng-model="settings.path" ng-click="selectPath()"/>
 		<span style="color:red" ng-show="errorPath">{{ 'Failed to save music path' | translate}}</span>
 		<p><em>{{ 'This setting specifies the folder which will be scanned for music.' | translate }}</em></p>
-		<p><em>{{ 'The music library has to be rescanned after changing this setting.' | translate }}</em></p>
+		<p><em>{{ 'Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists.' | translate }}</em></p>
 		</div>
 	<h3>Ampache</h3>
 	<div class="warning" translate>

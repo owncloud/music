@@ -139,7 +139,7 @@
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 
-			<div id="toScan" ng-show="toScan && currentView!='#/settings'" class="emptycontent clickable" ng-click="processNextScanStep()">
+			<div id="toScan" ng-show="toScan && currentView!='#/settings'" class="emptycontent clickable" ng-click="startScanning()">
 				<div class="icon-audio svg"></div>
 				<h2 translate>New music available</h2>
 				<p translate>Click here to start the scan</p>

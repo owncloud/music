@@ -33,13 +33,20 @@ angular.module('Music').controller('SettingsViewController', [
 						path = path + '/';
 					}
 					if ($scope.settings.path !== path) {
+						// Stop any ongoing scan if path got changed
+						$scope.$parent.stopScanning();
+
+						// Store the parent reference before posting the changed value to backend;
+						// $scope.$parent may not be available any more in the callback in case
+						// the user has navigated to another view in the meantime.
+						var parent = $scope.$parent;
 						Restangular.one('settings/user/path').customPOST({value: path}, '', {}, {}).then(
 							function (data) {
 								if (data.success) {
 									$scope.errorPath = false;
 									$scope.settings.path = path;
-									$scope.$parent.update();
-									$scope.$parent.updateFilesToScan();
+									parent.update();
+									parent.updateFilesToScan();
 								} else {
 									$scope.errorPath = true;
 								}

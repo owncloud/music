@@ -357,13 +357,26 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
+	/**
+	 * @param string $userId
+	 * @param Folder $userHome
+	 * @return Folder
+	 */
 	public function getUserMusicFolder($userId, $userHome) {
 		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
+		return self::getFolderFromRelativePath($userHome, $musicPath);
+	}
 
-		if ($musicPath !== null && $musicPath !== '/' && $musicPath !== '') {
-			return $userHome->get($musicPath);
+	/**
+	 * @param Folder $parentFolder
+	 * @param string $relativePath
+	 * @return Folder
+	 */
+	private static function getFolderFromRelativePath($parentFolder, $relativePath) {
+		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
+			return $parentFolder->get($relativePath);
 		} else {
-			return $userHome;
+			return $parentFolder;
 		}
 	}
 
@@ -471,6 +484,19 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
+	 * Remove all such audio files from the collection which do not reside
+	 * under the configured music path.
+	 * @param string $userId
+	 * @param Folder $userHome
+	 */
+	private function removeFilesNotUnderMusicFolder($userId, $userHome) {
+		$indexedFiles = $this->getScannedFiles($userId);
+		$validFiles = Util::extractIds($this->getMusicFiles($userId, $userHome));
+		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
+		$this->deleteAudio($filesToRemove, [$userId]);
+	}
+
+	/**
 	 * Parse and get basic info about a file. The file does not have to be indexed in the database.
 	 * @param string $fileId
 	 * @param string $userId
@@ -529,12 +555,27 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Update music path
+	 *
+	 * @param string $oldPath
+	 * @param string $newPath
+	 * @param string $userId
 	 */
-	public function updatePath($path, $userId) {
-		// TODO currently this function is quite dumb
-		// it just drops all entries of an user from the tables
-		$this->logger->log("Changing music collection path of user $userId to $path", 'info');
-		$this->maintenance->resetDb($userId);
+	public function updatePath($oldPath, $newPath, $userId) {
+		$this->logger->log("Changing music collection path of user $userId from $oldPath to $newPath", 'info');
+
+		$userHome = $this->resolveUserFolder($userId);
+		$oldFolder = self::getFolderFromRelativePath($userHome, $oldPath);
+		$newFolder = self::getFolderFromRelativePath($userHome, $newPath);
+
+		if ($newFolder->isSubNode($oldFolder)) {
+			$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
+		} elseif ($oldFolder->isSubNode($newFolder)) {
+			$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
+			$this->removeFilesNotUnderMusicFolder($userId, $userHome);
+		} else {
+			$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
+			$this->maintenance->resetDb($userId);
+		}
 	}
 
 	public function findCovers() {

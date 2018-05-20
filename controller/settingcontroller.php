@@ -74,9 +74,10 @@ class SettingController extends Controller {
 			if ($path[\strlen($path)-1] !== '/') {
 				$path .= '/';
 			}
+			$prevPath = $this->configManager->getUserValue($this->userId, $this->appname, 'path');
 			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
 			$success = true;
-			$this->scanner->updatePath($path, $this->userId);
+			$this->scanner->updatePath($prevPath, $path, $this->userId);
 		}
 		return new JSONResponse(['success' => $success]);
 	}

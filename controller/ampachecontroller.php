@@ -413,7 +413,7 @@ class AmpacheController extends Controller {
 			$album->setAlbumArtist($albumArtist);
 		}
 
-		$createCoverUrl = function($album) use ($auth) {
+		$createCoverUrl = function ($album) use ($auth) {
 			if ($album->getCoverFileId()) {
 				return self::createAlbumCoverUrl($this->urlGenerator, $album, $auth);
 			} else {
@@ -431,10 +431,10 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		// URL creation callbacks
-		$createPlayUrl = function($track) use ($auth) {
+		$createPlayUrl = function ($track) use ($auth) {
 			return self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth);
 		};
-		$createCoverUrl = function($track) use ($auth) {
+		$createCoverUrl = function ($track) use ($auth) {
 			if ($track->getAlbum()->getCoverFileId()) {
 				return self::createAlbumCoverUrl($this->urlGenerator, $track->getAlbum(), $auth);
 			} else {

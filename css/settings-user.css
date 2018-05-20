@@ -8,6 +8,10 @@
  * @copyright Morris Jobke 2013, 2014
  */
 
+#music-user h3 {
+	margin-top: 30px;
+}
+
 #music-user input:invalid {
 	box-shadow: #F00 0px 0px 1.5px 1px;
 	outline: 0;

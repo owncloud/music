@@ -73,7 +73,7 @@ $c->query('UserHooks')->register();
  * probably because of https://github.com/nextcloud/server/issues/5314.
  */
 $loadEmbeddedMusicPlayer = function () use ($appName) {
-	\OCP\Util::addScript($appName, 'vendor/soundmanager/script/soundmanager2-jsmin');
+	\OCP\Util::addScript($appName, 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 	\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
 	\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
 	\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');

@@ -10,7 +10,7 @@
 
 angular.module('Music').controller('SettingsViewController', [
 	'$scope', '$rootScope', 'Restangular','$window', '$timeout',
-	function ($scope, $rootScope, Restangular, $window, $timeout ) {
+	function ($scope, $rootScope, Restangular, $window, $timeout) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -29,17 +29,22 @@ angular.module('Music').controller('SettingsViewController', [
 			OC.dialogs.filepicker(
 				t('music', 'Path to your music collection'),
 				function (path) {
+					if (path.substr(-1) !== '/') {
+						path = path + '/';
+					}
 					if ($scope.settings.path !== path) {
-						Restangular.one('settings/user/path').customPOST({value: path}, '', {}, {}).then(function (data) {
-							if (data.success) {
-								$scope.errorPath = false;
-								$scope.settings.path = path;
-								$scope.$parent.update();
-								$scope.$parent.updateFilesToScan();
-							} else {
-								$scope.errorPath = true;
+						Restangular.one('settings/user/path').customPOST({value: path}, '', {}, {}).then(
+							function (data) {
+								if (data.success) {
+									$scope.errorPath = false;
+									$scope.settings.path = path;
+									$scope.$parent.update();
+									$scope.$parent.updateFilesToScan();
+								} else {
+									$scope.errorPath = true;
+								}
 							}
-						});
+						);
 					}
 				},
 				false,

@@ -889,7 +889,7 @@ angular.module('Music').controller('SettingsViewController', [
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime.
 						var parent = $scope.$parent;
-						Restangular.one('settings/user/path').customPOST({value: path}, '', {}, {}).then(
+						Restangular.all('settings/user/path').post({value: path}).then(
 							function (data) {
 								if (data.success) {
 									$scope.errorPath = false;
@@ -911,7 +911,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.addAPIKey = function() {
 			var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6);
-			Restangular.one('settings/userkey/add').customPOST({ password: password, description: $scope.ampacheDescription }, '', {}, {}).then(function(data) {
+			Restangular.all('settings/userkey/add').post({ password: password, description: $scope.ampacheDescription }).then(function(data) {
 				if (data.success) {
 					$scope.settings.ampacheKeys.push({
 						description: $scope.ampacheDescription,
@@ -928,7 +928,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.removeAPIKey = function(key) {
 			key.loading=true;
-			Restangular.one('settings/userkey/remove').customPOST({ id: key.id }, '', {}, {}).then(function(data) {
+			Restangular.all('settings/userkey/remove').post({ id: key.id }).then(function(data) {
 				if (data.success) {
 					// refresh remaining ampacheKeys
 					Restangular.one('settings').get().then(function (value) {

@@ -50,9 +50,6 @@ class ShareController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo($token, $fileId) {
-		// we no longer need the session to be kept open
-		\session_write_close();
-
 		$share = $this->shareManager->getShareByToken($token);
 
 		$fileOwner = $share->getShareOwner();

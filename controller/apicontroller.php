@@ -403,9 +403,6 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function download($fileId) {
-		// we no longer need the session to be kept open
-		\session_write_close();
-
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track === null) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'track not found');
@@ -429,9 +426,6 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo($fileId) {
-		// we no longer need the session to be kept open
-		\session_write_close();
-
 		$info = $this->scanner->getFileInfo($fileId, $this->userId, $this->userFolder);
 		if ($info) {
 			return new JSONResponse($info);
@@ -445,9 +439,6 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function cover($albumIdOrSlug) {
-		// we no longer need the session to be kept open
-		\session_write_close();
-
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$coverData = $this->coverHelper->getCover($albumId, $this->userId, $this->userFolder);
 
@@ -463,9 +454,6 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function cachedCover($hash) {
-		// we no longer need the session to be kept open
-		\session_write_close();
-
 		$coverData = $this->coverHelper->getCoverFromCache($hash, $this->userId);
 
 		if ($coverData !== null) {

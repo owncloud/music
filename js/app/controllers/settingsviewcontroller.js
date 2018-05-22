@@ -11,8 +11,8 @@
  */
 
 angular.module('Music').controller('SettingsViewController', [
-	'$scope', '$rootScope', 'Restangular','$window', '$timeout',
-	function ($scope, $rootScope, Restangular, $window, $timeout) {
+	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettext', 'gettextCatalog',
+	function ($scope, $rootScope, Restangular, $window, $timeout, gettext, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -29,7 +29,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.selectPath = function() {
 			OC.dialogs.filepicker(
-				t('music', 'Path to your music collection'),
+				gettextCatalog.getString(gettext('Path to your music collection')),
 				function (path) {
 					if (path.substr(-1) !== '/') {
 						path = path + '/';
@@ -58,6 +58,32 @@ angular.module('Music').controller('SettingsViewController', [
 				},
 				false,
 				'httpd/unix-directory',
+				true
+			);
+		};
+
+		$scope.resetCollection = function() {
+			OC.dialogs.confirm(
+				gettextCatalog.getString(gettext('Are you sure to reset the music collection? This removes all scanned trakcs and user-created playlists!')),
+				gettextCatalog.getString(gettext('Reset music collection')),
+				function(confirmed) {
+					if (confirmed) {
+						// stop any ongoing scan before posting the reset command
+						$scope.$parent.stopScanning();
+
+						// $scope.$parent may not be available any more in the callback in case
+						// the user has navigated to another view in the meantime
+						var parent = $scope.$parent;
+						Restangular.all('resetscanned').post().then(
+							function (data) {
+								if (data.success) {
+									parent.update();
+									parent.updateFilesToScan();
+								}
+							}
+						);
+					}
+				},
 				true
 			);
 		};

@@ -31,6 +31,7 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Cache;
+use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\Track;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
@@ -53,6 +54,8 @@ class ApiController extends Controller {
 	private $scanner;
 	/** @var CoverHelper */
 	private $coverHelper;
+	/** @var Maintenance */
+	private $maintenance;
 	/** @var string */
 	private $userId;
 	/** @var IURLGenerator */
@@ -71,6 +74,7 @@ class ApiController extends Controller {
 								Cache $cache,
 								Scanner $scanner,
 								CoverHelper $coverHelper,
+								Maintenance $maintenance,
 								$userId,
 								IL10N $l10n,
 								Folder $userFolder,
@@ -83,6 +87,7 @@ class ApiController extends Controller {
 		$this->cache = $cache;
 		$this->scanner = $scanner;
 		$this->coverHelper = $coverHelper;
+		$this->maintenance = $maintenance;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
@@ -396,6 +401,14 @@ class ApiController extends Controller {
 			'filesScanned' => $filesScanned,
 			'coversUpdated' => $coversUpdated
 		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function resetScanned() {
+		$this->maintenance->resetDb($this->userId);
+		return new JSONResponse(['success' => true]);
 	}
 
 	/**

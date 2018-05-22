@@ -40,7 +40,7 @@ The Music app uses SoundManager2 if the browser has a suitable codec available f
 
 Normally, the Music app detects any new audio files in the filesystem on application start and scans metadata from those to its database tables when the user clicks the prompt. The Music app also detects file removals and modifications on the background and makes the required database changes automatically.
 
-If the database would somehow get corrupted, the user can force it to be rebuilt by opening the settings (at the bottom of the left pane) and changing the option "Path to your music collection".
+If the database would somehow get corrupted, the user can force it to be rebuilt from scratch by opening the Settings (at the bottom of the left pane) and clicking the option "Reset music collection".
 
 ### Commands
 
@@ -50,27 +50,30 @@ Following commands are available(see script occ in your ownCloud root folder):
 
 #### Scan music files
 
-Scan all audio files not already indexed in the database. Extract metadata from those and insert it to the database. Target either specified user(s) or all users.
+Scan all audio files not already indexed in the database. Extract metadata from those and insert it to the database. Target either specified user(s) or user group(s) or all users.
 
 	./occ music:scan USERNAME1 USERNAME2 ...
+	./occ music:scan --group=USERGROUP1 --group==USERGROUP2 ...
 	./occ music:scan --all
 
-Both of the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
+All the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
 
 #### Reset scanned metadata
 
-Reset all data stored to the music database. Target either specified user(s) or all users.
+Reset all data stored to the music database. Target either specified user(s) or user group(s) or all users.
 
-**Warning:** This command will erase user-created data! It will remove all tracks from playlists as playlists are linked against the track metadata.
+**Warning:** This command will erase user-created data! It will remove all playlists as playlists are linked against the track metadata.
 
 	./occ music:reset-database USERNAME1 USERNAME2 ...
+	./occ music:reset-database --group=USERGROUP1 --group==USERGROUP2 ...
 	./occ music:reset-database --all
 
 #### Reset cache
 
-Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tets. Target either specified user(s) or all users.
+Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tets. Target either specified user(s) or user group(s) or all users.
 
 	./occ music:reset-cache USERNAME1 USERNAME2 ...
+	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
 	./occ music:reset-cache --all
 
 ### Ampache
@@ -228,6 +231,7 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/file/{fileId}/download`
 * `/api/scan`
 * `/api/scanstate`
+* `/api/resetscanned`
 * Playlist API at `/api/playlist/`
 * Settings API at `/api/settings`
 * [Ampache API](https://github.com/ampache/ampache/wiki/XML-API) at `/ampache/server/xml.server.php`

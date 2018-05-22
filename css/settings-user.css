@@ -5,16 +5,25 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2018
  */
 
 #music-user h3 {
-	margin-top: 30px;
+	margin-top: 40px;
 }
 
 #music-user input:invalid {
 	box-shadow: #F00 0px 0px 1.5px 1px;
 	outline: 0;
+}
+
+#music-user #reset-collection {
+	border: 0;
+	background-color: transparent;
+	vertical-align: middle;
+	margin-bottom: 8px;
 }
 
 #music-user div {
@@ -68,7 +77,7 @@
 	color: rgb(0, 0, 0) !important;
 }
 
-#music-password-info > span {
+#music-password-info > .password {
 	font-weight: bold;
 	font-size: 22px;
 }

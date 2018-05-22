@@ -33,6 +33,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#fileInfo',		'url' => '/api/file/{fileId}/info',		'verb' => 'GET'],
 	['name' => 'api#getScanState',	'url' => '/api/scanstate',				'verb' => 'GET'],
 	['name' => 'api#scan',			'url' => '/api/scan',					'verb' => 'POST'],
+	['name' => 'api#resetScanned',	'url' => '/api/resetscanned',			'verb' => 'POST'],
 	['name' => 'api#cachedCover',	'url' => '/api/cover/{hash}',			'verb' => 'GET'],
 
 	// Shiva api https://github.com/tooxie/shiva-server#resources
@@ -66,8 +67,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#removeUserKey',		'url' => '/api/settings/userkey/remove',	'verb' => 'POST'],
 
 	// ampache
-	['name' => 'ampache#ampache', 'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'],
+	['name' => 'ampache#ampache',	'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'],
 	// Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
-	['name' => 'ampache#ampache2', 'url' => '/ampache/server/xml.server.php', 'verb' => 'POST']
+	['name' => 'ampache#ampache2',	'url' => '/ampache/server/xml.server.php', 'verb' => 'POST']
 
 ]]);

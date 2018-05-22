@@ -91,6 +91,7 @@ class Music extends App {
 				$c->query('Cache'),
 				$c->query('Scanner'),
 				$c->query('CoverHelper'),
+				$c->query('Maintenance'),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('UserFolder'),

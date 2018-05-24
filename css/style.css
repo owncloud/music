@@ -69,7 +69,7 @@ h1 .play {
 }
 
 h1 span:hover .play {
-    visibility: visible
+	visibility: visible
 }
 
 .album-area {

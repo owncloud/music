@@ -915,6 +915,8 @@ angular.module('Music').controller('SettingsViewController', [
 				gettextCatalog.getString(gettext('Reset music collection')),
 				function(confirmed) {
 					if (confirmed) {
+						$scope.resetOngoing = true;
+
 						// stop any ongoing scan before posting the reset command
 						$scope.$parent.stopScanning();
 
@@ -927,6 +929,7 @@ angular.module('Music').controller('SettingsViewController', [
 									parent.update();
 									parent.updateFilesToScan();
 								}
+								$scope.resetOngoing = false;
 							}
 						);
 					}

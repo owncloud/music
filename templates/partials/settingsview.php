@@ -9,7 +9,8 @@
 	</div>
 	<div>
 		<label for="reset-collection">{{ 'Reset music collection' | translate }} </label>
-		<input type="button" class="icon-delete" id="reset-collection" ng-click="resetCollection()"/>
+		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete" id="reset-collection" ng-click="resetCollection()"/>
+		<div class="icon-loading-small" ng-class="{ 'invisible': !resetOngoing }" id="reset-in-progress"></div>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
 		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues">issues</a>.</em></p>
 	</div>

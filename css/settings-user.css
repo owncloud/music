@@ -10,6 +10,10 @@
  * @copyright Pauli Järvinen 2018
  */
 
+.invisible {
+	visibility: hidden;
+}
+
 #music-user h3 {
 	margin-top: 40px;
 }
@@ -24,6 +28,14 @@
 	background-color: transparent;
 	vertical-align: middle;
 	margin-bottom: 8px;
+}
+
+#music-user #reset-in-progress {
+	display: inline-block;
+	vertical-align: middle;
+	position: relative;
+	left: -26px;
+	top: -3px;
 }
 
 #music-user div {

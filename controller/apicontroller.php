@@ -382,6 +382,7 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function scan($files, $finalize) {
 		// extract the parameters
@@ -405,6 +406,7 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function resetScanned() {
 		$this->maintenance->resetDb($this->userId);

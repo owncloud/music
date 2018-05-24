@@ -76,15 +76,24 @@ angular.module('Music').controller('SettingsViewController', [
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime
 						var parent = $scope.$parent;
-						Restangular.all('resetscanned').post().then(
-							function (data) {
-								if (data.success) {
-									parent.update();
-									parent.updateFilesToScan();
-								}
-								$scope.resetOngoing = false;
-							}
-						);
+						var executeReset = function() {
+							Restangular.all('resetscanned').post().then(
+									function (data) {
+										if (data.success) {
+											parent.update();
+											parent.updateFilesToScan();
+										}
+										$scope.resetOngoing = false;
+									}
+								);
+						};
+
+						// Trigger the reset with a small delay. This is to tackle a small issue when
+						// reset button is pressed during scanning: if the POST /api/scan call fires
+						// just before POST /api/resetscanned, the server may receive these two messages
+						// in undeterministic order. This is because modern browsers typically hold several
+						// TCP connections and successive messages are often sent through different TCP pipes.
+						$timeout(executeReset, 100);
 					}
 				},
 				true

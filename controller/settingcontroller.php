@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 namespace OCA\Music\Controller;
@@ -61,6 +61,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function userPath($value) {
 		$success = false;

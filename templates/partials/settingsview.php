@@ -8,7 +8,7 @@
 		<p><em translate>Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists.</em></p>
 	</div>
 	<div>
-		<label for="reset-collection">{{ 'Reset music collection' | translate }} </label>
+		<label for="reset-collection" translate>Reset music collection</label>
 		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete" id="reset-collection" ng-click="resetCollection()"/>
 		<div class="icon-loading-small" ng-class="{ 'invisible': !resetOngoing }" id="reset-in-progress"></div>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>

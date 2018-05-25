@@ -55,27 +55,35 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 	];
 
 	$scope.letterAvailable = {};
-	for(var i in $scope.letters) {
-		$scope.letterAvailable[$scope.letters[i]] = false;
+	function resetNavigationLetters() {
+		for(var i in $scope.letters) {
+			$scope.letterAvailable[$scope.letters[i]] = false;
+		}
+	}
+	resetNavigationLetters();
+
+	function updateNavigationLetters(artists) {
+		for (var i=0; i < artists.length; i++) {
+			var artist = artists[i];
+			var letter = artist.name.substr(0,1).toUpperCase();
+
+			if ($scope.letterAvailable.hasOwnProperty(letter)) {
+				$scope.letterAvailable[letter] = true;
+			}
+		}
 	}
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
+		resetNavigationLetters();
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
 
-			for (var i=0; i < artists.length; i++) {
-				var artist = artists[i],
-					letter = artist.name.substr(0,1).toUpperCase();
-
-				if ($scope.letterAvailable.hasOwnProperty(letter)) {
-					$scope.letterAvailable[letter] = true;
-				}
-			}
+			updateNavigationLetters(artists);
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.

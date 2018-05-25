@@ -193,6 +193,9 @@ class getid3_quicktime extends getid3_handler
 		if (empty($info['video']['dataformat']) && !empty($info['quicktime']['video'])) {
 			$info['video']['dataformat'] = 'quicktime';
 		}
+		if (isset($info['video']) && ($info['mime_type'] == 'audio/mp4') && empty($info['video']['resolution_x']) && empty($info['video']['resolution_y']))  {
+			unset($info['video']);
+		}
 
 		return true;
 	}
@@ -722,6 +725,20 @@ class getid3_quicktime extends getid3_handler
 				$atom_structure['version']        = getid3_lib::BigEndian2Int(substr($atom_data,  0, 1));
 				$atom_structure['flags_raw']      = getid3_lib::BigEndian2Int(substr($atom_data,  1, 3)); // hardcoded: 0x0000
 				$atom_structure['number_entries'] = getid3_lib::BigEndian2Int(substr($atom_data,  4, 4));
+
+				// see: https://github.com/JamesHeinrich/getID3/issues/111
+				// Some corrupt files have been known to have high bits set in the number_entries field
+				// This field shouldn't really need to be 32-bits, values stores are likely in the range 1-100000
+				// Workaround: mask off the upper byte and throw a warning if it's nonzero
+				if ($atom_structure['number_entries'] > 0x000FFFFF) {
+					if ($atom_structure['number_entries'] > 0x00FFFFFF) {
+						$this->warning('"stsd" atom contains improbably large number_entries (0x'.getid3_lib::PrintHexBytes(substr($atom_data, 4, 4), true, false).' = '.$atom_structure['number_entries'].'), probably in error. Ignoring upper byte and interpreting this as 0x'.getid3_lib::PrintHexBytes(substr($atom_data, 5, 3), true, false).' = '.($atom_structure['number_entries'] & 0x00FFFFFF));
+						$atom_structure['number_entries'] = ($atom_structure['number_entries'] & 0x00FFFFFF);
+					} else {
+						$this->warning('"stsd" atom contains improbably large number_entries (0x'.getid3_lib::PrintHexBytes(substr($atom_data, 4, 4), true, false).' = '.$atom_structure['number_entries'].'), probably in error. Please report this to info@getid3.org referencing bug report #111');
+					}
+				}
+
 				$stsdEntriesDataOffset = 8;
 				for ($i = 0; $i < $atom_structure['number_entries']; $i++) {
 					$atom_structure['sample_description_table'][$i]['size']             = getid3_lib::BigEndian2Int(substr($atom_data, $stsdEntriesDataOffset, 4));
@@ -1570,6 +1587,152 @@ if (!empty($atom_structure['sample_description_table'][$i]['width']) && !empty($
 				}
 				break;
 
+			case 'gps ':
+				// https://dashcamtalk.com/forum/threads/script-to-extract-gps-data-from-novatek-mp4.20808/page-2#post-291730
+				// The 'gps ' contains simple look up table made up of 8byte rows, that point to the 'free' atoms that contains the actual GPS data.
+				// The first row is version/metadata/notsure, I skip that.
+				// The following rows consist of 4byte address (absolute) and 4byte size (0x1000), these point to the GPS data in the file.
+
+				$GPS_rowsize = 8; // 4 bytes for offset, 4 bytes for size
+				if (strlen($atom_data) > 0) {
+					if ((strlen($atom_data) % $GPS_rowsize) == 0) {
+						$atom_structure['gps_toc'] = array();
+						foreach (str_split($atom_data, $GPS_rowsize) as $counter => $datapair) {
+							$atom_structure['gps_toc'][] = unpack('Noffset/Nsize', substr($atom_data, $counter * $GPS_rowsize, $GPS_rowsize));
+						}
+
+						$atom_structure['gps_entries'] = array();
+						$previous_offset = $this->ftell();
+						foreach ($atom_structure['gps_toc'] as $key => $gps_pointer) {
+							if ($key == 0) {
+								// "The first row is version/metadata/notsure, I skip that."
+								continue;
+							}
+							$this->fseek($gps_pointer['offset']);
+							$GPS_free_data = $this->fread($gps_pointer['size']);
+
+							/*
+							// 2017-05-10: I see some of the data, notably the Hour-Minute-Second, but cannot reconcile the rest of the data. However, the NMEA "GPRMC" line is there and relatively easy to parse, so I'm using that instead
+
+							// https://dashcamtalk.com/forum/threads/script-to-extract-gps-data-from-novatek-mp4.20808/page-2#post-291730
+							// The structure of the GPS data atom (the 'free' atoms mentioned above) is following:
+							// hour,minute,second,year,month,day,active,latitude_b,longitude_b,unknown2,latitude,longitude,speed = struct.unpack_from('<IIIIIIssssfff',data, 48)
+							// For those unfamiliar with python struct:
+							// I = int
+							// s = is string (size 1, in this case)
+							// f = float
+
+							//$atom_structure['gps_entries'][$key] = unpack('Vhour/Vminute/Vsecond/Vyear/Vmonth/Vday/Vactive/Vlatitude_b/Vlongitude_b/Vunknown2/flatitude/flongitude/fspeed', substr($GPS_free_data, 48));
+							*/
+
+							// $GPRMC,081836,A,3751.65,S,14507.36,E,000.0,360.0,130998,011.3,E*62
+							// $GPRMC,183731,A,3907.482,N,12102.436,W,000.0,360.0,080301,015.5,E*67
+							// $GPRMC,002454,A,3553.5295,N,13938.6570,E,0.0,43.1,180700,7.1,W,A*3F
+							// $GPRMC,094347.000,A,5342.0061,N,00737.9908,W,0.01,156.75,140217,,,A*7D
+							if (preg_match('#\\$GPRMC,([0-9\\.]*),([AV]),([0-9\\.]*),([NS]),([0-9\\.]*),([EW]),([0-9\\.]*),([0-9\\.]*),([0-9]*),([0-9\\.]*),([EW]?)(,[A])?(\\*[0-9A-F]{2})#', $GPS_free_data, $matches)) {
+								$GPS_this_GPRMC = array();
+								list(
+									$GPS_this_GPRMC['raw']['gprmc'],
+									$GPS_this_GPRMC['raw']['timestamp'],
+									$GPS_this_GPRMC['raw']['status'],
+									$GPS_this_GPRMC['raw']['latitude'],
+									$GPS_this_GPRMC['raw']['latitude_direction'],
+									$GPS_this_GPRMC['raw']['longitude'],
+									$GPS_this_GPRMC['raw']['longitude_direction'],
+									$GPS_this_GPRMC['raw']['knots'],
+									$GPS_this_GPRMC['raw']['angle'],
+									$GPS_this_GPRMC['raw']['datestamp'],
+									$GPS_this_GPRMC['raw']['variation'],
+									$GPS_this_GPRMC['raw']['variation_direction'],
+									$dummy,
+									$GPS_this_GPRMC['raw']['checksum'],
+								) = $matches;
+
+								$hour   = substr($GPS_this_GPRMC['raw']['timestamp'], 0, 2);
+								$minute = substr($GPS_this_GPRMC['raw']['timestamp'], 2, 2);
+								$second = substr($GPS_this_GPRMC['raw']['timestamp'], 4, 2);
+								$ms     = substr($GPS_this_GPRMC['raw']['timestamp'], 6);    // may contain decimal seconds
+								$day   = substr($GPS_this_GPRMC['raw']['datestamp'], 0, 2);
+								$month = substr($GPS_this_GPRMC['raw']['datestamp'], 2, 2);
+								$year  = substr($GPS_this_GPRMC['raw']['datestamp'], 4, 2);
+								$year += (($year > 90) ? 1900 : 2000); // complete lack of foresight: datestamps are stored with 2-digit years, take best guess
+								$GPS_this_GPRMC['timestamp'] = $year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second.$ms;
+
+								$GPS_this_GPRMC['active'] = ($GPS_this_GPRMC['raw']['status'] == 'A'); // A=Active,V=Void
+
+								foreach (array('latitude','longitude') as $latlon) {
+									preg_match('#^([0-9]{1,3})([0-9]{2}\\.[0-9]+)$#', $GPS_this_GPRMC['raw'][$latlon], $matches);
+									list($dummy, $deg, $min) = $matches;
+									$GPS_this_GPRMC[$latlon] = $deg + ($min / 60);
+								}
+								$GPS_this_GPRMC['latitude']  *= (($GPS_this_GPRMC['raw']['latitude_direction']  == 'S') ? -1 : 1);
+								$GPS_this_GPRMC['longitude'] *= (($GPS_this_GPRMC['raw']['longitude_direction'] == 'W') ? -1 : 1);
+
+								$GPS_this_GPRMC['heading']    = $GPS_this_GPRMC['raw']['angle'];
+								$GPS_this_GPRMC['speed_knot'] = $GPS_this_GPRMC['raw']['knots'];
+								$GPS_this_GPRMC['speed_kmh']  = $GPS_this_GPRMC['raw']['knots'] * 1.852;
+								if ($GPS_this_GPRMC['raw']['variation']) {
+									$GPS_this_GPRMC['variation']  = $GPS_this_GPRMC['raw']['variation'];
+									$GPS_this_GPRMC['variation'] *= (($GPS_this_GPRMC['raw']['variation_direction'] == 'W') ? -1 : 1);
+								}
+
+								$atom_structure['gps_entries'][$key] = $GPS_this_GPRMC;
+
+								@$info['quicktime']['gps_track'][$GPS_this_GPRMC['timestamp']] = array(
+									'latitude'  => $GPS_this_GPRMC['latitude'],
+									'longitude' => $GPS_this_GPRMC['longitude'],
+									'speed_kmh' => $GPS_this_GPRMC['speed_kmh'],
+									'heading'   => $GPS_this_GPRMC['heading'],
+								);
+
+							} else {
+								$this->warning('Unhandled GPS format in "free" atom at offset '.$gps_pointer['offset']);
+							}
+						}
+						$this->fseek($previous_offset);
+
+					} else {
+						$this->warning('QuickTime atom "'.$atomname.'" is not mod-8 bytes long ('.$atomsize.' bytes) at offset '.$baseoffset);
+					}
+				} else {
+					$this->warning('QuickTime atom "'.$atomname.'" is zero bytes long at offset '.$baseoffset);
+				}
+				break;
+
+			case 'loci':// 3GP location (El Loco)
+				$loffset = 0;
+				$info['quicktime']['comments']['gps_flags']     =   getid3_lib::BigEndian2Int(substr($atom_data, 0, 4));
+				$info['quicktime']['comments']['gps_lang']      =   getid3_lib::BigEndian2Int(substr($atom_data, 4, 2));
+				$info['quicktime']['comments']['gps_location']  =           $this->LociString(substr($atom_data, 6), $loffset);
+				$loci_data = substr($atom_data, 6 + $loffset);
+				$info['quicktime']['comments']['gps_role']      =   getid3_lib::BigEndian2Int(substr($loci_data, 0, 1));
+				$info['quicktime']['comments']['gps_longitude'] = getid3_lib::FixedPoint16_16(substr($loci_data, 1, 4));
+				$info['quicktime']['comments']['gps_latitude']  = getid3_lib::FixedPoint16_16(substr($loci_data, 5, 4));
+				$info['quicktime']['comments']['gps_altitude']  = getid3_lib::FixedPoint16_16(substr($loci_data, 9, 4));
+				$info['quicktime']['comments']['gps_body']      =           $this->LociString(substr($loci_data, 13           ), $loffset);
+				$info['quicktime']['comments']['gps_notes']     =           $this->LociString(substr($loci_data, 13 + $loffset), $loffset);
+				break;
+
+			case 'chpl': // CHaPter List
+				// https://www.adobe.com/content/dam/Adobe/en/devnet/flv/pdfs/video_file_format_spec_v10.pdf
+				$chpl_version = getid3_lib::BigEndian2Int(substr($atom_data, 4, 1)); // Expected to be 0
+				$chpl_flags   = getid3_lib::BigEndian2Int(substr($atom_data, 5, 3)); // Reserved, set to 0
+				$chpl_count   = getid3_lib::BigEndian2Int(substr($atom_data, 8, 1));
+				$chpl_offset = 9;
+				for ($i = 0; $i < $chpl_count; $i++) {
+					if (($chpl_offset + 9) >= strlen($atom_data)) {
+						$this->warning('QuickTime chapter '.$i.' extends beyond end of "chpl" atom');
+						break;
+					}
+					$info['quicktime']['chapters'][$i]['timestamp'] = getid3_lib::BigEndian2Int(substr($atom_data, $chpl_offset, 8)) / 10000000; // timestamps are stored as 100-nanosecond units
+					$chpl_offset += 8;
+					$chpl_title_size = getid3_lib::BigEndian2Int(substr($atom_data, $chpl_offset, 1));
+					$chpl_offset += 1;
+					$info['quicktime']['chapters'][$i]['title']     =                           substr($atom_data, $chpl_offset, $chpl_title_size);
+					$chpl_offset += $chpl_title_size;
+				}
+				break;
+
 			default:
 				$this->warning('Unknown QuickTime atom type: "'.preg_replace('#[^a-zA-Z0-9 _\\-]#', '?', $atomname).'" ('.trim(getid3_lib::PrintHexBytes($atomname)).') at offset '.$baseoffset);
 				$atom_structure['data'] = $atom_data;
@@ -2401,6 +2564,39 @@ echo 'QuicktimeParseNikonNCTG()::unknown $data_size_type: '.$data_size_type.'<br
 		}
 		return true;
 	}
+
+    public function LociString($lstring, &$count) {
+            // Loci strings are UTF-8 or UTF-16 and null (x00/x0000) terminated. UTF-16 has a BOM
+            // Also need to return the number of bytes the string occupied so additional fields can be extracted
+            $len = strlen($lstring);
+            if ($len == 0) {
+                $count = 0;
+                return '';
+            }
+            if ($lstring[0] == "\x00") {
+                $count = 1;
+                return '';
+            }
+            //check for BOM
+            if ($len > 2 && (($lstring[0] == "\xFE" && $lstring[1] == "\xFF") || ($lstring[0] == "\xFF" && $lstring[1] == "\xFE"))) {
+                //UTF-16
+                if (preg_match('/(.*)\x00/', $lstring, $lmatches)){
+                     $count = strlen($lmatches[1]) * 2 + 2; //account for 2 byte characters and trailing \x0000
+                    return getid3_lib::iconv_fallback_utf16_utf8($lmatches[1]);
+                } else {
+                    return '';
+                }
+            } else {
+                //UTF-8
+                if (preg_match('/(.*)\x00/', $lstring, $lmatches)){
+                    $count = strlen($lmatches[1]) + 1; //account for trailing \x00
+                    return $lmatches[1];
+                }else {
+                    return '';
+                }
+
+            }
+        }
 
 	public function NoNullString($nullterminatedstring) {
 		// remove the single null terminator on null terminated strings

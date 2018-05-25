@@ -209,11 +209,19 @@ track-list:not(.collapsed) li.more-less:not(.collapsible) {
 	opacity: .1;
 }
 
+.alphabet-navigation a, .alphabet-navigation a * {
+	cursor: default;
+}
+
 .alphabet-navigation a.available {
 	display: block;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
 	filter: alpha(opacity = 40);
 	opacity: .4;
+}
+
+.alphabet-navigation a.available, .alphabet-navigation a.available * {
+	cursor: pointer;
 }
 
 .alphabet-navigation a.available:hover {

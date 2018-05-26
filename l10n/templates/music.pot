@@ -24,6 +24,10 @@ msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
+#: ../templates/partials/settingsview.php:53
+msgid "About"
+msgstr ""
+
 #: ../templates/partials/playlistview.php:34
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
@@ -38,7 +42,7 @@ msgstr ""
 msgid "All tracks"
 msgstr ""
 
-#: ../js/public/app.js:914
+#: ../js/public/app.js:922
 msgid "Are you sure to reset the music collection? This removes all scanned trakcs and user-created playlists!"
 msgstr ""
 
@@ -58,19 +62,19 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:29
+#: ../templates/partials/settingsview.php:31
 msgid "Description"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:42
+#: ../templates/partials/settingsview.php:44
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:44
+#: ../templates/partials/settingsview.php:46
 msgid "Failed to generated new Ampache key"
 msgstr ""
 
-#: ../js/public/app.js:157
+#: ../js/public/app.js:165
 msgid "Failed to load the collection:"
 msgstr ""
 
@@ -78,7 +82,7 @@ msgstr ""
 msgid "Failed to save music path"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:43
+#: ../templates/partials/settingsview.php:45
 msgid "Generate API password"
 msgstr ""
 
@@ -86,19 +90,19 @@ msgstr ""
 msgid "Go to album"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:24
+#: ../templates/partials/settingsview.php:26
 msgid "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:22
+#: ../templates/partials/settingsview.php:24
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:147
+#: ../js/public/app.js:155
 msgid "Internal server error"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:17
+#: ../templates/partials/settingsview.php:19
 msgid "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks"
 msgstr ""
 
@@ -107,6 +111,7 @@ msgid "Loading…"
 msgstr ""
 
 #: ../templates/fake-template.php:3
+#: ../templates/partials/settingsview.php:56
 msgid "Music"
 msgstr ""
 
@@ -139,7 +144,7 @@ msgstr ""
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../js/public/app.js:879
+#: ../js/public/app.js:887
 #: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
@@ -153,6 +158,10 @@ msgstr ""
 #: ../templates/partials/overview.php:7
 #: ../templates/partials/playlistview.php:6
 msgid "Play"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:58
+msgid "Please report any bugs and issues <a href=\"https://github.com/owncloud/music/issues\"><b>here</b></a>"
 msgstr ""
 
 #: ../templates/main.php:84
@@ -175,17 +184,17 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:409
-#: ../js/public/app.js:831
+#: ../js/public/app.js:417
+#: ../js/public/app.js:839
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:915
+#: ../js/public/app.js:923
 #: ../templates/partials/settingsview.php:11
 msgid "Reset music collection"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:30
+#: ../templates/partials/settingsview.php:32
 msgid "Revoke API password"
 msgstr ""
 
@@ -210,15 +219,15 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:639
+#: ../js/public/app.js:647
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:14
+#: ../templates/partials/settingsview.php:15
 msgid "There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href=\"https://github.com/owncloud/music/issues\">issues</a>."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:13
+#: ../templates/partials/settingsview.php:14
 msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
@@ -226,7 +235,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:150
+#: ../js/public/app.js:158
 msgid "Timeout"
 msgstr ""
 
@@ -246,11 +255,11 @@ msgstr ""
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:22
+#: ../templates/partials/settingsview.php:24
 msgid "Use this address to browse your music collection from any Ampache compatible player."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:46
+#: ../templates/partials/settingsview.php:48
 msgid "Use your username and following password to connect to this Ampache instance:"
 msgstr ""
 

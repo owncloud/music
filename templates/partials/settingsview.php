@@ -14,6 +14,7 @@
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
 		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues">issues</a>.</em></p>
 	</div>
+
 	<h3>Ampache</h3>
 	<div class="warning" translate>
 		Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href="https://github.com/owncloud/music/issues/60">issue</a>. I would also like to have a list of clients to test with. Thanks
@@ -48,4 +49,15 @@
 			<span class="password" ng-bind="ampachePassword"></span>
 		</div>
 	</div>
+
+	<h3 translate>About</h3>
+	<div>
+		<p>
+			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
+		</p>
+		<p translate>
+			Please report any bugs and issues <a href="https://github.com/owncloud/music/issues"><b>here</b></a>
+		</p>
+	</div>
+
 </div>

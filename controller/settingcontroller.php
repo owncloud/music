@@ -91,6 +91,7 @@ class SettingController extends Controller {
 			'path' => $this->configManager->getUserValue($this->userId, $this->appname, 'path'),
 			'ampacheUrl' => \str_replace('/server/xml.server.php', '', $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache'))),
 			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
+			'appVersion' => \OCP\App::getAppVersion($this->appname)
 		];
 	}
 

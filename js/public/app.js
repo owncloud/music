@@ -283,7 +283,7 @@ angular.module('Music').controller('OverviewController', [
 
 		$rootScope.currentView = '#';
 
-		var INCREMENTAL_LOAD_STEP = 4;
+		var INCREMENTAL_LOAD_STEP = 10;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed

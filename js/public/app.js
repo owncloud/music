@@ -1272,13 +1272,15 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 
 	var trackRenderer = $interpolate(tpl);
 
+	var TRACK_COUNT_COLLAPSE_LIMIT = 6;
+
 	return {
 		restrict: 'E',
 		link: function (scope, element, attrs) {
-			var rendered = false;
-			var expanded = false;
+			var trackListRendered = false;
+			var hiddenTracksRendered = false;
 			var listContainer;
-			var tracks = scope.album.tracks;
+			var tracks = scope.$eval(attrs.tracks);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
 
@@ -1295,9 +1297,9 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			 * Render markup (once) and set classes according to current scope (always)
 			 */
 			function render () {
-				if (!rendered) {
-					var widget = document.createDocumentFragment(),
-						trackListFragment = renderTrackList();
+				if (!trackListRendered) {
+					var widget = document.createDocumentFragment();
+					var trackListFragment = renderTrackList();
 
 					listContainer = document.createElement('ul');
 					listContainer.className = 'track-list';
@@ -1306,7 +1308,7 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 					widget.appendChild(listContainer);
 					element.html(widget);
 					element.addClass('collapsed');
-					rendered = true;
+					trackListRendered = true;
 				}
 				/**
 				 * Set classes for the currently active list item
@@ -1316,16 +1318,16 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 					el.classList.remove('current');
 					el.classList.remove('playing');
 				});
-				if (!scope.currentTrack) {
-					return;
-				}
-				var playing = listContainer.querySelector('[data-track-id="' + scope.currentTrack.id + '"]');
-				if (playing) {
-					playing.classList.add('current');
-					if ($rootScope.playing) {
-						playing.classList.add('playing');
-					} else {
-						playing.classList.remove('playing');
+
+				if (scope.currentTrack) {
+					var playing = listContainer.querySelector('[data-track-id="' + scope.currentTrack.id + '"]');
+					if (playing) {
+						playing.classList.add('current');
+						if ($rootScope.playing) {
+							playing.classList.add('playing');
+						} else {
+							playing.classList.remove('playing');
+						}
 					}
 				}
 			}
@@ -1339,16 +1341,18 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			function renderTrackList () {
 				var trackListFragment = document.createDocumentFragment();
 
-				for (var index = 0; index < tracks.length; index++) {
-					if (index > 4 && tracks.length !== 6) {
-						break;
-					}
+				var tracksToShow = tracks.length;
+				if (tracksToShow > TRACK_COUNT_COLLAPSE_LIMIT) {
+					tracksToShow = TRACK_COUNT_COLLAPSE_LIMIT - 1;
+				}
+
+				for (var index = 0; index < tracksToShow; index++) {
 					var track = tracks[index];
 					var className = '';
 					trackListFragment.appendChild(getTrackNode(track, className));
-
 				}
-				if (tracks.length > 6) {
+
+				if (tracks.length > TRACK_COUNT_COLLAPSE_LIMIT) {
 					var lessEl = document.createElement('li');
 					var moreEl = document.createElement('li');
 
@@ -1381,23 +1385,17 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 
 			/**
 			 * Adds those tracks that aren't initially visible to the listContainer
-			 *
-			 * @returns {boolean}
 			 */
 			function renderHiddenTracks () {
-				if (tracks.length < 6) {
-					return;
-				}
 				var trackListFragment = document.createDocumentFragment();
 
-				for (var index = 5; index < tracks.length; index++) {
+				for (var index = TRACK_COUNT_COLLAPSE_LIMIT - 1; index < tracks.length; index++) {
 					var track = tracks[index];
 					var className = 'collapsible';
 					trackListFragment.appendChild(getTrackNode(track, className));
 				}
 				var toggle = listContainer.getElementsByClassName('muted more-less collapsible');
 				listContainer.insertBefore(trackListFragment, toggle[0]);
-				return true;
 			}
 
 			/**
@@ -1452,10 +1450,14 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				if (trackId) {
 					scope.$emit('playTrack', trackId);
 					scope.$apply();
-					return;
 				}
-				expanded = expanded || renderHiddenTracks();
-				element.toggleClass('collapsed');
+				else { // "show more/less" item
+					if (!hiddenTracksRendered) {
+						renderHiddenTracks();
+						hiddenTracksRendered = true;
+					}
+					element.toggleClass('collapsed');
+				}
 			});
 
 			/**

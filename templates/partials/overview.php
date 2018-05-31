@@ -19,6 +19,7 @@
 			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
 				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 			<track-list
+					tracks="album.tracks"
 					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
 					less-text="'Show less …' | translate"
 			/>

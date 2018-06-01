@@ -29,12 +29,10 @@
 angular.module('Music').directive('trackList', ['$window', '$rootScope', '$interpolate', function ($window, $rootScope, $interpolate) {
 
 	var tpl = '<div class="play-pause"></div>' +
-		'<span data-number="{{number}}" class="muted">{{number}}</span> ' +
-		'<span title="{{titleAtt}}">{{title}}</span>';
+		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
+		'<span title="{{ tooltip }}">{{ title }}</span>';
 
 	var trackRenderer = $interpolate(tpl);
-
-	var TRACK_COUNT_COLLAPSE_LIMIT = 6;
 
 	return {
 		restrict: 'E',
@@ -43,8 +41,12 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			var hiddenTracksRendered = false;
 			var listContainer;
 			var tracks = scope.$eval(attrs.tracks);
+			var getTrackData = scope.$eval(attrs.getTrackData);
+			var playTrack = scope.$eval(attrs.playTrack);
+			var getDraggable = scope.$eval(attrs.getDraggable);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
+			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
 				$rootScope.$watch('currentTrack', function () {
@@ -104,17 +106,17 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				var trackListFragment = document.createDocumentFragment();
 
 				var tracksToShow = tracks.length;
-				if (tracksToShow > TRACK_COUNT_COLLAPSE_LIMIT) {
-					tracksToShow = TRACK_COUNT_COLLAPSE_LIMIT - 1;
+				if (tracksToShow > collapseLimit) {
+					tracksToShow = collapseLimit - 1;
 				}
 
 				for (var index = 0; index < tracksToShow; index++) {
 					var track = tracks[index];
 					var className = '';
-					trackListFragment.appendChild(getTrackNode(track, className));
+					trackListFragment.appendChild(getTrackNode(track, index, className));
 				}
 
-				if (tracks.length > TRACK_COUNT_COLLAPSE_LIMIT) {
+				if (tracks.length > collapseLimit) {
 					var lessEl = document.createElement('li');
 					var moreEl = document.createElement('li');
 
@@ -135,10 +137,12 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			 * @param className
 			 * @returns {HTMLLIElement}
 			 */
-			function getTrackNode (track, className) {
+			function getTrackNode (track, index, className) {
 				var listItem = document.createElement('li');
-				var newElement = trackRenderer(prepareTrackTemplateData(track));
-				listItem.setAttribute('data-track-id', track.id);
+				var trackData = getTrackData(track, index, scope);
+				var newElement = trackRenderer(trackData);
+				listItem.id = 'track-' + trackData.id;
+				listItem.setAttribute('data-track-id', trackData.id);
 				listItem.setAttribute('draggable', true);
 				listItem.className = className;
 				listItem.innerHTML = newElement;
@@ -151,57 +155,13 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			function renderHiddenTracks () {
 				var trackListFragment = document.createDocumentFragment();
 
-				for (var index = TRACK_COUNT_COLLAPSE_LIMIT - 1; index < tracks.length; index++) {
+				for (var index = collapseLimit - 1; index < tracks.length; index++) {
 					var track = tracks[index];
 					var className = 'collapsible';
-					trackListFragment.appendChild(getTrackNode(track, className));
+					trackListFragment.appendChild(getTrackNode(track, index, className));
 				}
 				var toggle = listContainer.getElementsByClassName('muted more-less collapsible');
 				listContainer.insertBefore(trackListFragment, toggle[0]);
-			}
-
-			/**
-			 * Checks if the track artist differs from the album artist
-			 *
-			 * @param track
-			 * @returns {boolean}
-			 */
-			function hasDifferentArtist (track) {
-				return (track.artistId !== scope.artist.id);
-			}
-
-			/**
-			 * Formats a track title string for displaying in the template
-			 *
-			 * @param track
-			 * @param plaintext
-			 */
-			function getTitleString (track, plaintext) {
-				var att = track.title;
-				if (hasDifferentArtist(track)) {
-					var artistName = ' (' + track.artistName + ') ';
-					if (!plaintext) {
-						artistName = ' <div class="muted">' + artistName + '</div>';
-					}
-					att += artistName;
-				}
-
-				return att;
-			}
-
-			/**
-			 * Prepares template data.
-			 * 
-			 * @param track
-			 */
-			function prepareTrackTemplateData (track) {
-				var data = Object.assign({}, track);//Clone the track data
-				data.title = getTitleString(track);
-				data.titleAtt = getTitleString(track, true);
-				if (data.number) {
-					data.number += '.';
-				}
-				return data;
 			}
 
 			/**
@@ -210,7 +170,7 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			element.on('click', 'li', function (event) {
 				var trackId = this.getAttribute('data-track-id');
 				if (trackId) {
-					scope.$emit('playTrack', trackId);
+					playTrack(parseInt(trackId));
 					scope.$apply();
 				}
 				else { // "show more/less" item
@@ -230,11 +190,9 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 					e.dataTransfer = e.originalEvent.dataTransfer;
 				}
 				var trackId = this.getAttribute('data-track-id');
-				var track = _.findWhere(tracks, {id: parseInt(trackId)});
-				var dragData = {'track': track};
 				var offset = {x: e.offsetX, y: e.offsetY};
 				var transferDataObject = {
-					data: dragData,
+					data: getDraggable(trackId),
 					channel: 'defaultchannel',
 					offset: offset
 				};

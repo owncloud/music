@@ -173,10 +173,6 @@ angular.module('Music').controller('PlaylistViewController', [
 						window.location.hash = '#/';
 					}
 				}
-				else {
-					$scope.playlist = null;
-					$scope.tracks = libraryService.getTracksInAlphaOrder();
-				}
 				$timeout(showMore);
 			}
 		}

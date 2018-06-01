@@ -132,7 +132,8 @@ h1 span:hover .play {
 	cursor: pointer
 }
 
-.album-area .track-list li * {
+.album-area .track-list li *,
+#alltracks-area .track-list li * {
 	cursor: pointer;
 }
 

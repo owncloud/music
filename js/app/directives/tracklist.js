@@ -84,7 +84,7 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				});
 
 				if (scope.currentTrack) {
-					var playing = listContainer.querySelector('[data-track-id="' + scope.currentTrack.id + '"]');
+					var playing = listContainer.querySelector('#track-' + scope.currentTrack.id);
 					if (playing) {
 						playing.classList.add('current');
 						if ($rootScope.playing) {
@@ -142,7 +142,6 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				var trackData = getTrackData(track, index, scope);
 				var newElement = trackRenderer(trackData);
 				listItem.id = 'track-' + trackData.id;
-				listItem.setAttribute('data-track-id', trackData.id);
 				listItem.setAttribute('draggable', true);
 				listItem.className = className;
 				listItem.innerHTML = newElement;
@@ -164,13 +163,21 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				listContainer.insertBefore(trackListFragment, toggle[0]);
 			}
 
+			function trackIdFromElementId(elemId) {
+				if (elemId && elemId.substring(0, 6) === 'track-') {
+					return parseInt(elemId.split('-')[1]);
+				} else {
+					return null;
+				}
+			}
+
 			/**
 			 * Click handler for list items
 			 */
 			element.on('click', 'li', function (event) {
-				var trackId = this.getAttribute('data-track-id');
+				var trackId = trackIdFromElementId(this.id);
 				if (trackId) {
-					playTrack(parseInt(trackId));
+					playTrack(trackId);
 					scope.$apply();
 				}
 				else { // "show more/less" item
@@ -189,7 +196,7 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				if (e.originalEvent) {
 					e.dataTransfer = e.originalEvent.dataTransfer;
 				}
-				var trackId = this.getAttribute('data-track-id');
+				var trackId = trackIdFromElementId(this.id);
 				var offset = {x: e.offsetX, y: e.offsetY};
 				var transferDataObject = {
 					data: getDraggable(trackId),

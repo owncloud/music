@@ -110,10 +110,8 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 					tracksToShow = collapseLimit - 1;
 				}
 
-				for (var index = 0; index < tracksToShow; index++) {
-					var track = tracks[index];
-					var className = '';
-					trackListFragment.appendChild(getTrackNode(track, index, className));
+				for (var i = 0; i < tracksToShow; i++) {
+					trackListFragment.appendChild(getTrackNode(tracks[i], i));
 				}
 
 				if (tracks.length > collapseLimit) {
@@ -133,8 +131,9 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			/**
 			 * Renders a single Track HTML Node
 			 *
-			 * @param track
-			 * @param className
+			 * @param object track
+			 * @param int index
+			 * @param string className (optional)
 			 * @returns {HTMLLIElement}
 			 */
 			function getTrackNode (track, index, className) {
@@ -143,7 +142,9 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 				var newElement = trackRenderer(trackData);
 				listItem.id = 'track-' + trackData.id;
 				listItem.setAttribute('draggable', true);
-				listItem.className = className;
+				if (className) {
+					listItem.className = className;
+				}
 				listItem.innerHTML = newElement;
 				return listItem;
 			}
@@ -154,10 +155,8 @@ angular.module('Music').directive('trackList', ['$window', '$rootScope', '$inter
 			function renderHiddenTracks () {
 				var trackListFragment = document.createDocumentFragment();
 
-				for (var index = collapseLimit - 1; index < tracks.length; index++) {
-					var track = tracks[index];
-					var className = 'collapsible';
-					trackListFragment.appendChild(getTrackNode(track, index, className));
+				for (var i = collapseLimit - 1; i < tracks.length; i++) {
+					trackListFragment.appendChild(getTrackNode(tracks[i], i, 'collapsible'));
 				}
 				var toggle = listContainer.getElementsByClassName('muted more-less collapsible');
 				listContainer.insertBefore(trackListFragment, toggle[0]);

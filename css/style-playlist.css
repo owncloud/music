@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016
+ * @copyright Pauli Järvinen 2016 - 2018
  */
 
 .playlist-area {
@@ -35,6 +35,7 @@
 	padding-top: 5px;
 	border: 1px solid transparent;
 	white-space: nowrap;
+	display: table;
 }
 
 .playlist-area .track-list.insert-above > li.drag-hover {

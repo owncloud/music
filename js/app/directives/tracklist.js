@@ -1,32 +1,25 @@
 /**
  * ownCloud - Music app
  *
- * @author Moritz Meißelbach
- * @copyright 2017 Moritz Meißelbach <moritz@meisselba.ch>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * @author Moritz Meißelbach <moritz@meisselba.ch>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright 2017 Moritz Meißelbach
+ * @copyright 2018 Pauli Järvinen
  *
  */
 
 
 /**
- * This custom directive produces a self-contained track list widget that updates its list items according to the global playback state and user interaction.
+ * This custom directive produces a self-contained track list widget that updates
+ * its list items according to the global playback state and user interaction.
  * Handling this with markup alone would produce a large amount of watchers.
  */
 
-
-angular.module('Music').directive('trackList', ['$window', '$rootScope', '$interpolate', function ($window, $rootScope, $interpolate) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate',
+function ($rootScope, $interpolate) {
 
 	var tpl = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +

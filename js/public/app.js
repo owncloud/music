@@ -1378,12 +1378,13 @@ angular.module('Music').directive('sidebarListItem', function() {
 });
 
 /**
- * This custom directive produces a self-contained track list widget that updates its list items according to the global playback state and user interaction.
+ * This custom directive produces a self-contained track list widget that updates
+ * its list items according to the global playback state and user interaction.
  * Handling this with markup alone would produce a large amount of watchers.
  */
 
-
-angular.module('Music').directive('trackList', ['$window', '$rootScope', '$interpolate', function ($window, $rootScope, $interpolate) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate',
+function ($rootScope, $interpolate) {
 
 	var tpl = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +

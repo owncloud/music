@@ -15,7 +15,7 @@ angular.module('Music').controller('PlaylistViewController', [
 	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
 	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular , $timeout) {
+			gettext, gettextCatalog, Restangular, $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -109,7 +109,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {
-			return $scope.playlist && draggable.srcIndex != dstIndex;
+			return draggable.srcIndex != dstIndex;
 		};
 
 		$scope.updateHoverStyle = function(dstIndex) {

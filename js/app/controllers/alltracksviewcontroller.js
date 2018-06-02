@@ -10,10 +10,8 @@
 
 
 angular.module('Music').controller('AllTracksViewController', [
-	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
-	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular , $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
@@ -81,10 +79,6 @@ angular.module('Music').controller('AllTracksViewController', [
 		subscribe('artistsLoaded', function () {
 			initViewFromRoute();
 		});
-
-		function listIsPlaying() {
-			return ($rootScope.playingView === $rootScope.currentView);
-		}
 
 		function initViewFromRoute() {
 			if (libraryService.collectionLoaded()) {

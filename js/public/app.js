@@ -63,10 +63,8 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 	]);
 
 angular.module('Music').controller('AllTracksViewController', [
-	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
-	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
-	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular , $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
@@ -134,10 +132,6 @@ angular.module('Music').controller('AllTracksViewController', [
 		subscribe('artistsLoaded', function () {
 			initViewFromRoute();
 		});
-
-		function listIsPlaying() {
-			return ($rootScope.playingView === $rootScope.currentView);
-		}
 
 		function initViewFromRoute() {
 			if (libraryService.collectionLoaded()) {
@@ -805,7 +799,7 @@ angular.module('Music').controller('PlaylistViewController', [
 	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
 	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular , $timeout) {
+			gettext, gettextCatalog, Restangular, $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -899,7 +893,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {
-			return $scope.playlist && draggable.srcIndex != dstIndex;
+			return draggable.srcIndex != dstIndex;
 		};
 
 		$scope.updateHoverStyle = function(dstIndex) {

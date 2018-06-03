@@ -5,7 +5,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2018
  */
 
 #notification a {
@@ -129,10 +131,11 @@ h1 span:hover .play {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	cursor: pointer
+	cursor: pointer;
 }
 
-.album-area .track-list li * {
+.album-area .track-list li *,
+#alltracks-area .track-list li * {
 	cursor: pointer;
 }
 
@@ -158,7 +161,7 @@ track-list:not(.collapsed) li.more-less:not(.collapsible) {
 	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
-	
+
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
 	filter: alpha(opacity = 60);

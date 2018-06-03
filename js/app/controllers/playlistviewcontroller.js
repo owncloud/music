@@ -15,7 +15,7 @@ angular.module('Music').controller('PlaylistViewController', [
 	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
 	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular , $timeout) {
+			gettext, gettextCatalog, Restangular, $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -29,7 +29,7 @@ angular.module('Music').controller('PlaylistViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', function() {
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
@@ -109,7 +109,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {
-			return $scope.playlist && draggable.srcIndex != dstIndex;
+			return draggable.srcIndex != dstIndex;
 		};
 
 		$scope.updateHoverStyle = function(dstIndex) {
@@ -134,15 +134,9 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once both aritsts and playlists have been loaded
-		$timeout(function() {
-			initViewFromRoute();
-		});
-		subscribe('artistsLoaded', function () {
-			initViewFromRoute();
-		});
-		subscribe('playlistsLoaded', function () {
-			initViewFromRoute();
-		});
+		$timeout(initViewFromRoute);
+		subscribe('artistsLoaded', initViewFromRoute);
+		subscribe('playlistsLoaded', initViewFromRoute);
 
 		function listIsPlaying() {
 			return ($rootScope.playingView === $rootScope.currentView);
@@ -172,10 +166,6 @@ angular.module('Music').controller('PlaylistViewController', [
 						OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
 						window.location.hash = '#/';
 					}
-				}
-				else {
-					$scope.playlist = null;
-					$scope.tracks = libraryService.getTracksInAlphaOrder();
 				}
 				$timeout(showMore);
 			}

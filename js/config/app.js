@@ -50,6 +50,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				templateUrl:'playlistview.html'
 			};
 
+			var allTracksControllerConfig = {
+				controller:'AllTracksViewController',
+				templateUrl:'alltracksview.html'
+			};
+
 			var settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -67,7 +72,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				.when('/track/:id',            overviewControllerConfig)
 				.when('/file/:id',             overviewControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
-				.when('/alltracks',            playlistControllerConfig)
+				.when('/alltracks',            allTracksControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])

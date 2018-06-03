@@ -20,6 +20,10 @@
 				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 			<track-list
 					tracks="album.tracks"
+					get-track-data="getTrackData"
+					play-track="playTrack"
+					get-draggable="getTrackDraggable"
+					collapse-limit="6"
 					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
 					less-text="'Show less …' | translate"
 			/>

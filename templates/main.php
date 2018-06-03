@@ -32,6 +32,9 @@
 	<script type="text/ng-template" id="overview.html">
 		<?php print_unescaped($this->inc('partials/overview')) ?>
 	</script>
+	<script type="text/ng-template" id="alltracksview.html">
+		<?php print_unescaped($this->inc('partials/alltracksview')) ?>
+	</script>
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>

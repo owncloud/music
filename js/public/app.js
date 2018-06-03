@@ -126,11 +126,12 @@ angular.module('Music').controller('AllTracksViewController', [
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once aritsts have been loaded
-		$timeout(function() {
-			initView();
-		});
+		$timeout(initView);
+
 		subscribe('artistsLoaded', function () {
-			initView();
+			// Nullify any previous tracks to force tracklist directive recreation
+			$scope.tracks = null;
+			$timeout(initView);
 		});
 
 		function initView() {

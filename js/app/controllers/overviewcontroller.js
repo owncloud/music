@@ -207,9 +207,7 @@ angular.module('Music').controller('OverviewController', [
 			$timeout(showMore);
 		}
 
-		subscribe('artistsLoaded', function() {
-			showMore();
-		});
+		subscribe('artistsLoaded', showMore);
 
 		function showLess() {
 			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;

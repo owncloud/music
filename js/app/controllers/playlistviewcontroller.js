@@ -29,7 +29,7 @@ angular.module('Music').controller('PlaylistViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		$scope.$on('$destroy', function () {
+		$scope.$on('$destroy', function() {
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
@@ -134,15 +134,9 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once both aritsts and playlists have been loaded
-		$timeout(function() {
-			initViewFromRoute();
-		});
-		subscribe('artistsLoaded', function () {
-			initViewFromRoute();
-		});
-		subscribe('playlistsLoaded', function () {
-			initViewFromRoute();
-		});
+		$timeout(initViewFromRoute);
+		subscribe('artistsLoaded', initViewFromRoute);
+		subscribe('playlistsLoaded', initViewFromRoute);
 
 		function listIsPlaying() {
 			return ($rootScope.playingView === $rootScope.currentView);

@@ -123,6 +123,7 @@ h1 span:hover .play {
 
 .album-area .track-list {
 	margin-left: 195px;
+	padding-top: 6px;
 }
 
 .album-area .track-list > li {

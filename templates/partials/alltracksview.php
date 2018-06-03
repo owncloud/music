@@ -5,7 +5,7 @@
 			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
-	<track-list ng-if="tracks && !loading && !loadingCollection"
+	<track-list ng-if="tracks"
 		tracks="tracks"
 		get-track-data="getTrackData"
 		play-track="playTrack"

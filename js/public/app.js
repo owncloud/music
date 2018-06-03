@@ -127,21 +127,27 @@ angular.module('Music').controller('AllTracksViewController', [
 		// Init happens either immediately (after making the loading animation visible)
 		// or once aritsts have been loaded
 		$timeout(function() {
-			initViewFromRoute();
+			initView();
 		});
 		subscribe('artistsLoaded', function () {
-			initViewFromRoute();
+			initView();
 		});
 
-		function initViewFromRoute() {
+		function initView() {
 			if (libraryService.collectionLoaded()) {
 				$scope.tracks = libraryService.getTracksInAlphaOrder();
-				$rootScope.loading = false;
+				$timeout(function() {
+					$rootScope.loading = false;
+				});
 			}
 		}
 
 		subscribe('deactivateView', function() {
-			$rootScope.$emit('viewDeactivated');
+			// The small delay may help in bringing up the load indicator a bit faster
+			// on huge collections (tens of thousands of tracks)
+			$timeout(function() {
+				$rootScope.$emit('viewDeactivated');
+			}, 100);
 		});
 
 	}

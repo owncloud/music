@@ -107,9 +107,9 @@ function ($rootScope, $interpolate) {
 					var moreEl = document.createElement('li');
 
 					lessEl.innerHTML = lessText;
-					lessEl.classList = 'muted more-less collapsible';
+					lessEl.className = 'muted more-less collapsible';
 					moreEl.innerHTML = moreText;
-					moreEl.classList = 'muted more-less';
+					moreEl.className = 'muted more-less';
 					trackListFragment.appendChild(lessEl);
 					trackListFragment.appendChild(moreEl);
 				}

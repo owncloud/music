@@ -1400,12 +1400,8 @@ function ($rootScope, $interpolate) {
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
-				$rootScope.$watch('currentTrack', function () {
-					requestAnimationFrame(render);
-				}),
-				$rootScope.$watch('playing', function () {
-					requestAnimationFrame(render);
-				})
+				$rootScope.$watch('currentTrack', render),
+				$rootScope.$watch('playing', render)
 			];
 
 			/**
@@ -1425,9 +1421,8 @@ function ($rootScope, $interpolate) {
 					element.addClass('collapsed');
 					trackListRendered = true;
 				}
-				/**
-				 * Set classes for the currently active list item
-				 */
+
+				// Set classes for the currently active list item
 				var elems = listContainer.querySelectorAll(".playing, .current");
 				[].forEach.call(elems, function (el) {
 					el.classList.remove('current');

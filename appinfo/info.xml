@@ -14,7 +14,7 @@
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<owncloud min-version="8.2" max-version="10.0" />
+		<owncloud min-version="8.2" max-version="10.1" />
 		<nextcloud min-version="9" max-version="14" />
 	</dependencies>
 	<types>

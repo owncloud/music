@@ -1,7 +1,7 @@
 v0.7.0 2018-06-17
  * improved performance of the "All tracks" view, especially with large collections (#647)
  * show the track and artist names extracted from metadata also when playing a public share (#616)
- * remove tracks from the index on collection path change only when stricly necessary (#627)
+ * remove tracks from the index on collection path change only when strictly necessary (#627)
  * allow resetting the music index from the settings view (#302)
  * fix the "Show all XX tracks"/"Show less" links on all versions of IE (regression from v0.5.6)
  * add "About" section (along with the new logotype by @nunojesus) to the Settings view

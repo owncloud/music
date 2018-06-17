@@ -148,6 +148,10 @@ track-list.collapsed .collapsible {
 	padding-left: 21px;
 }
 
+track-list.collapsed li.more-less:not(.collapsible) {
+	display: inline-block;
+}
+
 track-list:not(.collapsed) li.more-less:not(.collapsible) {
 	display: none;
 }

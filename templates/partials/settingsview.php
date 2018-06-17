@@ -53,6 +53,8 @@
 	<h3 translate>About</h3>
 	<div>
 		<p>
+			<img class="logotype" src="<?php p(OCP\Template::image_path('music', 'logo/music_logotype_horizontal.svg')) ?>" />
+			<br/>
 			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
 		</p>
 		<p translate>

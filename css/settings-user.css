@@ -102,6 +102,7 @@
 	width: 200px;
 }
 
-.nav-icon-music {
-	background-image: url('../img/music-dark.svg?v=1');
+#music-user .logotype {
+	max-width: 340px;
+	width: 100%;
 }

@@ -1,3 +1,17 @@
+v0.7.0 2018-06-17
+ * improved performance of the "All tracks" view, especially with large collections (#647)
+ * show the track and artist names extracted from metadata also when playing a public share (#616)
+ * remove tracks from the index on collection path change only when stricly necessary (#627)
+ * allow resetting the music index from the settings view (#302)
+ * fix the "Show all XX tracks"/"Show less" links on all versions of IE (regression from v0.5.6)
+ * add "About" section (along with the new logotype by @nunojesus) to the Settings view
+ * small UI fixes and tweaks
+ * use "nodebug" version of soundmanager2 lib also in Files and Share views
+ * prevent log warning spamming with PHP 7.2 (#642)
+ * support for ownCloud 10.1
+ * updated the getid3 library to version 1.9.15
+ * internal refactoring: enforced ownCloud coding standard 1.0.1 (#643) etc.
+
 v0.6.1 2018-05-13
  * fix not being able to play file types other than mp3 and flac (regression from 0.6.0)
 
@@ -36,7 +50,7 @@ v0.5.5 2017-12-10
 v0.5.4 2017-11-10
  * workaround for an authentication issue on Ampache Plugin for Rhythmbox (#590)
  * improved the cover image handling in the files music player (#582)
- * launch the files music player only for those audio files supported in the current browser (#582)
+ * launch the files music player only for those audio files supported in the current browser (#591)
  * enable the localization of the app (many UI strings are still unlocalized, though) (#592)
  * fix previously created playlists disappearing each time the app is loaded (regression introduced in v0.5.3)
  * when creating collection.json, skip tracks with DB problems insted of failing the whole process (related to #588)

@@ -39,6 +39,7 @@
 * [Moritz Meißelbach](https://github.com/Biont): <moritz@meisselba.ch>
 * [Ndurchx](https://github.com/ndurchx)
 * [Nico Boehr](https://github.com/youknow0): <nico@nicoboehr.de>
+* [Nuno Jesus](https://github.com/nunojesus)
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)

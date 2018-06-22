@@ -23,7 +23,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
-	private $cache;
+	private $collectionHelper;
 	private $request;
 	private $controller;
 	private $userId = 'john';
@@ -58,10 +58,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->cache = $this->getMockBuilder('\OCA\Music\Db\Cache')
+		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
+		$this->collectionHelper = $this->getMockBuilder('\OCA\Music\Utility\CollectionHelper')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->coverHelper = $this->getMockBuilder('\OCA\Music\Utility\CoverHelper')
@@ -80,8 +80,8 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
-			$this->cache,
 			$this->scanner,
+			$this->collectionHelper,
 			$this->coverHelper,
 			$this->maintenance,
 			$this->userId,

@@ -23,18 +23,16 @@ use \OCP\IL10N;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\Track;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\Scanner;
 
@@ -48,10 +46,10 @@ class ApiController extends Controller {
 	private $artistBusinessLayer;
 	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
-	/** @var Cache */
-	private $cache;
 	/** @var Scanner */
 	private $scanner;
+	/** @var CollectionHelper */
+	private $collectionHelper;
 	/** @var CoverHelper */
 	private $coverHelper;
 	/** @var Maintenance */
@@ -71,8 +69,8 @@ class ApiController extends Controller {
 								TrackBusinessLayer $trackbusinesslayer,
 								ArtistBusinessLayer $artistbusinesslayer,
 								AlbumBusinessLayer $albumbusinesslayer,
-								Cache $cache,
 								Scanner $scanner,
+								CollectionHelper $collectionHelper,
 								CoverHelper $coverHelper,
 								Maintenance $maintenance,
 								$userId,
@@ -84,8 +82,8 @@ class ApiController extends Controller {
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
-		$this->cache = $cache;
 		$this->scanner = $scanner;
+		$this->collectionHelper = $collectionHelper;
 		$this->coverHelper = $coverHelper;
 		$this->maintenance = $maintenance;
 		$this->userId = $userId;
@@ -110,79 +108,10 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
-		$collectionJson = $this->cache->get($this->userId, 'collection');
-
-		if ($collectionJson === null) {
-			$collectionJson = $this->buildCollectionJson();
-			try {
-				$this->cache->add($this->userId, 'collection', $collectionJson);
-			} catch (UniqueConstraintViolationException $ex) {
-				$this->logger->log("Race condition: collection.json for user {$this->userId} ".
-						"cached twice, ignoring latter.", 'warn');
-			}
-		}
-
+		$collectionJson = $this->collectionHelper->getJson($this->userId);
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
 		return $response;
-	}
-
-	private function buildCollectionJson() {
-		// Get all the entities from the DB first. The order of queries is important if we are in
-		// the middle of a scanning process: we don't want to get tracks which do not yet have
-		// an album entry or albums which do not yet have artist entry.
-		/** @var Track[] $allTracks */
-		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
-		/** @var Album[] $allAlbums */
-		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-		/** @var Artist[] $allArtists */
-		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
-
-		$allArtistsByIdAsObj = [];
-		$allArtistsByIdAsArr = [];
-		foreach ($allArtists as &$artist) {
-			$artistId = $artist->getId();
-			$allArtistsByIdAsObj[$artistId] = $artist;
-			$allArtistsByIdAsArr[$artistId] = $artist->toCollection($this->l10n);
-		}
-
-		$allAlbumsByIdAsObj = [];
-		$allAlbumsByIdAsArr = [];
-		$coverHashes = $this->coverHelper->getAllCachedCoverHashes($this->userId);
-		foreach ($allAlbums as &$album) {
-			$albumId = $album->getId();
-			$allAlbumsByIdAsObj[$albumId] = $album;
-			$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
-			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
-					$this->urlGenerator, $this->l10n, $coverHash);
-		}
-
-		$artists = [];
-		foreach ($allTracks as $track) {
-			$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
-			$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
-			$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
-
-			if (empty($albumObj) || empty($trackArtistObj) || empty($albumArtist)) {
-				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
-						"album or artist missing. Skipping the track.", 'warn');
-			} else {
-				$track->setAlbum($albumObj);
-				$track->setArtist($trackArtistObj);
-
-				if (!isset($albumArtist['albums'])) {
-					$albumArtist['albums'] = [];
-					$artists[] = &$albumArtist;
-				}
-				$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
-				if (!isset($album['tracks'])) {
-					$album['tracks'] = [];
-					$albumArtist['albums'][] = &$album;
-				}
-				$album['tracks'][] = $track->toCollection($this->l10n);
-			}
-		}
-		return \json_encode($artists);
 	}
 
 	/**

@@ -48,6 +48,7 @@ use \OCA\Music\Hooks\UserHooks;
 use \OCA\Music\Middleware\AmpacheMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
+use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
@@ -88,8 +89,8 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
-				$c->query('Cache'),
 				$c->query('Scanner'),
+				$c->query('CollectionHelper'),
 				$c->query('CoverHelper'),
 				$c->query('Maintenance'),
 				$c->query('UserId'),
@@ -217,7 +218,7 @@ class Music extends App {
 
 		$container->registerService('Cache', function (IAppContainer $c) {
 			return new Cache(
-					$c->getServer()->getDatabaseConnection()
+				$c->getServer()->getDatabaseConnection()
 			);
 		});
 
@@ -293,6 +294,19 @@ class Music extends App {
 
 		$container->registerService('AmpacheUser', function () {
 			return new AmpacheUser();
+		});
+
+		$container->registerService('CollectionHelper', function ($c) {
+			return new CollectionHelper(
+					$c->query('AlbumBusinessLayer'),
+					$c->query('ArtistBusinessLayer'),
+					$c->query('TrackBusinessLayer'),
+					$c->query('CoverHelper'),
+					$c->query('URLGenerator'),
+					$c->query('L10N'),
+					$c->query('Cache'),
+					$c->query('Logger')
+					);
 		});
 
 		$container->registerService('CoverHelper', function ($c) {

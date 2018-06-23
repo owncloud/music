@@ -107,10 +107,35 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function prepareCollection() {
+		$hash = $this->collectionHelper->getCachedJsonHash();
+		if ($hash === null) {
+			// build the collection but ignore the data for now
+			$this->collectionHelper->getJson();
+			$hash = $this->collectionHelper->getCachedJsonHash();
+		}
+		return new JSONResponse(['hash' => $hash]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function collection() {
+
 		$collectionJson = $this->collectionHelper->getJson();
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
+
+		// Instruct the client to cache the result in case it requested the collection with
+		// the correct hash. The hash could be incorrect if the collection would have changed
+		// between calls to prepareCollection() and colletion().
+		$requestHash = $this->request->getParam('hash');
+		$actualHash = $this->collectionHelper->getCachedJsonHash();
+		if (!empty($actualHash) && $requestHash === $actualHash) {
+			self::setClientCaching($response, 90); // cache for 3 months
+		}
+
 		return $response;
 	}
 
@@ -404,11 +429,15 @@ class ApiController extends Controller {
 			$response =  new FileResponse($coverData);
 			// instruct also the client-side to cache the result, this is safe
 			// as the resource URI contains the image hash
-			$response->cacheFor(31536000); // 1 year as seconds
-			$response->addHeader('Pragma', 'cache');
+			self::setClientCaching($response);
 			return $response;
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
+	}
+
+	private static function setClientCaching(&$httpResponse, $days=365) {
+		$httpResponse->cacheFor($days * 24 * 60 * 60);
+		$httpResponse->addHeader('Pragma', 'cache');
 	}
 }

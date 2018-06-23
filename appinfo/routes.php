@@ -26,15 +26,16 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'],
 
 	// api
-	['name' => 'api#collection',	'url' => '/api/collection',				'verb' => 'GET'],
-	['name' => 'api#trackByFileId',	'url' => '/api/file/{fileId}',			'verb' => 'GET'],
-	['name' => 'api#fileWebDavUrl',	'url' => '/api/file/{fileId}/webdav',	'verb' => 'GET'],
-	['name' => 'api#download',		'url' => '/api/file/{fileId}/download',	'verb' => 'GET'],
-	['name' => 'api#fileInfo',		'url' => '/api/file/{fileId}/info',		'verb' => 'GET'],
-	['name' => 'api#getScanState',	'url' => '/api/scanstate',				'verb' => 'GET'],
-	['name' => 'api#scan',			'url' => '/api/scan',					'verb' => 'POST'],
-	['name' => 'api#resetScanned',	'url' => '/api/resetscanned',			'verb' => 'POST'],
-	['name' => 'api#cachedCover',	'url' => '/api/cover/{hash}',			'verb' => 'GET'],
+	['name' => 'api#prepareCollection',	'url' => '/api/prepare_collection',		'verb' => 'POST'],
+	['name' => 'api#collection',		'url' => '/api/collection',				'verb' => 'GET'],
+	['name' => 'api#trackByFileId',		'url' => '/api/file/{fileId}',			'verb' => 'GET'],
+	['name' => 'api#fileWebDavUrl',		'url' => '/api/file/{fileId}/webdav',	'verb' => 'GET'],
+	['name' => 'api#download',			'url' => '/api/file/{fileId}/download',	'verb' => 'GET'],
+	['name' => 'api#fileInfo',			'url' => '/api/file/{fileId}/info',		'verb' => 'GET'],
+	['name' => 'api#getScanState',		'url' => '/api/scanstate',				'verb' => 'GET'],
+	['name' => 'api#scan',				'url' => '/api/scan',					'verb' => 'POST'],
+	['name' => 'api#resetScanned'	,	'url' => '/api/resetscanned',			'verb' => 'POST'],
+	['name' => 'api#cachedCover',		'url' => '/api/cover/{hash}',			'verb' => 'GET'],
 
 	// Shiva api https://github.com/tooxie/shiva-server#resources
 	['name' => 'api#artists',	'url' => '/api/artists',						'verb' => 'GET'],

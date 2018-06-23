@@ -91,6 +91,10 @@ class CollectionHelper {
 		return $collectionJson;
 	}
 
+	public function getCachedJsonHash() {
+		return $this->dbCache->get($this->userId, 'collection');
+	}
+
 	private function getCachedJson() {
 		$json = null;
 		$hash = $this->dbCache->get($this->userId, 'collection');

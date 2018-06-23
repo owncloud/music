@@ -108,7 +108,7 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
-		$collectionJson = $this->collectionHelper->getJson($this->userId);
+		$collectionJson = $this->collectionHelper->getJson();
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
 		return $response;

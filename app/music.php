@@ -216,7 +216,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('Cache', function (IAppContainer $c) {
+		$container->registerService('DbCache', function (IAppContainer $c) {
 			return new Cache(
 				$c->getServer()->getDatabaseConnection()
 			);
@@ -246,14 +246,16 @@ class Music extends App {
 			return $c->getServer()->getDatabaseConnection();
 		});
 
+		$container->registerService('FileCache', function (IAppContainer $c) {
+			return $c->getServer()->getCache();
+		});
+
 		$container->registerService('L10N', function ($c) {
 			return $c->getServer()->getL10N($c->query('AppName'));
 		});
 
 		$container->registerService('Logger', function ($c) {
-			return new Logger(
-				$c->query('AppName')
-			);
+			return new Logger($c->query('AppName'));
 		});
 
 		$container->registerService('URLGenerator', function ($c) {
@@ -298,22 +300,24 @@ class Music extends App {
 
 		$container->registerService('CollectionHelper', function ($c) {
 			return new CollectionHelper(
-					$c->query('AlbumBusinessLayer'),
-					$c->query('ArtistBusinessLayer'),
-					$c->query('TrackBusinessLayer'),
-					$c->query('CoverHelper'),
-					$c->query('URLGenerator'),
-					$c->query('L10N'),
-					$c->query('Cache'),
-					$c->query('Logger')
-					);
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('CoverHelper'),
+				$c->query('URLGenerator'),
+				$c->query('L10N'),
+				$c->query('FileCache'),
+				$c->query('DbCache'),
+				$c->query('Logger'),
+				$c->query('UserId')
+			);
 		});
 
 		$container->registerService('CoverHelper', function ($c) {
 			return new CoverHelper(
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ExtractorGetID3'),
-				$c->query('Cache'),
+				$c->query('DbCache'),
 				$c->query('Logger')
 			);
 		});
@@ -338,7 +342,7 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
-				$c->query('Cache'),
+				$c->query('DbCache'),
 				$c->query('CoverHelper'),
 				$c->query('Logger'),
 				$c->query('Maintenance'),

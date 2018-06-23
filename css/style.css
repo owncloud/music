@@ -123,12 +123,12 @@ h1 span:hover .play {
 
 .album-area .track-list {
 	margin-left: 195px;
-	padding-top: 6px;
 }
 
 .album-area .track-list > li {
 	padding-left: 2px;
-	padding-bottom: 11px;
+	padding-top: 6px;
+	padding-bottom: 5px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -145,15 +145,14 @@ track-list.collapsed .collapsible {
 }
 
 .track-list > li.more-less {
-	padding-left: 21px;
-}
-
-track-list.collapsed li.more-less:not(.collapsible) {
-	display: inline-block;
-}
-
-track-list:not(.collapsed) li.more-less:not(.collapsible) {
+	padding-left: 18px;
+	padding-bottom: 0px;
 	display: none;
+}
+
+track-list.collapsed li.more-less:not(.collapsible),
+track-list:not(.collapsed) li.more-less.collapsible {
+	display: inline-block;
 }
 
 .play-pause {

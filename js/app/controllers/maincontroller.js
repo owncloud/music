@@ -11,9 +11,9 @@
  */
 
 angular.module('Music').controller('MainController', [
-'$rootScope', '$scope', '$route', '$timeout', '$window', 'ArtistFactory',
+'$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory',
 'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
-function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
+function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		playlistService, libraryService, gettext, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
@@ -202,23 +202,22 @@ function ($rootScope, $scope, $route, $timeout, $window, ArtistFactory,
 
 	// adjust controls bar width to not overlap with the scroll bar
 	function adjustControlsBarWidth() {
-		try {
-			var controlsWidth = $window.innerWidth - getScrollBarWidth();
-			if ($(window).width() > 768) {
-				controlsWidth -= $('#app-navigation').outerWidth();
-			}
-			$('#controls').css('width', controlsWidth);
-			$('#controls').css('min-width', controlsWidth);
-		}
-		catch (exception) {
-			console.log("No getScrollBarWidth() in core");
+		var appViewWidth = $('#app-view').outerWidth();
+		if (appViewWidth) {
+			// Subtrack one pixel from the width because outerWidth() seems to
+			// return rounded integer value which may sometimes be slightly larger
+			// than the actual width of the #app-view.
+			$('#controls').css('width', appViewWidth - 1);
+			$('#controls').css('min-width', appViewWidth - 1);
 		}
 	}
+	$rootScope.$watch('started', adjustControlsBarWidth);
 	$($window).resize(function() {
-		adjustControlsBarWidth();
+		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
+		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
+		$timeout(adjustControlsBarWidth, 300);
 		$rootScope.$emit('windowResized');
 	});
-	adjustControlsBarWidth();
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

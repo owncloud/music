@@ -7,14 +7,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 angular.module('Music').controller('OverviewController', [
-	'$scope', '$rootScope', 'playlistService', 'libraryService', 'Restangular',
-	'$route', '$window', '$timeout', 'gettext', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, libraryService, Restangular,
-			$route, $window, $timeout, gettext, gettextCatalog) {
+	'$scope', '$rootScope', 'playlistService', 'libraryService',
+	'Restangular', '$route', '$timeout', 'gettext', 'gettextCatalog',
+	function ($scope, $rootScope, playlistService, libraryService,
+			Restangular, $route, $timeout, gettext, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 

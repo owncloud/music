@@ -32,7 +32,7 @@ $application->add(new OCA\Music\Command\ResetDatabase(
 $application->add(new OCA\Music\Command\ResetCache(
 		$c->query('UserManager'),
 		$c->query('GroupManager'),
-		$c->query('Cache')
+		$c->query('DbCache')
 ));
 $application->add(new OCA\Music\Command\Cleanup(
 		$c->query('Maintenance')

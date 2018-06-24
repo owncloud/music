@@ -124,9 +124,6 @@
 	#scanning, #toScan, #emptycontent {
 		margin-left: 0;
 	}
-}
-
-@media only screen and (max-width: 768px) {
 
 	#controls {
 		left: 0;
@@ -141,6 +138,7 @@
 	}
 
 }
+
 @media only screen and (max-width: 570px) {
 
 	#controls .progress-info {

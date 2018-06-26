@@ -63,8 +63,7 @@
 
 	.album-area > h2 > div {
 		display: inline-block;
-		vertical-align: middle;
-		line-height: normal;
+		line-height: 1.2;
 	}
 	/* move track list to the left so it’s visible on small screens */
 	.album-area .track-list {

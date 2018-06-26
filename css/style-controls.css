@@ -13,6 +13,8 @@
 #controls {
 	height: 66px;
 	padding: 0 20px 0 20px;
+	top: 45px;
+	position: fixed;
 }
 
 #controls, #controls * {

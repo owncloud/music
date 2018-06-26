@@ -29,7 +29,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#prepareCollection',	'url' => '/api/prepare_collection',		'verb' => 'POST'],
 	['name' => 'api#collection',		'url' => '/api/collection',				'verb' => 'GET'],
 	['name' => 'api#trackByFileId',		'url' => '/api/file/{fileId}',			'verb' => 'GET'],
-	['name' => 'api#fileWebDavUrl',		'url' => '/api/file/{fileId}/webdav',	'verb' => 'GET'],
+	['name' => 'api#fileWebDavUrl',		'url' => '/api/file/{fileId}/webdav',	'verb' => 'GET'], // DEPRECATED
+	['name' => 'api#filePath',			'url' => '/api/file/{fileId}/path',		'verb' => 'GET'],
 	['name' => 'api#download',			'url' => '/api/file/{fileId}/download',	'verb' => 'GET'],
 	['name' => 'api#fileInfo',			'url' => '/api/file/{fileId}/info',		'verb' => 'GET'],
 	['name' => 'api#getScanState',		'url' => '/api/scanstate',				'verb' => 'GET'],

@@ -229,7 +229,7 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/cover/{hash}`
 * `/api/file/{fileId}`
 * `/api/file/{fileId}/info`
-* `/api/file/{fileId}/webdav`
+* `/api/file/{fileId}/path`
 * `/api/file/{fileId}/download`
 * `/api/scan`
 * `/api/scanstate`
@@ -259,7 +259,7 @@ Response:
 
 ### `/api/collection`
 
-Returns all artists with nested albums and each album with nested tracks. The tracks carry file IDs which can be used to obtain WebDAV link for playing with /api/file/{fileId}/webdav.
+Returns all artists with nested albums and each album with nested tracks. Each track carries a file ID which can be used to obtain the file path with `/api/file/{fileId}/path`. The front-end converts the path into playable WebDAV link like this: `OC.linkToRemoteBase('webdav') + path`.
 
 	GET /api/collection
 

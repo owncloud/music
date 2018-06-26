@@ -681,11 +681,12 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 			// get webDAV URL to the track and start playing it
 			var mimeAndId = $scope.getPlayableFileId(track);
-			Restangular.one('file', mimeAndId.id).one('webdav').get().then(function(result) {
+			Restangular.one('file', mimeAndId.id).one('path').get().then(function(result) {
 				// It is possible that the active track has already changed again by the time we get
 				// the URI. Do not start playback in that case.
 				if (track == $scope.currentTrack) {
-					var url = result.url + '?requesttoken=' + encodeURIComponent(OC.requestToken);
+					var url = OC.linkToRemoteBase('webdav') + result.path +
+							'?requesttoken=' + encodeURIComponent(OC.requestToken);
 					$scope.player.fromURL(url, mimeAndId.mime);
 					$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 

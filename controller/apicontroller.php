@@ -310,6 +310,24 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function filePath($fileId) {
+		$nodes = $this->userFolder->getById($fileId);
+		if (\count($nodes) == 0) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		} else {
+			$node = $nodes[0];
+			$path = $this->userFolder->getRelativePath($node->getPath());
+			// URL encode each part of the file path
+			$path = \join('/', \array_map('rawurlencode', \explode('/', $path)));
+			return new JSONResponse(['path' => $path]);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * DEPRECATED
+	 */
 	public function fileWebDavUrl($fileId) {
 		$nodes = $this->userFolder->getById($fileId);
 		if (\count($nodes) == 0) {

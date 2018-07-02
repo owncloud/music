@@ -355,23 +355,57 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	function onViewWidthChange() {
-		// adjust controls bar width to not overlap with the scroll bar
 		var appViewWidth = $('#app-view').outerWidth();
-		if (appViewWidth) {
+		// If the app view has no width yet, then try again after a short while
+		if (!appViewWidth) {
+			$timeout(onViewWidthChange, 100);
+		}
+		else {
+			// adjust controls bar width to not overlap with the scroll bar
+
 			// Subtrack one pixel from the width because outerWidth() seems to
 			// return rounded integer value which may sometimes be slightly larger
 			// than the actual width of the #app-view.
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
-		}
 
-		// expanded details pane pushes the alphabet navigation to left
-		alphaNavRight = 10;
-		var detailsPane = $('#app-sidebar');
-		if (!detailsPane.hasClass('disappear')) {
-			alphaNavRight += detailsPane.outerWidth();
+			// expanded details pane pushes the alphabet navigation to left
+			alphaNavRight = 10;
+			var detailsPane = $('#app-sidebar');
+			if (!detailsPane.hasClass('disappear')) {
+				alphaNavRight += detailsPane.outerWidth();
+			}
+			$('.alphabet-navigation').css('right', alphaNavRight);
+
+			// Set the app-content classs according to view switch. This has impact
+			// on the overall layout of the app. See mobile.css and tablet.css.
+			var appContent = $('#app-content');
+			if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+				appContent.removeClass('tablet');
+				appContent.addClass('mobile');
+				appContent.addClass('portrait');
+			}
+			else if ($window.innerWidth <= 768) {
+				appContent.removeClass('tablet');
+				appContent.addClass('mobile');
+				appContent.removeClass('portrait');
+			}
+			else if (appViewWidth <= 690) {
+				appContent.addClass('tablet');
+				appContent.removeClass('mobile');
+				appContent.addClass('portrait');
+			}
+			else if (appViewWidth <= 1050) {
+				appContent.addClass('tablet');
+				appContent.removeClass('mobile');
+				appContent.removeClass('portrait');
+			}
+			else {
+				appContent.removeClass('tablet');
+				appContent.removeClass('mobile');
+				appContent.removeClass('portrait');
+			}
 		}
-		$('.alphabet-navigation').css('right', alphaNavRight);
 	}
 	$rootScope.$watch('started', onViewWidthChange);
 	$($window).resize(function() {

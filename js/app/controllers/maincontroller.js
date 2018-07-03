@@ -212,11 +212,8 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	function onViewWidthChange() {
 		var appViewWidth = $('#app-view').outerWidth();
-		// If the app view has no width yet, then try again after a short while
-		if (!appViewWidth) {
-			$timeout(onViewWidthChange, 100);
-		}
-		else {
+		// Ignore if the app view is not yet available
+		if (appViewWidth) {
 			// adjust controls bar width to not overlap with the scroll bar
 
 			// Subtrack one pixel from the width because outerWidth() seems to
@@ -225,13 +222,9 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
 
-			// expanded details pane pushes the alphabet navigation to left
-			alphaNavRight = 10;
-			var detailsPane = $('#app-sidebar');
-			if (!detailsPane.hasClass('disappear')) {
-				alphaNavRight += detailsPane.outerWidth();
-			}
-			$('.alphabet-navigation').css('right', alphaNavRight);
+			// anchor the alphabet navigation to the right edge of the app view
+			appViewRight = $window.innerWidth - $('#app-view').offset().left - appViewWidth;
+			$('.alphabet-navigation').css('right', appViewRight);
 
 			// Set the app-content classs according to view switch. This has impact
 			// on the overall layout of the app. See mobile.css and tablet.css.
@@ -263,13 +256,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			}
 		}
 	}
-	$rootScope.$watch('started', onViewWidthChange);
+	// Watch browser window size changes
 	$($window).resize(function() {
 		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
 		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
 		$timeout(onViewWidthChange, 300);
 		$rootScope.$emit('windowResized');
 	});
+	// Watch app view width changes within angularjs digest cycles
+	$scope.$watch(
+		function(scope) {
+			return $('#app-view').outerWidth();
+		},
+		onViewWidthChange
+	);
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

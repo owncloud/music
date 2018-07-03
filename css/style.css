@@ -230,7 +230,7 @@ div:hover > .play-pause,
 .alphabet-navigation {
 	z-index: 5;
 	position: fixed;
-	right: 10px;
+	right: 0;
 	bottom: 0;
 	width: 50px;
 	text-align: center;

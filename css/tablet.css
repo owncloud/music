@@ -16,6 +16,12 @@
 	width: 100%;
 }
 
+.tablet .album-area .track-list li > div > span {
+	white-space: normal;
+	vertical-align: top;
+	max-width: unset;
+}
+
 .tablet #play-controls {
 	margin-left: 0;
 }

@@ -126,6 +126,7 @@ h1 span:hover .play {
 }
 
 .album-area .track-list > li {
+	display: table;
 	padding-left: 2px;
 	padding-top: 6px;
 	padding-bottom: 5px;
@@ -142,7 +143,19 @@ h1 span:hover .play {
 
 .album-area .track-list li > div,
 #alltracks-area .track-list li > div {
-	display: inline;
+	display: table-cell;
+}
+
+.album-area .track-list li > div > span {
+	max-width: 200px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+#alltracks-area .track-list li > div > span {
+	white-space: normal;
 }
 
 track-list.collapsed .collapsible {
@@ -150,6 +163,7 @@ track-list.collapsed .collapsible {
 }
 
 .track-list .icon-details {
+	display: table-cell;
 	vertical-align: middle;
 	margin: 0;
 	border: none;

@@ -96,6 +96,13 @@
 	padding-left: 59px;
 }
 
+/* allow track name to span the whole view width and on multiple lines */
+.mobile .album-area .track-list li > div > span {
+	white-space: normal;
+	vertical-align: top;
+	max-width: unset;
+}
+
 /* layout the play bar elements for less space */
 .mobile #play-controls {
 	margin-left: 0;

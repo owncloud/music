@@ -105,10 +105,9 @@ angular.module('Music').controller('AllTracksViewController', [
 		 */
 		$scope.getTrackData = function(listItem, index, scope) {
 			var track = listItem.track;
-			var title = track.artistName + ' - ' + track.title;
 			return {
-				title: title,
-				tooltip: title,
+				title: track.artistName + ' - ' + track.title,
+				tooltip: '',
 				number: index + 1,
 				id: track.id
 			};

@@ -27,13 +27,11 @@
 }
 
 .tablet #controls .albumart {
-	left: 180px;
 	margin-left: 0;
 }
 
 .tablet #controls .song-info {
 	max-width: 240px;
-	left: 230px;
 }
 
 .tablet #controls .title {

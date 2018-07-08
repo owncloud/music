@@ -15,6 +15,7 @@
 	padding: 0 20px 0 20px;
 	top: 45px;
 	position: fixed;
+	overflow: hidden;
 }
 
 #controls, #controls * {
@@ -63,24 +64,22 @@
 }
 
 #controls .albumart {
-	position: absolute;
-	left: 213px;
-	top: 0;
+	position: relative;
 	height: 50px;
 	width: 50px;
 	margin: 8px 12px 8px 46px;
 	line-height: 50px;
 	font-size: 28px;
+	vertical-align: top;
 }
 
 #controls .song-info {
+	position: relative;
 	height: 58px;
+	max-width: 400px;
 	margin: 0 4px 4px 4px;
 	padding: 8px;
-	max-width: 400px;
-	position: absolute;
-	top: 0;
-	left: 313px;
+	vertical-align: top;
 }
 
 #controls .song-info span {

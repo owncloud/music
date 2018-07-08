@@ -111,11 +111,10 @@
 	display: none;
 }
 .mobile #controls .albumart {
-	left: 155px;
 	margin-left: 0;
+	margin-right: 0;
 }
 .mobile #controls .song-info {
-	left: 200px;
 	max-width: 45%;
 }
 .mobile #controls .title {
@@ -144,4 +143,12 @@
 /* in portrait, there's even less space */
 .mobile.portrait #controls .progress-info {
 	display: none;
+}
+.mobile.portrait #controls .control,
+.mobile.portrait #controls .song-info {
+	margin-left: 0;
+	margin-right: 0;
+}
+.mobile.portrait #controls .control.small {
+	margin-left: -4px;
 }

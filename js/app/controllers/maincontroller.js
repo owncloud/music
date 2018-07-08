@@ -186,9 +186,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
-	$scope.showSidebar = function() {
+	$scope.showSidebar = function(trackId) {
 		OC.Apps.showAppSidebar();
-		$timeout(onViewWidthChange, 300);
+		$timeout(function() {
+			onViewWidthChange();
+			var trackElem = document.getElementById('track-' + trackId);
+			if (!isElementInViewPort(trackElem)) {
+				$rootScope.$emit('scrollToTrack', trackId);
+			}
+		}, 300);
 	};
 
 	$scope.hideSidebar = function() {
@@ -209,6 +215,17 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 					angular.element(element), $scope.scrollOffset(), 500);
 		}
 	};
+
+	// Test if element is at least partially within the view-port
+	function isElementInViewPort(el) {
+		var appView = document.getElementById('app-view');
+		var header = document.getElementById('header');
+		var viewPortTop = header.offsetHeight + $scope.scrollOffset();
+		var viewPortBottom = header.offsetHeight + appView.offsetHeight;
+
+		var rect = el.getBoundingClientRect();
+		return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
+	}
 
 	function onViewWidthChange() {
 		var appViewWidth = $('#app-view').outerWidth();

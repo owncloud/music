@@ -413,6 +413,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		},
 		onViewWidthChange
 	);
+	// Watch view switching being completed
+	$rootScope.$watch('loading', function(isLoading) {
+		if (!isLoading) {
+			$timeout(onViewWidthChange);
+		}
+	});
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

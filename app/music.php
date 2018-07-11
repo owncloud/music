@@ -50,6 +50,7 @@ use \OCA\Music\Middleware\AmpacheMiddleware;
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
 
@@ -92,6 +93,7 @@ class Music extends App {
 				$c->query('Scanner'),
 				$c->query('CollectionHelper'),
 				$c->query('CoverHelper'),
+				$c->query('DetailsHelper'),
 				$c->query('Maintenance'),
 				$c->query('UserId'),
 				$c->query('L10N'),
@@ -318,6 +320,13 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('DetailsHelper', function ($c) {
+			return new DetailsHelper(
+				$c->query('ExtractorGetID3'),
 				$c->query('Logger')
 			);
 		});

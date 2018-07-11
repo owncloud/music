@@ -38,7 +38,7 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  * not logged in (in FileHooks, ShareHooks, occ commands). On the other hand, depending on
  * the database configuration, the json data may be too large to store it to \OCA\Music\Db\Cache
  * (with tens of thousands of tracks, the size of the json may be more than 10 MB and the
- * DB may be configured to with maximum object size of e.g. 1 MB).
+ * DB may be configured with maximum object size of e.g. 1 MB).
  */
 class CollectionHelper {
 	private $albumBusinessLayer;
@@ -158,7 +158,7 @@ class CollectionHelper {
 			} else {
 				$track->setAlbum($albumObj);
 				$track->setArtist($trackArtistObj);
-				
+
 				if (!isset($albumArtist['albums'])) {
 					$albumArtist['albums'] = [];
 					$artists[] = &$albumArtist;

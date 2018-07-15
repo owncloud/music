@@ -39,8 +39,8 @@
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>
-	<script type="text/ng-template" id="sidebarlistitem.html">
-		<?php print_unescaped($this->inc('partials/sidebarlistitem')) ?>
+	<script type="text/ng-template" id="navigationitem.html">
+		<?php print_unescaped($this->inc('partials/navigationitem')) ?>
 	</script>
 	<script type="text/ng-template" id="settingsview.html">
 		<?php print_unescaped($this->inc('partials/settingsview')) ?>
@@ -50,11 +50,11 @@
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
-		<div id="app-navigation" ng-controller="SidebarController">
+		<div id="app-navigation" ng-controller="NavigationController">
 			<ul>
-				<li sidebar-list-item text="'Albums' | translate" destination="'#'"
+				<li navigation-item text="'Albums' | translate" destination="'#'"
 					title="{{ albumCountText() }}"></li>
-				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
+				<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 					title="{{ trackCountText() }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
@@ -66,7 +66,7 @@
 						<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=!showCreateForm"></button>
 					</div>
 				</li>
-				<li sidebar-list-item
+				<li navigation-item
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"
 					ui-on-drop="dropOnPlaylist($data, playlist)"

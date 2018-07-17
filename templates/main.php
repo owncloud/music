@@ -155,8 +155,17 @@
 				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
 			</div>
 
-			<div id="app-sidebar" class="detailsView disappear">
+			<div id="app-sidebar" ng-controller="DetailsController" class="disappear">
 				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
+
+				<a>{{ details.path }}</a>
+				<dl>
+					<dt ng-repeat-start="(key, value) in details.tags" ng-if="value">{{ key }}</dt>
+					<dd ng-repeat-end ng-if="value">{{ value }}</dd>
+
+					<dt ng-repeat-start="(key, value) in details.fileinfo">{{ key }}</dt>
+					<dd ng-repeat-end>{{ value }}</dd>
+				</dl>
 			</div>
 
 		</div>

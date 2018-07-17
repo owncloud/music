@@ -30,3 +30,30 @@
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity=100);
 }
+
+#app-sidebar dl {
+	width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin-top: 25px;
+}
+
+#app-sidebar dt {
+	float: left;
+	width: 25%;
+	padding-top: 0;
+	padding-bottom: 6px;
+	overflow: hidden;
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: .5;
+}
+
+#app-sidebar dd {
+	float: left;
+	width: 75%;
+	padding-top: 0;
+	padding-bottom: 8px;
+}

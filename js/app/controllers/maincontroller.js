@@ -187,7 +187,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.showSidebar = function(trackId) {
-		OC.Apps.showAppSidebar();
+		$rootScope.$emit('showDetails', trackId);
 		$timeout(function() {
 			onViewWidthChange();
 			var trackElem = document.getElementById('track-' + trackId);
@@ -198,7 +198,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.hideSidebar = function() {
-		OC.Apps.hideAppSidebar();
+		$rootScope.$emit('hideDetails');
 		$timeout(onViewWidthChange, 300);
 	};
 

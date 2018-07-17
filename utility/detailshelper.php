@@ -39,7 +39,7 @@ class DetailsHelper {
 			$data = $this->extractor->extract($fileNodes[0]);
 
 			$result = [
-				'file' => $data['audio'],
+				'fileinfo' => $data['audio'],
 				'tags' => self::flattenComments($data['comments'])
 			];
 
@@ -47,7 +47,7 @@ class DetailsHelper {
 			$result['tags']['picture']['data'] = \base64_encode($result['tags']['picture']['data']);
 
 			// 'streams' contains duplicate data
-			unset($result['file']['streams']);
+			unset($result['fileinfo']['streams']);
 
 			// one track number is enough
 			if (\array_key_exists('track', $result['tags'])
@@ -56,7 +56,7 @@ class DetailsHelper {
 			}
 
 			// add file path
-			$result['file']['path'] = $fileNodes[0]->getPath();
+			$result['path'] = $userFolder->getRelativePath($fileNodes[0]->getPath());
 
 			return $result;
 		}

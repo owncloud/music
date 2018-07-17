@@ -153,6 +153,39 @@ angular.module('Music').controller('AllTracksViewController', [
 	}
 ]);
 
+angular.module('Music').controller('DetailsController', [
+	'$rootScope', '$scope', 'Restangular', '$timeout', 'libraryService',
+	function ($rootScope, $scope, Restangular, $timeout, libraryService) {
+
+		var currentTrack = null;
+
+		function getFileId(trackId) {
+			var files = libraryService.getTrack(trackId).files;
+			return files[Object.keys(files)[0]];
+		}
+
+		$rootScope.$on('showDetails', function(event, trackId) {
+			OC.Apps.showAppSidebar();
+
+			if (trackId != currentTrack) {
+				currentTrack = trackId;
+				$scope.details = null;
+
+				var fileId = getFileId(trackId);
+				Restangular.one('file', fileId).one('details').get().then(function(result) {
+					delete result.tags.picture;
+					$scope.details = result;
+				});
+			}
+		});
+
+		$rootScope.$on('hideDetails', function() {
+			OC.Apps.hideAppSidebar();
+		});
+
+	}
+]);
+
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory',
 'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
@@ -330,7 +363,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.showSidebar = function(trackId) {
-		OC.Apps.showAppSidebar();
+		$rootScope.$emit('showDetails', trackId);
 		$timeout(function() {
 			onViewWidthChange();
 			var trackElem = document.getElementById('track-' + trackId);
@@ -341,7 +374,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	};
 
 	$scope.hideSidebar = function() {
-		OC.Apps.hideAppSidebar();
+		$rootScope.$emit('hideDetails');
 		$timeout(onViewWidthChange, 300);
 	};
 

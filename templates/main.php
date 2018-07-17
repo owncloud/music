@@ -158,7 +158,8 @@
 			<div id="app-sidebar" ng-controller="DetailsController" class="disappear">
 				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
 
-				<a>{{ details.path }}</a>
+				<div class="albumart"></div>
+				<a id="path">{{ details.path }}</a>
 				<dl>
 					<dt ng-repeat-start="(key, value) in details.tags" ng-if="value">{{ formatDetailName(key) }}</dt>
 					<dd ng-repeat-end ng-if="value">{{ value }}</dd>

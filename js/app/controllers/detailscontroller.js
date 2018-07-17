@@ -27,8 +27,16 @@ angular.module('Music').controller('DetailsController', [
 				currentTrack = trackId;
 				$scope.details = null;
 
+				var albumart = $('#app-sidebar .albumart');
+				albumart.css('background-image', '').css('height', '0');
+
 				var fileId = getFileId(trackId);
 				Restangular.one('file', fileId).one('details').get().then(function(result) {
+					if (result.tags.picture) {
+						albumart.css('background-image', 'url("' + result.tags.picture + '")');
+						albumart.css('height', ''); // remove the inline height and use the one from the css file
+					}
+
 					delete result.tags.picture;
 					$scope.details = result;
 				});

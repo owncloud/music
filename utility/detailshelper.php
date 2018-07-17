@@ -44,7 +44,7 @@ class DetailsHelper {
 			];
 
 			// binary data has to be encoded
-			$result['tags']['picture']['data'] = \base64_encode($result['tags']['picture']['data']);
+			$result['tags']['picture'] = self::encodePictureTag($result['tags']['picture']);
 
 			// 'streams' contains duplicate data
 			unset($result['fileinfo']['streams']);
@@ -61,6 +61,14 @@ class DetailsHelper {
 			return $result;
 		}
 		return null;
+	}
+
+	private static function encodePictureTag($pic) {
+		if ($pic['data']) {
+			return 'data:' . $pic['image_mime'] . ';base64,' . \base64_encode($pic['data']);
+		} else {
+			return null;
+		}
 	}
 
 	// In the 'comments' field from the extractor, the value for each key is a 1-element

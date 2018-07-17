@@ -8,7 +8,7 @@
 	<ul class="track-list">
 		<li bindonce ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
 			ng-init="song = entry.track"
-			bo-id="'track-' + song.id"
+			id="{{ 'playlist-track-' + $index }}"
 			ui-on-drop="reorderDrop($data, $index)"
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"
@@ -21,6 +21,8 @@
 					<span class="muted">{{ $index + 1 }}.</span>
 					<div bo-text="song.artistName + ' - ' + song.title"></div>
 				</div>
+				<button class="svg action icon-details" ng-click="showSidebar(song.id)"
+					bo-alt="'Details' | translate" bo-title="'Details' | translate"></button>
 				<button class="svg action icon-close" ng-click="removeTrack($index)"
 					bo-alt="'Remove' | translate" bo-title="'Remove track from playlist' | translate"></button>
 			</div>

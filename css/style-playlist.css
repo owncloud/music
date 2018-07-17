@@ -50,10 +50,6 @@
 	margin-top: 5px;
 }
 
-.playlist-area .track-list * {
-	vertical-align: top;
-}
-
 .playlist-area .track-list > li > div,
 .playlist-area .track-list > li > div * {
 	display: inline-block;
@@ -73,6 +69,22 @@
 
 .playlist-area .track-list li .action {
 	visibility: hidden;
+	border: none;
+	background-color: transparent;
+	vertical-align: middle;
+	margin: 0;
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.playlist-area .track-list li .action:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
 }
 
 .playlist-area .track-list li div:hover .action {

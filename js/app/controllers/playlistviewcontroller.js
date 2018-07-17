@@ -128,7 +128,20 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
-				$scope.$parent.scrollToItem('track-' + trackId);
+				var currentIdx = $scope.getCurrentTrackIndex();
+				var index;
+
+				// There may be more than one playlist entry with the same track ID.
+				// Prefer to scroll to the currently playing entry if the requested
+				// track ID matches that. Otherwise scroll to the first match.
+				if (currentIdx &&  $scope.tracks[currentIdx].track.id == trackId) {
+					index = currentIdx;
+				} else {
+					index = _.findIndex($scope.tracks, function(entry) {
+						return entry.track.id == trackId;
+					});
+				}
+				$scope.$parent.scrollToItem('playlist-track-' + index);
 			}
 		});
 

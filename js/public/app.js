@@ -175,6 +175,8 @@ angular.module('Music').controller('DetailsController', [
 				albumart.css('background-image', '').css('height', '0');
 
 				var fileId = getFileId(trackId);
+				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
+
 				Restangular.one('file', fileId).one('details').get().then(function(result) {
 					if (result.tags.picture) {
 						albumart.css('background-image', 'url("' + result.tags.picture + '")');

@@ -159,7 +159,7 @@
 				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
 
 				<div class="albumart"></div>
-				<a id="path">{{ details.path }}</a>
+				<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
 				<dl>
 					<dt ng-repeat-start="(key, value) in details.tags" ng-if="value">{{ formatDetailName(key) }}</dt>
 					<dd ng-repeat-end ng-if="value">{{ value }}</dd>

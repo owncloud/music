@@ -40,6 +40,7 @@ function ($rootScope, $interpolate) {
 			var getDraggable = scope.$eval(attrs.getDraggable);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
+			var detailsText = scope.$eval(attrs.detailsText);
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
@@ -136,6 +137,7 @@ function ($rootScope, $interpolate) {
 
 				var detailsButton = document.createElement('button');
 				detailsButton.className = 'icon-details';
+				detailsButton.title = detailsText;
 				listItem.appendChild(detailsButton);
 
 				listItem.id = 'track-' + trackData.id;

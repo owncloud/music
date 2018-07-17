@@ -11,5 +11,6 @@
 		play-track="playTrack"
 		show-track-details="showSidebar"
 		get-draggable="getDraggable"
+		details-text="'Details' | translate"
 	/>
 </div>

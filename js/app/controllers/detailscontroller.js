@@ -39,5 +39,14 @@ angular.module('Music').controller('DetailsController', [
 			OC.Apps.hideAppSidebar();
 		});
 
+		$scope.formatDetailName = function(rawName) {
+			if (rawName === 'band') {
+				return 'album artist';
+			} else if (rawName === 'unsynchronised_lyric') {
+				return 'lyrics';
+			} else {
+				return rawName.replace(/_/g, ' ');
+			}
+		};
 	}
 ]);

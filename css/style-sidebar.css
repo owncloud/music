@@ -55,5 +55,6 @@
 	float: left;
 	width: 75%;
 	padding-top: 0;
-	padding-bottom: 8px;
+	padding-bottom: 6px;
+	white-space: pre-wrap;
 }

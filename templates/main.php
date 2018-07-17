@@ -167,6 +167,8 @@
 					<dt ng-repeat-start="(key, value) in details.fileinfo">{{ formatDetailName(key) }}</dt>
 					<dd ng-repeat-end>{{ value }}</dd>
 				</dl>
+
+				<div class="icon-loading" ng-if="!details"></div>
 			</div>
 
 		</div>

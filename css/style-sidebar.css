@@ -69,3 +69,9 @@
 	padding-bottom: 6px;
 	white-space: pre-wrap;
 }
+
+#app-sidebar .icon-loading {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}

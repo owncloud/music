@@ -164,6 +164,12 @@ angular.module('Music').controller('DetailsController', [
 			return files[Object.keys(files)[0]];
 		}
 
+		function toArray(obj) {
+			return _.map(obj, function(val, key) {
+				return {key: key, value: val};
+			});
+		}
+
 		$rootScope.$on('showDetails', function(event, trackId) {
 			OC.Apps.showAppSidebar();
 
@@ -184,7 +190,11 @@ angular.module('Music').controller('DetailsController', [
 					}
 
 					delete result.tags.picture;
-					$scope.details = result;
+					$scope.details = {
+							path: result.path,
+							tags: toArray(result.tags),
+							fileinfo: toArray(result.fileinfo)
+					};
 				});
 			}
 		});
@@ -200,6 +210,21 @@ angular.module('Music').controller('DetailsController', [
 				return 'lyrics';
 			} else {
 				return rawName.replace(/_/g, ' ');
+			}
+		};
+
+		$scope.tagRank = function(tag) {
+			switch (tag.key) {
+			case 'title':					return 1;
+			case 'artist':					return 2;
+			case 'album':					return 3;
+			case 'band':					return 4;
+			case 'composer':				return 5;
+			case 'part_of_a_set':			return 6;
+			case 'track_number':			return 7;
+			case 'comment':					return 100;
+			case 'unsynchronised_lyric':	return 101;
+			default:						return 10;
 			}
 		};
 	}

@@ -161,11 +161,11 @@
 				<div class="albumart"></div>
 				<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
 				<dl>
-					<dt ng-repeat-start="(key, value) in details.tags" ng-if="value">{{ formatDetailName(key) }}</dt>
-					<dd ng-repeat-end ng-if="value">{{ value }}</dd>
+					<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
+					<dd ng-repeat-end ng-if="tag.value">{{ tag.value }}</dd>
 
-					<dt ng-repeat-start="(key, value) in details.fileinfo">{{ formatDetailName(key) }}</dt>
-					<dd ng-repeat-end>{{ value }}</dd>
+					<dt ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
+					<dd ng-repeat-end>{{ info.value }}</dd>
 				</dl>
 
 				<div class="icon-loading" ng-if="!details"></div>

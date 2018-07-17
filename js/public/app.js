@@ -170,6 +170,13 @@ angular.module('Music').controller('DetailsController', [
 			});
 		}
 
+		function adjustClosePosition() {
+			var sidebarWidth = $('#app-sidebar').outerWidth();
+			var albumartWidth = $('#app-sidebar .albumart').outerWidth();
+			var offset = sidebarWidth - albumartWidth;
+			$('#app-sidebar .close').css('right', offset);
+		}
+
 		$rootScope.$on('showDetails', function(event, trackId) {
 			OC.Apps.showAppSidebar();
 
@@ -195,6 +202,7 @@ angular.module('Music').controller('DetailsController', [
 							tags: toArray(result.tags),
 							fileinfo: toArray(result.fileinfo)
 					};
+					$timeout(adjustClosePosition);
 				});
 			}
 		});
@@ -202,6 +210,8 @@ angular.module('Music').controller('DetailsController', [
 		$rootScope.$on('hideDetails', function() {
 			OC.Apps.hideAppSidebar();
 		});
+
+		$rootScope.$on('windowResized', adjustClosePosition);
 
 		$scope.formatDetailName = function(rawName) {
 			if (rawName === 'band') {

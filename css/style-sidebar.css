@@ -13,8 +13,8 @@
 }
 
 #app-sidebar .close {
-	position: absolute;
-	top: 0;
+	position: fixed;
+	top: 45px;
 	right: 0;
 	padding: 14px;
 	width: 44px;
@@ -34,8 +34,9 @@
 
 #app-sidebar .albumart {
 	width: 100%;
-	height: 30%;
+	height: 35%;
 	background-size: contain;
+	margin-top: 8px;
 }
 
 #app-sidebar #path {

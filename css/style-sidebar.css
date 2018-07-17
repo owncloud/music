@@ -22,7 +22,8 @@
 	opacity: 0.5;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	filter: alpha(opacity=50);
-	z-index: 1
+	z-index: 1;
+	background-color: #ffffffcc;
 }
 
 #app-sidebar .close:hover {

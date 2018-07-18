@@ -116,9 +116,9 @@
 					</div>
 				</div>
 
-				<img id="shuffle" class="control small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
+				<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
 					src="<?php p(OCP\Template::image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
-				<img id="repeat" class="control small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
+				<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
 					src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 				<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
@@ -167,6 +167,11 @@
 					<dt ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
 					<dd ng-repeat-end>{{ info.value }}</dd>
 				</dl>
+
+				<img id="follow-playback" class="control toggle small svg"
+					alt="{{ 'Follow playback' | translate }}" title="{{ 'Follow playback' | translate }}"
+					src="<?php p(OCP\Template::image_path('music', 'follow-playback.svg')) ?>" ng-class="{active: follow}"
+					ng-click="toggleFollow()" />
 
 				<div class="icon-loading" ng-if="!details"></div>
 			</div>

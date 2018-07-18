@@ -73,6 +73,12 @@
 	white-space: pre-wrap;
 }
 
+#app-sidebar #follow-playback {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+}
+
 #app-sidebar .icon-loading {
 	position: absolute;
 	left: 50%;

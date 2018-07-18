@@ -13,6 +13,8 @@ angular.module('Music').controller('DetailsController', [
 	'$rootScope', '$scope', 'Restangular', '$timeout', 'libraryService',
 	function ($rootScope, $scope, Restangular, $timeout, libraryService) {
 
+		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
+
 		var currentTrack = null;
 
 		function getFileId(trackId) {
@@ -26,16 +28,15 @@ angular.module('Music').controller('DetailsController', [
 			});
 		}
 
-		function adjustClosePosition() {
+		function adjustFixedPositions() {
 			var sidebarWidth = $('#app-sidebar').outerWidth();
 			var albumartWidth = $('#app-sidebar .albumart').outerWidth();
 			var offset = sidebarWidth - albumartWidth;
 			$('#app-sidebar .close').css('right', offset);
+			$('#app-sidebar #follow-playback').css('right', offset);
 		}
 
-		$rootScope.$on('showDetails', function(event, trackId) {
-			OC.Apps.showAppSidebar();
-
+		function showDetails(trackId) {
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;
@@ -58,16 +59,28 @@ angular.module('Music').controller('DetailsController', [
 							tags: toArray(result.tags),
 							fileinfo: toArray(result.fileinfo)
 					};
-					$timeout(adjustClosePosition);
+					$timeout(adjustFixedPositions);
 				});
 			}
+		}
+
+		$rootScope.$on('showDetails', function(event, trackId) {
+			OC.Apps.showAppSidebar();
+			showDetails(trackId);
 		});
 
 		$rootScope.$on('hideDetails', function() {
 			OC.Apps.hideAppSidebar();
 		});
 
-		$rootScope.$on('windowResized', adjustClosePosition);
+		$rootScope.$on('windowResized', adjustFixedPositions);
+
+		$scope.$parent.$watch('currentTrack', function(track) {
+			// show details for the current track if the feature is enabled
+			if ($scope.follow && track && !$('#app-sidebar').hasClass('disappear')) {
+				showDetails(track.id);
+			}
+		});
 
 		$scope.formatDetailName = function(rawName) {
 			if (rawName === 'band') {
@@ -92,6 +105,11 @@ angular.module('Music').controller('DetailsController', [
 			case 'unsynchronised_lyric':	return 101;
 			default:						return 10;
 			}
+		};
+
+		$scope.toggleFollow = function() {
+			$scope.follow = !$scope.follow;
+			Cookies.set('oc_music_details_follow_playback', $scope.follow.toString(), { expires: 3650 });
 		};
 	}
 ]);

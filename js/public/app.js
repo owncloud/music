@@ -174,19 +174,22 @@ angular.module('Music').controller('DetailsController', [
 
 		function createFormatSummary(fileInfo) {
 			var summary = '';
-			if (fileInfo.dataformat) {
-				summary = fileInfo.dataformat;
-			}
-			if (fileInfo.bitrate_mode === 'vbr') {
-				summary += ' VBR';
-			}
-			if (fileInfo.bitrate) {
-				if ($.isNumeric(fileInfo.bitrate)) {
-					summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
-				} else {
-					summary += ' ' + fileInfo.bitrate;
+			if (fileInfo) {
+				if (fileInfo.dataformat) {
+					summary = fileInfo.dataformat;
+				}
+				if (fileInfo.bitrate_mode === 'vbr') {
+					summary += ' VBR';
+				}
+				if (fileInfo.bitrate) {
+					if ($.isNumeric(fileInfo.bitrate)) {
+						summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
+					} else {
+						summary += ' ' + fileInfo.bitrate;
+					}
 				}
 			}
+
 			if (summary === '') {
 				summary = null;
 			} else {
@@ -486,7 +489,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			onViewWidthChange();
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
-				$rootScope.$emit('scrollToTrack', trackId);
+				$rootScope.$emit('scrollToTrack', trackId, 0);
 			}
 		}, 300);
 	};
@@ -501,12 +504,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		return controls ? controls.offsetHeight : 0;
 	};
 
-	$scope.scrollToItem = function(itemId) {
+	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		var container = document.getElementById('app-content');
 		var element = document.getElementById(itemId);
 		if (container && element) {
+			if (animationTime === undefined) {
+				animationTime = 500;
+			}
 			angular.element(container).scrollToElement(
-					angular.element(element), $scope.scrollOffset(), 500);
+					angular.element(element), $scope.scrollOffset(), animationTime);
 		}
 	};
 
@@ -858,17 +864,17 @@ angular.module('Music').controller('OverviewController', [
 			window.location.hash = '#/';
 		});
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
 			var track = libraryService.getTrack(trackId);
 			if (track) {
-				scrollToAlbumOfTrack(trackId);
+				scrollToAlbumOfTrack(trackId, animationTime);
 			}
 		});
 
-		function scrollToAlbumOfTrack(trackId) {
+		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
 			var album = libraryService.findAlbumOfTrack(trackId);
 			if (album) {
-				$scope.$parent.scrollToItem('album-' + album.id);
+				$scope.$parent.scrollToItem('album-' + album.id, animationTime);
 			}
 		}
 

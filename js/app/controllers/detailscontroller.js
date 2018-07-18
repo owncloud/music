@@ -30,19 +30,22 @@ angular.module('Music').controller('DetailsController', [
 
 		function createFormatSummary(fileInfo) {
 			var summary = '';
-			if (fileInfo.dataformat) {
-				summary = fileInfo.dataformat;
-			}
-			if (fileInfo.bitrate_mode === 'vbr') {
-				summary += ' VBR';
-			}
-			if (fileInfo.bitrate) {
-				if ($.isNumeric(fileInfo.bitrate)) {
-					summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
-				} else {
-					summary += ' ' + fileInfo.bitrate;
+			if (fileInfo) {
+				if (fileInfo.dataformat) {
+					summary = fileInfo.dataformat;
+				}
+				if (fileInfo.bitrate_mode === 'vbr') {
+					summary += ' VBR';
+				}
+				if (fileInfo.bitrate) {
+					if ($.isNumeric(fileInfo.bitrate)) {
+						summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
+					} else {
+						summary += ' ' + fileInfo.bitrate;
+					}
 				}
 			}
+
 			if (summary === '') {
 				summary = null;
 			} else {

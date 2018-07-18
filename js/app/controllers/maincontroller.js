@@ -192,7 +192,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			onViewWidthChange();
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
-				$rootScope.$emit('scrollToTrack', trackId);
+				$rootScope.$emit('scrollToTrack', trackId, 0);
 			}
 		}, 300);
 	};
@@ -207,12 +207,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		return controls ? controls.offsetHeight : 0;
 	};
 
-	$scope.scrollToItem = function(itemId) {
+	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		var container = document.getElementById('app-content');
 		var element = document.getElementById(itemId);
 		if (container && element) {
+			if (animationTime === undefined) {
+				animationTime = 500;
+			}
 			angular.element(container).scrollToElement(
-					angular.element(element), $scope.scrollOffset(), 500);
+					angular.element(element), $scope.scrollOffset(), animationTime);
 		}
 	};
 

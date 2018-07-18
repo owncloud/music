@@ -85,6 +85,7 @@
 	position: fixed;
 	right: 0;
 	bottom: 0;
+	background-color: #ffffffcc;
 }
 
 #app-sidebar .icon-loading {

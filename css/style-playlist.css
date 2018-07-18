@@ -38,6 +38,10 @@
 	display: table;
 }
 
+.playlist-area .track-list > li span.muted {
+	vertical-align: top;
+}
+
 .playlist-area .track-list.insert-above > li.drag-hover {
 	border-top-color: LightGray;
 }

@@ -160,12 +160,17 @@
 
 				<div class="albumart"></div>
 				<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
-				<dl>
+				<dl class="tags">
 					<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
 					<dd ng-repeat-end ng-if="tag.value">{{ tag.value }}</dd>
+				</dl>
+				<dl class="fileinfo clickable" ng-click="toggleFormatExpanded()" ng-if="formatSummary"
+					title="{{ formatExpanded ? 'Collapse' : 'Expand' | translate }}">
+					<dt ng-if="!formatExpanded">dataformat</dt>
+					<dd ng-if="!formatExpanded">{{ formatSummary }}</dd>
 
-					<dt ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
-					<dd ng-repeat-end>{{ info.value }}</dd>
+					<dt ng-if="formatExpanded" ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
+					<dd ng-if="formatExpanded" ng-repeat-end>{{ info.value }}</dd>
 				</dl>
 
 				<img id="follow-playback" class="control toggle small svg"

@@ -50,6 +50,14 @@
 	padding: 16px;
 }
 
+#app-sidebar dl.tags {
+	padding-bottom: 0;
+}
+
+#app-sidebar dl.fileinfo {
+	padding-top: 0;
+}
+
 #app-sidebar dt {
 	float: left;
 	width: 30%;

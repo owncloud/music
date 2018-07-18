@@ -28,6 +28,29 @@ angular.module('Music').controller('DetailsController', [
 			});
 		}
 
+		function createFormatSummary(fileInfo) {
+			var summary = '';
+			if (fileInfo.dataformat) {
+				summary = fileInfo.dataformat;
+			}
+			if (fileInfo.bitrate_mode === 'vbr') {
+				summary += ' VBR';
+			}
+			if (fileInfo.bitrate) {
+				if ($.isNumeric(fileInfo.bitrate)) {
+					summary += ' ' + parseInt(fileInfo.bitrate/1000) + ' kbps';
+				} else {
+					summary += ' ' + fileInfo.bitrate;
+				}
+			}
+			if (summary === '') {
+				summary = null;
+			} else {
+				summary += ' …';
+			}
+			return summary;
+		}
+
 		function adjustFixedPositions() {
 			var sidebarWidth = $('#app-sidebar').outerWidth();
 			var albumartWidth = $('#app-sidebar .albumart').outerWidth();
@@ -40,6 +63,8 @@ angular.module('Music').controller('DetailsController', [
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;
+				$scope.formatSummary = null;
+				$scope.formatExpanded = false;
 
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -59,6 +84,7 @@ angular.module('Music').controller('DetailsController', [
 							tags: toArray(result.tags),
 							fileinfo: toArray(result.fileinfo)
 					};
+					$scope.formatSummary = createFormatSummary(result.fileinfo);
 					$timeout(adjustFixedPositions);
 				});
 			}
@@ -110,6 +136,11 @@ angular.module('Music').controller('DetailsController', [
 		$scope.toggleFollow = function() {
 			$scope.follow = !$scope.follow;
 			Cookies.set('oc_music_details_follow_playback', $scope.follow.toString(), { expires: 3650 });
+		};
+
+		$scope.toggleFormatExpanded = function() {
+			$scope.formatExpanded = !$scope.formatExpanded;
+			$timeout(adjustFixedPositions);
 		};
 	}
 ]);

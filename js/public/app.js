@@ -527,6 +527,18 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
 	}
 
+	function setMasterLayout(classes) {
+		var missingClasses = _.difference(['tablet', 'mobile', 'portrait'], classes);
+		var appContent = $('#app-content');
+
+		_.each(classes, function(cls) {
+			appContent.addClass(cls);
+		});
+		_.each(missingClasses, function(cls) {
+			appContent.removeClass(cls);
+		});
+	}
+
 	function onViewWidthChange() {
 		var appViewWidth = $('#app-view').outerWidth();
 		// Ignore if the app view is not yet available
@@ -543,33 +555,22 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			appViewRight = $window.innerWidth - $('#app-view').offset().left - appViewWidth;
 			$('.alphabet-navigation').css('right', appViewRight);
 
-			// Set the app-content classs according to view switch. This has impact
-			// on the overall layout of the app. See mobile.css and tablet.css.
-			var appContent = $('#app-content');
+			// Set the app-content classs according to window and view width. This has
+			// impact on the overall layout of the app. See mobile.css and tablet.css.
 			if ($window.innerWidth <= 570 || appViewWidth <= 500) {
-				appContent.removeClass('tablet');
-				appContent.addClass('mobile');
-				appContent.addClass('portrait');
+				setMasterLayout(['mobile', 'portrait']);
 			}
 			else if ($window.innerWidth <= 768) {
-				appContent.removeClass('tablet');
-				appContent.addClass('mobile');
-				appContent.removeClass('portrait');
+				setMasterLayout(['mobile']);
 			}
 			else if (appViewWidth <= 690) {
-				appContent.addClass('tablet');
-				appContent.removeClass('mobile');
-				appContent.addClass('portrait');
+				setMasterLayout(['tablet', 'portrait']);
 			}
 			else if (appViewWidth <= 1050) {
-				appContent.addClass('tablet');
-				appContent.removeClass('mobile');
-				appContent.removeClass('portrait');
+				setMasterLayout(['tablet']);
 			}
 			else {
-				appContent.removeClass('tablet');
-				appContent.removeClass('mobile');
-				appContent.removeClass('portrait');
+				setMasterLayout([]);
 			}
 		}
 	}

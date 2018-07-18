@@ -47,16 +47,16 @@
 #app-sidebar dl {
 	width: 100%;
 	overflow: hidden;
-	padding: 0;
-	margin-top: 16px;
+	padding: 16px;
 }
 
 #app-sidebar dt {
 	float: left;
-	width: 25%;
+	width: 30%;
 	padding-top: 0;
 	padding-bottom: 6px;
 	overflow: hidden;
+	text-overflow: ellipsis;
 
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
@@ -66,9 +66,10 @@
 
 #app-sidebar dd {
 	float: left;
-	width: 75%;
+	width: 70%;
 	padding-top: 0;
 	padding-bottom: 6px;
+	padding-right: 0;
 	white-space: pre-wrap;
 }
 

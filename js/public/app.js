@@ -182,7 +182,7 @@ angular.module('Music').controller('DetailsController', [
 			}
 			if (fileInfo.bitrate) {
 				if ($.isNumeric(fileInfo.bitrate)) {
-					summary += ' ' + parseInt(fileInfo.bitrate/1000) + ' kbps';
+					summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
 				} else {
 					summary += ' ' + fileInfo.bitrate;
 				}
@@ -252,11 +252,23 @@ angular.module('Music').controller('DetailsController', [
 			}
 		});
 
+		$scope.formatDetailValue = function(value) {
+			if ($.isNumeric(value)) {
+				return Number(value.toPrecision(6));
+			} else {
+				return value;
+			}
+		};
+
 		$scope.formatDetailName = function(rawName) {
-			if (rawName === 'band') {
+			if (rawName === 'band' || rawName === 'albumartist') {
 				return 'album artist';
 			} else if (rawName === 'unsynchronised_lyric') {
 				return 'lyrics';
+			} else if (rawName === 'tracktotal') {
+				return 'total tracks';
+			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
+				return 'disc number';
 			} else {
 				return rawName.replace(/_/g, ' ');
 			}
@@ -267,10 +279,13 @@ angular.module('Music').controller('DetailsController', [
 			case 'title':					return 1;
 			case 'artist':					return 2;
 			case 'album':					return 3;
+			case 'albumartist':				return 4;
 			case 'band':					return 4;
 			case 'composer':				return 5;
 			case 'part_of_a_set':			return 6;
+			case 'discnumber':				return 6;
 			case 'track_number':			return 7;
+			case 'tracktotal':				return 8;
 			case 'comment':					return 100;
 			case 'unsynchronised_lyric':	return 101;
 			default:						return 10;

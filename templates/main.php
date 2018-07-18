@@ -170,7 +170,7 @@
 					<dd ng-if="!formatExpanded">{{ formatSummary }}</dd>
 
 					<dt ng-if="formatExpanded" ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
-					<dd ng-if="formatExpanded" ng-repeat-end>{{ info.value }}</dd>
+					<dd ng-if="formatExpanded" ng-repeat-end>{{ formatDetailValue(info.value) }}</dd>
 				</dl>
 
 				<img id="follow-playback" class="control toggle small svg"

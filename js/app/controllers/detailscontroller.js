@@ -60,6 +60,8 @@ angular.module('Music').controller('DetailsController', [
 			var offset = sidebarWidth - albumartWidth;
 			$('#app-sidebar .close').css('right', offset);
 			$('#app-sidebar #follow-playback').css('right', offset);
+
+			$('#app-sidebar .close').css('top', $('#header').outerHeight());
 		}
 
 		function showDetails(trackId) {

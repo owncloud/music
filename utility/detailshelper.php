@@ -28,8 +28,7 @@ class DetailsHelper {
 	}
 
 	/**
-	 * @param string $fileId
-	 * @param string $userId
+	 * @param integer $fileId
 	 * @param Folder $userFolder
 	 * $return array|null
 	 */
@@ -63,6 +62,12 @@ class DetailsHelper {
 		return null;
 	}
 
+	/**
+	 * Base64 encode the picture binary data and wrap it so that it can be directly used as
+	 * src of an HTML img element.
+	 * @param string $pic
+	 * @return string|null
+	 */
 	private static function encodePictureTag($pic) {
 		if ($pic['data']) {
 			return 'data:' . $pic['image_mime'] . ';base64,' . \base64_encode($pic['data']);
@@ -71,8 +76,12 @@ class DetailsHelper {
 		}
 	}
 
-	// In the 'comments' field from the extractor, the value for each key is a 1-element
-	// array containing the actual tag value. Remove these intermediate arrays.
+	/**
+	 * In the 'comments' field from the extractor, the value for each key is a 1-element
+	 * array containing the actual tag value. Remove these intermediate arrays.
+	 * @param array $array
+	 * @return array
+	 */
 	private static function flattenComments($array) {
 		foreach ($array as $key => $value) {
 			$array[$key] = $value[0];

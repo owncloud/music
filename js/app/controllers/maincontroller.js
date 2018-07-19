@@ -186,37 +186,116 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
+	$scope.showSidebar = function(trackId) {
+		$rootScope.$emit('showDetails', trackId);
+		$timeout(function() {
+			onViewWidthChange();
+			var trackElem = document.getElementById('track-' + trackId);
+			if (!isElementInViewPort(trackElem)) {
+				$rootScope.$emit('scrollToTrack', trackId, 0);
+			}
+		}, 300);
+	};
+
+	$scope.hideSidebar = function() {
+		$rootScope.$emit('hideDetails');
+		$timeout(onViewWidthChange, 300);
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
 	};
 
-	$scope.scrollToItem = function(itemId) {
+	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		var container = document.getElementById('app-content');
 		var element = document.getElementById(itemId);
 		if (container && element) {
+			if (animationTime === undefined) {
+				animationTime = 500;
+			}
 			angular.element(container).scrollToElement(
-					angular.element(element), $scope.scrollOffset(), 500);
+					angular.element(element), $scope.scrollOffset(), animationTime);
 		}
 	};
 
-	// adjust controls bar width to not overlap with the scroll bar
-	function adjustControlsBarWidth() {
+	// Test if element is at least partially within the view-port
+	function isElementInViewPort(el) {
+		var appView = document.getElementById('app-view');
+		var header = document.getElementById('header');
+		var viewPortTop = header.offsetHeight + $scope.scrollOffset();
+		var viewPortBottom = header.offsetHeight + appView.offsetHeight;
+
+		var rect = el.getBoundingClientRect();
+		return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
+	}
+
+	function setMasterLayout(classes) {
+		var missingClasses = _.difference(['tablet', 'mobile', 'portrait'], classes);
+		var appContent = $('#app-content');
+
+		_.each(classes, function(cls) {
+			appContent.addClass(cls);
+		});
+		_.each(missingClasses, function(cls) {
+			appContent.removeClass(cls);
+		});
+	}
+
+	function onViewWidthChange() {
 		var appViewWidth = $('#app-view').outerWidth();
+		// Ignore if the app view is not yet available
 		if (appViewWidth) {
+			// adjust controls bar width to not overlap with the scroll bar
+
 			// Subtrack one pixel from the width because outerWidth() seems to
 			// return rounded integer value which may sometimes be slightly larger
 			// than the actual width of the #app-view.
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
+
+			// anchor the alphabet navigation to the right edge of the app view
+			appViewRight = $window.innerWidth - $('#app-view').offset().left - appViewWidth;
+			$('.alphabet-navigation').css('right', appViewRight);
+
+			// Set the app-content classs according to window and view width. This has
+			// impact on the overall layout of the app. See mobile.css and tablet.css.
+			if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+				setMasterLayout(['mobile', 'portrait']);
+			}
+			else if ($window.innerWidth <= 768) {
+				setMasterLayout(['mobile']);
+			}
+			else if (appViewWidth <= 690) {
+				setMasterLayout(['tablet', 'portrait']);
+			}
+			else if (appViewWidth <= 1050) {
+				setMasterLayout(['tablet']);
+			}
+			else {
+				setMasterLayout([]);
+			}
 		}
 	}
-	$rootScope.$watch('started', adjustControlsBarWidth);
+	// Watch browser window size changes
 	$($window).resize(function() {
 		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
 		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
-		$timeout(adjustControlsBarWidth, 300);
+		$timeout(onViewWidthChange, 300);
 		$rootScope.$emit('windowResized');
+	});
+	// Watch app view width changes within angularjs digest cycles
+	$scope.$watch(
+		function(scope) {
+			return $('#app-view').outerWidth();
+		},
+		onViewWidthChange
+	);
+	// Watch view switching being completed
+	$rootScope.$watch('loading', function(isLoading) {
+		if (!isLoading) {
+			$timeout(onViewWidthChange);
+		}
 	});
 
 	$scope.scanning = false;

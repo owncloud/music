@@ -9,59 +9,45 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2016, 2017
+ * @copyright Pauli Järvinen 2016 - 2018
  */
 
-@media only screen and (min-width: 769px) and (max-width: 1300px) {
-
-	.album-area {
-		width: 100%;
-	}
-
-	#play-controls {
-		margin-left: 0;
-	}
-
-	#controls .albumart {
-		left: 180px;
-		margin-left: 0;
-	}
-
-	#controls .song-info {
-		max-width: 240px;
-		left: 230px;
-	}
-
-	#controls .title {
-		font-size: 14px;
-	}
-
-	#controls #volume-icon {
-		display: none;
-	}
-
-	#controls .progress-info {
-		left: 480px;
-		right: 140px;
-		max-width: 250px;
-	}
-
+.tablet .album-area {
+	width: 100%;
 }
 
-@media only screen and (min-width: 769px) and (max-width: 1000px) {
-
-	#controls .progress-info {
-		padding-top: 12px;
-	}
-
-	#controls.started .progress {
-		display: none;
-	}
+.tablet .album-area .track-list li > div > span {
+	white-space: normal;
+	vertical-align: top;
+	max-width: unset;
 }
 
-@media only screen and (min-width: 769px) and (max-width: 940px) {
+.tablet #play-controls {
+	margin-left: 0;
+}
 
-	#controls .progress-info {
-		display: none;
-	}
+.tablet #controls .albumart {
+	margin-left: 0;
+}
+
+.tablet #controls .song-info {
+	max-width: 240px;
+}
+
+.tablet #controls .title {
+	font-size: 14px;
+}
+
+.tablet #controls #volume-icon {
+	display: none;
+}
+
+.tablet #controls .progress-info {
+	left: 480px;
+	right: 140px;
+	max-width: 250px;
+}
+
+.tablet.portrait #controls .progress-info {
+	display: none;
 }

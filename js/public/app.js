@@ -105,10 +105,9 @@ angular.module('Music').controller('AllTracksViewController', [
 		 */
 		$scope.getTrackData = function(listItem, index, scope) {
 			var track = listItem.track;
-			var title = track.artistName + ' - ' + track.title;
 			return {
-				title: title,
-				tooltip: title,
+				title: track.artistName + ' - ' + track.title,
+				tooltip: '',
 				number: index + 1,
 				id: track.id
 			};
@@ -151,6 +150,167 @@ angular.module('Music').controller('AllTracksViewController', [
 			}, 100);
 		});
 
+	}
+]);
+
+angular.module('Music').controller('DetailsController', [
+	'$rootScope', '$scope', 'Restangular', '$timeout', 'libraryService',
+	function ($rootScope, $scope, Restangular, $timeout, libraryService) {
+
+		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
+
+		var currentTrack = null;
+
+		function getFileId(trackId) {
+			var files = libraryService.getTrack(trackId).files;
+			return files[Object.keys(files)[0]];
+		}
+
+		function toArray(obj) {
+			return _.map(obj, function(val, key) {
+				return {key: key, value: val};
+			});
+		}
+
+		function createFormatSummary(fileInfo) {
+			var summary = '';
+			if (fileInfo) {
+				if (fileInfo.dataformat) {
+					summary = fileInfo.dataformat;
+				}
+				if (fileInfo.bitrate_mode === 'vbr') {
+					summary += ' VBR';
+				}
+				if (fileInfo.bitrate) {
+					if ($.isNumeric(fileInfo.bitrate)) {
+						summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
+					} else {
+						summary += ' ' + fileInfo.bitrate;
+					}
+				}
+			}
+
+			if (summary === '') {
+				summary = null;
+			} else {
+				summary += ' …';
+			}
+			return summary;
+		}
+
+		function adjustFixedPositions() {
+			var sidebarWidth = $('#app-sidebar').outerWidth();
+			var albumartWidth = $('#app-sidebar .albumart').outerWidth();
+			var offset = sidebarWidth - albumartWidth;
+			$('#app-sidebar .close').css('right', offset);
+			$('#app-sidebar #follow-playback').css('right', offset);
+		}
+
+		function showDetails(trackId) {
+			if (trackId != currentTrack) {
+				currentTrack = trackId;
+				$scope.details = null;
+				$scope.formatSummary = null;
+				$scope.formatExpanded = false;
+
+				var albumart = $('#app-sidebar .albumart');
+				albumart.css('background-image', '').css('height', '0');
+
+				var fileId = getFileId(trackId);
+				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
+
+				Restangular.one('file', fileId).one('details').get().then(function(result) {
+					if (result.tags.picture) {
+						albumart.css('background-image', 'url("' + result.tags.picture + '")');
+						albumart.css('height', ''); // remove the inline height and use the one from the css file
+					}
+
+					delete result.tags.picture;
+					$scope.details = {
+							path: result.path,
+							tags: toArray(result.tags),
+							fileinfo: toArray(result.fileinfo)
+					};
+					$scope.formatSummary = createFormatSummary(result.fileinfo);
+					$timeout(adjustFixedPositions);
+				});
+			}
+		}
+
+		$rootScope.$on('showDetails', function(event, trackId) {
+			OC.Apps.showAppSidebar();
+			showDetails(trackId);
+		});
+
+		$rootScope.$on('hideDetails', function() {
+			OC.Apps.hideAppSidebar();
+		});
+
+		$rootScope.$on('windowResized', adjustFixedPositions);
+
+		$scope.$parent.$watch('currentTrack', function(track) {
+			// show details for the current track if the feature is enabled
+			if ($scope.follow && track && !$('#app-sidebar').hasClass('disappear')) {
+				showDetails(track.id);
+			}
+		});
+
+		$scope.formatDetailValue = function(value) {
+			if ($.isNumeric(value)) {
+				return Number(value.toPrecision(6));
+			} else {
+				return value;
+			}
+		};
+
+		$scope.formatDetailName = function(rawName) {
+			if (rawName === 'band' || rawName === 'albumartist') {
+				return 'album artist';
+			} else if (rawName === 'unsynchronised_lyric') {
+				return 'lyrics';
+			} else if (rawName === 'tracktotal') {
+				return 'total tracks';
+			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
+				return 'disc number';
+			} else {
+				return rawName.replace(/_/g, ' ');
+			}
+		};
+
+		$scope.tagRank = function(tag) {
+			switch (tag.key) {
+			case 'title':					return 1;
+			case 'artist':					return 2;
+			case 'album':					return 3;
+			case 'albumartist':				return 4;
+			case 'band':					return 4;
+			case 'composer':				return 5;
+			case 'part_of_a_set':			return 6;
+			case 'discnumber':				return 6;
+			case 'track_number':			return 7;
+			case 'tracktotal':				return 8;
+			case 'comment':					return 100;
+			case 'unsynchronised_lyric':	return 101;
+			default:						return 10;
+			}
+		};
+
+		$scope.toggleFollow = function() {
+			$scope.follow = !$scope.follow;
+			Cookies.set('oc_music_details_follow_playback', $scope.follow.toString(), { expires: 3650 });
+
+			// If "follow playback" was enabled and the currently shown track doesn't match currently
+			// playing track, then immediately switch to the details of the playing track.
+			if ($scope.follow && $scope.$parent.currentTrack
+					&& $scope.$parent.currentTrack.id != currentTrack) {
+				showDetails($scope.$parent.currentTrack.id);
+			}
+		};
+
+		$scope.toggleFormatExpanded = function() {
+			$scope.formatExpanded = !$scope.formatExpanded;
+			$timeout(adjustFixedPositions);
+		};
 	}
 ]);
 
@@ -330,37 +490,116 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$scope.scanning = false;
 	};
 
+	$scope.showSidebar = function(trackId) {
+		$rootScope.$emit('showDetails', trackId);
+		$timeout(function() {
+			onViewWidthChange();
+			var trackElem = document.getElementById('track-' + trackId);
+			if (!isElementInViewPort(trackElem)) {
+				$rootScope.$emit('scrollToTrack', trackId, 0);
+			}
+		}, 300);
+	};
+
+	$scope.hideSidebar = function() {
+		$rootScope.$emit('hideDetails');
+		$timeout(onViewWidthChange, 300);
+	};
+
 	var controls = document.getElementById('controls');
 	$scope.scrollOffset = function() {
 		return controls ? controls.offsetHeight : 0;
 	};
 
-	$scope.scrollToItem = function(itemId) {
+	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		var container = document.getElementById('app-content');
 		var element = document.getElementById(itemId);
 		if (container && element) {
+			if (animationTime === undefined) {
+				animationTime = 500;
+			}
 			angular.element(container).scrollToElement(
-					angular.element(element), $scope.scrollOffset(), 500);
+					angular.element(element), $scope.scrollOffset(), animationTime);
 		}
 	};
 
-	// adjust controls bar width to not overlap with the scroll bar
-	function adjustControlsBarWidth() {
+	// Test if element is at least partially within the view-port
+	function isElementInViewPort(el) {
+		var appView = document.getElementById('app-view');
+		var header = document.getElementById('header');
+		var viewPortTop = header.offsetHeight + $scope.scrollOffset();
+		var viewPortBottom = header.offsetHeight + appView.offsetHeight;
+
+		var rect = el.getBoundingClientRect();
+		return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
+	}
+
+	function setMasterLayout(classes) {
+		var missingClasses = _.difference(['tablet', 'mobile', 'portrait'], classes);
+		var appContent = $('#app-content');
+
+		_.each(classes, function(cls) {
+			appContent.addClass(cls);
+		});
+		_.each(missingClasses, function(cls) {
+			appContent.removeClass(cls);
+		});
+	}
+
+	function onViewWidthChange() {
 		var appViewWidth = $('#app-view').outerWidth();
+		// Ignore if the app view is not yet available
 		if (appViewWidth) {
+			// adjust controls bar width to not overlap with the scroll bar
+
 			// Subtrack one pixel from the width because outerWidth() seems to
 			// return rounded integer value which may sometimes be slightly larger
 			// than the actual width of the #app-view.
 			$('#controls').css('width', appViewWidth - 1);
 			$('#controls').css('min-width', appViewWidth - 1);
+
+			// anchor the alphabet navigation to the right edge of the app view
+			appViewRight = $window.innerWidth - $('#app-view').offset().left - appViewWidth;
+			$('.alphabet-navigation').css('right', appViewRight);
+
+			// Set the app-content classs according to window and view width. This has
+			// impact on the overall layout of the app. See mobile.css and tablet.css.
+			if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+				setMasterLayout(['mobile', 'portrait']);
+			}
+			else if ($window.innerWidth <= 768) {
+				setMasterLayout(['mobile']);
+			}
+			else if (appViewWidth <= 690) {
+				setMasterLayout(['tablet', 'portrait']);
+			}
+			else if (appViewWidth <= 1050) {
+				setMasterLayout(['tablet']);
+			}
+			else {
+				setMasterLayout([]);
+			}
 		}
 	}
-	$rootScope.$watch('started', adjustControlsBarWidth);
+	// Watch browser window size changes
 	$($window).resize(function() {
 		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
 		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
-		$timeout(adjustControlsBarWidth, 300);
+		$timeout(onViewWidthChange, 300);
 		$rootScope.$emit('windowResized');
+	});
+	// Watch app view width changes within angularjs digest cycles
+	$scope.$watch(
+		function(scope) {
+			return $('#app-view').outerWidth();
+		},
+		onViewWidthChange
+	);
+	// Watch view switching being completed
+	$rootScope.$watch('loading', function(isLoading) {
+		if (!isLoading) {
+			$timeout(onViewWidthChange);
+		}
 	});
 
 	$scope.scanning = false;
@@ -370,6 +609,141 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	// initial lookup if new files are available
 	$scope.updateFilesToScan();
 }]);
+
+angular.module('Music').controller('NavigationController', [
+	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService) {
+
+		$scope.newPlaylistName = null;
+
+		// holds the state of the editor (visible or not)
+		$scope.showCreateForm = false;
+		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
+		$scope.showEditForm = null;
+
+		// create playlist
+		$scope.create = function(playlist) {
+			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
+				libraryService.addPlaylist(playlist);
+				$scope.newPlaylistName = null;
+			});
+
+			$scope.showCreateForm = false;
+		};
+
+		// Start renaming playlist
+		$scope.startEdit = function(playlist) {
+			$scope.showEditForm = playlist.id;
+		};
+
+		// Commit renaming of playlist
+		$scope.commitEdit = function(playlist) {
+			Restangular.one('playlists', playlist.id).put({name: playlist.name});
+			$scope.showEditForm = null;
+		};
+
+		// Remove playlist
+		$scope.remove = function(playlist) {
+			Restangular.one('playlists', playlist.id).remove();
+
+			// remove the elemnt also from the AngularJS list
+			libraryService.removePlaylist(playlist);
+		};
+
+		// Play/pause playlist
+		$scope.togglePlay = function(destination, playlist) {
+			if ($rootScope.playingView == destination) {
+				playlistService.publish('togglePlayback');
+			}
+			else {
+				var tracks = null;
+				if (destination == '#') {
+					tracks = libraryService.getTracksInAlbumOrder();
+				} else if (destination == '#/alltracks') {
+					tracks = libraryService.getTracksInAlphaOrder();
+				} else {
+					tracks = playlist.tracks;
+				}
+				playlistService.setPlaylist(tracks);
+				playlistService.publish('play', destination);
+			}
+		};
+
+		// Add track to the playlist
+		$scope.addTrack = function(playlist, song) {
+			addTracks(playlist, [song.id]);
+		};
+
+		// Add all tracks on an album to the playlist
+		$scope.addAlbum = function(playlist, album) {
+			addTracks(playlist, trackIdsFromAlbum(album));
+		};
+
+		// Add all tracks on all albums by an artist to the playlist
+		$scope.addArtist = function(playlist, artist) {
+			addTracks(playlist, trackIdsFromArtist(artist));
+		};
+
+		// Navigate to a view selected from the navigation bar
+		var navigationDestination = null;
+		$scope.navigateTo = function(destination) {
+			if ($rootScope.currentView != destination) {
+				$rootScope.currentView = null;
+				navigationDestination = destination;
+				$rootScope.loading = true;
+				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
+				$rootScope.$emit('deactivateView');
+			}
+		};
+
+		$rootScope.$on('viewDeactivated', function() {
+			// carry on with the navigation once the previous view is deactivated
+			window.location.hash = navigationDestination;
+		});
+
+		// An item dragged and dropped on a navigation bar playlist item
+		$scope.dropOnPlaylist = function(droppedItem, playlist) {
+			if ('track' in droppedItem) {
+				$scope.addTrack(playlist, droppedItem.track);
+			} else if ('album' in droppedItem) {
+				$scope.addAlbum(playlist, droppedItem.album);
+			} else if ('artist' in droppedItem) {
+				$scope.addArtist(playlist, droppedItem.artist);
+			} else {
+				console.error("Unknwon entity dropped on playlist");
+			}
+		};
+
+		$scope.allowDrop = function(playlist) {
+			// Don't allow dragging a track from a playlist back to the same playlist
+			return $rootScope.currentView != '#/playlist/' + playlist.id;
+		};
+
+		function trackIdsFromAlbum(album) {
+			return _.pluck(album.tracks, 'id');
+		}
+
+		function trackIdsFromArtist(artist) {
+			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
+		}
+
+		function addTracks(playlist, trackIds) {
+			_.forEach(trackIds, function(trackId) {
+				libraryService.addToPlaylist(playlist.id, trackId);
+			});
+
+			// Update the currently playing list if necessary
+			if ($rootScope.playingView == "#/playlist/" + playlist.id) {
+				var newTracks = _.map(trackIds, function(trackId) {
+					return { track: libraryService.getTrack(trackId) };
+				});
+				playlistService.onTracksAdded(newTracks);
+			}
+
+			Restangular.one('playlists', playlist.id).all("add").post({trackIds: trackIds.join(',')});
+		}
+	}
+]);
 
 angular.module('Music').controller('OverviewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
@@ -486,7 +860,7 @@ angular.module('Music').controller('OverviewController', [
 			if (track.artistId !== artist.id) {
 				var artistName = ' (' + track.artistName + ') ';
 				if (!plaintext) {
-					artistName = ' <div class="muted">' + artistName + '</div>';
+					artistName = ' <span class="muted">' + artistName + '</span>';
 				}
 				att += artistName;
 			}
@@ -498,17 +872,17 @@ angular.module('Music').controller('OverviewController', [
 			window.location.hash = '#/';
 		});
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
 			var track = libraryService.getTrack(trackId);
 			if (track) {
-				scrollToAlbumOfTrack(trackId);
+				scrollToAlbumOfTrack(trackId, animationTime);
 			}
 		});
 
-		function scrollToAlbumOfTrack(trackId) {
+		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
 			var album = libraryService.findAlbumOfTrack(trackId);
 			if (album) {
-				$scope.$parent.scrollToItem('album-' + album.id);
+				$scope.$parent.scrollToItem('album-' + album.id, animationTime);
 			}
 		}
 
@@ -917,7 +1291,20 @@ angular.module('Music').controller('PlaylistViewController', [
 
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
-				$scope.$parent.scrollToItem('track-' + trackId);
+				var currentIdx = $scope.getCurrentTrackIndex();
+				var index;
+
+				// There may be more than one playlist entry with the same track ID.
+				// Prefer to scroll to the currently playing entry if the requested
+				// track ID matches that. Otherwise scroll to the first match.
+				if (currentIdx &&  $scope.tracks[currentIdx].track.id == trackId) {
+					index = currentIdx;
+				} else {
+					index = _.findIndex($scope.tracks, function(entry) {
+						return entry.track.id == trackId;
+					});
+				}
+				$scope.$parent.scrollToItem('playlist-track-' + index);
 			}
 		});
 
@@ -1115,141 +1502,6 @@ angular.module('Music').controller('SettingsViewController', [
 	}
 ]);
 
-angular.module('Music').controller('SidebarController', [
-	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService) {
-
-		$scope.newPlaylistName = null;
-
-		// holds the state of the editor (visible or not)
-		$scope.showCreateForm = false;
-		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
-		$scope.showEditForm = null;
-
-		// create playlist
-		$scope.create = function(playlist) {
-			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-				libraryService.addPlaylist(playlist);
-				$scope.newPlaylistName = null;
-			});
-
-			$scope.showCreateForm = false;
-		};
-
-		// Start renaming playlist
-		$scope.startEdit = function(playlist) {
-			$scope.showEditForm = playlist.id;
-		};
-
-		// Commit renaming of playlist
-		$scope.commitEdit = function(playlist) {
-			Restangular.one('playlists', playlist.id).put({name: playlist.name});
-			$scope.showEditForm = null;
-		};
-
-		// Remove playlist
-		$scope.remove = function(playlist) {
-			Restangular.one('playlists', playlist.id).remove();
-
-			// remove the elemnt also from the AngularJS list
-			libraryService.removePlaylist(playlist);
-		};
-
-		// Play/pause playlist
-		$scope.togglePlay = function(destination, playlist) {
-			if ($rootScope.playingView == destination) {
-				playlistService.publish('togglePlayback');
-			}
-			else {
-				var tracks = null;
-				if (destination == '#') {
-					tracks = libraryService.getTracksInAlbumOrder();
-				} else if (destination == '#/alltracks') {
-					tracks = libraryService.getTracksInAlphaOrder();
-				} else {
-					tracks = playlist.tracks;
-				}
-				playlistService.setPlaylist(tracks);
-				playlistService.publish('play', destination);
-			}
-		};
-
-		// Add track to the playlist
-		$scope.addTrack = function(playlist, song) {
-			addTracks(playlist, [song.id]);
-		};
-
-		// Add all tracks on an album to the playlist
-		$scope.addAlbum = function(playlist, album) {
-			addTracks(playlist, trackIdsFromAlbum(album));
-		};
-
-		// Add all tracks on all albums by an artist to the playlist
-		$scope.addArtist = function(playlist, artist) {
-			addTracks(playlist, trackIdsFromArtist(artist));
-		};
-
-		// Navigate to a view selected from the sidebar
-		var navigationDestination = null;
-		$scope.navigateTo = function(destination) {
-			if ($rootScope.currentView != destination) {
-				$rootScope.currentView = null;
-				navigationDestination = destination;
-				$rootScope.loading = true;
-				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
-				$rootScope.$emit('deactivateView');
-			}
-		};
-
-		$rootScope.$on('viewDeactivated', function() {
-			// carry on with the navigation once the previous view is deactivated
-			window.location.hash = navigationDestination;
-		});
-
-		// An item dragged and dropped on a sidebar playlist item
-		$scope.dropOnPlaylist = function(droppedItem, playlist) {
-			if ('track' in droppedItem) {
-				$scope.addTrack(playlist, droppedItem.track);
-			} else if ('album' in droppedItem) {
-				$scope.addAlbum(playlist, droppedItem.album);
-			} else if ('artist' in droppedItem) {
-				$scope.addArtist(playlist, droppedItem.artist);
-			} else {
-				console.error("Unknwon entity dropped on playlist");
-			}
-		};
-
-		$scope.allowDrop = function(playlist) {
-			// Don't allow dragging a track from a playlist back to the same playlist
-			return $rootScope.currentView != '#/playlist/' + playlist.id;
-		};
-
-		function trackIdsFromAlbum(album) {
-			return _.pluck(album.tracks, 'id');
-		}
-
-		function trackIdsFromArtist(artist) {
-			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
-		}
-
-		function addTracks(playlist, trackIds) {
-			_.forEach(trackIds, function(trackId) {
-				libraryService.addToPlaylist(playlist.id, trackId);
-			});
-
-			// Update the currently playing list if necessary
-			if ($rootScope.playingView == "#/playlist/" + playlist.id) {
-				var newTracks = _.map(trackIds, function(trackId) {
-					return { track: libraryService.getTrack(trackId) };
-				});
-				playlistService.onTracksAdded(newTracks);
-			}
-
-			Restangular.one('playlists', playlist.id).all("add").post({trackIds: trackIds.join(',')});
-		}
-	}
-]);
-
 angular.module('Music').directive('albumart', [function() {
 
 	function setCoverImage(element, imageUrl) {
@@ -1297,6 +1549,18 @@ angular.module('Music').directive('albumart', [function() {
 	};
 }]);
 
+
+angular.module('Music').directive('navigationItem', function() {
+	return {
+		scope: {
+			text: '=',
+			destination: '=',
+			playlist: '='
+		},
+		templateUrl: 'navigationitem.html',
+		replace: true
+	};
+});
 
 angular.module('Music').directive('ngEnter', function () {
 	return function (scope, element, attrs) {
@@ -1358,18 +1622,6 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 	};
 }]);
 
-angular.module('Music').directive('sidebarListItem', function() {
-	return {
-		scope: {
-			text: '=',
-			destination: '=',
-			playlist: '='
-		},
-		templateUrl: 'sidebarlistitem.html',
-		replace: true
-	};
-});
-
 /**
  * This custom directive produces a self-contained track list widget that updates
  * its list items according to the global playback state and user interaction.
@@ -1394,9 +1646,11 @@ function ($rootScope, $interpolate) {
 			var tracks = scope.$eval(attrs.tracks);
 			var getTrackData = scope.$eval(attrs.getTrackData);
 			var playTrack = scope.$eval(attrs.playTrack);
+			var showTrackDetails = scope.$eval(attrs.showTrackDetails);
 			var getDraggable = scope.$eval(attrs.getDraggable);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
+			var detailsText = scope.$eval(attrs.detailsText);
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
@@ -1484,14 +1738,22 @@ function ($rootScope, $interpolate) {
 			 */
 			function getTrackNode (track, index, className) {
 				var listItem = document.createElement('li');
+
+				var listItemContent = document.createElement('div');
 				var trackData = getTrackData(track, index, scope);
-				var newElement = trackRenderer(trackData);
+				listItemContent.innerHTML = trackRenderer(trackData);
+				listItemContent.setAttribute('draggable', true);
+				listItem.appendChild(listItemContent);
+
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				detailsButton.title = detailsText;
+				listItem.appendChild(detailsButton);
+
 				listItem.id = 'track-' + trackData.id;
-				listItem.setAttribute('draggable', true);
 				if (className) {
 					listItem.className = className;
 				}
-				listItem.innerHTML = newElement;
 				return listItem;
 			}
 
@@ -1522,8 +1784,12 @@ function ($rootScope, $interpolate) {
 			element.on('click', 'li', function (event) {
 				var trackId = trackIdFromElementId(this.id);
 				if (trackId) {
-					playTrack(trackId);
-					scope.$apply();
+					if (event.target.className == 'icon-details') {
+						showTrackDetails(trackId);
+					} else {
+						playTrack(trackId);
+						scope.$apply();
+					}
 				}
 				else { // "show more/less" item
 					if (!hiddenTracksRendered) {

@@ -125,7 +125,7 @@ angular.module('Music').controller('OverviewController', [
 			if (track.artistId !== artist.id) {
 				var artistName = ' (' + track.artistName + ') ';
 				if (!plaintext) {
-					artistName = ' <div class="muted">' + artistName + '</div>';
+					artistName = ' <span class="muted">' + artistName + '</span>';
 				}
 				att += artistName;
 			}
@@ -137,17 +137,17 @@ angular.module('Music').controller('OverviewController', [
 			window.location.hash = '#/';
 		});
 
-		subscribe('scrollToTrack', function(event, trackId) {
+		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
 			var track = libraryService.getTrack(trackId);
 			if (track) {
-				scrollToAlbumOfTrack(trackId);
+				scrollToAlbumOfTrack(trackId, animationTime);
 			}
 		});
 
-		function scrollToAlbumOfTrack(trackId) {
+		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
 			var album = libraryService.findAlbumOfTrack(trackId);
 			if (album) {
-				$scope.$parent.scrollToItem('album-' + album.id);
+				$scope.$parent.scrollToItem('album-' + album.id, animationTime);
 			}
 		}
 

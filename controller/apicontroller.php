@@ -34,6 +34,7 @@ use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\Scanner;
 
 class ApiController extends Controller {
@@ -52,6 +53,8 @@ class ApiController extends Controller {
 	private $collectionHelper;
 	/** @var CoverHelper */
 	private $coverHelper;
+	/** @var DetailsHelper */
+	private $detailsHelper;
 	/** @var Maintenance */
 	private $maintenance;
 	/** @var string */
@@ -72,6 +75,7 @@ class ApiController extends Controller {
 								Scanner $scanner,
 								CollectionHelper $collectionHelper,
 								CoverHelper $coverHelper,
+								DetailsHelper $detailsHelper,
 								Maintenance $maintenance,
 								$userId,
 								IL10N $l10n,
@@ -85,6 +89,7 @@ class ApiController extends Controller {
 		$this->scanner = $scanner;
 		$this->collectionHelper = $collectionHelper;
 		$this->coverHelper = $coverHelper;
+		$this->detailsHelper = $detailsHelper;
 		$this->maintenance = $maintenance;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
@@ -416,6 +421,19 @@ class ApiController extends Controller {
 		$info = $this->scanner->getFileInfo($fileId, $this->userId, $this->userFolder);
 		if ($info) {
 			return new JSONResponse($info);
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function fileDetails($fileId) {
+		$details = $this->detailsHelper->getDetails($fileId, $this->userFolder);
+		if ($details) {
+			return new JSONResponse($details);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

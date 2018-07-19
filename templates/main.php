@@ -19,6 +19,7 @@
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'settings-user');
+\OCP\Util::addStyle('music', 'style-navigation');
 \OCP\Util::addStyle('music', 'style-sidebar');
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');
@@ -38,8 +39,8 @@
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>
-	<script type="text/ng-template" id="sidebarlistitem.html">
-		<?php print_unescaped($this->inc('partials/sidebarlistitem')) ?>
+	<script type="text/ng-template" id="navigationitem.html">
+		<?php print_unescaped($this->inc('partials/navigationitem')) ?>
 	</script>
 	<script type="text/ng-template" id="settingsview.html">
 		<?php print_unescaped($this->inc('partials/settingsview')) ?>
@@ -49,11 +50,11 @@
 	<div ng-controller="MainController">
 		<!-- this will be used to display the flash element to give the user a chance to unblock flash -->
 		<div id="sm2-container" ng-class="{started: started}"></div>
-		<div id="app-navigation" ng-controller="SidebarController">
+		<div id="app-navigation" ng-controller="NavigationController">
 			<ul>
-				<li sidebar-list-item text="'Albums' | translate" destination="'#'"
+				<li navigation-item text="'Albums' | translate" destination="'#'"
 					title="{{ albumCountText() }}"></li>
-				<li sidebar-list-item text="'All tracks' | translate" destination="'#/alltracks'"
+				<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 					title="{{ trackCountText() }}"></li>
 				<li class="app-navigation-separator"></li>
 				<li id="new-playlist" class="music-navigation-item">
@@ -65,7 +66,7 @@
 						<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=!showCreateForm"></button>
 					</div>
 				</li>
-				<li sidebar-list-item
+				<li navigation-item
 					playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 					ng-repeat="playlist in playlists"
 					ui-on-drop="dropOnPlaylist($data, playlist)"
@@ -115,9 +116,9 @@
 					</div>
 				</div>
 
-				<img id="shuffle" class="control small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
+				<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
 					src="<?php p(OCP\Template::image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
-				<img id="repeat" class="control small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
+				<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
 					src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 				<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 					<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
@@ -153,6 +154,33 @@
 				<h2 translate>Scanning music …</h2>
 				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
 			</div>
+
+			<div id="app-sidebar" ng-controller="DetailsController" class="disappear">
+				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
+
+				<div class="albumart"></div>
+				<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
+				<dl class="tags">
+					<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
+					<dd ng-repeat-end ng-if="tag.value">{{ tag.value }}</dd>
+				</dl>
+				<dl class="fileinfo clickable" ng-click="toggleFormatExpanded()" ng-if="formatSummary"
+					title="{{ formatExpanded ? 'Collapse' : 'Expand' | translate }}">
+					<dt ng-if="!formatExpanded">dataformat</dt>
+					<dd ng-if="!formatExpanded">{{ formatSummary }}</dd>
+
+					<dt ng-if="formatExpanded" ng-repeat-start="info in details.fileinfo">{{ formatDetailName(info.key) }}</dt>
+					<dd ng-if="formatExpanded" ng-repeat-end>{{ formatDetailValue(info.value) }}</dd>
+				</dl>
+
+				<img id="follow-playback" class="control toggle small svg"
+					alt="{{ 'Follow playback' | translate }}" title="{{ 'Follow playback' | translate }}"
+					src="<?php p(OCP\Template::image_path('music', 'follow-playback.svg')) ?>" ng-class="{active: follow}"
+					ng-click="toggleFollow()" />
+
+				<div class="icon-loading" ng-if="!details"></div>
+			</div>
+
 		</div>
 
 	</div>

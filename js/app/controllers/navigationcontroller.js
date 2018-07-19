@@ -11,7 +11,7 @@
  */
 
 
-angular.module('Music').controller('SidebarController', [
+angular.module('Music').controller('NavigationController', [
 	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService',
 	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService) {
 
@@ -85,7 +85,7 @@ angular.module('Music').controller('SidebarController', [
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
-		// Navigate to a view selected from the sidebar
+		// Navigate to a view selected from the navigation bar
 		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
 			if ($rootScope.currentView != destination) {
@@ -102,7 +102,7 @@ angular.module('Music').controller('SidebarController', [
 			window.location.hash = navigationDestination;
 		});
 
-		// An item dragged and dropped on a sidebar playlist item
+		// An item dragged and dropped on a navigation bar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {
 			if ('track' in droppedItem) {
 				$scope.addTrack(playlist, droppedItem.track);

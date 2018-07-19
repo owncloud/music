@@ -12,104 +12,10 @@
  * @copyright Pauli Järvinen 2017, 2018
  */
 
+/* Adjust to layout with collapsible navigation bar */
 @media only screen and (max-width: 768px) {
-
 	#app-view {
 		left: 0px;
-	}
-
-	.artist-area {
-		padding-top: 15px;
-	}
-
-	.artist-area > h1 {
-		margin-left: 8px;
-	}
-
-	/* adjust album area to screen width */
-	.album-area {
-		width: 100%;
-		padding: 10px 30px 0 10px;
-	}
-
-	/* smaller album art */
-	.album-area > .albumart,
-	.album-area > img {
-		line-height: 50px;
-		font-size: 30px;
-		width: 50px;
-		height: 50px;
-		float: left;
-	}
-	/* also adjust the overlay */
-	.album-area > img.overlay {
-		margin-left: -37px;
-		padding: 0;
-		width: 25px;
-		height: 25px;
-		margin-top: 13px;
-	}
-
-	/* nicely display album name next to cover */
-	.album-area h2 {
-		padding: 0px 15px;
-		position: absolute;
-		left: 56px;
-		max-width: 75%;
-		white-space: normal;
-		height: 50px;
-		line-height: 50px;
-	}
-
-	.album-area > h2 > div {
-		display: inline-block;
-		line-height: 1.2;
-	}
-	/* move track list to the left so it’s visible on small screens */
-	.album-area .track-list {
-		margin-left: 0;
-		padding-top: 15px;
-		clear: both;
-	}
-	/* align track title to the left with album title */
-	.album-area .track-list > li {
-		padding-left: 40px;
-	}
-	.album-area .track-list > li.more-less {
-		padding-left: 59px;
-	}
-
-	/* layout the play bar elements for less space */
-	#play-controls {
-		margin-left: 0;
-	}
-	#play-controls img:first-child {
-		display: none;
-	}
-	#controls .albumart {
-		left: 155px;
-		margin-left: 0;
-	}
-	#controls .song-info {
-		left: 200px;
-		max-width: 45%;
-	}
-	#controls .title {
-		font-size: 14px;
-	}
-	#controls.started .progress {
-		display: none;
-	}
-
-	#controls #repeat {
-		right: 0;
-	}
-	#controls #shuffle {
-		right: 40px;
-	}
-
-	#controls .volume-control {
-		display: none;
 	}
 
 	#app-view:not(.started) {
@@ -119,7 +25,7 @@
 	#updateData {
 		left: 0;
 	}
-	
+
 	#scanning, #toScan, #emptycontent {
 		margin-left: 0;
 	}
@@ -127,21 +33,122 @@
 	#controls {
 		left: 0;
 	}
-
-	#controls .progress-info {
-		right: 115px;
-		left: auto;
-		padding-top: 12px;
-		text-align: right;
-		width: inherit;
-	}
-
 }
 
-@media only screen and (max-width: 570px) {
+.mobile .artist-area {
+	padding-top: 15px;
+}
 
-	#controls .progress-info {
-		display: none;
-	}
+.mobile .artist-area > h1 {
+	margin-left: 8px;
+}
 
+/* adjust album area to screen width */
+.mobile .album-area {
+	width: 100%;
+	padding: 10px 30px 0 10px;
+}
+
+/* smaller album art */
+.mobile .album-area > .albumart,
+.mobile .album-area > img {
+	line-height: 50px;
+	font-size: 30px;
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+/* also adjust the overlay */
+.mobile .album-area > img.overlay {
+	margin-left: -37px;
+	padding: 0;
+	width: 25px;
+	height: 25px;
+	margin-top: 13px;
+}
+
+/* nicely display album name next to cover */
+.mobile .album-area h2 {
+	padding: 0px 15px;
+	position: absolute;
+	left: 56px;
+	max-width: 75%;
+	white-space: normal;
+	height: 50px;
+	line-height: 50px;
+}
+
+.mobile .album-area > h2 > div {
+	display: inline-block;
+	line-height: 1.2;
+}
+/* move track list to the left so it’s visible on small screens */
+.mobile .album-area .track-list {
+	margin-left: 0;
+	padding-top: 15px;
+	clear: both;
+}
+/* align track title to the left with album title */
+.mobile .album-area .track-list > li {
+	padding-left: 40px;
+}
+.mobile .album-area .track-list > li.more-less {
+	padding-left: 59px;
+}
+
+/* allow track name to span the whole view width and on multiple lines */
+.mobile .album-area .track-list li > div > span {
+	white-space: normal;
+	vertical-align: top;
+	max-width: unset;
+}
+
+/* layout the play bar elements for less space */
+.mobile #play-controls {
+	margin-left: 0;
+}
+.mobile #play-controls img:first-child {
+	display: none;
+}
+.mobile #controls .albumart {
+	margin-left: 0;
+	margin-right: 0;
+}
+.mobile #controls .song-info {
+	max-width: 45%;
+}
+.mobile #controls .title {
+	font-size: 14px;
+}
+.mobile #controls.started .progress {
+	display: none;
+}
+.mobile #controls #repeat {
+	right: 0;
+}
+.mobile #controls #shuffle {
+	right: 40px;
+}
+.mobile #controls .volume-control {
+	display: none;
+}
+.mobile #controls .progress-info {
+	right: 115px;
+	left: auto;
+	padding-top: 12px;
+	text-align: right;
+	width: inherit;
+}
+
+/* in portrait, there's even less space */
+.mobile.portrait #controls .progress-info {
+	display: none;
+}
+.mobile.portrait #controls .control,
+.mobile.portrait #controls .song-info {
+	margin-left: 0;
+	margin-right: 0;
+}
+.mobile.portrait #controls .control.small {
+	margin-left: -4px;
 }

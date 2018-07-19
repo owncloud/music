@@ -36,9 +36,11 @@ function ($rootScope, $interpolate) {
 			var tracks = scope.$eval(attrs.tracks);
 			var getTrackData = scope.$eval(attrs.getTrackData);
 			var playTrack = scope.$eval(attrs.playTrack);
+			var showTrackDetails = scope.$eval(attrs.showTrackDetails);
 			var getDraggable = scope.$eval(attrs.getDraggable);
 			var moreText = scope.$eval(attrs.moreText);
 			var lessText = scope.$eval(attrs.lessText);
+			var detailsText = scope.$eval(attrs.detailsText);
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
@@ -126,14 +128,22 @@ function ($rootScope, $interpolate) {
 			 */
 			function getTrackNode (track, index, className) {
 				var listItem = document.createElement('li');
+
+				var listItemContent = document.createElement('div');
 				var trackData = getTrackData(track, index, scope);
-				var newElement = trackRenderer(trackData);
+				listItemContent.innerHTML = trackRenderer(trackData);
+				listItemContent.setAttribute('draggable', true);
+				listItem.appendChild(listItemContent);
+
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				detailsButton.title = detailsText;
+				listItem.appendChild(detailsButton);
+
 				listItem.id = 'track-' + trackData.id;
-				listItem.setAttribute('draggable', true);
 				if (className) {
 					listItem.className = className;
 				}
-				listItem.innerHTML = newElement;
 				return listItem;
 			}
 
@@ -164,8 +174,12 @@ function ($rootScope, $interpolate) {
 			element.on('click', 'li', function (event) {
 				var trackId = trackIdFromElementId(this.id);
 				if (trackId) {
-					playTrack(trackId);
-					scope.$apply();
+					if (event.target.className == 'icon-details') {
+						showTrackDetails(trackId);
+					} else {
+						playTrack(trackId);
+						scope.$apply();
+					}
 				}
 				else { // "show more/less" item
 					if (!hiddenTracksRendered) {

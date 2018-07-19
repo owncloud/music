@@ -1,0 +1,113 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016, 2017
+ */
+
+#app-navigation {
+	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
+	z-index: 999;
+}
+
+#app-navigation li > img {
+	float: right;
+	display: none;
+}
+
+#app-navigation > ul > li.music-navigation-item > a {
+	padding-left: 0 !important;
+}
+
+#app-navigation-toggle {
+	height: 66px;
+}
+
+#app-navigation .svg.action {
+	margin-right: 5px;
+	float: right;
+	width: 24px;
+	height: 24px;
+	padding: 5px;
+}
+
+#app-navigation .icon-checkmark, #app-navigation .icon-close {
+  margin-top: 8px !important;
+}
+
+#app-navigation .play-pause-button {
+	display: inline-block;
+	width: 25px;
+	height: 100%;
+}
+
+#app-navigation .play-pause {
+	margin-left: 9px;
+}
+
+#app-navigation .current:not(.playing) :hover .play-pause {
+	background-image: url(../img/play-big.svg);
+}
+
+#app-navigation .current.playing :hover .play-pause {
+	background-image: url(../img/pause-big.svg)
+}
+
+#app-navigation li > a#create {
+	padding-left: 18px !important;
+}
+
+#app-navigation li > a:first-child img {
+	margin-bottom: 0;
+	width: 10px;
+	margin-left: 5px;
+}
+
+.playlist:hover .actions {
+	display: block;
+	z-index: 200;
+}
+
+.playlist .actions {
+	position: absolute;
+	top: 7px;
+	right: 0;
+	display: none;
+}
+
+#new-playlist .actions {
+  float: right;
+}
+
+input[type="text"] {
+	width: 166px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+input.edit-list, input.new-list {
+	margin-left: 21px;
+	margin-bottom: 8px;
+	margin-top: 4px;
+	height: 32px;
+}
+
+.music-nav-settings {
+	position: fixed !important;
+	width: inherit !important;
+	bottom: 0;
+	z-index: 140;
+}
+
+.music-nav-settings a {
+	padding-left: 44px !important;
+	background-size: 16px 16px;
+	background-position: 14px center;
+	background-repeat: no-repeat;
+	background-image: url('../img/settings.svg');
+}

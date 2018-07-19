@@ -126,6 +126,7 @@ h1 span:hover .play {
 }
 
 .album-area .track-list > li {
+	display: table;
 	padding-left: 2px;
 	padding-top: 6px;
 	padding-bottom: 5px;
@@ -140,8 +141,50 @@ h1 span:hover .play {
 	cursor: pointer;
 }
 
+.album-area .track-list li > div,
+#alltracks-area .track-list li > div {
+	display: table-cell;
+}
+
+.album-area .track-list li > div > span {
+	max-width: 200px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+#alltracks-area .track-list li > div > span {
+	white-space: normal;
+}
+
 track-list.collapsed .collapsible {
 	display: none;
+}
+
+.track-list .icon-details {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 0;
+	border: none;
+	background-color: transparent;
+	visibility: hidden;
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.track-list li:hover .icon-details {
+	visibility: visible;
+}
+
+.track-list .icon-details:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
 }
 
 .track-list > li.more-less {
@@ -180,14 +223,13 @@ track-list:not(.collapsed) li.more-less.collapsible {
 }
 
 .current.playing .play-pause,
-:hover > .play-pause,
-#app-view .current:not(.playing):hover > .play-pause {
+div:hover > .play-pause,
+#app-view .current:not(.playing) div:hover .play-pause {
 	background-image: url(../img/play-big.svg);
 }
 
 .current:not(.playing) .play-pause,
-#app-view .current.playing:hover .play-pause,
-#app-view .current.playing:hover > .play-pause {
+#app-view .current.playing div:hover .play-pause {
 	background-image: url(../img/pause-big.svg)
 }
 
@@ -202,7 +244,7 @@ track-list:not(.collapsed) li.more-less.collapsible {
 .alphabet-navigation {
 	z-index: 5;
 	position: fixed;
-	right: 10px;
+	right: 0;
 	bottom: 0;
 	width: 50px;
 	text-align: center;

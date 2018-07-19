@@ -22,10 +22,12 @@
 					tracks="album.tracks"
 					get-track-data="getTrackData"
 					play-track="playTrack"
+					show-track-details="showSidebar"
 					get-draggable="getTrackDraggable"
 					collapse-limit="6"
 					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
 					less-text="'Show less …' | translate"
+					details-text="'Details' | translate"
 			/>
 		</div>
 	</div>

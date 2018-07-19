@@ -8,17 +8,17 @@ msgstr ""
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: ../templates/main.php:57
+#: ../templates/main.php:61
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:95
+#: ../js/public/app.js:352
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:90
+#: ../js/public/app.js:347
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -28,37 +28,38 @@ msgstr[1] ""
 msgid "About"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:34
+#: ../templates/partials/playlistview.php:35
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
 #: ../templates/fake-template.php:7
-#: ../templates/main.php:51
+#: ../templates/main.php:55
 msgid "Albums"
 msgstr ""
 
-#: ../templates/main.php:53
-#: ../templates/partials/playlistview.php:5
+#: ../templates/main.php:57
+#: ../templates/partials/alltracksview.php:4
 msgid "All tracks"
 msgstr ""
 
-#: ../js/public/app.js:922
-msgid "Are you sure to reset the music collection? This removes all scanned trakcs and user-created playlists!"
+#: ../js/public/app.js:1421
+msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:145
+#: ../templates/main.php:149
 msgid "Click here to start the scan"
 msgstr ""
 
 #: ../templates/fake-template.php:12
+#: ../templates/main.php:159
 msgid "Close"
 msgstr ""
 
-#: ../templates/partials/sidebarlistitem.php:20
+#: ../templates/partials/navigationitem.php:20
 msgid "Delete"
 msgstr ""
 
@@ -70,16 +71,26 @@ msgstr ""
 msgid "Description (e.g. App name)"
 msgstr ""
 
+#: ../templates/partials/alltracksview.php:8
+#: ../templates/partials/overview.php:21
+#: ../templates/partials/playlistview.php:24
+msgid "Details"
+msgstr ""
+
 #: ../templates/partials/settingsview.php:46
 msgid "Failed to generated new Ampache key"
 msgstr ""
 
-#: ../js/public/app.js:165
+#: ../js/public/app.js:422
 msgid "Failed to load the collection:"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:6
 msgid "Failed to save music path"
+msgstr ""
+
+#: ../templates/main.php:177
+msgid "Follow playback"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:45
@@ -98,7 +109,7 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:155
+#: ../js/public/app.js:412
 msgid "Internal server error"
 msgstr ""
 
@@ -111,32 +122,32 @@ msgid "Loading…"
 msgstr ""
 
 #: ../templates/fake-template.php:3
-#: ../templates/partials/settingsview.php:56
+#: ../templates/partials/settingsview.php:58
 msgid "Music"
 msgstr ""
 
-#: ../templates/main.php:59
+#: ../templates/main.php:63
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:144
+#: ../templates/main.php:148
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:139
-#: ../templates/main.php:140
+#: ../templates/main.php:143
+#: ../templates/main.php:144
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ../templates/main.php:90
+#: ../templates/main.php:94
 msgid "Next"
 msgstr ""
 
-#: ../templates/main.php:133
+#: ../templates/main.php:137
 msgid "No music found"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:33
+#: ../templates/partials/playlistview.php:34
 msgid "No tracks"
 msgstr ""
 
@@ -144,52 +155,53 @@ msgstr ""
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../js/public/app.js:887
+#: ../js/public/app.js:1386
 #: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/main.php:88
+#: ../templates/main.php:92
 msgid "Pause"
 msgstr ""
 
-#: ../templates/main.php:86
+#: ../templates/main.php:90
+#: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/overview.php:19
 #: ../templates/partials/overview.php:7
-#: ../templates/partials/playlistview.php:6
+#: ../templates/partials/playlistview.php:5
 msgid "Play"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:58
+#: ../templates/partials/settingsview.php:60
 msgid "Please report any bugs and issues <a href=\"https://github.com/owncloud/music/issues\"><b>here</b></a>"
 msgstr ""
 
-#: ../templates/main.php:84
+#: ../templates/main.php:88
 msgid "Previous"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:25
+#: ../templates/partials/playlistview.php:26
 msgid "Remove"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:25
+#: ../templates/partials/playlistview.php:26
 msgid "Remove track from playlist"
 msgstr ""
 
-#: ../templates/partials/sidebarlistitem.php:23
+#: ../templates/partials/navigationitem.php:23
 msgid "Rename"
 msgstr ""
 
-#: ../templates/main.php:117
+#: ../templates/main.php:121
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:417
-#: ../js/public/app.js:839
+#: ../js/public/app.js:1342
+#: ../js/public/app.js:914
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:923
+#: ../js/public/app.js:1422
 #: ../templates/partials/settingsview.php:11
 msgid "Reset music collection"
 msgstr ""
@@ -198,11 +210,11 @@ msgstr ""
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:150
+#: ../templates/main.php:154
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:74
+#: ../templates/main.php:78
 #: ../templates/partials/settingsview.php:2
 msgid "Settings"
 msgstr ""
@@ -211,15 +223,19 @@ msgstr ""
 msgid "Show all {{ album.tracks.length }} songs …"
 msgstr ""
 
+#: ../templates/main.php:162
+msgid "Show in Files"
+msgstr ""
+
 #: ../templates/partials/overview.php:21
 msgid "Show less …"
 msgstr ""
 
-#: ../templates/main.php:115
+#: ../templates/main.php:119
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:647
+#: ../js/public/app.js:1143
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -235,7 +251,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:158
+#: ../js/public/app.js:415
 msgid "Timeout"
 msgstr ""
 
@@ -251,7 +267,7 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/main.php:134
+#: ../templates/main.php:138
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
@@ -263,12 +279,12 @@ msgstr ""
 msgid "Use your username and following password to connect to this Ampache instance:"
 msgstr ""
 
-#: ../templates/main.php:119
-#: ../templates/main.php:120
-#: ../templates/main.php:122
+#: ../templates/main.php:123
+#: ../templates/main.php:124
+#: ../templates/main.php:126
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:151
+#: ../templates/main.php:155
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

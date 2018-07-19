@@ -1418,7 +1418,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.resetCollection = function() {
 			OC.dialogs.confirm(
-				gettextCatalog.getString(gettext('Are you sure to reset the music collection? This removes all scanned trakcs and user-created playlists!')),
+				gettextCatalog.getString(gettext('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!')),
 				gettextCatalog.getString(gettext('Reset music collection')),
 				function(confirmed) {
 					if (confirmed) {

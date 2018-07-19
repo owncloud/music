@@ -1768,6 +1768,8 @@ function ($rootScope, $interpolate) {
 				}
 				var toggle = listContainer.getElementsByClassName('muted more-less collapsible');
 				listContainer.insertBefore(trackListFragment, toggle[0]);
+
+				render(); // to update the current/playing classes on the newly rendered tracks
 			}
 
 			function trackIdFromElementId(elemId) {

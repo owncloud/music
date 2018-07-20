@@ -90,9 +90,22 @@ class DetailsHelper {
 	 * @return array
 	 */
 	private static function flattenComments($array) {
+		// key 'text' is an exception, its value is an associative array
+		$textArray = null;
+
 		foreach ($array as $key => $value) {
-			$array[$key] = $value[0];
+			if ($key === 'text') {
+				$textArray = $value;
+			} else {
+				$array[$key] = $value[0];
+			}
 		}
+
+		if (!empty($textArray)) {
+			$array = \array_merge($array, $textArray);
+			unset($array['text']);
+		} 
+
 		return $array;
 	}
 

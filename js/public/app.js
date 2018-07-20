@@ -227,10 +227,17 @@ angular.module('Music').controller('DetailsController', [
 						albumart.css('background-image', 'url("' + result.tags.picture + '")');
 						albumart.css('height', ''); // remove the inline height and use the one from the css file
 					}
+					delete result.tags.picture;
+
+					// In case the result contains both unsynchronised_lyric and LYRICS tags,
+					// show only the former. It would be pointless to show both, and the latter may
+					// contain timestamped lyrics which we can't handle properly (for now).
+					if (result.tags.unsynchronised_lyric && result.tags.LYRICS) {
+						delete result.tags.LYRICS;
+					}
 
 					$scope.formatSummary = createFormatSummary(result.fileinfo);
 
-					delete result.tags.picture;
 					result.tags = toArray(result.tags);
 					result.fileinfo = toArray(result.fileinfo);
 					$scope.details = result;
@@ -276,7 +283,7 @@ angular.module('Music').controller('DetailsController', [
 			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
 				return 'disc number';
 			} else {
-				return rawName.replace(/_/g, ' ');
+				return rawName.replace(/_/g, ' ').toLowerCase();
 			}
 		};
 

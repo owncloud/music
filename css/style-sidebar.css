@@ -65,8 +65,10 @@
 	width: 30%;
 	padding-top: 0;
 	padding-bottom: 6px;
+	padding-right: 12px;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-align: right;
 
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";

@@ -40,8 +40,10 @@
 }
 
 #app-sidebar #path {
-	width: 100%;
+	width: auto;
 	text-align: center;
+	display: table;
+	margin: 0 auto;
 }
 
 #app-sidebar dl {

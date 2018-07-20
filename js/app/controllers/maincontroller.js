@@ -255,8 +255,12 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			$('#controls').css('min-width', appViewWidth - 1);
 
 			// anchor the alphabet navigation to the right edge of the app view
-			appViewRight = $window.innerWidth - $('#app-view').offset().left - appViewWidth;
+			var appViewLeft = $('#app-view').offset().left;
+			var appViewRight = $window.innerWidth - appViewLeft - appViewWidth;
 			$('.alphabet-navigation').css('right', appViewRight);
+
+			// center the floating indicator box to the appView
+			$('.emptycontent').css('margin-left', (appViewLeft - appViewRight) / 2);
 
 			// Set the app-content classs according to window and view width. This has
 			// impact on the overall layout of the app. See mobile.css and tablet.css.

@@ -298,7 +298,7 @@ div:hover > .play-pause,
 	cursor: pointer;
 }
 
-#scanning, #toScan, #emptycontent {
+#emptycontent, .emptycontent {
 	position: fixed;
 	top: 0;
 	background-color: rgba(255,255,255,0.95);
@@ -306,7 +306,6 @@ div:hover > .play-pause,
 	z-index: 1;
 	width: auto;
 	left: 50%;
-	margin-left: 125px;
 	transform: translateX(-50%);
 	-ms-transform: translateX(-50%);
 }

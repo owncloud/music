@@ -132,18 +132,13 @@
 			<div id="app-view" ng-view ng-class="{started: started, 'icon-loading': loading || (loadingCollection && currentView!='#/settings')}">
 			</div>
 
-			<div id="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">
+			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">
 				<div class="icon-audio svg"></div>
 				<h2 translate>No music found</h2>
 				<p translate>Upload music in the files app to listen to it here</p>
 			</div>
 
-			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
-				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
-				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
-				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
-
-			<div id="toScan" ng-show="toScan && currentView!='#/settings'" class="emptycontent clickable" ng-click="startScanning()">
+			<div id="toScan" class="emptycontent clickable" ng-show="toScan && currentView!='#/settings'" ng-click="startScanning()">
 				<div class="icon-audio svg"></div>
 				<h2 translate>New music available</h2>
 				<p translate>Click here to start the scan</p>
@@ -154,6 +149,11 @@
 				<h2 translate>Scanning music …</h2>
 				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
 			</div>
+
+			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
+				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
+				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
+				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 
 			<div id="app-sidebar" ng-controller="DetailsController" class="disappear">
 				<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>

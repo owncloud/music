@@ -90,6 +90,8 @@
 	right: 0;
 	bottom: 0;
 	background-color: #ffffffcc;
+	margin: 0;
+	padding: 12px;
 }
 
 #app-sidebar .icon-loading {

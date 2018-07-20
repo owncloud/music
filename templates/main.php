@@ -162,7 +162,7 @@
 				<a id="path" title="{{ 'Show in Files' | translate }}">{{ details.path }}</a>
 				<dl class="tags">
 					<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
-					<dd ng-repeat-end ng-if="tag.value">{{ tag.value }}</dd>
+					<dd ng-repeat-end ng-if="tag.value">{{ formatDetailValue(tag.value) }}</dd>
 
 					<dt ng-if="details.length">length</dt>
 					<dd ng-if="details.length">{{ details.length | playTime }}</dd>

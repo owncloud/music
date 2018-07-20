@@ -136,14 +136,14 @@
 	opacity: 0.1;
 }
 
-#shuffle, #repeat {
+#shuffle {
 	position: absolute;
-	top: 0;
-	right: 0;
+	right: 55px;
 }
 
-#shuffle {
-	right: 55px;
+#repeat {
+	position: absolute;
+	right: 5px;
 }
 
 .control.toggle.active,

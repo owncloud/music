@@ -11,8 +11,8 @@
  */
 
 angular.module('Music').controller('SettingsViewController', [
-	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettext', 'gettextCatalog',
-	function ($scope, $rootScope, Restangular, $window, $timeout, gettext, gettextCatalog) {
+	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, Restangular, $window, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -29,7 +29,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.selectPath = function() {
 			OC.dialogs.filepicker(
-				gettextCatalog.getString(gettext('Path to your music collection')),
+				gettextCatalog.getString('Path to your music collection'),
 				function (path) {
 					if (path.substr(-1) !== '/') {
 						path = path + '/';
@@ -64,8 +64,8 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.resetCollection = function() {
 			OC.dialogs.confirm(
-				gettextCatalog.getString(gettext('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!')),
-				gettextCatalog.getString(gettext('Reset music collection')),
+				gettextCatalog.getString('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!'),
+				gettextCatalog.getString('Reset music collection'),
 				function(confirmed) {
 					if (confirmed) {
 						$scope.resetOngoing = true;

@@ -12,9 +12,9 @@
 
 angular.module('Music').controller('OverviewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
-	'Restangular', '$route', '$timeout', 'gettext', 'gettextCatalog',
+	'Restangular', '$route', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,
-			Restangular, $route, $timeout, gettext, gettextCatalog) {
+			Restangular, $route, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -176,7 +176,7 @@ angular.module('Music').controller('OverviewController', [
 					}
 				}
 				catch (exception) {
-					OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+					OC.Notification.showTemporary(gettextCatalog.getString('Requested entry was not found'));
 					window.location.hash = '#/';
 				}
 			}

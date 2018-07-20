@@ -13,9 +13,9 @@
 
 angular.module('Music').controller('PlaylistViewController', [
 	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
-	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
+	'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular, $timeout) {
+			gettextCatalog, Restangular, $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -176,7 +176,7 @@ angular.module('Music').controller('PlaylistViewController', [
 						$scope.tracks = playlist.tracks;
 					}
 					else {
-						OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+						OC.Notification.showTemporary(gettextCatalog.getString('Requested entry was not found'));
 						window.location.hash = '#/';
 					}
 				}

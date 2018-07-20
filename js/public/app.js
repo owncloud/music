@@ -319,9 +319,9 @@ angular.module('Music').controller('DetailsController', [
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory',
-'playlistService', 'libraryService', 'gettext', 'gettextCatalog', 'Restangular',
+'playlistService', 'libraryService', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $timeout, $window, ArtistFactory,
-		playlistService, libraryService, gettext, gettextCatalog, Restangular) {
+		playlistService, libraryService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -412,17 +412,17 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			var reason = null;
 			switch (response.status) {
 			case 500:
-				reason = gettextCatalog.getString(gettext('Internal server error'));
+				reason = gettextCatalog.getString('Internal server error');
 				break;
 			case 504:
-				reason = gettextCatalog.getString(gettext('Timeout'));
+				reason = gettextCatalog.getString('Timeout');
 				break;
 			default:
 				reason = response.status;
 				break;
 			}
 			OC.Notification.showTemporary(
-					gettextCatalog.getString(gettext('Failed to load the collection: ')) + reason);
+					gettextCatalog.getString('Failed to load the collection: ') + reason);
 		});
 
 	};
@@ -767,9 +767,9 @@ angular.module('Music').controller('NavigationController', [
 
 angular.module('Music').controller('OverviewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
-	'Restangular', '$route', '$timeout', 'gettext', 'gettextCatalog',
+	'Restangular', '$route', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,
-			Restangular, $route, $timeout, gettext, gettextCatalog) {
+			Restangular, $route, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -931,7 +931,7 @@ angular.module('Music').controller('OverviewController', [
 					}
 				}
 				catch (exception) {
-					OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+					OC.Notification.showTemporary(gettextCatalog.getString('Requested entry was not found'));
 					window.location.hash = '#/';
 				}
 			}
@@ -982,9 +982,9 @@ angular.module('Music').controller('OverviewController', [
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'libraryService',
-'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
+'Audio', 'Restangular', 'gettextCatalog', '$timeout',
 function ($scope, $rootScope, playlistService, libraryService,
-		Audio, Restangular, gettext, gettextCatalog, $timeout) {
+		Audio, Restangular, gettextCatalog, $timeout) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -1160,7 +1160,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 			entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped) {
-			OC.Notification.showTemporary(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
+			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
 		}
 		setCurrentTrack(entry);
 	};
@@ -1196,9 +1196,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 angular.module('Music').controller('PlaylistViewController', [
 	'$rootScope', '$scope', '$routeParams', 'playlistService', 'libraryService',
-	'gettext', 'gettextCatalog', 'Restangular', '$timeout',
+	'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
-			gettext, gettextCatalog, Restangular, $timeout) {
+			gettextCatalog, Restangular, $timeout) {
 
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
@@ -1359,7 +1359,7 @@ angular.module('Music').controller('PlaylistViewController', [
 						$scope.tracks = playlist.tracks;
 					}
 					else {
-						OC.Notification.showTemporary(gettextCatalog.getString(gettext('Requested entry was not found')));
+						OC.Notification.showTemporary(gettextCatalog.getString('Requested entry was not found'));
 						window.location.hash = '#/';
 					}
 				}
@@ -1385,8 +1385,8 @@ angular.module('Music').controller('PlaylistViewController', [
 ]);
 
 angular.module('Music').controller('SettingsViewController', [
-	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettext', 'gettextCatalog',
-	function ($scope, $rootScope, Restangular, $window, $timeout, gettext, gettextCatalog) {
+	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, Restangular, $window, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -1403,7 +1403,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.selectPath = function() {
 			OC.dialogs.filepicker(
-				gettextCatalog.getString(gettext('Path to your music collection')),
+				gettextCatalog.getString('Path to your music collection'),
 				function (path) {
 					if (path.substr(-1) !== '/') {
 						path = path + '/';
@@ -1438,8 +1438,8 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.resetCollection = function() {
 			OC.dialogs.confirm(
-				gettextCatalog.getString(gettext('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!')),
-				gettextCatalog.getString(gettext('Reset music collection')),
+				gettextCatalog.getString('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!'),
+				gettextCatalog.getString('Reset music collection'),
 				function(confirmed) {
 					if (confirmed) {
 						$scope.resetOngoing = true;

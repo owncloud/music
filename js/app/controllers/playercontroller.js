@@ -13,9 +13,9 @@
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'libraryService',
-'Audio', 'Restangular', 'gettext', 'gettextCatalog', '$timeout',
+'Audio', 'Restangular', 'gettextCatalog', '$timeout',
 function ($scope, $rootScope, playlistService, libraryService,
-		Audio, Restangular, gettext, gettextCatalog, $timeout) {
+		Audio, Restangular, gettextCatalog, $timeout) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -191,7 +191,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 			entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
 		}
 		if(tracksSkipped) {
-			OC.Notification.showTemporary(gettextCatalog.getString(gettext('Some not playable tracks were skipped.')));
+			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
 		}
 		setCurrentTrack(entry);
 	};

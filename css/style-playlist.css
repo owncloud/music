@@ -52,6 +52,7 @@
 
 .playlist-area .track-list .play-pause {
 	margin-top: 5px;
+	vertical-align: top;
 }
 
 .playlist-area .track-list > li > div,

@@ -54,6 +54,13 @@ class DetailsHelper {
 				unset($result['tags']['track']);
 			}
 
+			// add track length
+			if (\array_key_exists('playtime_seconds', $data)) {
+				$result['length'] = \ceil($data['playtime_seconds']);
+			} else {
+				$result['length'] = null;
+			}
+
 			// add file path
 			$result['path'] = $userFolder->getRelativePath($fileNodes[0]->getPath());
 

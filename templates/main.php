@@ -163,6 +163,9 @@
 				<dl class="tags">
 					<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
 					<dd ng-repeat-end ng-if="tag.value">{{ tag.value }}</dd>
+
+					<dt ng-if="details.length">length</dt>
+					<dd ng-if="details.length">{{ details.length | playTime }}</dd>
 				</dl>
 				<dl class="fileinfo clickable" ng-click="toggleFormatExpanded()" ng-if="formatSummary"
 					title="{{ formatExpanded ? 'Collapse' : 'Expand' | translate }}">

@@ -228,13 +228,13 @@ angular.module('Music').controller('DetailsController', [
 						albumart.css('height', ''); // remove the inline height and use the one from the css file
 					}
 
-					delete result.tags.picture;
-					$scope.details = {
-							path: result.path,
-							tags: toArray(result.tags),
-							fileinfo: toArray(result.fileinfo)
-					};
 					$scope.formatSummary = createFormatSummary(result.fileinfo);
+
+					delete result.tags.picture;
+					result.tags = toArray(result.tags);
+					result.fileinfo = toArray(result.fileinfo);
+					$scope.details = result;
+
 					$timeout(adjustFixedPositions);
 				});
 			}

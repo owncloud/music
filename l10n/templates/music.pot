@@ -12,13 +12,13 @@ msgstr ""
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:352
+#: ../js/public/app.js:355
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:347
+#: ../js/public/app.js:350
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -42,7 +42,11 @@ msgstr ""
 msgid "All tracks"
 msgstr ""
 
-#: ../js/public/app.js:1421
+#: ../js/public/app.js:659
+msgid "Are you sure to remove the playlist \"{{ name }}\"?"
+msgstr ""
+
+#: ../js/public/app.js:1441
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -50,7 +54,7 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:149
+#: ../templates/main.php:144
 msgid "Click here to start the scan"
 msgstr ""
 
@@ -81,7 +85,7 @@ msgstr ""
 msgid "Failed to generated new Ampache key"
 msgstr ""
 
-#: ../js/public/app.js:422
+#: ../js/public/app.js:425
 msgid "Failed to load the collection:"
 msgstr ""
 
@@ -109,7 +113,7 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:412
+#: ../js/public/app.js:415
 msgid "Internal server error"
 msgstr ""
 
@@ -130,12 +134,12 @@ msgstr ""
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:148
+#: ../templates/main.php:143
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:143
-#: ../templates/main.php:144
+#: ../templates/main.php:155
+#: ../templates/main.php:156
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
@@ -155,7 +159,7 @@ msgstr ""
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../js/public/app.js:1386
+#: ../js/public/app.js:1406
 #: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
@@ -184,6 +188,10 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+#: ../js/public/app.js:660
+msgid "Remove playlist"
+msgstr ""
+
 #: ../templates/partials/playlistview.php:26
 msgid "Remove track from playlist"
 msgstr ""
@@ -196,12 +204,12 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:1342
-#: ../js/public/app.js:914
+#: ../js/public/app.js:1362
+#: ../js/public/app.js:934
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:1422
+#: ../js/public/app.js:1442
 #: ../templates/partials/settingsview.php:11
 msgid "Reset music collection"
 msgstr ""
@@ -210,7 +218,7 @@ msgstr ""
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:154
+#: ../templates/main.php:149
 msgid "Scanning music …"
 msgstr ""
 
@@ -235,7 +243,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:1143
+#: ../js/public/app.js:1163
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -251,7 +259,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:415
+#: ../js/public/app.js:418
 msgid "Timeout"
 msgstr ""
 
@@ -285,6 +293,6 @@ msgstr ""
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:155
+#: ../templates/main.php:150
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

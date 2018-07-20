@@ -12,8 +12,8 @@
 
 
 angular.module('Music').controller('NavigationController', [
-	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService) {
+	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService', 'gettextCatalog',
+	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService, gettextCatalog) {
 
 		$scope.newPlaylistName = null;
 
@@ -45,10 +45,19 @@ angular.module('Music').controller('NavigationController', [
 
 		// Remove playlist
 		$scope.remove = function(playlist) {
-			Restangular.one('playlists', playlist.id).remove();
+			OC.dialogs.confirm(
+					gettextCatalog.getString('Are you sure to remove the playlist "{{ name }}"?', { name: playlist.name }),
+					gettextCatalog.getString('Remove playlist'),
+					function(confirmed) {
+						if (confirmed) {
+							Restangular.one('playlists', playlist.id).remove();
 
-			// remove the elemnt also from the AngularJS list
-			libraryService.removePlaylist(playlist);
+							// remove the elemnt also from the AngularJS list
+							libraryService.removePlaylist(playlist);
+						}
+					},
+					true
+				);
 		};
 
 		// Play/pause playlist

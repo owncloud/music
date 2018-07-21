@@ -1,3 +1,18 @@
+v0.8.0 2018-07-21
+ * track details pane (#656)
+ * show a confirmation dialog before deleting a playlist
+ * changed icons of "Repeat" and "Rename playlist" buttons
+ * cache the collection.json to file instead of DB, preventing problems with large collections on certain DB configurations (#588)
+ * cache collection.json also on the client-side (as discussed on #588)
+ * fix a layout issue in albums view which could cause empty "album slots" to show between albums (introduced in v0.7.0)
+ * fix unable to play tracks on some untypical proxy configurations (#650)
+ * fix a layout issue on album titles in the mobile view
+ * fix the controls bar being broken on NC13 with all versions of IE and other older browsers
+ * fix play icon not being shown on track which was collapsed when the playback started (regression from v0.5.6)
+ * fix a typo in the "reset library" confirmation dialog (#655)
+ * fix controls bar track info not being clickable on mobile landscape layout
+ * follow-up fix for the Firefox scrollbar issue (#631)
+
 v0.7.0 2018-06-17
  * improved performance of the "All tracks" view, especially with large collections (#647)
  * show the track and artist names extracted from metadata also when playing a public share (#616)

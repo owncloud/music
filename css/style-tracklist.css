@@ -1,0 +1,98 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2018
+ */
+
+/**
+ * Common rules for the track-list directive
+ */
+
+.track-list li * {
+	cursor: pointer;
+}
+
+.track-list li > div {
+	display: table-cell;
+}
+
+.track-list.collapsed .collapsible {
+	display: none;
+}
+
+.track-list .icon-details {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 0;
+	border: none;
+	background-color: transparent;
+	visibility: hidden;
+
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.track-list li:hover .icon-details {
+	visibility: visible;
+}
+
+.track-list .icon-details:hover {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
+}
+
+.track-list > li.more-less {
+	padding-left: 18px;
+	padding-bottom: 0px;
+	display: none;
+}
+
+.track-list.collapsed li.more-less:not(.collapsible),
+.track-list:not(.collapsed) li.more-less.collapsible {
+	display: inline-block;
+}
+
+
+/**
+ * View specific rules for the track-list directive in the 'Albums' view
+ */
+ 
+.album-area .track-list {
+	margin-left: 195px;
+}
+
+.album-area .track-list > li {
+	display: table;
+	padding-left: 2px;
+	padding-top: 6px;
+	padding-bottom: 5px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.album-area .track-list li > div > span {
+	max-width: 200px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+
+/**
+ * View specific rules for the track-list directive in the 'All tracks' view
+ */
+
+#alltracks-area .track-list li > div > span {
+	white-space: normal;
+}

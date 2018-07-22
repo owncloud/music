@@ -16,11 +16,13 @@
 
 // stylesheets
 \OCP\Util::addStyle('settings', 'settings');
+\OCP\Util::addStyle('music', 'style-alphabetnavigation');
 \OCP\Util::addStyle('music', 'style-controls');
 \OCP\Util::addStyle('music', 'style-playlist');
 \OCP\Util::addStyle('music', 'settings-user');
 \OCP\Util::addStyle('music', 'style-navigation');
 \OCP\Util::addStyle('music', 'style-sidebar');
+\OCP\Util::addStyle('music', 'style-tracklist');
 \OCP\Util::addStyle('music', 'style');
 \OCP\Util::addStyle('music', 'mobile');
 \OCP\Util::addStyle('music', 'tablet');

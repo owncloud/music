@@ -1,0 +1,62 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2018
+ */
+
+.alphabet-navigation {
+	z-index: 5;
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	width: 50px;
+	text-align: center;
+}
+
+.alphabet-navigation a {
+	display: block;
+	font-weight: bold;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
+	filter: alpha(opacity = 10);
+	opacity: .1;
+}
+
+.alphabet-navigation a, .alphabet-navigation a * {
+	cursor: default;
+}
+
+.alphabet-navigation a.available {
+	display: block;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity = 40);
+	opacity: .4;
+}
+
+.alphabet-navigation a.available, .alphabet-navigation a.available * {
+	cursor: pointer;
+}
+
+.alphabet-navigation a.available:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity = 80);
+	opacity: .8;
+}
+
+.alphabet-navigation a.filler.dotted:before
+{
+	content: "\00b7";
+}
+
+.alphabet-navigation a.filler.dotted > span.letter-content
+{
+	display: none;
+}
+
+.alphabet-navigation a.filler.stripped
+{
+	display: none;
+}

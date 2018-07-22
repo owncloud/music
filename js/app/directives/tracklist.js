@@ -30,9 +30,7 @@ function ($rootScope, $interpolate) {
 	return {
 		restrict: 'E',
 		link: function (scope, element, attrs) {
-			var trackListRendered = false;
 			var hiddenTracksRendered = false;
-			var listContainer;
 			var tracks = scope.$eval(attrs.tracks);
 			var getTrackData = scope.$eval(attrs.getTrackData);
 			var playTrack = scope.$eval(attrs.playTrack);
@@ -44,37 +42,36 @@ function ($rootScope, $interpolate) {
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
-				$rootScope.$watch('currentTrack', render),
-				$rootScope.$watch('playing', render)
+				$rootScope.$watch('currentTrack', updateClasses),
+				$rootScope.$watch('playing', updateClasses)
 			];
 
 			/**
-			 * Render markup (once) and set classes according to current scope (always)
+			 * Replace the <tack-list> element wiht <ul> element with nested
+			 * <li> elements for each shown track.
 			 */
-			function render () {
-				if (!trackListRendered) {
-					var widget = document.createDocumentFragment();
-					var trackListFragment = renderTrackList();
+			function replaceElement() {
+				var listContainer = document.createElement('ul');
+				listContainer.className = 'track-list collapsed';
+				listContainer.appendChild(renderTrackList());
 
-					listContainer = document.createElement('ul');
-					listContainer.className = 'track-list';
+				element.replaceWith(listContainer);
+				element = angular.element(listContainer);
+			}
+			replaceElement();
 
-					listContainer.appendChild(trackListFragment);
-					widget.appendChild(listContainer);
-					element.html(widget);
-					element.addClass('collapsed');
-					trackListRendered = true;
-				}
-
-				// Set classes for the currently active list item
-				var elems = listContainer.querySelectorAll(".playing, .current");
+			/**
+			 * Set classes of the track items according to current scope
+			 */
+			function updateClasses() {
+				var elems = element[0].querySelectorAll(".playing, .current");
 				[].forEach.call(elems, function (el) {
 					el.classList.remove('current');
 					el.classList.remove('playing');
 				});
 
 				if (scope.currentTrack) {
-					var playing = listContainer.querySelector('#track-' + scope.currentTrack.id);
+					var playing = element[0].querySelector('#track-' + scope.currentTrack.id);
 					if (playing) {
 						playing.classList.add('current');
 						if ($rootScope.playing) {
@@ -148,7 +145,7 @@ function ($rootScope, $interpolate) {
 			}
 
 			/**
-			 * Adds those tracks that aren't initially visible to the listContainer
+			 * Adds those tracks that aren't initially visible to the element
 			 */
 			function renderHiddenTracks () {
 				var trackListFragment = document.createDocumentFragment();
@@ -156,10 +153,10 @@ function ($rootScope, $interpolate) {
 				for (var i = collapseLimit - 1; i < tracks.length; i++) {
 					trackListFragment.appendChild(getTrackNode(tracks[i], i, 'collapsible'));
 				}
-				var toggle = listContainer.getElementsByClassName('muted more-less collapsible');
-				listContainer.insertBefore(trackListFragment, toggle[0]);
+				var toggle = element[0].getElementsByClassName('muted more-less collapsible');
+				element[0].insertBefore(trackListFragment, toggle[0]);
 
-				render(); // to update the current/playing classes on the newly rendered tracks
+				updateClasses();
 			}
 
 			function trackIdFromElementId(elemId) {

@@ -12,6 +12,7 @@
  * Common rules for the track-list directive
  */
 
+.track-list li,
 .track-list li * {
 	cursor: pointer;
 }
@@ -21,7 +22,7 @@
 }
 
 .track-list.collapsed .collapsible {
-	display: none;
+	display: none !important;
 }
 
 .track-list .icon-details {
@@ -51,6 +52,7 @@
 
 .track-list > li.more-less {
 	padding-left: 18px;
+	padding-top: 6px;
 	padding-bottom: 0px;
 	display: none;
 }
@@ -69,7 +71,7 @@
 	margin-left: 195px;
 }
 
-.album-area .track-list > li {
+.album-area .track-list li:not(.more-less) {
 	display: table;
 	padding-left: 2px;
 	padding-top: 6px;
@@ -77,7 +79,6 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	cursor: pointer;
 }
 
 .album-area .track-list li > div > span {

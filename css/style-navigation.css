@@ -51,11 +51,11 @@
 }
 
 #app-navigation .current:not(.playing) :hover .play-pause {
-	background-image: url(../img/play-big.svg);
+	background-image: url(../../img/play-big.svg);
 }
 
 #app-navigation .current.playing :hover .play-pause {
-	background-image: url(../img/pause-big.svg)
+	background-image: url(../../img/pause-big.svg)
 }
 
 #app-navigation li > a#create {
@@ -109,5 +109,5 @@ input.edit-list, input.new-list {
 	background-size: 16px 16px;
 	background-position: 14px center;
 	background-repeat: no-repeat;
-	background-image: url('../img/settings.svg');
+	background-image: url('../../img/settings.svg');
 }

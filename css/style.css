@@ -15,7 +15,7 @@
 }
 
 .icon-audio {
-	background-image: url('../img/audio.svg');
+	background-image: url('../../img/audio.svg');
 }
 
 /* angular JS wrapper for main controller */
@@ -148,12 +148,12 @@ h1 span:hover .play {
 .current.playing .play-pause,
 div:hover > .play-pause,
 #app-view .current:not(.playing) div:hover .play-pause {
-	background-image: url(../img/play-big.svg);
+	background-image: url(../../img/play-big.svg);
 }
 
 .current:not(.playing) .play-pause,
 #app-view .current.playing div:hover .play-pause {
-	background-image: url(../img/pause-big.svg)
+	background-image: url(../../img/pause-big.svg)
 }
 
 .muted {

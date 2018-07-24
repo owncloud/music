@@ -167,12 +167,12 @@ more to the beginning of the HTML element.
 
 ### Build frontend bundle
 
-All the frontend javascript sources of the Music app, excluding the vendor libraries, are bundled into a single file for deployment. The bundle file is js/public/app.js. Generating it requires make and npm utilities, and happens by running:
+All the frontend javascript sources of the Music app, excluding the vendor libraries, are bundled into a single file for deployment. This bundle file is js/public/app.js. Similarly, all the style files of the Music app are budnled into css/public/app.css. Generating these bundles requires `make` and `npm` utilities, and happens by running:
 
 	cd build
 	make
 
-To automatically regenerate the app.js bundle whenever the source .js files change, use
+To automatically regenerate the bundles whenever the source .js/.css files change, use
 
     make watch
 

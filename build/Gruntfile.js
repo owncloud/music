@@ -31,13 +31,19 @@ module.exports = function(grunt) {
 				// remove license headers
 				stripBanners: true
 			},
-			dist: {
+			javascript: {
 				src: [
 					'../js/config/app.js',
 					'../js/app/**/*.js',
 					'../js/l10n/*.js'
 				],
 				dest: '<%= meta.production %>app.js'
+			},
+			style: {
+				src: [
+					'../css/*.css'
+				],
+				dest: '../css/public/app.css'
 			}
 		},
 
@@ -75,7 +81,8 @@ module.exports = function(grunt) {
 				files: [
 					'../js/app/**/*.js',
 					'../js/config/*.js',
-					'../js/l10n/*.js'
+					'../js/l10n/*.js',
+                    '../css/*.css'
 				],
 				tasks: ['build']
 			},

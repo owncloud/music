@@ -81,7 +81,7 @@ $loadEmbeddedMusicPlayer = function () use ($appName) {
 	\OCP\Util::addScript($appName, 'app/playerwrapper');
 	\OCP\Util::addScript($appName, 'public/files-music-player');
 
-	\OCP\Util::addStyle($appName, 'files-music-player');
+	\OCP\Util::addStyle($appName, 'public/files-music-player');
 };
 
 $request = \OC::$server->getRequest();

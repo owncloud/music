@@ -12,7 +12,7 @@
 		<li id="new-playlist" class="music-navigation-item">
 			<a id="create" class="app-navigation-noclose" ng-click="showCreateForm=!showCreateForm" ng-hide="showCreateForm" translate>+ New Playlist</a>
 			<input type="text" class="new-list" ng-show="showCreateForm" 
-				placeholder="{{ 'New Playlist' | translate }}" ng-enter="create()" ng-model="newPlaylistName" />
+				placeholder="{{ ::('New Playlist' | translate) }}" ng-enter="create()" ng-model="newPlaylistName" />
 			<div class="actions" ng-show="showCreateForm">
 				<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark app-navigation-noclose" ng-click="create()"></button>
 				<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=!showCreateForm"></button>
@@ -27,7 +27,7 @@
 			title="{{ trackCountText(playlist) }}"></li>
 		<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
-				{{ 'Settings' | translate }}
+				{{ ::('Settings' | translate) }}
 			</a>
 		</li>
 	</ul>

@@ -105,6 +105,10 @@ angular.module('Music').controller('OverviewController', [
 			return $scope.getDraggable('track', libraryService.getTrack(trackId));
 		};
 
+		$scope.decoratedYear = function(album) {
+			return album.year ? ' (' + album.year + ')' : '';
+		};
+
 		/**
 		 * Gets track data to be dislayed in the tracklist directive
 		 */

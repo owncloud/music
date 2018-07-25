@@ -12,7 +12,7 @@ if($('html').hasClass('ie')) {
 	setTimeout(replaceSVGs, 5000);
 }
 
-angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop', 'pasvaz.bindonce'])
+angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop'])
 	.config(['RestangularProvider', '$routeProvider', '$locationProvider',
 		function (RestangularProvider, $routeProvider, $locationProvider) {
 
@@ -873,6 +873,10 @@ angular.module('Music').controller('OverviewController', [
 
 		$scope.getTrackDraggable = function(trackId) {
 			return $scope.getDraggable('track', libraryService.getTrack(trackId));
+		};
+
+		$scope.decoratedYear = function(album) {
+			return album.year ? ' (' + album.year + ')' : '';
 		};
 
 		/**

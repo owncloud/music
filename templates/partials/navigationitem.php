@@ -17,9 +17,9 @@
 	<div class="actions" ng-if="playlist && $parent.showEditForm != playlist.id">
 		<button class="svg action icon-delete"
 			ng-click="$parent.$parent.remove(playlist)"
-			alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
+			alt="{{ ::('Delete' | translate) }}" title="{{ ::('Delete' | translate) }}"></button>
 		<button class="svg action icon-rename"
 			ng-click="$parent.$parent.startEdit(playlist)"
-			alt="{{ 'Rename' | translate }}" title="{{ 'Rename' | translate }}"></button>
+			alt="{{ ::('Rename' | translate) }}" title="{{ ::('Rename' | translate) }}"></button>
 	</div>
 </li>

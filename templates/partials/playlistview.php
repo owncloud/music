@@ -2,11 +2,11 @@
 	<h1>
 		<span ng-click="playAll()">
 			<span>{{ playlist.name }}</span>
-			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
+			<img class="play svg" alt="{{ ::('Play' | translate) }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
 	<ul class="track-list">
-		<li bindonce ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
+		<li ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
 			ng-init="song = entry.track"
 			id="{{ 'playlist-track-' + $index }}"
 			ui-on-drop="reorderDrop($data, $index)"
@@ -19,12 +19,12 @@
 				>
 					<div class="play-pause" />
 					<span class="muted">{{ $index + 1 }}.</span>
-					<div bo-text="song.artistName + ' - ' + song.title"></div>
+					<div>{{ ::(song.artistName + ' - ' + song.title) }}</div>
 				</div>
 				<button class="svg action icon-details" ng-click="showSidebar(song.id)"
-					bo-alt="'Details' | translate" bo-title="'Details' | translate"></button>
+					alt="{{ ::('Details' | translate) }}" title="{{ ::('Details' | translate) }}"></button>
 				<button class="svg action icon-close" ng-click="removeTrack($index)"
-					bo-alt="'Remove' | translate" bo-title="'Remove track from playlist' | translate"></button>
+					alt="{{ ::('Remove' | translate) }}" title="{{ ::('Remove track from playlist' | translate) }}"></button>
 			</div>
 		</li>
 	</ul>

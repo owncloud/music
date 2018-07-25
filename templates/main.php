@@ -3,7 +3,6 @@
 \OCP\Util::addScript('core', 'placeholder');
 
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
-\OCP\Util::addScript('music', 'vendor/angular-bindonce/bindonce.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
@@ -69,8 +68,8 @@
 
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
 				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
-				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
-				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
+				 alt  ="{{ ::('New music available. Click here to reload the music library.' | translate) }}"
+				 title="{{ ::('New music available. Click here to reload the music library.' | translate) }}" >
 
 		</div>
 

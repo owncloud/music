@@ -5,11 +5,9 @@
     "angular" : "1.6.8",
     "angular-gettext" : "",
     "angular-route" : "1.6.8",
-    "backbone": "",
     "javascript-detect-element-resize" : "",
     "js-cookie" : "",
     "restangular" : "",
-    "soundmanager": "",
-    "underscore" : ""
+    "soundmanager": ""
   }
 }

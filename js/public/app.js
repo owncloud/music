@@ -284,7 +284,7 @@ angular.module('Music').controller('DetailsController', [
 		$scope.formatDetailName = function(rawName) {
 			if (rawName === 'band' || rawName === 'albumartist') {
 				return 'album artist';
-			} else if (rawName === 'unsynchronised_lyric') {
+			} else if (rawName === 'unsynchronised_lyric' || rawName == 'unsynced lyrics') {
 				return 'lyrics';
 			} else if (rawName === 'tracktotal') {
 				return 'total tracks';

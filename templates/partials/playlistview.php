@@ -19,7 +19,7 @@
 				>
 					<div class="play-pause" />
 					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ ::(song.artistName + ' - ' + song.title) }}</div>
+					<div>{{ ::song.artistName }} - {{ ::song.title }}</div>
 				</div>
 				<button class="svg action icon-details" ng-click="showSidebar(song.id)"
 					alt="{{ ::('Details' | translate) }}" title="{{ ::('Details' | translate) }}"></button>

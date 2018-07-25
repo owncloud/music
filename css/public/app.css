@@ -451,6 +451,10 @@
 	margin-left: 5px;
 }
 
+#app-navigation li.drag-hover {
+	background-color: #f7f7f7;
+}
+
 .playlist:hover .actions {
 	display: block;
 	z-index: 200;

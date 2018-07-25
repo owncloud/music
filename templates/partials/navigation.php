@@ -23,7 +23,7 @@
 			ng-repeat="playlist in playlists"
 			ui-on-drop="dropOnPlaylist($data, playlist)"
 			drop-validate="allowDrop(playlist)"
-			drag-hover-class="active"
+			drag-hover-class="drag-hover"
 			title="{{ trackCountText(playlist) }}"></li>
 		<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">

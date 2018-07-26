@@ -537,7 +537,7 @@ class APIControllerTest extends ControllerTestUtility {
 			]
 		];
 
-		$response = $this->controller->albums(false /*fulltree*/);
+		$response = $this->controller->albums(null /*artist*/, false /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);
@@ -684,7 +684,7 @@ class APIControllerTest extends ControllerTestUtility {
 			]
 		];
 
-		$response = $this->controller->albums(true /*fulltree*/);
+		$response = $this->controller->albums(null /*artist*/, true /*fulltree*/);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);

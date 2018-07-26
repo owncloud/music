@@ -206,9 +206,13 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums($fulltree) {
+	public function albums($artist, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		$albums = $this->albumBusinessLayer->findAll($this->userId);
+		if ($artist) {
+			$albums = $this->albumBusinessLayer->findAllByArtist($artist, $this->userId);
+		} else {
+			$albums = $this->albumBusinessLayer->findAll($this->userId);
+		}
 		foreach ($albums as &$album) {
 			$artistIds = $album->getArtistIds();
 			$album = $album->toAPI($this->urlGenerator, $this->l10n);

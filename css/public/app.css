@@ -742,6 +742,7 @@ input.edit-list, input.new-list {
 	padding-top: 0;
 	padding-bottom: 6px;
 	padding-right: 12px;
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-align: right;

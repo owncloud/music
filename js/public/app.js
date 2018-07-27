@@ -260,7 +260,7 @@ angular.module('Music').controller('DetailsController', [
 			OC.Apps.hideAppSidebar();
 		});
 
-		$rootScope.$on('windowResized', adjustFixedPositions);
+		$rootScope.$on('resize', adjustFixedPositions);
 
 		$scope.$parent.$watch('currentTrack', function(track) {
 			// show details for the current track if the feature is enabled
@@ -511,7 +511,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	$scope.showSidebar = function(trackId) {
 		$rootScope.$emit('showDetails', trackId);
 		$timeout(function() {
-			onViewWidthChange();
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
 				$rootScope.$emit('scrollToTrack', trackId, 0);
@@ -521,7 +520,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
-		$timeout(onViewWidthChange, 300);
 	};
 
 	var controls = document.getElementById('controls');
@@ -564,63 +562,36 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 	}
 
-	function onViewWidthChange() {
-		var appViewWidth = $('#app-view').outerWidth();
-		// Ignore if the app view is not yet available
-		if (appViewWidth) {
-			// adjust controls bar width to not overlap with the scroll bar
+	$rootScope.$on('resize', function(event, appView) {
+		var appViewWidth = appView.outerWidth();
 
-			// Subtrack one pixel from the width because outerWidth() seems to
-			// return rounded integer value which may sometimes be slightly larger
-			// than the actual width of the #app-view.
-			$('#controls').css('width', appViewWidth - 1);
-			$('#controls').css('min-width', appViewWidth - 1);
+		// Adjust controls bar width to not overlap with the scroll bar.
+		// Subtrack one pixel from the width because outerWidth() seems to
+		// return rounded integer value which may sometimes be slightly larger
+		// than the actual width of the #app-view.
+		$('#controls').css('width', appViewWidth - 1);
+		$('#controls').css('min-width', appViewWidth - 1);
 
-			// anchor the alphabet navigation to the right edge of the app view
-			var appViewLeft = $('#app-view').offset().left;
-			var appViewRight = $window.innerWidth - appViewLeft - appViewWidth;
-			$('.alphabet-navigation').css('right', appViewRight);
+		// center the floating indicator box to the appView
+		var appViewLeft = appView.offset().left;
+		$('.emptycontent').css('margin-left', appViewLeft + (appViewWidth - $window.innerWidth) / 2);
 
-			// center the floating indicator box to the appView
-			$('.emptycontent').css('margin-left', (appViewLeft - appViewRight) / 2);
-
-			// Set the app-content classs according to window and view width. This has
-			// impact on the overall layout of the app. See mobile.css and tablet.css.
-			if ($window.innerWidth <= 570 || appViewWidth <= 500) {
-				setMasterLayout(['mobile', 'portrait']);
-			}
-			else if ($window.innerWidth <= 768) {
-				setMasterLayout(['mobile']);
-			}
-			else if (appViewWidth <= 690) {
-				setMasterLayout(['tablet', 'portrait']);
-			}
-			else if (appViewWidth <= 1050) {
-				setMasterLayout(['tablet']);
-			}
-			else {
-				setMasterLayout([]);
-			}
+		// Set the app-content class according to window and view width. This has
+		// impact on the overall layout of the app. See mobile.css and tablet.css.
+		if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+			setMasterLayout(['mobile', 'portrait']);
 		}
-	}
-	// Watch browser window size changes
-	$($window).resize(function() {
-		// A small delay is needed here on ownCloud 10.0, otherwise #app-view does not
-		// yet have its final width. On Nextcloud 13 the delay would not be necessary.
-		$timeout(onViewWidthChange, 300);
-		$rootScope.$emit('windowResized');
-	});
-	// Watch app view width changes within angularjs digest cycles
-	$scope.$watch(
-		function(scope) {
-			return $('#app-view').outerWidth();
-		},
-		onViewWidthChange
-	);
-	// Watch view switching being completed
-	$rootScope.$watch('loading', function(isLoading) {
-		if (!isLoading) {
-			$timeout(onViewWidthChange);
+		else if ($window.innerWidth <= 768) {
+			setMasterLayout(['mobile']);
+		}
+		else if (appViewWidth <= 690) {
+			setMasterLayout(['tablet', 'portrait']);
+		}
+		else if (appViewWidth <= 1050) {
+			setMasterLayout(['tablet']);
+		}
+		else {
+			setMasterLayout([]);
 		}
 	});
 
@@ -1614,29 +1585,24 @@ angular.module('Music').directive('ngEnter', function () {
 	};
 });
 
-angular.module('Music').directive('resize', ['$window', '$rootScope', function($window, $rootScope) {
+angular.module('Music').directive('resize', ['$window', '$rootScope', '$timeout',
+function($window, $rootScope, $timeout) {
 	return function(scope, element, attrs, ctrl) {
-		var resizeNavigation = function() {
-			var height = $window.innerHeight;
+		function resizeNavigation() {
+			var appView = $('#app-view');
 
 			// top and button padding of 5px each
-			height = height - 10;
-			// remove playerbar height if started
-			if(scope.started) {
-				height = height - 65;
-			}
-			// remove header height
-			height = height - 45;
+			var height = appView.height() - 10;
 
 			element.css('height', height);
 
 			// Hide or replace every second letter on short screens
 			if(height < 300) {
-				$(".alphabet-navigation a").removeClass("dotted").addClass("stripped");
+				element.find("a").removeClass("dotted").addClass("stripped");
 			} else if(height < 500) {
-				$(".alphabet-navigation a").removeClass("stripped").addClass("dotted");
+				element.find("a").removeClass("stripped").addClass("dotted");
 			} else {
-				$(".alphabet-navigation a").removeClass("dotted stripped");
+				element.find("a").removeClass("dotted stripped");
 			}
 
 			if(height < 300) {
@@ -1644,19 +1610,33 @@ angular.module('Music').directive('resize', ['$window', '$rootScope', function($
 			} else {
 				element.css('line-height', Math.floor(height/26) + 'px');
 			}
-		};
+
+			// anchor the alphabet navigation to the right edge of the app view
+			var appViewRight = $window.innerWidth - appView.offset().left - appView.innerWidth();
+			element.css('right', appViewRight);
+		}
 
 		resizeNavigation();
 
 		// trigger resize on window resize and player status changes
 		var unsubscribeFuncs = [
-			$rootScope.$on('windowResized', resizeNavigation),
-			$rootScope.$watch('started', resizeNavigation)
+			$rootScope.$on('resize', resizeNavigation),
+			$rootScope.$watch('started', function() {
+				$timeout(resizeNavigation);
+			})
 		];
 
 		// unsubscribe listeners when the scope is destroyed
 		scope.$on('$destroy', function () {
 			_.each(unsubscribeFuncs, function(func) { func(); });
+		});
+	};
+}]);
+
+angular.module('Music').directive('resizeNotifier', ['$rootScope', function($rootScope) {
+	return function(scope, element, attrs, ctrl) {
+		element.resize(function() {
+			$rootScope.$emit('resize', element);
 		});
 	};
 }]);

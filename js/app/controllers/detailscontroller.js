@@ -116,7 +116,7 @@ angular.module('Music').controller('DetailsController', [
 			OC.Apps.hideAppSidebar();
 		});
 
-		$rootScope.$on('windowResized', adjustFixedPositions);
+		$rootScope.$on('resize', adjustFixedPositions);
 
 		$scope.$parent.$watch('currentTrack', function(track) {
 			// show details for the current track if the feature is enabled

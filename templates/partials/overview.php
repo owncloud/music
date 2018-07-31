@@ -1,6 +1,6 @@
 <div id="overview"  ng-show="!loading && !loadingCollection">
-	<div class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit" ng-init="letter = artist.name.substr(0,1).toUpperCase()">
-		<span id="{{ ::letter }}" ng-if="letterAvailable[letter]"></span>
+	<div class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
+		<span id="{{ ::artist.alphabetNavigationTarget }}" ng-if="artist.alphabetNavigationTarget"></span>
 		<h1 id="artist-{{ ::artist.id }}">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span >{{ ::artist.name }}</span>

@@ -390,7 +390,10 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			var letter = artist.name.substr(0,1).toUpperCase();
 
 			if ($scope.letterAvailable.hasOwnProperty(letter)) {
-				$scope.letterAvailable[letter] = true;
+				if (!$scope.letterAvailable[letter]) {
+					artist.alphabetNavigationTarget = letter;
+					$scope.letterAvailable[letter] = true;
+				}
 			}
 		}
 	}
@@ -405,7 +408,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
 
-			updateNavigationLetters(artists);
+			updateNavigationLetters($scope.artists);
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.

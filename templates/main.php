@@ -35,7 +35,9 @@
 	<script type="text/ng-template" id="settingsview.html">
 		<?php print_unescaped($this->inc('partials/settingsview')) ?>
 	</script>
-
+	<script type="text/ng-template" id="alphabetnavigation.html">
+		<?php print_unescaped($this->inc('partials/alphabetnavigation')) ?>
+	</script>
 
 	<div ng-controller="MainController">
 		<?php print_unescaped($this->inc('partials/navigation')) ?>

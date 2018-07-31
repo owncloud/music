@@ -370,45 +370,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
 	};
 
-	$scope.letters = [
-		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-		'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-		'U', 'V', 'W', 'X', 'Y', 'Z'
-	];
-
-	$scope.letterAvailable = {};
-	function resetNavigationLetters() {
-		for(var i in $scope.letters) {
-			$scope.letterAvailable[$scope.letters[i]] = false;
-		}
-	}
-	resetNavigationLetters();
-
-	function updateNavigationLetters(artists) {
-		for (var i=0; i < artists.length; i++) {
-			var artist = artists[i];
-			var letter = artist.name.substr(0,1).toUpperCase();
-
-			if ($scope.letterAvailable.hasOwnProperty(letter)) {
-				if (!$scope.letterAvailable[letter]) {
-					artist.alphabetNavigationTarget = letter;
-					$scope.letterAvailable[letter] = true;
-				}
-			}
-		}
-	}
-
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
-		resetNavigationLetters();
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
-
-			updateNavigationLetters($scope.artists);
+			addAlphabetNavigationTargets($scope.artists);
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.
@@ -444,6 +414,20 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 
 	};
+
+	function addAlphabetNavigationTargets(artists) {
+		for (var i = 0; i < artists.length; ++i) {
+			var letter = naviLetterForArtist(artists[i]);
+			var prevArtistLetter = (i === 0) ? '' : naviLetterForArtist(artists[i-1]);
+			if (letter != prevArtistLetter) {
+				artists[i].alphabetNavigationTarget = letter;
+			}
+		}
+	}
+
+	function naviLetterForArtist(artist) {
+		return artist.name.substr(0,1).toUpperCase();
+	}
 
 	// initial loading of artists
 	$scope.update();
@@ -1563,6 +1547,91 @@ angular.module('Music').directive('albumart', [function() {
 }]);
 
 
+angular.module('Music').directive('alphabetNavigation', ['$window', '$rootScope', '$timeout',
+function($window, $rootScope, $timeout) {
+	return {
+		restrict: 'E',
+		scope: {
+			items: '=',
+		},
+		templateUrl: 'alphabetnavigation.html',
+		replace: true,
+		link: function(scope, element, attrs, ctrl) {
+
+			scope.letters = [
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+				'U', 'V', 'W', 'X', 'Y', 'Z'
+			];
+			scope.letterAvailable = {};
+			updateAvailableLetters();
+
+			function updateAvailableLetters() {
+				// init all available letters to false
+				for (var i=0; i < scope.letters.length; i++) {
+					scope.letterAvailable[scope.letters[i]] = false;
+				}
+
+				// update available letters to match current items
+				for (i=0; i < scope.items.length; i++) {
+					var name = scope.items[i].name;
+					var letter = name.substr(0,1).toUpperCase();
+
+					if (scope.letterAvailable.hasOwnProperty(letter)) {
+						scope.letterAvailable[letter] = true;
+					}
+				}
+			}
+
+			function onResize(event, appView) {
+				// top and button padding of 5px each
+				var height = appView.height() - 10;
+
+				element.css('height', height);
+
+				// Hide or replace every second letter on short screens
+				if (height < 300) {
+					element.find("a").removeClass("dotted").addClass("stripped");
+				} else if (height < 500) {
+					element.find("a").removeClass("stripped").addClass("dotted");
+				} else {
+					element.find("a").removeClass("dotted stripped");
+				}
+
+				if (height < 300) {
+					element.css('line-height', Math.floor(height/13) + 'px');
+				} else {
+					element.css('line-height', Math.floor(height/26) + 'px');
+				}
+
+				// anchor the alphabet navigation to the right edge of the app view
+				var appViewRight = $window.innerWidth - appView.offset().left - appView.innerWidth();
+				element.css('right', appViewRight);
+			}
+
+			function onPlayerBarShownOrHidden() {
+				// React asynchronously so that angularjs bindings have had chance
+				// to update the properties of the #app-view element.
+				$timeout(function() {
+					onResize(null, $('#app-view'));
+				});
+			}
+
+			// trigger resize on #app-view resize and player status changes
+			var unsubscribeFuncs = [
+				$rootScope.$on('artistsLoaded', updateAvailableLetters),
+				$rootScope.$on('resize', onResize),
+				$rootScope.$watch('started', onPlayerBarShownOrHidden)
+			];
+
+			// unsubscribe listeners when the scope is destroyed
+			scope.$on('$destroy', function () {
+				_.each(unsubscribeFuncs, function(func) { func(); });
+			});
+		}
+	};
+}]);
+
 angular.module('Music').directive('navigationItem', function() {
 	return {
 		scope: {
@@ -1587,57 +1656,6 @@ angular.module('Music').directive('ngEnter', function () {
 		});
 	};
 });
-
-angular.module('Music').directive('resize', ['$window', '$rootScope', '$timeout',
-function($window, $rootScope, $timeout) {
-	return function(scope, element, attrs, ctrl) {
-
-		function onResize(event, appView) {
-			// top and button padding of 5px each
-			var height = appView.height() - 10;
-
-			element.css('height', height);
-
-			// Hide or replace every second letter on short screens
-			if (height < 300) {
-				element.find("a").removeClass("dotted").addClass("stripped");
-			} else if (height < 500) {
-				element.find("a").removeClass("stripped").addClass("dotted");
-			} else {
-				element.find("a").removeClass("dotted stripped");
-			}
-
-			if (height < 300) {
-				element.css('line-height', Math.floor(height/13) + 'px');
-			} else {
-				element.css('line-height', Math.floor(height/26) + 'px');
-			}
-
-			// anchor the alphabet navigation to the right edge of the app view
-			var appViewRight = $window.innerWidth - appView.offset().left - appView.innerWidth();
-			element.css('right', appViewRight);
-		}
-
-		function onPlayerBarShownOrHidden() {
-			// React asynchronously so that angularjs bindings have had chance
-			// to update the properties of the #app-view element.
-			$timeout(function() {
-				onResize(null, $('#app-view'));
-			});
-		}
-
-		// trigger resize on #app-view resize and player status changes
-		var unsubscribeFuncs = [
-			$rootScope.$on('resize', onResize),
-			$rootScope.$watch('started', onPlayerBarShownOrHidden)
-		];
-
-		// unsubscribe listeners when the scope is destroyed
-		scope.$on('$destroy', function () {
-			_.each(unsubscribeFuncs, function(func) { func(); });
-		});
-	};
-}]);
 
 angular.module('Music').directive('resizeNotifier', ['$rootScope', function($rootScope) {
 	return function(scope, element, attrs, ctrl) {

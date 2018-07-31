@@ -14,24 +14,23 @@
 angular.module('Music').directive('resize', ['$window', '$rootScope', '$timeout',
 function($window, $rootScope, $timeout) {
 	return function(scope, element, attrs, ctrl) {
-		function resizeNavigation() {
-			var appView = $('#app-view');
 
+		function onResize(event, appView) {
 			// top and button padding of 5px each
 			var height = appView.height() - 10;
 
 			element.css('height', height);
 
 			// Hide or replace every second letter on short screens
-			if(height < 300) {
+			if (height < 300) {
 				element.find("a").removeClass("dotted").addClass("stripped");
-			} else if(height < 500) {
+			} else if (height < 500) {
 				element.find("a").removeClass("stripped").addClass("dotted");
 			} else {
 				element.find("a").removeClass("dotted stripped");
 			}
 
-			if(height < 300) {
+			if (height < 300) {
 				element.css('line-height', Math.floor(height/13) + 'px');
 			} else {
 				element.css('line-height', Math.floor(height/26) + 'px');
@@ -42,14 +41,18 @@ function($window, $rootScope, $timeout) {
 			element.css('right', appViewRight);
 		}
 
-		resizeNavigation();
+		function onPlayerBarShownOrHidden() {
+			// React asynchronously so that angularjs bindings have had chance
+			// to update the properties of the #app-view element.
+			$timeout(function() {
+				onResize(null, $('#app-view'));
+			});
+		}
 
-		// trigger resize on window resize and player status changes
+		// trigger resize on #app-view resize and player status changes
 		var unsubscribeFuncs = [
-			$rootScope.$on('resize', resizeNavigation),
-			$rootScope.$watch('started', function() {
-				$timeout(resizeNavigation);
-			})
+			$rootScope.$on('resize', onResize),
+			$rootScope.$watch('started', onPlayerBarShownOrHidden)
 		];
 
 		// unsubscribe listeners when the scope is destroyed

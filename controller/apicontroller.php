@@ -317,42 +317,6 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function filePath($fileId) {
-		$nodes = $this->userFolder->getById($fileId);
-		if (\count($nodes) == 0) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		} else {
-			$node = $nodes[0];
-			$path = $this->userFolder->getRelativePath($node->getPath());
-			// URL encode each part of the file path
-			$path = \join('/', \array_map('rawurlencode', \explode('/', $path)));
-			return new JSONResponse(['path' => $path]);
-		}
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * DEPRECATED
-	 */
-	public function fileWebDavUrl($fileId) {
-		$nodes = $this->userFolder->getById($fileId);
-		if (\count($nodes) == 0) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		} else {
-			$node = $nodes[0];
-			$relativePath = $this->userFolder->getRelativePath($node->getPath());
-			// URL encode each part of the file path
-			$relativePath = \join('/', \array_map('rawurlencode', \explode('/', $relativePath)));
-			$url = $this->urlGenerator->getAbsoluteUrl('remote.php/webdav' . $relativePath);
-			return new JSONResponse(['url' => $url]);
-		}
-	}
-
-	/**
-	 * @NoAdminRequired
 	 */
 	public function getScanState() {
 		return new JSONResponse([
@@ -415,6 +379,23 @@ class ApiController extends Controller {
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'file not found');
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function filePath($fileId) {
+		$nodes = $this->userFolder->getById($fileId);
+		if (\count($nodes) == 0) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		} else {
+			$node = $nodes[0];
+			$path = $this->userFolder->getRelativePath($node->getPath());
+			// URL encode each part of the file path
+			$path = \join('/', \array_map('rawurlencode', \explode('/', $path)));
+			return new JSONResponse(['path' => $path]);
+		}
 	}
 
 	/**

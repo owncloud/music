@@ -229,6 +229,7 @@ Beside those mentioned resources following additional resources are implemented:
 * `/api/cover/{hash}`
 * `/api/file/{fileId}`
 * `/api/file/{fileId}/info`
+* `/api/file/{fileId}/details`
 * `/api/file/{fileId}/path`
 * `/api/file/{fileId}/download`
 * `/api/scan`

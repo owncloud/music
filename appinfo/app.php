@@ -78,7 +78,6 @@ $loadEmbeddedMusicPlayer = function () use ($appName) {
 	\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
 	\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');
 	\OCP\Util::addScript($appName, 'vendor/js-cookie/src/js.cookie');
-	\OCP\Util::addScript($appName, 'app/playerwrapper');
 	\OCP\Util::addScript($appName, 'public/files-music-player');
 
 	\OCP\Util::addStyle($appName, 'public/files-music-player');

@@ -5,7 +5,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2018
  */
 
 module.exports = function(grunt) {
@@ -23,7 +25,8 @@ module.exports = function(grunt) {
 		meta: {
 			pkg: grunt.file.readJSON('package.json'),
 			version: '<%= meta.pkg.version %>',
-			production: '../js/public/'
+			productionJs: '../js/public/',
+			productionCss: '../css/public/'
 		},
 
 		concat: {
@@ -31,26 +34,33 @@ module.exports = function(grunt) {
 				// remove license headers
 				stripBanners: true
 			},
-			javascript: {
+			appJs: {
 				src: [
 					'../js/config/app.js',
 					'../js/app/**/*.js',
 					'../js/l10n/*.js'
 				],
-				dest: '<%= meta.production %>app.js'
+				dest: '<%= meta.productionJs %>app.js'
+			},
+			embeddedJs: {
+				src: [
+					'../js/embedded/*.js',
+					'../js/app/playerwrapper.js'
+				],
+				dest: '<%= meta.productionJs %>files-music-player.js'
 			},
 			style: {
 				src: [
 					'../css/*.css'
 				],
-				dest: '../css/public/app.css'
+				dest: '<%= meta.productionCss %>app.css'
 			}
 		},
 
 		wrap: {
 			app: {
-				src: ['<%= meta.production %>app.js'],
-				dest: '<%= meta.production %>app.js',
+				src: ['<%= meta.productionJs %>app.js'],
+				dest: '<%= meta.productionJs %>app.js',
 				wrapper: [
 					'(function(angular, $, oc_requesttoken, undefined){\n\n\'use strict\';\n\n',
 					'\n})(angular, jQuery, oc_requesttoken);'
@@ -63,11 +73,12 @@ module.exports = function(grunt) {
 				'Gruntfile.js',
 				'../js/app/**/*.js',
 				'../js/config/*.js',
+				'../js/embedded/*.js',
 				'../js/l10n/*.js',
 				'../tests/js/unit/**/*.js',
 				'../js/public/**/*.js',
 				// exclusions
-				'!../js/public/app.js'
+				'!../js/public/*.js'
 			],
 			options: {
 				laxbreak: true // switch off jshint's stupid default rule for location of linebreaks
@@ -81,8 +92,9 @@ module.exports = function(grunt) {
 				files: [
 					'../js/app/**/*.js',
 					'../js/config/*.js',
+					'../js/embedded/*.js',
 					'../js/l10n/*.js',
-                    '../css/*.css'
+					'../css/*.css'
 				],
 				tasks: ['build']
 			},

@@ -86,6 +86,21 @@ angular.module('Music').controller('AllTracksViewController', [
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
+				setUpAlphabetNavigation();
+			}
+		}
+
+		function setUpAlphabetNavigation() {
+			$scope.alphabetNavigationTargets = {};
+			var prevLetter = '';
+
+			for (var i = 0; i < $scope.tracks.length; ++i) {
+				var track = $scope.tracks[i].track;
+				var letter = track.artistName.substr(0,1).toUpperCase();
+				if (letter != prevLetter) {
+					prevLetter = letter;
+					$scope.alphabetNavigationTargets[letter] = 'track-' + track.id;
+				}
 			}
 		}
 

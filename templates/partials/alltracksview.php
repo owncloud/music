@@ -11,6 +11,8 @@
 		play-track="playTrack"
 		show-track-details="showSidebar"
 		get-draggable="getDraggable"
-		details-text="'Details' | translate"
-	/>
+		details-text="'Details' | translate">
+	</track-list>
 </div>
+
+<alphabet-navigation targets="alphabetNavigationTargets" ng-if="tracks"></alphabet-navigation>

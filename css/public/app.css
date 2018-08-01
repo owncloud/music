@@ -863,6 +863,10 @@ input.edit-list, input.new-list {
  * View specific rules for the track-list directive in the 'All tracks' view
  */
 
+#alltracks-area .track-list {
+	margin-right: 50px;
+}
+
 #alltracks-area .track-list li > div > span {
 	white-space: normal;
 }

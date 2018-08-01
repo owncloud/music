@@ -378,7 +378,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
-			addAlphabetNavigationTargets($scope.artists);
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.
@@ -414,20 +413,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 
 	};
-
-	function addAlphabetNavigationTargets(artists) {
-		for (var i = 0; i < artists.length; ++i) {
-			var letter = naviLetterForArtist(artists[i]);
-			var prevArtistLetter = (i === 0) ? '' : naviLetterForArtist(artists[i-1]);
-			if (letter != prevArtistLetter) {
-				artists[i].alphabetNavigationTarget = letter;
-			}
-		}
-	}
-
-	function naviLetterForArtist(artist) {
-		return artist.name.substr(0,1).toUpperCase();
-	}
 
 	// initial loading of artists
 	$scope.update();
@@ -747,7 +732,7 @@ angular.module('Music').controller('OverviewController', [
 		$rootScope.currentView = '#';
 
 		var INCREMENTAL_LOAD_STEP = 10;
-		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
+		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];
@@ -887,6 +872,19 @@ angular.module('Music').controller('OverviewController', [
 			return $rootScope.playingView !== null;
 		}
 
+		function setUpAlphabetNavigation() {
+			$scope.alphabetNavigationTargets = {};
+			var prevLetter = '';
+
+			for (var i = 0; i < $scope.artists.length; ++i) {
+				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
+				if (letter != prevLetter) {
+					prevLetter = letter;
+					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;
+				}
+			}
+		}
+
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -915,6 +913,11 @@ angular.module('Music').controller('OverviewController', [
 			$rootScope.loading = false;
 		}
 
+		/**
+		 * Increase number of shown artists aynchronously step-by-step until
+		 * they are all visible. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
 		function showMore() {
 			// show more entries only if the view is not already (being) deactivated
 			if ($rootScope.currentView && $scope.$parent) {
@@ -930,17 +933,16 @@ angular.module('Music').controller('OverviewController', [
 					} else {
 						$rootScope.loading = false;
 					}
+					setUpAlphabetNavigation();
 				}
 			}
 		}
 
-		// initialize either immedately or once the parent view has finished loading the collection
-		if ($scope.$parent.artists) {
-			$timeout(showMore);
-		}
-
-		subscribe('artistsLoaded', showMore);
-
+		/**
+		 * Decrease number of shown artists aynchronously step-by-step until
+		 * they are all removed. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
 		function showLess() {
 			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
 			if ($scope.incrementalLoadLimit > 0) {
@@ -950,6 +952,18 @@ angular.module('Music').controller('OverviewController', [
 				$rootScope.$emit('viewDeactivated');
 			}
 		}
+
+		// Start making artists visible immediatedly if the artists are already loaded.
+		// Otherwise it happens on the 'artistsLoaded' event handler.
+		if ($scope.$parent.artists) {
+			showMore();
+		}
+
+		subscribe('artistsLoaded', function() {
+			// Start the anynchronus process of making aritsts visible
+			$scope.incrementalLoadLimit = 0;
+			showMore();
+		});
 
 		subscribe('deactivateView', function() {
 			$timeout(showLess);
@@ -1552,7 +1566,7 @@ function($window, $rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
-			items: '=',
+			targets: '<',
 		},
 		templateUrl: 'alphabetnavigation.html',
 		replace: true,
@@ -1563,25 +1577,6 @@ function($window, $rootScope, $timeout) {
 				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 				'U', 'V', 'W', 'X', 'Y', 'Z'
 			];
-			scope.letterAvailable = {};
-			updateAvailableLetters();
-
-			function updateAvailableLetters() {
-				// init all available letters to false
-				for (var i=0; i < scope.letters.length; i++) {
-					scope.letterAvailable[scope.letters[i]] = false;
-				}
-
-				// update available letters to match current items
-				for (i=0; i < scope.items.length; i++) {
-					var name = scope.items[i].name;
-					var letter = name.substr(0,1).toUpperCase();
-
-					if (scope.letterAvailable.hasOwnProperty(letter)) {
-						scope.letterAvailable[letter] = true;
-					}
-				}
-			}
 
 			function onResize(event, appView) {
 				// top and button padding of 5px each
@@ -1619,7 +1614,6 @@ function($window, $rootScope, $timeout) {
 
 			// trigger resize on #app-view resize and player status changes
 			var unsubscribeFuncs = [
-				$rootScope.$on('artistsLoaded', updateAvailableLetters),
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden)
 			];

@@ -19,7 +19,7 @@ angular.module('Music').controller('OverviewController', [
 		$rootScope.currentView = '#';
 
 		var INCREMENTAL_LOAD_STEP = 10;
-		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
+		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];
@@ -159,6 +159,19 @@ angular.module('Music').controller('OverviewController', [
 			return $rootScope.playingView !== null;
 		}
 
+		function setUpAlphabetNavigation() {
+			$scope.alphabetNavigationTargets = {};
+			var prevLetter = '';
+
+			for (var i = 0; i < $scope.artists.length; ++i) {
+				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
+				if (letter != prevLetter) {
+					prevLetter = letter;
+					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;
+				}
+			}
+		}
+
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -187,6 +200,11 @@ angular.module('Music').controller('OverviewController', [
 			$rootScope.loading = false;
 		}
 
+		/**
+		 * Increase number of shown artists aynchronously step-by-step until
+		 * they are all visible. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
 		function showMore() {
 			// show more entries only if the view is not already (being) deactivated
 			if ($rootScope.currentView && $scope.$parent) {
@@ -202,17 +220,16 @@ angular.module('Music').controller('OverviewController', [
 					} else {
 						$rootScope.loading = false;
 					}
+					setUpAlphabetNavigation();
 				}
 			}
 		}
 
-		// initialize either immedately or once the parent view has finished loading the collection
-		if ($scope.$parent.artists) {
-			$timeout(showMore);
-		}
-
-		subscribe('artistsLoaded', showMore);
-
+		/**
+		 * Decrease number of shown artists aynchronously step-by-step until
+		 * they are all removed. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
 		function showLess() {
 			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
 			if ($scope.incrementalLoadLimit > 0) {
@@ -222,6 +239,18 @@ angular.module('Music').controller('OverviewController', [
 				$rootScope.$emit('viewDeactivated');
 			}
 		}
+
+		// Start making artists visible immediatedly if the artists are already loaded.
+		// Otherwise it happens on the 'artistsLoaded' event handler.
+		if ($scope.$parent.artists) {
+			showMore();
+		}
+
+		subscribe('artistsLoaded', function() {
+			// Start the anynchronus process of making aritsts visible
+			$scope.incrementalLoadLimit = 0;
+			showMore();
+		});
 
 		subscribe('deactivateView', function() {
 			$timeout(showLess);

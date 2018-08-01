@@ -16,7 +16,7 @@ function($window, $rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
-			items: '=',
+			targets: '<',
 		},
 		templateUrl: 'alphabetnavigation.html',
 		replace: true,
@@ -27,25 +27,6 @@ function($window, $rootScope, $timeout) {
 				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 				'U', 'V', 'W', 'X', 'Y', 'Z'
 			];
-			scope.letterAvailable = {};
-			updateAvailableLetters();
-
-			function updateAvailableLetters() {
-				// init all available letters to false
-				for (var i=0; i < scope.letters.length; i++) {
-					scope.letterAvailable[scope.letters[i]] = false;
-				}
-
-				// update available letters to match current items
-				for (i=0; i < scope.items.length; i++) {
-					var name = scope.items[i].name;
-					var letter = name.substr(0,1).toUpperCase();
-
-					if (scope.letterAvailable.hasOwnProperty(letter)) {
-						scope.letterAvailable[letter] = true;
-					}
-				}
-			}
 
 			function onResize(event, appView) {
 				// top and button padding of 5px each
@@ -83,7 +64,6 @@ function($window, $rootScope, $timeout) {
 
 			// trigger resize on #app-view resize and player status changes
 			var unsubscribeFuncs = [
-				$rootScope.$on('artistsLoaded', updateAvailableLetters),
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden)
 			];

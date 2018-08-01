@@ -1,6 +1,5 @@
 <div id="overview"  ng-show="!loading && !loadingCollection">
 	<div class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
-		<span id="{{ ::artist.alphabetNavigationTarget }}" ng-if="artist.alphabetNavigationTarget"></span>
 		<h1 id="artist-{{ ::artist.id }}">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span >{{ ::artist.name }}</span>
@@ -28,10 +27,10 @@
 					collapse-limit="6"
 					more-text="'Show all {{ album.tracks.length }} songs …' | translate"
 					less-text="'Show less …' | translate"
-					details-text="'Details' | translate"
-			/>
+					details-text="'Details' | translate">
+			</track-list>
 		</div>
 	</div>
 
-	<alphabet-navigation ng-if="artists" items="artists"/>
+	<alphabet-navigation ng-if="artists" targets="alphabetNavigationTargets"></alphabet-navigation>
 </div>

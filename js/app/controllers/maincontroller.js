@@ -56,7 +56,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
 			$scope.artists = libraryService.getAllArtists();
-			addAlphabetNavigationTargets($scope.artists);
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.
@@ -92,20 +91,6 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		});
 
 	};
-
-	function addAlphabetNavigationTargets(artists) {
-		for (var i = 0; i < artists.length; ++i) {
-			var letter = naviLetterForArtist(artists[i]);
-			var prevArtistLetter = (i === 0) ? '' : naviLetterForArtist(artists[i-1]);
-			if (letter != prevArtistLetter) {
-				artists[i].alphabetNavigationTarget = letter;
-			}
-		}
-	}
-
-	function naviLetterForArtist(artist) {
-		return artist.name.substr(0,1).toUpperCase();
-	}
 
 	// initial loading of artists
 	$scope.update();

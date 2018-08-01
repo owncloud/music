@@ -1,3 +1,15 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pellaeon Lin <pellaeon@cnmc.tw>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pellaeon Lin 2015
+ * @copyright Pauli Järvinen 2016 - 2018
+ */
+
 var PlayerWrapper = function() {
 	this.underlyingPlayer = 'aurora';
 	this.aurora = {};

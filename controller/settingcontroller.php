@@ -75,7 +75,7 @@ class SettingController extends Controller {
 			if ($path[\strlen($path)-1] !== '/') {
 				$path .= '/';
 			}
-			$prevPath = $this->configManager->getUserValue($this->userId, $this->appname, 'path');
+			$prevPath = $this->getPath();
 			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
 			$success = true;
 			$this->scanner->updatePath($prevPath, $path, $this->userId);
@@ -88,11 +88,29 @@ class SettingController extends Controller {
 	 */
 	public function getAll() {
 		return [
-			'path' => $this->configManager->getUserValue($this->userId, $this->appname, 'path'),
-			'ampacheUrl' => \str_replace('/server/xml.server.php', '', $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache'))),
-			'ampacheKeys' => $this->ampacheUserMapper->getAll($this->userId),
-			'appVersion' => \OCP\App::getAppVersion($this->appname)
+			'path' => $this->getPath(),
+			'ampacheUrl' => $this->getAmpacheUrl(),
+			'ampacheKeys' => $this->getAmpacheKeys(),
+			'appVersion' => $this->getAppVersion()
 		];
+	}
+
+	private function getPath() {
+		$path = $this->configManager->getUserValue($this->userId, $this->appname, 'path');
+		return $path ?: '/';
+	}
+
+	private function getAmpacheUrl() {
+		return \str_replace('/server/xml.server.php', '',
+				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache')));
+	}
+
+	private function getAmpacheKeys() {
+		return $this->ampacheUserMapper->getAll($this->userId);
+	}
+
+	private function getAppVersion() {
+		return \OCP\App::getAppVersion($this->appname);
 	}
 
 	/**

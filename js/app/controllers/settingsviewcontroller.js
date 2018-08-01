@@ -136,7 +136,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$timeout(function() {
 			Restangular.one('settings').get().then(function (value) {
-				$scope.settings=value;
+				$scope.settings = value;
 				$rootScope.loading = false;
 			});
 		});

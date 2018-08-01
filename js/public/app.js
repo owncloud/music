@@ -1917,7 +1917,7 @@ angular.module('Music').filter('playTime', function() {
 		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	};
 });
-var PlayerWrapper = function() {
+function PlayerWrapper() {
 	this.underlyingPlayer = 'aurora';
 	this.aurora = {};
 	this.sm2 = {};
@@ -1926,7 +1926,7 @@ var PlayerWrapper = function() {
 	this.volume = 100;
 
 	return this;
-};
+}
 
 PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
 

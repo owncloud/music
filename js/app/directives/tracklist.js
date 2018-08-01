@@ -218,6 +218,7 @@ function ($rootScope, $interpolate) {
 				[].forEach.call(listeners, function (el) {
 					el();
 				});
+				element.remove();
 			});
 
 		}

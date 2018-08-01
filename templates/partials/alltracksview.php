@@ -15,4 +15,5 @@
 	</track-list>
 </div>
 
-<alphabet-navigation targets="alphabetNavigationTargets" ng-if="tracks"></alphabet-navigation>
+<alphabet-navigation targets="alphabetNavigationTargets" scroll-offset="scrollOffset()" ng-if="tracks">
+</alphabet-navigation>

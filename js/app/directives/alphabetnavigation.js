@@ -17,6 +17,7 @@ function($window, $rootScope, $timeout) {
 		restrict: 'E',
 		scope: {
 			targets: '<',
+			scrollOffset: '<'
 		},
 		templateUrl: 'alphabetnavigation.html',
 		replace: true,

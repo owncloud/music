@@ -32,5 +32,6 @@
 		</div>
 	</div>
 
-	<alphabet-navigation ng-if="artists" targets="alphabetNavigationTargets"></alphabet-navigation>
+	<alphabet-navigation ng-if="artists" targets="alphabetNavigationTargets" scroll-offset="scrollOffset()">
+	</alphabet-navigation>
 </div>

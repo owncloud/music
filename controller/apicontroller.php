@@ -18,6 +18,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Http\RedirectResponse;
 use \OCP\Files\Folder;
 use \OCP\IL10N;
 use \OCP\IRequest;
@@ -430,10 +431,15 @@ class ApiController extends Controller {
 	 */
 	public function cover($albumIdOrSlug) {
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
-		$coverData = $this->coverHelper->getCover($albumId, $this->userId, $this->userFolder);
+		$coverAndHash = $this->coverHelper->getCoverAndHash($albumId, $this->userId, $this->userFolder);
 
-		if ($coverData !== null) {
-			return new FileResponse($coverData);
+		if ($coverAndHash['hash'] !== null) {
+			// Cover is in cache. Return a redirection response so that the client
+			// will fetch the content through a cacheable route.
+			$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
+			return new RedirectResponse($link);
+		} else if ($coverData !== null) {
+			return new FileResponse($coverAndHash['data']);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

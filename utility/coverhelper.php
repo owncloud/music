@@ -52,15 +52,36 @@ class CoverHelper {
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	public function getCover($albumId, $userId, $rootFolder) {
+		$dataAndHash = $this->getCoverAndHash($albumId, $userId, $rootFolder);
+		return $dataAndHash['data'];
+	}
+
+	/**
+	 * Get cover image of the album along with its hash
+	 * 
+	 * The hash is non-null only in case the cover is/was cached.
+	 *
+	 * @param int $albumId
+	 * @param string $userId
+	 * @param Folder $rootFolder
+	 * @return array Dictionary with keys 'data' and 'hash'
+	 */
+	public function getCoverAndHash($albumId, $userId, $rootFolder) {
 		$hash = $this->getCachedCoverHash($albumId, $userId);
-		$response = ($hash === null) ? null : $this->getCoverFromCache($hash, $userId);
-		if ($response === null) {
-			$response = $this->readCover($albumId, $userId, $rootFolder);
-			if ($response !== null) {
-				$this->addCoverToCache($albumId, $userId, $response);
+		$data = null;
+
+		if ($hash !== null) {
+			$data = $this->getCoverFromCache($hash, $userId);
+		}
+		if ($data === null) {
+			$hash = null;
+			$data = $this->readCover($albumId, $userId, $rootFolder);
+			if ($data !== null) {
+				$hash = $this->addCoverToCache($albumId, $userId, $data);
 			}
 		}
-		return $response;
+
+		return ['data' => $data, 'hash' => $hash];
 	}
 
 	/**
@@ -116,6 +137,7 @@ class CoverHelper {
 	 * @param int $albumId
 	 * @param string $userId
 	 * @param array $coverData
+	 * @return string|null Hash of the cached cover
 	 */
 	private function addCoverToCache($albumId, $userId, $coverData) {
 		$mime = $coverData['mimetype'];
@@ -141,8 +163,11 @@ class CoverHelper {
 				$this->cache->remove($userId, 'collection');
 			} else {
 				$this->logger->log("Cover image of album $albumId is large ($size B), skip caching", 'debug');
+				$hash = null;
 			}
 		}
+
+		return $hash;
 	}
 
 	/**

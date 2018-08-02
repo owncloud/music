@@ -29,9 +29,9 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 			// configure RESTAngular path
 			RestangularProvider.setBaseUrl('api');
 
-			var overviewControllerConfig = {
-				controller:'OverviewController',
-				templateUrl:'overview.html'
+			var albumsControllerConfig = {
+				controller:'AlbumsViewController',
+				templateUrl:'albumsview.html'
 			};
 
 			var playlistControllerConfig = {
@@ -55,11 +55,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 			$locationProvider.hashPrefix('');
 
 			$routeProvider
-				.when('/',                     overviewControllerConfig)
-				.when('/artist/:id',           overviewControllerConfig)
-				.when('/album/:id',            overviewControllerConfig)
-				.when('/track/:id',            overviewControllerConfig)
-				.when('/file/:id',             overviewControllerConfig)
+				.when('/',                     albumsControllerConfig)
+				.when('/artist/:id',           albumsControllerConfig)
+				.when('/album/:id',            albumsControllerConfig)
+				.when('/track/:id',            albumsControllerConfig)
+				.when('/file/:id',             albumsControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
 				.when('/settings',             settingsControllerConfig);

@@ -23,8 +23,8 @@
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
 
-	<script type="text/ng-template" id="overview.html">
-		<?php print_unescaped($this->inc('partials/overview')) ?>
+	<script type="text/ng-template" id="albumsview.html">
+		<?php print_unescaped($this->inc('partials/albumsview')) ?>
 	</script>
 	<script type="text/ng-template" id="alltracksview.html">
 		<?php print_unescaped($this->inc('partials/alltracksview')) ?>

@@ -1,4 +1,4 @@
-<div id="overview"  ng-show="!loading && !loadingCollection">
+<div id="albums"  ng-show="!loading && !loadingCollection">
 	<div class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
 		<h1 id="artist-{{ ::artist.id }}">
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">

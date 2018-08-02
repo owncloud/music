@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2017, 2018
  */
 
-angular.module('Music').controller('OverviewController', [
+angular.module('Music').controller('AlbumsViewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
 	'Restangular', '$route', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,

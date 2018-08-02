@@ -1723,7 +1723,7 @@ function ($rootScope, $interpolate) {
 			var collapseLimit = attrs.collapseLimit || 999999;
 
 			var listeners = [
-				$rootScope.$watch('currentTrack', updateClasses),
+				scope.$watch('currentTrack', updateClasses),
 				$rootScope.$watch('playing', updateClasses)
 			];
 
@@ -1752,13 +1752,13 @@ function ($rootScope, $interpolate) {
 				});
 
 				if (scope.currentTrack) {
-					var playing = element[0].querySelector('#track-' + scope.currentTrack.id);
-					if (playing) {
-						playing.classList.add('current');
+					var currentTrack = element[0].querySelector('#track-' + scope.currentTrack.id);
+					if (currentTrack) {
+						currentTrack.classList.add('current');
 						if ($rootScope.playing) {
-							playing.classList.add('playing');
+							currentTrack.classList.add('playing');
 						} else {
-							playing.classList.remove('playing');
+							currentTrack.classList.remove('playing');
 						}
 					}
 				}

@@ -75,7 +75,6 @@
 }
 
 .mobile .album-area > h2 > div {
-	display: inline-block;
 	line-height: 1.2;
 }
 /* move track list to the left so it’s visible on small screens */

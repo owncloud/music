@@ -7,10 +7,10 @@
 			</span>
 		</h1>
 		<div class="album-area" ng-repeat="album in artist.albums">
-			<h2 id="album-{{ ::album.id }}">
-				<div ng-click="playAlbum(album)"
-					 title="{{ ::(album.name + decoratedYear(album)) }}"
-					 ui-draggable="true" drag="getDraggable('album', album)">
+			<h2 id="album-{{ ::album.id }}" ng-click="playAlbum(album)"
+				title="{{ ::(album.name + decoratedYear(album)) }}"
+				ui-draggable="true" drag="getDraggable('album', album)">
+				<div>
 					<span>{{ ::album.name }}</span>
 					<span ng-if="::album.year" class="muted">{{ ::decoratedYear(album) }}</span>
 				</div>

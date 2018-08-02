@@ -98,33 +98,51 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.currentTrack = track;
 		$scope.player.stop();
 		$scope.setPlay(false);
-		if(track !== null) {
+		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.currentAlbum = libraryService.findAlbumOfTrack(track.id);
 			$scope.setLoading(true);
-
-			// get webDAV URL to the track and start playing it
-			var mimeAndId = $scope.getPlayableFileId(track);
-			Restangular.one('file', mimeAndId.id).one('path').get().then(function(result) {
-				// It is possible that the active track has already changed again by the time we get
-				// the URI. Do not start playback in that case.
-				if (track == $scope.currentTrack) {
-					var url = OC.linkToRemoteBase('webdav') + result.path +
-							'?requesttoken=' + encodeURIComponent(OC.requestToken);
-					$scope.player.fromURL(url, mimeAndId.mime);
-					$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
-
-					$scope.player.play();
-					$scope.setPlay(true);
-				}
-			});
-
+			playTrack(track);
 		} else {
 			$scope.currentAlbum = null;
 			// switch initial state
 			$rootScope.started = false;
 		}
+	}
+
+	var pathRequestTimer = null;
+	function playTrack(track) {
+		// Execute the action with small delay. This is to limit the number of GET requests
+		// when repeatedly changing the playing track like when rapidly and repeatedly clicking
+		// the Next button. Too high number of simultaneous GET requests could easily jam a
+		// low-power server.
+		if (pathRequestTimer !== null) {
+			$timeout.cancel(pathRequestTimer);
+		}
+
+		pathRequestTimer = $timeout(function() {
+			// Get path to the track and from a webDAV URL. The webDAV URL is 
+			// then passed to PlayerWrapper for playing.
+			var mimeAndId = $scope.getPlayableFileId(track);
+			Restangular.one('file', mimeAndId.id).one('path').get().then(
+				function(result) {
+					// It is possible that the active track has already changed again by the time we get
+					// the URI. Do not start playback in that case.
+					if (track == $scope.currentTrack) {
+						var url = OC.linkToRemoteBase('webdav') + result.path +
+								'?requesttoken=' + encodeURIComponent(OC.requestToken);
+						$scope.player.fromURL(url, mimeAndId.mime);
+						$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
+
+						$scope.player.play();
+						$scope.setPlay(true);
+
+						pathRequestTimer = null;
+					}
+				}
+			);
+		}, 300);
 	}
 
 	$scope.setPlay = function(playing) {

@@ -62,14 +62,15 @@ angular.module('Music').controller('AlbumsViewController', [
 			if (currentTrack && track.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
-			// on any other track, start playing the album from this track
+			// on any other track, start playing the collection from this track
 			else {
 				// update URL hash
 				window.location.hash = '#/track/' + track.id;
 
-				var album = libraryService.findAlbumOfTrack(track.id);
-
-				playTracks(album.tracks, album.tracks.indexOf(track));
+				var collection = libraryService.getTracksInAlbumOrder();
+				var index = _.findIndex(collection, function(i) {return i.track.id == track.id;});
+				playlistService.setPlaylist(collection, index);
+				playlistService.publish('play');
 			}
 		};
 

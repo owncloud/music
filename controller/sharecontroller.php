@@ -36,9 +36,9 @@ class ShareController extends Controller {
 
 	public function __construct($appname,
 								IRequest $request,
-								\OCP\Share\IManager $shareManager,
 								Scanner $scanner,
-								Logger $logger) {
+								Logger $logger,
+								\OCP\Share\IManager $shareManager = null) {
 		parent::__construct($appname, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;
@@ -50,30 +50,34 @@ class ShareController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo($token, $fileId) {
-		$share = $this->shareManager->getShareByToken($token);
+		// ShareManager is not present on ownCloud 8.2
+		if (!empty($this->shareManager)) {
+			$share = $this->shareManager->getShareByToken($token);
 
-		$fileOwner = $share->getShareOwner();
+			$fileOwner = $share->getShareOwner();
 
-		\OC_Util::tearDownFS();
-		\OC_Util::setupFS($fileOwner);
+			\OC_Util::tearDownFS();
+			\OC_Util::setupFS($fileOwner);
 
-		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
+			$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
 
-		// If non-zero fileId is given, the $share identified by the token should
-		// be the file's parent directory. Otherwise the share is the target file.
-		if ($fileId == 0) {
-			$fileId = $share->getNodeId();
-		} else {
-			$folderId = $share->getNodeId();
-			$matchingFolders = $fileOwnerHome->getById($folderId);
-			if (empty($matchingFolders)
+			// If non-zero fileId is given, the $share identified by the token should
+			// be the file's parent directory. Otherwise the share is the target file.
+			if ($fileId == 0) {
+				$fileId = $share->getNodeId();
+			} else {
+				$folderId = $share->getNodeId();
+				$matchingFolders = $fileOwnerHome->getById($folderId);
+				if (empty($matchingFolders)
 				|| empty($matchingFolders[0]->getById($fileId))) {
-				// no such shared folder or the folder does not contain the given file
-				$fileId = null;
+					// no such shared folder or the folder does not contain the given file
+					$fileId = null;
+				}
 			}
+
+			$info = $this->scanner->getFileInfo($fileId, $fileOwner, $fileOwnerHome);
 		}
 
-		$info = $this->scanner->getFileInfo($fileId, $fileOwner, $fileOwnerHome);
 		if ($info) {
 			return new JSONResponse($info);
 		} else {

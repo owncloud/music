@@ -152,9 +152,9 @@ class Music extends App {
 			return new ShareController(
 				$c->query('AppName'),
 				$c->query('Request'),
-				$c->query('ShareManager'),
 				$c->query('Scanner'),
-				$c->query('Logger')
+				$c->query('Logger'),
+				$c->query('ShareManager')
 			);
 		});
 
@@ -289,7 +289,11 @@ class Music extends App {
 		});
 
 		$container->registerService('ShareManager', function ($c) {
-			return $c->getServer()->getShareManager();
+			if (\method_exists($c->getServer(), 'getShareManager')) {
+				return $c->getServer()->getShareManager();
+			} else {
+				return null;
+			}
 		});
 
 		/**

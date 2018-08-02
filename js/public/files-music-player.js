@@ -201,16 +201,22 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
-		if (parentContainer.length === 0) {
-			parentContainer = $('div#content-wrapper');
-			musicControls.css('left', '0');
-		}
-		parentContainer.append(musicControls);
-
 		// resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes
 		var resizeControls = function() {
-			musicControls.css('width', parentContainer.innerWidth() - getScrollBarWidth() + 'px');
+			musicControls.css('width', parentContainer.width() - getScrollBarWidth());
 		};
+
+		// On share page, there's no #app-content. Use #preview element as parent, instead.
+		// The #preview element's width does not include the scroll bar.
+		if (parentContainer.length === 0) {
+			parentContainer = $('div#preview');
+			resizeControls = function() {
+				musicControls.css('width', parentContainer.width());
+			};
+			musicControls.css('left', '0');
+		}
+
+		parentContainer.append(musicControls);
 		parentContainer.resize(resizeControls);
 		resizeControls();
 

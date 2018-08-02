@@ -85,11 +85,11 @@
 	clear: both;
 }
 /* align track title to the left with album title */
-.mobile .album-area .track-list > li {
+.mobile .album-area .track-list > li:not(.more-less) {
 	padding-left: 40px;
 }
 .mobile .album-area .track-list > li.more-less {
-	padding-left: 59px;
+	padding-left: 57px;
 }
 
 /* allow track name to span the whole view width and on multiple lines */

@@ -13,7 +13,7 @@
 		get-draggable="getDraggable"
 		details-text="'Details' | translate">
 	</track-list>
-</div>
 
-<alphabet-navigation targets="alphabetNavigationTargets" scroll-offset="scrollOffset()" ng-if="tracks">
-</alphabet-navigation>
+	<alphabet-navigation targets="alphabetNavigationTargets" scroll-offset="scrollOffset()" ng-if="tracks">
+	</alphabet-navigation>
+</div>

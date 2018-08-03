@@ -61,7 +61,6 @@
 }
 
 .mobile .album-area > h2 > div {
-	display: inline-block;
 	line-height: 1.2;
 }
 /* move track list to the left so it’s visible on small screens */
@@ -942,6 +941,8 @@ h1 span:hover .play {
 }
 
 .album-area > h2 {
+	display: table-cell;
+	max-width: 424px;
 	font-size: 21px;
 	padding-bottom: 21px;
 	text-overflow: ellipsis;
@@ -953,7 +954,8 @@ h1 span:hover .play {
 	display: inline-block;
 }
 
-.album-area > h2 *:hover {
+.album-area > h2,
+.album-area > h2 * {
 	cursor: pointer;
 }
 
@@ -977,7 +979,9 @@ h1 span:hover .play {
 	padding: 46px;
 }
 
-.album-area:hover > img.overlay {
+.album-area h2:hover ~ .overlay,
+.album-area .albumart:hover ~ .overlay,
+.album-area .overlay:hover {
 	visibility: visible;
 	cursor: pointer;
 }
@@ -1074,6 +1078,10 @@ div:hover > .play-pause,
 
 .tablet .album-area {
 	width: 100%;
+}
+
+.tablet .album-area > h2 {
+	max-width: 55vw;
 }
 
 .tablet .album-area .track-list li > div > span {

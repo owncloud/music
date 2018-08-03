@@ -16,6 +16,10 @@
 	width: 100%;
 }
 
+.tablet .album-area > h2 {
+	max-width: 55vw;
+}
+
 .tablet .album-area .track-list li > div > span {
 	white-space: normal;
 	vertical-align: top;

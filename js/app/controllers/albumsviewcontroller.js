@@ -88,11 +88,10 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$scope.playFile = function (fileid) {
 			if (fileid) {
-				Restangular.one('file', fileid).get()
-					.then(function(result){
-						playTracks([result]);
-						scrollToAlbumOfTrack(result.id);
-					});
+				Restangular.one('file', fileid).get().then(function(result) {
+					$scope.playTrack(result);
+					scrollToAlbumOfTrack(result.id);
+				});
 			}
 		};
 

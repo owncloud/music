@@ -103,26 +103,41 @@ angular.module('Music').controller('AlbumsViewController', [
 			playlistService.publish('play');
 		}
 
+		function playPlaylistFromTrack(listId, playlist, track) {
+			// update URL hash
+			window.location.hash = '#/track/' + track.id;
+
+			var index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
+			playlistService.setPlaylist(listId, playlist, index);
+			playlistService.publish('play');
+		}
+
 		$scope.playTrack = function(track) {
 			// Allow passing an ID as well as a track object
 			if (!isNaN(track)) {
 				track = libraryService.getTrack(track);
 			}
 
-			// play/pause if currently playing track clicked
 			var currentTrack = $scope.$parent.currentTrack;
+			var currentListId = playlistService.getCurrentPlaylistId();
+
+			// play/pause if currently playing track clicked
 			if (currentTrack && track.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
-			// on any other track, start playing the collection from this track
 			else {
-				// update URL hash
-				window.location.hash = '#/track/' + track.id;
+				var album = libraryService.findAlbumOfTrack(track.id);
+				var artist = libraryService.findArtistOfAlbum(album.id);
 
-				var collection = libraryService.getTracksInAlbumOrder();
-				var index = _.findIndex(collection, function(i) {return i.track.id == track.id;});
-				playlistService.setPlaylist('albums', collection, index);
-				playlistService.publish('play');
+				// start playing the album/artist from this track if the clicked track belongs
+				// to album/artist which is the current play scope
+				if (currentListId === 'album-' + album.id || currentListId === 'artist-' + artist.id) {
+					playPlaylistFromTrack(currentListId, playlistService.getCurrentPlaylist(), track);
+				}
+				// on any other track, start playing the collection from this track
+				else {
+					playPlaylistFromTrack('albums', libraryService.getTracksInAlbumOrder(), track);
+				}
 			}
 		};
 
@@ -2290,6 +2305,11 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				return _.findWhere(album.tracks, {id : Number(trackId)});
 			});
 		},
+		findArtistOfAlbum: function(albumId) {
+			return _.find(artists, function(artist) {
+				return _.findWhere(artist.albums, {id : Number(albumId)});
+			});
+		},
 		collectionLoaded: function() {
 			return artists !== null;
 		},
@@ -2385,6 +2405,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		getCurrentPlaylistId: function() {
 			return playlistId;
 		},
+		getCurrentPlaylist: function() {
+			return playlist;
+		},
 		jumpToPrevTrack: function() {
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
@@ -2411,6 +2434,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				} else { // we are done
 					playOrderIter = -1;
 					playlist = null;
+					playlistId = null;
 					this.publish('playlistEnded');
 					return null;
 				}

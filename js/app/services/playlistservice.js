@@ -96,6 +96,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		getCurrentPlaylistId: function() {
 			return playlistId;
 		},
+		getCurrentPlaylist: function() {
+			return playlist;
+		},
 		jumpToPrevTrack: function() {
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
@@ -122,6 +125,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				} else { // we are done
 					playOrderIter = -1;
 					playlist = null;
+					playlistId = null;
 					this.publish('playlistEnded');
 					return null;
 				}

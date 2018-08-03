@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 Pauli Järvinen
+ * @copyright 2017, 2018 Pauli Järvinen
  *
  */
 
@@ -142,6 +142,11 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		findAlbumOfTrack: function(trackId) {
 			return _.find(albums, function(album) {
 				return _.findWhere(album.tracks, {id : Number(trackId)});
+			});
+		},
+		findArtistOfAlbum: function(albumId) {
+			return _.find(artists, function(artist) {
+				return _.findWhere(artist.albums, {id : Number(albumId)});
 			});
 		},
 		collectionLoaded: function() {

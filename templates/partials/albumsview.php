@@ -1,13 +1,13 @@
 <div id="albums"  ng-show="!loading && !loadingCollection">
-	<div class="artist-area" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
-		<h1 id="artist-{{ ::artist.id }}">
+	<div class="artist-area" id="artist-{{ ::artist.id }}" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
+		<h1>
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
-				<span >{{ ::artist.name }}</span>
+				<span>{{ ::artist.name }}</span>
 				<img class="play svg" alt="{{ ::('Play' | translate) }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
-		<div class="album-area" ng-repeat="album in artist.albums">
-			<h2 id="album-{{ ::album.id }}" ng-click="playAlbum(album)"
+		<div class="album-area" id="album-{{ ::album.id }}" ng-repeat="album in artist.albums">
+			<h2 ng-click="playAlbum(album)"
 				title="{{ ::(album.name + decoratedYear(album)) }}"
 				ui-draggable="true" drag="getDraggable('album', album)">
 				<div>

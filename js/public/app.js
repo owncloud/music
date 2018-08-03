@@ -95,11 +95,11 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
-		function playTracks(tracks, startIndex /*optional*/) {
+		function playTracks(listId, tracks, startIndex /*optional*/) {
 			var playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
-			playlistService.setPlaylist(playlist, startIndex);
+			playlistService.setPlaylist(listId, playlist, startIndex);
 			playlistService.publish('play');
 		}
 
@@ -121,7 +121,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 				var collection = libraryService.getTracksInAlbumOrder();
 				var index = _.findIndex(collection, function(i) {return i.track.id == track.id;});
-				playlistService.setPlaylist(collection, index);
+				playlistService.setPlaylist('albums', collection, index);
 				playlistService.publish('play');
 			}
 		};
@@ -129,13 +129,14 @@ angular.module('Music').controller('AlbumsViewController', [
 		$scope.playAlbum = function(album) {
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
-			playTracks(album.tracks);
+			playTracks('album-' + album.id, album.tracks);
 		};
 
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-			playTracks(_.flatten(_.pluck(artist.albums, 'tracks')));
+			var tracks = _.flatten(_.pluck(artist.albums, 'tracks'));
+			playTracks('artist-' + artist.id, tracks);
 		};
 
 		$scope.playFile = function (fileid) {
@@ -191,6 +192,11 @@ angular.module('Music').controller('AlbumsViewController', [
 		// emited on end of playlist by playerController
 		subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
+			updateHighlight(null);
+		});
+
+		subscribe('playlistChanged', function(e, playlistId) {
+			updateHighlight(playlistId);
 		});
 
 		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
@@ -209,6 +215,20 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		function isPlaying() {
 			return $rootScope.playingView !== null;
+		}
+
+		function startsWith(str, search) {
+			return str !== null && search !== null && str.slice(0, search.length) === search;
+		}
+
+		function updateHighlight(playlistId) {
+			// remove any previous highlight
+			$('.highlight').removeClass('highlight');
+
+			// add highlighting if album or artist is being played
+			if (startsWith(playlistId, 'album-') || startsWith(playlistId, 'artist-')) {
+				$('#' + playlistId).addClass('highlight');
+			}
 		}
 
 		function setUpAlphabetNavigation() {
@@ -273,6 +293,7 @@ angular.module('Music').controller('AlbumsViewController', [
 						$rootScope.loading = false;
 					}
 					setUpAlphabetNavigation();
+					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}
 		}
@@ -328,14 +349,18 @@ angular.module('Music').controller('AllTracksViewController', [
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
-		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.tracks);
+		function play(startIndex /*optional*/) {
+			playlistService.setPlaylist('alltracks', $scope.tracks, startIndex);
 			playlistService.publish('play');
+		}
+
+		// Call playlistService to play all songs in the current playlist from the beginning
+		$scope.onHeaderClick = function() {
+			play();
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(trackId) {
+		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
 				playlistService.publish('togglePlayback');
@@ -343,8 +368,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			// on any other list item, start playing the list from this item
 			else {
 				var index = _.findIndex($scope.tracks, function(i) {return i.track.id == trackId;});
-				playlistService.setPlaylist($scope.tracks, index);
-				playlistService.publish('play');
+				play(index);
 			}
 		};
 
@@ -897,15 +921,19 @@ angular.module('Music').controller('NavigationController', [
 				playlistService.publish('togglePlayback');
 			}
 			else {
+				var id = null;
 				var tracks = null;
 				if (destination == '#') {
+					id = 'albums';
 					tracks = libraryService.getTracksInAlbumOrder();
 				} else if (destination == '#/alltracks') {
+					id = 'alltracks';
 					tracks = libraryService.getTracksInAlphaOrder();
 				} else {
+					id = 'playlist-' + playlist.id;
 					tracks = playlist.tracks;
 				}
-				playlistService.setPlaylist(tracks);
+				playlistService.setPlaylist(id, tracks);
 				playlistService.publish('play', destination);
 			}
 		};
@@ -1263,22 +1291,26 @@ angular.module('Music').controller('PlaylistViewController', [
 			Restangular.one('playlists', listId).all("remove").post({indices: trackIndex});
 		};
 
-		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.tracks);
+		function play(startIndex /*optional*/) {
+			var id = 'playlist-' + $scope.playlist.id;
+			playlistService.setPlaylist(id, $scope.tracks, startIndex);
 			playlistService.publish('play');
+		}
+
+		// Call playlistService to play all songs in the current playlist from the beginning
+		$scope.onHeaderClick = function() {
+			play();
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(trackIndex) {
+		$scope.onTrackClick = function(trackIndex) {
 			// play/pause if currently playing list item clicked
 			if ($scope.getCurrentTrackIndex() === trackIndex) {
 				playlistService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				playlistService.setPlaylist($scope.tracks, trackIndex);
-				playlistService.publish('play');
+				play(trackIndex);
 			}
 		};
 
@@ -2269,6 +2301,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
+	var playlistId = null;
 	var playOrder = [];
 	var playOrderIter = -1;
 	var startFromIndex = null;
@@ -2349,6 +2382,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		getCurrentIndex: function() {
 			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
 		},
+		getCurrentPlaylistId: function() {
+			return playlistId;
+		},
 		jumpToPrevTrack: function() {
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
@@ -2384,11 +2420,15 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			this.publish('trackChanged', track);
 			return track;
 		},
-		setPlaylist: function(pl, startIndex /*optional*/) {
+		setPlaylist: function(listId, pl, startIndex /*optional*/) {
 			playlist = pl.slice(); // copy
 			playOrder = null;
 			playOrderIter = -1;
 			startFromIndex = (startIndex === undefined) ? null : startIndex;
+			if (listId !== playlistId) {
+				playlistId = listId;
+				this.publish('playlistChanged', playlistId);
+			}
 		},
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];

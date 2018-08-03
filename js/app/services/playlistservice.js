@@ -7,11 +7,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
 	var playlist = null;
+	var playlistId = null;
 	var playOrder = [];
 	var playOrderIter = -1;
 	var startFromIndex = null;
@@ -92,6 +93,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		getCurrentIndex: function() {
 			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
 		},
+		getCurrentPlaylistId: function() {
+			return playlistId;
+		},
 		jumpToPrevTrack: function() {
 			if(playlist && playOrderIter > 0) {
 				--playOrderIter;
@@ -127,11 +131,15 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			this.publish('trackChanged', track);
 			return track;
 		},
-		setPlaylist: function(pl, startIndex /*optional*/) {
+		setPlaylist: function(listId, pl, startIndex /*optional*/) {
 			playlist = pl.slice(); // copy
 			playOrder = null;
 			playOrderIter = -1;
 			startFromIndex = (startIndex === undefined) ? null : startIndex;
+			if (listId !== playlistId) {
+				playlistId = listId;
+				this.publish('playlistChanged', playlistId);
+			}
 		},
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];

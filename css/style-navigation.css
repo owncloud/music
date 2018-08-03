@@ -85,7 +85,7 @@
 }
 
 #new-playlist .actions {
-  float: right;
+	float: right;
 }
 
 input[type="text"] {

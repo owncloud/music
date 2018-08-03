@@ -43,11 +43,11 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
-		function playTracks(tracks, startIndex /*optional*/) {
+		function playTracks(listId, tracks, startIndex /*optional*/) {
 			var playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
-			playlistService.setPlaylist(playlist, startIndex);
+			playlistService.setPlaylist(listId, playlist, startIndex);
 			playlistService.publish('play');
 		}
 
@@ -69,7 +69,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 				var collection = libraryService.getTracksInAlbumOrder();
 				var index = _.findIndex(collection, function(i) {return i.track.id == track.id;});
-				playlistService.setPlaylist(collection, index);
+				playlistService.setPlaylist('albums', collection, index);
 				playlistService.publish('play');
 			}
 		};
@@ -77,13 +77,14 @@ angular.module('Music').controller('AlbumsViewController', [
 		$scope.playAlbum = function(album) {
 			// update URL hash
 			window.location.hash = '#/album/' + album.id;
-			playTracks(album.tracks);
+			playTracks('album-' + album.id, album.tracks);
 		};
 
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-			playTracks(_.flatten(_.pluck(artist.albums, 'tracks')));
+			var tracks = _.flatten(_.pluck(artist.albums, 'tracks'));
+			playTracks('artist-' + artist.id, tracks);
 		};
 
 		$scope.playFile = function (fileid) {
@@ -139,6 +140,11 @@ angular.module('Music').controller('AlbumsViewController', [
 		// emited on end of playlist by playerController
 		subscribe('playlistEnded', function() {
 			window.location.hash = '#/';
+			updateHighlight(null);
+		});
+
+		subscribe('playlistChanged', function(e, playlistId) {
+			updateHighlight(playlistId);
 		});
 
 		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
@@ -157,6 +163,20 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		function isPlaying() {
 			return $rootScope.playingView !== null;
+		}
+
+		function startsWith(str, search) {
+			return str !== null && search !== null && str.slice(0, search.length) === search;
+		}
+
+		function updateHighlight(playlistId) {
+			// remove any previous highlight
+			$('.highlight').removeClass('highlight');
+
+			// add highlighting if album or artist is being played
+			if (startsWith(playlistId, 'album-') || startsWith(playlistId, 'artist-')) {
+				$('#' + playlistId).addClass('highlight');
+			}
 		}
 
 		function setUpAlphabetNavigation() {
@@ -221,6 +241,7 @@ angular.module('Music').controller('AlbumsViewController', [
 						$rootScope.loading = false;
 					}
 					setUpAlphabetNavigation();
+					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}
 		}

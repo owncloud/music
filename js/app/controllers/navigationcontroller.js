@@ -66,15 +66,19 @@ angular.module('Music').controller('NavigationController', [
 				playlistService.publish('togglePlayback');
 			}
 			else {
+				var id = null;
 				var tracks = null;
 				if (destination == '#') {
+					id = 'albums';
 					tracks = libraryService.getTracksInAlbumOrder();
 				} else if (destination == '#/alltracks') {
+					id = 'alltracks';
 					tracks = libraryService.getTracksInAlphaOrder();
 				} else {
+					id = 'playlist-' + playlist.id;
 					tracks = playlist.tracks;
 				}
-				playlistService.setPlaylist(tracks);
+				playlistService.setPlaylist(id, tracks);
 				playlistService.publish('play', destination);
 			}
 		};

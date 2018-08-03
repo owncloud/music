@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017, 2018
  */
 
 
@@ -56,22 +56,26 @@ angular.module('Music').controller('PlaylistViewController', [
 			Restangular.one('playlists', listId).all("remove").post({indices: trackIndex});
 		};
 
-		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.tracks);
+		function play(startIndex /*optional*/) {
+			var id = 'playlist-' + $scope.playlist.id;
+			playlistService.setPlaylist(id, $scope.tracks, startIndex);
 			playlistService.publish('play');
+		}
+
+		// Call playlistService to play all songs in the current playlist from the beginning
+		$scope.onHeaderClick = function() {
+			play();
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(trackIndex) {
+		$scope.onTrackClick = function(trackIndex) {
 			// play/pause if currently playing list item clicked
 			if ($scope.getCurrentTrackIndex() === trackIndex) {
 				playlistService.publish('togglePlayback');
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				playlistService.setPlaylist($scope.tracks, trackIndex);
-				playlistService.publish('play');
+				play(trackIndex);
 			}
 		};
 

@@ -27,14 +27,18 @@ angular.module('Music').controller('AllTracksViewController', [
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
-		// Call playlistService to play all songs in the current playlist from the beginning
-		$scope.playAll = function() {
-			playlistService.setPlaylist($scope.tracks);
+		function play(startIndex /*optional*/) {
+			playlistService.setPlaylist('alltracks', $scope.tracks, startIndex);
 			playlistService.publish('play');
+		}
+
+		// Call playlistService to play all songs in the current playlist from the beginning
+		$scope.onHeaderClick = function() {
+			play();
 		};
 
 		// Play the list, starting from a specific track
-		$scope.playTrack = function(trackId) {
+		$scope.onTrackClick = function(trackId) {
 			// play/pause if currently playing list item clicked
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
 				playlistService.publish('togglePlayback');
@@ -42,8 +46,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			// on any other list item, start playing the list from this item
 			else {
 				var index = _.findIndex($scope.tracks, function(i) {return i.track.id == trackId;});
-				playlistService.setPlaylist($scope.tracks, index);
-				playlistService.publish('play');
+				play(index);
 			}
 		};
 

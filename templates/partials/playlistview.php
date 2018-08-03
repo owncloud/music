@@ -1,6 +1,6 @@
 <div class="playlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
-		<span ng-click="playAll()">
+		<span ng-click="onHeaderClick()">
 			<span>{{ playlist.name }}</span>
 			<img class="play svg" alt="{{ ::('Play' | translate) }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
@@ -14,7 +14,7 @@
 			drop-validate="allowDrop($data, $index)"
 			drag-hover-class="drag-hover">
 			<div>
-				<div ng-click="playTrack($index)" ui-draggable="true" drag="getDraggable($index)"
+				<div ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)"
 					ng-class="{current: getCurrentTrackIndex() === $index, playing: playing}"
 				>
 					<div class="play-pause" />

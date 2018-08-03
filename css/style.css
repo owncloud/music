@@ -30,6 +30,7 @@
 	right: 0;
 	left: 0;
 	position: absolute;
+	padding-left: 14px;
 	padding-right: 50px;
 }
 
@@ -50,10 +51,12 @@
 .artist-area {
 	clear: both;
 	padding-top: 15px;
+	display: table;
+	width: 100%;
 }
 
 .artist-area > h1 {
-	margin-left: 28px;
+	margin-left: 14px;
 	font-size: 34px;
 	line-height: 36px;
 }
@@ -75,7 +78,7 @@ h1 span:hover .play {
 }
 
 .album-area {
-	padding: 14px 28px;
+	padding: 14px 28px 14px 14px;
 	width: 480px;
 	float: left;
 }
@@ -214,4 +217,8 @@ div:hover > .play-pause,
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);
 	opacity: 1;
+}
+
+.highlight {
+	background-color: #f9f9f9;
 }

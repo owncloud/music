@@ -17,18 +17,22 @@
 	}
 }
 
+.mobile #app-view {
+	padding-left: 4px;
+}
+
 .mobile .artist-area {
 	padding-top: 15px;
 }
 
 .mobile .artist-area > h1 {
-	margin-left: 8px;
+	margin-left: 4px;
 }
 
 /* adjust album area to screen width */
 .mobile .album-area {
 	width: 100%;
-	padding: 10px 30px 0 10px;
+	padding: 10px 30px 0 6px;
 }
 
 /* smaller album art */
@@ -467,7 +471,7 @@
 }
 
 #new-playlist .actions {
-  float: right;
+	float: right;
 }
 
 input[type="text"] {
@@ -504,7 +508,7 @@ input.edit-list, input.new-list {
 }
 
 .playlist-area > h1 {
-	margin-left: 28px;
+	margin-left: 14px;
 	margin-bottom: 11px;
 	font-size: 34px;
 	line-height: 36px;
@@ -516,7 +520,6 @@ input.edit-list, input.new-list {
 }
 
 .playlist-area .track-list {
-	margin-left: 15px;
 	margin-bottom: 15px;
 }
 
@@ -890,6 +893,7 @@ input.edit-list, input.new-list {
 	right: 0;
 	left: 0;
 	position: absolute;
+	padding-left: 14px;
 	padding-right: 50px;
 }
 
@@ -910,10 +914,12 @@ input.edit-list, input.new-list {
 .artist-area {
 	clear: both;
 	padding-top: 15px;
+	display: table;
+	width: 100%;
 }
 
 .artist-area > h1 {
-	margin-left: 28px;
+	margin-left: 14px;
 	font-size: 34px;
 	line-height: 36px;
 }
@@ -935,7 +941,7 @@ h1 span:hover .play {
 }
 
 .album-area {
-	padding: 14px 28px;
+	padding: 14px 28px 14px 14px;
 	width: 480px;
 	float: left;
 }
@@ -1074,6 +1080,10 @@ div:hover > .play-pause,
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	filter: alpha(opacity = 100);
 	opacity: 1;
+}
+
+.highlight {
+	background-color: #f9f9f9;
 }
 
 .tablet .album-area {

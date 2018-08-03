@@ -5,11 +5,12 @@
 # Jerry Lidén <gurragurra@gmail.com>, 2015
 # ff, 2013-2014
 # lagre, 2014
+# Petrus Lundberg <svensvennesvensson33@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
+"Last-Translator: Petrus Lundberg <svensvennesvensson33@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/owncloud-org/owncloud/language/sv/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,7 @@ msgstr ""
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Ny spellista"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
@@ -26,7 +27,7 @@ msgstr "Album"
 
 #: ../templates/main.php:56
 msgid "All tracks"
-msgstr ""
+msgstr "Alla låtar"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -34,7 +35,7 @@ msgstr "Artister"
 
 #: ../templates/main.php:146
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Klicka här för att börja skanning"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -73,11 +74,11 @@ msgstr "Musik"
 
 #: ../templates/main.php:145
 msgid "New music available"
-msgstr ""
+msgstr "Ny musik tillgänglig"
 
 #: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Ny musik tillgänglig. Klicka här för att ladda om musikbiblioteket."
 
 #: ../templates/main.php:91
 msgid "Next"
@@ -85,7 +86,7 @@ msgstr "Nästa"
 
 #: ../templates/main.php:134
 msgid "No music found"
-msgstr ""
+msgstr "Ingen musik hittades"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -113,7 +114,7 @@ msgstr "Upphäv API-lösenord"
 
 #: ../templates/main.php:151
 msgid "Scanning music …"
-msgstr ""
+msgstr "Skannar musik..."
 
 #: ../templates/main.php:116
 msgid "Shuffle"
@@ -141,7 +142,7 @@ msgstr "Okänd artist"
 
 #: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Ladda upp musik i filappen för att lyssna till den här"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -157,12 +158,12 @@ msgstr "Använd ditt användarnamn och följande lösenord för att ansluta mot 
 
 #: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
-msgstr ""
+msgstr "Volym"
 
 #: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
-msgstr ""
+msgstr "låtar"
 
 #: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} av {{ scanningTotal }}"

@@ -1,12 +1,13 @@
 # 
 # Translators:
-# hrexen <davit.mayilyan@protonmail.ch>, 2016
-# hrexen <davit.mayilyan@protonmail.ch>, 2016
+# Davit Mayilyan <davit.mayilyan@protonmail.ch>, 2018
+# Davit Mayilyan <davit.mayilyan@protonmail.ch>, 2016
+# Davit Mayilyan <davit.mayilyan@protonmail.ch>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2018-03-11 21:31+0000\n"
+"Last-Translator: Davit Mayilyan <davit.mayilyan@protonmail.ch>\n"
 "Language-Team: Armenian (http://www.transifex.com/owncloud-org/owncloud/language/hy/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -90,7 +91,7 @@ msgstr "Քո երաժշտական հավաքածուի ուղին"
 
 #: ../templates/main.php:89
 msgid "Pause"
-msgstr ""
+msgstr "Կանգ"
 
 #: ../templates/main.php:87
 msgid "Play"
@@ -154,7 +155,7 @@ msgstr ""
 
 #: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
-msgstr ""
+msgstr "Հատոր"
 
 #: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"

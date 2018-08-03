@@ -7,13 +7,13 @@
 # John Doe <twisted_tits@mail.ru>, 2015
 # Kalyuzhniy Aleksey, 2014
 # lifeslice <root@lifeslice.ru>, 2014
-# Sugaroverdose, 2015
+# Sergei Shuykov, 2015
 # Void Ayanami <hex.void@gmail.com>, 2013
 # Дмитрий <me@imthecat.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-30 12:14+0000\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
 "Last-Translator: Dmitry Popov <popov@krista.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/owncloud-org/owncloud/language/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

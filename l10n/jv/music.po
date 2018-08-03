@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
+"PO-Revision-Date: 2017-09-20 01:31+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Javanese (http://www.transifex.com/owncloud-org/owncloud/language/jv/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: jv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"

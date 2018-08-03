@@ -1,6 +1,6 @@
 # 
 # Translators:
-# António Ribeiro <contact@antonioribeiro.xyz>, 2017
+# Dickprince, 2017
 # zedascouves <inactive+zedascouves@transifex.com>, 2014
 # Helder Meneses <helder.meneses@gmail.com>, 2013-2016
 # Manuela Silva <manuela.silva@sky.com>, 2017
@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-04-05 17:35+0000\n"
+"PO-Revision-Date: 2017-09-23 19:14+0000\n"
 "Last-Translator: Manuela Silva <manuela.silva@sky.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/owncloud-org/owncloud/language/pt_PT/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

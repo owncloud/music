@@ -1,17 +1,18 @@
 # 
 # Translators:
 # majid hajibaba <majid.hajibaba@gmail.com>, 2014
+# Mohammad Hossein Mojtahedi <Mhm5000@gmail.com>, 2017
 # ximbesto <mashomid@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
+"Last-Translator: Mohammad Hossein Mojtahedi <Mhm5000@gmail.com>\n"
 "Language-Team: Persian (http://www.transifex.com/owncloud-org/owncloud/language/fa/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fa\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"
@@ -82,7 +83,7 @@ msgstr "بعدی"
 
 #: ../templates/main.php:134
 msgid "No music found"
-msgstr ""
+msgstr "موزیک جدید پیدا شد."
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -134,7 +135,7 @@ msgstr "آلبوم نامشخص"
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
-msgstr ""
+msgstr "خواننده نامشخص"
 
 #: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
@@ -154,7 +155,7 @@ msgstr ""
 
 #: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
-msgstr ""
+msgstr "میزان صدا"
 
 #: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"

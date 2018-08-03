@@ -3,6 +3,7 @@
 # Daisuke Deguchi <ddeguchi@nagoya-u.jp>, 2013
 # タカハシ <indexial@outlook.jp>, 2014
 # Ippei Shinozaki <shino.ip.1231@gmail.com>, 2017
+# Kenkichi Hattori <hk16153@tomakomai.kosen-ac.jp>, 2018
 # kuromabo <md81bird@hitaki.net>, 2014-2015,2017
 # Mika Kobayashi, 2014
 # Ippei Shinozaki <shino.ip.1231@gmail.com>, 2014
@@ -10,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-05-22 11:59+0000\n"
-"Last-Translator: Ippei Shinozaki <shino.ip.1231@gmail.com>\n"
+"PO-Revision-Date: 2018-01-30 15:53+0000\n"
+"Last-Translator: Kenkichi Hattori <hk16153@tomakomai.kosen-ac.jp>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/owncloud-org/owncloud/language/ja_JP/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -167,4 +168,4 @@ msgstr "トラック"
 
 #: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningTotal }} 中 {{ scanningScanned }}"

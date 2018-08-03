@@ -1,12 +1,12 @@
 # 
 # Translators:
-# woosuk park <bjh13579@gmail.com>, 2013
+# smallsnail, 2013
 # Shinjo Park <kde@peremen.name>, 2013,2015,2017
-# woosuk park <bjh13579@gmail.com>, 2013-2014
+# smallsnail, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-05-06 22:00+0000\n"
+"PO-Revision-Date: 2018-01-05 20:49+0000\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean (http://www.transifex.com/owncloud-org/owncloud/language/ko/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

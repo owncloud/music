@@ -5,13 +5,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-26 13:17+0000\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
 "Last-Translator: duvdevan\n"
 "Language-Team: Hebrew (http://www.transifex.com/owncloud-org/owncloud/language/he/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: he\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"

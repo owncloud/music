@@ -1,5 +1,6 @@
 # 
 # Translators:
+# jsgang <jsgang9@gmail.com>, 2018
 # Kaijia Feng <fengkaijia@gmail.com>, 2014
 # Ning Wang <wangning3100@gmail.com>, 2017
 # phy, 2014
@@ -8,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-05-30 09:35+0000\n"
-"Last-Translator: Ning Wang <wangning3100@gmail.com>\n"
+"PO-Revision-Date: 2018-07-28 02:14+0000\n"
+"Last-Translator: jsgang <jsgang9@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/owncloud-org/owncloud/language/zh_CN/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +27,7 @@ msgstr "专辑页"
 
 #: ../templates/main.php:56
 msgid "All tracks"
-msgstr ""
+msgstr "所有日志"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"

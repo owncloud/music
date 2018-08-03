@@ -3,11 +3,11 @@
 # I Robot, 2013
 # Mario Siegmann <mario_siegmann@web.de>, 2013-2014,2017
 # Stefan Niedermann, 2014
-# Morris Jobke <morris.jobke@gmail.com>, 2013-2014
+# Morris Jobke <inactive+kabum@transifex.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 18:17+0000\n"
+"PO-Revision-Date: 2017-09-23 19:14+0000\n"
 "Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
 "Language-Team: German (http://www.transifex.com/owncloud-org/owncloud/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2013-2015
+# Pauli Järvinen <pauli.jarvinen@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-11-04 18:31+0000\n"
+"Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/owncloud/language/fi_FI/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +15,7 @@ msgstr ""
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Uusi soittolista"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
@@ -22,7 +23,7 @@ msgstr "Albumit"
 
 #: ../templates/main.php:56
 msgid "All tracks"
-msgstr ""
+msgstr "Kaikki kappaleet"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -30,7 +31,7 @@ msgstr "Esittäjät"
 
 #: ../templates/main.php:146
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Napsauta aloittaaksesi skannauksen"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -49,7 +50,7 @@ msgid ""
 "Here you can generate passwords to use with the Ampache API, because they "
 "can't be stored in a really secure way due to the design of the Ampache API."
 " You can generate as many passwords as you want and revoke them anytime."
-msgstr ""
+msgstr "Tästä voit luoda Ampache API:n kanssa käytettäviä salasanoja. Rajapinnassa käytetään erillistä salasanaa koska rajapinnan rajoitteiden takia sitä ei voida tallentaa täysin turvallisesti. Voit luoda niin monta salasanaa kuin haluat ja peruuttaa ne koska vain."
 
 #: ../templates/fake-template.php:10
 msgid "Invalid path"
@@ -61,7 +62,7 @@ msgid ""
 "free to report your experience with this feature in the corresponding <a "
 "href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
 " like to have a list of clients to test with. Thanks"
-msgstr ""
+msgstr "Huomaa että Ampache API on kehitysasteella ja voi olla epävakaa. Voit raportoida kokemuksiasi ominaisuudesta <a href=\"https://github.com/owncloud/music/issues/60\">tänne</a>. Myös lista asiakasohjelmista auttaisi testaamista. Kiitos"
 
 #: ../templates/fake-template.php:3
 msgid "Music"
@@ -69,11 +70,11 @@ msgstr "Musiikki"
 
 #: ../templates/main.php:145
 msgid "New music available"
-msgstr ""
+msgstr "Uusia kappaleita saatavilla"
 
 #: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Uusia kappaleita saatavilla. Napsauta päivittääksesi musiikkikirjastosi."
 
 #: ../templates/main.php:91
 msgid "Next"
@@ -81,7 +82,7 @@ msgstr "Seuraava"
 
 #: ../templates/main.php:134
 msgid "No music found"
-msgstr ""
+msgstr "Musiikkia ei löytynyt"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -109,7 +110,7 @@ msgstr "Kumoa API-salasana"
 
 #: ../templates/main.php:151
 msgid "Scanning music …"
-msgstr ""
+msgstr "Skannataan musiikkia …"
 
 #: ../templates/main.php:116
 msgid "Shuffle"
@@ -137,7 +138,7 @@ msgstr "Tuntematon esittäjä"
 
 #: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Lähetä musiikkitiedostoja tiedostosovelluksen kautta. Sen jälkeen voit kuunnella musiikkia täällä."
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -153,12 +154,12 @@ msgstr "Käytä käyttäjätunnustasi ja seuraavaa salasanaa yhditäessäsi täh
 
 #: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
-msgstr ""
+msgstr "Äänenvoimakkuus"
 
 #: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
-msgstr ""
+msgstr "kappaletta"
 
 #: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} / {{ scanningTotal }}"

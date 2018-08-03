@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Alexander Gabilondo <alexgabi@openmailbox.org>, 2014
+# Alexander Gabilondo <alexgabilondo@gmail.com>, 2014
 # asieriko <asieriko@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Basque (http://www.transifex.com/owncloud-org/owncloud/language/eu/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

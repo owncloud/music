@@ -1,13 +1,13 @@
 # 
 # Translators:
-# ebela <bela@dandre.hu>, 2013
+# bela erdei <bela@dandre.hu>, 2013
 # János Fehér <feher.janos@mindworks.hu>, 2014
 # Laszlo Tornoci <torlasz@gmail.com>, 2014
 # Szládovics Péter <peti@szladovics.hu>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
+"PO-Revision-Date: 2017-09-19 20:12+0000\n"
 "Last-Translator: I Robot\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/owncloud-org/owncloud/language/hu_HU/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"

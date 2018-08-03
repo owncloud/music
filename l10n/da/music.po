@@ -2,12 +2,13 @@
 # Translators:
 # Anders J. Sørensen, 2013-2014
 # Aputsiak Niels Janussen (Skjalden) <aj@isit.gl>, 2014
+# Jakob Lass <jakob@lass.dk>, 2017
 # Leif Lodahl <leiflodahl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-03-24 11:20+0000\n"
-"Last-Translator: I Robot\n"
+"PO-Revision-Date: 2017-09-23 19:14+0000\n"
+"Last-Translator: Jakob Lass <jakob@lass.dk>\n"
 "Language-Team: Danish (http://www.transifex.com/owncloud-org/owncloud/language/da/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +17,7 @@ msgstr ""
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"
-msgstr ""
+msgstr "+ Ny spilleliste"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"
@@ -24,7 +25,7 @@ msgstr "Album"
 
 #: ../templates/main.php:56
 msgid "All tracks"
-msgstr ""
+msgstr "Alle sange"
 
 #: ../templates/fake-template.php:6
 msgid "Artists"
@@ -32,7 +33,7 @@ msgstr "Kunstnere"
 
 #: ../templates/main.php:146
 msgid "Click here to start the scan"
-msgstr ""
+msgstr "Tryk her for at starte et scan"
 
 #: ../templates/fake-template.php:13
 msgid "Description"
@@ -71,11 +72,11 @@ msgstr "Musik"
 
 #: ../templates/main.php:145
 msgid "New music available"
-msgstr ""
+msgstr "Ny musik tilgængelig"
 
 #: ../templates/main.php:140 ../templates/main.php:141
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "Ny musik tilgængelig. Tryk her for at genindlæse musikbibliotekt"
 
 #: ../templates/main.php:91
 msgid "Next"
@@ -83,7 +84,7 @@ msgstr "Næste"
 
 #: ../templates/main.php:134
 msgid "No music found"
-msgstr ""
+msgstr "Musik ikke fundet"
 
 #: ../templates/fake-template.php:9
 msgid "Path to your music collection"
@@ -111,7 +112,7 @@ msgstr "Tilbagekald API-adgangskode"
 
 #: ../templates/main.php:151
 msgid "Scanning music …"
-msgstr ""
+msgstr "Scanner musik..."
 
 #: ../templates/main.php:116
 msgid "Shuffle"
@@ -139,7 +140,7 @@ msgstr "Ukendt artist"
 
 #: ../templates/main.php:135
 msgid "Upload music in the files app to listen to it here"
-msgstr ""
+msgstr "Upload musk i fil-appen og lyt til dem her"
 
 #: ../templates/fake-template.php:12
 msgid ""
@@ -155,12 +156,12 @@ msgstr "Brug dit brugernavn og følgende adgangskode for at tilslutte til denne 
 
 #: ../templates/main.php:121 ../templates/main.php:123
 msgid "Volume"
-msgstr ""
+msgstr "Volumen"
 
 #: ../templates/main.php:57 ../templates/main.php:77
 msgid "tracks"
-msgstr ""
+msgstr "Numre"
 
 #: ../templates/main.php:152
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
-msgstr ""
+msgstr "{{ scanningScanned }} af {{ scanningTotal }}"

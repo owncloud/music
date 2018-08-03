@@ -7,11 +7,14 @@
     "Invalid path" : "مسیر اشتباه",
     "Music" : "موزیک",
     "Next" : "بعدی",
+    "No music found" : "موزیک جدید پیدا شد.",
     "Pause" : "توقف کردن",
     "Play" : "پخش کردن",
     "Previous" : "قبلی",
     "Repeat" : "تکرار",
     "Shuffle" : "درهم",
-    "Unknown album" : "آلبوم نامشخص"
-},"pluralForm" :"nplurals=1; plural=0;"
+    "Unknown album" : "آلبوم نامشخص",
+    "Unknown artist" : "خواننده نامشخص",
+    "Volume" : "میزان صدا"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

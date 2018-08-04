@@ -54,7 +54,8 @@ class AmpacheController extends Controller {
 	private $coverHelper;
 	private $logger;
 
-	private $sessionExpiryTime = 6000;
+	const SESSION_EXPIRY_TIME = 6000;
+	const ALL_TRACKS_PLAYLIST_ID = 10000000;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -165,7 +166,7 @@ class AmpacheController extends Controller {
 		if ($providedTime === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
-		if ($providedTime < ($currentTime - $this->sessionExpiryTime)) {
+		if ($providedTime < ($currentTime - self::SESSION_EXPIRY_TIME)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
 		// TODO - while testing with tomahawk it sometimes is $currenttime+1 ... needs further investigation
@@ -190,7 +191,7 @@ class AmpacheController extends Controller {
 
 		// this can cause collision, but it's just a temporary token
 		$token = \md5(\uniqid(\rand(), true));
-		$expiryDate = $currentTime + $this->sessionExpiryTime;
+		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
 		// create new session
 		$session = new AmpacheSession();
@@ -205,7 +206,7 @@ class AmpacheController extends Controller {
 		$artistCount = $this->artistBusinessLayer->count($user);
 		$albumCount = $this->albumBusinessLayer->count($user);
 		$trackCount = $this->trackBusinessLayer->count($user);
-		$playlistCount = $this->playlistBusinessLayer->count($user);
+		$playlistCount = $this->playlistBusinessLayer->count($user) + 1; // +1 for "All tracks"
 
 		return $this->renderXml(
 			'ampache/handshake',
@@ -225,7 +226,7 @@ class AmpacheController extends Controller {
 
 	protected function ping($auth) {
 		if ($auth !== null && $auth !== '') {
-			$this->ampacheSessionMapper->extend($auth, \time() + $this->sessionExpiryTime);
+			$this->ampacheSessionMapper->extend($auth, \time() + self::SESSION_EXPIRY_TIME);
 		}
 
 		return $this->renderXml('ampache/ping', []);
@@ -274,7 +275,7 @@ class AmpacheController extends Controller {
 
 	protected function songs($filter, $exact, $limit, $offset, $auth) {
 		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
-		return $this->renderSongs($tracks, $auth);
+		return $this->renderSongs($tracks, $auth, null, null, true);
 	}
 
 	protected function search_songs($filter, $auth) {
@@ -297,6 +298,12 @@ class AmpacheController extends Controller {
 	protected function playlists($filter, $exact) {
 		$userId = $this->ampacheUser->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact);
+		$playlists = \array_map(['self', 'playlistToArray'], $playlists);
+
+		// append "All tracks" if not searching by name
+		if (empty($filter)) {
+			$playlists[] = $this->allTracksPlaylistAsArray();
+		}
 
 		return $this->renderXml(
 				'ampache/playlists',
@@ -306,7 +313,11 @@ class AmpacheController extends Controller {
 
 	protected function playlist($listId) {
 		$userId = $this->ampacheUser->getUserId();
-		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
+		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
+			$playlist = $this->allTracksPlaylistAsArray();
+		} else {
+			$playlist = self::playlistToArray($this->playlistBusinessLayer->find($listId, $userId));
+		}
 		return $this->renderXml(
 				'ampache/playlists',
 				['playlists' => [$playlist], 'userId' => $userId]
@@ -315,6 +326,11 @@ class AmpacheController extends Controller {
 
 	protected function playlist_songs($listId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
+
+		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
+			return $this->songs(null, false, null, null, $auth);
+		}
+
 		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
@@ -386,6 +402,22 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	protected function allTracksPlaylistAsArray() {
+		return [
+			'id' => self::ALL_TRACKS_PLAYLIST_ID,
+			'name' => 'All tracks',
+			'trackCount' => $this->trackBusinessLayer->count($this->ampacheUser->getUserId())
+		];
+	}
+
+	protected static function playlistToArray($playlist) {
+		return [
+			'id' => $playlist->getId(),
+			'name' => $playlist->getName(),
+			'trackCount' => $playlist->getTrackCount()
+		];
+	}
+
 	protected static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
 		return $urlGenerator->getAbsoluteURL($urlGenerator->linkToRoute('music.ampache.ampache'))
 				. "?action=$action&filter=$filter&auth=$auth";
@@ -427,7 +459,7 @@ class AmpacheController extends Controller {
 		);
 	}
 
-	protected function renderSongs($tracks, $auth, $commonArtist=null, $commonAlbum=null) {
+	protected function renderSongs($tracks, $auth, $commonArtist=null, $commonAlbum=null, $sortByArtist=false) {
 		$userId = $this->ampacheUser->getUserId();
 
 		// URL creation callbacks
@@ -454,6 +486,10 @@ class AmpacheController extends Controller {
 				$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 				$track->setAlbum($album);
 			}
+		}
+
+		if ($sortByArtist) {
+			usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
 		}
 
 		return $this->renderXml(

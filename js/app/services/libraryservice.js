@@ -22,11 +22,11 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return _.sortBy(items, function(i) { return i[field].toLowerCase(); });
 	}
 
-	function sortByYearNameAndDisc(albums) {
-		albums = _.sortBy(albums, 'disk');
-		albums = sortCaseInsensitive(albums, 'name');
-		albums = _.sortBy(albums, 'year');
-		return albums;
+	function sortByYearNameAndDisc(aAlbums) {
+		aAlbums = _.sortBy(aAlbums, 'disk');
+		aAlbums = sortCaseInsensitive(aAlbums, 'name');
+		aAlbums = _.sortBy(aAlbums, 'year');
+		return aAlbums;
 	}
 
 	function sortByNumberAndTitle(tracks) {

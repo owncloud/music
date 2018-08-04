@@ -32,6 +32,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 		total: 0
 	};
 
+	playlistService.setRepeat($scope.repeat);
+	playlistService.setShuffle($scope.shuffle);
+
 	// Player events may fire synchronously or asynchronously. Utilize $timeout
 	// to always handle them asynchronously to run the handler within digest loop
 	// but with no nested digests loop (which causes an exception).
@@ -164,11 +167,13 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
+		playlistService.setShuffle($scope.shuffle);
 		Cookies.set('oc_music_shuffle', $scope.shuffle.toString(), { expires: 3650 });
 	};
 
 	$scope.toggleRepeat = function() {
 		$scope.repeat = !$scope.repeat;
+		playlistService.setRepeat($scope.repeat);
 		Cookies.set('oc_music_repeat', $scope.repeat.toString(), { expires: 3650 });
 	};
 
@@ -185,11 +190,11 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	$scope.toggle = function(forcePlay) {
 		forcePlay = forcePlay || false;
-		if($scope.currentTrack === null) {
+		if ($scope.currentTrack === null) {
 			// nothing to do
 			return null;
 		}
-		if(forcePlay) {
+		if (forcePlay) {
 			$scope.player.play();
 			$scope.setPlay(true);
 		} else {
@@ -199,16 +204,16 @@ function ($scope, $rootScope, playlistService, libraryService,
 	};
 
 	$scope.next = function() {
-		var entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle),
+		var entry = playlistService.jumpToNextTrack(),
 			tracksSkipped = false;
 
 		// get the next track as long as the current one contains no playable
 		// audio mimetype
-		while(entry !== null && !$scope.getPlayableFileId(entry.track)) {
+		while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
 			tracksSkipped = true;
-			entry = playlistService.jumpToNextTrack($scope.repeat, $scope.shuffle);
+			entry = playlistService.jumpToNextTrack();
 		}
-		if(tracksSkipped) {
+		if (tracksSkipped) {
 			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
 		}
 		setCurrentTrack(entry);

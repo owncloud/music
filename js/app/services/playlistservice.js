@@ -16,6 +16,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	var playOrder = [];
 	var playOrderIter = -1;
 	var startFromIndex = null;
+	var shuffle = false;
+	var repeat = false;
 	var prevShuffleState = false;
 
 	function shuffledIndices() {
@@ -39,50 +41,35 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		return list;
 	}
 
-	function initPlayOrder(shuffle) {
+	function enqueueIndices() {
+		var nextIndices = null;
+
 		if (shuffle) {
 			if (startFromIndex !== null) {
-				playOrder = [startFromIndex].concat(shuffledIndicesExcluding(startFromIndex));
+				nextIndices = [startFromIndex].concat(shuffledIndicesExcluding(startFromIndex));
 			} else {
-				playOrder = shuffledIndices();
+				nextIndices = shuffledIndices();
+			}
+			// if the next index ended up to be tha same as the pervious one, flip
+			// it to the end of the order
+			if (playlist.length > 1 && _.last(playOrder) == _.first(nextIndices)) {
+				nextIndices = wrapIndexToStart(nextIndices, 1);
 			}
 		}
 		else {
-			playOrder = _.range(playlist.length);
+			nextIndices = _.range(playlist.length);
 			if (startFromIndex !== null) {
-				playOrder = wrapIndexToStart(playOrder, startFromIndex);
+				nextIndices = wrapIndexToStart(nextIndices, startFromIndex);
 			}
-		}
-		prevShuffleState = shuffle;
-	}
-
-	function enqueueIndices(shuffle) {
-		var prevIndex = _.last(playOrder);
-		var nextIndices = null;
-
-		// Append playlist indices in suitable order, excluding the previously played index
-		// to prevent the same track from playing twice in row. Playlist containing only a
-		// single track is a special case as there we cannot exclude our only track.
-		if (playlist.length === 1) {
-			nextIndices = [0];
-		} else if (shuffle) {
-			nextIndices = shuffledIndicesExcluding(prevIndex);
-		} else {
-			nextIndices = wrapIndexToStart(_.range(playlist.length), prevIndex);
-			nextIndices = _.rest(nextIndices);
 		}
 
 		playOrder = playOrder.concat(nextIndices);
+		prevShuffleState = shuffle;
 	}
 
-	function checkShuffleStateChange(currentShuffleState) {
-		if (currentShuffleState != prevShuffleState) {
-			// Drop any future indices from the play order when the shuffle state changes
-			// and enqueue one playlist worth of indices according the new state.
-			playOrder = _.first(playOrder, playOrderIter);
-			enqueueIndices(currentShuffleState);
-			prevShuffleState = currentShuffleState;
-		}
+	// drop the planned play order but preserve the history
+	function dropFuturePlayOrder() {
+		playOrder = _.first(playOrder, playOrderIter + 1);
 	}
 
 	function insertMany(hostArray, targetIndex, insertedItems) {
@@ -90,6 +77,12 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	}
 
 	return {
+		setShuffle: function(state) {
+			shuffle = state;
+		},
+		setRepeat: function(state) {
+			repeat = state;
+		},
 		getCurrentIndex: function() {
 			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
 		},
@@ -100,7 +93,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			return playlist;
 		},
 		jumpToPrevTrack: function() {
-			if(playlist && playOrderIter > 0) {
+			if (playlist && playOrderIter > 0) {
 				--playOrderIter;
 				track = playlist[this.getCurrentIndex()];
 				this.publish('trackChanged', track);
@@ -108,20 +101,25 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			return null;
 		},
-		jumpToNextTrack: function(repeat, shuffle) {
-			if (playlist === null) {
+		jumpToNextTrack: function() {
+			if (playlist === null || playOrder === null) {
 				return null;
 			}
-			if (!playOrder) {
-				initPlayOrder(shuffle);
+
+			// check if shuffle state has changed after the play order was last updated
+			if (shuffle != prevShuffleState) {
+				dropFuturePlayOrder();
+				startFromIndex = playOrder[playOrderIter];
+				playOrder = _.initial(playOrder); // drop also current index as it will be readded on next step
+				enqueueIndices();
 			}
+
 			++playOrderIter;
-			checkShuffleStateChange(shuffle);
 
 			// check if we have run to the end of the enqueued tracks
 			if (playOrderIter >= playOrder.length) {
 				if (repeat) { // start another round
-					enqueueIndices(shuffle);
+					enqueueIndices();
 				} else { // we are done
 					playOrderIter = -1;
 					playlist = null;
@@ -137,13 +135,18 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		},
 		setPlaylist: function(listId, pl, startIndex /*optional*/) {
 			playlist = pl.slice(); // copy
-			playOrder = null;
-			playOrderIter = -1;
 			startFromIndex = (startIndex === undefined) ? null : startIndex;
-			if (listId !== playlistId) {
+			if (listId === playlistId) {
+				// preserve the history if list wasn't actually changed
+				dropFuturePlayOrder();
+			} else {
+				// drop the history if list changed
+				playOrder = [];
+				playOrderIter = -1; // jumpToNextTrack will move this to first valid index
 				playlistId = listId;
 				this.publish('playlistChanged', playlistId);
 			}
+			enqueueIndices();
 		},
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];
@@ -151,13 +154,15 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			if (pl[currentIndex] === currentTrack) {
 				// re-init the play-order, erasing any history data
 				playlist = pl.slice(); // copy
-				playOrderIter = 0;
 				startFromIndex = currentIndex;
-				initPlayOrder(prevShuffleState);
+				playOrder = [];
+				enqueueIndices();
+				playOrderIter = 0;
 			}
 			// if not, then we no longer have a valid list position
 			else {
 				playlist = null;
+				playlistId = null;
 				playOrder = null;
 				playOrderIter = -1;
 			}

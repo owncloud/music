@@ -423,7 +423,7 @@
 }
 
 #app-navigation .icon-checkmark, #app-navigation .icon-close {
-  margin-top: 8px !important;
+  margin-top: 10px !important;
 }
 
 #app-navigation .play-pause-button {
@@ -482,8 +482,9 @@ input[type="text"] {
 
 input.edit-list, input.new-list {
 	margin-left: 21px;
-	margin-bottom: 8px;
-	margin-top: 4px;
+	margin-bottom: 6px;
+	margin-top: 6px;
+	margin-right: 5px;
 	height: 32px;
 }
 

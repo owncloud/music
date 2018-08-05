@@ -894,12 +894,14 @@ angular.module('Music').controller('NavigationController', [
 
 		// create playlist
 		$scope.create = function(playlist) {
-			Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-				libraryService.addPlaylist(playlist);
-				$scope.newPlaylistName = null;
-			});
+			if ($scope.newPlaylistName.length > 0) {
+				Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
+					libraryService.addPlaylist(playlist);
+					$scope.newPlaylistName = null;
+				});
 
-			$scope.showCreateForm = false;
+				$scope.showCreateForm = false;
+			}
 		};
 
 		// Start renaming playlist
@@ -909,8 +911,10 @@ angular.module('Music').controller('NavigationController', [
 
 		// Commit renaming of playlist
 		$scope.commitEdit = function(playlist) {
-			Restangular.one('playlists', playlist.id).put({name: playlist.name});
-			$scope.showEditForm = null;
+			if (playlist.name.length > 0) {
+				Restangular.one('playlists', playlist.id).put({name: playlist.name});
+				$scope.showEditForm = null;
+			}
 		};
 
 		// Remove playlist

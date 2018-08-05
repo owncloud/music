@@ -11,10 +11,12 @@
 		<span>{{ text }}</span>
 	</a>
 	<div ng-if="playlist && $parent.showEditForm == playlist.id">
-		<input type="text" class="edit-list" ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name" />
-		<button class="svg action icon-checkmark" ng-click="$parent.$parent.commitEdit(playlist)"></button>
+		<input type="text" class="edit-list"
+			ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"></input>
+		<button class="svg action icon-checkmark"
+			ng-click="$parent.$parent.commitEdit(playlist)" ng-show="playlist.name.length > 0"></button>
 	</div>
-	<div class="actions" ng-if="playlist && $parent.showEditForm != playlist.id">
+	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
 		<button class="svg action icon-delete"
 			ng-click="$parent.$parent.remove(playlist)"
 			alt="{{ ::('Delete' | translate) }}" title="{{ ::('Delete' | translate) }}"></button>

@@ -892,8 +892,19 @@ angular.module('Music').controller('NavigationController', [
 		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
 
-		// create playlist
-		$scope.create = function(playlist) {
+		// Start creating playlist
+		$scope.startCreate = function() {
+			$scope.showCreateForm = true;
+			// Move the focus to the input field. This has to be made asynchronously
+			// because the field is not visible yet, it is shown by ng-show binding
+			// later during this digest loop.
+			$timeout(function() {
+				$('.new-list').focus();
+			});
+		};
+
+		// Commit creating playlist
+		$scope.commitCreate = function(playlist) {
 			if ($scope.newPlaylistName.length > 0) {
 				Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
 					libraryService.addPlaylist(playlist);
@@ -907,6 +918,12 @@ angular.module('Music').controller('NavigationController', [
 		// Start renaming playlist
 		$scope.startEdit = function(playlist) {
 			$scope.showEditForm = playlist.id;
+			// Move the focus to the input field. This has to be made asynchronously
+			// because the field does not exist yet, it is added by ng-if binding
+			// later during this digest loop.
+			$timeout(function() {
+				$('.edit-list').focus();
+			});
 		};
 
 		// Commit renaming of playlist

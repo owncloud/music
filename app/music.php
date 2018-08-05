@@ -21,6 +21,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -190,6 +191,18 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('Library', function ($c) {
+			return new Library(
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('CoverHelper'),
+				$c->query('URLGenerator'),
+				$c->query('L10N'),
+				$c->query('Logger')
+			);
+		});
+
 		/**
 		 * Mappers
 		 */
@@ -306,12 +319,7 @@ class Music extends App {
 
 		$container->registerService('CollectionHelper', function ($c) {
 			return new CollectionHelper(
-				$c->query('AlbumBusinessLayer'),
-				$c->query('ArtistBusinessLayer'),
-				$c->query('TrackBusinessLayer'),
-				$c->query('CoverHelper'),
-				$c->query('URLGenerator'),
-				$c->query('L10N'),
+				$c->query('Library'),
 				$c->query('FileCache'),
 				$c->query('DbCache'),
 				$c->query('Logger'),

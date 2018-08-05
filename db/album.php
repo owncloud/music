@@ -38,7 +38,7 @@ use \OCP\AppFramework\Db\Entity;
  * @method int getAlbumArtistId()
  * @method setAlbumArtistId(int $albumArtistId)
  * @method Artist getAlbumArtist()
- * @method setArtist(Artist $albumArtist)
+ * @method setAlbumArtist(Artist $albumArtist)
  * @method string getHash()
  * @method setHash(string $hash)
  * @method int getTrackCount()

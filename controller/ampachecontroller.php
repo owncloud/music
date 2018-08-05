@@ -26,6 +26,7 @@ use \OCA\Music\Middleware\AmpacheException;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -47,6 +48,7 @@ class AmpacheController extends Controller {
 	private $artistBusinessLayer;
 	private $playlistBusinessLayer;
 	private $trackBusinessLayer;
+	private $library;
 	private $ampacheUser;
 	private $urlGenerator;
 	private $rootFolder;
@@ -67,6 +69,7 @@ class AmpacheController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
+								Library $library,
 								AmpacheUser $ampacheUser,
 								$rootFolder,
 								CoverHelper $coverHelper,
@@ -79,6 +82,7 @@ class AmpacheController extends Controller {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
 
@@ -253,7 +257,8 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
-		return $this->renderSongs($tracks, $auth, $artist);
+		$this->injectArtistAndAlbum($tracks, $artist);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function album_songs($albumId, $auth) {
@@ -263,24 +268,41 @@ class AmpacheController extends Controller {
 		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
 
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
+		$this->injectArtistAndAlbum($tracks, null, $album);
 
-		return $this->renderSongs($tracks, $auth, null, $album);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function song($trackId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
-		return $this->renderSongs([$track], $auth);
+		$trackInArray = [$track];
+		$this->injectArtistAndAlbum($trackInArray);
+		return $this->renderSongs($trackInArray, $auth);
 	}
 
 	protected function songs($filter, $exact, $limit, $offset, $auth) {
-		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
-		return $this->renderSongs($tracks, $auth, null, null, true);
+
+		// optimized handling for fetching the whole library
+		if (empty($filter) && !$limit && !$offset) {
+			$userId = $this->ampacheUser->getUserId();
+			$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
+			usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+			$this->logger->log("sorting done", 'info');
+		}
+		// general case
+		else {
+			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
+			$this->injectArtistAndAlbum($tracks);
+		}
+
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function search_songs($filter, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
+		$this->injectArtistAndAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -328,6 +350,7 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
+			$this->logger->log("getting all tracks", 'info');
 			return $this->songs(null, false, null, null, $auth);
 		}
 
@@ -348,6 +371,7 @@ class AmpacheController extends Controller {
 			$playlistTracks[] = $track;
 		}
 
+		$this->injectArtistAndAlbum($tracks);
 		return $this->renderSongs($playlistTracks, $auth);
 	}
 
@@ -459,22 +483,9 @@ class AmpacheController extends Controller {
 		);
 	}
 
-	protected function renderSongs($tracks, $auth, $commonArtist=null, $commonAlbum=null, $sortByArtist=false) {
+	protected function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
 		$userId = $this->ampacheUser->getUserId();
 
-		// URL creation callbacks
-		$createPlayUrl = function ($track) use ($auth) {
-			return self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth);
-		};
-		$createCoverUrl = function ($track) use ($auth) {
-			if ($track->getAlbum()->getCoverFileId()) {
-				return self::createAlbumCoverUrl($this->urlGenerator, $track->getAlbum(), $auth);
-			} else {
-				return '';
-			}
-		};
-
-		// set album and artist for tracks
 		foreach ($tracks as &$track) {
 			$artist = $commonArtist ?: $this->artistBusinessLayer->find($track->getArtistId(), $userId);
 			$track->setArtist($artist);
@@ -487,10 +498,20 @@ class AmpacheController extends Controller {
 				$track->setAlbum($album);
 			}
 		}
+	}
 
-		if ($sortByArtist) {
-			usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
-		}
+	protected function renderSongs($tracks, $auth) {
+		// URL creation callbacks
+		$createPlayUrl = function ($track) use ($auth) {
+			return self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth);
+		};
+		$createCoverUrl = function ($track) use ($auth) {
+			if ($track->getAlbum()->getCoverFileId()) {
+				return self::createAlbumCoverUrl($this->urlGenerator, $track->getAlbum(), $auth);
+			} else {
+				return '';
+			}
+		};
 
 		return $this->renderXml(
 				'ampache/songs',

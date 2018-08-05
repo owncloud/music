@@ -55,14 +55,15 @@ class Library {
 		/** @var Artist[] $allArtists */
 		$artists = $this->artistBusinessLayer->findAll($userId);
 
-		$albumsById = [];
-		foreach ($albums as &$album) {
-			$albumsById[$album->getId()] = $album;
-		}
-
 		$artistsById = [];
 		foreach ($artists as &$artist) {
 			$artistsById[$artist->getId()] = $artist;
+		}
+
+		$albumsById = [];
+		foreach ($albums as &$album) {
+			$album->setAlbumArtist($artistsById[$album->getAlbumArtistId()]);
+			$albumsById[$album->getId()] = $album;
 		}
 
 		foreach ($tracks as $idx => $track) {

@@ -63,10 +63,16 @@ class Artist extends Entity {
 		return $name;
 	}
 
-	public function toCollection(IL10N $l10n) {
+	/**
+	 * @param IL10N $l10n
+	 * @param array $albums in the "toCollection" format
+	 * @return array
+	 */
+	public function toCollection(IL10N $l10n, $albums) {
 		return [
 			'id' => $this->getId(),
-			'name' => $this->getNameString($l10n)
+			'name' => $this->getNameString($l10n),
+			'albums' => $albums
 		];
 	}
 

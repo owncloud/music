@@ -179,15 +179,17 @@ class Album extends Entity {
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  object $l10n Localization handler
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
+	 * @param  array $tracks Tracks of the album in the "toCollection" format
 	 * @return array collection API object
 	 */
-	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash) {
+	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash, $tracks) {
 		return [
-			'name'  => $this->getNameString($l10n),
-			'year'  => $this->getYearRange(),
-			'disk'  => $this->getDisk(),
-			'cover' => $this->coverToCollection($urlGenerator, $cachedCoverHash),
-			'id'    => $this->getId(),
+			'name'   => $this->getNameString($l10n),
+			'year'   => $this->getYearRange(),
+			'disk'   => $this->getDisk(),
+			'cover'  => $this->coverToCollection($urlGenerator, $cachedCoverHash),
+			'id'     => $this->getId(),
+			'tracks' => $tracks
 		];
 	}
 

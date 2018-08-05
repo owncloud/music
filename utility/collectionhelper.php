@@ -116,62 +116,78 @@ class CollectionHelper {
 		$this->fileCache->set('music_collection.json', $json, 5*365*24*60*60);
 	}
 
-	private function buildJson() {
+	private function getTracksAlbumsAndArtists($userId) {
 		// Get all the entities from the DB first. The order of queries is important if we are in
 		// the middle of a scanning process: we don't want to get tracks which do not yet have
 		// an album entry or albums which do not yet have artist entry.
 		/** @var Track[] $allTracks */
-		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
+		$tracks = $this->trackBusinessLayer->findAll($this->userId);
 		/** @var Album[] $allAlbums */
-		$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
+		$albums = $this->albumBusinessLayer->findAll($this->userId);
 		/** @var Artist[] $allArtists */
-		$allArtists = $this->artistBusinessLayer->findAll($this->userId);
+		$artists = $this->artistBusinessLayer->findAll($this->userId);
 
-		$allArtistsByIdAsObj = [];
-		$allArtistsByIdAsArr = [];
-		foreach ($allArtists as &$artist) {
-			$artistId = $artist->getId();
-			$allArtistsByIdAsObj[$artistId] = $artist;
-			$allArtistsByIdAsArr[$artistId] = $artist->toCollection($this->l10n);
+		$albumsById = [];
+		foreach ($albums as &$album) {
+			$albumsById[$album->getId()] = $album;
 		}
 
-		$allAlbumsByIdAsObj = [];
-		$allAlbumsByIdAsArr = [];
-		$coverHashes = $this->coverHelper->getAllCachedCoverHashes($this->userId);
-		foreach ($allAlbums as &$album) {
-			$albumId = $album->getId();
-			$allAlbumsByIdAsObj[$albumId] = $album;
-			$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
-			$allAlbumsByIdAsArr[$albumId] = $album->toCollection(
-					$this->urlGenerator, $this->l10n, $coverHash);
+		$artistsById = [];
+		foreach ($artists as &$artist) {
+			$artistsById[$artist->getId()] = $artist;
 		}
 
-		$artists = [];
-		foreach ($allTracks as $track) {
-			$albumObj = $allAlbumsByIdAsObj[$track->getAlbumId()];
-			$trackArtistObj = $allArtistsByIdAsObj[$track->getArtistId()];
-			$albumArtist = &$allArtistsByIdAsArr[$albumObj->getAlbumArtistId()];
+		foreach ($tracks as $idx => $track) {
+			$album = $albumsById[$track->getAlbumId()];
+			$trackArtist = $artistsById[$track->getArtistId()];
 
-			if (empty($albumObj) || empty($trackArtistObj) || empty($albumArtist)) {
+			if (empty($album) || empty($trackArtist)) {
 				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
 						"album or artist missing. Skipping the track.", 'warn');
-			} else {
-				$track->setAlbum($albumObj);
-				$track->setArtist($trackArtistObj);
-
-				if (!isset($albumArtist['albums'])) {
-					$albumArtist['albums'] = [];
-					$artists[] = &$albumArtist;
-				}
-				$album = &$allAlbumsByIdAsArr[$track->getAlbumId()];
-				if (!isset($album['tracks'])) {
-					$album['tracks'] = [];
-					$albumArtist['albums'][] = &$album;
-				}
-				$album['tracks'][] = $track->toCollection($this->l10n);
+				unset($tracks[$idx]);
+			}
+			else {
+				$track->setAlbum($album);
+				$track->setArtist($trackArtist);
 			}
 		}
-		return \json_encode($artists);
+
+		return [
+			'tracks' => $tracks,
+			'albums' => $albumsById,
+			'artists' => $artistsById
+		];
+	}
+
+	private function buildJson() {
+		$entities = $this->getTracksAlbumsAndArtists($this->userId);
+		$coverHashes = $this->coverHelper->getAllCachedCoverHashes($this->userId);
+
+		// Create a multi-level dictionary of tracks where each track can be found
+		// by addressing like $trackDict[artistId][albumId][ordinal]. The tracks are
+		// in the dictionary in the "toCollection" format.
+		$trackDict = [];
+		foreach ($entities['tracks'] as $track) {
+			$trackDict[$track->getAlbum()->getAlbumArtistId()][$track->getAlbumId()][]
+				= $track->toCollection($this->l10n);
+		}
+
+		// Then create the actual collection by iterating over the previusly created
+		// dictionary and creating artists and albums in the "toCollection" format.
+		$collection = [];
+		foreach ($trackDict as $artistId => $artistTracksByAlbum) {
+
+			$artistAlbums = [];
+			foreach ($artistTracksByAlbum as $albumId => $albumTracks) {
+				$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
+				$artistAlbums[] = $entities['albums'][$albumId]->toCollection(
+					$this->urlGenerator, $this->l10n, $coverHash, $albumTracks);
+			}
+
+			$collection[] = $entities['artists'][$artistId]->toCollection($this->l10n, $artistAlbums);
+		}
+
+		return \json_encode($collection);
 	}
 
 }

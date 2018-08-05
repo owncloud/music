@@ -1031,9 +1031,9 @@ angular.module('Music').controller('NavigationController', [
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'libraryService',
-'Audio', 'Restangular', 'gettextCatalog', '$timeout',
+'Audio', 'Restangular', 'gettextCatalog', '$timeout', '$document',
 function ($scope, $rootScope, playlistService, libraryService,
-		Audio, Restangular, gettextCatalog, $timeout) {
+		Audio, Restangular, gettextCatalog, $timeout, $document) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -1264,6 +1264,30 @@ function ($scope, $rootScope, playlistService, libraryService,
 			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 		}
 	};
+
+	$document.bind('keydown', function(e) {
+		if (e.target == document.body) {
+			var func = null;
+			switch (e.which) {
+				case 32: //space
+					func = $scope.toggle;
+					break;
+				case 37: // arrow left
+					func = $scope.prev;
+					break;
+				case 39: // arrow right
+					func = $scope.next;
+					break;
+			}
+
+			if (func) {
+				$timeout(func);
+				return false;
+			}
+		}
+
+		return true;
+	});
 }]);
 
 angular.module('Music').controller('PlaylistViewController', [

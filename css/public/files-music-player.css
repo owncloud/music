@@ -85,7 +85,7 @@
 #music-controls #info-and-progress {
 	display: inline-block;
 	position: absolute;
-	left: 250px;
+	left: 260px;
 	right: 180px;
 	width: auto;
 	height: 100%;
@@ -215,51 +215,45 @@
 }
 
 /* "Tablet" style */
-@media only screen and (max-width: 1024px) {
-	#music-controls {
-		padding: 0;
-	}
-	#music-controls #albumart {
-		margin-left: 10px;
-	}
-	#music-controls #info-and-progress {
-		left: 230px;
-		right: 140px;
-	}
-	#music-controls #title {
-		font-size: 14px;
-	}
+#music-controls.tablet {
+	padding: 0;
+}
+#music-controls.tablet #albumart {
+	margin-left: 10px;
+}
+#music-controls.tablet #info-and-progress {
+	left: 230px;
+	right: 140px;
+}
+#music-controls.tablet #title {
+	font-size: 14px;
 }
 
-/* "Portrait phone" style */
-@media only screen and (max-width: 570px) {
-	#music-controls #prev {
-		display: none;
-	}
-	#music-controls .control {
-		margin-right: 0;
-	}
-	#music-controls #albumart {
-		margin-left: 0;
-		margin-right: 0;
-	}
-	#music-controls #info-and-progress {
-		left: 160px;
-		right: 50px;
-	}
-	#music-controls .volume-control {
-		display: none;
-	}
+/* "Mobile" style */
+#music-controls.mobile #prev {
+	display: none;
+}
+#music-controls.mobile .control {
+	margin-right: 0;
+}
+#music-controls.mobile #albumart {
+	margin-left: 0;
+	margin-right: 0;
+}
+#music-controls.mobile #info-and-progress {
+	left: 160px;
+	right: 50px;
+}
+#music-controls.mobile .volume-control {
+	display: none;
 }
 
 /* "Extra narrow" style */
-@media only screen and (max-width: 360px) {
-	#music-controls #song-info {
-		width: 100%;
-	}
-	#music-controls .progress-info {
-		display: none;
-	}
+#music-controls.extra-narrow #song-info {
+	width: 100%;
+}
+#music-controls.extra-narrow .progress-info {
+	display: none;
 }
 
 /* Hide the music controls when menu on left is in collapsible mode (on portrait phone)

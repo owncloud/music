@@ -249,22 +249,39 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
-		// resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes
-		var resizeControls = function() {
-			musicControls.css('width', parentContainer.width() - getScrollBarWidth());
+		var viewWidth = function() {
+			return 'width', parentContainer.width() - getScrollBarWidth();
 		};
 
 		// On share page, there's no #app-content. Use #preview element as parent, instead.
 		// The #preview element's width does not include the scroll bar.
 		if (parentContainer.length === 0) {
 			parentContainer = $('div#preview');
-			resizeControls = function() {
-				musicControls.css('width', parentContainer.width());
+			viewWidth = function() {
+				return parentContainer.width();
 			};
 			musicControls.css('left', '0');
 		}
 
 		parentContainer.append(musicControls);
+
+		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
+		// Also the internal layout of the bar is responsive to the available width.
+		resizeControls = function() {
+			var width = viewWidth();
+			musicControls.css('width', width);
+			if (width > 768) {
+				musicControls.removeClass('tablet mobile extra-narrow');
+			} else if (width > 500) {
+				musicControls.addClass('tablet');
+				musicControls.removeClass('mobile extra-narrow');
+			} else if (width > 360) {
+				musicControls.addClass('tablet mobile');
+				musicControls.removeClass('extra-narrow');
+			} else {
+				musicControls.addClass('tablet mobile extra-narrow');
+			}
+		};
 		parentContainer.resize(resizeControls);
 		resizeControls();
 

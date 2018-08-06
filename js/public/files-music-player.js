@@ -284,13 +284,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return match ? match[3] : fileBaseName;
 	}
 
-	function init(url, mime, cover) {
+	function init(url, mime) {
 		player.stop();
 		playing = false;
 		player.fromURL(url, mime);
 
-		coverImage.css('background-image', cover);
-		titleText.text(t('music', 'Loading…')); // actual title is filled later
+		// Set placeholders for track info fields, proper data is filled once received
+		coverImage.css('background-image', 'url("' + OC.imagePath('core', 'filetypes/audio') +'")');
+		titleText.text(t('music', 'Loading…'));
 		artistText.text('');
 
 		musicAppLinkElements().css('cursor', 'default').off("click");
@@ -332,13 +333,13 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, cover, fileId, fileBaseName) {
-		init(url, mime, cover);
+	this.init = function(url, mime, fileId, fileBaseName) {
+		init(url, mime);
 		loadFileInfo(fileId, fileBaseName);
 	};
 
-	this.initShare = function(url, mime, cover, fileId, fileBaseName, shareToken) {
-		init(url, mime, cover);
+	this.initShare = function(url, mime, fileId, fileBaseName, shareToken) {
+		init(url, mime);
 		loadSharedFileInfo(shareToken, fileId, fileBaseName);
 	};
 
@@ -391,7 +392,7 @@ function Playlist() {
 		}
 	}
 
-	this.init = function(folderUrl, supportedMimes, firstFileId, onDone) {
+	this.init = function(folderUrl, supportedMimes, firstFileId, shareToken, onDone) {
 		if (mFolderUrl != folderUrl || !mFiles) {
 			mFolderUrl = folderUrl;
 			mFiles = null;
@@ -405,12 +406,18 @@ function Playlist() {
 				'	</d:prop>' +
 				'</d:propfind>';
 
+			var headers = !shareToken ? {} : {
+				Authorization: 'Basic ' + btoa(shareToken + ':'),
+				Range: 'bytes=0-1000'
+			};
+
 			$.ajax({
 				url: folderUrl,
 				method: "PROPFIND",
 				data: propFindParams,
 				contentType: "application/xml; charset=utf-8",
 				dataType: "xml",
+				headers: headers,
 				success: function(response) {
 					mFiles = [];
 
@@ -418,16 +425,17 @@ function Playlist() {
 						var mime = $(this).find("d\\:getcontenttype").html();
 						if (_.contains(supportedMimes, mime)) {
 							var url = $(this).find("d\\:href").html();
+							var name = decodeURIComponent(OC.basename(url));
 							mFiles.push({
-								url: url,
 								fileid: $(this).find("oc\\:fileid").html(),
 								mime: mime,
-								name: stripExtension(OC.basename(url))
+								name: name,
+								basename: stripExtension(name)
 							});
 						}
 					});
 
-					mFiles = _.sortBy(mFiles, function(f) { return f.name.toLowerCase(); });
+					mFiles = _.sortBy(mFiles, function(f) { return f.basename.toLowerCase(); });
 					initDone(firstFileId, onDone);
 				},
 				fail: function() {
@@ -475,6 +483,11 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+
+	// wrapper function to start playing a file, implementation differs between
+	// normal folders and publicly shared ones 
+	var setPlayerFile = null;
+
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
 	// Register the play action for the supported mime types both synchronously
@@ -505,8 +518,7 @@ function initEmbeddedPlayer() {
 			player.close();
 		} else {
 			currentFile = file.fileid;
-			var cover = 'url("' + OC.imagePath('core', 'filetypes/audio') +'")'; // placeholder
-			player.init(appendToken(file.url), file.mime, cover, file.fileid, file.name);
+			setPlayerFile(file);
 			player.togglePlayback();
 		}
 	}
@@ -539,6 +551,10 @@ function initEmbeddedPlayer() {
 		}
 	}
 
+	function isShareView() {
+		return ($('#sharingToken').length > 0);
+	}
+
 	/**
 	 * "Folder player" is used in the Files app and on shared folders
 	 */
@@ -552,26 +568,39 @@ function initEmbeddedPlayer() {
 			if (currentFile != filerow.attr('data-id')) {
 				currentFile = filerow.attr('data-id');
 
-				var url = context.fileList.getDownloadUrl(fileName, context.dir);
-				var mime = filerow.attr('data-mime');
-				var cover = filerow.find('.thumbnail').css('background-image');
-				var fileBaseName = playlist.stripExtension(fileName);
+				var dir = context.dir;
 
-				var shareView = ($('#sharingToken').length > 0);
+				var shareToken = null;
+				var folderUrl = null;
 
-				if (shareView) {
-					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileBaseName, shareToken);
+				player.setNextAndPrevEnabled(false);
+
+				if (isShareView()) {
+					shareToken = $('#sharingToken').val();
+					setPlayerFile = function(file) {
+						var url = context.fileList.getDownloadUrl(file.name, dir);
+						player.initShare(url, file.mime, file.fileid, file.basename, shareToken);
+					};
+					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
 				}
 				else {
-					player.init(appendToken(url), mime, cover, currentFile, fileBaseName);
-					player.setNextAndPrevEnabled(false);
-
-					var folderUrl = context.fileList.getDownloadUrl('', context.dir);
-					playlist.init(folderUrl, supportedMimes, currentFile, function() {
-						player.setNextAndPrevEnabled(playlist.length() > 1);
-					});
+					setPlayerFile = function(file) {
+						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
+						player.init(url, file.mime, file.fileid, file.basename);
+					};
+					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
+
+				setPlayerFile({
+					mime: filerow.attr('data-mime'),
+					fileid: currentFile,
+					name: fileName,
+					basename: playlist.stripExtension(fileName)
+				});
+
+				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
+					player.setNextAndPrevEnabled(playlist.length() > 1);
+				});
 			}
 
 			// Play/Pause
@@ -604,7 +633,6 @@ function initEmbeddedPlayer() {
 				player.initShare(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
-						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
 						playlist.stripExtension($('#filename').val()),
 						$('#sharingToken').val()

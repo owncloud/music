@@ -294,13 +294,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return match ? match[3] : fileBaseName;
 	}
 
-	function init(url, mime, cover) {
+	function init(url, mime) {
 		player.stop();
 		playing = false;
 		player.fromURL(url, mime);
 
-		coverImage.css('background-image', cover);
-		titleText.text(t('music', 'Loading…')); // actual title is filled later
+		// Set placeholders for track info fields, proper data is filled once received
+		coverImage.css('background-image', 'url("' + OC.imagePath('core', 'filetypes/audio') +'")');
+		titleText.text(t('music', 'Loading…'));
 		artistText.text('');
 
 		musicAppLinkElements().css('cursor', 'default').off("click");
@@ -342,13 +343,13 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, cover, fileId, fileBaseName) {
-		init(url, mime, cover);
+	this.init = function(url, mime, fileId, fileBaseName) {
+		init(url, mime);
 		loadFileInfo(fileId, fileBaseName);
 	};
 
-	this.initShare = function(url, mime, cover, fileId, fileBaseName, shareToken) {
-		init(url, mime, cover);
+	this.initShare = function(url, mime, fileId, fileBaseName, shareToken) {
+		init(url, mime);
 		loadSharedFileInfo(shareToken, fileId, fileBaseName);
 	};
 

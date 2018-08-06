@@ -19,6 +19,11 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+
+	// wrapper function to start playing a file, implementation differs between
+	// normal folders and publicly shared ones 
+	var setPlayerFile = null;
+
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
 	// Register the play action for the supported mime types both synchronously
@@ -49,8 +54,7 @@ function initEmbeddedPlayer() {
 			player.close();
 		} else {
 			currentFile = file.fileid;
-			var cover = 'url("' + OC.imagePath('core', 'filetypes/audio') +'")'; // placeholder
-			player.init(appendToken(file.url), file.mime, cover, file.fileid, file.name);
+			setPlayerFile(file);
 			player.togglePlayback();
 		}
 	}
@@ -83,6 +87,10 @@ function initEmbeddedPlayer() {
 		}
 	}
 
+	function isShareView() {
+		return ($('#sharingToken').length > 0);
+	}
+
 	/**
 	 * "Folder player" is used in the Files app and on shared folders
 	 */
@@ -96,26 +104,39 @@ function initEmbeddedPlayer() {
 			if (currentFile != filerow.attr('data-id')) {
 				currentFile = filerow.attr('data-id');
 
-				var url = context.fileList.getDownloadUrl(fileName, context.dir);
-				var mime = filerow.attr('data-mime');
-				var cover = filerow.find('.thumbnail').css('background-image');
-				var fileBaseName = playlist.stripExtension(fileName);
+				var dir = context.dir;
 
-				var shareView = ($('#sharingToken').length > 0);
+				var shareToken = null;
+				var folderUrl = null;
 
-				if (shareView) {
-					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileBaseName, shareToken);
+				player.setNextAndPrevEnabled(false);
+
+				if (isShareView()) {
+					shareToken = $('#sharingToken').val();
+					setPlayerFile = function(file) {
+						var url = context.fileList.getDownloadUrl(file.name, dir);
+						player.initShare(url, file.mime, file.fileid, file.basename, shareToken);
+					};
+					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
 				}
 				else {
-					player.init(appendToken(url), mime, cover, currentFile, fileBaseName);
-					player.setNextAndPrevEnabled(false);
-
-					var folderUrl = context.fileList.getDownloadUrl('', context.dir);
-					playlist.init(folderUrl, supportedMimes, currentFile, function() {
-						player.setNextAndPrevEnabled(playlist.length() > 1);
-					});
+					setPlayerFile = function(file) {
+						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
+						player.init(url, file.mime, file.fileid, file.basename);
+					};
+					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
+
+				setPlayerFile({
+					mime: filerow.attr('data-mime'),
+					fileid: currentFile,
+					name: fileName,
+					basename: playlist.stripExtension(fileName)
+				});
+
+				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
+					player.setNextAndPrevEnabled(playlist.length() > 1);
+				});
 			}
 
 			// Play/Pause
@@ -148,7 +169,6 @@ function initEmbeddedPlayer() {
 				player.initShare(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
-						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
 						playlist.stripExtension($('#filename').val()),
 						$('#sharingToken').val()

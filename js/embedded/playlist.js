@@ -36,7 +36,7 @@ function Playlist() {
 		}
 	}
 
-	this.init = function(folderUrl, supportedMimes, firstFileId, onDone) {
+	this.init = function(folderUrl, supportedMimes, firstFileId, shareToken, onDone) {
 		if (mFolderUrl != folderUrl || !mFiles) {
 			mFolderUrl = folderUrl;
 			mFiles = null;
@@ -50,12 +50,18 @@ function Playlist() {
 				'	</d:prop>' +
 				'</d:propfind>';
 
+			var headers = !shareToken ? {} : {
+				Authorization: 'Basic ' + btoa(shareToken + ':'),
+				Range: 'bytes=0-1000'
+			};
+
 			$.ajax({
 				url: folderUrl,
 				method: "PROPFIND",
 				data: propFindParams,
 				contentType: "application/xml; charset=utf-8",
 				dataType: "xml",
+				headers: headers,
 				success: function(response) {
 					mFiles = [];
 
@@ -63,16 +69,17 @@ function Playlist() {
 						var mime = $(this).find("d\\:getcontenttype").html();
 						if (_.contains(supportedMimes, mime)) {
 							var url = $(this).find("d\\:href").html();
+							var name = decodeURIComponent(OC.basename(url));
 							mFiles.push({
-								url: url,
 								fileid: $(this).find("oc\\:fileid").html(),
 								mime: mime,
-								name: stripExtension(OC.basename(url))
+								name: name,
+								basename: stripExtension(name)
 							});
 						}
 					});
 
-					mFiles = _.sortBy(mFiles, function(f) { return f.name.toLowerCase(); });
+					mFiles = _.sortBy(mFiles, function(f) { return f.basename.toLowerCase(); });
 					initDone(firstFileId, onDone);
 				},
 				fail: function() {

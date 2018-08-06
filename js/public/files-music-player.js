@@ -1,4 +1,4 @@
-function EmbeddedPlayer(readyCallback, onClose) {
+function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	var player = new PlayerWrapper();
 	player.init(readyCallback);
@@ -6,11 +6,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
 	var playing = false;
+	var nextPrevEnabled = false;
 
 	// UI elements (jQuery)
 	var musicControls = null;
 	var playButton = null;
 	var pauseButton = null;
+	var prevButton = null;
+	var nextButton = null;
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
@@ -53,6 +56,32 @@ function EmbeddedPlayer(readyCallback, onClose) {
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(togglePlayback);
+	}
+
+	function createPrevButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'prev')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-previous'))
+			.attr('alt', t('music', 'Previous'))
+			.click(function() {
+				if (nextPrevEnabled && onPrev) {
+					onPrev();
+				}
+			});
+	}
+
+	function createNextButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'next')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-next'))
+			.attr('alt', t('music', 'Next'))
+			.click(function() {
+				if (nextPrevEnabled && onNext) {
+					onNext();
+				}
+			});
 	}
 
 	function createCoverImage() {
@@ -191,10 +220,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 
 		playButton = createPlayButton();
 		pauseButton = createPauseButton();
+		prevButton = createPrevButton();
+		nextButton = createNextButton();
 		coverImage = createCoverImage();
 
+		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
+		musicControls.append(nextButton);
 		musicControls.append(coverImage);
 		musicControls.append(createInfoProgressContainer());
 		musicControls.append(createVolumeControl());
@@ -220,14 +253,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', close);
+		player.on('end', onNext);
 	}
 
 	function musicAppLinkElements() {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fileBaseName, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -240,14 +273,15 @@ function EmbeddedPlayer(readyCallback, onClose) {
 				callback(data);
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileName));
+			titleText.text(titleFromFilename(fileBaseName));
 		});
 	}
 
-	function titleFromFilename(filename) {
-		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
-		return match ? match[3] : filename;
+	function titleFromFilename(fileBaseName) {
+		// Parsing logic is ported form parseFileName in utility/scanner.php.
+		// Here, however, we assume that the file extension has been stripped already.
+		var match = fileBaseName.match(/^((\d+)\s*[.-]\s+)?(.+)$/);
+		return match ? match[3] : fileBaseName;
 	}
 
 	function init(url, mime, cover) {
@@ -262,9 +296,9 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicAppLinkElements().css('cursor', 'default').off("click");
 	}
 
-	function loadFileInfo(fileId, fileName) {
+	function loadFileInfo(fileId, fileBaseName) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName, function(data) {
+		loadFileInfoFromUrl(url, fileBaseName, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -280,10 +314,10 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileName) {
+	function loadSharedFileInfo(shareToken, fileId, fileBaseName) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName);
+		loadFileInfoFromUrl(url, fileBaseName);
 	}
 
 
@@ -298,23 +332,138 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, cover, fileId, fileName) {
+	this.init = function(url, mime, cover, fileId, fileBaseName) {
 		init(url, mime, cover);
-		loadFileInfo(fileId, fileName);
+		loadFileInfo(fileId, fileBaseName);
 	};
 
-	this.initShare = function(url, mime, cover, fileId, fileName, shareToken) {
+	this.initShare = function(url, mime, cover, fileId, fileBaseName, shareToken) {
 		init(url, mime, cover);
-		loadSharedFileInfo(shareToken, fileId, fileName);
+		loadSharedFileInfo(shareToken, fileId, fileBaseName);
 	};
 
 	this.togglePlayback = function() {
 		togglePlayback();
 	};
 
+	this.close = function() {
+		close();
+	};
+
+	this.setNextAndPrevEnabled = function(enabled) {
+		nextPrevEnabled = enabled;
+		if (enabled) {
+			nextButton.removeClass('disabled');
+			prevButton.removeClass('disabled');
+		} else {
+			nextButton.addClass('disabled');
+			prevButton.addClass('disabled');
+		}
+	};
 }
 
 
+function Playlist() {
+
+	var mFolderUrl = null;
+	var mFiles = null;
+	var mCurrentIndex = null;
+
+	function jumpToOffset(offset) {
+		if (!mFiles || mFiles.length <= 1) {
+			return null;
+		} else {
+			mCurrentIndex = (mCurrentIndex + mFiles.length + offset) % mFiles.length;
+			return mFiles[mCurrentIndex];
+		}
+	}
+
+	function stripExtension(filename) {
+		return filename.substr(0, filename.lastIndexOf('.')) || filename;
+	}
+
+	function initDone(firstFileId, callback) {
+		if (mFiles) {
+			mCurrentIndex = _.findIndex(mFiles, {fileid: firstFileId});
+		}
+		if (callback) {
+			callback();
+		}
+	}
+
+	this.init = function(folderUrl, supportedMimes, firstFileId, onDone) {
+		if (mFolderUrl != folderUrl || !mFiles) {
+			mFolderUrl = folderUrl;
+			mFiles = null;
+
+			var propFindParams =
+				'<?xml version="1.0"?>' +
+				'<d:propfind  xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">' +
+				'	<d:prop>' +
+				'		<d:getcontenttype/>' +
+				'		<oc:fileid/>' +
+				'	</d:prop>' +
+				'</d:propfind>';
+
+			$.ajax({
+				url: folderUrl,
+				method: "PROPFIND",
+				data: propFindParams,
+				contentType: "application/xml; charset=utf-8",
+				dataType: "xml",
+				success: function(response) {
+					mFiles = [];
+
+					$(response).find("d\\:response").each(function() {
+						var mime = $(this).find("d\\:getcontenttype").html();
+						if (_.contains(supportedMimes, mime)) {
+							var url = $(this).find("d\\:href").html();
+							mFiles.push({
+								url: url,
+								fileid: $(this).find("oc\\:fileid").html(),
+								mime: mime,
+								name: stripExtension(OC.basename(url))
+							});
+						}
+					});
+
+					mFiles = _.sortBy(mFiles, function(f) { return f.name.toLowerCase(); });
+					initDone(firstFileId, onDone);
+				},
+				fail: function() {
+					console.warn('PROPFIND failed for folrder URL ' + folderUrl);
+					initDone(firstFileId, onDone);
+				}
+			});
+		}
+		else {
+			initDone(firstFileId, onDone);
+		}
+	};
+
+	this.next = function() {
+		return jumpToOffset(+1);
+	};
+
+	this.prev = function() {
+		return jumpToOffset(-1);
+	};
+
+	this.reset = function() {
+		mFolderUrl = null;
+		mFiles = null;
+		mCurrentIndex = null;
+	};
+
+	this.length = function() {
+		return mFiles ? mFiles.length : 0;
+	};
+
+	// Expose the utility function. This module is not really a logical
+	// place for it but creating another module just for one shared function
+	// would be cumbersome.
+	this.stripExtension = stripExtension;
+}
 $(document).ready(function() {
 	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
@@ -333,11 +482,38 @@ function initEmbeddedPlayer() {
 	// the types supported by SoundManager2 are known only in the callback but
 	// the callback does not fire at all on browsers with no codecs (some versions
 	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
-	var player = new EmbeddedPlayer(register, onClose);
+	var player = new EmbeddedPlayer(register, onClose, onNext, onPrev);
 	register();
+
+	var playlist = new Playlist();
 
 	function onClose() {
 		currentFile = null;
+		playlist.reset();
+	}
+
+	function onNext() {
+		jumpToPlaylistFile(playlist.next());
+	}
+
+	function onPrev() {
+		jumpToPlaylistFile(playlist.prev());
+	}
+
+	function jumpToPlaylistFile(file) {
+		if (!file) {
+			player.close();
+		} else {
+			currentFile = file.fileid;
+			var cover = 'url("' + OC.imagePath('core', 'filetypes/audio') +'")'; // placeholder
+			player.init(appendToken(file.url), file.mime, cover, file.fileid, file.name);
+			player.togglePlayback();
+		}
+	}
+
+	function appendToken(url) {
+		var delimiter = _.includes(url, '?') ? '&' : '?';
+		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	function register() {
@@ -379,18 +555,22 @@ function initEmbeddedPlayer() {
 				var url = context.fileList.getDownloadUrl(fileName, context.dir);
 				var mime = filerow.attr('data-mime');
 				var cover = filerow.find('.thumbnail').css('background-image');
+				var fileBaseName = playlist.stripExtension(fileName);
 
 				var shareView = ($('#sharingToken').length > 0);
 
 				if (shareView) {
 					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileName, shareToken);
+					player.initShare(url, mime, cover, currentFile, fileBaseName, shareToken);
 				}
 				else {
-					var delimiter = _.includes(url, '?') ? '&' : '?';
-					url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					player.init(appendToken(url), mime, cover, currentFile, fileBaseName);
+					player.setNextAndPrevEnabled(false);
 
-					player.init(url, mime, cover, currentFile, fileName);
+					var folderUrl = context.fileList.getDownloadUrl('', context.dir);
+					playlist.init(folderUrl, supportedMimes, currentFile, function() {
+						player.setNextAndPrevEnabled(playlist.length() > 1);
+					});
 				}
 			}
 
@@ -426,7 +606,7 @@ function initEmbeddedPlayer() {
 						$('#mimetype').val(),
 						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
-						$('#filename').val(),
+						playlist.stripExtension($('#filename').val()),
 						$('#sharingToken').val()
 				);
 			}

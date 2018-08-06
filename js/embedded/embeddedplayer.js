@@ -8,7 +8,7 @@
  * @copyright Pauli Järvinen 2017, 2018
  */
 
-function EmbeddedPlayer(readyCallback, onClose) {
+function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	var player = new PlayerWrapper();
 	player.init(readyCallback);
@@ -16,11 +16,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
 	var playing = false;
+	var nextPrevEnabled = false;
 
 	// UI elements (jQuery)
 	var musicControls = null;
 	var playButton = null;
 	var pauseButton = null;
+	var prevButton = null;
+	var nextButton = null;
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
@@ -63,6 +66,32 @@ function EmbeddedPlayer(readyCallback, onClose) {
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(togglePlayback);
+	}
+
+	function createPrevButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'prev')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-previous'))
+			.attr('alt', t('music', 'Previous'))
+			.click(function() {
+				if (nextPrevEnabled && onPrev) {
+					onPrev();
+				}
+			});
+	}
+
+	function createNextButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'next')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-next'))
+			.attr('alt', t('music', 'Next'))
+			.click(function() {
+				if (nextPrevEnabled && onNext) {
+					onNext();
+				}
+			});
 	}
 
 	function createCoverImage() {
@@ -201,10 +230,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 
 		playButton = createPlayButton();
 		pauseButton = createPauseButton();
+		prevButton = createPrevButton();
+		nextButton = createNextButton();
 		coverImage = createCoverImage();
 
+		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
+		musicControls.append(nextButton);
 		musicControls.append(coverImage);
 		musicControls.append(createInfoProgressContainer());
 		musicControls.append(createVolumeControl());
@@ -230,14 +263,14 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', close);
+		player.on('end', onNext);
 	}
 
 	function musicAppLinkElements() {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fileBaseName, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -250,14 +283,15 @@ function EmbeddedPlayer(readyCallback, onClose) {
 				callback(data);
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileName));
+			titleText.text(titleFromFilename(fileBaseName));
 		});
 	}
 
-	function titleFromFilename(filename) {
-		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
-		return match ? match[3] : filename;
+	function titleFromFilename(fileBaseName) {
+		// Parsing logic is ported form parseFileName in utility/scanner.php.
+		// Here, however, we assume that the file extension has been stripped already.
+		var match = fileBaseName.match(/^((\d+)\s*[.-]\s+)?(.+)$/);
+		return match ? match[3] : fileBaseName;
 	}
 
 	function init(url, mime, cover) {
@@ -272,9 +306,9 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicAppLinkElements().css('cursor', 'default').off("click");
 	}
 
-	function loadFileInfo(fileId, fileName) {
+	function loadFileInfo(fileId, fileBaseName) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName, function(data) {
+		loadFileInfoFromUrl(url, fileBaseName, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -290,10 +324,10 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileName) {
+	function loadSharedFileInfo(shareToken, fileId, fileBaseName) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName);
+		loadFileInfoFromUrl(url, fileBaseName);
 	}
 
 
@@ -308,19 +342,33 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, cover, fileId, fileName) {
+	this.init = function(url, mime, cover, fileId, fileBaseName) {
 		init(url, mime, cover);
-		loadFileInfo(fileId, fileName);
+		loadFileInfo(fileId, fileBaseName);
 	};
 
-	this.initShare = function(url, mime, cover, fileId, fileName, shareToken) {
+	this.initShare = function(url, mime, cover, fileId, fileBaseName, shareToken) {
 		init(url, mime, cover);
-		loadSharedFileInfo(shareToken, fileId, fileName);
+		loadSharedFileInfo(shareToken, fileId, fileBaseName);
 	};
 
 	this.togglePlayback = function() {
 		togglePlayback();
 	};
 
+	this.close = function() {
+		close();
+	};
+
+	this.setNextAndPrevEnabled = function(enabled) {
+		nextPrevEnabled = enabled;
+		if (enabled) {
+			nextButton.removeClass('disabled');
+			prevButton.removeClass('disabled');
+		} else {
+			nextButton.addClass('disabled');
+			prevButton.addClass('disabled');
+		}
+	};
 }
 

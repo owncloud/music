@@ -26,11 +26,38 @@ function initEmbeddedPlayer() {
 	// the types supported by SoundManager2 are known only in the callback but
 	// the callback does not fire at all on browsers with no codecs (some versions
 	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
-	var player = new EmbeddedPlayer(register, onClose);
+	var player = new EmbeddedPlayer(register, onClose, onNext, onPrev);
 	register();
+
+	var playlist = new Playlist();
 
 	function onClose() {
 		currentFile = null;
+		playlist.reset();
+	}
+
+	function onNext() {
+		jumpToPlaylistFile(playlist.next());
+	}
+
+	function onPrev() {
+		jumpToPlaylistFile(playlist.prev());
+	}
+
+	function jumpToPlaylistFile(file) {
+		if (!file) {
+			player.close();
+		} else {
+			currentFile = file.fileid;
+			var cover = 'url("' + OC.imagePath('core', 'filetypes/audio') +'")'; // placeholder
+			player.init(appendToken(file.url), file.mime, cover, file.fileid, file.name);
+			player.togglePlayback();
+		}
+	}
+
+	function appendToken(url) {
+		var delimiter = _.includes(url, '?') ? '&' : '?';
+		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	function register() {
@@ -72,18 +99,22 @@ function initEmbeddedPlayer() {
 				var url = context.fileList.getDownloadUrl(fileName, context.dir);
 				var mime = filerow.attr('data-mime');
 				var cover = filerow.find('.thumbnail').css('background-image');
+				var fileBaseName = playlist.stripExtension(fileName);
 
 				var shareView = ($('#sharingToken').length > 0);
 
 				if (shareView) {
 					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileName, shareToken);
+					player.initShare(url, mime, cover, currentFile, fileBaseName, shareToken);
 				}
 				else {
-					var delimiter = _.includes(url, '?') ? '&' : '?';
-					url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					player.init(appendToken(url), mime, cover, currentFile, fileBaseName);
+					player.setNextAndPrevEnabled(false);
 
-					player.init(url, mime, cover, currentFile, fileName);
+					var folderUrl = context.fileList.getDownloadUrl('', context.dir);
+					playlist.init(folderUrl, supportedMimes, currentFile, function() {
+						player.setNextAndPrevEnabled(playlist.length() > 1);
+					});
 				}
 			}
 
@@ -119,7 +150,7 @@ function initEmbeddedPlayer() {
 						$('#mimetype').val(),
 						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
-						$('#filename').val(),
+						playlist.stripExtension($('#filename').val()),
 						$('#sharingToken').val()
 				);
 			}

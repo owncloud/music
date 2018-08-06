@@ -18,6 +18,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var playing = false;
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
+	var currentFileId = null;
 
 	// UI elements (jQuery)
 	var musicControls = null;
@@ -274,17 +275,21 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fallbackTitle, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback /*optional*/) {
 		$.get(url, function(data) {
-			titleText.text(data.title);
-			artistText.text(data.artist);
+			// discard results if the file has already changed by the time the
+			// result arrives
+			if (currentFileId == fileId) {
+				titleText.text(data.title);
+				artistText.text(data.artist);
 
-			if (data.cover) {
-				coverImage.css('background-image', 'url("' + data.cover + '")');
-			}
+				if (data.cover) {
+					coverImage.css('background-image', 'url("' + data.cover + '")');
+				}
 
-			if (callback) {
-				callback(data);
+				if (callback) {
+					callback(data);
+				}
 			}
 		}).fail(function() {
 			titleText.text(fallbackTitle);
@@ -324,7 +329,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	function loadFileInfo(fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fallbackTitle, function(data) {
+		loadFileInfoFromUrl(url, fallbackTitle, fileId, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -343,7 +348,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fallbackTitle);
+		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
 
 
@@ -358,17 +363,15 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.playFile = function(url, mime, fileId, fileName) {
+	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
+		currentFileId = fileId;
 		var fallbackTitle = titleFromFilename(fileName);
 		playUrl(url, mime, fallbackTitle, function() {
-			loadFileInfo(fileId, fallbackTitle);
-		});
-	};
-
-	this.playShare = function(url, mime, fileId, fileName, shareToken) {
-		var fallbackTitle = titleFromFilename(fileName);
-		playUrl(url, mime, fallbackTitle, function() {
-			loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+			if (shareToken) {
+				loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+			} else {
+				loadFileInfo(fileId, fallbackTitle);
+			}
 		});
 	};
 

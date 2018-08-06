@@ -19,10 +19,11 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+	var shareToken = null;
 
-	// wrapper function to start playing a file, implementation differs between
-	// normal folders and publicly shared ones 
-	var playFile = null;
+	// function to get download URL for given file name, created later as it
+	// has to bind some variables not available here
+	var urlForFile = null;
 
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
@@ -54,14 +55,14 @@ function initEmbeddedPlayer() {
 			player.close();
 		} else {
 			currentFile = file.fileid;
-			playFile(file);
-			player.togglePlayback();
+			player.playFile(
+				urlForFile(file.name),
+				file.mime,
+				currentFile,
+				file.name,
+				shareToken
+			);
 		}
-	}
-
-	function appendToken(url) {
-		var delimiter = _.includes(url, '?') ? '&' : '?';
-		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	function register() {
@@ -105,33 +106,34 @@ function initEmbeddedPlayer() {
 				currentFile = filerow.attr('data-id');
 
 				var dir = context.dir;
-
-				var shareToken = null;
 				var folderUrl = null;
 
 				player.setNextAndPrevEnabled(false);
 
 				if (isShareView()) {
 					shareToken = $('#sharingToken').val();
-					playFile = function(file) {
-						var url = context.fileList.getDownloadUrl(file.name, dir);
-						player.playShare(url, file.mime, file.fileid, file.name, shareToken);
-					};
 					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
-				}
-				else {
-					playFile = function(file) {
-						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
-						player.playFile(url, file.mime, file.fileid, file.name);
-					};
+				} else {
 					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
 
-				playFile({
-					mime: filerow.attr('data-mime'),
-					fileid: currentFile,
-					name: fileName,
-				});
+				urlForFile = function(name) {
+					var url = context.fileList.getDownloadUrl(name, dir);
+					// append request token unless this is a public share
+					if (!shareToken) {
+						var delimiter = _.includes(url, '?') ? '&' : '?';
+						url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					}
+					return url;
+				};
+
+				player.playFile(
+					urlForFile(fileName),
+					filerow.attr('data-mime'),
+					currentFile,
+					fileName,
+					shareToken
+				);
 
 				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
 					player.setNextAndPrevEnabled(playlist.length() > 1);
@@ -165,7 +167,7 @@ function initEmbeddedPlayer() {
 			if (!currentFile) {
 				currentFile = 1; // bogus id
 
-				player.playShare(
+				player.playFile(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,

@@ -8,6 +8,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var playing = false;
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
+	var currentFileId = null;
 
 	// UI elements (jQuery)
 	var musicControls = null;
@@ -264,17 +265,21 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fallbackTitle, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback /*optional*/) {
 		$.get(url, function(data) {
-			titleText.text(data.title);
-			artistText.text(data.artist);
+			// discard results if the file has already changed by the time the
+			// result arrives
+			if (currentFileId == fileId) {
+				titleText.text(data.title);
+				artistText.text(data.artist);
 
-			if (data.cover) {
-				coverImage.css('background-image', 'url("' + data.cover + '")');
-			}
+				if (data.cover) {
+					coverImage.css('background-image', 'url("' + data.cover + '")');
+				}
 
-			if (callback) {
-				callback(data);
+				if (callback) {
+					callback(data);
+				}
 			}
 		}).fail(function() {
 			titleText.text(fallbackTitle);
@@ -314,7 +319,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	function loadFileInfo(fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fallbackTitle, function(data) {
+		loadFileInfoFromUrl(url, fallbackTitle, fileId, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -333,7 +338,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fallbackTitle);
+		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
 
 
@@ -348,17 +353,15 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.playFile = function(url, mime, fileId, fileName) {
+	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
+		currentFileId = fileId;
 		var fallbackTitle = titleFromFilename(fileName);
 		playUrl(url, mime, fallbackTitle, function() {
-			loadFileInfo(fileId, fallbackTitle);
-		});
-	};
-
-	this.playShare = function(url, mime, fileId, fileName, shareToken) {
-		var fallbackTitle = titleFromFilename(fileName);
-		playUrl(url, mime, fallbackTitle, function() {
-			loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+			if (shareToken) {
+				loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+			} else {
+				loadFileInfo(fileId, fallbackTitle);
+			}
 		});
 	};
 
@@ -498,10 +501,11 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+	var shareToken = null;
 
-	// wrapper function to start playing a file, implementation differs between
-	// normal folders and publicly shared ones 
-	var playFile = null;
+	// function to get download URL for given file name, created later as it
+	// has to bind some variables not available here
+	var urlForFile = null;
 
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
@@ -533,14 +537,14 @@ function initEmbeddedPlayer() {
 			player.close();
 		} else {
 			currentFile = file.fileid;
-			playFile(file);
-			player.togglePlayback();
+			player.playFile(
+				urlForFile(file.name),
+				file.mime,
+				currentFile,
+				file.name,
+				shareToken
+			);
 		}
-	}
-
-	function appendToken(url) {
-		var delimiter = _.includes(url, '?') ? '&' : '?';
-		return url + delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 	}
 
 	function register() {
@@ -584,33 +588,34 @@ function initEmbeddedPlayer() {
 				currentFile = filerow.attr('data-id');
 
 				var dir = context.dir;
-
-				var shareToken = null;
 				var folderUrl = null;
 
 				player.setNextAndPrevEnabled(false);
 
 				if (isShareView()) {
 					shareToken = $('#sharingToken').val();
-					playFile = function(file) {
-						var url = context.fileList.getDownloadUrl(file.name, dir);
-						player.playShare(url, file.mime, file.fileid, file.name, shareToken);
-					};
 					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
-				}
-				else {
-					playFile = function(file) {
-						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
-						player.playFile(url, file.mime, file.fileid, file.name);
-					};
+				} else {
 					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
 
-				playFile({
-					mime: filerow.attr('data-mime'),
-					fileid: currentFile,
-					name: fileName,
-				});
+				urlForFile = function(name) {
+					var url = context.fileList.getDownloadUrl(name, dir);
+					// append request token unless this is a public share
+					if (!shareToken) {
+						var delimiter = _.includes(url, '?') ? '&' : '?';
+						url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					}
+					return url;
+				};
+
+				player.playFile(
+					urlForFile(fileName),
+					filerow.attr('data-mime'),
+					currentFile,
+					fileName,
+					shareToken
+				);
 
 				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
 					player.setNextAndPrevEnabled(playlist.length() > 1);
@@ -644,7 +649,7 @@ function initEmbeddedPlayer() {
 			if (!currentFile) {
 				currentFile = 1; // bogus id
 
-				player.playShare(
+				player.playFile(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,

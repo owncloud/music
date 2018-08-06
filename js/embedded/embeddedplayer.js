@@ -17,6 +17,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	player.setVolume(volume);
 	var playing = false;
 	var nextPrevEnabled = false;
+	var playDelayTimer = null;
 
 	// UI elements (jQuery)
 	var musicControls = null;
@@ -30,15 +31,18 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 
 	function togglePlayback() {
-		player.togglePlayback();
-		playing = !playing;
+		// discard command while switching to new track is ongoing
+		if (!playDelayTimer) {
+			player.togglePlayback();
+			playing = !playing;
 
-		if (playing) {
-			playButton.css('display', 'none');
-			pauseButton.css('display', 'inline-block');
-		} else {
-			playButton.css('display', 'inline-block');
-			pauseButton.css('display', 'none');
+			if (playing) {
+				playButton.css('display', 'none');
+				pauseButton.css('display', 'inline-block');
+			} else {
+				playButton.css('display', 'inline-block');
+				pauseButton.css('display', 'none');
+			}
 		}
 	}
 
@@ -270,7 +274,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fallbackTitle, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -283,7 +287,8 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 				callback(data);
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileName));
+			titleText.text(fallbackTitle);
+			artistText.text('');
 		});
 	}
 
@@ -293,22 +298,33 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return match ? match[3] : filename;
 	}
 
-	function init(url, mime) {
+	function playUrl(url, mime, tempTitle, nextStep) {
 		player.stop();
 		playing = false;
-		player.fromURL(url, mime);
 
 		// Set placeholders for track info fields, proper data is filled once received
 		coverImage.css('background-image', 'url("' + OC.imagePath('core', 'filetypes/audio') +'")');
 		titleText.text(t('music', 'Loading…'));
-		artistText.text('');
-
+		artistText.text(tempTitle);
 		musicAppLinkElements().css('cursor', 'default').off("click");
+
+		// Add a small delay before actually starting to load any data. This is
+		// to avoid flooding HTTP requests in case the user rapidly jumps over
+		// tracks.
+		if (playDelayTimer) {
+			clearTimeout(playDelayTimer);
+		}
+		playDelayTimer = setTimeout(function() {
+			playDelayTimer = null;
+			player.fromURL(url, mime);
+			togglePlayback();
+			nextStep();
+		}, 300);
 	}
 
-	function loadFileInfo(fileId, fileName) {
+	function loadFileInfo(fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName, function(data) {
+		loadFileInfoFromUrl(url, fallbackTitle, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -324,10 +340,10 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileName) {
+	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName);
+		loadFileInfoFromUrl(url, fallbackTitle);
 	}
 
 
@@ -342,14 +358,18 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, fileId, fileName) {
-		init(url, mime);
-		loadFileInfo(fileId, fileName);
+	this.playFile = function(url, mime, fileId, fileName) {
+		var fallbackTitle = titleFromFilename(fileName);
+		playUrl(url, mime, fallbackTitle, function() {
+			loadFileInfo(fileId, fallbackTitle);
+		});
 	};
 
-	this.initShare = function(url, mime, fileId, fileName, shareToken) {
-		init(url, mime);
-		loadSharedFileInfo(shareToken, fileId, fileName);
+	this.playShare = function(url, mime, fileId, fileName, shareToken) {
+		var fallbackTitle = titleFromFilename(fileName);
+		playUrl(url, mime, fallbackTitle, function() {
+			loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+		});
 	};
 
 	this.togglePlayback = function() {

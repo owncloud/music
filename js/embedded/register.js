@@ -22,7 +22,7 @@ function initEmbeddedPlayer() {
 
 	// wrapper function to start playing a file, implementation differs between
 	// normal folders and publicly shared ones 
-	var setPlayerFile = null;
+	var playFile = null;
 
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
@@ -54,7 +54,7 @@ function initEmbeddedPlayer() {
 			player.close();
 		} else {
 			currentFile = file.fileid;
-			setPlayerFile(file);
+			playFile(file);
 			player.togglePlayback();
 		}
 	}
@@ -113,21 +113,21 @@ function initEmbeddedPlayer() {
 
 				if (isShareView()) {
 					shareToken = $('#sharingToken').val();
-					setPlayerFile = function(file) {
+					playFile = function(file) {
 						var url = context.fileList.getDownloadUrl(file.name, dir);
-						player.initShare(url, file.mime, file.fileid, file.name, shareToken);
+						player.playShare(url, file.mime, file.fileid, file.name, shareToken);
 					};
 					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
 				}
 				else {
-					setPlayerFile = function(file) {
+					playFile = function(file) {
 						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
-						player.init(url, file.mime, file.fileid, file.name);
+						player.playFile(url, file.mime, file.fileid, file.name);
 					};
 					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
 
-				setPlayerFile({
+				playFile({
 					mime: filerow.attr('data-mime'),
 					fileid: currentFile,
 					name: fileName,
@@ -137,9 +137,9 @@ function initEmbeddedPlayer() {
 					player.setNextAndPrevEnabled(playlist.length() > 1);
 				});
 			}
-
-			// Play/Pause
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		var registerPlayerForMime = function(mime) {
@@ -165,7 +165,7 @@ function initEmbeddedPlayer() {
 			if (!currentFile) {
 				currentFile = 1; // bogus id
 
-				player.initShare(
+				player.playShare(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,
@@ -173,7 +173,9 @@ function initEmbeddedPlayer() {
 						$('#sharingToken').val()
 				);
 			}
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		// Add click handler to the file preview if this is a supported file.

@@ -23,8 +23,9 @@ function Playlist() {
 		}
 	}
 
-	function stripExtension(filename) {
-		return filename.substr(0, filename.lastIndexOf('.')) || filename;
+	function getSortProperty(file) {
+		var basename = file.name.substr(0, file.name.lastIndexOf('.')) || file.name; 
+		return basename.toLowerCase();
 	}
 
 	function initDone(firstFileId, callback) {
@@ -73,13 +74,12 @@ function Playlist() {
 							mFiles.push({
 								fileid: $(this).find("oc\\:fileid").html(),
 								mime: mime,
-								name: name,
-								basename: stripExtension(name)
+								name: name
 							});
 						}
 					});
 
-					mFiles = _.sortBy(mFiles, function(f) { return f.basename.toLowerCase(); });
+					mFiles = _.sortBy(mFiles, getSortProperty);
 					initDone(firstFileId, onDone);
 				},
 				fail: function() {
@@ -111,8 +111,4 @@ function Playlist() {
 		return mFiles ? mFiles.length : 0;
 	};
 
-	// Expose the utility function. This module is not really a logical
-	// place for it but creating another module just for one shared function
-	// would be cumbersome.
-	this.stripExtension = stripExtension;
 }

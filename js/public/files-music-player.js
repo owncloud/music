@@ -260,7 +260,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileBaseName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -273,15 +273,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 				callback(data);
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileBaseName));
+			titleText.text(titleFromFilename(fileName));
 		});
 	}
 
-	function titleFromFilename(fileBaseName) {
-		// Parsing logic is ported form parseFileName in utility/scanner.php.
-		// Here, however, we assume that the file extension has been stripped already.
-		var match = fileBaseName.match(/^((\d+)\s*[.-]\s+)?(.+)$/);
-		return match ? match[3] : fileBaseName;
+	function titleFromFilename(filename) {
+		// parsing logic is ported form parseFileName in utility/scanner.php
+		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
+		return match ? match[3] : filename;
 	}
 
 	function init(url, mime) {
@@ -297,9 +296,9 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicAppLinkElements().css('cursor', 'default').off("click");
 	}
 
-	function loadFileInfo(fileId, fileBaseName) {
+	function loadFileInfo(fileId, fileName) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileBaseName, function(data) {
+		loadFileInfoFromUrl(url, fileName, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -315,10 +314,10 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileBaseName) {
+	function loadSharedFileInfo(shareToken, fileId, fileName) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileBaseName);
+		loadFileInfoFromUrl(url, fileName);
 	}
 
 
@@ -333,14 +332,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, fileId, fileBaseName) {
+	this.init = function(url, mime, fileId, fileName) {
 		init(url, mime);
-		loadFileInfo(fileId, fileBaseName);
+		loadFileInfo(fileId, fileName);
 	};
 
-	this.initShare = function(url, mime, fileId, fileBaseName, shareToken) {
+	this.initShare = function(url, mime, fileId, fileName, shareToken) {
 		init(url, mime);
-		loadSharedFileInfo(shareToken, fileId, fileBaseName);
+		loadSharedFileInfo(shareToken, fileId, fileName);
 	};
 
 	this.togglePlayback = function() {
@@ -379,8 +378,9 @@ function Playlist() {
 		}
 	}
 
-	function stripExtension(filename) {
-		return filename.substr(0, filename.lastIndexOf('.')) || filename;
+	function getSortProperty(file) {
+		var basename = file.name.substr(0, file.name.lastIndexOf('.')) || file.name; 
+		return basename.toLowerCase();
 	}
 
 	function initDone(firstFileId, callback) {
@@ -429,13 +429,12 @@ function Playlist() {
 							mFiles.push({
 								fileid: $(this).find("oc\\:fileid").html(),
 								mime: mime,
-								name: name,
-								basename: stripExtension(name)
+								name: name
 							});
 						}
 					});
 
-					mFiles = _.sortBy(mFiles, function(f) { return f.basename.toLowerCase(); });
+					mFiles = _.sortBy(mFiles, getSortProperty);
 					initDone(firstFileId, onDone);
 				},
 				fail: function() {
@@ -467,10 +466,6 @@ function Playlist() {
 		return mFiles ? mFiles.length : 0;
 	};
 
-	// Expose the utility function. This module is not really a logical
-	// place for it but creating another module just for one shared function
-	// would be cumbersome.
-	this.stripExtension = stripExtension;
 }
 $(document).ready(function() {
 	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
@@ -579,14 +574,14 @@ function initEmbeddedPlayer() {
 					shareToken = $('#sharingToken').val();
 					setPlayerFile = function(file) {
 						var url = context.fileList.getDownloadUrl(file.name, dir);
-						player.initShare(url, file.mime, file.fileid, file.basename, shareToken);
+						player.initShare(url, file.mime, file.fileid, file.name, shareToken);
 					};
 					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
 				}
 				else {
 					setPlayerFile = function(file) {
 						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
-						player.init(url, file.mime, file.fileid, file.basename);
+						player.init(url, file.mime, file.fileid, file.name);
 					};
 					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
@@ -595,7 +590,6 @@ function initEmbeddedPlayer() {
 					mime: filerow.attr('data-mime'),
 					fileid: currentFile,
 					name: fileName,
-					basename: playlist.stripExtension(fileName)
 				});
 
 				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
@@ -634,7 +628,7 @@ function initEmbeddedPlayer() {
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,
-						playlist.stripExtension($('#filename').val()),
+						$('#filename').val(),
 						$('#sharingToken').val()
 				);
 			}

@@ -115,14 +115,14 @@ function initEmbeddedPlayer() {
 					shareToken = $('#sharingToken').val();
 					setPlayerFile = function(file) {
 						var url = context.fileList.getDownloadUrl(file.name, dir);
-						player.initShare(url, file.mime, file.fileid, file.basename, shareToken);
+						player.initShare(url, file.mime, file.fileid, file.name, shareToken);
 					};
 					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
 				}
 				else {
 					setPlayerFile = function(file) {
 						var url = appendToken(context.fileList.getDownloadUrl(file.name, dir));
-						player.init(url, file.mime, file.fileid, file.basename);
+						player.init(url, file.mime, file.fileid, file.name);
 					};
 					folderUrl = context.fileList.getDownloadUrl('', dir);
 				}
@@ -131,7 +131,6 @@ function initEmbeddedPlayer() {
 					mime: filerow.attr('data-mime'),
 					fileid: currentFile,
 					name: fileName,
-					basename: playlist.stripExtension(fileName)
 				});
 
 				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
@@ -170,7 +169,7 @@ function initEmbeddedPlayer() {
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,
-						playlist.stripExtension($('#filename').val()),
+						$('#filename').val(),
 						$('#sharingToken').val()
 				);
 			}

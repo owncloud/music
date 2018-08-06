@@ -270,7 +270,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileBaseName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
 		$.get(url, function(data) {
 			titleText.text(data.title);
 			artistText.text(data.artist);
@@ -283,15 +283,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 				callback(data);
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileBaseName));
+			titleText.text(titleFromFilename(fileName));
 		});
 	}
 
-	function titleFromFilename(fileBaseName) {
-		// Parsing logic is ported form parseFileName in utility/scanner.php.
-		// Here, however, we assume that the file extension has been stripped already.
-		var match = fileBaseName.match(/^((\d+)\s*[.-]\s+)?(.+)$/);
-		return match ? match[3] : fileBaseName;
+	function titleFromFilename(filename) {
+		// parsing logic is ported form parseFileName in utility/scanner.php
+		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
+		return match ? match[3] : filename;
 	}
 
 	function init(url, mime) {
@@ -307,9 +306,9 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicAppLinkElements().css('cursor', 'default').off("click");
 	}
 
-	function loadFileInfo(fileId, fileBaseName) {
+	function loadFileInfo(fileId, fileName) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileBaseName, function(data) {
+		loadFileInfoFromUrl(url, fileName, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -325,10 +324,10 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileBaseName) {
+	function loadSharedFileInfo(shareToken, fileId, fileName) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileBaseName);
+		loadFileInfoFromUrl(url, fileName);
 	}
 
 
@@ -343,14 +342,14 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, fileId, fileBaseName) {
+	this.init = function(url, mime, fileId, fileName) {
 		init(url, mime);
-		loadFileInfo(fileId, fileBaseName);
+		loadFileInfo(fileId, fileName);
 	};
 
-	this.initShare = function(url, mime, fileId, fileBaseName, shareToken) {
+	this.initShare = function(url, mime, fileId, fileName, shareToken) {
 		init(url, mime);
-		loadSharedFileInfo(shareToken, fileId, fileBaseName);
+		loadSharedFileInfo(shareToken, fileId, fileName);
 	};
 
 	this.togglePlayback = function() {

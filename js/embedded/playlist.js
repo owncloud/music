@@ -10,7 +10,6 @@
 
 function Playlist() {
 
-	var mFolderUrl = null;
 	var mFiles = null;
 	var mCurrentIndex = null;
 
@@ -23,74 +22,14 @@ function Playlist() {
 		}
 	}
 
-	function getSortProperty(file) {
-		var basename = file.name.substr(0, file.name.lastIndexOf('.')) || file.name; 
-		return basename.toLowerCase();
-	}
-
-	function initDone(firstFileId, callback) {
-		if (mFiles) {
-			mCurrentIndex = _.findIndex(mFiles, {fileid: firstFileId});
-		}
-		if (callback) {
-			callback();
-		}
-	}
-
-	this.init = function(folderUrl, supportedMimes, firstFileId, shareToken, onDone) {
-		if (mFolderUrl != folderUrl || !mFiles) {
-			mFolderUrl = folderUrl;
-			mFiles = null;
-
-			var propFindParams =
-				'<?xml version="1.0"?>' +
-				'<d:propfind  xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">' +
-				'	<d:prop>' +
-				'		<d:getcontenttype/>' +
-				'		<oc:fileid/>' +
-				'	</d:prop>' +
-				'</d:propfind>';
-
-			var headers = !shareToken ? {} : {
-				Authorization: 'Basic ' + btoa(shareToken + ':'),
-				Range: 'bytes=0-1000'
-			};
-
-			$.ajax({
-				url: folderUrl,
-				method: "PROPFIND",
-				data: propFindParams,
-				contentType: "application/xml; charset=utf-8",
-				dataType: "xml",
-				headers: headers,
-				success: function(response) {
-					mFiles = [];
-
-					$(response).find("d\\:response").each(function() {
-						var mime = $(this).find("d\\:getcontenttype").html();
-						if (_.contains(supportedMimes, mime)) {
-							var url = $(this).find("d\\:href").html();
-							var name = decodeURIComponent(OC.basename(url));
-							mFiles.push({
-								fileid: $(this).find("oc\\:fileid").html(),
-								mime: mime,
-								name: name
-							});
-						}
-					});
-
-					mFiles = _.sortBy(mFiles, getSortProperty);
-					initDone(firstFileId, onDone);
-				},
-				fail: function() {
-					console.warn('PROPFIND failed for folrder URL ' + folderUrl);
-					initDone(firstFileId, onDone);
-				}
-			});
-		}
-		else {
-			initDone(firstFileId, onDone);
-		}
+	this.init = function(folderFiles, supportedMimes, firstFileId) {
+		mFiles = _.filter(folderFiles, function(file) {
+			return _.contains(supportedMimes, file.mimetype);
+		});
+		mCurrentIndex = _.findIndex(mFiles, function(file) {
+			// types int/string depend on the cloud version, don't use ===
+			return file.id == firstFileId; 
+		});
 	};
 
 	this.next = function() {
@@ -102,7 +41,6 @@ function Playlist() {
 	};
 
 	this.reset = function() {
-		mFolderUrl = null;
 		mFiles = null;
 		mCurrentIndex = null;
 	};

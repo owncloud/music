@@ -19,7 +19,7 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
-	var shareToken = null;
+	var shareToken = $('#sharingToken').val(); // undefined when not on share page
 
 	// function to get download URL for given file name, created later as it
 	// has to bind some variables not available here
@@ -54,10 +54,10 @@ function initEmbeddedPlayer() {
 		if (!file) {
 			player.close();
 		} else {
-			currentFile = file.fileid;
+			currentFile = file.id;
 			player.playFile(
 				urlForFile(file.name),
-				file.mime,
+				file.mimetype,
 				currentFile,
 				file.name,
 				shareToken
@@ -88,10 +88,6 @@ function initEmbeddedPlayer() {
 		}
 	}
 
-	function isShareView() {
-		return ($('#sharingToken').length > 0);
-	}
-
 	/**
 	 * "Folder player" is used in the Files app and on shared folders
 	 */
@@ -105,20 +101,8 @@ function initEmbeddedPlayer() {
 			if (currentFile != filerow.attr('data-id')) {
 				currentFile = filerow.attr('data-id');
 
-				var dir = context.dir;
-				var folderUrl = null;
-
-				player.setNextAndPrevEnabled(false);
-
-				if (isShareView()) {
-					shareToken = $('#sharingToken').val();
-					folderUrl = OC.linkTo('', 'public.php/webdav' + dir);
-				} else {
-					folderUrl = context.fileList.getDownloadUrl('', dir);
-				}
-
 				urlForFile = function(name) {
-					var url = context.fileList.getDownloadUrl(name, dir);
+					var url = context.fileList.getDownloadUrl(name, context.dir);
 					// append request token unless this is a public share
 					if (!shareToken) {
 						var delimiter = _.includes(url, '?') ? '&' : '?';
@@ -135,9 +119,8 @@ function initEmbeddedPlayer() {
 					shareToken
 				);
 
-				playlist.init(folderUrl, supportedMimes, currentFile, shareToken, function() {
-					player.setNextAndPrevEnabled(playlist.length() > 1);
-				});
+				playlist.init(context.fileList.files, supportedMimes, currentFile);
+				player.setNextAndPrevEnabled(playlist.length() > 1);
 			}
 			else {
 				player.togglePlayback();
@@ -172,7 +155,7 @@ function initEmbeddedPlayer() {
 						$('#mimetype').val(),
 						0,
 						$('#filename').val(),
-						$('#sharingToken').val()
+						shareToken
 				);
 			}
 			else {

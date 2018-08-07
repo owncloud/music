@@ -220,5 +220,5 @@ div:hover > .play-pause,
 }
 
 .highlight {
-	background-color: #f9f9f9;
+	background-color: rgba(0,0,0,0.025);;
 }

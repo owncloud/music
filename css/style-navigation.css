@@ -69,7 +69,7 @@
 }
 
 #app-navigation li.drag-hover {
-	background-color: #f7f7f7;
+	background-color: rgba(0,0,0,0.04);;
 }
 
 .playlist:hover .actions {

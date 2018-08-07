@@ -455,7 +455,7 @@
 }
 
 #app-navigation li.drag-hover {
-	background-color: #f7f7f7;
+	background-color: rgba(0,0,0,0.04);;
 }
 
 .playlist:hover .actions {
@@ -1084,7 +1084,7 @@ div:hover > .play-pause,
 }
 
 .highlight {
-	background-color: #f9f9f9;
+	background-color: rgba(0,0,0,0.025);;
 }
 
 .tablet .album-area {

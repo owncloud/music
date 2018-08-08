@@ -1,4 +1,4 @@
-function EmbeddedPlayer(readyCallback, onClose) {
+function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	var player = new PlayerWrapper();
 	player.init(readyCallback);
@@ -6,26 +6,34 @@ function EmbeddedPlayer(readyCallback, onClose) {
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
 	var playing = false;
+	var nextPrevEnabled = false;
+	var playDelayTimer = null;
+	var currentFileId = null;
 
 	// UI elements (jQuery)
 	var musicControls = null;
 	var playButton = null;
 	var pauseButton = null;
+	var prevButton = null;
+	var nextButton = null;
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
 
 
 	function togglePlayback() {
-		player.togglePlayback();
-		playing = !playing;
+		// discard command while switching to new track is ongoing
+		if (!playDelayTimer) {
+			player.togglePlayback();
+			playing = !playing;
 
-		if (playing) {
-			playButton.css('display', 'none');
-			pauseButton.css('display', 'inline-block');
-		} else {
-			playButton.css('display', 'inline-block');
-			pauseButton.css('display', 'none');
+			if (playing) {
+				playButton.css('display', 'none');
+				pauseButton.css('display', 'inline-block');
+			} else {
+				playButton.css('display', 'inline-block');
+				pauseButton.css('display', 'none');
+			}
 		}
 	}
 
@@ -53,6 +61,32 @@ function EmbeddedPlayer(readyCallback, onClose) {
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(togglePlayback);
+	}
+
+	function createPrevButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'prev')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-previous'))
+			.attr('alt', t('music', 'Previous'))
+			.click(function() {
+				if (nextPrevEnabled && onPrev) {
+					onPrev();
+				}
+			});
+	}
+
+	function createNextButton() {
+		return $(document.createElement('img'))
+			.attr('id', 'next')
+			.attr('class', 'control svg small disabled')
+			.attr('src', OC.imagePath('music', 'play-next'))
+			.attr('alt', t('music', 'Next'))
+			.click(function() {
+				if (nextPrevEnabled && onNext) {
+					onNext();
+				}
+			});
 	}
 
 	function createCoverImage() {
@@ -191,56 +225,82 @@ function EmbeddedPlayer(readyCallback, onClose) {
 
 		playButton = createPlayButton();
 		pauseButton = createPauseButton();
+		prevButton = createPrevButton();
+		nextButton = createNextButton();
 		coverImage = createCoverImage();
 
+		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
+		musicControls.append(nextButton);
 		musicControls.append(coverImage);
 		musicControls.append(createInfoProgressContainer());
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
-		// resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes
-		var resizeControls = function() {
-			musicControls.css('width', parentContainer.width() - getScrollBarWidth());
+		var viewWidth = function() {
+			return 'width', parentContainer.width() - getScrollBarWidth();
 		};
 
 		// On share page, there's no #app-content. Use #preview element as parent, instead.
 		// The #preview element's width does not include the scroll bar.
 		if (parentContainer.length === 0) {
 			parentContainer = $('div#preview');
-			resizeControls = function() {
-				musicControls.css('width', parentContainer.width());
+			viewWidth = function() {
+				return parentContainer.width();
 			};
 			musicControls.css('left', '0');
 		}
 
 		parentContainer.append(musicControls);
+
+		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
+		// Also the internal layout of the bar is responsive to the available width.
+		resizeControls = function() {
+			var width = viewWidth();
+			musicControls.css('width', width);
+			if (width > 768) {
+				musicControls.removeClass('tablet mobile extra-narrow');
+			} else if (width > 500) {
+				musicControls.addClass('tablet');
+				musicControls.removeClass('mobile extra-narrow');
+			} else if (width > 360) {
+				musicControls.addClass('tablet mobile');
+				musicControls.removeClass('extra-narrow');
+			} else {
+				musicControls.addClass('tablet mobile extra-narrow');
+			}
+		};
 		parentContainer.resize(resizeControls);
 		resizeControls();
 
-		player.on('end', close);
+		player.on('end', onNext);
 	}
 
 	function musicAppLinkElements() {
 		return $('#song-info *, #albumart');
 	}
 
-	function loadFileInfoFromUrl(url, fileName, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback /*optional*/) {
 		$.get(url, function(data) {
-			titleText.text(data.title);
-			artistText.text(data.artist);
+			// discard results if the file has already changed by the time the
+			// result arrives
+			if (currentFileId == fileId) {
+				titleText.text(data.title);
+				artistText.text(data.artist);
 
-			if (data.cover) {
-				coverImage.css('background-image', 'url("' + data.cover + '")');
-			}
+				if (data.cover) {
+					coverImage.css('background-image', 'url("' + data.cover + '")');
+				}
 
-			if (callback) {
-				callback(data);
+				if (callback) {
+					callback(data);
+				}
 			}
 		}).fail(function() {
-			titleText.text(titleFromFilename(fileName));
+			titleText.text(fallbackTitle);
+			artistText.text('');
 		});
 	}
 
@@ -250,21 +310,33 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		return match ? match[3] : filename;
 	}
 
-	function init(url, mime, cover) {
+	function playUrl(url, mime, tempTitle, nextStep) {
 		player.stop();
 		playing = false;
-		player.fromURL(url, mime);
 
-		coverImage.css('background-image', cover);
-		titleText.text(t('music', 'Loading…')); // actual title is filled later
-		artistText.text('');
-
+		// Set placeholders for track info fields, proper data is filled once received
+		coverImage.css('background-image', 'url("' + OC.imagePath('core', 'filetypes/audio') +'")');
+		titleText.text(t('music', 'Loading…'));
+		artistText.text(tempTitle);
 		musicAppLinkElements().css('cursor', 'default').off("click");
+
+		// Add a small delay before actually starting to load any data. This is
+		// to avoid flooding HTTP requests in case the user rapidly jumps over
+		// tracks.
+		if (playDelayTimer) {
+			clearTimeout(playDelayTimer);
+		}
+		playDelayTimer = setTimeout(function() {
+			playDelayTimer = null;
+			player.fromURL(url, mime);
+			togglePlayback();
+			nextStep();
+		}, 300);
 	}
 
-	function loadFileInfo(fileId, fileName) {
+	function loadFileInfo(fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName, function(data) {
+		loadFileInfoFromUrl(url, fallbackTitle, fileId, function(data) {
 			if (data.in_library) {
 				var navigateToMusicApp = function() {
 					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
@@ -280,10 +352,10 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		});
 	}
 
-	function loadSharedFileInfo(shareToken, fileId, fileName) {
+	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
-		loadFileInfoFromUrl(url, fileName);
+		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
 
 
@@ -298,23 +370,81 @@ function EmbeddedPlayer(readyCallback, onClose) {
 		musicControls.css('display', 'inline-block');
 	};
 
-	this.init = function(url, mime, cover, fileId, fileName) {
-		init(url, mime, cover);
-		loadFileInfo(fileId, fileName);
-	};
-
-	this.initShare = function(url, mime, cover, fileId, fileName, shareToken) {
-		init(url, mime, cover);
-		loadSharedFileInfo(shareToken, fileId, fileName);
+	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
+		currentFileId = fileId;
+		var fallbackTitle = titleFromFilename(fileName);
+		playUrl(url, mime, fallbackTitle, function() {
+			if (shareToken) {
+				loadSharedFileInfo(shareToken, fileId, fallbackTitle);
+			} else {
+				loadFileInfo(fileId, fallbackTitle);
+			}
+		});
 	};
 
 	this.togglePlayback = function() {
 		togglePlayback();
 	};
 
+	this.close = function() {
+		close();
+	};
+
+	this.setNextAndPrevEnabled = function(enabled) {
+		nextPrevEnabled = enabled;
+		if (enabled) {
+			nextButton.removeClass('disabled');
+			prevButton.removeClass('disabled');
+		} else {
+			nextButton.addClass('disabled');
+			prevButton.addClass('disabled');
+		}
+	};
 }
 
 
+function Playlist() {
+
+	var mFiles = null;
+	var mCurrentIndex = null;
+
+	function jumpToOffset(offset) {
+		if (!mFiles || mFiles.length <= 1) {
+			return null;
+		} else {
+			mCurrentIndex = (mCurrentIndex + mFiles.length + offset) % mFiles.length;
+			return mFiles[mCurrentIndex];
+		}
+	}
+
+	this.init = function(folderFiles, supportedMimes, firstFileId) {
+		mFiles = _.filter(folderFiles, function(file) {
+			return _.contains(supportedMimes, file.mimetype);
+		});
+		mCurrentIndex = _.findIndex(mFiles, function(file) {
+			// types int/string depend on the cloud version, don't use ===
+			return file.id == firstFileId; 
+		});
+	};
+
+	this.next = function() {
+		return jumpToOffset(+1);
+	};
+
+	this.prev = function() {
+		return jumpToOffset(-1);
+	};
+
+	this.reset = function() {
+		mFiles = null;
+		mCurrentIndex = null;
+	};
+
+	this.length = function() {
+		return mFiles ? mFiles.length : 0;
+	};
+
+}
 $(document).ready(function() {
 	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
@@ -326,6 +456,12 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+	var shareToken = $('#sharingToken').val(); // undefined when not on share page
+
+	// function to get download URL for given file name, created later as it
+	// has to bind some variables not available here
+	var urlForFile = null;
+
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
 	// Register the play action for the supported mime types both synchronously
@@ -333,11 +469,37 @@ function initEmbeddedPlayer() {
 	// the types supported by SoundManager2 are known only in the callback but
 	// the callback does not fire at all on browsers with no codecs (some versions
 	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
-	var player = new EmbeddedPlayer(register, onClose);
+	var player = new EmbeddedPlayer(register, onClose, onNext, onPrev);
 	register();
+
+	var playlist = new Playlist();
 
 	function onClose() {
 		currentFile = null;
+		playlist.reset();
+	}
+
+	function onNext() {
+		jumpToPlaylistFile(playlist.next());
+	}
+
+	function onPrev() {
+		jumpToPlaylistFile(playlist.prev());
+	}
+
+	function jumpToPlaylistFile(file) {
+		if (!file) {
+			player.close();
+		} else {
+			currentFile = file.id;
+			player.playFile(
+				urlForFile(file.name),
+				file.mimetype,
+				currentFile,
+				file.name,
+				shareToken
+			);
+		}
 	}
 
 	function register() {
@@ -376,26 +538,30 @@ function initEmbeddedPlayer() {
 			if (currentFile != filerow.attr('data-id')) {
 				currentFile = filerow.attr('data-id');
 
-				var url = context.fileList.getDownloadUrl(fileName, context.dir);
-				var mime = filerow.attr('data-mime');
-				var cover = filerow.find('.thumbnail').css('background-image');
+				urlForFile = function(name) {
+					var url = context.fileList.getDownloadUrl(name, context.dir);
+					// append request token unless this is a public share
+					if (!shareToken) {
+						var delimiter = _.includes(url, '?') ? '&' : '?';
+						url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					}
+					return url;
+				};
 
-				var shareView = ($('#sharingToken').length > 0);
+				player.playFile(
+					urlForFile(fileName),
+					filerow.attr('data-mime'),
+					currentFile,
+					fileName,
+					shareToken
+				);
 
-				if (shareView) {
-					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileName, shareToken);
-				}
-				else {
-					var delimiter = _.includes(url, '?') ? '&' : '?';
-					url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
-
-					player.init(url, mime, cover, currentFile, fileName);
-				}
+				playlist.init(context.fileList.files, supportedMimes, currentFile);
+				player.setNextAndPrevEnabled(playlist.length() > 1);
 			}
-
-			// Play/Pause
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		var registerPlayerForMime = function(mime) {
@@ -421,16 +587,17 @@ function initEmbeddedPlayer() {
 			if (!currentFile) {
 				currentFile = 1; // bogus id
 
-				player.initShare(
+				player.playFile(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
-						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
 						$('#filename').val(),
-						$('#sharingToken').val()
+						shareToken
 				);
 			}
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		// Add click handler to the file preview if this is a supported file.

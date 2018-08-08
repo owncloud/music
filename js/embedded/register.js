@@ -19,6 +19,12 @@ $(document).ready(function() {
 function initEmbeddedPlayer() {
 
 	var currentFile = null;
+	var shareToken = $('#sharingToken').val(); // undefined when not on share page
+
+	// function to get download URL for given file name, created later as it
+	// has to bind some variables not available here
+	var urlForFile = null;
+
 	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
 
 	// Register the play action for the supported mime types both synchronously
@@ -26,11 +32,37 @@ function initEmbeddedPlayer() {
 	// the types supported by SoundManager2 are known only in the callback but
 	// the callback does not fire at all on browsers with no codecs (some versions
 	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
-	var player = new EmbeddedPlayer(register, onClose);
+	var player = new EmbeddedPlayer(register, onClose, onNext, onPrev);
 	register();
+
+	var playlist = new Playlist();
 
 	function onClose() {
 		currentFile = null;
+		playlist.reset();
+	}
+
+	function onNext() {
+		jumpToPlaylistFile(playlist.next());
+	}
+
+	function onPrev() {
+		jumpToPlaylistFile(playlist.prev());
+	}
+
+	function jumpToPlaylistFile(file) {
+		if (!file) {
+			player.close();
+		} else {
+			currentFile = file.id;
+			player.playFile(
+				urlForFile(file.name),
+				file.mimetype,
+				currentFile,
+				file.name,
+				shareToken
+			);
+		}
 	}
 
 	function register() {
@@ -69,26 +101,30 @@ function initEmbeddedPlayer() {
 			if (currentFile != filerow.attr('data-id')) {
 				currentFile = filerow.attr('data-id');
 
-				var url = context.fileList.getDownloadUrl(fileName, context.dir);
-				var mime = filerow.attr('data-mime');
-				var cover = filerow.find('.thumbnail').css('background-image');
+				urlForFile = function(name) {
+					var url = context.fileList.getDownloadUrl(name, context.dir);
+					// append request token unless this is a public share
+					if (!shareToken) {
+						var delimiter = _.includes(url, '?') ? '&' : '?';
+						url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+					}
+					return url;
+				};
 
-				var shareView = ($('#sharingToken').length > 0);
+				player.playFile(
+					urlForFile(fileName),
+					filerow.attr('data-mime'),
+					currentFile,
+					fileName,
+					shareToken
+				);
 
-				if (shareView) {
-					var shareToken = $('#sharingToken').val();
-					player.initShare(url, mime, cover, currentFile, fileName, shareToken);
-				}
-				else {
-					var delimiter = _.includes(url, '?') ? '&' : '?';
-					url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
-
-					player.init(url, mime, cover, currentFile, fileName);
-				}
+				playlist.init(context.fileList.files, supportedMimes, currentFile);
+				player.setNextAndPrevEnabled(playlist.length() > 1);
 			}
-
-			// Play/Pause
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		var registerPlayerForMime = function(mime) {
@@ -114,16 +150,17 @@ function initEmbeddedPlayer() {
 			if (!currentFile) {
 				currentFile = 1; // bogus id
 
-				player.initShare(
+				player.playFile(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
-						'url("' + $('img.publicpreview').attr('src') + '")',
 						0,
 						$('#filename').val(),
-						$('#sharingToken').val()
+						shareToken
 				);
 			}
-			player.togglePlayback();
+			else {
+				player.togglePlayback();
+			}
 		};
 
 		// Add click handler to the file preview if this is a supported file.

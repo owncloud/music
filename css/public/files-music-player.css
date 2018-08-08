@@ -189,7 +189,7 @@
 ::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background-color: #666;
-	border-radius: 3px;
+	border-radius: 50px;
 	width: 10px;
 	height: 10px;
 }
@@ -201,7 +201,7 @@
 ::-moz-range-thumb {
 	-moz-appearance: none;
 	background-color: #666;
-	border-radius: 3px;
+	border-radius: 50px;
 	width: 10px;
 	height: 10px;
 }

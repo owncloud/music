@@ -6,4 +6,4 @@ OC.L10N.register(
     "Play" : "Puter",
     "Previous" : "Sak durunge"
 },
-"nplurals=2; plural=(n != 1);");
+"nplurals=1; plural=0;");

@@ -26,4 +26,4 @@ OC.L10N.register(
     "Use this address to browse your music collection from any Ampache compatible player." : "Použite túto adresu pre prístup k hudobnej zbierke z akéhokoľvek prehrávača podporujúceho Ampache.",
     "Use your username and following password to connect to this Ampache instance:" : "Použite svoje používateľské meno a heslo pre pripojenie k tejto inštancii Ampache:"
 },
-"nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;");
+"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

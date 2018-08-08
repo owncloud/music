@@ -28,10 +28,11 @@
     "Tracks" : "Utwory",
     "Unknown album" : "Nieznany album",
     "Unknown artist" : "Nieznany artysta",
+    "Upload music in the files app to listen to it here" : "Aby wysłuchać muzykę w plikach aplikacji, należy je tam wgrać",
     "Use this address to browse your music collection from any Ampache compatible player." : "Użyj tego adresu aby przeglądać swoją kolekcję muzyczną na dowolnym odtwarzaczu kompatybilnym z Ampache.",
     "Use your username and following password to connect to this Ampache instance:" : "Użyj nazwy użytkownika i następującego hasła do połączenia do tej instancji Ampache:",
     "Volume" : "Głośność",
     "tracks" : "ścieżki",
     "{{ scanningScanned }} of {{ scanningTotal }}" : "{{ scanningScanned }} z {{ scanningTotal }}"
-},"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
+},"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

@@ -1,6 +1,7 @@
 OC.L10N.register(
     "music",
     {
+    "+ New Playlist" : "+ Nueva lista de reproducción",
     "Albums" : "Álbumes",
     "Artists" : "Artistas",
     "Description" : "Descripción",

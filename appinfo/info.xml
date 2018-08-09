@@ -3,15 +3,19 @@
 	<id>music</id>
 	<name>Music</name>
 	<summary>Music player, library viewer, and server</summary>
-	<description>Plays audio files directly in the Files view or in a separate library view. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. In the library view, you can play tracks by album or artist or create custom playlists. Includes an Ampache-compatible server. Limitations: The library view does not scale well to huge music collections. The practical maximum number of tracks the app can handle is ~50´000 on Firefox and lower on other browsers. The playback from Files works regardless of the collection size.</description>
+	<description>Plays audio files directly in the Files view or in a separate library view. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3.
+
+In the library view, you can play tracks by album or artist, create custom playlists, or shuffle play over you whole library. In the Files view, an audio file can be played with one click and the playback continues to next files of the folder until stopped. The app includes also an Ampache-compatible server.
+
+Limitations: The library view does not scale well to huge music collections. The practical maximum number of tracks the app can handle is ~50´000 on Firefox and lower on other browsers. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen, Morris Jobke (original author), Jan-Christoph Borchardt (original design)</author>
-	<version>0.8.0</version>
+	<version>0.9.0</version>
 	<category>multimedia</category>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43035387-3ef5d3de-8cf7-11e8-9bc0-837c7148e73a.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43035389-459cadf2-8cf7-11e8-91b7-8dde011ee33b.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43036716-24216592-8d0f-11e8-998d-9879d3622ab7.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43035396-52b47984-8cf7-11e8-9f3e-f8708c78f11c.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/43827475-94d34d7c-9b02-11e8-8bf9-9f3d91aa5dab.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/43827491-9ae81a8a-9b02-11e8-8b8a-3e8dce76107a.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/43827500-9f45beb6-9b02-11e8-8884-39ed2f0daa54.png</screenshot>
 	<website>https://github.com/owncloud/music</website>
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>

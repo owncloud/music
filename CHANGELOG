@@ -1,3 +1,28 @@
+v0.9.0 2018-08-09
+ * enable playing more than one track from Files: provide next/previous buttons and jump automatically to next file after reaching the end of file (#641)
+ * show alphabet navigation also in the "All tracks" view
+ * provide "All tracks" as a playlist on the Ampache API
+ * when playback is started by clicking a track, it now continues also after current album and artist (affect also the scope of shuffle and repeat)
+ * when the play scope is limited to one album/artist, show a slight highlight around the scope
+ * preserve the play queue history when clicking on track to play it, unless the play scope changes
+ * more visible highlight on the target playlist when dragging a track to a playlist
+ * make the client-side caching of cover images work already on first time the images are loaded (instead of second)
+ * do not spam HTTP requests if next/previous track button is clicked repeatedly and rapidly
+ * add a few keyboard shotcuts: play/pause [space], previous track [left arrow], next track [right arrow]
+ * focus the text field automatically when clicking to create/rename a playlist
+ * prevent creating/renaming playlists with empty name
+ * small updates on traslations (although they are still very much uncomplete)
+ * fix library being erased when library path "changed" from default (empty) value to '/'
+ * fix track name shown only as "Loading..." when playing a public share on ownCloud 8.2
+ * fix play/pause icon in front of track name moving with a delay when track changed
+ * fix highlighting of the current view vanishing whne dragging a track to a playlist
+ * fix a layout bug in the details pane with narrow screen on ownCloud (not reproducable on Nextcloud)
+ * fix a small UI jitter on playlist create/rename forms
+ * fix enbedded music player bar being a bit too narrow when playing public shares
+ * support optional `artist` filter in the Shiva API endpoint `/api/albums` (#46)
+ * remove the previously deprecated endpoint `/api/file/{fileId}/webdav`
+ * lots of internal refactoring
+
 v0.8.0 2018-07-21
  * track details pane (#656)
  * show a confirmation dialog before deleting a playlist

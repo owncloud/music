@@ -50,19 +50,24 @@ class AlbumMapper extends BaseMapper {
 	 * returns artist IDs mapped to album IDs
 	 * does not include album_artist_id
 	 *
-	 * @param integer[] $albumIds IDs of the albums
-	 * @return array the artist IDs of an album are accessible by the album ID inside of this array
+	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
+	 * @param string $userId the user ID
+	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
 	 */
-	public function getAlbumArtistsByAlbumId($albumIds) {
+	public function getAlbumArtistsByAlbumId($albumIds, $userId) {
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
-			'FROM `*PREFIX*music_tracks` `track`'.
-			' WHERE `track`.`album_id` IN ' . $this->questionMarks(\count($albumIds));
-		$result = $this->execute($sql, $albumIds);
+			'FROM `*PREFIX*music_tracks` `track` '.
+			'WHERE `track`.`user_id` = ? ';
+		$params = [$userId];
+
+		if ($albumIds !== null) {
+			$sql .= 'AND `track`.`album_id` IN ' . $this->questionMarks(\count($albumIds));
+			$params = \array_merge($params, $albumIds);
+		}
+
+		$result = $this->execute($sql, $params);
 		$artists = [];
 		while ($row = $result->fetch()) {
-			if (!\array_key_exists($row['album_id'], $artists)) {
-				$artists[$row['album_id']] = [];
-			}
 			$artists[$row['album_id']][] = $row['artist_id'];
 		}
 		return $artists;
@@ -71,20 +76,25 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns release years mapped to album IDs
 	 *
-	 * @param integer[] $albumIds IDs of the albums
-	 * @return array the years of an album are accessible by the album ID inside of this array
+	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
+	 * @param string $userId the user ID
+	 * @return array int => int[], keys are albums IDs and values are arrays of years
 	 */
-	public function getYearsByAlbumId($albumIds) {
+	public function getYearsByAlbumId($albumIds, $userId) {
 		$sql = 'SELECT DISTINCT `track`.`year`, `track`.`album_id` '.
 				'FROM `*PREFIX*music_tracks` `track` '.
-				'WHERE `track`.`year` IS NOT NULL '.
-				'AND `track`.`album_id` IN ' . $this->questionMarks(\count($albumIds));
-		$result = $this->execute($sql, $albumIds);
+				'WHERE `track`.`user_id` = ? '.
+				'AND `track`.`year` IS NOT NULL ';
+		$params = [$userId];
+
+		if ($albumIds !== null) {
+			$sql .= 'AND `track`.`album_id` IN ' . $this->questionMarks(\count($albumIds));
+			$params = \array_merge($params, $albumIds);
+		}
+
+		$result = $this->execute($sql, $params);
 		$yearsByAlbum = [];
 		while ($row = $result->fetch()) {
-			if (!\array_key_exists($row['album_id'], $yearsByAlbum)) {
-				$yearsByAlbum[$row['album_id']] = [];
-			}
 			$yearsByAlbum[$row['album_id']][] = $row['year'];
 		}
 		return $yearsByAlbum;

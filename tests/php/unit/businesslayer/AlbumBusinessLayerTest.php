@@ -59,11 +59,13 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue($this->albums));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo([1,2,3]))
+			->with($this->equalTo(null),
+					$this->equalTo($this->userId))
 			->will($this->returnValue($this->artistIds));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo([1,2,3]))
+			->with($this->equalTo(null),
+					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
@@ -89,11 +91,13 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue($this->albums[$albumId-1]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo([$albumId]))
+			->with($this->equalTo([$albumId]),
+					$this->equalTo($this->userId))
 			->will($this->returnValue([$albumId => $this->artistIds[$albumId-1]]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo([$albumId]))
+			->with($this->equalTo([$albumId]),
+					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -109,14 +113,16 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->will($this->returnValue($this->albumsByArtist3));
 		$this->mapper->expects($this->exactly(1))
 			->method('getAlbumArtistsByAlbumId')
-			->with($this->equalTo([1, 2]))
+			->with($this->equalTo([1, 2]),
+					$this->equalTo($this->userId))
 			->will($this->returnValue([
 				1 => $this->artistIds[1],
 				2 => $this->artistIds[2]
 			]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
-			->with($this->equalTo([1, 2]))
+			->with($this->equalTo([1, 2]),
+					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);

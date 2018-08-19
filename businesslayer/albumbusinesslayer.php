@@ -38,19 +38,20 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function find($albumId, $userId) {
 		$album = $this->mapper->find($albumId, $userId);
-		return $this->injectArtistsAndYears([$album])[0];
+		return $this->injectArtistsAndYears([$album], $userId)[0];
 	}
 
 	/**
 	 * Returns all albums
 	 * @param string $userId the name of the user
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer $sortBy Sorting order of the result, default to unspecified
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Album[] albums
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		$albums = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
-		return $this->injectArtistsAndYears($albums);
+		return $this->injectArtistsAndYears($albums, $userId, true);
 	}
 
 	/**
@@ -60,7 +61,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
-		return $this->injectArtistsAndYears($albums);
+		return $this->injectArtistsAndYears($albums, $userId);
 	}
 
 	/**
@@ -72,14 +73,23 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false) {
 		$albums = parent::findAllByName($name, $userId, $fuzzy);
-		return $this->injectArtistsAndYears($albums);
+		return $this->injectArtistsAndYears($albums, $userId);
 	}
 
-	private function injectArtistsAndYears($albums) {
+	/**
+	 * Add album artists and release years to the given album objects
+	 * @param Album[] $albums
+	 * @param string $userId
+	 * @param bool $allAlbums Set to true if $albums contains all albums of the user.
+	 *                        This has now effect on the outcome but helps in optimizing
+	 *                        the database query.
+	 * @return Album[]
+	 */
+	private function injectArtistsAndYears($albums, $userId, $allAlbums = false) {
 		if (\count($albums) > 0) {
-			$albumIds = Util::extractIds($albums);
-			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds);
-			$years = $this->mapper->getYearsByAlbumId($albumIds);
+			$albumIds = $allAlbums ? null : Util::extractIds($albums);
+			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds, $userId);
+			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($albumArtists[$albumId]);

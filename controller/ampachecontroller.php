@@ -287,8 +287,7 @@ class AmpacheController extends Controller {
 		if (empty($filter) && !$limit && !$offset) {
 			$userId = $this->ampacheUser->getUserId();
 			$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
-			usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
-			$this->logger->log("sorting done", 'info');
+			\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
 		}
 		// general case
 		else {
@@ -350,7 +349,6 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
-			$this->logger->log("getting all tracks", 'info');
 			return $this->songs(null, false, null, null, $auth);
 		}
 

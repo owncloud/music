@@ -160,6 +160,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.showSidebar = function(trackId) {
 		$rootScope.$emit('showDetails', trackId);
+		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
@@ -170,6 +171,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
+		$('#app-content').removeClass('with-app-sidebar');
 	};
 
 	var controls = document.getElementById('controls');

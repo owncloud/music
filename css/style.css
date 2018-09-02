@@ -18,6 +18,14 @@
 	background-image: url('../../img/audio.svg');
 }
 
+#app {
+	width: 100%;
+}
+
+#app-content.with-app-sidebar {
+	margin-right: 27%;
+}
+
 /* angular JS wrapper for main controller */
 #app > div {
 	width: 100%;

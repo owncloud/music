@@ -687,6 +687,10 @@ input.edit-list, input.new-list {
 	width: 100%;
 }
 
+#app-sidebar {
+	position: fixed;
+}
+
 #app-sidebar * {
 	display: inline-block;
 }
@@ -880,6 +884,14 @@ input.edit-list, input.new-list {
 
 .icon-audio {
 	background-image: url('../../img/audio.svg');
+}
+
+#app {
+	width: 100%;
+}
+
+#app-content.with-app-sidebar {
+	margin-right: 27%;
 }
 
 /* angular JS wrapper for main controller */
@@ -1084,7 +1096,7 @@ div:hover > .play-pause,
 }
 
 .highlight {
-	background-color: rgba(0,0,0,0.025);;
+	background-color: rgba(0,0,0,0.025);
 }
 
 .tablet .album-area {

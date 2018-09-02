@@ -271,7 +271,10 @@ class Music extends App {
 		});
 
 		$container->registerService('Logger', function ($c) {
-			return new Logger($c->query('AppName'));
+			return new Logger(
+				$c->query('AppName'),
+				$c->getServer()->getLogger()
+			);
 		});
 
 		$container->registerService('URLGenerator', function ($c) {
@@ -286,8 +289,9 @@ class Music extends App {
 			return $c->getServer()->getRootFolder();
 		});
 
-		$container->registerService('UserId', function () {
-			return \OCP\User::getUser();
+		$container->registerService('UserId', function ($c) {
+			$user = $c->getServer()->getUserSession()->getUser();
+			return $user ? $user->getUID() : null;
 		});
 
 		$container->registerService('SecureRandom', function ($c) {

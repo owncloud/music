@@ -382,7 +382,7 @@ class AmpacheController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 		}
 
-		$files = $this->rootFolder->getById($track->getFileId());
+		$files = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId());
 
 		if (\count($files) === 1) {
 			return new FileResponse($files[0]);
@@ -394,9 +394,10 @@ class AmpacheController extends Controller {
 	/* this is not ampache proto */
 	protected function get_cover($albumId) {
 		$userId = $this->ampacheUser->getUserId();
+		$userFolder = $this->rootFolder->getUserFolder($userId);
 
 		try {
-			$coverData = $this->coverHelper->getCover($albumId, $userId, $this->rootFolder);
+			$coverData = $this->coverHelper->getCover($albumId, $userId, $userFolder);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}

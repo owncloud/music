@@ -56,9 +56,6 @@ class ShareController extends Controller {
 
 			$fileOwner = $share->getShareOwner();
 
-			\OC_Util::tearDownFS();
-			\OC_Util::setupFS($fileOwner);
-
 			$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
 
 			// If non-zero fileId is given, the $share identified by the token should

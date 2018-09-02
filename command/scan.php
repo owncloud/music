@@ -84,8 +84,6 @@ class Scan extends BaseCommand {
 	}
 
 	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
-		\OC_Util::tearDownFS();
-		\OC_Util::setupFS($user);
 		$userHome = $this->scanner->resolveUserFolder($user);
 
 		if ($cleanObsolete) {

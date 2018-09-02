@@ -16,6 +16,7 @@ use OC\Hooks\PublicEmitter;
 
 use \OCP\Files\File;
 use \OCP\Files\Folder;
+use \OCP\Files\IRootFolder;
 use \OCP\IConfig;
 
 use \OCA\Music\AppFramework\Core\Logger;
@@ -53,7 +54,7 @@ class Scanner extends PublicEmitter {
 								Maintenance $maintenance,
 								IConfig $configManager,
 								$appName,
-								Folder $rootFolder) {
+								IRootFolder $rootFolder) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -589,26 +590,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	public function resolveUserFolder($userId) {
-		$dir = '/' . $userId;
-		$root = $this->rootFolder;
-
-		// copy of getUserServer of server container
-		$folder = null;
-
-		if (!$root->nodeExists($dir)) {
-			$folder = $root->newFolder($dir);
-		} else {
-			$folder = $root->get($dir);
-		}
-
-		$dir = '/files';
-		if (!$folder->nodeExists($dir)) {
-			$folder = $folder->newFolder($dir);
-		} else {
-			$folder = $folder->get($dir);
-		}
-	
-		return $folder;
+		return $this->rootFolder->getUserFolder($userId);
 	}
 
 	private static function isNullOrEmpty($string) {

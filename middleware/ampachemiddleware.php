@@ -71,8 +71,6 @@ class AmpacheMiddleware extends Middleware {
 			if ($token !== null && $token !== '') {
 				$user = $this->ampacheSessionMapper->findByToken($token);
 				if ($user !== false && \array_key_exists('user_id', $user)) {
-					// setup the filesystem for the user - actual login isn't really needed
-					\OC_Util::setupFS($user['user_id']);
 					$this->ampacheUser->setUserId($user['user_id']);
 					return;
 				}

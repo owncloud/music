@@ -13,36 +13,40 @@
 
 namespace OCA\Music\AppFramework\Core;
 
+use \OCP\ILogger;
+
 class Logger {
 	protected $appName;
+	protected $logger;
 
-	public function __construct($appName) {
+	public function __construct($appName, ILogger $logger) {
 		$this->appName = $appName;
+		$this->logger = $logger;
 	}
 
 	/**
-	 * Writes a function into the error log
-	 * @param string $msg the error message to be logged
-	 * @param int $level the error level
+	 * Writes a message to the log file
+	 * @param string $msg the message to be logged
+	 * @param string $level the severity of the logged event, defaults to 'error'
 	 */
 	public function log($msg, $level=null) {
+		$context = ['app' => $this->appName];
 		switch ($level) {
 			case 'debug':
-				$level = \OCP\Util::DEBUG;
+				$this->logger->debug($msg, $context);
 				break;
 			case 'info':
-				$level = \OCP\Util::INFO;
+				$this->logger->info($msg, $context);
 				break;
 			case 'warn':
-				$level = \OCP\Util::WARN;
+				$this->logger->warning($msg, $context);
 				break;
 			case 'fatal':
-				$level = \OCP\Util::FATAL;
+				$this->logger->emergency($msg, $context);
 				break;
 			default:
-				$level = \OCP\Util::ERROR;
+				$this->logger->error($msg, $context);
 				break;
 		}
-		\OCP\Util::writeLog($this->appName, $msg, $level);
 	}
 }

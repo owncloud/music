@@ -42,7 +42,7 @@
 	<div ng-controller="MainController">
 		<?php print_unescaped($this->inc('partials/navigation')) ?>
 
-		<div id="app-content" du-scroll-container>
+		<div id="app-content">
 
 			<?php print_unescaped($this->inc('partials/controls')) ?>
 

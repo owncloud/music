@@ -635,9 +635,9 @@ angular.module('Music').controller('DetailsController', [
 ]);
 
 angular.module('Music').controller('MainController', [
-'$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory',
+'$rootScope', '$scope', '$timeout', '$window', '$document', 'ArtistFactory', 
 'playlistService', 'libraryService', 'gettextCatalog', 'Restangular',
-function ($rootScope, $scope, $timeout, $window, ArtistFactory,
+function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory, 
 		playlistService, libraryService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
@@ -798,20 +798,29 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		$('#app-content').removeClass('with-app-sidebar');
 	};
 
+	// Nextcloud 14 has a new overall layout structure which requires changes
+	// to the scrolling logic. Detect the new structure from the presence of
+	// the #content-wrapper element.
+	var newLayoutStructure = $('#content-wrapper').length === 0;
+
 	var controls = document.getElementById('controls');
-	$scope.scrollOffset = function() {
-		return controls ? controls.offsetHeight : 0;
-	};
+	var header = document.getElementById('header');
+	function scrollOffset() {
+		var offset = controls ? controls.offsetHeight : 0;
+		if (newLayoutStructure && header) {
+			offset += header.offsetHeight;
+		}
+		return offset;
+	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
-		var container = document.getElementById('app-content');
-		var element = document.getElementById(itemId);
+		var container = newLayoutStructure ? $document : $('#app-content');
+		var element = $('#' + itemId);
 		if (container && element) {
 			if (animationTime === undefined) {
 				animationTime = 500;
 			}
-			angular.element(container).scrollToElement(
-					angular.element(element), $scope.scrollOffset(), animationTime);
+			container.scrollToElement(element, scrollOffset(), animationTime);
 		}
 	};
 
@@ -819,7 +828,7 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 	function isElementInViewPort(el) {
 		var appView = document.getElementById('app-view');
 		var header = document.getElementById('header');
-		var viewPortTop = header.offsetHeight + $scope.scrollOffset();
+		var viewPortTop = header.offsetHeight + scrollOffset();
 		var viewPortBottom = header.offsetHeight + appView.offsetHeight;
 
 		var rect = el.getBoundingClientRect();
@@ -1699,7 +1708,7 @@ function($window, $rootScope, $timeout) {
 		restrict: 'E',
 		scope: {
 			targets: '<',
-			scrollOffset: '<'
+			scrollToTarget: '<'
 		},
 		templateUrl: 'alphabetnavigation.html',
 		replace: true,

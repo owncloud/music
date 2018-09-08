@@ -117,8 +117,9 @@
 	overflow-wrap: break-word;
 }
 
-#music-ampache-description {
-	width: 200px;
+#music-user input[type="text"] {
+	max-width: 300px;
+	width: 100%;
 }
 
 #music-user .logotype {

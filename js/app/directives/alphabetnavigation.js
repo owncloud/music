@@ -11,8 +11,8 @@
  *
  */
 
-angular.module('Music').directive('alphabetNavigation', ['$window', '$rootScope', '$timeout',
-function($window, $rootScope, $timeout) {
+angular.module('Music').directive('alphabetNavigation', ['$rootScope', '$timeout',
+function($rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -51,7 +51,7 @@ function($window, $rootScope, $timeout) {
 				}
 
 				// anchor the alphabet navigation to the right edge of the app view
-				var appViewRight = $window.innerWidth - appView.offset().left - appView.innerWidth();
+				var appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
 				element.css('right', appViewRight);
 			}
 

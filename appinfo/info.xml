@@ -22,7 +22,7 @@ Limitations: The library view does not scale well to huge music collections. The
 	<dependencies>
 		<php min-version="5.6" max-version="7.2"/>
 		<owncloud min-version="8.2" max-version="10.1" />
-		<nextcloud min-version="9" max-version="14" />
+		<nextcloud min-version="9" max-version="15" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

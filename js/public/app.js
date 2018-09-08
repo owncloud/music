@@ -798,23 +798,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$('#app-content').removeClass('with-app-sidebar');
 	};
 
-	// Nextcloud 14 has a new overall layout structure which requires changes
-	// to the scrolling logic. Detect the new structure from the presence of
-	// the #content-wrapper element.
-	var newLayoutStructure = $('#content-wrapper').length === 0;
-
-	var controls = document.getElementById('controls');
-	var header = document.getElementById('header');
 	function scrollOffset() {
+		var controls = document.getElementById('controls');
+		var header = document.getElementById('header');
 		var offset = controls ? controls.offsetHeight : 0;
-		if (newLayoutStructure && header) {
+		if (OC_Music_Utils.newLayoutStructure() && header) {
 			offset += header.offsetHeight;
 		}
 		return offset;
 	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
-		var container = newLayoutStructure ? $document : $('#app-content');
+		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
 		var element = $('#' + itemId);
 		if (container && element) {
 			if (animationTime === undefined) {
@@ -2043,194 +2038,6 @@ angular.module('Music').filter('playTime', function() {
 		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	};
 });
-function PlayerWrapper() {
-	this.underlyingPlayer = 'aurora';
-	this.aurora = {};
-	this.sm2 = {};
-	this.sm2ready = false;
-	this.duration = 0;
-	this.volume = 100;
-
-	return this;
-}
-
-PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
-
-PlayerWrapper.prototype.init = function(onReadyCallback) {
-	var self = this;
-	this.sm2 = soundManager.setup({
-		html5PollingInterval: 200,
-		onready: function() {
-			self.sm2ready = true;
-			onReadyCallback();
-		}
-	});
-};
-
-PlayerWrapper.prototype.play = function() {
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.play('ownCloudSound');
-			break;
-		case 'aurora':
-			this.aurora.play();
-			break;
-	}
-};
-
-PlayerWrapper.prototype.stop = function() {
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.stop('ownCloudSound');
-			this.sm2.destroySound('ownCloudSound');
-			break;
-		case 'aurora':
-			if(this.aurora.asset !== undefined) {
-				// check if player's constructor has been called,
-				// if so, stop() will be available
-				this.aurora.stop();
-			}
-			break;
-	}
-};
-
-PlayerWrapper.prototype.togglePlayback = function() {
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.togglePause('ownCloudSound');
-			break;
-		case 'aurora':
-			this.aurora.togglePlayback();
-			break;
-	}
-};
-
-PlayerWrapper.prototype.seekingSupported = function() {
-	// Seeking is not implemented in aurora/flac.js and does not work on all
-	// files with aurora/mp3.js. Hence, we disable seeking with aurora.
-	return this.underlyingPlayer == 'sm2';
-};
-
-PlayerWrapper.prototype.seek = function(percentage) {
-	if (this.seekingSupported()) {
-		console.log('seek to '+percentage);
-		switch(this.underlyingPlayer) {
-			case 'sm2':
-				this.sm2.setPosition('ownCloudSound', percentage * this.duration);
-				break;
-			case 'aurora':
-				this.aurora.seek(percentage * this.duration);
-				break;
-		}
-	}
-	else {
-		console.log('seeking is not supported for this file');
-	}
-};
-
-PlayerWrapper.prototype.setVolume = function(percentage) {
-	this.volume = percentage;
-
-	switch(this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.setVolume('ownCloudSound', this.volume);
-			break;
-		case 'aurora':
-			this.aurora.volume = this.volume;
-			break;
-	}
-};
-
-PlayerWrapper.prototype.canPlayMIME = function(mime) {
-	// Function soundManager.canPlayMIME should not be called if SM2 is still in the process
-	// of being initialized, as it may lead to dereferencing an uninitialized member (see #629).
-	var canPlayWithSm2 = (this.sm2ready && soundManager.canPlayMIME(mime));
-	var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
-	return canPlayWithSm2 || canPlayWithAurora;
-};
-
-PlayerWrapper.prototype.fromURL = function(url, mime) {
-	// ensure there are no active playback before starting new
-	this.stop();
-
-	this.trigger('loading');
-
-	if (soundManager.canPlayMIME(mime)) {
-		this.underlyingPlayer = 'sm2';
-	} else {
-		this.underlyingPlayer = 'aurora';
-	}
-	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
-
-	var self = this;
-	switch (this.underlyingPlayer) {
-		case 'sm2':
-			this.sm2.html5Only = true;
-			this.sm2.createSound({
-				id: 'ownCloudSound',
-				url: url,
-				whileplaying: function() {
-					self.trigger('progress', this.position);
-				},
-				whileloading: function() {
-					self.duration = this.durationEstimate;
-					self.trigger('duration', this.durationEstimate);
-					// The buffer may contain holes after seeking but just ignore those.
-					// Show the buffering status according the last buffered position.
-					var bufCount = this.buffered.length;
-					var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
-					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
-				},
-				onsuspend: function() {
-					// Work around an issue in Firefox where the last buffered position will almost
-					// never equal the duration. See https://github.com/scottschiller/SoundManager2/issues/114.
-					// On Firefox, the buffering is *usually* not suspended and this event fires only when the
-					// downloading is completed.
-					var isFirefox = (typeof InstallTrigger !== 'undefined');
-					if (isFirefox) {
-						self.trigger('buffer', 100);
-					}
-				},
-				onfinish: function() {
-					self.trigger('end');
-				},
-				onload: function(success) {
-					if (success) {
-						self.trigger('ready');
-					} else {
-						console.log('SM2: sound load error');
-					}
-				}
-			});
-			break;
-
-		case 'aurora':
-			this.aurora = AV.Player.fromURL(url);
-			this.aurora.asset.source.chunkSize=524288;
-
-			this.aurora.on('buffer', function(percent) {
-				self.trigger('buffer', percent);
-			});
-			this.aurora.on('progress', function(currentTime) {
-				self.trigger('progress', currentTime);
-			});
-			this.aurora.on('ready', function() {
-				self.trigger('ready');
-			});
-			this.aurora.on('end', function() {
-				self.trigger('end');
-			});
-			this.aurora.on('duration', function(msecs) {
-				self.duration = msecs;
-				self.trigger('duration', msecs);
-			});
-			break;
-	}
-
-	// Set the current volume to the newly created player instance
-	this.setVolume(this.volume);
-};
-
 angular.module('Music').service('libraryService', ['$rootScope', function($rootScope) {
 
 	var artists = null;
@@ -2704,3 +2511,204 @@ angular.module('Music').run(['gettextCatalog', function (gettextCatalog) {
     gettextCatalog.setStrings('zh_TW', {"Albums":"專輯","Artists":"演出者","Description":"描述","Description (e.g. App name)":"描述（例如應用程式名稱）","Generate API password":"產生 API 密碼","Invalid path":"無效的路徑","Music":"音樂","Next":"下一個","Path to your music collection":"您的音樂資料夾的路徑","Pause":"暫停","Play":"播放","Previous":"上一個","Repeat":"重覆","Revoke API password":"撤銷 API 密碼","Shuffle":"隨機播放","Some not playable tracks were skipped.":"部份無法播放的曲目已跳過","This setting specifies the folder which will be scanned for music.":"我們會在這個資料夾內掃描音樂檔案","Tracks":"曲目","Unknown album":"未知的專輯","Unknown artist":"未知的表演者"});
 /* jshint +W100 */
 }]);
+function PlayerWrapper() {
+	this.underlyingPlayer = 'aurora';
+	this.aurora = {};
+	this.sm2 = {};
+	this.sm2ready = false;
+	this.duration = 0;
+	this.volume = 100;
+
+	return this;
+}
+
+PlayerWrapper.prototype = _.extend({}, OC.Backbone.Events);
+
+PlayerWrapper.prototype.init = function(onReadyCallback) {
+	var self = this;
+	this.sm2 = soundManager.setup({
+		html5PollingInterval: 200,
+		onready: function() {
+			self.sm2ready = true;
+			onReadyCallback();
+		}
+	});
+};
+
+PlayerWrapper.prototype.play = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			this.sm2.play('ownCloudSound');
+			break;
+		case 'aurora':
+			this.aurora.play();
+			break;
+	}
+};
+
+PlayerWrapper.prototype.stop = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			this.sm2.stop('ownCloudSound');
+			this.sm2.destroySound('ownCloudSound');
+			break;
+		case 'aurora':
+			if(this.aurora.asset !== undefined) {
+				// check if player's constructor has been called,
+				// if so, stop() will be available
+				this.aurora.stop();
+			}
+			break;
+	}
+};
+
+PlayerWrapper.prototype.togglePlayback = function() {
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			this.sm2.togglePause('ownCloudSound');
+			break;
+		case 'aurora':
+			this.aurora.togglePlayback();
+			break;
+	}
+};
+
+PlayerWrapper.prototype.seekingSupported = function() {
+	// Seeking is not implemented in aurora/flac.js and does not work on all
+	// files with aurora/mp3.js. Hence, we disable seeking with aurora.
+	return this.underlyingPlayer == 'sm2';
+};
+
+PlayerWrapper.prototype.seek = function(percentage) {
+	if (this.seekingSupported()) {
+		console.log('seek to '+percentage);
+		switch(this.underlyingPlayer) {
+			case 'sm2':
+				this.sm2.setPosition('ownCloudSound', percentage * this.duration);
+				break;
+			case 'aurora':
+				this.aurora.seek(percentage * this.duration);
+				break;
+		}
+	}
+	else {
+		console.log('seeking is not supported for this file');
+	}
+};
+
+PlayerWrapper.prototype.setVolume = function(percentage) {
+	this.volume = percentage;
+
+	switch(this.underlyingPlayer) {
+		case 'sm2':
+			this.sm2.setVolume('ownCloudSound', this.volume);
+			break;
+		case 'aurora':
+			this.aurora.volume = this.volume;
+			break;
+	}
+};
+
+PlayerWrapper.prototype.canPlayMIME = function(mime) {
+	// Function soundManager.canPlayMIME should not be called if SM2 is still in the process
+	// of being initialized, as it may lead to dereferencing an uninitialized member (see #629).
+	var canPlayWithSm2 = (this.sm2ready && soundManager.canPlayMIME(mime));
+	var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
+	return canPlayWithSm2 || canPlayWithAurora;
+};
+
+PlayerWrapper.prototype.fromURL = function(url, mime) {
+	// ensure there are no active playback before starting new
+	this.stop();
+
+	this.trigger('loading');
+
+	if (soundManager.canPlayMIME(mime)) {
+		this.underlyingPlayer = 'sm2';
+	} else {
+		this.underlyingPlayer = 'aurora';
+	}
+	console.log('Using ' + this.underlyingPlayer + ' for type ' + mime + ' URL ' + url);
+
+	var self = this;
+	switch (this.underlyingPlayer) {
+		case 'sm2':
+			this.sm2.html5Only = true;
+			this.sm2.createSound({
+				id: 'ownCloudSound',
+				url: url,
+				whileplaying: function() {
+					self.trigger('progress', this.position);
+				},
+				whileloading: function() {
+					self.duration = this.durationEstimate;
+					self.trigger('duration', this.durationEstimate);
+					// The buffer may contain holes after seeking but just ignore those.
+					// Show the buffering status according the last buffered position.
+					var bufCount = this.buffered.length;
+					var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
+					self.trigger('buffer', bufEnd / this.durationEstimate * 100);
+				},
+				onsuspend: function() {
+					// Work around an issue in Firefox where the last buffered position will almost
+					// never equal the duration. See https://github.com/scottschiller/SoundManager2/issues/114.
+					// On Firefox, the buffering is *usually* not suspended and this event fires only when the
+					// downloading is completed.
+					var isFirefox = (typeof InstallTrigger !== 'undefined');
+					if (isFirefox) {
+						self.trigger('buffer', 100);
+					}
+				},
+				onfinish: function() {
+					self.trigger('end');
+				},
+				onload: function(success) {
+					if (success) {
+						self.trigger('ready');
+					} else {
+						console.log('SM2: sound load error');
+					}
+				}
+			});
+			break;
+
+		case 'aurora':
+			this.aurora = AV.Player.fromURL(url);
+			this.aurora.asset.source.chunkSize=524288;
+
+			this.aurora.on('buffer', function(percent) {
+				self.trigger('buffer', percent);
+			});
+			this.aurora.on('progress', function(currentTime) {
+				self.trigger('progress', currentTime);
+			});
+			this.aurora.on('ready', function() {
+				self.trigger('ready');
+			});
+			this.aurora.on('end', function() {
+				self.trigger('end');
+			});
+			this.aurora.on('duration', function(msecs) {
+				self.duration = msecs;
+				self.trigger('duration', msecs);
+			});
+			break;
+	}
+
+	// Set the current volume to the newly created player instance
+	this.setVolume(this.volume);
+};
+
+/** @namespace */
+var OC_Music_Utils = {
+
+	/**
+	 * Nextcloud 14 has a new overall layout structure which requires some
+	 * changes on the application logic.
+	 */
+	newLayoutStructure: function() {
+		// Detect the new structure from the presence of the #content-wrapper element.
+		return $('#content-wrapper').length === 0;
+	}
+
+};

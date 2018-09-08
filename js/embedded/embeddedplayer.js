@@ -250,7 +250,13 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 		var parentContainer = $('div#app-content');
 		var viewWidth = function() {
-			return 'width', parentContainer.width() - getScrollBarWidth();
+			var width = parentContainer.width();
+			if (!OC_Music_Utils.newLayoutStructure()) {
+				// On NC14, the structure has been changed so that scroll bar width
+				// is not included in the #app-content width.
+				width -= getScrollBarWidth();
+			}
+			return width;
 		};
 
 		// On share page, there's no #app-content. Use #preview element as parent, instead.

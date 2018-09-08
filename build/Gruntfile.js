@@ -38,14 +38,15 @@ module.exports = function(grunt) {
 				src: [
 					'../js/config/app.js',
 					'../js/app/**/*.js',
-					'../js/l10n/*.js'
+					'../js/l10n/*.js',
+					'../js/shared/*.js'
 				],
 				dest: '<%= meta.productionJs %>app.js'
 			},
 			embeddedJs: {
 				src: [
 					'../js/embedded/*.js',
-					'../js/app/playerwrapper.js'
+					'../js/shared/*.js'
 				],
 				dest: '<%= meta.productionJs %>files-music-player.js'
 			},
@@ -75,10 +76,8 @@ module.exports = function(grunt) {
 				'../js/config/*.js',
 				'../js/embedded/*.js',
 				'../js/l10n/*.js',
-				'../tests/js/unit/**/*.js',
-				'../js/public/**/*.js',
-				// exclusions
-				'!../js/public/*.js'
+				'../js/shared/*.js',
+				'../tests/js/unit/**/*.js'
 			],
 			options: {
 				laxbreak: true // switch off jshint's stupid default rule for location of linebreaks
@@ -90,6 +89,7 @@ module.exports = function(grunt) {
 			// and wrap tasks if something changed
 			concat: {
 				files: [
+					'../js/shared/*.js',
 					'../js/app/**/*.js',
 					'../js/config/*.js',
 					'../js/embedded/*.js',

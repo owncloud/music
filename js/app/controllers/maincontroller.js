@@ -174,23 +174,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$('#app-content').removeClass('with-app-sidebar');
 	};
 
-	// Nextcloud 14 has a new overall layout structure which requires changes
-	// to the scrolling logic. Detect the new structure from the presence of
-	// the #content-wrapper element.
-	var newLayoutStructure = $('#content-wrapper').length === 0;
-
-	var controls = document.getElementById('controls');
-	var header = document.getElementById('header');
 	function scrollOffset() {
+		var controls = document.getElementById('controls');
+		var header = document.getElementById('header');
 		var offset = controls ? controls.offsetHeight : 0;
-		if (newLayoutStructure && header) {
+		if (OC_Music_Utils.newLayoutStructure() && header) {
 			offset += header.offsetHeight;
 		}
 		return offset;
 	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
-		var container = newLayoutStructure ? $document : $('#app-content');
+		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
 		var element = $('#' + itemId);
 		if (container && element) {
 			if (animationTime === undefined) {

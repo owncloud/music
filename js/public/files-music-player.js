@@ -240,7 +240,13 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 		var parentContainer = $('div#app-content');
 		var viewWidth = function() {
-			return 'width', parentContainer.width() - getScrollBarWidth();
+			var width = parentContainer.width();
+			if (!OC_Music_Utils.newLayoutStructure()) {
+				// On NC14, the structure has been changed so that scroll bar width
+				// is not included in the #app-content width.
+				width -= getScrollBarWidth();
+			}
+			return width;
 		};
 
 		// On share page, there's no #app-content. Use #preview element as parent, instead.
@@ -817,4 +823,18 @@ PlayerWrapper.prototype.fromURL = function(url, mime) {
 
 	// Set the current volume to the newly created player instance
 	this.setVolume(this.volume);
+};
+
+/** @namespace */
+var OC_Music_Utils = {
+
+	/**
+	 * Nextcloud 14 has a new overall layout structure which requires some
+	 * changes on the application logic.
+	 */
+	newLayoutStructure: function() {
+		// Detect the new structure from the presence of the #content-wrapper element.
+		return $('#content-wrapper').length === 0;
+	}
+
 };

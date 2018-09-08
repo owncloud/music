@@ -1,4 +1,4 @@
-<div class="section" id="music-user" ng_show="!loading">
+<div id="music-user" ng-show="!loading">
 	<h2 translate>Settings</h2>
 	<div>
 		<label for="music-path" translate>Path to your music collection</label>:

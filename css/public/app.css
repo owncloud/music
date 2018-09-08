@@ -594,6 +594,12 @@ input.edit-list, input.new-list {
 	visibility: hidden;
 }
 
+#music-user {
+	margin-top: 14px;
+	margin-left: 14px;
+	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
+}
+
 #music-user h3 {
 	margin-top: 40px;
 }
@@ -698,7 +704,7 @@ input.edit-list, input.new-list {
 }
 
 #music-user input[type="text"] {
-	max-width: 300px;
+	max-width: 320px;
 	width: 100%;
 }
 

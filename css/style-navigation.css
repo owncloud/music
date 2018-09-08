@@ -15,12 +15,11 @@
 	z-index: 999;
 }
 
-#app-navigation li > img {
-	float: right;
-	display: none;
+#app-navigation .music-navigation-item {
+	height: 44px;
 }
 
-#app-navigation > ul > li.music-navigation-item > a {
+#app-navigation .music-navigation-item > a {
 	padding-left: 0 !important;
 }
 
@@ -72,29 +71,41 @@
 	background-color: rgba(0,0,0,0.04);;
 }
 
-.playlist:hover .actions {
+#app-navigation .actions {
+	position: absolute;
+	right: 0;
+}
+
+#app-navigation .playlist .actions {
+	top: 7px;
+	display: none;
+}
+
+#app-navigation .playlist:hover .actions {
 	display: block;
 	z-index: 200;
 }
 
-.playlist .actions {
+#app-navigation button.disabled {
+	/* opacity */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity = 50);
+	opacity: .5;
+
+	pointer-events: none;
+}
+
+#app-navigation .input-container {
 	position: absolute;
-	top: 7px;
-	right: 0;
-	display: none;
+	left: 0;
+	right: 85px;
+	width: auto;
 }
 
-#new-playlist .actions {
-	float: right;
-}
-
-input[type="text"] {
-	width: 166px;
+#app-navigation .input-container input {
+	width: 100%;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
-}
-
-input.edit-list, input.new-list {
 	margin-left: 21px;
 	margin-bottom: 6px;
 	margin-top: 6px;
@@ -102,14 +113,20 @@ input.edit-list, input.new-list {
 	height: 32px;
 }
 
-.music-nav-settings {
+#app-navigation .icon-checkmark {
+	position: absolute;
+	right: 30px;
+	float: none;
+}
+
+#app-navigation .music-nav-settings {
 	position: fixed !important;
 	width: inherit !important;
 	bottom: 0;
 	z-index: 140;
 }
 
-.music-nav-settings a {
+#app-navigation .music-nav-settings a {
 	padding-left: 44px !important;
 	background-size: 16px 16px;
 	background-position: 14px center;

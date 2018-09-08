@@ -15,7 +15,7 @@ angular.module('Music').controller('NavigationController', [
 	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService', 'gettextCatalog',
 	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService, gettextCatalog) {
 
-		$scope.newPlaylistName = null;
+		$scope.newPlaylistName = '';
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
@@ -38,7 +38,7 @@ angular.module('Music').controller('NavigationController', [
 			if ($scope.newPlaylistName.length > 0) {
 				Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
 					libraryService.addPlaylist(playlist);
-					$scope.newPlaylistName = null;
+					$scope.newPlaylistName = '';
 				});
 
 				$scope.showCreateForm = false;

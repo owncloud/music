@@ -6,15 +6,18 @@
 			ng-click="$parent.togglePlay(destination, playlist); $event.stopPropagation()"
 			title="{{ (($parent.playingView == destination && $parent.playing) ? 'Pause' : 'Play list') | translate }}"
 		>
-			<div class="play-pause" />
+			<div class="play-pause"></div>
 		</div>
 		<span>{{ text }}</span>
 	</a>
 	<div ng-if="playlist && $parent.showEditForm == playlist.id">
-		<input type="text" class="edit-list"
-			ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"></input>
+		<div class="input-container">
+			<input type="text" class="edit-list"
+				ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
+		</div>
 		<button class="svg action icon-checkmark"
-			ng-click="$parent.$parent.commitEdit(playlist)" ng-show="playlist.name.length > 0"></button>
+			ng-class="{ disabled: playlist.name.length == 0 }" 
+			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
 	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
 		<button class="svg action icon-delete"

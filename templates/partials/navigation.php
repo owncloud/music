@@ -11,10 +11,13 @@
 		<li class="app-navigation-separator"></li>
 		<li id="new-playlist" class="music-navigation-item">
 			<a id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>+ New Playlist</a>
-			<input type="text" class="new-list" ng-show="showCreateForm" 
-				placeholder="{{ ::('New Playlist' | translate) }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
+			<div class="input-container">
+				<input type="text" class="new-list" ng-show="showCreateForm" 
+					placeholder="{{ ::('New Playlist' | translate) }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
+			</div>
 			<div class="actions" ng-show="showCreateForm">
-				<button ng-if="newPlaylistName.length > 0" class="svg action icon-checkmark app-navigation-noclose" ng-click="commitCreate()"></button>
+				<button class="svg action icon-checkmark app-navigation-noclose"
+					ng-class="{ disabled: newPlaylistName.length == 0}" ng-click="commitCreate()"></button>
 				<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
 			</div>
 		</li>

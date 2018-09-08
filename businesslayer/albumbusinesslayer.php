@@ -87,7 +87,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	private function injectArtistsAndYears($albums, $userId, $allAlbums = false) {
 		if (\count($albums) > 0) {
-			$albumIds = $allAlbums ? null : Util::extractIds($albums);
+			// In case we are injecting data to a lot of albums, do not limit the
+			// SQL SELECTs to only those albums. Very large amount of SQL host parameters
+			// could cause problems with SQLite (see #239) and probably it would be bad for
+			// performance also on other DBMSs. For the proper operation of this function,
+			// it doesn't matter if we fetch data for some extra albums.
+			$albumIds = ($allAlbums || \count($albums) >= 999)
+					? null : Util::extractIds($albums);
+
 			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			foreach ($albums as &$album) {

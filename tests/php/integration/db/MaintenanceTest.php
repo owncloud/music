@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\AppFramework\Core\Logger;
 use Doctrine\DBAL\Connection;
 
 class MaintenanceTest extends \PHPUnit_Framework_TestCase {
@@ -23,7 +22,9 @@ class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp() {
 		/** @var Connection db */
 		$this->db = \OC::$server->getDatabaseConnection();
-		$this->logger = new Logger('music');
+		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
+			->disableOriginalConstructor()
+			->getMock();
 	}
 
 	protected function loadData($filename) {

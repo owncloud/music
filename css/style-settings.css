@@ -55,6 +55,7 @@
 
 #music-user table {
 	max-width: 600px;
+	white-space: normal;
 }
 
 #music-user table td {

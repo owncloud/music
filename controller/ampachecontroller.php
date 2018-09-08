@@ -173,8 +173,9 @@ class AmpacheController extends Controller {
 		if ($providedTime < ($currentTime - self::SESSION_EXPIRY_TIME)) {
 			throw new AmpacheException('Invalid Login - session is outdated', 401);
 		}
-		// TODO - while testing with tomahawk it sometimes is $currenttime+1 ... needs further investigation
-		if ($providedTime > $currentTime + 100) {
+		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
+		// own system clock to generate the timestamp and that may differ from the server's time.
+		if ($providedTime > $currentTime + 600) {
 			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
 		}
 

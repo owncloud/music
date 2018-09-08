@@ -669,9 +669,28 @@ input.edit-list, input.new-list {
 	color: rgb(0, 0, 0) !important;
 }
 
-#music-password-info > .password {
-	font-weight: bold;
+#music-password-info dl {
+	display: inline-block;
 	font-size: 22px;
+	padding: 0;
+}
+
+#music-password-info dt {
+	width: 40%;
+	float: left;
+	text-align: right;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-bottom: 0;
+}
+
+#music-password-info dd {
+	width: 60%;
+	float: left;
+	text-align: left;
+	word-wrap: break-word;
+	font-weight: bold;
+	padding-bottom: 0;
 }
 
 #music-user code {

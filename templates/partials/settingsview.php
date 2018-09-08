@@ -44,9 +44,12 @@
 		<input type="text" id="music-ampache-description" placeholder="{{ ::('Description (e.g. App name)' | translate) }}" ng-model="ampacheDescription"/>
 		<button translate ng-click="addAPIKey()">Generate API password</button>
 		<span style="color:red" ng-show="errorAmpache" translate>Failed to generated new Ampache key</span>
-		<div id="music-password-info" class="info" ng_show="ampachePassword">
-			<span translate>Use your username and following password to connect to this Ampache instance:</span><br />
-			<span class="password" ng-bind="ampachePassword"></span>
+		<div id="music-password-info" class="info" ng-show="ampachePassword">
+			<span translate>Use the following credentials to connect to this Ampache instance.</span>
+			<dl>
+				<dt translate>Username:</dt><dd>{{ settings.user }}</dd>
+				<dt translate>Password:</dt><dd>{{ ampachePassword }}</dd>
+			</dl>
 		</div>
 	</div>
 

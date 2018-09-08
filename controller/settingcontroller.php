@@ -91,7 +91,8 @@ class SettingController extends Controller {
 			'path' => $this->getPath(),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),
-			'appVersion' => $this->getAppVersion()
+			'appVersion' => $this->getAppVersion(),
+			'user' => $this->userId
 		];
 	}
 

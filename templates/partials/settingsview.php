@@ -41,7 +41,8 @@
 		</tr>
 	</table>
 	<div id="music-ampache-form">
-		<input type="text" id="music-ampache-description" placeholder="{{ ::('Description (e.g. App name)' | translate) }}" ng-model="ampacheDescription"/>
+		<input type="text" id="music-ampache-description" ng-model="ampacheDescription"
+			placeholder="{{ ::('Description (e.g. App name)' | translate) }}" ng-enter="addAPIKey()"/>
 		<button translate ng-click="addAPIKey()">Generate API password</button>
 		<span style="color:red" ng-show="errorAmpache" translate>Failed to generated new Ampache key</span>
 		<div id="music-password-info" class="info" ng-show="ampachePassword">

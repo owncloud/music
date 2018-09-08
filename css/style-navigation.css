@@ -15,6 +15,10 @@
 	z-index: 999;
 }
 
+#app-navigation .app-navigation-separator {
+	border-bottom: 1px solid #dbdbdb;
+}
+
 #app-navigation .music-navigation-item {
 	height: 44px;
 }

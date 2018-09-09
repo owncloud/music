@@ -875,9 +875,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	});
 
-	// Nextcloud 14 has different title banner height than previous OC/NC versions.
-	// Adjust the controls bar position to match the host cloud.
-	$('#controls').css('top', $('#header').outerHeight());
+	if (OC_Music_Utils.newLayoutStructure()) {
+		$('#controls').addClass('taller-header');
+	}
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

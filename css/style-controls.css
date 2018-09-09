@@ -18,6 +18,19 @@
 	overflow: hidden;
 }
 
+/* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed
+ * to right and this has the side-effect of making the "fixed" position to be eveluated in the
+ * context of the transformed element instead of the entrie window.
+ */
+.snapjs-left #controls {
+	top: 0;
+}
+
+/* Adjustment to taller header pane used on NC14+ */
+body:not(.snapjs-left) #controls.taller-header {
+	top: 50px;
+}
+
 #controls, #controls * {
 	display: none;
 }

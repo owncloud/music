@@ -399,6 +399,7 @@
 #app-navigation {
 	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
 	z-index: 999;
+	display: block;
 }
 
 #app-navigation .app-navigation-separator {

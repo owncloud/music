@@ -8,23 +8,23 @@ msgstr ""
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: ../templates/main.php:61
+#: ../templates/partials/navigation.php:13
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:355
+#: ../js/public/app.js:672
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:350
+#: ../js/public/app.js:667
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../templates/partials/settingsview.php:53
+#: ../templates/partials/settingsview.php:57
 msgid "About"
 msgstr ""
 
@@ -33,20 +33,20 @@ msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
 #: ../templates/fake-template.php:7
-#: ../templates/main.php:55
+#: ../templates/partials/navigation.php:7
 msgid "Albums"
 msgstr ""
 
-#: ../templates/main.php:57
 #: ../templates/partials/alltracksview.php:4
+#: ../templates/partials/navigation.php:9
 msgid "All tracks"
 msgstr ""
 
-#: ../js/public/app.js:659
+#: ../js/public/app.js:946
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/public/app.js:1441
+#: ../js/public/app.js:1568
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -54,16 +54,16 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:144
+#: ../templates/main.php:64
 msgid "Click here to start the scan"
 msgstr ""
 
 #: ../templates/fake-template.php:12
-#: ../templates/main.php:159
+#: ../templates/partials/sidebar.php:2
 msgid "Close"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:20
+#: ../templates/partials/navigationitem.php:25
 msgid "Delete"
 msgstr ""
 
@@ -71,21 +71,21 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:44
+#: ../templates/partials/settingsview.php:45
 msgid "Description (e.g. App name)"
 msgstr ""
 
+#: ../templates/partials/albumsview.php:21
 #: ../templates/partials/alltracksview.php:8
-#: ../templates/partials/overview.php:21
-#: ../templates/partials/playlistview.php:24
+#: ../templates/partials/playlistview.php:25
 msgid "Details"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:46
+#: ../templates/partials/settingsview.php:47
 msgid "Failed to generated new Ampache key"
 msgstr ""
 
-#: ../js/public/app.js:425
+#: ../js/public/app.js:714
 msgid "Failed to load the collection:"
 msgstr ""
 
@@ -93,11 +93,11 @@ msgstr ""
 msgid "Failed to save music path"
 msgstr ""
 
-#: ../templates/main.php:177
+#: ../templates/partials/sidebar.php:23
 msgid "Follow playback"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:45
+#: ../templates/partials/settingsview.php:46
 msgid "Generate API password"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:415
+#: ../js/public/app.js:704
 msgid "Internal server error"
 msgstr ""
 
@@ -126,28 +126,28 @@ msgid "Loading…"
 msgstr ""
 
 #: ../templates/fake-template.php:3
-#: ../templates/partials/settingsview.php:58
+#: ../templates/partials/settingsview.php:62
 msgid "Music"
 msgstr ""
 
-#: ../templates/main.php:63
+#: ../templates/partials/navigation.php:16
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:143
+#: ../templates/main.php:63
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:155
-#: ../templates/main.php:156
+#: ../templates/main.php:75
+#: ../templates/main.php:76
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
-#: ../templates/main.php:94
+#: ../templates/partials/controls.php:9
 msgid "Next"
 msgstr ""
 
-#: ../templates/main.php:137
+#: ../templates/main.php:57
 msgid "No music found"
 msgstr ""
 
@@ -159,57 +159,61 @@ msgstr ""
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../js/public/app.js:1406
+#: ../templates/partials/settingsview.php:52
+msgid "Password:"
+msgstr ""
+
+#: ../js/public/app.js:1533
 #: ../templates/partials/settingsview.php:4
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/main.php:92
+#: ../templates/partials/controls.php:7
 msgid "Pause"
 msgstr ""
 
-#: ../templates/main.php:90
+#: ../templates/partials/albumsview.php:19
+#: ../templates/partials/albumsview.php:6
 #: ../templates/partials/alltracksview.php:5
-#: ../templates/partials/overview.php:19
-#: ../templates/partials/overview.php:7
+#: ../templates/partials/controls.php:5
 #: ../templates/partials/playlistview.php:5
 msgid "Play"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:60
+#: ../templates/partials/settingsview.php:64
 msgid "Please report any bugs and issues <a href=\"https://github.com/owncloud/music/issues\"><b>here</b></a>"
 msgstr ""
 
-#: ../templates/main.php:88
+#: ../templates/partials/controls.php:3
 msgid "Previous"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:26
+#: ../templates/partials/playlistview.php:27
 msgid "Remove"
 msgstr ""
 
-#: ../js/public/app.js:660
+#: ../js/public/app.js:947
 msgid "Remove playlist"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:26
+#: ../templates/partials/playlistview.php:27
 msgid "Remove track from playlist"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:23
+#: ../templates/partials/navigationitem.php:28
 msgid "Rename"
 msgstr ""
 
-#: ../templates/main.php:121
+#: ../templates/partials/controls.php:35
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:1362
-#: ../js/public/app.js:934
+#: ../js/public/app.js:1489
+#: ../js/public/app.js:283
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:1442
+#: ../js/public/app.js:1569
 #: ../templates/partials/settingsview.php:11
 msgid "Reset music collection"
 msgstr ""
@@ -218,32 +222,32 @@ msgstr ""
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:149
+#: ../templates/main.php:69
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/main.php:78
+#: ../templates/partials/navigation.php:33
 #: ../templates/partials/settingsview.php:2
 msgid "Settings"
 msgstr ""
 
-#: ../templates/partials/overview.php:21
+#: ../templates/partials/albumsview.php:21
 msgid "Show all {{ album.tracks.length }} songs …"
 msgstr ""
 
-#: ../templates/main.php:162
+#: ../templates/partials/sidebar.php:5
 msgid "Show in Files"
 msgstr ""
 
-#: ../templates/partials/overview.php:21
+#: ../templates/partials/albumsview.php:21
 msgid "Show less …"
 msgstr ""
 
-#: ../templates/main.php:119
+#: ../templates/partials/controls.php:33
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:1163
+#: ../js/public/app.js:1262
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -259,7 +263,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:418
+#: ../js/public/app.js:707
 msgid "Timeout"
 msgstr ""
 
@@ -275,24 +279,28 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/main.php:138
+#: ../templates/main.php:58
 msgid "Upload music in the files app to listen to it here"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:49
+msgid "Use the following credentials to connect to this Ampache instance."
 msgstr ""
 
 #: ../templates/partials/settingsview.php:24
 msgid "Use this address to browse your music collection from any Ampache compatible player."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:48
-msgid "Use your username and following password to connect to this Ampache instance:"
+#: ../templates/partials/settingsview.php:51
+msgid "Username:"
 msgstr ""
 
-#: ../templates/main.php:123
-#: ../templates/main.php:124
-#: ../templates/main.php:126
+#: ../templates/partials/controls.php:37
+#: ../templates/partials/controls.php:38
+#: ../templates/partials/controls.php:40
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:150
+#: ../templates/main.php:70
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

@@ -2,7 +2,7 @@
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span>{{ playlist.name }}</span>
-			<img class="play svg" alt="{{ ::('Play' | translate) }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
+			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
 	<ul class="track-list">
@@ -22,9 +22,9 @@
 					<div>{{ ::song.artistName }} - {{ ::song.title }}</div>
 				</div>
 				<button class="svg action icon-details" ng-click="showSidebar(song.id)"
-					alt="{{ ::('Details' | translate) }}" title="{{ ::('Details' | translate) }}"></button>
+					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"></button>
 				<button class="svg action icon-close" ng-click="removeTrack($index)"
-					alt="{{ ::('Remove' | translate) }}" title="{{ ::('Remove track from playlist' | translate) }}"></button>
+					alt="{{ 'Remove' | translate }}" title="{{ 'Remove track from playlist' | translate }}"></button>
 			</div>
 		</li>
 	</ul>

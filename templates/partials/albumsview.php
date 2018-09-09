@@ -3,7 +3,7 @@
 		<h1>
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span>{{ ::artist.name }}</span>
-				<img class="play svg" alt="{{ ::('Play' | translate) }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
+				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
 		<div class="album-area" id="album-{{ ::album.id }}" ng-repeat="album in artist.albums">
@@ -16,7 +16,7 @@
 				</div>
 			</h2>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
-			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ ::('Play' | translate) }}"
+			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
 				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 			<track-list
 					tracks="album.tracks"

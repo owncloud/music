@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
-# this downloads test data from jamendo that is then moved to the data folder
+# this downloads test data from github that is then moved to the data folder
 # and then can be scanned by the ownCloud filescanner
 
-urls="https://mp3d.jamendo.com/download/track/391005/mp32/
-https://mp3d.jamendo.com/download/track/391013/mp32/
-https://mp3d.jamendo.com/download/track/391014/mp32/
-https://mp3d.jamendo.com/download/track/391010/mp32/
-https://mp3d.jamendo.com/download/track/391002/mp32/
-https://mp3d.jamendo.com/download/track/23975/mp32/
-https://mp3d.jamendo.com/download/track/23969/mp32/
-https://mp3d.jamendo.com/download/track/23976/mp32/
-https://mp3d.jamendo.com/download/track/1048293/mp32/
-https://mp3d.jamendo.com/download/track/1048300/mp32/
-https://mp3d.jamendo.com/download/track/1050078/mp32/
-https://mp3d.jamendo.com/download/track/1050077/mp32/
-https://mp3d.jamendo.com/download/track/1048292/mp32/"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <path to ownCloud user dir>"
+    exit 1
+fi
+
+url="https://github.com/paulijar/music/files/2364060/testcontent.zip"
 
 if [ ! -d /tmp/downloadedData ];
 then
@@ -23,34 +16,34 @@ fi
 
 cd /tmp/downloadedData
 
-for url in $urls
-do
-    name=`echo $url | cut -d "/" -f 6`
-    if [ ! -f "$name.mp3" ];
+name=`echo $url | cut -d "/" -f 8`
+if [ ! -f "$name" ];
+then
+    echo "Downloading $name ..."
+    wget $url -q --no-check-certificate -O $name
+    if [ $? -ne 0 ];
     then
-        echo "Downloading $name ..."
-        wget $url -q --no-check-certificate -O $name.mp3
+        sleep 5
+        wget $url --no-check-certificate -O $name
         if [ $? -ne 0 ];
         then
             sleep 5
-            wget $url --no-check-certificate -O $name.mp3
+            wget $url --no-check-certificate -O $name
             if [ $? -ne 0 ];
             then
-                sleep 5
-                wget $url --no-check-certificate -O $name.mp3
-                if [ $? -ne 0 ];
-                then
-                    exit 1
-                fi
+                exit 1
             fi
         fi
-    else
-        echo "$name is already available"
     fi
-done
+else
+    echo "$name is already available"
+fi
+
+# extract
+unzip -o $name -d .
 
 # go back to the old folder
 cd -
 
-mkdir -p $1/files/
-cp -r /tmp/downloadedData $1/files/music
+mkdir -p $1/files/music
+cp -r /tmp/downloadedData/* $1/files/music

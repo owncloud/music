@@ -26,6 +26,7 @@ matrix:
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable11
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable12
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable13
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable14
   fast_finish: true
 
 branches:

@@ -21,14 +21,6 @@
 	#app-view:not(.started) {
 		padding-top: 66px;
 	}
-
-	#updateData {
-		left: 0;
-	}
-
-	#controls {
-		left: 0;
-	}
 }
 
 .mobile #app-view {

@@ -210,7 +210,6 @@ div:hover > .play-pause,
 	height: 40px;
 	padding: 10px;
 	bottom: 0;
-	left: 250px;
 	z-index: 101;
 	background-color: rgba(255,255,255,0.5);
 

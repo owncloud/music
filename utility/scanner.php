@@ -349,10 +349,10 @@ class Scanner extends PublicEmitter {
 			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
 		}
 
-		$imageFiles = $folder->searchByMime('image');
-		if (\count($imageFiles) > 0) {
-			$this->deleteImage(Util::extractIds($imageFiles), $userIds);
-		}
+		// NOTE: When a folder is removed, we don't need to check for any image
+		// files in the folder. This is because those images could be potentially
+		// used as covers only on the audio files of the same folder and those
+		// were already removed above.
 	}
 
 	/**

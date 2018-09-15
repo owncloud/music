@@ -228,15 +228,21 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string|null $userId target user; omit to target all users
 	 * @return array of dictionaries with keys [albumId, userId, parentFolderId]
 	 */
-	public function getAlbumsWithoutCover() {
+	public function getAlbumsWithoutCover($userId = null) {
 		$sql = 'SELECT DISTINCT `albums`.`id`, `albums`.`user_id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
 				WHERE `albums`.`cover_file_id` IS NULL';
-		$result = $this->execute($sql);
+		$params = [];
+		if ($userId) {
+			$sql .= ' AND `albums`.`user_id` = ?';
+			$params[] = $userId;
+		}
+		$result = $this->execute($sql, $params);
 		$return = [];
 		while ($row = $result->fetch()) {
 			$return[] = [

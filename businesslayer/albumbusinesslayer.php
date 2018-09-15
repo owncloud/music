@@ -193,11 +193,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * try to find cover arts for albums without covers
+	 * @param string|null $userId target user; omit to target all users
 	 * @return array of users whose collections got modified
 	 */
-	public function findCovers() {
+	public function findCovers($userId = null) {
 		$affectedUsers = [];
-		$albums = $this->mapper->getAlbumsWithoutCover();
+		$albums = $this->mapper->getAlbumsWithoutCover($userId);
 		foreach ($albums as $album) {
 			if ($this->mapper->findAlbumCover($album['albumId'], $album['parentFolderId'])) {
 				$affectedUsers[$album['userId']] = 1;

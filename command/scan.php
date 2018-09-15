@@ -76,11 +76,6 @@ class Scan extends BaseCommand {
 					$input->getOption('clean-obsolete'),
 					$input->getOption('debug'));
 		}
-
-		$output->writeln("Searching cover images for albums with no cover art set...");
-		if ($this->scanner->findCovers()) {
-			$output->writeln("Some cover image(s) were found and added");
-		}
 	}
 
 	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
@@ -103,6 +98,11 @@ class Scan extends BaseCommand {
 					$user, $userHome, $unscanned,
 					$debug ? $output : null);
 			$output->writeln("Added $processedCount files to database of <info>$user</info>");
+		}
+
+		$output->writeln("Searching cover images for albums with no cover art set...");
+		if ($this->scanner->findCovers($user)) {
+			$output->writeln("Some cover image(s) were found and added");
 		}
 	}
 }

@@ -340,7 +340,7 @@ class ApiController extends Controller {
 
 		$coversUpdated = false;
 		if ($finalize) {
-			$coversUpdated = $this->scanner->findCovers();
+			$coversUpdated = $this->scanner->findCovers($this->userId);
 			$totalCount = $this->trackBusinessLayer->count($this->userId);
 			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}

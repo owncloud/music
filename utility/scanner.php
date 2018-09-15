@@ -584,8 +584,13 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	public function findCovers() {
-		$affectedUsers = $this->albumBusinessLayer->findCovers();
+	/**
+	 * Find external cover images for albums which do not yet have one.
+	 * Target either one user or all users.
+	 * @param string|null $userId
+	 */
+	public function findCovers($userId = null) {
+		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
 			$this->cache->remove($user, 'collection');

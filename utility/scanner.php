@@ -489,7 +489,9 @@ class Scanner extends PublicEmitter {
 		$indexedFiles = $this->getScannedFiles($userId);
 		$validFiles = Util::extractIds($this->getMusicFiles($userId, $userHome));
 		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
-		$this->deleteAudio($filesToRemove, [$userId]);
+		if (\count($filesToRemove)) {
+			$this->deleteAudio($filesToRemove, [$userId]);
+		}
 	}
 
 	/**

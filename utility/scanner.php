@@ -249,6 +249,32 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
+	 * @param string[] $affectedUsers
+	 * @param int[] $affectedAlbums
+	 */
+	private function invalidateCacheOnDelete($affectedUsers, $affectedAlbums) {
+		// Delete may be for one file or for a folder containing thousands of albums.
+		// If loads of albums got affected, then ditch the whole cache of the affected
+		// users because removing the cached covers one-by-one could delay the delete
+		// operation significantly.
+		if (\count($affectedAlbums) > 100) {
+			foreach ($affectedUsers as $user) {
+				$this->cache->remove($user);
+			}
+		}
+		else {
+			// remove the cached covers
+			foreach ($affectedAlbums as $albumId) {
+				$this->coverHelper->removeCoverFromCache($albumId, null);
+			}
+			// remove the cached collection
+			foreach ($affectedUsers as $user) {
+				$this->cache->remove($user, 'collection');
+			}
+		}
+	}
+
+	/**
 	 * @param int[] $fileIds
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
@@ -274,10 +300,7 @@ class Scanner extends PublicEmitter {
 				}
 			}
 
-			// invalidate the cache of all affected users as their music collections were changed
-			foreach ($result['affectedUsers'] as $affectedUser) {
-				$this->cache->remove($affectedUser, 'collection');
-			}
+			$this->invalidateCacheOnDelete($result['affectedUsers'], $result['obsoleteAlbums']);
 
 			$this->logger->log('removed entities - ' . \json_encode($result), 'debug');
 		}
@@ -299,24 +322,7 @@ class Scanner extends PublicEmitter {
 		}, $affectedAlbums);
 		$affectedUsers = \array_unique($affectedUsers);
 
-		// Delete may be for one file or for a folder containing thousands of albums.
-		// If loads of albums got affected, then ditch the whole cache of the affected
-		// users because removing the cached covers one-by-one could delay the delete
-		// operation significantly.
-		if (\count($affectedAlbums) > 100) {
-			foreach ($affectedUsers as $user) {
-				$this->cache->remove($user);
-			}
-		} else {
-			// remove the cached covers
-			foreach ($affectedAlbums as $album) {
-				$this->coverHelper->removeCoverFromCache($album->getId(), $album->getUserId());
-			}
-			// remove the cached collection
-			foreach ($affectedUsers as $user) {
-				$this->cache->remove($user, 'collection');
-			}
-		}
+		$this->invalidateCacheOnDelete($affectedUsers, Util::extractIds($affectedAlbums));
 
 		return (\count($affectedAlbums) > 0);
 	}

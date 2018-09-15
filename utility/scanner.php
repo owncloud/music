@@ -109,7 +109,7 @@ class Scanner extends PublicEmitter {
 
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (Util::startsWith($mimetype, 'audio') || Util::startsWith($mimetype, 'application/ogg')) {
+		} elseif (Util::startsWith($mimetype, 'audio')) {
 			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
 	}
@@ -344,10 +344,7 @@ class Scanner extends PublicEmitter {
 	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
 	public function deleteFolder($folder, $userIds=null) {
-		$audioFiles = \array_merge(
-				$folder->searchByMime('audio'),
-				$folder->searchByMime('application/ogg')
-		);
+		$audioFiles = $folder->searchByMime('audio');
 		if (\count($audioFiles) > 0) {
 			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
 		}
@@ -394,10 +391,7 @@ class Scanner extends PublicEmitter {
 			return [];
 		}
 
-		$audio = $folder->searchByMime('audio');
-		$ogg = $folder->searchByMime('application/ogg');
-
-		return \array_merge($audio, $ogg);
+		return $folder->searchByMime('audio');
 	}
 
 	private function getScannedFiles($userId) {

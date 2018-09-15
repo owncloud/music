@@ -57,7 +57,10 @@ $c->query('UserHooks')->register();
 /**
  * register search provider
  */
-\OC::$server->getSearch()->registerProvider('OCA\Music\Utility\Search');
+$c->getServer()->getSearch()->registerProvider(
+		'OCA\Music\Search\Provider',
+		['app' => $appName, 'apps' => ['files']]
+);
 
 /**
  * Load embedded music player for Files and Sharing apps

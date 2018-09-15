@@ -563,7 +563,9 @@ class Scanner extends PublicEmitter {
 		$oldFolder = self::getFolderFromRelativePath($userHome, $oldPath);
 		$newFolder = self::getFolderFromRelativePath($userHome, $newPath);
 
-		if ($newFolder->isSubNode($oldFolder)) {
+		if ($newFolder->getPath() === $oldFolder->getPath()) {
+			$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');
+		} elseif ($newFolder->isSubNode($oldFolder)) {
 			$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
 		} elseif ($oldFolder->isSubNode($newFolder)) {
 			$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');

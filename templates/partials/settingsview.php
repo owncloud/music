@@ -1,16 +1,23 @@
 <div id="music-user" ng-show="!loading">
 	<h2 translate>Settings</h2>
 	<div>
-		<label for="music-path" translate>Path to your music collection</label>:
-		<input type="text" id="music-path" ng-model="settings.path" ng-click="selectPath()"/>
+		<div class="label-container">
+			<label for="music-path" translate>Path to your music collection</label>:
+		</div>
+		<div class="icon-loading-small" ng-show="pathChangeOngoing" id="path-change-in-progress"></div>
+		<input type="text" id="music-path" ng-class="{ 'invisible': pathChangeOngoing }"
+			ng-model="settings.path" ng-click="selectPath()"/>
 		<span style="color:red" ng-show="errorPath" translate>Failed to save music path</span>
 		<p><em translate>This setting specifies the folder which will be scanned for music.</em></p>
 		<p><em translate>Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists.</em></p>
 	</div>
 	<div>
-		<label for="reset-collection" translate>Reset music collection</label>
-		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete" id="reset-collection" ng-click="resetCollection()"/>
-		<div class="icon-loading-small" ng-class="{ 'invisible': !resetOngoing }" id="reset-in-progress"></div>
+		<div class="label-container">
+			<label for="reset-collection" translate>Reset music collection</label>
+		</div>
+		<div class="icon-loading-small" ng-show="resetOngoing" id="reset-in-progress"></div>
+		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete"
+			id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
 		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues">issues</a>.</em></p>
 	</div>

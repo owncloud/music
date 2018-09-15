@@ -631,6 +631,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	margin-top: 40px;
 }
 
+#music-user .label-container {
+	display: inline-block;
+}
+
 #music-user input:invalid {
 	box-shadow: #F00 0px 0px 1.5px 1px;
 	outline: 0;
@@ -643,12 +647,12 @@ body:not(.snapjs-left) #controls.taller-header {
 	margin-bottom: 8px;
 }
 
+#music-user #path-change-in-progress,
 #music-user #reset-in-progress {
 	display: inline-block;
 	vertical-align: middle;
-	position: relative;
-	left: -26px;
 	top: -3px;
+	left: 5px;
 }
 
 #music-user div {

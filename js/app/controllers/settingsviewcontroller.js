@@ -35,6 +35,8 @@ angular.module('Music').controller('SettingsViewController', [
 						path = path + '/';
 					}
 					if ($scope.settings.path !== path) {
+						$scope.pathChangeOngoing = true;
+
 						// Stop any ongoing scan if path got changed
 						$scope.$parent.stopScanning();
 
@@ -52,6 +54,11 @@ angular.module('Music').controller('SettingsViewController', [
 								} else {
 									$scope.errorPath = true;
 								}
+								$scope.pathChangeOngoing = false;
+							},
+							function(response) { // error handling
+								$scope.pathChangeOngoing = false;
+								$scope.errorPath = true;
 							}
 						);
 					}
@@ -84,6 +91,11 @@ angular.module('Music').controller('SettingsViewController', [
 											parent.updateFilesToScan();
 										}
 										$scope.resetOngoing = false;
+									},
+									function(response) { // error handling
+										$scope.resetOngoing = false;
+										OC.Notification.showTemporary(
+												gettextCatalog.getString('Failed to reset the collection: ') + reason);
 									}
 								);
 						};

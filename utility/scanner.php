@@ -382,11 +382,12 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * search for files by mimetype inside an optional user specified path
+	 * search for files by mimetype inside user specified library path
+	 * (which defaults to user home dir)
 	 *
 	 * @return \OCP\Files\File[]
 	 */
-	public function getMusicFiles($userId, $userHome) {
+	private function getMusicFiles($userId, $userHome) {
 		try {
 			$folder = $this->getUserMusicFolder($userId, $userHome);
 		} catch (\OCP\Files\NotFoundException $e) {
@@ -399,7 +400,7 @@ class Scanner extends PublicEmitter {
 		return \array_merge($audio, $ogg);
 	}
 
-	public function getScannedFiles($userId) {
+	private function getScannedFiles($userId) {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 

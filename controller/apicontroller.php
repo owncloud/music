@@ -318,6 +318,7 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function getScanState() {
 		return new JSONResponse([
@@ -340,7 +341,7 @@ class ApiController extends Controller {
 		$coversUpdated = false;
 		if ($finalize) {
 			$coversUpdated = $this->scanner->findCovers();
-			$totalCount = \count($this->scanner->getScannedFiles($this->userId));
+			$totalCount = $this->trackBusinessLayer->count($this->userId);
 			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}
 

@@ -142,6 +142,7 @@ class CoverHelper {
 	private function addCoverToCache($albumId, $userId, $coverData) {
 		$mime = $coverData['mimetype'];
 		$content = $coverData['content'];
+		$hash = null;
 
 		if ($mime && $content) {
 			$size = \strlen($content);
@@ -163,7 +164,6 @@ class CoverHelper {
 				$this->cache->remove($userId, 'collection');
 			} else {
 				$this->logger->log("Cover image of album $albumId is large ($size B), skip caching", 'debug');
-				$hash = null;
 			}
 		}
 

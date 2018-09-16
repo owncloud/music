@@ -50,6 +50,8 @@ class ShareController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo($token, $fileId) {
+		$info = null;
+
 		// ShareManager is not present on ownCloud 8.2
 		if (!empty($this->shareManager)) {
 			$share = $this->shareManager->getShareByToken($token);

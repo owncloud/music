@@ -439,7 +439,7 @@ class ApiController extends Controller {
 			// will fetch the content through a cacheable route.
 			$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
 			return new RedirectResponse($link);
-		} else if ($coverData !== null) {
+		} else if ($coverAndHash['data'] !== null) {
 			return new FileResponse($coverAndHash['data']);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

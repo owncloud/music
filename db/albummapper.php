@@ -163,7 +163,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer $coverFileId
 	 * @param integer $folderId
-	 * @return true if one or more albums were influenced
+	 * @return boolean True if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId) {
 		$sql = 'SELECT DISTINCT `tracks`.`album_id`
@@ -238,7 +238,7 @@ class AlbumMapper extends BaseMapper {
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
 				WHERE `albums`.`cover_file_id` IS NULL';
 		$params = [];
-		if ($userId) {
+		if ($userId !== null) {
 			$sql .= ' AND `albums`.`user_id` = ?';
 			$params[] = $userId;
 		}
@@ -257,7 +257,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer $albumId
 	 * @param integer $parentFolderId
-	 * @return true if a cover image was found and added for the album
+	 * @return boolean True if a cover image was found and added for the album
 	 */
 	public function findAlbumCover($albumId, $parentFolderId) {
 		$return = false;

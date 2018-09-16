@@ -1,3 +1,13 @@
+v0.9.2 2018-09-16
+ * fix settings link not showing up on Firefox in mobile layout with NC14+
+ * fix the controls bar position when collapsible navigation pane is open in mobile layout
+ * fix positioning of the "Update scanning results" button on mobile layout
+ * fix UI sometimes getting into inconsistent state when library path changed (invalid SQL exception on back-end)
+ * fix performance issue on file deletion when the user has huge amount of image files (#664)
+ * performance/scalability: do not search cover art for *all* users after scanning library of one user
+ * show load indicator on settings view while library path change ongoing
+ * do not scan files with MIME type 'application/ogg'
+
 v0.9.1 2018-09-09
  * fix the application layout being totally messed up on Nextcloud 14-beta and later (#660)
  * fix huge library not loading with some distributions of SQLite (#239)

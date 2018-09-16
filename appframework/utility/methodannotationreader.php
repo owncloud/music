@@ -20,7 +20,7 @@ class MethodAnnotationReader {
 	private $annotations;
 
 	/**
-	 * @param object $object an object or classname
+	 * @param object|string $object an object or classname
 	 * @param string $method the method which we want to inspect for annotations
 	 */
 	public function __construct($object, $method) {
@@ -29,7 +29,7 @@ class MethodAnnotationReader {
 		$reflection = new \ReflectionMethod($object, $method);
 		$docs = $reflection->getDocComment();
 
-		// extract everythin prefixed by @ and first letter uppercase
+		// extract everything prefixed by @ and first letter uppercase
 		\preg_match_all('/@([A-Z]\w+)/', $docs, $matches);
 		$this->annotations = $matches[1];
 	}

@@ -249,25 +249,21 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
+		var isSharePage = (parentContainer.length === 0);
+		if (isSharePage) {
+			// On share page, there's no #app-content. Use #preview element as parent, instead.
+			parentContainer = $('div#preview');
+			musicControls.css('left', '0');
+		}
 		var getViewWidth = function() {
 			var width = parentContainer.width();
-			if (!OC_Music_Utils.newLayoutStructure()) {
-				// On NC14, the structure has been changed so that scroll bar width
-				// is not included in the #app-content width.
+			// On the share page and in NC14+, the parent width has the scroll bar width
+			// already subtracted.
+			if (!isSharePage && !OC_Music_Utils.newLayoutStructure()) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;
 		};
-
-		// On share page, there's no #app-content. Use #preview element as parent, instead.
-		// The #preview element's width does not include the scroll bar.
-		if (parentContainer.length === 0) {
-			parentContainer = $('div#preview');
-			getViewWidth = function() {
-				return parentContainer.width();
-			};
-			musicControls.css('left', '0');
-		}
 
 		parentContainer.append(musicControls);
 

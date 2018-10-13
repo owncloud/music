@@ -239,12 +239,12 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.append(createCloseButton());
 
 		var parentContainer = $('div#app-content');
-		var viewWidth = function() {
+		var getViewWidth = function() {
 			var width = parentContainer.width();
 			if (!OC_Music_Utils.newLayoutStructure()) {
 				// On NC14, the structure has been changed so that scroll bar width
 				// is not included in the #app-content width.
-				width -= getScrollBarWidth();
+				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;
 		};
@@ -253,7 +253,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		// The #preview element's width does not include the scroll bar.
 		if (parentContainer.length === 0) {
 			parentContainer = $('div#preview');
-			viewWidth = function() {
+			getViewWidth = function() {
 				return parentContainer.width();
 			};
 			musicControls.css('left', '0');
@@ -264,7 +264,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
 		// Also the internal layout of the bar is responsive to the available width.
 		resizeControls = function() {
-			var width = viewWidth();
+			var width = getViewWidth();
 			musicControls.css('width', width);
 			if (width > 768) {
 				musicControls.removeClass('tablet mobile extra-narrow');

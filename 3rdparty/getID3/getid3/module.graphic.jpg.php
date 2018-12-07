@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.graphic.jpg.php                                      //
@@ -18,8 +18,9 @@
 
 class getid3_jpg extends getid3_handler
 {
-
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -33,7 +34,7 @@ class getid3_jpg extends getid3_handler
 
 		$imageinfo = array();
 		//list($width, $height, $type) = getid3_lib::GetDataImageSize($this->fread($info['filesize']), $imageinfo);
-		list($width, $height, $type) = getimagesize($info['filenamepath'], $imageinfo); // http://www.getid3.org/phpBB3/viewtopic.php?t=1474
+		list($width, $height, $type) = getimagesize($info['filenamepath'], $imageinfo); // https://www.getid3.org/phpBB3/viewtopic.php?t=1474
 
 
 		if (isset($imageinfo['APP13'])) {
@@ -66,8 +67,8 @@ class getid3_jpg extends getid3_handler
 				if (isset($imageinfo['APP1'])) {
 					if (function_exists('exif_read_data')) {
 						if (substr($imageinfo['APP1'], 0, 4) == 'Exif') {
-//$this->warning('known issue: https://bugs.php.net/bug.php?id=62523');
-//return false;
+							//$this->warning('known issue: https://bugs.php.net/bug.php?id=62523');
+							//return false;
 							set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
 								if (!(error_reporting() & $errno)) {
 									// error is not specified in the error_reporting setting, so we ignore it
@@ -108,6 +109,7 @@ class getid3_jpg extends getid3_handler
 		if (isset($info['jpg']['exif']['GPS'])) {
 
 			if (isset($info['jpg']['exif']['GPS']['GPSVersion'])) {
+				$version_subparts = array();
 				for ($i = 0; $i < 4; $i++) {
 					$version_subparts[$i] = ord(substr($info['jpg']['exif']['GPS']['GPSVersion'], $i, 1));
 				}
@@ -131,6 +133,7 @@ class getid3_jpg extends getid3_handler
 
 			if (isset($info['jpg']['exif']['GPS']['GPSLatitude']) && is_array($info['jpg']['exif']['GPS']['GPSLatitude'])) {
 				$direction_multiplier = ((isset($info['jpg']['exif']['GPS']['GPSLatitudeRef']) && ($info['jpg']['exif']['GPS']['GPSLatitudeRef'] == 'S')) ? -1 : 1);
+				$computed_latitude = array();
 				foreach ($info['jpg']['exif']['GPS']['GPSLatitude'] as $key => $value) {
 					$computed_latitude[$key] = getid3_lib::DecimalizeFraction($value);
 				}
@@ -139,6 +142,7 @@ class getid3_jpg extends getid3_handler
 
 			if (isset($info['jpg']['exif']['GPS']['GPSLongitude']) && is_array($info['jpg']['exif']['GPS']['GPSLongitude'])) {
 				$direction_multiplier = ((isset($info['jpg']['exif']['GPS']['GPSLongitudeRef']) && ($info['jpg']['exif']['GPS']['GPSLongitudeRef'] == 'W')) ? -1 : 1);
+				$computed_longitude = array();
 				foreach ($info['jpg']['exif']['GPS']['GPSLongitude'] as $key => $value) {
 					$computed_longitude[$key] = getid3_lib::DecimalizeFraction($value);
 				}
@@ -176,7 +180,11 @@ class getid3_jpg extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param mixed $value
+	 *
+	 * @return mixed
+	 */
 	public function CastAsAppropriate($value) {
 		if (is_array($value)) {
 			return $value;
@@ -190,7 +198,11 @@ class getid3_jpg extends getid3_handler
 		return $value;
 	}
 
-
+	/**
+	 * @param int $iptc_record
+	 *
+	 * @return string
+	 */
 	public function IPTCrecordName($iptc_record) {
 		// http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 		static $IPTCrecordName = array();
@@ -207,7 +219,12 @@ class getid3_jpg extends getid3_handler
 		return (isset($IPTCrecordName[$iptc_record]) ? $IPTCrecordName[$iptc_record] : '');
 	}
 
-
+	/**
+	 * @param int $iptc_record
+	 * @param int $iptc_tagkey
+	 *
+	 * @return string
+	 */
 	public function IPTCrecordTagName($iptc_record, $iptc_tagkey) {
 		// http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/IPTC.html
 		static $IPTCrecordTagName = array();

@@ -1,10 +1,10 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
 //                                                             //
 // extension.cache.mysql.php - part of getID3()                //
 // Please see readme.txt for more information                  //
@@ -73,13 +73,34 @@
 
 class getID3_cached_mysql extends getID3
 {
-
-	// private vars
+	/**
+	 * @var resource
+	 */
 	private $cursor;
+
+	/**
+	 * @var resource
+	 */
 	private $connection;
 
+	/**
+	 * @var string
+	 */
+	private $table;
 
-	// public: constructor - see top of this file for cache type and cache_options
+
+	/**
+	 * constructor - see top of this file for cache type and cache_options
+	 *
+	 * @param string $host
+	 * @param string $database
+	 * @param string $username
+	 * @param string $password
+	 * @param string $table
+	 *
+	 * @throws Exception
+	 * @throws getid3_exception
+	 */
 	public function __construct($host, $database, $username, $password, $table='getid3_cache') {
 
 		// Check for mysql support
@@ -124,7 +145,9 @@ class getID3_cached_mysql extends getID3
 
 
 
-	// public: clear cache
+	/**
+	 * clear cache
+	 */
 	public function clear_cache() {
 
 		$this->cursor = mysql_query('DELETE FROM `'.mysql_real_escape_string($this->table).'`', $this->connection);
@@ -133,9 +156,18 @@ class getID3_cached_mysql extends getID3
 
 
 
-	// public: analyze file
+	/**
+	 * analyze file
+	 *
+	 * @param string $filename
+	 * @param int    $filesize
+	 * @param string $original_filename
+	 *
+	 * @return mixed
+	 */
 	public function analyze($filename, $filesize=null, $original_filename='') {
 
+        $filetime = 0;
 		if (file_exists($filename)) {
 
 			// Short-hands
@@ -174,7 +206,11 @@ class getID3_cached_mysql extends getID3
 
 
 
-	// private: (re)create sql table
+	/**
+	 * (re)create sql table
+	 *
+	 * @param bool $drop
+	 */
 	private function create_table($drop=false) {
 
 		$SQLquery  = 'CREATE TABLE IF NOT EXISTS `'.mysql_real_escape_string($this->table).'` (';

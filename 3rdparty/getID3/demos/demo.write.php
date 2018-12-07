@@ -1,20 +1,19 @@
 <?php
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
 //                                                             //
 // /demo/demo.write.php - part of getID3()                     //
 // sample script for demonstrating writing ID3v1 and ID3v2     //
 // tags for MP3, or Ogg comment tags for Ogg Vorbis            //
-// See readme.txt for more details                             //
+//  see readme.txt for more details                            //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
 
-die('Due to a security issue, this demo has been disabled. It can be enabled by removing line '.__LINE__.' in '.$_SERVER['PHP_SELF']);
+die('For security reasons, this demo has been disabled. It can be enabled by removing line '.__LINE__.' in demos/'.basename(__FILE__));
 
 $TaggingFormat = 'UTF-8';
 
@@ -76,7 +75,7 @@ if (isset($_POST['WriteTags'])) {
 							$TagData['attached_picture'][0]['data']          = $APICdata;
 							$TagData['attached_picture'][0]['picturetypeid'] = $_POST['APICpictureType'];
 							$TagData['attached_picture'][0]['description']   = $_FILES['userfile']['name'];
-							$TagData['attached_picture'][0]['mime']          = image_type_to_mime_type($exif_imagetype),
+							$TagData['attached_picture'][0]['mime']          = image_type_to_mime_type($exif_imagetype);
 
 						} else {
 							echo '<b>invalid image format (only GIF, JPEG, PNG)</b><br>';

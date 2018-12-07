@@ -1,21 +1,27 @@
 <?php
-/////////////////////////////////////////////////////////////////////////////////
-/// getID3() by James Heinrich <info@getid3.org>                               //
-//  available at http://getid3.sourceforge.net                                 //
-//            or http://www.getid3.org                                         //
-//          also https://github.com/JamesHeinrich/getID3                       //
-/////////////////////////////////////////////////////////////////////////////////
-///                                                                            //
-// extension.cache.sqlite3.php - part of getID3()                              //
-// Please see readme.txt for more information                                  //
-//                                                                            ///
-/////////////////////////////////////////////////////////////////////////////////
-///                                                                            //
-// MySQL extension written by Allan Hansen <ahØartemis*dk>                     //
-// Table name mod by Carlo Capocasa <calroØcarlocapocasa*com>                  //
-// MySQL extension was reworked for SQLite3 by Karl G. Holz <newaeonØmac*com>  //
-//                                                                            ///
-/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+/// getID3() by James Heinrich <info@getid3.org>               //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//                                                             //
+// extension.cache.mysqli.php - part of getID3()               //
+// Please see readme.txt for more information                  //
+//                                                             //
+/////////////////////////////////////////////////////////////////
+//                                                             //
+// extension.cache.sqlite3.php - part of getID3()              //
+// Please see readme.txt for more information                  //
+//                                                             //
+/////////////////////////////////////////////////////////////////
+///                                                            //
+// MySQL extension written by Allan Hansen <ahØartemis*dk>     //
+// Table name mod by Carlo Capocasa <calroØcarlocapocasa*com>  //
+// MySQL extension was reworked for SQLite3 by                 //
+//   Karl G. Holz <newaeonØmac*com>                            //
+//                                                            ///
+/////////////////////////////////////////////////////////////////
+
 /**
 * This is a caching extension for getID3(). It works the exact same
 * way as the getID3 class, but return cached information much faster
@@ -89,14 +95,35 @@
 *
 *
 */
-class getID3_cached_sqlite3 extends getID3 {
+class getID3_cached_sqlite3 extends getID3
+{
+	/**
+	 * hold the sqlite db
+	 *
+	 * @var SQLite3 Resource
+	 */
+	private $db;
 
 	/**
-	* __construct()
-	* @param string $table holds name of sqlite table
-	* @return type
-	*/
+	 * table to use for caching
+	 *
+	 * @var string $table
+	 */
+	private $table;
+
+	/**
+	 * @param string  $table holds name of sqlite table
+	 * @param boolean $hide
+	 *
+	 * @throws getid3_exception
+	 * @throws Exception
+	 */
 	public function __construct($table='getid3_cache', $hide=false) {
+		// Check for SQLite3 support
+		if (!function_exists('sqlite_open')) {
+			throw new Exception('PHP not compiled with SQLite3 support.');
+		}
+
 		$this->table = $table; // Set table
 		$file = dirname(__FILE__).'/'.basename(__FILE__, 'php').'sqlite';
 		if ($hide) {
@@ -106,7 +133,7 @@ class getID3_cached_sqlite3 extends getID3 {
 		$db = $this->db;
 		$this->create_table();   // Create cache table if not exists
 		$version = '';
-		$sql = $this->version_check;
+		$sql = $this->getQuery('version_check');
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':filename', getID3::VERSION, SQLITE3_TEXT);
 		$result = $stmt->execute();
@@ -114,39 +141,27 @@ class getID3_cached_sqlite3 extends getID3 {
 		if ($version != getID3::VERSION) { // Check version number and clear cache if changed
 			$this->clear_cache();
 		}
-		return parent::__construct();
+		parent::__construct();
 	}
 
 	/**
-	* close the database connection
-	*/
+	 * close the database connection
+	 */
 	public function __destruct() {
 		$db=$this->db;
 		$db->close();
 	}
 
 	/**
-	* hold the sqlite db
-	* @var SQLite Resource
-	*/
-	private $db;
-
-	/**
-	* table to use for caching
-	* @var string $table
-	*/
-	private $table;
-
-	/**
-	* clear the cache
-	* @access private
-	* @return type
-	*/
+	 * clear the cache
+	 *
+	 * @return SQLite3Result
+	 */
 	private function clear_cache() {
 		$db = $this->db;
-		$sql = $this->delete_cache;
+		$sql = $this->getQuery('delete_cache');
 		$db->exec($sql);
-		$sql = $this->set_version;
+		$sql = $this->getQuery('set_version');
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':filename', getID3::VERSION, SQLITE3_TEXT);
 		$stmt->bindValue(':dirname', getID3::VERSION, SQLITE3_TEXT);
@@ -155,10 +170,14 @@ class getID3_cached_sqlite3 extends getID3 {
 	}
 
 	/**
-	* analyze file and cache them, if cached pull from the db
-	* @param type $filename
-	* @return boolean
-	*/
+	 * analyze file and cache them, if cached pull from the db
+	 *
+	 * @param string  $filename
+	 * @param integer $filesize
+	 * @param string  $original_filename
+	 *
+	 * @return mixed|false
+	 */
 	public function analyze($filename, $filesize=null, $original_filename='') {
 		if (!file_exists($filename)) {
 			return false;
@@ -171,7 +190,7 @@ class getID3_cached_sqlite3 extends getID3 {
 		$dirname  = dirname($filename);
 		// Lookup file
 		$db = $this->db;
-		$sql = $this->get_id3_data;
+		$sql = $this->getQuery('get_id3_data');
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':filename', $filename,      SQLITE3_TEXT);
 		$stmt->bindValue(':filesize', $filesize_real, SQLITE3_INTEGER);
@@ -184,7 +203,7 @@ class getID3_cached_sqlite3 extends getID3 {
 		// if it hasn't been analyzed before, then do it now
 		$analysis = parent::analyze($filename, $filesize, $original_filename);
 		// Save result
-		$sql = $this->cache_file;
+		$sql = $this->getQuery('cache_file');
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':filename', $filename,                           SQLITE3_TEXT);
 		$stmt->bindValue(':dirname',  $dirname,                            SQLITE3_TEXT);
@@ -197,30 +216,31 @@ class getID3_cached_sqlite3 extends getID3 {
 	}
 
 	/**
-	* create data base table
-	* this is almost the same as MySQL, with the exception of the dirname being added
-	* @return type
-	*/
+	 * create data base table
+	 * this is almost the same as MySQL, with the exception of the dirname being added
+	 *
+	 * @return bool
+	 */
 	private function create_table() {
 		$db = $this->db;
-		$sql = $this->make_table;
+		$sql = $this->getQuery('make_table');
 		return $db->exec($sql);
 	}
 
 	/**
-	* get cached directory
-	*
-	* This function is not in the MySQL extention, it's ment to speed up requesting multiple files
-	* which is ideal for podcasting, playlists, etc.
-	*
-	* @access public
-	* @param string $dir directory to search the cache database for
-	* @return array return an array of matching id3 data
-	*/
+	 * get cached directory
+	 *
+	 * This function is not in the MySQL extention, it's ment to speed up requesting multiple files
+	 * which is ideal for podcasting, playlists, etc.
+	 *
+	 * @param string $dir directory to search the cache database for
+	 *
+	 * @return array return an array of matching id3 data
+	 */
 	public function get_cached_dir($dir) {
 		$db = $this->db;
 		$rows = array();
-		$sql = $this->get_cached_dir;
+		$sql = $this->getQuery('get_cached_dir');
 		$stmt = $db->prepare($sql);
 		$stmt->bindValue(':dirname', $dir, SQLITE3_TEXT);
 		$res = $stmt->execute();
@@ -231,12 +251,15 @@ class getID3_cached_sqlite3 extends getID3 {
 	}
 
 	/**
-	* use the magical __get() for sql queries
-	*
-	* access as easy as $this->{case name}, returns NULL if query is not found
-	*/
-	public function __get($name) {
-		switch($name) {
+	 * returns NULL if query is not found
+	 *
+	 * @param string $name
+	 *
+	 * @return null|string
+	 */
+	public function getQuery($name)
+	{
+		switch ($name) {
 			case 'version_check':
 				return "SELECT val FROM $this->table WHERE filename = :filename AND filesize = '-1' AND filetime = '-1' AND analyzetime = '-1'";
 				break;
@@ -258,8 +281,23 @@ class getID3_cached_sqlite3 extends getID3 {
 			case 'get_cached_dir':
 				return "SELECT val FROM $this->table WHERE dirname = :dirname";
 				break;
+			default:
+				return null;
 		}
-		return null;
+	}
+
+	/**
+	* use the magical __get() for sql queries
+	*
+	* access as easy as $this->{case name}, returns NULL if query is not found
+	*
+	* @param string $name
+	*
+	* @return string
+	* @deprecated use getQuery() instead
+	*/
+	public function __get($name) {
+		return $this->getQuery($name);
 	}
 
 }

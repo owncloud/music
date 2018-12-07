@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio.vqf.php                                        //
@@ -17,6 +17,9 @@
 
 class getid3_vqf extends getid3_handler
 {
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -136,6 +139,11 @@ class getid3_vqf extends getid3_handler
 		return true;
 	}
 
+	/**
+	 * @param int $frequencyid
+	 *
+	 * @return int
+	 */
 	public function VQFchannelFrequencyLookup($frequencyid) {
 		static $VQFchannelFrequencyLookup = array(
 			11 => 11025,
@@ -145,6 +153,11 @@ class getid3_vqf extends getid3_handler
 		return (isset($VQFchannelFrequencyLookup[$frequencyid]) ? $VQFchannelFrequencyLookup[$frequencyid] : $frequencyid * 1000);
 	}
 
+	/**
+	 * @param string $shortname
+	 *
+	 * @return string
+	 */
 	public function VQFcommentNiceNameLookup($shortname) {
 		static $VQFcommentNiceNameLookup = array(
 			'NAME' => 'title',

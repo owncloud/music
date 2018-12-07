@@ -62,7 +62,6 @@ local.properties
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.vspscc
 .builds
 *.dotCover
@@ -168,3 +167,9 @@ pip-log.txt
 # Mac crap
 .DS_Store
 demos/php_error.log
+
+# Composer
+/vendor
+/composer.lock
+/composer.local.json
+/composer.phar

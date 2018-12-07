@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio-video.real.php                                 //
@@ -18,7 +18,9 @@ getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', 
 
 class getid3_real extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -370,7 +372,12 @@ class getid3_real extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param string $OldRAheaderData
+	 * @param array  $ParsedArray
+	 *
+	 * @return bool
+	 */
 	public function ParseOldRAheader($OldRAheaderData, &$ParsedArray) {
 		// http://www.freelists.org/archives/matroska-devel/07-2003/msg00010.html
 
@@ -485,6 +492,12 @@ class getid3_real extends getid3_handler
 		return true;
 	}
 
+	/**
+	 * @param string $fourcc
+	 * @param int    $bitrate
+	 *
+	 * @return string
+	 */
 	public function RealAudioCodecFourCClookup($fourcc, $bitrate) {
 		static $RealAudioCodecFourCClookup = array();
 		if (empty($RealAudioCodecFourCClookup)) {

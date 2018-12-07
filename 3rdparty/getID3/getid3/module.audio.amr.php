@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio.aa.php                                         //
@@ -17,7 +17,9 @@
 
 class getid3_amr extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -63,7 +65,11 @@ class getid3_amr extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param int $key
+	 *
+	 * @return int|false
+	 */
 	public function amr_mode_bitrate($key) {
 		static $amr_mode_bitrate = array(
 			0 =>  4750,
@@ -78,6 +84,11 @@ class getid3_amr extends getid3_handler
 		return (isset($amr_mode_bitrate[$key]) ? $amr_mode_bitrate[$key] : false);
 	}
 
+	/**
+	 * @param int $key
+	 *
+	 * @return int|false
+	 */
 	public function amr_mode_bytes_per_frame($key) {
 		static $amr_mode_bitrate = array(
 			0 =>  13, // 1-byte frame header +  95 bits [padded to: 12 bytes] audio data

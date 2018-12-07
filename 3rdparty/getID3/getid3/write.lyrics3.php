@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // write.lyrics3.php                                           //
@@ -17,20 +17,45 @@
 
 class getid3_write_lyrics3
 {
+	/**
+	 * @var string
+	 */
 	public $filename;
+
+	/**
+	 * @var array
+	 */
 	public $tag_data;
 	//public $lyrics3_version = 2;       // 1 or 2
-	public $warnings        = array(); // any non-critical errors will be stored here
-	public $errors          = array(); // any critical errors will be stored here
+
+	/**
+	 * Any non-critical errors will be stored here.
+	 *
+	 * @var array
+	 */
+	public $warnings        = array();
+
+	/**
+	 * Any critical errors will be stored here.
+	 *
+	 * @var array
+	 */
+	public $errors          = array();
 
 	public function __construct() {
-		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function WriteLyrics3() {
 		$this->errors[] = 'WriteLyrics3() not yet functional - cannot write Lyrics3';
 		return false;
 	}
+
+	/**
+	 * @return bool
+	 */
 	public function DeleteLyrics3() {
 		// Initialize getID3 engine
 		$getID3 = new getID3;

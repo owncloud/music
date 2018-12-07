@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio-video.riff.php                                 //
@@ -27,10 +27,15 @@ getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.mp3.php', __FILE_
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ac3.php', __FILE__, true);
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.dts.php', __FILE__, true);
 
-class getid3_riff extends getid3_handler {
-
+class getid3_riff extends getid3_handler
+{
 	protected $container = 'riff'; // default
 
+	/**
+	 * @return bool
+	 *
+	 * @throws getid3_exception
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -46,6 +51,7 @@ class getid3_riff extends getid3_handler {
 		$thisfile_audio_dataformat = &$thisfile_audio['dataformat'];
 		$thisfile_riff_audio       = &$thisfile_riff['audio'];
 		$thisfile_riff_video       = &$thisfile_riff['video'];
+        $thisfile_riff_WAVE        = array();
 
 		$Original['avdataoffset'] = $info['avdataoffset'];
 		$Original['avdataend']    = $info['avdataend'];
@@ -406,7 +412,6 @@ class getid3_riff extends getid3_handler {
 						'tracktitle'=>'title',
 						'category'  =>'genre',
 						'cdtitle'   =>'album',
-						'tracktitle'=>'title',
 					);
 					foreach ($tagmapping as $fromkey => $tokey) {
 						if (isset($thisfile_riff_WAVE_SNDM_0['parsed'][$fromkey])) {
@@ -614,6 +619,8 @@ class getid3_riff extends getid3_handler {
 				$thisfile_video['bitrate_mode'] = 'vbr'; // maybe not, but probably
 				$thisfile_video['dataformat']   = 'avi';
 
+				$thisfile_riff_video_current = array();
+
 				if (isset($thisfile_riff[$RIFFsubtype]['movi']['offset'])) {
 					$info['avdataoffset'] = $thisfile_riff[$RIFFsubtype]['movi']['offset'] + 8;
 					if (isset($thisfile_riff['AVIX'])) {
@@ -702,6 +709,7 @@ class getid3_riff extends getid3_handler {
 
 					// shortcut
 					$thisfile_riff_video[$streamindex] = array();
+                    /** @var array $thisfile_riff_video_current */
 					$thisfile_riff_video_current = &$thisfile_riff_video[$streamindex];
 
 					if ($thisfile_riff_raw_avih['dwWidth'] > 0) {
@@ -868,7 +876,7 @@ class getid3_riff extends getid3_handler {
 								}
 							}
 
-							if (isset($thisfile_riff_raw_strf_strhfccType_streamindex['fourcc'])) {
+							if (isset($thisfile_riff_raw_strf_strhfccType_streamindex) && isset($thisfile_riff_raw_strf_strhfccType_streamindex['fourcc'])) {
 
 								$thisfile_video['fourcc'] = $thisfile_riff_raw_strf_strhfccType_streamindex['fourcc'];
 								if (self::fourccLookup($thisfile_video['fourcc'])) {
@@ -1078,6 +1086,7 @@ class getid3_riff extends getid3_handler {
 				$thisfile_audio_dataformat         = '8svx';
 				$thisfile_audio['bits_per_sample'] = 8;
 				$thisfile_audio['channels']        = 1; // overridden below, if need be
+				$ActualBitsPerSample               = 0;
 
 				if (isset($thisfile_riff[$RIFFsubtype]['BODY'][0]['offset'])) {
 					$info['avdataoffset'] = $thisfile_riff[$RIFFsubtype]['BODY'][0]['offset'] + 8;
@@ -1115,7 +1124,7 @@ class getid3_riff extends getid3_handler {
 							break;
 
 						default:
-							$this->warning('Unexpected sCompression value in 8SVX.VHDR chunk - expecting 0 or 1, found "'.sCompression.'"');
+							$this->warning('Unexpected sCompression value in 8SVX.VHDR chunk - expecting 0 or 1, found "'.$thisfile_riff_RIFFsubtype_VHDR_0['sCompression'].'"');
 							break;
 					}
 				}
@@ -1373,6 +1382,15 @@ class getid3_riff extends getid3_handler {
 		return true;
 	}
 
+	/**
+	 * @param int $startoffset
+	 * @param int $maxoffset
+	 *
+	 * @return array|false
+	 *
+	 * @throws Exception
+	 * @throws getid3_exception
+	 */
 	public function ParseRIFFAMV($startoffset, $maxoffset) {
 		// AMV files are RIFF-AVI files with parts of the spec deliberately broken, such as chunk size fields hardcoded to zero (because players known in hardware that these fields are always a certain size
 
@@ -1481,7 +1499,13 @@ class getid3_riff extends getid3_handler {
 		return $RIFFchunk;
 	}
 
-
+	/**
+	 * @param int $startoffset
+	 * @param int $maxoffset
+	 *
+	 * @return array|false
+	 * @throws getid3_exception
+	 */
 	public function ParseRIFF($startoffset, $maxoffset) {
 		$info = &$this->getid3->info;
 
@@ -1733,7 +1757,7 @@ class getid3_riff extends getid3_handler {
 							//	break;
 
 							default:
-								if (!empty($LISTchunkParent) && (($RIFFchunk[$chunkname][$thisindex]['offset'] + $RIFFchunk[$chunkname][$thisindex]['size']) <= $LISTchunkMaxOffset)) {
+								if (!empty($LISTchunkParent) && isset($LISTchunkMaxOffset) && (($RIFFchunk[$chunkname][$thisindex]['offset'] + $RIFFchunk[$chunkname][$thisindex]['size']) <= $LISTchunkMaxOffset)) {
 									$RIFFchunk[$LISTchunkParent][$chunkname][$thisindex]['offset'] = $RIFFchunk[$chunkname][$thisindex]['offset'];
 									$RIFFchunk[$LISTchunkParent][$chunkname][$thisindex]['size']   = $RIFFchunk[$chunkname][$thisindex]['size'];
 									unset($RIFFchunk[$chunkname][$thisindex]['offset']);
@@ -1768,6 +1792,11 @@ class getid3_riff extends getid3_handler {
 		return $RIFFchunk;
 	}
 
+	/**
+	 * @param string $RIFFdata
+	 *
+	 * @return bool
+	 */
 	public function ParseRIFFdata(&$RIFFdata) {
 		$info = &$this->getid3->info;
 		if ($RIFFdata) {
@@ -1805,6 +1834,12 @@ class getid3_riff extends getid3_handler {
 		return false;
 	}
 
+	/**
+	 * @param array $RIFFinfoArray
+	 * @param array $CommentsTargetArray
+	 *
+	 * @return bool
+	 */
 	public static function parseComments(&$RIFFinfoArray, &$CommentsTargetArray) {
 		$RIFFinfoKeyLookup = array(
 			'IARL'=>'archivallocation',
@@ -1864,8 +1899,14 @@ class getid3_riff extends getid3_handler {
 		return true;
 	}
 
+	/**
+	 * @param string $WaveFormatExData
+	 *
+	 * @return array
+	 */
 	public static function parseWAVEFORMATex($WaveFormatExData) {
 		// shortcut
+		$WaveFormatEx        = array();
 		$WaveFormatEx['raw'] = array();
 		$WaveFormatEx_raw    = &$WaveFormatEx['raw'];
 
@@ -1889,6 +1930,11 @@ class getid3_riff extends getid3_handler {
 		return $WaveFormatEx;
 	}
 
+	/**
+	 * @param string $WavPackChunkData
+	 *
+	 * @return bool
+	 */
 	public function parseWavPackHeader($WavPackChunkData) {
 		// typedef struct {
 		//     char ckID [4];
@@ -1950,6 +1996,12 @@ class getid3_riff extends getid3_handler {
 		return true;
 	}
 
+	/**
+	 * @param string $BITMAPINFOHEADER
+	 * @param bool   $littleEndian
+	 *
+	 * @return array
+	 */
 	public static function ParseBITMAPINFOHEADER($BITMAPINFOHEADER, $littleEndian=true) {
 
 		$parsed['biSize']          = substr($BITMAPINFOHEADER,  0, 4); // number of bytes required by the BITMAPINFOHEADER structure
@@ -1969,6 +2021,12 @@ class getid3_riff extends getid3_handler {
 		return $parsed;
 	}
 
+	/**
+	 * @param string $DIVXTAG
+	 * @param bool   $raw
+	 *
+	 * @return array
+	 */
 	public static function ParseDIVXTAG($DIVXTAG, $raw=false) {
 		// structure from "IDivX" source, Form1.frm, by "Greg Frazier of Daemonic Software Group", email: gfrazier@icestorm.net, web: http://dsg.cjb.net/
 		// source available at http://files.divx-digest.com/download/c663efe7ef8ad2e90bf4af4d3ea6188a/on0SWN2r/edit/IDivX.zip
@@ -2015,6 +2073,7 @@ class getid3_riff extends getid3_handler {
 			 5 => 'NC-17',
 		);
 
+		$parsed              = array();
 		$parsed['title']     =        trim(substr($DIVXTAG,   0, 32));
 		$parsed['artist']    =        trim(substr($DIVXTAG,  32, 28));
 		$parsed['year']      = intval(trim(substr($DIVXTAG,  60,  4)));
@@ -2030,8 +2089,8 @@ class getid3_riff extends getid3_handler {
 		if (!$raw) {
 			unset($parsed['genre_id'], $parsed['rating_id']);
 			foreach ($parsed as $key => $value) {
-				if (!$value === '') {
-					unset($parsed['key']);
+				if (empty($value)) {
+					unset($parsed[$key]);
 				}
 			}
 		}
@@ -2043,6 +2102,11 @@ class getid3_riff extends getid3_handler {
 		return $parsed;
 	}
 
+	/**
+	 * @param string $tagshortname
+	 *
+	 * @return string
+	 */
 	public static function waveSNDMtagLookup($tagshortname) {
 		$begin = __LINE__;
 
@@ -2066,6 +2130,11 @@ class getid3_riff extends getid3_handler {
 		return getid3_lib::EmbeddedLookup($tagshortname, $begin, __LINE__, __FILE__, 'riff-sndm');
 	}
 
+	/**
+	 * @param int $wFormatTag
+	 *
+	 * @return string
+	 */
 	public static function wFormatTagLookup($wFormatTag) {
 
 		$begin = __LINE__;
@@ -2235,6 +2304,11 @@ class getid3_riff extends getid3_handler {
 		return getid3_lib::EmbeddedLookup('0x'.str_pad(strtoupper(dechex($wFormatTag)), 4, '0', STR_PAD_LEFT), $begin, __LINE__, __FILE__, 'riff-wFormatTag');
 	}
 
+	/**
+	 * @param string $fourcc
+	 *
+	 * @return string
+	 */
 	public static function fourccLookup($fourcc) {
 
 		$begin = __LINE__;
@@ -2629,6 +2703,12 @@ class getid3_riff extends getid3_handler {
 		return getid3_lib::EmbeddedLookup($fourcc, $begin, __LINE__, __FILE__, 'riff-fourcc');
 	}
 
+	/**
+	 * @param string $byteword
+	 * @param bool   $signed
+	 *
+	 * @return int|float|false
+	 */
 	private function EitherEndian2Int($byteword, $signed=false) {
 		if ($this->container == 'riff') {
 			return getid3_lib::LittleEndian2Int($byteword, $signed);

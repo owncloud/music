@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.archive.tar.php                                      //
@@ -22,7 +22,9 @@
 
 class getid3_tar extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -117,7 +119,13 @@ class getid3_tar extends getid3_handler
 		return true;
 	}
 
-	// Parses the file mode to file permissions
+	/**
+	 * Parses the file mode to file permissions.
+	 *
+	 * @param int $mode
+	 *
+	 * @return string
+	 */
 	public function display_perms($mode) {
 		// Determine Type
 		if     ($mode & 0x1000) $type='p'; // FIFO pipe
@@ -152,7 +160,13 @@ class getid3_tar extends getid3_handler
 		return $s;
 	}
 
-	// Converts the file type
+	/**
+	 * Converts the file type.
+	 *
+	 * @param string $typflag
+	 *
+	 * @return mixed|string
+	 */
 	public function get_flag_type($typflag) {
 		static $flag_types = array(
 			'0' => 'LF_NORMAL',

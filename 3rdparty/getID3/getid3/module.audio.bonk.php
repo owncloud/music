@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio.la.php                                         //
@@ -17,6 +17,9 @@
 
 class getid3_bonk extends getid3_handler
 {
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -114,6 +117,9 @@ class getid3_bonk extends getid3_handler
 
 	}
 
+	/**
+	 * @param string $BonkTagName
+	 */
 	public function HandleBonkTags($BonkTagName) {
 		$info = &$this->getid3->info;
 		switch ($BonkTagName) {
@@ -213,6 +219,12 @@ class getid3_bonk extends getid3_handler
 		}
 	}
 
+	/**
+	 * @param string $PossibleBonkTag
+	 * @param bool   $ignorecase
+	 *
+	 * @return bool
+	 */
 	public static function BonkIsValidTagName($PossibleBonkTag, $ignorecase=false) {
 		static $BonkIsValidTagName = array('BONK', 'INFO', ' ID3', 'META');
 		foreach ($BonkIsValidTagName as $validtagname) {

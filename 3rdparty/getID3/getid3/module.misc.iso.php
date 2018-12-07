@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.misc.iso.php                                         //
@@ -17,7 +17,9 @@
 
 class getid3_iso extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -55,7 +57,11 @@ class getid3_iso extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param string $ISOheader
+	 *
+	 * @return bool
+	 */
 	public function ParsePrimaryVolumeDescriptor(&$ISOheader) {
 		// ISO integer values are stored *BOTH* Little-Endian AND Big-Endian format!!
 		// ie 12345 == 0x3039  is stored as $39 $30 $30 $39 in a 4-byte field
@@ -129,7 +135,11 @@ class getid3_iso extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param string $ISOheader
+	 *
+	 * @return bool
+	 */
 	public function ParseSupplementaryVolumeDescriptor(&$ISOheader) {
 		// ISO integer values are stored Both-Endian format!!
 		// ie 12345 == 0x3039  is stored as $39 $30 $30 $39 in a 4-byte field
@@ -208,7 +218,9 @@ class getid3_iso extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @return bool
+	 */
 	public function ParsePathTable() {
 		$info = &$this->getid3->info;
 		if (!isset($info['iso']['supplementary_volume_descriptor']['raw']['path_table_l_location']) && !isset($info['iso']['primary_volume_descriptor']['raw']['path_table_l_location'])) {
@@ -267,7 +279,11 @@ class getid3_iso extends getid3_handler
 		return true;
 	}
 
-
+	/**
+	 * @param array $directorydata
+	 *
+	 * @return array
+	 */
 	public function ParseDirectoryRecord($directorydata) {
 		$info = &$this->getid3->info;
 		if (isset($info['iso']['supplementary_volume_descriptor'])) {
@@ -278,10 +294,13 @@ class getid3_iso extends getid3_handler
 
 		$this->fseek($directorydata['location_bytes']);
 		$DirectoryRecordData = $this->fread(1);
+		$DirectoryRecord = array();
 
 		while (ord($DirectoryRecordData{0}) > 33) {
 
 			$DirectoryRecordData .= $this->fread(ord($DirectoryRecordData{0}) - 1);
+
+			$ThisDirectoryRecord = array();
 
 			$ThisDirectoryRecord['raw']['length']                    = getid3_lib::LittleEndian2Int(substr($DirectoryRecordData,  0, 1));
 			$ThisDirectoryRecord['raw']['extended_attribute_length'] = getid3_lib::LittleEndian2Int(substr($DirectoryRecordData,  1, 1));
@@ -321,6 +340,11 @@ class getid3_iso extends getid3_handler
 		return $DirectoryRecord;
 	}
 
+	/**
+	 * @param string $ISOfilename
+	 *
+	 * @return string
+	 */
 	public function ISOstripFilenameVersion($ISOfilename) {
 		// convert 'filename.ext;1' to 'filename.ext'
 		if (!strstr($ISOfilename, ';')) {
@@ -330,6 +354,11 @@ class getid3_iso extends getid3_handler
 		}
 	}
 
+	/**
+	 * @param string $ISOtime
+	 *
+	 * @return int|false
+	 */
 	public function ISOtimeText2UNIXtime($ISOtime) {
 
 		$UNIXyear   = (int) substr($ISOtime,  0, 4);
@@ -345,6 +374,11 @@ class getid3_iso extends getid3_handler
 		return gmmktime($UNIXhour, $UNIXminute, $UNIXsecond, $UNIXmonth, $UNIXday, $UNIXyear);
 	}
 
+	/**
+	 * @param string $ISOtime
+	 *
+	 * @return int
+	 */
 	public function ISOtime2UNIXtime($ISOtime) {
 		// Represented by seven bytes:
 		// 1: Number of years since 1900
@@ -366,6 +400,11 @@ class getid3_iso extends getid3_handler
 		return gmmktime($UNIXhour, $UNIXminute, $UNIXsecond, $UNIXmonth, $UNIXday, $UNIXyear);
 	}
 
+	/**
+	 * @param int $BinaryValue
+	 *
+	 * @return int
+	 */
 	public function TwosCompliment2Decimal($BinaryValue) {
 		// http://sandbox.mc.edu/~bennet/cs110/tc/tctod.html
 		// First check if the number is negative or positive by looking at the sign bit.

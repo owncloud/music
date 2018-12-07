@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio.lpac.php                                       //
@@ -18,13 +18,16 @@ getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', 
 
 class getid3_lpac extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
 		$this->fseek($info['avdataoffset']);
 		$LPACheader = $this->fread(14);
-		if (substr($LPACheader, 0, 4) != 'LPAC') {
+		$StreamMarker = substr($LPACheader, 0, 4);
+		if ($StreamMarker != 'LPAC') {
 			$this->error('Expected "LPAC" at offset '.$info['avdataoffset'].', found "'.$StreamMarker.'"');
 			return false;
 		}

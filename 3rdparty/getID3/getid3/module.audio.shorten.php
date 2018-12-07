@@ -1,11 +1,11 @@
 <?php
+
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
-//  available at http://getid3.sourceforge.net                 //
-//            or http://www.getid3.org                         //
-//          also https://github.com/JamesHeinrich/getID3       //
-/////////////////////////////////////////////////////////////////
-// See readme.txt for more details                             //
+//  available at https://github.com/JamesHeinrich/getID3       //
+//            or https://www.getid3.org                        //
+//            or http://getid3.sourceforge.net                 //
+//  see readme.txt for more details                            //
 /////////////////////////////////////////////////////////////////
 //                                                             //
 // module.audio.shorten.php                                    //
@@ -17,7 +17,9 @@
 
 class getid3_shorten extends getid3_handler
 {
-
+	/**
+	 * @return bool
+	 */
 	public function Analyze() {
 		$info = &$this->getid3->info;
 
@@ -38,7 +40,7 @@ class getid3_shorten extends getid3_handler
 
 		$this->fseek($info['avdataend'] - 12);
 		$SeekTableSignatureTest = $this->fread(12);
-		$info['shn']['seektable']['present'] = (bool) (substr($SeekTableSignatureTest, 4, 8) == 'SHNAMPSK');
+		$info['shn']['seektable']['present'] = substr($SeekTableSignatureTest, 4, 8) == 'SHNAMPSK';
 		if ($info['shn']['seektable']['present']) {
 			$info['shn']['seektable']['length'] = getid3_lib::LittleEndian2Int(substr($SeekTableSignatureTest, 0, 4));
 			$info['shn']['seektable']['offset'] = $info['avdataend'] - $info['shn']['seektable']['length'];

@@ -27,12 +27,12 @@ Music player embedded into the files view:
 
 _Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
-_Note: It might be unable to play some particular files on some browsers._
+_Note: The app might be unable to play some particular files on some browsers._
 
 
 ### Detail
 
-This app utilizes 2 backend players: Aurora.js and SoundManager2.
+The Music app utilizes 2 backend players: Aurora.js and SoundManager2.
 
 SoundManager2 utilizes the browser's built-in codecs. Aurora.js, on the other hand, uses Javascript and HTML5 Audio API to decode and play music and doesn't require codecs from browser. The Music app ships with FLAC and MP3 plugins for Aurora.js. Aurora.js does not work on any version of Internet Explorer and fails to play some MP3 files on other browsers, too.
 
@@ -72,7 +72,7 @@ Reset all data stored to the music database. Target either specified user(s) or 
 
 #### Reset cache
 
-Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tets. Target either specified user(s) or user group(s) or all users.
+Music app caches some results for performance reasons. Normally, there should be no reason to reset this cache manually, but it might be desiredable e.g. when running performance tests. Target either specified user(s) or user group(s) or all users.
 
 	./occ music:reset-cache USERNAME1 USERNAME2 ...
 	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
@@ -91,8 +91,7 @@ This is the common path. Some clients append the last part (`server/xml.server.p
 #### Authentication
 
 Ampache doesn't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY for Ampache.
-The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app.
-In your Ampache client, use your ownCloud username and the generated key as password.
+The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app. When you create the APIKEY, the application shows also the username you should use on your Ampache client. Typically, this is your ownCloud login name but it may also be an UUID in case you have set up LDAP authentication.
 
 You may use the `/api/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
@@ -150,13 +149,17 @@ After installation, you may want to select a specific sub-folder containing your
 
 ### Known issues
 
-#### Unshare from self
-
-When the recipient of a shared audio file unshares it, the file reference is left in the music database of the recipient. To get rid of it, the database has to be regenerated. The fix for this has been merged to ownCloud and Nextcloud cores, but it may not yet be included in your release of the cloud. #567
-
 #### Huge music collections
 
-The version 0.4.0 scales better for large music collections than the older versions. Still, if the collection is large enough, it may fail to load. The maximum number of tracks supported depends on your server but should be around 50'000. Also, when there are tens of thousands of tracks, loading the applicatin view takes pretty long time and the responsiveness of the UI may be poor. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. 
+The application's scalability for large music collections has gradually improved as new versions have been released. Still, if the collection is large enough, the application may fail to load. The maximum number of tracks supported depends on your server but should be around 50'000. Also, when there are tens of thousands of tracks, loading the applicatin view takes pretty long time and the responsiveness of the UI may be poor. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. 
+
+#### Translations
+
+There exist partial translations for the Music app for many languages, but all of them are very much incomplete. The application is translated at https://www.transifex.com/owncloud-org/owncloud/ but most of the strings used in the app are not currently visible on Transifex. This is because of disparity in the localization mechanisms used in the Music app and on ownCloud in general. This issue is followed at https://central.owncloud.org/t/owncloud-music-app-translations/14881 .
+
+#### SMB shares
+
+The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
 
 ## Development
 

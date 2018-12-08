@@ -568,20 +568,28 @@ class Scanner extends PublicEmitter {
 		$this->logger->log("Changing music collection path of user $userId from $oldPath to $newPath", 'info');
 
 		$userHome = $this->resolveUserFolder($userId);
-		$oldFolder = self::getFolderFromRelativePath($userHome, $oldPath);
-		$newFolder = self::getFolderFromRelativePath($userHome, $newPath);
 
-		if ($newFolder->getPath() === $oldFolder->getPath()) {
-			$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');
-		} elseif ($newFolder->isSubNode($oldFolder)) {
-			$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
-		} elseif ($oldFolder->isSubNode($newFolder)) {
-			$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
-			$this->removeFilesNotUnderMusicFolder($userId, $userHome);
-		} else {
-			$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
+		try {
+			$oldFolder = self::getFolderFromRelativePath($userHome, $oldPath);
+			$newFolder = self::getFolderFromRelativePath($userHome, $newPath);
+
+			if ($newFolder->getPath() === $oldFolder->getPath()) {
+				$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');
+			} elseif ($newFolder->isSubNode($oldFolder)) {
+				$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
+			} elseif ($oldFolder->isSubNode($newFolder)) {
+				$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
+				$this->removeFilesNotUnderMusicFolder($userId, $userHome);
+			} else {
+				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
+				$this->maintenance->resetDb($userId);
+			}
+		}
+		catch (\OCP\Files\NotFoundException $e) {
+			$this->logger->log('One of the paths was invalid, erasing the previous collection content', 'warn');
 			$this->maintenance->resetDb($userId);
 		}
+
 	}
 
 	/**

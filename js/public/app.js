@@ -867,7 +867,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		else if (appViewWidth <= 690) {
 			setMasterLayout(['tablet', 'portrait']);
 		}
-		else if (appViewWidth <= 1050) {
+		else if (appViewWidth <= 1024) {
 			setMasterLayout(['tablet']);
 		}
 		else {

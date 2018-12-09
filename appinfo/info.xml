@@ -21,7 +21,7 @@ Limitations: The library view does not scale well to huge music collections. The
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
 		<php min-version="5.6" max-version="7.2"/>
-		<owncloud min-version="8.2" max-version="10.1" />
+		<owncloud min-version="8.2" max-version="10" />
 		<nextcloud min-version="9" max-version="16" />
 	</dependencies>
 	<types>

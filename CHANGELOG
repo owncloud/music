@@ -1,3 +1,11 @@
+v0.9.3 2018-12-09
+ * replace deprecated call `getScrollbarWidth()` with `OC.Util.getScrollbarWidth()` (#667)
+ * update the getID3 library to version 1.9.16
+ * fix a bug on music library path changing when the previous library root is no longer present
+ * slightly tweak the width threshold between the "desktop" and "tablet" layouts
+ * declare support for Nextcloud 16
+ * declare support for ownCloud 10 (i.e. all 10.x versions instead of the former 10.1; oC is moving to semantic versioning)
+
 v0.9.2 2018-09-16
  * fix settings link not showing up on Firefox in mobile layout with NC14+
  * fix the controls bar position when collapsible navigation pane is open in mobile layout

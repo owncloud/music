@@ -15,13 +15,13 @@
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
-use OCP\AppFramework\Http;
+use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\Folder;
 use \OCP\IConfig;
 use \OCP\IRequest;
-use \OCP\Security\ISecureRandom;
 use \OCP\IURLGenerator;
+use \OCP\Security\ISecureRandom;
 
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;
@@ -111,6 +111,8 @@ class SettingController extends Controller {
 	}
 
 	private function getAppVersion() {
+		// Note: the following in deprecated since NC14 but the replacement
+		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
 		return \OCP\App::getAppVersion($this->appname);
 	}
 

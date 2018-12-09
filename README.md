@@ -159,7 +159,7 @@ There exist partial translations for the Music app for many languages, but all o
 
 #### SMB shares
 
-The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
+The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track names from the file names and the album names from the folder names. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
 
 ## Development
 
@@ -208,11 +208,7 @@ Behat acceptance tests
 	# add credentials for Ampache API to behat.yml
 	../vendor/bin/behat
 
-For the acceptance tests you need to upload all tracks of the following 3 artists:
-
-* https://www.jamendo.com/de/artist/435725/simon-bowman
-* https://www.jamendo.com/de/artist/351716/diablo-swing-orchestra
-* https://www.jamendo.com/de/artist/3573/pascalb-pascal-boiseau
+For the acceptance tests, you need to upload all the tracks from the following zip file: https://github.com/paulijar/music/files/2364060/testcontent.zip
 
 ### 3rdparty libs
 

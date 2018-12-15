@@ -6,27 +6,34 @@ php:
 env:
   global:
     - OC_PASS=ampache
-  matrix:
-    - DB=mysql;CLOUD=owncloud;CORE_BRANCH=stable10
-    - DB=pgsql;CLOUD=owncloud;CORE_BRANCH=stable10
-    - DB=mysql;CLOUD=nextcloud;CORE_BRANCH=master
-    - DB=pgsql;CLOUD=nextcloud;CORE_BRANCH=master
 
 matrix:
   include:
+    # ownCloud versions
+    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable8.2
+    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable9
+    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable9.1
+    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
+    - env: DB=pgsql CLOUD=owncloud CORE_BRANCH=stable10
+
+    # Nextcloud versions
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable11
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable12
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable13
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable14
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
+    - env: DB=pgsql CLOUD=nextcloud CORE_BRANCH=master
+    
+    # PHP versions
     - php: 5.6
       env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - php: 7.1
       env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - php: 7.2
       env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable8.2
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable9
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable9.1
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable11
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable12
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable13
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable14
+    - php: 7.3
+      env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
   fast_finish: true
 
 branches:

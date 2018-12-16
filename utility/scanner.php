@@ -109,7 +109,7 @@ class Scanner extends PublicEmitter {
 
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (Util::startsWith($mimetype, 'audio')) {
+		} elseif (Util::startsWith($mimetype, 'audio') && $mimetype!='audio/mpegurl') {
 			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
 	}
@@ -396,8 +396,11 @@ class Scanner extends PublicEmitter {
 		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
-
-		return $folder->searchByMime('audio');
+		$files = $folder->searchByMime('audio');
+		return array_filter($files,
+			function ($f) {
+				return $f->getMimeType()!=='audio/mpegurl';
+			});
 	}
 
 	private function getScannedFiles($userId) {

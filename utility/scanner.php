@@ -109,8 +109,10 @@ class Scanner extends PublicEmitter {
 
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (Util::startsWith($mimetype, 'audio') && $mimetype!='audio/mpegurl') {
-			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
+		} elseif (Util::startsWith($mimetype, 'audio')) {
+			if ($mimetype!='audio/mpegurl' && $mimetype!='audio/x-scpls') {
+				$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
+			}
 		}
 	}
 
@@ -399,7 +401,16 @@ class Scanner extends PublicEmitter {
 		$files = $folder->searchByMime('audio');
 		return array_filter($files,
 			function ($f) {
-				return $f->getMimeType()!=='audio/mpegurl';
+				switch ($f->getMimeType()) {
+					case 'audio/mpegurl':
+						return false;
+						break;
+					case 'audio/x-scpls':
+						return false;
+						break;
+					default:
+						return true;
+				}
 			});
 	}
 

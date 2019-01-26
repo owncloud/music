@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../templates/main.php:60
 msgid "+ New Playlist"
-msgstr "Новый список проигрывания"
+msgstr "Новый плейлист"
 
 #: ../templates/fake-template.php:7 ../templates/main.php:55
 msgid "Albums"

@@ -9,4 +9,4 @@ OC.L10N.register(
     "Previous" : "წინა",
     "Repeat" : "გამეორება"
 },
-"nplurals=1; plural=0;");
+"nplurals=2; plural=(n!=1);");

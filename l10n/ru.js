@@ -1,7 +1,7 @@
 OC.L10N.register(
     "music",
     {
-    "+ New Playlist" : "Новый список проигрывания",
+    "+ New Playlist" : "+ Новый плейлист",
     "Albums" : "Альбомы",
     "All tracks" : "Все дорожки",
     "Artists" : "Исполнители",

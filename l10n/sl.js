@@ -30,9 +30,11 @@ OC.L10N.register(
     "Tracks" : "Sledi",
     "Unknown album" : "Neznan album",
     "Unknown artist" : "Neznan izvajalec",
+    "Upload music in the files app to listen to it here" : "Pošljite glasbene datoteke v oblak za predvajanje",
     "Use this address to browse your music collection from any Ampache compatible player." : "Uporabite ta naslov za brskanje po zbirki glasbe preko kateregakoli predvajalnika, ki podpira sistem Ampache.",
     "Use your username and following password to connect to this Ampache instance:" : "Uporabite uporabniško ime in navedeno geslo za povezavo z Ampache:",
     "Volume" : "Glasnost",
+    "tracks" : "posnetki",
     "{{ scanningScanned }} of {{ scanningTotal }}" : "{{ scanningScanned }} od {{ scanningTotal }}"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

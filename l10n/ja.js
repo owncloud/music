@@ -34,6 +34,7 @@ OC.L10N.register(
     "Use this address to browse your music collection from any Ampache compatible player." : "あなたの音楽コレクションをAmpache対応プレイヤーから閲覧するには、このアドレスを使用してください。",
     "Use your username and following password to connect to this Ampache instance:" : "このAmpacheインスタンスに接続するには、あなたのユーザー名と以下のパスワードを使用してください:",
     "Volume" : "音量",
-    "tracks" : "トラック"
+    "tracks" : "トラック",
+    "{{ scanningScanned }} of {{ scanningTotal }}" : "{{ scanningTotal }} 中 {{ scanningScanned }}"
 },
 "nplurals=1; plural=0;");

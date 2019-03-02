@@ -7,15 +7,15 @@
  * later. See the COPYING file.
  *
  * @author Gregory Baudet <gregory.baudet@gmail.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
+ * @copyright Pauli Järvinen 2019
  */
 
 namespace OCA\Music\Migration;
 
 use OCP\IConfig;
-use OCP\ILogger;
 use OCP\IDBConnection;
-use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 
@@ -27,17 +27,13 @@ class PlaylistCleanup implements IRepairStep {
 	/** @var IConfig */
 	private $config;
 
-	/** @var TrackBusinessLayer */
-	private $tracker;
-
-	public function __construct(IDBConnection $connection, IConfig $config, TrackBusinessLayer $tracker) {
+	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;
 		$this->config = $config;
-		$this->tracker = $tracker;
 	}
 
 	public function getName() {
-		return 'Remove playlist files from music_tracks table';
+		return 'Remove any playlist files from music_tracks table';
 	}
 
 	/**
@@ -46,27 +42,22 @@ class PlaylistCleanup implements IRepairStep {
 	public function run(IOutput $output) {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
 
-		// Get version of the core
-		$coreVersion = \OCP\Util::getVersion();
-
-		if ($coreVersion[0] >= 13) {
+		// Music version 0.9.3 and older may have scanned playlist files as tracks,
+		// depending on the MIME type configuration of the cloud.
+		if (\version_compare($installedVersion, '0.9.4', '<')) {
 			$n = $this->removePlaylistFiles();
-			$output->info("$n files with audio/mpegurl or audio/x-scpls mime type removed from library");
+			$output->info("$n files with audio/mpegurl or audio/x-scpls mime type removed from the music library");
 			// Clean cache
-			$this->db->executeQuery("DELETE FROM `*PREFIX*music_cache`");
+			$this->db->executeUpdate("DELETE FROM `*PREFIX*music_cache`");
 		}
 	}
 
 	private function removePlaylistFiles() {
-		//find tracks with mime audio/mpegurl and audio/x-scpls
-		$sql = "SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `mimetype` = 'audio/mpegurl' OR `mimetype` = 'audio/x-scpls'";
-		$sth = $this->db->executeQuery($sql);
-		$file_ids = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
-		// remove corresponding tracks and albums/artists if not needed anymore
-		if (count($file_ids)) {
-			$result = $this->tracker->deleteTracks($file_ids);
-		}
-		return count($file_ids);
+		// Find and delete tracks with mime audio/mpegurl and audio/x-scpls.
+		// This may leave some stray albums and artists in the DB but that is not a major probelm
+		// since the background cleanup task should get rid of those, eventually.
+		$sql = "DELETE FROM `*PREFIX*music_tracks` WHERE `mimetype` = 'audio/mpegurl' OR `mimetype` = 'audio/x-scpls'";
+		return $this->db->executeUpdate($sql);
 	}
 
 }

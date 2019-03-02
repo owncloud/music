@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 namespace OCA\Music\Utility;
@@ -109,11 +111,13 @@ class Scanner extends PublicEmitter {
 
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
-		} elseif (Util::startsWith($mimetype, 'audio')) {
-			if ($mimetype!='audio/mpegurl' && $mimetype!='audio/x-scpls') {
-				$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
-			}
+		} elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
+			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
 		}
+	}
+
+	private static function isPlaylistMime($mime) {
+		return $mime == 'audio/mpegurl' || $mime == 'audio/x-scpls';
 	}
 
 	private function pathIsUnderMusicFolder($filePath, $userId, $userHome) {
@@ -387,7 +391,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * search for files by mimetype inside user specified library path
+	 * search for music files by mimetype inside user specified library path
 	 * (which defaults to user home dir)
 	 *
 	 * @return \OCP\Files\File[]
@@ -398,20 +402,12 @@ class Scanner extends PublicEmitter {
 		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
+
+		// Search files with mime 'audio/*' but filter out the playlist files
 		$files = $folder->searchByMime('audio');
-		return array_filter($files,
-			function ($f) {
-				switch ($f->getMimeType()) {
-					case 'audio/mpegurl':
-						return false;
-						break;
-					case 'audio/x-scpls':
-						return false;
-						break;
-					default:
-						return true;
-				}
-			});
+		return array_filter($files, function ($f) {
+			return !self::isPlaylistMime($f->getMimeType());
+		});
 	}
 
 	private function getScannedFiles($userId) {

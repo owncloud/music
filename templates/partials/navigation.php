@@ -33,5 +33,14 @@
 				{{ 'Settings' | translate }}
 			</a>
 		</li>
+		<li>
+			<svg style="width:1px;height:1px">
+				<defs>
+					<filter id="backgroundInvert">
+						<feColorMatrix in="SourceGraphic" type="matrix" values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0" />
+					</filter>
+				</defs>
+			</svg>
+		</li>
 	</ul>
 </div>

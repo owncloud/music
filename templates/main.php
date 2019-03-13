@@ -71,7 +71,8 @@
 			</div>
 
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
-				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
+				 class="svg clickable" src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/reload')) : p(OCP\Template::image_path('music', 'reload.svg')); ?>"
+				 ng-click="update()"
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 

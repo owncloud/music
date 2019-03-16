@@ -53,14 +53,14 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.setLoading(false);
 	});
 	onPlayerEvent('progress', function (currentTime) {
-		$scope.setTime(currentTime/1000, $scope.player.duration/1000);
+		$scope.setTime(currentTime/1000, $scope.position.total);
 	});
 	onPlayerEvent('end', function() {
 		$scope.setPlay(false);
 		$scope.next();
 	});
 	onPlayerEvent('duration', function(msecs) {
-		$scope.setTime($scope.position.current, $scope.player.duration/1000);
+		$scope.setTime($scope.position.current, msecs/1000);
 	});
 
 	var titleApp = $('title').html().trim();

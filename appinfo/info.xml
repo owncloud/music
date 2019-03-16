@@ -34,7 +34,7 @@ Limitations: The library view does not scale well to huge music collections. The
 			<step>OCA\Music\Migration\PreMigration</step>
 		</pre-migration>
 		<post-migration>
-			<step>OCA\Music\Migration\PlaylistCleanup</step>
+			<step>OCA\Music\Migration\BogusTrackRemoval</step>
 		</post-migration>
 	</repair-steps>
 </info>

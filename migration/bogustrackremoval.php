@@ -19,7 +19,7 @@ use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 
-class PlaylistCleanup implements IRepairStep {
+class BogusTrackRemoval implements IRepairStep {
 
 	/** @var IDBConnection */
 	private $db;
@@ -33,7 +33,7 @@ class PlaylistCleanup implements IRepairStep {
 	}
 
 	public function getName() {
-		return 'Remove any playlist files from music_tracks table';
+		return 'Remove any playlist files mistakenly added to music_tracks table';
 	}
 
 	/**

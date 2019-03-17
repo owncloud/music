@@ -1,12 +1,9 @@
-<?php $darkThemeEnabled = 'themedark' === \OC::$server->getConfig()->getUserValue(\OC::$server->getUserSession()->getUser()->getUID(), 'accessibility', 'theme'); ?>
 <div id="albums"  ng-show="!loading && !loadingCollection">
 	<div class="artist-area" id="artist-{{ ::artist.id }}" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
 		<h1>
 			<span ng-click="playArtist(artist)" ui-draggable="true" drag="getDraggable('artist', artist)">
 				<span>{{ ::artist.name }}</span>
-				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php $darkThemeEnabled ?
-					p(link_to('svg', 'music/play-big')) :
-					p(OCP\Template::image_path('music', 'play-big.svg')); ?>"/>
+				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>
 		<div class="album-area" id="album-{{ ::album.id }}" ng-repeat="album in artist.albums">
@@ -20,8 +17,7 @@
 			</h2>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				 src="<?php $darkThemeEnabled ?
-					 p(link_to('svg', 'music/play-big')) : p(OCP\Template::image_path('music', 'play-big.svg')); ?>" />
+				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 			<track-list
 					tracks="album.tracks"
 					get-track-data="getTrackData"

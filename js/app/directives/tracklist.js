@@ -129,6 +129,10 @@ function ($rootScope, $interpolate) {
 				var listItemContent = document.createElement('div');
 				var trackData = getTrackData(track, index, scope);
 				listItemContent.innerHTML = trackRenderer(trackData);
+				if($rootScope.darkTheme) {
+					$(listItemContent).find('.play-pause')
+						.css('filter', 'url("#backgroundInvert")');
+				}
 				listItemContent.setAttribute('draggable', true);
 				listItem.appendChild(listItemContent);
 

@@ -1,10 +1,8 @@
-<?php $darkThemeEnabled = 'themedark' === \OC::$server->getConfig()->getUserValue(\OC::$server->getUserSession()->getUser()->getUID(), 'accessibility', 'theme'); ?>
 <div class="playlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span>{{ playlist.name }}</span>
-			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php $darkThemeEnabled ?
-				p(link_to('svg', 'music/play-big')) : p(OCP\Template::image_path('music', 'play-big.svg')); ?>"/>
+			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 		</span>
 	</h1>
 	<ul class="track-list">

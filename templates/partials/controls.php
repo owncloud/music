@@ -1,14 +1,13 @@
-<?php $darkThemeEnabled = 'themedark' === \OC::$server->getConfig()->getUserValue(\OC::$server->getUserSession()->getUser()->getUID(), 'accessibility', 'theme'); ?>
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/play-previous')) : p(OCP\Template::image_path('music', 'play-previous.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'play-previous.svg')) ?>" />
 		<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/play-big')) : p(OCP\Template::image_path('music', 'play-big.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
 		<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/pause-big')) : p(OCP\Template::image_path('music', 'pause-big.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'pause-big.svg')) ?>" />
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/play-next')) : p(OCP\Template::image_path('music', 'play-next.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'play-next.svg')) ?>" />
 	</div>
 
 	<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
@@ -32,16 +31,14 @@
 	</div>
 
 	<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
-		src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/shuffle')) : p(OCP\Template::image_path('music', 'shuffle.svg')); ?>"
-		 ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
+		src="<?php p(OCP\Template::image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
-		src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/repeat')) : p(OCP\Template::image_path('music', 'repeat.svg')); ?>"
-		 ng-class="{active: repeat}" ng-click="toggleRepeat()" />
+		src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 	<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/sound')) : p(OCP\Template::image_path('music', 'sound.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'sound.svg')) ?>" />
 		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume == 0"
-			src="<?php $darkThemeEnabled ? p(link_to('svg', 'music/sound-off')) : p(OCP\Template::image_path('music', 'sound-off.svg')); ?>" />
+			src="<?php p(OCP\Template::image_path('music', 'sound-off.svg')) ?>" />
 		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 	</div>
 </div>

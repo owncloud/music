@@ -21,6 +21,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
+	$rootScope.darkTheme = (OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark');
 	$scope.currentTrack = null;
 	playlistService.subscribe('trackChanged', function(e, listEntry){
 		$scope.currentTrack = listEntry.track;
@@ -72,10 +73,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			$rootScope.loadingCollection = false;
 
 			// After data has loaded, invert icons in case the nextcloud dark theme is configured
-			if(OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark') {
+			if($rootScope.darkTheme) {
 				var navigation = $('#app-navigation');
-				navigation.find('.music-nav-settings a').css('filter', 'url("#backgroundInvert")');
-				navigation.find('.play-pause').css('filter', 'url("#backgroundInvert")');
+				navigation.find('.music-nav-settings a')
+					.css('filter', 'url("#backgroundInvert")');
+				navigation.find('.play-pause')
+					.css('filter', 'url("#backgroundInvert")');
+				$(document).find('.svg')
+					.css('filter', 'url("#backgroundInvert")');
 			}
 		},
 		function(response) { // error handling

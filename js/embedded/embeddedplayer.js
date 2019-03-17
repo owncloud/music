@@ -29,14 +29,6 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
-
-	function getIconSrc(icon) {
-		if(OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark') {
-			return OC.generateUrl('svg/music/'+icon);
-		} else {
-			return OC.imagePath('music', icon+".svg");
-		}
-	}
 	
 	function togglePlayback() {
 		// discard command while switching to new track is ongoing
@@ -64,7 +56,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $(document.createElement('img'))
 			.attr('id', 'play')
 			.attr('class', 'control svg')
-			.attr('src', getIconSrc('play-big'))
+			.attr('src', OC.imagePath('music', 'play-big'))
 			.attr('alt', t('music', 'Play'))
 			.css('display', 'inline-block')
 			.click(togglePlayback);
@@ -74,7 +66,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $(document.createElement('img'))
 			.attr('id', 'pause')
 			.attr('class', 'control svg')
-			.attr('src', getIconSrc('pause-big'))
+			.attr('src', OC.imagePath('music', 'pause-big'))
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(togglePlayback);
@@ -84,7 +76,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $(document.createElement('img'))
 			.attr('id', 'prev')
 			.attr('class', 'control svg small disabled')
-			.attr('src', getIconSrc('play-previous'))
+			.attr('src', OC.imagePath('music', 'play-previous'))
 			.attr('alt', t('music', 'Previous'))
 			.click(function() {
 				if (nextPrevEnabled && onPrev) {
@@ -97,7 +89,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $(document.createElement('img'))
 			.attr('id', 'next')
 			.attr('class', 'control svg small disabled')
-			.attr('src', getIconSrc('play-next'))
+			.attr('src', OC.imagePath('music', 'play-next'))
 			.attr('alt', t('music', 'Next'))
 			.click(function() {
 				if (nextPrevEnabled && onNext) {
@@ -208,7 +200,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		var volumeIcon = $(document.createElement('img'))
 			.attr('id', 'volume-icon')
 			.attr('class', 'control small svg')
-			.attr('src', getIconSrc('sound'));
+			.attr('src', OC.imagePath('music', 'sound'));
 
 		var volumeSlider = $(document.createElement('input'))
 			.attr('id', 'volume-slider')
@@ -232,7 +224,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		return $(document.createElement('img'))
 			.attr('id', 'close')
 			.attr('class', 'control small svg')
-			.attr('src', getIconSrc('close'))
+			.attr('src', OC.imagePath('music', 'close'))
 			.attr('alt', t('music', 'Close'))
 			.click(close);
 	}

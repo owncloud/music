@@ -29,8 +29,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
-
-
+	
 	function togglePlayback() {
 		// discard command while switching to new track is ongoing
 		if (!playDelayTimer) {

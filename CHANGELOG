@@ -1,3 +1,9 @@
+v0.9.4 2019-03-18
+ * support for PHP 7.3 (#687)
+ * minor fixes on some localizations (e.g. #679)
+ * fix playlist files being incorrectly listed as audio tracks (#674 by @greku)
+ * fix play controls being nigh invisible with the Nextcloud dark theme (#688 by @Faldon)
+
 v0.9.3 2018-12-09
  * replace deprecated call `getScrollbarWidth()` with `OC.Util.getScrollbarWidth()` (#667)
  * update the getID3 library to version 1.9.16

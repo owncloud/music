@@ -1,0 +1,4 @@
+.dark-theme .svg,
+.dark-theme .play-pause {
+	filter: invert(100%);
+}

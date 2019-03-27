@@ -16,9 +16,9 @@
 					placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
 			</div>
 			<div class="actions" ng-show="showCreateForm">
-				<button class="svg action icon-checkmark app-navigation-noclose"
+				<button class="action icon-checkmark app-navigation-noclose"
 					ng-class="{ disabled: newPlaylistName.length == 0}" ng-click="commitCreate()"></button>
-				<button class="svg action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
+				<button class="action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
 			</div>
 		</li>
 		<li navigation-item
@@ -30,17 +30,9 @@
 			title="{{ trackCountText(playlist) }}"></li>
 		<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
+				<img class="svg" src="<?php p(OCP\Template::image_path('music', 'settings.svg')) ?>">
 				{{ 'Settings' | translate }}
 			</a>
-		</li>
-		<li>
-			<svg style="width:1px;height:1px">
-				<defs>
-					<filter id="backgroundInvert">
-						<feColorMatrix in="SourceGraphic" type="matrix" values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0" />
-					</filter>
-				</defs>
-			</svg>
 		</li>
 	</ul>
 </div>

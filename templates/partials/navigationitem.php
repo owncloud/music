@@ -15,15 +15,15 @@
 			<input type="text" class="edit-list"
 				ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 		</div>
-		<button class="svg action icon-checkmark"
+		<button class="action icon-checkmark"
 			ng-class="{ disabled: playlist.name.length == 0 }" 
 			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
 	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
-		<button class="svg action icon-delete"
+		<button class="action icon-delete"
 			ng-click="$parent.$parent.remove(playlist)"
 			alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
-		<button class="svg action icon-rename"
+		<button class="action icon-rename"
 			ng-click="$parent.$parent.startEdit(playlist)"
 			alt="{{ 'Rename' | translate }}" title="{{ 'Rename' | translate }}"></button>
 	</div>

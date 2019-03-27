@@ -32,7 +32,7 @@
 	height: 66px;
 }
 
-#app-navigation .svg.action {
+#app-navigation button.action {
 	margin-right: 5px;
 	float: right;
 	width: 24px;
@@ -131,10 +131,10 @@
 	z-index: 140;
 }
 
-#app-navigation .music-nav-settings a {
-	padding-left: 44px !important;
-	background-size: 16px 16px;
-	background-position: 14px center;
-	background-repeat: no-repeat;
-	background-image: url('../../img/settings.svg');
+#app-navigation .music-nav-settings > a:first-child img {
+	vertical-align: text-top;
+	width: 16px;
+	height: 16px;
+	margin-right: 11px;
+	margin-top: 1.5px;
 }

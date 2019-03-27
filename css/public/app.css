@@ -401,6 +401,11 @@ body:not(.snapjs-left) #controls.taller-header {
 	cursor: pointer;
 }
 
+.dark-theme .svg,
+.dark-theme .play-pause {
+	filter: invert(100%);
+}
+
 #app-navigation {
 	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
 	z-index: 999;
@@ -423,7 +428,7 @@ body:not(.snapjs-left) #controls.taller-header {
 	height: 66px;
 }
 
-#app-navigation .svg.action {
+#app-navigation button.action {
 	margin-right: 5px;
 	float: right;
 	width: 24px;
@@ -522,12 +527,12 @@ body:not(.snapjs-left) #controls.taller-header {
 	z-index: 140;
 }
 
-#app-navigation .music-nav-settings a {
-	padding-left: 44px !important;
-	background-size: 16px 16px;
-	background-position: 14px center;
-	background-repeat: no-repeat;
-	background-image: url('../../img/settings.svg');
+#app-navigation .music-nav-settings > a:first-child img {
+	vertical-align: text-top;
+	width: 16px;
+	height: 16px;
+	margin-right: 11px;
+	margin-top: 1.5px;
 }
 
 .playlist-area {

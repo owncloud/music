@@ -88,10 +88,6 @@ angular.module('Music').controller('AllTracksViewController', [
 				$scope.tracks = libraryService.getTracksInAlphaOrder();
 				$timeout(function() {
 					$rootScope.loading = false;
-					if($rootScope.darkTheme) {
-						$('#alltracks-area').find('.svg')
-							.css('filter', 'url("#backgroundInvert")');
-					}
 				});
 				setUpAlphabetNavigation();
 			}

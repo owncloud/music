@@ -2,3 +2,28 @@
 .dark-theme .play-pause {
 	filter: invert(100%);
 }
+
+.dark-theme #app-sidebar .close {
+	background-color: #181818cc;
+}
+
+.dark-theme #app-sidebar #follow-playback {
+	background-color: transparent;
+}
+
+.dark-theme #emptycontent,
+.dark-theme .emptycontent {
+	background-color: rgba(24, 24, 24, 0.97);
+}
+
+.dark-theme #toScan:hover * {
+	color: #eeeeee;
+}
+
+.dark-theme .highlight {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-theme #app-navigation li.drag-hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}

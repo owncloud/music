@@ -21,7 +21,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Add dark-theme class to the #app element if Nextcloud dark theme detected.
 	// Css can then diffentiate the style of the contained elments where necessary.
-	if (OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark') {
+	if (OC_Music_Utils.darkThemeActive()) {
 		$('#app').addClass('dark-theme');
 	}
 

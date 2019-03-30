@@ -18,6 +18,13 @@ var OC_Music_Utils = {
 	newLayoutStructure: function() {
 		// Detect the new structure from the presence of the #content-wrapper element.
 		return $('#content-wrapper').length === 0;
-	}
+	},
 
+	/**
+	 * Newer versions of Nextcloud come with a "dark theme" which may be activated
+	 * from the accessibility settings. Test if the theme is active.
+	 */
+	darkThemeActive: function() {
+		return OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark';
+	}
 };

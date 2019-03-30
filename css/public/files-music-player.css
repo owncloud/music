@@ -261,4 +261,16 @@
 body.snapjs-left #music-controls {
 	visibility: hidden;
 }
-	
+
+/* Adjustments for the Nextcloud dark theme */
+#music-controls.dark-theme {
+	background-color: rgba(24, 24, 24, 0.95);
+}
+
+#music-controls.dark-theme #albumart {
+	border-color: rgb(64, 64, 64);
+}
+
+#music-controls.dark-theme .svg {
+	filter: invert(100%);
+}

@@ -9,7 +9,7 @@
  */
 
 $(document).ready(function() {
-	// Nextcloud 13 has a built-in Music player in its "individual shared music file" page.
+	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
 	if ($('audio').length === 0) {
 		initEmbeddedPlayer();

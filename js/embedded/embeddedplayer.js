@@ -247,6 +247,10 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
+		if (OC_Music_Utils.darkThemeActive()) {
+			musicControls.addClass('dark-theme');
+		}
+
 		var parentContainer = $('div#app-content');
 		var isSharePage = (parentContainer.length === 0);
 		if (isSharePage) {

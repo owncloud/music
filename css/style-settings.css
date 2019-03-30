@@ -97,11 +97,8 @@
 }
 
 #music-user .warning {
-	background-color: rgba(233, 50, 45, .15);
-}
-
-#music-user .warning a {
-	color: rgb(0, 0, 0) !important;
+	color: rgb(255, 255, 255);
+	background-color: rgb(236, 167, 0);
 }
 
 #music-password-info dl {

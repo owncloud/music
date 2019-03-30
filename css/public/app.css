@@ -430,6 +430,7 @@ body:not(.snapjs-left) #controls.taller-header {
 .dark-theme #app-navigation li.drag-hover {
 	background-color: rgba(255, 255, 255, 0.1);
 }
+
 #app-navigation {
 	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
 	z-index: 999;
@@ -733,11 +734,8 @@ body:not(.snapjs-left) #controls.taller-header {
 }
 
 #music-user .warning {
-	background-color: rgba(233, 50, 45, .15);
-}
-
-#music-user .warning a {
-	color: rgb(0, 0, 0) !important;
+	color: rgb(255, 255, 255);
+	background-color: rgb(236, 167, 0);
 }
 
 #music-password-info dl {

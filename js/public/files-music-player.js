@@ -408,48 +408,6 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 }
 
 
-function Playlist() {
-
-	var mFiles = null;
-	var mCurrentIndex = null;
-
-	function jumpToOffset(offset) {
-		if (!mFiles || mFiles.length <= 1) {
-			return null;
-		} else {
-			mCurrentIndex = (mCurrentIndex + mFiles.length + offset) % mFiles.length;
-			return mFiles[mCurrentIndex];
-		}
-	}
-
-	this.init = function(folderFiles, supportedMimes, firstFileId) {
-		mFiles = _.filter(folderFiles, function(file) {
-			return _.contains(supportedMimes, file.mimetype);
-		});
-		mCurrentIndex = _.findIndex(mFiles, function(file) {
-			// types int/string depend on the cloud version, don't use ===
-			return file.id == firstFileId; 
-		});
-	};
-
-	this.next = function() {
-		return jumpToOffset(+1);
-	};
-
-	this.prev = function() {
-		return jumpToOffset(-1);
-	};
-
-	this.reset = function() {
-		mFiles = null;
-		mCurrentIndex = null;
-	};
-
-	this.length = function() {
-		return mFiles ? mFiles.length : 0;
-	};
-
-}
 $(document).ready(function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
@@ -636,6 +594,48 @@ function initEmbeddedPlayer() {
 
 }
 
+function Playlist() {
+
+	var mFiles = null;
+	var mCurrentIndex = null;
+
+	function jumpToOffset(offset) {
+		if (!mFiles || mFiles.length <= 1) {
+			return null;
+		} else {
+			mCurrentIndex = (mCurrentIndex + mFiles.length + offset) % mFiles.length;
+			return mFiles[mCurrentIndex];
+		}
+	}
+
+	this.init = function(folderFiles, supportedMimes, firstFileId) {
+		mFiles = _.filter(folderFiles, function(file) {
+			return _.contains(supportedMimes, file.mimetype);
+		});
+		mCurrentIndex = _.findIndex(mFiles, function(file) {
+			// types int/string depend on the cloud version, don't use ===
+			return file.id == firstFileId; 
+		});
+	};
+
+	this.next = function() {
+		return jumpToOffset(+1);
+	};
+
+	this.prev = function() {
+		return jumpToOffset(-1);
+	};
+
+	this.reset = function() {
+		mFiles = null;
+		mCurrentIndex = null;
+	};
+
+	this.length = function() {
+		return mFiles ? mFiles.length : 0;
+	};
+
+}
 function PlayerWrapper() {
 	var m_underlyingPlayer = 'aurora';
 	var m_aurora = {};

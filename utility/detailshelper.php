@@ -37,9 +37,16 @@ class DetailsHelper {
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
 
+			// remove intermediate arrays
+			$data['comments'] = self::flattenComments($data['comments']);
+
+			// cleanup strings from invalid characters
+			array_walk($data['audio'], [self, 'sanitizeString']);
+			array_walk($data['comments'], [self, 'sanitizeString']);
+
 			$result = [
 				'fileinfo' => $data['audio'],
-				'tags' => self::flattenComments($data['comments'])
+				'tags' => $data['comments']
 			];
 
 			// binary data has to be encoded
@@ -80,6 +87,16 @@ class DetailsHelper {
 			return 'data:' . $pic['image_mime'] . ';base64,' . \base64_encode($pic['data']);
 		} else {
 			return null;
+		}
+	}
+
+	/**
+	 * Remove potentially invalid characters from the string.
+	 * @param $item
+	 */
+	private static function sanitizeString(&$item){
+		if(is_string($item)) {
+			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
 		}
 	}
 

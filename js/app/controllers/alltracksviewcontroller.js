@@ -100,6 +100,9 @@ angular.module('Music').controller('AllTracksViewController', [
 			for (var i = 0; i < $scope.tracks.length; ++i) {
 				var track = $scope.tracks[i].track;
 				var letter = track.artistName.substr(0,1).toUpperCase();
+				if (prevLetter==='' && letter!='A') {
+					letter = '#';
+				}
 				if (letter != prevLetter) {
 					prevLetter = letter;
 					$scope.alphabetNavigationTargets[letter] = 'track-' + track.id;

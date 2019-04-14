@@ -200,6 +200,9 @@ angular.module('Music').controller('AlbumsViewController', [
 
 			for (var i = 0; i < $scope.artists.length; ++i) {
 				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
+				if (prevLetter==='' && letter!='A') {
+					letter = '#';
+				}
 				if (letter != prevLetter) {
 					prevLetter = letter;
 					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;

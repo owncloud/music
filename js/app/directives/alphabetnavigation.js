@@ -24,7 +24,7 @@ function($rootScope, $timeout) {
 		link: function(scope, element, attrs, ctrl) {
 
 			scope.letters = [
-				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 				'U', 'V', 'W', 'X', 'Y', 'Z'
 			];
@@ -45,9 +45,9 @@ function($rootScope, $timeout) {
 				}
 
 				if (height < 300) {
-					element.css('line-height', Math.floor(height/13) + 'px');
+					element.css('line-height', Math.floor(height/Math.ceil(scope.letters.length/2.0)) + 'px');
 				} else {
-					element.css('line-height', Math.floor(height/26) + 'px');
+					element.css('line-height', Math.floor(height/scope.letters.length) + 'px');
 				}
 
 				// anchor the alphabet navigation to the right edge of the app view

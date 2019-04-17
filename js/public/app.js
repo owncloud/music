@@ -2071,25 +2071,32 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksInAlphaOrder = null;
 	var playlists = null;
 
-	function sortCaseInsensitive(items, field) {
-		return _.sortBy(items, function(i) { return i[field].toLowerCase(); });
+	/** 
+	 * Sort array according to a specified text field.
+	 * Note:  The exact ordering is browser-dependant and usually affected by the browser language.
+	 * Note2: The array is sorted in-place instead of returning a new array.
+	 */
+	function sortByTextField(items, field) {
+		items.sort(function(a, b) {
+			return a[field].localeCompare(b[field]);
+		});
 	}
 
 	function sortByYearNameAndDisc(aAlbums) {
 		aAlbums = _.sortBy(aAlbums, 'disk');
-		aAlbums = sortCaseInsensitive(aAlbums, 'name');
+		sortByTextField(aAlbums, 'name');
 		aAlbums = _.sortBy(aAlbums, 'year');
 		return aAlbums;
 	}
 
 	function sortByNumberAndTitle(tracks) {
-		tracks = sortCaseInsensitive(tracks, 'title');
+		sortByTextField(tracks, 'title');
 		tracks = _.sortBy(tracks, 'number');
 		return tracks;
 	}
 
 	function sortCollection(collection) {
-		collection = sortCaseInsensitive(collection, 'name');
+		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
 			artist.albums = sortByYearNameAndDisc(artist.albums);
 			_.forEach(artist.albums, function(album) {
@@ -2125,8 +2132,8 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
 
 		// alphabetic order "playlist"
-		tracks = sortCaseInsensitive(tracks, 'title');
-		tracks = sortCaseInsensitive(tracks, 'artistName');
+		sortByTextField(tracks, 'title');
+		sortByTextField(tracks, 'artistName');
 		tracksInAlphaOrder = _.map(tracks, playlistEntry);
 
 		// tracks index

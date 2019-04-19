@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018, 2019
  */
 
 
@@ -63,6 +63,16 @@ angular.module('Music').controller('AllTracksViewController', [
 			};
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getTrackArtistName = function(index) {
+			return $scope.tracks[index].track.artistName;
+		};
+		$scope.getTrackElementId = function(index) {
+			return 'track-' + $scope.tracks[index].track.id;
+		};
+
 		$scope.getDraggable = function(trackId) {
 			return { track: libraryService.getTrack(trackId) };
 		};
@@ -89,24 +99,6 @@ angular.module('Music').controller('AllTracksViewController', [
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
-				setUpAlphabetNavigation();
-			}
-		}
-
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.tracks.length; ++i) {
-				var track = $scope.tracks[i].track;
-				var letter = track.artistName.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'track-' + track.id;
-				}
 			}
 		}
 

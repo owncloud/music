@@ -163,6 +163,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getArtistName = function(index) {
+			return $scope.artists[index].name;
+		};
+		$scope.getArtistElementId = function(index) {
+			return 'artist-' + $scope.artists[index].id;
+		};
+
 		$scope.getDraggable = function(type, draggedElement) {
 			var draggable = {};
 			draggable[type] = draggedElement;
@@ -246,22 +256,6 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.artists.length; ++i) {
-				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;
-				}
-			}
-		}
-
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -310,7 +304,6 @@ angular.module('Music').controller('AlbumsViewController', [
 					} else {
 						$rootScope.loading = false;
 					}
-					setUpAlphabetNavigation();
 					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}
@@ -403,6 +396,16 @@ angular.module('Music').controller('AllTracksViewController', [
 			};
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getTrackArtistName = function(index) {
+			return $scope.tracks[index].track.artistName;
+		};
+		$scope.getTrackElementId = function(index) {
+			return 'track-' + $scope.tracks[index].track.id;
+		};
+
 		$scope.getDraggable = function(trackId) {
 			return { track: libraryService.getTrack(trackId) };
 		};
@@ -429,24 +432,6 @@ angular.module('Music').controller('AllTracksViewController', [
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
-				setUpAlphabetNavigation();
-			}
-		}
-
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.tracks.length; ++i) {
-				var track = $scope.tracks[i].track;
-				var letter = track.artistName.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'track-' + track.id;
-				}
 			}
 		}
 
@@ -1726,7 +1711,9 @@ function($rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
-			targets: '<',
+			itemCount: '<',
+			getElemTitle: '<',
+			getElemId: '<',
 			scrollToTarget: '<'
 		},
 		templateUrl: 'alphabetnavigation.html',
@@ -1734,13 +1721,56 @@ function($rootScope, $timeout) {
 		link: function(scope, element, attrs, ctrl) {
 
 			scope.letters = [
-				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-				'U', 'V', 'W', 'X', 'Y', 'Z'
+				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+				'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '…'
 			];
+			scope.targets = {};
+
+			function isVariantOfZ(char) {
+				return ('Zz\u017A\u017B\u017C\u017D\u017E\u01B5\u01B6\u0224\u0225\u0240\u1E90\u1E91\u1E92'
+					+ '\u1E93\u1E94\u1E95\u24CF\u24E9\u2C6B\u2C6C\uA762\uA763\uFF3A\uFF5A').indexOf(char) >= 0;
+			}
+
+			function itemPrecedesLetter(itemIdx, letterIdx) {
+				var initialChar = scope.getElemTitle(itemIdx).substr(0,1).toUpperCase();
+
+				// Special case: '…' is considered to be larger than Z or any of its variants
+				// but equal to any other character greater than Z
+				if (scope.letters[letterIdx] === '…') {
+					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, letterIdx-1);
+				} else {
+					return initialChar.localeCompare(scope.letters[letterIdx]) < 0;
+				}
+			}
+
+			function setUpTargets() {
+				for (var letterIdx = 0, itemIdx = 0;
+					letterIdx < scope.letters.length && itemIdx < scope.itemCount;
+					++letterIdx)
+				{
+					var alphabet = scope.letters[letterIdx];
+
+					if (letterIdx === scope.letters.length - 1) {
+						// Last link '…' reached while there are items left, the remaining items go under this link
+						scope.targets[alphabet] = scope.getElemId(itemIdx);
+					}
+					else if (itemPrecedesLetter(itemIdx, letterIdx + 1)) {
+						// Item is smaller than the next alphabet, i.e.
+						// alphabet <= item < nextAlphabet, link the item to this alphabet
+						scope.targets[alphabet] = scope.getElemId(itemIdx);
+
+						// Skip the rest of the items belonging to the same alphabet
+						do {
+							++itemIdx;
+						} while (itemIdx < scope.itemCount
+								&& itemPrecedesLetter(itemIdx, letterIdx + 1));
+					}
+				}
+			}
+			setUpTargets();
 
 			function onResize(event, appView) {
-				// top and button padding of 5px each
+				// top and bottom padding of 5px each
 				var height = appView.height() - 10;
 
 				element.css('height', height);
@@ -1773,10 +1803,12 @@ function($rootScope, $timeout) {
 				});
 			}
 
-			// trigger resize on #app-view resize and player status changes
+			// Trigger resize on #app-view resize and player status changes.
+			// Trigger re-evaluation of available scroll targets when collection reloaded.
 			var unsubscribeFuncs = [
 				$rootScope.$on('resize', onResize),
-				$rootScope.$watch('started', onPlayerBarShownOrHidden)
+				$rootScope.$watch('started', onPlayerBarShownOrHidden),
+				$rootScope.$on('artistsLoaded', setUpTargets)
 			];
 
 			// unsubscribe listeners when the scope is destroyed
@@ -2071,25 +2103,32 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksInAlphaOrder = null;
 	var playlists = null;
 
-	function sortCaseInsensitive(items, field) {
-		return _.sortBy(items, function(i) { return i[field].toLowerCase(); });
+	/** 
+	 * Sort array according to a specified text field.
+	 * Note:  The exact ordering is browser-dependant and usually affected by the browser language.
+	 * Note2: The array is sorted in-place instead of returning a new array.
+	 */
+	function sortByTextField(items, field) {
+		items.sort(function(a, b) {
+			return a[field].localeCompare(b[field]);
+		});
 	}
 
 	function sortByYearNameAndDisc(aAlbums) {
 		aAlbums = _.sortBy(aAlbums, 'disk');
-		aAlbums = sortCaseInsensitive(aAlbums, 'name');
+		sortByTextField(aAlbums, 'name');
 		aAlbums = _.sortBy(aAlbums, 'year');
 		return aAlbums;
 	}
 
 	function sortByNumberAndTitle(tracks) {
-		tracks = sortCaseInsensitive(tracks, 'title');
+		sortByTextField(tracks, 'title');
 		tracks = _.sortBy(tracks, 'number');
 		return tracks;
 	}
 
 	function sortCollection(collection) {
-		collection = sortCaseInsensitive(collection, 'name');
+		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
 			artist.albums = sortByYearNameAndDisc(artist.albums);
 			_.forEach(artist.albums, function(album) {
@@ -2125,8 +2164,8 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
 
 		// alphabetic order "playlist"
-		tracks = sortCaseInsensitive(tracks, 'title');
-		tracks = sortCaseInsensitive(tracks, 'artistName');
+		sortByTextField(tracks, 'title');
+		sortByTextField(tracks, 'artistName');
 		tracksInAlphaOrder = _.map(tracks, playlistEntry);
 
 		// tracks index

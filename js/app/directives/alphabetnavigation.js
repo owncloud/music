@@ -26,23 +26,42 @@ function($rootScope, $timeout) {
 		link: function(scope, element, attrs, ctrl) {
 
 			scope.letters = [
-				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-				'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+				'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '…'
 			];
 			scope.targets = {};
 
-			function setUpTargets() {
-				var prevLetter = '';
+			function isVariantOfZ(char) {
+				return ('Zz\u017A\u017B\u017C\u017D\u017E\u01B5\u01B6\u0224\u0225\u0240\u1E90\u1E91\u1E92'
+					+ '\u1E93\u1E94\u1E95\u24CF\u24E9\u2C6B\u2C6C\uA762\uA763\uFF3A\uFF5A').indexOf(char) >= 0;
+			}
 
-				for (var i = 0; i < scope.itemCount; ++i) {
-					var letter = scope.getElemTitle(i).substr(0,1).toUpperCase();
-					if (prevLetter==='' && letter!='A') {
-						letter = '#';
-					}
-					if (letter != prevLetter) {
-						prevLetter = letter;
-						scope.targets[letter] = scope.getElemId(i);
+			function itemPrecedesLetter(itemIdx, letterIdx) {
+				var initialChar = scope.getElemTitle(itemIdx).substr(0,1).toUpperCase();
+
+				// Special case: '…' is considered to be larger than Z or any of its variants
+				// but equal to any other character greater than Z
+				if (letterIdx === scope.letters.length-1) {
+					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, letterIdx-1);
+				} else {
+					return initialChar.localeCompare(scope.letters[letterIdx]) < 0;
+				}
+			}
+
+			function setUpTargets() {
+				for (var letterIdx = 0, itemIdx = 0;
+					letterIdx < scope.letters.length && itemIdx < scope.itemCount;
+					++letterIdx)
+				{
+					if (letterIdx === scope.letters.length - 1
+						|| itemPrecedesLetter(itemIdx, letterIdx + 1))
+					{
+						scope.targets[scope.letters[letterIdx]] = scope.getElemId(itemIdx);
+
+						do {
+							++itemIdx;
+						} while (itemIdx < scope.itemCount
+								&& itemPrecedesLetter(itemIdx, letterIdx + 1));
 					}
 				}
 			}

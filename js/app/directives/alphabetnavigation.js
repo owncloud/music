@@ -41,7 +41,7 @@ function($rootScope, $timeout) {
 
 				// Special case: '…' is considered to be larger than Z or any of its variants
 				// but equal to any other character greater than Z
-				if (letterIdx === scope.letters.length-1) {
+				if (scope.letters[letterIdx] === '…') {
 					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, letterIdx-1);
 				} else {
 					return initialChar.localeCompare(scope.letters[letterIdx]) < 0;
@@ -53,11 +53,18 @@ function($rootScope, $timeout) {
 					letterIdx < scope.letters.length && itemIdx < scope.itemCount;
 					++letterIdx)
 				{
-					if (letterIdx === scope.letters.length - 1
-						|| itemPrecedesLetter(itemIdx, letterIdx + 1))
-					{
-						scope.targets[scope.letters[letterIdx]] = scope.getElemId(itemIdx);
+					var alphabet = scope.letters[letterIdx];
 
+					if (letterIdx === scope.letters.length - 1) {
+						// Last link '…' reached while there are items left, the remaining items go under this link
+						scope.targets[alphabet] = scope.getElemId(itemIdx);
+					}
+					else if (itemPrecedesLetter(itemIdx, letterIdx + 1)) {
+						// Item is smaller than the next alphabet, i.e.
+						// alphabet <= item < nextAlphabet, link the item to this alphabet
+						scope.targets[alphabet] = scope.getElemId(itemIdx);
+
+						// Skip the rest of the items belonging to the same alphabet
 						do {
 							++itemIdx;
 						} while (itemIdx < scope.itemCount

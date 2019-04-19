@@ -101,10 +101,12 @@ function($rootScope, $timeout) {
 				});
 			}
 
-			// trigger resize on #app-view resize and player status changes
+			// Trigger resize on #app-view resize and player status changes.
+			// Trigger re-evaluation of available scroll targets when collection reloaded.
 			var unsubscribeFuncs = [
 				$rootScope.$on('resize', onResize),
-				$rootScope.$watch('started', onPlayerBarShownOrHidden)
+				$rootScope.$watch('started', onPlayerBarShownOrHidden),
+				$rootScope.$on('artistsLoaded', setUpTargets)
 			];
 
 			// unsubscribe listeners when the scope is destroyed

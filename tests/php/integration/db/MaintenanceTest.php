@@ -19,6 +19,8 @@ class MaintenanceTest extends \PHPUnit_Framework_TestCase {
 	/** @var Connection */
 	private $db;
 
+	private $logger;
+
 	protected function setUp() {
 		/** @var Connection db */
 		$this->db = \OC::$server->getDatabaseConnection();

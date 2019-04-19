@@ -14,6 +14,7 @@
 		details-text="'Details' | translate">
 	</track-list>
 
-	<alphabet-navigation targets="alphabetNavigationTargets" scroll-to-target="scrollToItem" ng-if="tracks">
+	<alphabet-navigation ng-if="tracks" item-count="tracks.length"
+		get-elem-title="getTrackArtistName" get-elem-id="getTrackElementId" scroll-to-target="scrollToItem">
 	</alphabet-navigation>
 </div>

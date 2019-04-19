@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -111,6 +111,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getArtistName = function(index) {
+			return $scope.artists[index].name;
+		};
+		$scope.getArtistElementId = function(index) {
+			return 'artist-' + $scope.artists[index].id;
+		};
+
 		$scope.getDraggable = function(type, draggedElement) {
 			var draggable = {};
 			draggable[type] = draggedElement;
@@ -194,22 +204,6 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.artists.length; ++i) {
-				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;
-				}
-			}
-		}
-
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -258,7 +252,6 @@ angular.module('Music').controller('AlbumsViewController', [
 					} else {
 						$rootScope.loading = false;
 					}
-					setUpAlphabetNavigation();
 					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017, 2018 Pauli Järvinen
+ * @copyright 2017 - 2019 Pauli Järvinen
  *
  */
 

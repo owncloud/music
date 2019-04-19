@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2018 Pauli Järvinen
+ * @copyright 2018, 2019 Pauli Järvinen
  *
  */
 
@@ -16,7 +16,9 @@ function($rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
-			targets: '<',
+			itemCount: '<',
+			getElemTitle: '<',
+			getElemId: '<',
 			scrollToTarget: '<'
 		},
 		templateUrl: 'alphabetnavigation.html',
@@ -24,13 +26,30 @@ function($rootScope, $timeout) {
 		link: function(scope, element, attrs, ctrl) {
 
 			scope.letters = [
-				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-				'U', 'V', 'W', 'X', 'Y', 'Z'
+				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+				'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 			];
+			scope.targets = {};
+
+			function setUpTargets() {
+				var prevLetter = '';
+
+				for (var i = 0; i < scope.itemCount; ++i) {
+					var letter = scope.getElemTitle(i).substr(0,1).toUpperCase();
+					if (prevLetter==='' && letter!='A') {
+						letter = '#';
+					}
+					if (letter != prevLetter) {
+						prevLetter = letter;
+						scope.targets[letter] = scope.getElemId(i);
+					}
+				}
+			}
+			setUpTargets();
 
 			function onResize(event, appView) {
-				// top and button padding of 5px each
+				// top and bottom padding of 5px each
 				var height = appView.height() - 10;
 
 				element.css('height', height);

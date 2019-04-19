@@ -163,6 +163,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getArtistName = function(index) {
+			return $scope.artists[index].name;
+		};
+		$scope.getArtistElementId = function(index) {
+			return 'artist-' + $scope.artists[index].id;
+		};
+
 		$scope.getDraggable = function(type, draggedElement) {
 			var draggable = {};
 			draggable[type] = draggedElement;
@@ -246,22 +256,6 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.artists.length; ++i) {
-				var letter = $scope.artists[i].name.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'artist-' + $scope.artists[i].id;
-				}
-			}
-		}
-
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
@@ -310,7 +304,6 @@ angular.module('Music').controller('AlbumsViewController', [
 					} else {
 						$rootScope.loading = false;
 					}
-					setUpAlphabetNavigation();
 					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}
@@ -403,6 +396,16 @@ angular.module('Music').controller('AllTracksViewController', [
 			};
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getTrackArtistName = function(index) {
+			return $scope.tracks[index].track.artistName;
+		};
+		$scope.getTrackElementId = function(index) {
+			return 'track-' + $scope.tracks[index].track.id;
+		};
+
 		$scope.getDraggable = function(trackId) {
 			return { track: libraryService.getTrack(trackId) };
 		};
@@ -429,24 +432,6 @@ angular.module('Music').controller('AllTracksViewController', [
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
-				setUpAlphabetNavigation();
-			}
-		}
-
-		function setUpAlphabetNavigation() {
-			$scope.alphabetNavigationTargets = {};
-			var prevLetter = '';
-
-			for (var i = 0; i < $scope.tracks.length; ++i) {
-				var track = $scope.tracks[i].track;
-				var letter = track.artistName.substr(0,1).toUpperCase();
-				if (prevLetter==='' && letter!='A') {
-					letter = '#';
-				}
-				if (letter != prevLetter) {
-					prevLetter = letter;
-					$scope.alphabetNavigationTargets[letter] = 'track-' + track.id;
-				}
 			}
 		}
 
@@ -1726,7 +1711,9 @@ function($rootScope, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
-			targets: '<',
+			itemCount: '<',
+			getElemTitle: '<',
+			getElemId: '<',
 			scrollToTarget: '<'
 		},
 		templateUrl: 'alphabetnavigation.html',
@@ -1734,13 +1721,30 @@ function($rootScope, $timeout) {
 		link: function(scope, element, attrs, ctrl) {
 
 			scope.letters = [
-				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-				'U', 'V', 'W', 'X', 'Y', 'Z'
+				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+				'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 			];
+			scope.targets = {};
+
+			function setUpTargets() {
+				var prevLetter = '';
+
+				for (var i = 0; i < scope.itemCount; ++i) {
+					var letter = scope.getElemTitle(i).substr(0,1).toUpperCase();
+					if (prevLetter==='' && letter!='A') {
+						letter = '#';
+					}
+					if (letter != prevLetter) {
+						prevLetter = letter;
+						scope.targets[letter] = scope.getElemId(i);
+					}
+				}
+			}
+			setUpTargets();
 
 			function onResize(event, appView) {
-				// top and button padding of 5px each
+				// top and bottom padding of 5px each
 				var height = appView.height() - 10;
 
 				element.css('height', height);

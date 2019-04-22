@@ -9,6 +9,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
+	var playTime_s = 0;
 
 	// UI elements (jQuery)
 	var musicControls = null;
@@ -69,8 +70,18 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 			.attr('src', OC.imagePath('music', 'play-previous'))
 			.attr('alt', t('music', 'Previous'))
 			.click(function() {
-				if (nextPrevEnabled && onPrev) {
+				// Jump to the beginning of the current track if it has already played more than 2 secs
+				if (playTime_s > 2.0 && player.seekingSupported()) {
+					player.seek(0);
+				}
+				// Jump to the previous track if the current track has played only 2 secs or less
+				else if (nextPrevEnabled && onPrev) {
 					onPrev();
+				}
+				// Jump to the beginning of the current track even if the track has played less than 2 secs
+				// but there's no previous track to jump to
+				else if (player.seekingSupported()) {
+					player.seek(0);
 				}
 			});
 	}
@@ -108,7 +119,6 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		container.append(seekBar);
 
 		// Progress updating
-		var playTime_s = 0;
 		var songLength_s = 0;
 
 		function formatTime(seconds) {
@@ -399,9 +409,13 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		nextPrevEnabled = enabled;
 		if (enabled) {
 			nextButton.removeClass('disabled');
-			prevButton.removeClass('disabled');
 		} else {
 			nextButton.addClass('disabled');
+		}
+
+		if (enabled || player.seekingSupported()) {
+			prevButton.removeClass('disabled');
+		} else {
 			prevButton.addClass('disabled');
 		}
 	};

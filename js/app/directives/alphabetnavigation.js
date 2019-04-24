@@ -25,10 +25,15 @@ function($rootScope, $timeout) {
 		replace: true,
 		link: function(scope, element, attrs, ctrl) {
 
-			scope.letters = [
+			var lettersIndividual = [
 				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
 				'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '…'
 			];
+			var lettersGrouped = [
+				'#', 'A-B', 'C-D', 'E-F', 'G-H', 'I-J', 'K-L', 'M-N',
+				'O-P', 'Q-R', 'S-T', 'U-V', 'W-X', 'Y-Z', '…'
+			];
+			scope.letters = lettersIndividual;
 			scope.targets = {};
 
 			function isVariantOfZ(char) {
@@ -41,21 +46,21 @@ function($rootScope, $timeout) {
 
 				// Special case: '…' is considered to be larger than Z or any of its variants
 				// but equal to any other character greater than Z
-				if (scope.letters[letterIdx] === '…') {
+				if (lettersIndividual[letterIdx] === '…') {
 					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, letterIdx-1);
 				} else {
-					return initialChar.localeCompare(scope.letters[letterIdx]) < 0;
+					return initialChar.localeCompare(lettersIndividual[letterIdx]) < 0;
 				}
 			}
 
 			function setUpTargets() {
 				for (var letterIdx = 0, itemIdx = 0;
-					letterIdx < scope.letters.length && itemIdx < scope.itemCount;
+					letterIdx < lettersIndividual.length && itemIdx < scope.itemCount;
 					++letterIdx)
 				{
-					var alphabet = scope.letters[letterIdx];
+					var alphabet = lettersIndividual[letterIdx];
 
-					if (letterIdx === scope.letters.length - 1) {
+					if (letterIdx === lettersIndividual.length - 1) {
 						// Last link '…' reached while there are items left, the remaining items go under this link
 						scope.targets[alphabet] = scope.getElemId(itemIdx);
 					}
@@ -71,6 +76,22 @@ function($rootScope, $timeout) {
 								&& itemPrecedesLetter(itemIdx, letterIdx + 1));
 					}
 				}
+				for (letterIdx = 1;
+					letterIdx < lettersIndividual.length - 1;
+					letterIdx += 2) {
+
+					var letterGroupedIdx = Math.trunc((letterIdx-1)/2)+1;
+					var group = lettersGrouped[letterGroupedIdx];
+					var firstLetter = lettersIndividual[letterIdx];
+					var secondLetter = lettersIndividual[letterIdx+1];
+
+					if (firstLetter in scope.targets) {
+						scope.targets[group]=scope.targets[firstLetter];
+					}
+					else if (secondLetter in scope.targets) {
+						scope.targets[group]=scope.targets[secondLetter];
+					}
+				}
 			}
 			setUpTargets();
 
@@ -80,20 +101,21 @@ function($rootScope, $timeout) {
 
 				element.css('height', height);
 
-				// Hide or replace every second letter on short screens
 				if (height < 300) {
-					element.find("a").removeClass("dotted").addClass("stripped");
+					element.find("a").removeClass("dotted");
+					scope.letters = lettersGrouped;
+					scope.$apply();
 				} else if (height < 500) {
-					element.find("a").removeClass("stripped").addClass("dotted");
+					scope.letters = lettersIndividual;
+					element.find("a").addClass("dotted");
 				} else {
-					element.find("a").removeClass("dotted stripped");
+					scope.letters = lettersIndividual;
+					element.find("a").removeClass("dotted");
 				}
+				scope.$apply();
 
-				if (height < 300) {
-					element.css('line-height', Math.floor(height/Math.ceil(scope.letters.length/2.0)) + 'px');
-				} else {
-					element.css('line-height', Math.floor(height/scope.letters.length) + 'px');
-				}
+				// adapt line-height to spread letters over the available height
+				element.css('line-height', Math.floor(height/scope.letters.length) + 'px');
 
 				// anchor the alphabet navigation to the right edge of the app view
 				var appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();

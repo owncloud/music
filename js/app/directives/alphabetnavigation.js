@@ -25,15 +25,18 @@ function($rootScope, $timeout) {
 		replace: true,
 		link: function(scope, element, attrs, ctrl) {
 
-			var lettersIndividual = [
+			var links = [
 				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
 				'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '…'
 			];
-			var lettersGrouped = [
+			var linksShort = [
 				'#', 'A-B', 'C-D', 'E-F', 'G-H', 'I-J', 'K-L', 'M-N',
 				'O-P', 'Q-R', 'S-T', 'U-V', 'W-X', 'Y-Z', '…'
 			];
-			scope.letters = lettersIndividual;
+			var linksExtraShort = [
+				'A-C', 'D-F', 'G-I', 'J-L', 'M-O', 'P-R', 'S-U', 'V-X', 'Y-Z'
+			];
+			scope.links = links;
 			scope.targets = {};
 
 			function isVariantOfZ(char) {
@@ -41,57 +44,61 @@ function($rootScope, $timeout) {
 					+ '\u1E93\u1E94\u1E95\u24CF\u24E9\u2C6B\u2C6C\uA762\uA763\uFF3A\uFF5A').indexOf(char) >= 0;
 			}
 
-			function itemPrecedesLetter(itemIdx, letterIdx) {
+			function itemPrecedesLetter(itemIdx, linkIdx) {
 				var initialChar = scope.getElemTitle(itemIdx).substr(0,1).toUpperCase();
 
 				// Special case: '…' is considered to be larger than Z or any of its variants
 				// but equal to any other character greater than Z
-				if (lettersIndividual[letterIdx] === '…') {
-					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, letterIdx-1);
+				if (links[linkIdx] === '…') {
+					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, linkIdx-1);
 				} else {
-					return initialChar.localeCompare(lettersIndividual[letterIdx]) < 0;
+					return initialChar.localeCompare(links[linkIdx]) < 0;
 				}
 			}
 
-			function setUpTargets() {
-				for (var letterIdx = 0, itemIdx = 0;
-					letterIdx < lettersIndividual.length && itemIdx < scope.itemCount;
-					++letterIdx)
+			function setUpMainLinks() {
+				for (var linkIdx = 0, itemIdx = 0;
+					linkIdx < links.length && itemIdx < scope.itemCount;
+					++linkIdx)
 				{
-					var alphabet = lettersIndividual[letterIdx];
+					var alphabet = links[linkIdx];
 
-					if (letterIdx === lettersIndividual.length - 1) {
+					if (linkIdx === links.length - 1) {
 						// Last link '…' reached while there are items left, the remaining items go under this link
 						scope.targets[alphabet] = scope.getElemId(itemIdx);
 					}
-					else if (itemPrecedesLetter(itemIdx, letterIdx + 1)) {
+					else if (itemPrecedesLetter(itemIdx, linkIdx + 1)) {
 						// Item is smaller than the next alphabet, i.e.
 						// alphabet <= item < nextAlphabet, link the item to this alphabet
 						scope.targets[alphabet] = scope.getElemId(itemIdx);
-
+	
 						// Skip the rest of the items belonging to the same alphabet
 						do {
 							++itemIdx;
 						} while (itemIdx < scope.itemCount
-								&& itemPrecedesLetter(itemIdx, letterIdx + 1));
+								&& itemPrecedesLetter(itemIdx, linkIdx + 1));
 					}
 				}
-				for (letterIdx = 1;
-					letterIdx < lettersIndividual.length - 1;
-					letterIdx += 2) {
+			}
 
-					var letterGroupedIdx = Math.trunc((letterIdx-1)/2)+1;
-					var group = lettersGrouped[letterGroupedIdx];
-					var firstLetter = lettersIndividual[letterIdx];
-					var secondLetter = lettersIndividual[letterIdx+1];
+			function setUpGroupedLinks(groupSize) {
+				for (var i = 1; i < links.length - groupSize; i += groupSize) {
+					var group = links[i] + '-' + links[i+groupSize-1];
 
-					if (firstLetter in scope.targets) {
-						scope.targets[group]=scope.targets[firstLetter];
-					}
-					else if (secondLetter in scope.targets) {
-						scope.targets[group]=scope.targets[secondLetter];
+					for (var j = 0; j < groupSize; ++j) {
+						var alphabet = links[i+j];
+						if (alphabet in scope.targets) {
+							scope.targets[group] = scope.targets[alphabet];
+							break;
+						}
 					}
 				}
+			}
+
+			function setUpTargets() {
+				setUpMainLinks();
+				setUpGroupedLinks(2);
+				setUpGroupedLinks(3);
 			}
 			setUpTargets();
 
@@ -101,21 +108,23 @@ function($rootScope, $timeout) {
 
 				element.css('height', height);
 
-				if (height < 300) {
+				if (height < 200) {
+					scope.links = linksExtraShort;
 					element.find("a").removeClass("dotted");
-					scope.letters = lettersGrouped;
-					scope.$apply();
-				} else if (height < 500) {
-					scope.letters = lettersIndividual;
+				} else if (height < 300) {
+					scope.links = linksShort;
+					element.find("a").removeClass("dotted");
+				} else if (height < 450) {
+					scope.links = links;
 					element.find("a").addClass("dotted");
 				} else {
-					scope.letters = lettersIndividual;
+					scope.links = links;
 					element.find("a").removeClass("dotted");
 				}
 				scope.$apply();
 
-				// adapt line-height to spread letters over the available height
-				element.css('line-height', Math.floor(height/scope.letters.length) + 'px');
+				// adapt line-height to spread links over the available height
+				element.css('line-height', Math.floor(height/scope.links.length) + 'px');
 
 				// anchor the alphabet navigation to the right edge of the app view
 				var appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();

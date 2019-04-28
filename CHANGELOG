@@ -1,6 +1,6 @@
 v0.9.5 2019-04-27
  * comprehensive support for the Nextcloud dark theme
- * locale-dependent ordering for artists/albums/tracks with accented alpahbets (#695)
+ * locale-dependent ordering for artists/albums/tracks with accented alphabets (#695)
  * add link '#' to the alphabet navigation for names starting with numerals (#697 by @greku)
  * add link '…' to the alphabet navigation for names starting with characters sorted after Z
  * improvements for alphabet navigation on short screens (like landscape mobile phone) (#699 by @greku)

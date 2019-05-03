@@ -184,6 +184,48 @@ class TrackMapper extends BaseMapper {
 		return $this->findEntities($sql, $params);
 	}
 
+	/**
+	 * Finds all track IDs of the user along with the parent folder ID of each track
+	 * @param string $userId
+	 * @return array where keys are folder IDs and values are arrays of track IDs
+	 */
+	public function findTrackAndFolderIds($userId) {
+		$sql = 'SELECT `track`.`id` AS id, `file`.`parent` AS parent '.
+				'FROM `*PREFIX*music_tracks` `track` '.
+				'JOIN `*PREFIX*filecache` `file` '.
+				'ON `track`.`file_id` = `file`.`fileid` '.
+				'WHERE `track`.`user_id` = ?';
+
+		$rows = $this->execute($sql, [$userId])->fetchAll();
+
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row['parent']][] = $row['id'];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Find names of the file system nodes with given IDs
+	 * @param int[] $nodeIds
+	 * @return array where keys are the node IDs and values are node names
+	 */
+	public function findNodeNames($nodeIds) {
+		$sql = 'SELECT `fileid`, `name` '.
+				'FROM `*PREFIX*filecache` '.
+				'WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
+
+		$rows = $this->execute($sql, $nodeIds)->fetchAll();
+
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row['fileid']] = $row['name'];
+		}
+
+		return $result;
+	}
+
 	public function findUniqueEntity(Track $track) {
 		return $this->findByFileId($track->getFileId(), $track->getUserId());
 	}

@@ -29,6 +29,9 @@
 	<script type="text/ng-template" id="alltracksview.html">
 		<?php print_unescaped($this->inc('partials/alltracksview')) ?>
 	</script>
+	<script type="text/ng-template" id="foldersview.html">
+		<?php print_unescaped($this->inc('partials/foldersview')) ?>
+	</script>
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>

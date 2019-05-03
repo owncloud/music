@@ -54,6 +54,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
 	};
 
+	$scope.folderCountText = function() {
+		var folderCount = 0; // TODO
+		return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+	};
+
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;

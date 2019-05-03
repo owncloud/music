@@ -34,6 +34,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				templateUrl:'alltracksview.html'
 			};
 
+			var foldersControllerConfig = {
+				controller:'FoldersViewController',
+				templateUrl:'foldersview.html'
+			};
+
 			var settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -52,6 +57,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				.when('/file/:id',             albumsControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
+				.when('/folders',              foldersControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])
@@ -625,6 +631,34 @@ angular.module('Music').controller('DetailsController', [
 	}
 ]);
 
+angular.module('Music').controller('FoldersViewController', [
+	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+
+		$scope.tracks = null;
+		$rootScope.currentView = window.location.hash;
+
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		var unsubFuncs = [];
+
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+
+		$scope.$on('$destroy', function () {
+			_.each(unsubFuncs, function(func) { func(); });
+		});
+
+		$timeout(function() {
+			$rootScope.loading = false;
+		});
+
+		subscribe('deactivateView', function() {
+			$rootScope.$emit('viewDeactivated');
+		});
+	}
+]);
+
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', '$document', 'ArtistFactory', 
 'playlistService', 'libraryService', 'gettextCatalog', 'Restangular',
@@ -667,6 +701,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.albumCountText = function() {
 		var albumCount = libraryService.getAlbumCount();
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
+	};
+
+	$scope.folderCountText = function() {
+		var folderCount = 0; // TODO
+		return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
 	};
 
 	$scope.update = function() {

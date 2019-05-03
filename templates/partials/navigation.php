@@ -8,6 +8,8 @@
 			title="{{ albumCountText() }}"></li>
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}"></li>
+		<li navigation-item text="'Folders' | translate" destination="'#/folders'"
+			title="{{ folderCountText() }}"></li>
 		<li class="app-navigation-separator"></li>
 		<li id="new-playlist" class="music-navigation-item">
 			<a id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>+ New Playlist</a>

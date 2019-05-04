@@ -691,6 +691,16 @@ angular.module('Music').controller('FoldersViewController', [
 			return $scope.getDraggable('track', libraryService.getTrack(trackId));
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getFolderName = function(index) {
+			return $scope.folders[index].name;
+		};
+		$scope.getFolderElementId = function(index) {
+			return 'folder-' + $scope.folders[index].id;
+		};
+
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
 				var elementId = 'track-' + trackId;
@@ -2351,6 +2361,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		setFolders: function(folderData) {
 			folders = _.map(folderData, wrapPlaylist);
+			sortByTextField(folders, 'name');
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
@@ -2359,15 +2370,15 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			playlists.splice(playlists.indexOf(playlist), 1);
 		},
 		addToPlaylist: function(playlistId, trackId) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			playlist.tracks.push(playlistEntryFromId(trackId));
 		},
 		removeFromPlaylist: function(playlistId, indexToRemove) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			playlist.tracks.splice(indexToRemove, 1);
 		},
 		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {

@@ -957,14 +957,16 @@ body:not(.snapjs-left) #controls.taller-header {
 
 
 /**
- * View specific rules for the track-list directive in the 'All tracks' view
+ * View specific rules for the track-list directive in the 'All tracks' and 'Folders' views
  */
 
-#alltracks-area .track-list {
+#alltracks-area .track-list,
+#folders-area .track-list {
 	margin-right: 50px;
 }
 
-#alltracks-area .track-list li > div > span {
+#alltracks-area .track-list li > div > span,
+#folders-area .track-list li > div > span {
 	white-space: normal;
 }
 

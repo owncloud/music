@@ -69,6 +69,16 @@ angular.module('Music').controller('FoldersViewController', [
 			return $scope.getDraggable('track', libraryService.getTrack(trackId));
 		};
 
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getFolderName = function(index) {
+			return $scope.folders[index].name;
+		};
+		$scope.getFolderElementId = function(index) {
+			return 'folder-' + $scope.folders[index].id;
+		};
+
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
 				var elementId = 'track-' + trackId;

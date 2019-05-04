@@ -20,4 +20,8 @@
 				details-text="'Details' | translate">
 		</track-list>
 	</div>
+
+	<alphabet-navigation ng-if="folders && folders.length" item-count="folders.length"
+		get-elem-title="getFolderName" get-elem-id="getFolderElementId" scroll-to-target="scrollToItem">
+	</alphabet-navigation>
 </div>

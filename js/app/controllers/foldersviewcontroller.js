@@ -23,14 +23,17 @@ angular.module('Music').controller('FoldersViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		function play(folder, startIndex /*optional*/) {
-			var id = 'folder-' + folder.id;
-			playlistService.setPlaylist(id, folder.tracks, startIndex);
+		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
+			var startIndex = null;
+			if (startFromTrackId !== undefined) {
+				startIndex = _.findIndex(tracks, function(i) {return i.track.id == startFromTrackId;});
+			}
+			playlistService.setPlaylist(listId, tracks, startIndex);
 			playlistService.publish('play');
 		}
 
 		$scope.onFolderTitleClick = function(folder) {
-			play(folder);
+			playPlaylist('folder-' + folder.id, folder.tracks);
 		};
 
 		$scope.onTrackClick = function(trackId) {
@@ -40,9 +43,18 @@ angular.module('Music').controller('FoldersViewController', [
 			}
 			// on any other list item, start playing the folder from this item
 			else {
+				var currentListId = playlistService.getCurrentPlaylistId();
 				var folder = libraryService.findFolderOfTrack(trackId);
-				var index = _.findIndex(folder.tracks, function(i) {return i.track.id == trackId;});
-				play(folder, index);
+
+				// start playing the folder from this track if the clicked track belongs
+				// to folder which is the current play scope
+				if (currentListId === 'folder-' + folder.id) {
+					playPlaylist(currentListId, folder.tracks, trackId);
+				}
+				// on any other track, start playing the collection from this track
+				else {
+					playPlaylist('folders', libraryService.getTracksInFolderOrder(), trackId);
+				}
 			}
 		};
 

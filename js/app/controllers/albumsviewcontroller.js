@@ -67,13 +67,13 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 
 			var currentTrack = $scope.$parent.currentTrack;
-			var currentListId = playlistService.getCurrentPlaylistId();
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && track.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
 			else {
+				var currentListId = playlistService.getCurrentPlaylistId();
 				var album = libraryService.findAlbumOfTrack(track.id);
 				var artist = libraryService.findArtistOfAlbum(album.id);
 

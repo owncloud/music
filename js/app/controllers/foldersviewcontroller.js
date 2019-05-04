@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('FoldersViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', 'Restangular', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, Restangular, $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
@@ -106,9 +106,8 @@ angular.module('Music').controller('FoldersViewController', [
 		});
 
 		function initView() {
-			if (libraryService.collectionLoaded()) {
-				Restangular.one('folders').get().then(function (folders) {
-					libraryService.setFolders(folders);
+			if ($scope.$parent && libraryService.collectionLoaded()) {
+				$scope.$parent.loadFoldersAndThen(function() {
 					$scope.folders = libraryService.getAllFolders();
 
 					$timeout(function() {

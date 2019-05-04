@@ -55,8 +55,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.folderCountText = function() {
-		var folderCount = 0; // TODO
-		return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+		if (libraryService.foldersLoaded()) {
+			var folderCount = libraryService.getAllFolders().length;
+			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+		} else {
+			return '';
+		}
 	};
 
 	$scope.update = function() {
@@ -167,6 +171,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.stopScanning = function() {
 		$scope.scanning = false;
+	};
+
+	$scope.loadFoldersAndThen = function(callback) {
+		if (libraryService.foldersLoaded()) {
+			$timeout(callback);
+		} else {
+			Restangular.one('folders').get().then(function (folders) {
+				libraryService.setFolders(folders);
+				callback();
+			});
+		}
 	};
 
 	$scope.showSidebar = function(trackId) {

@@ -17,6 +17,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
 	var playlists = null;
+	var folders = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -98,6 +99,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		setPlaylists: function(lists) {
 			playlists = _.map(lists, wrapPlaylist);
 		},
+		setFolders: function(folderData) {
+			folders = _.map(folderData, wrapPlaylist);
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -146,6 +150,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getAllPlaylists: function() {
 			return playlists;
 		},
+		getFolder: function(id) {
+			return _.findWhere(folders, { id: Number(id) });
+		},
+		getAllFolders: function() {
+			return folders;
+		},
 		findAlbumOfTrack: function(trackId) {
 			return _.find(albums, function(album) {
 				return _.findWhere(album.tracks, {id : Number(trackId)});
@@ -156,11 +166,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				return _.findWhere(artist.albums, {id : Number(albumId)});
 			});
 		},
+		findFolderOfTrack: function(trackId) {
+			return _.find(folders, function(folder) {
+				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
+			});
+		},
 		collectionLoaded: function() {
 			return artists !== null;
 		},
 		playlistsLoaded: function() {
 			return playlists !== null;
+		},
+		foldersLoaded: function() {
+			return folders !== null;
 		}
 	};
 }]);

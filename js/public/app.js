@@ -632,8 +632,8 @@ angular.module('Music').controller('DetailsController', [
 ]);
 
 angular.module('Music').controller('FoldersViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', 'Restangular', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, Restangular, $timeout) {
 
 		$scope.tracks = null;
 		$rootScope.currentView = window.location.hash;
@@ -645,13 +645,76 @@ angular.module('Music').controller('FoldersViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
+		function play(folder, startIndex /*optional*/) {
+			var id = 'folder-' + folder.id;
+			playlistService.setPlaylist(id, folder.tracks, startIndex);
+			playlistService.publish('play');
+		}
+
+		$scope.onFolderTitleClick = function(folder) {
+			play(folder);
+		};
+
+		$scope.onTrackClick = function(trackId) {
+			// play/pause if currently playing folder item clicked
+			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
+				playlistService.publish('togglePlayback');
+			}
+			// on any other list item, start playing the folder from this item
+			else {
+				var folder = libraryService.findFolderOfTrack(trackId);
+				var index = _.findIndex(folder.tracks, function(i) {return i.track.id == trackId;});
+				play(folder, index);
+			}
+		};
+
+		/**
+		 * Gets track data to be dislayed in the tracklist directive
+		 */
+		$scope.getTrackData = function(listItem, index, scope) {
+			var track = listItem.track;
+			return {
+				title: track.artistName + ' - ' + track.title,
+				tooltip: '',
+				number: index + 1,
+				id: track.id
+			};
+		};
+
+		$scope.getDraggable = function(type, draggedElement) {
+			var draggable = {};
+			draggable[type] = draggedElement;
+			return draggable;
+		};
+
+		$scope.getTrackDraggable = function(trackId) {
+			return $scope.getDraggable('track', libraryService.getTrack(trackId));
+		};
+
 		$scope.$on('$destroy', function () {
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
-		$timeout(function() {
-			$rootScope.loading = false;
+		// Init happens either immediately (after making the loading animation visible)
+		// or once collection has been loaded
+		$timeout(initView);
+
+		subscribe('artistsLoaded', function () {
+			$timeout(initView);
 		});
+
+		function initView() {
+			if (libraryService.collectionLoaded()) {
+				Restangular.one('folders').get().then(function (folders) {
+					libraryService.setFolders(folders);
+					$scope.folders = libraryService.getAllFolders();
+
+					$timeout(function() {
+						$rootScope.loading = false;
+					});
+				});
+			}
+		}
 
 		subscribe('deactivateView', function() {
 			$rootScope.$emit('viewDeactivated');
@@ -1031,6 +1094,11 @@ angular.module('Music').controller('NavigationController', [
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
+		// Add all tracks in a folder to the playlist
+		$scope.addFolder = function(playlist, folder) {
+			addTracks(playlist, trackIdsFromFolder(folder));
+		};
+
 		// Navigate to a view selected from the navigation bar
 		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
@@ -1056,6 +1124,8 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {
 				$scope.addArtist(playlist, droppedItem.artist);
+			} else if ('folder' in droppedItem) {
+				$scope.addFolder(playlist, droppedItem.folder);
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
@@ -1072,6 +1142,10 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromArtist(artist) {
 			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
+		}
+
+		function trackIdsFromFolder(folder) {
+			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
 		}
 
 		function addTracks(playlist, trackIds) {
@@ -2179,6 +2253,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
 	var playlists = null;
+	var folders = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -2260,6 +2335,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		setPlaylists: function(lists) {
 			playlists = _.map(lists, wrapPlaylist);
 		},
+		setFolders: function(folderData) {
+			folders = _.map(folderData, wrapPlaylist);
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -2308,6 +2386,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getAllPlaylists: function() {
 			return playlists;
 		},
+		getFolder: function(id) {
+			return _.findWhere(folders, { id: Number(id) });
+		},
+		getAllFolders: function() {
+			return folders;
+		},
 		findAlbumOfTrack: function(trackId) {
 			return _.find(albums, function(album) {
 				return _.findWhere(album.tracks, {id : Number(trackId)});
@@ -2318,11 +2402,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				return _.findWhere(artist.albums, {id : Number(albumId)});
 			});
 		},
+		findFolderOfTrack: function(trackId) {
+			return _.find(folders, function(folder) {
+				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
+			});
+		},
 		collectionLoaded: function() {
 			return artists !== null;
 		},
 		playlistsLoaded: function() {
 			return playlists !== null;
+		},
+		foldersLoaded: function() {
+			return folders !== null;
 		}
 	};
 }]);

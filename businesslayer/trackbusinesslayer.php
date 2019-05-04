@@ -97,7 +97,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
 	 * @param string $userId
-	 * @return array of entries like {id: int, name: string, tracks: int[]}
+	 * @return array of entries like {id: int, name: string, trackIds: int[]}
 	 */
 	public function findAllFolders($userId) {
 		$tracksByFolder = $this->mapper->findTrackAndFolderIds($userId);
@@ -108,7 +108,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$result[] = [
 				'id' => $folderId,
 				'name' => $folderNames[$folderId],
-				'tracks' => $trackIds
+				'trackIds' => $trackIds
 			];
 		}
 

@@ -119,6 +119,11 @@ angular.module('Music').controller('NavigationController', [
 			addTracks(playlist, trackIdsFromArtist(artist));
 		};
 
+		// Add all tracks in a folder to the playlist
+		$scope.addFolder = function(playlist, folder) {
+			addTracks(playlist, trackIdsFromFolder(folder));
+		};
+
 		// Navigate to a view selected from the navigation bar
 		var navigationDestination = null;
 		$scope.navigateTo = function(destination) {
@@ -144,6 +149,8 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {
 				$scope.addArtist(playlist, droppedItem.artist);
+			} else if ('folder' in droppedItem) {
+				$scope.addFolder(playlist, droppedItem.folder);
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
@@ -160,6 +167,10 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromArtist(artist) {
 			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
+		}
+
+		function trackIdsFromFolder(folder) {
+			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
 		}
 
 		function addTracks(playlist, trackIds) {

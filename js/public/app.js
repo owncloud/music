@@ -691,6 +691,20 @@ angular.module('Music').controller('FoldersViewController', [
 			return $scope.getDraggable('track', libraryService.getTrack(trackId));
 		};
 
+		subscribe('scrollToTrack', function(event, trackId) {
+			if ($scope.$parent) {
+				var elementId = 'track-' + trackId;
+				// If the track element is hidden (collapsed), scroll to the folder
+				// element instead
+				var trackElem = $('#' + elementId);
+				if (trackElem.length === 0 || !trackElem.is(':visible')) {
+					var folder = libraryService.findFolderOfTrack(trackId); 
+					elementId = 'folder-' + folder.id;
+				}
+				$scope.$parent.scrollToItem(elementId);
+			}
+		});
+
 		$scope.$on('$destroy', function () {
 			_.each(unsubFuncs, function(func) { func(); });
 		});

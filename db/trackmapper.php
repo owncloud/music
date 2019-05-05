@@ -212,15 +212,18 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are the node IDs and values are node names
 	 */
 	public function findNodeNames($nodeIds) {
-		$sql = 'SELECT `fileid`, `name` '.
-				'FROM `*PREFIX*filecache` '.
-				'WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
-
-		$rows = $this->execute($sql, $nodeIds)->fetchAll();
-
 		$result = [];
-		foreach ($rows as $row) {
-			$result[$row['fileid']] = $row['name'];
+
+		if (!empty($nodeIds)) {
+			$sql = 'SELECT `fileid`, `name` '.
+					'FROM `*PREFIX*filecache` '.
+					'WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
+
+			$rows = $this->execute($sql, $nodeIds)->fetchAll();
+
+			foreach ($rows as $row) {
+				$result[$row['fileid']] = $row['name'];
+			}
 		}
 
 		return $result;

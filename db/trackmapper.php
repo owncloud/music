@@ -207,22 +207,26 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Find names of the file system nodes with given IDs
+	 * Find names and paths of the file system nodes with given IDs
 	 * @param int[] $nodeIds
-	 * @return array where keys are the node IDs and values are node names
+	 * @return array where keys are the node IDs and values are associative arrays
+	 *         like { 'name' => string, 'path' => string }
 	 */
-	public function findNodeNames($nodeIds) {
+	public function findNodeNamesAndPaths($nodeIds) {
 		$result = [];
 
 		if (!empty($nodeIds)) {
-			$sql = 'SELECT `fileid`, `name` '.
+			$sql = 'SELECT `fileid`, `name`, `path` '.
 					'FROM `*PREFIX*filecache` '.
 					'WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
 
 			$rows = $this->execute($sql, $nodeIds)->fetchAll();
 
 			foreach ($rows as $row) {
-				$result[$row['fileid']] = $row['name'];
+				$result[$row['fileid']] = [
+					'name' => $row['name'],
+					'path' => $row['path']
+				];
 			}
 		}
 

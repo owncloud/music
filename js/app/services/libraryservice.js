@@ -75,6 +75,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		};
 	}
 
+	function wrapFolder(folder) {
+		var wrapped = wrapPlaylist(folder);
+		wrapped.path = folder.path;
+		return wrapped;
+	}
+
 	function createTrackContainers() {
 		// album order "playlist"
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
@@ -105,7 +111,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				folders = null;
 				tracksInFolderOrder = null;
 			} else {
-				folders = _.map(folderData, wrapPlaylist);
+				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
 			}

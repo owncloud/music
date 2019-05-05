@@ -2,7 +2,7 @@
 	<div class="playlist-area" id="folder-{{ ::folder.id }}" ng-repeat="folder in folders | limitTo: incrementalLoadLimit">
 		<h1>
 			<span ng-click="onFolderTitleClick(folder)"
-					title="{{ ::folder.name }}"
+					title="{{ ::folder.path }}"
 					ui-draggable="true" drag="getDraggable('folder', folder)">
 				<span>{{ ::folder.name }}</span>
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>

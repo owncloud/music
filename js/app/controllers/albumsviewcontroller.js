@@ -190,16 +190,13 @@ angular.module('Music').controller('AlbumsViewController', [
 			return $rootScope.playingView !== null;
 		}
 
-		function startsWith(str, search) {
-			return str !== null && search !== null && str.slice(0, search.length) === search;
-		}
-
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if album or artist is being played
-			if (startsWith(playlistId, 'album-') || startsWith(playlistId, 'artist-')) {
+			if (OC_Music_Utils.startsWith(playlistId, 'album-')
+					|| OC_Music_Utils.startsWith(playlistId, 'artist-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

@@ -26,5 +26,12 @@ var OC_Music_Utils = {
 	 */
 	darkThemeActive: function() {
 		return OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark';
+	},
+
+	/**
+	 * Test if the string @a str starts with another string @a search
+	 */
+	startsWith: function(str, search) {
+		return str !== null && search !== null && str.slice(0, search.length) === search;
 	}
 };

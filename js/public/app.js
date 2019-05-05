@@ -248,16 +248,13 @@ angular.module('Music').controller('AlbumsViewController', [
 			return $rootScope.playingView !== null;
 		}
 
-		function startsWith(str, search) {
-			return str !== null && search !== null && str.slice(0, search.length) === search;
-		}
-
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if album or artist is being played
-			if (startsWith(playlistId, 'album-') || startsWith(playlistId, 'artist-')) {
+			if (OC_Music_Utils.startsWith(playlistId, 'album-')
+					|| OC_Music_Utils.startsWith(playlistId, 'artist-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}
@@ -680,6 +677,16 @@ angular.module('Music').controller('FoldersViewController', [
 			}
 		};
 
+		function updateHighlight(playlistId) {
+			// remove any previous highlight
+			$('.highlight').removeClass('highlight');
+
+			// add highlighting if an individual folder is being played
+			if (OC_Music_Utils.startsWith(playlistId, 'folder-')) {
+				$('#' + playlistId).addClass('highlight');
+			}
+		}
+
 		/**
 		 * Gets track data to be dislayed in the tracklist directive
 		 */
@@ -712,6 +719,14 @@ angular.module('Music').controller('FoldersViewController', [
 		$scope.getFolderElementId = function(index) {
 			return 'folder-' + $scope.folders[index].id;
 		};
+
+		subscribe('playlistEnded', function() {
+			updateHighlight(null);
+		});
+
+		subscribe('playlistChanged', function(e, playlistId) {
+			updateHighlight(playlistId);
+		});
 
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
@@ -746,6 +761,7 @@ angular.module('Music').controller('FoldersViewController', [
 
 					$timeout(function() {
 						$rootScope.loading = false;
+						updateHighlight(playlistService.getCurrentPlaylistId());
 					});
 				});
 			}
@@ -3005,5 +3021,12 @@ var OC_Music_Utils = {
 	 */
 	darkThemeActive: function() {
 		return OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark';
+	},
+
+	/**
+	 * Test if the string @a str starts with another string @a search
+	 */
+	startsWith: function(str, search) {
+		return str !== null && search !== null && str.slice(0, search.length) === search;
 	}
 };

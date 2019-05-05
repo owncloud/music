@@ -13,8 +13,14 @@ angular.module('Music').controller('FoldersViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
-		$scope.tracks = null;
+		$scope.folders = null;
 		$rootScope.currentView = window.location.hash;
+
+		// When making the view visible, the folders are added incrementally step-by-step.
+		// The purpose of this is to keep the browser responsive even in case the view contains
+		// an enormous amount of folders (like several thousands).
+		var INCREMENTAL_LOAD_STEP = 50;
+		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];
@@ -139,17 +145,44 @@ angular.module('Music').controller('FoldersViewController', [
 			if ($scope.$parent && libraryService.collectionLoaded()) {
 				$scope.$parent.loadFoldersAndThen(function() {
 					$scope.folders = libraryService.getAllFolders();
-
-					$timeout(function() {
-						$rootScope.loading = false;
-						updateHighlight(playlistService.getCurrentPlaylistId());
-					});
+					$timeout(showMore);
 				});
 			}
 		}
 
-		subscribe('deactivateView', function() {
-			$rootScope.$emit('viewDeactivated');
-		});
+		/**
+		 * Increase number of shown folders aynchronously step-by-step until
+		 * they are all visible. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
+		function showMore() {
+			// show more entries only if the view is not already (being) deactivated
+			if ($scope.$parent) {
+				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
+				if ($scope.incrementalLoadLimit < $scope.folders.length) {
+					$timeout(showMore);
+				} else {
+					$rootScope.loading = false;
+					updateHighlight(playlistService.getCurrentPlaylistId());
+				}
+			}
+		}
+
+		/**
+		 * Decrease number of shown folders aynchronously step-by-step until
+		 * they are all removed. This is to avoid script hanging up for too
+		 * long on huge collections.
+		 */
+		function showLess() {
+			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
+			if ($scope.incrementalLoadLimit > 0) {
+				$timeout(showLess);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$rootScope.$emit('viewDeactivated');
+			}
+		}
+
+		subscribe('deactivateView', showLess);
 	}
 ]);

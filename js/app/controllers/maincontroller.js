@@ -70,6 +70,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
+			libraryService.setFolders(null); // invalidate any out-dated folders
 			$scope.artists = libraryService.getAllArtists();
 
 			// Emit the event asynchronously so that the DOM tree has already been

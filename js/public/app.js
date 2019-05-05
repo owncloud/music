@@ -757,14 +757,17 @@ angular.module('Music').controller('FoldersViewController', [
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once collection has been loaded
-		$timeout(initView);
+		if (libraryService.collectionLoaded()) {
+			$timeout(initView);
+		}
 
 		subscribe('artistsLoaded', function () {
 			$timeout(initView);
 		});
 
 		function initView() {
-			if ($scope.$parent && libraryService.collectionLoaded()) {
+			$scope.incrementalLoadLimit = 0;
+			if ($scope.$parent) {
 				$scope.$parent.loadFoldersAndThen(function() {
 					$scope.folders = libraryService.getAllFolders();
 					$timeout(showMore);
@@ -869,6 +872,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
+			libraryService.setFolders(null); // invalidate any out-dated folders
 			$scope.artists = libraryService.getAllArtists();
 
 			// Emit the event asynchronously so that the DOM tree has already been
@@ -2443,9 +2447,14 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			playlists = _.map(lists, wrapPlaylist);
 		},
 		setFolders: function(folderData) {
-			folders = _.map(folderData, wrapPlaylist);
-			sortByTextField(folders, 'name');
-			tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+			if (!folderData) {
+				folders = null;
+				tracksInFolderOrder = null;
+			} else {
+				folders = _.map(folderData, wrapPlaylist);
+				sortByTextField(folders, 'name');
+				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+			}
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));

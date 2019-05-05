@@ -135,14 +135,17 @@ angular.module('Music').controller('FoldersViewController', [
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once collection has been loaded
-		$timeout(initView);
+		if (libraryService.collectionLoaded()) {
+			$timeout(initView);
+		}
 
 		subscribe('artistsLoaded', function () {
 			$timeout(initView);
 		});
 
 		function initView() {
-			if ($scope.$parent && libraryService.collectionLoaded()) {
+			$scope.incrementalLoadLimit = 0;
+			if ($scope.$parent) {
 				$scope.$parent.loadFoldersAndThen(function() {
 					$scope.folders = libraryService.getAllFolders();
 					$timeout(showMore);

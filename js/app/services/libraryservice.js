@@ -101,9 +101,14 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			playlists = _.map(lists, wrapPlaylist);
 		},
 		setFolders: function(folderData) {
-			folders = _.map(folderData, wrapPlaylist);
-			sortByTextField(folders, 'name');
-			tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+			if (!folderData) {
+				folders = null;
+				tracksInFolderOrder = null;
+			} else {
+				folders = _.map(folderData, wrapPlaylist);
+				sortByTextField(folders, 'name');
+				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+			}
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));

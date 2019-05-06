@@ -4,7 +4,7 @@
 			<span ng-click="onFolderTitleClick(folder)"
 					title="{{ ::folder.path }}"
 					ui-draggable="true" drag="getDraggable('folder', folder)">
-				<span>{{ ::folder.name }}</span>
+				<span>{{ ::(folder.name || '(root folder)' | translate) }}</span>
 				<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
 			</span>
 		</h1>

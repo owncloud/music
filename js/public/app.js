@@ -2377,6 +2377,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		});
 	}
 
+	/**
+	 * Like sortByTextField but to be used with arrays of playlist entries where
+	 * field is within outer field "track".
+	 */
+	function sortByPlaylistEntryField(items, field) {
+		items.sort(function(a, b) {
+			return a.track[field].localeCompare(b.track[field]);
+		});
+	}
+
 	function sortByYearNameAndDisc(aAlbums) {
 		aAlbums = _.sortBy(aAlbums, 'disk');
 		sortByTextField(aAlbums, 'name');
@@ -2459,6 +2469,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			} else {
 				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
+				_.forEach(folders, function(folder) {
+					sortByPlaylistEntryField(folder.tracks, 'title');
+					sortByPlaylistEntryField(folder.tracks, 'artistName');
+				});
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
 			}
 		},

@@ -44,6 +44,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				templateUrl:'alltracksview.html'
 			};
 
+			var foldersControllerConfig = {
+				controller:'FoldersViewController',
+				templateUrl:'foldersview.html'
+			};
+
 			var settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -62,6 +67,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				.when('/file/:id',             albumsControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
+				.when('/folders',              foldersControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])

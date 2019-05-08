@@ -18,6 +18,9 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$rootScope.currentView = '#';
 
+		// When making the view visible, the artists are added incrementally step-by-step.
+		// The purpose of this is to keep the browser responsive even in case the view contains
+		// an enormous amount of albums (like several thousands).
 		var INCREMENTAL_LOAD_STEP = 10;
 		$scope.incrementalLoadLimit = 0;
 
@@ -67,13 +70,13 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 
 			var currentTrack = $scope.$parent.currentTrack;
-			var currentListId = playlistService.getCurrentPlaylistId();
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && track.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
 			else {
+				var currentListId = playlistService.getCurrentPlaylistId();
 				var album = libraryService.findAlbumOfTrack(track.id);
 				var artist = libraryService.findArtistOfAlbum(album.id);
 
@@ -190,16 +193,13 @@ angular.module('Music').controller('AlbumsViewController', [
 			return $rootScope.playingView !== null;
 		}
 
-		function startsWith(str, search) {
-			return str !== null && search !== null && str.slice(0, search.length) === search;
-		}
-
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if album or artist is being played
-			if (startsWith(playlistId, 'album-') || startsWith(playlistId, 'artist-')) {
+			if (OC_Music_Utils.startsWith(playlistId, 'album-')
+					|| OC_Music_Utils.startsWith(playlistId, 'artist-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

@@ -103,7 +103,7 @@ class ApiController extends Controller {
 	 * @param string $slug the slug
 	 * @return string the id
 	 */
-	protected function getIdFromSlug($slug) {
+	protected static function getIdFromSlug($slug) {
 		$split = \explode('-', $slug, 2);
 
 		return $split[0];
@@ -143,6 +143,15 @@ class ApiController extends Controller {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function folders() {
+		$folders = $this->trackBusinessLayer->findAllFolders($this->userId);
+		return new JSONResponse($folders);
 	}
 
 	/**

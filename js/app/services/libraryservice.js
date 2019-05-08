@@ -16,7 +16,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksIndex = {};
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
+	var tracksInFolderOrder = null;
 	var playlists = null;
+	var folders = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -26,6 +28,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	function sortByTextField(items, field) {
 		items.sort(function(a, b) {
 			return a[field].localeCompare(b[field]);
+		});
+	}
+
+	/**
+	 * Like sortByTextField but to be used with arrays of playlist entries where
+	 * field is within outer field "track".
+	 */
+	function sortByPlaylistEntryField(items, field) {
+		items.sort(function(a, b) {
+			return a.track[field].localeCompare(b.track[field]);
 		});
 	}
 
@@ -73,6 +85,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		};
 	}
 
+	function wrapFolder(folder) {
+		var wrapped = wrapPlaylist(folder);
+		wrapped.path = folder.path;
+		return wrapped;
+	}
+
 	function createTrackContainers() {
 		// album order "playlist"
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
@@ -98,6 +116,20 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		setPlaylists: function(lists) {
 			playlists = _.map(lists, wrapPlaylist);
 		},
+		setFolders: function(folderData) {
+			if (!folderData) {
+				folders = null;
+				tracksInFolderOrder = null;
+			} else {
+				folders = _.map(folderData, wrapFolder);
+				sortByTextField(folders, 'name');
+				_.forEach(folders, function(folder) {
+					sortByPlaylistEntryField(folder.tracks, 'title');
+					sortByPlaylistEntryField(folder.tracks, 'artistName');
+				});
+				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+			}
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -105,15 +137,15 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			playlists.splice(playlists.indexOf(playlist), 1);
 		},
 		addToPlaylist: function(playlistId, trackId) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			playlist.tracks.push(playlistEntryFromId(trackId));
 		},
 		removeFromPlaylist: function(playlistId, indexToRemove) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			playlist.tracks.splice(indexToRemove, 1);
 		},
 		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
-			playlist = this.getPlaylist(playlistId);
+			var playlist = this.getPlaylist(playlistId);
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {
@@ -137,6 +169,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getTracksInAlbumOrder: function() {
 			return tracksInAlbumOrder;
 		},
+		getTracksInFolderOrder: function() {
+			return tracksInFolderOrder;
+		},
 		getTrackCount: function() {
 			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
 		},
@@ -145,6 +180,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		getAllPlaylists: function() {
 			return playlists;
+		},
+		getFolder: function(id) {
+			return _.findWhere(folders, { id: Number(id) });
+		},
+		getAllFolders: function() {
+			return folders;
 		},
 		findAlbumOfTrack: function(trackId) {
 			return _.find(albums, function(album) {
@@ -156,11 +197,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				return _.findWhere(artist.albums, {id : Number(albumId)});
 			});
 		},
+		findFolderOfTrack: function(trackId) {
+			return _.find(folders, function(folder) {
+				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
+			});
+		},
 		collectionLoaded: function() {
 			return artists !== null;
 		},
 		playlistsLoaded: function() {
 			return playlists !== null;
+		},
+		foldersLoaded: function() {
+			return folders !== null;
 		}
 	};
 }]);

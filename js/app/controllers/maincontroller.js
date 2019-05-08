@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 angular.module('Music').controller('MainController', [
@@ -54,6 +54,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
 	};
 
+	$scope.folderCountText = function() {
+		if (libraryService.foldersLoaded()) {
+			var folderCount = libraryService.getAllFolders().length;
+			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
@@ -61,6 +70,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
+			libraryService.setFolders(null); // invalidate any out-dated folders
 			$scope.artists = libraryService.getAllArtists();
 
 			// Emit the event asynchronously so that the DOM tree has already been
@@ -162,6 +172,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.stopScanning = function() {
 		$scope.scanning = false;
+	};
+
+	$scope.loadFoldersAndThen = function(callback) {
+		if (libraryService.foldersLoaded()) {
+			$timeout(callback);
+		} else {
+			Restangular.one('folders').get().then(function (folders) {
+				libraryService.setFolders(folders);
+				callback();
+			});
+		}
 	};
 
 	$scope.showSidebar = function(trackId) {

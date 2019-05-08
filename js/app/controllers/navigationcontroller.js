@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 
@@ -87,20 +87,24 @@ angular.module('Music').controller('NavigationController', [
 				playlistService.publish('togglePlayback');
 			}
 			else {
-				var id = null;
-				var tracks = null;
+				var play = function(id, tracks) {
+					if (tracks && tracks.length) {
+						playlistService.setPlaylist(id, tracks);
+						playlistService.publish('play', destination);
+					}
+				};
+
 				if (destination == '#') {
-					id = 'albums';
-					tracks = libraryService.getTracksInAlbumOrder();
+					play('albums', libraryService.getTracksInAlbumOrder());
 				} else if (destination == '#/alltracks') {
-					id = 'alltracks';
-					tracks = libraryService.getTracksInAlphaOrder();
+					play('alltracks', libraryService.getTracksInAlphaOrder());
+				} else if (destination == '#/folders') {
+					$scope.$parent.loadFoldersAndThen(function() {
+						play('folders', libraryService.getTracksInFolderOrder());
+					});
 				} else {
-					id = 'playlist-' + playlist.id;
-					tracks = playlist.tracks;
+					play('playlist-' + playlist.id, playlist.tracks);
 				}
-				playlistService.setPlaylist(id, tracks);
-				playlistService.publish('play', destination);
 			}
 		};
 
@@ -117,6 +121,11 @@ angular.module('Music').controller('NavigationController', [
 		// Add all tracks on all albums by an artist to the playlist
 		$scope.addArtist = function(playlist, artist) {
 			addTracks(playlist, trackIdsFromArtist(artist));
+		};
+
+		// Add all tracks in a folder to the playlist
+		$scope.addFolder = function(playlist, folder) {
+			addTracks(playlist, trackIdsFromFolder(folder));
 		};
 
 		// Navigate to a view selected from the navigation bar
@@ -144,6 +153,8 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addAlbum(playlist, droppedItem.album);
 			} else if ('artist' in droppedItem) {
 				$scope.addArtist(playlist, droppedItem.artist);
+			} else if ('folder' in droppedItem) {
+				$scope.addFolder(playlist, droppedItem.folder);
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
@@ -160,6 +171,10 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromArtist(artist) {
 			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
+		}
+
+		function trackIdsFromFolder(folder) {
+			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
 		}
 
 		function addTracks(playlist, trackIds) {

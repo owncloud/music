@@ -82,7 +82,7 @@ class Scanner extends PublicEmitter {
 	 * @param \OCP\Files\File $file the file
 	 * @param string $userId
 	 * @param \OCP\Files\Folder $userHome
-	 * @param string|null $filePath Deducted from $file if not given
+	 * @param string|null $filePath Deduced from $file if not given
 	 */
 	public function update($file, $userId, $userHome, $filePath = null) {
 		if ($filePath === null) {

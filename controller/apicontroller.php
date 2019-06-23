@@ -150,7 +150,7 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function folders() {
-		$folders = $this->trackBusinessLayer->findAllFolders($this->userId);
+		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $this->userFolder);
 		return new JSONResponse($folders);
 	}
 

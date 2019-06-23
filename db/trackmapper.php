@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 namespace OCA\Music\Db;
@@ -207,20 +209,24 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Find names and paths of the file system nodes with given IDs
+	 * Find names and paths of the file system nodes with given IDs within the given storage
 	 * @param int[] $nodeIds
+	 * @param string $storageId
 	 * @return array where keys are the node IDs and values are associative arrays
-	 *         like { 'name' => string, 'path' => string }
+	 *         like { 'name' => string, 'path' => string };
 	 */
-	public function findNodeNamesAndPaths($nodeIds) {
+	public function findNodeNamesAndPaths($nodeIds, $storageId) {
 		$result = [];
 
 		if (!empty($nodeIds)) {
 			$sql = 'SELECT `fileid`, `name`, `path` '.
-					'FROM `*PREFIX*filecache` '.
-					'WHERE `fileid` IN '. $this->questionMarks(\count($nodeIds));
+					'FROM `*PREFIX*filecache` `filecache` '.
+					'JOIN `*PREFIX*storages` `storages` '.
+					'ON `filecache`.`storage` = `storages`.`numeric_id` '.
+					'WHERE `storages`.`id` = ? '.
+					'AND `filecache`.`fileid` IN '. $this->questionMarks(\count($nodeIds));
 
-			$rows = $this->execute($sql, $nodeIds)->fetchAll();
+			$rows = $this->execute($sql, \array_merge([$storageId], $nodeIds))->fetchAll();
 
 			foreach ($rows as $row) {
 				$result[$row['fileid']] = [

@@ -3,22 +3,13 @@
 /**
  * ownCloud - Music app
  *
- * @author Morris Jobke
- * @copyright 2013 Morris Jobke <morris.jobke@gmail.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -97,19 +88,70 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
 	 * @param string $userId
+	 * @param Folder $userHome
 	 * @return array of entries like {id: int, name: string, path: string, trackIds: int[]}
 	 */
-	public function findAllFolders($userId) {
+	public function findAllFolders($userId, $userHome) {
+		// All tracks of the user, grouped by their parent folders. Some of the parent folders
+		// may be owned by other users and are invisible to this user (in case of shared files).
 		$tracksByFolder = $this->mapper->findTrackAndFolderIds($userId);
-		$folderNamesAndPaths = $this->mapper->findNodeNamesAndPaths(\array_keys($tracksByFolder));
 
+		// Get the folder names and paths for ordinary local folders directly from the DB.
+		// This is significantly more efficient than using the Files API because we need to
+		// run only single DB query instead of one per folder.
+		$folderNamesAndPaths = $this->mapper->findNodeNamesAndPaths(
+				\array_keys($tracksByFolder), $userHome->getStorage()->getId());
+
+		// root folder has to be handled as a special case because shared files from
+		// many folders may be shown to this user mapped under the root folder
+		$rootFolderTracks = [];
+
+		// Build the final results. Use the previously fetched data for the ordinary
+		// local folders and query the data through the Files API for the more special cases.
 		$result = [];
 		foreach ($tracksByFolder as $folderId => $trackIds) {
-			$entry = $folderNamesAndPaths[$folderId];
-			$entry['id'] = $folderId;
-			$entry['trackIds'] = $trackIds;
+			if (isset($folderNamesAndPaths[$folderId])) {
+				// normal folder within the user home storage
+				$entry = $folderNamesAndPaths[$folderId];
+				// remove the "files" from the beginning of the folder path
+				$entry['path'] = \substr($entry['path'], 5);
+				// special handling for the root folder
+				if ($entry['path'] === '') {
+					$entry = null;
+				}
+			}
+			else {
+				// shared folder or parent folder of a shared file or an externally mounted folder
+				$folderNode = $userHome->getById($folderId);
+				if (\count($folderNode) === 0) {
+					// other user's folder with files shared with this user (mapped under root)
+					$entry = null;
+				}
+				else {
+					$entry = [
+						'name' => $folderNode[0]->getName(),
+						'path' => $userHome->getRelativePath($folderNode[0]->getPath())
+					];
+				}
+			}
 
-			$result[] = $entry;
+			if ($entry) {
+				$entry['trackIds'] = $trackIds;
+				$entry['id'] = $folderId;
+				$result[] = $entry;
+			} else {
+				$rootFolderTracks = \array_merge($rootFolderTracks, $trackIds);
+			}
+		}
+
+		// add the root folder if it contains any tracks
+		if (!empty($rootFolderTracks)) {
+			$result[] = [
+				'name' => '',
+				'path' => '/',
+				'trackIds' => $rootFolderTracks,
+				'id' => $userHome->getId()
+			];
 		}
 
 		return $result;

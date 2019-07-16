@@ -155,6 +155,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
 		if (loading) {
+			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
 			$scope.position.bufferPercent = 0;
 		}

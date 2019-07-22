@@ -105,6 +105,14 @@ class Maintenance {
 	}
 
 	/**
+	 * Remove albums which have a non-existing album artist
+	 * @return Number of removed albums
+	 */
+	private function removeAlbumsWithNoArtist() {
+		return $this->removeUnreferencedDbRows('music_albums', 'music_artists', 'album_artist_id', 'id');
+	}
+
+	/**
 	 * Remove artists which have no albums and no tracks
 	 * @return Number of removed artists
 	 */
@@ -125,11 +133,12 @@ class Maintenance {
 	public function cleanUp() {
 		return [
 			'covers' => $this->removeObsoleteCoverImages(),
+			'artists' => $this->removeObsoleteArtists(),
+			'albums' => $this->removeObsoleteAlbums()
+					+ $this->removeAlbumsWithNoArtist(),
 			'tracks' => $this->removeObsoleteTracks()
 						+ $this->removeTracksWithNoAlbum()
 						+ $this->removeTracksWithNoArtist(),
-			'albums' => $this->removeObsoleteAlbums(),
-			'artists' => $this->removeObsoleteArtists()
 		];
 	}
 

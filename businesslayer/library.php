@@ -62,8 +62,15 @@ class Library {
 
 		$albumsById = [];
 		foreach ($albums as &$album) {
-			$album->setAlbumArtist($artistsById[$album->getAlbumArtistId()]);
-			$albumsById[$album->getId()] = $album;
+			$albumArtist = $artistsById[$album->getAlbumArtistId()];
+			if (empty($albumArtist)) {
+				$this->logger->log("DB error on album {$album->id} '{$album->name}': ".
+						"album artist missing. Skipping the album.", 'warn');
+			}
+			else {
+				$album->setAlbumArtist($albumArtist);
+				$albumsById[$album->getId()] = $album;
+			}
 		}
 
 		foreach ($tracks as $idx => $track) {

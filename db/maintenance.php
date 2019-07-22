@@ -131,14 +131,20 @@ class Maintenance {
 	 * @return array describing the number of removed entries per type
 	 */
 	public function cleanUp() {
+		$removedCovers = $this->removeObsoleteCoverImages();
+		$removedTracks = $this->removeObsoleteTracks();
+		$removedAlbums = $this->removeObsoleteAlbums();
+		$removedArtists = $this->removeObsoleteArtists();
+
+		$removedAlbums += $this->removeAlbumsWithNoArtist();
+		$removedTracks += $this->removeTracksWithNoAlbum();
+		$removedTracks += $this->removeTracksWithNoArtist();
+
 		return [
-			'covers' => $this->removeObsoleteCoverImages(),
-			'artists' => $this->removeObsoleteArtists(),
-			'albums' => $this->removeObsoleteAlbums()
-					+ $this->removeAlbumsWithNoArtist(),
-			'tracks' => $this->removeObsoleteTracks()
-						+ $this->removeTracksWithNoAlbum()
-						+ $this->removeTracksWithNoArtist(),
+			'covers' => $removedCovers,
+			'artists' => $removedArtists,
+			'albums' => $removedAlbums,
+			'tracks' => $removedTracks
 		];
 	}
 

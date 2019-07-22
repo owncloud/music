@@ -1,3 +1,9 @@
+v0.10.0 2019-07-23
+ * simple Folders view (#651)
+ * fix unable to load collection.json if there's any albums with invalid album_artist_id; remove these corrupt albums on background cleanup task (#710)
+ * fix "jump to previous" not always working while track was loading (caused as side effect of #691)
+ * declare support for Nextcloud 17
+
 v0.9.5 2019-04-27
  * comprehensive support for the Nextcloud dark theme
  * locale-dependent ordering for artists/albums/tracks with accented alphabets (#695)

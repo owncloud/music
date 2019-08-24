@@ -202,7 +202,7 @@ v0.4.0 2017-07-17
  * fixed some charset issues by updating getid3 library to version 1.9.14 (#410)
  * allowed one album to cover several release years (#279, #307)
  * support ISO-formatted date tags (#430)
- * improved the heuristics of deducting track number and name from file name when not given in tags
+ * improved the heuristics of deducing track number and name from file name when not given in tags
  * refresh the UI automatically when the scanning process is done
  * show the currently playing track in the window title
  * lot of internal refactoring and small UI fixes and tweaks

@@ -84,7 +84,7 @@ class FileHooks {
 				}
 			}
 
-			// Ignore event if we got not user or folder or the user has not yet scanned the music
+			// Ignore event if we got no user or folder or the user has not yet scanned the music
 			// collection. The last condition is especially to prevent problems when creating new user
 			// and the default file set contains one or more audio files (see the discussion in #638).
 			if (!empty($userId) && !empty($userFolder) && self::userHasMusicLib($userId, $container)) {

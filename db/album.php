@@ -122,7 +122,7 @@ class Album extends Entity {
 	 * @return int|null
 	 */
 	public function yearToAPI() {
-		return (\count($this->years) > 0) ? \max($this->years) : null;
+		return empty($this->years) ? null : \max($this->years);
 	}
 
 	/**

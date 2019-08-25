@@ -9,7 +9,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2016 - 2018
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 .tablet .album-area {
@@ -17,7 +17,8 @@
 }
 
 .tablet .album-area > h2 {
-	max-width: 55vw;
+	white-space: normal;
+	max-width: unset;
 }
 
 .tablet .album-area .track-list li > div > span {

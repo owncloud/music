@@ -1195,7 +1195,8 @@ div:hover > .play-pause,
 }
 
 .tablet .album-area > h2 {
-	max-width: 55vw;
+	white-space: normal;
+	max-width: unset;
 }
 
 .tablet .album-area .track-list li > div > span {

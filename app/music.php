@@ -32,6 +32,7 @@ use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Controller\ShareController;
+use \OCA\Music\Controller\SubsonicController;
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\AmpacheSessionMapper;
@@ -158,6 +159,23 @@ class Music extends App {
 				$c->query('Logger'),
 				$c->query('ShareManager')
 			);
+		});
+
+		$container->registerService('SubsonicController', function ($c) {
+			return new SubsonicController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('L10N'),
+				$c->query('URLGenerator'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('Library'),
+				$c->query('RootFolder'),
+				$c->query('CoverHelper'),
+				$c->query('Logger')
+				);
 		});
 
 		/**

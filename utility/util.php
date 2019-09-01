@@ -75,4 +75,14 @@ class Util {
 	public static function startsWith($string, $potentialStart) {
 		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
 	}
+
+	/**
+	 * Test if given string ends with another given string
+	 * @param string $string
+	 * @param string $potentialEnd
+	 * @return boolean
+	 */
+	public static function endsWith($string, $potentialEnd) {
+		return \substr($string, -\strlen($potentialEnd)) === $potentialEnd;
+	}
 }

@@ -457,7 +457,7 @@ class AmpacheController extends Controller {
 			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
 		}
 
-		return $this->renderXml('ampache/artists', ['artists' => $artists]);
+		return $this->renderXml('ampache/artists', ['artists' => $artists, 'l10n' => $this->l10n]);
 	}
 
 	protected function renderAlbums($albums, $auth) {
@@ -515,7 +515,8 @@ class AmpacheController extends Controller {
 
 		return $this->renderXml(
 				'ampache/songs',
-				['songs' => $tracks, 'createPlayUrl' => $createPlayUrl, 'createCoverUrl' => $createCoverUrl]
+				['songs' => $tracks, 'l10n' => $this->l10n,
+				 'createPlayUrl' => $createPlayUrl, 'createCoverUrl' => $createCoverUrl]
 		);
 	}
 

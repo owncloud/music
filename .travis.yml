@@ -32,6 +32,7 @@ matrix:
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable14
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable16
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable17
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
 
     # PostgreSQL

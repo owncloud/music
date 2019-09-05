@@ -48,6 +48,7 @@ use \OCA\Music\Hooks\ShareHooks;
 use \OCA\Music\Hooks\UserHooks;
 
 use \OCA\Music\Middleware\AmpacheMiddleware;
+use \OCA\Music\Middleware\SubsonicMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CollectionHelper;
@@ -408,8 +409,14 @@ class Music extends App {
 				$c->query('AmpacheUser')
 			);
 		});
-
 		$container->registerMiddleWare('AmpacheMiddleware');
+
+		$container->registerService('SubsonicMiddleware', function ($c) {
+			return new SubsonicMiddleware(
+					$c->query('Request')
+			);
+		});
+		$container->registerMiddleWare('SubsonicMiddleware');
 
 		/**
 		 * Hooks

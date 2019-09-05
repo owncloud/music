@@ -86,8 +86,6 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	public function handleRequest($method) {
-		// TODO: handle user authentication here or with a separate middleware
-		
 		// Allow calling all methods with or without the postfix ".view"
 		if (Util::endsWith($method, ".view")) {
 			$method = \substr($method, 0, -\strlen(".view"));
@@ -101,16 +99,16 @@ class SubsonicController extends Controller {
 		}
 		else {
 			$this->logger->log("Request $method not supported", 'warn');
-			return self::subsonicErrorResonse(70, "Requested action $method is not supported");
+			return $this->subsonicErrorResponse(70, "Requested action $method is not supported");
 		}
 	}
 
 	private function ping() {
-		return self::subsonicResponse([]);
+		return $this->subsonicResponse([]);
 	}
 
 	private function getLicense() {
-		return self::subsonicResponse([
+		return $this->subsonicResponse([
 			'license' => [
 				'valid' => 'true',
 				'email' => '',
@@ -120,7 +118,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getMusicFolders() {
-		return self::subsonicResponse([
+		return $this->subsonicResponse([
 			'musicFolders' => ['musicFolder' => [
 					['id'=>'1', 'name'=>'Music']
 			]]
@@ -128,7 +126,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexes() {
-		return self::subsonicResponse([
+		return $this->subsonicResponse([
 			'indexes' => ['index' => [
 					['name'=>'A', 'artist'=>[
 							['name'=>'ABBA', 'id'=>10], 
@@ -144,7 +142,7 @@ class SubsonicController extends Controller {
 		$id = $this->request->getParam('id');
 		if ($id == 100 || $id == 200) {
 			// album songs
-			return self::subsonicResponse([
+			return $this->subsonicResponse([
 				'directory' => [
 					'id' => $id,
 					'parent' => 10,
@@ -164,7 +162,7 @@ class SubsonicController extends Controller {
 		}
 		else {
 			// artist albums
-			return self::subsonicResponse([
+			return $this->subsonicResponse([
 				'directory' => [
 					'id' => 10,
 					'parent' => 1,
@@ -180,7 +178,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getAlbumList() {
-		return self::subsonicResponse([
+		return $this->subsonicResponse([
 			'albumList' => ['album' => [
 						['id' => '100', 'parent'=>10, 'title'=>'First album', 'artist'=>'ABBA', 'isDir'=>'true', 'coverArt'=>123, 'userRating'=>4, 'averageRating'=>4], 
 						['id' => '200', 'parent'=>10, 'title'=>'Another album', 'artist'=>'ABBA', 'isDir'=>'true', 'coverArt'=>456, 'userRating'=>3, 'averageRating'=>5] 
@@ -191,7 +189,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getRandomSongs() {
-		return self::subsonicResponse([
+		return $this->subsonicResponse([
 			'randomSongs' => ['song' => [
 					['id' => '101', 'parent'=>100, 'title'=>'Dancing Queen', 'album'=>'First album', 'artist'=>'ABBA', 
 						'track'=>1, 'isDir'=>'false', 'coverArt'=>123, 'genre'=>'Pop', 'year'=>1978, 'size'=>'123456',
@@ -207,8 +205,6 @@ class SubsonicController extends Controller {
 	}
 
 	private function getCoverArt() {
-		$this->logger->log('Attempting to get cover', 'warn');
-		
 		$userId = 'root';
 		$userFolder = $this->rootFolder->getUserFolder($userId);
 
@@ -218,10 +214,10 @@ class SubsonicController extends Controller {
 				return new FileResponse($coverData);
 			}
 		} catch (BusinessLayerException $e) {
-			return self::subsonicErrorResonse(70, 'album not found');
+			return $this->subsonicErrorResponse(70, 'album not found');
 		}
 
-		return self::subsonicErrorResonse(70, 'album has no cover');
+		return $this->subsonicErrorResponse(70, 'album has no cover');
 	}
 
 	private function stream() {
@@ -236,7 +232,7 @@ class SubsonicController extends Controller {
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $userId);
 		} catch (BusinessLayerException $e) {
-			return self::subsonicErrorResonse(70, $e->getMessage());
+			return $this->subsonicErrorResponse(70, $e->getMessage());
 		}
 		
 		$files = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId());
@@ -244,26 +240,22 @@ class SubsonicController extends Controller {
 		if (\count($files) === 1) {
 			return new FileResponse($files[0]);
 		} else {
-			return self::subsonicErrorResonse(70, 'file not found');
+			return $this->subsonicErrorResponse(70, 'file not found');
 		}
 	}
 
-	private static function subsonicResponse($content) {
-		$content['status'] = 'ok';
+	private function subsonicResponse($content, $status = 'ok') {
+		$content['status'] = $status; 
 		$content['version'] = self::API_VERSION;
 		return new JSONResponse(['subsonic-response' => $content]);
 	}
 
-	private static function subsonicErrorResonse($errorCode, $errorMessage) {
-		return new JSONResponse([
-			'subsonic-response' => [
-				'version' => self::API_VERSION,
-				'status' => 'failed',
+	public function subsonicErrorResponse($errorCode, $errorMessage) {
+		return $this->subsonicResponse([
 				'error' => [
 					'code' => $errorCode,
 					'message' => $errorMessage
 				]
-			]
-		]);
+			], 'failed');
 	}
 }

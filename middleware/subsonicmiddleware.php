@@ -61,6 +61,9 @@ class SubsonicMiddleware extends Middleware {
 			if ($user != 'root' || $pass != 'Test123') {
 				throw new SubsonicException('Invalid Login', 40);
 			}
+			else {
+				$controller->setAuthenticatedUser($user);
+			}
 		}
 	}
 

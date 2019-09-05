@@ -49,6 +49,7 @@ class SubsonicController extends Controller {
 	private $l10n;
 	private $coverHelper;
 	private $logger;
+	private $userId;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -80,6 +81,14 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Called by the middleware once the user credentials have been checked
+	 * @param string $userId
+	 */
+	public function setAuthenticatedUser($userId) {
+		$this->userId = $userId;
+	}
+
+	/**
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
@@ -90,7 +99,7 @@ class SubsonicController extends Controller {
 		if (Util::endsWith($method, ".view")) {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
-		
+
 		// Allow calling ping or any of the getter functions in this class
 		// with a matching REST URL
 		if (($method === 'ping' || $method === 'download' || $method === 'stream' || Util::startsWith($method, 'get'))
@@ -112,69 +121,117 @@ class SubsonicController extends Controller {
 			'license' => [
 				'valid' => 'true',
 				'email' => '',
-				licenseExpires => 'never'
+				'licenseExpires' => 'never'
 			]
 		]);
 	}
 
 	private function getMusicFolders() {
+		// Only single root folder is supported
 		return $this->subsonicResponse([
 			'musicFolders' => ['musicFolder' => [
-					['id'=>'1', 'name'=>'Music']
+				['id' => 'root', 
+				'name' => $this->l10n->t('Music')]
 			]]
 		]);
 	}
 
 	private function getIndexes() {
-		return $this->subsonicResponse([
-			'indexes' => ['index' => [
-					['name'=>'A', 'artist'=>[
-							['name'=>'ABBA', 'id'=>10], 
-							['name'=>'ACDC', 'id'=>20]
-						]
-					]
-				]
-			]
-		]);
+		$artists = $this->artistBusinessLayer->findAll($this->userId, SortBy::Name);
+
+		$indexes = [];
+		foreach ($artists as $artist) {
+			$indexes[$artist->getIndexingChar()][] = [
+				'name' => $artist->getNameString($this->l10n),
+				'id' => 'artist-' . $artist->getId()
+			];
+		}
+
+		$result = [];
+		foreach ($indexes as $indexChar => $bucketArtists) {
+			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+		}
+
+		return $this->subsonicResponse(['indexes' => ['index' => $result]]);
 	}
 
 	private function getMusicDirectory() {
 		$id = $this->request->getParam('id');
-		if ($id == 100 || $id == 200) {
-			// album songs
-			return $this->subsonicResponse([
-				'directory' => [
-					'id' => $id,
-					'parent' => 10,
-					'name' => 'First album',
-					'child' => [
-						['id' => '101', 'parent'=>$id, 'title'=>'Dancing Queen', 'album'=>'First album', 'artist'=>'ABBA', 
-							'track'=>1, 'isDir'=>false, 'coverArt'=>123, 'genre'=>'Pop', 'year'=>1978, 'size'=>'123456',
-							'contentType'=>'audio/mpeg', 'suffix'=>'mp3', 'duration'=>146, 'bitRate'=>'128', path=>'track101'
-						], 
-						['id' => '102', 'parent'=>$id, 'title'=>'Money, Money, Money', 'album'=>'First album', 'artist'=>'ABBA', 
-							'track'=>2, 'isDir'=>false, 'coverArt'=>456, 'genre'=>'Pop', 'year'=>1978, 'size'=>'678123',
-							'contentType'=>'audio/mpeg', 'suffix'=>'mp3', 'duration'=>146, 'bitRate'=>'128', path=>'track102'
-						] 
-					]
-				]
-			]);
+		
+		if (Util::startsWith($id, 'artist-')) {
+			return $this->doGetMusicDirectoryForArtist($id);
+		} else {
+			return $this->doGetMusicDirectoryForAlbum($id);
 		}
-		else {
-			// artist albums
-			return $this->subsonicResponse([
-				'directory' => [
-					'id' => 10,
-					'parent' => 1,
-					'name' => 'ABBA',
-					'starred' => '2013-11-02T12:30:00',
-					'child' => [
-						['id'=>100, 'parent'=>10, 'title'=>'First album', 'artist'=>'ABBA', 'isDir'=>true, 'coverArt'=>123],
-						['id'=>200, 'parent'=>10, 'title'=>'Another album', 'artist'=>'ABBA', 'isDir'=>true, 'coverArt'=>456],
-					]
-				]
-			]);
+	}
+
+	private function doGetMusicDirectoryForArtist($id) {
+		$artistId = \explode('-', $id)[1]; // get rid of 'artist-' prefix
+
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		$artistName = $artist->getNameString($this->l10n);
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+
+		$children = [];
+		foreach ($albums as $album) {
+			$children[] = [
+				'id' => 'album-' . $album->getId(),
+				'parent' => $id,
+				'title' => $album->getNameString($this->l10n),
+				'artist' => $artistName,
+				'isDir' => true,
+				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId()
+			];
 		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'parent' => 'root',
+				'name' => $artistName,
+				'child' => $children
+			]
+		]);
+	}
+
+	private function doGetMusicDirectoryForAlbum($id) {
+		$albumId = \explode('-', $id)[1]; // get rid of 'album-' prefix
+
+		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$albumName = $album->getNameString($this->l10n);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+
+		$children = [];
+		foreach ($tracks as $track) {
+			$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+			$children[] = [
+				'id' => 'track-' . $track->getId(),
+				'parent' => $id,
+				'title' => $track->getTitle(),
+				'artist' => $trackArtist->getNameString($this->l10n),
+				'isDir' => false,
+				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
+				'album' => $albumName,
+				'track' => $track->getNumber() ?: 0,
+				'genre' => '',
+				'year' => $track->getYear(),
+				'size' => 0,
+				'contentType' => $track->getMimetype(),
+				'suffix' => '',
+				'duration' => $track->getLength() ?: 0,
+				'bitRate' => $track->getBitrate() ?: 0,
+				'path' => ''
+			];
+		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'parent' => 'artist-' . $album->getAlbumArtistId(),
+				'name' => $albumName,
+				'child' => $children
+			]
+		]);
 	}
 
 	private function getAlbumList() {
@@ -205,11 +262,11 @@ class SubsonicController extends Controller {
 	}
 
 	private function getCoverArt() {
-		$userId = 'root';
-		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$id = $this->request->getParam('id');
+		$userFolder = $this->rootFolder->getUserFolder($this->userId);
 
 		try {
-			$coverData = $this->coverHelper->getCover(383018, $userId, $userFolder);
+			$coverData = $this->coverHelper->getCover($id, $this->userId, $userFolder);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}
@@ -226,16 +283,16 @@ class SubsonicController extends Controller {
 	}
 
 	private function download() {
-		$userId = 'root';
-		$trackId = 524301;
+		$id = $this->request->getParam('id');
+		$trackId = \explode('-', $id)[1]; // get rid of 'track-' prefix
 		
 		try {
-			$track = $this->trackBusinessLayer->find($trackId, $userId);
+			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		} catch (BusinessLayerException $e) {
 			return $this->subsonicErrorResponse(70, $e->getMessage());
 		}
 		
-		$files = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId());
+		$files = $this->rootFolder->getUserFolder($this->userId)->getById($track->getFileId());
 		
 		if (\count($files) === 1) {
 			return new FileResponse($files[0]);

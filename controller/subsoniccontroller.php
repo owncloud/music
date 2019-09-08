@@ -196,10 +196,13 @@ class SubsonicController extends Controller {
 		// $offset = $this->request->getParam('offset', 0); parameter not supported for now
 
 		$albums = [];
-		if ($size > 0 && $type == 'random') {
+		if ($type == 'random') {
 			$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
 			$size = \min($size, \count($allAlbums)); // can't return more than all albums
 			$indices = \array_rand($allAlbums, $size);
+			if ($size == 1) { // return type is not array when randomizing a single index
+				$indices = [$indices];
+			}
 
 			foreach ($indices as $index) {
 				$albums[] = $this->albumAsChild($allAlbums[$index]);

@@ -14,8 +14,6 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
-require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
-
 /**
  * an extractor class for getID3
  */
@@ -25,14 +23,26 @@ class ExtractorGetID3 implements Extractor {
 
 	public function __construct(Logger $logger) {
 		$this->logger = $logger;
+		$this->getID3 = null; // lazy-loaded
+	}
 
-		$this->getID3 = new \getID3();
-		$this->getID3->encoding = 'UTF-8';
-		// On 32-bit systems, getid3 tries to make a 2GB size check,
-		// which does not work with fopen. Disable it.
-		// Therefore the filesize (determined by getID3) could be wrong
-		// (for files over ~2 GB) but this isn't used in any way.
-		$this->getID3->option_max_2gb_check = false;
+	/**
+	 * Second stage constructor used to lazy-load the getID3 library once it's needed.
+	 * This is to prevent polluting the namespace of occ when the user is not running
+	 * Music app commands.
+	 * See https://github.com/nextcloud/server/issues/17027.
+	 */
+	private function initGetID3() {
+		if ($this->getID3 === null) {
+			require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+			$this->getID3 = new \getID3();
+			$this->getID3->encoding = 'UTF-8';
+			// On 32-bit systems, getid3 tries to make a 2GB size check,
+			// which does not work with fopen. Disable it.
+			// Therefore the filesize (determined by getID3) could be wrong
+			// (for files over ~2 GB) but this isn't used in any way.
+			$this->getID3->option_max_2gb_check = false;
+		}
 	}
 
 	/**
@@ -42,6 +52,8 @@ class ExtractorGetID3 implements Extractor {
 	 * @return array extracted data
 	 */
 	public function extract($file) {
+		$this->initGetID3();
+
 		$metadata = $this->getID3->analyze($file->getPath(), $file->fopen('r'), $file->getSize());
 
 		// TODO make non static

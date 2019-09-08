@@ -1,3 +1,11 @@
+v0.10.1 2019-09-08
+ * fix warnings being logged on PHP7.2+ when fetching albums via Ampache API (#714)
+ * provide string "Unknown artist/album" in Ampache API for nameless entities
+ * allow album name to span multiple rows in the "tablet" layout
+ * lazy-load getID3 library to avoid interfering with AudioPlayer occ scan (#715)
+ * update the getID3 library to version 1.9.17
+ * declare support for Nextcloud 18
+
 v0.10.0 2019-07-23
  * simple Folders view (#651)
  * fix unable to load collection.json if there's any albums with invalid album_artist_id; remove these corrupt albums on background cleanup task (#710)

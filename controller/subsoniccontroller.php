@@ -112,6 +112,10 @@ class SubsonicController extends Controller {
 		}
 	}
 
+	/* -------------------------------------------------------------------------
+	 * REST API methods
+	 *------------------------------------------------------------------------*/
+
 	private function ping() {
 		return $this->subsonicResponse([]);
 	}
@@ -165,84 +169,25 @@ class SubsonicController extends Controller {
 		}
 	}
 
-	private function doGetMusicDirectoryForArtist($id) {
-		$artistId = \explode('-', $id)[1]; // get rid of 'artist-' prefix
-
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$artistName = $artist->getNameString($this->l10n);
-		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
-
-		$children = [];
-		foreach ($albums as $album) {
-			$children[] = [
-				'id' => 'album-' . $album->getId(),
-				'parent' => $id,
-				'title' => $album->getNameString($this->l10n),
-				'artist' => $artistName,
-				'isDir' => true,
-				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId()
-			];
-		}
-
-		return $this->subsonicResponse([
-			'directory' => [
-				'id' => $id,
-				'parent' => 'root',
-				'name' => $artistName,
-				'child' => $children
-			]
-		]);
-	}
-
-	private function doGetMusicDirectoryForAlbum($id) {
-		$albumId = \explode('-', $id)[1]; // get rid of 'album-' prefix
-
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		$albumName = $album->getNameString($this->l10n);
-		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-
-		$children = [];
-		foreach ($tracks as $track) {
-			$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-			$children[] = [
-				'id' => 'track-' . $track->getId(),
-				'parent' => $id,
-				'title' => $track->getTitle(),
-				'artist' => $trackArtist->getNameString($this->l10n),
-				'isDir' => false,
-				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
-				'album' => $albumName,
-				'track' => $track->getNumber() ?: 0,
-				'genre' => '',
-				'year' => $track->getYear(),
-				'size' => 0,
-				'contentType' => $track->getMimetype(),
-				'suffix' => '',
-				'duration' => $track->getLength() ?: 0,
-				'bitRate' => $track->getBitrate() ?: 0,
-				'path' => ''
-			];
-		}
-
-		return $this->subsonicResponse([
-			'directory' => [
-				'id' => $id,
-				'parent' => 'artist-' . $album->getAlbumArtistId(),
-				'name' => $albumName,
-				'child' => $children
-			]
-		]);
-	}
-
 	private function getAlbumList() {
-		return $this->subsonicResponse([
-			'albumList' => ['album' => [
-						['id' => '100', 'parent'=>10, 'title'=>'First album', 'artist'=>'ABBA', 'isDir'=>'true', 'coverArt'=>123, 'userRating'=>4, 'averageRating'=>4], 
-						['id' => '200', 'parent'=>10, 'title'=>'Another album', 'artist'=>'ABBA', 'isDir'=>'true', 'coverArt'=>456, 'userRating'=>3, 'averageRating'=>5] 
-					]
-				]
-			]
-		);
+		$type = $this->request->getParam('type');
+		$size = $this->request->getParam('size', 10);
+		$size = \min($size, 500); // the API spec limits the maximum amount to 500
+		// $offset = $this->request->getParam('offset', 0); parameter not supported for now
+
+		$albums = [];
+		if ($size > 0 && $type == 'random') {
+			$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
+			$size = \min($size, \count($allAlbums)); // can't return more than all albums
+			$indices = \array_rand($allAlbums, $size);
+
+			foreach ($indices as $index) {
+				$albums[] = $this->albumAsChild($allAlbums[$index]);
+			}
+		}
+		// TODO: support 'newest', 'highest', 'frequent', 'recent'
+
+		return $this->subsonicResponse(['albumList' => ['album' => $albums]]);
 	}
 
 	private function getRandomSongs() {
@@ -299,6 +244,90 @@ class SubsonicController extends Controller {
 		} else {
 			return $this->subsonicErrorResponse(70, 'file not found');
 		}
+	}
+
+	/* -------------------------------------------------------------------------
+	 * Helper methods
+	 *------------------------------------------------------------------------*/
+
+	private function doGetMusicDirectoryForArtist($id) {
+		$artistId = \explode('-', $id)[1]; // get rid of 'artist-' prefix
+
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		$artistName = $artist->getNameString($this->l10n);
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+
+		$children = [];
+		foreach ($albums as $album) {
+			$children[] = $this->albumAsChild($album, $artistName);
+		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'parent' => 'root',
+				'name' => $artistName,
+				'child' => $children
+			]
+		]);
+	}
+
+	private function doGetMusicDirectoryForAlbum($id) {
+		$albumId = \explode('-', $id)[1]; // get rid of 'album-' prefix
+
+		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$albumName = $album->getNameString($this->l10n);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+
+		$children = [];
+		foreach ($tracks as $track) {
+			$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+			$children[] = [
+				'id' => 'track-' . $track->getId(),
+				'parent' => $id,
+				'title' => $track->getTitle(),
+				'artist' => $trackArtist->getNameString($this->l10n),
+				'isDir' => false,
+				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
+				'album' => $albumName,
+				'track' => $track->getNumber() ?: 0,
+				//'genre' => '',
+				'year' => $track->getYear(),
+				'size' => 0,
+				'contentType' => $track->getMimetype(),
+				//'suffix' => '',
+				'duration' => $track->getLength() ?: 0,
+				'bitRate' => $track->getBitrate() ?: 0,
+				//'path' => ''
+			];
+		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'parent' => 'artist-' . $album->getAlbumArtistId(),
+				'name' => $albumName,
+				'child' => $children
+			]
+		]);
+	}
+
+	private function albumAsChild($album, $artistName = null) {
+		$artistId = $album->getAlbumArtistId();
+
+		if (empty($artistName)) {
+			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artistName = $artist->getNameString($this->l10n);
+		}
+
+		return [
+			'id' => 'album-' . $album->getId(),
+			'parent' => 'artist-' . $artistId,
+			'title' => $album->getNameString($this->l10n),
+			'artist' => $artistName,
+			'isDir' => true,
+			'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId()
+		];
 	}
 
 	private function subsonicResponse($content, $status = 'ok') {

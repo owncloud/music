@@ -198,37 +198,30 @@ class SubsonicController extends Controller {
 		$albums = [];
 		if ($type == 'random') {
 			$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-			$size = \min($size, \count($allAlbums)); // can't return more than all albums
-			$indices = \array_rand($allAlbums, $size);
-			if ($size == 1) { // return type is not array when randomizing a single index
-				$indices = [$indices];
-			}
-
-			foreach ($indices as $index) {
-				$albums[] = $this->albumAsChild($allAlbums[$index]);
-			}
+			$albums = self::randomItems($allAlbums, $size);
 		}
 		// TODO: support 'newest', 'highest', 'frequent', 'recent'
 
-		return $this->subsonicResponse(['albumList' => ['album' => $albums]]);
+		return $this->subsonicResponse(['albumList' =>
+				['album' => \array_map([$this, 'albumAsChild'], $albums)]
+		]);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
 	private function getRandomSongs() {
-		return $this->subsonicResponse([
-			'randomSongs' => ['song' => [
-					['id' => '101', 'parent'=>100, 'title'=>'Dancing Queen', 'album'=>'First album', 'artist'=>'ABBA', 
-						'track'=>1, 'isDir'=>'false', 'coverArt'=>123, 'genre'=>'Pop', 'year'=>1978, 'size'=>'123456',
-						'contentType'=>'audio/mpeg', 'suffix'=>'mp3', 'duration'=>146, 'bitRate'=>'128', path=>'track101'
-					], 
-					['id' => '102', 'parent'=>100, 'title'=>'Money, Money, Money', 'album'=>'First album', 'artist'=>'ABBA', 
-						'track'=>2, 'isDir'=>'false', 'coverArt'=>456, 'genre'=>'Pop', 'year'=>1978, 'size'=>'678123',
-						'contentType'=>'audio/mpeg', 'suffix'=>'mp3', 'duration'=>146, 'bitRate'=>'128', path=>'track102'
-					] 
-				]
-			]
+		$size = $this->request->getParam('size', 10);
+		$size = \min($size, 500); // the API spec limits the maximum amount to 500
+		// $genre = $this->request->getParam('genre'); not supported
+		// $fromYear = $this->request->getParam('fromYear'); not supported
+		// $toYear = $this->request->getParam('genre'); not supported
+
+		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
+		$tracks = self::randomItems($allTracks, $size);
+
+		return $this->subsonicResponse(['randomSongs' =>
+				['song' => \array_map([$this, 'trackAsChild'], $tracks)]
 		]);
 	}
 
@@ -265,15 +258,15 @@ class SubsonicController extends Controller {
 	private function download() {
 		$id = $this->request->getParam('id');
 		$trackId = \explode('-', $id)[1]; // get rid of 'track-' prefix
-		
+
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		} catch (BusinessLayerException $e) {
 			return $this->subsonicErrorResponse(70, $e->getMessage());
 		}
-		
+
 		$files = $this->rootFolder->getUserFolder($this->userId)->getById($track->getFileId());
-		
+
 		if (\count($files) === 1) {
 			return new FileResponse($files[0]);
 		} else {
@@ -314,35 +307,12 @@ class SubsonicController extends Controller {
 		$albumName = $album->getNameString($this->l10n);
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
 
-		$children = [];
-		foreach ($tracks as $track) {
-			$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-			$children[] = [
-				'id' => 'track-' . $track->getId(),
-				'parent' => $id,
-				'title' => $track->getTitle(),
-				'artist' => $trackArtist->getNameString($this->l10n),
-				'isDir' => false,
-				'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
-				'album' => $albumName,
-				'track' => $track->getNumber() ?: 0,
-				//'genre' => '',
-				'year' => $track->getYear(),
-				'size' => 0,
-				'contentType' => $track->getMimetype(),
-				//'suffix' => '',
-				'duration' => $track->getLength() ?: 0,
-				'bitRate' => $track->getBitrate() ?: 0,
-				//'path' => ''
-			];
-		}
-
 		return $this->subsonicResponse([
 			'directory' => [
 				'id' => $id,
 				'parent' => 'artist-' . $album->getAlbumArtistId(),
 				'name' => $albumName,
-				'child' => $children
+				'child' => \array_map([$this, 'trackAsChild'], $tracks)
 			]
 		]);
 	}
@@ -363,6 +333,51 @@ class SubsonicController extends Controller {
 			'isDir' => true,
 			'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId()
 		];
+	}
+
+	private function trackAsChild($track, $album = null, $albumName = null) {
+		$albumId = $track->getAlbumId();
+		if ($album == null) {
+			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		}
+		if (empty($albumName)) {
+			$albumName = $album->getNameString($this->l10n);
+		}
+
+		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+		return [
+			'id' => 'track-' . $track->getId(),
+			'parent' => 'album-' . $albumId,
+			'title' => $track->getTitle(),
+			'artist' => $trackArtist->getNameString($this->l10n),
+			'isDir' => false,
+			'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
+			'album' => $albumName,
+			'track' => $track->getNumber() ?: 0,
+			//'genre' => '',
+			'year' => $track->getYear(),
+			'size' => 0,
+			'contentType' => $track->getMimetype(),
+			//'suffix' => '',
+			'duration' => $track->getLength() ?: 0,
+			'bitRate' => $track->getBitrate() ?: 0,
+			//'path' => ''
+		];
+	}
+
+	private static function randomItems($itemArray, $count) {
+		$count = \min($count, \count($itemArray)); // can't return more than all items
+		$indices = \array_rand($itemArray, $count);
+		if ($count == 1) { // return type is not array when randomizing a single index
+			$indices = [$indices];
+		}
+
+		$result = [];
+		foreach ($indices as $index) {
+			$result[] = $itemArray[$index];
+		}
+
+		return $result;
 	}
 
 	private function subsonicResponse($content, $status = 'ok') {

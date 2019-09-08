@@ -157,9 +157,11 @@ class TrackMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Track[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -168,7 +170,7 @@ class TrackMapper extends BaseMapper {
 		}
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`track`.`title`)');
 		$params = [$userId, $name];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

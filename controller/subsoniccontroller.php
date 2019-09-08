@@ -36,6 +36,7 @@ use \OCA\Music\Http\FileResponse;
 
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\Util;
+use OCA\Music\Middleware\SubsonicException;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.4.0';
@@ -159,10 +160,7 @@ class SubsonicController extends Controller {
 
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$indexes[$artist->getIndexingChar()][] = [
-				'name' => $artist->getNameString($this->l10n),
-				'id' => 'artist-' . $artist->getId()
-			];
+			$indexes[$artist->getIndexingChar()][] = $this->artistAsChild($artist);
 		}
 
 		$result = [];
@@ -178,7 +176,7 @@ class SubsonicController extends Controller {
 	 */
 	private function getMusicDirectory() {
 		$id = $this->request->getParam('id');
-		
+
 		if (Util::startsWith($id, 'artist-')) {
 			return $this->doGetMusicDirectoryForArtist($id);
 		} else {
@@ -274,6 +272,40 @@ class SubsonicController extends Controller {
 		}
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function search2() {
+		$query = $this->request->getParam('query');
+		$artistCount = $this->request->getParam('artistCount', 20);
+		$artistOffset = $this->request->getParam('artistOffset', 0);
+		$albumCount = $this->request->getParam('albumCount', 20);
+		$albumOffset = $this->request->getParam('albumOffset', 0);
+		$songCount = $this->request->getParam('songCount', 20);
+		$songOffset = $this->request->getParam('songOffset', 0);
+
+		if (empty($query)) {
+			throw new SubsonicException("The 'query' argument is mandatory", 10);
+		}
+
+		$artists = $this->artistBusinessLayer->findAllByName($query, $this->userId, true, $artistCount, $artistOffset);
+		$albums = $this->albumBusinessLayer->findAllByName($query, $this->userId, true, $albumCount, $albumOffset);
+		$tracks = $this->trackBusinessLayer->findAllByName($query, $this->userId, true, $songCount, $songOffset);
+
+		$results = [];
+		if (!empty($artists)) {
+			$results['artist'] = \array_map([$this, 'artistAsChild'], $artists);
+		}
+		if (!empty($albums)) {
+			$results['album'] = \array_map([$this, 'albumAsChild'], $albums);
+		}
+		if (!empty($tracks)) {
+			$results['song'] = \array_map([$this, 'trackAsChild'], $tracks);
+		}
+
+		return $this->subsonicResponse(['searchResult2' => $results]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
@@ -315,6 +347,13 @@ class SubsonicController extends Controller {
 				'child' => \array_map([$this, 'trackAsChild'], $tracks)
 			]
 		]);
+	}
+
+	private function artistAsChild($artist) {
+		return [
+			'name' => $artist->getNameString($this->l10n),
+			'id' => 'artist-' . $artist->getId()
+		];
 	}
 
 	private function albumAsChild($album, $artistName = null) {

@@ -316,9 +316,11 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -327,7 +329,7 @@ class AlbumMapper extends BaseMapper {
 		}
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`album`.`name`)');
 		$params = [$userId, $name];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	public function findUniqueEntity(Album $album) {

@@ -69,10 +69,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
-		$albums = parent::findAllByName($name, $userId, $fuzzy);
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums, $userId);
 	}
 

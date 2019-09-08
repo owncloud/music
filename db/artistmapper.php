@@ -94,11 +94,13 @@ class ArtistMapper extends BaseMapper {
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Artist[]
 	 */
-	public function findAllByName($artistName, $userId, $fuzzy = false) {
+	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
-		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
+		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
 	}
 
 	public function findUniqueEntity(Artist $artist) {

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 namespace OCA\Music\Utility;
@@ -54,9 +56,8 @@ class ExtractorGetID3 implements Extractor {
 	public function extract($file) {
 		$this->initGetID3();
 
-		$metadata = $this->getID3->analyze($file->getPath(), $file->fopen('r'), $file->getSize());
+		$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $file->fopen('r'));
 
-		// TODO make non static
 		\getid3_lib::CopyTagsToComments($metadata);
 
 		if (\array_key_exists('error', $metadata)) {

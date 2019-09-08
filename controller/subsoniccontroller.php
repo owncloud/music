@@ -21,6 +21,7 @@ use \OCP\IURLGenerator;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -100,26 +101,33 @@ class SubsonicController extends Controller {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
 
-		// Allow calling ping or any of the getter functions in this class
-		// with a matching REST URL
-		if (($method === 'ping' || $method === 'download' || $method === 'stream' || Util::startsWith($method, 'get'))
-				&& \method_exists($this, $method)) {
-			return $this->$method();
+		// Allow calling any functions annotated to be part of the API, except for
+		// recursive call back to this dispatcher function.
+		if ($method !== 'handleRequest' && \method_exists($this, $method)) {
+			$annotationReader = new MethodAnnotationReader($this, $method);
+			if ($annotationReader->hasAnnotation('SubsonicAPI')) {
+				return $this->$method();
+			}
 		}
-		else {
-			$this->logger->log("Request $method not supported", 'warn');
-			return $this->subsonicErrorResponse(70, "Requested action $method is not supported");
-		}
+
+		$this->logger->log("Request $method not supported", 'warn');
+		return $this->subsonicErrorResponse(70, "Requested action $method is not supported");
 	}
 
 	/* -------------------------------------------------------------------------
 	 * REST API methods
 	 *------------------------------------------------------------------------*/
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function ping() {
 		return $this->subsonicResponse([]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getLicense() {
 		return $this->subsonicResponse([
 			'license' => [
@@ -130,6 +138,9 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getMusicFolders() {
 		// Only single root folder is supported
 		return $this->subsonicResponse([
@@ -140,6 +151,9 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getIndexes() {
 		$artists = $this->artistBusinessLayer->findAll($this->userId, SortBy::Name);
 
@@ -159,6 +173,9 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['indexes' => ['index' => $result]]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getMusicDirectory() {
 		$id = $this->request->getParam('id');
 		
@@ -169,6 +186,9 @@ class SubsonicController extends Controller {
 		}
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getAlbumList() {
 		$type = $this->request->getParam('type');
 		$size = $this->request->getParam('size', 10);
@@ -190,6 +210,9 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['albumList' => ['album' => $albums]]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getRandomSongs() {
 		return $this->subsonicResponse([
 			'randomSongs' => ['song' => [
@@ -206,6 +229,9 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getCoverArt() {
 		$id = $this->request->getParam('id');
 		$userFolder = $this->rootFolder->getUserFolder($this->userId);
@@ -222,11 +248,17 @@ class SubsonicController extends Controller {
 		return $this->subsonicErrorResponse(70, 'album has no cover');
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function stream() {
 		// We don't support transcaoding, so 'stream' and 'download' act identically
 		return $this->download();
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
 	private function download() {
 		$id = $this->request->getParam('id');
 		$trackId = \explode('-', $id)[1]; // get rid of 'track-' prefix

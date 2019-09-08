@@ -1,5 +1,4 @@
 <?php
-
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at https://github.com/JamesHeinrich/getID3       //
@@ -251,7 +250,7 @@ class getID3
 	 */
 	protected $startup_warning = '';
 
-	const VERSION           = '1.9.16-201810171314';
+	const VERSION           = '1.9.17-201902071234';
 	const FREAD_BUFFER_SIZE = 32768;
 
 	const ATTACHMENTS_NONE   = false;
@@ -406,7 +405,7 @@ class getID3
 	 *
 	 * @throws getid3_exception
 	 */
-	public function openfile($filename, $filesize=null) {
+	public function openfile($filename, $filesize=null, $fp=null) {
 		try {
 			if (!empty($this->startup_error)) {
 				throw new getid3_exception($this->startup_error);
@@ -433,7 +432,9 @@ class getID3
 
 			// open local file
 			//if (is_readable($filename) && is_file($filename) && ($this->fp = fopen($filename, 'rb'))) { // see https://www.getid3.org/phpBB3/viewtopic.php?t=1720
-			if ((is_readable($filename) || file_exists($filename)) && is_file($filename) && ($this->fp = fopen($filename, 'rb'))) {
+			if (($fp != null) && ((get_resource_type($fp) == 'file') || (get_resource_type($fp) == 'stream'))) {
+				$this->fp = $fp;
+			} elseif ((is_readable($filename) || file_exists($filename)) && is_file($filename) && ($this->fp = fopen($filename, 'rb'))) {
 				// great
 			} else {
 				$errormessagelist = array();
@@ -514,9 +515,9 @@ class getID3
 	 *
 	 * @return array
 	 */
-	public function analyze($filename, $filesize=null, $original_filename='') {
+	public function analyze($filename, $filesize=null, $original_filename='', $fp=null) {
 		try {
-			if (!$this->openfile($filename, $filesize)) {
+			if (!$this->openfile($filename, $filesize, $fp)) {
 				return $this->info;
 			}
 
@@ -1252,6 +1253,16 @@ class getID3
 							'fail_ape'  => 'ERROR',
 						),
 
+				// XZ   - data         - XZ compressed data
+				'xz'  => array(
+							'pattern'   => '^\\xFD7zXZ\\x00',
+							'group'     => 'archive',
+							'module'    => 'xz',
+							'mime_type' => 'application/x-xz',
+							'fail_id3'  => 'ERROR',
+							'fail_ape'  => 'ERROR',
+						),
+
 
 				// Misc other formats
 
@@ -1323,7 +1334,7 @@ class getID3
 
 
 		if (preg_match('#\\.mp[123a]$#i', $filename)) {
-			// Too many mp3 encoders on the market put gabage in front of mpeg files
+			// Too many mp3 encoders on the market put garbage in front of mpeg files
 			// use assume format on these if format detection failed
 			$GetFileFormatArray = $this->GetFileFormatArray();
 			$info = $GetFileFormatArray['mp3'];
@@ -1427,6 +1438,7 @@ class getID3
 						}
 					}
 					if ($tag_key == 'picture') {
+						// pictures can take up a lot of space, and we don't need multiple copies of them; let there be a single copy in [comments][picture], and not elsewhere
 						unset($this->info[$comment_name]['comments'][$tag_key]);
 					}
 				}
@@ -1440,6 +1452,11 @@ class getID3
 
 				if ($this->option_tags_html) {
 					foreach ($this->info['tags'][$tag_name] as $tag_key => $valuearray) {
+						if ($tag_key == 'picture') {
+							// Do not to try to convert binary picture data to HTML
+							// https://github.com/JamesHeinrich/getID3/issues/178
+							continue;
+						}
 						$this->info['tags_html'][$tag_name][$tag_key] = getid3_lib::recursiveMultiByteCharString2HTML($valuearray, $this->info[$comment_name]['encoding']);
 					}
 				}
@@ -1448,8 +1465,7 @@ class getID3
 
 		}
 
-		// pictures can take up a lot of space, and we don't need multiple copies of them
-		// let there be a single copy in [comments][picture], and not elsewhere
+		// pictures can take up a lot of space, and we don't need multiple copies of them; let there be a single copy in [comments][picture], and not elsewhere
 		if (!empty($this->info['tags'])) {
 			$unset_keys = array('tags', 'tags_html');
 			foreach ($this->info['tags'] as $tagtype => $tagarray) {
@@ -1824,16 +1840,14 @@ class getID3
 	 *
 	 * @return bool
 	 */
-    public static function is_writable ($filename) {
-        $ret = is_writable($filename);
-
-        if (!$ret) {
-            $perms = fileperms($filename);
-            $ret = ($perms & 0x0080) || ($perms & 0x0010) || ($perms & 0x0002);
-        }
-
-        return $ret;
-    }
+	public static function is_writable ($filename) {
+		$ret = is_writable($filename);
+		if (!$ret) {
+			$perms = fileperms($filename);
+			$ret = ($perms & 0x0080) || ($perms & 0x0010) || ($perms & 0x0002);
+		}
+		return $ret;
+	}
 
 }
 
@@ -1976,7 +1990,8 @@ abstract class getid3_handler
 		*/
 		$contents = '';
 		do {
-			if (($this->getid3->memory_limit > 0) && ($bytes > $this->getid3->memory_limit)) {
+			//if (($this->getid3->memory_limit > 0) && ($bytes > $this->getid3->memory_limit)) {
+			if (($this->getid3->memory_limit > 0) && (($bytes / $this->getid3->memory_limit) > 0.99)) { // enable a more-fuzzy match to prevent close misses generating errors like "PHP Fatal error: Allowed memory size of 33554432 bytes exhausted (tried to allocate 33554464 bytes)"
 				throw new getid3_exception('cannot fread('.$bytes.' from '.$this->ftell().') that is more than available PHP memory ('.$this->getid3->memory_limit.')', 10);
 			}
 			$part = fread($this->getid3->fp, $bytes);

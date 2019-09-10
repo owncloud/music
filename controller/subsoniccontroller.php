@@ -33,6 +33,7 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\XMLResponse;
 
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\Util;
@@ -97,6 +98,11 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	public function handleRequest($method) {
+		$this->format = $this->request->getParam('f', 'xml');
+		if ($this->format != 'json' && $this->format != 'xml') {
+			throw new SubsonicException("Unsupported format {$this->format}", 0);
+		}
+
 		// Allow calling all methods with or without the postfix ".view"
 		if (Util::endsWith($method, ".view")) {
 			$method = \substr($method, 0, -\strlen(".view"));
@@ -422,7 +428,13 @@ class SubsonicController extends Controller {
 	private function subsonicResponse($content, $status = 'ok') {
 		$content['status'] = $status; 
 		$content['version'] = self::API_VERSION;
-		return new JSONResponse(['subsonic-response' => $content]);
+		$responseData = ['subsonic-response' => $content];
+		
+		if ($this->format == 'json') {
+			return new JSONResponse($responseData);
+		} else {
+			return new XMLResponse($responseData);
+		}
 	}
 
 	public function subsonicErrorResponse($errorCode, $errorMessage) {

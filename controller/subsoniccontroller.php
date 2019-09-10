@@ -162,7 +162,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getIndexes() {
-		$artists = $this->artistBusinessLayer->findAll($this->userId, SortBy::Name);
+		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
 
 		$indexes = [];
 		foreach ($artists as $artist) {
@@ -358,7 +358,7 @@ class SubsonicController extends Controller {
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 		$artistName = $artist->getNameString($this->l10n);
-		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
 
 		$children = [];
 		foreach ($albums as $album) {

@@ -43,6 +43,21 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string $userId
+	 * @param SortBy $sortBy sort order of the result set
+	 * @return Artist[]
+	 */
+	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+		$sql = 'SELECT DISTINCT `artist`.* FROM `*PREFIX*music_artists` `artist` '.
+				'INNER JOIN `*PREFIX*music_albums` `album` '.
+				'ON `artist`.`id` = `album`.`album_artist_id` '.
+				'WHERE `artist`.`user_id` = ? '.
+				(($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`artist`.`name`) ' : '');
+		$params = [$userId];
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
 	 * @param integer[] $artistIds
 	 * @param string $userId
 	 * @return Artist[]

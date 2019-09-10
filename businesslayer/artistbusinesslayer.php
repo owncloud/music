@@ -29,6 +29,16 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Finds all artists who have at least one album
+	 * @param string $userId the name of the user
+	 * @param SortBy $sortBy sort order of the result set
+	 * @return \OCA\Music\Db\Artist[] artists
+	 */
+	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
+	}
+
+	/**
 	 * Returns all artists with the given ids
 	 * @param array $artistIds the ids of the artists
 	 * @param string $userId the name of the user

@@ -120,6 +120,20 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns albums of a specified artist
+	 * The artist must album_artist on the album, artists of individual tracks are not considered
+	 *
+	 * @param integer $artistId ID of the artist
+	 * @param string $userId the user ID
+	 * @return Album[]
+	 */
+	public function findAllByAlbumArtist($artistId, $userId) {
+		$sql = $this->makeSelectQuery('AND `album`.`album_artist_id` = ?');
+		$params = [$userId, $artistId];
+		return $this->findEntities($sql, $params);
+	}
+
+	/**
 	 * returns album that matches a name, a disc number and an album artist ID
 	 *
 	 * @param string|null $albumName name of the album

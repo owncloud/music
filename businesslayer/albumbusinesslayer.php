@@ -55,12 +55,22 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all albums filtered by artist
+	 * Returns all albums filtered by artist (both album and track artists are considered)
 	 * @param string $artistId the id of the artist
 	 * @return Album[] albums
 	 */
 	public function findAllByArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
+		return $this->injectArtistsAndYears($albums, $userId);
+	}
+
+	/**
+	 * Returns all albums filtered by album artist
+	 * @param string $artistId the id of the artist
+	 * @return Album[] albums
+	 */
+	public function findAllByAlbumArtist($artistId, $userId) {
+		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
 		return $this->injectArtistsAndYears($albums, $userId);
 	}
 

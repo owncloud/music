@@ -370,14 +370,19 @@ class SubsonicController extends Controller {
 			$artistName = $artist->getNameString($this->l10n);
 		}
 
-		return [
+		$result = [
 			'id' => 'album-' . $album->getId(),
 			'parent' => 'artist-' . $artistId,
 			'title' => $album->getNameString($this->l10n),
 			'artist' => $artistName,
-			'isDir' => true,
-			'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId()
+			'isDir' => true
 		];
+
+		if (!empty($album->getCoverFileId())) {
+			$result['coverArt'] = $album->getId();
+		}
+
+		return $result;
 	}
 
 	private function trackAsChild($track, $album = null, $albumName = null) {
@@ -390,24 +395,32 @@ class SubsonicController extends Controller {
 		}
 
 		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-		return [
+		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
 			'title' => $track->getTitle(),
 			'artist' => $trackArtist->getNameString($this->l10n),
 			'isDir' => false,
-			'coverArt' => empty($album->getCoverFileId()) ? '' : $album->getId(),
 			'album' => $albumName,
-			'track' => $track->getNumber() ?: 0,
 			//'genre' => '',
 			'year' => $track->getYear(),
-			'size' => 0,
+			//'size' => 0,
 			'contentType' => $track->getMimetype(),
 			//'suffix' => '',
 			'duration' => $track->getLength() ?: 0,
-			'bitRate' => $track->getBitrate() ?: 0,
+			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
 			//'path' => ''
 		];
+
+		if (!empty($album->getCoverFileId())) {
+			$result['coverArt'] = $album->getId();
+		}
+
+		if ($track->getNumber() !== null) {
+			$result['track'] = $track->getNumber();
+		}
+
+		return $result;
 	}
 
 	private static function randomItems($itemArray, $count) {

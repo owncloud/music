@@ -181,7 +181,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getMusicDirectory() {
-		$id = $this->request->getParam('id');
+		$id = $this->getRequiredParam('id');
 
 		if (Util::startsWith($id, 'artist-')) {
 			return $this->doGetMusicDirectoryForArtist($id);
@@ -194,7 +194,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getAlbumList() {
-		$type = $this->request->getParam('type');
+		$type = $this->getRequiredParam('type');
 		$size = $this->request->getParam('size', 10);
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
 		// $offset = $this->request->getParam('offset', 0); parameter not supported for now
@@ -233,7 +233,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getCoverArt() {
-		$id = $this->request->getParam('id');
+		$id = $this->getRequiredParam('id');
 		$userFolder = $this->rootFolder->getUserFolder($this->userId);
 
 		try {
@@ -260,7 +260,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function download() {
-		$id = $this->request->getParam('id');
+		$id = $this->getRequiredParam('id');
 		$trackId = \explode('-', $id)[1]; // get rid of 'track-' prefix
 
 		try {
@@ -282,7 +282,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function search2() {
-		$query = $this->request->getParam('query');
+		$query = $this->getRequiredParam('query');
 		$artistCount = $this->request->getParam('artistCount', 20);
 		$artistOffset = $this->request->getParam('artistOffset', 0);
 		$albumCount = $this->request->getParam('albumCount', 20);
@@ -312,9 +312,46 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['searchResult2' => $results]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getPlaylists() {
+		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
+
+		return $this->subsonicResponse(['playlists' =>
+			['playlist' => \array_map([$this, 'playlistAsChild'], $playlists)]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getPlaylist() {
+		$id = $this->getRequiredParam('id');
+		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
+		$trackIds = $playlist->getTrackIdsAsArray();
+
+		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $this->userId);
+
+		$playlistNode = $this->playlistAsChild($playlist);
+		$playlistNode['entry'] = \array_map([$this, 'trackAsChild'], $tracks);
+
+		return $this->subsonicResponse(['playlist' => $playlistNode]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
+
+	private function getRequiredParam($paramName) {
+		$param = $this->request->getParam($paramName);
+
+		if ($param === null) {
+			throw new SubsonicException("Required parameter '$paramName' missing", 10);
+		}
+
+		return $param;
+	}
 
 	private function doGetMusicDirectoryForArtist($id) {
 		$artistId = \explode('-', $id)[1]; // get rid of 'artist-' prefix
@@ -421,6 +458,20 @@ class SubsonicController extends Controller {
 		}
 
 		return $result;
+	}
+
+	private function playlistAsChild($playlist) {
+		return [
+			'id' => $playlist->getId(),
+			'name' => $playlist->getName(),
+			'owner' => $this->userId,
+			'public' => false,
+			'songCount' => $playlist->getTrackCount(),
+			// comment => '',
+			// duration => '',
+			// created => '',
+			// coverArt => ''
+		];
 	}
 
 	private static function randomItems($itemArray, $count) {

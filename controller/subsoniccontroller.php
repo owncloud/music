@@ -329,9 +329,7 @@ class SubsonicController extends Controller {
 	private function getPlaylist() {
 		$id = $this->getRequiredParam('id');
 		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
-
-		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $this->userId);
+		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 
 		$playlistNode = $this->playlistAsChild($playlist);
 		$playlistNode['entry'] = \array_map([$this, 'trackAsChild'], $tracks);

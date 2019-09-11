@@ -347,31 +347,15 @@ class AmpacheController extends Controller {
 	}
 
 	protected function playlist_songs($listId, $auth) {
-		$userId = $this->ampacheUser->getUserId();
-
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
 			return $this->songs(null, false, null, null, $auth);
 		}
-
-		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
-		$trackIds = $playlist->getTrackIdsAsArray();
-		$tracks = $this->trackBusinessLayer->findById($trackIds, $userId);
-
-		// The $tracks contains the songs in unspecified order and with no duplicates.
-		// Build a new array where the tracks are in the same order as in $trackIds.
-		$tracksById = [];
-		foreach ($tracks as $track) {
-			$tracksById[$track->getId()] = $track;
+		else {
+			$userId = $this->ampacheUser->getUserId();
+			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId);
+			$this->injectArtistAndAlbum($playlistTracks);
+			return $this->renderSongs($playlistTracks, $auth);
 		}
-		$playlistTracks = [];
-		foreach ($trackIds as $trackId) {
-			$track = $tracksById[$trackId];
-			$track->setNumber(\count($playlistTracks) + 1); // override track # with the ordinal on the list
-			$playlistTracks[] = $track;
-		}
-
-		$this->injectArtistAndAlbum($tracks);
-		return $this->renderSongs($playlistTracks, $auth);
 	}
 
 	protected function play($trackId) {

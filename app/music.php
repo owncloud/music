@@ -207,6 +207,7 @@ class Music extends App {
 		$container->registerService('PlaylistBusinessLayer', function ($c) {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('Logger')
 			);
 		});

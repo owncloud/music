@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018, 2019
  */
 
 .invisible {
@@ -20,7 +20,12 @@
 	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
-#music-user h3 {
+#music-user h1 {
+	font-size: 32px;
+}
+
+#music-user h2 {
+	font-size: 22px;
 	margin-top: 40px;
 }
 

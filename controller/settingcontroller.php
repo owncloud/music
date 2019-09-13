@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 namespace OCA\Music\Controller;
@@ -91,6 +91,7 @@ class SettingController extends Controller {
 		return [
 			'path' => $this->getPath(),
 			'ampacheUrl' => $this->getAmpacheUrl(),
+			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),
 			'appVersion' => $this->getAppVersion(),
 			'user' => $this->userId
@@ -105,6 +106,12 @@ class SettingController extends Controller {
 	private function getAmpacheUrl() {
 		return \str_replace('/server/xml.server.php', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache')));
+	}
+
+	private function getSubsonicUrl() {
+		return \str_replace('/rest/dummy', '',
+				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
+						'music.subsonic.handleRequest', ['method' => 'dummy'])));
 	}
 
 	private function getAmpacheKeys() {

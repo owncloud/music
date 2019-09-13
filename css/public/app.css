@@ -653,7 +653,12 @@ body:not(.snapjs-left) #controls.taller-header {
 	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
-#music-user h3 {
+#music-user h1 {
+	font-size: 32px;
+}
+
+#music-user h2 {
+	font-size: 22px;
 	margin-top: 40px;
 }
 

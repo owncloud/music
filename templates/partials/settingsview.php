@@ -1,5 +1,5 @@
 <div id="music-user" ng-show="!loading">
-	<h2 translate>Settings</h2>
+	<h1 translate>Settings</h1>
 	<div>
 		<div class="label-container">
 			<label for="music-path" translate>Path to your music collection</label>:
@@ -22,16 +22,21 @@
 		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues">issues</a>.</em></p>
 	</div>
 
-	<h3>Ampache</h3>
+	<h2 translate>Ampache and Subsonic</h2>
+	<div translate>You can browse and play your music collection from external applications using either Ampache or Subsonic API.</div>
 	<div class="warning" translate>
-		Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href="https://github.com/owncloud/music/issues/60">issue</a>. I would also like to have a list of clients to test with. Thanks
+		Note that Music is not compatible with all Ampahce/Subsonic clients. Check the tested Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
 	</div>
 	<div>
 		<code ng-bind="settings.ampacheUrl"></code><br />
 		<em translate>Use this address to browse your music collection from any Ampache compatible player.</em> <em translate>If this URL doesn't work try to append '/server/xml.server.php'.</em>
 	</div>
+	<div>
+		<code ng-bind="settings.subsonicUrl"></code><br />
+		<em translate>Use this address to browse your music collection from any Subsonic compatible player.</em>
+	</div>
 	<div translate>
-		Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime.
+		Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime.
 	</div>
 	<table id="music-ampache-keys" class="grid" ng-show="settings.ampacheKeys.length">
 		<tr class="head">
@@ -51,9 +56,9 @@
 		<input type="text" id="music-ampache-description" ng-model="ampacheDescription"
 			placeholder="{{ 'Description (e.g. App name)' | translate }}" ng-enter="addAPIKey()"/>
 		<button translate ng-click="addAPIKey()">Generate API password</button>
-		<span style="color:red" ng-show="errorAmpache" translate>Failed to generated new Ampache key</span>
+		<span style="color:red" ng-show="errorAmpache" translate>Failed to generate new Ampache/Subsonic password</span>
 		<div id="music-password-info" class="info" ng-show="ampachePassword">
-			<span translate>Use the following credentials to connect to this Ampache instance.</span>
+			<span translate>Use the following credentials to connect to this Ampache/Subsonic instance.</span>
 			<dl>
 				<dt translate>Username:</dt><dd>{{ settings.user }}</dd>
 				<dt translate>Password:</dt><dd>{{ ampachePassword }}</dd>
@@ -61,7 +66,7 @@
 		</div>
 	</div>
 
-	<h3 translate>About</h3>
+	<h2 translate>About</h2>
 	<div>
 		<p>
 			<img class="logotype" src="<?php p(OCP\Template::image_path('music', 'logo/music_logotype_horizontal.svg')) ?>" />

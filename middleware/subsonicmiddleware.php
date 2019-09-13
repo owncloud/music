@@ -16,7 +16,7 @@ use \OCP\IRequest;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
-
+use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Util;
 
 
@@ -28,9 +28,11 @@ use \OCA\Music\Utility\Util;
 class SubsonicMiddleware extends Middleware {
 	private $request;
 	private $isSubsonicCall;
+	private $userMapper;
 
-	public function __construct(IRequest $request) {
+	public function __construct(IRequest $request, AmpacheUserMapper $userMapper) {
 		$this->request = $request;
+		$this->userMapper = $userMapper;
 	}
 
 	/**
@@ -49,22 +51,41 @@ class SubsonicMiddleware extends Middleware {
 		$this->$isSubsonicCall = $annotationReader->hasAnnotation('SubsonicAPI');
 
 		if ($this->$isSubsonicCall) {
-			$user = $this->request->u;
-			$pass = $this->request->p;
+			$user = $this->request->getParam('u');
+			$pass = $this->request->getParam('p');
+
+			if ($user === null || $pass === null) {
+				throw new SubsonicException('Required credentials missing', 10);
+			}
 
 			// The password may be given in hexadecimal format
 			if (Util::startsWith($pass, 'enc:')) {
 				$pass = \hex2bin(\substr($pass, \strlen('enc:')));
 			}
 
-			// Dummy implementation: allow only single test account
-			if ($user != 'root' || $pass != 'Test123') {
+			if ($this->credentialsAreValid($user, $pass)) {
+				$controller->setAuthenticatedUser($user);
+			} else {
 				throw new SubsonicException('Invalid Login', 40);
 			}
-			else {
-				$controller->setAuthenticatedUser($user);
+		}
+	}
+
+	/**
+	 * @param string $user Username
+	 * @param string $pass Password
+	 * @return boolean
+	 */
+	private function credentialsAreValid($user, $pass) {
+		$hashes = $this->userMapper->getPasswordHashes($user);
+
+		foreach ($hashes as $hash) {
+			if ($hash === \hash('sha256', $pass)) {
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/**

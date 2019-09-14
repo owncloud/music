@@ -25,7 +25,11 @@ class TrackMapper extends BaseMapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQueryWithoutUserId($condition) {
-		return 'SELECT * FROM `*PREFIX*music_tracks` `track` WHERE ' . $condition;
+		return 'SELECT `track`.*, `file`.`name` AS `filename`, `file`.`size` '.
+				'FROM `*PREFIX*music_tracks` `track` '.
+				'INNER JOIN `*PREFIX*filecache` `file` '.
+				'ON `track`.`file_id` = `file`.`fileid` '.
+				'WHERE ' . $condition;
 	}
 
 	/**

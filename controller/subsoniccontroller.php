@@ -14,11 +14,9 @@ namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
@@ -31,7 +29,6 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\SortBy;
 
-use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Http\XMLResponse;
 
@@ -439,9 +436,9 @@ class SubsonicController extends Controller {
 			'album' => $albumName,
 			//'genre' => '',
 			'year' => $track->getYear(),
-			//'size' => 0,
+			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),
-			//'suffix' => '',
+			'suffix' => \end(\explode('.', $track->getFilename())),
 			'duration' => $track->getLength() ?: 0,
 			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
 			//'path' => ''

@@ -41,6 +41,10 @@ use \OCP\AppFramework\Db\Entity;
  * @method setMimetype(string $mimetype)
  * @method string getUserId()
  * @method setUserId(string $userId)
+ * @method string getFilename()
+ * @method setFilename(string $filename)
+ * @method int getSize()
+ * @method setSize(int $size)
  */
 class Track extends Entity {
 	public $title;
@@ -57,6 +61,8 @@ class Track extends Entity {
 	public $mimetype;
 	public $userId;
 	public $mbid;
+	public $filename;
+	public $size;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -66,6 +72,7 @@ class Track extends Entity {
 		$this->addType('length', 'int');
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');
+		$this->addType('size', 'int');
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) {

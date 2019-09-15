@@ -13,6 +13,7 @@
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
@@ -50,6 +51,8 @@ class SubsonicController extends Controller {
 	private $coverHelper;
 	private $logger;
 	private $userId;
+	private $format;
+	private $callback;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -96,8 +99,15 @@ class SubsonicController extends Controller {
 	 */
 	public function handleRequest($method) {
 		$this->format = $this->request->getParam('f', 'xml');
-		if ($this->format != 'json' && $this->format != 'xml') {
+		$this->callback = $this->request->getParam('callback');
+
+		if ($this->format != 'json' && $this->format != 'xml' && $this->format != 'jsonp') {
 			throw new SubsonicException("Unsupported format {$this->format}", 0);
+		}
+
+		if ($this->format === 'jsonp' && $this->callback === null) {
+			$this->format = 'json';
+			throw new SubsonicException("Argument 'callback' is required with jsonp format", 10);
 		}
 
 		// Allow calling all methods with or without the postfix ".view"
@@ -488,12 +498,18 @@ class SubsonicController extends Controller {
 		$content['status'] = $status; 
 		$content['version'] = self::API_VERSION;
 		$responseData = ['subsonic-response' => $content];
-		
+
 		if ($this->format == 'json') {
-			return new JSONResponse($responseData);
+			$response = new JSONResponse($responseData);
+		} else if ($this->format == 'jsonp') {
+			$responseData = \json_encode($responseData);
+			$response = new DataDisplayResponse("{$this->callback}($responseData);");
+			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');
 		} else {
-			return new XMLResponse($responseData);
+			$response = new XMLResponse($responseData);
 		}
+
+		return $response;
 	}
 
 	public function subsonicErrorResponse($errorCode, $errorMessage) {

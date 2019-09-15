@@ -51,6 +51,22 @@ class Util {
 	}
 
 	/**
+	 * Truncate the given string to maximum length, appendig ellipsis character
+	 * if the truncation happened. Also null argument may be safely passed and
+	 * it remains unaltered.
+	 * @param string|null $string
+	 * @param int $maxLength
+	 * @return string|null
+	 */
+	public static function truncate($string, $maxLength) {
+		if ($string === null) {
+			return null;
+		} else {
+			return \mb_strimwidth($string, 0, $maxLength, "\u{2026}");
+		}
+	}
+
+	/**
 	 * Test if given string starts with another given string
 	 * @param string $string
 	 * @param string $potentialStart

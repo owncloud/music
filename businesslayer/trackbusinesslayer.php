@@ -191,7 +191,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$title, $number, $year, $artistId, $albumId, $fileId,
 			$mimetype, $userId, $length=null, $bitrate=null) {
 		$track = new Track();
-		$track->setTitle($title);
+		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
 		$track->setYear($year);
 		$track->setArtistId($artistId);

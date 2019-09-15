@@ -25,6 +25,7 @@ use \OCP\Security\ISecureRandom;
 
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\Util;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
@@ -116,12 +117,17 @@ class SettingController extends Controller {
 		return \OCP\App::getAppVersion($this->appname);
 	}
 
+	private function storeUserKey($description, $password) {
+		$hash = \hash('sha256', $password);
+		$description = Util::truncate($description, 64); // some DB setups can't truncate automatically to column max size
+		return $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
+	}
+
 	/**
 	 * @NoAdminRequired
 	 */
 	public function addUserKey($description, $password) {
-		$hash = \hash('sha256', $password);
-		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
+		$id = $this->storeUserKey($description, $password);
 		$success = ($id !== null);
 		return new JSONResponse(['success' => $success, 'id' => $id]);
 	}
@@ -144,8 +150,7 @@ class SettingController extends Controller {
 			$length,
 			ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_UPPER . ISecureRandom::CHAR_DIGITS);
 
-		$hash = \hash('sha256', $password);
-		$id = $this->ampacheUserMapper->addUserKey($this->userId, $hash, $description);
+		$id = $this->storeUserKey($description, $password);
 
 		if ($id === null) {
 			return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, 'Error while saving the credentials');

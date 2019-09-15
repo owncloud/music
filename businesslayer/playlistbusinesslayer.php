@@ -21,6 +21,8 @@ use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Playlist;
 
+use \OCA\Music\Utility\Util;
+
 class PlaylistBusinessLayer extends BusinessLayer {
 	private $logger;
 
@@ -58,7 +60,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function create($name, $userId) {
 		$playlist = new Playlist();
-		$playlist->setName($name);
+		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
 
 		return $this->mapper->insert($playlist);
@@ -66,7 +68,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	public function rename($name, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
-		$playlist->setName($name);
+		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}

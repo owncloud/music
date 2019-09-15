@@ -137,7 +137,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateAlbum($name, $discnumber, $albumArtistId, $userId) {
 		$album = new Album();
-		$album->setName($name);
+		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setDisk($discnumber);
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);

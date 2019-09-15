@@ -18,6 +18,8 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
 
+use \OCA\Music\Utility\Util;
+
 class ArtistBusinessLayer extends BusinessLayer {
 	private $logger;
 
@@ -44,7 +46,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function addOrUpdateArtist($name, $userId) {
 		$artist = new Artist();
-		$artist->setName($name);
+		$artist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$artist->setUserId($userId);
 		$artist->setHash(\hash('md5', \mb_strtolower($name)));
 		return $this->mapper->insertOrUpdate($artist);

@@ -268,7 +268,7 @@ class SubsonicController extends Controller {
 	 */
 	private function download() {
 		$id = $this->getRequiredParam('id');
-		$trackId = \explode('-', $id)[1]; // get rid of 'track-' prefix
+		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 
 		try {
 			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
@@ -344,6 +344,20 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse(['playlist' => $playlistNode]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createPlaylist() {
+		$name = $this->getRequiredParam('name');
+		$songIds = $this->getRepeatedParam('songId');
+		$songIds = \array_map('self::ripIdPrefix', $songIds);
+
+		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
+		$this->playlistBusinessLayer->addTracks($songIds, $playlist->getId(), $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
@@ -358,8 +372,54 @@ class SubsonicController extends Controller {
 		return $param;
 	}
 
+	/** 
+	 * Get values for parameter which may be present multiple times in the query
+	 * string or POST data.
+	 * @param string $paramName
+	 * @return string[]
+	 */
+	private function getRepeatedParam($paramName) {
+		// We can't use the IRequest object nor $_GET and $_POST to get the data
+		// because all of these are based to the idea of unique parameter names.
+		// If the same name is repeated, only the last value is saved. Hence, we
+		// need to parse the raw data manually.
+
+		// query string is always present (although it could be empty)
+		$values = $this->parseRepeatedKeyValues($paramName, $_SERVER['QUERY_STRING']);
+
+		// POST data is available if the method is POST
+		if ($this->request->getMethod() == 'POST') {
+			$values = \array_merge($values,
+					$this->parseRepeatedKeyValues($paramName, file_get_contents('php://input')));
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Parse a string like "someKey=value1&someKey=value2&anotherKey=valueA&someKey=value3"
+	 * and return an array of values for the given key
+	 * @param string $key
+	 * @param string $data
+	 */
+	private function parseRepeatedKeyValues($key, $data) {
+		$result = [];
+
+		$keyValuePairs = \explode('&', $data);
+
+		foreach ($keyValuePairs as $pair) {
+			$keyAndValue = \explode('=', $pair);
+
+			if ($keyAndValue[0] == $key) {
+				$result[] = $keyAndValue[1];
+			}
+		}
+
+		return $result;
+	}
+
 	private function doGetMusicDirectoryForArtist($id) {
-		$artistId = \explode('-', $id)[1]; // get rid of 'artist-' prefix
+		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 		$artistName = $artist->getNameString($this->l10n);
@@ -381,7 +441,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function doGetMusicDirectoryForAlbum($id) {
-		$albumId = \explode('-', $id)[1]; // get rid of 'album-' prefix
+		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 		$albumName = $album->getNameString($this->l10n);
@@ -477,6 +537,15 @@ class SubsonicController extends Controller {
 			// created => '',
 			// coverArt => ''
 		];
+	}
+
+	/**
+	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
+	 * @param string $id
+	 * @return string
+	 */
+	private static function ripIdPrefix($id) {
+		return \explode('-', $id)[1];
 	}
 
 	private static function randomItems($itemArray, $count) {

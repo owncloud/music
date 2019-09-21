@@ -56,6 +56,7 @@ use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\UserMusicFolder;
 
 class Music extends App {
 	public function __construct(array $urlParams=[]) {
@@ -145,8 +146,7 @@ class Music extends App {
 				$c->query('AmpacheUserMapper'),
 				$c->query('Scanner'),
 				$c->query('UserId'),
-				$c->query('UserFolder'),
-				$c->query('Config'),
+				$c->query('UserMusicFolder'),
 				$c->query('SecureRandom'),
 				$c->query('URLGenerator')
 			);
@@ -392,9 +392,17 @@ class Music extends App {
 				$c->query('CoverHelper'),
 				$c->query('Logger'),
 				$c->query('Maintenance'),
-				$c->query('Config'),
-				$c->query('AppName'),
+				$c->query('UserMusicFolder'),
 				$c->query('RootFolder')
+			);
+		});
+
+		$container->registerService('UserMusicFolder', function ($c) {
+			return new UserMusicFolder(
+				$c->query('AppName'),
+				$c->query('Config'),
+				$c->query('RootFolder'),
+				$c->query('Logger')
 			);
 		});
 

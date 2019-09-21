@@ -331,7 +331,7 @@ class ApiController extends Controller {
 	 */
 	public function getScanState() {
 		return new JSONResponse([
-			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId, $this->userFolder),
+			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId),
 			'scannedCount' => $this->trackBusinessLayer->count($this->userId)
 		]);
 	}

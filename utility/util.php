@@ -85,4 +85,17 @@ class Util {
 	public static function endsWith($string, $potentialEnd) {
 		return \substr($string, -\strlen($potentialEnd)) === $potentialEnd;
 	}
+
+	/**
+	 * @param Folder $parentFolder
+	 * @param string $relativePath
+	 * @return Folder
+	 */
+	public static function getFolderFromRelativePath($parentFolder, $relativePath) {
+		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
+			return $parentFolder->get($relativePath);
+		} else {
+			return $parentFolder;
+		}
+	}
 }

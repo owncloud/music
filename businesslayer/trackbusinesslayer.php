@@ -44,12 +44,22 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by album
-	 * @param string $albumId the id of the track
+	 * @param string $albumId the id of the album
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null) {
 		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
+	}
+
+	/**
+	 * Returns all tracks filtered by parent folder
+	 * @param integer $folderId the id of the track
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track[] tracks
+	 */
+	public function findAllByFolder($folderId, $userId) {
+		return $this->mapper->findAllByFolder($folderId, $userId);
 	}
 
 	/**

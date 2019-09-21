@@ -83,6 +83,18 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param integer $folderId
+	 * @param string $userId
+	 * @return Track[]
+	 */
+	public function findAllByFolder($folderId, $userId) {
+		$sql = $this->makeSelectQuery('AND `file`.`parent` = ? ');
+		$params = [$userId, $folderId];
+		$sql .= 'ORDER BY LOWER(`track`.`title`)';
+		return $this->findEntities($sql, $params);
+	}
+
+	/**
 	 * @param string $userId
 	 * @return int[]
 	 */

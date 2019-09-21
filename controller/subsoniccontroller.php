@@ -15,6 +15,9 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\Files\File;
+use \OCP\Files\Folder;
+use \OCP\Files\IRootFolder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -33,9 +36,11 @@ use \OCA\Music\Db\SortBy;
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Http\XMLResponse;
 
+use \OCA\Music\Middleware\SubsonicException;
+
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
-use OCA\Music\Middleware\SubsonicException;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.4.0';
@@ -47,6 +52,7 @@ class SubsonicController extends Controller {
 	private $library;
 	private $urlGenerator;
 	private $rootFolder;
+	private $userMusicFolder;
 	private $l10n;
 	private $coverHelper;
 	private $logger;
@@ -63,7 +69,8 @@ class SubsonicController extends Controller {
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
-								$rootFolder,
+								IRootFolder $rootFolder,
+								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -75,10 +82,8 @@ class SubsonicController extends Controller {
 		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
-
-		// used to deliver actual media file
 		$this->rootFolder = $rootFolder;
-
+		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
 	}
@@ -159,8 +164,8 @@ class SubsonicController extends Controller {
 		// Only single root folder is supported
 		return $this->subsonicResponse([
 			'musicFolders' => ['musicFolder' => [
-				['id' => 'root', 
-				'name' => $this->l10n->t('Music')]
+				['id' => 'artists', 'name' => $this->l10n->t('Artists')],
+				['id' => 'folders', 'name' => $this->l10n->t('Folders')]
 			]]
 		]);
 	}
@@ -169,19 +174,13 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getIndexes() {
-		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
+		$id = $this->request->getParam('musicFolderId');
 
-		$indexes = [];
-		foreach ($artists as $artist) {
-			$indexes[$artist->getIndexingChar()][] = $this->artistAsChild($artist);
+		if ($id === 'folders') {
+			return $this->getIndexesForFolders();
+		} else {
+			return $this->getIndexesForArtists();
 		}
-
-		$result = [];
-		foreach ($indexes as $indexChar => $bucketArtists) {
-			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
-		}
-
-		return $this->subsonicResponse(['indexes' => ['index' => $result]]);
 	}
 
 	/**
@@ -190,10 +189,12 @@ class SubsonicController extends Controller {
 	private function getMusicDirectory() {
 		$id = $this->getRequiredParam('id');
 
-		if (Util::startsWith($id, 'artist-')) {
-			return $this->doGetMusicDirectoryForArtist($id);
+		if (Util::startsWith($id, 'folder-')) {
+			return $this->getMusicDirectoryForFolder($id);
+		} elseif (Util::startsWith($id, 'artist-')) {
+			return $this->getMusicDirectoryForArtist($id);
 		} else {
-			return $this->doGetMusicDirectoryForAlbum($id);
+			return $this->getMusicDirectoryForAlbum($id);
 		}
 	}
 
@@ -276,10 +277,10 @@ class SubsonicController extends Controller {
 			return $this->subsonicErrorResponse(70, $e->getMessage());
 		}
 
-		$files = $this->rootFolder->getUserFolder($this->userId)->getById($track->getFileId());
+		$file = $this->getFilesystemNode($track->getFileId());
 
-		if (\count($files) === 1) {
-			return new FileResponse($files[0]);
+		if ($file instanceof File) {
+			return new FileResponse($file);
 		} else {
 			return $this->subsonicErrorResponse(70, 'file not found');
 		}
@@ -418,7 +419,71 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
-	private function doGetMusicDirectoryForArtist($id) {
+	private function getFilesystemNode($id) {
+		$nodes = $this->rootFolder->getUserFolder($this->userId)->getById($id);
+
+		if (\count($nodes) != 1) {
+			throw new SubsonicException('file not found', 70);
+		}
+
+		return $nodes[0];
+	}
+
+	private function getIndexesForFolders() {
+		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+	
+		return $this->subsonicResponse(['indexes' => ['index' => [
+				['name' => '*',
+				'artist' => [['id' => 'folder-' . $rootFolder->getId(), 'name' => $rootFolder->getName()]]]
+				]]]);
+	}
+	
+	private function getMusicDirectoryForFolder($id) {
+		$folderId = self::ripIdPrefix($id); // get rid of 'folder-' prefix
+		$folder = $this->getFilesystemNode($folderId);
+
+		if (!($folder instanceof Folder)) {
+			throw new SubsonicException("$id is not a valid folder", 70);
+		}
+
+		$nodes = $folder->getDirectoryListing();
+		$subFolders = \array_filter($nodes, function ($n) {
+			return $n instanceof Folder;
+		});
+		$tracks = $this->trackBusinessLayer->findAllByFolder($folderId, $this->userId);
+
+		$children = \array_merge(
+			\array_map([$this, 'folderAsChild'], $subFolders),
+			\array_map([$this, 'trackAsChild'], $tracks)
+		);
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'parent' => 'folder-' . $folder->getParent()->getId(),
+				'name' => $folder->getName(),
+				'child' => $children
+			]
+		]);
+	}
+
+	private function getIndexesForArtists() {
+		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
+	
+		$indexes = [];
+		foreach ($artists as $artist) {
+			$indexes[$artist->getIndexingChar()][] = $this->artistAsChild($artist);
+		}
+	
+		$result = [];
+		foreach ($indexes as $indexChar => $bucketArtists) {
+			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+		}
+	
+		return $this->subsonicResponse(['indexes' => ['index' => $result]]);
+	}
+
+	private function getMusicDirectoryForArtist($id) {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
@@ -433,14 +498,14 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse([
 			'directory' => [
 				'id' => $id,
-				'parent' => 'root',
+				'parent' => 'artists',
 				'name' => $artistName,
 				'child' => $children
 			]
 		]);
 	}
 
-	private function doGetMusicDirectoryForAlbum($id) {
+	private function getMusicDirectoryForAlbum($id) {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -457,6 +522,13 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	private function folderAsChild($folder) {
+		return [
+			'id' => 'folder-' . $folder->getId(),
+			'title' => $folder->getName(),
+			'isDir' => true
+		];
+	}
 	private function artistAsChild($artist) {
 		return [
 			'name' => $artist->getNameString($this->l10n),

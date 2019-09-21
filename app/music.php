@@ -174,6 +174,7 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
 				$c->query('RootFolder'),
+				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
 				$c->query('Logger')
 				);

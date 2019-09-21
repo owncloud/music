@@ -50,7 +50,11 @@ class SubsonicMiddleware extends Middleware {
 			$pass = $this->request->getParam('p');
 
 			if ($user === null || $pass === null) {
-				throw new SubsonicException('Required credentials missing', 10);
+				if ($this->request->getParam('t') !== null) {
+					throw new SubsonicException('Token-based authentication not supported', 41);
+				} else {
+					throw new SubsonicException('Required credentials missing', 10);
+				}
 			}
 
 			// The password may be given in hexadecimal format

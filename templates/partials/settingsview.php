@@ -23,16 +23,18 @@
 	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
-	<div translate>You can browse and play your music collection from external applications using either Ampache or Subsonic API.</div>
+	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>
 	<div class="warning" translate>
-		Note that Music is not compatible with all Ampahce/Subsonic clients. Check the tested Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
+		Note that Music may not be compatible with all Ampahce/Subsonic clients. Check list of verified Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
 	</div>
 	<div>
-		<code ng-bind="settings.ampacheUrl"></code><br />
+		<code id="ampache-url" ng-bind="settings.ampacheUrl"></code>
+		<a class="clipboardButton icon icon-clippy" ng-click="copyToClipboard('ampache-url')"></a><br />
 		<em translate>Use this address to browse your music collection from any Ampache compatible player.</em> <em translate>If this URL doesn't work try to append '/server/xml.server.php'.</em>
 	</div>
 	<div>
-		<code ng-bind="settings.subsonicUrl"></code><br />
+		<code id="subsonic-url" ng-bind="settings.subsonicUrl"></code>
+		<a class="clipboardButton icon icon-clippy" ng-click="copyToClipboard('subsonic-url')"></a><br />
 		<em translate>Use this address to browse your music collection from any Subsonic compatible player.</em>
 	</div>
 	<div translate>
@@ -60,8 +62,10 @@
 		<div id="music-password-info" class="info" ng-show="ampachePassword">
 			<span translate>Use the following credentials to connect to this Ampache/Subsonic instance.</span>
 			<dl>
-				<dt translate>Username:</dt><dd>{{ settings.user }}</dd>
-				<dt translate>Password:</dt><dd>{{ ampachePassword }}</dd>
+				<dt translate>Username:</dt>
+				<dd>{{ settings.user }}</dd>
+				<dt translate>Password:</dt>
+				<dd><span id="pw-label">{{ ampachePassword }}</span><a class="clipboardButton icon icon-clippy" ng-click="copyToClipboard('pw-label')"></a></dd>
 			</dl>
 		</div>
 	</div>

@@ -53,6 +53,10 @@
 	left: 5px;
 }
 
+#music-user .clipboardButton {
+	padding: 16px;
+}
+
 #music-user div {
 	margin: 10px 0;
 }

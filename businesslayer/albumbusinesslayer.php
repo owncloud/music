@@ -12,6 +12,8 @@
 
 namespace OCA\Music\BusinessLayer;
 
+use \OCP\AppFramework\Db\DoesNotExistException;
+
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
@@ -37,7 +39,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album album
 	 */
 	public function find($albumId, $userId) {
-		$album = $this->mapper->find($albumId, $userId);
+		$album = parent::find($albumId, $userId);
 		return $this->injectArtistsAndYears([$album], $userId)[0];
 	}
 
@@ -50,7 +52,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[] albums
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$albums = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
+		$albums = parent::findAll($userId, $sortBy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums, $userId, true);
 	}
 
@@ -130,9 +132,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	public function findAlbumOwner($albumId) {
-		$entities = $this->mapper->findById([$albumId]);
+		$entities = $this->findById([$albumId]);
 		if (\count($entities) != 1) {
-			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
+			throw new BusinessLayerException(
 					'Expected to find one album but got ' . \count($entities));
 		} else {
 			return $entities[0]->getUserId();
@@ -170,7 +172,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return boolean
 	 */
 	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
-		$albums = $this->mapper->findById([$albumId]);
+		$albums = $this->findById([$albumId]);
 		return (\count($albums) && \in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
 

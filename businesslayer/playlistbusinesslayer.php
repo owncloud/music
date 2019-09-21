@@ -15,8 +15,6 @@ namespace OCA\Music\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Playlist;

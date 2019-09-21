@@ -100,17 +100,16 @@ class SubsonicController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
-	 * @SubsonicAPI
 	 */
 	public function handleRequest($method) {
 		$this->format = $this->request->getParam('f', 'xml');
 		$this->callback = $this->request->getParam('callback');
 
-		if ($this->format != 'json' && $this->format != 'xml' && $this->format != 'jsonp') {
+		if (!\in_array($this->format, ['json', 'xml', 'jsonp'])) {
 			throw new SubsonicException("Unsupported format {$this->format}", 0);
 		}
 
-		if ($this->format === 'jsonp' && $this->callback === null) {
+		if ($this->format === 'jsonp' && empty($this->callback)) {
 			$this->format = 'json';
 			throw new SubsonicException("Argument 'callback' is required with jsonp format", 10);
 		}
@@ -120,9 +119,8 @@ class SubsonicController extends Controller {
 			$method = \substr($method, 0, -\strlen(".view"));
 		}
 
-		// Allow calling any functions annotated to be part of the API, except for
-		// recursive call back to this dispatcher function.
-		if ($method !== 'handleRequest' && \method_exists($this, $method)) {
+		// Allow calling any functions annotated to be part of the API
+		if (\method_exists($this, $method)) {
 			$annotationReader = new MethodAnnotationReader($this, $method);
 			if ($annotationReader->hasAnnotation('SubsonicAPI')) {
 				return $this->$method();
@@ -243,14 +241,10 @@ class SubsonicController extends Controller {
 	private function getCoverArt() {
 		$id = $this->getRequiredParam('id');
 		$userFolder = $this->rootFolder->getUserFolder($this->userId);
+		$coverData = $this->coverHelper->getCover($id, $this->userId, $userFolder);
 
-		try {
-			$coverData = $this->coverHelper->getCover($id, $this->userId, $userFolder);
-			if ($coverData !== null) {
-				return new FileResponse($coverData);
-			}
-		} catch (BusinessLayerException $e) {
-			return $this->subsonicErrorResponse(70, 'album not found');
+		if ($coverData !== null) {
+			return new FileResponse($coverData);
 		}
 
 		return $this->subsonicErrorResponse(70, 'album has no cover');
@@ -271,12 +265,7 @@ class SubsonicController extends Controller {
 		$id = $this->getRequiredParam('id');
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 
-		try {
-			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		} catch (BusinessLayerException $e) {
-			return $this->subsonicErrorResponse(70, $e->getMessage());
-		}
-
+		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		$file = $this->getFilesystemNode($track->getFileId());
 
 		if ($file instanceof File) {

@@ -15,7 +15,8 @@ namespace OCA\Music\Middleware;
 use \OCP\IRequest;
 use \OCP\AppFramework\Middleware;
 
-use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\Controller\SubsonicController;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Util;
 
@@ -27,7 +28,6 @@ use \OCA\Music\Utility\Util;
  */
 class SubsonicMiddleware extends Middleware {
 	private $request;
-	private $isSubsonicCall;
 	private $userMapper;
 
 	public function __construct(IRequest $request, AmpacheUserMapper $userMapper) {
@@ -36,21 +36,16 @@ class SubsonicMiddleware extends Middleware {
 	}
 
 	/**
-	 * This is run before any HTTP request handler method.
-	 * Need for Subsonic authentication checking is detected from the function
-	 * annotation 'SubsonicAPI'
+	 * This function is run before any HTTP request handler method, but it does
+	 * nothing if the call in question is not routed to SubsonicController. In
+	 * case of Subsonic call, this checks the user authentication.
 	 * 
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method
 	 * @throws SubsonicException when a security check fails
 	 */
 	public function beforeController($controller, $methodName) {
-		// get annotations from comments
-		$annotationReader = new MethodAnnotationReader($controller, $methodName);
-
-		$this->$isSubsonicCall = $annotationReader->hasAnnotation('SubsonicAPI');
-
-		if ($this->$isSubsonicCall) {
+		if ($controller instanceof SubsonicController) {
 			$user = $this->request->getParam('u');
 			$pass = $this->request->getParam('p');
 
@@ -89,21 +84,29 @@ class SubsonicMiddleware extends Middleware {
 	}
 
 	/**
-	 * If an SubsonicException is being caught, the appropiate subsonic
-	 * exception response is rendered
+	 * Catch SubsonicException and BusinessLayerExcpetion instances thrown when handling
+	 * Subsonic requests, and render the the appropiate Subsonic error response. Any other
+	 * exceptions are allowed to flow through, reaching eventually the default handler if
+	 * no-one else intercepts them. The default handler logs the error and returns response
+	 * code 500.
+	 * 
 	 * @param Controller $controller the controller that was being called
-	 * @param string $methodName the name of the method that was called on
-	 *                           the controller
+	 * @param string $methodName the name of the method that was called on the controller
 	 * @param \Exception $exception the thrown exception
 	 * @throws \Exception the passed in exception if it couldn't be handled
 	 * @return Response a Response object in case the exception could be handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
-		if ($exception instanceof SubsonicException && $this->$isSubsonicCall) {
-			return $controller->subsonicErrorResponse(
-					$exception->getCode(),
-					$exception->getMessage()
-			);
+		if ($controller instanceof SubsonicController) {
+			if ($exception instanceof SubsonicException) {
+				return $controller->subsonicErrorResponse(
+						$exception->getCode(),
+						$exception->getMessage()
+				);
+			}
+			elseif ($exception instanceof BusinessLayerException) {
+				return $controller->subsonicErrorResponse(70, 'Entity not found');
+			}
 		}
 		throw $exception;
 	}

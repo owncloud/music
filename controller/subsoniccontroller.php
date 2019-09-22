@@ -200,21 +200,44 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getAlbumList() {
-		$type = $this->getRequiredParam('type');
-		$size = $this->request->getParam('size', 10);
-		$size = \min($size, 500); // the API spec limits the maximum amount to 500
-		// $offset = $this->request->getParam('offset', 0); parameter not supported for now
-
-		$albums = [];
-		if ($type == 'random') {
-			$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-			$albums = self::randomItems($allAlbums, $size);
-		}
-		// TODO: support 'newest', 'highest', 'frequent', 'recent'
-
+		$albums = $this->albumsForGetAlbumList();
 		return $this->subsonicResponse(['albumList' =>
 				['album' => \array_map([$this, 'albumAsChild'], $albums)]
 		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getAlbumList2() {
+		/*
+		 *  According to the API specification, the difference between this and getAlbumList
+		 * should be that this function would organize albums according the metadata while
+		 * getAlbumList would organize them by folders. However, we organize by metadata
+		 * also in getAlbumList, because that's more natural for the Music app and many/most
+		 * clients do not support getAlbumList2.
+		 */
+		$albums = $this->albumsForGetAlbumList();
+		return $this->subsonicResponse(['albumList2' =>
+				['album' => \array_map([$this, 'albumToNewApi'], $albums)]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getAlbum() {
+		$id = $this->getRequiredParam('id');
+		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
+
+		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$albumName = $album->getNameString($this->l10n);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
+
+		$albumNode = $this->albumToNewApi($album);
+		$albumNode['song'] = \array_map([$this, 'trackToNewApi'], $tracks);
+
+		return $this->subsonicResponse(['album' => $albumNode]);
 	}
 
 	/**
@@ -548,6 +571,30 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
+	private function albumToNewApi($album, $artistName = null) {
+		$artistId = $album->getAlbumArtistId();
+
+		if (empty($artistName)) {
+			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artistName = $artist->getNameString($this->l10n);
+		}
+
+		$result = [
+			'id' => 'album-' . $album->getId(),
+			'artistId' => 'artist-' . $artistId,
+			'name' => $album->getNameString($this->l10n),
+			'artist' => $artistName,
+			'songCount' => $this->trackBusinessLayer->countByAlbum($album->getId()),
+			//'duration' => 0
+		];
+	
+		if (!empty($album->getCoverFileId())) {
+			$result['coverArt'] = $album->getId();
+		}
+	
+		return $result;
+	}
+
 	private function trackAsChild($track, $album = null, $albumName = null) {
 		$albumId = $track->getAlbumId();
 		if ($album == null) {
@@ -586,6 +633,48 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
+	private function trackToNewApi($track, $album = null, $albumName = null) {
+		$albumId = $track->getAlbumId();
+		if ($album == null) {
+			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		}
+		if (empty($albumName)) {
+			$albumName = $album->getNameString($this->l10n);
+		}
+
+		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+		$result = [
+			'id' => 'track-' . $track->getId(),
+			'parent' => 'album-' . $albumId,
+			'title' => $track->getTitle(),
+			'artist' => $trackArtist->getNameString($this->l10n),
+			'isDir' => false,
+			'album' => $albumName,
+			//'genre' => '',
+			'year' => $track->getYear(),
+			'size' => $track->getSize(),
+			'contentType' => $track->getMimetype(),
+			'suffix' => \end(\explode('.', $track->getFilename())),
+			'duration' => $track->getLength() ?: 0,
+			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
+			//'path' => '',
+			'isVideo' => false,
+			'albumId' => 'album-' . $albumId,
+			'artistId' => 'artist-' . $track->getArtistId(),
+			'type' => 'music',
+		];
+
+		if (!empty($album->getCoverFileId())) {
+			$result['coverArt'] = $album->getId();
+		}
+
+		if ($track->getNumber() !== null) {
+			$result['track'] = $track->getNumber();
+		}
+
+		return $result;
+	}
+
 	private function playlistAsChild($playlist) {
 		return [
 			'id' => $playlist->getId(),
@@ -598,6 +687,43 @@ class SubsonicController extends Controller {
 			// created => '',
 			// coverArt => ''
 		];
+	}
+
+	/**
+	 * Common logic for getAlbumList and getAlbumList2
+	 * @return Album[]
+	 */
+	private function albumsForGetAlbumList() {
+		$type = $this->getRequiredParam('type');
+		$size = $this->request->getParam('size', 10);
+		$size = \min($size, 500); // the API spec limits the maximum amount to 500
+		$offset = $this->request->getParam('offset', 0);
+
+		$albums = [];
+
+		switch ($type) {
+			case 'random':
+				$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
+				$albums = self::randomItems($allAlbums, $size);
+				// Note: offset is not supported on this type
+				break;
+			case 'alphabeticalByName':
+				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $size, $offset);
+				break;
+			case 'alphabeticalByArtist':
+			case 'newest':
+			case 'highest':
+			case 'frequent':
+			case 'recent':
+			case 'starred':
+			case 'byYear':
+			case 'byGenre':
+			default:
+				$this->logger->log("Album list type '$type' is not supported", 'warn');
+				break;
+		}
+
+		return $albums;
 	}
 
 	/**

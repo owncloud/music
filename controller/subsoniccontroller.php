@@ -202,7 +202,7 @@ class SubsonicController extends Controller {
 	private function getAlbumList() {
 		$albums = $this->albumsForGetAlbumList();
 		return $this->subsonicResponse(['albumList' =>
-				['album' => \array_map([$this, 'albumAsChild'], $albums)]
+				['album' => \array_map([$this, 'albumToOldApi'], $albums)]
 		]);
 	}
 
@@ -235,7 +235,7 @@ class SubsonicController extends Controller {
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
 
 		$albumNode = $this->albumToNewApi($album);
-		$albumNode['song'] = \array_map([$this, 'trackToNewApi'], $tracks);
+		$albumNode['song'] = \array_map([$this, 'trackToApi'], $tracks);
 
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
@@ -254,7 +254,7 @@ class SubsonicController extends Controller {
 		$tracks = self::randomItems($allTracks, $size);
 
 		return $this->subsonicResponse(['randomSongs' =>
-				['song' => \array_map([$this, 'trackAsChild'], $tracks)]
+				['song' => \array_map([$this, 'trackToApi'], $tracks)]
 		]);
 	}
 
@@ -320,13 +320,13 @@ class SubsonicController extends Controller {
 
 		$results = [];
 		if (!empty($artists)) {
-			$results['artist'] = \array_map([$this, 'artistAsChild'], $artists);
+			$results['artist'] = \array_map([$this, 'artistToApi'], $artists);
 		}
 		if (!empty($albums)) {
-			$results['album'] = \array_map([$this, 'albumAsChild'], $albums);
+			$results['album'] = \array_map([$this, 'albumToOldApi'], $albums);
 		}
 		if (!empty($tracks)) {
-			$results['song'] = \array_map([$this, 'trackAsChild'], $tracks);
+			$results['song'] = \array_map([$this, 'trackToApi'], $tracks);
 		}
 
 		return $this->subsonicResponse(['searchResult2' => $results]);
@@ -339,7 +339,7 @@ class SubsonicController extends Controller {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
 
 		return $this->subsonicResponse(['playlists' =>
-			['playlist' => \array_map([$this, 'playlistAsChild'], $playlists)]
+			['playlist' => \array_map([$this, 'playlistToApi'], $playlists)]
 		]);
 	}
 
@@ -351,8 +351,8 @@ class SubsonicController extends Controller {
 		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 
-		$playlistNode = $this->playlistAsChild($playlist);
-		$playlistNode['entry'] = \array_map([$this, 'trackAsChild'], $tracks);
+		$playlistNode = $this->playlistToApi($playlist);
+		$playlistNode['entry'] = \array_map([$this, 'trackToApi'], $tracks);
 
 		return $this->subsonicResponse(['playlist' => $playlistNode]);
 	}
@@ -465,8 +465,8 @@ class SubsonicController extends Controller {
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folderId, $this->userId);
 
 		$children = \array_merge(
-			\array_map([$this, 'folderAsChild'], $subFolders),
-			\array_map([$this, 'trackAsChild'], $tracks)
+			\array_map([$this, 'folderToApi'], $subFolders),
+			\array_map([$this, 'trackToApi'], $tracks)
 		);
 
 		return $this->subsonicResponse([
@@ -484,7 +484,7 @@ class SubsonicController extends Controller {
 	
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$indexes[$artist->getIndexingChar()][] = $this->artistAsChild($artist);
+			$indexes[$artist->getIndexingChar()][] = $this->artistToApi($artist);
 		}
 	
 		$result = [];
@@ -504,7 +504,7 @@ class SubsonicController extends Controller {
 
 		$children = [];
 		foreach ($albums as $album) {
-			$children[] = $this->albumAsChild($album, $artistName);
+			$children[] = $this->albumToOldApi($album, $artistName);
 		}
 
 		return $this->subsonicResponse([
@@ -529,26 +529,33 @@ class SubsonicController extends Controller {
 				'id' => $id,
 				'parent' => 'artist-' . $album->getAlbumArtistId(),
 				'name' => $albumName,
-				'child' => \array_map([$this, 'trackAsChild'], $tracks)
+				'child' => \array_map([$this, 'trackToApi'], $tracks)
 			]
 		]);
 	}
 
-	private function folderAsChild($folder) {
+	private function folderToApi($folder) {
 		return [
 			'id' => 'folder-' . $folder->getId(),
 			'title' => $folder->getName(),
 			'isDir' => true
 		];
 	}
-	private function artistAsChild($artist) {
+
+	private function artistToApi($artist) {
 		return [
 			'name' => $artist->getNameString($this->l10n),
 			'id' => 'artist-' . $artist->getId()
 		];
 	}
 
-	private function albumAsChild($album, $artistName = null) {
+	/**
+	 * The "old API" format is used e.g. in getMusicDirectory and getAlbumList
+	 * @param Album $album
+	 * @param string $artistName
+	 * @return array
+	 */
+	private function albumToOldApi($album, $artistName = null) {
 		$artistId = $album->getAlbumArtistId();
 
 		if (empty($artistName)) {
@@ -571,6 +578,12 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
+	/**
+	 * The "new API" format is used e.g. in getAlbum and getAlbumList2
+	 * @param Album $album
+	 * @param string|null $artistName
+	 * @return array
+	 */
 	private function albumToNewApi($album, $artistName = null) {
 		$artistId = $album->getAlbumArtistId();
 
@@ -595,45 +608,16 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
-	private function trackAsChild($track, $album = null, $albumName = null) {
-		$albumId = $track->getAlbumId();
-		if ($album == null) {
-			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		}
-		if (empty($albumName)) {
-			$albumName = $album->getNameString($this->l10n);
-		}
-
-		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-		$result = [
-			'id' => 'track-' . $track->getId(),
-			'parent' => 'album-' . $albumId,
-			'title' => $track->getTitle(),
-			'artist' => $trackArtist->getNameString($this->l10n),
-			'isDir' => false,
-			'album' => $albumName,
-			//'genre' => '',
-			'year' => $track->getYear(),
-			'size' => $track->getSize(),
-			'contentType' => $track->getMimetype(),
-			'suffix' => \end(\explode('.', $track->getFilename())),
-			'duration' => $track->getLength() ?: 0,
-			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
-			//'path' => ''
-		];
-
-		if (!empty($album->getCoverFileId())) {
-			$result['coverArt'] = $album->getId();
-		}
-
-		if ($track->getNumber() !== null) {
-			$result['track'] = $track->getNumber();
-		}
-
-		return $result;
-	}
-
-	private function trackToNewApi($track, $album = null, $albumName = null) {
+	/**
+	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
+	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
+	 * older clients. 
+	 * @param Track $track
+	 * @param Album|null $album
+	 * @param string|null $albumName
+	 * @return array
+	 */
+	private function trackToApi($track, $album = null, $albumName = null) {
 		$albumId = $track->getAlbumId();
 		if ($album == null) {
 			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -661,7 +645,7 @@ class SubsonicController extends Controller {
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $track->getArtistId(),
-			'type' => 'music',
+			'type' => 'music'
 		];
 
 		if (!empty($album->getCoverFileId())) {
@@ -675,7 +659,7 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
-	private function playlistAsChild($playlist) {
+	private function playlistToApi($playlist) {
 		return [
 			'id' => $playlist->getId(),
 			'name' => $playlist->getName(),

@@ -83,7 +83,7 @@ class AmpacheClient {
 
 		try {
 			$xml = self::getXml($response);
-		} catch (\GuzzleHttp\Exception\ParseException $e) {
+		} catch (Exception $e) {
 			throw new AmpacheClientException('Could not parse XML', 0, $e);
 		}
 
@@ -117,11 +117,9 @@ class AmpacheClient {
 		} catch (\Exception $e) {
 			\libxml_disable_entity_loader($disableEntities);
 			\libxml_use_internal_errors($internalErrors);
-			throw new XmlParseException(
-				'Unable to parse response body into XML: ' . $e->getMessage(),
-				$this,
-				$e,
-				(\libxml_get_last_error()) ?: null
+			throw new Exception(
+				'Unable to parse response body into XML: ' . $e->getMessage() .
+				'; libxml error: ' . \libxml_get_last_error()->message
 			);
 		}
 		return $xml;

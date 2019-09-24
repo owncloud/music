@@ -54,7 +54,7 @@ class ArtistMapper extends BaseMapper {
 				'WHERE `artist`.`user_id` = ? '.
 				(($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`artist`.`name`) ' : '');
 		$params = [$userId];
-		return $this->findEntities($sql, $params, $limit, $offset);
+		return $this->findEntities($sql, $params);
 	}
 
 	/**

@@ -91,8 +91,8 @@ class AmpacheMiddleware extends Middleware {
 	 * @param string $methodName the name of the method that will be called on
 	 *                           the controller
 	 * @param \Exception $exception the thrown exception
-	 * @throws \Exception the passed in exception if it cant handle it
-	 * @return Response a Response object or null in case that the exception could not be handled
+	 * @throws \Exception the passed in exception if it wasn't handled
+	 * @return Response a Response object if the exception was handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($exception instanceof AmpacheException && $this->isAmpacheCall) {

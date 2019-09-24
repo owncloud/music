@@ -13,6 +13,7 @@
 namespace OCA\Music\Middleware;
 
 use \OCP\IRequest;
+use \OCP\AppFramework\Http\Response;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;

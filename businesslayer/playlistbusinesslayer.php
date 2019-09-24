@@ -101,7 +101,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	public function getPlaylistTracks($playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
-		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $this->userId);
+		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $userId);
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.

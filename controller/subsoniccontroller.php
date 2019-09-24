@@ -31,7 +31,11 @@ use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
+use \OCA\Music\Db\Album;
+use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\SortBy;
+use \OCA\Music\Db\Track;
 
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Http\XMLResponse;
@@ -235,7 +239,9 @@ class SubsonicController extends Controller {
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
 
 		$albumNode = $this->albumToNewApi($album);
-		$albumNode['song'] = \array_map([$this, 'trackToApi'], $tracks);
+		$albumNode['song'] = \array_map(function($track) use ($album, $albumName) {
+			return $this->trackToApi($track, $album, $albumName);
+		}, $tracks);
 
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
@@ -534,6 +540,10 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	/**
+	 * @param Folder $folder
+	 * @return array
+	 */
 	private function folderToApi($folder) {
 		return [
 			'id' => 'folder-' . $folder->getId(),
@@ -542,6 +552,10 @@ class SubsonicController extends Controller {
 		];
 	}
 
+	/**
+	 * @param Artist $artist
+	 * @return array
+	 */
 	private function artistToApi($artist) {
 		return [
 			'name' => $artist->getNameString($this->l10n),
@@ -552,7 +566,7 @@ class SubsonicController extends Controller {
 	/**
 	 * The "old API" format is used e.g. in getMusicDirectory and getAlbumList
 	 * @param Album $album
-	 * @param string $artistName
+	 * @param string|null $artistName
 	 * @return array
 	 */
 	private function albumToOldApi($album, $artistName = null) {
@@ -659,6 +673,10 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
+	/**
+	 * @param Playlist $playlist
+	 * @return array
+	 */
 	private function playlistToApi($playlist) {
 		return [
 			'id' => $playlist->getId(),
@@ -713,10 +731,10 @@ class SubsonicController extends Controller {
 	/**
 	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
 	 * @param string $id
-	 * @return string
+	 * @return integer
 	 */
 	private static function ripIdPrefix($id) {
-		return \explode('-', $id)[1];
+		return (int)(\explode('-', $id)[1]);
 	}
 
 	private static function randomItems($itemArray, $count) {

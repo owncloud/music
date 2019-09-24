@@ -82,7 +82,7 @@ abstract class BusinessLayer {
 	/**
 	 * Finds all entities
 	 * @param string $userId the name of the user
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Entity[]

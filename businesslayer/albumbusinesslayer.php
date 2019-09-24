@@ -46,7 +46,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all albums
 	 * @param string $userId the name of the user
-	 * @param SortBy $sortBy Sorting order of the result, default to unspecified
+	 * @param integer $sortBy Sorting order of the result, default to unspecified
 	 * @param integer|null $limit
 	 * @param integer|null $offset
 	 * @return Album[] albums

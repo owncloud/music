@@ -101,12 +101,12 @@ class ApiController extends Controller {
 	/**
 	 * Extracts the id from an unique slug (id-slug)
 	 * @param string $slug the slug
-	 * @return string the id
+	 * @return integer the id
 	 */
 	protected static function getIdFromSlug($slug) {
 		$split = \explode('-', $slug, 2);
 
-		return $split[0];
+		return (int)$split[0];
 	}
 
 	/**

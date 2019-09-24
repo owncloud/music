@@ -34,7 +34,7 @@ class AlbumMapper extends BaseMapper {
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Album[]

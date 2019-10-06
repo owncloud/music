@@ -1,9 +1,19 @@
 
 default:
     suites:
-        default:
+        Ampache:
+            paths:
+                - features/Ampache
             contexts:
-                - FeatureContext:
-                    baseUrl: http://urlpath/index.php/apps/music/ampache/server/xml.server.php
+                - AmpacheContext:
+                    baseUrl: http://cloud_instance_path/index.php
                     username: UserName
                     password: MyAmpacheAPIPassword
+        Subsonic:
+            paths:
+                - features/Subsonic
+            contexts:
+                - SubsonicContext:
+                    baseUrl: http://cloud_instance_path/index.php
+                    username: UserName
+                    password: MySubsonicAPIPassword

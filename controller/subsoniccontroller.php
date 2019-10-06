@@ -215,7 +215,7 @@ class SubsonicController extends Controller {
 	 */
 	private function getAlbumList2() {
 		/*
-		 *  According to the API specification, the difference between this and getAlbumList
+		 * According to the API specification, the difference between this and getAlbumList
 		 * should be that this function would organize albums according the metadata while
 		 * getAlbumList would organize them by folders. However, we organize by metadata
 		 * also in getAlbumList, because that's more natural for the Music app and many/most
@@ -614,11 +614,11 @@ class SubsonicController extends Controller {
 			'songCount' => $this->trackBusinessLayer->countByAlbum($album->getId()),
 			//'duration' => 0
 		];
-	
+
 		if (!empty($album->getCoverFileId())) {
 			$result['coverArt'] = $album->getId();
 		}
-	
+
 		return $result;
 	}
 

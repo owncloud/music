@@ -25,13 +25,13 @@ class AmpacheClient {
 	/**
 	 * connects to the API endpoint and authenticates the user
 	 *
-	 * @param string $baseUrl Ampache URL
+	 * @param string $baseUrl URL of the cloud instance
 	 * @param string $userName
 	 * @param string $password
 	 * @throws AmpacheClientException if the authentication doesn't succeed
 	 */
 	public function __construct($baseUrl, $userName, $password) {
-		$this->baseUrl = $baseUrl;
+		$this->baseUrl = $baseUrl . '/apps/music/ampache/server/xml.server.php';
 
 		$time = \time();
 		$key = \hash('sha256', $password);
@@ -90,7 +90,7 @@ class AmpacheClient {
 		$error = $xml->xpath('/root/error');
 
 		if ($error) {
-			throw new AmpacheClientException('Ampache error: ' . $error[0]->__toString() . ' (' . $error[0]->attributes()['code'] . ') ' . $response->getEffectiveUrl());
+			throw new AmpacheClientException('Ampache error: ' . $error[0]->__toString() . ' (' . $error[0]->attributes()['code'] . ') ');
 		}
 
 		return $xml;

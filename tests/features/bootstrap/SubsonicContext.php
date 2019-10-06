@@ -27,6 +27,8 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	private $resource;
 	/** @var array options to pass to the Subsonic API request */
 	private $options = [];
+	/** @var array values stored to be passed to the next step(s) */
+	private $storedValues = [];
 
 	private static function tableSize(TableNode $table) {
 		// getHash() doesn't return the header of the table
@@ -38,7 +40,9 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	}
 
 	private static function resultElementForResource($resource) {
-		if (self::startsWith($resource, 'get')) {
+		if ($resource === 'getMusicDirectory') {
+			return 'directory';
+		} elseif (self::startsWith($resource, 'get')) {
 			return \lcfirst(\substr($resource, 3));
 		} elseif ($resource === 'search2') {
 			return 'searchResult2';
@@ -46,7 +50,6 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 			throw new Exception("Resource $resource not supported in test context");
 		}
 	}
-			
 
 	/**
 	 * Initializes context.
@@ -162,10 +165,30 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$elements = $this->xml->xpath('/subsonic-response/' .
 			self::resultElementForResource($this->resource) . '/' . $entryType);
 		$actualCount = \count($elements);
-		
+
 		if ((int)$expectedCount !== $actualCount) {
 			throw new Exception('Unexpected number of entries in the result set - ' . $actualCount . 
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
+	}
+
+	/**
+	 * @Given I store the attribute :attr from the first :entryType XML element
+	 */
+	public function iStoreTheFirstFromTheXmlResult($attr, $entryType)
+	{
+		$elements = $this->xml->xpath('/subsonic-response/' .
+			self::resultElementForResource($this->resource) . '/' . $entryType);
+
+		$element = $elements[0];
+		$this->storedValues[$attr] = $element[$attr]->__toString();
+	}
+
+	/**
+	 * @When I specify the parameter :option with the stored value
+	 */
+	public function iSpecifyTheParameterWithTheStoredValue($option)
+	{
+		$this->options[$option] = $this->storedValues[$option];
 	}
 }

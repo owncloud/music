@@ -46,3 +46,10 @@ Feature: Subsonic API - Search
       | Nuance          | Pascal Boiseau (Pascalb)  |
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 0 "song" entries
+
+  Scenario: Query matches a song and results are requested as JSON
+    When I specify the parameter "query" with value "pitbull"
+    And I request the "search2" resource in JSON
+    Then I should get JSON with "song" entries:
+      | title                      | album                  | artist                 | duration | year | track |
+      | Poetic Pitbull Revolutions | The Butcher's Ballroom | Diablo Swing Orchestra | 2        | 2009 | 3     |

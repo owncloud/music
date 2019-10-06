@@ -28,11 +28,25 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	/** @var array options to pass to the Subsonic API request */
 	private $options = [];
 
-	/** @var array maps resources to the name of the XML element of the response */
-	private $resourceToXMLElementMapping = [
-		'getAlbumList' => 'albumList/album',
-		'getAlbumList2' => 'albumList2/album',
-	];
+	private static function tableSize(TableNode $table) {
+		// getHash() doesn't return the header of the table
+		return \count($table->getHash());
+	}
+
+	private static function startsWith($string, $potentialStart) {
+		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
+	}
+
+	private static function resultElementForResource($resource) {
+		if (self::startsWith($resource, 'get')) {
+			return \lcfirst(\substr($resource, 3));
+		} elseif ($resource === 'search2') {
+			return 'searchResult2';
+		} else {
+			throw new Exception("Resource $resource not supported in test context");
+		}
+	}
+			
 
 	/**
 	 * Initializes context.
@@ -73,11 +87,12 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
-	 * @Then I should get XML:
+	 * @Then I should get XML with :entryType entries:
+	 * @Then the XML result should contain :entryType entries:
 	 */
-	public function iShouldGetXml(TableNode $table) {
+	public function iShouldGetXmlWithEntries($entryType, TableNode $table) {
 		$elements = $this->xml->xpath('/subsonic-response/' .
-			$this->resourceToXMLElementMapping[$this->resource]);
+			self::resultElementForResource($this->resource) . '/' . $entryType);
 
 		$expectedIterator = $table->getIterator();
 		foreach ($elements as $element) {
@@ -97,8 +112,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 			}
 		}
 
-		// getHash() doesn't return the header of the table
-		$expectedCount = \count($table->getHash());
+		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
 			throw new Exception('Not all elements are in the result set - ' . $actualCount . 
@@ -107,12 +121,11 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
-	 * @Then I should get JSON:
+	 * @Then I should get JSON with :entryType entries:
 	 */
-	public function iShouldGetJson(TableNode $table) {
-		$xmlPath = $this->resourceToXMLElementMapping[$this->resource];
-		$nodeNames = \explode('/', $xmlPath);
-		$elements = $this->json['subsonic-response'][$nodeNames[0]][$nodeNames[1]];
+	public function iShouldGetJson($entryType, TableNode $table) {
+		$resultElement = self::resultElementForResource($this->resource);
+		$elements = $this->json['subsonic-response'][$resultElement][$entryType];
 
 		$expectedIterator = $table->getIterator();
 		foreach ($elements as $element) {
@@ -127,16 +140,31 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 				$actualValue = $element[$key];
 				if ($actualValue != $expectedValue) {
 					throw new Exception(\ucfirst($key) . " does not match - expected: '$expectedValue'" .
-										" got: '$actualValue'" . PHP_EOL . $this->xml->asXML());
+										" got: '$actualValue'" . PHP_EOL . \json_encode($this->json));
 				}
 			}
 		}
 
-		// getHash() doesn't return the header of the table
-		$expectedCount = \count($table->getHash());
+		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
 			throw new Exception('Not all elements are in the result set - ' . $actualCount . 
+								' does not match the expected ' . $expectedCount . PHP_EOL . \json_encode($this->json));
+		}
+	}
+
+	/**
+	 * @Then I should get XML containing :expectedCount :entryType entry/entries
+	 * @Then the XML result should contain :expectedCount :entryType entry/entries
+	 */
+	public function iShouldGetXmlContainingEntries($expectedCount, $entryType)
+	{
+		$elements = $this->xml->xpath('/subsonic-response/' .
+			self::resultElementForResource($this->resource) . '/' . $entryType);
+		$actualCount = \count($elements);
+		
+		if ((int)$expectedCount !== $actualCount) {
+			throw new Exception('Unexpected number of entries in the result set - ' . $actualCount . 
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}

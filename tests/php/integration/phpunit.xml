@@ -2,7 +2,7 @@
 <phpunit bootstrap="../bootstrap-integration.php">
 	<filter>
 		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./utility</directory>
+			<directory suffix=".php">./db</directory>
 		</whitelist>
 	</filter>
 </phpunit>

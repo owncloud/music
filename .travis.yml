@@ -104,10 +104,10 @@ script:
   - vendor/bin/phpunit --coverage-clover clover-integration.xml --configuration tests/php/integration/phpunit.xml tests/php/integration
   - cd tests && ../vendor/bin/behat
 
-  # Create coverage report
-  - bash -c "if [ '$TRAVIS_PHP_VERSION' == '7' ] && [ '$DB' == 'mysql' ] && [ '$CLOUD' = 'owncloud' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
-  - bash -c "if [ '$TRAVIS_PHP_VERSION' == '7' ] && [ '$DB' == 'mysql' ] && [ '$CLOUD' = 'owncloud' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-unit.xml; fi"
-  - bash -c "if [ '$TRAVIS_PHP_VERSION' == '7' ] && [ '$DB' == 'mysql' ] && [ '$CLOUD' = 'owncloud' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-integration.xml; fi"
+  # Post coverage report from NC11 to Scrutinizer as this version is included only in a single configuration, and run early in the queue
+  - bash -c "if [ '$CORE_BRANCH' == 'stable11' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
+  - bash -c "if [ '$CORE_BRANCH' == 'stable11' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-unit.xml; fi"
+  - bash -c "if [ '$CORE_BRANCH' == 'stable11' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-integration.xml; fi"
 
   # debug section to check what went wrong
   - curl --max-time 10 http://admin:admin@localhost:8888/index.php || true

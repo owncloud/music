@@ -16,6 +16,8 @@ use \OCP\IURLGenerator;
 
 use \OCP\AppFramework\Db\Entity;
 
+use \OCA\Music\Utility\Util;
+
 /**
  * @method string getTitle()
  * @method setTitle(string $title)
@@ -132,18 +134,9 @@ class Track extends Entity {
 	}
 
 	public static function compareArtistAndTitle(Track $a, Track $b) {
-		$artistA = \mb_strtolower($a->getArtist()->getName());
-		$artistB = \mb_strtolower($b->getArtist()->getName());
+		$artistResult = Util::stringCaseCompare(
+				$a->getArtist()->getName(), $b->getArtist()->getName());
 
-		if ($artistA < $artistB) {
-			return -1;
-		} else if ($artistA > $artistB) {
-			return 1;
-		} else {
-			return \strcmp(
-				\mb_strtolower($a->getTitle()),
-				\mb_strtolower($b->getTitle())
-			);
-		}
+		return $artistResult ?: Util::stringCaseCompare($a->getTitle(), $b->getTitle());
 	}
 }

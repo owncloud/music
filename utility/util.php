@@ -87,6 +87,15 @@ class Util {
 	}
 
 	/**
+	 * Multi-byte safe case-insensitive string comparison
+	 * @param string $a
+	 * @param string $b
+	 */
+	public static function stringCaseCompare($a, $b) {
+		return \strcmp(\mb_strtolower($a), \mb_strtolower($b));
+	}
+
+	/**
 	 * @param Folder $parentFolder
 	 * @param string $relativePath
 	 * @return Folder

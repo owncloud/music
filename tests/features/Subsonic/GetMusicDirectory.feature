@@ -11,8 +11,8 @@ Feature: Subsonic API - Get music directory
     And I request the "getMusicDirectory" resource
     Then I should get XML with "child" entries:
       | title                          | artist       |
-      | Orchestral Film Music Vol. 1   | Simon Bowman |
       | Instrumental Film Music Vol. 1 | Simon Bowman |
+      | Orchestral Film Music Vol. 1   | Simon Bowman |
 
   Scenario: Get songs of an album
     Given I specify the parameter "query" with value "Nuance"

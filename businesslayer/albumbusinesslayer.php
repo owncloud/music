@@ -73,7 +73,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByAlbumArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
-		return $this->injectArtistsAndYears($albums, $userId);
+		$albums = $this->injectArtistsAndYears($albums, $userId);
+		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
+		return $albums;
 	}
 
 	/**

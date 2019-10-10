@@ -18,6 +18,8 @@ use \OCP\IURLGenerator;
 
 use \OCP\AppFramework\Db\Entity;
 
+use \OCA\Music\Utility\Util;
+
 /**
  * @method string getName()
  * @method setName(string $name)
@@ -211,5 +213,11 @@ class Album extends Entity {
 			'albumArtistId' => $this->getAlbumArtistId(),
 			'artists'       => $this->getArtists($urlGenerator)
 		];
+	}
+
+	public static function compareYearAndName(Album $a, Album $b) {
+		$yearResult = \strcmp($a->getYearRange(), $b->getYearRange());
+
+		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
 	}
 }

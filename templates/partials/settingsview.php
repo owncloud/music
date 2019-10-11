@@ -30,12 +30,12 @@
 	<div>
 		<code id="ampache-url" ng-bind="settings.ampacheUrl"></code>
 		<a class="clipboardButton icon icon-clippy" ng-click="copyToClipboard('ampache-url')"></a><br />
-		<em translate>Use this address to browse your music collection from any Ampache compatible player.</em> <em translate>If this URL doesn't work try to append '/server/xml.server.php'.</em>
+		<em translate>Use this address to browse your music collection from an Ampache compatible player.</em> <em translate>If this URL doesn't work try to append '/server/xml.server.php'.</em>
 	</div>
 	<div>
 		<code id="subsonic-url" ng-bind="settings.subsonicUrl"></code>
 		<a class="clipboardButton icon icon-clippy" ng-click="copyToClipboard('subsonic-url')"></a><br />
-		<em translate>Use this address to browse your music collection from any Subsonic compatible player.</em>
+		<em translate>Use this address to browse your music collection from a Subsonic compatible player.</em>
 	</div>
 	<div translate>
 		Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime.

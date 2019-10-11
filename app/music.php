@@ -32,6 +32,7 @@ use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Controller\ShareController;
+use \OCA\Music\Controller\SubsonicController;
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\AmpacheSessionMapper;
@@ -47,6 +48,7 @@ use \OCA\Music\Hooks\ShareHooks;
 use \OCA\Music\Hooks\UserHooks;
 
 use \OCA\Music\Middleware\AmpacheMiddleware;
+use \OCA\Music\Middleware\SubsonicMiddleware;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CollectionHelper;
@@ -54,6 +56,7 @@ use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\UserMusicFolder;
 
 class Music extends App {
 	public function __construct(array $urlParams=[]) {
@@ -143,8 +146,7 @@ class Music extends App {
 				$c->query('AmpacheUserMapper'),
 				$c->query('Scanner'),
 				$c->query('UserId'),
-				$c->query('UserFolder'),
-				$c->query('Config'),
+				$c->query('UserMusicFolder'),
 				$c->query('SecureRandom'),
 				$c->query('URLGenerator')
 			);
@@ -158,6 +160,24 @@ class Music extends App {
 				$c->query('Logger'),
 				$c->query('ShareManager')
 			);
+		});
+
+		$container->registerService('SubsonicController', function ($c) {
+			return new SubsonicController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('L10N'),
+				$c->query('URLGenerator'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('Library'),
+				$c->query('RootFolder'),
+				$c->query('UserMusicFolder'),
+				$c->query('CoverHelper'),
+				$c->query('Logger')
+				);
 		});
 
 		/**
@@ -188,6 +208,7 @@ class Music extends App {
 		$container->registerService('PlaylistBusinessLayer', function ($c) {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('Logger')
 			);
 		});
@@ -372,9 +393,17 @@ class Music extends App {
 				$c->query('CoverHelper'),
 				$c->query('Logger'),
 				$c->query('Maintenance'),
-				$c->query('Config'),
-				$c->query('AppName'),
+				$c->query('UserMusicFolder'),
 				$c->query('RootFolder')
+			);
+		});
+
+		$container->registerService('UserMusicFolder', function ($c) {
+			return new UserMusicFolder(
+				$c->query('AppName'),
+				$c->query('Config'),
+				$c->query('RootFolder'),
+				$c->query('Logger')
 			);
 		});
 
@@ -390,8 +419,15 @@ class Music extends App {
 				$c->query('AmpacheUser')
 			);
 		});
-
 		$container->registerMiddleWare('AmpacheMiddleware');
+
+		$container->registerService('SubsonicMiddleware', function ($c) {
+			return new SubsonicMiddleware(
+					$c->query('Request'),
+					$c->query('AmpacheUserMapper') /* not a mistake, the mapper is shared between the APIs */
+			);
+		});
+		$container->registerMiddleWare('SubsonicMiddleware');
 
 		/**
 		 * Hooks

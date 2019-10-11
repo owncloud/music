@@ -15,6 +15,10 @@ namespace OCA\Music\Db;
 use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
+/**
+ * Note: Despite the name, this mapper and the related database table are
+ *       used both for Subsonic and Ampache users.
+ */
 class AmpacheUserMapper extends Mapper {
 	public function __construct(IDBConnection $db) {
 		// there is no entity for this mapper -> '' as entity class name

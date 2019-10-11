@@ -32,7 +32,7 @@ class PlaylistMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Playlist[]
@@ -48,9 +48,11 @@ class PlaylistMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Playlist[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -58,7 +60,7 @@ class PlaylistMapper extends BaseMapper {
 			$condition = 'AND `name` = ? ';
 		}
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`name`)');
-		return $this->findEntities($sql, [$userId, $name]);
+		return $this->findEntities($sql, [$userId, $name], $limit, $offset);
 	}
 
 	/**

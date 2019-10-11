@@ -34,7 +34,7 @@ class AlbumMapper extends BaseMapper {
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Album[]
@@ -116,6 +116,20 @@ class AlbumMapper extends BaseMapper {
 			'FROM `*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? AND '.
 			'`track`.`user_id` = ?) ORDER BY LOWER(`album`.`name`)';
 		$params = [$artistId, $userId, $artistId, $userId];
+		return $this->findEntities($sql, $params);
+	}
+
+	/**
+	 * returns albums of a specified artist
+	 * The artist must album_artist on the album, artists of individual tracks are not considered
+	 *
+	 * @param integer $artistId ID of the artist
+	 * @param string $userId the user ID
+	 * @return Album[]
+	 */
+	public function findAllByAlbumArtist($artistId, $userId) {
+		$sql = $this->makeSelectQuery('AND `album`.`album_artist_id` = ?');
+		$params = [$userId, $artistId];
 		return $this->findEntities($sql, $params);
 	}
 
@@ -316,9 +330,11 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -327,7 +343,7 @@ class AlbumMapper extends BaseMapper {
 		}
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`album`.`name`)');
 		$params = [$userId, $name];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	public function findUniqueEntity(Album $album) {

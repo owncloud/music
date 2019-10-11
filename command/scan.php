@@ -90,7 +90,7 @@ class Scan extends BaseCommand {
 		}
 
 		$output->writeln("Start scan for <info>$user</info>");
-		$unscanned = $this->scanner->getUnscannedMusicFileIds($user, $userHome);
+		$unscanned = $this->scanner->getUnscannedMusicFileIds($user);
 		$output->writeln('Found ' . \count($unscanned) . ' new music files');
 
 		if (\count($unscanned)) {

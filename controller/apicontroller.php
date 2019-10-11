@@ -101,12 +101,12 @@ class ApiController extends Controller {
 	/**
 	 * Extracts the id from an unique slug (id-slug)
 	 * @param string $slug the slug
-	 * @return string the id
+	 * @return integer the id
 	 */
 	protected static function getIdFromSlug($slug) {
 		$split = \explode('-', $slug, 2);
 
-		return $split[0];
+		return (int)$split[0];
 	}
 
 	/**
@@ -331,7 +331,7 @@ class ApiController extends Controller {
 	 */
 	public function getScanState() {
 		return new JSONResponse([
-			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId, $this->userFolder),
+			'unscannedFiles' => $this->scanner->getUnscannedMusicFileIds($this->userId),
 			'scannedCount' => $this->trackBusinessLayer->count($this->userId)
 		]);
 	}

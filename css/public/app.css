@@ -653,7 +653,12 @@ body:not(.snapjs-left) #controls.taller-header {
 	margin-right: -30px; /* utilize the space which app-view reserves for alphabet-navigation */
 }
 
-#music-user h3 {
+#music-user h1 {
+	font-size: 32px;
+}
+
+#music-user h2 {
+	font-size: 22px;
 	margin-top: 40px;
 }
 
@@ -679,6 +684,19 @@ body:not(.snapjs-left) #controls.taller-header {
 	vertical-align: middle;
 	top: -3px;
 	left: 5px;
+}
+
+#music-user .clipboardButton {
+	padding: 16px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter: alpha(opacity=50);
+	opacity: .5;
+}
+
+#music-user .clipboardButton:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
 }
 
 #music-user div {

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 namespace OCA\Music\Controller;
@@ -17,8 +17,6 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\Files\Folder;
-use \OCP\IConfig;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 use \OCP\Security\ISecureRandom;
@@ -26,36 +24,32 @@ use \OCP\Security\ISecureRandom;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\Util;
+use \OCA\Music\Utility\UserMusicFolder;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
 
-	private $appname;
 	private $ampacheUserMapper;
 	private $scanner;
 	private $userId;
-	private $userFolder;
-	private $configManager;
+	private $userMusicFolder;
 	private $secureRandom;
 	private $urlGenerator;
 
-	public function __construct($appname,
+	public function __construct($appName,
 								IRequest $request,
 								AmpacheUserMapper $ampacheUserMapper,
 								Scanner $scanner,
 								$userId,
-								Folder $userFolder,
-								IConfig $configManager,
+								UserMusicFolder $userMusicFolder,
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator) {
-		parent::__construct($appname, $request);
+		parent::__construct($appName, $request);
 
-		$this->appname = $appname;
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->scanner = $scanner;
 		$this->userId = $userId;
-		$this->userFolder = $userFolder;
-		$this->configManager = $configManager;
+		$this->userMusicFolder = $userMusicFolder;
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 	}
@@ -65,22 +59,13 @@ class SettingController extends Controller {
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function userPath($value) {
-		$success = false;
-		$path = $value;
-		// TODO check for validity
-		$element = $this->userFolder->get($path);
-		if ($element instanceof \OCP\Files\Folder) {
-			if ($path[0] !== '/') {
-				$path = '/' . $path;
-			}
-			if ($path[\strlen($path)-1] !== '/') {
-				$path .= '/';
-			}
-			$prevPath = $this->getPath();
-			$this->configManager->setUserValue($this->userId, $this->appname, 'path', $path);
-			$success = true;
-			$this->scanner->updatePath($prevPath, $path, $this->userId);
+		$prevPath = $this->userMusicFolder->getPath($this->userId);
+		$success = $this->userMusicFolder->setPath($this->userId, $value);
+
+		if ($success) {
+			$this->scanner->updatePath($prevPath, $value, $this->userId);
 		}
+
 		return new JSONResponse(['success' => $success]);
 	}
 
@@ -89,22 +74,24 @@ class SettingController extends Controller {
 	 */
 	public function getAll() {
 		return [
-			'path' => $this->getPath(),
+			'path' => $this->userMusicFolder->getPath($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
+			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),
 			'appVersion' => $this->getAppVersion(),
 			'user' => $this->userId
 		];
 	}
 
-	private function getPath() {
-		$path = $this->configManager->getUserValue($this->userId, $this->appname, 'path');
-		return $path ?: '/';
-	}
-
 	private function getAmpacheUrl() {
 		return \str_replace('/server/xml.server.php', '',
 				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache')));
+	}
+
+	private function getSubsonicUrl() {
+		return \str_replace('/rest/dummy', '',
+				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute(
+						'music.subsonic.handleRequest', ['method' => 'dummy'])));
 	}
 
 	private function getAmpacheKeys() {
@@ -114,7 +101,7 @@ class SettingController extends Controller {
 	private function getAppVersion() {
 		// Note: the following in deprecated since NC14 but the replacement
 		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
-		return \OCP\App::getAppVersion($this->appname);
+		return \OCP\App::getAppVersion($this->appName);
 	}
 
 	private function storeUserKey($description, $password) {

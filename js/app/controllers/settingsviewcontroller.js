@@ -143,6 +143,19 @@ angular.module('Music').controller('SettingsViewController', [
 			});
 		};
 
+		$scope.copyToClipboard = function(elementId) {
+			var range = document.createRange();
+			range.selectNode(document.getElementById(elementId));
+			window.getSelection().removeAllRanges(); // clear current selection
+			window.getSelection().addRange(range); // to select text
+			var success = document.execCommand("copy");
+
+			if (success) {
+				OC.Notification.showTemporary(
+						gettextCatalog.getString('Text copied to clipboard'));
+			}
+		};
+
 		$scope.errorPath = false;
 		$scope.errorAmpache = false;
 

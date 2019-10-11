@@ -39,7 +39,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#resetScanned'	,	'url' => '/api/resetscanned',			'verb' => 'POST'],
 	['name' => 'api#cachedCover',		'url' => '/api/cover/{hash}',			'verb' => 'GET'],
 
-	// Shiva api https://github.com/tooxie/shiva-server#resources
+	// Shiva API https://github.com/tooxie/shiva-server#resources
 	['name' => 'api#artists',	'url' => '/api/artists',						'verb' => 'GET'],
 	['name' => 'api#artist',	'url' => '/api/artist/{artistIdOrSlug}',		'verb' => 'GET'],
 	// ['name' => 'api#artistShows', 'url' => '/api/artist/{artistIdOrSlug}/shows', 'verb' => 'GET'],
@@ -69,9 +69,14 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#generateUserKey',	'url' => '/api/settings/userkey/generate',	'verb' => 'POST'],
 	['name' => 'setting#removeUserKey',		'url' => '/api/settings/userkey/remove',	'verb' => 'POST'],
 
-	// ampache
+	// Ampache API https://github.com/ampache/ampache/wiki/XML-API
 	['name' => 'ampache#ampache',	'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'],
-	// Ampache API http://ampache.org/wiki/dev:xmlapi - POST version. Dirty fix for JustPlayer
-	['name' => 'ampache#ampache2',	'url' => '/ampache/server/xml.server.php', 'verb' => 'POST']
+	// Ampache API - POST version. Dirty fix for JustPlayer
+	['name' => 'ampache#ampache2',	'url' => '/ampache/server/xml.server.php', 'verb' => 'POST'],
+
+	// Subsonic API http://www.subsonic.org/pages/api.jsp
+	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.
+	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'GET',	'requirements' => ['method' => '[a-zA-Z0-9\.]+']],
+	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'POST',	'requirements' => ['method' => '[a-zA-Z0-9\.]+'],	'postfix' => '_post'],
 
 ]]);

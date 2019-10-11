@@ -19,7 +19,6 @@ use OC\Hooks\PublicEmitter;
 use \OCP\Files\File;
 use \OCP\Files\Folder;
 use \OCP\Files\IRootFolder;
-use \OCP\IConfig;
 
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -41,8 +40,7 @@ class Scanner extends PublicEmitter {
 	private $coverHelper;
 	private $logger;
 	private $maintenance;
-	private $configManager;
-	private $appName;
+	private $userMusicFolder;
 	private $rootFolder;
 
 	public function __construct(Extractor $extractor,
@@ -54,8 +52,7 @@ class Scanner extends PublicEmitter {
 								CoverHelper $coverHelper,
 								Logger $logger,
 								Maintenance $maintenance,
-								IConfig $configManager,
-								$appName,
+								UserMusicFolder $userMusicFolder,
 								IRootFolder $rootFolder) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
@@ -66,8 +63,7 @@ class Scanner extends PublicEmitter {
 		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
 		$this->maintenance = $maintenance;
-		$this->configManager = $configManager;
-		$this->appName = $appName;
+		$this->userMusicFolder = $userMusicFolder;
 		$this->rootFolder = $rootFolder;
 
 		// Trying to enable stream support
@@ -99,7 +95,7 @@ class Scanner extends PublicEmitter {
 		}
 
 		// skip files that aren't inside the user specified path
-		if (!$this->pathIsUnderMusicFolder($filePath, $userId, $userHome)) {
+		if (!$this->pathIsUnderMusicFolder($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 			return;
 		}
@@ -120,8 +116,8 @@ class Scanner extends PublicEmitter {
 		return $mime == 'audio/mpegurl' || $mime == 'audio/x-scpls';
 	}
 
-	private function pathIsUnderMusicFolder($filePath, $userId, $userHome) {
-		$musicFolder = $this->getUserMusicFolder($userId, $userHome);
+	private function pathIsUnderMusicFolder($filePath, $userId) {
+		$musicFolder = $this->userMusicFolder->getFolder($userId);
 		$musicPath = $musicFolder->getPath();
 		return Util::startsWith($filePath, $musicPath);
 	}
@@ -368,37 +364,14 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * @param string $userId
-	 * @param Folder $userHome
-	 * @return Folder
-	 */
-	public function getUserMusicFolder($userId, $userHome) {
-		$musicPath = $this->configManager->getUserValue($userId, $this->appName, 'path');
-		return self::getFolderFromRelativePath($userHome, $musicPath);
-	}
-
-	/**
-	 * @param Folder $parentFolder
-	 * @param string $relativePath
-	 * @return Folder
-	 */
-	private static function getFolderFromRelativePath($parentFolder, $relativePath) {
-		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
-			return $parentFolder->get($relativePath);
-		} else {
-			return $parentFolder;
-		}
-	}
-
-	/**
 	 * search for music files by mimetype inside user specified library path
 	 * (which defaults to user home dir)
 	 *
 	 * @return \OCP\Files\File[]
 	 */
-	private function getMusicFiles($userId, $userHome) {
+	private function getMusicFiles($userId) {
 		try {
-			$folder = $this->getUserMusicFolder($userId, $userHome);
+			$folder = $this->userMusicFolder->getFolder($userId);
 		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
@@ -414,9 +387,9 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function getUnscannedMusicFileIds($userId, $userHome) {
+	public function getUnscannedMusicFileIds($userId) {
 		$scannedIds = $this->getScannedFiles($userId);
-		$musicFiles = $this->getMusicFiles($userId, $userHome);
+		$musicFiles = $this->getMusicFiles($userId);
 		$allIds = Util::extractIds($musicFiles);
 		$unscannedIds = Util::arrayDiff($allIds, $scannedIds);
 
@@ -499,11 +472,10 @@ class Scanner extends PublicEmitter {
 	 * Remove all such audio files from the collection which do not reside
 	 * under the configured music path.
 	 * @param string $userId
-	 * @param Folder $userHome
 	 */
-	private function removeFilesNotUnderMusicFolder($userId, $userHome) {
+	private function removeFilesNotUnderMusicFolder($userId) {
 		$indexedFiles = $this->getScannedFiles($userId);
-		$validFiles = Util::extractIds($this->getMusicFiles($userId, $userHome));
+		$validFiles = Util::extractIds($this->getMusicFiles($userId));
 		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
 		if (\count($filesToRemove)) {
 			$this->deleteAudio($filesToRemove, [$userId]);
@@ -561,7 +533,7 @@ class Scanner extends PublicEmitter {
 				'title'      => $metadata['title'],
 				'artist'     => $metadata['artist'],
 				'cover'      => $cover,
-				'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId, $userFolder)
+				'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId)
 			];
 		}
 		return null;
@@ -580,8 +552,8 @@ class Scanner extends PublicEmitter {
 		$userHome = $this->resolveUserFolder($userId);
 
 		try {
-			$oldFolder = self::getFolderFromRelativePath($userHome, $oldPath);
-			$newFolder = self::getFolderFromRelativePath($userHome, $newPath);
+			$oldFolder = Util::getFolderFromRelativePath($userHome, $oldPath);
+			$newFolder = Util::getFolderFromRelativePath($userHome, $newPath);
 
 			if ($newFolder->getPath() === $oldFolder->getPath()) {
 				$this->logger->log('New collection path is the same as the old path, nothing to do', 'debug');
@@ -589,7 +561,7 @@ class Scanner extends PublicEmitter {
 				$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
 			} elseif ($oldFolder->isSubNode($newFolder)) {
 				$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
-				$this->removeFilesNotUnderMusicFolder($userId, $userHome);
+				$this->removeFilesNotUnderMusicFolder($userId);
 			} else {
 				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
 				$this->maintenance->resetDb($userId);

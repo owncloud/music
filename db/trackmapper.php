@@ -25,7 +25,11 @@ class TrackMapper extends BaseMapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQueryWithoutUserId($condition) {
-		return 'SELECT * FROM `*PREFIX*music_tracks` `track` WHERE ' . $condition;
+		return 'SELECT `track`.*, `file`.`name` AS `filename`, `file`.`size` '.
+				'FROM `*PREFIX*music_tracks` `track` '.
+				'INNER JOIN `*PREFIX*filecache` `file` '.
+				'ON `track`.`file_id` = `file`.`fileid` '.
+				'WHERE ' . $condition;
 	}
 
 	/**
@@ -37,7 +41,7 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Track[]
@@ -75,6 +79,18 @@ class TrackMapper extends BaseMapper {
 			\array_push($params, $artistId);
 		}
 		$sql .= 'ORDER BY `track`.`number`, LOWER(`track`.`title`)';
+		return $this->findEntities($sql, $params);
+	}
+
+	/**
+	 * @param integer $folderId
+	 * @param string $userId
+	 * @return Track[]
+	 */
+	public function findAllByFolder($folderId, $userId) {
+		$sql = $this->makeSelectQuery('AND `file`.`parent` = ? ');
+		$params = [$userId, $folderId];
+		$sql .= 'ORDER BY LOWER(`track`.`title`)';
 		return $this->findEntities($sql, $params);
 	}
 
@@ -157,9 +173,11 @@ class TrackMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Track[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
 			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
@@ -168,7 +186,7 @@ class TrackMapper extends BaseMapper {
 		}
 		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`track`.`title`)');
 		$params = [$userId, $name];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

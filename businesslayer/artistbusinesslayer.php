@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\ArtistMapper;
+use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Utility\Util;
 
@@ -26,6 +27,16 @@ class ArtistBusinessLayer extends BusinessLayer {
 	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
 		$this->logger = $logger;
+	}
+
+	/**
+	 * Finds all artists who have at least one album
+	 * @param string $userId the name of the user
+	 * @param integer $sortBy sort order of the result set
+	 * @return \OCA\Music\Db\Artist[] artists
+	 */
+	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
 	}
 
 	/**

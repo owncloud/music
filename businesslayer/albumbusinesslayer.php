@@ -12,6 +12,8 @@
 
 namespace OCA\Music\BusinessLayer;
 
+use \OCP\AppFramework\Db\DoesNotExistException;
+
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
@@ -32,12 +34,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Return an album
-	 * @param string $albumId the id of the album
+	 * @param integer $albumId the id of the album
 	 * @param string $userId the name of the user
 	 * @return Album album
 	 */
 	public function find($albumId, $userId) {
-		$album = $this->mapper->find($albumId, $userId);
+		$album = parent::find($albumId, $userId);
 		return $this->injectArtistsAndYears([$album], $userId)[0];
 	}
 
@@ -50,12 +52,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[] albums
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$albums = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
+		$albums = parent::findAll($userId, $sortBy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums, $userId, true);
 	}
 
 	/**
-	 * Returns all albums filtered by artist
+	 * Returns all albums filtered by artist (both album and track artists are considered)
 	 * @param string $artistId the id of the artist
 	 * @return Album[] albums
 	 */
@@ -65,14 +67,28 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns all albums filtered by album artist
+	 * @param string $artistId the id of the artist
+	 * @return Album[] albums
+	 */
+	public function findAllByAlbumArtist($artistId, $userId) {
+		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
+		$albums = $this->injectArtistsAndYears($albums, $userId);
+		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
+		return $albums;
+	}
+
+	/**
 	 * Return all albums with name matching the search criteria
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false) {
-		$albums = parent::findAllByName($name, $userId, $fuzzy);
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset);
 		return $this->injectArtistsAndYears($albums, $userId);
 	}
 
@@ -118,9 +134,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	public function findAlbumOwner($albumId) {
-		$entities = $this->mapper->findById([$albumId]);
+		$entities = $this->findById([$albumId]);
 		if (\count($entities) != 1) {
-			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
+			throw new BusinessLayerException(
 					'Expected to find one album but got ' . \count($entities));
 		} else {
 			return $entities[0]->getUserId();
@@ -158,7 +174,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return boolean
 	 */
 	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
-		$albums = $this->mapper->findById([$albumId]);
+		$albums = $this->findById([$albumId]);
 		return (\count($albums) && \in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
 

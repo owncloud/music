@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 namespace OCA\Music\Http;
@@ -44,7 +46,7 @@ class FileResponse extends Response {
 			// Note that we do not support Range Header of the type
 			// bytes=x-x,y-y
 			if (!\preg_match('/^bytes=\d*-\d*$/', $_SERVER['HTTP_RANGE'])) {
-				$this->addHeader('Content-Range: bytes */' . $size);
+				$this->addHeader('Content-Range', 'bytes */' . $size);
 				$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 			} else {
 				$parts = \explode('-', \substr($_SERVER['HTTP_RANGE'], 6));
@@ -53,7 +55,7 @@ class FileResponse extends Response {
 				$this->end = \min($this->end, $size - 1);
 
 				if ($this->start > $this->end) {
-					$this->addHeader('Content-Range: bytes */' . $size);
+					$this->addHeader('Content-Range', 'bytes */' . $size);
 					$this->setStatus(Http::STATUS_REQUEST_RANGE_NOT_SATISFIABLE);
 				} else {
 					$this->addHeader('Accept-Ranges', 'bytes');

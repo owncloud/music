@@ -17,7 +17,7 @@ use Behat\Gherkin\Node\TableNode;
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context, SnippetAcceptingContext {
+class AmpacheContext implements Context, SnippetAcceptingContext {
 	private $client;
 	/** @var  SimpleXMLElement */
 	private $xml;

@@ -30,7 +30,7 @@ class ArtistMapper extends BaseMapper {
 
 	/**
 	 * @param string $userId
-	 * @param SortBy $sortBy sort order of the result set
+	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit
 	 * @param integer $offset
 	 * @return Artist[]
@@ -40,6 +40,24 @@ class ArtistMapper extends BaseMapper {
 				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`artist`.`name`)' : null);
 		$params = [$userId];
 		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param integer $sortBy sort order of the result set
+	 * @return Artist[]
+	 */
+	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+		$sql = $this->makeSelectQuery('AND EXISTS '.
+				'(SELECT 1 FROM `*PREFIX*music_albums` `album` '.
+				' WHERE `artist`.`id` = `album`.`album_artist_id`)');
+
+		if ($sortBy == SortBy::Name) {
+			$sql .= ' ORDER BY LOWER(`artist`.`name`)';
+		}
+
+		$params = [$userId];
+		return $this->findEntities($sql, $params);
 	}
 
 	/**
@@ -94,11 +112,13 @@ class ArtistMapper extends BaseMapper {
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
 	 * @return Artist[]
 	 */
-	public function findAllByName($artistName, $userId, $fuzzy = false) {
+	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
-		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params']);
+		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
 	}
 
 	public function findUniqueEntity(Artist $artist) {

@@ -64,6 +64,26 @@ class Artist extends Entity {
 	}
 
 	/**
+	 * Get initial character of the artist name in upper case.
+	 * This is intended to be used as index in a list of aritsts.
+	 */
+	public function getIndexingChar() {
+		// For unknown artists, use '?'
+		$char = '?';
+		$name = $this->getName();
+
+		if (!empty($name)) {
+			$char = \mb_convert_case(\mb_substr($name, 0, 1), MB_CASE_UPPER);
+		}
+		// Bundle all numeric characters together
+		if (\is_numeric($char)) {
+			$char = '#';
+		}
+
+		return $char;
+	}
+
+	/**
 	 * @param IL10N $l10n
 	 * @param array $albums in the "toCollection" format
 	 * @return array

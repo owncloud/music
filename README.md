@@ -7,7 +7,7 @@
 
 ## Overview
 
-Music player and server for ownCloud and Nextcloud. Shows audio files stored in your cloud categorized by artists and albums. Supports mp3, and depending on the browser, many other audio formats too. Supports shuffle play and playlists. The application includes an experimental Ampache server.
+Music player and server for ownCloud and Nextcloud. Shows audio files stored in your cloud categorized by artists and albums. Supports mp3, and depending on the browser, many other audio formats too. Supports shuffle play and playlists. The Music app also allows serving audio files from your cloud to external applications which are compatible either with Ampache or Subsonic.
 
 The full-screen albums view:
 ![library view](https://user-images.githubusercontent.com/8565946/43827475-94d34d7c-9b02-11e8-8bf9-9f3d91aa5dab.png)
@@ -78,20 +78,27 @@ Music app caches some results for performance reasons. Normally, there should be
 	./occ music:reset-cache --group=USERGROUP1 --group==USERGROUP2 ...
 	./occ music:reset-cache --all
 
-### Ampache
+### Ampache and Subsonic
 
-The URL you need for Ampache is listed in the settings and looks like this:
+The URL you need to connect with an Ampache-compatible player is listed in the settings and looks like this:
 
 ```
-https://cloud.domain.org/index.php/apps/music/ampache/
+https://cloud.domain.org/index.php/apps/music/ampache
 ```
 
-This is the common path. Some clients append the last part (`server/xml.server.php`) automatically. If you have connection problems try the longer version of the URL with the `server/xml.server.php` appended.
+This is the common path. Most clients append the last part (`/server/xml.server.php`) automatically. If you have connection problems, try the longer version of the URL with the `/server/xml.server.php` appended.
+
+Similarly, the URL used to connect with a Subsonic-compatible player is listed in the settings and looks like this:
+
+```
+https://cloud.domain.org/index.php/apps/music/subsonic
+```
+
 
 #### Authentication
 
-Ampache doesn't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY for Ampache.
-The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app. When you create the APIKEY, the application shows also the username you should use on your Ampache client. Typically, this is your ownCloud login name but it may also be an UUID in case you have set up LDAP authentication.
+Ampache and Subsonic don't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY with them.
+The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app. When you create the APIKEY, the application shows also the username you should use on your Ampache/Subsonic client. Typically, this is your ownCloud login name but it may also be an UUID in case you have set up LDAP authentication.
 
 You may use the `/api/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
@@ -221,22 +228,25 @@ update JavaScript libraries
 
 The Music app implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
 
-Beside those mentioned resources following additional resources are implemented:
+Beside those mentioned resources, the following additional resources are implemented:
 
 * `/api/log`
+* `/api/prepare_collection`
 * `/api/collection`
-* `/api/cover/{hash}`
+* `/api/folders`
 * `/api/file/{fileId}`
+* `/api/file/{fileId}/download`
+* `/api/file/{fileId}/path`
 * `/api/file/{fileId}/info`
 * `/api/file/{fileId}/details`
-* `/api/file/{fileId}/path`
-* `/api/file/{fileId}/download`
-* `/api/scan`
 * `/api/scanstate`
+* `/api/scan`
 * `/api/resetscanned`
-* Playlist API at `/api/playlist/`
-* Settings API at `/api/settings`
+* `/api/cover/{hash}`
+* Playlist API at `/api/playlists/*`
+* Settings API at `/api/settings/*`
 * [Ampache API](https://github.com/ampache/ampache/wiki/XML-API) at `/ampache/server/xml.server.php`
+* [Subsonic API](http://www.subsonic.org/pages/api.jsp) at `/subsonic/rest/{method}`
 
 ### `/api/log`
 

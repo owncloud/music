@@ -54,6 +54,7 @@
 }
 
 #music-user .clipboardButton {
+	background-size: 16px 16px;
 	padding: 16px;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	filter: alpha(opacity=50);

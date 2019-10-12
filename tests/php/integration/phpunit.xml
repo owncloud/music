@@ -2,7 +2,18 @@
 <phpunit bootstrap="../bootstrap-integration.php">
 	<filter>
 		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./db</directory>
+			<directory suffix=".php">../../../app</directory>
+			<directory suffix=".php">../../../appframework</directory>
+			<directory suffix=".php">../../../backgroundjob</directory>
+			<directory suffix=".php">../../../businesslayer</directory>
+			<directory suffix=".php">../../../command</directory>
+			<directory suffix=".php">../../../controller</directory>
+			<directory suffix=".php">../../../db</directory>
+			<directory suffix=".php">../../../hooks</directory>
+			<directory suffix=".php">../../../http</directory>
+			<directory suffix=".php">../../../middleware</directory>
+			<directory suffix=".php">../../../migration</directory>
+			<directory suffix=".php">../../../utility</directory>
 		</whitelist>
 	</filter>
 </phpunit>

@@ -852,7 +852,9 @@ var OC_Music_Utils = {
 	 * from the accessibility settings. Test if the theme is active.
 	 */
 	darkThemeActive: function() {
-		return OCA.hasOwnProperty('Accessibility') && OCA.Accessibility.theme == 'themedark';
+		// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
+		return OCA.hasOwnProperty('Accessibility')
+			&& (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
 	},
 
 	/**

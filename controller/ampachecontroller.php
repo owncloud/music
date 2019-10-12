@@ -144,21 +144,6 @@ class AmpacheController extends Controller {
 		throw new AmpacheException('Action not supported', 405);
 	}
 
-	/**
-	 * JustPlayer fix
-	 *
-	 * router crashes if same route is defined for POST and GET
-	 * so this just forwards to ampache()
-	 *
-	 * @NoAdminRequired
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 * @AmpacheAPI
-	 */
-	public function ampache2($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
-		return $this->ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset);
-	}
-
 	protected function handshake($user, $timestamp, $auth) {
 		// prepare hash check
 		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
@@ -413,7 +398,7 @@ class AmpacheController extends Controller {
 	protected function allTracksPlaylistAsArray() {
 		return [
 			'id' => self::ALL_TRACKS_PLAYLIST_ID,
-			'name' => 'All tracks',
+			'name' => $this->l10n->t('All tracks'),
 			'trackCount' => $this->trackBusinessLayer->count($this->ampacheUser->getUserId())
 		];
 	}

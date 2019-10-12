@@ -71,8 +71,8 @@ $app->registerRoutes($this, ['routes' => [
 
 	// Ampache API https://github.com/ampache/ampache/wiki/XML-API
 	['name' => 'ampache#ampache',	'url' => '/ampache/server/xml.server.php', 'verb' => 'GET'],
-	// Ampache API - POST version. Dirty fix for JustPlayer
-	['name' => 'ampache#ampache2',	'url' => '/ampache/server/xml.server.php', 'verb' => 'POST'],
+	// Ampache API - POST version for JustPlayer. Defining 'postfix' allows binding two routes to the same handler.
+	['name' => 'ampache#ampache',	'url' => '/ampache/server/xml.server.php', 'verb' => 'POST',	'postfix' => '_post'],
 
 	// Subsonic API http://www.subsonic.org/pages/api.jsp
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.

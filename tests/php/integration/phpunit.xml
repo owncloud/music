@@ -12,7 +12,7 @@
 			<directory suffix=".php">../../../hooks</directory>
 			<directory suffix=".php">../../../http</directory>
 			<directory suffix=".php">../../../middleware</directory>
-			<directory suffix=".php">../../../migration</directory>
+			<!--directory suffix=".php">../../../migration</directory-->
 			<directory suffix=".php">../../../utility</directory>
 		</whitelist>
 	</filter>

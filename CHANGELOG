@@ -1,3 +1,9 @@
+v0.11.0 2019-10-12
+ * support for Subsonic API (#718)
+ * truncate variable length text fields before storing them to the database (#632, #716)
+ * add copy-to-clipboard buttons to the Settings view next to Ampache/Subsonic addresses and passwords
+ * fix the dark theme detection on Nextcloud 18
+
 v0.10.1 2019-09-08
  * fix warnings being logged on PHP7.2+ when fetching albums via Ampache API (#714)
  * provide string "Unknown artist/album" in Ampache API for nameless entities

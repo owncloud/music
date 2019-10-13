@@ -359,7 +359,7 @@ class SubsonicController extends Controller {
 	 */
 	private function search3() {
 		$results = $this->doSearch();
-	
+
 		return $this->subsonicResponse(['searchResult3' => [
 			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
 			'album' => \array_map([$this, 'albumToNewApi'], $results['albums']),
@@ -773,7 +773,7 @@ class SubsonicController extends Controller {
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),
-			'suffix' => \end(\explode('.', $track->getFilename())),
+			'suffix' => $track->getFileExtension(),
 			'duration' => $track->getLength() ?: 0,
 			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
 			//'path' => '',

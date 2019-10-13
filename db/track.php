@@ -133,6 +133,11 @@ class Track extends Entity {
 		];
 	}
 
+	public function getFileExtension() {
+		$parts = \explode('.', $this->getFilename());
+		return \end($parts);
+	}
+
 	public static function compareArtistAndTitle(Track $a, Track $b) {
 		$artistResult = Util::stringCaseCompare(
 				$a->getArtist()->getName(), $b->getArtist()->getName());

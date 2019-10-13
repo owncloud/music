@@ -377,6 +377,38 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse([]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getUser() {
+		$username = $this->getRequiredParam('username');
+
+		if ($username != $this->userId) {
+			throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
+		}
+
+		return $this->subsonicResponse([
+			'user' => [
+				'username' => $username,
+				'email' => '',
+				'scrobblingEnabled' => false,
+				'adminRole' => false,
+				'settingsRole' => false,
+				'downloadRole' => true,
+				'uploadRole' => false,
+				'playlistRole' => true,
+				'coverArtRole' => false,
+				'commentRole' => false,
+				'podcastRole' => false,
+				'streamRole' => true,
+				'jukeboxRole' => false,
+				'shareRole' => false,
+				'videoConversionRole' => false,
+				'folder' => ['artists', 'folders'],
+			]
+		]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/

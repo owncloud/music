@@ -50,18 +50,22 @@ class XMLResponse extends Response {
 		return $xmlTree->asXML();
 	}
 
-	private static function addChildElement($parentNode, $key, $value) {
+	private static function addChildElement($parentNode, $key, $value, $forceElement=false) {
 		if (\is_bool($value)) {
 			$value = $value ? 'true' : 'false';
-			$parentNode->addAttribute($key, $value);
 		}
-		elseif (\is_string($value) || \is_numeric($value)) {
-			$parentNode->addAttribute($key, $value);
+
+		if (\is_string($value) || \is_numeric($value)) {
+			if ($forceElement) {
+				$parentNode->addChild($key, $value);
+			} else {
+				$parentNode->addAttribute($key, $value);
+			}
 		}
 		elseif (\is_array($value)) {
 			if (self::arrayIsIndexed($value)) {
 				foreach ($value as $child) {
-					self::addChildElement($parentNode, $key, $child);
+					self::addChildElement($parentNode, $key, $child, true);
 				}
 			}
 			else {

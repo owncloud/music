@@ -40,6 +40,37 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find a single entity by id and user_id
+	 * This has to be overridden from BaseMapper because we utilize also *PREFIX*filecache table.
+	 * @param integer $id
+	 * @param string $userId
+	 * @throws DoesNotExistException if the entity does not exist
+	 * @throws MultipleObjectsReturnedException if more than one entity exists
+	 * @return Track
+	 */
+	public function find($id, $userId) {
+		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
+		return $this->findEntity($sql, [$userId, $id]);
+	}
+
+	/**
+	 * Find all entities matching the given IDs. Specifying the owning user is optional.
+	 * This has to be overridden from BaseMapper because we utilize also *PREFIX*filecache table.
+	 * @param integer[] $ids  IDs of the entities to be found
+	 * @param string|null $userId
+	 * @return Entity[]
+	 */
+	public function findById($ids, $userId=null) {
+		$count = \count($ids);
+		$sql = $this->makeSelectQueryWithoutUserId('`track`.`id` IN '. $this->questionMarks($count));
+		if (!empty($userId)) {
+			$sql .= ' AND `user_id` = ?';
+			$ids[] = $userId;
+		}
+		return $this->findEntities($sql, $ids);
+	}
+
+	/**
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer $limit

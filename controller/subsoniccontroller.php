@@ -47,7 +47,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.4.0';
+	const API_VERSION = '1.8.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -230,6 +230,32 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function getArtists() {
+		return $this->getIndexesForArtists('artists');
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getArtist() {
+		$id = $this->getRequiredParam('id');
+		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
+
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		$artistName = $artist->getNameString($this->l10n);
+		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
+
+		$artistNode = $this->artistToApi($artist);
+		$artistNode['album'] = \array_map(function($album) use ($artist, $artistName) {
+			return $this->albumToNewApi($album, $artistName);
+		}, $albums);
+
+		return $this->subsonicResponse(['artist' => $artistNode]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getAlbum() {
 		$id = $this->getRequiredParam('id');
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
@@ -244,6 +270,17 @@ class SubsonicController extends Controller {
 		}, $tracks);
 
 		return $this->subsonicResponse(['album' => $albumNode]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getSong() {
+		$id = $this->getRequiredParam('id');
+		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
+		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+
+		return $this->subsonicResponse(['song' => $this->trackToApi($track)]);
 	}
 
 	/**
@@ -308,34 +345,26 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function search2() {
-		$query = $this->getRequiredParam('query');
-		$artistCount = $this->request->getParam('artistCount', 20);
-		$artistOffset = $this->request->getParam('artistOffset', 0);
-		$albumCount = $this->request->getParam('albumCount', 20);
-		$albumOffset = $this->request->getParam('albumOffset', 0);
-		$songCount = $this->request->getParam('songCount', 20);
-		$songOffset = $this->request->getParam('songOffset', 0);
+		$results = $this->doSearch();
 
-		if (empty($query)) {
-			throw new SubsonicException("The 'query' argument is mandatory", 10);
-		}
+		return $this->subsonicResponse(['searchResult2' => [
+			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
+			'album' => \array_map([$this, 'albumToOldApi'], $results['albums']),
+			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+		]]);
+	}
 
-		$artists = $this->artistBusinessLayer->findAllByName($query, $this->userId, true, $artistCount, $artistOffset);
-		$albums = $this->albumBusinessLayer->findAllByName($query, $this->userId, true, $albumCount, $albumOffset);
-		$tracks = $this->trackBusinessLayer->findAllByName($query, $this->userId, true, $songCount, $songOffset);
-
-		$results = [];
-		if (!empty($artists)) {
-			$results['artist'] = \array_map([$this, 'artistToApi'], $artists);
-		}
-		if (!empty($albums)) {
-			$results['album'] = \array_map([$this, 'albumToOldApi'], $albums);
-		}
-		if (!empty($tracks)) {
-			$results['song'] = \array_map([$this, 'trackToApi'], $tracks);
-		}
-
-		return $this->subsonicResponse(['searchResult2' => $results]);
+	/**
+	 * @SubsonicAPI
+	 */
+	private function search3() {
+		$results = $this->doSearch();
+	
+		return $this->subsonicResponse(['searchResult3' => [
+			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
+			'album' => \array_map([$this, 'albumToNewApi'], $results['albums']),
+			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+		]]);
 	}
 
 	/**
@@ -405,6 +434,65 @@ class SubsonicController extends Controller {
 				'shareRole' => false,
 				'videoConversionRole' => false,
 				'folder' => ['artists', 'folders'],
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getUsers() {
+		throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getAvatar() {
+		// TODO: Use 'username' parameter to fetch user-specific avatar from the OC core.
+		// Remember to check the permission.
+		// For now, use the Music app logo for all users.
+		$fileName = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'img', 'logo', 'music_logo.png']);
+		$content = \file_get_contents($fileName);
+		return new FileResponse(['content' => $content, 'mimetype' => 'image/png']);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getStarred() {
+		// TODO: dummy implementation
+		return $this->subsonicResponse([
+			'starred' => [
+				'artist' => [],
+				'album' => [],
+				'song' => []
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getStarred2() {
+		// TODO: dummy implementation
+		return $this->subsonicResponse([
+			'starred2' => [
+				'artist' => [],
+				'album' => [],
+				'song' => []
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getVideos() {
+		// TODO: dummy implementation
+		return $this->subsonicResponse([
+			'videos' => [
+				'video' => []
 			]
 		]);
 	}
@@ -517,7 +605,7 @@ class SubsonicController extends Controller {
 		]);
 	}
 
-	private function getIndexesForArtists() {
+	private function getIndexesForArtists($rootElementName = 'indexes') {
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
 	
 		$indexes = [];
@@ -530,7 +618,7 @@ class SubsonicController extends Controller {
 			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
 		}
 	
-		return $this->subsonicResponse(['indexes' => ['index' => $result]]);
+		return $this->subsonicResponse([$rootElementName => ['index' => $result]]);
 	}
 
 	private function getMusicDirectoryForArtist($id) {
@@ -591,7 +679,8 @@ class SubsonicController extends Controller {
 	private function artistToApi($artist) {
 		return [
 			'name' => $artist->getNameString($this->l10n),
-			'id' => 'artist-' . $artist->getId()
+			'id' => 'artist-' . $artist->getId(),
+			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
 		];
 	}
 
@@ -753,11 +842,35 @@ class SubsonicController extends Controller {
 			case 'byYear':
 			case 'byGenre':
 			default:
-				$this->logger->log("Album list type '$type' is not supported", 'warn');
+				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;
 		}
 
 		return $albums;
+	}
+
+	/**
+	 * Common logic for search2 and search3
+	 * @return array with keys 'artists', 'albums', and 'tracks'
+	 */
+	private function doSearch() {
+		$query = $this->getRequiredParam('query');
+		$artistCount = $this->request->getParam('artistCount', 20);
+		$artistOffset = $this->request->getParam('artistOffset', 0);
+		$albumCount = $this->request->getParam('albumCount', 20);
+		$albumOffset = $this->request->getParam('albumOffset', 0);
+		$songCount = $this->request->getParam('songCount', 20);
+		$songOffset = $this->request->getParam('songOffset', 0);
+
+		if (empty($query)) {
+			throw new SubsonicException("The 'query' argument is mandatory", 10);
+		}
+
+		return [
+			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, true, $artistCount, $artistOffset),
+			'albums' => $this->albumBusinessLayer->findAllByName($query, $this->userId, true, $albumCount, $albumOffset),
+			'tracks' => $this->trackBusinessLayer->findAllByName($query, $this->userId, true, $songCount, $songOffset)
+		];
 	}
 
 	/**

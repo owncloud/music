@@ -434,6 +434,15 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function deletePlaylist() {
+		$id = $this->getRequiredParam('id');
+		$this->playlistBusinessLayer->delete($id, $this->userId);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getUser() {
 		$username = $this->getRequiredParam('username');
 

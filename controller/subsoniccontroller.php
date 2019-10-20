@@ -246,7 +246,7 @@ class SubsonicController extends Controller {
 		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
 
 		$artistNode = $this->artistToApi($artist);
-		$artistNode['album'] = \array_map(function($album) use ($artist, $artistName) {
+		$artistNode['album'] = \array_map(function($album) use ($artistName) {
 			return $this->albumToNewApi($album, $artistName);
 		}, $albums);
 
@@ -402,6 +402,31 @@ class SubsonicController extends Controller {
 
 		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
 		$this->playlistBusinessLayer->addTracks($songIds, $playlist->getId(), $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function updatePlaylist() {
+		$listId = $this->getRequiredParam('playlistId');
+		$newName = $this->request->getParam('name');
+		$songIdsToAdd = $this->getRepeatedParam('songIdToAdd');
+		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdsToAdd);
+		$songIndicesToRemove = $this->getRepeatedParam('songIndexToRemove');
+
+		if (!empty($newName)) {
+			$this->playlistBusinessLayer->rename($newName, $listId, $this->userId);
+		}
+
+		if (!empty($songIndicesToRemove)) {
+			$this->playlistBusinessLayer->removeTracks($songIndicesToRemove, $listId, $this->userId);
+		}
+
+		if (!empty($songIdsToAdd)) {
+			$this->playlistBusinessLayer->addTracks($songIdsToAdd, $listId, $this->userId);
+		}
 
 		return $this->subsonicResponse([]);
 	}

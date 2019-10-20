@@ -44,11 +44,24 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 			return 'directory';
 		} elseif (self::startsWith($resource, 'get')) {
 			return \lcfirst(\substr($resource, 3));
-		} elseif ($resource === 'search2') {
-			return 'searchResult2';
+		} elseif (self::startsWith($resource, 'search')) {
+			return \substr($resource, 0, 6) . 'Result' . \substr($resource, 6);
 		} else {
-			throw new Exception("Resource $resource not supported in test context");
+			throw new \Exception("Resource $resource not supported in test context");
 		}
+	}
+
+	private function storeAttributeFromXmlResult($attr, $entryType, $entryIndex, $storeName = null) {
+		$elements = $this->xml->xpath('/subsonic-response/' .
+				self::resultElementForResource($this->resource) . '/' . $entryType);
+
+		$element = $elements[$entryIndex];
+
+		if (empty($storeName)) {
+			$storeName = $attr;
+		}
+
+		$this->storedValues[$storeName] = $element[$attr]->__toString();
 	}
 
 	/**
@@ -90,8 +103,18 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
-	 * @Then I should get XML with :entryType entries:
-	 * @Then the XML result should contain :entryType entries:
+	 * @Then I should get empty XML response
+	 */
+	public function iShouldGetEmptyXmlResponse() {
+		$rootElem = $this->xml->xpath('/subsonic-response')[0];
+		if ($rootElem->count() > 0) {
+			throw new \Exception('<subsonic-response> has ' . $rootElem->count() . ' children while none expected');
+		}
+	}
+
+	/**
+	 * @Then I should get XML with :entryType entry/entries:
+	 * @Then the XML result should contain :entryType entry/entries:
 	 */
 	public function iShouldGetXmlWithEntries($entryType, TableNode $table) {
 		$elements = $this->xml->xpath('/subsonic-response/' .
@@ -103,13 +126,13 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 			$expectedIterator->next();
 
 			if ($expectedElement === null) {
-				throw new Exception('More results than expected');
+				throw new \Exception('More results than expected');
 			}
 
 			foreach ($expectedElement as $key => $expectedValue) {
 				$actualValue = $element[$key];
 				if ($actualValue != $expectedValue) {
-					throw new Exception(\ucfirst($key) . " does not match - expected: '$expectedValue'" .
+					throw new \Exception(\ucfirst($key) . " does not match - expected: '$expectedValue'" .
 										" got: '$actualValue'" . PHP_EOL . $this->xml->asXML());
 				}
 			}
@@ -118,13 +141,13 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
-			throw new Exception('Not all elements are in the result set - ' . $actualCount . 
+			throw new \Exception('Not all elements are in the result set - ' . $actualCount . 
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
 
 	/**
-	 * @Then I should get JSON with :entryType entries:
+	 * @Then I should get JSON with :entryType entry/entries:
 	 */
 	public function iShouldGetJson($entryType, TableNode $table) {
 		$resultElement = self::resultElementForResource($this->resource);
@@ -136,13 +159,13 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 			$expectedIterator->next();
 
 			if ($expectedElement === null) {
-				throw new Exception('More results than expected');
+				throw new \Exception('More results than expected');
 			}
 
 			foreach ($expectedElement as $key => $expectedValue) {
 				$actualValue = $element[$key];
 				if ($actualValue != $expectedValue) {
-					throw new Exception(\ucfirst($key) . " does not match - expected: '$expectedValue'" .
+					throw new \Exception(\ucfirst($key) . " does not match - expected: '$expectedValue'" .
 										" got: '$actualValue'" . PHP_EOL . \json_encode($this->json));
 				}
 			}
@@ -151,7 +174,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
-			throw new Exception('Not all elements are in the result set - ' . $actualCount . 
+			throw new \Exception('Not all elements are in the result set - ' . $actualCount . 
 								' does not match the expected ' . $expectedCount . PHP_EOL . \json_encode($this->json));
 		}
 	}
@@ -160,14 +183,13 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	 * @Then I should get XML containing :expectedCount :entryType entry/entries
 	 * @Then the XML result should contain :expectedCount :entryType entry/entries
 	 */
-	public function iShouldGetXmlContainingEntries($expectedCount, $entryType)
-	{
+	public function iShouldGetXmlContainingEntries($expectedCount, $entryType) {
 		$elements = $this->xml->xpath('/subsonic-response/' .
 			self::resultElementForResource($this->resource) . '/' . $entryType);
 		$actualCount = \count($elements);
 
 		if ((int)$expectedCount !== $actualCount) {
-			throw new Exception('Unexpected number of entries in the result set - ' . $actualCount . 
+			throw new \Exception('Unexpected number of entries in the result set - ' . $actualCount . 
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
@@ -175,20 +197,36 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	/**
 	 * @Given I store the attribute :attr from the first :entryType XML element
 	 */
-	public function iStoreTheFirstFromTheXmlResult($attr, $entryType)
-	{
-		$elements = $this->xml->xpath('/subsonic-response/' .
-			self::resultElementForResource($this->resource) . '/' . $entryType);
+	public function iStoreTheFirstFromTheXmlResult($attr, $entryType) {
+		$this->storeAttributeFromXmlResult($attr, $entryType, 0);
+	}
 
-		$element = $elements[0];
-		$this->storedValues[$attr] = $element[$attr]->__toString();
+	/**
+	 * @Given I store the attribute :attr from the first :entryType XML element as :storeName
+	 */
+	public function iStoreTheFirstFromTheXmlResultAs($attr, $entryType, $storeName) {
+		$this->storeAttributeFromXmlResult($attr, $entryType, 0, $storeName);
+	}
+
+	/**
+	 * @Given I store the attribute :attr from the second :entryType XML element
+	 */
+	public function iStoreTheSecondFromTheXmlResult($attr, $entryType) {
+		$this->storeAttributeFromXmlResult($attr, $entryType, 1);
 	}
 
 	/**
 	 * @When I specify the parameter :option with the stored value
 	 */
-	public function iSpecifyTheParameterWithTheStoredValue($option)
-	{
+	public function iSpecifyTheParameterWithTheStoredValue($option) {
 		$this->options[$option] = $this->storedValues[$option];
 	}
+
+	/**
+	 * @When I specify the parameter :option with the stored value of :source
+	 */
+	public function iSpecifyTheParameterWithTheStoredValueOf($option, $source) {
+		$this->options[$option] = $this->storedValues[$source];
+	}
+
 }

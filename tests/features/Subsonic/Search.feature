@@ -53,3 +53,17 @@ Feature: Subsonic API - Search
     Then I should get JSON with "song" entries:
       | title                      | album                  | artist                 | duration | year | track |
       | Poetic Pitbull Revolutions | The Butcher's Ballroom | Diablo Swing Orchestra | 2        | 2009 | 3     |
+
+  Scenario: Query (search3) finds entries of all types
+    When I specify the parameter "query" with value "an"
+    And I request the "search3" resource
+    Then the XML result should contain "artist" entries:
+      | name            |
+      | Simon Bowman    |
+    And the XML result should contain "album" entries:
+      | name            | artist                    | songCount |
+      | Nuance          | Pascal Boiseau (Pascalb)  | 3         |
+    And the XML result should contain "song" entries:
+      | title           | album                     | artist                    | duration  | year      | track     |
+      | Gunpowder Chant | The Butcher's Ballroom    | Diablo Swing Orchestra    | 1         | 2009      | 7         |
+      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 3         | 2006      | 1         |

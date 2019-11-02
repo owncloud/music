@@ -106,6 +106,8 @@ class SubsonicController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function handleRequest($method) {
+		$this->logger->log("Subsonic request $method", 'debug');
+
 		$this->format = $this->request->getParam('f', 'xml');
 		$this->callback = $this->request->getParam('callback');
 

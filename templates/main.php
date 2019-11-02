@@ -1,7 +1,6 @@
 <?php
-// scripts
-\OCP\Util::addScript('core', 'placeholder');
 
+// scripts
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');

@@ -28,6 +28,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\Track;
@@ -163,25 +164,11 @@ class ApiController extends Controller {
 		$includeAlbums = \filter_var($albums, FILTER_VALIDATE_BOOLEAN);
 		/** @var Artist[] $artists */
 		$artists = $this->artistBusinessLayer->findAll($this->userId);
-		foreach ($artists as &$artist) {
-			$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
-			if ($fulltree || $includeAlbums) {
-				$artistId = $artist['id'];
-				$artistAlbums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
-				foreach ($artistAlbums as &$album) {
-					$album = $album->toAPI($this->urlGenerator, $this->l10n);
-					if ($fulltree) {
-						$albumId = $album['id'];
-						$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId, $artistId);
-						foreach ($tracks as &$track) {
-							$track = $track->toAPI($this->urlGenerator);
-						}
-						$album['tracks'] = $tracks;
-					}
-				}
-				$artist['albums'] = $artistAlbums;
-			}
-		}
+
+		$artists = \array_map(function($a) use ($fulltree, $includeAlbums) {
+			return $this->artistToApi($a, $includeAlbums || $fulltree, $fulltree);
+		}, $artists);
+
 		return new JSONResponse($artists);
 	}
 
@@ -194,22 +181,28 @@ class ApiController extends Controller {
 		$artistId = $this->getIdFromSlug($artistIdOrSlug);
 		/** @var Artist $artist */
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
-		if ($fulltree) {
-			$artistId = $artist['id'];
-			$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
-			foreach ($albums as &$album) {
-				$album = $album->toAPI($this->urlGenerator, $this->l10n);
-				$albumId = $album['id'];
-				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId, $artistId);
-				foreach ($tracks as &$track) {
-					$track = $track->toAPI($this->urlGenerator);
-				}
-				$album['tracks'] = $tracks;
-			}
-			$artist['albums'] = $albums;
-		}
+		$artist = $this->artistToApi($artist, $fulltree, $fulltree);
 		return new JSONResponse($artist);
+	}
+
+	/**
+	 * Return given artist in Shia API format
+	 * @param Artist $artist
+	 * @param boolean $includeAlbums
+	 * @param boolean $includeTracks (ignored if $includeAlbums==false)
+	 * @return array
+	 */
+	private function artistToApi($artist, $includeAlbums, $includeTracks) {
+		$artistInApi = $artist->toAPI($this->urlGenerator, $this->l10n);
+		if ($includeAlbums) {
+			$artistId = $artist->getId();
+			$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
+
+			$artistInApi['albums'] = \array_map(function($a) use ($includeTracks) {
+				return $this->albumToApi($a, $includeTracks, false);
+			}, $albums);
+		}
+		return $artistInApi;
 	}
 
 	/**
@@ -223,23 +216,11 @@ class ApiController extends Controller {
 		} else {
 			$albums = $this->albumBusinessLayer->findAll($this->userId);
 		}
-		foreach ($albums as &$album) {
-			$artistIds = $album->getArtistIds();
-			$album = $album->toAPI($this->urlGenerator, $this->l10n);
-			if ($fulltree) {
-				$albumId = $album['id'];
-				$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-				foreach ($tracks as &$track) {
-					$track = $track->toAPI($this->urlGenerator);
-				}
-				$album['tracks'] = $tracks;
-				$artists = $this->artistBusinessLayer->findMultipleById($artistIds, $this->userId);
-				foreach ($artists as &$artist) {
-					$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
-				}
-				$album['artists'] = $artists;
-			}
-		}
+
+		$albums = \array_map(function($a) use ($fulltree) {
+			return $this->albumToApi($a, $fulltree, $fulltree);
+		}, $albums);
+
 		return new JSONResponse($albums);
 	}
 
@@ -251,24 +232,37 @@ class ApiController extends Controller {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		$album = $this->albumToApi($album, $fulltree, $fulltree);
+		return new JSONResponse($album);
+	}
 
-		$artistIds = $album->getArtistIds();
-		$album = $album->toAPI($this->urlGenerator, $this->l10n);
-		if ($fulltree) {
-			$albumId = $album['id'];
+	/**
+	 * Return given album in the Shiva API format
+	 * @param Album $album
+	 * @param boolean $includeTracks
+	 * @param boolean $includeAlbums
+	 * @return array
+	 */
+	private function albumToApi($album, $includeTracks, $includeArtists) {
+		$albumInApi = $album->toAPI($this->urlGenerator, $this->l10n);
+
+		if ($includeTracks) {
+			$albumId = $album->getId();
 			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-			foreach ($tracks as &$track) {
-				$track = $track->toAPI($this->urlGenerator);
-			}
-			$album['tracks'] = $tracks;
-			$artists = $this->artistBusinessLayer->findMultipleById($artistIds, $this->userId);
-			foreach ($artists as &$artist) {
-				$artist = $artist->toAPI($this->urlGenerator, $this->l10n);
-			}
-			$album['artists'] = $artists;
+			$albumInApi['tracks'] = \array_map(function($t) {
+				return $t->toAPI($this->urlGenerator);
+			}, $tracks);
 		}
 
-		return new JSONResponse($album);
+		if ($includeArtists) {
+			$artistIds = $album->getArtistIds();
+			$artists = $this->artistBusinessLayer->findMultipleById($artistIds, $this->userId);
+			$albumInApi['artists'] = \array_map(function($a) {
+				return $a->toAPI($this->urlGenerator, $this->l10n);
+			}, $artists);
+		}
+
+		return $albumInApi;
 	}
 
 	/**

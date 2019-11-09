@@ -96,6 +96,18 @@ class Util {
 	}
 
 	/**
+	 * Convert file size given in bytes to human-readable format
+	 * @param int $bytes
+	 * @param int $decimals
+	 * @return string
+	 */
+	public static function formatFileSize($bytes, $decimals = 1) {
+		$units = 'BKMGTP';
+		$factor = \floor((\strlen($bytes) - 1) / 3);
+		return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
+	}
+
+	/**
 	 * @param Folder $parentFolder
 	 * @param string $relativePath
 	 * @return Folder

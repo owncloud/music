@@ -417,19 +417,15 @@ class Scanner extends PublicEmitter {
 			$fileNodes = $userHome->getById($fileId);
 			if (\count($fileNodes) > 0) {
 				$file = $fileNodes[0];
-				if ($debugOutput) {
-					$before = \memory_get_usage(true);
-				}
+				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
 				$this->update($file, $userId, $userHome);
 				if ($debugOutput) {
-					$after = \memory_get_usage(true);
-					$diff = $after - $before;
-					$afterFileSize = new FileSize($after);
-					$diffFileSize = new FileSize($diff);
-					$humanFilesizeAfter = $afterFileSize->getHumanReadable();
-					$humanFilesizeDiff = $diffFileSize->getHumanReadable();
+					$memAfter = \memory_get_usage(true);
+					$memDelta = $memAfter - $memBefore;
+					$fmtMemAfter = Util::formatFileSize($memAfter);
+					$fmtMemDelta = Util::formatFileSize($memDelta);
 					$path = $file->getPath();
-					$debugOutput->writeln("\e[1m $count \e[0m $humanFilesizeAfter \e[1m $diff \e[0m ($humanFilesizeDiff) $path");
+					$debugOutput->writeln("\e[1m $count \e[0m $fmtMemAfter \e[1m $memDelta \e[0m ($fmtMemDelta) $path");
 				}
 				$count++;
 			} else {

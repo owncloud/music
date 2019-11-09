@@ -7,12 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 namespace OCA\Music\BusinessLayer;
-
-use \OCP\AppFramework\Db\DoesNotExistException;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -146,7 +146,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
-	 * @param string $discnumber the disk number of this album's disk
+	 * @param integer $discnumber the disk number of this album's disk
 	 * @param integer $albumArtistId
 	 * @param string $userId
 	 * @return Album The added/updated album

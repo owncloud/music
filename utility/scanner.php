@@ -622,9 +622,9 @@ class Scanner extends PublicEmitter {
 
 	private static function normalizeYear($date) {
 		if (\ctype_digit($date)) {
-			return $date; // the date is a valid year as-is
+			return (int)$date; // the date is a valid year as-is
 		} elseif (\preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
-			return $matches[1]; // year from ISO-formatted date yyyy-mm-dd
+			return (int)$matches[1]; // year from ISO-formatted date yyyy-mm-dd
 		} else {
 			return null;
 		}

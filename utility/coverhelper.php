@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 namespace OCA\Music\Utility;
@@ -214,7 +214,7 @@ class CoverHelper {
 			if ($response === null) {
 				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
 			} else {
-				$response['content'] = self::scaleDownIfLarge($response['content'], 200);
+				$response['content'] = $this->scaleDownIfLarge($response['content'], 200);
 			}
 		}
 
@@ -226,41 +226,49 @@ class CoverHelper {
 	 * Scale down an image keeping it's aspect ratio, if both sides of the image
 	 * exceeds the given target size.
 	 * @param string $image The image to be scaled down as string
-	 * @param integer $size The target size of the smaller side in pixels
+	 * @param integer $size The target size of the smaller dimension in pixels
 	 * @return string The processed image as string
 	 */
-	public static function scaleDownIfLarge($image, $size) {
+	public function scaleDownIfLarge($image, $size) {
 		$meta = \getimagesizefromstring($image);
 		// only process pictures with width and height greater than $size pixels
-		if ($meta[0]>$size && $meta[1]>$size) {
+		if ($meta[0] > $size && $meta[1] > $size) {
 			$img = imagecreatefromstring($image);
-			// scale down the picture so that the smaller dimension will be $sixe pixels
-			$ratio = $meta[0]/$meta[1];
-			if (1.0 <=  $ratio) {
-				$img = imagescale($img, $size*$ratio, $size, IMG_BICUBIC_FIXED);
-			} else {
-				$img = imagescale($img, $size, $size/$ratio, IMG_BICUBIC_FIXED);
-			};
-			\ob_start();
-			\ob_clean();
-			switch ($meta['mime']) {
-				case "image/jpeg":
-					imagejpeg($img, null, 75);
-					$image = \ob_get_contents();
-					break;
-				case "image/png":
-					imagepng($img, null, 7, PNG_ALL_FILTERS);
-					$image = \ob_get_contents();
-					break;
-				case "image/gif":
-					imagegif($img, null);
-					$image = \ob_get_contents();
-					break;
-				default:
-					break;
+
+			if ($img === false) {
+				$this->logger->log('Failed to open cover image for downscaling', 'warning');
 			}
-			\ob_end_clean();
-			imagedestroy($img);
+			else {
+				// scale down the picture so that the smaller dimension will be $sixe pixels
+				$ratio = $meta[0]/$meta[1];
+				if (1.0 <=  $ratio) {
+					$img = imagescale($img, $size*$ratio, $size, IMG_BICUBIC_FIXED);
+				} else {
+					$img = imagescale($img, $size, $size/$ratio, IMG_BICUBIC_FIXED);
+				}
+				\ob_start();
+				\ob_clean();
+				$mime = $meta['mime'];
+				switch ($mime) {
+					case 'image/jpeg':
+						imagejpeg($img, null, 75);
+						$image = \ob_get_contents();
+						break;
+					case 'image/png':
+						imagepng($img, null, 7, PNG_ALL_FILTERS);
+						$image = \ob_get_contents();
+						break;
+					case 'image/gif':
+						imagegif($img, null);
+						$image = \ob_get_contents();
+						break;
+					default:
+						$this->logger->log("Cover image type $mime not supported for downscaling", 'warning');
+						break;
+				}
+				\ob_end_clean();
+				imagedestroy($img);
+			}
 		}
 		return $image;
 	}

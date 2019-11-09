@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2019
  */
 
 namespace OCA\Music\Controller;
@@ -16,21 +18,14 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 
-use \OCA\Music\Utility\Scanner;
-
 class PageController extends Controller {
 	private $l10n;
-	private $scanner;
-	private $status;
 
 	public function __construct($appname,
 								IRequest $request,
-								$l10n,
-								Scanner $scanner) {
+								$l10n) {
 		parent::__construct($appname, $request);
-
 		$this->l10n = $l10n;
-		$this->scanner = $scanner;
 	}
 
 	/**

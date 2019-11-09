@@ -186,11 +186,11 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
-	 * @param string $number the number of the track
-	 * @param string $year the year of the release
-	 * @param string $artistId the artist id of the track
-	 * @param string $albumId the album id of the track
-	 * @param string $fileId the file id of the track
+	 * @param int|null $number the number of the track
+	 * @param int|null $year the year of the release
+	 * @param int $artistId the artist id of the track
+	 * @param int $albumId the album id of the track
+	 * @param int $fileId the file id of the track
 	 * @param string $mimetype the mimetype of the track
 	 * @param string $userId the name of the user
 	 * @param int $length track length in seconds
@@ -219,7 +219,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param int[] $fileIds file IDs of the tracks to delete
 	 * @param string[]|null $userIds the target users; if omitted, the tracks matching the
 	 *                      $fileIds are deleted from all users
-	 * @return False if no such track was found; otherwise array of six arrays
+	 * @return array|false  False is returned if no such track was found; otherwise array of six arrays
 	 *         (named 'deletedTracks', 'remainingAlbums', 'remainingArtists', 'obsoleteAlbums',
 	 *         'obsoleteArtists', and 'affectedUsers'). These contain the track, album, artist, and
 	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer

@@ -84,22 +84,27 @@ class ExtractorGetID3 implements Extractor {
 	}
 
 	public static function getTag($fileInfo, $tag, $binaryValued = false) {
+		$value = null;
+
 		if (\array_key_exists('comments', $fileInfo)) {
 			$comments = $fileInfo['comments'];
 			if (\array_key_exists($tag, $comments)) {
 				$value = $comments[$tag][0];
-				if (!$binaryValued) {
-					// Ensure that the tag contains only valid utf-8 characters.
-					// Illegal characters may result, if the file metadata has a mismatch
-					// between claimed and actual encoding. Invalid characters could break
-					// the database update.
-					\mb_substitute_character(0xFFFD); // Use the Unicode REPLACEMENT CHARACTER (U+FFFD)
-					$value = \mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-				}
-				return $value;
+			}
+			elseif (\array_key_exists('text', $comments) && \array_key_exists($tag, $comments['text'])) {
+				$value = $comments['text'][$tag];
+			}
+
+			if ($value !== null && !$binaryValued) {
+				// Ensure that the tag contains only valid utf-8 characters.
+				// Illegal characters may result, if the file metadata has a mismatch
+				// between claimed and actual encoding. Invalid characters could break
+				// the database update.
+				\mb_substitute_character(0xFFFD); // Use the Unicode REPLACEMENT CHARACTER (U+FFFD)
+				$value = \mb_convert_encoding($value, 'UTF-8', 'UTF-8');
 			}
 		}
-		return null;
+		return $value;
 	}
 
 	public static function getFirstOfTags($fileInfo, array $tags, $defaultValue = null) {

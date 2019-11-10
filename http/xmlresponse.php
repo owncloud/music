@@ -50,26 +50,27 @@ class XMLResponse extends Response {
 		return $xmlTree->asXML();
 	}
 
-	private static function addChildElement($parentNode, $key, $value, $forceElement=false) {
+	private static function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
 		if (\is_bool($value)) {
 			$value = $value ? 'true' : 'false';
 		}
 
 		if (\is_string($value) || \is_numeric($value)) {
-			if ($forceElement) {
-				$parentNode->addChild($key, $value);
-			} else {
+			if ($key == 'value') { // special key mapping to the element contents
+				dom_import_simplexml($parentNode)->nodeValue = $value;
+			} elseif ($allowAttribute) {
 				$parentNode->addAttribute($key, $value);
+			} else {
+				$parentNode->addChild($key, $value);
 			}
 		}
 		elseif (\is_array($value)) {
 			if (self::arrayIsIndexed($value)) {
 				foreach ($value as $child) {
-					self::addChildElement($parentNode, $key, $child, true);
+					self::addChildElement($parentNode, $key, $child, /*allowAttribute=*/false);
 				}
 			}
-			else {
-				// associative array
+			else { // associative array
 				$element = $parentNode->addChild($key);
 				foreach ($value as $childKey => $childValue) {
 					self::addChildElement($element, $childKey, $childValue);
@@ -86,10 +87,11 @@ class XMLResponse extends Response {
 
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
+	 * Empty array is not considered "indexed".
 	 * @param array $array
 	 */
 	private static function arrayIsIndexed(array $array) {
 		reset($array);
-		return empty($array) || \is_int(key($array));
+		return !empty($array) && \is_int(key($array));
 	}
 }

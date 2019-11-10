@@ -23,6 +23,7 @@ use \OCA\Music\Db\Track;
 use \OCA\Music\Utility\Util;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
+use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 class TrackBusinessLayer extends BusinessLayer {
 	private $logger;
@@ -70,6 +71,25 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByNameRecursive($name, $userId) {
 		return $this->mapper->findAllByNameRecursive($name, $userId);
+	}
+
+	/**
+	 * Returns track specified by name and/or artist name
+	 * @param string|null $name the name of the track
+	 * @param string|null $artistName the name of the artist
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track|null Mathing track if the criteria uniquely defines one
+	 */
+	public function findByNameAndArtistName($name, $artistName, $userId) {
+		try {
+			return $this->mapper->findByNameAndArtistName($name, $artistName, $userId);
+		} catch (DoesNotExistException $e) {
+			$this->logger->log("No track found with title '$name' and artist '$artistName'", 'debug');
+			return null;
+		} catch (MultipleObjectsReturnedException $e) {
+			$this->logger->log("More than on track found with title '$name' and artist '$artistName'", 'debug');
+			return null;
+		}
 	}
 
 	/**

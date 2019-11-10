@@ -236,6 +236,31 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Returns track specified by name and/or artist name
+	 * @param string|null $name the name of the track
+	 * @param string|null $artistName the name of the artist
+	 * @param string $userId the name of the user
+	 * @return \OCA\Music\Db\Track|null Mathing track if the criteria uniquely defines one
+	 */
+	public function findByNameAndArtistName($name, $artistName, $userId) {
+		$sqlConditions = '';
+		$params = [$userId];
+
+		if (!empty($name)) {
+			$sqlConditions .= 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
+			$params[] = $name;
+		}
+
+		if (!empty($artistName)) {
+			$sqlConditions .= 'AND `track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?))';
+			$params[] = $artistName;
+		}
+
+		$sql = $this->makeSelectQuery($sqlConditions);
+		return $this->findEntity($sql, $params);
+	}
+
+	/**
 	 * Finds all track IDs of the user along with the parent folder ID of each track
 	 * @param string $userId
 	 * @return array where keys are folder IDs and values are arrays of track IDs

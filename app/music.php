@@ -175,8 +175,9 @@ class Music extends App {
 				$c->query('RootFolder'),
 				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
+				$c->query('DetailsHelper'),
 				$c->query('Logger')
-				);
+			);
 		});
 
 		/**

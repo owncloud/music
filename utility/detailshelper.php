@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018, 2019
  */
 
 namespace OCA\Music\Utility;
@@ -77,6 +77,21 @@ class DetailsHelper {
 	}
 
 	/**
+	 * @param integer $fileId
+	 * @param Folder $userFolder
+	 * $return string|null
+	 */
+	public function getLyrics($fileId, $userFolder) {
+		$lyrics = null;
+		$fileNodes = $userFolder->getById($fileId);
+		if (\count($fileNodes) > 0) {
+			$data = $this->extractor->extract($fileNodes[0]);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'LYRICS']);
+		}
+		return $lyrics;
+	}
+
+	/**
 	 * Base64 encode the picture binary data and wrap it so that it can be directly used as
 	 * src of an HTML img element.
 	 * @param string $pic
@@ -95,7 +110,7 @@ class DetailsHelper {
 	 * @param $item
 	 */
 	private static function sanitizeString(&$item){
-		if(is_string($item)) {
+		if (is_string($item)) {
 			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
 		}
 	}

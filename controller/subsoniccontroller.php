@@ -21,7 +21,6 @@ use \OCP\Files\IRootFolder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 
@@ -43,6 +42,7 @@ use \OCA\Music\Http\XMLResponse;
 use \OCA\Music\Middleware\SubsonicException;
 
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
@@ -59,6 +59,7 @@ class SubsonicController extends Controller {
 	private $userMusicFolder;
 	private $l10n;
 	private $coverHelper;
+	private $detailsHelper;
 	private $logger;
 	private $userId;
 	private $format;
@@ -76,6 +77,7 @@ class SubsonicController extends Controller {
 								IRootFolder $rootFolder,
 								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
+								DetailsHelper $detailsHelper,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 
@@ -89,6 +91,7 @@ class SubsonicController extends Controller {
 		$this->rootFolder = $rootFolder;
 		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
+		$this->detailsHelper = $detailsHelper;
 		$this->logger = $logger;
 	}
 
@@ -321,6 +324,31 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function getLyrics() {
+		$artistPar = $this->request->getParam('artist');
+		$titlePar = $this->request->getParam('title');
+
+		$track = $this->trackBusinessLayer->findByNameAndArtistName($titlePar, $artistPar, $this->userId);
+
+		if ($track === null) {
+			return $this->subsonicResponse(['lyrics' => []]);
+		}
+		else {
+			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+			$lyrics = $this->detailsHelper->getLyrics($track->getFileId(), $rootFolder);
+
+			return $this->subsonicResponse(['lyrics' => [
+					'artist' => $artist->getNameString($this->l10n),
+					'title' => $track->getTitle(),
+					'value' => $lyrics
+			]]);
+		}
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function stream() {
 		// We don't support transcaoding, so 'stream' and 'download' act identically
 		return $this->download();
@@ -349,11 +377,18 @@ class SubsonicController extends Controller {
 	private function search2() {
 		$results = $this->doSearch();
 
-		return $this->subsonicResponse(['searchResult2' => [
-			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
-			'album' => \array_map([$this, 'albumToOldApi'], $results['albums']),
-			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
-		]]);
+		$formattedResults = [];
+		if (!empty($results['artists'])) {
+			$formattedResults['artist'] =  \array_map([$this, 'artistToApi'], $results['artists']);
+		}
+		if (!empty($results['albums'])) {
+			$formattedResults['album'] = \array_map([$this, 'albumToOldApi'], $results['albums']);
+		}
+		if (!empty($results['tracks'])) {
+			$formattedResults['song'] = \array_map([$this, 'trackToApi'], $results['tracks']);
+		}
+
+		return $this->subsonicResponse(['searchResult2' => $formattedResults]);
 	}
 
 	/**
@@ -362,11 +397,18 @@ class SubsonicController extends Controller {
 	private function search3() {
 		$results = $this->doSearch();
 
-		return $this->subsonicResponse(['searchResult3' => [
-			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
-			'album' => \array_map([$this, 'albumToNewApi'], $results['albums']),
-			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
-		]]);
+		$formattedResults = [];
+		if (!empty($results['artists'])) {
+			$formattedResults['artist'] =  \array_map([$this, 'artistToApi'], $results['artists']);
+		}
+		if (!empty($results['albums'])) {
+			$formattedResults['album'] = \array_map([$this, 'albumToNewApi'], $results['albums']);
+		}
+		if (!empty($results['tracks'])) {
+			$formattedResults['song'] = \array_map([$this, 'trackToApi'], $results['tracks']);
+		}
+
+		return $this->subsonicResponse(['searchResult3' => $formattedResults]);
 	}
 
 	/**

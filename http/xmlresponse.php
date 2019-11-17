@@ -28,6 +28,7 @@ use OCP\AppFramework\Http\Response;
 class XMLResponse extends Response {
 
 	private $content;
+	private $doc;
 
 	public function __construct(array $content) {
 		$this->addHeader('Content-Type', 'application/xml');
@@ -37,43 +38,45 @@ class XMLResponse extends Response {
 			$content = ['root' => $content];
 		}
 		$this->content = $content;
+		$this->doc = new \DOMDocument();
+		$this->doc->formatOutput = true;
 	}
 
 	public function render() {
 		$rootName = \array_keys($this->content)[0];
-
-		$xmlTree = new \SimpleXMLElement("<?xml version='1.0' encoding='UTF-8'?><$rootName/>");
-		foreach ($this->content[$rootName] as $key => $value) {
-			self::addChildElement($xmlTree, $key, $value);
-		}
-
-		return $xmlTree->asXML();
+		$this->addChildElement($this->doc, $rootName, $this->content[$rootName]);
+		return $this->doc->saveXML();
 	}
 
-	private static function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
+	private function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
 		if (\is_bool($value)) {
 			$value = $value ? 'true' : 'false';
 		}
 
 		if (\is_string($value) || \is_numeric($value)) {
-			if ($key == 'value') { // special key mapping to the element contents
-				dom_import_simplexml($parentNode)->nodeValue = $value;
+			// key 'value' has a special meaning
+			if ($key == 'value') {
+				$child = $this->doc->createTextNode($value);
 			} elseif ($allowAttribute) {
-				$parentNode->addAttribute($key, $value);
+				$child = $this->doc->createAttribute($key);
+				$child->value = $value;
 			} else {
-				$parentNode->addChild($key, $value);
+				$child = $this->doc->createElement($key);
+				$child->appendChild($this->doc->createTextNode($value));
 			}
+			$parentNode->appendChild($child);
 		}
 		elseif (\is_array($value)) {
 			if (self::arrayIsIndexed($value)) {
 				foreach ($value as $child) {
-					self::addChildElement($parentNode, $key, $child, /*allowAttribute=*/false);
+					$this->addChildElement($parentNode, $key, $child, /*allowAttribute=*/false);
 				}
 			}
 			else { // associative array
-				$element = $parentNode->addChild($key);
+				$element = $this->doc->createElement($key);
+				$parentNode->appendChild($element);
 				foreach ($value as $childKey => $childValue) {
-					self::addChildElement($element, $childKey, $childValue);
+					$this->addChildElement($element, $childKey, $childValue);
 				}
 			}
 		}

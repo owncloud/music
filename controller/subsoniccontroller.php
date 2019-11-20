@@ -17,7 +17,6 @@ use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\File;
 use \OCP\Files\Folder;
-use \OCP\Files\IRootFolder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -55,7 +54,6 @@ class SubsonicController extends Controller {
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
-	private $rootFolder;
 	private $userMusicFolder;
 	private $l10n;
 	private $coverHelper;
@@ -74,7 +72,6 @@ class SubsonicController extends Controller {
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
-								IRootFolder $rootFolder,
 								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
@@ -88,7 +85,6 @@ class SubsonicController extends Controller {
 		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
-		$this->rootFolder = $rootFolder;
 		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
@@ -311,8 +307,9 @@ class SubsonicController extends Controller {
 	 */
 	private function getCoverArt() {
 		$id = $this->getRequiredParam('id');
-		$userFolder = $this->rootFolder->getUserFolder($this->userId);
-		$coverData = $this->coverHelper->getCover($id, $this->userId, $userFolder);
+
+		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+		$coverData = $this->coverHelper->getCover($id, $this->userId, $rootFolder);
 
 		if ($coverData !== null) {
 			return new FileResponse($coverData);
@@ -636,7 +633,8 @@ class SubsonicController extends Controller {
 	}
 
 	private function getFilesystemNode($id) {
-		$nodes = $this->rootFolder->getUserFolder($this->userId)->getById($id);
+		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+		$nodes = $rootFolder->getById($id);
 
 		if (\count($nodes) != 1) {
 			throw new SubsonicException('file not found', 70);

@@ -172,7 +172,6 @@ class Music extends App {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
-				$c->query('RootFolder'),
 				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),

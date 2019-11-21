@@ -671,14 +671,22 @@ class SubsonicController extends Controller {
 			\array_map([$this, 'trackToApi'], $tracks)
 		);
 
-		return $this->subsonicResponse([
+		$content = [
 			'directory' => [
 				'id' => $id,
-				'parent' => 'folder-' . $folder->getParent()->getId(),
 				'name' => $folder->getName(),
 				'child' => $children
 			]
-		]);
+		];
+
+		// Parent folder ID is included if and only if the parent folder is not the top level
+		$rootFolderId = $this->userMusicFolder->getFolder($this->userId)->getId();
+		$parentFolderId = $folder->getParent()->getId();
+		if ($rootFolderId != $parentFolderId) {
+			$content['parent'] = 'folder-' . $parentFolderId;
+		}
+
+		return $this->subsonicResponse($content);
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
@@ -712,7 +720,6 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse([
 			'directory' => [
 				'id' => $id,
-				'parent' => 'artists',
 				'name' => $artistName,
 				'child' => $children
 			]

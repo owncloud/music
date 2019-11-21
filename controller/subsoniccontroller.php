@@ -328,7 +328,7 @@ class SubsonicController extends Controller {
 		$track = $this->trackBusinessLayer->findByNameAndArtistName($titlePar, $artistPar, $this->userId);
 
 		if ($track === null) {
-			return $this->subsonicResponse(['lyrics' => []]);
+			return $this->subsonicResponse(['lyrics' => new \stdClass]);
 		}
 		else {
 			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
@@ -374,18 +374,11 @@ class SubsonicController extends Controller {
 	private function search2() {
 		$results = $this->doSearch();
 
-		$formattedResults = [];
-		if (!empty($results['artists'])) {
-			$formattedResults['artist'] =  \array_map([$this, 'artistToApi'], $results['artists']);
-		}
-		if (!empty($results['albums'])) {
-			$formattedResults['album'] = \array_map([$this, 'albumToOldApi'], $results['albums']);
-		}
-		if (!empty($results['tracks'])) {
-			$formattedResults['song'] = \array_map([$this, 'trackToApi'], $results['tracks']);
-		}
-
-		return $this->subsonicResponse(['searchResult2' => $formattedResults]);
+		return $this->subsonicResponse(['searchResult2' => [
+			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
+			'album' => \array_map([$this, 'albumToOldApi'], $results['albums']),
+			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+		]]);
 	}
 
 	/**
@@ -394,18 +387,11 @@ class SubsonicController extends Controller {
 	private function search3() {
 		$results = $this->doSearch();
 
-		$formattedResults = [];
-		if (!empty($results['artists'])) {
-			$formattedResults['artist'] =  \array_map([$this, 'artistToApi'], $results['artists']);
-		}
-		if (!empty($results['albums'])) {
-			$formattedResults['album'] = \array_map([$this, 'albumToNewApi'], $results['albums']);
-		}
-		if (!empty($results['tracks'])) {
-			$formattedResults['song'] = \array_map([$this, 'trackToApi'], $results['tracks']);
-		}
-
-		return $this->subsonicResponse(['searchResult3' => $formattedResults]);
+		return $this->subsonicResponse(['searchResult3' => [
+			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
+			'album' => \array_map([$this, 'albumToNewApi'], $results['albums']),
+			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+		]]);
 	}
 
 	/**

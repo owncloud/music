@@ -80,6 +80,11 @@ class XMLResponse extends Response {
 				}
 			}
 		}
+		elseif ($value instanceof \stdClass) {
+			// empty element
+			$element = $this->doc->createElement($key);
+			$parentNode->appendChild($element);
+		}
 		elseif ($value === null) {
 			// skip
 		}
@@ -90,11 +95,11 @@ class XMLResponse extends Response {
 
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
-	 * Empty array is not considered "indexed".
+	 * Empty array is considered to be "indexed".
 	 * @param array $array
 	 */
 	private static function arrayIsIndexed(array $array) {
 		reset($array);
-		return !empty($array) && \is_int(key($array));
+		return empty($array) || \is_int(key($array));
 	}
 }

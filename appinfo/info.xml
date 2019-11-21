@@ -10,7 +10,7 @@ In the library view, you can play tracks by album or artist, create custom playl
 Limitations: The library view does not scale well to huge music collections. The practical maximum number of tracks the app can handle is ~50´000 on Firefox and lower on other browsers. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen, Morris Jobke (original author), Jan-Christoph Borchardt (original design)</author>
-	<version>0.11.0</version>
+	<version>0.11.1</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827475-94d34d7c-9b02-11e8-8bf9-9f3d91aa5dab.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

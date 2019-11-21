@@ -1,3 +1,13 @@
+v0.11.1 2019-11-21
+ * improved support for Subsonic API:
+   * support most parts of the API v1.8 (added methods getUser, getArtists, getArtist, getSong, search3, getAvatar, getLyrics, updatePlaylist, deletePlaylist, along with a few other implemented as stubs)
+   * prevent navigating to folders outside the user music path (#725)
+   * fix notice "Only variables should be passed by reference" being logged
+   * fix malformed contents breaking the XML responses
+ * fix warning about placeholder.js being logged on NC17+ (#721)
+ * fix warning about array_walk callback syntax being logged on NC17+ (#726)
+ * internal refactoring
+
 v0.11.0 2019-10-12
  * support for Subsonic API (#718)
  * truncate variable length text fields before storing them to the database (#632, #716)

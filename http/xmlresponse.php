@@ -56,15 +56,14 @@ class XMLResponse extends Response {
 		if (\is_string($value) || \is_numeric($value)) {
 			// key 'value' has a special meaning
 			if ($key == 'value') {
-				$child = $this->doc->createTextNode($value);
+				$parentNode->appendChild($this->doc->createTextNode($value));
 			} elseif ($allowAttribute) {
-				$child = $this->doc->createAttribute($key);
-				$child->value = $value;
+				$parentNode->setAttribute($key, $value);
 			} else {
 				$child = $this->doc->createElement($key);
 				$child->appendChild($this->doc->createTextNode($value));
+				$parentNode->appendChild($child);
 			}
-			$parentNode->appendChild($child);
 		}
 		elseif (\is_array($value)) {
 			if (self::arrayIsIndexed($value)) {

@@ -7,18 +7,19 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2018, 2019
  */
 
 namespace OCA\Music\Middleware;
 
 use \OCP\IRequest;
-use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
-
 use \OCA\Music\Db\AmpacheSessionMapper;
+use \OCA\Music\Http\XMLResponse;
 
 /**
  * Used to do the authentication and checking stuff for an ampache controller method
@@ -96,14 +97,12 @@ class AmpacheMiddleware extends Middleware {
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($exception instanceof AmpacheException && $this->isAmpacheCall) {
-			$response = new TemplateResponse($this->appname, 'ampache/error');
-			$response->renderAs('blank');
-			$response->addHeader('Content-Type', 'text/xml; charset=UTF-8');
-			$response->setParams([
-				'code' => $exception->getCode(),
-				'message' => $exception->getMessage()
-			]);
-			return $response;
+			return new XMLResponse(['root' => [
+				'error' => [
+					'code' => $exception->getCode(),
+					'value' => $exception->getMessage()
+				]
+			]]);
 		}
 		throw $exception;
 	}

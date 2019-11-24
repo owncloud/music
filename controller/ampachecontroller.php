@@ -9,13 +9,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2019
  */
 
 namespace OCA\Music\Controller;
 
 use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http\TemplateResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -37,6 +36,7 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\XMLResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
@@ -58,6 +58,7 @@ class AmpacheController extends Controller {
 
 	const SESSION_EXPIRY_TIME = 6000;
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
+	const API_VERSION = 350001;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -192,26 +193,20 @@ class AmpacheController extends Controller {
 		// save session
 		$this->ampacheSessionMapper->insert($session);
 
-		// return counts
-		$artistCount = $this->artistBusinessLayer->count($user);
-		$albumCount = $this->albumBusinessLayer->count($user);
-		$trackCount = $this->trackBusinessLayer->count($user);
-		$playlistCount = $this->playlistBusinessLayer->count($user) + 1; // +1 for "All tracks"
-
-		return $this->renderXml(
-			'ampache/handshake',
-			[
-				'token' => $token,
-				'songCount' => $trackCount,
-				'artistCount' => $artistCount,
-				'albumCount' => $albumCount,
-				'playlistCount' => $playlistCount,
-				'updateDate' => $currentTime,
-				'cleanDate' => $currentTime,
-				'addDate' => $currentTime,
-				'expireDate' => $expiryDate
-			]
-		);
+		return new XMLResponse(['root' => [
+			'auth' => [$token],
+			'version' => [self::API_VERSION],
+			'update' => [$currentTime],
+			'add' => [$currentTime],
+			'clean' => [$currentTime],
+			'songs' => [$this->trackBusinessLayer->count($user)],
+			'artists' => [$this->artistBusinessLayer->count($user)],
+			'albums' => [$this->albumBusinessLayer->count($user)],
+			'playlists' => [$this->playlistBusinessLayer->count($user) + 1], // +1 for "All tracks"
+			'session_expire' => [\date('c', $expiryDate)],
+			'tags' => [0],
+			'videos' => [0]
+		]]);
 	}
 
 	protected function ping($auth) {
@@ -219,7 +214,9 @@ class AmpacheController extends Controller {
 			$this->ampacheSessionMapper->extend($auth, \time() + self::SESSION_EXPIRY_TIME);
 		}
 
-		return $this->renderXml('ampache/ping', []);
+		return new XMLResponse(['root' => [
+			'version' => [self::API_VERSION]
+		]]);
 	}
 
 	protected function artists($filter, $exact) {
@@ -305,30 +302,23 @@ class AmpacheController extends Controller {
 	protected function playlists($filter, $exact) {
 		$userId = $this->ampacheUser->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact);
-		$playlists = \array_map(['self', 'playlistToArray'], $playlists);
 
 		// append "All tracks" if not searching by name
 		if (empty($filter)) {
-			$playlists[] = $this->allTracksPlaylistAsArray();
+			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}
 
-		return $this->renderXml(
-				'ampache/playlists',
-				['playlists' => $playlists, 'userId' => $userId]
-		);
+		return $this->renderPlaylists($playlists);
 	}
 
 	protected function playlist($listId) {
 		$userId = $this->ampacheUser->getUserId();
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
-			$playlist = $this->allTracksPlaylistAsArray();
+			$playlist = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		} else {
-			$playlist = self::playlistToArray($this->playlistBusinessLayer->find($listId, $userId));
+			$playlist = $this->playlistBusinessLayer->find($listId, $userId);
 		}
-		return $this->renderXml(
-				'ampache/playlists',
-				['playlists' => [$playlist], 'userId' => $userId]
-		);
+		return $this->renderPlaylists([$playlist]);
 	}
 
 	protected function playlist_songs($listId, $auth) {
@@ -403,53 +393,52 @@ class AmpacheController extends Controller {
 		];
 	}
 
-	protected static function playlistToArray($playlist) {
-		return [
-			'id' => $playlist->getId(),
-			'name' => $playlist->getName(),
-			'trackCount' => $playlist->getTrackCount()
-		];
-	}
-
 	protected static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
 		return $urlGenerator->getAbsoluteURL($urlGenerator->linkToRoute('music.ampache.ampache'))
 				. "?action=$action&filter=$filter&auth=$auth";
 	}
 
 	protected static function createAlbumCoverUrl($urlGenerator, $album, $auth) {
-		return self::createAmpacheActionUrl($urlGenerator, '_get_cover', $album->getId(), $auth);
+		if ($album->getCoverFileId()) {
+			return self::createAmpacheActionUrl($urlGenerator, '_get_cover', $album->getId(), $auth);
+		} else {
+			return '';
+		}
 	}
 
 	protected function renderArtists($artists) {
-		foreach ($artists as &$artist) {
-			$artist->setAlbumCount($this->albumBusinessLayer->countByArtist($artist->getId()));
-			$artist->setTrackCount($this->trackBusinessLayer->countByArtist($artist->getId()));
-		}
-
-		return $this->renderXml('ampache/artists', ['artists' => $artists, 'l10n' => $this->l10n]);
+		return new XMLResponse(['root' => ['artist' => \array_map(function($artist) {
+			return [
+				'id' => $artist->getId(),
+				'name' => [$artist->getNameString($this->l10n)],
+				'albums' => [$this->albumBusinessLayer->countByArtist($artist->getId())],
+				'songs' => [$this->trackBusinessLayer->countByArtist($artist->getId())],
+				'rating' => [0],
+				'preciserating' => [0]
+			];
+		}, $artists)]]);
 	}
 
 	protected function renderAlbums($albums, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 
-		foreach ($albums as &$album) {
-			$album->setTrackCount($this->trackBusinessLayer->countByAlbum($album->getId()));
-			$albumArtist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
-			$album->setAlbumArtist($albumArtist);
-		}
-
-		$createCoverUrl = function ($album) use ($auth) {
-			if ($album->getCoverFileId()) {
-				return self::createAlbumCoverUrl($this->urlGenerator, $album, $auth);
-			} else {
-				return '';
-			}
-		};
-
-		return $this->renderXml(
-				'ampache/albums',
-				['albums' => $albums, 'l10n' => $this->l10n, 'createCoverUrl' => $createCoverUrl]
-		);
+		return new XMLResponse(['root' => ['album' => \array_map(function($album) use ($userId, $auth) {
+			$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
+			return [
+				'id' => $album->getId(),
+				'name' => [$album->getNameString($this->l10n)],
+				'artist' => [
+					'id' => $artist->getId(),
+					'value' => $artist->getNameString($this->l10n)
+				],
+				'tracks' => [$this->trackBusinessLayer->countByAlbum($album->getId())],
+				'rating' => [0],
+				'year' => [$album->yearToAPI()],
+				'disk' => [$album->getDisk()],
+				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
+				'preciserating' => [0]
+			];
+		}, $albums)]]);
 	}
 
 	protected function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
@@ -470,28 +459,77 @@ class AmpacheController extends Controller {
 	}
 
 	protected function renderSongs($tracks, $auth) {
-		// URL creation callbacks
-		$createPlayUrl = function ($track) use ($auth) {
-			return self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth);
-		};
-		$createCoverUrl = function ($track) use ($auth) {
-			if ($track->getAlbum()->getCoverFileId()) {
-				return self::createAlbumCoverUrl($this->urlGenerator, $track->getAlbum(), $auth);
-			} else {
-				return '';
-			}
-		};
+		return new XMLResponse(['root' => ['song' => \array_map(function($track) use ($auth) {
+			$artist = $track->getArtist();
+			$album = $track->getAlbum();
+			$albumArtist = $album->getAlbumArtist();
 
-		return $this->renderXml(
-				'ampache/songs',
-				['songs' => $tracks, 'l10n' => $this->l10n,
-				 'createPlayUrl' => $createPlayUrl, 'createCoverUrl' => $createCoverUrl]
-		);
+			return [
+				'id' => $track->getId(),
+				'title' => [$track->getTitle()],
+				'artist' => [
+					'id' => $artist->getId(),
+					'value' => $artist->getNameString($this->l10n)
+				],
+				'albumartist' => [
+					'id' => $albumArtist->getId(),
+					'value' => $albumArtist->getNameString($this->l10n)
+				],
+				'album' => [
+					'id' => $album->getId(),
+					'value' => $album->getNameString($this->l10n)
+				],
+				'url' => [self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth)],
+				'time' => [$track->getLength()],
+				'track' => [$track->getNumber()],
+				'bitrate' => [$track->getBitrate()],
+				'mime' => [$track->getMimetype()],
+				'size' => [$track->getSize()],
+				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
+				'rating' => [0],
+				'preciserating' => [0]
+			];
+		}, $tracks)]]);
 	}
 
-	protected function renderXml($templateName, $params) {
-		$response = new TemplateResponse($this->appName, $templateName, $params, 'blank');
-		$response->setHeaders(['Content-Type' => 'text/xml']);
-		return $response;
+	protected function renderPlaylists($playlists) {
+		return new XMLResponse(['root' => ['playlist' => \array_map(function($playlist) {
+			return [
+				'id' => $playlist->getId(),
+				'name' => [$playlist->getName()],
+				'owner' => [$this->ampacheUser->getUserId()],
+				'items' => [$playlist->getTrackCount()],
+				'type' => ['Private']
+			];
+		}, $playlists)]]);
+	}
+}
+
+/**
+ * Adapter class which acts like the Playlist class for the purpose of 
+ * AmpacheController::renderPlaylists but contains all the track of the user. 
+ */
+class AmpacheController_AllTracksPlaylist {
+
+	private $user;
+	private $trackBusinessLayer;
+	private $l10n;
+
+	public function __construct($user, $trackBusinessLayer, $l10n) {
+		$this->user = $user;
+		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->l10n = $l10n;
+	}
+
+	public function getId() {
+		return AmpacheController::ALL_TRACKS_PLAYLIST_ID;
+	}
+
+	public function getName() {
+		return $this->l10n->t('All tracks');
+	}
+
+	public function getTrackCount() {
+		return $this->trackBusinessLayer->count($this->user);
 	}
 }

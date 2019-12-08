@@ -193,17 +193,20 @@ class AmpacheController extends Controller {
 		// save session
 		$this->ampacheSessionMapper->insert($session);
 
+		$currentTimeFormated = \date('c', $currentTime);
+		$expiryDateFormated = \date('c', $expiryDate);
+
 		return new XMLResponse(['root' => [
 			'auth' => [$token],
 			'version' => [self::API_VERSION],
-			'update' => [$currentTime],
-			'add' => [$currentTime],
-			'clean' => [$currentTime],
+			'update' => [$currentTimeFormated],
+			'add' => [$currentTimeFormated],
+			'clean' => [$currentTimeFormated],
 			'songs' => [$this->trackBusinessLayer->count($user)],
 			'artists' => [$this->artistBusinessLayer->count($user)],
 			'albums' => [$this->albumBusinessLayer->count($user)],
 			'playlists' => [$this->playlistBusinessLayer->count($user) + 1], // +1 for "All tracks"
-			'session_expire' => [\date('c', $expiryDate)],
+			'session_expire' => [$expiryDateFormated],
 			'tags' => [0],
 			'videos' => [0]
 		]]);

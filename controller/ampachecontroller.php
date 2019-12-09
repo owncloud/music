@@ -145,53 +145,17 @@ class AmpacheController extends Controller {
 		throw new AmpacheException('Action not supported', 405);
 	}
 
+	/***********************
+	 * Ampahce API methods *
+	 ***********************/
+
 	protected function handshake($user, $timestamp, $auth) {
-		// prepare hash check
-		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
-
-		// prepare time check
 		$currentTime = \time();
-		$providedTime = \intval($timestamp);
-
-		if ($providedTime === 0) {
-			throw new AmpacheException('Invalid Login - cannot parse time', 401);
-		}
-		if ($providedTime < ($currentTime - self::SESSION_EXPIRY_TIME)) {
-			throw new AmpacheException('Invalid Login - session is outdated', 401);
-		}
-		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
-		// own system clock to generate the timestamp and that may differ from the server's time.
-		if ($providedTime > $currentTime + 600) {
-			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
-		}
-
-		$validTokenFound = false;
-
-		foreach ($hashes as $hash) {
-			$expectedHash = \hash('sha256', $timestamp . $hash);
-
-			if ($expectedHash === $auth) {
-				$validTokenFound = true;
-				break;
-			}
-		}
-
-		if ($validTokenFound === false) {
-			throw new AmpacheException('Invalid Login - passphrase does not match', 401);
-		}
-
-		// this can cause collision, but it's just a temporary token
-		$token = \md5(\uniqid(\rand(), true));
 		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
-		// create new session
-		$session = new AmpacheSession();
-		$session->setUserId($user);
-		$session->setToken($token);
-		$session->setExpiry($expiryDate);
-
-		// save session
-		$this->ampacheSessionMapper->insert($session);
+		$this->checkHandshakeTimestamp($timestamp, $currentTime);
+		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
+		$token = $this->startNewSession($user, $expiryDate);
 
 		$currentTimeFormated = \date('c', $currentTime);
 		$expiryDateFormated = \date('c', $expiryDate);
@@ -371,7 +335,58 @@ class AmpacheController extends Controller {
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album has no cover');
 	}
 
-	protected function findEntities(BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null) {
+
+	/********************
+	 * Helper functions *
+	 ********************/
+
+	private function checkHandshakeTimestamp($timestamp, $currentTime) {
+		$providedTime = \intval($timestamp);
+
+		if ($providedTime === 0) {
+			throw new AmpacheException('Invalid Login - cannot parse time', 401);
+		}
+		if ($providedTime < ($currentTime - self::SESSION_EXPIRY_TIME)) {
+			throw new AmpacheException('Invalid Login - session is outdated', 401);
+		}
+		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
+		// own system clock to generate the timestamp and that may differ from the server's time.
+		if ($providedTime > $currentTime + 600) {
+			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
+		}
+	}
+
+	private function checkHandshakeAuthentication($user, $timestamp, $auth) {
+		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
+
+		foreach ($hashes as $hash) {
+			$expectedHash = \hash('sha256', $timestamp . $hash);
+
+			if ($expectedHash === $auth) {
+				return;
+			}
+		}
+
+		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
+	}
+
+	private function startNewSession($user, $expiryDate) {
+		// this can cause collision, but it's just a temporary token
+		$token = \md5(\uniqid(\rand(), true));
+
+		// create new session
+		$session = new AmpacheSession();
+		$session->setUserId($user);
+		$session->setToken($token);
+		$session->setExpiry($expiryDate);
+
+		// save session
+		$this->ampacheSessionMapper->insert($session);
+
+		return $token;
+	}
+
+	private function findEntities(BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null) {
 		$userId = $this->ampacheUser->getUserId();
 
 		if ($filter) {
@@ -388,20 +403,12 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	protected function allTracksPlaylistAsArray() {
-		return [
-			'id' => self::ALL_TRACKS_PLAYLIST_ID,
-			'name' => $this->l10n->t('All tracks'),
-			'trackCount' => $this->trackBusinessLayer->count($this->ampacheUser->getUserId())
-		];
-	}
-
-	protected static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
+	private static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
 		return $urlGenerator->getAbsoluteURL($urlGenerator->linkToRoute('music.ampache.ampache'))
 				. "?action=$action&filter=$filter&auth=$auth";
 	}
 
-	protected static function createAlbumCoverUrl($urlGenerator, $album, $auth) {
+	private static function createAlbumCoverUrl($urlGenerator, $album, $auth) {
 		if ($album->getCoverFileId()) {
 			return self::createAmpacheActionUrl($urlGenerator, '_get_cover', $album->getId(), $auth);
 		} else {
@@ -409,7 +416,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	protected function renderArtists($artists) {
+	private function renderArtists($artists) {
 		return new XMLResponse(['root' => ['artist' => \array_map(function($artist) {
 			return [
 				'id' => $artist->getId(),
@@ -422,7 +429,7 @@ class AmpacheController extends Controller {
 		}, $artists)]]);
 	}
 
-	protected function renderAlbums($albums, $auth) {
+	private function renderAlbums($albums, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 
 		return new XMLResponse(['root' => ['album' => \array_map(function($album) use ($userId, $auth) {
@@ -444,7 +451,7 @@ class AmpacheController extends Controller {
 		}, $albums)]]);
 	}
 
-	protected function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
+	private function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
 		$userId = $this->ampacheUser->getUserId();
 
 		foreach ($tracks as &$track) {
@@ -461,7 +468,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	protected function renderSongs($tracks, $auth) {
+	private function renderSongs($tracks, $auth) {
 		return new XMLResponse(['root' => ['song' => \array_map(function($track) use ($auth) {
 			$artist = $track->getArtist();
 			$album = $track->getAlbum();
@@ -495,7 +502,7 @@ class AmpacheController extends Controller {
 		}, $tracks)]]);
 	}
 
-	protected function renderPlaylists($playlists) {
+	private function renderPlaylists($playlists) {
 		return new XMLResponse(['root' => ['playlist' => \array_map(function($playlist) {
 			return [
 				'id' => $playlist->getId(),

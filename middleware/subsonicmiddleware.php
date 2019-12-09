@@ -47,27 +47,59 @@ class SubsonicMiddleware extends Middleware {
 	 */
 	public function beforeController($controller, $methodName) {
 		if ($controller instanceof SubsonicController) {
-			$user = $this->request->getParam('u');
-			$pass = $this->request->getParam('p');
+			$this->setupResponseFormat($controller);
+			$this->checkAuthentication($controller);
+		}
+	}
 
-			if ($user === null || $pass === null) {
-				if ($this->request->getParam('t') !== null) {
-					throw new SubsonicException('Token-based authentication not supported', 41);
-				} else {
-					throw new SubsonicException('Required credentials missing', 10);
-				}
-			}
+	/**
+	 * Evaluate the reponse format parameters and setup the controller to use
+	 * the requested format
+	 * @param SubsoniController $controller
+	 * @throws SubsonicException
+	 */
+	private function setupResponseFormat($controller) {
+		$format = $this->request->getParam('f', 'xml');
+		$callback = $this->request->getParam('callback');
 
-			// The password may be given in hexadecimal format
-			if (Util::startsWith($pass, 'enc:')) {
-				$pass = \hex2bin(\substr($pass, \strlen('enc:')));
-			}
+		if (!\in_array($format, ['json', 'xml', 'jsonp'])) {
+			throw new SubsonicException("Unsupported format $format", 0);
+		}
 
-			if ($this->credentialsAreValid($user, $pass)) {
-				$controller->setAuthenticatedUser($user);
+		if ($format === 'jsonp' && empty($callback)) {
+			throw new SubsonicException("Argument 'callback' is required with jsonp format", 10);
+		}
+
+		$controller->setResponseFormat($format, $callback);
+	}
+
+	/**
+	 * Check that valid credentials have been given.
+	 * Setup the controller with the acitve user if the authentication is ok.
+	 * @param SubsoniController $controller
+	 * @throws SubsonicException
+	 */
+	private function checkAuthentication($controller) {
+		$user = $this->request->getParam('u');
+		$pass = $this->request->getParam('p');
+
+		if ($user === null || $pass === null) {
+			if ($this->request->getParam('t') !== null) {
+				throw new SubsonicException('Token-based authentication not supported', 41);
 			} else {
-				throw new SubsonicException('Invalid Login', 40);
+				throw new SubsonicException('Required credentials missing', 10);
 			}
+		}
+
+		// The password may be given in hexadecimal format
+		if (Util::startsWith($pass, 'enc:')) {
+			$pass = \hex2bin(\substr($pass, \strlen('enc:')));
+		}
+
+		if ($this->credentialsAreValid($user, $pass)) {
+			$controller->setAuthenticatedUser($user);
+		} else {
+			throw new SubsonicException('Invalid Login', 40);
 		}
 	}
 

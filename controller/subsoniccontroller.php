@@ -92,6 +92,16 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Called by the middleware to set the reponse format to be used
+	 * @param string $format Response format: xml/json/jsonp
+	 * @param string|null $callback Function name to use if the @a $format is 'jsonp'
+	 */
+	public function setResponseFormat($format, $callback) {
+		$this->format = $format;
+		$this->callback = $callback;
+	}
+
+	/**
 	 * Called by the middleware once the user credentials have been checked
 	 * @param string $userId
 	 */
@@ -106,18 +116,6 @@ class SubsonicController extends Controller {
 	 */
 	public function handleRequest($method) {
 		$this->logger->log("Subsonic request $method", 'debug');
-
-		$this->format = $this->request->getParam('f', 'xml');
-		$this->callback = $this->request->getParam('callback');
-
-		if (!\in_array($this->format, ['json', 'xml', 'jsonp'])) {
-			throw new SubsonicException("Unsupported format {$this->format}", 0);
-		}
-
-		if ($this->format === 'jsonp' && empty($this->callback)) {
-			$this->format = 'json';
-			throw new SubsonicException("Argument 'callback' is required with jsonp format", 10);
-		}
 
 		// Allow calling all methods with or without the postfix ".view"
 		if (Util::endsWith($method, ".view")) {

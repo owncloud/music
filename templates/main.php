@@ -56,20 +56,26 @@
 
 			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">
 				<div class="icon-audio svg"></div>
-				<h2 translate>No music found</h2>
-				<p translate>Upload music in the files app to listen to it here</p>
+				<div>
+					<h2 translate>No music found</h2>
+					<p translate>Upload music in the files app to listen to it here</p>
+				</div>
 			</div>
 
 			<div id="toScan" class="emptycontent clickable" ng-show="toScan && currentView!='#/settings'" ng-click="startScanning()">
 				<div class="icon-audio svg"></div>
-				<h2 translate>New music available</h2>
-				<p translate>Click here to start the scan</p>
+				<div>
+					<h2 translate>New music available</h2>
+					<p translate>Click here to start the scan</p>
+				</div>
 			</div>
 
 			<div id="scanning" class="emptycontent" ng-show="scanning && currentView!='#/settings'">
 				<div class="icon-loading svg"></div>
-				<h2 translate>Scanning music …</h2>
-				<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
+				<div>
+					<h2 translate>Scanning music …</h2>
+					<p translate>{{ scanningScanned }} of {{ scanningTotal }}</p>
+				</div>
 			</div>
 
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"

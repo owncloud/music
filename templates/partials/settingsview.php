@@ -1,4 +1,4 @@
-<div id="music-user" ng-show="!loading">
+<div class="view-container" id="music-user" ng-show="!loading">
 	<h1 translate>Settings</h1>
 	<div>
 		<div class="label-container">

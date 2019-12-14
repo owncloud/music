@@ -887,6 +887,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
 			});
+
+			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
+			// if there are any tracks already visible
+			if (libraryService.getTrackCount() > 0) {
+				$('.emptycontent').addClass('collapsed');
+			} else {
+				$('.emptycontent').removeClass('collapsed');
+			}
+
 			$rootScope.loadingCollection = false;
 		},
 		function(response) { // error handling
@@ -1054,12 +1063,13 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// Subtrack one pixel from the width because outerWidth() seems to
 		// return rounded integer value which may sometimes be slightly larger
 		// than the actual width of the #app-view.
-		$('#controls').css('width', appViewWidth - 1);
-		$('#controls').css('min-width', appViewWidth - 1);
+		var controlsWidth = appViewWidth - 1;
+		$('#controls').css('width', controlsWidth);
+		$('#controls').css('min-width', controlsWidth);
 
-		// center the floating indicator box to the appView
-		var appViewLeft = appView.offset().left;
-		$('.emptycontent').css('margin-left', appViewLeft + (appViewWidth - $window.innerWidth) / 2);
+		// the "no content"/"click to scan"/"scanning" banner has the same width as controls 
+		$('.emptycontent').css('width', controlsWidth);
+		$('.emptycontent').css('min-width', controlsWidth);
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See mobile.css and tablet.css.

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2018
+ * @copyright Pauli Järvinen 2016 - 2019
  */
 
 #notification a {
@@ -44,6 +44,10 @@
 
 #app-view.started {
 	padding-top: 66px;
+}
+
+.view-container {
+	padding-bottom: 60px;
 }
 
 .play {
@@ -190,10 +194,23 @@ div:hover > .play-pause,
 	background-color: rgba(255,255,255,0.95);
 	padding: 20px 50px;
 	z-index: 1;
-	width: auto;
-	left: 50%;
-	transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
+}
+
+#emptycontent.collapsed, .emptycontent.collapsed {
+	top: unset;
+	bottom: 0;
+	padding: 5px 20px;
+}
+
+#emptycontent.collapsed > *, .emptycontent.collapsed > * {
+	display: inline-block;
+	margin: 0;
+	height: 40px;
+	background-size: 40px;
+}
+
+#emptycontent.collapsed h2, .emptycontent.collapsed h2 {
+	margin: 0;
 }
 
 #toScan:hover * {
@@ -206,9 +223,9 @@ div:hover > .play-pause,
 
 #updateData {
 	position: fixed;
-	width: 40px;
-	height: 40px;
-	padding: 10px;
+	width: 60px;
+	height: 60px;
+	padding: 20px;
 	bottom: 0;
 	z-index: 101;
 	background-color: rgba(255,255,255,0.5);

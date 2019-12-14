@@ -1,4 +1,4 @@
-<div class="playlist-area" ng-show="!loading && !loadingCollection">
+<div class="view-container playlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span>{{ playlist.name }}</span>
@@ -31,8 +31,10 @@
 
 	<div class="emptycontent" ng-show="playlist.tracks.length == 0 && !scanning && !toScan && !noMusicAvailable">
 		<div class="icon-audio svg"></div>
-		<h2 translate>No tracks</h2>
-		<p translate>Add tracks with drag and drop from Albums or other playlists</p>
+		<div>
+			<h2 translate>No tracks</h2>
+			<p translate>Add tracks with drag and drop from Albums or other playlists</p>
+		</div>
 	</div>
 
 </div>

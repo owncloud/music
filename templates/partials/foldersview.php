@@ -1,4 +1,4 @@
-<div id="folders-area" ng-show="!loading && !loadingCollection">
+<div class="view-container" id="folders-area" ng-show="!loading && !loadingCollection">
 	<div class="playlist-area" id="folder-{{ ::folder.id }}" ng-repeat="folder in folders | limitTo: incrementalLoadLimit">
 		<h1>
 			<span ng-click="onFolderTitleClick(folder)"

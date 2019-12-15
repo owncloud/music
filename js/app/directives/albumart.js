@@ -7,22 +7,29 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2016, 2017 Pauli Järvinen
+ * @copyright 2016 - 2019 Pauli Järvinen
  *
  */
 
-angular.module('Music').directive('albumart', [function() {
+angular.module('Music').directive('albumart', ['albumartLazyLoader', function(albumartLazyLoader) {
 
-	function setCoverImage(element, imageUrl) {
+	function setCoverImage(element, imageUrl, disableLazyLoad) {
 		// remove placeholder stuff
 		element.html('');
 		element.css('background-color', '');
-		// add background image
-		element.css('background-image', 'url(' + imageUrl + ')');
+
+		// on ancient browsers, load all the cover images immediately
+		if (!albumartLazyLoader.supported() || disableLazyLoad) {
+			element.css('background-image', 'url(' + imageUrl + ')');
+		}
+		// on modern browsers, load cover images only once they enter the viewport
+		else {
+			albumartLazyLoader.register(element);
+		}
 	}
 
 	function setPlaceholder(element, text) {
-		if(text) {
+		if (text) {
 			// remove background image
 			element.css('-ms-filter', '');
 			element.css('background-image', '');
@@ -40,15 +47,15 @@ angular.module('Music').directive('albumart', [function() {
 	return function(scope, element, attrs, ctrl) {
 
 		var onCoverChanged = function() {
-			if(attrs.cover) {
-				setCoverImage(element, attrs.cover);
+			if (attrs.cover) {
+				setCoverImage(element, attrs.cover, attrs.noLazyLoad !== undefined);
 			} else {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};
 
 		var onAlbumartChanged = function() {
-			if(!attrs.cover) {
+			if (!attrs.cover) {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};

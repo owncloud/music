@@ -1912,18 +1912,25 @@ angular.module('Music').controller('SettingsViewController', [
 	}
 ]);
 
-angular.module('Music').directive('albumart', [function() {
+angular.module('Music').directive('albumart', ['albumartLazyLoader', function(albumartLazyLoader) {
 
-	function setCoverImage(element, imageUrl) {
+	function setCoverImage(element, imageUrl, disableLazyLoad) {
 		// remove placeholder stuff
 		element.html('');
 		element.css('background-color', '');
-		// add background image
-		element.css('background-image', 'url(' + imageUrl + ')');
+
+		// on ancient browsers, load all the cover images immediately
+		if (!albumartLazyLoader.supported() || disableLazyLoad) {
+			element.css('background-image', 'url(' + imageUrl + ')');
+		}
+		// on modern browsers, load cover images only once they enter the viewport
+		else {
+			albumartLazyLoader.register(element);
+		}
 	}
 
 	function setPlaceholder(element, text) {
-		if(text) {
+		if (text) {
 			// remove background image
 			element.css('-ms-filter', '');
 			element.css('background-image', '');
@@ -1941,15 +1948,15 @@ angular.module('Music').directive('albumart', [function() {
 	return function(scope, element, attrs, ctrl) {
 
 		var onCoverChanged = function() {
-			if(attrs.cover) {
-				setCoverImage(element, attrs.cover);
+			if (attrs.cover) {
+				setCoverImage(element, attrs.cover, attrs.noLazyLoad !== undefined);
 			} else {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};
 
 		var onAlbumartChanged = function() {
-			if(!attrs.cover) {
+			if (!attrs.cover) {
 				setPlaceholder(element, attrs.albumart);
 			}
 		};
@@ -2379,6 +2386,63 @@ angular.module('Music').filter('playTime', function() {
 		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	};
 });
+/**
+ * Lazy-loader for albumart. This service has an intimate relation to the albumart directive.
+ */
+angular.module('Music').service('albumartLazyLoader', ['$timeout', function($timeout) {
+
+	var observer = null;
+	var imagesToBeLoaded = null;
+
+	if (typeof IntersectionObserver !== 'undefined'
+		&& typeof WeakMap !== 'undefined')
+	{
+		imagesToBeLoaded = new WeakMap();
+
+		var loadAlbumart = function(tgtElem) {
+			var tgt = $(tgtElem);
+			tgt.css('background-image', 'url(' + tgt.attr('cover') + ')');
+		};
+
+		var onVisibilityChange = function(changes) {
+			changes.forEach(function(change) {
+				var tgt = change.target;
+				var promise;
+				if (change.intersectionRatio > 0) {
+					// Load the albumart with a small delay after it enters the viewport with margins.
+					// This is to avoid loading images which just pass through the viewport during
+					// fast scrolling.
+					promise = $timeout(loadAlbumart, 100, true, tgt);
+					imagesToBeLoaded.set(tgt, promise);
+				} else {
+					// Cancel any pending load for albumart exiting the viewport with margins
+					promise = imagesToBeLoaded.get(tgt);
+					if (promise !== undefined) {
+						$timeout.cancel(promise);
+						imagesToBeLoaded.delete(tgt);
+					}
+				}
+			});
+		};
+		var observerOptions = {
+			root: document.getElementById("app-content"),
+			rootMargin: '1000px'
+		};
+
+		observer = new IntersectionObserver(onVisibilityChange, observerOptions);
+	}
+
+	return {
+		supported: function() {
+			return (observer !== null);
+		},
+		register: function(element) {
+			var img = angular.element(element)[0];
+			observer.observe(img);
+		}
+	};
+}]);
+
 angular.module('Music').service('libraryService', ['$rootScope', function($rootScope) {
 
 	var artists = null;

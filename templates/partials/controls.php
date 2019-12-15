@@ -11,7 +11,7 @@
 	</div>
 
 	<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
-		class="albumart clickable" cover="{{ currentAlbum.cover }}"
+		class="albumart clickable" cover="{{ currentAlbum.cover }}" no-lazy-load
 		albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()">

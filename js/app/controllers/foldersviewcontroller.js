@@ -19,7 +19,7 @@ angular.module('Music').controller('FoldersViewController', [
 		// When making the view visible, the folders are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of folders (like several thousands).
-		var INCREMENTAL_LOAD_STEP = 50;
+		var INCREMENTAL_LOAD_STEP = 100;
 		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
@@ -87,14 +87,18 @@ angular.module('Music').controller('FoldersViewController', [
 			};
 		};
 
-		$scope.getDraggable = function(type, draggedElement) {
+		function getDraggable(type, draggedElement) {
 			var draggable = {};
 			draggable[type] = draggedElement;
 			return draggable;
-		};
+		}
 
 		$scope.getTrackDraggable = function(trackId) {
-			return $scope.getDraggable('track', libraryService.getTrack(trackId));
+			return getDraggable('track', libraryService.getTrack(trackId));
+		};
+
+		$scope.getFolderDraggable = function(folder) {
+			return getDraggable('folder', folder);
 		};
 
 		/**

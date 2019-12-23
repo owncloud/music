@@ -21,7 +21,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		// When making the view visible, the artists are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of albums (like several thousands).
-		var INCREMENTAL_LOAD_STEP = 10;
+		var INCREMENTAL_LOAD_STEP = 20;
 		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
@@ -124,14 +124,22 @@ angular.module('Music').controller('AlbumsViewController', [
 			return 'artist-' + $scope.artists[index].id;
 		};
 
-		$scope.getDraggable = function(type, draggedElement) {
+		function getDraggable(type, draggedElement) {
 			var draggable = {};
 			draggable[type] = draggedElement;
 			return draggable;
-		};
+		}
 
 		$scope.getTrackDraggable = function(trackId) {
-			return $scope.getDraggable('track', libraryService.getTrack(trackId));
+			return getDraggable('track', libraryService.getTrack(trackId));
+		};
+
+		$scope.getAlbumDraggable = function(album) {
+			return getDraggable('album', album);
+		};
+
+		$scope.getArtistDraggable = function(album) {
+			return getDraggable('artist', album);
 		};
 
 		$scope.decoratedYear = function(album) {

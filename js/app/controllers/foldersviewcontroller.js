@@ -160,7 +160,7 @@ angular.module('Music').controller('FoldersViewController', [
 		 */
 		function showMore() {
 			// show more entries only if the view is not already (being) deactivated
-			if ($scope.$parent) {
+			if ($rootScope.currentView && $scope.$parent) {
 				$scope.incrementalLoadLimit += INCREMENTAL_LOAD_STEP;
 				if ($scope.incrementalLoadLimit < $scope.folders.length) {
 					$timeout(showMore);

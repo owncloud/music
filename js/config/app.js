@@ -23,8 +23,11 @@ if($('html').hasClass('ie')) {
 }
 
 angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-drag-drop'])
-	.config(['RestangularProvider', '$routeProvider', '$locationProvider',
-		function (RestangularProvider, $routeProvider, $locationProvider) {
+	.config(['RestangularProvider', '$routeProvider', '$locationProvider', '$compileProvider',
+		function (RestangularProvider, $routeProvider, $locationProvider, $compileProvider) {
+
+			// disable debug info for performance gains
+			$compileProvider.debugInfoEnabled(false);
 
 			// configure RESTAngular path
 			RestangularProvider.setBaseUrl('api');

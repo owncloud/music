@@ -25,6 +25,7 @@ angular.module('Music').service('albumartLazyLoader', ['$timeout', function($tim
 		var loadAlbumart = function(tgtElem) {
 			var tgt = $(tgtElem);
 			tgt.css('background-image', 'url(' + tgt.attr('cover') + ')');
+			observer.unobserve(tgtElem);
 		};
 
 		var onVisibilityChange = function(changes) {

@@ -135,6 +135,10 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 		data.scope.$on('$destroy', function() {
 			tearDown(htmlElem, data);
+			if (observer !== null) {
+				observer.unobserve(htmlElem);
+				instances.delete(htmlElem);
+			}
 		});
 	}
 

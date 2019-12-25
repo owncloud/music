@@ -303,40 +303,44 @@ function ($rootScope, $interpolate, $timeout) {
 
 	return {
 		restrict: 'E',
-		link: function (scope, element, attrs) {
-			var data = {
-				expanded: false,
-				hiddenTracksRendered: false,
-				tracks: scope.$eval(attrs.tracks),
-				getTrackData: scope.$eval(attrs.getTrackData),
-				playTrack: scope.$eval(attrs.playTrack),
-				showTrackDetails: scope.$eval(attrs.showTrackDetails),
-				getDraggable: scope.$eval(attrs.getDraggable),
-				moreText: scope.$eval(attrs.moreText),
-				lessText: scope.$eval(attrs.lessText),
-				detailsText: scope.$eval(attrs.detailsText),
-				collapseLimit: attrs.collapseLimit || 999999,
-				listeners: [],
-				scope: scope
-			};
-
+		compile: function(element, attrs) {
 			// Replace the <tack-list> element wiht <ul> element
 			var listContainer = document.createElement('ul');
 			listContainer.className = 'track-list collapsed';
 			element.replaceWith(listContainer);
 
-			// On ancient browsers, build the list contents fully at once
-			if (observer === null) {
-				setup(listContainer, data);
-			}
-			// On modern browsers, populate the list first with a placeholder.
-			// The placeholder is replaced with the actual content once the element
-			// enters the viewport (with some margins).
-			else {
-				setupPlaceholder(listContainer, estimateContentsHeight(data));
-				instances.set(listContainer, data);
-				observer.observe(listContainer);
-			}
+			return {
+				post: function(scope, element, attrs) {
+					var data = {
+						expanded: false,
+						hiddenTracksRendered: false,
+						tracks: scope.$eval(attrs.tracks),
+						getTrackData: scope.$eval(attrs.getTrackData),
+						playTrack: scope.$eval(attrs.playTrack),
+						showTrackDetails: scope.$eval(attrs.showTrackDetails),
+						getDraggable: scope.$eval(attrs.getDraggable),
+						moreText: scope.$eval(attrs.moreText),
+						lessText: scope.$eval(attrs.lessText),
+						detailsText: scope.$eval(attrs.detailsText),
+						collapseLimit: attrs.collapseLimit || 999999,
+						listeners: [],
+						scope: scope
+					};
+
+					// On ancient browsers, build the list contents fully at once
+					if (observer === null) {
+						setup(element[0], data);
+					}
+					// On modern browsers, populate the list first with a placeholder.
+					// The placeholder is replaced with the actual content once the element
+					// enters the viewport (with some margins).
+					else {
+						setupPlaceholder(element[0], estimateContentsHeight(data));
+						instances.set(element[0], data);
+						observer.observe(element[0]);
+					}
+				}
+			};
 		}
 	};
 }]);

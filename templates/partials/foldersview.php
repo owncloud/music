@@ -15,10 +15,7 @@
 				play-track="onTrackClick"
 				show-track-details="showSidebar"
 				get-draggable="getTrackDraggable"
-				collapse-limit="10"
-				more-text="'Show all {{ folder.tracks.length }} songs …' | translate"
-				less-text="'Show less …' | translate"
-				details-text="'Details' | translate">
+				collapse-limit="10">
 		</track-list>
 	</div>
 

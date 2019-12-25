@@ -23,13 +23,20 @@
  * removed and listeners de-registered once the list instance leaves the viewport.
  */
 
-angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', '$timeout',
-function ($rootScope, $interpolate, $timeout) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', '$timeout', 'gettextCatalog',
+function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 
 	var trackTemplate = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
 		'<span title="{{ tooltip }}">{{ title }}</span>';
 	var trackRenderer = $interpolate(trackTemplate);
+
+	// Localized strings
+	var lessText = gettextCatalog.getString('Show less …');
+	var detailsText = gettextCatalog.getString('Details');
+	var moreText = function(count) {
+		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
+	};
 
 	var observer = null;
 	var instances = null;
@@ -131,9 +138,9 @@ function ($rootScope, $interpolate, $timeout) {
 				var lessEl = document.createElement('li');
 				var moreEl = document.createElement('li');
 
-				lessEl.innerHTML = data.lessText;
+				lessEl.innerHTML = lessText;
 				lessEl.className = 'muted more-less collapsible';
-				moreEl.innerHTML = data.moreText;
+				moreEl.innerHTML = moreText(data.tracks.length);
 				moreEl.className = 'muted more-less';
 				trackListFragment.appendChild(lessEl);
 				trackListFragment.appendChild(moreEl);
@@ -160,7 +167,7 @@ function ($rootScope, $interpolate, $timeout) {
 
 			var detailsButton = document.createElement('button');
 			detailsButton.className = 'icon-details';
-			detailsButton.title = data.detailsText;
+			detailsButton.title = detailsText;
 			listItem.appendChild(detailsButton);
 
 			listItem.id = 'track-' + trackData.id;
@@ -319,9 +326,6 @@ function ($rootScope, $interpolate, $timeout) {
 						playTrack: scope.$eval(attrs.playTrack),
 						showTrackDetails: scope.$eval(attrs.showTrackDetails),
 						getDraggable: scope.$eval(attrs.getDraggable),
-						moreText: scope.$eval(attrs.moreText),
-						lessText: scope.$eval(attrs.lessText),
-						detailsText: scope.$eval(attrs.detailsText),
 						collapseLimit: attrs.collapseLimit || 999999,
 						listeners: [],
 						scope: scope

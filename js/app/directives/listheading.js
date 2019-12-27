@@ -27,7 +27,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 	 */
 	function setup(data) {
 		/**
-		 * Remove any placeholder and add the nested <li> elements for each shown track.
+		 * Remove any placeholder and add the proper content
 		 */
 		removeChildNodes(data.element);
 		data.element.appendChild(render());
@@ -103,7 +103,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 	function tearDown(data) {
 		$(data.element).off();
-		[].forEach.call(data.listeners, function (el) {
+		_(data.listeners).each(function (el) {
 			el();
 		});
 		removeChildNodes(data.element);

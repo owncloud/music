@@ -63,7 +63,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		 */
 		function updateClasses() {
 			var elems = htmlElem.querySelectorAll(".playing, .current");
-			[].forEach.call(elems, function (el) {
+			_(elems).each(function (el) {
 				el.classList.remove('current');
 				el.classList.remove('playing');
 			});
@@ -224,7 +224,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	function tearDown(data) {
 		data.hiddenTracksRendered = false;
 		data.element.off();
-		[].forEach.call(data.listeners, function(lstnr) {
+		_(data.listeners).each(function(lstnr) {
 			lstnr();
 		});
 		removeChildNodes(data.element[0]);

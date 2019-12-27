@@ -26,7 +26,7 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 	$rootScope.$on('resize', onScroll);
 
 	function onScroll() {
-		[].forEach.call(instances, function(inst) {
+		_(instances).each(function(inst) {
 			var elem = inst.element;
 			var nowInViewPort = elemInViewPort(elem);
 			var wasInViewPort = inst.inViewPort;
@@ -50,26 +50,20 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 	}
 
 	function elemInViewPort(elem) {
-		var appView = document.getElementById('app-view');
-		var header = document.getElementById('header');
-		var viewPortTop = header.offsetHeight;
-		var viewPortBottom = header.offsetHeight + appView.offsetHeight;
-
-		var rect = elem.getBoundingClientRect();
-		return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
+		return OC_Music_Utils.isElementInViewPort(elem, 500, 500);
 	}
 
 	function onEnterView(inst) {
 		inst.promise = null;
 		inst.inViewPort = true;
-		inst.listeners.forEach(function(listener) {
+		_(inst.listeners).each(function(listener) {
 			listener.onEnterView();
 		});
 	}
 
 	function onLeaveView(inst) {
 		inst.inViewPort = false;
-		inst.listeners.forEach(function(listener) {
+		_(inst.listeners).each(function(listener) {
 			listener.onLeaveView();
 		});
 	}

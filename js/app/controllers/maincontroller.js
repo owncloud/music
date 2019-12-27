@@ -233,18 +233,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Test if element is at least partially within the view-port
 	function isElementInViewPort(el) {
-		if (el) {
-			var appView = document.getElementById('app-view');
-			var header = document.getElementById('header');
-			var viewPortTop = header.offsetHeight + scrollOffset();
-			var viewPortBottom = header.offsetHeight + appView.offsetHeight;
-
-			var rect = el.getBoundingClientRect();
-			return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
-		}
-		else {
-			return false;
-		}
+		return OC_Music_Utils.isElementInViewPort(el, -scrollOffset());
 	}
 
 	function setMasterLayout(classes) {

@@ -11,21 +11,14 @@
  *
  */
 
-angular.module('Music').directive('albumart', ['albumartLazyLoader', function(albumartLazyLoader) {
+angular.module('Music').directive('albumart', [function() {
 
-	function setCoverImage(element, imageUrl, disableLazyLoad) {
+	function setCoverImage(element, imageUrl) {
 		// remove placeholder stuff
 		element.html('');
 		element.css('background-color', '');
 
-		// on ancient browsers, load all the cover images immediately
-		if (!albumartLazyLoader.supported() || disableLazyLoad) {
-			element.css('background-image', 'url(' + imageUrl + ')');
-		}
-		// on modern browsers, load cover images only once they enter the viewport
-		else {
-			albumartLazyLoader.register(element);
-		}
+		element.css('background-image', 'url(' + imageUrl + ')');
 	}
 
 	function setPlaceholder(element, text) {
@@ -44,24 +37,45 @@ angular.module('Music').directive('albumart', ['albumartLazyLoader', function(al
 		}
 	}
 
-	return function(scope, element, attrs, ctrl) {
+	return {
+		require: '?^inViewObserver',
+		link: function(scope, element, attrs, ctrl) {
+			/**
+			 * This directive can be used for two different purposes in two different
+			 * contexts:
+			 * 1. Within a scroling container, in which case there should be inViewObserver
+			 *    directive as ancestor of this directive. In this case, inViewObserver is 
+			 *    paased to here in the argument `ctrl`.
+			 * 2. Within the player control pane, in which case there's no ancestor inViewObserver
+			 *    and `ctrl` is null. In this case, the directive observes any changes on the
+			 *    related attributes of the element.
+			 */
 
-		var onCoverChanged = function() {
-			if (attrs.cover) {
-				setCoverImage(element, attrs.cover, attrs.noLazyLoad !== undefined);
-			} else {
-				setPlaceholder(element, attrs.albumart);
+			var onCoverChanged = function() {
+				if (attrs.cover) {
+					setCoverImage(element, attrs.cover);
+				} else {
+					setPlaceholder(element, attrs.albumart);
+				}
+			};
+
+			var onAlbumartChanged = function() {
+				if (!attrs.cover) {
+					setPlaceholder(element, attrs.albumart);
+				}
+			};
+
+			if (ctrl) {
+				ctrl.registerListener({
+					onEnterView: onCoverChanged,
+					onLeaveView: function() { /* nothing to do */ }
+				});
 			}
-		};
-
-		var onAlbumartChanged = function() {
-			if (!attrs.cover) {
-				setPlaceholder(element, attrs.albumart);
+			else {
+				attrs.$observe('albumart', onAlbumartChanged);
+				attrs.$observe('cover', onCoverChanged);
 			}
-		};
-
-		attrs.$observe('albumart', onAlbumartChanged);
-		attrs.$observe('cover', onCoverChanged);
+		}
 	};
 }]);
 

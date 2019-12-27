@@ -1,5 +1,7 @@
 <div class="view-container" id="albums" ng-show="!loading && !loadingCollection">
-	<div class="artist-area" id="artist-{{ ::artist.id }}" ng-repeat="artist in artists | limitTo: incrementalLoadLimit">
+	<div class="artist-area" id="artist-{{ ::artist.id }}" in-view-observer
+		ng-repeat="artist in artists | limitTo: incrementalLoadLimit" 
+	>
 		<list-heading 
 			level="1"
 			heading="artist.name"

@@ -22,52 +22,15 @@ function ($rootScope, $timeout, gettextCatalog) {
 	var playText = gettextCatalog.getString('Play');
 	var playIconSrc = OC.imagePath('music','play-big.svg');
 
-	var observer = null;
-	var instances = null;
-
-	// Lazy loading requires support for IntersectionObserver and WeakMap. This is not
-	// available on IE and other ancient browsers.
-	if (typeof IntersectionObserver !== 'undefined' && typeof WeakMap !== 'undefined') {
-		var onVisibilityChange = function(changes) {
-			changes.forEach(function(change) {
-				var tgt = change.target;
-				var data = instances.get(tgt);
-
-				if (change.intersectionRatio > 0) {
-					// element entered the viewport, setup the layout with small delay
-					data.promise = $timeout(setup, 50, true, tgt, data);
-				}
-				else if (data.promise) {
-					// element left the viewport before it had been set up, cancel the pending setup
-					$timeout.cancel(data.promise);
-					data.promise = null;
-				}
-				else {
-					// element left the viewport after it had been set up, replace it with placeholder
-					tearDown(tgt, data);
-					setupPlaceholder(tgt, data);
-				}
-			});
-		};
-		var observerOptions = {
-			root: document.getElementById("app-content"),
-			rootMargin: '500px'
-		};
-		observer = new IntersectionObserver(onVisibilityChange, observerOptions);
-		instances = new WeakMap();
-	}
-
 	/**
 	 * Set up the contents and the listeners for a given heading element
 	 */
-	function setup(htmlElem, data) {
-		data.promise = null;
-
+	function setup(data) {
 		/**
 		 * Remove any placeholder and add the nested <li> elements for each shown track.
 		 */
-		removeChildNodes(htmlElem);
-		htmlElem.appendChild(render());
+		removeChildNodes(data.element);
+		data.element.appendChild(render());
 
 		/**
 		 * Create the contained HTML elements
@@ -101,7 +64,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 			return outerSpan;
 		}
 
-		var ngElem = $(htmlElem);
+		var ngElem = $(data.element);
 
 		/**
 		 * Click handler
@@ -129,36 +92,25 @@ function ($rootScope, $timeout, gettextCatalog) {
 			$rootScope.$broadcast('ANGULAR_DRAG_START', e, 'defaultchannel', transferDataObject);
 		});
 
-		ngElem.on('dragend', 'span', function (e) {
+		ngElem.on('dragend', 'span', function(e) {
 			$rootScope.$broadcast('ANGULAR_DRAG_END', e, 'defaultchannel');
 		});
 
 		data.scope.$on('$destroy', function() {
-			tearDown(htmlElem, data);
-			if (observer !== null) {
-				observer.unobserve(htmlElem);
-				instances.delete(htmlElem);
-			}
+			tearDown(data);
 		});
 	}
 
-	/**
-	 * Tear down a given <ul> element, removing all child nodes and unsubscribing any listeners
-	 */
-	function tearDown(htmlElem, data) {
-		data.hiddenTracksRendered = false;
-		$(htmlElem).off();
+	function tearDown(data) {
+		$(data.element).off();
 		[].forEach.call(data.listeners, function (el) {
 			el();
 		});
-		removeChildNodes(htmlElem);
+		removeChildNodes(data.element);
 	}
 
-	/**
-	 * Setup a placeholder
-	 */
-	function setupPlaceholder(htmlElem, data) {
-		htmlElem.innerHTML = data.heading;
+	function setupPlaceholder(data) {
+		data.element.innerHTML = data.heading;
 	}
 
 	/**
@@ -172,35 +124,43 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 	return {
 		restrict: 'E',
-		link: function (scope, element, attrs) {
-			var data = {
-				heading: scope.$eval(attrs.heading),
-				headingExt: scope.$eval(attrs.headingExt),
-				tooltip: scope.$eval(attrs.tooltip),
-				showPlayIcon: scope.$eval(attrs.showPlayIcon),
-				model: scope.$eval(attrs.model),
-				onClick: scope.$eval(attrs.onClick),
-				getDraggable: scope.$eval(attrs.getDraggable),
-				listeners: [],
-				scope: scope
-			};
-
+		require: '^inViewObserver',
+		compile: function(element, attrs) {
 			// Replace the <list-heading> element with <h?> element of desired size
 			var hElem = document.createElement('h' + (attrs.level || '1'));
 			element.replaceWith(hElem);
 
-			// On ancient browsers, build the heading fully at once
-			if (observer === null) {
-				setup(hElem, data);
-			}
-			// On modern browsers, populate the heading first with a placeholder.
-			// The placeholder is replaced with the actual content once the element
-			// enters the viewport (with some margins).
-			else {
-				setupPlaceholder(hElem, data);
-				instances.set(hElem, data);
-				observer.observe(hElem);
-			}
+			return {
+				post: function(scope, element, attrs, controller) {
+					var data = {
+						heading: scope.$eval(attrs.heading),
+						headingExt: scope.$eval(attrs.headingExt),
+						tooltip: scope.$eval(attrs.tooltip),
+						showPlayIcon: scope.$eval(attrs.showPlayIcon),
+						model: scope.$eval(attrs.model),
+						onClick: scope.$eval(attrs.onClick),
+						getDraggable: scope.$eval(attrs.getDraggable),
+						listeners: [],
+						element: element[0],
+						scope: scope
+					};
+
+					// Populate the heading first with a placeholder.
+					// The placeholder is replaced with the actual content once the element
+					// enters the viewport (with some margins).
+					setupPlaceholder(data);
+
+					controller.registerListener({
+						onEnterView: function() {
+							setup(data);
+						},
+						onLeaveView: function() {
+							tearDown(data);
+							setupPlaceholder(data);
+						}
+					});
+				}
+			};
 		}
 	};
 }]);

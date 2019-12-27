@@ -38,50 +38,15 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 
-	var observer = null;
-	var instances = null;
-
-	// Lazy loading requires support for IntersectionObserver and WeakMap. This is not
-	// available on IE and other ancient browsers.
-	if (typeof IntersectionObserver !== 'undefined' && typeof WeakMap !== 'undefined') {
-		var onVisibilityChange = function(changes) {
-			changes.forEach(function(change) {
-				var tgt = change.target;
-				var data = instances.get(tgt);
-
-				if (change.intersectionRatio > 0) {
-					// element entered the viewport, setup the layout with small delay
-					data.promise = $timeout(setup, 50, true, tgt, data);
-				}
-				else if (data.promise) {
-					// element left the viewport before it had been set up, cancel the pending setup
-					$timeout.cancel(data.promise);
-					data.promise = null;
-				}
-				else {
-					// element left the viewport after it had been set up, replace it with placeholder
-					var height = calculateContentsHeight(tgt);
-					tearDown(tgt, data);
-					setupPlaceholder(tgt, height);
-				}
-			});
-		};
-		var observerOptions = {
-			root: document.getElementById("app-content"),
-			rootMargin: '1000px'
-		};
-		observer = new IntersectionObserver(onVisibilityChange, observerOptions);
-		instances = new WeakMap();
-	}
 
 	/**
 	 * Set up the track items and the listeners for a given <ul> element
 	 */
-	function setup(htmlElem, data) {
-		data.promise = null;
-
+	function setup(data) {
 		data.listeners.push(data.scope.$watch('currentTrack', updateClasses));
 		data.listeners.push($rootScope.$watch('playing', updateClasses));
+
+		var htmlElem = data.element[0];
 
 		/**
 		 * Remove any placeholder and add the nested <li> elements for each shown track.
@@ -202,12 +167,10 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			}
 		}
 
-		var ngElem = $(htmlElem);
-
 		/**
 		 * Click handler for list items
 		 */
-		ngElem.on('click', 'li', function(event) {
+		data.element.on('click', 'li', function(event) {
 			var trackId = trackIdFromElementId(this.id);
 			if (trackId) {
 				if (event.target.className == 'icon-details') {
@@ -222,14 +185,14 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 					renderHiddenTracks();
 				}
 				data.expanded = !data.expanded;
-				ngElem.toggleClass('collapsed');
+				data.element.toggleClass('collapsed');
 			}
 		});
 
 		/**
 		 * Drag&Drop compatibility
 		 */
-		ngElem.on('dragstart', 'li', function(e) {
+		data.element.on('dragstart', 'li', function(e) {
 			if (e.originalEvent) {
 				e.dataTransfer = e.originalEvent.dataTransfer;
 			}
@@ -246,46 +209,42 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			$rootScope.$broadcast('ANGULAR_DRAG_START', e, 'defaultchannel', transferDataObject);
 		});
 
-		ngElem.on('dragend', 'li', function (e) {
+		data.element.on('dragend', 'li', function (e) {
 			$rootScope.$broadcast('ANGULAR_DRAG_END', e, 'defaultchannel');
 		});
 
 		data.scope.$on('$destroy', function() {
-			tearDown(htmlElem, data);
-			if (observer !== null) {
-				observer.unobserve(htmlElem);
-				instances.delete(htmlElem);
-			}
+			tearDown(data);
 		});
 	}
 
 	/**
 	 * Tear down a given <ul> element, removing all child nodes and unsubscribing any listeners
 	 */
-	function tearDown(htmlElem, data) {
+	function tearDown(data) {
 		data.hiddenTracksRendered = false;
-		$(htmlElem).off();
-		[].forEach.call(data.listeners, function (el) {
-			el();
+		data.element.off();
+		[].forEach.call(data.listeners, function(lstnr) {
+			lstnr();
 		});
-		removeChildNodes(htmlElem);
+		removeChildNodes(data.element[0]);
 	}
 
 	/**
 	 * Setup a placeholder list item within the given <ul> element using the given height
 	 */
-	function setupPlaceholder(htmlElem, height) {
+	function setupPlaceholder(data, height) {
 		placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
-		htmlElem.appendChild(placeholder);
+		data.element[0].appendChild(placeholder);
 	}
 
 	/**
 	 * Calculate total height of all the child nodes of the given <ul> element
 	 */
-	function calculateContentsHeight(htmlElem) {
+	function calculateContentsHeight(data) {
 		totalHeight = 0;
-		$(htmlElem).children().each(function() {
+		data.element.children().each(function() {
 			totalHeight += $(this).outerHeight(true);
 		});
 		return totalHeight;
@@ -310,6 +269,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 
 	return {
 		restrict: 'E',
+		require: '^inViewObserver',
 		compile: function(element, attrs) {
 			// Replace the <tack-list> element wiht <ul> element
 			var listContainer = document.createElement('ul');
@@ -317,7 +277,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			element.replaceWith(listContainer);
 
 			return {
-				post: function(scope, element, attrs) {
+				post: function(scope, element, attrs, controller) {
 					var data = {
 						expanded: false,
 						hiddenTracksRendered: false,
@@ -328,21 +288,25 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 						getDraggable: scope.$eval(attrs.getDraggable),
 						collapseLimit: attrs.collapseLimit || 999999,
 						listeners: [],
-						scope: scope
+						scope: scope,
+						element: element
 					};
 
-					// On ancient browsers, build the list contents fully at once
-					if (observer === null) {
-						setup(element[0], data);
-					}
-					// On modern browsers, populate the list first with a placeholder.
+					// Populate the list first with a placeholder.
 					// The placeholder is replaced with the actual content once the element
 					// enters the viewport (with some margins).
-					else {
-						setupPlaceholder(element[0], estimateContentsHeight(data));
-						instances.set(element[0], data);
-						observer.observe(element[0]);
-					}
+					setupPlaceholder(data, estimateContentsHeight(data));
+
+					controller.registerListener({
+						onEnterView: function() {
+							setup(data);
+						},
+						onLeaveView: function() {
+							var height = calculateContentsHeight(data);
+							tearDown(data);
+							setupPlaceholder(data, height);
+						}
+					});
 				}
 			};
 		}

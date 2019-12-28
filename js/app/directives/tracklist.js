@@ -269,46 +269,45 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 
 	return {
 		restrict: 'E',
-		require: '^inViewObserver',
-		compile: function(element, attrs) {
-			// Replace the <tack-list> element wiht <ul> element
-			var listContainer = document.createElement('ul');
-			listContainer.className = 'track-list collapsed';
-			element.replaceWith(listContainer);
-
-			return {
-				post: function(scope, element, attrs, controller) {
-					var data = {
-						expanded: false,
-						hiddenTracksRendered: false,
-						tracks: scope.$eval(attrs.tracks),
-						getTrackData: scope.$eval(attrs.getTrackData),
-						playTrack: scope.$eval(attrs.playTrack),
-						showTrackDetails: scope.$eval(attrs.showTrackDetails),
-						getDraggable: scope.$eval(attrs.getDraggable),
-						collapseLimit: attrs.collapseLimit || 999999,
-						listeners: [],
-						scope: scope,
-						element: element
-					};
-
-					// Populate the list first with a placeholder.
-					// The placeholder is replaced with the actual content once the element
-					// enters the viewport (with some margins).
-					setupPlaceholder(data, estimateContentsHeight(data));
-
-					controller.registerListener({
-						onEnterView: function() {
-							setup(data);
-						},
-						onLeaveView: function() {
-							var height = calculateContentsHeight(data);
-							tearDown(data);
-							setupPlaceholder(data, height);
-						}
-					});
-				}
+		template: '<ul class="track-list collapsed"></ul>',
+		replace: true,
+		require: '?^inViewObserver',
+		link: function(scope, element, attrs, controller) {
+			var data = {
+				expanded: false,
+				hiddenTracksRendered: false,
+				tracks: scope.$eval(attrs.tracks),
+				getTrackData: scope.$eval(attrs.getTrackData),
+				playTrack: scope.$eval(attrs.playTrack),
+				showTrackDetails: scope.$eval(attrs.showTrackDetails),
+				getDraggable: scope.$eval(attrs.getDraggable),
+				collapseLimit: attrs.collapseLimit || 999999,
+				listeners: [],
+				scope: scope,
+				element: element
 			};
+
+			// In case this directive has inViewObserver as ancestor, populate it first
+			// with a placeholder. The placeholder is replaced with the actual content
+			// once the element enters the viewport (with some margins).
+			if (controller) {
+				setupPlaceholder(data, estimateContentsHeight(data));
+
+				controller.registerListener({
+					onEnterView: function() {
+						setup(data);
+					},
+					onLeaveView: function() {
+						var height = calculateContentsHeight(data);
+						tearDown(data);
+						setupPlaceholder(data, height);
+					}
+				});
+			}
+			// Otherwise, populate immediately with the actual content
+			else {
+				setup(data);
+			}
 		}
 	};
 }]);

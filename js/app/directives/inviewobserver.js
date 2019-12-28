@@ -22,8 +22,9 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 		instances = [];
 	});
 
-	document.getElementById("app-content").addEventListener('scroll', onScroll);
+	document.getElementById('app-content').addEventListener('scroll', onScroll);
 	$rootScope.$on('resize', onScroll);
+	$rootScope.$on('trackListCollapsed', onScroll);
 
 	function onScroll() {
 		_(instances).each(function(inst) {
@@ -33,7 +34,7 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 
 			if (inst.promise) {
 				if (!nowInViewPort) {
-					// element left the viewport before it had been set up, cancel the pending notify
+					// element left the viewport before onEnterView was called, cancel the pending call
 					$timeout.cancel(inst.promise);
 					inst.promise = null;
 				}
@@ -83,6 +84,14 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 			};
 
 			instances.push(this);
+		},
+		link: function(scope) {
+			// The visibilites should be evaluated after all the ng-repeated instances
+			// have been linked. There may be no actual `scroll` or `resize` events after
+			// page load, in case there's so few items that no scrollbar appears.
+			if (scope.$parent.$last && !$rootScope.loading) {
+				$timeout(onScroll);
+			}
 		}
 	};
 }]);

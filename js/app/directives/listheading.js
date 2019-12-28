@@ -125,10 +125,10 @@ function ($rootScope, $timeout, gettextCatalog) {
 	return {
 		restrict: 'E',
 		require: '^inViewObserver',
-		compile: function(element, attrs) {
+		compile: function(tmplElement, tmplAttrs) {
 			// Replace the <list-heading> element with <h?> element of desired size
-			var hElem = document.createElement('h' + (attrs.level || '1'));
-			element.replaceWith(hElem);
+			var hElem = document.createElement('h' + (tmplAttrs.level || '1'));
+			tmplElement.replaceWith(hElem);
 
 			return {
 				post: function(scope, element, attrs, controller) {

@@ -12,9 +12,9 @@
 
 angular.module('Music').controller('MainController', [
 '$rootScope', '$scope', '$timeout', '$window', '$document', 'ArtistFactory', 
-'playlistService', 'libraryService', 'gettextCatalog', 'Restangular',
+'playlistService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
 function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory, 
-		playlistService, libraryService, gettextCatalog, Restangular) {
+		playlistService, libraryService, inViewService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
@@ -233,7 +233,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Test if element is at least partially within the view-port
 	function isElementInViewPort(el) {
-		return OC_Music_Utils.isElementInViewPort(el, -scrollOffset());
+		return inViewService.isElementInViewPort(el, -scrollOffset());
 	}
 
 	function setMasterLayout(classes) {

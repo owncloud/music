@@ -13,7 +13,8 @@
  * This directive observes whether the host element is within the view-port or not.
  * When the status changes to either direction, it notifies the registered listeners.
  */
-angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', 'inViewService',
+function($rootScope, $timeout, inViewService) {
 
 	var _instances = []; // in creation order i.e. top-most first
 	var _firstIndexInView = 0;
@@ -159,7 +160,7 @@ angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', f
 	}
 
 	function elemInViewPort(elem) {
-		return OC_Music_Utils.isElementInViewPort(elem, 500, 500);
+		return inViewService.isElementInViewPort(elem, 500, 500);
 	}
 
 	function onEnterView(inst) {

@@ -208,6 +208,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
 		$('#app-content').removeClass('with-app-sidebar');
+		$('#app-content').css('margin-right', '');
 	};
 
 	function scrollOffset() {
@@ -285,6 +286,26 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	if (OC_Music_Utils.newLayoutStructure()) {
 		$('#controls').addClass('taller-header');
 	}
+
+	// Work-around for NC14+: The sidebar width has been limited to 500px (normally 27%),
+	// but it's not possible to make corresponding "max margin" definition for #app-content
+	// in css. Hence, the margin width is limited here.
+	var appContent = $('#app-content');
+	appContent.resize(function() {
+		if (appContent.hasClass('with-app-sidebar')) {
+			var sidebarWidth = $('#app-sidebar').outerWidth();
+			var viewWidth = $('#header').outerWidth();
+
+			if (sidebarWidth < 0.27 * viewWidth) {
+				appContent.css('margin-right', sidebarWidth);
+			} else {
+				appContent.css('margin-right', '');
+			}
+		}
+		else {
+			appContent.css('margin-right', '');
+		}
+	});
 
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;

@@ -15,6 +15,8 @@ angular.module('Music').controller('NavigationController', [
 	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService', 'gettextCatalog',
 	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService, gettextCatalog) {
 
+		$rootScope.loading = true;
+
 		$scope.newPlaylistName = '';
 
 		// holds the state of the editor (visible or not)

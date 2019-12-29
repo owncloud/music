@@ -53,7 +53,7 @@
 .track-list > li.more-less {
 	padding-left: 18px;
 	padding-top: 6px;
-	padding-bottom: 0px;
+	padding-bottom: 5px;
 	display: none;
 }
 

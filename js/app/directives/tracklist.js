@@ -234,33 +234,29 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	}
 
 	/**
-	 * Setup a placeholder list item within the given <ul> element using the given height
+	 * Setup a placeholder list item within the given <ul> element
 	 */
-	function setupPlaceholder(data, height) {
+	function setupPlaceholder(data) {
 		data.hiddenTracksRendered = false;
 		removeChildNodes(data.element[0]);
+
+		var height = estimateContentsHeight(data);
 		placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
 		data.element[0].appendChild(placeholder);
 	}
 
 	/**
-	 * Calculate total height of all the child nodes of the given <ul> element
-	 */
-	function calculateContentsHeight(data) {
-		totalHeight = 0;
-		data.element.children().each(function() {
-			totalHeight += $(this).outerHeight(true);
-		});
-		return totalHeight;
-	}
-
-	/**
 	 * Estimate the total height needed for the <li> entries of the track list element
 	 */
 	function estimateContentsHeight(data) {
-		var rowCount = Math.min(data.tracks.length, data.collapseLimit);
-		return 31.5 * rowCount;
+		var rowCount;
+		if (data.expanded) {
+			rowCount = data.tracks.length + 1; // all tracks + "Show less"
+		} else {
+			rowCount = Math.min(data.tracks.length, data.collapseLimit);
+		}
+		return 31.4833 * rowCount;
 	}
 
 	/**
@@ -296,16 +292,15 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			// with a placeholder. The placeholder is replaced with the actual content
 			// once the element enters the viewport (with some margins).
 			if (controller) {
-				setupPlaceholder(data, estimateContentsHeight(data));
+				setupPlaceholder(data);
 
 				controller.registerListener({
 					onEnterView: function() {
 						setup(data);
 					},
 					onLeaveView: function() {
-						var height = calculateContentsHeight(data);
 						tearDown(data);
-						setupPlaceholder(data, height);
+						setupPlaceholder(data);
 					}
 				});
 			}

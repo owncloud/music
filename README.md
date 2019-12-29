@@ -158,7 +158,7 @@ After installation, you may want to select a specific sub-folder containing your
 
 #### Huge music collections
 
-The application's scalability for large music collections has gradually improved as new versions have been released. Still, if the collection is large enough, the application may fail to load. The maximum number of tracks supported depends on your server but should be around 50'000. Also, when there are tens of thousands of tracks, loading the applicatin view takes pretty long time and the responsiveness of the UI may be poor. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. 
+The application's scalability for large music collections has gradually improved as new versions have been released. Still, if the collection is large enough, the application may fail to load. The maximum number of tracks supported depends on your server but should be more than 50'000. Also, when there are tens of thousands of tracks, switching the application views may take pretty long time. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. On the most recent Music app version, also up-to-date Chrome or Edge browser should perform sufficiently well.
 
 #### Translations
 

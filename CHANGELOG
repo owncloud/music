@@ -1,3 +1,15 @@
+v0.12.0 2019-12-29
+ * improved performance for huge music collections (#728)
+ * collapse the "Scanning..." popup to the bottom of the screen when there are already tracks shown (#728)
+ * do not download the album cover image before scrolling to the album in question (#719, #653)
+ * Ampache: Sanitize the XML results so that no illegal characters are included (#723)
+ * Subsonic: Fix names containing ampersand (&) missing from the results (regression from v0.11.1)
+ * Subsonic: Fix format (f=...) argument being ignored if user credentials are incorrect or missing (#730)
+ * fix a potential dead-lock on Folders view deactivation
+ * fix part of the screen width being unused on NC14+ with extra wide screen when the details pane is open
+ * the repository no longer contains the bundled js and css files needed for execution
+ * the delivery packages no longer contain the source js and css files, only the bundles for execution
+
 v0.11.1 2019-11-21
  * improved support for Subsonic API:
    * support most parts of the API v1.8 (added methods getUser, getArtists, getArtist, getSong, search3, getAvatar, getLyrics, updatePlaylist, deletePlaylist, along with a few other implemented as stubs)

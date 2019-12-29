@@ -22,6 +22,13 @@ function($rootScope, $timeout, inViewService) {
 
 	// Drop all instances when view switching begins
 	$rootScope.$on('deactivateView', function() {
+		// cancel any pending notifications first
+		_(_instances).each(function(inst) {
+			if (inst.promise) {
+				$timeout.cancel(inst.promise);
+			}
+		});
+
 		_instances = [];
 		_firstIndexInView = 0;
 		_lastIndexInView = -1;
@@ -34,10 +41,13 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 
 	function onScroll() {
-		if (!validInViewRange()) {
-			initInViewRange();
-		} else {
-			updateInViewRange();
+		// do not react while the layout building is still ongoing
+		if (!$rootScope.loading) {
+			if (!validInViewRange()) {
+				initInViewRange();
+			} else {
+				updateInViewRange();
+			}
 		}
 	}
 
@@ -199,7 +209,7 @@ function($rootScope, $timeout, inViewService) {
 			// have been linked. There may be no actual `scroll` or `resize` events after
 			// page load, in case there's so few items that no scrollbar appears.
 			if (scope.$parent.$last && !$rootScope.loading) {
-				$timeout(onScroll);
+				throttledOnScroll();
 			}
 		}
 	};

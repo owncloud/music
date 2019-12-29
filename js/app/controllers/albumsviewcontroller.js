@@ -265,21 +265,6 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
-		/**
-		 * Decrease number of shown artists aynchronously step-by-step until
-		 * they are all removed. This is to avoid script hanging up for too
-		 * long on huge collections.
-		 */
-		function showLess() {
-			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit > 0) {
-				$timeout(showLess);
-			} else {
-				$scope.incrementalLoadLimit = 0;
-				$rootScope.$emit('viewDeactivated');
-			}
-		}
-
 		// Start making artists visible immediatedly if the artists are already loaded.
 		// Otherwise it happens on the 'artistsLoaded' event handler.
 		if ($scope.$parent.artists) {
@@ -293,7 +278,9 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('deactivateView', function() {
-			$timeout(showLess);
+			$timeout(function() {
+				$rootScope.$emit('viewDeactivated');
+			});
 		});
 	}
 ]);

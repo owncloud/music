@@ -222,18 +222,18 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	 * Tear down a given <ul> element, removing all child nodes and unsubscribing any listeners
 	 */
 	function tearDown(data) {
-		data.hiddenTracksRendered = false;
 		data.element.off();
 		_(data.listeners).each(function(lstnr) {
 			lstnr();
 		});
-		removeChildNodes(data.element[0]);
 	}
 
 	/**
 	 * Setup a placeholder list item within the given <ul> element using the given height
 	 */
 	function setupPlaceholder(data, height) {
+		data.hiddenTracksRendered = false;
+		removeChildNodes(data.element[0]);
 		placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
 		data.element[0].appendChild(placeholder);

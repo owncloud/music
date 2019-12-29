@@ -175,21 +175,10 @@ angular.module('Music').controller('FoldersViewController', [
 			}
 		}
 
-		/**
-		 * Decrease number of shown folders aynchronously step-by-step until
-		 * they are all removed. This is to avoid script hanging up for too
-		 * long on huge collections.
-		 */
-		function showLess() {
-			$scope.incrementalLoadLimit -= INCREMENTAL_LOAD_STEP;
-			if ($scope.incrementalLoadLimit > 0) {
-				$timeout(showLess);
-			} else {
-				$scope.incrementalLoadLimit = 0;
+		subscribe('deactivateView', function() {
+			$timeout(function() {
 				$rootScope.$emit('viewDeactivated');
-			}
-		}
-
-		subscribe('deactivateView', showLess);
+			});
+		});
 	}
 ]);

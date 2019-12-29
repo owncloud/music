@@ -106,7 +106,6 @@ function ($rootScope, $timeout, gettextCatalog) {
 		_(data.listeners).each(function (el) {
 			el();
 		});
-		removeChildNodes(data.element);
 	}
 
 	function setupPlaceholder(data) {

@@ -184,11 +184,14 @@ All the frontend javascript sources of the Music app, excluding the vendor libra
 
 To automatically regenerate the bundles whenever the source .js/.css files change, use
 
-    make watch
+	make watch
 
-### Build appstore package
+### Build delivery package
 
-	git archive HEAD --format=zip --prefix=music/ > build/music.zip
+To build the release zip package, run the following commands. This requires the `zip` command line utility.
+
+	cd build
+	make release
 
 ### Install test dependencies
 

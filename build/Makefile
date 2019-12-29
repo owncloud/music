@@ -33,6 +33,7 @@ watch: build
 deps:
 	npm install --deps
 
+# localization
 l10n-clone:
 	python ./duplicate-lang.py --path=../l10n bg_BG:bg cs_CZ:cs fi_FI:fi hu_HU:hu nb_NO:nb sk_SK:sk th_TH:th
 
@@ -42,3 +43,11 @@ l10n-extract: deps
 l10n-compile: deps
 	$(grunt_dir) --config=$(gruntfile_dir) nggettext_compile
 	cd ../l10n; ./l10n.pl music write
+
+# releasing
+release: build
+	cd .. && \
+	git archive HEAD --format=zip --prefix=music/ > music.zip && \
+	cd .. && \
+	zip -g music/music.zip music/js/public/*.js && \
+	zip -g music/music.zip music/css/public/*.css

@@ -43,8 +43,10 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	 * Set up the track items and the listeners for a given <ul> element
 	 */
 	function setup(data) {
-		data.listeners.push(data.scope.$watch('currentTrack', updateClasses));
-		data.listeners.push($rootScope.$watch('playing', updateClasses));
+		data.listeners = [
+			data.scope.$watch('currentTrack', updateClasses),
+			$rootScope.$watch('playing', updateClasses)
+		];
 
 		var htmlElem = data.element[0];
 
@@ -222,10 +224,13 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	 * Tear down a given <ul> element, removing all child nodes and unsubscribing any listeners
 	 */
 	function tearDown(data) {
-		data.element.off();
-		_(data.listeners).each(function(lstnr) {
-			lstnr();
-		});
+		if (data.listeners !== null) {
+			data.element.off();
+			_(data.listeners).each(function(lstnr) {
+				lstnr();
+			});
+			data.listeners = null;
+		}
 	}
 
 	/**
@@ -282,7 +287,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 				showTrackDetails: scope.$eval(attrs.showTrackDetails),
 				getDraggable: scope.$eval(attrs.getDraggable),
 				collapseLimit: attrs.collapseLimit || 999999,
-				listeners: [],
+				listeners: null,
 				scope: scope,
 				element: element
 			};

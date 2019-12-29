@@ -23,7 +23,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 	var playIconSrc = OC.imagePath('music','play-big.svg');
 
 	/**
-	 * Set up the contents and the listeners for a given heading element
+	 * Set up the contents for a given heading element
 	 */
 	function setup(data) {
 		/**
@@ -103,9 +103,6 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 	function tearDown(data) {
 		$(data.element).off();
-		_(data.listeners).each(function (el) {
-			el();
-		});
 	}
 
 	function setupPlaceholder(data) {
@@ -139,7 +136,6 @@ function ($rootScope, $timeout, gettextCatalog) {
 						model: scope.$eval(attrs.model),
 						onClick: scope.$eval(attrs.onClick),
 						getDraggable: scope.$eval(attrs.getDraggable),
-						listeners: [],
 						element: element[0],
 						scope: scope
 					};

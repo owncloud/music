@@ -24,8 +24,8 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('deactivateView', function() {
 		// cancel any pending notifications first
 		_(_instances).each(function(inst) {
-			if (inst.promise) {
-				$timeout.cancel(inst.promise);
+			if (inst.pendingEnterView) {
+				$timeout.cancel(inst.pendingEnterView);
 			}
 		});
 
@@ -40,6 +40,14 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 
+	var debouncedNotifyLeave = _.debounce(function() {
+		_(_instances).each(function(inst) {
+			if (inst.leaveViewPending) {
+				onLeaveView(inst);
+			}
+		});
+	}, 1000);
+
 	function onScroll() {
 		// do not react while the layout building is still ongoing
 		if (!$rootScope.loading) {
@@ -48,6 +56,9 @@ function($rootScope, $timeout, inViewService) {
 			} else {
 				updateInViewRange();
 			}
+
+			// leave notifications are post-poned until when the scrolling stops
+			debouncedNotifyLeave();
 		}
 	}
 
@@ -147,26 +158,29 @@ function($rootScope, $timeout, inViewService) {
 	 */
 	function updateInViewStatus(inst) {
 		var elem = inst.element;
-		var nowInViewPort = elemInViewPort(elem);
 		var wasInViewPort = inst.inViewPort;
+		inst.inViewPort = elemInViewPort(elem);
 
-		if (inst.promise) {
-			if (!nowInViewPort) {
+		if (!wasInViewPort && inst.inViewPort) {
+			if (!inst.leaveViewPending) {
+				// element entered the viewport, notify the listeners with small delay
+				inst.pendingEnterView = $timeout(onEnterView, 250, true, inst);
+			}
+			inst.leaveViewPending = false;
+		}
+		else if (wasInViewPort && !inst.inViewPort) {
+			if (inst.pendingEnterView) {
 				// element left the viewport before onEnterView was called, cancel the pending call
-				$timeout.cancel(inst.promise);
-				inst.promise = null;
+				$timeout.cancel(inst.pendingEnterView);
+				inst.pendingEnterView = null;
+			}
+			else {
+				// element left the viewport after it had been notified that it has entered the view
+				inst.leaveViewPending = true;
 			}
 		}
-		else if (!wasInViewPort && nowInViewPort) {
-			// element entered the viewport, notify the listeners with small delay
-			inst.promise = $timeout(onEnterView, 250, true, inst);
-		}
-		else if (wasInViewPort && !nowInViewPort) {
-			// element left the viewport after it had been notified that it has entered the view
-			onLeaveView(inst);
-		}
 
-		return nowInViewPort;
+		return inst.inViewPort;
 	}
 
 	function elemInViewPort(elem) {
@@ -174,15 +188,14 @@ function($rootScope, $timeout, inViewService) {
 	}
 
 	function onEnterView(inst) {
-		inst.promise = null;
-		inst.inViewPort = true;
+		inst.pendingEnterView = null;
 		_(inst.listeners).each(function(listener) {
 			listener.onEnterView();
 		});
 	}
 
 	function onLeaveView(inst) {
-		inst.inViewPort = false;
+		inst.leaveViewPending = false;
 		_(inst.listeners).each(function(listener) {
 			listener.onLeaveView();
 		});
@@ -192,6 +205,8 @@ function($rootScope, $timeout, inViewService) {
 		scope: {},
 		controller: function($scope, $element) {
 			this.inViewPort = false;
+			this.leaveViewPending = false;
+			this.pendingEnterView = null;
 			this.element = $element[0];
 			this.listeners = [];
 

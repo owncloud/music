@@ -36,7 +36,8 @@ function($rootScope, $timeout, inViewService) {
 
 	var throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
 
-	document.getElementById('app-content').addEventListener('scroll', throttledOnScroll);
+	var scrollContainer = OC_Music_Utils.newLayoutStructure() ? document : document.getElementById('app-content');
+	scrollContainer.addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 

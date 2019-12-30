@@ -1,3 +1,6 @@
+v0.12.1 2019-12-31
+ * fix broken scrolling in Albums and Folders views on Nextcloud 14+
+
 v0.12.0 2019-12-29
  * improved performance for huge music collections (#728)
  * collapse the "Scanning..." popup to the bottom of the screen when there are already tracks shown (#728)

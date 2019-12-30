@@ -1,5 +1,5 @@
 v0.12.1 2019-12-31
- * fix broken scrolling in Albums and Folders views on Nextcloud 14+
+ * fix broken scrolling in Albums and Folders views on Nextcloud 14+ (#733)
 
 v0.12.0 2019-12-29
  * improved performance for huge music collections (#728)

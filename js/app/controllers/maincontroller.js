@@ -222,13 +222,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
-		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
-		var element = $('#' + itemId);
-		if (container && element) {
-			if (animationTime === undefined) {
-				animationTime = 500;
+		if (itemId) {
+			var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+			var element = $('#' + itemId);
+			if (container && element) {
+				if (animationTime === undefined) {
+					animationTime = 500;
+				}
+				container.scrollToElement(element, scrollOffset(), animationTime);
 			}
-			container.scrollToElement(element, scrollOffset(), animationTime);
 		}
 	};
 

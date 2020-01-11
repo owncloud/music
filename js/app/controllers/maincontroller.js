@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 angular.module('Music').controller('MainController', [
@@ -88,10 +88,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
+			var collapsiblePopups = $('.emptycontent:not(#noSearchResults)');
 			if (libraryService.getTrackCount() > 0) {
-				$('.emptycontent').addClass('collapsed');
+				collapsiblePopups.addClass('collapsed');
 			} else {
-				$('.emptycontent').removeClass('collapsed');
+				collapsiblePopups.removeClass('collapsed');
 			}
 
 			$rootScope.loadingCollection = false;

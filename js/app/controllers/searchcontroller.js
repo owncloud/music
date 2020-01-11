@@ -26,11 +26,11 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	var MAX_FOLDER_MATCHES = 100;
 
 	var searchbox = $('#searchbox');
-	var queryString = searchbox.val().trim();
+	$scope.queryString = searchbox.val().trim();
 
 	/** Conduct the search when there is a pause in typing in text */
 	var checkQueryChange = _.debounce(function() {
-		if (queryString != searchbox.val().trim()) {
+		if ($scope.queryString != searchbox.val().trim()) {
 			$scope.$apply(onEnterSearchString);
 		}
 	}, 250);
@@ -40,8 +40,8 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	 *  of the #searchbox element.
 	 */
 	$('.searchbox').on('reset', function() {
-		queryString = '';
-		clearSearch();
+		$scope.queryString = '';
+		$scope.$apply(clearSearch);
 	});
 
 	/** Catch ctrl+f except when the Settings view is active */
@@ -61,16 +61,16 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	});
 
 	function onEnterSearchString() {
-		queryString = searchbox.val().trim();
+		$scope.queryString = searchbox.val().trim();
 
-		if (queryString.length > 0) {
-			runSearch();
+		if ($scope.queryString.length > 0) {
+			runSearch($scope.queryString);
 		} else {
 			clearSearch();
 		}
 	}
 
-	function runSearch() {
+	function runSearch(query) {
 		// reset previous matches
 		$('.matched').removeClass('matched');
 
@@ -78,19 +78,20 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		var view = $rootScope.currentView;
 
 		if (view == '#') {
-			matchingTracks = searchInAlbumsView();
+			matchingTracks = searchInAlbumsView(query);
 		} else if (view == '#/folders') {
-			matchingTracks = searchInFoldersView();
+			matchingTracks = searchInFoldersView(query);
 		} else if (view == '#/alltracks') {
-			matchingTracks = searchInAllTracksView();
+			matchingTracks = searchInAllTracksView(query);
 		} else if (view.startsWith('#/playlist/')) {
-			matchingTracks = searchInPlaylistView();
+			matchingTracks = searchInPlaylistView(query);
 		} else {
 			OC.Notification.showTemporary(gettextCatalog.getString('Search not available in this view'));
-			matchingTracks = {results: [], truncated: false};
+			return;
 		}
 
 		$scope.searchResultsOmitted = matchingTracks.truncated;
+		$scope.noSearchResults = (matchingTracks.result.length === 0);
 
 		// inform the track-list directive about changed search matches
 		$rootScope.$emit('searchMatchedTracks', matchingTracks.result);
@@ -100,10 +101,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		$rootScope.$emit('inViewObserverReInit');
 	}
 
-	function searchInAlbumsView() {
-		var trackResults = libraryService.searchTracks(queryString, MAX_TRACK_MATCHES);
-		var albumResults = libraryService.searchAlbums(queryString, MAX_ALBUM_MATCHES);
-		var artistResults = libraryService.searchArtists(queryString, MAX_ARTIST_MATCHES);
+	function searchInAlbumsView(query) {
+		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
+		var albumResults = libraryService.searchAlbums(query, MAX_ALBUM_MATCHES);
+		var artistResults = libraryService.searchArtists(query, MAX_ARTIST_MATCHES);
 
 		// add children of matching albums/artists (if have not hit the maximum amount)
 		if (!albumResults.truncated) {
@@ -143,9 +144,9 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		};
 	}
 
-	function searchInFoldersView() {
-		var trackResults = libraryService.searchTracks(queryString, MAX_TRACK_MATCHES);
-		var folderResults = libraryService.searchFolders(queryString, MAX_FOLDER_MATCHES);
+	function searchInFoldersView(query) {
+		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
+		var folderResults = libraryService.searchFolders(query, MAX_FOLDER_MATCHES);
 
 		// add children of matching folders
 		if (!trackResults.truncated) {
@@ -173,23 +174,27 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		};
 	}
 
-	function searchInAllTracksView() {
-		var trackResults = libraryService.searchTracks(queryString, MAX_TRACK_MATCHES);
+	function searchInAllTracksView(query) {
+		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
 		_(trackResults.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 		});
 		return trackResults;
 	}
 
-	function searchInPlaylistView() {
+	function searchInPlaylistView(query) {
 		// set no maximum number, because many of the matches might not be on the current list
-		var trackResults = libraryService.searchTracks(queryString);
+		var trackResults = libraryService.searchTracks(query);
+		var matchesInCurrentView = [];
 		_(trackResults.result).each(function(track) {
-			$('li[data-track-id=' + track.id + ']').addClass('matched');
+			var items = $('li[data-track-id=' + track.id + ']');
+			if (items.length) {
+				items.addClass('matched');
+				matchesInCurrentView.push(track);
+			}
 		});
 
-		// return no tracks because this view uses no track-list directives
-		return {result: [], truncated: false};
+		return {result: matchesInCurrentView, truncated: false};
 	}
 
 	function clearSearch() {
@@ -198,5 +203,11 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		$('.matched').removeClass('matched');
 		$rootScope.$emit('inViewObserverReInit');
 		$scope.searchResultsOmitted = false;
+		$scope.noSearchResults = false;
 	}
+
+	$rootScope.$on('deactivateView', function() {
+		$scope.searchResultsOmitted = false;
+		$scope.noSearchResults = false;
+	});
 }]);

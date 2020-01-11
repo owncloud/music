@@ -78,12 +78,20 @@
 				</div>
 			</div>
 
-			<div ng-controller="SearchController">
+			<div id="searchContainer" ng-controller="SearchController">
 				<div id="searchResultsOmitted" class="emptycontent" ng-show="searchResultsOmitted">
 					<div class="icon-search svg"></div>
 					<div>
 						<h2 translate>Some search results are omitted</h2>
 						<p translate>Try to refine the search</p>
+					</div>
+				</div>
+				<div id="noSearchResults" class="emptycontent" ng-show="noSearchResults">
+					<div class="icon-search svg"></div>
+					<div>
+						<h2 translate>
+							No matches for the query <strong>'{{ queryString }}'</strong> in this view
+						</h2>
 					</div>
 				</div>
 			</div>

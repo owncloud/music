@@ -12,13 +12,9 @@
  * This controller implements the search/filtering logic for all views. The details
  * of the search still vary per-view.
  * 
- * The controller is attached to the div#searchresults, but this element is always hidden.
- * The element's only purpose is, that having it present makes the ownCloud/Nextcloud core
- * show the searchbox element within the header.
- * 
  * When the search query is written to the searchbox, the core automatically sends the query
- * to the backend. However, we disregard any results from the backend and conduct the search
- * on our own, on the frontend.
+ * to the backend. However, we disregard any results from the back-end and conduct the search
+ * on our own, on the front-end.
  */
 angular.module('Music').controller('SearchController', [
 '$scope', '$rootScope', 'libraryService', '$timeout', '$document', 'gettextCatalog',
@@ -94,9 +90,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 			matchingTracks = {results: [], truncated: false};
 		}
 
+		$scope.searchResultsOmitted = matchingTracks.truncated;
+
 		// inform the track-list directive about changed search matches
 		$rootScope.$emit('searchMatchedTracks', matchingTracks.result);
-		$rootScope.searchResultsOmitted = matchingTracks.truncated;
 
 		$('#app-view').addClass('searchmode');
 
@@ -200,6 +197,6 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		$('#app-view').removeClass('searchmode');
 		$('.matched').removeClass('matched');
 		$rootScope.$emit('inViewObserverReInit');
-		$rootScope.searchResultsOmitted = false;
+		$scope.searchResultsOmitted = false;
 	}
 }]);

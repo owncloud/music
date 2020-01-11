@@ -78,11 +78,13 @@
 				</div>
 			</div>
 
-			<div id="searchResultsOmitted" class="emptycontent" ng-show="searchResultsOmitted">
-				<div class="icon-search svg"></div>
-				<div>
-					<h2 translate>Some search results are omitted</h2>
-					<p translate>Try to refine the search</p>
+			<div ng-controller="SearchController">
+				<div id="searchResultsOmitted" class="emptycontent" ng-show="searchResultsOmitted">
+					<div class="icon-search svg"></div>
+					<div>
+						<h2 translate>Some search results are omitted</h2>
+						<p translate>Try to refine the search</p>
+					</div>
 				</div>
 			</div>
 
@@ -93,7 +95,8 @@
 
 		</div>
 
-		<div id="searchresults" class="hidden" data-appfilter="music" ng-controller="SearchController"></div>
+		<!-- The following exists just in order to make the core unhide the #searchbox element -->
+		<div id="searchresults" data-appfilter="music"></div>
 	</div>
 
 </div>

@@ -230,23 +230,31 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		foldersLoaded: function() {
 			return folders !== null;
 		},
-		searchTracks: function(query) {
-			return _.union(
+		searchTracks: function(query, maxResults/*optional*/) {
+			return OC_Music_Utils.limitedUnion(
+				maxResults,
 				search(tracksIndex, 'title', query),
 				search(tracksIndex, 'artistName', query)
 			);
 		},
-		searchAlbums: function(query) {
-			return _.union(
+		searchAlbums: function(query, maxResults/*optional*/) {
+			return OC_Music_Utils.limitedUnion(
+				maxResults,
 				search(albums, 'name', query),
 				search(albums, 'year', query)
 			);
 		},
-		searchArtists: function(query) {
-			return search(artists, 'name', query);
+		searchArtists: function(query, maxResults/*optional*/) {
+			return OC_Music_Utils.limitedUnion(
+				maxResults,
+				search(artists, 'name', query)
+			);
 		},
-		searchFolders: function(query) {
-			return search(folders, 'path', query);
+		searchFolders: function(query, maxResults/*optional*/) {
+			return OC_Music_Utils.limitedUnion(
+				maxResults,
+				search(folders, 'path', query)
+			);
 		},
 	};
 }]);

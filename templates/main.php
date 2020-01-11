@@ -78,6 +78,14 @@
 				</div>
 			</div>
 
+			<div id="searchResultsOmitted" class="emptycontent" ng-show="searchResultsOmitted">
+				<div class="icon-search svg"></div>
+				<div>
+					<h2 translate>Some search results are omitted</h2>
+					<p translate>Try to refine the search</p>
+				</div>
+			</div>
+
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
 				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"

@@ -117,7 +117,8 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	function search(container, field, query) {
 		query = query.toLocaleLowerCase();
 		return _.filter(container, function(item) {
-			return (item[field].toLocaleLowerCase().indexOf(query) !== -1);
+			return (item[field] !== null
+				&& item[field].toLocaleLowerCase().indexOf(query) !== -1);
 		});
 	}
 
@@ -236,13 +237,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			);
 		},
 		searchAlbums: function(query) {
-			return search(albums, 'name', query);
+			return _.union(
+				search(albums, 'name', query),
+				search(albums, 'year', query)
+			);
 		},
 		searchArtists: function(query) {
 			return search(artists, 'name', query);
 		},
 		searchFolders: function(query) {
-			return search(folders, 'name', query);
+			return search(folders, 'path', query);
 		},
 	};
 }]);

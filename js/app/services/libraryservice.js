@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2019 Pauli Järvinen
+ * @copyright 2017 - 2020 Pauli Järvinen
  *
  */
 
@@ -92,6 +92,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function createTrackContainers() {
+		// add parent album ID to each track
+		_.forEach(albums, function(album) {
+			_.forEach(album.tracks, function(track) {
+				track.albumId = album.id;
+			});
+		});
+
 		// album order "playlist"
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
@@ -104,6 +111,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		// tracks index
 		_.forEach(tracks, function(track) {
 			tracksIndex[track.id] = track;
+		});
+	}
+
+	function search(container, field, query) {
+		query = query.toLocaleLowerCase();
+		return _.filter(container, function(item) {
+			return (item[field].toLocaleLowerCase().indexOf(query) !== -1);
 		});
 	}
 
@@ -126,6 +140,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				_.forEach(folders, function(folder) {
 					sortByPlaylistEntryField(folder.tracks, 'title');
 					sortByPlaylistEntryField(folder.tracks, 'artistName');
+
+					_.forEach(folder.tracks, function(trackEntry) {
+						trackEntry.track.folderId = folder.id;
+					});
 				});
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
 			}
@@ -210,6 +228,21 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		foldersLoaded: function() {
 			return folders !== null;
-		}
+		},
+		searchTracks: function(query) {
+			return _.union(
+				search(tracksIndex, 'title', query),
+				search(tracksIndex, 'artistName', query)
+			);
+		},
+		searchAlbums: function(query) {
+			return search(albums, 'name', query);
+		},
+		searchArtists: function(query) {
+			return search(artists, 'name', query);
+		},
+		searchFolders: function(query) {
+			return search(folders, 'name', query);
+		},
 	};
 }]);

@@ -9,6 +9,7 @@
 		<li ng-repeat="entry in tracks | limitTo: incrementalLoadLimit"
 			ng-init="song = entry.track"
 			id="{{ 'playlist-track-' + $index }}"
+			data-track-id="{{ ::song.id }}"
 			ui-on-drop="reorderDrop($data, $index)"
 			ui-on-drag-enter="updateHoverStyle($index)"
 			drop-validate="allowDrop($data, $index)"

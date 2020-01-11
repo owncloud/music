@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 Pauli Järvinen
+ * @copyright 2019, 2020 Pauli Järvinen
  *
  */
 
@@ -40,6 +40,11 @@ function($rootScope, $timeout, inViewService) {
 	scrollContainer.addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
+
+	$rootScope.$on('inViewObserverReInit', function() {
+		resetAll();
+		initInViewRange();
+	});
 
 	var debouncedNotifyLeave = _.debounce(function() {
 		_(_instances).each(function(inst) {
@@ -76,7 +81,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// loop from the begining until we find the first instance in viewport
 		for (i = 0; i < length; ++i) {
-			if (updateInViewStatus(_instances[i])) {
+			if (updateInViewStatus(_instances[i]) && !instanceIsInvisible(_instances[i])) {
 				_firstIndexInView = i;
 				_lastIndexInView = i;
 				break;
@@ -86,7 +91,7 @@ function($rootScope, $timeout, inViewService) {
 		// if some instance was found, then continue looping until we have found
 		// all the instances in viewport
 		for (++i; i < length; ++i) {
-			if (updateInViewStatus(_instances[i])) {
+			if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
 				_lastIndexInView = i;
 			} else {
 				break;
@@ -105,7 +110,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// Check if instances in the beginning of the range have slided off
 		for (i = _firstIndexInView; i <= _lastIndexInView; ++i) {
-			if (!updateInViewStatus(_instances[i])) {
+			if (!updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
 				++_firstIndexInView;
 			} else {
 				break;
@@ -114,7 +119,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// Check if instances in the end of the range have slided off
 		for (i = _lastIndexInView; i > _firstIndexInView; --i) {
-			if (!updateInViewStatus(_instances[i])) {
+			if (!updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
 				--_lastIndexInView;
 			} else {
 				break;
@@ -132,7 +137,7 @@ function($rootScope, $timeout, inViewService) {
 			// did not move downwards
 			if (prevFirst === _firstIndexInView) {
 				for (i = _firstIndexInView - 1; i >= 0; --i) {
-					if (updateInViewStatus(_instances[i])) {
+					if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
 						--_firstIndexInView;
 					} else {
 						break;
@@ -144,7 +149,7 @@ function($rootScope, $timeout, inViewService) {
 			// did not move upwards
 			if (prevLast === _lastIndexInView) {
 				for (i = _lastIndexInView + 1; i < length; ++i) {
-					if (updateInViewStatus(_instances[i])) {
+					if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
 						++_lastIndexInView;
 					} else {
 						break;
@@ -158,9 +163,8 @@ function($rootScope, $timeout, inViewService) {
 	 * Update in-view-port status of the given instance
 	 */
 	function updateInViewStatus(inst) {
-		var elem = inst.element;
 		var wasInViewPort = inst.inViewPort;
-		inst.inViewPort = elemInViewPort(elem);
+		inst.inViewPort = instanceInViewPort(inst);
 
 		if (!wasInViewPort && inst.inViewPort) {
 			if (!inst.leaveViewPending) {
@@ -184,21 +188,41 @@ function($rootScope, $timeout, inViewService) {
 		return inst.inViewPort;
 	}
 
-	function elemInViewPort(elem) {
-		return inViewService.isElementInViewPort(elem, 500, 500);
+	function instanceInViewPort(inst) {
+		return inViewService.isElementInViewPort(inst.element, 500, 500);
+	}
+
+	function instanceIsInvisible(inst) {
+		return (inst.element.offsetHeight <= 0);
 	}
 
 	function onEnterView(inst) {
 		inst.pendingEnterView = null;
-		_(inst.listeners).each(function(listener) {
-			listener.onEnterView();
-		});
+
+		if (!instanceIsInvisible(inst)) {
+			_(inst.listeners).each(function(listener) {
+				listener.onEnterView();
+			});
+		}
 	}
 
 	function onLeaveView(inst) {
 		inst.leaveViewPending = false;
 		_(inst.listeners).each(function(listener) {
 			listener.onLeaveView();
+		});
+	}
+
+	function resetAll() {
+		_(_instances).each(function(inst) {
+			if (inst.pendingEnterView) {
+				$timeout.cancel(inst.pendingEnterView);
+				inst.pendingEnterView = null;
+			}
+			if (inst.inViewPort) {
+				onLeaveView(inst);
+				inst.inViewPort = false;
+			}
 		});
 	}
 

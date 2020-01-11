@@ -7,7 +7,7 @@
  * @author Moritz Meißelbach <moritz@meisselba.ch>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2017 Moritz Meißelbach
- * @copyright 2018, 2019 Pauli Järvinen
+ * @copyright 2018 - 2020 Pauli Järvinen
  *
  */
 
@@ -38,6 +38,20 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 
+	// Search support
+	var searchModeTrackMatches = null;
+	$rootScope.$on('searchMatchedTracks', function(event, matchingTracks) {
+		// store only the IDs of the matching tracks; store them in sorted array
+		// to enable binary search
+		searchModeTrackMatches = _(matchingTracks).pluck('id');
+		searchModeTrackMatches.sort(function(a,b) { return a - b; });
+	}); 
+	$rootScope.$on('searchOff', function() {
+		searchModeTrackMatches = null;
+	}); 
+	function inSearchMode() {
+		return searchModeTrackMatches !== null;
+	}
 
 	/**
 	 * Set up the track items and the listeners for a given <ul> element
@@ -56,7 +70,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		removeChildNodes(htmlElem);
 		htmlElem.appendChild(renderTrackList());
 
-		if (data.expanded) {
+		if (data.expanded || inSearchMode()) {
 			renderHiddenTracks();
 		}
 
@@ -141,6 +155,13 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			if (className) {
 				listItem.className = className;
 			}
+
+			if (inSearchMode()) {
+				if (_.indexOf(searchModeTrackMatches, trackData.id, true) !== -1) {
+					listItem.className += ' matched';
+				}
+			}
+
 			return listItem;
 		}
 

@@ -85,6 +85,7 @@
 
 		</div>
 
+		<div id="searchresults" class="hidden" data-appfilter="music" ng-controller="SearchController"></div>
 	</div>
 
 </div>

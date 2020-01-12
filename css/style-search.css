@@ -20,6 +20,7 @@
 .searchmode .album-area .track-list li:not(.matched),
 .searchmode .album-area:not(.matched),
 .searchmode .artist-area:not(.matched),
-.searchmode .folder-area:not(.matched) {
+.searchmode .folder-area:not(.matched),
+.searchmode .track-bucket:not(.matched) {
 	display: none;
 }

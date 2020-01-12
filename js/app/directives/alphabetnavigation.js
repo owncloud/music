@@ -7,12 +7,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2018, 2019 Pauli Järvinen
+ * @copyright 2018 - 2020 Pauli Järvinen
  *
  */
 
-angular.module('Music').directive('alphabetNavigation', ['$rootScope', '$timeout',
-function($rootScope, $timeout) {
+angular.module('Music').directive('alphabetNavigation', ['$rootScope', '$timeout', 'alphabetIndexingService',
+function($rootScope, $timeout, alphabetIndexingService) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -25,10 +25,7 @@ function($rootScope, $timeout) {
 		replace: true,
 		link: function(scope, element, attrs, ctrl) {
 
-			var links = [
-				'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-				'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '…'
-			];
+			var links = alphabetIndexingService.indexChars();
 			var linksShort = [
 				'#', 'A-B', 'C-D', 'E-F', 'G-H', 'I-J', 'K-L', 'M-N',
 				'O-P', 'Q-R', 'S-T', 'U-V', 'W-X', 'Y-Z', '…'
@@ -39,21 +36,10 @@ function($rootScope, $timeout) {
 			scope.links = links;
 			scope.targets = {};
 
-			function isVariantOfZ(char) {
-				return ('Zz\u017A\u017B\u017C\u017D\u017E\u01B5\u01B6\u0224\u0225\u0240\u1E90\u1E91\u1E92'
-					+ '\u1E93\u1E94\u1E95\u24CF\u24E9\u2C6B\u2C6C\uA762\uA763\uFF3A\uFF5A').indexOf(char) >= 0;
-			}
-
 			function itemPrecedesLetter(itemIdx, linkIdx) {
-				var initialChar = scope.getElemTitle(itemIdx).substr(0,1).toUpperCase();
-
-				// Special case: '…' is considered to be larger than Z or any of its variants
-				// but equal to any other character greater than Z
-				if (links[linkIdx] === '…') {
-					return isVariantOfZ(initialChar) || itemPrecedesLetter(itemIdx, linkIdx-1);
-				} else {
-					return initialChar.localeCompare(links[linkIdx]) < 0;
-				}
+				var title = scope.getElemTitle(itemIdx);
+				return (linkIdx >= links.length
+						|| alphabetIndexingService.titlePrecedesIndexCharAt(title, linkIdx));
 			}
 
 			function setUpMainLinks() {
@@ -61,15 +47,10 @@ function($rootScope, $timeout) {
 					linkIdx < links.length && itemIdx < scope.itemCount;
 					++linkIdx)
 				{
-					var alphabet = links[linkIdx];
-
-					if (linkIdx === links.length - 1) {
-						// Last link '…' reached while there are items left, the remaining items go under this link
-						scope.targets[alphabet] = scope.getElemId(itemIdx);
-					}
-					else if (itemPrecedesLetter(itemIdx, linkIdx + 1)) {
+					if (itemPrecedesLetter(itemIdx, linkIdx + 1)) {
 						// Item is smaller than the next alphabet, i.e.
 						// alphabet <= item < nextAlphabet, link the item to this alphabet
+						var alphabet = links[linkIdx];
 						scope.targets[alphabet] = scope.getElemId(itemIdx);
 	
 						// Skip the rest of the items belonging to the same alphabet

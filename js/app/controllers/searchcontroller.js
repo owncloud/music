@@ -17,8 +17,8 @@
  * on our own, on the front-end.
  */
 angular.module('Music').controller('SearchController', [
-'$scope', '$rootScope', 'libraryService', '$timeout', '$document', 'gettextCatalog',
-function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalog) {
+'$scope', '$rootScope', 'libraryService', 'alphabetIndexingService', '$timeout', '$document', 'gettextCatalog',
+function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout, $document, gettextCatalog) {
 
 	var MAX_TRACK_MATCHES = 1000;
 	var MAX_ALBUM_MATCHES = 100;
@@ -178,6 +178,11 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
 		_(trackResults.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
+			var indexChar = alphabetIndexingService.indexCharForTitle(track.artistName);
+			if (indexChar == '#') {
+				indexChar = '\\#';
+			}
+			$('.track-bucket-' + indexChar).addClass('matched');
 		});
 		return trackResults;
 	}

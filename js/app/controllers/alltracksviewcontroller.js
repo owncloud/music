@@ -5,15 +5,18 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018, 2019
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 
 angular.module('Music').controller('AllTracksViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
 
 		$scope.tracks = null;
+		$scope.trackBuckets = null;
+		var BUCKET_MAX_SIZE = 100;
+		var indexChars = alphabetIndexingService.indexChars();
 		$rootScope.currentView = window.location.hash;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
@@ -58,7 +61,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			return {
 				title: track.artistName + ' - ' + track.title,
 				tooltip: '',
-				number: index + 1,
+				number: scope.$parent.bucket.baseIndex + index + 1,
 				id: track.id
 			};
 		};
@@ -66,11 +69,11 @@ angular.module('Music').controller('AllTracksViewController', [
 		/**
 		 * Two functions for the alphabet-navigation directive integration
 		 */
-		$scope.getTrackArtistName = function(index) {
-			return $scope.tracks[index].track.artistName;
+		$scope.getBucketName = function(index) {
+			return $scope.trackBuckets[index].name;
 		};
-		$scope.getTrackElementId = function(index) {
-			return 'track-' + $scope.tracks[index].track.id;
+		$scope.getBucketElementId = function(index) {
+			return 'track-bucket-' + index;
 		};
 
 		$scope.getDraggable = function(trackId) {
@@ -84,22 +87,67 @@ angular.module('Music').controller('AllTracksViewController', [
 		});
 
 		// Init happens either immediately (after making the loading animation visible)
-		// or once aritsts have been loaded
+		// or once artists have been loaded
 		$timeout(initView);
 
 		subscribe('artistsLoaded', function () {
 			// Nullify any previous tracks to force tracklist directive recreation
 			$scope.tracks = null;
+			$scope.trackBuckets = null;
 			$timeout(initView);
 		});
 
 		function initView() {
 			if (libraryService.collectionLoaded()) {
 				$scope.tracks = libraryService.getTracksInAlphaOrder();
+				$scope.trackBuckets = createTrackBuckets();
 				$timeout(function() {
 					$rootScope.loading = false;
 				});
 			}
+		}
+
+		function trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx) {
+			var name = $scope.tracks[trackIdx].track.artistName;
+			return (charIdx >= indexChars.length
+				|| alphabetIndexingService.titlePrecedesIndexCharAt(name, charIdx));
+		}
+
+		function createTrackBuckets() {
+			var buckets = [];
+
+			for (var charIdx = 0, trackIdx = 0;
+				charIdx < indexChars.length && trackIdx < $scope.tracks.length;
+				++charIdx)
+			{
+				if (trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx + 1)) {
+					// Track at trackIdx belongs to bucket of the char indexChars[charIdx]
+
+					var bucket = null;
+	
+					// Add all the items belonging to the same alphabet to the same bucket
+					do {
+						// create a new bucket when necessary
+						if (!bucket || bucket.tracks.length >= BUCKET_MAX_SIZE) {
+							bucket = {
+								char: indexChars[charIdx],
+								firstForChar: !bucket,
+								name: $scope.tracks[trackIdx].track.artistName,
+								tracks: [],
+								baseIndex: trackIdx
+							};
+							buckets.push(bucket);
+						}
+
+						bucket.tracks.push($scope.tracks[trackIdx]);
+						++trackIdx;
+					}
+					while (trackIdx < $scope.tracks.length
+							&& trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx + 1));
+				}
+			}
+
+			return buckets;
 		}
 
 		subscribe('deactivateView', function() {

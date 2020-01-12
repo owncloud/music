@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Search;

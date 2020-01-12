@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
@@ -95,7 +95,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		jumpToPrevTrack: function() {
 			if (playlist && playOrderIter > 0) {
 				--playOrderIter;
-				track = playlist[this.getCurrentIndex()];
+				var track = playlist[this.getCurrentIndex()];
 				this.publish('trackChanged', track);
 				return track;
 			}

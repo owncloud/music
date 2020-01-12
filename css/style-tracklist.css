@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 /**
@@ -21,7 +21,7 @@
 	display: table-cell;
 }
 
-.track-list.collapsed .collapsible {
+#app-view:not(.searchmode) .track-list.collapsed .collapsible {
 	display: none !important;
 }
 
@@ -57,8 +57,8 @@
 	display: none;
 }
 
-.track-list.collapsed li.more-less:not(.collapsible),
-.track-list:not(.collapsed) li.more-less.collapsible {
+#app-view:not(.searchmode) .track-list.collapsed li.more-less:not(.collapsible),
+#app-view:not(.searchmode) .track-list:not(.collapsed) li.more-less.collapsible {
 	display: inline-block;
 }
 

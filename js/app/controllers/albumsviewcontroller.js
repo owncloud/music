@@ -237,7 +237,8 @@ angular.module('Music').controller('AlbumsViewController', [
 					window.location.hash = '#/';
 				}
 			}
-			$rootScope.loading = false;
+
+			updateHighlight(playlistService.getCurrentPlaylistId());
 		}
 
 		/**
@@ -252,15 +253,16 @@ angular.module('Music').controller('AlbumsViewController', [
 				if ($scope.incrementalLoadLimit < $scope.$parent.artists.length) {
 					$timeout(showMore);
 				} else {
+					$rootScope.loading = false;
+
 					// Do not reinitialize the player state if it is already playing.
 					// This is the case when the user has started playing music while scanning is ongoing,
 					// and then hits the 'update' button. Reinitializing would stop and restart the playback.
 					if (!isPlaying()) {
-						initializePlayerStateFromURL();
+						$timeout(initializePlayerStateFromURL);
 					} else {
-						$rootScope.loading = false;
+						updateHighlight(playlistService.getCurrentPlaylistId());
 					}
-					updateHighlight(playlistService.getCurrentPlaylistId());
 				}
 			}
 		}

@@ -221,6 +221,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
 			});
 		},
+		findTracksByArtist: function(artistId) {
+			return _.filter(tracksIndex, {artistId: Number(artistId)});
+		},
 		collectionLoaded: function() {
 			return artists !== null;
 		},

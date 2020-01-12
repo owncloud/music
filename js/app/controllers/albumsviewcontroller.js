@@ -222,8 +222,17 @@ angular.module('Music').controller('AlbumsViewController', [
 					if (type == 'file') {
 						$scope.playFile(id);
 					} else if (type == 'artist') {
-						$scope.playArtist(libraryService.getArtist(id));
-						$scope.$parent.scrollToItem('artist-' + id);
+						var artist = libraryService.getArtist(id);
+						if (artist) {
+							$scope.playArtist(artist);
+							$scope.$parent.scrollToItem('artist-' + id);
+						} else {
+							// If there is no such album artist, then maybe this is only a track artist.
+							// Try to find the first track by this artist.
+							var tracks = libraryService.findTracksByArtist(id);
+							$scope.playTrack(tracks[0]);
+							scrollToAlbumOfTrack(tracks[0].id);
+						}
 					} else if (type == 'album') {
 						$scope.playAlbum(libraryService.getAlbum(id));
 						$scope.$parent.scrollToItem('album-' + id);

@@ -84,7 +84,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		} else if (view == '#/alltracks') {
 			matchingTracks = searchInAllTracksView(query);
 		} else if (view.startsWith('#/playlist/')) {
-			matchingTracks = searchInPlaylistView(query);
+			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
 		} else {
 			OC.Notification.showTemporary(gettextCatalog.getString('Search not available in this view'));
 			return;
@@ -182,19 +182,13 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		return trackResults;
 	}
 
-	function searchInPlaylistView(query) {
-		// set no maximum number, because many of the matches might not be on the current list
-		var trackResults = libraryService.searchTracks(query);
-		var matchesInCurrentView = [];
+	function searchInPlaylistView(playlistId, query) {
+		var trackResults = libraryService.searchTracksInPlaylist(playlistId, query, MAX_TRACK_MATCHES);
 		_(trackResults.result).each(function(track) {
-			var items = $('li[data-track-id=' + track.id + ']');
-			if (items.length) {
-				items.addClass('matched');
-				matchesInCurrentView.push(track);
-			}
+			$('li[data-track-id=' + track.id + ']').addClass('matched');
 		});
 
-		return {result: matchesInCurrentView, truncated: false};
+		return trackResults;
 	}
 
 	function clearSearch() {

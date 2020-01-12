@@ -256,5 +256,15 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				search(folders, 'path', query)
 			);
 		},
+		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
+			var list = this.getPlaylist(playlistId) || [];
+			list = _.pluck(list.tracks, 'track');
+			list = _.uniq(list);
+			return OC_Music_Utils.limitedUnion(
+				maxResults,
+				search(list, 'title', query),
+				search(list, 'artistName', query)
+			);
+		},
 	};
 }]);

@@ -19,6 +19,9 @@ function($rootScope, $timeout, inViewService) {
 	var _instances = []; // in creation order i.e. top-most first
 	var _firstIndexInView = 0;
 	var _lastIndexInView = -1;
+	// tracking the range of visible items reduces the workload when there are a huge number of instances,
+	// but it cannot be used while some of the instances may be hidden (e.g. with "display: none")
+	var _trackVisibleRange = true;
 
 	// Drop all instances when view switching begins
 	$rootScope.$on('deactivateView', function() {
@@ -41,9 +44,14 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 
-	$rootScope.$on('inViewObserverReInit', function() {
-		resetAll();
-		initInViewRange();
+	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {
+		_trackVisibleRange = !itemsMayBeHidden;
+
+		if (_trackVisibleRange) {
+			resetAll();
+		}
+
+		onScroll();
 	});
 
 	var debouncedNotifyLeave = _.debounce(function() {
@@ -57,10 +65,16 @@ function($rootScope, $timeout, inViewService) {
 	function onScroll() {
 		// do not react while the layout building is still ongoing
 		if (!$rootScope.loading) {
-			if (!validInViewRange()) {
-				initInViewRange();
-			} else {
-				updateInViewRange();
+
+			if (_trackVisibleRange) {
+				if (!validInViewRange()) {
+					initInViewRange();
+				} else {
+					updateInViewRange();
+				}
+			}
+			else {
+				updateStatusForAll();
 			}
 
 			// leave notifications are post-poned until when the scrolling stops
@@ -81,7 +95,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// loop from the begining until we find the first instance in viewport
 		for (i = 0; i < length; ++i) {
-			if (updateInViewStatus(_instances[i]) && !instanceIsInvisible(_instances[i])) {
+			if (updateInViewStatus(_instances[i])) {
 				_firstIndexInView = i;
 				_lastIndexInView = i;
 				break;
@@ -91,7 +105,7 @@ function($rootScope, $timeout, inViewService) {
 		// if some instance was found, then continue looping until we have found
 		// all the instances in viewport
 		for (++i; i < length; ++i) {
-			if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
+			if (updateInViewStatus(_instances[i])) {
 				_lastIndexInView = i;
 			} else {
 				break;
@@ -110,7 +124,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// Check if instances in the beginning of the range have slided off
 		for (i = _firstIndexInView; i <= _lastIndexInView; ++i) {
-			if (!updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
+			if (!updateInViewStatus(_instances[i])) {
 				++_firstIndexInView;
 			} else {
 				break;
@@ -119,7 +133,7 @@ function($rootScope, $timeout, inViewService) {
 
 		// Check if instances in the end of the range have slided off
 		for (i = _lastIndexInView; i > _firstIndexInView; --i) {
-			if (!updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
+			if (!updateInViewStatus(_instances[i])) {
 				--_lastIndexInView;
 			} else {
 				break;
@@ -137,7 +151,7 @@ function($rootScope, $timeout, inViewService) {
 			// did not move downwards
 			if (prevFirst === _firstIndexInView) {
 				for (i = _firstIndexInView - 1; i >= 0; --i) {
-					if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
+					if (updateInViewStatus(_instances[i])) {
 						--_firstIndexInView;
 					} else {
 						break;
@@ -149,7 +163,7 @@ function($rootScope, $timeout, inViewService) {
 			// did not move upwards
 			if (prevLast === _lastIndexInView) {
 				for (i = _lastIndexInView + 1; i < length; ++i) {
-					if (updateInViewStatus(_instances[i]) || instanceIsInvisible(_instances[i])) {
+					if (updateInViewStatus(_instances[i])) {
 						++_lastIndexInView;
 					} else {
 						break;
@@ -164,7 +178,7 @@ function($rootScope, $timeout, inViewService) {
 	 */
 	function updateInViewStatus(inst) {
 		var wasInViewPort = inst.inViewPort;
-		inst.inViewPort = instanceInViewPort(inst);
+		inst.inViewPort = instanceInViewPort(inst) && !instanceIsInvisible(inst);
 
 		if (!wasInViewPort && inst.inViewPort) {
 			if (!inst.leaveViewPending) {
@@ -224,6 +238,10 @@ function($rootScope, $timeout, inViewService) {
 				inst.inViewPort = false;
 			}
 		});
+	}
+
+	function updateStatusForAll() {
+		_(_instances).each(updateInViewStatus);
 	}
 
 	return {

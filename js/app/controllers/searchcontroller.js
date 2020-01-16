@@ -98,7 +98,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 
 		$('#app-view').addClass('searchmode');
 
-		$rootScope.$emit('inViewObserverReInit');
+		$rootScope.$emit('inViewObserver_visibilityEvent', true);
 	}
 
 	function searchInAlbumsView(query) {
@@ -200,7 +200,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		$rootScope.$emit('searchOff');
 		$('#app-view').removeClass('searchmode');
 		$('.matched').removeClass('matched');
-		$rootScope.$emit('inViewObserverReInit');
+		$rootScope.$emit('inViewObserver_visibilityEvent', false);
 		$scope.searchResultsOmitted = false;
 		$scope.noSearchResults = false;
 	}

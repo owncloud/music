@@ -214,7 +214,7 @@ class CoverHelper {
 			if ($response === null) {
 				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
 			} else {
-				$response['content'] = $this->scaleDownIfLarge($response['content'], 200);
+				$response['content'] = $this->scaleDownIfLarge($response['content'], 380);
 			}
 		}
 

@@ -203,7 +203,8 @@ function($rootScope, $timeout, inViewService) {
 	}
 
 	function instanceInViewPort(inst) {
-		return inViewService.isElementInViewPort(inst.element, 500, 500);
+		var margin = inst.viewPortMargin;
+		return inViewService.isElementInViewPort(inst.element, margin, margin);
 	}
 
 	function instanceIsInvisible(inst) {
@@ -262,7 +263,9 @@ function($rootScope, $timeout, inViewService) {
 
 			_instances.push(this);
 		},
-		link: function(scope) {
+		link: function(scope, element, attributes, controller) {
+			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
+
 			// The visibilites should be evaluated after all the ng-repeated instances
 			// have been linked. There may be no actual `scroll` or `resize` events after
 			// page load, in case there's so few items that no scrollbar appears.

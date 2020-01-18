@@ -1,5 +1,6 @@
 <div class="view-container" id="folders-area" ng-show="!loading && !loadingCollection">
 	<div class="playlist-area folder-area" id="folder-{{ ::folder.id }}" in-view-observer
+		in-view-observer-margin="1000"
 		ng-repeat="folder in folders | limitTo: incrementalLoadLimit"
 	>
 		<list-heading 

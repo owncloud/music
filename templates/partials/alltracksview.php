@@ -11,6 +11,7 @@
 		ng-repeat="bucket in trackBuckets"
 		ng-class="::('track-bucket-' + bucket.char)"
 		in-view-observer
+		in-view-observer-margin="3000"
 		id="{{ ::('track-bucket-' + $index) }}"
 	>
 		<h2 ng-if="::bucket.firstForChar">{{ ::bucket.char }}</h2>

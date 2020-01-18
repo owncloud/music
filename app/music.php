@@ -423,7 +423,8 @@ class Music extends App {
 		$container->registerService('SubsonicMiddleware', function ($c) {
 			return new SubsonicMiddleware(
 					$c->query('Request'),
-					$c->query('AmpacheUserMapper') /* not a mistake, the mapper is shared between the APIs */
+					$c->query('AmpacheUserMapper'), /* not a mistake, the mapper is shared between the APIs */
+					$c->query('Logger')
 			);
 		});
 		$container->registerMiddleWare('SubsonicMiddleware');

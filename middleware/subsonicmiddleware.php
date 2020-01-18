@@ -17,6 +17,7 @@ use \OCP\AppFramework\Http\Response;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Controller\SubsonicController;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Utility\Util;
@@ -30,10 +31,12 @@ use \OCA\Music\Utility\Util;
 class SubsonicMiddleware extends Middleware {
 	private $request;
 	private $userMapper;
+	private $logger;
 
-	public function __construct(IRequest $request, AmpacheUserMapper $userMapper) {
+	public function __construct(IRequest $request, AmpacheUserMapper $userMapper, Logger $logger) {
 		$this->request = $request;
 		$this->userMapper = $userMapper;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -136,6 +139,7 @@ class SubsonicMiddleware extends Middleware {
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
+				$this->logger->log($exception->getMessage(), 'debug');
 				return $controller->subsonicErrorResponse(
 						$exception->getCode(),
 						$exception->getMessage()

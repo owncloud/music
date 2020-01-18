@@ -13,25 +13,30 @@ angular.module('Music').controller('AllTracksViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
 
-		$scope.tracks = null;
-		$scope.trackBuckets = null;
-		var BUCKET_MAX_SIZE = 100;
-		var indexChars = alphabetIndexingService.indexChars();
 		$rootScope.currentView = window.location.hash;
 
+		var _tracks = null;
+		var _indexChars = alphabetIndexingService.indexChars();
+
+		// Tracks are split into "buckets" to facilitate lazy loading. One track-list directive
+		// is created for each bucket. All tracks in a single bucket have the same indexing char
+		// but a single indexing char may have several buckets.
+		var BUCKET_MAX_SIZE = 100;
+		$scope.trackBuckets = null;
+
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		var _unsubFuncs = [];
 
 		function subscribe(event, handler) {
-			unsubFuncs.push( $rootScope.$on(event, handler) );
+			_unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
 		$scope.$on('$destroy', function () {
-			_.each(unsubFuncs, function(func) { func(); });
+			_.each(_unsubFuncs, function(func) { func(); });
 		});
 
 		function play(startIndex /*optional*/) {
-			playlistService.setPlaylist('alltracks', $scope.tracks, startIndex);
+			playlistService.setPlaylist('alltracks', _tracks, startIndex);
 			playlistService.publish('play');
 		}
 
@@ -48,7 +53,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				var index = _.findIndex($scope.tracks, function(i) {return i.track.id == trackId;});
+				var index = _.findIndex(_tracks, function(i) {return i.track.id == trackId;});
 				play(index);
 			}
 		};
@@ -92,14 +97,14 @@ angular.module('Music').controller('AllTracksViewController', [
 
 		subscribe('artistsLoaded', function () {
 			// Nullify any previous tracks to force tracklist directive recreation
-			$scope.tracks = null;
+			_tracks = null;
 			$scope.trackBuckets = null;
 			$timeout(initView);
 		});
 
 		function initView() {
 			if (libraryService.collectionLoaded()) {
-				$scope.tracks = libraryService.getTracksInAlphaOrder();
+				_tracks = libraryService.getTracksInAlphaOrder();
 				$scope.trackBuckets = createTrackBuckets();
 				$timeout(function() {
 					$rootScope.loading = false;
@@ -108,8 +113,8 @@ angular.module('Music').controller('AllTracksViewController', [
 		}
 
 		function trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx) {
-			var name = $scope.tracks[trackIdx].track.artistName;
-			return (charIdx >= indexChars.length
+			var name = _tracks[trackIdx].track.artistName;
+			return (charIdx >= _indexChars.length
 				|| alphabetIndexingService.titlePrecedesIndexCharAt(name, charIdx));
 		}
 
@@ -117,11 +122,11 @@ angular.module('Music').controller('AllTracksViewController', [
 			var buckets = [];
 
 			for (var charIdx = 0, trackIdx = 0;
-				charIdx < indexChars.length && trackIdx < $scope.tracks.length;
+				charIdx < _indexChars.length && trackIdx < _tracks.length;
 				++charIdx)
 			{
 				if (trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx + 1)) {
-					// Track at trackIdx belongs to bucket of the char indexChars[charIdx]
+					// Track at trackIdx belongs to bucket of the char _indexChars[charIdx]
 
 					var bucket = null;
 	
@@ -130,19 +135,19 @@ angular.module('Music').controller('AllTracksViewController', [
 						// create a new bucket when necessary
 						if (!bucket || bucket.tracks.length >= BUCKET_MAX_SIZE) {
 							bucket = {
-								char: indexChars[charIdx],
+								char: _indexChars[charIdx],
 								firstForChar: !bucket,
-								name: $scope.tracks[trackIdx].track.artistName,
+								name: _tracks[trackIdx].track.artistName,
 								tracks: [],
 								baseIndex: trackIdx
 							};
 							buckets.push(bucket);
 						}
 
-						bucket.tracks.push($scope.tracks[trackIdx]);
+						bucket.tracks.push(_tracks[trackIdx]);
 						++trackIdx;
 					}
-					while (trackIdx < $scope.tracks.length
+					while (trackIdx < _tracks.length
 							&& trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx + 1));
 				}
 			}

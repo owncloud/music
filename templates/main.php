@@ -90,7 +90,7 @@
 					<div class="icon-search svg"></div>
 					<div>
 						<h2 translate>
-							No matches for the query <strong>'{{ queryString }}'</strong> in this view
+							No search results in this view for <strong>{{ queryString }}</strong>
 						</h2>
 					</div>
 				</div>

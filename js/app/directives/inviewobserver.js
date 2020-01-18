@@ -54,6 +54,23 @@ function($rootScope, $timeout, inViewService) {
 		onScroll();
 	});
 
+	$rootScope.$on('inViewObserver_revealElement', function(event, element) {
+		var inst = _(_instances).find({element: element});
+
+		// cancel any pending "enter view" because it's about to happen immediately
+		if (inst.pendingEnterView) {
+			$timeout.cancel(inst.pendingEnterView);
+			inst.pendingEnterView = null;
+			inst.inViewPort = false;
+		}
+
+		// nothing to do if the instance is already within the viewport and and notified about it
+		if (!inst.inViewPort) {
+			onEnterView(inst);
+			inst.inViewPort = true;
+		}
+	});
+
 	var debouncedNotifyLeave = _.debounce(function() {
 		_(_instances).each(function(inst) {
 			if (inst.leaveViewPending) {

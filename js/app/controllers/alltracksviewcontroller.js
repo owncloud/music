@@ -85,8 +85,31 @@ angular.module('Music').controller('AllTracksViewController', [
 			return { track: libraryService.getTrack(trackId) };
 		};
 
+		function findTrackFromBucket(bucket, trackId) {
+			return _(bucket.tracks).find(function(item) {
+				return item.track.id == trackId;
+			});
+		}
+
+		function bucketElementForTrack(trackId) {
+			var track = libraryService.getTrack(trackId);
+			var indexChar = alphabetIndexingService.indexCharForTitle(track.artistName);
+
+			for (var i = 0; i < $scope.trackBuckets.length; ++i) {
+				var bucket = $scope.trackBuckets[i];
+				if (bucket.char == indexChar) {
+					if (findTrackFromBucket(bucket, trackId)) {
+						return document.getElementById('track-bucket-' + i);
+					}
+				}
+			}
+
+			return null;
+		}
+
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
+				$rootScope.$emit('inViewObserver_revealElement', bucketElementForTrack(trackId));
 				$scope.$parent.scrollToItem('track-' + trackId);
 			}
 		});

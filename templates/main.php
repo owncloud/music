@@ -51,7 +51,7 @@
 			<?php print_unescaped($this->inc('partials/sidebar')) ?>
 
 			<div id="app-view" ng-view resize-notifier
-				ng-class="{started: started, 'icon-loading': loading || (loadingCollection && currentView!='#/settings')}">
+				ng-class="{started: started, 'icon-loading': loadIndicatorVisible()}">
 			</div>
 
 			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">

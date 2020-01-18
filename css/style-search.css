@@ -16,9 +16,9 @@
 }
 
 /* Only matching items should be shown when the searchmode is active */
-.searchmode .track-list li:not(.matched),
+.searchmode .track-list li:not(.matched):not(.placeholder),
 .searchmode .track-list li.more-less,
-.searchmode .album-area .track-list li:not(.matched),
+.searchmode .album-area .track-list li:not(.matched):not(.placeholder),
 .searchmode .album-area:not(.matched),
 .searchmode .artist-area:not(.matched),
 .searchmode .folder-area:not(.matched),

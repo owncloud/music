@@ -31,7 +31,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	/** Conduct the search when there is a pause in typing in text */
 	var checkQueryChange = _.debounce(function() {
 		if ($scope.queryString != searchbox.val().trim()) {
-			$scope.$apply(onEnterSearchString);
+			onEnterSearchString();
 		}
 	}, 250);
 	searchbox.bind('propertychange change keyup input paste', checkQueryChange);
@@ -41,7 +41,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	 */
 	$('.searchbox').on('reset', function() {
 		$scope.queryString = '';
-		$scope.$apply(clearSearch);
+		$scope.$apply(startProgress);
+		$timeout(clearSearch);
 	});
 
 	/** Catch ctrl+f except when the Settings view is active */
@@ -63,11 +64,24 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	function onEnterSearchString() {
 		$scope.queryString = searchbox.val().trim();
 
-		if ($scope.queryString.length > 0) {
-			runSearch($scope.queryString);
-		} else {
-			clearSearch();
-		}
+		$scope.$apply(startProgress);
+
+		$timeout(function() {
+			if ($scope.queryString.length > 0) {
+				runSearch($scope.queryString);
+			} else {
+				clearSearch();
+			}
+		});
+	}
+
+	function startProgress() {
+		$rootScope.searchInProgress = true;
+		$scope.$parent.scrollToTop();
+	}
+
+	function endProgress() {
+		$rootScope.searchInProgress = false;
 	}
 
 	function runSearch(query) {
@@ -87,6 +101,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
 		} else {
 			OC.Notification.showTemporary(gettextCatalog.getString('Search not available in this view'));
+			endProgress();
 			return;
 		}
 
@@ -99,6 +114,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		$('#app-view').addClass('searchmode');
 
 		$rootScope.$emit('inViewObserver_visibilityEvent', true);
+
+		endProgress();
 	}
 
 	function searchInAlbumsView(query) {
@@ -203,10 +220,13 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		$rootScope.$emit('inViewObserver_visibilityEvent', false);
 		$scope.searchResultsOmitted = false;
 		$scope.noSearchResults = false;
+		endProgress();
 	}
 
 	$rootScope.$on('deactivateView', function() {
 		$scope.searchResultsOmitted = false;
 		$scope.noSearchResults = false;
+		$rootScope.$emit('searchOff');
+		endProgress();
 	});
 }]);

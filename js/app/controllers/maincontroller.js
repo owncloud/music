@@ -63,6 +63,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.loadIndicatorVisible = function() {
+		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
+		return $rootScope.loading
+			|| (contentNotReady && $rootScope.currentView != '#/settings');
+	};
+
 	$scope.update = function() {
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
@@ -233,6 +239,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				container.scrollToElement(element, scrollOffset(), animationTime);
 			}
 		}
+	};
+
+	$scope.scrollToTop = function() {
+		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+		container.scrollTo(0, 0);
 	};
 
 	// Test if element is at least partially within the view-port

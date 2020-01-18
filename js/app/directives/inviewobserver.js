@@ -47,11 +47,12 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {
 		_trackVisibleRange = !itemsMayBeHidden;
 
+		resetAll();
 		if (_trackVisibleRange) {
-			resetAll();
+			initInViewRange(/*skipDelays=*/true);
+		} else {
+			updateStatusForAll(/*skipDelays=*/true);
 		}
-
-		onScroll();
 	});
 
 	$rootScope.$on('inViewObserver_revealElement', function(event, element) {
@@ -106,13 +107,13 @@ function($rootScope, $timeout, inViewService) {
 	/**
 	 * Initial setup of the in-view-port statuses of the available instances
 	 */
-	function initInViewRange() {
+	function initInViewRange(skipDelays/*optional*/) {
 		var length = _instances.length;
 		var i;
 
 		// loop from the begining until we find the first instance in viewport
 		for (i = 0; i < length; ++i) {
-			if (updateInViewStatus(_instances[i])) {
+			if (updateInViewStatus(_instances[i], skipDelays)) {
 				_firstIndexInView = i;
 				_lastIndexInView = i;
 				break;
@@ -122,7 +123,7 @@ function($rootScope, $timeout, inViewService) {
 		// if some instance was found, then continue looping until we have found
 		// all the instances in viewport
 		for (++i; i < length; ++i) {
-			if (updateInViewStatus(_instances[i])) {
+			if (updateInViewStatus(_instances[i], skipDelays)) {
 				_lastIndexInView = i;
 			} else {
 				break;
@@ -193,14 +194,21 @@ function($rootScope, $timeout, inViewService) {
 	/**
 	 * Update in-view-port status of the given instance
 	 */
-	function updateInViewStatus(inst) {
+	function updateInViewStatus(inst, skipDelays/*optional*/) {
+		skipDelays = skipDelays || false;
+
 		var wasInViewPort = inst.inViewPort;
 		inst.inViewPort = instanceInViewPort(inst) && !instanceIsInvisible(inst);
 
 		if (!wasInViewPort && inst.inViewPort) {
 			if (!inst.leaveViewPending) {
-				// element entered the viewport, notify the listeners with small delay
-				inst.pendingEnterView = $timeout(onEnterView, 250, true, inst);
+				// element entered the viewport, notify the listeners with small delay,
+				// unless immediate action has been requested
+				if (skipDelays) {
+					onEnterView(inst);
+				} else {
+					inst.pendingEnterView = $timeout(onEnterView, 250, true, inst);
+				}
 			}
 			inst.leaveViewPending = false;
 		}
@@ -212,7 +220,11 @@ function($rootScope, $timeout, inViewService) {
 			}
 			else {
 				// element left the viewport after it had been notified that it has entered the view
-				inst.leaveViewPending = true;
+				if (skipDelays) {
+					onLeaveView(inst);
+				} else {
+					inst.leaveViewPending = true;
+				}
 			}
 		}
 
@@ -225,7 +237,11 @@ function($rootScope, $timeout, inViewService) {
 	}
 
 	function instanceIsInvisible(inst) {
-		return (inst.element.offsetHeight <= 0);
+		var el = inst.element;
+		// IE uses currentStyle, all the other browsers the getComputedStyle
+		return el.currentStyle
+			? (el.currentStyle.display == 'none')
+			: (getComputedStyle(el, null).display == 'none');
 	}
 
 	function onEnterView(inst) {
@@ -251,15 +267,19 @@ function($rootScope, $timeout, inViewService) {
 				$timeout.cancel(inst.pendingEnterView);
 				inst.pendingEnterView = null;
 			}
-			if (inst.inViewPort) {
+			if (!instanceIsInvisible(inst)) {
 				onLeaveView(inst);
 				inst.inViewPort = false;
 			}
 		});
+		_firstIndexInView = 0;
+		_lastIndexInView = -1;
 	}
 
-	function updateStatusForAll() {
-		_(_instances).each(updateInViewStatus);
+	function updateStatusForAll(skipDelays/*optional*/) {
+		_(_instances).each(function(inst) {
+			updateInViewStatus(inst, skipDelays);
+		});
 	}
 
 	return {

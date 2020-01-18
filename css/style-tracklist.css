@@ -12,15 +12,6 @@
  * Common rules for the track-list directive
  */
 
-.track-list {
-	/**
-	 * Hack: The list heigh must not become 0 even if there are no items in the list.
-	 * The in-view-observer identifies hidden items from the offsetHeight=0.
-	 */
-	padding-bottom: 1px;
-	margin-bottom: -1px;
-}
-
 .track-list li,
 .track-list li * {
 	cursor: pointer;
@@ -28,6 +19,11 @@
 
 .track-list li > div {
 	display: table-cell;
+}
+
+.track-list > li.placeholder {
+	padding: 0;
+	border: none;
 }
 
 #app-view:not(.searchmode) .track-list.collapsed .collapsible {

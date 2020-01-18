@@ -52,6 +52,17 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	function inSearchMode() {
 		return searchModeTrackMatches !== null;
 	}
+	function trackMatchedInSearch(trackId) {
+		return _.indexOf(searchModeTrackMatches, trackId, true) !== -1;
+	}
+
+	function trackIdFromElementId(elemId) {
+		if (elemId && elemId.substring(0, 6) === 'track-') {
+			return parseInt(elemId.split('-')[1]);
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Set up the track items and the listeners for a given <ul> element
@@ -157,7 +168,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			}
 
 			if (inSearchMode()) {
-				if (_.indexOf(searchModeTrackMatches, trackData.id, true) !== -1) {
+				if (trackMatchedInSearch(trackData.id)) {
 					listItem.className += ' matched';
 				}
 			}
@@ -180,14 +191,6 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			updateClasses();
 
 			data.hiddenTracksRendered = true;
-		}
-
-		function trackIdFromElementId(elemId) {
-			if (elemId && elemId.substring(0, 6) === 'track-') {
-				return parseInt(elemId.split('-')[1]);
-			} else {
-				return null;
-			}
 		}
 
 		/**
@@ -264,6 +267,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		var height = estimateContentsHeight(data);
 		placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
+		placeholder.className = 'placeholder';
 		data.element[0].appendChild(placeholder);
 	}
 
@@ -271,11 +275,24 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	 * Estimate the total height needed for the <li> entries of the track list element
 	 */
 	function estimateContentsHeight(data) {
-		var rowCount;
-		if (data.expanded) {
-			rowCount = data.tracks.length + 1; // all tracks + "Show less"
-		} else {
-			rowCount = Math.min(data.tracks.length, data.collapseLimit);
+		var rowCount = 0;
+
+		// During search, all matched tracks are shown
+		if (inSearchMode()) {
+			for (var i = 0; i < data.tracks.length; ++i) {
+				var trackData = data.getTrackData(data.tracks[i], i, data.scope);
+				if (trackMatchedInSearch(trackData.id)) {
+					rowCount++;
+				}
+			}
+		}
+		// Otherwise, the non-collapsed tracks are shown
+		else {
+			if (data.expanded) {
+				rowCount = data.tracks.length + 1; // all tracks + "Show less"
+			} else {
+				rowCount = Math.min(data.tracks.length, data.collapseLimit);
+			}
 		}
 		return 31.4833 * rowCount;
 	}

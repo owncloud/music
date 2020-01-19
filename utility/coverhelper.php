@@ -49,11 +49,17 @@ class CoverHelper {
 	 * @param int $albumId
 	 * @param string $userId
 	 * @param Folder $rootFolder
+	 * @param int|null $size
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($albumId, $userId, $rootFolder) {
-		$dataAndHash = $this->getCoverAndHash($albumId, $userId, $rootFolder);
-		return $dataAndHash['data'];
+	public function getCover($albumId, $userId, $rootFolder, $size) {
+		// Skip using cache in case the cover is requested in specific size
+		if ($size) {
+			return $this->readCover($albumId, $userId, $rootFolder, $size);
+		} else {
+			$dataAndHash = $this->getCoverAndHash($albumId, $userId, $rootFolder);
+			return $dataAndHash['data'];
+		}
 	}
 
 	/**
@@ -185,9 +191,10 @@ class CoverHelper {
 	 * @param integer $albumId
 	 * @param string $userId
 	 * @param Folder $rootFolder
+	 * @param int $size
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($albumId, $userId, $rootFolder) {
+	private function readCover($albumId, $userId, $rootFolder, $size=380) {
 		$response = null;
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 		$coverId = $album->getCoverFileId();
@@ -214,7 +221,7 @@ class CoverHelper {
 			if ($response === null) {
 				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
 			} else {
-				$response['content'] = $this->scaleDownAndCrop($response['content'], 380);
+				$response['content'] = $this->scaleDownAndCrop($response['content'], $size);
 			}
 		}
 

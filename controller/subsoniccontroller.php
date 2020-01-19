@@ -305,9 +305,10 @@ class SubsonicController extends Controller {
 	 */
 	private function getCoverArt() {
 		$id = $this->getRequiredParam('id');
+		$size = $this->request->getParam('size');
 
 		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
-		$coverData = $this->coverHelper->getCover($id, $this->userId, $rootFolder);
+		$coverData = $this->coverHelper->getCover($id, $this->userId, $rootFolder, $size);
 
 		if ($coverData !== null) {
 			return new FileResponse($coverData);

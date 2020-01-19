@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Utility;
@@ -214,7 +214,7 @@ class CoverHelper {
 			if ($response === null) {
 				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
 			} else {
-				$response['content'] = $this->scaleDownIfLarge($response['content'], 380);
+				$response['content'] = $this->scaleDownAndCrop($response['content'], 380);
 			}
 		}
 
@@ -222,44 +222,50 @@ class CoverHelper {
 	}
 
 	/**
-	 * Scale down images to reduce size
-	 * Scale down an image keeping it's aspect ratio, if both sides of the image
-	 * exceeds the given target size.
+	 * Scale down images to reduce size and crop to square shape
+	 *
+	 * If one of the dimensions of the image is smaller than the maximum, then just
+	 * crop to square shape but do not scale.
 	 * @param string $image The image to be scaled down as string
-	 * @param integer $size The target size of the smaller dimension in pixels
+	 * @param integer $maxSize The maximum size in pixels for the square shaped output
 	 * @return string The processed image as string
 	 */
-	public function scaleDownIfLarge($image, $size) {
+	public function scaleDownAndCrop($image, $maxSize) {
 		$meta = \getimagesizefromstring($image);
-		// only process pictures with width and height greater than $size pixels
-		if ($meta[0] > $size && $meta[1] > $size) {
+		$srcWidth = $meta[0];
+		$srcHeight = $meta[1];
+
+		// only process picture if it's larger than target size or not perfect square
+		if ($srcWidth > $maxSize || $srcHeight > $maxSize || $srcWidth != $srcHeight) {
 			$img = imagecreatefromstring($image);
 
 			if ($img === false) {
 				$this->logger->log('Failed to open cover image for downscaling', 'warning');
 			}
 			else {
-				// scale down the picture so that the smaller dimension will be $sixe pixels
-				$ratio = $meta[0]/$meta[1];
-				if (1.0 <=  $ratio) {
-					$img = imagescale($img, $size*$ratio, $size, IMG_BICUBIC_FIXED);
-				} else {
-					$img = imagescale($img, $size, $size/$ratio, IMG_BICUBIC_FIXED);
-				}
+				$srcCropSize = \min($srcWidth, $srcHeight);
+				$srcX = ($srcWidth - $srcCropSize) / 2;
+				$srcY = ($srcHeight - $srcCropSize) / 2;
+
+				$dstSize = \min($maxSize, $srcCropSize);
+				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);
+				\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
+				\imagedestroy($img);
+
 				\ob_start();
 				\ob_clean();
 				$mime = $meta['mime'];
 				switch ($mime) {
 					case 'image/jpeg':
-						imagejpeg($img, null, 75);
+						imagejpeg($scaledImg, null, 75);
 						$image = \ob_get_contents();
 						break;
 					case 'image/png':
-						imagepng($img, null, 7, PNG_ALL_FILTERS);
+						imagepng($scaledImg, null, 7, PNG_ALL_FILTERS);
 						$image = \ob_get_contents();
 						break;
 					case 'image/gif':
-						imagegif($img, null);
+						imagegif($scaledImg, null);
 						$image = \ob_get_contents();
 						break;
 					default:
@@ -267,7 +273,7 @@ class CoverHelper {
 						break;
 				}
 				\ob_end_clean();
-				imagedestroy($img);
+				\imagedestroy($scaledImg);
 			}
 		}
 		return $image;

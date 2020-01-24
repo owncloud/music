@@ -52,7 +52,7 @@ class CoverHelper {
 	 * @param int|null $size
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($albumId, $userId, $rootFolder, $size) {
+	public function getCover($albumId, $userId, $rootFolder, $size=null) {
 		// Skip using cache in case the cover is requested in specific size
 		if ($size) {
 			return $this->readCover($albumId, $userId, $rootFolder, $size);

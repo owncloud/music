@@ -114,11 +114,23 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		});
 	}
 
+	/** Convert string to "folded" form suitable for fuzzy matching */
+	function foldString(str) {
+		str = str.toLocaleLowerCase();
+
+		// Skip the normalization if the browser is ancient and doesn't support it
+		if ('normalize' in String.prototype) {
+			str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+		}
+
+		return str;
+	}
+
 	function search(container, field, query) {
-		query = query.toLocaleLowerCase();
+		query = foldString(query);
 		return _.filter(container, function(item) {
 			return (item[field] !== null
-				&& item[field].toLocaleLowerCase().indexOf(query) !== -1);
+				&& foldString(item[field]).indexOf(query) !== -1);
 		});
 	}
 

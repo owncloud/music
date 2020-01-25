@@ -126,11 +126,33 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return str;
 	}
 
+	/** Split search query to array by whitespace.
+	 *  In case the query is surrounded by quatation marks ", the query is treated as one entity,
+	 *  including the whitespace. In this case, the quotation marks are removed by this function.
+	 */
+	function splitSearchQuery(query) {
+		if (query.length > 2 && OC_Music_Utils.startsWith(query, '"') && OC_Music_Utils.endsWith(query, '"')) {
+			return [query.slice(1, -1)];
+		} else {
+			return query.match(/\S+/g) || [];
+		}
+	}
+
+	function stringContainsAll(str, strParts) {
+		return _.every(strParts, function(part) {
+			return (str.indexOf(part) !== -1);
+		});
+	}
+
 	function search(container, field, query) {
 		query = foldString(query);
+		// In case the query contains many words separated with whitespace, each part
+		// has to be found but the whitespace is disregarded.
+		var queryParts = splitSearchQuery(query);
+
 		return _.filter(container, function(item) {
 			return (item[field] !== null
-				&& foldString(item[field]).indexOf(query) !== -1);
+				&& stringContainsAll(foldString(item[field]), queryParts));
 		});
 	}
 

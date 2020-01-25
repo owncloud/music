@@ -38,6 +38,13 @@ var OC_Music_Utils = {
 	},
 
 	/**
+	 * Test if the string @a str ends with another string @a search
+	 */
+	endsWith: function(str, search) {
+		return str !== null && search !== null && str.slice(-search.length) === search;
+	},
+
+	/**
 	 * Forms an union of a variable number of arrays, but limits the size of the result
 	 * to a supplied maximum number of items. The return value contains the union itself
 	 * and a flag indicating if the result had to be truncated or not.

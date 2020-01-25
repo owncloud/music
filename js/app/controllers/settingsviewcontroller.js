@@ -50,7 +50,6 @@ angular.module('Music').controller('SettingsViewController', [
 									$scope.errorPath = false;
 									$scope.settings.path = path;
 									parent.update();
-									parent.updateFilesToScan();
 								} else {
 									$scope.errorPath = true;
 								}
@@ -88,7 +87,6 @@ angular.module('Music').controller('SettingsViewController', [
 									function (data) {
 										if (data.success) {
 											parent.update();
-											parent.updateFilesToScan();
 										}
 										$scope.resetOngoing = false;
 									},

@@ -102,6 +102,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			}
 
 			$rootScope.loadingCollection = false;
+
+			// check the availability of unscanned files after the collection has been loaded,
+			// unless we are already in the middle of scanning (and intermediate results were just loaded)
+			if (!$scope.scanning) {
+				$scope.updateFilesToScan();
+			}
 		},
 		function(response) { // error handling
 			$rootScope.loadingCollection = false;
@@ -324,7 +330,4 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;
 	$scope.scanningTotal = 0;
-
-	// initial lookup if new files are available
-	$scope.updateFilesToScan();
 }]);

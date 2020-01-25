@@ -140,10 +140,11 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		}
 	}
 
-	function arrayContainsAll(array, subStrings) {
+	function objectFieldsContainAll(object, fields, subStrings) {
 		return _.every(subStrings, function(subStr) {
-			return _.some(array, function(arrayItem) {
-				return (arrayItem !== null && arrayItem.indexOf(subStr) !== -1);
+			return _.some(fields, function(field) {
+				var value = object[field];
+				return (value !== null && foldString(value).indexOf(subStr) !== -1);
 			});
 		});
 	}
@@ -154,9 +155,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		// has to be found but the whitespace is disregarded.
 		var queryParts = splitSearchQuery(query);
 
+		// @a fields may be an array or an idividual string
+		if (!Array.isArray(fields)) {
+			fields = [fields];
+		}
+
 		return _.filter(container, function(item) {
-			var itemValues = _.map(_.pick(item, fields), foldString);
-			return arrayContainsAll(itemValues, queryParts);
+			return objectFieldsContainAll(item, fields, queryParts);
 		});
 	}
 

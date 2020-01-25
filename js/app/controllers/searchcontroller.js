@@ -142,7 +142,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		// mark track matches
 		_(trackResults.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
-			$('#album-' + track.albumId).addClass('matched').parent().addClass('matched');
+			$('#album-' + track.album.id).addClass('matched').parent().addClass('matched');
 		});
 
 		// mark album matches
@@ -177,7 +177,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		// mark track matches
 		_(trackResults.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
-			$('#folder-' + track.folderId).addClass('matched');
+			$('#folder-' + track.folder.id).addClass('matched');
 		});
 
 		// mark folder matches

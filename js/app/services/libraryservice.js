@@ -54,12 +54,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return tracks;
 	}
 
-	function sortCollection(collection) {
+	/**
+	 * Sort the passed in collection alphabetically, and set up parent references
+	 */
+	function transformCollection(collection) {
 		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
 			artist.albums = sortByYearNameAndDisc(artist.albums);
 			_.forEach(artist.albums, function(album) {
+				album.artist = artist;
 				album.tracks = sortByNumberAndTitle(album.tracks);
+				_.forEach(album.tracks, function(track) {
+					track.album = album;
+				});
 			});
 		});
 		return collection;
@@ -92,13 +99,6 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function createTrackContainers() {
-		// add parent album ID to each track
-		_.forEach(albums, function(album) {
-			_.forEach(album.tracks, function(track) {
-				track.albumId = album.id;
-			});
-		});
-
 		// album order "playlist"
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
@@ -167,7 +167,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 	return {
 		setCollection: function(collection) {
-			artists = sortCollection(collection);
+			artists = transformCollection(collection);
 			albums = _.flatten(_.pluck(artists, 'albums'));
 			createTrackContainers();
 		},
@@ -186,7 +186,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 					sortByPlaylistEntryField(folder.tracks, 'artistName');
 
 					_.forEach(folder.tracks, function(trackEntry) {
-						trackEntry.track.folderId = folder.id;
+						trackEntry.track.folder = folder;
 					});
 				});
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
@@ -248,21 +248,6 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		getAllFolders: function() {
 			return folders;
-		},
-		findAlbumOfTrack: function(trackId) {
-			return _.find(albums, function(album) {
-				return _.findWhere(album.tracks, {id : Number(trackId)});
-			});
-		},
-		findArtistOfAlbum: function(albumId) {
-			return _.find(artists, function(artist) {
-				return _.findWhere(artist.albums, {id : Number(albumId)});
-			});
-		},
-		findFolderOfTrack: function(trackId) {
-			return _.find(folders, function(folder) {
-				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
-			});
 		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});

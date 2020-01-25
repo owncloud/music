@@ -104,7 +104,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			$scope.currentAlbum = libraryService.findAlbumOfTrack(track.id);
+			$scope.currentAlbum = track.album;
 			$scope.setLoading(true);
 			playTrack(track);
 		} else {

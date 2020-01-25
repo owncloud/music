@@ -357,6 +357,7 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
+				$c->query('Config'),
 				$c->query('Logger')
 			);
 		});

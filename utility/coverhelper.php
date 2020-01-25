@@ -19,6 +19,8 @@ use \OCA\Music\Db\Cache;
 use \OCP\Files\Folder;
 use \OCP\Files\File;
 
+use \OCP\IConfig;
+
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
@@ -28,6 +30,7 @@ class CoverHelper {
 	private $albumBusinessLayer;
 	private $extractor;
 	private $cache;
+	private $coverSize;
 	private $logger;
 
 	const MAX_SIZE_TO_CACHE = 102400;
@@ -36,11 +39,15 @@ class CoverHelper {
 			AlbumBusinessLayer $albumBusinessLayer,
 			Extractor $extractor,
 			Cache $cache,
+			IConfig $config,
 			Logger $logger) {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->extractor = $extractor;
 		$this->cache = $cache;
 		$this->logger = $logger;
+
+		// Read the cover size to use from config.php or use the default
+		$this->coverSize = intval($config->getSystemValue('music.cover_size')) ?: 380;
 	}
 
 	/**
@@ -81,7 +88,7 @@ class CoverHelper {
 		}
 		if ($data === null) {
 			$hash = null;
-			$data = $this->readCover($albumId, $userId, $rootFolder);
+			$data = $this->readCover($albumId, $userId, $rootFolder, $this->coverSize);
 			if ($data !== null) {
 				$hash = $this->addCoverToCache($albumId, $userId, $data);
 			}
@@ -191,10 +198,10 @@ class CoverHelper {
 	 * @param integer $albumId
 	 * @param string $userId
 	 * @param Folder $rootFolder
-	 * @param int $size
+	 * @param int $size Maximum size for the image to read, larger images are scaled down
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($albumId, $userId, $rootFolder, $size=380) {
+	private function readCover($albumId, $userId, $rootFolder, $size) {
 		$response = null;
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 		$coverId = $album->getCoverFileId();

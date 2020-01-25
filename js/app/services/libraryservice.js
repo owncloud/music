@@ -116,11 +116,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	function foldString(str) {
-		str = str.toLocaleLowerCase();
+		if (str !== null) {
+			str = str.toLocaleLowerCase();
 
-		// Skip the normalization if the browser is ancient and doesn't support it
-		if ('normalize' in String.prototype) {
-			str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+			// Skip the normalization if the browser is ancient and doesn't support it
+			if ('normalize' in String.prototype) {
+				str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+			}
 		}
 
 		return str;
@@ -138,21 +140,23 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		}
 	}
 
-	function stringContainsAll(str, strParts) {
-		return _.every(strParts, function(part) {
-			return (str.indexOf(part) !== -1);
+	function arrayContainsAll(array, subStrings) {
+		return _.every(subStrings, function(subStr) {
+			return _.some(array, function(arrayItem) {
+				return (arrayItem !== null && arrayItem.indexOf(subStr) !== -1);
+			});
 		});
 	}
 
-	function search(container, field, query) {
+	function search(container, fields, query) {
 		query = foldString(query);
 		// In case the query contains many words separated with whitespace, each part
 		// has to be found but the whitespace is disregarded.
 		var queryParts = splitSearchQuery(query);
 
 		return _.filter(container, function(item) {
-			return (item[field] !== null
-				&& stringContainsAll(foldString(item[field]), queryParts));
+			var itemValues = _.map(_.pick(item, fields), foldString);
+			return arrayContainsAll(itemValues, queryParts);
 		});
 	}
 
@@ -270,15 +274,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		searchTracks: function(query, maxResults/*optional*/) {
 			return OC_Music_Utils.limitedUnion(
 				maxResults,
-				search(tracksIndex, 'title', query),
-				search(tracksIndex, 'artistName', query)
+				search(tracksIndex, ['title', 'artistName'], query)
 			);
 		},
 		searchAlbums: function(query, maxResults/*optional*/) {
 			return OC_Music_Utils.limitedUnion(
 				maxResults,
-				search(albums, 'name', query),
-				search(albums, 'year', query)
+				search(albums, ['name', 'year'], query)
 			);
 		},
 		searchArtists: function(query, maxResults/*optional*/) {
@@ -299,8 +301,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			list = _.uniq(list);
 			return OC_Music_Utils.limitedUnion(
 				maxResults,
-				search(list, 'title', query),
-				search(list, 'artistName', query)
+				search(list, ['title', 'artistName'], query)
 			);
 		},
 	};

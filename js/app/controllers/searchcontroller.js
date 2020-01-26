@@ -59,13 +59,18 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		}
 	});
 
+	/** Search query is considered to be empty if it contains only whitespace and/or quotes (") */
+	function queryIsEmpty() {
+		return ($scope.queryString.length === 0 || $scope.queryString.match(/[^\s"]/) === null);
+	}
+
 	function onEnterSearchString() {
 		$scope.queryString = searchbox.val().trim();
 
 		$scope.$apply(startProgress);
 
 		$timeout(function() {
-			if ($scope.queryString.length > 0) {
+			if (!queryIsEmpty()) {
 				runSearch($scope.queryString);
 			} else {
 				clearSearch();

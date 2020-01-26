@@ -130,15 +130,23 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	/** Split search query to array by whitespace.
-	 *  In case the query is surrounded by quatation marks ", the query is treated as one entity,
-	 *  including the whitespace. In this case, the quotation marks are removed by this function.
+	 *  As an exception, quoted substrings are kept as one entity. The quotation marks are removed.
 	 */
 	function splitSearchQuery(query) {
-		if (query.length > 2 && OC_Music_Utils.startsWith(query, '"') && OC_Music_Utils.endsWith(query, '"')) {
-			return [query.slice(1, -1)];
-		} else {
-			return query.match(/\S+/g) || [];
-		}
+		var regExQuoted = /\".*?\"/g;
+
+		// Get any quoted substring. Also the quotation marks get extracted, and they are sliced off separately.
+		var quoted = query.match(regExQuoted) || [];
+		quoted = _.map(quoted, function(str) {
+			return str.slice(1, -1);
+		});
+
+		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
+		query = query.replace(regExQuoted, ' ');
+		query = query.replace('"', ' ');
+		var unquoted = query.match(/\S+/g) || [];
+
+		return quoted.concat(unquoted);
 	}
 
 	function objectFieldsContainAll(object, getFieldValueFuncs, subStrings) {

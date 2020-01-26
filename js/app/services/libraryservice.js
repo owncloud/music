@@ -166,7 +166,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		path = path.split('.');
 		return function(obj) {
 			for (var i = 0, length = path.length; i < length; i++) {
-				if (obj == null) {
+				if (obj === null) {
 					return null;
 				}
 				obj = obj[path[i]];

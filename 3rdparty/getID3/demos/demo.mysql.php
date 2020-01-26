@@ -480,8 +480,8 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 			}
 
 			$this_track_track = '';
-			if (!empty($ThisFileInfo['comments']['track'])) {
-				foreach ($ThisFileInfo['comments']['track'] as $key => $value) {
+			if (!empty($ThisFileInfo['comments']['track_number'])) {
+				foreach ($ThisFileInfo['comments']['track_number'] as $key => $value) {
 					if (strlen($value) > strlen($this_track_track)) {
 						$this_track_track = str_pad($value, 2, '0', STR_PAD_LEFT);
 					}
@@ -504,7 +504,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 
 			$ParenthesesPairs = array('()', '[]', '{}');
 			foreach ($ParenthesesPairs as $pair) {
-				if (preg_match_all('/(.*) '.preg_quote($pair{0}).'(([^'.preg_quote($pair).']*[\- '.preg_quote($pair{0}).'])?(cut|dub|edit|version|live|reprise|[a-z]*mix))'.preg_quote($pair{1}).'/iU', $this_track_title, $matches)) {
+				if (preg_match_all('/(.*) '.preg_quote($pair[0]).'(([^'.preg_quote($pair).']*[\- '.preg_quote($pair[0]).'])?(cut|dub|edit|version|live|reprise|[a-z]*mix))'.preg_quote($pair[1]).'/iU', $this_track_title, $matches)) {
 					$this_track_title = $matches[1][0];
 					$this_track_remix = implode("\t", $matches[2]);
 				}
@@ -902,7 +902,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 		header('Content-type: audio/x-mpegurl');
 		echo '#EXTM3U'."\n";
 		while ($row = mysql_fetch_array($result)) {
-			if ((strlen($row['track']) > 0) && ($row['track'] < 1) || ($row['track'] > 99)) {
+			if ((strlen($row['track_number']) > 0) && ($row['track_number'] < 1) || ($row['track_number'] > 99)) {
 				echo WindowsShareSlashTranslate($row['filename'])."\n";
 			}
 		}
@@ -915,12 +915,12 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 		echo '<table border="1" cellspacing="0" cellpadding="3">';
 		echo '<tr><th>m3u</th><th>filename</th><th>track</th></tr>';
 		while ($row = mysql_fetch_array($result)) {
-			if ((strlen($row['track']) > 0) && ($row['track'] < 1) || ($row['track'] > 99)) {
+			if ((strlen($row['track_number']) > 0) && ($row['track_number'] < 1) || ($row['track_number'] > 99)) {
 				$TrackZeroCounter++;
 				echo '<tr>';
 				echo '<td><a href="'.htmlentities($_SERVER['PHP_SELF'].'?m3ufilename='.urlencode($row['filename']), ENT_QUOTES).'">m3u</a></td>';
 				echo '<td><a href="'.htmlentities('demo.browse.php?filename='.rawurlencode($row['filename']), ENT_QUOTES).'">'.htmlentities($row['filename']).'</a></td>';
-				echo '<td>'.htmlentities($row['track']).'</td>';
+				echo '<td>'.htmlentities($row['track_number']).'</td>';
 				echo '</tr>';
 			}
 		}
@@ -993,7 +993,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 			echo '<tr>';
 			echo '<td><a href="'.htmlentities($_SERVER['PHP_SELF'].'?m3ufilename='.urlencode($row['filename']), ENT_QUOTES).'">m3u</a></td>';
 			echo '<td><a href="'.htmlentities('demo.browse.php?filename='.rawurlencode($row['filename']), ENT_QUOTES).'">'.htmlentities($row['filename']).'</a></td>';
-			echo '<td>'.htmlentities($row['track']).'</td>';
+			echo '<td>'.htmlentities($row['track_number']).'</td>';
 			echo '<td>'.htmlentities($row['album']).'</td>';
 			echo '</tr>';
 		}
@@ -1018,7 +1018,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 
 	$NotOKfiles        = 0;
 	$Autofixedfiles    = 0;
-	$FieldsToCompare   = array('title', 'artist', 'album', 'year', 'genre', 'comment', 'track');
+	$FieldsToCompare   = array('title', 'artist', 'album', 'year', 'genre', 'comment', 'track_number');
 	$TagsToCompare     = array('id3v2'=>false, 'ape'=>false, 'lyrics3'=>false, 'id3v1'=>false);
 	$ID3v1FieldLengths = array('title'=>30, 'artist'=>30, 'album'=>30, 'year'=>4, 'genre'=>99, 'comment'=>28);
 	if (strpos($_REQUEST['unsynchronizedtags'], '2') !== false) {
@@ -1085,16 +1085,12 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 		}
 
 		if (isset($Comments['ape']['tracknumber'])) {
-			$Comments['ape']['track'] = $Comments['ape']['tracknumber'];
+			$Comments['ape']['track_number'] = $Comments['ape']['tracknumber'];
 			unset($Comments['ape']['tracknumber']);
 		}
-		if (isset($Comments['ape']['track_number'])) {
-			$Comments['ape']['track'] = $Comments['ape']['track_number'];
-			unset($Comments['ape']['track_number']);
-		}
-		if (isset($Comments['id3v2']['track_number'])) {
-			$Comments['id3v2']['track'] = $Comments['id3v2']['track_number'];
-			unset($Comments['id3v2']['track_number']);
+		if (isset($Comments['ape']['track'])) {
+			$Comments['ape']['track_number'] = $Comments['ape']['track'];
+			unset($Comments['ape']['track']);
 		}
 		if (!empty($Comments['all']['track'])) {
 			$besttrack = '';
@@ -1103,7 +1099,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 					$besttrack = $value;
 				}
 			}
-			$Comments['all']['track'] = array(0=>$besttrack);
+			$Comments['all']['track_number'] = array(0=>$besttrack);
 		}
 
 		$ThisLine  = '<tr>';
@@ -1141,7 +1137,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 								$tagvalues .= $fieldname.' = '.(isset($Comments[$tagtype][$fieldname][0]) ? $Comments[$tagtype][$fieldname][0] : '')."\n";
 							}
 
-						} elseif ($fieldname == 'track') {
+						} elseif ($fieldname == 'track_number') {
 
 							// intval('01/20') == intval('1')
 							$trackA = (isset($Comments[$tagtype][$fieldname][0]) ? $Comments[$tagtype][$fieldname][0] : '');
@@ -1354,10 +1350,10 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 		set_time_limit(10);
 		$PatternFilename = '';
 		for ($i = 0; $i < $PatternLength; $i++) {
-			if (isset($patterns[$Pattern{$i}])) {
-				$PatternFilename .= trim(strtr($row[$patterns[$Pattern{$i}]], ':\\*<>|', ';-¤«»¦'), ' ');
+			if (isset($patterns[$Pattern[$i]])) {
+				$PatternFilename .= trim(strtr($row[$patterns[$Pattern[$i]]], ':\\*<>|', ';-¤«»¦'), ' ');
 			} else {
-				$PatternFilename .= $Pattern{$i};
+				$PatternFilename .= $Pattern[$i];
 			}
 		}
 
@@ -1381,15 +1377,15 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 
 			// multiple remixes are stored tab-seperated in the database.
 			// change "{2000 Version\tSomebody Remix}" into "{2000 Version} {Somebody Remix}"
-			while (preg_match('#^(.*)'.preg_quote($pair{0}).'([^'.preg_quote($pair{1}).']*)('."\t".')([^'.preg_quote($pair{0}).']*)'.preg_quote($pair{1}).'#', $PatternFilename, $matches)) {
-				$PatternFilename = $matches[1].$pair{0}.$matches[2].$pair{1}.' '.$pair{0}.$matches[4].$pair{1};
+			while (preg_match('#^(.*)'.preg_quote($pair[0]).'([^'.preg_quote($pair[1]).']*)('."\t".')([^'.preg_quote($pair[0]).']*)'.preg_quote($pair[1]).'#', $PatternFilename, $matches)) {
+				$PatternFilename = $matches[1].$pair[0].$matches[2].$pair[1].' '.$pair[0].$matches[4].$pair[1];
 			}
 
 			// remove empty parenthesized pairs (probably where no track numbers, remix version, etc)
 			$PatternFilename = preg_replace('#'.preg_quote($pair).'#', '', $PatternFilename);
 
 			// "[01]  - Title With No Artist.mp3"  ==>  "[01] Title With No Artist.mp3"
-			$PatternFilename = preg_replace('#'.preg_quote($pair{1}).' +\- #', $pair{1}.' ', $PatternFilename);
+			$PatternFilename = preg_replace('#'.preg_quote($pair[1]).' +\- #', $pair[1].' ', $PatternFilename);
 
 		}
 
@@ -1423,7 +1419,7 @@ if (!empty($_REQUEST['scan']) || !empty($_REQUEST['newscan']) || !empty($_REQUES
 			} else {
 				$ShortestNameLength = min(strlen($ActualFilenameNoExt), strlen($PatternFilenameNoExt));
 				for ($DifferenceOffset = 0; $DifferenceOffset < $ShortestNameLength; $DifferenceOffset++) {
-					if ($ActualFilenameNoExt{$DifferenceOffset} !== $PatternFilenameNoExt{$DifferenceOffset}) {
+					if ($ActualFilenameNoExt[$DifferenceOffset] !== $PatternFilenameNoExt[$DifferenceOffset]) {
 						break;
 					}
 				}
@@ -2097,15 +2093,15 @@ function CleanUpFileName($filename) {
 function BetterUCwords($string) {
 	$stringlength = strlen($string);
 
-	$string{0} = strtoupper($string{0});
+	$string[0] = strtoupper($string[0]);
 	for ($i = 1; $i < $stringlength; $i++) {
-		if (($string{$i - 1} == '\'') && ($i > 1) && (($string{$i - 2} == 'O') || ($string{$i - 2} == ' '))) {
+		if (($string[$i - 1] == '\'') && ($i > 1) && (($string[$i - 2] == 'O') || ($string[$i - 2] == ' '))) {
 			// O'Clock, 'Em
-			$string{$i} = strtoupper($string{$i});
-		} elseif (preg_match('#^[\'A-Za-z0-9À-ÿ]$#', $string{$i - 1})) {
-			$string{$i} = strtolower($string{$i});
+			$string[$i] = strtoupper($string[$i]);
+		} elseif (preg_match('#^[\'A-Za-z0-9À-ÿ]$#', $string[$i - 1])) {
+			$string[$i] = strtolower($string[$i]);
 		} else {
-			$string{$i} = strtoupper($string{$i});
+			$string[$i] = strtoupper($string[$i]);
 		}
 	}
 
@@ -2120,9 +2116,9 @@ function BetterUCwords($string) {
 		} elseif (in_array(strtoupper(str_replace('(', '', $ThisWord)), $UpperCaseWords)) {
 			$ThisWord = strtoupper($ThisWord);
 		} elseif ((substr($ThisWord, 0, 2) == 'Mc') && (strlen($ThisWord) > 2)) {
-			$ThisWord{2} = strtoupper($ThisWord{2});
+			$ThisWord[2] = strtoupper($ThisWord[2]);
 		} elseif ((substr($ThisWord, 0, 3) == 'Mac') && (strlen($ThisWord) > 3)) {
-			$ThisWord{3} = strtoupper($ThisWord{3});
+			$ThisWord[3] = strtoupper($ThisWord[3]);
 		}
 		$OutputListOfWords[] = $ThisWord;
 	}

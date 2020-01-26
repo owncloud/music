@@ -797,17 +797,17 @@ class getid3_asf extends getid3_handler
 							case 'wm/tracknumber':
 							case 'tracknumber':
 								// be careful casting to int: casting unicode strings to int gives unexpected results (stops parsing at first non-numeric character)
-								$thisfile_asf_comments['track'] = array($this->TrimTerm($thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value']));
-								foreach ($thisfile_asf_comments['track'] as $key => $value) {
+								$thisfile_asf_comments['track_number'] = array($this->TrimTerm($thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value']));
+								foreach ($thisfile_asf_comments['track_number'] as $key => $value) {
 									if (preg_match('/^[0-9\x00]+$/', $value)) {
-										$thisfile_asf_comments['track'][$key] = intval(str_replace("\x00", '', $value));
+										$thisfile_asf_comments['track_number'][$key] = intval(str_replace("\x00", '', $value));
 									}
 								}
 								break;
 
 							case 'wm/track':
-								if (empty($thisfile_asf_comments['track'])) {
-									$thisfile_asf_comments['track'] = array(1 + $this->TrimConvert($thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value']));
+								if (empty($thisfile_asf_comments['track_number'])) {
+									$thisfile_asf_comments['track_number'] = array(1 + $this->TrimConvert($thisfile_asf_extendedcontentdescriptionobject_contentdescriptor_current['value']));
 								}
 								break;
 
@@ -1653,26 +1653,26 @@ class getid3_asf extends getid3_handler
 	 * @return string
 	 */
 	public static function BytestringToGUID($Bytestring) {
-		$GUIDstring  = str_pad(dechex(ord($Bytestring{3})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{2})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{1})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{0})),  2, '0', STR_PAD_LEFT);
+		$GUIDstring  = str_pad(dechex(ord($Bytestring[3])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[2])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[1])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[0])),  2, '0', STR_PAD_LEFT);
 		$GUIDstring .= '-';
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{5})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{4})),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[5])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[4])),  2, '0', STR_PAD_LEFT);
 		$GUIDstring .= '-';
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{7})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{6})),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[7])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[6])),  2, '0', STR_PAD_LEFT);
 		$GUIDstring .= '-';
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{8})),  2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{9})),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[8])),  2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[9])),  2, '0', STR_PAD_LEFT);
 		$GUIDstring .= '-';
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{10})), 2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{11})), 2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{12})), 2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{13})), 2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{14})), 2, '0', STR_PAD_LEFT);
-		$GUIDstring .= str_pad(dechex(ord($Bytestring{15})), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[10])), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[11])), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[12])), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[13])), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[14])), 2, '0', STR_PAD_LEFT);
+		$GUIDstring .= str_pad(dechex(ord($Bytestring[15])), 2, '0', STR_PAD_LEFT);
 
 		return strtoupper($GUIDstring);
 	}

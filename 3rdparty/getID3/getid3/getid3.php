@@ -250,7 +250,7 @@ class getID3
 	 */
 	protected $startup_warning = '';
 
-	const VERSION           = '1.9.17-201902071234';
+	const VERSION           = '1.9.18-201907240906';
 	const FREAD_BUFFER_SIZE = 32768;
 
 	const ATTACHMENTS_NONE   = false;
@@ -320,7 +320,7 @@ class getID3
 
 		// Needed for Windows only:
 		// Define locations of helper applications for Shorten, VorbisComment, MetaFLAC
-		//   as well as other helper functions such as head, tail, md5sum, etc
+		//   as well as other helper functions such as head, etc
 		// This path cannot contain spaces, but the below code will attempt to get the
 		//   8.3-equivalent path automatically
 		// IMPORTANT: This path must include the trailing slash
@@ -551,8 +551,8 @@ class getID3
 				$header = fread($this->fp, 10);
 				if ((substr($header, 0, 3) == 'ID3') && (strlen($header) == 10)) {
 					$this->info['id3v2']['header']        = true;
-					$this->info['id3v2']['majorversion']  = ord($header{3});
-					$this->info['id3v2']['minorversion']  = ord($header{4});
+					$this->info['id3v2']['majorversion']  = ord($header[3]);
+					$this->info['id3v2']['minorversion']  = ord($header[4]);
 					$this->info['avdataoffset']          += getid3_lib::BigEndian2Int(substr($header, 6, 4), 1) + 10; // length of ID3v2 tag in 10-byte header doesn't include 10-byte header length
 				}
 			}
@@ -834,7 +834,7 @@ class getID3
 
 				// DSS  - audio       - Digital Speech Standard
 				'dss'  => array(
-							'pattern'   => '^[\\x02-\\x06]ds[s2]',
+							'pattern'   => '^[\\x02-\\x08]ds[s2]',
 							'group'     => 'audio',
 							'module'    => 'dss',
 							'mime_type' => 'application/octet-stream',

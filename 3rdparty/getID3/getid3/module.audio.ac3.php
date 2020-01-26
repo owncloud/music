@@ -687,7 +687,7 @@ class getid3_ac3 extends getid3_handler
 		// -8    -42.14 dB
 
 		$fourbit = str_pad(decbin(($compre & 0xF0) >> 4), 4, '0', STR_PAD_LEFT);
-		if ($fourbit{0} == '1') {
+		if ($fourbit[0] == '1') {
 			$log_gain = -8 + bindec(substr($fourbit, 1));
 		} else {
 			$log_gain = bindec(substr($fourbit, 1));
@@ -758,11 +758,13 @@ class getid3_ac3 extends getid3_handler
 				18 => array(2560, 2786, 3840)   // 640 kbps
 			);
 		}
+		$paddingBytes = 0;
 		if (($fscod == 1) && $padding) {
 			// frame lengths are padded by 1 word (16 bits) at 44100
-			$frameSizeLookup[$frmsizecod] += 2;
+			// (fscode==1) means 44100Hz (see sampleRateCodeLookup)
+			$paddingBytes = 2;
 		}
-		return (isset($frameSizeLookup[$framesizeid][$fscod]) ? $frameSizeLookup[$framesizeid][$fscod] : false);
+		return (isset($frameSizeLookup[$framesizeid][$fscod]) ? $frameSizeLookup[$framesizeid][$fscod] + $paddingBytes : false);
 	}
 
 	/**

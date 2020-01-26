@@ -26,9 +26,9 @@ class getid3_lib
 		$returnstring = '';
 		for ($i = 0; $i < strlen($string); $i++) {
 			if ($hex) {
-				$returnstring .= str_pad(dechex(ord($string{$i})), 2, '0', STR_PAD_LEFT);
+				$returnstring .= str_pad(dechex(ord($string[$i])), 2, '0', STR_PAD_LEFT);
 			} else {
-				$returnstring .= ' '.(preg_match("#[\x20-\x7E]#", $string{$i}) ? $string{$i} : '¤');
+				$returnstring .= ' '.(preg_match("#[\x20-\x7E]#", $string[$i]) ? $string[$i] : '¤');
 			}
 			if ($spaces) {
 				$returnstring .= ' ';
@@ -152,11 +152,11 @@ class getid3_lib
 	public static function NormalizeBinaryPoint($binarypointnumber, $maxbits=52) {
 		if (strpos($binarypointnumber, '.') === false) {
 			$binarypointnumber = '0.'.$binarypointnumber;
-		} elseif ($binarypointnumber{0} == '.') {
+		} elseif ($binarypointnumber[0] == '.') {
 			$binarypointnumber = '0'.$binarypointnumber;
 		}
 		$exponent = 0;
-		while (($binarypointnumber{0} != '1') || (substr($binarypointnumber, 1, 1) != '.')) {
+		while (($binarypointnumber[0] != '1') || (substr($binarypointnumber, 1, 1) != '.')) {
 			if (substr($binarypointnumber, 1, 1) == '.') {
 				$exponent--;
 				$binarypointnumber = substr($binarypointnumber, 2, 1).'.'.substr($binarypointnumber, 3);
@@ -164,7 +164,7 @@ class getid3_lib
 				$pointpos = strpos($binarypointnumber, '.');
 				$exponent += ($pointpos - 1);
 				$binarypointnumber = str_replace('.', '', $binarypointnumber);
-				$binarypointnumber = $binarypointnumber{0}.'.'.substr($binarypointnumber, 1);
+				$binarypointnumber = $binarypointnumber[0].'.'.substr($binarypointnumber, 1);
 			}
 		}
 		$binarypointnumber = str_pad(substr($binarypointnumber, 0, $maxbits + 2), $maxbits + 2, '0', STR_PAD_RIGHT);
@@ -255,7 +255,7 @@ class getid3_lib
 		if (!$bitword) {
 			return 0;
 		}
-		$signbit = $bitword{0};
+		$signbit = $bitword[0];
 		$floatvalue = 0;
 		$exponentbits = 0;
 		$fractionbits = 0;
@@ -275,7 +275,7 @@ class getid3_lib
 				// 80-bit Apple SANE format
 				// http://www.mactech.com/articles/mactech/Vol.06/06.01/SANENormalized/
 				$exponentstring = substr($bitword, 1, 15);
-				$isnormalized = intval($bitword{16});
+				$isnormalized = intval($bitword[16]);
 				$fractionstring = substr($bitword, 17, 63);
 				$exponent = pow(2, self::Bin2Dec($exponentstring) - 16383);
 				$fraction = $isnormalized + self::DecimalBinary2Float($fractionstring);
@@ -343,9 +343,9 @@ class getid3_lib
 		for ($i = 0; $i < $bytewordlen; $i++) {
 			if ($synchsafe) { // disregard MSB, effectively 7-bit bytes
 				//$intvalue = $intvalue | (ord($byteword{$i}) & 0x7F) << (($bytewordlen - 1 - $i) * 7); // faster, but runs into problems past 2^31 on 32-bit systems
-				$intvalue += (ord($byteword{$i}) & 0x7F) * pow(2, ($bytewordlen - 1 - $i) * 7);
+				$intvalue += (ord($byteword[$i]) & 0x7F) * pow(2, ($bytewordlen - 1 - $i) * 7);
 			} else {
-				$intvalue += ord($byteword{$i}) * pow(256, ($bytewordlen - 1 - $i));
+				$intvalue += ord($byteword[$i]) * pow(256, ($bytewordlen - 1 - $i));
 			}
 		}
 		if ($signed && !$synchsafe) {
@@ -390,7 +390,7 @@ class getid3_lib
 		$binvalue = '';
 		$bytewordlen = strlen($byteword);
 		for ($i = 0; $i < $bytewordlen; $i++) {
-			$binvalue .= str_pad(decbin(ord($byteword{$i})), 8, '0', STR_PAD_LEFT);
+			$binvalue .= str_pad(decbin(ord($byteword[$i])), 8, '0', STR_PAD_LEFT);
 		}
 		return $binvalue;
 	}
@@ -451,7 +451,7 @@ class getid3_lib
 	public static function Bin2Dec($binstring, $signed=false) {
 		$signmult = 1;
 		if ($signed) {
-			if ($binstring{0} == '1') {
+			if ($binstring[0] == '1') {
 				$signmult = -1;
 			}
 			$binstring = substr($binstring, 1);
@@ -751,9 +751,7 @@ class getid3_lib
 	}
 
 	/**
-	 * self::md5_data() - returns md5sum for a file from startuing position to absolute end position
-	 *
-	 * @author Allan Hansen <ahØartemis*dk>
+	 * Returns checksum for a file from starting position to absolute end position.
 	 *
 	 * @param string $file
 	 * @param int    $offset
@@ -761,97 +759,30 @@ class getid3_lib
 	 * @param string $algorithm
 	 *
 	 * @return string|false
-	 * @throws Exception
 	 * @throws getid3_exception
 	 */
 	public static function hash_data($file, $offset, $end, $algorithm) {
-		static $tempdir = '';
-		$windows_call = null;
-		$unix_call = null;
-		$hash_length = null;
-		$hash_function = null;
 		if (!self::intValueSupported($end)) {
 			return false;
 		}
-		switch ($algorithm) {
-			case 'md5':
-				$hash_function = 'md5_file';
-				$unix_call     = 'md5sum';
-				$windows_call  = 'md5sum.exe';
-				$hash_length   = 32;
-				break;
-
-			case 'sha1':
-				$hash_function = 'sha1_file';
-				$unix_call     = 'sha1sum';
-				$windows_call  = 'sha1sum.exe';
-				$hash_length   = 40;
-				break;
-
-			default:
-				throw new Exception('Invalid algorithm ('.$algorithm.') in self::hash_data()');
-				break;
+		if (!in_array($algorithm, array('md5', 'sha1'))) {
+			throw new getid3_exception('Invalid algorithm ('.$algorithm.') in self::hash_data()');
 		}
+
 		$size = $end - $offset;
-		while (true) {
-			if (GETID3_OS_ISWINDOWS) {
 
-				// It seems that sha1sum.exe for Windows only works on physical files, does not accept piped data
-				// Fall back to create-temp-file method:
-				if ($algorithm == 'sha1') {
-					break;
-				}
-
-				$RequiredFiles = array('cygwin1.dll', 'head.exe', 'tail.exe', $windows_call);
-				foreach ($RequiredFiles as $required_file) {
-					if (!is_readable(GETID3_HELPERAPPSDIR.$required_file)) {
-						// helper apps not available - fall back to old method
-						break 2;
-					}
-				}
-				$commandline  = GETID3_HELPERAPPSDIR.'head.exe -c '.$end.' '.escapeshellarg(str_replace('/', DIRECTORY_SEPARATOR, $file)).' | ';
-				$commandline .= GETID3_HELPERAPPSDIR.'tail.exe -c '.$size.' | ';
-				$commandline .= GETID3_HELPERAPPSDIR.$windows_call;
-
-			} else {
-
-				$commandline  = 'head -c'.$end.' '.escapeshellarg($file).' | ';
-				$commandline .= 'tail -c'.$size.' | ';
-				$commandline .= $unix_call;
-
-			}
-			if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
-				//throw new Exception('PHP running in Safe Mode - backtick operator not available, using slower non-system-call '.$algorithm.' algorithm');
-				break;
-			}
-			return substr(`$commandline`, 0, $hash_length);
+		$fp = fopen($file, 'rb');
+		fseek($fp, $offset);
+		$ctx = hash_init($algorithm);
+		while ($size > 0) {
+			$buffer = fread($fp, min($size, getID3::FREAD_BUFFER_SIZE));
+			hash_update($ctx, $buffer);
+			$size -= getID3::FREAD_BUFFER_SIZE;
 		}
+		$hash = hash_final($ctx);
+		fclose($fp);
 
-		if (empty($tempdir)) {
-			// yes this is ugly, feel free to suggest a better way
-			require_once(dirname(__FILE__).'/getid3.php');
-			$getid3_temp = new getID3();
-			$tempdir = $getid3_temp->tempdir;
-			unset($getid3_temp);
-		}
-		// try to create a temporary file in the system temp directory - invalid dirname should force to system temp dir
-		if (($data_filename = tempnam($tempdir, 'gI3')) === false) {
-			// can't find anywhere to create a temp file, just fail
-			return false;
-		}
-
-		// Init
-		$result = false;
-
-		// copy parts of file
-		try {
-			self::CopyFileParts($file, $data_filename, $offset, $end - $offset);
-			$result = $hash_function($data_filename);
-		} catch (Exception $e) {
-			throw new Exception('self::CopyFileParts() failed in getid_lib::hash_data(): '.$e->getMessage());
-		}
-		unlink($data_filename);
-		return $result;
+		return $hash;
 	}
 
 	/**
@@ -862,6 +793,8 @@ class getid3_lib
 	 *
 	 * @return bool
 	 * @throws Exception
+	 *
+	 * @deprecated Unused, may be removed in future versions of getID3
 	 */
 	public static function CopyFileParts($filename_source, $filename_dest, $offset, $length) {
 		if (!self::intValueSupported($offset + $length)) {
@@ -935,7 +868,7 @@ class getid3_lib
 			$newcharstring .= "\xEF\xBB\xBF";
 		}
 		for ($i = 0; $i < strlen($string); $i++) {
-			$charval = ord($string{$i});
+			$charval = ord($string[$i]);
 			$newcharstring .= self::iconv_fallback_int_utf8($charval);
 		}
 		return $newcharstring;
@@ -955,7 +888,7 @@ class getid3_lib
 			$newcharstring .= "\xFE\xFF";
 		}
 		for ($i = 0; $i < strlen($string); $i++) {
-			$newcharstring .= "\x00".$string{$i};
+			$newcharstring .= "\x00".$string[$i];
 		}
 		return $newcharstring;
 	}
@@ -974,7 +907,7 @@ class getid3_lib
 			$newcharstring .= "\xFF\xFE";
 		}
 		for ($i = 0; $i < strlen($string); $i++) {
-			$newcharstring .= $string{$i}."\x00";
+			$newcharstring .= $string[$i]."\x00";
 		}
 		return $newcharstring;
 	}
@@ -1006,27 +939,27 @@ class getid3_lib
 		$offset = 0;
 		$stringlength = strlen($string);
 		while ($offset < $stringlength) {
-			if ((ord($string{$offset}) | 0x07) == 0xF7) {
+			if ((ord($string[$offset]) | 0x07) == 0xF7) {
 				// 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x07) << 18) &
-						   ((ord($string{($offset + 1)}) & 0x3F) << 12) &
-						   ((ord($string{($offset + 2)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 3)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x07) << 18) &
+						   ((ord($string[($offset + 1)]) & 0x3F) << 12) &
+						   ((ord($string[($offset + 2)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 3)]) & 0x3F);
 				$offset += 4;
-			} elseif ((ord($string{$offset}) | 0x0F) == 0xEF) {
+			} elseif ((ord($string[$offset]) | 0x0F) == 0xEF) {
 				// 1110bbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x0F) << 12) &
-						   ((ord($string{($offset + 1)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 2)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x0F) << 12) &
+						   ((ord($string[($offset + 1)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 2)]) & 0x3F);
 				$offset += 3;
-			} elseif ((ord($string{$offset}) | 0x1F) == 0xDF) {
+			} elseif ((ord($string[$offset]) | 0x1F) == 0xDF) {
 				// 110bbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x1F) <<  6) &
-							(ord($string{($offset + 1)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x1F) <<  6) &
+							(ord($string[($offset + 1)]) & 0x3F);
 				$offset += 2;
-			} elseif ((ord($string{$offset}) | 0x7F) == 0x7F) {
+			} elseif ((ord($string[$offset]) | 0x7F) == 0x7F) {
 				// 0bbbbbbb
-				$charval = ord($string{$offset});
+				$charval = ord($string[$offset]);
 				$offset += 1;
 			} else {
 				// error? throw some kind of warning here?
@@ -1056,27 +989,27 @@ class getid3_lib
 		$offset = 0;
 		$stringlength = strlen($string);
 		while ($offset < $stringlength) {
-			if ((ord($string{$offset}) | 0x07) == 0xF7) {
+			if ((ord($string[$offset]) | 0x07) == 0xF7) {
 				// 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x07) << 18) &
-						   ((ord($string{($offset + 1)}) & 0x3F) << 12) &
-						   ((ord($string{($offset + 2)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 3)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x07) << 18) &
+						   ((ord($string[($offset + 1)]) & 0x3F) << 12) &
+						   ((ord($string[($offset + 2)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 3)]) & 0x3F);
 				$offset += 4;
-			} elseif ((ord($string{$offset}) | 0x0F) == 0xEF) {
+			} elseif ((ord($string[$offset]) | 0x0F) == 0xEF) {
 				// 1110bbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x0F) << 12) &
-						   ((ord($string{($offset + 1)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 2)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x0F) << 12) &
+						   ((ord($string[($offset + 1)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 2)]) & 0x3F);
 				$offset += 3;
-			} elseif ((ord($string{$offset}) | 0x1F) == 0xDF) {
+			} elseif ((ord($string[$offset]) | 0x1F) == 0xDF) {
 				// 110bbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x1F) <<  6) &
-							(ord($string{($offset + 1)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x1F) <<  6) &
+							(ord($string[($offset + 1)]) & 0x3F);
 				$offset += 2;
-			} elseif ((ord($string{$offset}) | 0x7F) == 0x7F) {
+			} elseif ((ord($string[$offset]) | 0x7F) == 0x7F) {
 				// 0bbbbbbb
-				$charval = ord($string{$offset});
+				$charval = ord($string[$offset]);
 				$offset += 1;
 			} else {
 				// error? throw some kind of warning here?
@@ -1106,27 +1039,27 @@ class getid3_lib
 		$offset = 0;
 		$stringlength = strlen($string);
 		while ($offset < $stringlength) {
-			if ((ord($string{$offset}) | 0x07) == 0xF7) {
+			if ((ord($string[$offset]) | 0x07) == 0xF7) {
 				// 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x07) << 18) &
-						   ((ord($string{($offset + 1)}) & 0x3F) << 12) &
-						   ((ord($string{($offset + 2)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 3)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x07) << 18) &
+						   ((ord($string[($offset + 1)]) & 0x3F) << 12) &
+						   ((ord($string[($offset + 2)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 3)]) & 0x3F);
 				$offset += 4;
-			} elseif ((ord($string{$offset}) | 0x0F) == 0xEF) {
+			} elseif ((ord($string[$offset]) | 0x0F) == 0xEF) {
 				// 1110bbbb 10bbbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x0F) << 12) &
-						   ((ord($string{($offset + 1)}) & 0x3F) <<  6) &
-							(ord($string{($offset + 2)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x0F) << 12) &
+						   ((ord($string[($offset + 1)]) & 0x3F) <<  6) &
+							(ord($string[($offset + 2)]) & 0x3F);
 				$offset += 3;
-			} elseif ((ord($string{$offset}) | 0x1F) == 0xDF) {
+			} elseif ((ord($string[$offset]) | 0x1F) == 0xDF) {
 				// 110bbbbb 10bbbbbb
-				$charval = ((ord($string{($offset + 0)}) & 0x1F) <<  6) &
-							(ord($string{($offset + 1)}) & 0x3F);
+				$charval = ((ord($string[($offset + 0)]) & 0x1F) <<  6) &
+							(ord($string[($offset + 1)]) & 0x3F);
 				$offset += 2;
-			} elseif ((ord($string{$offset}) | 0x7F) == 0x7F) {
+			} elseif ((ord($string[$offset]) | 0x7F) == 0x7F) {
 				// 0bbbbbbb
-				$charval = ord($string{$offset});
+				$charval = ord($string[$offset]);
 				$offset += 1;
 			} else {
 				// error? maybe throw some warning here?
@@ -1281,6 +1214,16 @@ class getid3_lib
 
 		// mb_convert_encoding() available
 		if (function_exists('mb_convert_encoding')) {
+			if ((strtoupper($in_charset) == 'UTF-16') && (substr($string, 0, 2) != "\xFE\xFF") && (substr($string, 0, 2) != "\xFF\xFE")) {
+				// if BOM missing, mb_convert_encoding will mishandle the conversion, assume UTF-16BE and prepend appropriate BOM
+				$string = "\xFF\xFE".$string;
+			}
+			if ((strtoupper($in_charset) == 'UTF-16') && (strtoupper($out_charset) == 'UTF-8')) {
+				if (($string == "\xFF\xFE") || ($string == "\xFE\xFF")) {
+					// if string consists of only BOM, mb_convert_encoding will return the BOM unmodified
+					return '';
+				}
+			}
 			if ($converted_string = @mb_convert_encoding($string, $out_charset, $in_charset)) {
 				switch ($out_charset) {
 					case 'ISO-8859-1':
@@ -1290,9 +1233,9 @@ class getid3_lib
 				return $converted_string;
 			}
 			return $string;
-		}
+
 		// iconv() available
-		else if (function_exists('iconv')) {
+		} elseif (function_exists('iconv')) {
 			if ($converted_string = @iconv($in_charset, $out_charset.'//TRANSLIT', $string)) {
 				switch ($out_charset) {
 					case 'ISO-8859-1':
@@ -1397,22 +1340,22 @@ class getid3_lib
 			case 'utf-8':
 				$strlen = strlen($string);
 				for ($i = 0; $i < $strlen; $i++) {
-					$char_ord_val = ord($string{$i});
+					$char_ord_val = ord($string[$i]);
 					$charval = 0;
 					if ($char_ord_val < 0x80) {
 						$charval = $char_ord_val;
 					} elseif ((($char_ord_val & 0xF0) >> 4) == 0x0F  &&  $i+3 < $strlen) {
 						$charval  = (($char_ord_val & 0x07) << 18);
-						$charval += ((ord($string{++$i}) & 0x3F) << 12);
-						$charval += ((ord($string{++$i}) & 0x3F) << 6);
-						$charval +=  (ord($string{++$i}) & 0x3F);
+						$charval += ((ord($string[++$i]) & 0x3F) << 12);
+						$charval += ((ord($string[++$i]) & 0x3F) << 6);
+						$charval +=  (ord($string[++$i]) & 0x3F);
 					} elseif ((($char_ord_val & 0xE0) >> 5) == 0x07  &&  $i+2 < $strlen) {
 						$charval  = (($char_ord_val & 0x0F) << 12);
-						$charval += ((ord($string{++$i}) & 0x3F) << 6);
-						$charval +=  (ord($string{++$i}) & 0x3F);
+						$charval += ((ord($string[++$i]) & 0x3F) << 6);
+						$charval +=  (ord($string[++$i]) & 0x3F);
 					} elseif ((($char_ord_val & 0xC0) >> 6) == 0x03  &&  $i+1 < $strlen) {
 						$charval  = (($char_ord_val & 0x1F) << 6);
-						$charval += (ord($string{++$i}) & 0x3F);
+						$charval += (ord($string[++$i]) & 0x3F);
 					}
 					if (($charval >= 32) && ($charval <= 127)) {
 						$HTMLstring .= htmlentities(chr($charval));

@@ -18,6 +18,9 @@
 Version History
 ===============
 
+1.9.19-oc-music: [2020-01-27] Pauli Järvinen :: 1.9.19-oc-music-202001270010
+    * rollback bugfix (G:206) inverted logic in CopyTagsToComments
+
 1.9.19: [2019-12-17] James Heinrich :: 1.9.19-201912131005
 	» add placeholder support for WTV (Windows Recorded TV Show)
 	* bugfix (G:210) PHP 7.4 deprecated get_magic_quotes

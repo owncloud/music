@@ -20,10 +20,10 @@ angular.module('Music').controller('SearchController', [
 '$scope', '$rootScope', 'libraryService', 'alphabetIndexingService', '$timeout', '$document', 'gettextCatalog',
 function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout, $document, gettextCatalog) {
 
-	var MAX_TRACK_MATCHES = 1000;
-	var MAX_ALBUM_MATCHES = 100;
-	var MAX_ARTIST_MATCHES = 30;
-	var MAX_FOLDER_MATCHES = 100;
+	var MAX_MATCHES_IN_ALBUMS = 5000;
+	var MAX_MATCHES_IN_FOLDERS = 5000;
+	var MAX_MATCHES_IN_ALLTRACKS = 1000;
+	var MAX_MATCHES_IN_PLAYLIST = 1000;
 
 	var searchbox = $('#searchbox');
 	$scope.queryString = searchbox.val().trim();
@@ -119,25 +119,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	}
 
 	function searchInAlbumsView(query) {
-		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
-		var albumResults = libraryService.searchAlbums(query, MAX_ALBUM_MATCHES);
-		var artistResults = libraryService.searchArtists(query, MAX_ARTIST_MATCHES);
-
-		// add children of matching albums/artists (if have not hit the maximum amount)
-		if (!albumResults.truncated) {
-			albumResults = OC_Music_Utils.limitedUnion(
-					MAX_ALBUM_MATCHES,
-					albumResults.result,
-					_.flatten(_.pluck(artistResults.result, 'albums'))
-			);
-		}
-		if (!trackResults.truncated) {
-			trackResults = OC_Music_Utils.limitedUnion(
-					MAX_TRACK_MATCHES,
-					trackResults.result,
-					_.flatten(_.pluck(albumResults.result, 'tracks'))
-			);
-		}
+		var trackResults = libraryService.searchTracksInAlbums(query, MAX_MATCHES_IN_ALBUMS);
 
 		// mark track matches
 		_(trackResults.result).each(function(track) {
@@ -145,34 +127,11 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			$('#album-' + track.album.id).addClass('matched').parent().addClass('matched');
 		});
 
-		// mark album matches
-		_(albumResults.result).each(function(album) {
-			$('#album-' + album.id).addClass('matched').parent().addClass('matched');
-		});
-
-		// mark artist matches
-		_(artistResults.result).each(function(artist) {
-			$('#artist-' + artist.id).addClass('matched');
-		});
-
-		return {
-			result: trackResults.result,
-			truncated: trackResults.truncated || albumResults.truncated || artistResults.truncated
-		};
+		return trackResults;
 	}
 
 	function searchInFoldersView(query) {
-		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
-		var folderResults = libraryService.searchFolders(query, MAX_FOLDER_MATCHES);
-
-		// add children of matching folders
-		if (!trackResults.truncated) {
-			trackResults = OC_Music_Utils.limitedUnion(
-					MAX_TRACK_MATCHES,
-					trackResults.result,
-					_.chain(folderResults.result).pluck('tracks').flatten().pluck('track').value()
-			);
-		}
+		var trackResults = libraryService.searchTracksInFolders(query, MAX_MATCHES_IN_FOLDERS);
 
 		// mark track matches
 		_(trackResults.result).each(function(track) {
@@ -180,19 +139,11 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			$('#folder-' + track.folder.id).addClass('matched');
 		});
 
-		// mark folder matches
-		_(folderResults.result).each(function(folder) {
-			$('#folder-' + folder.id).addClass('matched');
-		});
-
-		return {
-			result: trackResults.result,
-			truncated: trackResults.truncated || folderResults.truncated
-		};
+		return trackResults;
 	}
 
 	function searchInAllTracksView(query) {
-		var trackResults = libraryService.searchTracks(query, MAX_TRACK_MATCHES);
+		var trackResults = libraryService.searchTracks(query, MAX_MATCHES_IN_ALLTRACKS);
 		_(trackResults.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 			var indexChar = alphabetIndexingService.indexCharForTitle(track.artistName);
@@ -205,7 +156,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	}
 
 	function searchInPlaylistView(playlistId, query) {
-		var trackResults = libraryService.searchTracksInPlaylist(playlistId, query, MAX_TRACK_MATCHES);
+		var trackResults = libraryService.searchTracksInPlaylist(playlistId, query, MAX_MATCHES_IN_PLAYLIST);
 		_(trackResults.result).each(function(track) {
 			$('li[data-track-id=' + track.id + ']').addClass('matched');
 		});

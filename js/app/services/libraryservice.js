@@ -116,7 +116,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	function foldString(str) {
-		if (str !== null) {
+		if (str) {
 			str = str.toLocaleLowerCase();
 
 			// Skip the normalization if the browser is ancient and doesn't support it
@@ -140,16 +140,35 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		}
 	}
 
-	function objectFieldsContainAll(object, fields, subStrings) {
+	function objectFieldsContainAll(object, getFieldValueFuncs, subStrings) {
 		return _.every(subStrings, function(subStr) {
-			return _.some(fields, function(field) {
-				var value = object[field];
+			return _.some(getFieldValueFuncs, function(getter) {
+				var value = getter(object);
 				return (value !== null && foldString(value).indexOf(subStr) !== -1);
 			});
 		});
 	}
 
-	function search(container, fields, query) {
+	function fieldPathToGetterFunc(path) {
+		// On the newest underscore.js, this could be achieved with 
+		// return _.property(path.split('.'));
+		// but the cloud core may ship so old underscore.js that property method doesn't support nesting.
+		// The following is a modified copy from the up-to-date sources of underscore.js.
+		path = path.split('.');
+		return function(obj) {
+			for (var i = 0, length = path.length; i < length; i++) {
+				if (obj == null) {
+					return null;
+				}
+				obj = obj[path[i]];
+			}
+			return length ? obj : null;
+		};
+	}
+
+	function search(container, fields, query, maxResults/*optional*/) {
+		maxResults = maxResults || Infinity;
+
 		query = foldString(query);
 		// In case the query contains many words separated with whitespace, each part
 		// has to be found but the whitespace is disregarded.
@@ -160,9 +179,25 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			fields = [fields];
 		}
 
-		return _.filter(container, function(item) {
-			return objectFieldsContainAll(item, fields, queryParts);
+		// Field may be given as a '.'-separated path;
+		// convert the fields to corresponding getter functions.
+		var fieldGetterFuncs = _.map(fields, fieldPathToGetterFunc);
+
+		var matchCount = 0;
+		var maxLimitReached = false;
+		var matches = _.filter(container, function(item) {
+			var matched = !maxLimitReached && objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
+			if (matched && matchCount++ == maxResults) {
+				maxLimitReached = true;
+				matched = false;
+			}
+			return matched;
 		});
+
+		return {
+			result: matches,
+			truncated: maxLimitReached
+		};
 	}
 
 	return {
@@ -262,37 +297,27 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			return folders !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(tracksIndex, ['title', 'artistName'], query)
-			);
+			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
 		},
-		searchAlbums: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(albums, ['name', 'year'], query)
-			);
+		searchTracksInAlbums: function(query, maxResults/*optional*/) {
+			return search(
+					tracksIndex,
+					['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
+					query,
+					maxResults);
 		},
-		searchArtists: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(artists, 'name', query)
-			);
-		},
-		searchFolders: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(folders, 'path', query)
-			);
+		searchTracksInFolders: function(query, maxResults/*optional*/) {
+			return search(
+					tracksIndex,
+					['title', 'artistName', 'folder.path'],
+					query,
+					maxResults);
 		},
 		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
 			var list = this.getPlaylist(playlistId) || [];
 			list = _.pluck(list.tracks, 'track');
 			list = _.uniq(list);
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(list, ['title', 'artistName'], query)
-			);
+			return search(list, ['title', 'artistName'], query, maxResults);
 		},
 	};
 }]);

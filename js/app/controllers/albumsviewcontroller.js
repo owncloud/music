@@ -77,12 +77,10 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 			else {
 				var currentListId = playlistService.getCurrentPlaylistId();
-				var album = libraryService.findAlbumOfTrack(track.id);
-				var artist = libraryService.findArtistOfAlbum(album.id);
 
 				// start playing the album/artist from this track if the clicked track belongs
 				// to album/artist which is the current play scope
-				if (currentListId === 'album-' + album.id || currentListId === 'artist-' + artist.id) {
+				if (currentListId === 'album-' + track.album.id || currentListId === 'artist-' + track.album.artist.id) {
 					playPlaylistFromTrack(currentListId, playlistService.getCurrentPlaylist(), track);
 				}
 				// on any other track, start playing the collection from this track
@@ -191,9 +189,9 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
-			var album = libraryService.findAlbumOfTrack(trackId);
-			if (album) {
-				$scope.$parent.scrollToItem('album-' + album.id, animationTime);
+			var track = libraryService.getTrack(trackId);
+			if (track) {
+				$scope.$parent.scrollToItem('album-' + track.album.id, animationTime);
 			}
 		}
 

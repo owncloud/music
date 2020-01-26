@@ -20,6 +20,13 @@ use \OCA\Music\App\Music;
 
 class Provider extends \OCP\Search\Provider {
 
+	/* Limit the maximum number of matches because the Provider API is limited and does
+	 * not support pagination. The core paginates the results to 30 item pages, but it
+	 * obtains all the items from the Providers again on creation of each page.
+	 * If there were thousands of mathces, we would end up doing lot of unnecessary work.
+	 */
+	const MAX_RESULTS_PER_TYPE = 100;
+
 	private $artistMapper;
 	private $albumMapper;
 	private $trackMapper;
@@ -28,6 +35,7 @@ class Provider extends \OCP\Search\Provider {
 	private $l10n;
 	private $resultTypeNames;
 	private $resultTypePaths;
+	private $logger;
 
 	public function __construct() {
 		$app = new Music();
@@ -39,6 +47,7 @@ class Provider extends \OCP\Search\Provider {
 		$this->urlGenerator = $c->query('URLGenerator');
 		$this->userId = $c->query('UserId');
 		$this->l10n = $c->query('L10N');
+		$this->logger = $c->query('Logger');
 
 		$this->resultTypeNames = [
 			'music_artist' => $this->l10n->t('Artist'),
@@ -63,17 +72,17 @@ class Provider extends \OCP\Search\Provider {
 	public function search($query) {
 		$results=[];
 
-		$artists = $this->artistMapper->findAllByName($query, $this->userId, true);
+		$artists = $this->artistMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
 		foreach ($artists as $artist) {
 			$results[] = $this->createResult($artist, $artist->name, 'music_artist');
 		}
 
-		$albums = $this->albumMapper->findAllByName($query, $this->userId, true);
+		$albums = $this->albumMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
 		foreach ($albums as $album) {
 			$results[] = $this->createResult($album, $album->name, 'music_album');
 		}
 
-		$tracks = $this->trackMapper->findAllByName($query, $this->userId, true);
+		$tracks = $this->trackMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
 		foreach ($tracks as $track) {
 			$results[] = $this->createResult($track, $track->title, 'music_track');
 		}

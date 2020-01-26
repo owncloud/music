@@ -50,7 +50,7 @@ angular.module('Music').controller('FoldersViewController', [
 			// on any other list item, start playing the folder from this item
 			else {
 				var currentListId = playlistService.getCurrentPlaylistId();
-				var folder = libraryService.findFolderOfTrack(trackId);
+				var folder = libraryService.getTrack(trackId).folder;
 
 				// start playing the folder from this track if the clicked track belongs
 				// to folder which is the current play scope
@@ -126,7 +126,7 @@ angular.module('Music').controller('FoldersViewController', [
 				// element instead
 				var trackElem = $('#' + elementId);
 				if (trackElem.length === 0 || !trackElem.is(':visible')) {
-					var folder = libraryService.findFolderOfTrack(trackId); 
+					var folder = libraryService.getTrack(trackId).folder; 
 					elementId = 'folder-' + folder.id;
 				}
 				$scope.$parent.scrollToItem(elementId);

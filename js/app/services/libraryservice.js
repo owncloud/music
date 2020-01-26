@@ -54,12 +54,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		return tracks;
 	}
 
-	function sortCollection(collection) {
+	/**
+	 * Sort the passed in collection alphabetically, and set up parent references
+	 */
+	function transformCollection(collection) {
 		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
 			artist.albums = sortByYearNameAndDisc(artist.albums);
 			_.forEach(artist.albums, function(album) {
+				album.artist = artist;
 				album.tracks = sortByNumberAndTitle(album.tracks);
+				_.forEach(album.tracks, function(track) {
+					track.album = album;
+				});
 			});
 		});
 		return collection;
@@ -92,13 +99,6 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function createTrackContainers() {
-		// add parent album ID to each track
-		_.forEach(albums, function(album) {
-			_.forEach(album.tracks, function(track) {
-				track.albumId = album.id;
-			});
-		});
-
 		// album order "playlist"
 		var tracks = _.flatten(_.pluck(albums, 'tracks'));
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
@@ -114,17 +114,104 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		});
 	}
 
-	function search(container, field, query) {
-		query = query.toLocaleLowerCase();
-		return _.filter(container, function(item) {
-			return (item[field] !== null
-				&& item[field].toLocaleLowerCase().indexOf(query) !== -1);
+	var diacriticRegExp = /[\u0300-\u036f]/g;
+	/** Convert string to "folded" form suitable for fuzzy matching */
+	function foldString(str) {
+		if (str) {
+			str = str.toLocaleLowerCase();
+
+			// Skip the normalization if the browser is ancient and doesn't support it
+			if ('normalize' in String.prototype) {
+				str = str.normalize('NFD').replace(diacriticRegExp, "");
+			}
+		}
+
+		return str;
+	}
+
+	/** Split search query to array by whitespace.
+	 *  As an exception, quoted substrings are kept as one entity. The quotation marks are removed.
+	 */
+	function splitSearchQuery(query) {
+		var regExQuoted = /\".*?\"/g;
+
+		// Get any quoted substring. Also the quotation marks get extracted, and they are sliced off separately.
+		var quoted = query.match(regExQuoted) || [];
+		quoted = _.map(quoted, function(str) {
+			return str.slice(1, -1);
 		});
+
+		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
+		query = query.replace(regExQuoted, ' ');
+		query = query.replace('"', ' ');
+		var unquoted = query.match(/\S+/g) || [];
+
+		return quoted.concat(unquoted);
+	}
+
+	function objectFieldsContainAll(object, getFieldValueFuncs, subStrings) {
+		return _.every(subStrings, function(subStr) {
+			return _.some(getFieldValueFuncs, function(getter) {
+				var value = getter(object);
+				return (value !== null && foldString(value).indexOf(subStr) !== -1);
+			});
+		});
+	}
+
+	function fieldPathToGetterFunc(path) {
+		// On the newest underscore.js, this could be achieved with 
+		// return _.property(path.split('.'));
+		// but the cloud core may ship so old underscore.js that property method doesn't support nesting.
+		// The following is a modified copy from the up-to-date sources of underscore.js.
+		path = path.split('.');
+		return function(obj) {
+			for (var i = 0, length = path.length; i < length; i++) {
+				if (obj === null) {
+					return null;
+				}
+				obj = obj[path[i]];
+			}
+			return length ? obj : null;
+		};
+	}
+
+	function search(container, fields, query, maxResults/*optional*/) {
+		maxResults = maxResults || Infinity;
+
+		query = foldString(query);
+		// In case the query contains many words separated with whitespace, each part
+		// has to be found but the whitespace is disregarded.
+		var queryParts = splitSearchQuery(query);
+
+		// @a fields may be an array or an idividual string
+		if (!Array.isArray(fields)) {
+			fields = [fields];
+		}
+
+		// Field may be given as a '.'-separated path;
+		// convert the fields to corresponding getter functions.
+		var fieldGetterFuncs = _.map(fields, fieldPathToGetterFunc);
+
+		var matchCount = 0;
+		var maxLimitReached = false;
+		var matches = _.filter(container, function(item) {
+			var matched = !maxLimitReached && objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
+			if (matched && matchCount++ == maxResults) {
+				maxLimitReached = true;
+				matched = false;
+			}
+			return matched;
+		});
+
+		return {
+			result: matches,
+			truncated: maxLimitReached
+		};
 	}
 
 	return {
 		setCollection: function(collection) {
-			artists = sortCollection(collection);
+			artists = transformCollection(collection);
 			albums = _.flatten(_.pluck(artists, 'albums'));
 			createTrackContainers();
 		},
@@ -143,7 +230,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 					sortByPlaylistEntryField(folder.tracks, 'artistName');
 
 					_.forEach(folder.tracks, function(trackEntry) {
-						trackEntry.track.folderId = folder.id;
+						trackEntry.track.folder = folder;
 					});
 				});
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
@@ -206,21 +293,6 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getAllFolders: function() {
 			return folders;
 		},
-		findAlbumOfTrack: function(trackId) {
-			return _.find(albums, function(album) {
-				return _.findWhere(album.tracks, {id : Number(trackId)});
-			});
-		},
-		findArtistOfAlbum: function(albumId) {
-			return _.find(artists, function(artist) {
-				return _.findWhere(artist.albums, {id : Number(albumId)});
-			});
-		},
-		findFolderOfTrack: function(trackId) {
-			return _.find(folders, function(folder) {
-				return _.find(folder.tracks, function(i) { return i.track.id == Number(trackId); });
-			});
-		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -234,40 +306,27 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			return folders !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(tracksIndex, 'title', query),
-				search(tracksIndex, 'artistName', query)
-			);
+			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
 		},
-		searchAlbums: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(albums, 'name', query),
-				search(albums, 'year', query)
-			);
+		searchTracksInAlbums: function(query, maxResults/*optional*/) {
+			return search(
+					tracksIndex,
+					['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
+					query,
+					maxResults);
 		},
-		searchArtists: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(artists, 'name', query)
-			);
-		},
-		searchFolders: function(query, maxResults/*optional*/) {
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(folders, 'path', query)
-			);
+		searchTracksInFolders: function(query, maxResults/*optional*/) {
+			return search(
+					tracksIndex,
+					['title', 'artistName', 'folder.path'],
+					query,
+					maxResults);
 		},
 		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
 			var list = this.getPlaylist(playlistId) || [];
 			list = _.pluck(list.tracks, 'track');
 			list = _.uniq(list);
-			return OC_Music_Utils.limitedUnion(
-				maxResults,
-				search(list, 'title', query),
-				search(list, 'artistName', query)
-			);
+			return search(list, ['title', 'artistName'], query, maxResults);
 		},
 	};
 }]);

@@ -12,7 +12,7 @@
 		ng-class="::('track-bucket-' + bucket.char)"
 		in-view-observer
 		in-view-observer-margin="3000"
-		id="{{ ::('track-bucket-' + $index) }}"
+		id="{{ ::('track-bucket-' + bucket.id) }}"
 	>
 		<h2 ng-if="::bucket.firstForChar">{{ ::bucket.char }}</h2>
 		<track-list

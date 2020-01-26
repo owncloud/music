@@ -93,18 +93,11 @@ angular.module('Music').controller('AllTracksViewController', [
 
 		function bucketElementForTrack(trackId) {
 			var track = libraryService.getTrack(trackId);
-			var indexChar = alphabetIndexingService.indexCharForTitle(track.artistName);
-
-			for (var i = 0; i < $scope.trackBuckets.length; ++i) {
-				var bucket = $scope.trackBuckets[i];
-				if (bucket.char == indexChar) {
-					if (findTrackFromBucket(bucket, trackId)) {
-						return document.getElementById('track-bucket-' + i);
-					}
-				}
+			if (track) {
+				return document.getElementById('track-bucket-' + track.bucket.id);
+			} else {
+				return null;
 			}
-
-			return null;
 		}
 
 		subscribe('scrollToTrack', function(event, trackId) {
@@ -158,6 +151,7 @@ angular.module('Music').controller('AllTracksViewController', [
 						// create a new bucket when necessary
 						if (!bucket || bucket.tracks.length >= BUCKET_MAX_SIZE) {
 							bucket = {
+								id: buckets.length,
 								char: _indexChars[charIdx],
 								firstForChar: !bucket,
 								name: _tracks[trackIdx].track.artistName,
@@ -167,6 +161,7 @@ angular.module('Music').controller('AllTracksViewController', [
 							buckets.push(bucket);
 						}
 
+						_tracks[trackIdx].track.bucket = bucket;
 						bucket.tracks.push(_tracks[trackIdx]);
 						++trackIdx;
 					}

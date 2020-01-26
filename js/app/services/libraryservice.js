@@ -114,6 +114,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		});
 	}
 
+	var diacriticRegExp = /[\u0300-\u036f]/g;
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	function foldString(str) {
 		if (str) {
@@ -121,7 +122,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 			// Skip the normalization if the browser is ancient and doesn't support it
 			if ('normalize' in String.prototype) {
-				str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+				str = str.normalize('NFD').replace(diacriticRegExp, "");
 			}
 		}
 

@@ -23,8 +23,11 @@ function($rootScope, $timeout, inViewService) {
 	// but it cannot be used while some of the instances may be hidden (e.g. with "display: none")
 	var _trackVisibleRange = true;
 
-	// Drop all instances when view switching begins
-	$rootScope.$on('deactivateView', function() {
+	// Drop all instances when view switching or artists reloading begins
+	$rootScope.$on('deactivateView', eraseInstances);
+	$rootScope.$on('artistsUpdating', eraseInstances);
+
+	function eraseInstances() {
 		// cancel any pending notifications first
 		_(_instances).each(function(inst) {
 			if (inst.pendingEnterView) {
@@ -35,7 +38,7 @@ function($rootScope, $timeout, inViewService) {
 		_instances = [];
 		_firstIndexInView = 0;
 		_lastIndexInView = -1;
-	});
+	}
 
 	var throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
 
@@ -302,6 +305,15 @@ function($rootScope, $timeout, inViewService) {
 		},
 		link: function(scope, element, attributes, controller) {
 			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
+
+			// Remove this instance from the static array if this would still be there upon destruction.
+			// This seems to happen whn the album view contents are updated during/after scanning.
+			scope.$on('$destroy', function() {
+				var index = _instances.indexOf(controller);
+				if (index !== -1) {
+					_instances.splice(index, 1);
+				}
+			});
 
 			// The visibilites should be evaluated after all the ng-repeated instances
 			// have been linked. There may be no actual `scroll` or `resize` events after

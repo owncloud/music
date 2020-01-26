@@ -73,6 +73,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
 
+		$scope.artists = null;
+		$rootScope.$emit('artistsUpdating');
+
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);

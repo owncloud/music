@@ -50,6 +50,8 @@ matrix:
       env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
     - php: 7.3
       env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
+    - php: 7.4
+      env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable18
   allow_failures:
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master

@@ -55,6 +55,7 @@ matrix:
   allow_failures:
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master
+    - php: 7.4
   fast_finish: true
 
 branches:

@@ -73,7 +73,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
 
-		$scope.artists = null;
+		$scope.artists = [];
 		$rootScope.$emit('artistsUpdating');
 
 		// load the music collection
@@ -197,6 +197,13 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.stopScanning = function() {
 		$scope.scanning = false;
+	};
+
+	$scope.resetScanned = function() {
+		$scope.toScan = false;
+		filesToScan = null;
+		filesToScanIterator = 0;
+		previouslyScannedCount = 0;
 	};
 
 	$scope.loadFoldersAndThen = function(callback) {

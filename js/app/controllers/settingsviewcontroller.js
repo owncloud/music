@@ -86,6 +86,7 @@ angular.module('Music').controller('SettingsViewController', [
 							Restangular.all('resetscanned').post().then(
 									function (data) {
 										if (data.success) {
+											parent.resetScanned();
 											parent.update();
 										}
 										$scope.resetOngoing = false;

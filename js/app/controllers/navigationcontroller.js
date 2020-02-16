@@ -111,23 +111,23 @@ angular.module('Music').controller('NavigationController', [
 		};
 
 		// Add track to the playlist
-		$scope.addTrack = function(playlist, song) {
-			addTracks(playlist, [song.id]);
+		$scope.addTrack = function(playlist, songId) {
+			addTracks(playlist, [songId]);
 		};
 
 		// Add all tracks on an album to the playlist
-		$scope.addAlbum = function(playlist, album) {
-			addTracks(playlist, trackIdsFromAlbum(album));
+		$scope.addAlbum = function(playlist, albumId) {
+			addTracks(playlist, trackIdsFromAlbum(albumId));
 		};
 
 		// Add all tracks on all albums by an artist to the playlist
-		$scope.addArtist = function(playlist, artist) {
-			addTracks(playlist, trackIdsFromArtist(artist));
+		$scope.addArtist = function(playlist, artistId) {
+			addTracks(playlist, trackIdsFromArtist(artistId));
 		};
 
 		// Add all tracks in a folder to the playlist
-		$scope.addFolder = function(playlist, folder) {
-			addTracks(playlist, trackIdsFromFolder(folder));
+		$scope.addFolder = function(playlist, folderId) {
+			addTracks(playlist, trackIdsFromFolder(folderId));
 		};
 
 		// Navigate to a view selected from the navigation bar
@@ -167,15 +167,18 @@ angular.module('Music').controller('NavigationController', [
 			return $rootScope.currentView != '#/playlist/' + playlist.id;
 		};
 
-		function trackIdsFromAlbum(album) {
+		function trackIdsFromAlbum(albumId) {
+			var album = libraryService.getAlbum(albumId);
 			return _.pluck(album.tracks, 'id');
 		}
 
-		function trackIdsFromArtist(artist) {
-			return _.flatten(_.map(artist.albums, trackIdsFromAlbum));
+		function trackIdsFromArtist(artistId) {
+			var artist = libraryService.getArtist(artistId);
+			return _.flatten(_.map(_.pluck(artist.albums, 'id'), trackIdsFromAlbum));
 		}
 
-		function trackIdsFromFolder(folder) {
+		function trackIdsFromFolder(folderId) {
+			var folder = libraryService.getFolder(folderId);
 			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
 		}
 

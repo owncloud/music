@@ -82,7 +82,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		};
 
 		$scope.getDraggable = function(trackId) {
-			return { track: libraryService.getTrack(trackId) };
+			return { track: trackId };
 		};
 
 		function findTrackFromBucket(bucket, trackId) {

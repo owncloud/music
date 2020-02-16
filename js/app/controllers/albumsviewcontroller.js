@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -124,7 +124,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		function getDraggable(type, draggedElement) {
 			var draggable = {};
-			draggable[type] = draggedElement;
+			draggable[type] = draggedElement.id;
 			return draggable;
 		}
 

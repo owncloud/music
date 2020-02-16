@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019, 2020
  */
 
 
@@ -87,18 +87,18 @@ angular.module('Music').controller('FoldersViewController', [
 			};
 		};
 
-		function getDraggable(type, draggedElement) {
+		function getDraggable(type, draggedElementId) {
 			var draggable = {};
-			draggable[type] = draggedElement;
+			draggable[type] = draggedElementId;
 			return draggable;
 		}
 
 		$scope.getTrackDraggable = function(trackId) {
-			return getDraggable('track', libraryService.getTrack(trackId));
+			return getDraggable('track', trackId);
 		};
 
 		$scope.getFolderDraggable = function(folder) {
-			return getDraggable('folder', folder);
+			return getDraggable('folder', folder.id);
 		};
 
 		/**

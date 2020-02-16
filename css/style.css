@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 #notification a {
@@ -16,6 +16,11 @@
 
 .icon-audio {
 	background-image: url('../../img/audio.svg');
+}
+
+/* Override background-color definition made by NC18, which seems like a bug and breaks the dark theme (#739) */
+body#body-user.dark {
+	background-color: var(--color-main-background);
 }
 
 #app {

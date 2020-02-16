@@ -1,3 +1,21 @@
+v0.13.0 2020-02-16
+ * searching/filtering by title/album/artist/year/folder/path (#662, #367)
+   * the query may freely combine details from tracks and their parent entities (album/artist/folder)
+   * searching by album name and year works only in the Albums view
+   * searching by folder name/path works only in the Folders view
+   * quotation may be used to treat multiple words as a single entity instead of as separate substrings
+   * searching by title/album/artist works also within the Files app, but this is much more limited than within the Music app
+ * improved performance/scalability for huge music collections also in the "All tracks" view
+ * improved quality of cover images in the Albums view and in the Ampache/Subsonic APIs (#734)
+   * default size for the images is now 380px, but this can be altered with `config.php` using the key `music.cover_size`
+ * Subsonic: respect the `size` attribute given to method `getCoverArt`
+ * support for PHP 7.4 (#738)
+ * support for Nextcloud 19
+ * updated getID3 to version 1.9.19 (minus one commit which caused us problems)
+ * fixed scan state being shown incorrectly after resetting the music collection
+ * fixed a background color problem on NC18 with dark theme (#739)
+ * fixed a null-reference problem on the `postWrite` file hook occuring on NC16+
+
 v0.12.1 2019-12-31
  * fix broken scrolling in Albums and Folders views on Nextcloud 14+ (#733)
 

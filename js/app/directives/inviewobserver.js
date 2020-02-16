@@ -46,6 +46,8 @@ function($rootScope, $timeout, inViewService) {
 	scrollContainer.addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
+	$rootScope.$on('artistsLoaded', throttledOnScroll);
+	$rootScope.$watch('loading', throttledOnScroll);
 
 	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {
 		_trackVisibleRange = !itemsMayBeHidden;
@@ -307,7 +309,7 @@ function($rootScope, $timeout, inViewService) {
 			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
 
 			// Remove this instance from the static array if this would still be there upon destruction.
-			// This seems to happen whn the album view contents are updated during/after scanning.
+			// This seems to happen when the album view contents are updated during/after scanning.
 			scope.$on('$destroy', function() {
 				var index = _instances.indexOf(controller);
 				if (index !== -1) {

@@ -230,7 +230,7 @@ class Scanner extends PublicEmitter {
 		$meta['discNumber'] = self::normalizeOrdinal($meta['discNumber']);
 
 		// year
-		$meta['year'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['year', 'date']);
+		$meta['year'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['year', 'date', 'creation_date']);
 		$meta['year'] = self::normalizeYear($meta['year']);
 
 		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);

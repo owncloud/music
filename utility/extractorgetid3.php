@@ -56,16 +56,24 @@ class ExtractorGetID3 implements Extractor {
 	public function extract($file) {
 		$this->initGetID3();
 
-		$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $file->fopen('r'));
+		$fp = $file->fopen('r');
 
-		\getid3_lib::CopyTagsToComments($metadata);
+		if (empty($fp)) {
+			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
+			$metadata = [];
+		}
+		else {
+			$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $fp);
 
-		if (\array_key_exists('error', $metadata)) {
-			foreach ($metadata['error'] as $error) {
-				// TODO $error is base64 encoded but it wasn't possible to add the decoded part to the log message
-				$this->logger->log('getID3 error occured', 'debug');
-				// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
-				$this->logger->log('getID3 error message: '. $error, 'debug');
+			\getid3_lib::CopyTagsToComments($metadata);
+
+			if (\array_key_exists('error', $metadata)) {
+				foreach ($metadata['error'] as $error) {
+					// TODO $error is base64 encoded but it wasn't possible to add the decoded part to the log message
+					$this->logger->log('getID3 error occured', 'debug');
+					// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
+					$this->logger->log('getID3 error message: '. $error, 'debug');
+				}
 			}
 		}
 

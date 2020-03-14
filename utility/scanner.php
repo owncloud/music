@@ -226,7 +226,7 @@ class Scanner extends PublicEmitter {
 		$meta['trackNumber'] = self::normalizeOrdinal($meta['trackNumber']);
 
 		// disc number
-		$meta['discNumber'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['discnumber', 'part_of_a_set'], '1');
+		$meta['discNumber'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['disc_number', 'discnumber', 'part_of_a_set'], '1');
 		$meta['discNumber'] = self::normalizeOrdinal($meta['discNumber']);
 
 		// year

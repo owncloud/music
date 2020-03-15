@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 
@@ -142,7 +142,7 @@ angular.module('Music').controller('DetailsController', [
 				return 'album artist';
 			} else if (rawName === 'unsynchronised_lyric' || rawName == 'unsynced lyrics') {
 				return 'lyrics';
-			} else if (rawName === 'tracktotal') {
+			} else if (rawName === 'tracktotal' || rawName === 'totaltracks') {
 				return 'total tracks';
 			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
 				return 'disc number';
@@ -157,14 +157,21 @@ angular.module('Music').controller('DetailsController', [
 			case 'artist':					return 2;
 			case 'album':					return 3;
 			case 'albumartist':				return 4;
+			case 'album_artist':			return 4;
 			case 'band':					return 4;
 			case 'composer':				return 5;
 			case 'part_of_a_set':			return 6;
 			case 'discnumber':				return 6;
+			case 'disc_number':				return 6;
 			case 'track_number':			return 7;
+			case 'tracknumber':				return 7;
+			case 'track':					return 7;
+			case 'totaltracks':				return 8;
 			case 'tracktotal':				return 8;
 			case 'comment':					return 100;
 			case 'unsynchronised_lyric':	return 101;
+			case 'unsynced lyrics':			return 101;
+			case 'LYRICS':					return 101;
 			default:						return 10;
 			}
 		};

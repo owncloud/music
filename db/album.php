@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -43,8 +43,6 @@ use \OCA\Music\Utility\Util;
  * @method setAlbumArtist(Artist $albumArtist)
  * @method string getHash()
  * @method setHash(string $hash)
- * @method int getTrackCount()
- * @method setTrackCount(int $trackCount)
  */
 class Album extends Entity {
 	public $name;
@@ -58,9 +56,6 @@ class Album extends Entity {
 	public $albumArtistId;
 	public $albumArtist;
 	public $hash;
-
-	// the following attributes aren't filled automatically
-	public $trackCount;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
@@ -160,8 +155,9 @@ class Album extends Entity {
 	}
 
 	/**
-	 * If the cover image is already cached, the image data is embedded into collection as data URI.
-	 * Otherwise the collection contains URL which can be used to fetch the image data.
+	 * If the cover image is already cached, the cover is presented with a link containing the image hash.
+	 * Otherwise, the collection contains an URL which triggers the caching and then redirects to the
+	 * URL with image hash.
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
 	 * $return string|null

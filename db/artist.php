@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -28,10 +30,6 @@ use \OCP\AppFramework\Db\Entity;
  * @method setMbid(string $mbid)
  * @method string getHash()
  * @method setHash(string $hash)
- * @method int getAlbumCount()
- * @method setAlbumCount(int $albumCount)
- * @method int getTrackCount()
- * @method setTrackCount(int $trackCount)
  */
 class Artist extends Entity {
 	public $name;
@@ -39,10 +37,6 @@ class Artist extends Entity {
 	public $userId;
 	public $mbid;
 	public $hash;
-
-	// the following attributes aren't filled automatically
-	public $albumCount;
-	public $trackCount;
 
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -23,6 +25,8 @@ use \OCA\Music\Utility\Util;
  * @method setTitle(string $title)
  * @method int getNumber()
  * @method setNumber(int $number)
+ * @method int getDisk()
+ * @method setDisk(int $disk)
  * @method int getYear()
  * @method setYear(int $year)
  * @method int getArtistId()
@@ -51,11 +55,10 @@ use \OCA\Music\Utility\Util;
 class Track extends Entity {
 	public $title;
 	public $number;
+	public $disk;
 	public $year;
 	public $artistId;
-	public $artist;
 	public $albumId;
-	public $album;
 	public $length;
 	public $fileId;
 	public $bitrate;
@@ -66,8 +69,13 @@ class Track extends Entity {
 	public $filename;
 	public $size;
 
+	// these don't come from the music_tracks table:
+	public $artist;
+	public $album;
+
 	public function __construct() {
 		$this->addType('number', 'int');
+		$this->addType('disk', 'int');
 		$this->addType('year', 'int');
 		$this->addType('artistId', 'int');
 		$this->addType('albumId', 'int');
@@ -108,6 +116,7 @@ class Track extends Entity {
 		return [
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
+			'disk' => $this->getDisk(),
 			'artistName' => $this->getArtist()->getNameString($l10n),
 			'artistId' => $this->getArtistId(),
 			'files' => [$this->getMimetype() => $this->getFileId()],
@@ -118,7 +127,7 @@ class Track extends Entity {
 	public function toAPI(IURLGenerator $urlGenerator) {
 		return [
 			'title' => $this->getTitle(),
-			'ordinal' => $this->getNumber(),
+			'ordinal' => $this->getDiskAdjustedTrackNumber(),
 			'artist' => $this->getArtistWithUri($urlGenerator),
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
@@ -131,6 +140,23 @@ class Track extends Entity {
 			'slug' => $this->getId() . '-' . $this->slugify('title'),
 			'uri' => $this->getUri($urlGenerator)
 		];
+	}
+
+	public function getDiskAdjustedTrackNumber() {
+		// On single-disk albums, the track number is given as-is.
+		// On multi-disk albums, the disk-number is applied to the track number.
+		// In case we have no Album reference, the best we can do is to apply the
+		// disk number if it is greater than 1. For disk 1, we don't know if this
+		// is a multi-disk album or not.
+		$numberOfDisks = ($this->album) ? $this->album->getNumberOfDisks() : null;
+		$trackNumber = $this->getNumber();
+
+		if ($this->disk > 1 || $numberOfDisks > 1) {
+			$trackNumber = $trackNumber ?: 0;
+			$trackNumber += (100 * $this->disk);
+		}
+
+		return $trackNumber;
 	}
 
 	public function getFileExtension() {

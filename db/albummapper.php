@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -101,6 +103,33 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns number of disks per album ID
+	 *
+	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
+	 * @param string $userId the user ID
+	 * @return array int => int[], keys are albums IDs and values are disk counts
+	 */
+	public function getDiscCountByAlbumId($albumIds, $userId) {
+		$sql = 'SELECT MAX(`disk`) AS `disc_count`, `album_id` '.
+				'FROM `*PREFIX*music_tracks` '.
+				'WHERE `user_id` = ? '.
+				'GROUP BY `album_id` ';
+		$params = [$userId];
+	
+		if ($albumIds !== null) {
+			$sql .= 'AND `album_id` IN ' . $this->questionMarks(\count($albumIds));
+			$params = \array_merge($params, $albumIds);
+		}
+	
+		$result = $this->execute($sql, $params);
+		$diskCountByAlbum = [];
+		while ($row = $result->fetch()) {
+			$diskCountByAlbum[$row['album_id']] = $row['disc_count'];
+		}
+		return $diskCountByAlbum;
+	}
+
+	/**
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *
@@ -134,17 +163,15 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns album that matches a name, a disc number and an album artist ID
+	 * returns album that matches a name and an album artist ID
 	 *
 	 * @param string|null $albumName name of the album
-	 * @param string|integer|null $discNumber disk number of this album's disk
 	 * @param integer|null $albumArtistId ID of the album artist
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAlbum($albumName, $discNumber, $albumArtistId, $userId) {
-		$sql = 'SELECT * FROM `*PREFIX*music_albums` `album` '.
-			'WHERE `album`.`user_id` = ? ';
+	public function findAlbum($albumName, $albumArtistId, $userId) {
+		$sql = $this->makeSelectQuery();
 		$params = [$userId];
 
 		// add artist id check
@@ -161,14 +188,6 @@ class AlbumMapper extends BaseMapper {
 		} else {
 			$sql .= 'AND `album`.`name` = ? ';
 			\array_push($params, $albumName);
-		}
-
-		// add disc number check
-		if ($discNumber === null) {
-			$sql .= 'AND `album`.`disk` IS NULL ';
-		} else {
-			$sql .= 'AND `album`.`disk` = ? ';
-			\array_push($params, $discNumber);
 		}
 
 		return $this->findEntity($sql, $params);
@@ -215,7 +234,8 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * @param integer[] $coverFileIds
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
-	 * @return Album[] albums which got modified, empty array if none
+	 * @return Album[] albums which got modified (with incomplete data, only id and user are valid),
+	 *         empty array if none
 	 */
 	public function removeCovers($coverFileIds, $userIds=null) {
 		// find albums using the given file as cover

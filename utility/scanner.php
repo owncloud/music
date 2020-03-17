@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Utility;
@@ -148,12 +148,12 @@ class Scanner extends PublicEmitter {
 
 			// add/update album and get album entity
 			$album = $this->albumBusinessLayer->addOrUpdateAlbum(
-					$meta['album'], $meta['discNumber'], $albumArtistId, $userId);
+					$meta['album'], $albumArtistId, $userId);
 			$albumId = $album->getId();
 
 			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'], $meta['year'],
-					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
+			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'],  $meta['discNumber'],
+					$meta['year'], $artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
 			if ($meta['picture'] != null) {

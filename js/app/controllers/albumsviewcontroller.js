@@ -151,7 +151,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			return {
 				title: getTitleString(track, scope.artist, false),
 				tooltip: getTitleString(track, scope.artist, true),
-				number: track.number,
+				number: getTrackNumber(track),
 				id: track.id
 			};
 		};
@@ -169,6 +169,20 @@ angular.module('Music').controller('AlbumsViewController', [
 				att += artistName;
 			}
 			return att;
+		}
+
+		/**
+		 * Formats a track number, possible including disk number, for displaying in tracklist directive
+		 */
+		function getTrackNumber(track) {
+			if (track.album.diskCount <= 1) {
+				return track.number;
+			} else {
+				// multidisk album
+				var number = track.disk + '-';
+				number += (track.number !== null) ? track.number : '?';
+				return number;
+			}
 		}
 
 		// emited on end of playlist by playerController

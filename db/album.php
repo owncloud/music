@@ -43,19 +43,24 @@ use \OCA\Music\Utility\Util;
  * @method setAlbumArtist(Artist $albumArtist)
  * @method string getHash()
  * @method setHash(string $hash)
+ * @method int getNumberOfDisks()
+ * @method setNumberOfDisks(int $count)
  */
 class Album extends Entity {
 	public $name;
 	public $mbid;
-	public $years;
-	public $disk;
+	public $disk; // deprecated
 	public $mbidGroup;
 	public $coverFileId;
-	public $artistIds;
 	public $userId;
 	public $albumArtistId;
-	public $albumArtist;
 	public $hash;
+
+	// these don't come from the music_albums table
+	public $years;
+	public $artistIds;
+	public $numberOfDisks;
+	public $albumArtist;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
@@ -173,7 +178,7 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Creates object used for collection API (array with name, year, disk, cover URL and ID)
+	 * Creates object used for collection API (array with name, year, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  object $l10n Localization handler
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
@@ -182,17 +187,17 @@ class Album extends Entity {
 	 */
 	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash, $tracks) {
 		return [
-			'name'   => $this->getNameString($l10n),
-			'year'   => $this->getYearRange(),
-			'disk'   => $this->getDisk(),
-			'cover'  => $this->coverToCollection($urlGenerator, $cachedCoverHash),
-			'id'     => $this->getId(),
-			'tracks' => $tracks
+			'name'      => $this->getNameString($l10n),
+			'year'      => $this->getYearRange(),
+			'cover'     => $this->coverToCollection($urlGenerator, $cachedCoverHash),
+			'id'        => $this->getId(),
+			'diskCount' => $this->getNumberOfDisks(),
+			'tracks'    => $tracks
 		];
 	}
 
 	/**
-	 * Creates object used by the shiva API (array with name, year, disk, cover URL, ID, slug, URI and artists Array)
+	 * Creates object used by the shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  object $l10n Localization handler
 	 * @return array shiva API object
@@ -201,7 +206,6 @@ class Album extends Entity {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
-			'disk'          => $this->getDisk(),
 			'cover'         => $this->coverToAPI($urlGenerator),
 			'id'            => $this->getId(),
 			'uri'           => $this->getUri($urlGenerator),

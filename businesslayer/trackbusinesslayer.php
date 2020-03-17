@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -207,6 +207,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
 	 * @param int|null $number the number of the track
+	 * @param int|null $discNumber the number of the disc
 	 * @param int|null $year the year of the release
 	 * @param int $artistId the artist id of the track
 	 * @param int $albumId the album id of the track
@@ -218,11 +219,12 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $year, $artistId, $albumId, $fileId,
+			$title, $number, $discNumber, $year, $artistId, $albumId, $fileId,
 			$mimetype, $userId, $length=null, $bitrate=null) {
 		$track = new Track();
 		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
+		$track->setDisk($discNumber);
 		$track->setYear($year);
 		$track->setArtistId($artistId);
 		$track->setAlbumId($albumId);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -444,7 +444,6 @@ class AmpacheController extends Controller {
 				'tracks' => [$this->trackBusinessLayer->countByAlbum($album->getId())],
 				'rating' => [0],
 				'year' => [$album->yearToAPI()],
-				'disk' => [$album->getDisk()],
 				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
 				'preciserating' => [0]
 			];
@@ -491,7 +490,7 @@ class AmpacheController extends Controller {
 				],
 				'url' => [self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth)],
 				'time' => [$track->getLength()],
-				'track' => [$track->getNumber()],
+				'track' => [$track->getDiskAdjustedTrackNumber()],
 				'bitrate' => [$track->getBitrate()],
 				'mime' => [$track->getMimetype()],
 				'size' => [$track->getSize()],

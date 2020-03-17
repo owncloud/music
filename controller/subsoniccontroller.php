@@ -260,14 +260,13 @@ class SubsonicController extends Controller {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		$albumName = $album->getNameString($this->l10n);
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
 
 		$albumNode = $this->albumToNewApi($album);
-		$albumNode['song'] = \array_map(function($track) use ($album, $albumName) {
-			return $this->trackToApi($track, $album, $albumName);
+		$albumNode['song'] = \array_map(function($track) use ($album) {
+			$track->setAlbum($album);
+			return $this->trackToApi($track);
 		}, $tracks);
-
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
 
@@ -723,7 +722,10 @@ class SubsonicController extends Controller {
 				'id' => $id,
 				'parent' => 'artist-' . $album->getAlbumArtistId(),
 				'name' => $albumName,
-				'child' => \array_map([$this, 'trackToApi'], $tracks)
+				'child' => \array_map(function($track) use ($album) {
+					$track->setAlbum($album);
+					return $this->trackToApi($track);
+				}, $tracks)
 			]
 		]);
 	}
@@ -815,28 +817,27 @@ class SubsonicController extends Controller {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. 
-	 * @param Track $track
-	 * @param Album|null $album
-	 * @param string|null $albumName
+	 * @param Track $track The track entity must have an ablum reference. One is fetched from
+	 *                     AlbumBusinessLayer if not already present.
 	 * @return array
 	 */
-	private function trackToApi($track, $album = null, $albumName = null) {
+	private function trackToApi($track) {
 		$albumId = $track->getAlbumId();
-		if ($album == null) {
+		$album = $track->getAlbum();
+		if (empty($album)) {
 			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+			$track->setAlbum($album);
 		}
-		if (empty($albumName)) {
-			$albumName = $album->getNameString($this->l10n);
-		}
-
 		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+
 		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
+			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
 			'title' => $track->getTitle(),
 			'artist' => $trackArtist->getNameString($this->l10n),
 			'isDir' => false,
-			'album' => $albumName,
+			'album' => $album->getNameString($this->l10n),
 			//'genre' => '',
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
@@ -855,8 +856,9 @@ class SubsonicController extends Controller {
 			$result['coverArt'] = $album->getId();
 		}
 
-		if ($track->getNumber() !== null) {
-			$result['track'] = $track->getNumber();
+		$trackNumber = $track->getDiskAdjustedTrackNumber();
+		if ($trackNumber !== null) {
+			$result['track'] = $trackNumber;
 		}
 
 		return $result;

@@ -41,16 +41,16 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		});
 	}
 
-	function sortByYearNameAndDisc(aAlbums) {
-		aAlbums = _.sortBy(aAlbums, 'disk');
+	function sortByYearAndName(aAlbums) {
 		sortByTextField(aAlbums, 'name');
 		aAlbums = _.sortBy(aAlbums, 'year');
 		return aAlbums;
 	}
 
-	function sortByNumberAndTitle(tracks) {
+	function sortByDiskNumberAndTitle(tracks) {
 		sortByTextField(tracks, 'title');
 		tracks = _.sortBy(tracks, 'number');
+		tracks = _.sortBy(tracks, 'disk');
 		return tracks;
 	}
 
@@ -60,10 +60,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	function transformCollection(collection) {
 		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
-			artist.albums = sortByYearNameAndDisc(artist.albums);
+			artist.albums = sortByYearAndName(artist.albums);
 			_.forEach(artist.albums, function(album) {
 				album.artist = artist;
-				album.tracks = sortByNumberAndTitle(album.tracks);
+				album.tracks = sortByDiskNumberAndTitle(album.tracks);
 				_.forEach(album.tracks, function(track) {
 					track.album = album;
 				});

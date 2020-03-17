@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -40,7 +40,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function find($albumId, $userId) {
 		$album = parent::find($albumId, $userId);
-		return $this->injectArtistsAndYears([$album], $userId)[0];
+		return $this->injectExtraFields([$album], $userId)[0];
 	}
 
 	/**
@@ -53,7 +53,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		$albums = parent::findAll($userId, $sortBy, $limit, $offset);
-		return $this->injectArtistsAndYears($albums, $userId, true);
+		return $this->injectExtraFields($albums, $userId, true);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
-		return $this->injectArtistsAndYears($albums, $userId);
+		return $this->injectExtraFields($albums, $userId);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByAlbumArtist($artistId, $userId) {
 		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
-		$albums = $this->injectArtistsAndYears($albums, $userId);
+		$albums = $this->injectExtraFields($albums, $userId);
 		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
 		return $albums;
 	}
@@ -89,11 +89,11 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset);
-		return $this->injectArtistsAndYears($albums, $userId);
+		return $this->injectExtraFields($albums, $userId);
 	}
 
 	/**
-	 * Add performing artists and release years to the given album objects
+	 * Add performing artists, release years, and disk counts to the given album objects
 	 * @param Album[] $albums
 	 * @param string $userId
 	 * @param bool $allAlbums Set to true if $albums contains all albums of the user.
@@ -101,7 +101,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 *                        the database query.
 	 * @return Album[]
 	 */
-	private function injectArtistsAndYears($albums, $userId, $allAlbums = false) {
+	private function injectExtraFields($albums, $userId, $allAlbums = false) {
 		if (\count($albums) > 0) {
 			// In case we are injecting data to a lot of albums, do not limit the
 			// SQL SELECTs to only those albums. Very large amount of SQL host parameters
@@ -113,9 +113,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
+			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
+
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($artists[$albumId]);
+				$album->setNumberOfDisks($diskCounts[$albumId]);
 				if (\array_key_exists($albumId, $years)) {
 					$album->setYears($years[$albumId]);
 				}
@@ -146,22 +149,20 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
 	 * @param string $name the name of the album
-	 * @param integer $discnumber the disk number of this album's disk
 	 * @param integer $albumArtistId
 	 * @param string $userId
 	 * @return Album The added/updated album
 	 */
-	public function addOrUpdateAlbum($name, $discnumber, $albumArtistId, $userId) {
+	public function addOrUpdateAlbum($name, $albumArtistId, $userId) {
 		$album = new Album();
 		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
-		$album->setDisk($discnumber);
 		$album->setUserId($userId);
 		$album->setAlbumArtistId($albumArtistId);
 
 		// Generate hash from the set of fields forming the album identity to prevent duplicates.
 		// The uniqueness of album name is evaluated in case-insensitive manner.
-		$lowerName = \mb_strtolower($name);
-		$hash = \hash('md5', "$lowerName|$discnumber|$albumArtistId");
+		$lowerName = \mb_strtolower($album->getName());
+		$hash = \hash('md5', "$lowerName|$albumArtistId");
 		$album->setHash($hash);
 
 		return $this->mapper->insertOrUpdate($album);

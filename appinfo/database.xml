@@ -133,6 +133,7 @@
 				<type>integer</type>
 				<notnull>false</notnull>
 				<unsigned>true</unsigned>
+				<comments>deprecated</comments>
 			</field>
 			<field>
 				<name>mbid_group</name>
@@ -203,6 +204,12 @@
 			</field>
 			<field>
 				<name>number</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>disk</name>
 				<type>integer</type>
 				<notnull>false</notnull>
 				<unsigned>true</unsigned>

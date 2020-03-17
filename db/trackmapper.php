@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -109,7 +109,7 @@ class TrackMapper extends BaseMapper {
 			$sql .= 'AND `track`.`artist_id` = ? ';
 			\array_push($params, $artistId);
 		}
-		$sql .= 'ORDER BY `track`.`number`, LOWER(`track`.`title`)';
+		$sql .= 'ORDER BY `track`.`disk`, `track`.`number`, LOWER(`track`.`title`)';
 		return $this->findEntities($sql, $params);
 	}
 

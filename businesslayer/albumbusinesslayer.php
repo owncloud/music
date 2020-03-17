@@ -93,7 +93,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Add album artists and release years to the given album objects
+	 * Add performing artists and release years to the given album objects
 	 * @param Album[] $albums
 	 * @param string $userId
 	 * @param bool $allAlbums Set to true if $albums contains all albums of the user.
@@ -111,11 +111,11 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$albumIds = ($allAlbums || \count($albums) >= 999)
 					? null : Util::extractIds($albums);
 
-			$albumArtists = $this->mapper->getAlbumArtistsByAlbumId($albumIds, $userId);
+			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
-				$album->setArtistIds($albumArtists[$albumId]);
+				$album->setArtistIds($artists[$albumId]);
 				if (\array_key_exists($albumId, $years)) {
 					$album->setYears($years[$albumId]);
 				}

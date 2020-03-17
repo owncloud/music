@@ -58,7 +58,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue($this->albums));
 		$this->mapper->expects($this->exactly(1))
-			->method('getAlbumArtistsByAlbumId')
+			->method('getPerformingArtistsByAlbumId')
 			->with($this->equalTo(null),
 					$this->equalTo($this->userId))
 			->will($this->returnValue($this->artistIds));
@@ -90,7 +90,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($this->albums[$albumId-1]));
 		$this->mapper->expects($this->exactly(1))
-			->method('getAlbumArtistsByAlbumId')
+			->method('getPerformingArtistsByAlbumId')
 			->with($this->equalTo([$albumId]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([$albumId => $this->artistIds[$albumId-1]]));
@@ -112,7 +112,7 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo($artistId))
 			->will($this->returnValue($this->albumsByArtist3));
 		$this->mapper->expects($this->exactly(1))
-			->method('getAlbumArtistsByAlbumId')
+			->method('getPerformingArtistsByAlbumId')
 			->with($this->equalTo([1, 2]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([

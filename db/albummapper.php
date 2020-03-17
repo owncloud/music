@@ -54,7 +54,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
 	 */
-	public function getAlbumArtistsByAlbumId($albumIds, $userId) {
+	public function getPerformingArtistsByAlbumId($albumIds, $userId) {
 		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
 			'FROM `*PREFIX*music_tracks` `track` '.
 			'WHERE `track`.`user_id` = ? ';

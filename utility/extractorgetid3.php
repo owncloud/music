@@ -56,7 +56,13 @@ class ExtractorGetID3 implements Extractor {
 	public function extract($file) {
 		$this->initGetID3();
 
-		$fp = $file->fopen('r');
+		try {
+			$fp = $file->fopen('r');
+		} catch (\Exception $e) {
+			// There are probably more than one reason, why openeing a file may fail.
+			// Some of the problems throw exceptions, and others just return null or false.
+			$this->logger->log('Exception ' . get_class($e) . ' when opening file', 'error');
+		}
 
 		if (empty($fp)) {
 			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');

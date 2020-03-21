@@ -168,7 +168,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2011, 2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(5);
 		$track = new Track();
@@ -216,7 +215,6 @@ class APIControllerTest extends ControllerTestUtility {
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
-						'disk' => 1,
 						'artists' => [
 							['id' => 3, 'uri' => null]
 						],
@@ -254,7 +252,6 @@ class APIControllerTest extends ControllerTestUtility {
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
-						'disk' => 1,
 						'artists' => [
 							['id' => 3, 'uri' => null]
 						],
@@ -300,7 +297,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(3);
 
@@ -334,7 +330,6 @@ class APIControllerTest extends ControllerTestUtility {
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
-						'disk' => 1,
 						'artists' => [
 							['id' => 3, 'uri' => null]
 						],
@@ -356,7 +351,6 @@ class APIControllerTest extends ControllerTestUtility {
 						'slug' => '4-the-name',
 						'id' => 4,
 						'year' => 2013,
-						'disk' => 1,
 						'artists' => [
 							['id' => 3, 'uri' => null]
 						],
@@ -409,7 +403,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([1999, 2000, 2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([3]);
 		$album->setAlbumArtistId(3);
 		$track = new Track();
@@ -453,7 +446,6 @@ class APIControllerTest extends ControllerTestUtility {
 					'slug' => '3-the-name',
 					'id' => 3,
 					'year' => 2013,
-					'disk' => 1,
 					'artists' => [
 						['id' => 3, 'uri' => null]
 					],
@@ -490,7 +482,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1->setName('The name');
 		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
-		$album1->setDisk(1);
 		$album1->setArtistIds([1]);
 		$album1->setAlbumArtistId(1);
 		$album2 = new Album();
@@ -498,7 +489,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2->setName('The album name');
 		$album2->setYears([]);
 		$album2->setCoverFileId(7);
-		$album2->setDisk(1);
 		$album2->setArtistIds([3,5]);
 		$album2->setAlbumArtistId(2);
 
@@ -515,7 +505,6 @@ class APIControllerTest extends ControllerTestUtility {
 				'slug' => '3-the-name',
 				'id' => 3,
 				'year' => 2013,
-				'disk' => 1,
 				'artists' => [
 					['id' => 1, 'uri' => null]
 				],
@@ -528,7 +517,6 @@ class APIControllerTest extends ControllerTestUtility {
 				'slug' => '4-the-album-name',
 				'id' => 4,
 				'year' => null,
-				'disk' => 1,
 				'artists' => [
 					['id' => 3, 'uri' => null],
 					['id' => 5, 'uri' => null]
@@ -549,7 +537,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album1->setName('The name');
 		$album1->setYears([2013]);
 		$album1->setCoverFileId(5);
-		$album1->setDisk(1);
 		$album1->setArtistIds([1]);
 		$album1->setAlbumArtistId(5);
 		$album2 = new Album();
@@ -557,7 +544,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album2->setName('The album name');
 		$album2->setYears([2003]);
 		$album2->setCoverFileId(7);
-		$album2->setDisk(1);
 		$album2->setArtistIds([3,5]);
 		$album2->setAlbumArtistId(1);
 		$artist1 = new Artist();
@@ -612,7 +598,6 @@ class APIControllerTest extends ControllerTestUtility {
 				'slug' => '3-the-name',
 				'id' => 3,
 				'year' => 2013,
-				'disk' => 1,
 				'artists' => [
 					[
 						'name' => 'The artist name',
@@ -647,7 +632,6 @@ class APIControllerTest extends ControllerTestUtility {
 				'slug' => '4-the-album-name',
 				'id' => 4,
 				'year' => 2003,
-				'disk' => 1,
 				'artists' => [
 					[
 						'name' => 'The artist name3',
@@ -696,7 +680,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(1);
 		$artist = new Artist();
@@ -736,7 +719,6 @@ class APIControllerTest extends ControllerTestUtility {
 			'slug' => '3-the-name',
 			'id' => 3,
 			'year' => 2013,
-			'disk' => 1,
 			'artists' => [
 				[
 					'name' => 'The artist name',
@@ -777,7 +759,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(2);
 
@@ -795,7 +776,6 @@ class APIControllerTest extends ControllerTestUtility {
 			'slug' => '3-the-name',
 			'id' => 3,
 			'year' => 2013,
-			'disk' => 1,
 			'artists' => [
 				['id' => 1, 'uri' => null]
 			],
@@ -888,7 +868,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$album->setName('The name');
 		$album->setYears([2013]);
 		$album->setCoverFileId(5);
-		$album->setDisk(1);
 		$album->setArtistIds([1]);
 		$album->setAlbumArtistId(2);
 		$artist = new Artist();
@@ -936,7 +915,6 @@ class APIControllerTest extends ControllerTestUtility {
 					'slug' => '3-the-name',
 					'id' => 3,
 					'year' => 2013,
-					'disk' => 1,
 					'artists' => [
 						['id' => 1, 'uri' => null]
 					],
@@ -1004,6 +982,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setArtistId(3);
 		$track->setAlbumId(1);
 		$track->setNumber(4);
+		$track->setDisk(1);
 		$track->setLength(123);
 		$track->setFileId($fileId);
 		$track->setMimetype('audio/mp3');
@@ -1037,6 +1016,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'artistName' => 'The track artist',
 			'id' => 1,
 			'number' => 4,
+			'disk' => 1,
 			'artistId' => 3,
 			'files' => [
 				'audio/mp3' => $fileId

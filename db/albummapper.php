@@ -107,7 +107,7 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => int[], keys are albums IDs and values are disk counts
+	 * @return array int => int, keys are albums IDs and values are disk counts
 	 */
 	public function getDiscCountByAlbumId($albumIds, $userId) {
 		$sql = 'SELECT MAX(`disk`) AS `disc_count`, `album_id` '.
@@ -115,12 +115,12 @@ class AlbumMapper extends BaseMapper {
 				'WHERE `user_id` = ? '.
 				'GROUP BY `album_id` ';
 		$params = [$userId];
-	
+
 		if ($albumIds !== null) {
-			$sql .= 'AND `album_id` IN ' . $this->questionMarks(\count($albumIds));
+			$sql .= 'HAVING `album_id` IN ' . $this->questionMarks(\count($albumIds));
 			$params = \array_merge($params, $albumIds);
 		}
-	
+
 		$result = $this->execute($sql, $params);
 		$diskCountByAlbum = [];
 		while ($row = $result->fetch()) {

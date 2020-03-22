@@ -19,6 +19,7 @@
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
 * [Cbxk1xg](https://github.com/cbxk1xg)
+* [Chris Allan](https://github.com/ChrisJAllan): <chrisallan@pm.me>
 * [ChristophWurst](https://github.com/ChristophWurst)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)

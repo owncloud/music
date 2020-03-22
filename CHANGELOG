@@ -1,3 +1,15 @@
+v0.13.1 2020-03-22
+ * do not treat each disc of a multi-disc album as a separate album (#680)
+ * fix year tag not being extracted from M4A files (#744 by @ChrisJAllan)
+ * fix disc number tag not being extracted from M4A files (#746)
+ * update getID3 to development version 1.9.19-202003150936
+   * should fix cover art not showing up on M4A files (#743)
+   * fixes the issue which forced us previously to remove one commit from v1.9.19 
+ * log the error if opening a file for metadata extraction fails (#123)
+ * do not stop the whole scanning process if opening a file throws an exception
+ * tweak the ordering of the fields in the track details pane
+ * fix embedded player not showing metadata for the unscanned files (regression introduced in v0.13.0)
+
 v0.13.0 2020-02-16
  * searching/filtering by title/album/artist/year/folder/path (#662, #367)
    * the query may freely combine details from tracks and their parent entities (album/artist/folder)

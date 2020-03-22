@@ -71,7 +71,7 @@ class ExtractorGetID3 implements Extractor {
 		else {
 			$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $fp);
 
-			\getid3_lib::CopyTagsToComments($metadata);
+			$this->getID3->CopyTagsToComments($metadata);
 
 			if (\array_key_exists('error', $metadata)) {
 				foreach ($metadata['error'] as $error) {

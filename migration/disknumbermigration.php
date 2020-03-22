@@ -129,10 +129,15 @@ class DiskNumberMigration implements IRepairStep {
 	 * Delete from the albums table those rows which were made obsolete by the previous steps
 	 */
 	private function removeObsoleteAlbums() {
-		$sql = 'DELETE FROM `*PREFIX*music_albums` '.
-				'WHERE `id` IN '. $this->questionMarks(count($this->obsoleteAlbums));
+		$count = count($this->obsoleteAlbums);
 
-		return $this->db->executeUpdate($sql, $this->obsoleteAlbums);
+		if ($count > 0) {
+			$sql = 'DELETE FROM `*PREFIX*music_albums` '.
+					'WHERE `id` IN '. $this->questionMarks($count);
+			$count = $this->db->executeUpdate($sql, $this->obsoleteAlbums);
+		}
+
+		return $count;
 	}
 
 	/**

@@ -39,6 +39,7 @@ class ExtractorGetID3 implements Extractor {
 			require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
 			$this->getID3 = new \getID3();
 			$this->getID3->encoding = 'UTF-8';
+			$this->getID3->option_tags_html = false; // HTML-encoded tags are not needed
 			// On 32-bit systems, getid3 tries to make a 2GB size check,
 			// which does not work with fopen. Disable it.
 			// Therefore the filesize (determined by getID3) could be wrong
@@ -75,7 +76,6 @@ class ExtractorGetID3 implements Extractor {
 
 			if (\array_key_exists('error', $metadata)) {
 				foreach ($metadata['error'] as $error) {
-					// TODO $error is base64 encoded but it wasn't possible to add the decoded part to the log message
 					$this->logger->log('getID3 error occured', 'debug');
 					// sometimes $error is string but can't be concatenated to another string and weirdly just hide the log message
 					$this->logger->log('getID3 error message: '. $error, 'debug');

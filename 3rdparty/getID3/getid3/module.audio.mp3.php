@@ -14,6 +14,9 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
+if (!defined('GETID3_INCLUDEPATH')) { // prevent path-exposing attacks that access modules directly on public webservers
+	exit;
+}
 
 // number of frames to scan to determine if MPEG-audio sequence is valid
 // Lower this number to 5-20 for faster scanning
@@ -1788,7 +1791,7 @@ class getid3_mp3 extends getid3_handler
 	 * @return bool
 	 */
 	public static function MPEGaudioHeaderValid($rawarray, $echoerrors=false, $allowBitrate15=false) {
-		if (($rawarray['synch'] & 0x0FFE) != 0x0FFE) {
+		if (!isset($rawarray['synch']) || ($rawarray['synch'] & 0x0FFE) != 0x0FFE) {
 			return false;
 		}
 

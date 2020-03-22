@@ -18,6 +18,12 @@
 Version History
 ===============
 
+1.9.19-202003150936: [2020-03-22] Pauli Järvinen :: 1.9.19-202003150936
+    Development version from getID3 github master branch. Among others, there
+    are two fixes important for the ownCloud Music app:
+    * Fix missing cover art in .M4A https://github.com/JamesHeinrich/getID3/pull/233
+    * Problem with CopyTagsToComments https://github.com/JamesHeinrich/getID3/issues/238
+
 1.9.19: [2019-12-17] James Heinrich :: 1.9.19-201912131005
 	» add placeholder support for WTV (Windows Recorded TV Show)
 	* bugfix (G:210) PHP 7.4 deprecated get_magic_quotes

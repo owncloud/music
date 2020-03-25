@@ -28,10 +28,14 @@ class DiskNumberMigration implements IRepairStep {
 	/** @var int[] */
 	private $obsoleteAlbums;
 
+	/** @var int[] */
+	private $mergeFailureAlbums;
+
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->db = $connection;
 		$this->config = $config;
 		$this->obsoleteAlbums = [];
+		$this->mergeFailureAlbums = [];
 	}
 
 	public function getName() {
@@ -56,6 +60,9 @@ class DiskNumberMigration implements IRepairStep {
 
 			$n = $this->reEvaluateAlbumHashes();
 			$output->info("$n albums were updated with new hashes");
+
+			$n = $this->removeAlbumsWhichFailedMerging();
+			$output->info("$n albums were rmeoved because merging them failed; these need to be rescanned by the user");
 
 			$n = $this->removeDiskNumbersFromAlbums();
 			$output->info("obsolete disk number field was nullified in $n albums");
@@ -155,13 +162,40 @@ class DiskNumberMigration implements IRepairStep {
 			$artist = $row['album_artist_id'];
 			$hash = \hash('md5', "$lowerName|$artist");
 
-			$affectedRows += $this->db->executeUpdate(
-				'UPDATE `*PREFIX*music_albums` SET `hash` = ? WHERE `id` = ?',
-				[$hash, $row['id']]
-			);
+			try {
+				$affectedRows += $this->db->executeUpdate(
+						'UPDATE `*PREFIX*music_albums` SET `hash` = ? WHERE `id` = ?',
+						[$hash, $row['id']]
+				);
+			}
+			catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+				$this->mergeFailureAlbums[] = $row['id'];
+			}
 		}
 
 		return $affectedRows;
+	}
+
+	/**
+	 * Remove any albums which should have got merged to another albums, but for some
+	 * reason this has not happened. Remove also the contained tracks. The user shall
+	 * be prompted to rescan these problematic albums/tracks when (s)he opens the Music
+	 * app.
+	 */
+	private function removeAlbumsWhichFailedMerging() {
+		$count = count($this->mergeFailureAlbums);
+
+		if ($count > 0) {
+			$sql = 'DELETE FROM `*PREFIX*music_albums` '.
+					'WHERE `id` IN '. $this->questionMarks($count);
+			$count = $this->db->executeUpdate($sql, $this->mergeFailureAlbums);
+
+			$sql = 'DELETE FROM `*PREFIX*music_tracks` '.
+					'WHERE `album_id` IN '. $this->questionMarks($count);
+			$this->db->executeUpdate($sql, $this->mergeFailureAlbums);
+		}
+
+		return $count;
 	}
 
 	/**

@@ -82,7 +82,7 @@ class DiskNumberMigration implements IRepairStep {
 	private function combineMultiDiskAlbums() {
 		$sql = 'SELECT `id`, `user_id`, `album_artist_id`, `name` '.
 				'FROM `*PREFIX*music_albums` '.
-				'ORDER BY `user_id`, `album_artist_id`, `name`';
+				'ORDER BY `user_id`, `album_artist_id`, LOWER(`name`)';
 
 		$rows = $this->db->executeQuery($sql)->fetchAll();
 

@@ -49,24 +49,33 @@ class DiskNumberMigration implements IRepairStep {
 		$installedVersion = $this->config->getAppValue('music', 'installed_version');
 
 		if (\version_compare($installedVersion, '0.13.0', '<=')) {
-			$n = $this->copyDiskNumberToTracks();
-			$output->info("$n tracks were updated with a disk number");
-
-			$n = $this->combineMultiDiskAlbums();
-			$output->info("$n tracks were assinged to new albums when combining multi-disk albums");
-
-			$n = $this->removeObsoleteAlbums();
-			$output->info("$n obsolete album entries were removed from the database");
-
-			$n = $this->reEvaluateAlbumHashes();
-			$output->info("$n albums were updated with new hashes");
-
-			$n = $this->removeAlbumsWhichFailedMerging();
-			$output->info("$n albums were rmeoved because merging them failed; these need to be rescanned by the user");
-
-			$n = $this->removeDiskNumbersFromAlbums();
-			$output->info("obsolete disk number field was nullified in $n albums");
+			try {
+				$this->executeMigrationSteps($output);
+			} catch (\Exception $e) {
+				$output->warning('Unexpected exception ' . get_class($e) . 
+								'. The music DB may have been left in an inconsistent state.');
+			}
 		}
+	}
+
+	private function executeMigrationSteps(IOutput $output) {
+		$n = $this->copyDiskNumberToTracks();
+		$output->info("$n tracks were updated with a disk number");
+
+		$n = $this->combineMultiDiskAlbums();
+		$output->info("$n tracks were assinged to new albums when combining multi-disk albums");
+
+		$n = $this->removeObsoleteAlbums();
+		$output->info("$n obsolete album entries were removed from the database");
+
+		$n = $this->reEvaluateAlbumHashes();
+		$output->info("$n albums were updated with new hashes");
+
+		$n = $this->removeAlbumsWhichFailedMerging();
+		$output->info("$n albums were rmeoved because merging them failed; these need to be rescanned by the user");
+
+		$n = $this->removeDiskNumbersFromAlbums();
+		$output->info("obsolete disk number field was nullified in $n albums");
 	}
 
 	/**

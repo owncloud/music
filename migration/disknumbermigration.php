@@ -52,8 +52,8 @@ class DiskNumberMigration implements IRepairStep {
 			try {
 				$this->executeMigrationSteps($output);
 			} catch (\Exception $e) {
-				$output->warning('Unexpected exception ' . get_class($e) . 
-								'. The music DB may have been left in an inconsistent state.');
+				$output->warning('Unexpected exception ' . get_class($e) . ' during Music disk-number-migration. ' . 
+								'The music DB may need to be rebuilt.');
 			}
 		}
 	}

@@ -1,3 +1,6 @@
+v0.13.2 2020-03-25
+ * fix SW update problems caused by the disk-number-migration script introduced in v0.13.1 (#748)
+
 v0.13.1 2020-03-22
  * do not treat each disc of a multi-disc album as a separate album (#680)
  * fix year tag not being extracted from M4A files (#744 by @ChrisJAllan)

@@ -72,7 +72,7 @@ class DiskNumberMigration implements IRepairStep {
 		$output->info("$n albums were updated with new hashes");
 
 		$n = $this->removeAlbumsWhichFailedMerging();
-		$output->info("$n albums were rmeoved because merging them failed; these need to be rescanned by the user");
+		$output->info("$n albums were removed because merging them failed; these need to be rescanned by the user");
 
 		$n = $this->removeDiskNumbersFromAlbums();
 		$output->info("obsolete disk number field was nullified in $n albums");

@@ -50,7 +50,9 @@ class DetailsHelper {
 			];
 
 			// binary data has to be encoded
-			$result['tags']['picture'] = self::encodePictureTag($result['tags']['picture']);
+			if (\array_key_exists('picture', $result['tags'])) {
+				$result['tags']['picture'] = self::encodePictureTag($result['tags']['picture']);
+			}
 
 			// 'streams' contains duplicate data
 			unset($result['fileinfo']['streams']);

@@ -47,7 +47,9 @@ abstract class BusinessLayer {
 	 * @param array $ids the ids of the entities which should be deleted
 	 */
 	public function deleteById($ids) {
-		$this->mapper->deleteById($ids);
+		if (count($ids) > 0) {
+			$this->mapper->deleteById($ids);
+		}
 	}
 
 	/**
@@ -76,7 +78,11 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 */
 	public function findById($ids, $userId=null) {
-		return $this->mapper->findById($ids, $userId);
+		if (count($ids) > 0) {
+			return $this->mapper->findById($ids, $userId);
+		} else {
+			return [];
+		}
 	}
 
 	/**

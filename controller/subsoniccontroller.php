@@ -650,6 +650,12 @@ class SubsonicController extends Controller {
 		});
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folderId, $this->userId);
 
+		// A folder may contain thousands of audio files, and getting artist and album data
+		// for each of those individually would take a lot of time and great many DB queries.
+		// To prevent having to do this in `trackToApi`, we fetch all the albums and artists
+		// in one go.
+		$this->injectAlbumsAndArtistsToTracks($tracks);
+
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
 			\array_map([$this, 'trackToApi'], $tracks)
@@ -671,6 +677,41 @@ class SubsonicController extends Controller {
 		}
 
 		return $this->subsonicResponse($content);
+	}
+
+	private function injectAlbumsAndArtistsToTracks(&$tracks) {
+		$albumIds = [];
+		$artistIds = [];
+
+		// get unique album and artist IDs
+		foreach ($tracks as $track) {
+			$albumIds[$track->getAlbumId()] = 1;
+			$artistIds[$track->getArtistId()] = 1;
+		}
+		$albumIds = \array_keys($albumIds);
+		$artistIds = \array_keys($artistIds);
+
+		// get the corresponding entities from the business layer
+		$albums = $this->albumBusinessLayer->findById($albumIds, $this->userId);
+		$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
+
+		// create hash tables "id => entity" for the albums and artists for fast access
+		$albumMap = self::createIdLookupTable($albums);
+		$artistMap = self::createIdLookupTable($artists);
+
+		// finally, set the references on the tracks
+		foreach ($tracks as &$track) {
+			$track->setAlbum($albumMap[$track->getAlbumId()]);
+			$track->setArtist($artistMap[$track->getArtistId()]);
+		}
+	}
+
+	private static function createIdLookupTable($array) {
+		$lut = [];
+		foreach ($array as $item) {
+			$lut[$item->getId()] = $item;
+		}
+		return $lut;
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
@@ -817,25 +858,31 @@ class SubsonicController extends Controller {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. 
-	 * @param Track $track The track entity must have an ablum reference. One is fetched from
-	 *                     AlbumBusinessLayer if not already present.
+	 * @param Track $track If the track entity has no album and/or artist references set, then
+	 *                     those are automatically fetched from the respective BusinessLayer modules.
 	 * @return array
 	 */
 	private function trackToApi($track) {
 		$albumId = $track->getAlbumId();
+
 		$album = $track->getAlbum();
 		if (empty($album)) {
 			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 			$track->setAlbum($album);
 		}
-		$trackArtist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+
+		$artist = $track->getArtist();
+		if (empty($artist)) {
+			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+			$track->setArtist($artist);
+		}
 
 		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
 			'title' => $track->getTitle(),
-			'artist' => $trackArtist->getNameString($this->l10n),
+			'artist' => $artist->getNameString($this->l10n),
 			'isDir' => false,
 			'album' => $album->getNameString($this->l10n),
 			//'genre' => '',

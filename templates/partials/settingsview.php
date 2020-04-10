@@ -25,7 +25,7 @@
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>
 	<div class="warning" translate>
-		Note that Music may not be compatible with all Ampahce/Subsonic clients. Check list of verified Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
+		Note that Music may not be compatible with all Ampache/Subsonic clients. Check list of verified Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
 	</div>
 	<div>
 		<code id="ampache-url" ng-bind="settings.ampacheUrl"></code>

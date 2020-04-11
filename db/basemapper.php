@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2018
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -20,7 +20,7 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 /**
  * Common base class for data access classes of the Music app
  */
-class BaseMapper extends Mapper {
+abstract class BaseMapper extends Mapper {
 
 	/**
 	 * @param IDBConnection $db
@@ -95,7 +95,7 @@ class BaseMapper extends Mapper {
 		try {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
-			$existingEntity = $this->findUniqueEntity($entity); // this should be implemented by the derived class
+			$existingEntity = $this->findUniqueEntity($entity);
 			$entity->setId($existingEntity->getId());
 			return $this->update($entity);
 		}
@@ -112,4 +112,12 @@ class BaseMapper extends Mapper {
 		}
 		return '(' . \implode(',', $questionMarks) . ')';
 	}
+
+	/**
+	 * Find an entity which has the same identity as the supplied entity.
+	 * How the identity of the entity is defined, depends on the derived concrete class.
+	 * @param Entity $entity
+	 * @return Entity
+	 */
+	abstract protected function findUniqueEntity($entity);
 }

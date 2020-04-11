@@ -37,8 +37,8 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param string $userId the user ID
 	 * @param integer $sortBy sort order of the result set
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Album[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
@@ -350,8 +350,8 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Album[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
@@ -366,7 +366,12 @@ class AlbumMapper extends BaseMapper {
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
-	public function findUniqueEntity(Album $album) {
+	/**
+	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
+	 * @param Album $album
+	 * @return Album
+	 */
+	protected function findUniqueEntity($album) {
 		return $this->findEntity(
 				'SELECT * FROM `*PREFIX*music_albums` WHERE `user_id` = ? AND `hash` = ?',
 				[$album->getUserId(), $album->getHash()]

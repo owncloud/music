@@ -73,8 +73,8 @@ class TrackMapper extends BaseMapper {
 	/**
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Track[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
@@ -204,8 +204,8 @@ class TrackMapper extends BaseMapper {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Track[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
@@ -313,7 +313,12 @@ class TrackMapper extends BaseMapper {
 		return $result;
 	}
 
-	public function findUniqueEntity(Track $track) {
+	/**
+	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
+	 * @param Track $track
+	 * @return Track
+	 */
+	protected function findUniqueEntity($track) {
 		return $this->findByFileId($track->getFileId(), $track->getUserId());
 	}
 }

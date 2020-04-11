@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -31,8 +33,8 @@ class ArtistMapper extends BaseMapper {
 	/**
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Artist[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
@@ -112,8 +114,8 @@ class ArtistMapper extends BaseMapper {
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Artist[]
 	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null) {
@@ -121,7 +123,12 @@ class ArtistMapper extends BaseMapper {
 		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
 	}
 
-	public function findUniqueEntity(Artist $artist) {
+	/**
+	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
+	 * @param Artist $artist
+	 * @return Artist
+	 */
+	protected function findUniqueEntity($artist) {
 		return $this->findEntity(
 				'SELECT * FROM `*PREFIX*music_artists` WHERE `user_id` = ? AND `hash` = ?',
 				[$artist->getUserId(), $artist->getHash()]

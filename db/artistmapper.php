@@ -62,20 +62,6 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer[] $artistIds
-	 * @param string $userId
-	 * @return Artist[]
-	 */
-	public function findMultipleById($artistIds, $userId) {
-		$sql = $this->makeSelectQuery('AND `artist`.`id` IN '
-			. $this->questionMarks(\count($artistIds))
-			. ' ORDER BY LOWER(`artist`.`name`)');
-		$params = $artistIds;
-		\array_unshift($params, $userId);
-		return $this->findEntities($sql, $params);
-	}
-
-	/**
 	 * @param string|null $artistName
 	 * @param string $userId
 	 * @param bool $fuzzy

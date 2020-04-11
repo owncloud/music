@@ -574,11 +574,11 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($this->userId))
 			->will($this->returnValue([$album1, $album2]));
 		$this->artistBusinessLayer->expects($this->at(0))
-			->method('findMultipleById')
+			->method('findById')
 			->with($this->equalTo([1]), $this->equalTo($this->userId))
 			->will($this->returnValue([$artist1]));
 		$this->artistBusinessLayer->expects($this->at(1))
-			->method('findMultipleById')
+			->method('findById')
 			->with($this->equalTo([3,5]), $this->equalTo($this->userId))
 			->will($this->returnValue([$artist2, $artist3]));
 		$this->trackBusinessLayer->expects($this->at(0))
@@ -704,7 +704,7 @@ class APIControllerTest extends ControllerTestUtility {
 			->with($this->equalTo($albumId), $this->equalTo($this->userId))
 			->will($this->returnValue($album));
 		$this->artistBusinessLayer->expects($this->once())
-			->method('findMultipleById')
+			->method('findById')
 			->with($this->equalTo([1]), $this->equalTo($this->userId))
 			->will($this->returnValue([$artist]));
 		$this->trackBusinessLayer->expects($this->once())

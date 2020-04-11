@@ -40,16 +40,6 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all artists with the given ids
-	 * @param array $artistIds the ids of the artists
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Artist[] artists
-	 */
-	public function findMultipleById($artistIds, $userId) {
-		return $this->mapper->findMultipleById($artistIds, $userId);
-	}
-
-	/**
 	 * Adds an artist if it does not exist already or updates an existing artist
 	 * @param string $name the name of the artist
 	 * @param string $userId the name of the user

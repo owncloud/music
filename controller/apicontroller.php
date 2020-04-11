@@ -256,7 +256,7 @@ class ApiController extends Controller {
 
 		if ($includeArtists) {
 			$artistIds = $album->getArtistIds();
-			$artists = $this->artistBusinessLayer->findMultipleById($artistIds, $this->userId);
+			$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
 			$albumInApi['artists'] = \array_map(function($a) {
 				return $a->toAPI($this->urlGenerator, $this->l10n);
 			}, $artists);

@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;

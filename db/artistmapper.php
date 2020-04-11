@@ -22,14 +22,6 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $condition
-	 */
-	private function makeSelectQuery($condition=null) {
-		return 'SELECT * FROM `*PREFIX*music_artists` `artist` '.
-			'WHERE `artist`.`user_id` = ? ' . $condition;
-	}
-
-	/**
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer|null $limit
@@ -37,8 +29,8 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->makeSelectQuery(
-				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`artist`.`name`)' : null);
+		$sql = $this->selectUserEntities(
+				'', ($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`name`)' : null);
 		$params = [$userId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -49,39 +41,13 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist[]
 	 */
 	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
-		$sql = $this->makeSelectQuery('AND EXISTS '.
+		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_albums` `album` '.
-				' WHERE `artist`.`id` = `album`.`album_artist_id`)');
-
-		if ($sortBy == SortBy::Name) {
-			$sql .= ' ORDER BY LOWER(`artist`.`name`)';
-		}
+				' WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)',
+				($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`name`)' : null);
 
 		$params = [$userId];
 		return $this->findEntities($sql, $params);
-	}
-
-	/**
-	 * @param string|null $artistName
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 */
-	protected function makeFindByNameSqlAndParams($artistName, $userId, $fuzzy = false) {
-		if ($artistName === null) {
-			$condition = 'AND `artist`.`name` IS NULL';
-			$params = [$userId];
-		} elseif ($fuzzy) {
-			$condition = 'AND LOWER(`artist`.`name`) LIKE LOWER(?)';
-			$params = [$userId, '%' . $artistName . '%'];
-		} else {
-			$condition = 'AND `artist`.`name` = ?';
-			$params = [$userId, $artistName];
-		}
-		$sql = $this->makeSelectQuery($condition . ' ORDER BY LOWER(`artist`.`name`)');
-		return [
-			'sql' => $sql,
-			'params' => $params,
-		];
 	}
 
 	/**
@@ -93,8 +59,19 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist[]
 	 */
 	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null) {
-		$sqlAndParams = $this->makeFindByNameSqlAndParams($artistName, $userId, $fuzzy);
-		return $this->findEntities($sqlAndParams['sql'], $sqlAndParams['params'], $limit, $offset);
+		if ($artistName === null) {
+			$condition = '`name` IS NULL';
+			$params = [$userId];
+		} elseif ($fuzzy) {
+			$condition = 'LOWER(`name`) LIKE LOWER(?)';
+			$params = [$userId, '%' . $artistName . '%'];
+		} else {
+			$condition = '`name` = ?';
+			$params = [$userId, $artistName];
+		}
+		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`name`)');
+
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
@@ -103,9 +80,7 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist
 	 */
 	protected function findUniqueEntity($artist) {
-		return $this->findEntity(
-				'SELECT * FROM `*PREFIX*music_artists` WHERE `user_id` = ? AND `hash` = ?',
-				[$artist->getUserId(), $artist->getHash()]
-		);
+		$sql = $this->selectUserEntities('`hash` = ?');
+		return $this->findEntity($sql, [$artist->getUserId(), $artist->getHash()]);
 	}
 }

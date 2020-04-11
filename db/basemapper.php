@@ -42,8 +42,8 @@ abstract class BaseMapper extends Mapper {
 	 * @return Entity
 	 */
 	public function find($id, $userId) {
-		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` = ? AND `user_id` = ?';
-		return $this->findEntity($sql, [$id, $userId]);
+		$sql = $this->selectUserEntities('`id` = ?');
+		return $this->findEntity($sql, [$userId, $id]);
 	}
 
 	/**
@@ -54,11 +54,15 @@ abstract class BaseMapper extends Mapper {
 	 */
 	public function findById($ids, $userId=null) {
 		$count = \count($ids);
-		$sql = 'SELECT * FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
-		if (!empty($userId)) {
-			$sql .= ' AND `user_id` = ?';
-			$ids[] = $userId;
+		$condition = '`id` IN '. $this->questionMarks($count);
+
+		if (empty($userId)) {
+			$sql = $this->selectEntities($condition);
+		} else {
+			$sql = $this->selectUserEntities($condition);
+			$ids = \array_merge([$userId], $ids);
 		}
+
 		return $this->findEntities($sql, $ids);
 	}
 
@@ -70,8 +74,7 @@ abstract class BaseMapper extends Mapper {
 	 * @return Entity[]
 	 */
 	public function findAllStarred($userId, $limit=null, $offset=null) {
-		$sql = "SELECT * FROM `{$this->getTableName()}` ".
-				"WHERE `starred` IS NOT NULL AND `user_id` = ?";
+		$sql = $this->selectUserEntities('`starred` IS NOT NULL');
 		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
@@ -144,6 +147,36 @@ abstract class BaseMapper extends Mapper {
 			$questionMarks[] = '?';
 		}
 		return '(' . \implode(',', $questionMarks) . ')';
+	}
+
+	/**
+	 * Build a SQL SELECT statement which selects all entities of the given user,
+	 * and optionally applies other conditions, too.
+	 * This is built upon `selectEntities` which may be overridden by the derived class.
+	 * @param string|null $condition Optional extra condition. This will get automatically
+	 *                               prefixed with ' AND ', so don't include that.
+	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
+	 *                               the conditions in the SQL statement
+	 */
+	protected function selectUserEntities($condition=null, $extension=null) {
+		$allConditions = '`user_id` = ?';
+
+		if (!empty($condition)) {
+			$allConditions .= " AND $condition";
+		}
+
+		return $this->selectEntities($allConditions, $extension);
+	}
+
+	/**
+	 * Build a SQL SELECT statement which selects all entities matching the given condition.
+	 * The derived class may override this if necessary.
+	 * @param string $condition This will get automatically prefixed with ' WHERE '
+	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
+	 *                               the conditions in the SQL statement
+	 */
+	protected function selectEntities($condition, $extension=null) {
+		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
 	}
 
 	/**

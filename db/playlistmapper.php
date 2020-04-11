@@ -24,15 +24,6 @@ class PlaylistMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $condition
-	 */
-	private function makeSelectQuery($condition=null) {
-		return 'SELECT `name`, `id`, `track_ids` ' .
-			'FROM `*PREFIX*music_playlists` ' .
-			'WHERE `user_id` = ? ' . $condition;
-	}
-
-	/**
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer|null $limit
@@ -40,8 +31,8 @@ class PlaylistMapper extends BaseMapper {
 	 * @return Playlist[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->makeSelectQuery(
-				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
+		$sql = $this->selectUserEntities(
+				'', $sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
 		);
 		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
@@ -56,12 +47,12 @@ class PlaylistMapper extends BaseMapper {
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
-			$condition = 'AND LOWER(`name`) LIKE LOWER(?) ';
+			$condition = 'LOWER(`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
 		} else {
-			$condition = 'AND `name` = ? ';
+			$condition = '`name` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`name`)');
+		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`name`)');
 		return $this->findEntities($sql, [$userId, $name], $limit, $offset);
 	}
 
@@ -70,9 +61,7 @@ class PlaylistMapper extends BaseMapper {
 	 * @return Playlist[]
 	 */
 	public function findListsContainingTrack($trackId) {
-		$sql = 'SELECT * ' .
-			'FROM `*PREFIX*music_playlists` ' .
-			'WHERE `track_ids` LIKE ?';
+		$sql = $this->selectEntities('`track_ids` LIKE ?');
 		$params = ['%|' . $trackId . '|%'];
 		return $this->findEntities($sql, $params);
 	}

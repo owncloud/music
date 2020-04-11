@@ -24,15 +24,6 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $condition
-	 * @return string
-	 */
-	private function makeSelectQuery($condition=null) {
-		return 'SELECT * FROM `*PREFIX*music_albums` `album`'.
-			'WHERE `album`.`user_id` = ? ' . $condition;
-	}
-
-	/**
 	 * returns all albums of a user
 	 *
 	 * @param string $userId the user ID
@@ -42,8 +33,8 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->makeSelectQuery(
-				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`album`.`name`)' : null);
+		$sql = $this->selectUserEntities(
+				'', $sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null);
 		$params = [$userId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -157,7 +148,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[]
 	 */
 	public function findAllByAlbumArtist($artistId, $userId) {
-		$sql = $this->makeSelectQuery('AND `album`.`album_artist_id` = ?');
+		$sql = $this->selectUserEntities('`album_artist_id` = ?');
 		$params = [$userId, $artistId];
 		return $this->findEntities($sql, $params);
 	}
@@ -171,22 +162,22 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[]
 	 */
 	public function findAlbum($albumName, $albumArtistId, $userId) {
-		$sql = $this->makeSelectQuery();
+		$sql = $this->selectUserEntities();
 		$params = [$userId];
 
 		// add artist id check
 		if ($albumArtistId === null) {
-			$sql .= 'AND `album`.`album_artist_id` IS NULL ';
+			$sql .= ' AND `album_artist_id` IS NULL ';
 		} else {
-			$sql .= 'AND `album`.`album_artist_id` = ? ';
+			$sql .= ' AND `album_artist_id` = ? ';
 			\array_push($params, $albumArtistId);
 		}
 
 		// add album name check
 		if ($albumName === null) {
-			$sql .= 'AND `album`.`name` IS NULL ';
+			$sql .= ' AND `name` IS NULL ';
 		} else {
-			$sql .= 'AND `album`.`name` = ? ';
+			$sql .= ' AND `name` = ? ';
 			\array_push($params, $albumName);
 		}
 
@@ -356,12 +347,12 @@ class AlbumMapper extends BaseMapper {
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
-			$condition = 'AND LOWER(`album`.`name`) LIKE LOWER(?) ';
+			$condition = 'LOWER(`name`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
 		} else {
-			$condition = 'AND `album`.`name` = ? ';
+			$condition = '`name` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`album`.`name`)');
+		$sql = $this->selectUserEntities($condition . 'ORDER BY LOWER(`name`)');
 		$params = [$userId, $name];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -372,9 +363,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album
 	 */
 	protected function findUniqueEntity($album) {
-		return $this->findEntity(
-				'SELECT * FROM `*PREFIX*music_albums` WHERE `user_id` = ? AND `hash` = ?',
-				[$album->getUserId(), $album->getHash()]
-		);
+		$sql = $this->selectUserEntities('`hash` = ?');
+		return $this->findEntity($sql, [$album->getUserId(), $album->getHash()]);
 	}
 }

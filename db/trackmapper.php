@@ -22,52 +22,17 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Override the base implementation
+	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
 	 * @param string $condition
+	 * @param string|null $extension
 	 */
-	private function makeSelectQueryWithoutUserId($condition) {
-		return 'SELECT `track`.*, `file`.`name` AS `filename`, `file`.`size` '.
-				'FROM `*PREFIX*music_tracks` `track` '.
-				'INNER JOIN `*PREFIX*filecache` `file` '.
-				'ON `track`.`file_id` = `file`.`fileid` '.
-				'WHERE ' . $condition;
-	}
-
-	/**
-	 * @param string $condition
-	 */
-	private function makeSelectQuery($condition=null) {
-		return $this->makeSelectQueryWithoutUserId('`track`.`user_id` = ? ' . $condition);
-	}
-
-	/**
-	 * Find a single entity by id and user_id
-	 * This has to be overridden from BaseMapper because we utilize also *PREFIX*filecache table.
-	 * @param integer $id
-	 * @param string $userId
-	 * @throws DoesNotExistException if the entity does not exist
-	 * @throws MultipleObjectsReturnedException if more than one entity exists
-	 * @return Track
-	 */
-	public function find($id, $userId) {
-		$sql = $this->makeSelectQuery('AND `track`.`id` = ?');
-		return $this->findEntity($sql, [$userId, $id]);
-	}
-
-	/**
-	 * Find all entities matching the given IDs. Specifying the owning user is optional.
-	 * This has to be overridden from BaseMapper because we utilize also *PREFIX*filecache table.
-	 * @param integer[] $ids  IDs of the entities to be found
-	 * @param string|null $userId
-	 * @return Entity[]
-	 */
-	public function findById($ids, $userId=null) {
-		$count = \count($ids);
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`id` IN '. $this->questionMarks($count));
-		if (!empty($userId)) {
-			$sql .= ' AND `user_id` = ?';
-			$ids[] = $userId;
-		}
-		return $this->findEntities($sql, $ids);
+	protected function selectEntities($condition, $extension=null) {
+		return "SELECT `track`.*, `file`.`name` AS `filename`, `file`.`size`
+				FROM `*PREFIX*music_tracks` `track`
+				INNER JOIN `*PREFIX*filecache` `file`
+				ON `track`.`file_id` = `file`.`fileid`
+				WHERE $condition $extension";
 	}
 
 	/**
@@ -78,8 +43,8 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->makeSelectQuery(
-				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`track`.`title`)' : null);
+		$sql = $this->selectUserEntities(
+				'', $sortBy == SortBy::Name ? 'ORDER BY LOWER(`track`.`title`)' : null);
 		$params = [$userId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -90,8 +55,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByArtist($artistId, $userId) {
-		$sql = $this->makeSelectQuery('AND `track`.`artist_id` = ? '.
-			'ORDER BY LOWER(`track`.`title`)');
+		$sql = $this->selectUserEntities('`artist_id` = ? ', 'ORDER BY LOWER(`track`.`title`)');
 		$params = [$userId, $artistId];
 		return $this->findEntities($sql, $params);
 	}
@@ -99,17 +63,20 @@ class TrackMapper extends BaseMapper {
 	/**
 	 * @param integer $albumId
 	 * @param string $userId
-	 * @param integer $artistId
+	 * @param integer|null $artistId
 	 * @return Track[]
 	 */
 	public function findAllByAlbum($albumId, $userId, $artistId = null) {
-		$sql = $this->makeSelectQuery('AND `track`.`album_id` = ? ');
+		$condition = '`track`.`album_id` = ?';
 		$params = [$userId, $albumId];
+
 		if ($artistId !== null) {
-			$sql .= 'AND `track`.`artist_id` = ? ';
-			\array_push($params, $artistId);
+			$condition .= ' AND `track`.`artist_id` = ? ';
+			$params[] = $artistId;
 		}
-		$sql .= 'ORDER BY `track`.`disk`, `track`.`number`, LOWER(`track`.`title`)';
+
+		$sql = $this->selectUserEntities($condition, 
+				'ORDER BY `track`.`disk`, `track`.`number`, LOWER(`track`.`title`)');
 		return $this->findEntities($sql, $params);
 	}
 
@@ -119,9 +86,8 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByFolder($folderId, $userId) {
-		$sql = $this->makeSelectQuery('AND `file`.`parent` = ? ');
+		$sql = $this->selectUserEntities('`file`.`parent` = ?', 'ORDER BY LOWER(`track`.`title`)');
 		$params = [$userId, $folderId];
-		$sql .= 'ORDER BY LOWER(`track`.`title`)';
 		return $this->findEntities($sql, $params);
 	}
 
@@ -146,7 +112,7 @@ class TrackMapper extends BaseMapper {
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
 	 */
 	public function findByFileId($fileId, $userId) {
-		$sql = $this->makeSelectQuery('AND `track`.`file_id` = ?');
+		$sql = $this->selectUserEntities('`track`.`file_id` = ?');
 		$params = [$userId, $fileId];
 		return $this->findEntity($sql, $params);
 	}
@@ -158,7 +124,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findByFileIds($fileIds, $userIds) {
-		$sql = $this->makeSelectQueryWithoutUserId(
+		$sql = $this->selectEntities(
 				'`track`.`user_id` IN ' . $this->questionMarks(\count($userIds)) .
 				' AND `track`.`file_id` IN '. $this->questionMarks(\count($fileIds)));
 		$params = \array_merge($userIds, $fileIds);
@@ -171,7 +137,7 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByFileIds($fileIds) {
-		$sql = $this->makeSelectQueryWithoutUserId('`track`.`file_id` IN '.
+		$sql = $this->selectEntities('`track`.`file_id` IN '.
 				$this->questionMarks(\count($fileIds)));
 		return $this->findEntities($sql, $fileIds);
 	}
@@ -210,12 +176,12 @@ class TrackMapper extends BaseMapper {
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		if ($fuzzy) {
-			$condition = 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
+			$condition = 'LOWER(`track`.`title`) LIKE LOWER(?) ';
 			$name = '%' . $name . '%';
 		} else {
-			$condition = 'AND `track`.`title` = ? ';
+			$condition = '`track`.`title` = ? ';
 		}
-		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`track`.`title`)');
+		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`track`.`title`)');
 		$params = [$userId, $name];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -226,10 +192,10 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByNameRecursive($name, $userId) {
-		$condition = ' AND (`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
+		$condition = '(`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
 						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
-						' LOWER(`track`.`title`) LIKE LOWER(?) ) ORDER BY LOWER(`track`.`title`)';
-		$sql = $this->makeSelectQuery($condition);
+						' LOWER(`track`.`title`) LIKE LOWER(?) )';
+		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`track`.`title`)');
 		$name = '%' . $name . '%';
 		$params = [$userId, $name, $name, $name];
 		return $this->findEntities($sql, $params);
@@ -247,16 +213,19 @@ class TrackMapper extends BaseMapper {
 		$params = [$userId];
 
 		if (!empty($name)) {
-			$sqlConditions .= 'AND LOWER(`track`.`title`) LIKE LOWER(?) ';
+			$sqlConditions .= 'LOWER(`track`.`title`) LIKE LOWER(?) ';
 			$params[] = $name;
 		}
 
 		if (!empty($artistName)) {
-			$sqlConditions .= 'AND `track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?))';
+			if (!empty($sqlConditions)) {
+				$sqlConditions .= ' AND ';
+			}
+			$sqlConditions .= '`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?))';
 			$params[] = $artistName;
 		}
 
-		$sql = $this->makeSelectQuery($sqlConditions);
+		$sql = $this->selectUserEntities($sqlConditions);
 		return $this->findEntity($sql, $params);
 	}
 

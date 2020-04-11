@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019, 2020
  */
 
 use Behat\Behat\Context\Context;
@@ -213,6 +213,15 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	 */
 	public function iStoreTheSecondFromTheXmlResult($attr, $entryType) {
 		$this->storeAttributeFromXmlResult($attr, $entryType, 1);
+	}
+
+	/**
+	 * @Given I have stored :attr from the :entryType matching :query
+	 */
+	public function iHaveStoredAttrFromTheEntryMatchingQuery($attr, $entryType, $query) {
+		$this->iSpecifyTheParameterWithValue('query', $query);
+		$this->iRequestTheResource('search2');
+		$this->iStoreTheFirstFromTheXmlResult($attr, $entryType);
 	}
 
 	/**

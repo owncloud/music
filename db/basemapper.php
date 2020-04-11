@@ -121,7 +121,7 @@ abstract class BaseMapper extends Mapper {
 	 * @return Entity[]
 	 */
 	public function findAllStarred($userId, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities('`starred` IS NOT NULL');
+		$sql = $this->selectUserEntities('`starred` IS NOT NULL', "ORDER BY LOWER(`{$this->nameColumn}`)");
 		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 

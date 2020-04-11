@@ -25,8 +25,7 @@ class ArtistMapper extends BaseMapper {
 	 * @param string $condition
 	 */
 	private function makeSelectQuery($condition=null) {
-		return 'SELECT `artist`.`name`, `artist`.`image`, `artist`.`id`, '.
-			'`artist`.`mbid`, `artist`.`hash` FROM `*PREFIX*music_artists` `artist` '.
+		return 'SELECT * FROM `*PREFIX*music_artists` `artist` '.
 			'WHERE `artist`.`user_id` = ? ' . $condition;
 	}
 

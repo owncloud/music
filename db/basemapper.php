@@ -22,6 +22,8 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  */
 abstract class BaseMapper extends Mapper {
 
+	const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
+
 	/**
 	 * @param IDBConnection $db
 	 * @param string $tableName
@@ -58,6 +60,19 @@ abstract class BaseMapper extends Mapper {
 			$ids[] = $userId;
 		}
 		return $this->findEntities($sql, $ids);
+	}
+
+	/**
+	 * Find all starred entities
+	 * @param string $userId
+	 * @param integer|null $limit
+	 * @param integer|null $offset
+	 * @return Entity[]
+	 */
+	public function findAllStarred($userId, $limit=null, $offset=null) {
+		$sql = "SELECT * FROM `{$this->getTableName()}` ".
+				"WHERE `starred` IS NOT NULL AND `user_id` = ?";
+		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
 	/**
@@ -99,6 +114,24 @@ abstract class BaseMapper extends Mapper {
 			$entity->setId($existingEntity->getId());
 			return $this->update($entity);
 		}
+	}
+
+	/**
+	 * Set the "starred" column of the given entities
+	 * @param DateTime|null $date
+	 * @param integer[] $ids
+	 * @param string $userId
+	 */
+	public function setStarredDate($date, $ids, $userId) {
+		$count = \count($ids);
+		if (!empty($date)) {
+			$date = $date->format(self::SQL_DATE_FORMAT);
+		}
+
+		$sql = "UPDATE `{$this->getTableName()}` SET `starred` = ? " .
+				"WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
+		$params = \array_merge([$date], $ids, [$userId]);
+		$this->execute($sql, $params);
 	}
 
 	/**

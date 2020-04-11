@@ -22,29 +22,31 @@ use \OCA\Music\Utility\Util;
 
 /**
  * @method string getName()
- * @method setName(string $name)
+ * @method void setName(string $name)
  * @method string getMbid()
- * @method setMbid(string $mbid)
+ * @method void setMbid(string $mbid)
  * @method array getYears()
- * @method setYears(array $years)
+ * @method void setYears(array $years)
  * @method int getDisk()
- * @method setDisk(int $discnumber)
+ * @method void setDisk(int $discnumber)
  * @method string getMbidGroup()
- * @method setMbidGroup(string $mbidGroup)
+ * @method void setMbidGroup(string $mbidGroup)
  * @method int getCoverFileId()
- * @method setCoverFileId(int $coverFileId)
+ * @method void setCoverFileId(int $coverFileId)
  * @method array getArtistIds()
- * @method setArtistIds(array $artistIds)
+ * @method void setArtistIds(array $artistIds)
  * @method string getUserId()
- * @method setUserId(string $userId)
+ * @method void setUserId(string $userId)
  * @method int getAlbumArtistId()
- * @method setAlbumArtistId(int $albumArtistId)
+ * @method void setAlbumArtistId(int $albumArtistId)
  * @method Artist getAlbumArtist()
- * @method setAlbumArtist(Artist $albumArtist)
+ * @method void setAlbumArtist(Artist $albumArtist)
  * @method string getHash()
- * @method setHash(string $hash)
+ * @method void setHash(string $hash)
  * @method int getNumberOfDisks()
- * @method setNumberOfDisks(int $count)
+ * @method void setNumberOfDisks(int $count)
+ * @method string getStarred()
+ * @method void setStarred(string $timestamp)
  */
 class Album extends Entity {
 	public $name;
@@ -55,6 +57,7 @@ class Album extends Entity {
 	public $userId;
 	public $albumArtistId;
 	public $hash;
+	public $starred;
 
 	// these don't come from the music_albums table
 	public $years;

@@ -47,7 +47,7 @@ abstract class BusinessLayer {
 	 * @param array $ids the ids of the entities which should be deleted
 	 */
 	public function deleteById($ids) {
-		if (count($ids) > 0) {
+		if (\count($ids) > 0) {
 			$this->mapper->deleteById($ids);
 		}
 	}
@@ -78,7 +78,7 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 */
 	public function findById($ids, $userId=null) {
-		if (count($ids) > 0) {
+		if (\count($ids) > 0) {
 			return $this->mapper->findById($ids, $userId);
 		} else {
 			return [];
@@ -89,8 +89,8 @@ abstract class BusinessLayer {
 	 * Finds all entities
 	 * @param string $userId the name of the user
 	 * @param integer $sortBy sort order of the result set
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
@@ -102,12 +102,45 @@ abstract class BusinessLayer {
 	 * @param string $name
 	 * @param string $userId
 	 * @param bool $fuzzy
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param integer|null $limit
+	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
 		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset);
+	}
+
+	/**
+	 * Find all starred entities
+	 * @param string $userId
+	 * @param integer|null $limit
+	 * @param integer|null $offset
+	 * @return Entity[]
+	 */
+	public function findAllStarred($userId, $limit=null, $offset=null) {
+		return $this->mapper->findAllStarred($userId, $limit, $offset);
+	}
+
+	/**
+	 * Set the given entities as "starred" on this date
+	 * @param integer[] $ids
+	 * @param string $userId
+	 */
+	public function setStarred($ids, $userId) {
+		if (\count($ids) > 0) {
+			$this->mapper->setStarredDate(new \DateTime(), $ids, $userId);
+		}
+	}
+
+	/**
+	 * Remove the "starred" status of the given entities
+	 * @param integer[] $ids
+	 * @param string $userId
+	 */
+	public function unsetStarred($ids, $userId) {
+		if (\count($ids) > 0) {
+			$this->mapper->setStarredDate(NULL, $ids, $userId);
+		}
 	}
 
 	/**
@@ -117,4 +150,5 @@ abstract class BusinessLayer {
 	public function count($userId) {
 		return $this->mapper->count($userId);
 	}
+
 }

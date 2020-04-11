@@ -62,6 +62,7 @@ class SubsonicController extends Controller {
 	private $userId;
 	private $format;
 	private $callback;
+	private $timezone;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -89,6 +90,12 @@ class SubsonicController extends Controller {
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
 		$this->logger = $logger;
+
+		// For timestamps in the Subsonic API, we would prefer to use the local timezone,
+		// but the core has set the default timezone as 'UTC'. Get the timezone from php.ini
+		// if available, and store it for later use.
+		$tz = \ini_get('date.timezone') ?: 'UTC';
+		$this->timezone = new \DateTimeZone($tz);
 	}
 
 	/**
@@ -371,12 +378,7 @@ class SubsonicController extends Controller {
 	 */
 	private function search2() {
 		$results = $this->doSearch();
-
-		return $this->subsonicResponse(['searchResult2' => [
-			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
-			'album' => \array_map([$this, 'albumToOldApi'], $results['albums']),
-			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
-		]]);
+		return $this->searchResponse('searchResult2', $results, /*$useNewApi=*/false);
 	}
 
 	/**
@@ -384,12 +386,7 @@ class SubsonicController extends Controller {
 	 */
 	private function search3() {
 		$results = $this->doSearch();
-
-		return $this->subsonicResponse(['searchResult3' => [
-			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
-			'album' => \array_map([$this, 'albumToNewApi'], $results['albums']),
-			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
-		]]);
+		return $this->searchResponse('searchResult3', $results, /*$useNewApi=*/true);
 	}
 
 	/**
@@ -519,29 +516,43 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function star() {
+		$targetIds = $this->getStarringParameters();
+
+		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $this->userId);
+		$this->albumBusinessLayer->setStarred($targetIds['albums'], $this->userId);
+		$this->artistBusinessLayer->setStarred($targetIds['artists'], $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function unstar() {
+		$targetIds = $this->getStarringParameters();
+
+		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $this->userId);
+		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $this->userId);
+		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getStarred() {
-		// TODO: dummy implementation
-		return $this->subsonicResponse([
-			'starred' => [
-				'artist' => [],
-				'album' => [],
-				'song' => []
-			]
-		]);
+		$starred = $this->doGetStarred();
+		return $this->searchResponse('starred', $starred, /*$useNewApi=*/false);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
 	private function getStarred2() {
-		// TODO: dummy implementation
-		return $this->subsonicResponse([
-			'starred2' => [
-				'artist' => [],
-				'album' => [],
-				'song' => []
-			]
-		]);
+		$starred = $this->doGetStarred();
+		return $this->searchResponse('starred2', $starred, /*$useNewApi=*/true);
 	}
 
 	/**
@@ -568,6 +579,48 @@ class SubsonicController extends Controller {
 		}
 
 		return $param;
+	}
+
+	/**
+	 * Get parameters used in the `star` and `unstar` API methods
+	 */
+	private function getStarringParameters() {
+		// album IDs from newer clients
+		$albumIds = $this->getRepeatedParam('albumId');
+		$albumIds = \array_map('self::ripIdPrefix', $albumIds);
+
+		// artist IDs from newer clients
+		$artistIds = $this->getRepeatedParam('artistId');
+		$artistIds = \array_map('self::ripIdPrefix', $artistIds);
+
+		// song IDs from newer clients and song/folder/album/artist IDs from older clients
+		$ids = $this->getRepeatedParam('id');
+
+		$trackIds = [];
+
+		foreach ($ids as $prefixedId) {
+			$parts = \explode('-', $prefixedId);
+			$type = $parts[0];
+			$id = $parts[1];
+
+			if ($type == 'track') {
+				$trackIds[] = $id;
+			} elseif ($type == 'album') {
+				$albumIds[] = $id;
+			} elseif ($type == 'artist') {
+				$artistIds[] = $id;
+			} elseif ($type == 'folder') {
+				throw new SubsonicException('Starring folders is not supported', 0);
+			} else {
+				throw new SubsonicException("Unexpected ID format: $prefixedId", 0);
+			}
+		}
+
+		return [
+			'tracks' => $trackIds,
+			'albums' => $albumIds,
+			'artists' => $artistIds
+		];
 	}
 
 	/** 
@@ -788,11 +841,17 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function artistToApi($artist) {
-		return [
+		$result = [
 			'name' => $artist->getNameString($this->l10n),
 			'id' => 'artist-' . $artist->getId(),
 			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
 		];
+
+		if ($artist->getStarred() != null) {
+			$result['starred'] = $this->formatDateTime($artist->getStarred());
+		}
+
+		return $result;
 	}
 
 	/**
@@ -819,6 +878,10 @@ class SubsonicController extends Controller {
 
 		if (!empty($album->getCoverFileId())) {
 			$result['coverArt'] = $album->getId();
+		}
+
+		if ($album->getStarred() != null) {
+			$result['starred'] = $this->formatDateTime($album->getStarred());
 		}
 
 		return $result;
@@ -849,6 +912,10 @@ class SubsonicController extends Controller {
 
 		if (!empty($album->getCoverFileId())) {
 			$result['coverArt'] = $album->getId();
+		}
+
+		if ($album->getStarred() != null) {
+			$result['starred'] = $this->formatDateTime($album->getStarred());
 		}
 
 		return $result;
@@ -908,6 +975,10 @@ class SubsonicController extends Controller {
 			$result['track'] = $trackNumber;
 		}
 
+		if ($track->getStarred() != null) {
+			$result['starred'] = $this->formatDateTime($track->getStarred());
+		}
+
 		return $result;
 	}
 
@@ -947,6 +1018,9 @@ class SubsonicController extends Controller {
 				$albums = self::randomItems($allAlbums, $size);
 				// Note: offset is not supported on this type
 				break;
+			case 'starred':
+				$albums = $this->albumBusinessLayer->findAllStarred($this->userId, $size, $offset);
+				break;
 			case 'alphabeticalByName':
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $size, $offset);
 				break;
@@ -955,7 +1029,6 @@ class SubsonicController extends Controller {
 			case 'highest':
 			case 'frequent':
 			case 'recent':
-			case 'starred':
 			case 'byYear':
 			case 'byGenre':
 			default:
@@ -991,6 +1064,36 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Common logic for getStarred and getStarred2
+	 * @return array
+	 */
+	private function doGetStarred() {
+		return [
+			'artists' => $this->artistBusinessLayer->findAllStarred($this->userId),
+			'albums' => $this->albumBusinessLayer->findAllStarred($this->userId),
+			'tracks' => $this->trackBusinessLayer->findAllStarred($this->userId)
+		];
+	}
+
+	/**
+	 * Common response building logic for search2, search3, getStarred, and getStarred2
+	 * @param string $title Name of the main node in the response message
+	 * @param array $results Search results with keys 'artists', 'albums', and 'tracks'
+	 * @param boolean $useNewApi Set to true for search3 and getStarred3. There is a difference
+	 *                           in the formatting of the album nodes.
+	 * @return \OCP\AppFramework\Http\Response
+	 */
+	private function searchResponse($title, $results, $useNewApi) {
+		$albumMapFunc = $useNewApi ? 'albumToNewApi' : 'albumToOldApi';
+
+		return $this->subsonicResponse([$title => [
+			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
+			'album' => \array_map([$this, $albumMapFunc], $results['albums']),
+			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+		]]);
+	}
+
+	/**
 	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
 	 * @param string $id
 	 * @return integer
@@ -1012,6 +1115,12 @@ class SubsonicController extends Controller {
 		}
 
 		return $result;
+	}
+
+	private function formatDateTime($dateString) {
+		$dateTime = new \DateTime($dateString);
+		$dateTime->setTimezone($this->timezone);
+		return $dateTime->format('Y-m-d\TH:i:s');
 	}
 
 	private function subsonicResponse($content, $status = 'ok') {

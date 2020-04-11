@@ -21,15 +21,17 @@ use \OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getName()
- * @method setName(string $name)
+ * @method void setName(string $name)
  * @method string getImage()
- * @method setImage(string $image)
+ * @method void setImage(string $image)
  * @method string getUserId()
- * @method setUserId(string $userId)
+ * @method void setUserId(string $userId)
  * @method string getMbid()
- * @method setMbid(string $mbid)
+ * @method void setMbid(string $mbid)
  * @method string getHash()
- * @method setHash(string $hash)
+ * @method void setHash(string $hash)
+ * @method string getStarred()
+ * @method void setStarred(string $timestamp)
  */
 class Artist extends Entity {
 	public $name;
@@ -37,6 +39,7 @@ class Artist extends Entity {
 	public $userId;
 	public $mbid;
 	public $hash;
+	public $starred;
 
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(

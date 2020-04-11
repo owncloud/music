@@ -47,6 +47,11 @@
 				<length>32</length>
 				<comments>Unique hash formed from the artist name. The name field as such is too long to be indexed.</comments>
 			</field>
+			<field>
+				<name>starred</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
 
 			<index>
 				<name>user_id_hash_idx</name>
@@ -152,6 +157,11 @@
 				<notnull>true</notnull>
 				<length>32</length>
 				<comments>Unique hash formed from the fields composing the identity of the album</comments>
+			</field>
+			<field>
+				<name>starred</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
 			</field>
 
 			<index>
@@ -259,6 +269,11 @@
 				<type>text</type>
 				<notnull>false</notnull>
 				<length>36</length>
+			</field>
+			<field>
+				<name>starred</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
 			</field>
 
 			<index>

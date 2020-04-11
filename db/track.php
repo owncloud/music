@@ -22,35 +22,39 @@ use \OCA\Music\Utility\Util;
 
 /**
  * @method string getTitle()
- * @method setTitle(string $title)
+ * @method void setTitle(string $title)
  * @method int getNumber()
- * @method setNumber(int $number)
+ * @method void setNumber(int $number)
  * @method int getDisk()
- * @method setDisk(int $disk)
+ * @method void setDisk(int $disk)
  * @method int getYear()
- * @method setYear(int $year)
+ * @method void setYear(int $year)
  * @method int getArtistId()
- * @method setArtistId(int $artistId)
+ * @method void setArtistId(int $artistId)
  * @method Artist getArtist()
- * @method setArtist(Artist $artist)
+ * @method void setArtist(Artist $artist)
  * @method int getAlbumId()
- * @method setAlbumId(int $albumId)
+ * @method void setAlbumId(int $albumId)
  * @method Album getAlbum()
- * @method setAlbum(Album $album)
+ * @method void setAlbum(Album $album)
  * @method int getLength()
- * @method setLength(int $length)
+ * @method void setLength(int $length)
  * @method int getFileId()
- * @method setFileId(int $fileId)
+ * @method void setFileId(int $fileId)
  * @method int getBitrate()
- * @method setBitrate(int $bitrate)
+ * @method void setBitrate(int $bitrate)
  * @method string getMimetype()
- * @method setMimetype(string $mimetype)
+ * @method void setMimetype(string $mimetype)
  * @method string getUserId()
- * @method setUserId(string $userId)
+ * @method void setUserId(string $userId)
+ * @method string getMbid()
+ * @method void setMbid(string $mbid)
+ * @method string getStarred()
+ * @method void setStarred(string $timestamp)
  * @method string getFilename()
- * @method setFilename(string $filename)
+ * @method void setFilename(string $filename)
  * @method int getSize()
- * @method setSize(int $size)
+ * @method void setSize(int $size)
  */
 class Track extends Entity {
 	public $title;
@@ -66,6 +70,7 @@ class Track extends Entity {
 	public $mimetype;
 	public $userId;
 	public $mbid;
+	public $starred;
 	public $filename;
 	public $size;
 

@@ -20,40 +20,7 @@ use OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist');
-	}
-
-	/**
-	 * @param string $userId
-	 * @param integer $sortBy sort order of the result set
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Playlist[]
-	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities(
-				'', $sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
-		);
-		return $this->findEntities($sql, [$userId], $limit, $offset);
-	}
-
-	/**
-	 * @param string $name
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Playlist[]
-	 */
-	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
-		if ($fuzzy) {
-			$condition = 'LOWER(`name`) LIKE LOWER(?) ';
-			$name = '%' . $name . '%';
-		} else {
-			$condition = '`name` = ? ';
-		}
-		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`name`)');
-		return $this->findEntities($sql, [$userId, $name], $limit, $offset);
+		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist', 'name');
 	}
 
 	/**
@@ -74,6 +41,6 @@ class PlaylistMapper extends BaseMapper {
 	protected function findUniqueEntity($playlist) {
 		// The playlist table has no unique constraints, and hence, this function
 		// should never be called.
-		throw new \BadMethodCallException("not supported");
+		throw new \BadMethodCallException('not supported');
 	}
 }

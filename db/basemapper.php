@@ -24,13 +24,16 @@ abstract class BaseMapper extends Mapper {
 
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
 
+	protected $nameColumn;
+
 	/**
 	 * @param IDBConnection $db
 	 * @param string $tableName
 	 * @param string $entityClass
 	 */
-	public function __construct(IDBConnection $db, $tableName, $entityClass=null) {
+	public function __construct(IDBConnection $db, $tableName, $entityClass, $nameColumn) {
 		parent::__construct($db, $tableName, $entityClass);
+		$this->nameColumn = $nameColumn;
 	}
 
 	/**
@@ -67,7 +70,51 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
-	 * Find all starred entities
+	 * Find all user's entities
+	 * 
+	 * @param string $userId
+	 * @param integer $sortBy sort order of the result set
+	 * @param integer|null $limit
+	 * @param integer|null $offset
+	 * @return Entity[]
+	 */
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities(
+				'', $sortBy == SortBy::Name ? "ORDER BY LOWER(`{$this->nameColumn}`)" : null);
+		$params = [$userId];
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
+	 * Find all user's entities matching the given name
+	 * 
+	 * @param string|null $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 * @param integer|null $limit
+	 * @param integer|null $offset
+	 * @return Artist[]
+	 */
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+		$nameCol = $this->nameColumn;
+		if ($name === null) {
+			$condition = "`$nameCol` IS NULL";
+			$params = [$userId];
+		} elseif ($fuzzy) {
+			$condition = "LOWER(`$nameCol`) LIKE LOWER(?)";
+			$params = [$userId, "%$name%"];
+		} else {
+			$condition = "`$nameCol` = ?";
+			$params = [$userId, $name];
+		}
+		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER(`$nameCol`)");
+
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
+	 * Find all user's starred entities
+	 * 
 	 * @param string $userId
 	 * @param integer|null $limit
 	 * @param integer|null $offset

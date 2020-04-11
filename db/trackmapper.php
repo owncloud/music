@@ -18,7 +18,7 @@ use OCP\IDBConnection;
 
 class TrackMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track');
+		parent::__construct($db, 'music_tracks', '\OCA\Music\Db\Track', 'title');
 	}
 
 	/**
@@ -33,20 +33,6 @@ class TrackMapper extends BaseMapper {
 				INNER JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`
 				WHERE $condition $extension";
-	}
-
-	/**
-	 * @param string $userId
-	 * @param integer $sortBy sort order of the result set
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Track[]
-	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities(
-				'', $sortBy == SortBy::Name ? 'ORDER BY LOWER(`track`.`title`)' : null);
-		$params = [$userId];
-		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
@@ -164,26 +150,6 @@ class TrackMapper extends BaseMapper {
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
 		return $row['count'];
-	}
-
-	/**
-	 * @param string $name
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Track[]
-	 */
-	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
-		if ($fuzzy) {
-			$condition = 'LOWER(`track`.`title`) LIKE LOWER(?) ';
-			$name = '%' . $name . '%';
-		} else {
-			$condition = '`track`.`title` = ? ';
-		}
-		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`track`.`title`)');
-		$params = [$userId, $name];
-		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

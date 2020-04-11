@@ -18,21 +18,7 @@ use OCP\IDBConnection;
 
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist');
-	}
-
-	/**
-	 * @param string $userId
-	 * @param integer $sortBy sort order of the result set
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Artist[]
-	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities(
-				'', ($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`name`)' : null);
-		$params = [$userId];
-		return $this->findEntities($sql, $params, $limit, $offset);
+		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist', 'name');
 	}
 
 	/**
@@ -48,30 +34,6 @@ class ArtistMapper extends BaseMapper {
 
 		$params = [$userId];
 		return $this->findEntities($sql, $params);
-	}
-
-	/**
-	 * @param string|null $artistName
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Artist[]
-	 */
-	public function findAllByName($artistName, $userId, $fuzzy = false, $limit=null, $offset=null) {
-		if ($artistName === null) {
-			$condition = '`name` IS NULL';
-			$params = [$userId];
-		} elseif ($fuzzy) {
-			$condition = 'LOWER(`name`) LIKE LOWER(?)';
-			$params = [$userId, '%' . $artistName . '%'];
-		} else {
-			$condition = '`name` = ?';
-			$params = [$userId, $artistName];
-		}
-		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`name`)');
-
-		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

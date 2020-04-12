@@ -106,13 +106,16 @@ class AmpacheController extends Controller {
 	public function ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
 		$this->logger->log("Ampache action '$action' requested", 'debug');
 
+		$limit = self::validateLimitOrOffset($limit);
+		$offset = self::validateLimitOrOffset($offset);
+
 		switch ($action) {
 			case 'handshake':
 				return $this->handshake($user, $timestamp, $auth);
 			case 'ping':
 				return $this->ping($auth);
 			case 'artists':
-				return $this->artists($filter, $exact);
+				return $this->artists($filter, $exact, $limit, $offset);
 			case 'artist':
 				return $this->artist($filter);
 			case 'artist_albums':
@@ -120,7 +123,7 @@ class AmpacheController extends Controller {
 			case 'album_songs':
 				return $this->album_songs($filter, $auth);
 			case 'albums':
-				return $this->albums($filter, $exact, $auth);
+				return $this->albums($filter, $exact, $limit, $offset, $auth);
 			case 'album':
 				return $this->album($filter, $auth);
 			case 'artist_songs':
@@ -132,11 +135,11 @@ class AmpacheController extends Controller {
 			case 'search_songs':
 				return $this->search_songs($filter, $auth);
 			case 'playlists':
-				return $this->playlists($filter, $exact);
+				return $this->playlists($filter, $exact, $limit, $offset);
 			case 'playlist':
 				return $this->playlist($filter);
 			case 'playlist_songs':
-				return $this->playlist_songs($filter, $auth);
+				return $this->playlist_songs($filter, $limit, $offset, $auth);
 			# non Ampache API action - used for provide the file
 			case 'play':
 				return $this->play($filter);
@@ -189,8 +192,8 @@ class AmpacheController extends Controller {
 		]]);
 	}
 
-	protected function artists($filter, $exact) {
-		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact);
+	protected function artists($filter, $exact, $limit, $offset) {
+		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderArtists($artists);
 	}
 
@@ -237,10 +240,9 @@ class AmpacheController extends Controller {
 	protected function songs($filter, $exact, $limit, $offset, $auth) {
 
 		// optimized handling for fetching the whole library
+		// note: the ordering of the songs differs between these two cases
 		if (empty($filter) && !$limit && !$offset) {
-			$userId = $this->ampacheUser->getUserId();
-			$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
-			\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+			$tracks = $this->getAllTracks();
 		}
 		// general case
 		else {
@@ -258,8 +260,8 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($tracks, $auth);
 	}
 
-	protected function albums($filter, $exact, $auth) {
-		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact);
+	protected function albums($filter, $exact, $limit, $offset, $auth) {
+		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderAlbums($albums, $auth);
 	}
 
@@ -269,12 +271,12 @@ class AmpacheController extends Controller {
 		return $this->renderAlbums([$album], $auth);
 	}
 
-	protected function playlists($filter, $exact) {
+	protected function playlists($filter, $exact, $limit, $offset) {
 		$userId = $this->ampacheUser->getUserId();
-		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact);
+		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset);
 
-		// append "All tracks" if not searching by name
-		if (empty($filter)) {
+		// append "All tracks" if not searching by name, and it is not off-limit
+		if (empty($filter) && ($limit === null || \count($playlists) < $limit)) {
 			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}
 
@@ -291,16 +293,17 @@ class AmpacheController extends Controller {
 		return $this->renderPlaylists([$playlist]);
 	}
 
-	protected function playlist_songs($listId, $auth) {
+	protected function playlist_songs($listId, $limit, $offset, $auth) {
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
-			return $this->songs(null, false, null, null, $auth);
+			$playlistTracks = $this->getAllTracks();
+			$playlistTracks = \array_slice($playlistTracks, $offset, $limit);
 		}
 		else {
 			$userId = $this->ampacheUser->getUserId();
-			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId);
+			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);
 			$this->injectArtistAndAlbum($playlistTracks);
-			return $this->renderSongs($playlistTracks, $auth);
 		}
+		return $this->renderSongs($playlistTracks, $auth);
 	}
 
 	protected function play($trackId) {
@@ -394,16 +397,24 @@ class AmpacheController extends Controller {
 
 		if ($filter) {
 			$fuzzy = !((boolean) $exact);
-			return $businessLayer->findAllByName($filter, $userId, $fuzzy);
+			return $businessLayer->findAllByName($filter, $userId, $fuzzy, $limit, $offset);
 		} else {
-			if ($limit === 0) {
-				$limit = null;
-			}
-			if ($offset === 0) {
-				$offset = null;
-			}
 			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset);
 		}
+	}
+
+	/**
+	 * Getting all tracks with this helper is more efficient than with `findEntities`
+	 * followed by `injectArtistAndAlbum`. This is because, under the hood, the albums
+	 * and artists are fetched with a single DB query instead of fetching each separately.
+	 * 
+	 * The result set is ordered first by artist and then by song title.
+	 */
+	private function getAllTracks() {
+		$userId = $this->ampacheUser->getUserId();
+		$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
+		\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+		return $tracks;
 	}
 
 	private static function createAmpacheActionUrl($urlGenerator, $action, $filter, $auth) {
@@ -416,6 +427,20 @@ class AmpacheController extends Controller {
 			return self::createAmpacheActionUrl($urlGenerator, '_get_cover', $album->getId(), $auth);
 		} else {
 			return '';
+		}
+	}
+
+	/**
+	 * Any non-integer values and integer value 0 are converted to null to
+	 * indicate "no limit" or "no offset".
+	 * @param string $value
+	 * @return integer|null
+	 */
+	private static function validateLimitOrOffset($value) {
+		if (\ctype_digit(\strval($value)) && $value !== 0) {
+			return \intval($value);
+		} else {
+			return null;
 		}
 	}
 

@@ -96,11 +96,16 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * get list of Track objects belonging to a given playlist
 	 * @param int $playlistId
 	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
 	 * @return Track[]
 	 */
-	public function getPlaylistTracks($playlistId, $userId) {
+	public function getPlaylistTracks($playlistId, $userId, $limit=null, $offset=null) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
+
+		$trackIds = \array_slice($trackIds, \intval($offset), $limit);
+
 		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $userId);
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.

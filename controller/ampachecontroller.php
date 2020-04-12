@@ -104,6 +104,8 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	public function ampache($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+		$this->logger->log("Ampache action '$action' requested", 'debug');
+
 		switch ($action) {
 			case 'handshake':
 				return $this->handshake($user, $timestamp, $auth);
@@ -141,7 +143,8 @@ class AmpacheController extends Controller {
 			case '_get_cover':
 				return $this->get_cover($filter);
 		}
-		$this->logger->log("Unsupported Ampache action '$action' requested", 'debug');
+
+		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
 		throw new AmpacheException('Action not supported', 405);
 	}
 

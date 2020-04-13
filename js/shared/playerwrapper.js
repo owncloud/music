@@ -7,7 +7,7 @@
  * @author Pellaeon Lin <pellaeon@cnmc.tw>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Pellaeon Lin 2015
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 function PlayerWrapper() {
@@ -15,6 +15,7 @@ function PlayerWrapper() {
 	var m_aurora = {};
 	var m_sm2 = {};
 	var m_sm2ready = false;
+	var m_position = 0;
 	var m_duration = 0;
 	var m_volume = 100;
 
@@ -74,21 +75,34 @@ function PlayerWrapper() {
 		return m_underlyingPlayer == 'sm2';
 	};
 
-	this.seek = function(percentage) {
+	this.seekMsecs = function(msecs) {
 		if (this.seekingSupported()) {
-			console.log('seek to '+percentage);
-			switch(m_underlyingPlayer) {
+			switch (m_underlyingPlayer) {
 				case 'sm2':
-					m_sm2.setPosition('ownCloudSound', percentage * m_duration);
+					m_sm2.setPosition('ownCloudSound', msecs);
 					break;
 				case 'aurora':
-					m_aurora.seek(percentage * m_duration);
+					m_aurora.seek(msecs);
 					break;
 			}
 		}
 		else {
 			console.log('seeking is not supported for this file');
 		}
+	};
+
+	this.seek = function(ratio) {
+		this.seekMsecs(ratio * m_duration);
+	};
+
+	this.seekForward = function(msecs /*optional*/) {
+		msecs = msecs || 10000;
+		this.seekMsecs(m_position + msecs);
+	};
+
+	this.seekBackward = function(msecs /*optional*/) {
+		msecs = msecs || 10000;
+		this.seekMsecs(m_position - msecs);
 	};
 
 	this.setVolume = function(percentage) {
@@ -133,7 +147,8 @@ function PlayerWrapper() {
 					id: 'ownCloudSound',
 					url: url,
 					whileplaying: function() {
-						self.trigger('progress', this.position);
+						m_position = this.position;
+						self.trigger('progress', m_position);
 					},
 					whileloading: function() {
 						m_duration = this.durationEstimate;
@@ -175,6 +190,7 @@ function PlayerWrapper() {
 					self.trigger('buffer', percent);
 				});
 				m_aurora.on('progress', function(currentTime) {
+					m_position = currentTime;
 					self.trigger('progress', currentTime);
 				});
 				m_aurora.on('ready', function() {

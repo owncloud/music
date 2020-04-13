@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 
@@ -56,7 +56,6 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.setTime(currentTime/1000, $scope.position.total);
 	});
 	onPlayerEvent('end', function() {
-		$scope.setPlay(false);
 		$scope.next();
 	});
 	onPlayerEvent('duration', function(msecs) {
@@ -98,24 +97,22 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	function setCurrentTrack(playlistEntry) {
 		var track = playlistEntry ? playlistEntry.track : null;
-		$scope.currentTrack = track;
-		$scope.player.stop();
-		$scope.setPlay(false);
+
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
-			$scope.currentAlbum = track.album;
 			$scope.setLoading(true);
 			playTrack(track);
 		} else {
-			$scope.currentAlbum = null;
-			// switch initial state
-			$rootScope.started = false;
+			$scope.stop();
 		}
 	}
 
 	var pathRequestTimer = null;
 	function playTrack(track) {
+		$scope.currentTrack = track;
+		$scope.currentAlbum = track.album;
+
 		// Execute the action with small delay. This is to limit the number of GET requests
 		// when repeatedly changing the playing track like when rapidly and repeatedly clicking
 		// the Next button. Too high number of simultaneous GET requests could easily jam a
@@ -139,7 +136,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 						$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
 						$scope.player.play();
-						$scope.setPlay(true);
+						$rootScope.playing = true;
 
 						pathRequestTimer = null;
 					}
@@ -147,10 +144,6 @@ function ($scope, $rootScope, playlistService, libraryService,
 			);
 		}, 300);
 	}
-
-	$scope.setPlay = function(playing) {
-		$rootScope.playing = playing;
-	};
 
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
@@ -189,19 +182,19 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.position.bufferPercent = Math.min(100, Math.round(percent)) + '%';
 	};
 
-	$scope.toggle = function(forcePlay) {
-		forcePlay = forcePlay || false;
-		if ($scope.currentTrack === null) {
-			// nothing to do
-			return null;
-		}
-		if (forcePlay) {
-			$scope.player.play();
-			$scope.setPlay(true);
-		} else {
+	$scope.toggle = function() {
+		if ($scope.currentTrack !== null) {
 			$scope.player.togglePlayback();
 			$rootScope.playing = !$rootScope.playing;
 		}
+	};
+
+	$scope.stop = function() {
+		$rootScope.playing = false;
+		$scope.player.stop();
+		$scope.currentTrack = null;
+		$scope.currentAlbum = null;
+		$rootScope.started = false;
 	};
 
 	$scope.next = function() {
@@ -235,9 +228,17 @@ function ($scope, $rootScope, playlistService, libraryService,
 	};
 
 	$scope.seek = function($event) {
-		var offsetX = $event.offsetX || $event.originalEvent.layerX,
-			percentage = offsetX / $event.currentTarget.clientWidth;
-		$scope.player.seek(percentage);
+		var offsetX = $event.offsetX || $event.originalEvent.layerX;
+		var ratio = offsetX / $event.currentTarget.clientWidth;
+		$scope.player.seek(ratio);
+	};
+
+	$scope.seekBackward = function() {
+		$scope.player.seekBackward();
+	};
+
+	$scope.seekForward = function() {
+		$scope.player.seekForward();
 	};
 
 	playlistService.subscribe('play', function() {
@@ -278,4 +279,43 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 		return true;
 	});
+
+	/**
+	 * Integration to the media control panel available on Chrome starting from version 73. 
+	 * It should be available also on Firefox starting from version 76.
+	 * This brings the bindings with the special multimedia keys possibly present on the keyboard,
+	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
+	 */ 
+	if ('mediaSession' in navigator) {
+		var registerMediaControlHandler = function(action, handler) {
+			try {
+				navigator.mediaSession.setActionHandler(action, function() { $timeout(handler); });
+			} catch (error) {
+				console.log("The media control '" + action + "' is not supported by the browser");
+			}
+		};
+
+		registerMediaControlHandler('play', $scope.toggle);
+		registerMediaControlHandler('pause', $scope.toggle);
+		registerMediaControlHandler('stop', $scope.stop);
+		registerMediaControlHandler('seekbackward', $scope.seekBackward);
+		registerMediaControlHandler('seekforward', $scope.seekForward);
+		registerMediaControlHandler('previoustrack', $scope.prev);
+		registerMediaControlHandler('nexttrack', $scope.next);
+
+		$scope.$watch('currentTrack', function(track) {
+			if (track) {
+				navigator.mediaSession.metadata = new MediaMetadata({
+					title: track.title,
+					artist: track.artistName,
+					album: track.album.name,
+					artwork: [{
+						sizes: "190x190",
+						src: track.album.cover,
+						type: ""
+					}]
+				});
+			}
+		});
+	}
 }]);

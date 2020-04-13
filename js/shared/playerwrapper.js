@@ -32,7 +32,7 @@ function PlayerWrapper() {
 	};
 
 	this.play = function() {
-		switch(m_underlyingPlayer) {
+		switch (m_underlyingPlayer) {
 			case 'sm2':
 				m_sm2.play('ownCloudSound');
 				break;
@@ -43,13 +43,13 @@ function PlayerWrapper() {
 	};
 
 	this.stop = function() {
-		switch(m_underlyingPlayer) {
+		switch (m_underlyingPlayer) {
 			case 'sm2':
 				m_sm2.stop('ownCloudSound');
 				m_sm2.destroySound('ownCloudSound');
 				break;
 			case 'aurora':
-				if(m_aurora.asset !== undefined) {
+				if (m_aurora.asset !== undefined) {
 					// check if player's constructor has been called,
 					// if so, stop() will be available
 					m_aurora.stop();
@@ -59,7 +59,7 @@ function PlayerWrapper() {
 	};
 
 	this.togglePlayback = function() {
-		switch(m_underlyingPlayer) {
+		switch (m_underlyingPlayer) {
 			case 'sm2':
 				m_sm2.togglePause('ownCloudSound');
 				break;
@@ -108,7 +108,7 @@ function PlayerWrapper() {
 	this.setVolume = function(percentage) {
 		m_volume = percentage;
 
-		switch(m_underlyingPlayer) {
+		switch (m_underlyingPlayer) {
 			case 'sm2':
 				m_sm2.setVolume('ownCloudSound', m_volume);
 				break;

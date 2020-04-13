@@ -330,12 +330,20 @@ class SubsonicController extends Controller {
 		$artistPar = $this->request->getParam('artist');
 		$titlePar = $this->request->getParam('title');
 
-		$track = $this->trackBusinessLayer->findByNameAndArtistName($titlePar, $artistPar, $this->userId);
+		$matches = $this->trackBusinessLayer->findAllByNameAndArtistName($titlePar, $artistPar, $this->userId);
+		$matchingCount = \count($matches);
 
-		if ($track === null) {
+		if ($matchingCount === 0) {
+			$this->logger->log("No matching track for title '$titlePar' and artist '$artistPar'", 'debug');
 			return $this->subsonicResponse(['lyrics' => new \stdClass]);
 		}
 		else {
+			if ($matchingCount > 1) {
+				$this->logger->log("Found $matchingCount tracks matching title ".
+									"'$titlePar' and artist '$artistPar'; using the first", 'debug');
+			}
+			$track = $matches[0];
+
 			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
 			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
 			$lyrics = $this->detailsHelper->getLyrics($track->getFileId(), $rootFolder);

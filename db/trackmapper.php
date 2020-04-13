@@ -168,31 +168,45 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Returns track specified by name and/or artist name
+	 * Returns all tracks specified by name and/or artist name
 	 * @param string|null $name the name of the track
 	 * @param string|null $artistName the name of the artist
+	 * @param bool $fuzzy match names using case-insensitive substring search
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track|null Mathing track if the criteria uniquely defines one
+	 * @return \OCA\Music\Db\Track[] Tracks matching the criteria
 	 */
-	public function findByNameAndArtistName($name, $artistName, $userId) {
-		$sqlConditions = '';
+	public function findAllByNameAndArtistName($name, $artistName, $fuzzy, $userId) {
+		$sqlConditions = [];
 		$params = [$userId];
 
 		if (!empty($name)) {
-			$sqlConditions .= 'LOWER(`track`.`title`) LIKE LOWER(?) ';
-			$params[] = $name;
+			if ($fuzzy) {
+				$sqlConditions[] = 'LOWER(`track`.`title`) LIKE LOWER(?)';
+				$params[] = "%$name%";
+			} else {
+				$sqlConditions[] = '`track`.`title` = ?';
+				$params[] = $name;
+			}
 		}
 
 		if (!empty($artistName)) {
-			if (!empty($sqlConditions)) {
-				$sqlConditions .= ' AND ';
+			if ($fuzzy) {
+				$equality = 'LOWER(`name`) LIKE LOWER(?)';
+				$params[] = "%$artistName%";
+			} else {
+				$equality = '`name` = ?';
+				$params[] = $artistName;
 			}
-			$sqlConditions .= '`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?))';
-			$params[] = $artistName;
+			$sqlConditions[] = "`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE $equality)";
 		}
 
-		$sql = $this->selectUserEntities($sqlConditions);
-		return $this->findEntity($sql, $params);
+		// at least one condition has to be given, otherwise return an empty set
+		if (\count($sqlConditions) > 0) {
+			$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions));
+			return $this->findEntities($sql, $params);
+		} else {
+			return [];
+		}
 	}
 
 	/**

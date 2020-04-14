@@ -11,30 +11,83 @@
  */
 
 function PlayerWrapper() {
-	var m_underlyingPlayer = 'aurora';
-	var m_aurora = {};
-	var m_sm2 = {};
-	var m_sm2ready = false;
+	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
+	var m_html5audio = null;
+	var m_aurora = null;
 	var m_position = 0;
 	var m_duration = 0;
 	var m_volume = 100;
+	var m_playing = false;
+	var m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
 
-	this.init = function(onReadyCallback) {
-		m_sm2 = soundManager.setup({
-			html5PollingInterval: 200,
-			onready: function() {
-				m_sm2ready = true;
-				setTimeout(onReadyCallback, 0);
+	function initHtml5() {
+		m_html5audio = document.createElement('audio');
+
+		var getBufferedEnd = function() {
+			// The buffer may contain holes after seeking but just ignore those.
+			// Show the buffering status according the last buffered position.
+			var bufCount = m_html5audio.buffered.length;
+			return (bufCount > 0) ? m_html5audio.buffered.end(bufCount-1) : 0;
+		};
+		var latestNotifiedBufferState = null;
+
+		// Bind the various callbacks
+		m_html5audio.ontimeupdate = function() {
+			// On Firefox, both the last 'progress' event and the 'suspend' event
+			// often fire a tad too early, before the 'buffered' state has been
+			// updated to its final value. Hence, check here during playback if the
+			// buffering state has changed, and fire an extra event if it has.
+			if (latestNotifiedBufferState != getBufferedEnd()) {
+				this.onprogress();
 			}
-		});
-	};
+
+			m_position = this.currentTime * 1000;
+			m_self.trigger('progress', m_position);
+		};
+
+		m_html5audio.ondurationchange = function() {
+			m_duration = this.duration * 1000;
+			m_self.trigger('duration', m_duration);
+		};
+
+		m_html5audio.onprogress = function() {
+			var bufEnd = getBufferedEnd();
+			m_self.trigger('buffer', bufEnd / this.duration * 100);
+			latestNotifiedBufferState = bufEnd;
+		};
+
+		m_html5audio.onsuspend = function() {
+			this.onprogress();
+		};
+
+		m_html5audio.onended = function() {
+			m_self.trigger('end');
+		};
+
+		m_html5audio.oncanplay = function() {
+			m_self.trigger('ready');
+		};
+
+		m_html5audio.onerror = function() {
+			console.log('HTML5 audio: sound load error');
+		};
+
+		m_html5audio.onplaying = function() {
+			m_playing = true;
+		};
+
+		m_html5audio.onpause = function() {
+			m_playing = false;
+		};
+	}
+	initHtml5();
 
 	this.play = function() {
 		switch (m_underlyingPlayer) {
-			case 'sm2':
-				m_sm2.play('ownCloudSound');
+			case 'html5':
+				m_html5audio.play();
 				break;
 			case 'aurora':
 				m_aurora.play();
@@ -44,9 +97,9 @@ function PlayerWrapper() {
 
 	this.stop = function() {
 		switch (m_underlyingPlayer) {
-			case 'sm2':
-				m_sm2.stop('ownCloudSound');
-				m_sm2.destroySound('ownCloudSound');
+			case 'html5':
+				m_html5audio.pause();
+				m_html5audio.currentTime = 0;
 				break;
 			case 'aurora':
 				if (m_aurora.asset !== undefined) {
@@ -60,8 +113,12 @@ function PlayerWrapper() {
 
 	this.togglePlayback = function() {
 		switch (m_underlyingPlayer) {
-			case 'sm2':
-				m_sm2.togglePause('ownCloudSound');
+			case 'html5':
+				if (m_playing) {
+					m_html5audio.pause();
+				} else {
+					m_html5audio.play();
+				}
 				break;
 			case 'aurora':
 				m_aurora.togglePlayback();
@@ -72,14 +129,14 @@ function PlayerWrapper() {
 	this.seekingSupported = function() {
 		// Seeking is not implemented in aurora/flac.js and does not work on all
 		// files with aurora/mp3.js. Hence, we disable seeking with aurora.
-		return m_underlyingPlayer == 'sm2';
+		return (m_underlyingPlayer == 'html5');
 	};
 
 	this.seekMsecs = function(msecs) {
 		if (this.seekingSupported()) {
 			switch (m_underlyingPlayer) {
-				case 'sm2':
-					m_sm2.setPosition('ownCloudSound', msecs);
+				case 'html5':
+					m_html5audio.currentTime = msecs / 1000;
 					break;
 				case 'aurora':
 					m_aurora.seek(msecs);
@@ -109,8 +166,8 @@ function PlayerWrapper() {
 		m_volume = percentage;
 
 		switch (m_underlyingPlayer) {
-			case 'sm2':
-				m_sm2.setVolume('ownCloudSound', m_volume);
+			case 'html5':
+				m_html5audio.volume = m_volume/100;
 				break;
 			case 'aurora':
 				m_aurora.volume = m_volume;
@@ -118,68 +175,35 @@ function PlayerWrapper() {
 		}
 	};
 
+	function canPlayWithHtml5(mime) {
+		// The m4b format is almost identical with m4a (but intended for audio books).
+		// Still, browsers actually able to play m4b files seem to return false when
+		// queuring the support for the mime. Hence, a little hack.
+		// The m4a files use MIME type 'audio/mp4' while the m4b use 'audio/m4b'.
+		return m_html5audio.canPlayType(mime)
+			|| (mime == 'audio/m4b' && m_html5audio.canPlayType('audio/mp4'));
+	}
+
 	this.canPlayMIME = function(mime) {
-		// Function soundManager.canPlayMIME should not be called if sm2 is still in the process
-		// of being initialized, as it may lead to dereferencing an uninitialized member (see #629).
-		var canPlayWithSm2 = (m_sm2ready && soundManager.canPlayMIME(mime));
 		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
-		return canPlayWithSm2 || canPlayWithAurora;
+		return canPlayWithHtml5(mime) || canPlayWithAurora;
 	};
 
 	this.fromURL = function(url, mime) {
-		// ensure there are no active playback before starting new
-		this.stop();
-
 		this.trigger('loading');
 
-		if (soundManager.canPlayMIME(mime)) {
-			m_underlyingPlayer = 'sm2';
+		this.stop();
+
+		if (canPlayWithHtml5(mime)) {
+			m_underlyingPlayer = 'html5';
 		} else {
 			m_underlyingPlayer = 'aurora';
 		}
 		console.log('Using ' + m_underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 
-		var self = this;
 		switch (m_underlyingPlayer) {
-			case 'sm2':
-				m_sm2.html5Only = true;
-				m_sm2.createSound({
-					id: 'ownCloudSound',
-					url: url,
-					whileplaying: function() {
-						m_position = this.position;
-						self.trigger('progress', m_position);
-					},
-					whileloading: function() {
-						m_duration = this.durationEstimate;
-						self.trigger('duration', m_duration);
-						// The buffer may contain holes after seeking but just ignore those.
-						// Show the buffering status according the last buffered position.
-						var bufCount = this.buffered.length;
-						var bufEnd = (bufCount > 0) ? this.buffered[bufCount-1].end : 0;
-						self.trigger('buffer', bufEnd / this.durationEstimate * 100);
-					},
-					onsuspend: function() {
-						// Work around an issue in Firefox where the last buffered position will almost
-						// never equal the duration. See https://github.com/scottschiller/SoundManager2/issues/114.
-						// On Firefox, the buffering is *usually* not suspended and this event fires only when the
-						// downloading is completed.
-						var isFirefox = (typeof InstallTrigger !== 'undefined');
-						if (isFirefox) {
-							self.trigger('buffer', 100);
-						}
-					},
-					onfinish: function() {
-						self.trigger('end');
-					},
-					onload: function(success) {
-						if (success) {
-							self.trigger('ready');
-						} else {
-							console.log('SM2: sound load error');
-						}
-					}
-				});
+			case 'html5':
+				m_html5audio.src = url;
 				break;
 
 			case 'aurora':
@@ -187,26 +211,27 @@ function PlayerWrapper() {
 				m_aurora.asset.source.chunkSize=524288;
 
 				m_aurora.on('buffer', function(percent) {
-					self.trigger('buffer', percent);
+					m_self.trigger('buffer', percent);
 				});
 				m_aurora.on('progress', function(currentTime) {
 					m_position = currentTime;
-					self.trigger('progress', currentTime);
+					m_self.trigger('progress', currentTime);
 				});
 				m_aurora.on('ready', function() {
-					self.trigger('ready');
+					m_self.trigger('ready');
 				});
 				m_aurora.on('end', function() {
-					self.trigger('end');
+					m_self.trigger('end');
 				});
 				m_aurora.on('duration', function(msecs) {
 					m_duration = msecs;
-					self.trigger('duration', msecs);
+					m_self.trigger('duration', msecs);
 				});
+
 				break;
 		}
 
-		// Set the current volume to the newly created player instance
+		// Set the current volume to the newly created/selected player instance
 		this.setVolume(m_volume);
 	};
 }

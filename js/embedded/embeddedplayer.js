@@ -5,13 +5,12 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
-function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
+function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 	var player = new PlayerWrapper();
-	player.init(readyCallback);
 
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
@@ -30,7 +29,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
-	
+
 	function togglePlayback() {
 		// discard command while switching to new track is ongoing
 		if (!playDelayTimer) {
@@ -356,6 +355,10 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 			player.fromURL(url, mime);
 			togglePlayback();
 			nextStep();
+
+			// 'Previous' button is enalbed regardless of the playlist size if seeking is
+			// supported for the file being played 
+			updateNextPrevButtonStatus();
 		}, 300);
 	}
 
@@ -383,6 +386,19 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
 
+	function updateNextPrevButtonStatus() {
+		if (nextPrevEnabled) {
+			nextButton.removeClass('disabled');
+		} else {
+			nextButton.addClass('disabled');
+		}
+
+		if (nextPrevEnabled || player.seekingSupported()) {
+			prevButton.removeClass('disabled');
+		} else {
+			prevButton.addClass('disabled');
+		}
+	}
 
 	/**
 	 * PUBLIC INTEFACE
@@ -417,17 +433,7 @@ function EmbeddedPlayer(readyCallback, onClose, onNext, onPrev) {
 
 	this.setNextAndPrevEnabled = function(enabled) {
 		nextPrevEnabled = enabled;
-		if (enabled) {
-			nextButton.removeClass('disabled');
-		} else {
-			nextButton.addClass('disabled');
-		}
-
-		if (enabled || player.seekingSupported()) {
-			prevButton.removeClass('disabled');
-		} else {
-			prevButton.addClass('disabled');
-		}
+		updateNextPrevButtonStatus();
 	};
 }
 

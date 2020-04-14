@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 $(document).ready(function() {
@@ -25,14 +25,7 @@ function initEmbeddedPlayer() {
 	// has to bind some variables not available here
 	var urlForFile = null;
 
-	var actionRegisteredForSingleShare = false; // to check that we don't register more than one click handler
-
-	// Register the play action for the supported mime types both synchronously
-	// and asynchronously once the player init is done. This is necessary because
-	// the types supported by SoundManager2 are known only in the callback but
-	// the callback does not fire at all on browsers with no codecs (some versions
-	// of Chromium) where we still can support mp3 and flac formats using aurora.js.
-	var player = new EmbeddedPlayer(register, onClose, onNext, onPrev);
+	var player = new EmbeddedPlayer(onClose, onNext, onPrev);
 	register();
 
 	var playlist = new Playlist();
@@ -165,10 +158,8 @@ function initEmbeddedPlayer() {
 
 		// Add click handler to the file preview if this is a supported file.
 		// The feature is disabled on old IE versions where there's no MutationObserver and
-		// $.initialize would not work. Also, make sure to add the handler only once even if this method
-		// gets called multiple times.
+		// $.initialize would not work.
 		if (typeof MutationObserver !== "undefined"
-				&& !actionRegisteredForSingleShare
 				&& _.contains(supportedMimes, $('#mimetype').val()))
 		{
 			actionRegisteredForSingleShare = true;

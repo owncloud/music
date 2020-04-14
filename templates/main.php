@@ -9,7 +9,6 @@
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
 \OCP\Util::addScript('music', 'vendor/javascript-detect-element-resize/jquery.resize');
 \OCP\Util::addScript('music', 'vendor/js-cookie/src/js.cookie');
-\OCP\Util::addScript('music', 'vendor/soundmanager/script/soundmanager2-nodebug-jsmin');
 \OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
 \OCP\Util::addScript('music', 'public/app');
 

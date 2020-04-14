@@ -5,14 +5,11 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <morris.jobke@gmail.com>
- * @copyright 2013 Morris Jobke
- *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013
+ * @copyrigth Pauli Järvinen 2017 - 2020
  */
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	var wrapper = new PlayerWrapper();
-	wrapper.init(function() {
-		$rootScope.$emit('SoundManagerReady');
-	});
-	return wrapper;
+	return new PlayerWrapper();
 }]);

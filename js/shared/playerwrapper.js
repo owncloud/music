@@ -72,6 +72,7 @@ function PlayerWrapper() {
 
 		m_html5audio.onerror = function() {
 			console.log('HTML5 audio: sound load error');
+			m_self.trigger('error');
 		};
 
 		m_html5audio.onplaying = function() {

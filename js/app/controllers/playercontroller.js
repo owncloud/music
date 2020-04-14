@@ -61,6 +61,10 @@ function ($scope, $rootScope, playlistService, libraryService,
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
 	});
+	onPlayerEvent('error', function() {
+		OC.Notification.showTemporary(gettextCatalog.getString('Error occured when playing file'));
+		$scope.next();
+	});
 
 	var titleApp = $('title').html().trim();
 	var titleSong = '';

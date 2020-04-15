@@ -52,6 +52,36 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		onClose();
 	}
 
+	function previous() {
+		// Jump to the beginning of the current track if it has already played more than 2 secs
+		if (playTime_s > 2.0 && player.seekingSupported()) {
+			player.seek(0);
+		}
+		// Jump to the previous track if the current track has played only 2 secs or less
+		else if (nextPrevEnabled && onPrev) {
+			onPrev();
+		}
+		// Jump to the beginning of the current track even if the track has played less than 2 secs
+		// but there's no previous track to jump to
+		else if (player.seekingSupported()) {
+			player.seek(0);
+		}
+	}
+
+	function next() {
+		if (nextPrevEnabled && onNext) {
+			onNext();
+		}
+	}
+
+	function seekBackward() {
+		player.seekBackward();
+	}
+
+	function seekForward() {
+		player.seekForward();
+	}
+
 	function createPlayButton() {
 		return $(document.createElement('img'))
 			.attr('id', 'play')
@@ -78,21 +108,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			.attr('class', 'control svg small disabled')
 			.attr('src', OC.imagePath('music', 'play-previous'))
 			.attr('alt', t('music', 'Previous'))
-			.click(function() {
-				// Jump to the beginning of the current track if it has already played more than 2 secs
-				if (playTime_s > 2.0 && player.seekingSupported()) {
-					player.seek(0);
-				}
-				// Jump to the previous track if the current track has played only 2 secs or less
-				else if (nextPrevEnabled && onPrev) {
-					onPrev();
-				}
-				// Jump to the beginning of the current track even if the track has played less than 2 secs
-				// but there's no previous track to jump to
-				else if (player.seekingSupported()) {
-					player.seek(0);
-				}
-			});
+			.click(previous);
 	}
 
 	function createNextButton() {
@@ -101,11 +117,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			.attr('class', 'control svg small disabled')
 			.attr('src', OC.imagePath('music', 'play-next'))
 			.attr('alt', t('music', 'Next'))
-			.click(function() {
-				if (nextPrevEnabled && onNext) {
-					onNext();
-				}
-			});
+			.click(next);
 	}
 
 	function createCoverImage() {
@@ -153,22 +165,22 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			bufferBar.css('cursor', type);
 		}
 
-		player.on('loading', function () {
+		player.on('loading', function() {
 			playTime_s = 0;
 			songLength_s = 0;
 			updateProgress();
 			bufferBar.css('width', '0');
 			setCursorType('default');
 		});
-		player.on('ready', function () {
+		player.on('ready', function() {
 			if (player.seekingSupported()) {
 				setCursorType('pointer');
 			}
 		});
-		player.on('buffer', function (percent) {
+		player.on('buffer', function(percent) {
 			bufferBar.css('width', Math.round(percent) + '%');
 		});
-		player.on('progress', function (msecs) {
+		player.on('progress', function(msecs) {
 			playTime_s = Math.round(msecs/1000);
 			updateProgress();
 		});
@@ -306,25 +318,33 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		return $('#song-info *, #albumart');
 	}
 
+	function updateMetadata(data) {
+		titleText.text(data.title);
+		artistText.text(data.artist);
+
+		var cover = data.cover || OC.imagePath('core', 'filetypes/audio');
+		coverImage.css('background-image', 'url("' + cover + '")');
+
+		updateMediaSession(data);
+	}
+
 	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback /*optional*/) {
 		$.get(url, function(data) {
 			// discard results if the file has already changed by the time the
 			// result arrives
 			if (currentFileId == fileId) {
-				titleText.text(data.title);
-				artistText.text(data.artist);
-
-				if (data.cover) {
-					coverImage.css('background-image', 'url("' + data.cover + '")');
-				}
+				updateMetadata(data);
 
 				if (callback) {
 					callback(data);
 				}
 			}
 		}).fail(function() {
-			titleText.text(fallbackTitle);
-			artistText.text('');
+			updateMetadata({
+				title: fallbackTitle,
+				artist: '',
+				cover: null
+			});
 		});
 	}
 
@@ -339,9 +359,11 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		playing = false;
 
 		// Set placeholders for track info fields, proper data is filled once received
-		coverImage.css('background-image', 'url("' + OC.imagePath('core', 'filetypes/audio') +'")');
-		titleText.text(t('music', 'Loading…'));
-		artistText.text(tempTitle);
+		updateMetadata({
+			title: t('music', 'Loading…'),
+			artist: tempTitle,
+			cover: null
+		});
 		musicAppLinkElements().css('cursor', 'default').off("click");
 
 		// Add a small delay before actually starting to load any data. This is
@@ -364,20 +386,22 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 	function loadFileInfo(fileId, fallbackTitle) {
 		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
-		loadFileInfoFromUrl(url, fallbackTitle, fileId, function(data) {
-			if (data.in_library) {
-				var navigateToMusicApp = function() {
-					window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
-				};
-				musicAppLinkElements()
-					.css('cursor', 'pointer')
-					.click(navigateToMusicApp)
-					.attr('title', t('music', 'Go to album'));
-			}
-			else {
-				musicAppLinkElements().attr('title', t('music', '(file is not within your music collection folder)'));
-			}
-		});
+		loadFileInfoFromUrl(url, fallbackTitle, fileId, updateMusicAppLink);
+	}
+
+	function updateMusicAppLink(data) {
+		if (data.in_library) {
+			var navigateToMusicApp = function() {
+				window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
+			};
+			musicAppLinkElements()
+				.css('cursor', 'pointer')
+				.click(navigateToMusicApp)
+				.attr('title', t('music', 'Go to album'));
+		}
+		else {
+			musicAppLinkElements().attr('title', t('music', '(file is not within your music collection folder)'));
+		}
 	}
 
 	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
@@ -397,6 +421,45 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			prevButton.removeClass('disabled');
 		} else {
 			prevButton.addClass('disabled');
+		}
+	}
+
+	/**
+	 * Integration to the media control panel available on Chrome starting from version 73. 
+	 * It should be available also on Firefox starting from version 76.
+	 * This brings the bindings with the special multimedia keys possibly present on the keyboard,
+	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
+	 */ 
+	if ('mediaSession' in navigator) {
+		var registerMediaControlHandler = function(action, handler) {
+			try {
+				navigator.mediaSession.setActionHandler(action, handler);
+			} catch (error) {
+				console.log("The media control '" + action + "' is not supported by the browser");
+			}
+		};
+
+		registerMediaControlHandler('play', togglePlayback);
+		registerMediaControlHandler('pause', togglePlayback);
+		registerMediaControlHandler('stop', close);
+		registerMediaControlHandler('seekbackward', seekBackward);
+		registerMediaControlHandler('seekforward', seekForward);
+		registerMediaControlHandler('previoustrack', previous);
+		registerMediaControlHandler('nexttrack', next);
+	}
+
+	function updateMediaSession(data) {
+		if ('mediaSession' in navigator) {
+			navigator.mediaSession.metadata = new MediaMetadata({
+				title: data.title,
+				artist: data.artist,
+				album: '',
+				artwork: [{
+					sizes: "200x200",
+					src: data.cover,
+					type: ""
+				}]
+			});
 		}
 	}
 

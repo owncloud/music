@@ -522,7 +522,7 @@ class Scanner extends PublicEmitter {
 			if ($cover != null) {
 				$cover = [
 					'mimetype' => $cover['image_mime'],
-					'content' => $this->coverHelper->scaleDownAndCrop($cover['data'], 100)
+					'content' => $this->coverHelper->scaleDownAndCrop($cover['data'], 200)
 				];
 			}
 			return [

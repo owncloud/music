@@ -7,18 +7,20 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
-class Cache extends Mapper {
+use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+
+class Cache {
+	private $db;
+
 	public function __construct(IDBConnection $db) {
-		// there is no entity for this mapper -> '' as entity class name
-		parent::__construct($db, 'music_cache', '');
+		$this->db = $db;
 	}
 
 	/**
@@ -27,10 +29,33 @@ class Cache extends Mapper {
 	 * @param string $data
 	 */
 	public function add($userId, $key, $data) {
-		$sql = 'INSERT INTO `*PREFIX*music_cache` '.
-			'(`user_id`, `key`, `data`) VALUES (?, ?, ?)';
-		$result = $this->execute($sql, [$userId, $key, $data]);
-		$result->closeCursor();
+		$sql = 'INSERT INTO `*PREFIX*music_cache`
+				(`user_id`, `key`, `data`) VALUES (?, ?, ?)';
+		$this->db->executeUpdate($sql, [$userId, $key, $data]);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param string $key
+	 * @param string $data
+	 */
+	public function update($userId, $key, $data) {
+		$sql = 'UPDATE `*PREFIX*music_cache` SET `data` = ?
+				WHERE `user_id` = ? AND `key` = ?';
+		$this->db->executeUpdate($sql, [$data, $userId, $key]);
+	}
+
+	/**
+	 * @param string $userId
+	 * @param string $key
+	 * @param string $data
+	 */
+	public function set($userId, $key, $data) {
+		try {
+			$this->add($userId, $key, $data);
+		} catch (UniqueConstraintViolationException $e) {
+			$this->update($userId, $key, $data);
+		}
 	}
 
 	/**
@@ -54,8 +79,7 @@ class Cache extends Mapper {
 			$sql .= ' WHERE `key` = ?';
 			$params[] = $key;
 		}
-		$result = $this->execute($sql, $params);
-		$result->closeCursor();
+		$this->db->executeUpdate($sql, $params);
 	}
 
 	/**
@@ -64,9 +88,9 @@ class Cache extends Mapper {
 	 * @return string|null
 	 */
 	public function get($userId, $key) {
-		$sql = 'SELECT `data` FROM `*PREFIX*music_cache` '.
-			'WHERE `user_id` = ? AND `key` = ?';
-		$result = $this->execute($sql, [$userId, $key]);
+		$sql = 'SELECT `data` FROM `*PREFIX*music_cache`
+				WHERE `user_id` = ? AND `key` = ?';
+		$result = $this->db->executeQuery($sql, [$userId, $key]);
 		$rows = $result->fetchAll();
 		$result->closeCursor();
 
@@ -80,8 +104,8 @@ class Cache extends Mapper {
 	 * @return array of arrays with keys 'key', 'data'
 	 */
 	public function getAll($userId, $prefix = null) {
-		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache` '.
-				'WHERE `user_id` = ?';
+		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache`
+				WHERE `user_id` = ?';
 		$params = [$userId];
 
 		if (!empty($prefix)) {
@@ -89,7 +113,7 @@ class Cache extends Mapper {
 			$params[] = $prefix . '%';
 		}
 
-		$result = $this->execute($sql, $params);
+		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();
 		$result->closeCursor();
 

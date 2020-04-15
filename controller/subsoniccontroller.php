@@ -42,6 +42,7 @@ use \OCA\Music\Middleware\SubsonicException;
 
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
+use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
@@ -58,6 +59,7 @@ class SubsonicController extends Controller {
 	private $l10n;
 	private $coverHelper;
 	private $detailsHelper;
+	private $random;
 	private $logger;
 	private $userId;
 	private $format;
@@ -76,6 +78,7 @@ class SubsonicController extends Controller {
 								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
+								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 
@@ -89,6 +92,7 @@ class SubsonicController extends Controller {
 		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
+		$this->random = $random;
 		$this->logger = $logger;
 
 		// For timestamps in the Subsonic API, we would prefer to use the local timezone,
@@ -299,7 +303,7 @@ class SubsonicController extends Controller {
 		// $toYear = $this->request->getParam('genre'); not supported
 
 		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
-		$tracks = self::randomItems($allTracks, $size);
+		$tracks = Random::pickItems($allTracks, $size);
 
 		return $this->subsonicResponse(['randomSongs' =>
 				['song' => \array_map([$this, 'trackToApi'], $tracks)]
@@ -1023,8 +1027,8 @@ class SubsonicController extends Controller {
 		switch ($type) {
 			case 'random':
 				$allAlbums = $this->albumBusinessLayer->findAll($this->userId);
-				$albums = self::randomItems($allAlbums, $size);
-				// Note: offset is not supported on this type
+				$indices = $this->random->getIndices(\count($allAlbums), $offset, $size, $this->userId, 'subsonic_albums');
+				$albums = Util::arrayMultiGet($allAlbums, $indices);
 				break;
 			case 'starred':
 				$albums = $this->albumBusinessLayer->findAllStarred($this->userId, $size, $offset);
@@ -1108,21 +1112,6 @@ class SubsonicController extends Controller {
 	 */
 	private static function ripIdPrefix($id) {
 		return (int)(\explode('-', $id)[1]);
-	}
-
-	private static function randomItems($itemArray, $count) {
-		$count = \min($count, \count($itemArray)); // can't return more than all items
-		$indices = \array_rand($itemArray, $count);
-		if ($count == 1) { // return type is not array when randomizing a single index
-			$indices = [$indices];
-		}
-
-		$result = [];
-		foreach ($indices as $index) {
-			$result[] = $itemArray[$index];
-		}
-
-		return $result;
 	}
 
 	private function formatDateTime($dateString) {

@@ -55,6 +55,7 @@ use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
+use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\UserMusicFolder;
 
@@ -175,6 +176,7 @@ class Music extends App {
 				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
+				$c->query('Random'),
 				$c->query('Logger')
 			);
 		});
@@ -378,6 +380,13 @@ class Music extends App {
 		$container->registerService('Maintenance', function (IAppContainer $c) {
 			return new Maintenance(
 				$c->query('Db'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('Random', function (IAppContainer $c) {
+			return new Random(
+				$c->query('DbCache'),
 				$c->query('Logger')
 			);
 		});

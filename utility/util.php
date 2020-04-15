@@ -51,6 +51,20 @@ class Util {
 	}
 
 	/**
+	 * Get multiple items from @a $array, as indicated by a second array @a $indices.
+	 * @param array $array
+	 * @param array $indices
+	 * @return array
+	 */
+	public static function arrayMultiGet($array, $indices) {
+		$result = [];
+		foreach ($indices as $index) {
+			$result[] = $array[$index];
+		}
+		return $result;
+	}
+
+	/**
 	 * Truncate the given string to maximum length, appendig ellipsis character
 	 * if the truncation happened. Also null argument may be safely passed and
 	 * it remains unaltered.

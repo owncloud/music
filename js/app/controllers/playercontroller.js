@@ -118,6 +118,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.currentTrack = track;
 		$scope.currentAlbum = track.album;
 
+		// Pause any previous playback
+		$scope.player.pause();
+
 		// Execute the action with small delay. This is to limit the number of GET requests
 		// when repeatedly changing the playing track like when rapidly and repeatedly clicking
 		// the Next button. Too high number of simultaneous GET requests could easily jam a
@@ -156,6 +159,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
 			$scope.position.bufferPercent = 0;
+			$scope.position.total = 0;
 		}
 	};
 

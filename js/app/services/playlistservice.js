@@ -121,10 +121,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				if (repeat) { // start another round
 					enqueueIndices();
 				} else { // we are done
-					playOrderIter = -1;
-					playlist = null;
-					playlistId = null;
-					this.publish('playlistEnded');
+					this.clearPlaylist();
 					return null;
 				}
 			}
@@ -147,6 +144,12 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				this.publish('playlistChanged', playlistId);
 			}
 			enqueueIndices();
+		},
+		clearPlaylist: function() {
+			playOrderIter = -1;
+			playlist = null;
+			playlistId = null;
+			this.publish('playlistEnded');
 		},
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];

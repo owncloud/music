@@ -199,11 +199,12 @@ function ($scope, $rootScope, playlistService, libraryService,
 	};
 
 	$scope.stop = function() {
-		$rootScope.playing = false;
 		$scope.player.stop();
 		$scope.currentTrack = null;
 		$scope.currentAlbum = null;
+		$rootScope.playing = false;
 		$rootScope.started = false;
+		playlistService.clearPlaylist();
 	};
 
 	$scope.next = function() {

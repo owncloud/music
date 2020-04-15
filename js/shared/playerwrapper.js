@@ -18,6 +18,7 @@ function PlayerWrapper() {
 	var m_duration = 0;
 	var m_volume = 100;
 	var m_playing = false;
+	var m_url = null;
 	var m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
@@ -71,8 +72,14 @@ function PlayerWrapper() {
 		};
 
 		m_html5audio.onerror = function() {
-			console.log('HTML5 audio: sound load error');
-			m_self.trigger('error');
+			m_playing = false;
+			if (m_url) {
+				console.log('HTML5 audio: sound load error');
+				m_self.trigger('error', m_url);
+			} else {
+				// ignore stray errors fired by the HTML audio when the src
+				// has been cleared (set to invalid).
+			}
 		};
 
 		m_html5audio.onplaying = function() {
@@ -91,21 +98,42 @@ function PlayerWrapper() {
 				m_html5audio.play();
 				break;
 			case 'aurora':
-				m_aurora.play();
+				if (m_aurora) {
+					m_aurora.play();
+				}
+				break;
+		}
+	};
+
+	this.pause = function() {
+		switch (m_underlyingPlayer) {
+			case 'html5':
+				m_html5audio.pause();
+				break;
+			case 'aurora':
+				if (m_aurora) {
+					m_aurora.pause();
+				}
 				break;
 		}
 	};
 
 	this.stop = function() {
+		m_url = null;
+
 		switch (m_underlyingPlayer) {
 			case 'html5':
+				// Amazingly, there's no 'stop' functionality in the HTML5 audio API, nor is there a way to
+				// properly remove the src attribute: setting it to null wold be interpreted as addess
+				// "<baseURI>/null" and setting it to empty string will make the src equal the baseURI.
+				// Still, resetting the source is necessary to detach the player from the mediaSession API
+				// (on Chrome). Just be sure to ignore the resulting 'error' events. Unfortunately, this will
+				// still print a warning to the console on Firefox.
 				m_html5audio.pause();
-				m_html5audio.currentTime = 0;
+				m_html5audio.src = '';
 				break;
 			case 'aurora':
-				if (m_aurora.asset !== undefined) {
-					// check if player's constructor has been called,
-					// if so, stop() will be available
+				if (m_aurora) {
 					m_aurora.stop();
 				}
 				break;
@@ -122,7 +150,9 @@ function PlayerWrapper() {
 				}
 				break;
 			case 'aurora':
-				m_aurora.togglePlayback();
+				if (m_aurora) {
+					m_aurora.togglePlayback();
+				}
 				break;
 		}
 	};
@@ -140,7 +170,9 @@ function PlayerWrapper() {
 					m_html5audio.currentTime = msecs / 1000;
 					break;
 				case 'aurora':
-					m_aurora.seek(msecs);
+					if (m_aurora) {
+						m_aurora.seek(msecs);
+					}
 					break;
 			}
 		}
@@ -171,7 +203,9 @@ function PlayerWrapper() {
 				m_html5audio.volume = m_volume/100;
 				break;
 			case 'aurora':
-				m_aurora.volume = m_volume;
+				if (m_aurora) {
+					m_aurora.volume = m_volume;
+				}
 				break;
 		}
 	};
@@ -193,7 +227,7 @@ function PlayerWrapper() {
 	this.fromURL = function(url, mime) {
 		this.trigger('loading');
 
-		this.stop();
+		m_url = url;
 
 		if (canPlayWithHtml5(mime)) {
 			m_underlyingPlayer = 'html5';
@@ -204,10 +238,15 @@ function PlayerWrapper() {
 
 		switch (m_underlyingPlayer) {
 			case 'html5':
+				m_html5audio.pause();
 				m_html5audio.src = url;
 				break;
 
 			case 'aurora':
+				if (m_aurora) {
+					m_aurora.stop();
+				}
+
 				m_aurora = AV.Player.fromURL(url);
 				m_aurora.asset.source.chunkSize=524288;
 

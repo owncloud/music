@@ -355,7 +355,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	}
 
 	function playUrl(url, mime, tempTitle, nextStep) {
-		player.stop();
+		player.pause();
 		playing = false;
 
 		// Set placeholders for track info fields, proper data is filled once received

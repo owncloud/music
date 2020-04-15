@@ -61,8 +61,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
 	});
-	onPlayerEvent('error', function() {
-		OC.Notification.showTemporary(gettextCatalog.getString('Error occured when playing file'));
+	onPlayerEvent('error', function(url) {
+		var filename = url.split('?').shift().split('/').pop();
+		OC.Notification.showTemporary(gettextCatalog.getString('Error playing file: ' + filename));
 		$scope.next();
 	});
 

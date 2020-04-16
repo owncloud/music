@@ -78,6 +78,19 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string $genre
+	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Track[] tracks
+	 */
+	public function findAllByGenre($genre, $userId, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities('`track`.`genre` = ?', 'ORDER BY LOWER(`track`.`title`)');
+		$params = [$userId, $genre];
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
 	 * @param string $userId
 	 * @return int[]
 	 */
@@ -268,7 +281,9 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are genre names and values are arrays of track IDs
 	 */
 	public function findAllGenres($userId) {
-		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks` WHERE `genre` IS NOT NULL and `user_id` = ?';
+		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks`
+				WHERE `genre` IS NOT NULL and `user_id` = ?
+				ORDER BY LOWER(`genre`)';
 		$rows = $this->execute($sql, [$userId]);
 
 		$result = [];
@@ -277,6 +292,26 @@ class TrackMapper extends BaseMapper {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Count tracks, albums, and artists by genre
+	 * @param string $userId
+	 * @return array with keys: { genre: string, tracks: int, albums: int, artists: int }
+	 */
+	public function getGenreStats($userId) {
+		$sql = 'SELECT 
+					`genre`,
+					COUNT(`id`) AS `tracks`,
+					COUNT(DISTINCT(`album_id`)) AS `albums`,
+					COUNT(DISTINCT(`artist_id`)) AS `artists`
+				FROM `*PREFIX*music_tracks`
+				WHERE `genre` IS NOT NULL and `user_id` = ?
+				GROUP BY `genre`
+				ORDER BY LOWER(`genre`)';
+		$rows = $this->execute($sql, [$userId]);
+
+		return $rows->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	/**

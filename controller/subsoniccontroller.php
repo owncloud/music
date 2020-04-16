@@ -47,7 +47,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.8.0';
+	const API_VERSION = '1.9.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -298,12 +298,16 @@ class SubsonicController extends Controller {
 	private function getRandomSongs() {
 		$size = $this->request->getParam('size', 10);
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
-		// $genre = $this->request->getParam('genre'); not supported
+		$genre = $this->request->getParam('genre');
 		// $fromYear = $this->request->getParam('fromYear'); not supported
 		// $toYear = $this->request->getParam('genre'); not supported
 
-		$allTracks = $this->trackBusinessLayer->findAll($this->userId);
-		$tracks = Random::pickItems($allTracks, $size);
+		if ($genre) {
+			$trackPool = $this->trackBusinessLayer->findAllByGenre($genre, $this->userId);
+		} else {
+			$trackPool = $this->trackBusinessLayer->findAll($this->userId);
+		}
+		$tracks = Random::pickItems($trackPool, $size);
 
 		return $this->subsonicResponse(['randomSongs' =>
 				['song' => \array_map([$this, 'trackToApi'], $tracks)]
@@ -399,6 +403,41 @@ class SubsonicController extends Controller {
 	private function search3() {
 		$results = $this->doSearch();
 		return $this->searchResponse('searchResult3', $results, /*$useNewApi=*/true);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getGenres() {
+		$genres = $this->trackBusinessLayer->getGenreStats($this->userId);
+
+		return $this->subsonicResponse(['genres' =>
+			[
+				'genre' => \array_map(function($genre) {
+					return [
+						'songCount' => $genre['tracks'],
+						'albumCount' => $genre['albums'],
+						'value' => $genre['genre']
+					];
+				},
+				$genres)
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getSongsByGenre() {
+		$genre = $this->getRequiredParam('genre');
+		$count = $this->request->getParam('count', 10);
+		$offset = $this->request->getParam('offset', 0);
+
+		$tracks = $this->trackBusinessLayer->findAllByGenre($genre, $this->userId, $count, $offset);
+
+		return $this->subsonicResponse(['songsByGenre' =>
+			['song' => \array_map([$this, 'trackToApi'], $tracks)]
+		]);
 	}
 
 	/**
@@ -964,7 +1003,7 @@ class SubsonicController extends Controller {
 			'artist' => $artist->getNameString($this->l10n),
 			'isDir' => false,
 			'album' => $album->getNameString($this->l10n),
-			//'genre' => '',
+			'genre' => $track->getGenre(),
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),

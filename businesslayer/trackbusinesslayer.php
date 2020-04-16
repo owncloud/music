@@ -55,12 +55,24 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by parent folder
-	 * @param integer $folderId the id of the track
+	 * @param integer $folderId the id of the folder
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByFolder($folderId, $userId) {
 		return $this->mapper->findAllByFolder($folderId, $userId);
+	}
+
+	/**
+	 * Returns all tracks filtered by genre
+	 * @param string $genre the genre to include
+	 * @param string $userId the name of the user
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return \OCA\Music\Db\Track[] tracks
+	 */
+	public function findAllByGenre($genre, $userId, $limit=null, $offset=null) {
+		return $this->mapper->findAllByGenre($genre, $userId, $limit, $offset);
 	}
 
 	/**
@@ -203,6 +215,15 @@ class TrackBusinessLayer extends BusinessLayer {
 			];
 		}
 		return $result;
+	}
+
+	/**
+	 * Count tracks, albums, and artists by genre
+	 * @param string $userId
+	 * @return array with keys: { genre: string, tracks: int, albums: int, artists: int }
+	 */
+	public function getGenreStats($userId) {
+		return $this->mapper->getGenreStats($userId);
 	}
 
 	/**

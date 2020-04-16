@@ -104,6 +104,8 @@ angular.module('Music').controller('NavigationController', [
 					$scope.$parent.loadFoldersAndThen(function() {
 						play('folders', libraryService.getTracksInFolderOrder());
 					});
+				} else if (destination == '#/genres') {
+					play('genres', libraryService.getTracksInGenreOrder());
 				} else {
 					play('playlist-' + playlist.id, playlist.tracks);
 				}

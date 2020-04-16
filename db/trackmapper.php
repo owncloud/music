@@ -268,7 +268,7 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are genre names and values are arrays of track IDs
 	 */
 	public function findAllGenres($userId) {
-		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
+		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks` WHERE `genre` IS NOT NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId]);
 
 		$result = [];
@@ -277,6 +277,22 @@ class TrackMapper extends BaseMapper {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
+	 * thing as unknown genre, which is stored as empty string and means that the genre has
+	 * been scanned but was not found from the track metadata.
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function findFilesWithoutScannedGenre($userId) {
+		$sql = 'SELECT `track`.`file_id` FROM `*PREFIX*music_tracks` `track`
+				INNER JOIN `*PREFIX*filecache` `file`
+				ON `track`.`file_id` = `file`.`fileid`
+				WHERE `genre` IS NULL and `user_id` = ?';
+		$rows = $this->execute($sql, [$userId]);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
 
 	/**

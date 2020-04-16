@@ -161,7 +161,11 @@ class ApiController extends Controller {
 	 */
 	public function genres() {
 		$genres = $this->trackBusinessLayer->findAllGenres($this->userId);
-		return new JSONResponse($genres);
+		$unscanned =  $this->trackBusinessLayer->findFilesWithoutScannedGenre($this->userId);
+		return new JSONResponse([
+			'genres' => $genres,
+			'unscanned' => $unscanned
+		]);
 	}
 
 	/**

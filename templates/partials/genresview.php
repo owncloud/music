@@ -24,4 +24,14 @@
 	<alphabet-navigation ng-if="genres && genres.length" item-count="genres.length"
 		get-elem-title="getGenreName" get-elem-id="getGenreElementId" scroll-to-target="scrollToItem">
 	</alphabet-navigation>
+
+	<div id="toRescan" class="emptycontent clickable" ng-click="startScanning()"
+		ng-show="!scanning && !toScan && !noMusicAvailable && filesWithUnscannedGenre && filesWithUnscannedGenre.length"
+	>
+		<div class="icon-audio svg"></div>
+		<div>
+			<h2 translate>Click to rescan</h2>
+			<p translate>Some tracks in your library have to be rescanned to show the genre</p>
+		</div>
+	</div>
 </div>

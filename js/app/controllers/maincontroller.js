@@ -105,14 +105,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			});
 
 			// Load also genres once the collection has been loaded
-			Restangular.all('genres').getList().then(function(genres) {
-				libraryService.setGenres(genres);
+			Restangular.one('genres').get().then(function(genres) {
+				libraryService.setGenres(genres.genres);
+				$scope.filesWithUnscannedGenre = genres.unscanned;
 				$rootScope.$emit('genresLoaded');
 			});
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('.emptycontent:not(#noSearchResults)');
+			var collapsiblePopups = $('.emptycontent:not(#noSearchResults):not(#toRescan)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -204,7 +205,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function() {
+	$scope.startScanning = function(fileIds /*optional*/) {
+		if (fileIds) {
+			filesToScan = fileIds;
+			previouslyScannedCount = 0;
+			$scope.scanningScanned = 0;
+			$scope.scanningTotal = fileIds.length;
+		}
+
 		$scope.toScan = false;
 		$scope.scanning = true;
 		processNextScanStep();

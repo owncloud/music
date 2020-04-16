@@ -206,6 +206,17 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
+	 * thing as unknown genre, which is stored as empty string and means that the genre has
+	 * been scanned but was not found from the track metadata.
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function findFilesWithoutScannedGenre($userId) {
+		return $this->mapper->findFilesWithoutScannedGenre($userId);
+	}
+
+	/**
 	 * @param integer $artistId
 	 * @return integer
 	 */

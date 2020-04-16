@@ -29,6 +29,11 @@ angular.module('Music').controller('GenresViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
+		$scope.startScanning = function() {
+			$scope.$parent.startScanning($scope.$parent.filesWithUnscannedGenre);
+			$scope.$parent.filesWithUnscannedGenre = null;
+		};
+
 		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
 			var startIndex = null;
 			if (startFromTrackId !== undefined) {
@@ -154,6 +159,14 @@ angular.module('Music').controller('GenresViewController', [
 			$scope.incrementalLoadLimit = 0;
 			$scope.genres = libraryService.getAllGenres();
 			$timeout(showMore);
+
+			// The "rescan needed" banner uses "collapsed" layout if there are any genres already available
+			var rescanPopup = $('#toRescan');
+			if ($scope.genres.length > 0) {
+				rescanPopup.addClass('collapsed');
+			} else {
+				rescanPopup.removeClass('collapsed');
+			}
 		}
 
 		/**

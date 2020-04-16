@@ -30,6 +30,9 @@
 	<script type="text/ng-template" id="foldersview.html">
 		<?php print_unescaped($this->inc('partials/foldersview')) ?>
 	</script>
+	<script type="text/ng-template" id="genresview.html">
+		<?php print_unescaped($this->inc('partials/genresview')) ?>
+	</script>
 	<script type="text/ng-template" id="playlistview.html">
 		<?php print_unescaped($this->inc('partials/playlistview')) ?>
 	</script>

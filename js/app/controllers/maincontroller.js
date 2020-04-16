@@ -63,6 +63,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.genresCountText = function() {
+		if (libraryService.genresLoaded()) {
+			var genreCount = libraryService.getAllGenres().length;
+			return gettextCatalog.getPlural(genreCount, '1 genre', '{{ count }} genres', { count: genreCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
@@ -88,11 +97,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$rootScope.$emit('artistsLoaded');
 			});
 
-			// Load playlist once the collection has been loaded
+			// Load playlists once the collection has been loaded
 			Restangular.all('playlists').getList().then(function(playlists) {
 				libraryService.setPlaylists(playlists);
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
+			});
+
+			// Load also genres once the collection has been loaded
+			Restangular.all('genres').getList().then(function(genres) {
+				libraryService.setGenres(genres);
+				$rootScope.$emit('genresLoaded');
 			});
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout

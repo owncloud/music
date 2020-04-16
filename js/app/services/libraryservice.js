@@ -17,8 +17,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
 	var tracksInFolderOrder = null;
+	var tracksInGenreOrder = null;
 	var playlists = null;
 	var folders = null;
+	var genres = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -236,6 +238,31 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
 			}
 		},
+		setGenres: function(genreData) {
+			if (!genreData) {
+				genres = null;
+				tracksInGenreOrder = null;
+			} else {
+				genres = _.map(genreData, wrapPlaylist);
+				sortByTextField(genres, 'name');
+				// if the first item after sorting is the unknown genre (empty string),
+				// then move it to the end of the list
+				if (genres.length > 0 && genres[0].name === '') {
+					genres.push(genres.shift());
+				}
+
+				_.forEach(genres, function(genre) {
+					sortByPlaylistEntryField(genre.tracks, 'title');
+					sortByPlaylistEntryField(genre.tracks, 'artistName');
+
+					_.forEach(genre.tracks, function(trackEntry) {
+						trackEntry.track.genre = genre;
+					});
+				});
+
+				tracksInGenreOrder = _.flatten(_.pluck(genres, 'tracks'));
+			}
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -278,6 +305,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getTracksInFolderOrder: function() {
 			return tracksInFolderOrder;
 		},
+		getTracksInGenreOrder: function() {
+			return tracksInGenreOrder;
+		},
 		getTrackCount: function() {
 			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
 		},
@@ -293,6 +323,12 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		getAllFolders: function() {
 			return folders;
 		},
+		getGenre: function(id) {
+			return _.findWhere(genres, { id: Number(id) });
+		},
+		getAllGenres: function() {
+			return genres;
+		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -304,6 +340,9 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		foldersLoaded: function() {
 			return folders !== null;
+		},
+		genresLoaded: function() {
+			return genres !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);

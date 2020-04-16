@@ -159,6 +159,15 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function genres() {
+		$genres = $this->trackBusinessLayer->findAllGenres($this->userId);
+		return new JSONResponse($genres);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function artists($fulltree, $albums) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = \filter_var($albums, FILTER_VALIDATE_BOOLEAN);

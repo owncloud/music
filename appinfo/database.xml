@@ -275,6 +275,12 @@
 				<type>timestamp</type>
 				<notnull>false</notnull>
 			</field>
+			<field>
+				<name>genre</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>64</length>
+			</field>
 
 			<index>
 				<name>music_tracks_artist_id_idx</name>

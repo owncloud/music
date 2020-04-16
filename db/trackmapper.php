@@ -263,6 +263,23 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Returns all genres of the user, along with the contained track IDs
+	 * @param string $userId
+	 * @return array where keys are genre names and values are arrays of track IDs
+	 */
+	public function findAllGenres($userId) {
+		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
+		$rows = $this->execute($sql, [$userId]);
+
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row['genre']][] = $row['id'];
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param Track $track
 	 * @return Track

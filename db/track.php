@@ -51,6 +51,8 @@ use \OCA\Music\Utility\Util;
  * @method void setMbid(string $mbid)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
+ * @method string getGenre()
+ * @method void setGenre(string $genre)
  * @method string getFilename()
  * @method void setFilename(string $filename)
  * @method int getSize()
@@ -71,6 +73,7 @@ class Track extends Entity {
 	public $userId;
 	public $mbid;
 	public $starred;
+	public $genre;
 	public $filename;
 	public $size;
 

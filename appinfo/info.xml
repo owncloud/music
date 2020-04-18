@@ -10,7 +10,7 @@ In the library view, you can play tracks by album or artist, create custom playl
 Limitations: The app can handle libraries of more than 50´000 tracks on modern desktop browsers, but the user experience is not optimized for such collections. Libraries significantly larger than this may fail to function altogether. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen, Morris Jobke (original author), Jan-Christoph Borchardt (original design)</author>
-	<version>0.13.3-alpha2</version>
+	<version>0.13.3-alpha3</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827475-94d34d7c-9b02-11e8-8bf9-9f3d91aa5dab.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

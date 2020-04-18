@@ -65,14 +65,14 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by genre
-	 * @param string $genre the genre to include
+	 * @param int $genreId the genre to include
 	 * @param string $userId the name of the user
 	 * @param int|null $limit
 	 * @param int|null $offset
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
-	public function findAllByGenre($genre, $userId, $limit=null, $offset=null) {
-		return $this->mapper->findAllByGenre($genre, $userId, $limit, $offset);
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
 	}
 
 	/**
@@ -198,35 +198,6 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all genres of the user, along with the contained track IDs
-	 * @param string $userId
-	 * @return array of entries like {id: int, name: string, trackIds: int[]}
-	 */
-	public function findAllGenres($userId) {
-		$tracksByGenre = $this->mapper->findAllGenres($userId);
-
-		$count = 0;
-		$result = [];
-		foreach ($tracksByGenre as $genre => $trackIds) {
-			$result[] = [
-				'id' => ++$count,
-				'name' => $genre,
-				'trackIds' => $trackIds
-			];
-		}
-		return $result;
-	}
-
-	/**
-	 * Count tracks, albums, and artists by genre
-	 * @param string $userId
-	 * @return array with keys: { genre: string, tracks: int, albums: int, artists: int }
-	 */
-	public function getGenreStats($userId) {
-		return $this->mapper->getGenreStats($userId);
-	}
-
-	/**
 	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
 	 * thing as unknown genre, which is stored as empty string and means that the genre has
 	 * been scanned but was not found from the track metadata.
@@ -259,7 +230,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param int|null $number the number of the track
 	 * @param int|null $discNumber the number of the disc
 	 * @param int|null $year the year of the release
-	 * @param string $genre the genre of the track
+	 * @param int $genreId the genre id of the track
 	 * @param int $artistId the artist id of the track
 	 * @param int $albumId the album id of the track
 	 * @param int $fileId the file id of the track
@@ -270,14 +241,14 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
-			$title, $number, $discNumber, $year, $genre, $artistId, $albumId,
+			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
 			$fileId, $mimetype, $userId, $length=null, $bitrate=null) {
 		$track = new Track();
 		$track->setTitle(Util::truncate($title, 256)); // some DB setups can't truncate automatically to column max size
 		$track->setNumber($number);
 		$track->setDisk($discNumber);
 		$track->setYear($year);
-		$track->setGenre(Util::truncate($genre, 64));
+		$track->setGenreId($genreId);
 		$track->setArtistId($artistId);
 		$track->setAlbumId($albumId);
 		$track->setFileId($fileId);

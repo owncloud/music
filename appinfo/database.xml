@@ -244,10 +244,10 @@
 				<notnull>false</notnull>
 			</field>
 			<field>
-				<name>genre</name>
-				<type>text</type>
+				<name>genre_id</name>
+				<type>integer</type>
 				<notnull>false</notnull>
-				<length>64</length>
+				<unsigned>true</unsigned>
 			</field>
 
 			<index>
@@ -310,6 +310,50 @@
 				<notnull>false</notnull>
 				<comments>|-delimited list of track IDs</comments>
 			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*music_genres</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>lower_name</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>64</length>
+				<comments>Used to enforce uniquenes of genres in case insensitive sense</comments>
+			</field>
+
+			<index>
+				<name>mg_lower_name_user_id_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>lower_name</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
 		</declaration>
 	</table>
 

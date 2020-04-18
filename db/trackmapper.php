@@ -78,15 +78,15 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $genre
+	 * @param int $genreId
 	 * @param string $userId
 	 * @param int|null $limit
 	 * @param int|null $offset
 	 * @return Track[] tracks
 	 */
-	public function findAllByGenre($genre, $userId, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities('`track`.`genre` = ?', 'ORDER BY LOWER(`track`.`title`)');
-		$params = [$userId, $genre];
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities('`genre_id` = ?', 'ORDER BY LOWER(`track`.`title`)');
+		$params = [$userId, $genreId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
@@ -276,48 +276,27 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Returns all genres of the user, along with the contained track IDs
+	 * Returns all tracks IDs of the user, organized by the genre_id.
 	 * @param string $userId
-	 * @return array where keys are genre names and values are arrays of track IDs
+	 * @return array where keys are genre IDs and values are arrays of track IDs
 	 */
-	public function findAllGenres($userId) {
-		$sql = 'SELECT `id`, `genre` FROM `*PREFIX*music_tracks`
-				WHERE `genre` IS NOT NULL and `user_id` = ?
-				ORDER BY LOWER(`genre`)';
+	public function mapGenreIdsToTrackIds($userId) {
+		$sql = 'SELECT `id`, `genre_id` FROM `*PREFIX*music_tracks`
+				WHERE `genre_id` IS NOT NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId]);
 
 		$result = [];
 		foreach ($rows as $row) {
-			$result[$row['genre']][] = $row['id'];
+			$result[$row['genre_id']][] = $row['id'];
 		}
 
 		return $result;
 	}
 
 	/**
-	 * Count tracks, albums, and artists by genre
-	 * @param string $userId
-	 * @return array with keys: { genre: string, tracks: int, albums: int, artists: int }
-	 */
-	public function getGenreStats($userId) {
-		$sql = 'SELECT 
-					`genre`,
-					COUNT(`id`) AS `tracks`,
-					COUNT(DISTINCT(`album_id`)) AS `albums`,
-					COUNT(DISTINCT(`artist_id`)) AS `artists`
-				FROM `*PREFIX*music_tracks`
-				WHERE `genre` IS NOT NULL and `user_id` = ?
-				GROUP BY `genre`
-				ORDER BY LOWER(`genre`)';
-		$rows = $this->execute($sql, [$userId]);
-
-		return $rows->fetchAll(\PDO::FETCH_ASSOC);
-	}
-
-	/**
 	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
-	 * thing as unknown genre, which is stored as empty string and means that the genre has
-	 * been scanned but was not found from the track metadata.
+	 * thing as unknown genre, which means that the genre has been scanned but was not found
+	 * from the track metadata.
 	 * @param string $userId
 	 * @return int[]
 	 */
@@ -325,7 +304,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT `track`.`file_id` FROM `*PREFIX*music_tracks` `track`
 				INNER JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`
-				WHERE `genre` IS NULL and `user_id` = ?';
+				WHERE `genre_id` IS NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId]);
 		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}

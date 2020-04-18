@@ -51,8 +51,10 @@ use \OCA\Music\Utility\Util;
  * @method void setMbid(string $mbid)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
- * @method string getGenre()
- * @method void setGenre(string $genre)
+ * @method int getGenreId()
+ * @method void setGenreId(int $genreId)
+ * @method Genre getGenre()
+ * @method void setGenre(Genre $genre)
  * @method string getFilename()
  * @method void setFilename(string $filename)
  * @method int getSize()
@@ -73,13 +75,14 @@ class Track extends Entity {
 	public $userId;
 	public $mbid;
 	public $starred;
-	public $genre;
+	public $genreId;
 	public $filename;
 	public $size;
 
 	// these don't come from the music_tracks table:
 	public $artist;
 	public $album;
+	public $genre;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -90,6 +93,7 @@ class Track extends Entity {
 		$this->addType('length', 'int');
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');
+		$this->addType('genreId', 'int');
 		$this->addType('size', 'int');
 	}
 

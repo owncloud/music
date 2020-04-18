@@ -21,6 +21,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
@@ -39,6 +40,7 @@ use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Db\ArtistMapper;
 use \OCA\Music\Db\Cache;
+use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\TrackMapper;
@@ -96,6 +98,7 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
 				$c->query('Scanner'),
 				$c->query('CollectionHelper'),
 				$c->query('CoverHelper'),
@@ -170,6 +173,7 @@ class Music extends App {
 				$c->query('URLGenerator'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
@@ -195,6 +199,14 @@ class Music extends App {
 		$container->registerService('ArtistBusinessLayer', function ($c) {
 			return new ArtistBusinessLayer(
 				$c->query('ArtistMapper'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('GenreBusinessLayer', function ($c) {
+			return new GenreBusinessLayer(
+				$c->query('GenreMapper'),
+				$c->query('TrackMapper'),
 				$c->query('Logger')
 			);
 		});
@@ -256,6 +268,12 @@ class Music extends App {
 
 		$container->registerService('DbCache', function (IAppContainer $c) {
 			return new Cache(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('GenreMapper', function (IAppContainer $c) {
+			return new GenreMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
@@ -398,6 +416,7 @@ class Music extends App {
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
 				$c->query('DbCache'),
 				$c->query('CoverHelper'),
 				$c->query('Logger'),

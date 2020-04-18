@@ -38,6 +38,7 @@ use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\Scanner;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
 
 class ApiController extends Controller {
 
@@ -49,6 +50,8 @@ class ApiController extends Controller {
 	private $artistBusinessLayer;
 	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
+	/** @var GenreBusinessLayer */
+	private $genreBusinessLayer;
 	/** @var Scanner */
 	private $scanner;
 	/** @var CollectionHelper */
@@ -74,6 +77,7 @@ class ApiController extends Controller {
 								TrackBusinessLayer $trackbusinesslayer,
 								ArtistBusinessLayer $artistbusinesslayer,
 								AlbumBusinessLayer $albumbusinesslayer,
+								GenreBusinessLayer $genreBusinessLayer,
 								Scanner $scanner,
 								CollectionHelper $collectionHelper,
 								CoverHelper $coverHelper,
@@ -88,6 +92,7 @@ class ApiController extends Controller {
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
+		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->scanner = $scanner;
 		$this->collectionHelper = $collectionHelper;
 		$this->coverHelper = $coverHelper;
@@ -160,10 +165,10 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function genres() {
-		$genres = $this->trackBusinessLayer->findAllGenres($this->userId);
+		$genres = $this->genreBusinessLayer->findAllWithTrackIds($this->userId);
 		$unscanned =  $this->trackBusinessLayer->findFilesWithoutScannedGenre($this->userId);
 		return new JSONResponse([
-			'genres' => $genres,
+			'genres' => \array_map(function($g) {return $g->toApi();}, $genres),
 			'unscanned' => $unscanned
 		]);
 	}

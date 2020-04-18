@@ -25,12 +25,14 @@ use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
@@ -52,6 +54,7 @@ class SubsonicController extends Controller {
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $playlistBusinessLayer;
+	private $genreBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
@@ -72,6 +75,7 @@ class SubsonicController extends Controller {
 								IURLGenerator $urlGenerator,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
+								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
@@ -84,6 +88,7 @@ class SubsonicController extends Controller {
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
@@ -302,8 +307,8 @@ class SubsonicController extends Controller {
 		// $fromYear = $this->request->getParam('fromYear'); not supported
 		// $toYear = $this->request->getParam('genre'); not supported
 
-		if ($genre) {
-			$trackPool = $this->trackBusinessLayer->findAllByGenre($genre, $this->userId);
+		if ($genre !== null) {
+			$trackPool = $this->findTracksByGenre($genre);
 		} else {
 			$trackPool = $this->trackBusinessLayer->findAll($this->userId);
 		}
@@ -409,15 +414,15 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getGenres() {
-		$genres = $this->trackBusinessLayer->getGenreStats($this->userId);
+		$genres = $this->genreBusinessLayer->findAllWithCounts($this->userId);
 
 		return $this->subsonicResponse(['genres' =>
 			[
 				'genre' => \array_map(function($genre) {
 					return [
-						'songCount' => $genre['tracks'],
-						'albumCount' => $genre['albums'],
-						'value' => $genre['genre']
+						'songCount' => $genre->getTrackCount(),
+						'albumCount' => $genre->getAlbumCount(),
+						'value' => $genre->getNameString($this->l10n)
 					];
 				},
 				$genres)
@@ -433,7 +438,7 @@ class SubsonicController extends Controller {
 		$count = $this->request->getParam('count', 10);
 		$offset = $this->request->getParam('offset', 0);
 
-		$tracks = $this->trackBusinessLayer->findAllByGenre($genre, $this->userId, $count, $offset);
+		$tracks = $this->findTracksByGenre($genre, $count, $offset);
 
 		return $this->subsonicResponse(['songsByGenre' =>
 			['song' => \array_map([$this, 'trackToApi'], $tracks)]
@@ -758,7 +763,7 @@ class SubsonicController extends Controller {
 		// for each of those individually would take a lot of time and great many DB queries.
 		// To prevent having to do this in `trackToApi`, we fetch all the albums and artists
 		// in one go.
-		$this->injectAlbumsAndArtistsToTracks($tracks);
+		$this->injectAlbumsArtistsAndGenresToTracks($tracks);
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
@@ -783,7 +788,7 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse($content);
 	}
 
-	private function injectAlbumsAndArtistsToTracks(&$tracks) {
+	private function injectAlbumsArtistsAndGenresToTracks(&$tracks) {
 		$albumIds = [];
 		$artistIds = [];
 
@@ -798,15 +803,18 @@ class SubsonicController extends Controller {
 		// get the corresponding entities from the business layer
 		$albums = $this->albumBusinessLayer->findById($albumIds, $this->userId);
 		$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
+		$genres = $this->genreBusinessLayer->findAll($this->userId);
 
 		// create hash tables "id => entity" for the albums and artists for fast access
 		$albumMap = self::createIdLookupTable($albums);
 		$artistMap = self::createIdLookupTable($artists);
+		$genreMap = self::createIdLookupTable($genres);
 
 		// finally, set the references on the tracks
 		foreach ($tracks as &$track) {
 			$track->setAlbum($albumMap[$track->getAlbumId()]);
 			$track->setArtist($artistMap[$track->getArtistId()]);
+			$track->setGenre($genreMap[$track->getGenreId()]);
 		}
 	}
 
@@ -976,7 +984,7 @@ class SubsonicController extends Controller {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. 
-	 * @param Track $track If the track entity has no album and/or artist references set, then
+	 * @param Track $track If the track entity has no album, artist and/or genre references set, then
 	 *                     those are automatically fetched from the respective BusinessLayer modules.
 	 * @return array
 	 */
@@ -995,6 +1003,12 @@ class SubsonicController extends Controller {
 			$track->setArtist($artist);
 		}
 
+		$genre = $track->getGenre();
+		if (empty($genre)) {
+			$genre = $this->genreBusinessLayer->find($track->getGenreId(), $this->userId);
+			$track->setGenre($genre);
+		}
+
 		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
@@ -1003,7 +1017,7 @@ class SubsonicController extends Controller {
 			'artist' => $artist->getNameString($this->l10n),
 			'isDir' => false,
 			'album' => $album->getNameString($this->l10n),
-			'genre' => $track->getGenre(),
+			'genre' => $genre->getNameString($this->l10n),
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),
@@ -1142,6 +1156,26 @@ class SubsonicController extends Controller {
 			'album' => \array_map([$this, $albumMapFunc], $results['albums']),
 			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
 		]]);
+	}
+
+	/**
+	 * Find tracks by genre name
+	 * @param string $genreName
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Track[]
+	 */
+	private function findTracksByGenre($genreName, $limit=null, $offset=null) {
+		$genreArr = $this->genreBusinessLayer->findAllByName($genreName, $this->userId);
+		if (\count($genreArr) == 0 && $genreName == Genre::unknownGenreName($this->l10n)) {
+			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
+		}
+
+		if (\count($genreArr) > 0) {
+			return $this->trackBusinessLayer->findAllByGenre($genreArr[0]->getId(), $this->userId, $limit, $offset);
+		} else {
+			return [];
+		}
 	}
 
 	/**

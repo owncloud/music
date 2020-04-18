@@ -32,9 +32,9 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
 	 */
 	public function getPerformingArtistsByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
-			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? ';
+		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`artist_id`
+				FROM `*PREFIX*music_tracks` `track`
+				WHERE `track`.`user_id` = ? ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {
@@ -43,11 +43,7 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$artists = [];
-		while ($row = $result->fetch()) {
-			$artists[$row['album_id']][] = $row['artist_id'];
-		}
-		return $artists;
+		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
 	}
 
 	/**
@@ -58,10 +54,10 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int[], keys are albums IDs and values are arrays of years
 	 */
 	public function getYearsByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT DISTINCT `track`.`year`, `track`.`album_id` '.
-				'FROM `*PREFIX*music_tracks` `track` '.
-				'WHERE `track`.`user_id` = ? '.
-				'AND `track`.`year` IS NOT NULL ';
+		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`year`
+				FROM `*PREFIX*music_tracks` `track`
+				WHERE `track`.`user_id` = ?
+				AND `track`.`year` IS NOT NULL ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {
@@ -70,11 +66,7 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$yearsByAlbum = [];
-		while ($row = $result->fetch()) {
-			$yearsByAlbum[$row['album_id']][] = $row['year'];
-		}
-		return $yearsByAlbum;
+		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
 	}
 
 	/**
@@ -85,10 +77,10 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int, keys are albums IDs and values are disk counts
 	 */
 	public function getDiscCountByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT MAX(`disk`) AS `disc_count`, `album_id` '.
-				'FROM `*PREFIX*music_tracks` '.
-				'WHERE `user_id` = ? '.
-				'GROUP BY `album_id` ';
+		$sql = 'SELECT `album_id`, MAX(`disk`) AS `disc_count`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				GROUP BY `album_id` ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {

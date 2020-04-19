@@ -993,12 +993,6 @@ class SubsonicController extends Controller {
 			$track->setArtist($artist);
 		}
 
-		$genre = $track->getGenre();
-		if (empty($genre)) {
-			$genre = $this->genreBusinessLayer->find($track->getGenreId(), $this->userId);
-			$track->setGenre($genre);
-		}
-
 		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
@@ -1007,7 +1001,6 @@ class SubsonicController extends Controller {
 			'artist' => $artist->getNameString($this->l10n),
 			'isDir' => false,
 			'album' => $album->getNameString($this->l10n),
-			'genre' => $genre->getNameString($this->l10n),
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),
@@ -1032,6 +1025,11 @@ class SubsonicController extends Controller {
 
 		if ($track->getStarred() != null) {
 			$result['starred'] = $this->formatDateTime($track->getStarred());
+		}
+
+		if (!empty($track->getGenreId())) {
+			$genre = $track->getGenre() ?: $this->genreBusinessLayer->find($track->getGenreId(), $this->userId);
+			$result['genre'] = $genre->getNameString($this->l10n);
 		}
 
 		return $result;

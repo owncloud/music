@@ -1081,12 +1081,16 @@ class SubsonicController extends Controller {
 				$genre = $this->getRequiredParam('genre');
 				$albums = $this->findAlbumsByGenre($genre, $size, $offset);
 				break;
+			case 'byYear':
+				$fromYear = $this->getRequiredParam('fromYear');
+				$toYear = $this->getRequiredParam('toYear');
+				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
+				break;
 			case 'alphabeticalByArtist':
 			case 'newest':
 			case 'highest':
 			case 'frequent':
 			case 'recent':
-			case 'byYear':
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;

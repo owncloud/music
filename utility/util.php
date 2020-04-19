@@ -157,4 +157,15 @@ class Util {
 			return $parentFolder;
 		}
 	}
+
+	/**
+	 * Swap values of two variables in place
+	 * @param mixed $a
+	 * @param mixed $b
+	 */
+	public static function swap(&$a, &$b) {
+		$temp = $a;
+		$a = $b;
+		$b = $temp;
+	}
 }

@@ -61,7 +61,11 @@ class GenreBusinessLayer extends BusinessLayer {
 		foreach ($genres as &$genre) {
 			$genre->setTrackIds($tracksByGenre[$genre->getId()]);
 		}
-		return $genres;
+
+		// Filter out genres with no tracks
+		return \array_filter($genres, function($genre) {
+			return !empty($genre->getTrackIds());
+		});
 	}
 
 	/**
@@ -72,6 +76,11 @@ class GenreBusinessLayer extends BusinessLayer {
 	 * @return Genre[]
 	 */
 	public function findAllWithCounts($userId, $limit=null, $offset=null) {
-		return $this->mapper->findAllWithCounts($userId, $limit, $offset);
+		$genres = $this->mapper->findAllWithCounts($userId, $limit, $offset);
+
+		// Filter out genres with no entities
+		return \array_filter($genres, function($genre) {
+			return $genre->getTrackCount() > 0 || $genre->getAlbumCount() > 0 || $genre->artistCount() > 0;
+		});
 	}
 }

@@ -63,6 +63,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.genresCountText = function() {
+		if (libraryService.genresLoaded()) {
+			var genreCount = libraryService.getAllGenres().length;
+			return gettextCatalog.getPlural(genreCount, '1 genre', '{{ count }} genres', { count: genreCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
@@ -88,16 +97,23 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$rootScope.$emit('artistsLoaded');
 			});
 
-			// Load playlist once the collection has been loaded
+			// Load playlists once the collection has been loaded
 			Restangular.all('playlists').getList().then(function(playlists) {
 				libraryService.setPlaylists(playlists);
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
 			});
 
+			// Load also genres once the collection has been loaded
+			Restangular.one('genres').get().then(function(genres) {
+				libraryService.setGenres(genres.genres);
+				$scope.filesWithUnscannedGenre = genres.unscanned;
+				$rootScope.$emit('genresLoaded');
+			});
+
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('.emptycontent:not(#noSearchResults)');
+			var collapsiblePopups = $('.emptycontent:not(#noSearchResults):not(#toRescan)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -189,7 +205,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function() {
+	$scope.startScanning = function(fileIds /*optional*/) {
+		if (fileIds) {
+			filesToScan = fileIds;
+			previouslyScannedCount = 0;
+			$scope.scanningScanned = 0;
+			$scope.scanningTotal = fileIds.length;
+		}
+
 		$scope.toScan = false;
 		$scope.scanning = true;
 		processNextScanStep();

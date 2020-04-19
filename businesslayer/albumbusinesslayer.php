@@ -79,6 +79,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns all albums filtered by genre
+	 * @param int $genreId the genre to include
+	 * @param string $userId the name of the user
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Album[] albums
+	 */
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		$albums = $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
 	 * Return all albums with name matching the search criteria
 	 * @param string $name
 	 * @param string $userId
@@ -93,7 +106,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Add performing artists, release years, and disk counts to the given album objects
+	 * Add performing artists, release years, genres, and disk counts to the given album objects
 	 * @param Album[] $albums
 	 * @param string $userId
 	 * @param bool $allAlbums Set to true if $albums contains all albums of the user.
@@ -114,14 +127,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
 			$years = $this->mapper->getYearsByAlbumId($albumIds, $userId);
 			$diskCounts = $this->mapper->getDiscCountByAlbumId($albumIds, $userId);
+			$genres = $this->mapper->getGenresByAlbumId($albumIds, $userId);
 
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
 				$album->setArtistIds($artists[$albumId]);
 				$album->setNumberOfDisks($diskCounts[$albumId]);
-				if (\array_key_exists($albumId, $years)) {
-					$album->setYears($years[$albumId]);
-				}
+				$album->setGenres(Util::arrayGetOrDefault($genres, $albumId));
+				$album->setYears(Util::arrayGetOrDefault($years, $albumId));
 			}
 		}
 		return $albums;

@@ -78,6 +78,19 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param int $genreId
+	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Track[] tracks
+	 */
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities('`genre_id` = ?', 'ORDER BY LOWER(`track`.`title`)');
+		$params = [$userId, $genreId];
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
 	 * @param string $userId
 	 * @return int[]
 	 */
@@ -260,6 +273,53 @@ class TrackMapper extends BaseMapper {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns all genre IDs associated with the given artist
+	 * @param int $artistId
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function getGenresByArtistId($artistId, $userId) {
+		$sql = 'SELECT DISTINCT(`genre_id`) FROM `*PREFIX*music_tracks` WHERE
+				`genre_id` IS NOT NULL AND `user_id` = ? AND `artist_id` = ?';
+		$rows = $this->execute($sql, [$userId, $artistId]);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
+	}
+
+	/**
+	 * Returns all tracks IDs of the user, organized by the genre_id.
+	 * @param string $userId
+	 * @return array where keys are genre IDs and values are arrays of track IDs
+	 */
+	public function mapGenreIdsToTrackIds($userId) {
+		$sql = 'SELECT `id`, `genre_id` FROM `*PREFIX*music_tracks`
+				WHERE `genre_id` IS NOT NULL and `user_id` = ?';
+		$rows = $this->execute($sql, [$userId]);
+
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row['genre_id']][] = $row['id'];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
+	 * thing as unknown genre, which means that the genre has been scanned but was not found
+	 * from the track metadata.
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function findFilesWithoutScannedGenre($userId) {
+		$sql = 'SELECT `track`.`file_id` FROM `*PREFIX*music_tracks` `track`
+				INNER JOIN `*PREFIX*filecache` `file`
+				ON `track`.`file_id` = `file`.`fileid`
+				WHERE `genre_id` IS NULL and `user_id` = ?';
+		$rows = $this->execute($sql, [$userId]);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
 	}
 
 	/**

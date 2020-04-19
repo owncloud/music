@@ -25,6 +25,7 @@ use \OCA\Music\Middleware\AmpacheException;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
@@ -40,12 +41,14 @@ use \OCA\Music\Http\XMLResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
 	private $ampacheUserMapper;
 	private $ampacheSessionMapper;
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
+	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
@@ -68,6 +71,7 @@ class AmpacheController extends Controller {
 								AmpacheSessionMapper $ampacheSessionMapper,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
+								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
@@ -81,6 +85,7 @@ class AmpacheController extends Controller {
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
@@ -140,6 +145,14 @@ class AmpacheController extends Controller {
 				return $this->playlist($filter);
 			case 'playlist_songs':
 				return $this->playlist_songs($filter, $limit, $offset, $auth);
+			case 'tags':
+				return $this->tags($filter, $exact, $limit, $offset);
+			case 'tag_artists':
+				return $this->tag_artists($filter, $limit, $offset);
+			case 'tag_albums':
+				return $this->tag_albums($filter, $limit, $offset, $auth);
+			case 'tag_songs':
+				return $this->tag_songs($filter, $limit, $offset, $auth);
 			# non Ampache API action - used for provide the file
 			case 'play':
 				return $this->play($filter);
@@ -177,7 +190,7 @@ class AmpacheController extends Controller {
 			'albums' => [$this->albumBusinessLayer->count($user)],
 			'playlists' => [$this->playlistBusinessLayer->count($user) + 1], // +1 for "All tracks"
 			'session_expire' => [$expiryDateFormated],
-			'tags' => [0],
+			'tags' => [$this->genreBusinessLayer->count($user)],
 			'videos' => [0]
 		]]);
 	}
@@ -304,6 +317,48 @@ class AmpacheController extends Controller {
 			$this->injectArtistAndAlbum($playlistTracks);
 		}
 		return $this->renderSongs($playlistTracks, $auth);
+	}
+
+	protected function tags($filter, $exact, $limit, $offset) {
+		$userId = $this->ampacheUser->getUserId();
+		$genres = $this->genreBusinessLayer->findAllWithCounts($userId, $limit, $offset);
+
+		// TODO: $filter, $exact
+
+		return new XMLResponse(['root' => [
+			'total_count' => \count($genres),
+			'tag' => \array_map(function($genre) {
+				return [
+					'id' => $genre->getId(),
+					'name' => [$genre->getNameString($this->l10n)],
+					'albums' => [$genre->getAlbumCount()],
+					'artists' => [$genre->getArtistCount()],
+					'songs' => [$genre->getTrackCount()],
+					'videos' => [0],
+					'playlists' => [0],
+					'stream' => [0]
+				];
+			}, $genres)
+		]]);
+	}
+
+	protected function tag_artists($genreId, $limit, $offset) {
+		$userId = $this->ampacheUser->getUserId();
+		$artists = $this->artistBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
+		return $this->renderArtists($artists);
+	}
+
+	protected function tag_albums($genreId, $limit, $offset, $auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$albums = $this->albumBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
+		return $this->renderAlbums($albums, $auth);
+	}
+
+	protected function tag_songs($genreId, $limit, $offset, $auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$tracks = $this->trackBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
+		$this->injectArtistAndAlbum($tracks, $artist);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	protected function play($trackId) {
@@ -445,14 +500,24 @@ class AmpacheController extends Controller {
 	}
 
 	private function renderArtists($artists) {
-		return new XMLResponse(['root' => ['artist' => \array_map(function($artist) {
+		$userId = $this->ampacheUser->getUserId();
+		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
+
+		return new XMLResponse(['root' => ['artist' => \array_map(function($artist) use ($userId, $genreMap) {
 			return [
 				'id' => $artist->getId(),
 				'name' => [$artist->getNameString($this->l10n)],
 				'albums' => [$this->albumBusinessLayer->countByArtist($artist->getId())],
 				'songs' => [$this->trackBusinessLayer->countByArtist($artist->getId())],
 				'rating' => [0],
-				'preciserating' => [0]
+				'preciserating' => [0],
+				'tag' => \array_map(function($genreId) use ($genreMap) {
+					return [
+						'id' => $genreId,
+						'value' => $genreMap[$genreId]->getNameString($this->l10n),
+						'count' => 1
+					];
+				}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
 			];
 		}, $artists)]]);
 	}
@@ -460,7 +525,9 @@ class AmpacheController extends Controller {
 	private function renderAlbums($albums, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 
-		return new XMLResponse(['root' => ['album' => \array_map(function($album) use ($userId, $auth) {
+		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
+
+		return new XMLResponse(['root' => ['album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
 			$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 			return [
 				'id' => $album->getId(),
@@ -473,7 +540,14 @@ class AmpacheController extends Controller {
 				'rating' => [0],
 				'year' => [$album->yearToAPI()],
 				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
-				'preciserating' => [0]
+				'preciserating' => [0],
+				'tag' => \array_map(function($genreId) use ($genreMap) {
+					return [
+						'id' => $genreId,
+						'value' => $genreMap[$genreId]->getNameString($this->l10n),
+						'count' => 1
+					];
+				}, $album->getGenres())
 			];
 		}, $albums)]]);
 	}
@@ -496,12 +570,15 @@ class AmpacheController extends Controller {
 	}
 
 	private function renderSongs($tracks, $auth) {
-		return new XMLResponse(['root' => ['song' => \array_map(function($track) use ($auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
+
+		return new XMLResponse(['root' => ['song' => \array_map(function($track) use ($auth, $genreMap) {
 			$artist = $track->getArtist();
 			$album = $track->getAlbum();
 			$albumArtist = $album->getAlbumArtist();
 
-			return [
+			$result = [
 				'id' => $track->getId(),
 				'title' => [$track->getTitle()],
 				'artist' => [
@@ -524,9 +601,20 @@ class AmpacheController extends Controller {
 				'size' => [$track->getSize()],
 				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
 				'rating' => [0],
-				'preciserating' => [0]
+				'preciserating' => [0],
 			];
-		}, $tracks)]]);
+
+			$genreId = $track->getGenreId();
+			if ($genreId !== null) {
+				$result['tag'] = [
+					'id' => $genreId,
+					'value' => $genreMap[$genreId]->getNameString($this->l10n),
+					'count' => 1
+				];
+			}
+			return $result;
+		},
+		$tracks)]]);
 	}
 
 	private function renderPlaylists($playlists) {

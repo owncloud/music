@@ -8,6 +8,8 @@
 			title="{{ albumCountText() }}"></li>
 		<li navigation-item text="'Folders' | translate" destination="'#/folders'"
 			title="{{ folderCountText() }}"></li>
+		<li navigation-item text="'Genres' | translate" destination="'#/genres'"
+			title="{{ genresCountText() }}"></li>
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}"></li>
 		<li class="app-navigation-separator"></li>

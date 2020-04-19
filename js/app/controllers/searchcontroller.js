@@ -98,6 +98,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			matchingTracks = searchInAlbumsView(query);
 		} else if (view == '#/folders') {
 			matchingTracks = searchInFoldersView(query);
+		} else if (view == '#/genres') {
+			matchingTracks = searchInGenresView(query);
 		} else if (view == '#/alltracks') {
 			matchingTracks = searchInAllTracksView(query);
 		} else if (view.startsWith('#/playlist/')) {
@@ -159,6 +161,24 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		// mark parent folders of the matches
 		_(folders).each(function(value, folderId) {
 			$('#folder-' + folderId).addClass('matched');
+		});
+
+		return matches;
+	}
+
+	function searchInGenresView(query) {
+		var matches = libraryService.searchTracksInGenres(query, MAX_MATCHES);
+
+		// mark track matches and collect the unique parent genres
+		var genres = {};
+		_(matches.result).each(function(track) {
+			$('#track-' + track.id).addClass('matched');
+			genres[track.genre.id] = 1;
+		});
+
+		// mark parent folders of the matches
+		_(genres).each(function(value, genreId) {
+			$('#genre-' + genreId).addClass('matched');
 		});
 
 		return matches;

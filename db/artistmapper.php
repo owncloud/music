@@ -37,6 +37,23 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param int $genreId
+	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Artist[]
+	 */
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities('EXISTS '.
+				'(SELECT 1 FROM `*PREFIX*music_tracks` `track`
+				  WHERE `*PREFIX*music_artists`.`id` = `track`.`artist_id`
+				  AND `track`.`genre_id` = ?)');
+
+		$params = [$userId, $genreId];
+		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param Artist $artist
 	 * @return Artist

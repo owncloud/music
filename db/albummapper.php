@@ -32,9 +32,9 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
 	 */
 	public function getPerformingArtistsByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT DISTINCT `track`.`artist_id`, `track`.`album_id` '.
-			'FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`user_id` = ? ';
+		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`artist_id`
+				FROM `*PREFIX*music_tracks` `track`
+				WHERE `track`.`user_id` = ? ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {
@@ -43,11 +43,7 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$artists = [];
-		while ($row = $result->fetch()) {
-			$artists[$row['album_id']][] = $row['artist_id'];
-		}
-		return $artists;
+		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
 	}
 
 	/**
@@ -58,10 +54,10 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int[], keys are albums IDs and values are arrays of years
 	 */
 	public function getYearsByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT DISTINCT `track`.`year`, `track`.`album_id` '.
-				'FROM `*PREFIX*music_tracks` `track` '.
-				'WHERE `track`.`user_id` = ? '.
-				'AND `track`.`year` IS NOT NULL ';
+		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`year`
+				FROM `*PREFIX*music_tracks` `track`
+				WHERE `track`.`user_id` = ?
+				AND `track`.`year` IS NOT NULL ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {
@@ -70,11 +66,30 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$yearsByAlbum = [];
-		while ($row = $result->fetch()) {
-			$yearsByAlbum[$row['album_id']][] = $row['year'];
+		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+	}
+
+	/**
+	 * returns genres mapped to album IDs
+	 *
+	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
+	 * @param string $userId the user ID
+	 * @return array int => string[], keys are albums IDs and values are arrays of genres
+	 */
+	public function getGenresByAlbumId($albumIds, $userId) {
+		$sql = 'SELECT DISTINCT `album_id`, `genre_id`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				AND `genre_id` IS NOT NULL ';
+		$params = [$userId];
+
+		if ($albumIds !== null) {
+			$sql .= 'AND `album_id` IN ' . $this->questionMarks(\count($albumIds));
+			$params = \array_merge($params, $albumIds);
 		}
-		return $yearsByAlbum;
+
+		$result = $this->execute($sql, $params);
+		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
 	}
 
 	/**
@@ -85,10 +100,10 @@ class AlbumMapper extends BaseMapper {
 	 * @return array int => int, keys are albums IDs and values are disk counts
 	 */
 	public function getDiscCountByAlbumId($albumIds, $userId) {
-		$sql = 'SELECT MAX(`disk`) AS `disc_count`, `album_id` '.
-				'FROM `*PREFIX*music_tracks` '.
-				'WHERE `user_id` = ? '.
-				'GROUP BY `album_id` ';
+		$sql = 'SELECT `album_id`, MAX(`disk`) AS `disc_count`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				GROUP BY `album_id` ';
 		$params = [$userId];
 
 		if ($albumIds !== null) {
@@ -135,6 +150,23 @@ class AlbumMapper extends BaseMapper {
 		$sql = $this->selectUserEntities('`album_artist_id` = ?');
 		$params = [$userId, $artistId];
 		return $this->findEntities($sql, $params);
+	}
+
+	/**
+	 * @param int $genreId
+	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Artist[]
+	 */
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		$sql = $this->selectUserEntities('EXISTS '.
+				'(SELECT 1 FROM `*PREFIX*music_tracks` `track`
+				  WHERE `*PREFIX*music_albums`.`id` = `track`.`album_id`
+				  AND `track`.`genre_id` = ?)');
+
+		$params = [$userId, $genreId];
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

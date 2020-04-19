@@ -219,7 +219,8 @@ div:hover > .play-pause,
 	margin: 0;
 }
 
-#toScan:hover * {
+#toScan:hover *,
+#toRescan:hover * {
 	color: #000;
 	/* opacity */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";

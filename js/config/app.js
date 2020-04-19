@@ -52,6 +52,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				templateUrl:'foldersview.html'
 			};
 
+			var genresControllerConfig = {
+				controller:'GenresViewController',
+				templateUrl:'genresview.html'
+			};
+
 			var settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -71,11 +76,12 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
 				.when('/folders',              foldersControllerConfig)
+				.when('/genres',               genresControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])
 	.run(['Token', 'Restangular',
-		function(Token, Restangular){
+		function(Token, Restangular) {
 			// add CSRF token
 			Restangular.setDefaultHeaders({requesttoken: Token});
 		}

@@ -104,6 +104,8 @@ angular.module('Music').controller('NavigationController', [
 					$scope.$parent.loadFoldersAndThen(function() {
 						play('folders', libraryService.getTracksInFolderOrder());
 					});
+				} else if (destination == '#/genres') {
+					play('genres', libraryService.getTracksInGenreOrder());
 				} else {
 					play('playlist-' + playlist.id, playlist.tracks);
 				}
@@ -128,6 +130,11 @@ angular.module('Music').controller('NavigationController', [
 		// Add all tracks in a folder to the playlist
 		$scope.addFolder = function(playlist, folderId) {
 			addTracks(playlist, trackIdsFromFolder(folderId));
+		};
+
+		// Add all tracks of the genre to the playlist
+		$scope.addGenre = function(playlist, genreId) {
+			addTracks(playlist, trackIdsFromGenre(genreId));
 		};
 
 		// Navigate to a view selected from the navigation bar
@@ -157,6 +164,8 @@ angular.module('Music').controller('NavigationController', [
 				$scope.addArtist(playlist, droppedItem.artist);
 			} else if ('folder' in droppedItem) {
 				$scope.addFolder(playlist, droppedItem.folder);
+			} else if ('genre' in droppedItem) {
+				$scope.addGenre(playlist, droppedItem.genre);
 			} else {
 				console.error("Unknwon entity dropped on playlist");
 			}
@@ -180,6 +189,11 @@ angular.module('Music').controller('NavigationController', [
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
 			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
+		}
+
+		function trackIdsFromGenre(genreId) {
+			var genre = libraryService.getGenre(genreId);
+			return _.pluck(_.pluck(genre.tracks, 'track'), 'id');
 		}
 
 		function addTracks(playlist, trackIds) {

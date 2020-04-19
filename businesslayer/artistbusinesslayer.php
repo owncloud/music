@@ -40,6 +40,18 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns all artists filtered by genre
+	 * @param int $genreId the genre to include
+	 * @param string $userId the name of the user
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return \OCA\Music\Db\Artist[] artists
+	 */
+	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
+	}
+
+	/**
 	 * Adds an artist if it does not exist already or updates an existing artist
 	 * @param string $name the name of the artist
 	 * @param string $userId the name of the user

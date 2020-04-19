@@ -23,8 +23,9 @@ use \OCP\Files\IRootFolder;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\Maintenance;
 
@@ -36,6 +37,7 @@ class Scanner extends PublicEmitter {
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
 	private $playlistBusinessLayer;
+	private $genreBusinessLayer;
 	private $cache;
 	private $coverHelper;
 	private $logger;
@@ -48,6 +50,7 @@ class Scanner extends PublicEmitter {
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								GenreBusinessLayer $genreBusinessLayer,
 								Cache $cache,
 								CoverHelper $coverHelper,
 								Logger $logger,
@@ -59,6 +62,7 @@ class Scanner extends PublicEmitter {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->cache = $cache;
 		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
@@ -151,9 +155,13 @@ class Scanner extends PublicEmitter {
 					$meta['album'], $albumArtistId, $userId);
 			$albumId = $album->getId();
 
+			// add/update genre and get genre entity
+			$genre = $this->genreBusinessLayer->addOrUpdateGenre($meta['genre'], $userId);
+
 			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack($meta['title'], $meta['trackNumber'],  $meta['discNumber'],
-					$meta['year'], $artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
+			$track = $this->trackBusinessLayer->addOrUpdateTrack(
+					$meta['title'], $meta['trackNumber'],  $meta['discNumber'], $meta['year'], $genre->getId(),
+					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
 			if ($meta['picture'] != null) {
@@ -232,6 +240,8 @@ class Scanner extends PublicEmitter {
 		// year
 		$meta['year'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['year', 'date', 'creation_date']);
 		$meta['year'] = self::normalizeYear($meta['year']);
+
+		$meta['genre'] = ExtractorGetID3::getTag($fileInfo, 'genre') ?: ''; // empty string used for "scanned but unknown"
 
 		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);
 

@@ -912,28 +912,11 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function albumToOldApi($album, $artistName = null) {
-		$artistId = $album->getAlbumArtistId();
+		$result = $this->albumCommonApiFields($album, $artistName);
 
-		if (empty($artistName)) {
-			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-			$artistName = $artist->getNameString($this->l10n);
-		}
-
-		$result = [
-			'id' => 'album-' . $album->getId(),
-			'parent' => 'artist-' . $artistId,
-			'title' => $album->getNameString($this->l10n),
-			'artist' => $artistName,
-			'isDir' => true
-		];
-
-		if (!empty($album->getCoverFileId())) {
-			$result['coverArt'] = $album->getId();
-		}
-
-		if ($album->getStarred() != null) {
-			$result['starred'] = $this->formatDateTime($album->getStarred());
-		}
+		$result['parent'] = 'artist-' . $album->getAlbumArtistId();
+		$result['title'] = $album->getNameString($this->l10n);
+		$result['isDir'] = true;
 
 		return $result;
 	}
@@ -945,20 +928,25 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function albumToNewApi($album, $artistName = null) {
-		$artistId = $album->getAlbumArtistId();
+		$result = $this->albumCommonApiFields($album, $artistName);
 
+		$result['artistId'] = 'artist-' . $album->getAlbumArtistId();
+		$result['name'] = $album->getNameString($this->l10n);
+		$result['songCount'] = $this->trackBusinessLayer->countByAlbum($album->getId());
+		//$result['duration'] = 0;
+
+		return $result;
+	}
+
+	private function albumCommonApiFields($album, $artistName = null) {
 		if (empty($artistName)) {
-			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $this->userId);
 			$artistName = $artist->getNameString($this->l10n);
 		}
 
 		$result = [
 			'id' => 'album-' . $album->getId(),
-			'artistId' => 'artist-' . $artistId,
-			'name' => $album->getNameString($this->l10n),
-			'artist' => $artistName,
-			'songCount' => $this->trackBusinessLayer->countByAlbum($album->getId()),
-			//'duration' => 0
+			'artist' => $artistName
 		];
 
 		if (!empty($album->getCoverFileId())) {
@@ -967,6 +955,16 @@ class SubsonicController extends Controller {
 
 		if ($album->getStarred() != null) {
 			$result['starred'] = $this->formatDateTime($album->getStarred());
+		}
+
+		if (!empty($album->getGenres())) {
+			$result['genre'] = \implode(', ', \array_map(function($genreId) {
+				return $this->genreBusinessLayer->find($genreId, $this->userId)->getNameString($this->l10n);
+			}, $album->getGenres()));
+		}
+
+		if (!empty($album->getYears())) {
+			$result['year'] = $album->yearToAPI();
 		}
 
 		return $result;

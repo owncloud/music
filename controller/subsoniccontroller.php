@@ -49,7 +49,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.9.0';
+	const API_VERSION = '1.10.1';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -738,13 +738,13 @@ class SubsonicController extends Controller {
 
 	private function getIndexesForFolders() {
 		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
-	
+
 		return $this->subsonicResponse(['indexes' => ['index' => [
-				['name' => '*',
-				'artist' => [['id' => 'folder-' . $rootFolder->getId(), 'name' => $rootFolder->getName()]]]
-				]]]);
+			['name' => '*',
+			'artist' => [['id' => 'folder-' . $rootFolder->getId(), 'name' => $rootFolder->getName()]]]
+		]]]);
 	}
-	
+
 	private function getMusicDirectoryForFolder($id) {
 		$folderId = self::ripIdPrefix($id); // get rid of 'folder-' prefix
 		$folder = $this->getFilesystemNode($folderId);
@@ -1077,13 +1077,16 @@ class SubsonicController extends Controller {
 			case 'alphabeticalByName':
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $size, $offset);
 				break;
+			case 'byGenre':
+				$genre = $this->getRequiredParam('genre');
+				$albums = $this->findAlbumsByGenre($genre, $size, $offset);
+				break;
 			case 'alphabeticalByArtist':
 			case 'newest':
 			case 'highest':
 			case 'frequent':
 			case 'recent':
 			case 'byYear':
-			case 'byGenre':
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;
@@ -1154,16 +1157,38 @@ class SubsonicController extends Controller {
 	 * @return Track[]
 	 */
 	private function findTracksByGenre($genreName, $limit=null, $offset=null) {
-		$genreArr = $this->genreBusinessLayer->findAllByName($genreName, $this->userId);
-		if (\count($genreArr) == 0 && $genreName == Genre::unknownGenreName($this->l10n)) {
-			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
-		}
+		$genre = $this->findGenreByName($genreName);
 
-		if (\count($genreArr) > 0) {
-			return $this->trackBusinessLayer->findAllByGenre($genreArr[0]->getId(), $this->userId, $limit, $offset);
+		if ($genre) {
+			return $this->trackBusinessLayer->findAllByGenre($genre->getId(), $this->userId, $limit, $offset);
 		} else {
 			return [];
 		}
+	}
+
+	/**
+	 * Find albums by genre name
+	 * @param string $genreName
+	 * @param int|null $limit
+	 * @param int|null $offset
+	 * @return Album[]
+	 */
+	private function findAlbumsByGenre($genreName, $limit=null, $offset=null) {
+		$genre = $this->findGenreByName($genreName);
+
+		if ($genre) {
+			return $this->albumBusinessLayer->findAllByGenre($genre->getId(), $this->userId, $limit, $offset);
+		} else {
+			return [];
+		}
+	}
+
+	private function findGenreByName($name) {
+		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->userId);
+		if (\count($genreArr) == 0 && $genreName == Genre::unknownGenreName($this->l10n)) {
+			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
+		}
+		return \count($genreArr) ? $genreArr[0] : null;
 	}
 
 	/**

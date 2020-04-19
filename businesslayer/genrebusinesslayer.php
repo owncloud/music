@@ -50,10 +50,12 @@ class GenreBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all genres of the user, along with the contained track IDs
 	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
 	 * @return Genre[] where each instance has also the trackIds property set
 	 */
-	public function findAllWithTrackIds($userId) {
-		$genres = $this->findAll($userId);
+	public function findAllWithTrackIds($userId, $limit=null, $offset=null) {
+		$genres = $this->findAll($userId, $limit, $offset);
 		$tracksByGenre = $this->trackMapper->mapGenreIdsToTrackIds($userId);
 
 		foreach ($genres as &$genre) {
@@ -65,9 +67,11 @@ class GenreBusinessLayer extends BusinessLayer {
 	/**
 	 * Retrun all genres of the user, along with count of tracks, albums, and artists on each genre
 	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
 	 * @return Genre[]
 	 */
-	public function findAllWithCounts($userId) {
-		return $this->mapper->findAllWithCounts($userId);
+	public function findAllWithCounts($userId, $limit=null, $offset=null) {
+		return $this->mapper->findAllWithCounts($userId, $limit, $offset);
 	}
 }

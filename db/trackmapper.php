@@ -276,6 +276,19 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Returns all genre IDs associated with the given artist
+	 * @param int $artistId
+	 * @param string $userId
+	 * @return int[]
+	 */
+	public function getGenresByArtistId($artistId, $userId) {
+		$sql = 'SELECT DISTINCT(`genre_id`) FROM `*PREFIX*music_tracks` WHERE
+				`user_id` = ? AND `artist_id` = ?';
+		$rows = $this->execute($sql, [$userId, $artistId]);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
+	}
+
+	/**
 	 * Returns all tracks IDs of the user, organized by the genre_id.
 	 * @param string $userId
 	 * @return array where keys are genre IDs and values are arrays of track IDs

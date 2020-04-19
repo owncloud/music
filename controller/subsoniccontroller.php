@@ -806,9 +806,9 @@ class SubsonicController extends Controller {
 		$genres = $this->genreBusinessLayer->findAll($this->userId);
 
 		// create hash tables "id => entity" for the albums and artists for fast access
-		$albumMap = self::createIdLookupTable($albums);
-		$artistMap = self::createIdLookupTable($artists);
-		$genreMap = self::createIdLookupTable($genres);
+		$albumMap = Util::createIdLookupTable($albums);
+		$artistMap = Util::createIdLookupTable($artists);
+		$genreMap = Util::createIdLookupTable($genres);
 
 		// finally, set the references on the tracks
 		foreach ($tracks as &$track) {
@@ -816,14 +816,6 @@ class SubsonicController extends Controller {
 			$track->setArtist($artistMap[$track->getArtistId()]);
 			$track->setGenre($genreMap[$track->getGenreId()]);
 		}
-	}
-
-	private static function createIdLookupTable($array) {
-		$lut = [];
-		foreach ($array as $item) {
-			$lut[$item->getId()] = $item;
-		}
-		return $lut;
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {

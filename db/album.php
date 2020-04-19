@@ -47,6 +47,8 @@ use \OCA\Music\Utility\Util;
  * @method void setNumberOfDisks(int $count)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
+ * @method array getGenres()
+ * @method void setGenres(array $genres)
  */
 class Album extends Entity {
 	public $name;
@@ -61,6 +63,7 @@ class Album extends Entity {
 
 	// these don't come from the music_albums table
 	public $years;
+	public $genres;
 	public $artistIds;
 	public $numberOfDisks;
 	public $albumArtist;

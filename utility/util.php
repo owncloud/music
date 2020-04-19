@@ -30,6 +30,19 @@ class Util {
 	}
 
 	/**
+	 * Create look-up table from given array of items which have a `getId` function.
+	 * @param array $array
+	 * @return array where keys are the values returned by `getId` of each item
+	 */
+	public static function createIdLookupTable($array) {
+		$lut = [];
+		foreach ($array as $item) {
+			$lut[$item->getId()] = $item;
+		}
+		return $lut;
+	}
+
+	/**
 	 * Get difference of two arrays, i.e. elements belonging to $b but not $a.
 	 * This function is faster than the built-in array_diff for large arrays but
 	 * at the expense of higher RAM usage and can be used only for arrays of
@@ -62,6 +75,17 @@ class Util {
 			$result[] = $array[$index];
 		}
 		return $result;
+	}
+
+	/**
+	 * Get array value if exists, otherwise return a default value or null
+	 * @param array $array
+	 * @param int|string $key
+	 * @param mixed|null $default
+	 * @return mixed|null
+	 */
+	public static function arrayGetOrDefault($array, $key, $default=null) {
+		return isset($array[$key]) ? $array[$key] : $default;
 	}
 
 	/**

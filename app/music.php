@@ -80,6 +80,7 @@ class Music extends App {
 				$c->query('AmpacheSessionMapper'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),

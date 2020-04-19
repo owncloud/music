@@ -32,9 +32,11 @@ class GenreMapper extends BaseMapper {
 	/**
 	 * Count tracks, albums, and artists by genre
 	 * @param string $userId
+	 * @param int|null $limit
+	 * @param int|null $offset
 	 * @return Genre[] with also all the count properties set
 	 */
-	public function findAllWithCounts($userId) {
+	public function findAllWithCounts($userId, $limit=null, $offset=null) {
 		$sql = 'SELECT
 					`genre`.`id`,
 					`genre`.`name`,
@@ -48,6 +50,15 @@ class GenreMapper extends BaseMapper {
 				WHERE `track`.`genre_id` IS NOT NULL and `track`.`user_id` = ?
 				GROUP BY `genre`.`id`, `genre`.`name`, `genre`.`lower_name`
 				ORDER BY `genre`.`lower_name`';
+
+		if ($limit) {
+			$sql .= " LIMIT $limit";
+		}
+
+		if ($offset) {
+			$sql .= " OFFSET $offset";
+		}
+
 		$rows = $this->execute($sql, [$userId]);
 
 		return $rows->fetchAll(\PDO::FETCH_CLASS, $this->entityClass);

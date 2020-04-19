@@ -361,6 +361,13 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 					query,
 					maxResults);
 		},
+		searchTracksInGenres: function(query, maxResults/*optional*/) {
+			return search(
+					tracksIndex,
+					['title', 'artistName', 'genre.name'],
+					query,
+					maxResults);
+		},
 		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
 			var list = this.getPlaylist(playlistId) || [];
 			list = _.pluck(list.tracks, 'track');

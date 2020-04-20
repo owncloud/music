@@ -25,18 +25,11 @@ Music player embedded into the files view:
 * M4A (`audio/mp4`)
 * M4B (`audio/m4b`)
 
-_Note: The audio formats supported vary depending on the browser. Chrome and Firefox should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
-
-_Note: The app might be unable to play some particular files on some browsers._
-
+_Note: The audio formats supported vary depending on the browser. Most recents versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
 ### Detail
 
-The Music app utilizes 2 backend players: Aurora.js and SoundManager2.
-
-SoundManager2 utilizes the browser's built-in codecs. Aurora.js, on the other hand, uses Javascript and HTML5 Audio API to decode and play music and doesn't require codecs from browser. The Music app ships with FLAC and MP3 plugins for Aurora.js. Aurora.js does not work on any version of Internet Explorer and fails to play some MP3 files on other browsers, too.
-
-The Music app uses SoundManager2 if the browser has a suitable codec available for the file in question and Aurora.js otherwise. In practice, Firefox and Chrome use SoundManager2 for all supported audio formats. Chromium uses Aurora.js for MP3 and FLAC and doesn't play any other formats. Edge uses Aurora.js for FLAC and SoundManager2 for everything else (ogg and m4b not supported). Internet Explorer plays MP3 with SoundManager2 and doesn's play any other formats.
+The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. This is the default playback methdod used by the Music app. In case the browser at hand doesn't have a codec for the file format in question, the app attempts to play the file using the Aurora.js library, instead. This library usus javascript to decode the supported file formats which are MP3 and FLAC.
 
 ## Usage hints
 

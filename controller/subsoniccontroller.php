@@ -304,14 +304,27 @@ class SubsonicController extends Controller {
 		$size = $this->request->getParam('size', 10);
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
 		$genre = $this->request->getParam('genre');
-		// $fromYear = $this->request->getParam('fromYear'); not supported
-		// $toYear = $this->request->getParam('genre'); not supported
+		$fromYear = $this->request->getParam('fromYear');
+		$toYear = $this->request->getParam('toYear');
 
 		if ($genre !== null) {
 			$trackPool = $this->findTracksByGenre($genre);
 		} else {
 			$trackPool = $this->trackBusinessLayer->findAll($this->userId);
 		}
+
+		if ($fromYear !== null) {
+			$trackPool = \array_filter($trackPool, function($track) use ($fromYear) {
+				return ($track->getYear() !== null && $track->getYear() >= $fromYear);
+			});
+		}
+
+		if ($toYear !== null) {
+			$trackPool = \array_filter($trackPool, function($track) use ($toYear) {
+				return ($track->getYear() !== null && $track->getYear() <= $toYear);
+			});
+		}
+
 		$tracks = Random::pickItems($trackPool, $size);
 
 		return $this->subsonicResponse(['randomSongs' =>

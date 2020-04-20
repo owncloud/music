@@ -37,8 +37,8 @@ class DetailsHelper {
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
 
-			// remove intermediate arrays
-			$data['comments'] = self::flattenComments($data['comments']);
+			// remove intermediate arrays and map null comments into an empty array
+			$data['comments'] = self::flattenComments($data['comments'] ?: []);
 
 			// cleanup strings from invalid characters
 			\array_walk($data['audio'], ['self', 'sanitizeString']);

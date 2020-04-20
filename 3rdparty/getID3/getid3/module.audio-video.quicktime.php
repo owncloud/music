@@ -771,6 +771,15 @@ class getid3_quicktime extends getid3_handler
 						$atom_structure['sample_description_table'][$i]['data']             =                           substr($atom_data, $stsdEntriesDataOffset, ($atom_structure['sample_description_table'][$i]['size'] - 4 - 4 - 6 - 2));
 						$stsdEntriesDataOffset += ($atom_structure['sample_description_table'][$i]['size'] - 4 - 4 - 6 - 2);
 
+						if (substr($atom_structure['sample_description_table'][$i]['data'],  1, 54) == 'application/octet-stream;type=com.parrot.videometadata') {
+							// special handling for apparently-malformed (TextMetaDataSampleEntry?) data for some version of Parrot drones
+							$atom_structure['sample_description_table'][$i]['parrot_frame_metadata']['mime_type']        =       substr($atom_structure['sample_description_table'][$i]['data'],  1, 55);
+							$atom_structure['sample_description_table'][$i]['parrot_frame_metadata']['metadata_version'] = (int) substr($atom_structure['sample_description_table'][$i]['data'], 55,  1);
+							unset($atom_structure['sample_description_table'][$i]['data']);
+$this->warning('incomplete/incorrect handling of "stsd" with Parrot metadata in this version of getID3() ['.$this->getid3->version().']');
+							continue;
+						}
+
 						$atom_structure['sample_description_table'][$i]['encoder_version']  = getid3_lib::BigEndian2Int(substr($atom_structure['sample_description_table'][$i]['data'],  0, 2));
 						$atom_structure['sample_description_table'][$i]['encoder_revision'] = getid3_lib::BigEndian2Int(substr($atom_structure['sample_description_table'][$i]['data'],  2, 2));
 						$atom_structure['sample_description_table'][$i]['encoder_vendor']   =                           substr($atom_structure['sample_description_table'][$i]['data'],  4, 4);
@@ -1148,7 +1157,7 @@ class getid3_quicktime extends getid3_handler
 					$atom_structure['component_manufacturer'] =                           substr($atom_data, 12, 4);
 					$atom_structure['component_flags_raw']    = getid3_lib::BigEndian2Int(substr($atom_data, 16, 4));
 					$atom_structure['component_flags_mask']   = getid3_lib::BigEndian2Int(substr($atom_data, 20, 4));
-					$atom_structure['component_name']         =      $this->Pascal2String(substr($atom_data, 24));
+					$atom_structure['component_name']         = $this->MaybePascal2String(substr($atom_data, 24));
 
 					if (($atom_structure['component_subtype'] == 'STpn') && ($atom_structure['component_manufacturer'] == 'zzzz')) {
 						$info['video']['dataformat'] = 'quicktimevr';
@@ -1472,7 +1481,7 @@ class getid3_quicktime extends getid3_handler
 						$info['avdataend']    = $atom_structure['offset'] + $atom_structure['size']; // $info['quicktime'][$atomname]['offset'] + $info['quicktime'][$atomname]['size'];
 
 						$getid3_temp = new getID3();
-						$getid3_temp->openfile($this->getid3->filename);
+						$getid3_temp->openfile($this->getid3->filename, $this->getid3->info['filesize'], $this->getid3->fp);
 						$getid3_temp->info['avdataoffset'] = $info['avdataoffset'];
 						$getid3_temp->info['avdataend']    = $info['avdataend'];
 						$getid3_mp3 = new getid3_mp3($getid3_temp);
@@ -2004,6 +2013,11 @@ class getid3_quicktime extends getid3_handler
 					}
 					break;
 
+				case 'cdsc': // timed metadata reference
+					// A QuickTime movie can contain none, one, or several timed metadata tracks. Timed metadata tracks can refer to multiple tracks.
+					// Metadata tracks are linked to the tracks they describe using a track-reference of type 'cdsc'. The metadata track holds the 'cdsc' track reference.
+					$atom_structure['track_number'] = getid3_lib::BigEndian2Int($atom_data);
+					break;
 
 				default:
 					$this->warning('Unknown QuickTime atom type: "'.preg_replace('#[^a-zA-Z0-9 _\\-]#', '?', $atomname).'" ('.trim(getid3_lib::PrintHexBytes($atomname)).'), '.$atomsize.' bytes at offset '.$baseoffset);
@@ -2966,6 +2980,23 @@ class getid3_quicktime extends getid3_handler
 	public function Pascal2String($pascalstring) {
 		// Pascal strings have 1 unsigned byte at the beginning saying how many chars (1-255) are in the string
 		return substr($pascalstring, 1);
+	}
+
+	/**
+	 * @param string $pascalstring
+	 *
+	 * @return string
+	 */
+	public function MaybePascal2String($pascalstring) {
+		// Pascal strings have 1 unsigned byte at the beginning saying how many chars (1-255) are in the string
+		// Check if string actually is in this format or written incorrectly, straight string, or null-terminated string
+		if (ord(substr($pascalstring, 0, 1)) == (strlen($pascalstring) - 1)) {
+			return substr($pascalstring, 1);
+		} elseif (substr($pascalstring, -1, 1) == "\x00") {
+			// appears to be null-terminated instead of Pascal-style
+			return substr($pascalstring, 0, -1);
+		}
+		return $pascalstring;
 	}
 
 

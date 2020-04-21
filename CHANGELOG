@@ -1,3 +1,25 @@
+v0.14.0 2020-04-21
+ * add 'Genres' view to the web UI
+ * integrate the web UI with the (Chrome) media control API (provides e.g. support for HW keys play/pause/etc and integration to the OS lock screen)
+ * improvements for Subsonic API:
+   * support genres: add methods `getGenres` and `getSongsByGenre`, and add parameter `genre` to methods `getRandomSongs` and `getAlbumList(2)`
+   * support defining year ranges on methods `getAlbumList(2)` and `getRandomSongs`
+   * add `year` and `genre` properties to all album responses, add `genre` property to all song responses
+   * support starring tracks, albums, and artists (#750) (stars are visible only via Subsonic)
+   * proper paging when fetching random album list (one album returned only once)
+   * optimize getting large folder contents
+   * fix/tweak the logic used in the method `getLyrics`
+   * API version set to 1.10.1
+ * improvements for Ampache API:
+   * support `limit` and `offset` parameters on more actions; this fixes the "Random Artists/Albums/Playlists" feature on the Ampache plugin in the Kodi media player
+   * support genres using the `tags` feature of the API: added actions `tags`, `tag_artists`, `tag_albums`, and `tag_songs` and include `tag` properties on song/album/artist responses
+ * drop the SoundManager2 library in favor of using HTML5 API directly
+ * update getID3 to development version 1.9.19-202004201144 (should help on #123)
+ * allow rescanning previously scanned tracks with `occ music:scan` by using the option `--rescan`
+ * fix unable to open details pane if getID3 can't extract any metadata tags
+ * fix several small bugs causing logged error notes (but no undesired behavior) at least on Nextcloud 18 + PHP 7.4
+ * fix a typo in the 'Settings' view (#751 by @amalvarenga)
+
 v0.13.2 2020-03-25
  * fix SW update problems caused by the disk-number-migration script introduced in v0.13.1 (#748)
 

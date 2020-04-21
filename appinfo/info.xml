@@ -5,12 +5,14 @@
 	<summary>Music player, library viewer, and server</summary>
 	<description>Plays audio files directly in the Files view or in a separate library view. Depending on the browser, supports playing filetypes mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3.
 
-In the library view, you can play tracks by album or artist, create custom playlists, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to next files of the folder until stopped. The app includes also a server compatible with Ampache and Subsonic clients.
+In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to next files of the folder until stopped. The app includes also a server compatible with Ampache and Subsonic clients.
+
+The Music app also integrates with the mediaSession API (available at least on recent versions of Chrome). When the API is supported by the browser, this allows controlling the Music app via the media playback keys on keyboard even when the browser is not focused, and shows the playback controls also on the lock scren of the OS (at least on Windows 10 and Android).
 
 Limitations: The app can handle libraries of more than 50´000 tracks on modern desktop browsers, but the user experience is not optimized for such collections. Libraries significantly larger than this may fail to function altogether. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen, Morris Jobke (original author), Jan-Christoph Borchardt (original design)</author>
-	<version>0.13.3-alpha3</version>
+	<version>0.14.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827475-94d34d7c-9b02-11e8-8bf9-9f3d91aa5dab.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

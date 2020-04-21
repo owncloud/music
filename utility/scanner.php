@@ -393,14 +393,18 @@ class Scanner extends PublicEmitter {
 		});
 	}
 
-	private function getScannedFiles($userId) {
+	private function getScannedFileIds($userId) {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function getUnscannedMusicFileIds($userId) {
-		$scannedIds = $this->getScannedFiles($userId);
+	public function getAllMusicFileIds($userId) {
 		$musicFiles = $this->getMusicFiles($userId);
-		$allIds = Util::extractIds($musicFiles);
+		return Util::extractIds($musicFiles);
+	}
+
+	public function getUnscannedMusicFileIds($userId) {
+		$scannedIds = $this->getScannedFileIds($userId);
+		$allIds = $this->getAllMusicFileIds($userId);
 		$unscannedIds = Util::arrayDiff($allIds, $scannedIds);
 
 		$count = \count($unscannedIds);
@@ -457,7 +461,7 @@ class Scanner extends PublicEmitter {
 	 * @return Number of removed files
 	 */
 	public function removeUnavailableFiles($userId, $userHome) {
-		$indexedFiles = $this->getScannedFiles($userId);
+		$indexedFiles = $this->getScannedFileIds($userId);
 		$unavailableFiles = [];
 		foreach ($indexedFiles as $fileId) {
 			$fileNodes = $userHome->getById($fileId);
@@ -480,7 +484,7 @@ class Scanner extends PublicEmitter {
 	 * @param string $userId
 	 */
 	private function removeFilesNotUnderMusicFolder($userId) {
-		$indexedFiles = $this->getScannedFiles($userId);
+		$indexedFiles = $this->getScannedFileIds($userId);
 		$validFiles = Util::extractIds($this->getMusicFiles($userId));
 		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
 		if (\count($filesToRemove)) {

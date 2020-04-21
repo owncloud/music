@@ -52,6 +52,12 @@ class Scan extends BaseCommand {
 					InputOption::VALUE_NONE,
 					'also check availability of any previously scanned tracks, removing obsolete entries'
 			)
+			->addOption(
+					'rescan',
+					null,
+					InputOption::VALUE_NONE,
+					'rescan also any previously scanned tracks'
+			)
 		;
 	}
 
@@ -73,12 +79,13 @@ class Scan extends BaseCommand {
 			$this->scanUser(
 					$user,
 					$output,
+					$input->getOption('rescan'),
 					$input->getOption('clean-obsolete'),
 					$input->getOption('debug'));
 		}
 	}
 
-	protected function scanUser($user, OutputInterface $output, $cleanObsolete, $debug) {
+	protected function scanUser($user, OutputInterface $output, $rescan, $cleanObsolete, $debug) {
 		$userHome = $this->scanner->resolveUserFolder($user);
 
 		if ($cleanObsolete) {
@@ -90,12 +97,17 @@ class Scan extends BaseCommand {
 		}
 
 		$output->writeln("Start scan for <info>$user</info>");
-		$unscanned = $this->scanner->getUnscannedMusicFileIds($user);
-		$output->writeln('Found ' . \count($unscanned) . ' new music files');
+		if ($rescan) {
+			$filesToScan = $this->scanner->getAllMusicFileIds($user);
+			$output->writeln('Found ' . \count($filesToScan) . ' music files to scan');
+		} else {
+			$filesToScan = $this->scanner->getUnscannedMusicFileIds($user);
+			$output->writeln('Found ' . \count($filesToScan) . ' new music files');
+		}
 
-		if (\count($unscanned)) {
+		if (\count($filesToScan)) {
 			$processedCount = $this->scanner->scanFiles(
-					$user, $userHome, $unscanned,
+					$user, $userHome, $filesToScan,
 					$debug ? $output : null);
 			$output->writeln("Added $processedCount files to database of <info>$user</info>");
 		}

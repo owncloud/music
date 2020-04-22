@@ -10,7 +10,8 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
-angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
+angular.module('Music').service('playlistService', ['$rootScope', 'Restangular', 'libraryService', 'gettextCatalog', '$timeout',  
+  function($rootScope, Restangular, libraryService, gettextCatalog, $timeout) {
 	var playlist = null;
 	var playlistId = null;
 	var playOrder = [];
@@ -75,6 +76,43 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	function insertMany(hostArray, targetIndex, insertedItems) {
 		hostArray.splice.apply(hostArray, [targetIndex, 0].concat(insertedItems));
 	}
+    
+    function clear() {
+      playlist = null;
+      playlistId = null;
+      playOrder = [];
+      playOrderIter = -1;
+      
+      // update playqueue tracks on server
+      Restangular.one('playqueue').all('save').post({
+        currentTrackId: -1,
+        position: 0,
+        trackIds: []
+      });
+    }
+    
+    function createPlaylist(listId, pl, startIndex /*optional*/) {
+      playlist = pl.slice(); // copy
+      startFromIndex = (startIndex === undefined) ? null : startIndex;
+      if (listId === playlistId) {
+          // preserve the history if list wasn't actually changed
+          dropFuturePlayOrder();
+      } else {
+          // drop the history if list changed
+          playOrder = [];
+          playOrderIter = -1; // jumpToNextTrack will move this to first valid index
+          playlistId = listId;
+          $rootScope.$emit('playlistChanged', playlistId);
+      }
+      enqueueIndices();
+
+      // update playqueue tracks on server
+      Restangular.one('playqueue').all('save').post({
+        trackIds: playlist.map(function(value) { 
+          return value.track.id;
+        })
+      });
+    }
 
 	return {
 		setShuffle: function(state) {
@@ -121,8 +159,10 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				if (repeat) { // start another round
 					enqueueIndices();
 				} else { // we are done
-					this.clearPlaylist();
-					return null;
+                                  clear();
+
+                                  this.publish('playlistEnded');
+                                  return null;
 				}
 			}
 
@@ -131,26 +171,31 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			return track;
 		},
 		setPlaylist: function(listId, pl, startIndex /*optional*/) {
-			playlist = pl.slice(); // copy
-			startFromIndex = (startIndex === undefined) ? null : startIndex;
-			if (listId === playlistId) {
-				// preserve the history if list wasn't actually changed
-				dropFuturePlayOrder();
-			} else {
-				// drop the history if list changed
-				playOrder = [];
-				playOrderIter = -1; // jumpToNextTrack will move this to first valid index
-				playlistId = listId;
-				this.publish('playlistChanged', playlistId);
-			}
-			enqueueIndices();
-		},
-		clearPlaylist: function() {
-			playOrderIter = -1;
-			playlist = null;
-			playlistId = null;
-			this.publish('playlistEnded');
-		},
+                  return createPlaylist(listId, pl, startIndex);
+                }, 
+                syncPlayQueueFromServer: function() {
+                  Restangular.one('playqueue/get').get().then(function (playQueue) {
+                    // if no play queue available, 
+                    if ((playQueue.trackIds.length === 0) || (playQueue.current == '')) {
+                      OC.Notification.showTemporary(gettextCatalog.getString('The server\'s play queue is empty.'));
+                      return;
+                    }
+
+                    // create playlist from track ids received from server
+                    var queueTracks = _.map(playQueue.trackIds, function (trackId) {
+                      return { track: libraryService.getTrack(trackId) };
+                    });
+
+                    createPlaylist('{--synced from server--}', 
+                      queueTracks, 
+                      playQueue.trackIds.indexOf(playQueue.current));
+
+                    $timeout($rootScope.$emit('play', playQueue.position));
+                  });
+                }, 
+		clearPlaylist: function () { 
+		  clear();
+		}, 
 		onPlaylistModified: function(pl, currentIndex) {
 			var currentTrack = playlist[this.getCurrentIndex()];
 			// check if the track being played is still available in the list
@@ -161,13 +206,17 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				playOrder = [];
 				enqueueIndices();
 				playOrderIter = 0;
+
+                                // update playqueue tracks on server
+                                Restangular.one('playqueue').all('save').post({
+                                  trackIds: playlist.map(function(value) { 
+                                    return value.track.id;
+                                  })
+                                });
 			}
 			// if not, then we no longer have a valid list position
 			else {
-				playlist = null;
-				playlistId = null;
-				playOrder = null;
-				playOrderIter = -1;
+                          clear();
 			}
 			this.publish('trackChanged', currentTrack);
 		},
@@ -192,6 +241,13 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 					insertMany(playOrder, insertPos, newIndices);
 				}
 			}
+
+                        // update playqueue tracks on server
+                        Restangular.one('playqueue').all('save').post({
+                          trackIds: playlist.map(function(value) { 
+                            return value.track.id;
+                          })
+                        });
 		},
 		publish: function(name, parameters) {
 			$rootScope.$emit(name, parameters);

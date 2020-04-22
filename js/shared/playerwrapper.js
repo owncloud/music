@@ -185,6 +185,11 @@ function PlayerWrapper() {
 		this.seekMsecs(ratio * m_duration);
 	};
 
+	this.seekToTime = function(msecs) {
+		msecs = msecs || 0;
+		this.seekMsecs(msecs);
+	};
+
 	this.seekForward = function(msecs /*optional*/) {
 		msecs = msecs || 10000;
 		this.seekMsecs(m_position + msecs);

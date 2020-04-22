@@ -25,6 +25,7 @@ use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 
 use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Controller\ApiController;
@@ -44,6 +45,7 @@ use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\TrackMapper;
+use \OCA\Music\Db\BookmarkMapper;
 
 use \OCA\Music\Hooks\FileHooks;
 use \OCA\Music\Hooks\ShareHooks;
@@ -99,6 +101,8 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('Scanner'),
 				$c->query('CollectionHelper'),
@@ -177,6 +181,7 @@ class Music extends App {
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
 				$c->query('Library'),
 				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
@@ -223,6 +228,13 @@ class Music extends App {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('BookmarkBusinessLayer', function ($c) {
+			return new BookmarkBusinessLayer(
+				$c->query('BookmarkMapper'),
 				$c->query('Logger')
 			);
 		});
@@ -287,6 +299,12 @@ class Music extends App {
 
 		$container->registerService('TrackMapper', function (IAppContainer $c) {
 			return new TrackMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('BookmarkMapper', function (IAppContainer $c) {
+			return new BookmarkMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});

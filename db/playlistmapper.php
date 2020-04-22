@@ -24,6 +24,48 @@ class PlaylistMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param string $condition
+	 */
+	private function makeSelectQuery($condition=null) {
+		return 'SELECT `name`, `id`, `track_ids` ' .
+			'FROM `*PREFIX*music_playlists` ' .
+			'WHERE `user_id` = ? ' . $condition;
+	}
+
+	/**
+	 * @param string $userId
+	 * @param integer $sortBy sort order of the result set
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return Playlist[]
+	 */
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+		$sql = $this->makeSelectQuery(
+				$sortBy == SortBy::Name ? 'ORDER BY LOWER(`name`)' : null
+		);
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $userId
+	 * @param bool $fuzzy
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return Playlist[]
+	 */
+	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+		if ($fuzzy) {
+			$condition = 'AND LOWER(`name`) LIKE LOWER(?) ';
+			$name = '%' . $name . '%';
+		} else {
+			$condition = 'AND `name` = ? ';
+		}
+		$sql = $this->makeSelectQuery($condition . 'ORDER BY LOWER(`name`)');
+		return $this->findEntities($sql, [$userId, $name], $limit, $offset);
+	}
+
+	/**
 	 * @param int $trackId
 	 * @return Playlist[]
 	 */

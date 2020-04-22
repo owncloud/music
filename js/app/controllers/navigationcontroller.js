@@ -24,6 +24,10 @@ angular.module('Music').controller('NavigationController', [
 		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
 
+                $scope.syncPlayQueueFromServer = function() {
+                  playlistService.syncPlayQueueFromServer();
+                };
+
 		// Start creating playlist
 		$scope.startCreate = function() {
 			$scope.showCreateForm = true;

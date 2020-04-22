@@ -480,4 +480,50 @@
 			</index>
 		</declaration>
 	</table>
+	<table>
+		<name>*dbprefix*music_bookmarks</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>track_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>position</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>comment</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+
+			<index>
+				<name>music_bookmarks_user_track</name>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>track_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
 </database>

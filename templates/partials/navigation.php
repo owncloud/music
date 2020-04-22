@@ -13,10 +13,19 @@
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}"></li>
 		<li class="app-navigation-separator"></li>
+    <li class="music-navigation-item" title="Sync from the server's play queue (ctrl-space)" translate>
+      <a ng-click="syncPlayQueueFromServer()">
+        <div class="play-pause-button">
+          <div class="play-pause"></div>
+        </div>
+        <span>Remembered play queue</span>
+      </a>
+    </li>
+		<li class="app-navigation-separator"></li>
 		<li id="new-playlist" class="music-navigation-item">
 			<a id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>+ New Playlist</a>
 			<div class="input-container">
-				<input type="text" class="new-list" ng-show="showCreateForm" 
+				<input type="text" class="new-list" ng-show="showCreateForm"
 					placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
 			</div>
 			<div class="actions" ng-show="showCreateForm">

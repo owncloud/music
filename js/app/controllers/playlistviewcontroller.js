@@ -56,10 +56,11 @@ angular.module('Music').controller('PlaylistViewController', [
 			Restangular.one('playlists', listId).all("remove").post({indices: trackIndex});
 		};
 
-		function play(startIndex /*optional*/) {
+		function play(startIndex /*optional*/, startPosition /*optional*/) {
 			var id = 'playlist-' + $scope.playlist.id;
+                        playlistService.clearPlaylist();
 			playlistService.setPlaylist(id, $scope.tracks, startIndex);
-			playlistService.publish('play');
+			playlistService.publish('play', startPosition);
 		}
 
 		// Call playlistService to play all songs in the current playlist from the beginning

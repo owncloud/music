@@ -31,6 +31,10 @@ function ($scope, $rootScope, playlistService, libraryService,
 		current: 0,
 		total: 0
 	};
+        $scope.playQueue = {
+          lastUpdatePosition: 0, 
+          lastUpdateTime: 0
+        };
 
 	playlistService.setRepeat($scope.repeat);
 	playlistService.setShuffle($scope.shuffle);
@@ -56,6 +60,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.setTime(currentTime/1000, $scope.position.total);
 	});
 	onPlayerEvent('end', function() {
+		$scope.setPlay(false);
 		$scope.next();
 	});
 	onPlayerEvent('duration', function(msecs) {
@@ -100,21 +105,29 @@ function ($scope, $rootScope, playlistService, libraryService,
 		return null;
 	};
 
-	function setCurrentTrack(playlistEntry) {
+	function setCurrentTrack(playlistEntry, startPosition) {
 		var track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track);
+			playTrack(track, startPosition);
 		} else {
 			$scope.stop();
+                  // update playqueue bookmark on server
+                  Restangular.one('playqueue').all('save').post({ 
+                    currentTrackId: 0, 
+                    position: 0, 
+                    trackIds: []
+                  });
+                  $scope.playQueue.lastUpdatePosition = 0;
+                  $scope.playQueue.lastUpdateTime = new Date().getTime();
 		}
 	}
 
 	var pathRequestTimer = null;
-	function playTrack(track) {
+	function playTrack(track, startPosition) {
 		$scope.currentTrack = track;
 		$scope.currentAlbum = track.album;
 
@@ -146,12 +159,28 @@ function ($scope, $rootScope, playlistService, libraryService,
 						$scope.player.play();
 						$rootScope.playing = true;
 
+                        if (startPosition !== undefined) {
+                          $scope.player.seekToTime(startPosition);
+                        }
+
+                        // update playqueue bookmark on server
+                        Restangular.one('playqueue').all('save').post({ 
+                          currentTrackId: $scope.currentTrack.id, 
+                          position: 0
+                        });
+                        $scope.playQueue.lastUpdatePosition = 0;
+                        $scope.playQueue.lastUpdateTime = new Date().getTime();
+
 						pathRequestTimer = null;
 					}
 				}
 			);
 		}, 300);
 	}
+
+	$scope.setPlay = function(playing) {
+		$rootScope.playing = playing;
+	};
 
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
@@ -191,11 +220,28 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.position.bufferPercent = Math.min(100, Math.round(percent)) + '%';
 	};
 
-	$scope.toggle = function() {
+	$scope.toggle = function(e) {
+                // if CTRL key held down, load playqueue from server
+                if (e && (e.ctrlKey === true)) {
+                  playlistService.syncPlayQueueFromServer();
+                  return;
+                }
+
 		if ($scope.currentTrack !== null) {
 			$scope.player.togglePlayback();
 			$rootScope.playing = !$rootScope.playing;
 		}
+
+                // update playqueue currentTrack on server if changed since last update
+                if ($scope.playQueue.lastUpdatePosition !== $scope.position.current) {
+                  // update playqueue bookmark on server
+                  Restangular.one('playqueue').all('save').post({ 
+                    currentTrackId: $scope.currentTrack.id, 
+                    position: ($scope.position.current * 1000)
+                  });
+                  $scope.playQueue.lastUpdatePosition = $scope.position.current;
+                  $scope.playQueue.lastUpdateTime = new Date().getTime();
+                }
 	};
 
 	$scope.stop = function() {
@@ -207,7 +253,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		playlistService.clearPlaylist();
 	};
 
-	$scope.next = function() {
+	$scope.next = function(startPosition) {
 		var entry = playlistService.jumpToNextTrack(),
 			tracksSkipped = false;
 
@@ -220,7 +266,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		if (tracksSkipped) {
 			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
 		}
-		setCurrentTrack(entry);
+		setCurrentTrack(entry, startPosition);
 	};
 
 	$scope.prev = function() {
@@ -251,9 +297,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.player.seekForward();
 	};
 
-	playlistService.subscribe('play', function() {
+	playlistService.subscribe('play', function(e, startPosition) {
 		// fetch track and start playing
-		$scope.next();
+		$scope.next(startPosition);
 	});
 
 	playlistService.subscribe('togglePlayback', function() {
@@ -271,7 +317,13 @@ function ($scope, $rootScope, playlistService, libraryService,
 			var func = null;
 			switch (e.which) {
 				case 32: //space
-					func = $scope.toggle;
+                                        if (e.ctrlKey === false) {
+        					func = $scope.toggle;
+                                        }
+                                        // if CTRL key held down, load playqueue from server
+                                        else {
+                                          func = playlistService.syncPlayQueueFromServer;
+                                        }
 					break;
 				case 37: // arrow left
 					func = $scope.prev;
@@ -328,4 +380,12 @@ function ($scope, $rootScope, playlistService, libraryService,
 			}
 		});
 	}
+
+        // try and save playqueue to server before leaving
+        $(window).on('beforeunload', function(){
+            Restangular.one('playqueue').all('save').post({ 
+              currentTrackId: $scope.currentTrack.id, 
+              position: ($scope.position.current * 1000)
+            });
+        });
 }]);

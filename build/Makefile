@@ -19,7 +19,7 @@
 # Makefile for building the project
 
 # common directories
-grunt_cmd=grunt
+grunt_cmd=$(CURDIR)/node_modules/grunt/bin/grunt
 gruntfile=$(CURDIR)/Gruntfile.js
 
 # building the javascript

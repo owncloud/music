@@ -29,6 +29,7 @@ use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
@@ -36,6 +37,7 @@ use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
+use \OCA\Music\Db\Bookmark;
 
 use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Http\XMLResponse;
@@ -49,13 +51,14 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.10.1';
+	const API_VERSION = '1.12.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $playlistBusinessLayer;
 	private $genreBusinessLayer;
 	private $trackBusinessLayer;
+	private $bookmarkBusinessLayer;
 	private $library;
 	private $urlGenerator;
 	private $userMusicFolder;
@@ -78,6 +81,7 @@ class SubsonicController extends Controller {
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
+								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								Library $library,
 								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
@@ -91,6 +95,7 @@ class SubsonicController extends Controller {
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
@@ -169,7 +174,7 @@ class SubsonicController extends Controller {
 			'license' => [
 				'valid' => 'true',
 				'email' => '',
-				'licenseExpires' => 'never'
+				'licenseExpires' => '9999-12-31T11:59:59'
 			]
 		]);
 	}
@@ -269,6 +274,24 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * @SubsonicAPI
+	 */
+        private function getArtistInfo() {
+          // don't support artist info
+
+          return $this->subsonicResponse([]);
+        }
+
+	/**
+	 * @SubsonicAPI
+	 */
+        private function getArtistInfo2() {
+          // don't support artist info
+
+          return $this->subsonicResponse([]);
+        }
+
+        /**
 	 * @SubsonicAPI
 	 */
 	private function getAlbum() {
@@ -491,8 +514,7 @@ class SubsonicController extends Controller {
 		$songIds = $this->getRepeatedParam('songId');
 		$songIds = \array_map('self::ripIdPrefix', $songIds);
 
-		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
-		$this->playlistBusinessLayer->addTracks($songIds, $playlist->getId(), $this->userId);
+    $this->playlistBusinessLayer->createWithTracks($this->userId, $name, $songIds);
 
 		return $this->subsonicResponse([]);
 	}
@@ -635,6 +657,118 @@ class SubsonicController extends Controller {
 			]
 		]);
 	}
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getBookmarks() {
+    $bookmarkNodes = [];
+
+    $bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
+
+    if (count($bookmarks) > 0) {
+      $tracks = $this->trackBusinessLayer->findById(\array_column($bookmarks, 'trackId'));
+
+      $trackIdMap =\array_column($tracks, 'id');
+
+      foreach ($bookmarks as $bookmark) {
+        $trackIndex = \array_search($bookmark->getTrackId(), $trackIdMap);
+        if ($trackIndex !== false)
+        {
+          $bookmarkNode = $this->bookmarkToApi($bookmark);
+          $bookmarkNode['entry'] = $this->trackToApi($tracks[$trackIndex]);
+          $bookmarkNodes[] = $bookmarkNode;
+        }
+        // else, cleanup bookmark to non-existent track now
+        else {
+          $this->bookmarkBusinessLayer->remove($this->userId, $bookmark->getTrackId());
+        }
+      }
+    }
+		return $this->subsonicResponse([ 'bookmarks' => [ 'bookmark' => $bookmarkNodes ]]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createBookmark() {
+    $comment = $this->request->getParam('comment');
+
+    $this->bookmarkBusinessLayer->create(
+        $this->userId,
+        self::ripIdPrefix($this->getRequiredParam('id')),
+        $this->getRequiredParam('position'),
+        is_null($comment) ? '' : $comment
+    );
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function deleteBookmark() {
+    $this->bookmarkBusinessLayer->remove($this->userId, self::ripIdPrefix($this->getRequiredParam('id')));
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function savePlayQueue() {
+    $tmp = $this->getRepeatedParam('id');
+    $trackIds = \array_map('self::ripIdPrefix', $tmp);
+    if (count($trackIds) == 0)
+      throw new SubsonicException("Required parameter id missing", 10);
+
+    // create playlist for playqueue
+    $this->playlistBusinessLayer->createPlayQueueWithTracks($this->userId, $trackIds);
+
+    // create magic playqueue bookmark
+    $position = $this->request->getParam('position');
+    $currentTrackId = $this->request->getParam('current');
+    if (($position !== null) && ($currentTrackId !== null))
+      $this->bookmarkBusinessLayer->createPlayQueueBookmark($this->userId, self::ripIdPrefix($currentTrackId), $position);
+
+		return $this->subsonicResponse([]);
+  }
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getPlayQueue() {
+    $playQueueNode['username'] = $this->userId;
+
+    // find magic playqueue playlist
+		$playQueue = $this->playlistBusinessLayer->findPlayQueue($this->userId);
+    if ($playQueue !== null) {
+      $playQueueBookmark = $this->bookmarkBusinessLayer->findPlayQueueBookmark($this->userId);
+      if ($playQueueBookmark !== null) {
+        $playQueueNode['current'] = 'track-' . $playQueueBookmark->getTrackId();
+        $playQueueNode['position'] = $playQueueBookmark->getPosition();
+        $playQueueNode['changed'] = $playQueueBookmark->getComment(); // comment field is used to store update time
+      }
+
+      $orderedTrackIds = $playQueue->getTrackIdsAsArray();
+
+      // get tracks from db
+      $dbTracks = $this->trackBusinessLayer->findById($orderedTrackIds);
+
+      // put tracks in play queue order so output of API is correct order
+      $orderedTracks = [];
+      foreach ($orderedTrackIds as $orderedTrackId) {
+        foreach ($dbTracks as $dbTrack) {
+          if ($dbTrack->id == $orderedTrackId) {
+            $orderedTracks[] = $dbTrack;
+          }
+        }
+      }
+
+      $playQueueNode['entry'] = \array_map([$this, 'trackToApi'], $orderedTracks);
+    }
+
+    return $this->subsonicResponse([ 'playQueue' => $playQueueNode ]);
+  }
 
 	/* -------------------------------------------------------------------------
 	 * Helper methods
@@ -1063,6 +1197,18 @@ class SubsonicController extends Controller {
 			// duration => '',
 			// created => '',
 			// coverArt => ''
+		];
+	}
+
+	/**
+	 * @param Bookmark $bookmark
+	 * @return array
+	 */
+	private function bookmarkToApi($bookmark) {
+		return [
+			'position' => $bookmark->getPosition(),
+			'username' => $this->userId,
+			'comment' => $bookmark->getComment(),
 		];
 	}
 

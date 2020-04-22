@@ -40,6 +40,10 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#resetScanned'	,	'url' => '/api/resetscanned',			'verb' => 'POST'],
 	['name' => 'api#cachedCover',		'url' => '/api/cover/{hash}',			'verb' => 'GET'],
 
+        // playqueue
+	['name' => 'api#getPlayQueue',		'url' => '/api/playqueue/get',			'verb' => 'GET'],
+	['name' => 'api#savePlayQueue',		'url' => '/api/playqueue/save',			'verb' => 'POST'],
+
 	// Shiva API https://github.com/tooxie/shiva-server#resources
 	['name' => 'api#artists',	'url' => '/api/artists',						'verb' => 'GET'],
 	['name' => 'api#artist',	'url' => '/api/artist/{artistIdOrSlug}',		'verb' => 'GET'],

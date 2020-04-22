@@ -28,6 +28,8 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Maintenance;
@@ -50,6 +52,10 @@ class ApiController extends Controller {
 	private $artistBusinessLayer;
 	/** @var AlbumBusinessLayer */
 	private $albumBusinessLayer;
+        /** @var PlaylistBusinessLayer */
+        private $playlistBusinessLayer;
+        /** @var BookmarkBusinessLayer */
+        private $bookmarkBusinessLayer;
 	/** @var GenreBusinessLayer */
 	private $genreBusinessLayer;
 	/** @var Scanner */
@@ -77,6 +83,8 @@ class ApiController extends Controller {
 								TrackBusinessLayer $trackbusinesslayer,
 								ArtistBusinessLayer $artistbusinesslayer,
 								AlbumBusinessLayer $albumbusinesslayer,
+                PlaylistBusinessLayer $playlistbusinesslayer,
+                BookmarkBusinessLayer $bookmarkbusinesslayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								Scanner $scanner,
 								CollectionHelper $collectionHelper,
@@ -92,6 +100,8 @@ class ApiController extends Controller {
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
+                $this->playlistBusinessLayer = $playlistbusinesslayer;
+                $this->bookmarkBusinessLayer = $bookmarkbusinesslayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->scanner = $scanner;
 		$this->collectionHelper = $collectionHelper;
@@ -484,6 +494,58 @@ class ApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
+
+  /**
+   * get playqueue
+   *
+   * @NoAdminRequired
+   * @NoCSRFRequired
+   */
+  public function getPlayQueue() {
+    $retVal = [];
+
+		try {
+      $playqueueBookmark = $this->bookmarkBusinessLayer->findPlayQueueBookmark($this->userId);
+      if ($playqueueBookmark !== null) {
+        $retVal['current'] = $playqueueBookmark->getTrackId();
+        $retVal['position'] = $playqueueBookmark->getPosition();
+        $retVal['changed'] = $playqueueBookmark->getComment();
+      }
+
+      $playqueue = $this->playlistBusinessLayer->findPlayQueue($this->userId);
+      if ($playqueue !== null) {
+        $retVal['trackIds'] = $playqueue->getTrackIdsAsArray();
+      }
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+
+		return new JSONResponse($retVal);
+  }
+
+  /**
+   * save playqueue
+   *
+   * @NoAdminRequired
+   * @NoCSRFRequired
+   */
+	public function savePlayQueue($position, $currentTrackId, $trackIds) {
+		try {
+      // save position and current track if avialable (means that all tracks in queue don't have to be passed in every time)
+      if (($position !== null) && ($currentTrackId !== null)) {
+        $this->bookmarkBusinessLayer->createPlayQueueBookmark($this->userId, $currentTrackId, $position);
+      }
+
+      // save tracks in queue
+      if ($trackIds !== null) {
+        $this->playlistBusinessLayer->createPlayQueueWithTracks($this->userId, $trackIds);
+      }
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+
+		return new JSONResponse([ 'success' => true ]);
+  }
 
 	private static function setClientCaching(&$httpResponse, $days=365) {
 		$httpResponse->cacheFor($days * 24 * 60 * 60);

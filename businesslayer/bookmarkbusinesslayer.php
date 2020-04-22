@@ -30,8 +30,8 @@ class BookmarkBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
-  public function findAll($userId) {
-    $bookmarks = $this->mapper->findAll($userId);
+  public function findAll($userId, $sortBy = SortBy::None, $limit = null, $offset = null) {
+    $bookmarks = $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 
     foreach ($bookmarks as $key => $bookmark) {
       if ($bookmark->getTrackId() < 0) {

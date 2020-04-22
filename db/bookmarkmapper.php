@@ -34,7 +34,7 @@ class BookmarkMapper extends BaseMapper {
 	 * @param integer $offset
 	 * @return Bookmark[]
 	 */
-	public function findAll($userId, $limit=null, $offset=null) {
+	public function findAll($userId, $sortBy = SortBy::None, $limit = null, $offset = null) {
 		return $this->findEntities($this->makeSelectQuery(), [ $userId ], $limit, $offset);
 	}
 

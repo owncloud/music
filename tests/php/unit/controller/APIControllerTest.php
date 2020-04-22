@@ -59,6 +59,12 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->playlistBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\PlaylistBusinessLayer')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->bookmarkBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\BookmarkBusinessLayer')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->genreBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\GenreBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
@@ -87,6 +93,8 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
+			$this->playlistBusinessLayer,
+			$this->bookmarkBusinessLayer,
 			$this->genreBusinessLayer,
 			$this->scanner,
 			$this->collectionHelper,
@@ -999,7 +1007,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The track artist');
-		
+
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findByFileId')
 			->with($this->equalTo($fileId), $this->equalTo($this->userId))

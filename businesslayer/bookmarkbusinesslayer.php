@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\BookmarkMapper;
 use \OCA\Music\Db\Bookmark;
+use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Utility\Util;
 

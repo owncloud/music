@@ -1202,7 +1202,7 @@ class SubsonicController extends Controller {
 
 	private function findGenreByName($name) {
 		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->userId);
-		if (\count($genreArr) == 0 && $genreName == Genre::unknownGenreName($this->l10n)) {
+		if (\count($genreArr) == 0 && $name == Genre::unknownGenreName($this->l10n)) {
 			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
 		}
 		return \count($genreArr) ? $genreArr[0] : null;

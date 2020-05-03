@@ -495,23 +495,26 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
-		return new XMLResponse(['root' => ['artist' => \array_map(function($artist) use ($userId, $genreMap) {
-			return [
-				'id' => $artist->getId(),
-				'name' => [$artist->getNameString($this->l10n)],
-				'albums' => [$this->albumBusinessLayer->countByArtist($artist->getId())],
-				'songs' => [$this->trackBusinessLayer->countByArtist($artist->getId())],
-				'rating' => [0],
-				'preciserating' => [0],
-				'tag' => \array_map(function($genreId) use ($genreMap) {
-					return [
-						'id' => $genreId,
-						'value' => $genreMap[$genreId]->getNameString($this->l10n),
-						'count' => 1
-					];
-				}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
-			];
-		}, $artists)]]);
+		return new XMLResponse(['root' => [
+			'total_count' => [\count($artists)],
+			'artist' => \array_map(function($artist) use ($userId, $genreMap) {
+				return [
+					'id' => $artist->getId(),
+					'name' => [$artist->getNameString($this->l10n)],
+					'albums' => [$this->albumBusinessLayer->countByArtist($artist->getId())],
+					'songs' => [$this->trackBusinessLayer->countByArtist($artist->getId())],
+					'rating' => [0],
+					'preciserating' => [0],
+					'tag' => \array_map(function($genreId) use ($genreMap) {
+						return [
+							'id' => $genreId,
+							'value' => $genreMap[$genreId]->getNameString($this->l10n),
+							'count' => 1
+						];
+					}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
+				];
+			}, $artists)
+		]]);
 	}
 
 	private function renderAlbums($albums, $auth) {
@@ -519,29 +522,32 @@ class AmpacheController extends Controller {
 
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
-		return new XMLResponse(['root' => ['album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
-			$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
-			return [
-				'id' => $album->getId(),
-				'name' => [$album->getNameString($this->l10n)],
-				'artist' => [
-					'id' => $artist->getId(),
-					'value' => $artist->getNameString($this->l10n)
-				],
-				'tracks' => [$this->trackBusinessLayer->countByAlbum($album->getId())],
-				'rating' => [0],
-				'year' => [$album->yearToAPI()],
-				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
-				'preciserating' => [0],
-				'tag' => \array_map(function($genreId) use ($genreMap) {
-					return [
-						'id' => $genreId,
-						'value' => $genreMap[$genreId]->getNameString($this->l10n),
-						'count' => 1
-					];
-				}, $album->getGenres())
-			];
-		}, $albums)]]);
+		return new XMLResponse(['root' => [
+			'total_count' => [\count($albums)],
+			'album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
+				$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
+				return [
+					'id' => $album->getId(),
+					'name' => [$album->getNameString($this->l10n)],
+					'artist' => [
+						'id' => $artist->getId(),
+						'value' => $artist->getNameString($this->l10n)
+					],
+					'tracks' => [$this->trackBusinessLayer->countByAlbum($album->getId())],
+					'rating' => [0],
+					'year' => [$album->yearToAPI()],
+					'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
+					'preciserating' => [0],
+					'tag' => \array_map(function($genreId) use ($genreMap) {
+						return [
+							'id' => $genreId,
+							'value' => $genreMap[$genreId]->getNameString($this->l10n),
+							'count' => 1
+						];
+					}, $album->getGenres())
+				];
+			}, $albums)
+		]]);
 	}
 
 	private function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
@@ -565,60 +571,65 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
-		return new XMLResponse(['root' => ['song' => \array_map(function($track) use ($auth, $genreMap) {
-			$artist = $track->getArtist();
-			$album = $track->getAlbum();
-			$albumArtist = $album->getAlbumArtist();
+		return new XMLResponse(['root' => [
+			'total_count' => [\count($tracks)],
+			'song' => \array_map(function($track) use ($auth, $genreMap) {
+				$artist = $track->getArtist();
+				$album = $track->getAlbum();
+				$albumArtist = $album->getAlbumArtist();
 
-			$result = [
-				'id' => $track->getId(),
-				'title' => [$track->getTitle()],
-				'artist' => [
-					'id' => $artist->getId(),
-					'value' => $artist->getNameString($this->l10n)
-				],
-				'albumartist' => [
-					'id' => $albumArtist->getId(),
-					'value' => $albumArtist->getNameString($this->l10n)
-				],
-				'album' => [
-					'id' => $album->getId(),
-					'value' => $album->getNameString($this->l10n)
-				],
-				'url' => [self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth)],
-				'time' => [$track->getLength()],
-				'track' => [$track->getDiskAdjustedTrackNumber()],
-				'bitrate' => [$track->getBitrate()],
-				'mime' => [$track->getMimetype()],
-				'size' => [$track->getSize()],
-				'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
-				'rating' => [0],
-				'preciserating' => [0],
-			];
-
-			$genreId = $track->getGenreId();
-			if ($genreId !== null) {
-				$result['tag'] = [
-					'id' => $genreId,
-					'value' => $genreMap[$genreId]->getNameString($this->l10n),
-					'count' => 1
+				$result = [
+					'id' => $track->getId(),
+					'title' => [$track->getTitle()],
+					'artist' => [
+						'id' => $artist->getId(),
+						'value' => $artist->getNameString($this->l10n)
+					],
+					'albumartist' => [
+						'id' => $albumArtist->getId(),
+						'value' => $albumArtist->getNameString($this->l10n)
+					],
+					'album' => [
+						'id' => $album->getId(),
+						'value' => $album->getNameString($this->l10n)
+					],
+					'url' => [self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth)],
+					'time' => [$track->getLength()],
+					'track' => [$track->getDiskAdjustedTrackNumber()],
+					'bitrate' => [$track->getBitrate()],
+					'mime' => [$track->getMimetype()],
+					'size' => [$track->getSize()],
+					'art' => [self::createAlbumCoverUrl($this->urlGenerator, $album, $auth)],
+					'rating' => [0],
+					'preciserating' => [0],
 				];
-			}
-			return $result;
-		},
-		$tracks)]]);
+
+				$genreId = $track->getGenreId();
+				if ($genreId !== null) {
+					$result['tag'] = [
+						'id' => $genreId,
+						'value' => $genreMap[$genreId]->getNameString($this->l10n),
+						'count' => 1
+					];
+				}
+				return $result;
+			}, $tracks)
+		]]);
 	}
 
 	private function renderPlaylists($playlists) {
-		return new XMLResponse(['root' => ['playlist' => \array_map(function($playlist) {
-			return [
-				'id' => $playlist->getId(),
-				'name' => [$playlist->getName()],
-				'owner' => [$this->ampacheUser->getUserId()],
-				'items' => [$playlist->getTrackCount()],
-				'type' => ['Private']
-			];
-		}, $playlists)]]);
+		return new XMLResponse(['root' => [
+			'total_count' => [\count($playlists)],
+			'playlist' => \array_map(function($playlist) {
+				return [
+					'id' => $playlist->getId(),
+					'name' => [$playlist->getName()],
+					'owner' => [$this->ampacheUser->getUserId()],
+					'items' => [$playlist->getTrackCount()],
+					'type' => ['Private']
+				];
+			}, $playlists)
+		]]);
 	}
 
 	private function renderTags($genres) {

@@ -147,6 +147,8 @@ class AmpacheController extends Controller {
 				return $this->playlist_songs($filter, $limit, $offset, $auth);
 			case 'tags':
 				return $this->tags($filter, $exact, $limit, $offset);
+			case 'tag':
+				return $this->tag($filter);
 			case 'tag_artists':
 				return $this->tag_artists($filter, $limit, $offset);
 			case 'tag_albums':
@@ -321,25 +323,15 @@ class AmpacheController extends Controller {
 
 	protected function tags($filter, $exact, $limit, $offset) {
 		$userId = $this->ampacheUser->getUserId();
-		$genres = $this->genreBusinessLayer->findAllWithCounts($userId, $limit, $offset);
-
 		// TODO: $filter, $exact
+		$genres = $this->genreBusinessLayer->findAllWithCounts($userId, $limit, $offset);
+		return $this->renderTags($genres);
+	}
 
-		return new XMLResponse(['root' => [
-			'total_count' => \count($genres),
-			'tag' => \array_map(function($genre) {
-				return [
-					'id' => $genre->getId(),
-					'name' => [$genre->getNameString($this->l10n)],
-					'albums' => [$genre->getAlbumCount()],
-					'artists' => [$genre->getArtistCount()],
-					'songs' => [$genre->getTrackCount()],
-					'videos' => [0],
-					'playlists' => [0],
-					'stream' => [0]
-				];
-			}, $genres)
-		]]);
+	protected function tag($tagId) {
+		$userId = $this->ampacheUser->getUserId();
+		$genre = $this->genreBusinessLayer->find($tagId, $userId);
+		return $this->renderTags([$genre]);
 	}
 
 	protected function tag_artists($genreId, $limit, $offset) {
@@ -628,6 +620,25 @@ class AmpacheController extends Controller {
 			];
 		}, $playlists)]]);
 	}
+
+	private function renderTags($genres) {
+		return new XMLResponse(['root' => [
+			'total_count' => [\count($genres)],
+			'tag' => \array_map(function($genre) {
+				return [
+					'id' => $genre->getId(),
+					'name' => [$genre->getNameString($this->l10n)],
+					'albums' => [$genre->getAlbumCount()],
+					'artists' => [$genre->getArtistCount()],
+					'songs' => [$genre->getTrackCount()],
+					'videos' => [0],
+					'playlists' => [0],
+					'stream' => [0]
+				];
+			}, $genres)
+		]]);
+	}
+
 }
 
 /**

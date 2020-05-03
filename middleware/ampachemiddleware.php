@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018, 2019
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Middleware;
@@ -17,6 +17,7 @@ namespace OCA\Music\Middleware;
 use \OCP\IRequest;
 use \OCP\AppFramework\Middleware;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Http\XMLResponse;
@@ -96,14 +97,23 @@ class AmpacheMiddleware extends Middleware {
 	 * @return Response a Response object if the exception was handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
-		if ($exception instanceof AmpacheException && $this->isAmpacheCall) {
-			return new XMLResponse(['root' => [
-				'error' => [
-					'code' => $exception->getCode(),
-					'value' => $exception->getMessage()
-				]
-			]]);
+		if ($this->isAmpacheCall) {
+			if ($exception instanceof AmpacheException) {
+				return self::errorResponse($exception->getCode(), $exception->getMessage());
+			}
+			elseif ($exception instanceof BusinessLayerException) {
+				return self::errorResponse(400, 'Entity not found');
+			}
 		}
 		throw $exception;
+	}
+
+	private static function errorResponse($code, $message) {
+		return new XMLResponse(['root' => [
+			'error' => [
+				'code' => $code,
+				'value' => $message
+			]
+		]]);
 	}
 }

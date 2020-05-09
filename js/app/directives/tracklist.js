@@ -180,17 +180,19 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		 * Adds those tracks that aren't initially visible to the element
 		 */
 		function renderHiddenTracks() {
-			var trackListFragment = document.createDocumentFragment();
+			if (data.collapseLimit < data.tracks.length) {
+				var trackListFragment = document.createDocumentFragment();
 
-			for (var i = data.collapseLimit - 1; i < data.tracks.length; i++) {
-				trackListFragment.appendChild(getTrackNode(data.tracks[i], i, 'collapsible'));
+				for (var i = data.collapseLimit - 1; i < data.tracks.length; i++) {
+					trackListFragment.appendChild(getTrackNode(data.tracks[i], i, 'collapsible'));
+				}
+				var toggle = htmlElem.getElementsByClassName('muted more-less collapsible');
+				htmlElem.insertBefore(trackListFragment, toggle[0]);
+
+				updateClasses();
+
+				data.hiddenTracksRendered = true;
 			}
-			var toggle = htmlElem.getElementsByClassName('muted more-less collapsible');
-			htmlElem.insertBefore(trackListFragment, toggle[0]);
-
-			updateClasses();
-
-			data.hiddenTracksRendered = true;
 		}
 
 		/**

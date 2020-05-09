@@ -85,7 +85,7 @@ class ApiController extends Controller {
 								Maintenance $maintenance,
 								$userId,
 								IL10N $l10n,
-								Folder $userFolder,
+								/*Folder*/ $userFolder, // no type-hint as this may sometimes be null
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;

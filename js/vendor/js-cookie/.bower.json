@@ -5,23 +5,22 @@
     "src/js.cookie.js"
   ],
   "ignore": [
-    "travis.sh",
     "test",
     "Gruntfile.js",
     "package.json",
     ".gitignore",
-    ".jshintignore",
-    ".jshintrc",
+    ".eslintintignore",
+    ".eslintrc",
     ".tm_properties",
     ".travis.yml"
   ],
   "homepage": "https://github.com/js-cookie/js-cookie",
-  "version": "2.2.0",
-  "_release": "2.2.0",
+  "version": "2.2.1",
+  "_release": "2.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v2.2.0",
-    "commit": "34f056cd261982828072b84a9bbdcd8c3d9931ad"
+    "tag": "v2.2.1",
+    "commit": "54962f884e9ae33f93e13ac903ffaf1d5a523598"
   },
   "_source": "https://github.com/js-cookie/js-cookie.git",
   "_target": "*",

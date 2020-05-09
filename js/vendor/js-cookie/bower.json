@@ -5,13 +5,12 @@
     "src/js.cookie.js"
   ],
   "ignore": [
-    "travis.sh",
     "test",
     "Gruntfile.js",
     "package.json",
     ".gitignore",
-    ".jshintignore",
-    ".jshintrc",
+    ".eslintintignore",
+    ".eslintrc",
     ".tm_properties",
     ".travis.yml"
   ]

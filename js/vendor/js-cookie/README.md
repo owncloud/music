@@ -20,7 +20,7 @@ A simple, lightweight JavaScript API for handling cookies
 **If you're viewing this at https://github.com/js-cookie/js-cookie, you're reading the documentation for the master branch.
 [View documentation for the latest release.](https://github.com/js-cookie/js-cookie/tree/latest#readme)**
 
-## Build Status Matrix
+## Build Status Matrix ([including active Pull Requests](https://github.com/js-cookie/js-cookie/issues/286))
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/js-cookie.svg)](https://saucelabs.com/u/js-cookie)
 
@@ -47,9 +47,14 @@ in Internet Explorer on Windows 7 for instance (because of the wrong MIME type).
 
 JavaScript Cookie supports [npm](https://www.npmjs.com/package/js-cookie) and [Bower](http://bower.io/search/?q=js-cookie) under the name `js-cookie`.
 
+#### NPM
+```
+  $ npm install js-cookie --save
+```
+
 ### Module Loaders
 
-JavaScript Cookie can also be loaded as an AMD, CommonJS or [ES6](https://github.com/js-cookie/js-cookie/issues/233#issuecomment-233187386) module.
+JavaScript Cookie can also be loaded as an AMD or CommonJS module.
 
 ## Basic Usage
 
@@ -84,6 +89,16 @@ Read all visible cookies:
 Cookies.get(); // => { name: 'value' }
 ```
 
+*Note: It is not possible to read a particular cookie by passing one of the cookie attributes (which may or may not
+have been used when writing the cookie in question):*
+
+```javascript
+Cookies.get('foo', { domain: 'sub.example.com' }); // `domain` won't have any effect...!
+```
+
+The cookie with the name `foo` will only be available on `.get()` if it's visible from where the
+code is called; the domain and/or path attribute will not have an effect when reading.
+
 Delete cookie:
 
 ```javascript
@@ -98,9 +113,13 @@ Cookies.remove('name'); // fail!
 Cookies.remove('name', { path: '' }); // removed!
 ```
 
-*IMPORTANT! when deleting a cookie, you must pass the exact same path and domain attributes that was used to set the cookie, unless you're relying on the [default attributes](#cookie-attributes).*
+*IMPORTANT! When deleting a cookie and you're not relying on the [default attributes](#cookie-attributes), you must pass the exact same path and domain attributes that were used to set the cookie:*
 
-*Note: Removing unexisting cookie does not raise any exception nor return any value*
+```javascript
+Cookies.remove('name', { path: '', domain: '.yourdomain.com' });
+```
+
+*Note: Removing a nonexistent cookie does not raise any exception nor return any value.*
 
 ## Namespace conflicts
 
@@ -152,6 +171,8 @@ This project is [RFC 6265](http://tools.ietf.org/html/rfc6265#section-4.1.1) com
 The only character in cookie-name or cookie-value that is allowed and still encoded is the percent `%` character, it is escaped in order to interpret percent input as literal.  
 Please note that the default encoding/decoding strategy is meant to be interoperable [only between cookies that are read/written by js-cookie](https://github.com/js-cookie/js-cookie/pull/200#discussion_r63270778). To override the default encoding/decoding strategy you need to use a [converter](#converters).
 
+*Note: According to [RFC 6265](https://tools.ietf.org/html/rfc6265#section-6.1), your cookies may get deleted if they are too big or there are too many cookies in the same domain, [more details here](https://github.com/js-cookie/js-cookie/wiki/Frequently-Asked-Questions#why-are-my-cookies-being-deleted).*
+
 ## Cookie Attributes
 
 Cookie attributes defaults can be set globally by setting properties of the `Cookies.defaults` object or individually for each call to `Cookies.set(...)` by passing a plain object in the last argument. Per-call attributes override the default attributes.
@@ -192,7 +213,9 @@ Cookies.remove('name', { path: '' });
 
 (From [Internet Explorer Cookie Internals (FAQ)](http://blogs.msdn.com/b/ieinternals/archive/2009/08/20/wininet-ie-cookie-internals-faq.aspx))
 
-This means one cannot set a path using `path: window.location.pathname` in case such pathname contains a filename like so: `/check.html` (or at least, such cookie cannot be read correctly).
+This means one cannot set a path using `window.location.pathname` in case such pathname contains a filename like so: `/check.html` (or at least, such cookie cannot be read correctly).
+
+In fact, you should never allow untrusted input to set the cookie attributes or you might be exposed to a [XSS attack](https://github.com/js-cookie/js-cookie/issues/396).
 
 ### domain
 
@@ -281,7 +304,7 @@ Check out the [Contributing Guidelines](CONTRIBUTING.md)
 
 ## Security
 
-For vulnerability reports, send an e-mail to `jscookie at gmail dot com`
+For vulnerability reports, send an e-mail to `jscookieproject at gmail dot com`
 
 ## Manual release steps
 

@@ -5,13 +5,14 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <morris.jobke@gmail.com>
- * @copyright 2013 Morris Jobke
- *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Morris Jobke 2013
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 // fix SVGs in IE because the scaling is a real PITA
 // https://github.com/owncloud/music/issues/126
-if($('html').hasClass('ie')) {
+if ($('html').hasClass('ie')) {
 	var replaceSVGs = function() {
 		replaceSVG();
 		// call them periodically to keep track of possible changes in the artist view

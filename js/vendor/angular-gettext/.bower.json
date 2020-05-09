@@ -1,6 +1,6 @@
 {
   "name": "angular-gettext",
-  "version": "2.3.10",
+  "version": "2.4.1",
   "main": "dist/angular-gettext.js",
   "ignore": [
     "**/.*",
@@ -19,11 +19,11 @@
     "angular-mocks": ">=1.2.0"
   },
   "homepage": "https://github.com/rubenv/angular-gettext",
-  "_release": "2.3.10",
+  "_release": "2.4.1",
   "_resolution": {
     "type": "version",
-    "tag": "v2.3.10",
-    "commit": "9accc75f8edd8964d6a5a1d1df376454cf14c382"
+    "tag": "v2.4.1",
+    "commit": "7409cd1dfe1188db9d513c0c19c7f16aea6a08b6"
   },
   "_source": "https://github.com/rubenv/angular-gettext.git",
   "_target": "*",

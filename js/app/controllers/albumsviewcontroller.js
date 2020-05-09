@@ -63,12 +63,8 @@ angular.module('Music').controller('AlbumsViewController', [
 			playlistService.publish('play');
 		}
 
-		$scope.playTrack = function(track) {
-			// Allow passing an ID as well as a track object
-			if (!isNaN(track)) {
-				track = libraryService.getTrack(track);
-			}
-
+		$scope.playTrack = function(trackId) {
+			var track = libraryService.getTrack(trackId);
 			var currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
@@ -106,7 +102,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		$scope.playFile = function (fileid) {
 			if (fileid) {
 				Restangular.one('file', fileid).get().then(function(result) {
-					$scope.playTrack(result);
+					$scope.playTrack(result.id);
 					scrollToAlbumOfTrack(result.id);
 				});
 			}
@@ -196,10 +192,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
-			var track = libraryService.getTrack(trackId);
-			if (track) {
-				scrollToAlbumOfTrack(trackId, animationTime);
-			}
+			scrollToAlbumOfTrack(trackId, animationTime);
 		});
 
 		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
@@ -242,14 +235,14 @@ angular.module('Music').controller('AlbumsViewController', [
 							// If there is no such album artist, then maybe this is only a track artist.
 							// Try to find the first track by this artist.
 							var tracks = libraryService.findTracksByArtist(id);
-							$scope.playTrack(tracks[0]);
+							$scope.playTrack(tracks[0].id);
 							scrollToAlbumOfTrack(tracks[0].id);
 						}
 					} else if (type == 'album') {
 						$scope.playAlbum(libraryService.getAlbum(id));
 						$scope.$parent.scrollToItem('album-' + id);
 					} else if (type == 'track') {
-						$scope.playTrack(libraryService.getTrack(id));
+						$scope.playTrack(id);
 						scrollToAlbumOfTrack(id);
 					}
 				}

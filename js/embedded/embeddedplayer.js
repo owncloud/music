@@ -336,7 +336,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 				updateMetadata(data);
 
 				if (callback) {
-					callback(data);
+					callback(data, fileId);
 				}
 			}
 		}).fail(function() {
@@ -389,7 +389,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		loadFileInfoFromUrl(url, fallbackTitle, fileId, updateMusicAppLink);
 	}
 
-	function updateMusicAppLink(data) {
+	function updateMusicAppLink(data, fileId) {
 		if (data.in_library) {
 			var navigateToMusicApp = function() {
 				window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});

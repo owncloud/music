@@ -82,7 +82,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.updateAvailable = false;
 		$rootScope.loadingCollection = true;
 
-		$scope.artists = [];
+		$scope.artists = null; // the null-value tells the views that data is not yet available
 		$rootScope.$emit('artistsUpdating');
 
 		// load the music collection

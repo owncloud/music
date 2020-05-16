@@ -461,6 +461,9 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
 		\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+		foreach ($tracks as $index => &$track) {
+			$track->setNumberOnPlaylist($index + 1);
+		}
 		return $tracks;
 	}
 

@@ -49,7 +49,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.10.1';
+	const API_VERSION = '1.10.2';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;

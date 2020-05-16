@@ -121,4 +121,27 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		return $playlistTracks;
 	}
+
+	/**
+	 * get the total duration of all the tracks on a playlist
+	 * 
+	 * @param int $playlistId        	
+	 * @param string $userId        	
+	 * @return int duration in seconds
+	 */
+	public function getDuration($playlistId, $userId) {
+		$playlist = $this->find ( $playlistId, $userId );
+		$trackIds = $playlist->getTrackIdsAsArray ();
+		$durations = $this->trackBusinessLayer->mapper->getDurations ( $trackIds );
+
+		// We can't simply sum up the values of $durations array, because the playlist may
+		// contain duplicate entries, and those are not reflected in $durations.
+		$sum = 0;
+		foreach ( $trackIds as $trackId ) {
+			$sum += $durations [$trackId];
+		}
+
+		return $sum;
+	}
+
 }

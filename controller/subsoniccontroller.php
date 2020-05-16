@@ -1057,10 +1057,10 @@ class SubsonicController extends Controller {
 			'owner' => $this->userId,
 			'public' => false,
 			'songCount' => $playlist->getTrackCount(),
-			// comment => '',
-			// duration => '',
-			// created => '',
-			// coverArt => ''
+			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
+			//'comment' => 'some comment',
+			//'created' => '2020-05-16T16:47:49',
+			//'coverArt' => ''
 		];
 	}
 

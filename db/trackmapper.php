@@ -175,6 +175,25 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Get durations of the given tracks.
+	 * @param integer[] $trackIds
+	 * @return array {int => int} where keys are track IDs and values are corresponding durations
+	 */
+	public function getDurations($trackIds) {
+		$result = [];
+
+		if (!empty($trackIds)) {
+			$sql = 'SELECT `id`, `length` FROM `*PREFIX*music_tracks` WHERE `id` IN ' .
+						$this->questionMarks(\count($trackIds));
+			$rows = $this->execute($sql, $trackIds)->fetchAll();
+			foreach ($rows as $row) {
+				$result[$row['id']] = $row['length'];
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * @param string $name
 	 * @param string $userId
 	 * @return Track[]

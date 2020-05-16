@@ -595,6 +595,7 @@ class AmpacheController extends Controller {
 					],
 					'url' => [self::createAmpacheActionUrl($this->urlGenerator, 'play', $track->getId(), $auth)],
 					'time' => [$track->getLength()],
+					'year' => [$track->getYear()],
 					'track' => [$track->getAdjustedTrackNumber()],
 					'bitrate' => [$track->getBitrate()],
 					'mime' => [$track->getMimetype()],

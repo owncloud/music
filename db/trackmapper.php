@@ -146,8 +146,7 @@ class TrackMapper extends BaseMapper {
 	 * @return integer
 	 */
 	public function countByArtist($artistId) {
-		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`artist_id` = ?';
+		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
 		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
 		return $row['count'];
@@ -158,11 +157,21 @@ class TrackMapper extends BaseMapper {
 	 * @return integer
 	 */
 	public function countByAlbum($albumId) {
-		$sql = 'SELECT COUNT(*) AS count FROM `*PREFIX*music_tracks` `track` '.
-			'WHERE `track`.`album_id` = ?';
+		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
 		return $row['count'];
+	}
+
+	/**
+	 * @param integer $albumId
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationOfAlbum($albumId) {
+		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
+		$result = $this->execute($sql, [$albumId]);
+		$row = $result->fetch();
+		return $row['duration'];
 	}
 
 	/**

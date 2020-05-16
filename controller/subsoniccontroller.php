@@ -946,7 +946,7 @@ class SubsonicController extends Controller {
 		$result['artistId'] = 'artist-' . $album->getAlbumArtistId();
 		$result['name'] = $album->getNameString($this->l10n);
 		$result['songCount'] = $this->trackBusinessLayer->countByAlbum($album->getId());
-		//$result['duration'] = 0;
+		$result['duration'] = $this->trackBusinessLayer->totalDurationOfAlbum($album->getId());
 
 		return $result;
 	}

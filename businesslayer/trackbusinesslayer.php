@@ -235,6 +235,14 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @param integer $albumId
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationOfAlbum($albumId) {
+		return $this->mapper->totalDurationOfAlbum($albumId);
+	}
+
+	/**
 	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
 	 * @param int|null $number the number of the track

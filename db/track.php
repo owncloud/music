@@ -59,6 +59,8 @@ use \OCA\Music\Utility\Util;
  * @method void setFilename(string $filename)
  * @method int getSize()
  * @method void setSize(int $size)
+ * @method int getNumberOnPlaylist()
+ * @method void setNumberOnPlaylist(int $number)
  */
 class Track extends Entity {
 	public $title;
@@ -83,6 +85,7 @@ class Track extends Entity {
 	public $artist;
 	public $album;
 	public $genre;
+	public $numberOnPlaylist;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -139,7 +142,7 @@ class Track extends Entity {
 	public function toAPI(IURLGenerator $urlGenerator) {
 		return [
 			'title' => $this->getTitle(),
-			'ordinal' => $this->getDiskAdjustedTrackNumber(),
+			'ordinal' => $this->getAdjustedTrackNumber(),
 			'artist' => $this->getArtistWithUri($urlGenerator),
 			'album' => $this->getAlbumWithUri($urlGenerator),
 			'length' => $this->getLength(),
@@ -154,18 +157,24 @@ class Track extends Entity {
 		];
 	}
 
-	public function getDiskAdjustedTrackNumber() {
-		// On single-disk albums, the track number is given as-is.
-		// On multi-disk albums, the disk-number is applied to the track number.
-		// In case we have no Album reference, the best we can do is to apply the
-		// disk number if it is greater than 1. For disk 1, we don't know if this
-		// is a multi-disk album or not.
-		$numberOfDisks = ($this->album) ? $this->album->getNumberOfDisks() : null;
-		$trackNumber = $this->getNumber();
+	public function getAdjustedTrackNumber() {
+		// Number on playlist overrides the track number if it is set.
+		if ($this->numberOnPlaylist !== null) {
+			$trackNumber = $this->numberOnPlaylist;
+		}
+		else {
+			// On single-disk albums, the track number is given as-is.
+			// On multi-disk albums, the disk-number is applied to the track number.
+			// In case we have no Album reference, the best we can do is to apply the
+			// disk number if it is greater than 1. For disk 1, we don't know if this
+			// is a multi-disk album or not.
+			$numberOfDisks = ($this->album) ? $this->album->getNumberOfDisks() : null;
+			$trackNumber = $this->getNumber();
 
-		if ($this->disk > 1 || $numberOfDisks > 1) {
-			$trackNumber = $trackNumber ?: 0;
-			$trackNumber += (100 * $this->disk);
+			if ($this->disk > 1 || $numberOfDisks > 1) {
+				$trackNumber = $trackNumber ?: 0;
+				$trackNumber += (100 * $this->disk);
+			}
 		}
 
 		return $trackNumber;

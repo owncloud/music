@@ -7,13 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2020
  */
 
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\PlaylistMapper;
@@ -111,14 +110,12 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.
 		// First create an index as a middle-step.
-		$tracksById = [];
-		foreach ($tracks as $track) {
-			$tracksById[$track->getId()] = $track;
-		}
+		$tracksById = Util::createIdLookupTable($tracks);
+
 		$playlistTracks = [];
 		foreach ($trackIds as $trackId) {
 			$track = $tracksById[$trackId];
-			$track->setNumber(\count($playlistTracks) + 1); // override track # with the ordinal on the list
+			$track->setNumberOnPlaylist(\intval($offset) + \count($playlistTracks) + 1);
 			$playlistTracks[] = $track;
 		}
 

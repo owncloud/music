@@ -1031,7 +1031,7 @@ class SubsonicController extends Controller {
 			$result['coverArt'] = $album->getId();
 		}
 
-		$trackNumber = $track->getDiskAdjustedTrackNumber();
+		$trackNumber = $track->getAdjustedTrackNumber();
 		if ($trackNumber !== null) {
 			$result['track'] = $trackNumber;
 		}

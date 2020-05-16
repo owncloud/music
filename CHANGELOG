@@ -51,7 +51,7 @@ v0.13.0 2020-02-16
  * updated getID3 to version 1.9.19 (minus one commit which caused us problems)
  * fixed scan state being shown incorrectly after resetting the music collection
  * fixed a background color problem on NC18 with dark theme (#739)
- * fixed a null-reference problem on the `postWrite` file hook occuring on NC16+
+ * fixed a null-reference problem on the `postWrite` file hook occurring on NC16+
 
 v0.12.1 2019-12-31
  * fix broken scrolling in Albums and Folders views on Nextcloud 14+ (#733)

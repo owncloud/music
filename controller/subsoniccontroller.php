@@ -1090,6 +1090,9 @@ class SubsonicController extends Controller {
 			case 'alphabeticalByName':
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $size, $offset);
 				break;
+			case 'alphabeticalByArtist':
+				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Parent, $size, $offset);
+				break;
 			case 'byGenre':
 				$genre = $this->getRequiredParam('genre');
 				$albums = $this->findAlbumsByGenre($genre, $size, $offset);
@@ -1099,7 +1102,6 @@ class SubsonicController extends Controller {
 				$toYear = $this->getRequiredParam('toYear');
 				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
 				break;
-			case 'alphabeticalByArtist':
 			case 'newest':
 			case 'highest':
 			case 'frequent':

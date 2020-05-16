@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -18,4 +18,5 @@ namespace OCA\Music\Db;
 abstract class SortBy {
 	const None = 0;
 	const Name = 1;
+	const Parent = 2;
 }

@@ -120,6 +120,31 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find all user's entities
+	 *
+	 * Overridden from \OCA\Music\Db\BaseMapper to add support for sorting by artist.
+	 *
+	 * @param string $userId
+	 * @param integer $sortBy sort order of the result set
+	 * @param integer|null $limit
+	 * @param integer|null $offset
+	 * @return Entity[]
+	 */
+	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+		if ($sortBy === SortBy::Parent) {
+			$sql = 'SELECT `album`.* FROM `*PREFIX*music_albums` `album`
+					INNER JOIN `*PREFIX*music_artists` `artist`
+					ON `album`.`album_artist_id` = `artist`.`id`
+					WHERE `album`.`user_id` = ?
+					ORDER BY LOWER(`artist`.`name`)';
+			$params = [$userId];
+			return $this->findEntities($sql, $params, $limit, $offset);
+		} else {
+			return parent::findAll($userId, $sortBy, $limit, $offset);
+		}
+	}
+
+	/**
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *

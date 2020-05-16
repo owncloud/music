@@ -113,9 +113,9 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$tracksById = Util::createIdLookupTable($tracks);
 
 		$playlistTracks = [];
-		foreach ($trackIds as $trackId) {
+		foreach ($trackIds as $index => $trackId) {
 			$track = $tracksById[$trackId];
-			$track->setNumberOnPlaylist(\intval($offset) + \count($playlistTracks) + 1);
+			$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
 			$playlistTracks[] = $track;
 		}
 

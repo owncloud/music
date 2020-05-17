@@ -1118,6 +1118,8 @@ class SubsonicController extends Controller {
 				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
 				break;
 			case 'newest':
+				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Newest, $size, $offset);
+				break;
 			case 'highest':
 			case 'frequent':
 			case 'recent':

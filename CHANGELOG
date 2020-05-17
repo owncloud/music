@@ -1,3 +1,25 @@
+v0.14.1 2020-05-17
+ * improvements for the Subsonic API:
+   * support for the types `alphabeticalByArtist` and `newest` in `getAlbumList` and `getAlbumList2`
+   * add `duration` property to `album` type response entries
+   * add `duration`, `created`, and `comment` properties to `playlist` type response entries
+   * fix a bug in getting tracks/albums for the "unknown genre"
+   * fix several issues in the track numbering on playlists
+   * fix response of `getLicense` to conform the Subsonic API specification (#759)
+   * set API version to 1.10.2 (#758)
+ * improvements for the Ampache API:
+   * add support for the action `tag` (this was forgotten from v0.14.0 where other tag/genre related actions were added)
+   * add element `total_count` to all responses
+   * add `year` property to all `song` responses
+   * proper error handling when requesting unavailable song/album/artist/etc.
+   * fix several issues in the track numbering on playlists
+ * fix unhandled exception if the web UI is used after the user has been logged out (#682)
+ * fix 6th track being duplicated in the search mode on albums with exactly 6 tracks
+ * fix navigation from embedded Files player to the Music app (broken since v0.13.0)
+ * fix navigation from the search results in the Files app to the Music app
+ * update AngularJS library to the version 1.7.9
+ * update js-cookie library to the version 2.2.1
+
 v0.14.0 2020-04-21
  * add 'Genres' view to the web UI
  * integrate the web UI with the (Chrome) media control API (provides e.g. support for HW keys play/pause/etc and integration to the OS lock screen)

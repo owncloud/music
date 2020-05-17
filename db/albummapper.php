@@ -136,7 +136,7 @@ class AlbumMapper extends BaseMapper {
 					INNER JOIN `*PREFIX*music_artists` `artist`
 					ON `album`.`album_artist_id` = `artist`.`id`
 					WHERE `album`.`user_id` = ?
-					ORDER BY LOWER(`artist`.`name`)';
+					ORDER BY LOWER(`artist`.`name`), LOWER(`album`.`name`)';
 			$params = [$userId];
 			return $this->findEntities($sql, $params, $limit, $offset);
 		} else {

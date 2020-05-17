@@ -36,6 +36,7 @@ matrix:
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable16
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable17
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable18
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable19
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
 
     # PostgreSQL
@@ -55,6 +56,7 @@ matrix:
   allow_failures:
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master
+    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
     - php: 7.4
   fast_finish: true
 

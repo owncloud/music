@@ -626,10 +626,22 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getVideos() {
-		// TODO: dummy implementation
+		// Feature not supported, return an empty list
 		return $this->subsonicResponse([
 			'videos' => [
 				'video' => []
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	 private function getPodcasts() {
+		// Feature not supported, return an empty list
+		return $this->subsonicResponse([
+			'podcasts' => [
+				'channel' => []
 			]
 		]);
 	}

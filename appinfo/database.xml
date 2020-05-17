@@ -310,6 +310,17 @@
 				<notnull>false</notnull>
 				<comments>|-delimited list of track IDs</comments>
 			</field>
+			<field>
+				<name>created</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>comment</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
 		</declaration>
 	</table>
 

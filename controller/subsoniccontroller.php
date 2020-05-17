@@ -501,12 +501,17 @@ class SubsonicController extends Controller {
 	private function updatePlaylist() {
 		$listId = $this->getRequiredParam('playlistId');
 		$newName = $this->request->getParam('name');
+		$newComment = $this->request->getParam('comment');
 		$songIdsToAdd = $this->getRepeatedParam('songIdToAdd');
 		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdsToAdd);
 		$songIndicesToRemove = $this->getRepeatedParam('songIndexToRemove');
 
 		if (!empty($newName)) {
 			$this->playlistBusinessLayer->rename($newName, $listId, $this->userId);
+		}
+
+		if ($newComment !== null) {
+			$this->playlistBusinessLayer->setComment($newComment, $listId, $this->userId);
 		}
 
 		if (!empty($songIndicesToRemove)) {
@@ -1070,9 +1075,9 @@ class SubsonicController extends Controller {
 			'public' => false,
 			'songCount' => $playlist->getTrackCount(),
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
-			//'comment' => 'some comment',
-			//'created' => '2020-05-16T16:47:49',
-			//'coverArt' => ''
+			'comment' => $playlist->getComment() ?: '',
+			'created' => $this->formatDateTime($playlist->getCreated()),
+			//'coverArt' => '' // added in API 1.11.0 but is optional even there
 		];
 	}
 

@@ -65,12 +65,22 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
 
+		$now = new \DateTime();
+		$playlist->setCreated($now->format(PlaylistMapper::SQL_DATE_FORMAT));
+
 		return $this->mapper->insert($playlist);
 	}
 
 	public function rename($name, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
+		$this->mapper->update($playlist);
+		return $playlist;
+	}
+
+	public function setComment($comment, $playlistId, $userId) {
+		$playlist = $this->find($playlistId, $userId);
+		$playlist->setComment(Util::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}

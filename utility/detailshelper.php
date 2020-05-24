@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018, 2019
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Utility;
@@ -88,7 +88,17 @@ class DetailsHelper {
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
-			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'LYRICS']);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics']);
+
+			if ($lyrics === null) {
+				// no unsynchronized lyrics, try to get and convert the potentially syncronized lyrics
+				$lyrics = ExtractorGetID3::getTag($data, 'LYRICS');
+				$parsed = LyricsParser::parseSyncedLyrics($lyrics, $this->logger);
+				if ($parsed) {
+					// the lyrics were indeed time-synced, convert the parsed array to a plain string
+					$lyrics = \implode("\n", $parsed);
+				}
+			}
 		}
 		return $lyrics;
 	}

@@ -7,6 +7,9 @@
 		<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
 		<dd ng-repeat-end ng-if="tag.value">{{ formatDetailValue(tag.value) }}</dd>
 
+		<dt ng-if="details.lyrics">lyrics</dt>
+		<dd ng-if="details.lyrics">{{ formatDetailValue(details.lyrics.unsynced) }}</dd>
+
 		<dt ng-if="details.length">length</dt>
 		<dd ng-if="details.length">{{ details.length | playTime }}</dd>
 	</dl>

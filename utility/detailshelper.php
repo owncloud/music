@@ -63,6 +63,15 @@ class DetailsHelper {
 				unset($result['tags']['track']);
 			}
 
+			// special handling for lyrics tags
+			$lyricsNode = self::transformLyrics($result['tags']);
+			if ($lyricsNode !== null) {
+				$result['lyrics'] = $lyricsNode;
+				unset($result['tags']['LYRICS']);
+				unset($result['tags']['unsynchronised_lyric']);
+				unset($result['tags']['unsynced lyrics']);
+			}
+
 			// add track length
 			if (\array_key_exists('playtime_seconds', $data)) {
 				$result['length'] = \ceil($data['playtime_seconds']);
@@ -96,11 +105,45 @@ class DetailsHelper {
 				$parsed = LyricsParser::parseSyncedLyrics($lyrics, $this->logger);
 				if ($parsed) {
 					// the lyrics were indeed time-synced, convert the parsed array to a plain string
-					$lyrics = \implode("\n", $parsed);
+					$lyrics = LyricsParser::syncedToUnsynced($parsed);
 				}
 			}
 		}
 		return $lyrics;
+	}
+
+	/**
+	 * Read lyrics-related tags, and build a result array containing potentially
+	 * both time-synced and unsynced lyrics. If no lyrics tags are found, the result will
+	 * be null. In case the result is non-null, there is always at least the key 'unsynced'
+	 * in the result which will hold a string representing the lyrics with no timestamps.
+	 * If found and successfully parsed, there will be also another key 'synced', which will
+	 * hold the time-synced lyrics. These are presented as an associative array where the
+	 * keys are timestamps and values are corresponding lines of text.
+	 * 
+	 * @param array $tags
+	 * @return array|null
+	 */
+	private static function transformLyrics($tags) {
+		$lyrics = Util::arrayGetOrDefault($tags, 'LYRICS'); // may be synced or unsynced
+		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
+		$unsyncedLyrics = Util::arrayGetOrDefault($tags, 'unsynchronised_lyric')
+						?: Util::arrayGetOrDefault($tags, 'unsynced lyrics')
+						?: LyricsParser::syncedToUnsynced($syncedLyrics)
+						?: $lyrics;
+
+		if ($unsyncedLyrics !== null) {
+			$result = ['unsynced' => $unsyncedLyrics];
+
+			if ($syncedLyrics !== null) {
+				$result['synced'] = $syncedLyrics;
+			}
+		}
+		else {
+			$result = null;
+		}
+
+		return $result;
 	}
 
 	/**

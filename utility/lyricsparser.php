@@ -16,12 +16,24 @@ namespace OCA\Music\Utility;
 class LyricsParser {
 
 	/**
+	 * Take the timestamped lyrics as returned by `LyricsParser::parseSyncedLyrics` and
+	 * return the corresponding plain text representation with no LRC tags.
+	 * Input value null will give null result.
+	 *
+	 * @param array|null $parsedSyncedLyrics
+	 * @return string|null
+	 */
+	public static function syncedToUnsynced($parsedSyncedLyrics) {
+		return ($parsedSyncedLyrics === null) ? null : \implode("\n", $parsedSyncedLyrics);
+	}
+
+	/**
 	 * Parse timestamped lyrics from the given string, and return the parsed data.
-	 * Return false if the string does not appear to be timestamped lyric in the LRC format.
+	 * Return null if the string does not appear to be timestamped lyric in the LRC format.
 	 *
 	 * @param string $data
-	 * @return array|false The keys of the array are timestamps and values are corresponding
-	 *                     lines of lyrics.
+	 * @return array|null The keys of the array are timestamps and values are corresponding
+	 *                    lines of lyrics.
 	 */
 	public static function parseSyncedLyrics($data) {
 		$parsedLyrics = [];
@@ -38,7 +50,7 @@ class LyricsParser {
 		// sort the parsed lyric lines according the timestamps (which are keys of the array)
 		\ksort($parsedLyrics);
 
-		return \count($parsedLyrics) > 0 ? $parsedLyrics : false;
+		return \count($parsedLyrics) > 0 ? $parsedLyrics : null;
 	}
 
 	/**

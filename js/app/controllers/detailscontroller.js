@@ -89,13 +89,6 @@ angular.module('Music').controller('DetailsController', [
 					}
 					delete result.tags.picture;
 
-					// In case the result contains both unsynchronised_lyric and LYRICS tags,
-					// show only the former. It would be pointless to show both, and the latter may
-					// contain timestamped lyrics which we can't handle properly (for now).
-					if (result.tags.unsynchronised_lyric && result.tags.LYRICS) {
-						delete result.tags.LYRICS;
-					}
-
 					$scope.formatSummary = createFormatSummary(result.fileinfo);
 
 					result.tags = toArray(result.tags);
@@ -140,8 +133,6 @@ angular.module('Music').controller('DetailsController', [
 		$scope.formatDetailName = function(rawName) {
 			if (rawName === 'band' || rawName === 'albumartist') {
 				return 'album artist';
-			} else if (rawName === 'unsynchronised_lyric' || rawName == 'unsynced lyrics') {
-				return 'lyrics';
 			} else if (rawName === 'tracktotal' || rawName === 'totaltracks') {
 				return 'total tracks';
 			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
@@ -169,9 +160,6 @@ angular.module('Music').controller('DetailsController', [
 			case 'totaltracks':				return 8;
 			case 'tracktotal':				return 8;
 			case 'comment':					return 100;
-			case 'unsynchronised_lyric':	return 101;
-			case 'unsynced lyrics':			return 101;
-			case 'LYRICS':					return 101;
 			default:						return 10;
 			}
 		};

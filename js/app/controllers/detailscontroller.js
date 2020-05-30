@@ -14,6 +14,7 @@ angular.module('Music').controller('DetailsController', [
 	function ($rootScope, $scope, Restangular, $timeout, libraryService) {
 
 		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
+		$scope.selectedTab = 'general';
 
 		var currentTrack = null;
 
@@ -32,40 +33,16 @@ angular.module('Music').controller('DetailsController', [
 			return typeof n === "number" && Math.floor(n) !== n;
 		}
 
-		function createFormatSummary(fileInfo) {
-			var summary = '';
-			if (fileInfo) {
-				if (fileInfo.dataformat) {
-					summary = fileInfo.dataformat;
-				}
-				if (fileInfo.bitrate_mode === 'vbr') {
-					summary += ' VBR';
-				}
-				if (fileInfo.bitrate) {
-					if ($.isNumeric(fileInfo.bitrate)) {
-						summary += ' ' + Math.round(fileInfo.bitrate/1000) + ' kbps';
-					} else {
-						summary += ' ' + fileInfo.bitrate;
-					}
-				}
-			}
-
-			if (summary === '') {
-				summary = null;
-			} else {
-				summary += ' …';
-			}
-			return summary;
-		}
-
 		function adjustFixedPositions() {
-			var sidebarWidth = $('#app-sidebar').outerWidth();
-			var albumartWidth = $('#app-sidebar .albumart').outerWidth();
-			var offset = sidebarWidth - albumartWidth;
-			$('#app-sidebar .close').css('right', offset);
-			$('#app-sidebar #follow-playback').css('right', offset);
+			$timeout(function() {
+				var sidebarWidth = $('#app-sidebar').outerWidth();
+				var albumartWidth = $('#app-sidebar .albumart').outerWidth();
+				var offset = sidebarWidth - albumartWidth;
+				$('#app-sidebar .close').css('right', offset);
+				$('#app-sidebar #follow-playback').css('right', offset);
 
-			$('#app-sidebar .close').css('top', $('#header').outerHeight());
+				$('#app-sidebar .close').css('top', $('#header').outerHeight());
+			});
 		}
 
 		function showDetails(trackId) {
@@ -73,8 +50,6 @@ angular.module('Music').controller('DetailsController', [
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;
-				$scope.formatSummary = null;
-				$scope.formatExpanded = false;
 
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -89,13 +64,16 @@ angular.module('Music').controller('DetailsController', [
 					}
 					delete result.tags.picture;
 
-					$scope.formatSummary = createFormatSummary(result.fileinfo);
-
 					result.tags = toArray(result.tags);
 					result.fileinfo = toArray(result.fileinfo);
 					$scope.details = result;
 
-					$timeout(adjustFixedPositions);
+					if ($scope.selectedTab == 'lyrics' && !$scope.details.lyrics) {
+						// 'lyrics' tab is selected but not available => select 'general' tab
+						$scope.selectedTab = 'general';
+					}
+
+					adjustFixedPositions();
 				});
 			}
 		}
@@ -110,6 +88,8 @@ angular.module('Music').controller('DetailsController', [
 		});
 
 		$rootScope.$on('resize', adjustFixedPositions);
+
+		$scope.$watch('selectedTab', adjustFixedPositions);
 
 		$scope.$parent.$watch('currentTrack', function(track) {
 			// show details for the current track if the feature is enabled
@@ -131,36 +111,38 @@ angular.module('Music').controller('DetailsController', [
 		};
 
 		$scope.formatDetailName = function(rawName) {
-			if (rawName === 'band' || rawName === 'albumartist') {
-				return 'album artist';
-			} else if (rawName === 'tracktotal' || rawName === 'totaltracks') {
-				return 'total tracks';
-			} else if (rawName === 'part_of_a_set' || rawName === 'discnumber') {
-				return 'disc number';
-			} else {
-				return rawName.replace(/_/g, ' ').toLowerCase();
+			switch (rawName) {
+			case 'band':			return 'album artist';
+			case 'albumartist':		return 'album artist';
+			case 'tracktotal':		return 'total tracks';
+			case 'totaltracks':		return 'total tracks';
+			case 'part_of_a_set':	return 'disc number';
+			case 'discnumber':		return 'disc number';
+			case 'dataformat':		return 'format';
+			case 'channelmode':		return 'channel mode';
+			default:				return rawName.replace(/_/g, ' ').toLowerCase();
 			}
 		};
 
 		$scope.tagRank = function(tag) {
 			switch (tag.key) {
-			case 'title':					return 1;
-			case 'artist':					return 2;
-			case 'album':					return 3;
-			case 'albumartist':				return 4;
-			case 'album_artist':			return 4;
-			case 'band':					return 4;
-			case 'composer':				return 5;
-			case 'part_of_a_set':			return 6;
-			case 'discnumber':				return 6;
-			case 'disc_number':				return 6;
-			case 'track_number':			return 7;
-			case 'tracknumber':				return 7;
-			case 'track':					return 7;
-			case 'totaltracks':				return 8;
-			case 'tracktotal':				return 8;
-			case 'comment':					return 100;
-			default:						return 10;
+			case 'title':			return 1;
+			case 'artist':			return 2;
+			case 'album':			return 3;
+			case 'albumartist':		return 4;
+			case 'album_artist':	return 4;
+			case 'band':			return 4;
+			case 'composer':		return 5;
+			case 'part_of_a_set':	return 6;
+			case 'discnumber':		return 6;
+			case 'disc_number':		return 6;
+			case 'track_number':	return 7;
+			case 'tracknumber':		return 7;
+			case 'track':			return 7;
+			case 'totaltracks':		return 8;
+			case 'tracktotal':		return 8;
+			case 'comment':			return 100;
+			default:				return 10;
 			}
 		};
 
@@ -174,11 +156,6 @@ angular.module('Music').controller('DetailsController', [
 					&& $scope.$parent.currentTrack.id != currentTrack) {
 				showDetails($scope.$parent.currentTrack.id);
 			}
-		};
-
-		$scope.toggleFormatExpanded = function() {
-			$scope.formatExpanded = !$scope.formatExpanded;
-			$timeout(adjustFixedPositions);
 		};
 	}
 ]);

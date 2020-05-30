@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 #app-sidebar {
@@ -50,18 +50,14 @@
 	margin: 0 auto;
 }
 
+#app-sidebar .tabsContainer {
+	width: 100%;
+}
+
 #app-sidebar dl {
 	width: 100%;
 	overflow: hidden;
-	padding: 16px;
-}
-
-#app-sidebar dl.tags {
-	padding-bottom: 0;
-}
-
-#app-sidebar dl.fileinfo {
-	padding-top: 0;
+	padding: 0 16px 16px 16px;
 }
 
 #app-sidebar dt {
@@ -88,6 +84,21 @@
 	padding-bottom: 6px;
 	padding-right: 0;
 	white-space: pre-wrap;
+}
+
+#app-sidebar .tabsContainer .tab {
+	width: 100%;
+	margin-bottom: 32px;
+}
+
+#app-sidebar #lyricsTabView {
+	width: 100%;
+}
+
+#app-sidebar #lyrics {
+	width: 100%;
+	white-space: pre-wrap;
+	text-align: center;
 }
 
 #app-sidebar #follow-playback {

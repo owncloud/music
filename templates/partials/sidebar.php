@@ -29,7 +29,9 @@
 		</div>
 
 		<div class="tab" id="lyricsTabView" ng-show="selectedTab=='lyrics'">
-			<span id="lyrics">{{ formatDetailValue(details.lyrics.unsynced) }}</span>
+			<div class="lyrics" ng-if="!details.lyrics.synced">{{ formatDetailValue(details.lyrics.unsynced) }}</div>
+			<div class="lyrics" ng-if="details.lyrics.synced"
+				ng-repeat="(timestamp, row) in details.lyrics.synced" data-timestamp="{{timestamp}}">{{row}}</div>
 		</div>
 
 		<div class="tab" id="technicalTabView" ng-show="selectedTab=='technical'">

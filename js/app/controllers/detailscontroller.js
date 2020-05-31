@@ -87,6 +87,27 @@ angular.module('Music').controller('DetailsController', [
 			OC.Apps.hideAppSidebar();
 		});
 
+		$rootScope.$on('playerProgress', function(event, time) {
+			// check if we are viewing time-synced lyrics of the currently playing track
+			if ($scope.details && $scope.details.lyrics && $scope.details.lyrics.synced
+					&& $scope.$parent.currentTrack.id == currentTrack) {
+				// Check if the highlighted row needs to change. First find the last row
+				// which has been already reached by the playback.
+				var allRows = $("#app-sidebar .lyrics");
+				for (var i = allRows.length - 1; i >= 0; --i) {
+					var curRow = $(allRows[i]);
+					if (Number(curRow.attr('data-timestamp')) <= time) {
+						if (!curRow.hasClass('highlight')) {
+							// highlight actually needs to move
+							allRows.removeClass('highlight');
+							curRow.addClass('highlight');
+						}
+						break;
+					}
+				}
+			}
+		});
+
 		$rootScope.$on('resize', adjustFixedPositions);
 
 		$scope.$watch('selectedTab', adjustFixedPositions);

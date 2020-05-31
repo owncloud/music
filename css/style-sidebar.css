@@ -95,10 +95,14 @@
 	width: 100%;
 }
 
-#app-sidebar #lyrics {
+#app-sidebar .lyrics {
 	width: 100%;
 	white-space: pre-wrap;
 	text-align: center;
+}
+
+#app-sidebar .lyrics.highlight {
+	background-color: rgba(0,0,0,0.04);
 }
 
 #app-sidebar #follow-playback {

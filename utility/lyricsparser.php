@@ -32,8 +32,8 @@ class LyricsParser {
 	 * Return null if the string does not appear to be timestamped lyric in the LRC format.
 	 *
 	 * @param string $data
-	 * @return array|null The keys of the array are timestamps and values are corresponding
-	 *                    lines of lyrics.
+	 * @return array|null The keys of the array are timestamps in milliseconds and values are
+	 *                    corresponding lines of lyrics.
 	 */
 	public static function parseSyncedLyrics($data) {
 		$parsedLyrics = [];
@@ -43,7 +43,7 @@ class LyricsParser {
 		\rewind($fp);
 		while ($line = \fgets($fp)) {
 			$lineParseResult = self::parseTimestampedLrcLine($line);
-			$parsedLyrics = \array_merge($parsedLyrics, $lineParseResult);
+			$parsedLyrics += $lineParseResult;
 		}
 		\fclose($fp);
 
@@ -82,11 +82,22 @@ class LyricsParser {
 
 				// add the line text to the result set on each found timestamp
 				foreach ($timestamps as $timestamp) {
-					$result[$timestamp] = $text;
+					$result[self::timestampToMs($timestamp)] = $text;
 				}
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Convert timestamp in "mm:ss.fff" format to milliseconds
+	 * 
+	 * @param string $timestamp
+	 * @return int
+	 */
+	private static function timestampToMs($timestamp) {
+		\sscanf($timestamp, "%d:%f", $minutes, $seconds);
+		return \intval($seconds * 1000 + $minutes * 60 * 1000);
 	}
 }

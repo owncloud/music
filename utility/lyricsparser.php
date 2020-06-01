@@ -37,12 +37,13 @@ class LyricsParser {
 	 */
 	public static function parseSyncedLyrics($data) {
 		$parsedLyrics = [];
+		$offset = 0;
 
 		$fp = \fopen("php://temp", 'r+');
 		\fputs($fp, $data);
 		\rewind($fp);
 		while ($line = \fgets($fp)) {
-			$lineParseResult = self::parseTimestampedLrcLine($line);
+			$lineParseResult = self::parseTimestampedLrcLine($line, $offset);
 			$parsedLyrics += $lineParseResult;
 		}
 		\fclose($fp);
@@ -60,11 +61,15 @@ class LyricsParser {
 	 * b) 1 actual timestamp line (the "normal" case)
 	 * c) several actual timestamp lines, in case the line contains several timestamps,
 	 *    meaning that the same line of text is repeated multiple times during the song
-	 * 
+	 *
+	 * If the line defines a time offset, this is returned in the reference paramete. If the offset
+	 * parameter holds a non-zero value on call, the offset is applied on any extracted timestamps. 
+	 *
 	 * @param string $line
+	 * @param int [in|out] $offset
 	 * @return array
 	 */
-	private static function parseTimestampedLrcLine($line) {
+	private static function parseTimestampedLrcLine($line, &$offset) {
 		$result = [];
 		$line = \trim($line);
 
@@ -74,15 +79,19 @@ class LyricsParser {
 			$tags = $matches[1];
 			$text = $matches[2];
 
-			// Extract timestamp tags and discard the metadata tags.
+			// Extract timestamp tags and the offset tag and discard any other metadata tags.
 			$timestampMatches = [];
-			if (\preg_match_all('/\[(\d\d:\d\d\.\d\d)\]/', $tags, $timestampMatches)) {
+			$offsetMatch = [];
+			if (\preg_match('/\[offset:(\d+)\]/', $tags, $offsetMatch)) {
+				$offset = \intval($offsetMatch[1]);
+			}
+			elseif (\preg_match_all('/\[(\d\d:\d\d\.\d\d)\]/', $tags, $timestampMatches)) {
 				// some timestamp(s) were found
 				$timestamps = $timestampMatches[1];
 
 				// add the line text to the result set on each found timestamp
 				foreach ($timestamps as $timestamp) {
-					$result[self::timestampToMs($timestamp)] = $text;
+					$result[self::timestampToMs($timestamp) - $offset] = $text;
 				}
 			}
 		}
@@ -91,7 +100,7 @@ class LyricsParser {
 	}
 
 	/**
-	 * Convert timestamp in "mm:ss.fff" format to milliseconds
+	 * Convert timestamp in "mm:ss.ff" format to milliseconds
 	 * 
 	 * @param string $timestamp
 	 * @return int

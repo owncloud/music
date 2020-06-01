@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018, 2019
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Utility;
@@ -63,6 +63,15 @@ class DetailsHelper {
 				unset($result['tags']['track']);
 			}
 
+			// special handling for lyrics tags
+			$lyricsNode = self::transformLyrics($result['tags']);
+			if ($lyricsNode !== null) {
+				$result['lyrics'] = $lyricsNode;
+				unset($result['tags']['LYRICS']);
+				unset($result['tags']['unsynchronised_lyric']);
+				unset($result['tags']['unsynced lyrics']);
+			}
+
 			// add track length
 			if (\array_key_exists('playtime_seconds', $data)) {
 				$result['length'] = \ceil($data['playtime_seconds']);
@@ -88,9 +97,53 @@ class DetailsHelper {
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
-			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'LYRICS']);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics']);
+
+			if ($lyrics === null) {
+				// no unsynchronized lyrics, try to get and convert the potentially syncronized lyrics
+				$lyrics = ExtractorGetID3::getTag($data, 'LYRICS');
+				$parsed = LyricsParser::parseSyncedLyrics($lyrics, $this->logger);
+				if ($parsed) {
+					// the lyrics were indeed time-synced, convert the parsed array to a plain string
+					$lyrics = LyricsParser::syncedToUnsynced($parsed);
+				}
+			}
 		}
 		return $lyrics;
+	}
+
+	/**
+	 * Read lyrics-related tags, and build a result array containing potentially
+	 * both time-synced and unsynced lyrics. If no lyrics tags are found, the result will
+	 * be null. In case the result is non-null, there is always at least the key 'unsynced'
+	 * in the result which will hold a string representing the lyrics with no timestamps.
+	 * If found and successfully parsed, there will be also another key 'synced', which will
+	 * hold the time-synced lyrics. These are presented as an associative array where the
+	 * keys are timestamps and values are corresponding lines of text.
+	 * 
+	 * @param array $tags
+	 * @return array|null
+	 */
+	private static function transformLyrics($tags) {
+		$lyrics = Util::arrayGetOrDefault($tags, 'LYRICS'); // may be synced or unsynced
+		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
+		$unsyncedLyrics = Util::arrayGetOrDefault($tags, 'unsynchronised_lyric')
+						?: Util::arrayGetOrDefault($tags, 'unsynced lyrics')
+						?: LyricsParser::syncedToUnsynced($syncedLyrics)
+						?: $lyrics;
+
+		if ($unsyncedLyrics !== null) {
+			$result = ['unsynced' => $unsyncedLyrics];
+
+			if ($syncedLyrics !== null) {
+				$result['synced'] = $syncedLyrics;
+			}
+		}
+		else {
+			$result = null;
+		}
+
+		return $result;
 	}
 
 	/**

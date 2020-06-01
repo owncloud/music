@@ -54,6 +54,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 	});
 	onPlayerEvent('progress', function (currentTime) {
 		$scope.setTime(currentTime/1000, $scope.position.total);
+		$rootScope.$emit('playerProgress', currentTime);
 	});
 	onPlayerEvent('end', function() {
 		$scope.next();

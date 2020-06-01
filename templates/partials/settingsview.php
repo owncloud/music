@@ -19,13 +19,13 @@
 		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete"
 			id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
-		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues">issues</a>.</em></p>
+		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="https://github.com/owncloud/music/issues" target="_blank">issues</a>.</em></p>
 	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>
 	<div class="warning" translate>
-		Note that Music may not be compatible with all Ampache/Subsonic clients. Check list of verified Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic">here</a>.
+		Note that Music may not be compatible with all Ampache/Subsonic clients. Check list of verified Ampache clients from <a href="https://github.com/owncloud/music/wiki/Ampache" target="_blank">here</a> and Subsonic clients from <a href="https://github.com/owncloud/music/wiki/Subsonic" target="_blank">here</a>.
 	</div>
 	<div>
 		<code id="ampache-url" ng-bind="settings.ampacheUrl"></code>
@@ -78,7 +78,7 @@
 			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
 		</p>
 		<p translate>
-			Please report any bugs and issues <a href="https://github.com/owncloud/music/issues"><b>here</b></a>
+			Please report any bugs and issues <a href="https://github.com/owncloud/music/issues" target="_blank"><b>here</b></a>
 		</p>
 	</div>
 

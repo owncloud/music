@@ -16,8 +16,10 @@
 \OCP\Util::addStyle('settings', 'settings');
 \OCP\Util::addStyle('music', 'public/app');
 
-?>
+// base URI
+\OCP\Util::addHeader('base', ['href' => \OC::$server->getURLGenerator()->linkToRoute('music.page.index')]);
 
+?>
 
 <div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
 

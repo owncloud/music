@@ -31,7 +31,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ang-d
 			$compileProvider.debugInfoEnabled(false);
 
 			// configure RESTAngular path
-			RestangularProvider.setBaseUrl('api');
+			RestangularProvider.setBaseUrl($('base').attr('href') + 'api');
 
 			var albumsControllerConfig = {
 				controller:'AlbumsViewController',

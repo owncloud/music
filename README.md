@@ -35,7 +35,7 @@ _Note: The audio formats supported vary depending on the browser. Most recents v
 
 ### Detail
 
-The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. This is the default playback methdod used by the Music app. In case the browser at hand doesn't have a codec for the file format in question, the app attempts to play the file using the Aurora.js library, instead. This library usus javascript to decode the supported file formats which are MP3 and FLAC.
+The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. This is the default playback methdod used by the Music app. In case the browser at hand doesn't have a codec for the file format in question, the app attempts to play the file using the Aurora.js library, instead. This library uses javascript to decode the supported file formats which are MP3 and FLAC.
 
 ## Usage hints
 
@@ -58,6 +58,10 @@ Scan all audio files not already indexed in the database. Extract metadata from 
 	./occ music:scan --all
 
 All the above commands can be combined with the `--debug` switch, which enables debug output and shows the memory usage of each scan step.
+
+You can also supply the option `--rescan` to scan also the files which are already part of the collection. This might be necessary, if some file update has been missed by the app because of some bug or because the admin has temporarily disabled the app.
+
+Lastly, you can give option `--clean-obsolete` to make the process check all the previously scanned files, and clean up those which are no longer found. Again, this is usually handled automatically, but manually running the command could be necessary on some special cases.
 
 #### Reset scanned metadata
 
@@ -236,6 +240,7 @@ Beside those mentioned resources, the following additional resources are impleme
 * `/api/prepare_collection`
 * `/api/collection`
 * `/api/folders`
+* `/api/genres`
 * `/api/file/{fileId}`
 * `/api/file/{fileId}/download`
 * `/api/file/{fileId}/path`

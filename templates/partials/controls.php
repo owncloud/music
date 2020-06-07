@@ -2,9 +2,9 @@
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php p(OCP\Template::image_path('music', 'play-previous.svg')) ?>" />
-		<img ng-click="toggle()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
+		<img ng-click="play()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
 			src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
-		<img ng-click="toggle()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
+		<img ng-click="pause()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
 			src="<?php p(OCP\Template::image_path('music', 'pause-big.svg')) ?>" />
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
 			src="<?php p(OCP\Template::image_path('music', 'play-next.svg')) ?>" />

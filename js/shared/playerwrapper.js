@@ -82,15 +82,25 @@ function PlayerWrapper() {
 			}
 		};
 
-		m_html5audio.onplaying = function() {
-			m_playing = true;
-		};
+		m_html5audio.onplaying = onPlayStarted;
 
-		m_html5audio.onpause = function() {
-			m_playing = false;
-		};
+		m_html5audio.onpause = onPaused;
 	}
 	initHtml5();
+
+	function onPlayStarted() {
+		m_playing = true;
+		m_self.trigger('play');
+	}
+
+	function onPaused() {
+		m_playing = false;
+		if (m_url !== null) {
+			m_self.trigger('pause');
+		} else {
+			m_self.trigger('stop');
+		}
+	}
 
 	this.play = function() {
 		switch (m_underlyingPlayer) {
@@ -100,6 +110,7 @@ function PlayerWrapper() {
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.play();
+					onPlayStarted(); // Aurora has no callback => fire event synchronously
 				}
 				break;
 		}
@@ -114,6 +125,7 @@ function PlayerWrapper() {
 				if (m_aurora) {
 					m_aurora.pause();
 				}
+				onPaused(); // Aurora has no callback => fire event synchronously
 				break;
 		}
 	};
@@ -126,9 +138,9 @@ function PlayerWrapper() {
 				// Amazingly, there's no 'stop' functionality in the HTML5 audio API, nor is there a way to
 				// properly remove the src attribute: setting it to null wold be interpreted as addess
 				// "<baseURI>/null" and setting it to empty string will make the src equal the baseURI.
-				// Still, resetting the source is necessary to detach the player from the mediaSession API
-				// (on Chrome). Just be sure to ignore the resulting 'error' events. Unfortunately, this will
-				// still print a warning to the console on Firefox.
+				// Still, resetting the source is necessary to detach the player from the mediaSession API.
+				// Just be sure to ignore the resulting 'error' events. Unfortunately, this will still print
+				// a warning to the console on Firefox.
 				m_html5audio.pause();
 				m_html5audio.src = '';
 				break;
@@ -136,25 +148,13 @@ function PlayerWrapper() {
 				if (m_aurora) {
 					m_aurora.stop();
 				}
+				onPaused(); // Aurora has no callback => fire event synchronously
 				break;
 		}
 	};
 
-	this.togglePlayback = function() {
-		switch (m_underlyingPlayer) {
-			case 'html5':
-				if (m_playing) {
-					m_html5audio.pause();
-				} else {
-					m_html5audio.play();
-				}
-				break;
-			case 'aurora':
-				if (m_aurora) {
-					m_aurora.togglePlayback();
-				}
-				break;
-		}
+	this.isPlaying = function() {
+		return m_playing;
 	};
 
 	this.seekingSupported = function() {

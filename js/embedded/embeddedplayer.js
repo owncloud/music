@@ -14,7 +14,6 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
-	var playing = false;
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
@@ -30,19 +29,25 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	var titleText = null;
 	var artistText = null;
 
-	function togglePlayback() {
+	function play() {
 		// discard command while switching to new track is ongoing
 		if (!playDelayTimer) {
-			player.togglePlayback();
-			playing = !playing;
+			player.play();
+		}
+	}
 
-			if (playing) {
-				playButton.css('display', 'none');
-				pauseButton.css('display', 'inline-block');
-			} else {
-				playButton.css('display', 'inline-block');
-				pauseButton.css('display', 'none');
-			}
+	function pause() {
+		// discard command while switching to new track is ongoing
+		if (!playDelayTimer) {
+			player.pause();
+		}
+	}
+
+	function togglePlayback() {
+		if (player.isPlaying()) {
+			pause();
+		} else {
+			play();
 		}
 	}
 
@@ -89,7 +94,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			.attr('src', OC.imagePath('music', 'play-big'))
 			.attr('alt', t('music', 'Play'))
 			.css('display', 'inline-block')
-			.click(togglePlayback);
+			.click(play);
 	}
 
 	function createPauseButton() {
@@ -99,7 +104,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			.attr('src', OC.imagePath('music', 'pause-big'))
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
-			.click(togglePlayback);
+			.click(pause);
 	}
 
 	function createPrevButton() {
@@ -187,6 +192,14 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		player.on('duration', function(msecs) {
 			songLength_s = Math.round(msecs/1000);
 			updateProgress();
+		});
+		player.on('play', function() {
+			playButton.css('display', 'none');
+			pauseButton.css('display', 'inline-block');
+		});
+		player.on('pause', function() {
+			playButton.css('display', 'inline-block');
+			pauseButton.css('display', 'none');
 		});
 
 		// Seeking
@@ -355,8 +368,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	}
 
 	function playUrl(url, mime, tempTitle, nextStep) {
-		player.pause();
-		playing = false;
+		pause();
 
 		// Set placeholders for track info fields, proper data is filled once received
 		updateMetadata({
@@ -375,7 +387,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		playDelayTimer = setTimeout(function() {
 			playDelayTimer = null;
 			player.fromURL(url, mime);
-			togglePlayback();
+			play();
 			nextStep();
 
 			// 'Previous' button is enalbed regardless of the playlist size if seeking is
@@ -425,11 +437,13 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	}
 
 	/**
-	 * Integration to the media control panel available on Chrome starting from version 73. 
-	 * It should be available also on Firefox starting from version 76.
-	 * This brings the bindings with the special multimedia keys possibly present on the keyboard,
+	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
+	 * version 83. In Firefox, it is still disabled in the version 77, but a partially working support can
+	 * be enabled via the advanced settings.
+	 *
+	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
 	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
-	 */ 
+	 */
 	if ('mediaSession' in navigator) {
 		var registerMediaControlHandler = function(action, handler) {
 			try {
@@ -439,8 +453,8 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			}
 		};
 
-		registerMediaControlHandler('play', togglePlayback);
-		registerMediaControlHandler('pause', togglePlayback);
+		registerMediaControlHandler('play', play);
+		registerMediaControlHandler('pause', pause);
 		registerMediaControlHandler('stop', close);
 		registerMediaControlHandler('seekbackward', seekBackward);
 		registerMediaControlHandler('seekforward', seekForward);
@@ -486,13 +500,9 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		});
 	};
 
-	this.togglePlayback = function() {
-		togglePlayback();
-	};
+	this.togglePlayback = togglePlayback;
 
-	this.close = function() {
-		close();
-	};
+	this.close = close;
 
 	this.setNextAndPrevEnabled = function(enabled) {
 		nextPrevEnabled = enabled;

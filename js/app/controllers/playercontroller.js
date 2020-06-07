@@ -67,6 +67,15 @@ function ($scope, $rootScope, playlistService, libraryService,
 		OC.Notification.showTemporary(gettextCatalog.getString('Error playing file: ' + filename));
 		$scope.next();
 	});
+	onPlayerEvent('play', function() {
+		$rootScope.playing = true;
+	});
+	onPlayerEvent('pause', function() {
+		$rootScope.playing = false;
+	});
+	onPlayerEvent('stop', function() {
+		$rootScope.playing = false;
+	});
 
 	var titleApp = $('title').html().trim();
 	var titleSong = '';
@@ -145,7 +154,6 @@ function ($scope, $rootScope, playlistService, libraryService,
 						$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
 						$scope.player.play();
-						$rootScope.playing = true;
 
 						pathRequestTimer = null;
 					}
@@ -192,10 +200,23 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.position.bufferPercent = Math.min(100, Math.round(percent)) + '%';
 	};
 
-	$scope.toggle = function() {
+	$scope.play = function() {
 		if ($scope.currentTrack !== null) {
-			$scope.player.togglePlayback();
-			$rootScope.playing = !$rootScope.playing;
+			$scope.player.play();
+		}
+	};
+
+	$scope.pause = function() {
+		if ($scope.currentTrack !== null) {
+			$scope.player.pause();
+		}
+	};
+
+	$scope.togglePlayback = function() {
+		if ($rootScope.playing) {
+			$scope.pause();
+		} else {
+			$scope.play();
 		}
 	};
 
@@ -244,22 +265,13 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$scope.player.seek(ratio);
 	};
 
-	$scope.seekBackward = function() {
-		$scope.player.seekBackward();
-	};
+	$scope.seekBackward = $scope.player.seekBackward;
 
-	$scope.seekForward = function() {
-		$scope.player.seekForward();
-	};
+	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function() {
-		// fetch track and start playing
-		$scope.next();
-	});
+	playlistService.subscribe('play', $scope.next /* fetch track and start playing*/);
 
-	playlistService.subscribe('togglePlayback', function() {
-		$scope.toggle();
-	});
+	playlistService.subscribe('togglePlayback', $scope.togglePlayback);
 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
@@ -272,7 +284,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 			var func = null;
 			switch (e.which) {
 				case 32: //space
-					func = $scope.toggle;
+					func = $scope.togglePlayback;
 					break;
 				case 37: // arrow left
 					func = $scope.prev;
@@ -292,11 +304,13 @@ function ($scope, $rootScope, playlistService, libraryService,
 	});
 
 	/**
-	 * Integration to the media control panel available on Chrome starting from version 73. 
-	 * It should be available also on Firefox starting from version 76.
-	 * This brings the bindings with the special multimedia keys possibly present on the keyboard,
+	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
+	 * version 83. In Firefox, it is still disabled in the version 77, but a partially working support can
+	 * be enabled via the advanced settings.
+	 *
+	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
 	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
-	 */ 
+	 */
 	if ('mediaSession' in navigator) {
 		var registerMediaControlHandler = function(action, handler) {
 			try {
@@ -306,8 +320,8 @@ function ($scope, $rootScope, playlistService, libraryService,
 			}
 		};
 
-		registerMediaControlHandler('play', $scope.toggle);
-		registerMediaControlHandler('pause', $scope.toggle);
+		registerMediaControlHandler('play', $scope.play);
+		registerMediaControlHandler('pause', $scope.pause);
 		registerMediaControlHandler('stop', $scope.stop);
 		registerMediaControlHandler('seekbackward', $scope.seekBackward);
 		registerMediaControlHandler('seekforward', $scope.seekForward);

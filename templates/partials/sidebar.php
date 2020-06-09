@@ -6,13 +6,13 @@
 
 	<ul class="tabHeaders" ng-show="details">
 		<li class="tabHeader" ng-class="{selected: selectedTab=='general'}" ng-click="selectedTab='general'">
-			<a href="#" translate>General</a>
+			<a translate>General</a>
 		</li>
 		<li class="tabHeader" ng-class="{selected: selectedTab=='lyrics'}" ng-click="selectedTab='lyrics'" ng-show="details.lyrics">
-			<a href="#" translate>Lyrics</a>
+			<a translate>Lyrics</a>
 		</li>
 		<li class="tabHeader" ng-class="{selected: selectedTab=='technical'}" ng-click="selectedTab='technical'">
-			<a href="#" translate>Technical</a>
+			<a translate>Technical</a>
 		</li>
 	</ul>
 

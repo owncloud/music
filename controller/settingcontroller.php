@@ -85,7 +85,7 @@ class SettingController extends Controller {
 
 	private function getAmpacheUrl() {
 		return \str_replace('/server/xml.server.php', '',
-				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.ampache')));
+				$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('music.ampache.xmlApi')));
 	}
 
 	private function getSubsonicUrl() {

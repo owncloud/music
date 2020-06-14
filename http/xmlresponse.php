@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019, 2020
  */
 
 namespace OCA\Music\Http;
@@ -29,8 +29,15 @@ class XMLResponse extends Response {
 
 	private $content;
 	private $doc;
+	private $attributeKeys;
 
-	public function __construct(array $content) {
+	/**
+	 * @param array $content
+	 * @param bool|string[] $attributes If true, then key-value pair is made into attribute if possible.
+	 *                                  If false, then key-value pairs are never made into attributes.
+	 *                                  If an array, then keys found from the array are made into attributes if possible.
+	 */
+	public function __construct(array $content, $attributes=true) {
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary
@@ -40,6 +47,7 @@ class XMLResponse extends Response {
 		$this->content = $content;
 		$this->doc = new \DOMDocument();
 		$this->doc->formatOutput = true;
+		$this->attributeKeys = $attributes;
 	}
 
 	public function render() {
@@ -57,7 +65,7 @@ class XMLResponse extends Response {
 			// key 'value' has a special meaning
 			if ($key == 'value') {
 				$parentNode->appendChild($this->doc->createTextNode($value));
-			} elseif ($allowAttribute) {
+			} elseif ($allowAttribute && $this->keyMayDefineAttribute($key)) {
 				$parentNode->setAttribute($key, $value);
 			} else {
 				$child = $this->doc->createElement($key);
@@ -89,6 +97,14 @@ class XMLResponse extends Response {
 		}
 		else {
 			throw new \Exception("Unexpected value type for key $key");
+		}
+	}
+
+	private function keyMayDefineAttribute($key) {
+		if (\is_array($this->attributeKeys)) {
+			return \in_array($key, $this->attributeKeys);
+		} else {
+			return \boolval($this->attributeKeys);
 		}
 	}
 

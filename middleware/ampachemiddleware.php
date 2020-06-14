@@ -18,32 +18,33 @@ use \OCP\IRequest;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\Controller\AmpacheController;
 use \OCA\Music\Db\AmpacheSessionMapper;
-use \OCA\Music\Http\XMLResponse;
+use \OCA\Music\Utility\AmpacheUser;
 
 /**
- * Used to do the authentication and checking stuff for an ampache controller method
- * It reads out the annotations of a controller method and checks which if
- * ampache authentification stuff has to be done.
+ * Checks the authentication on each Ampache API call before the
+ * request is allowed to be passed to AmpacheController.
+ * Map identified exceptions from the controller to proper Ampache error results.
  */
 class AmpacheMiddleware extends Middleware {
 	private $appname;
 	private $request;
 	private $ampacheSessionMapper;
-	private $isAmpacheCall;
 	private $ampacheUser;
+	private $logger;
 
 	/**
 	 * @param Request $request an instance of the request
 	 */
-	public function __construct($appname, IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, $ampacheUser) {
-		$this->appname = $appname;
+	public function __construct(
+			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper,
+			AmpacheUser $ampacheUser, Logger $logger) {
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
-
-		// used to share user info with controller
-		$this->ampacheUser = $ampacheUser;
+		$this->ampacheUser = $ampacheUser; // used to share user info with controller
+		$this->logger = $logger;
 	}
 
 	/**
@@ -56,33 +57,35 @@ class AmpacheMiddleware extends Middleware {
 	 */
 	public function beforeController($controller, $methodName) {
 
-		// get annotations from comments
-		$annotationReader = new MethodAnnotationReader($controller, $methodName);
+		if ($controller instanceof AmpacheController) {
 
-		$this->isAmpacheCall = $annotationReader->hasAnnotation('AmpacheAPI');
-
-		// don't try to authenticate for the handshake request
-		if ($this->isAmpacheCall && $this->request['action'] !== 'handshake') {
-			$token = null;
-			if (!empty($this->request['auth'])) {
-				$token = $this->request['auth'];
-			} elseif (!empty($this->request['ssid'])) {
-				$token = $this->request['ssid'];
+			if ($methodName === 'jsonApi') {
+				$controller->setJsonMode(true);
 			}
 
-			if ($token !== null && $token !== '') {
-				$user = $this->ampacheSessionMapper->findByToken($token);
-				if ($user !== false && \array_key_exists('user_id', $user)) {
-					$this->ampacheUser->setUserId($user['user_id']);
-					return;
-				}
+			// don't try to authenticate for the handshake request
+			if ($this->request['action'] !== 'handshake') {
+				$this->checkAuthentication();
+			}
+		}
+	}
+
+	private function checkAuthentication() {
+		$token = $this->request['auth'] ?: $this->request['ssid'] ?: null;
+
+		if (empty($token)) {
+			// ping is allowed without a session (but if session token is passed, then it has to be valid)
+			if ($this->request['action'] !== 'ping') {
+				throw new AmpacheException('Invalid Login - session token missing', 401);
+			}
+		}
+		else {
+			$user = $this->ampacheSessionMapper->findByToken($token);
+			if ($user !== false && \array_key_exists('user_id', $user)) {
+				$this->ampacheUser->setUserId($user['user_id']);
 			} else {
-				// for ping action without token the version information is provided
-				if ($this->request['action'] === 'ping') {
-					return;
-				}
+				throw new AmpacheException('Invalid Login - invalid session token', 401);
 			}
-			throw new AmpacheException('Invalid Login', 401);
 		}
 	}
 
@@ -97,23 +100,25 @@ class AmpacheMiddleware extends Middleware {
 	 * @return Response a Response object if the exception was handled
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
-		if ($this->isAmpacheCall) {
+		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
-				return self::errorResponse($exception->getCode(), $exception->getMessage());
+				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());
 			}
 			elseif ($exception instanceof BusinessLayerException) {
-				return self::errorResponse(400, 'Entity not found');
+				return $this->errorResponse($controller, 400, 'Entity not found');
 			}
 		}
 		throw $exception;
 	}
 
-	private static function errorResponse($code, $message) {
-		return new XMLResponse(['root' => [
+	private function errorResponse(AmpacheController $controller, $code, $message) {
+		$this->logger->log($message, 'debug');
+
+		return $controller->ampacheResponse([
 			'error' => [
 				'code' => $code,
 				'value' => $message
 			]
-		]]);
+		]);
 	}
 }

@@ -12,9 +12,7 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IL10N;
-use \OCP\IURLGenerator;
-
+use \OCP\IL10N;
 use \OCP\AppFramework\Db\Entity;
 
 /**

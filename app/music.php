@@ -442,19 +442,19 @@ class Music extends App {
 
 		$container->registerService('AmpacheMiddleware', function ($c) {
 			return new AmpacheMiddleware(
-				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('AmpacheSessionMapper'),
-				$c->query('AmpacheUser')
+				$c->query('AmpacheUser'),
+				$c->query('Logger')
 			);
 		});
 		$container->registerMiddleWare('AmpacheMiddleware');
 
 		$container->registerService('SubsonicMiddleware', function ($c) {
 			return new SubsonicMiddleware(
-					$c->query('Request'),
-					$c->query('AmpacheUserMapper'), /* not a mistake, the mapper is shared between the APIs */
-					$c->query('Logger')
+				$c->query('Request'),
+				$c->query('AmpacheUserMapper'), /* not a mistake, the mapper is shared between the APIs */
+				$c->query('Logger')
 			);
 		});
 		$container->registerMiddleWare('SubsonicMiddleware');

@@ -119,14 +119,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.
-		// First create an index as a middle-step.
 		$tracksById = Util::createIdLookupTable($tracks);
 
 		$playlistTracks = [];
 		foreach ($trackIds as $index => $trackId) {
 			$track = $tracksById[$trackId];
 			// in case the same track comes up again in the list, clone the track object
-			// to have different number of the instances
+			// to have different numbers on the instances
 			if ($track->getNumberOnPlaylist() !== null) {
 				$track = clone $track;
 			}
@@ -140,19 +139,19 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	/**
 	 * get the total duration of all the tracks on a playlist
 	 * 
-	 * @param int $playlistId        	
-	 * @param string $userId        	
+	 * @param int $playlistId
+	 * @param string $userId
 	 * @return int duration in seconds
 	 */
 	public function getDuration($playlistId, $userId) {
-		$playlist = $this->find ( $playlistId, $userId );
-		$trackIds = $playlist->getTrackIdsAsArray ();
-		$durations = $this->trackBusinessLayer->mapper->getDurations ( $trackIds );
+		$playlist = $this->find($playlistId, $userId);
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$durations = $this->trackBusinessLayer->mapper->getDurations($trackIds);
 
 		// We can't simply sum up the values of $durations array, because the playlist may
 		// contain duplicate entries, and those are not reflected in $durations.
 		$sum = 0;
-		foreach ( $trackIds as $trackId ) {
+		foreach ($trackIds as $trackId) {
 			$sum += $durations [$trackId];
 		}
 

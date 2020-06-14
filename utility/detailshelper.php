@@ -166,7 +166,7 @@ class DetailsHelper {
 	 * Remove potentially invalid characters from the string.
 	 * @param $item
 	 */
-	private static function sanitizeString(&$item){
+	private static function sanitizeString(&$item) {
 		if (is_string($item)) {
 			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
 		}

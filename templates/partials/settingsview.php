@@ -78,7 +78,7 @@
 			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
 		</p>
 		<p translate>
-			Please report any bugs and issues <a href="https://github.com/owncloud/music/issues" target="_blank"><b>here ↗</b></a>
+			Please report any bugs and issues <a href="https://github.com/owncloud/music/issues" target="_blank">here ↗</a>
 		</p>
 	</div>
 

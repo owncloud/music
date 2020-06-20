@@ -403,9 +403,10 @@ class AmpacheController extends Controller {
 	protected function get_cover($albumId) {
 		$userId = $this->ampacheUser->getUserId();
 		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
 
 		try {
-			$coverData = $this->coverHelper->getCover($albumId, $userId, $userFolder);
+			$coverData = $this->coverHelper->getCover($album, $userId, $userFolder);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);
 			}

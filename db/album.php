@@ -159,7 +159,7 @@ class Album extends Entity {
 	public function coverToAPI(IURLGenerator $urlGenerator) {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
-			$coverUrl = $urlGenerator->linkToRoute('music.api.cover',
+			$coverUrl = $urlGenerator->linkToRoute('music.api.albumCover',
 					['albumIdOrSlug' => $this->getId()]);
 		}
 		return $coverUrl;

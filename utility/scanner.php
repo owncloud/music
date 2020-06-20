@@ -166,14 +166,14 @@ class Scanner extends PublicEmitter {
 			// if present, use the embedded album art as cover for the respective album
 			if ($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
-				$this->coverHelper->removeCoverFromCache($albumId, $userId);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
 			elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
 				$this->albumBusinessLayer->removeCovers([$fileId]);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
-				$this->coverHelper->removeCoverFromCache($albumId, $userId);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 			}
 
 			// invalidate the cache as the music collection was changed
@@ -277,7 +277,7 @@ class Scanner extends PublicEmitter {
 		else {
 			// remove the cached covers
 			foreach ($affectedAlbums as $albumId) {
-				$this->coverHelper->removeCoverFromCache($albumId, null);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
 			}
 			// remove the cached collection
 			foreach ($affectedUsers as $user) {
@@ -308,7 +308,7 @@ class Scanner extends PublicEmitter {
 				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
 					$this->albumBusinessLayer->setCover(null, $albumId);
 					$this->findEmbeddedCoverForAlbum($albumId);
-					$this->coverHelper->removeCoverFromCache($albumId, null);
+					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
 				}
 			}
 
@@ -517,10 +517,11 @@ class Scanner extends PublicEmitter {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
 		if ($track !== null) {
 			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
 			return [
 				'title'      => $track->getTitle(),
 				'artist'     => $artist->getName(),
-				'cover'      => $this->coverHelper->getCover($track->getAlbumId(), $userId, $userFolder),
+				'cover'      => $this->coverHelper->getCover($album, $userId, $userFolder),
 				'in_library' => true
 			];
 		}

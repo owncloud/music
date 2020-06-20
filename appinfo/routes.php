@@ -41,15 +41,16 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#cachedCover',		'url' => '/api/cover/{hash}',			'verb' => 'GET'],
 
 	// Shiva API https://github.com/tooxie/shiva-server#resources
-	['name' => 'api#artists',	'url' => '/api/artists',						'verb' => 'GET'],
-	['name' => 'api#artist',	'url' => '/api/artist/{artistIdOrSlug}',		'verb' => 'GET'],
-	// ['name' => 'api#artistShows', 'url' => '/api/artist/{artistIdOrSlug}/shows', 'verb' => 'GET'],
-	['name' => 'api#albums',	'url' => '/api/albums',							'verb' => 'GET'],
-	['name' => 'api#album',		'url' => '/api/album/{albumIdOrSlug}',			'verb' => 'GET'],
-	['name' => 'api#cover',		'url' => '/api/album/{albumIdOrSlug}/cover',	'verb' => 'GET'],
-	['name' => 'api#tracks',	'url' => '/api/tracks',							'verb' => 'GET'],
-	['name' => 'api#track',		'url' => '/api/track/{trackIdOrSlug}',			'verb' => 'GET'],
-	// ['name' => 'api#trackLyrics', 'url' => '/api/track/{trackIdOrSlug}/lyrics', 'verb' => 'GET'],
+	['name' => 'api#artists',		'url' => '/api/artists',						'verb' => 'GET'],
+	['name' => 'api#artist',		'url' => '/api/artist/{artistIdOrSlug}',		'verb' => 'GET'],
+	['name' => 'api#artistCover',	'url' => '/api/artist/{artistIdOrSlug}/cover',	'verb' => 'GET'], // non-Shiva extension
+	//['name' => 'api#artistShows',	'url' => '/api/artist/{artistIdOrSlug}/shows',	'verb' => 'GET'],
+	['name' => 'api#albums',		'url' => '/api/albums',							'verb' => 'GET'],
+	['name' => 'api#album',			'url' => '/api/album/{albumIdOrSlug}',			'verb' => 'GET'],
+	['name' => 'api#albumCover',	'url' => '/api/album/{albumIdOrSlug}/cover',	'verb' => 'GET'], // non-Shiva extension
+	['name' => 'api#tracks',		'url' => '/api/tracks',							'verb' => 'GET'],
+	['name' => 'api#track',			'url' => '/api/track/{trackIdOrSlug}',			'verb' => 'GET'],
+	//['name' => 'api#trackLyrics',	'url' => '/api/track/{trackIdOrSlug}/lyrics',	'verb' => 'GET'],
 
 	['name' => 'share#fileInfo', 'url' => '/api/share/{token}/{fileId}/info', 'verb' => 'GET'],
 

@@ -29,10 +29,10 @@
 				<length>256</length>
 			</field>
 			<field>
-				<name>image</name>
-				<type>text</type>
+				<name>cover_file_id</name>
+				<type>integer</type>
 				<notnull>false</notnull>
-				<length>256</length>
+				<length>10</length>
 			</field>
 			<field>
 				<name>mbid</name>

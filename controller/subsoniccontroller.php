@@ -337,8 +337,9 @@ class SubsonicController extends Controller {
 		$id = $this->getRequiredParam('id');
 		$size = $this->request->getParam('size');
 
+		$album = $this->albumBusinessLayer->find($id, $this->userId);
 		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
-		$coverData = $this->coverHelper->getCover($id, $this->userId, $rootFolder, $size);
+		$coverData = $this->coverHelper->getCover($album, $this->userId, $rootFolder, $size);
 
 		if ($coverData !== null) {
 			return new FileResponse($coverData);

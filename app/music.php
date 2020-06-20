@@ -375,7 +375,6 @@ class Music extends App {
 
 		$container->registerService('CoverHelper', function ($c) {
 			return new CoverHelper(
-				$c->query('AlbumBusinessLayer'),
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
 				$c->query('Config'),

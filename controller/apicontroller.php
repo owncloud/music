@@ -454,7 +454,21 @@ class ApiController extends Controller {
 	public function albumCover($albumIdOrSlug) {
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		$coverAndHash = $this->coverHelper->getCoverAndHash($album, $this->userId, $this->userFolder);
+		return $this->cover($album);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function artistCover($artistIdOrSlug) {
+		$artistId = $this->getIdFromSlug($artistIdOrSlug);
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		return $this->cover($artist);
+	}
+
+	private function cover($entity) {
+		$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
 
 		if ($coverAndHash['hash'] !== null) {
 			// Cover is in cache. Return a redirection response so that the client

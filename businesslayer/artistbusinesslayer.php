@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -63,5 +65,38 @@ class ArtistBusinessLayer extends BusinessLayer {
 		$artist->setUserId($userId);
 		$artist->setHash(\hash('md5', \mb_strtolower($name)));
 		return $this->mapper->insertOrUpdate($artist);
+	}
+
+	/**
+	 * Use the given file as cover art for an artist if there exists an artist
+	 * with name matching the file name with no cover already set.
+	 * @param File $imageFile
+	 * @param string $userId
+	 * @return true if the file was set as cover for an artist
+	 */
+	public function updateCover($imageFile, $userId) {
+		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
+		$matches = $this->findAllByName($name, $userId);
+
+		if (!empty($matches)) {
+			$artist = $matches[0];
+			if ($artist->getCoverFileId() === null) {
+				$artist->setCoverFileId($imageFile->getId());
+				$this->mapper->update($artist);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * removes the given cover art files from artists
+	 * @param integer[] $coverFileIds the file IDs of the cover images
+	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
+	 * @return Artist[] artists which got modified, empty array if none
+	 */
+	public function removeCovers($coverFileIds, $userIds=null) {
+		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 }

@@ -173,13 +173,23 @@ class CoverHelper {
 	}
 
 	/**
-	 * Remove cover image from cache if it is there. Silently do nothing if there
+	 * Remove album cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover.
 	 * @param int $albumId
 	 * @param string $userId
 	 */
 	public function removeAlbumCoverFromCache($albumId, $userId) {
 		$this->cache->remove($userId, 'album_cover_hash_' . $albumId);
+	}
+
+	/**
+	 * Remove artist cover image from cache if it is there. Silently do nothing if there
+	 * is no cached cover.
+	 * @param int $artistId
+	 * @param string $userId
+	 */
+	public function removeArtistCoverFromCache($artistId, $userId) {
+		$this->cache->remove($userId, 'artist_cover_hash_' . $artistId);
 	}
 
 	/**

@@ -133,6 +133,9 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
 			$this->cache->remove($userId, 'collection');
 		}
+		if ($this->artistBusinessLayer->updateCover($file, $userId)) {
+			$this->logger->log('updateImage - the image was set as cover for an artist', 'debug');
+		}
 	}
 
 	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
@@ -328,7 +331,9 @@ class Scanner extends PublicEmitter {
 	private function deleteImage($fileIds, $userIds=null) {
 		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
 
+		// handle album cover images
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
+
 		$affectedUsers = \array_map(function ($a) {
 			return $a->getUserId();
 		}, $affectedAlbums);
@@ -336,7 +341,13 @@ class Scanner extends PublicEmitter {
 
 		$this->invalidateCacheOnDelete($affectedUsers, Util::extractIds($affectedAlbums));
 
-		return (\count($affectedAlbums) > 0);
+		// handle artist cover imges (these are not included in the collection.json)
+		$affectedArtists = $this->artistBusinessLayer->removeCovers($fileIds, $userIds);
+		foreach ($affectedArtists as $artist) {
+			$this->coverHelper->removeArtistCoverFromCache($artist->getId(), null);
+		}
+
+		return (\count($affectedAlbums) + \count($affectedArtists)> 0);
 	}
 
 	/**

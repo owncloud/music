@@ -43,6 +43,7 @@ class Random {
 			if ($count == 1) { // return type is not array when randomizing a single index
 				$indices = [$indices];
 			}
+			\shuffle($indices);
 
 			return Util::arrayMultiGet($itemArray, $indices);
 		}

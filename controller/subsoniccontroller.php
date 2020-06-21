@@ -44,12 +44,13 @@ use \OCA\Music\Middleware\SubsonicException;
 
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
+use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.10.2';
+	const API_VERSION = '1.11.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -62,6 +63,7 @@ class SubsonicController extends Controller {
 	private $l10n;
 	private $coverHelper;
 	private $detailsHelper;
+	private $lastfmService;
 	private $random;
 	private $logger;
 	private $userId;
@@ -82,6 +84,7 @@ class SubsonicController extends Controller {
 								UserMusicFolder $userMusicFolder,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
+								LastfmService $lastfmService,
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -97,6 +100,7 @@ class SubsonicController extends Controller {
 		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
+		$this->lastfmService = $lastfmService;
 		$this->random = $random;
 		$this->logger = $logger;
 
@@ -261,6 +265,34 @@ class SubsonicController extends Controller {
 		$artistNode['album'] = \array_map([$this, 'albumToNewApi'], $albums);
 
 		return $this->subsonicResponse(['artist' => $artistNode]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getArtistInfo() {
+		return $this->doGetArtistInfo('artistInfo');
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getArtistInfo2() {
+		return $this->doGetArtistInfo('artistInfo2');
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getSimilarSongs() {
+		return $this->doGetSimilarSongs('similarSongs');
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getSimilarSongs2() {
+		return $this->doGetSimilarSongs('similarSongs2');
 	}
 
 	/**
@@ -913,10 +945,11 @@ class SubsonicController extends Controller {
 	 * @return array
 	 */
 	private function artistToApi($artist) {
+		$id = $artist->getId();
 		$result = [
 			'name' => $artist->getNameString($this->l10n),
-			'id' => 'artist-' . $artist->getId(),
-			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
+			'id' => $id ? ('artist-' . $id) : '-1', // getArtistInfo may show artists without ID
+			'albumCount' => $this->albumBusinessLayer->countByAlbumArtist($artist->getId())
 		];
 
 		if (!empty($artist->getCoverFileId())) {
@@ -1115,6 +1148,79 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Common logic for getArtistInfo and getArtistInfo2
+	 */
+	private function doGetArtistInfo($rootName) {
+		$id = $this->getRequiredParam('id');
+		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
+		// TODO: getArtistInfo may be called for a folder
+		$includeNotPresent = $this->request->getParam('includeNotPresent', false);
+		$includeNotPresent = \filter_var($includeNotPresent, FILTER_VALIDATE_BOOLEAN);
+
+		$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
+
+		if (isset($info['artist'])) {
+			$content = [
+				'biography' => $info['artist']['bio']['summary'],
+				'lastFmUrl' => $info['artist']['url'],
+				'musicBrainzId' => $info['artist']['mbid']
+			];
+
+			$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);
+			$content['similarArtist'] = \array_map([$this, 'artistToApi'], $similarArtists);
+		}
+
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		if ($artist->getCoverFileId() !== null) {
+			$url = $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
+					. "?u={$this->request->u}&p={$this->request->p}&v={$this->request->v}&c={$this->request->c}&id=$id";
+			$content['largeImageUrl'] = [$url];
+		}
+
+		// This method is unusual in how it uses non-attribute elements in the response. On the other hand,
+		// all the details of the <similarArtist> elements are rendered as attributes. List those separately.
+		$attributeKeys = ['name', 'id', 'albumCount', 'coverArt', 'starred'];
+
+		return $this->subsonicResponse([$rootName => $content], $attributeKeys);
+	}
+
+	/**
+	 * Common logic for getSimilarSongs and getSimilarSongs2
+	 */
+	private function doGetSimilarSongs($rootName) {
+		$id = $this->getRequiredParam('id');
+		$count = $this->request->getParam('count', 50);
+
+		if (Util::startsWith($id, 'artist')) {
+			$artistId = self::ripIdPrefix($id);
+		} elseif (Util::startsWith($id, 'album')) {
+			$albumId = self::ripIdPrefix($id);
+			$artistId = $this->albumBusinessLayer->find($albumId, $this->userId)->getAlbumArtistId();
+		} elseif (Util::startsWith($id, 'track')) {
+			$trackId = self::ripIdPrefix($id);
+			$artistId = $this->trackBusinessLayer->find($trackId, $this->userId)->getArtistId();
+		} else {
+			throw new SubsonicException("Id $id has a type not supported on getSimilarSongs", 0);
+		}
+
+		$artists = $this->lastfmService->getSimilarArtists($artistId, $this->userId);
+		$artists[] = $this->artistBusinessLayer->find($artistId, $this->userId);
+
+		// Get all songs by the found artists
+		$songs = [];
+		foreach ($artists as $artist) {
+			$songs = \array_merge($songs, $this->trackBusinessLayer->findAllByArtist($artist->getId(), $this->userId));
+		}
+
+		// Randomly select the desired number of songs
+		$songs = $this->random->pickItems($songs, $count);
+
+		return $this->subsonicResponse([$rootName => [
+				'song' => \array_map([$this, 'trackToApi'], $songs)
+		]]);
+	}
+
+	/**
 	 * Common logic for search2 and search3
 	 * @return array with keys 'artists', 'albums', and 'tracks'
 	 */
@@ -1225,7 +1331,7 @@ class SubsonicController extends Controller {
 		return $dateTime->format('Y-m-d\TH:i:s');
 	}
 
-	private function subsonicResponse($content, $status = 'ok') {
+	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
 		$content['status'] = $status; 
 		$content['version'] = self::API_VERSION;
 		$responseData = ['subsonic-response' => $content];
@@ -1237,7 +1343,10 @@ class SubsonicController extends Controller {
 			$response = new DataDisplayResponse("{$this->callback}($responseData);");
 			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');
 		} else {
-			$response = new XMLResponse($responseData);
+			if (\is_array($useAttributes)) {
+				$useAttributes = \array_merge($useAttributes, ['status', 'version']);
+			}
+			$response = new XMLResponse($responseData, $useAttributes);
 		}
 
 		return $response;
@@ -1249,6 +1358,6 @@ class SubsonicController extends Controller {
 					'code' => $errorCode,
 					'message' => $errorMessage
 				]
-			], 'failed');
+			], true, 'failed');
 	}
 }

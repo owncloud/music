@@ -348,7 +348,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * Returns the count of albums an Artist is featured in
+	 * Returns the count of albums where the given Artist is featured in
 	 * @param integer $artistId
 	 * @return integer
 	 */
@@ -363,6 +363,21 @@ class AlbumMapper extends BaseMapper {
 					WHERE `album`.`album_artist_id` = ?
 				) tmp';
 		$params = [$artistId, $artistId];
+		$result = $this->execute($sql, $params);
+		$row = $result->fetch();
+		return (int)$row['count'];
+	}
+
+	/**
+	 * Returns the count of albums where the given artist is the album artist
+	 * @param integer $artistId
+	 * @return integer
+	 */
+	public function countByAlbumArtist($artistId) {
+		$sql = 'SELECT COUNT(*) AS count
+				FROM `*PREFIX*music_albums` `album`
+				WHERE `album`.`album_artist_id` = ?';
+		$params = [$artistId];
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
 		return (int)$row['count'];

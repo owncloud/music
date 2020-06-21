@@ -176,12 +176,21 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns the count of albums an Artist is featured in
+	 * Returns the count of albums where the given Artist is featured in
 	 * @param integer $artistId
 	 * @return integer
 	 */
 	public function countByArtist($artistId) {
 		return $this->mapper->countByArtist($artistId);
+	}
+
+	/**
+	 * Returns the count of albums where the given artist is the album artist
+	 * @param integer $artistId
+	 * @return integer
+	 */
+	public function countByAlbumArtist($artistId) {
+		return $this->mapper->countByAlbumArtist($artistId);
 	}
 
 	public function findAlbumOwner($albumId) {

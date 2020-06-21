@@ -16,6 +16,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\Artist;
 
 use \OCP\IConfig;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -88,6 +89,43 @@ class LastfmService {
 				'artist' => $track->getArtistName(),
 				'track' => $track->getTitle()
 		]);
+	}
+
+	/**
+	 * Get artists from the user's library similar to the given artist 
+	 * @param integer $artistId
+	 * @param string $userId
+	 * @parma bool $includeNotPresent When true, the result may include also artists which
+	 *                                are not found from the user's music library. Such 
+	 *                                artists have many fields including `id` set as null.
+	 * @return Artist[]
+	 * @throws BusinessLayerException if artist with the given ID is not found
+	 */
+	public function getSimilarArtists($artistId, $userId, $includeNotPresent=false) {
+		$artist = $this->artistBusinessLayer->find($artistId, $userId);
+
+		$similarOnLastfm = $this->getInfoFromLastFm([
+			'method' => 'artist.getSimilar',
+			'artist' => $artist->getName()
+		]);
+
+		$result = [];
+		if (isset($similarOnLastfm['similarartists']) && isset($similarOnLastfm['similarartists']['artist'])) {
+			foreach ($similarOnLastfm['similarartists']['artist'] as $lastfmArtist) {
+				$matchingLibArtists = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
+
+				if (!empty($matchingLibArtists)) {
+					$result = \array_merge($result, $matchingLibArtists);
+				} else if ($includeNotPresent) {
+					$unfoundArtist = new Artist();
+					$unfoundArtist->setName($lastfmArtist['name']);
+					$unfoundArtist->setMbid($lastfmArtist['mbid']);
+					$result[] = $unfoundArtist;
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	private function getInfoFromLastFm($args) {

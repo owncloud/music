@@ -187,6 +187,7 @@ class Music extends App {
 				$c->query('UserMusicFolder'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
+				$c->query('LastfmService'),
 				$c->query('Random'),
 				$c->query('Logger')
 			);

@@ -337,15 +337,23 @@ class SubsonicController extends Controller {
 		$id = $this->getRequiredParam('id');
 		$size = $this->request->getParam('size');
 
-		$album = $this->albumBusinessLayer->find($id, $this->userId);
-		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
-		$coverData = $this->coverHelper->getCover($album, $this->userId, $rootFolder, $size);
+		$idParts = \explode('-', $id);
+		if ($idParts[0] == 'album') {
+			$entity = $this->albumBusinessLayer->find($idParts[1], $this->userId);
+		} elseif ($idParts[0] == 'artist') {
+			$entity = $this->artistBusinessLayer->find($idParts[1], $this->userId);
+		}
+
+		if (!empty($entity)) {
+			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
+		}
 
 		if ($coverData !== null) {
 			return new FileResponse($coverData);
 		}
 
-		return $this->subsonicErrorResponse(70, 'album has no cover');
+		return $this->subsonicErrorResponse(70, "entity $id has no cover");
 	}
 
 	/**
@@ -927,6 +935,10 @@ class SubsonicController extends Controller {
 			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
 		];
 
+		if (!empty($artist->getCoverFileId())) {
+			$result['coverArt'] = 'artist-' . $artist->getId();
+		}
+
 		if ($artist->getStarred() != null) {
 			$result['starred'] = $this->formatDateTime($artist->getStarred());
 		}
@@ -979,7 +991,7 @@ class SubsonicController extends Controller {
 		];
 
 		if (!empty($album->getCoverFileId())) {
-			$result['coverArt'] = $album->getId();
+			$result['coverArt'] = 'album-' . $album->getId();
 		}
 
 		if ($album->getStarred() != null) {
@@ -1044,7 +1056,7 @@ class SubsonicController extends Controller {
 		];
 
 		if (!empty($album->getCoverFileId())) {
-			$result['coverArt'] = $album->getId();
+			$result['coverArt'] = 'album-' . $album->getId();
 		}
 
 		$trackNumber = $track->getAdjustedTrackNumber();

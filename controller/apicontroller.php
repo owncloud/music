@@ -361,7 +361,8 @@ class ApiController extends Controller {
 
 		$coversUpdated = false;
 		if ($finalize) {
-			$coversUpdated = $this->scanner->findCovers($this->userId);
+			$coversUpdated = $this->scanner->findAlbumCovers($this->userId)
+							|| $this->scanner->findArtistCovers($this->userId);
 			$totalCount = $this->trackBusinessLayer->count($this->userId);
 			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}

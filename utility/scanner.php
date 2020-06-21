@@ -404,6 +404,22 @@ class Scanner extends PublicEmitter {
 		});
 	}
 
+	/**
+	 * search for image files by mimetype inside user specified library path
+	 * (which defaults to user home dir)
+	 *
+	 * @return \OCP\Files\File[]
+	 */
+	private function getImageFiles($userId) {
+		try {
+			$folder = $this->userMusicFolder->getFolder($userId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return [];
+		}
+
+		return $folder->searchByMime('image');
+	}
+
 	private function getScannedFileIds($userId) {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
@@ -600,8 +616,9 @@ class Scanner extends PublicEmitter {
 	 * Find external cover images for albums which do not yet have one.
 	 * Target either one user or all users.
 	 * @param string|null $userId
+	 * @return true if any albums were updated
 	 */
-	public function findCovers($userId = null) {
+	public function findAlbumCovers($userId = null) {
 		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
@@ -609,6 +626,17 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('album cover(s) were found for user '. $user, 'debug');
 		}
 		return !empty($affectedUsers);
+	}
+
+	/**
+	 * Find external cover images for albums which do not yet have one.
+	 * Target either one user or all users.
+	 * @param string|null $userId
+	 * @return true if any albums were updated
+	 */
+	public function findArtistCovers($userId) {
+		$allImages = $this->getImageFiles($userId);
+		return $this->artistBusinessLayer->updateCovers($allImages, $userId);
 	}
 
 	public function resolveUserFolder($userId) {

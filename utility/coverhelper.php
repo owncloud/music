@@ -301,7 +301,7 @@ class CoverHelper {
 		if ($entity instanceof Album) {
 			return 'album_cover_hash_' . $entity->getId();
 		} elseif ($entity instanceof Artist) {
-			return 'artist_cover_hash' . $entity->getId();
+			return 'artist_cover_hash_' . $entity->getId();
 		} else {
 			throw new \InvalidArgumentException('Unexpected entity type');
 		}

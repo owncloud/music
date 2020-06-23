@@ -19,13 +19,25 @@ class Util {
 
 	/**
 	 * Extract ID of each array element by calling getId and return
-	 * the IDs as array
+	 * the IDs as an array
 	 * @param array $arr
 	 * @return array
 	 */
 	public static function extractIds(array $arr) {
 		return \array_map(function ($i) {
 			return $i->getId();
+		}, $arr);
+	}
+
+	/**
+	 * Extract User ID of each array element by calling getUserId and return
+	 * the IDs as an array
+	 * @param array $arr
+	 * @return array
+	 */
+	public static function extractUserIds(array $arr) {
+		return \array_map(function ($i) {
+			return $i->getUserId();
 		}, $arr);
 	}
 

@@ -69,10 +69,11 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Use the given file as cover art for an artist if there exists an artist
-	 * with name matching the file name with no cover already set.
+	 * with name matching the file name.
 	 * @param File $imageFile
 	 * @param string $userId
-	 * @return true if the file was set as cover for an artist
+	 * @return artistId of the modified artist if the file was set as cover for an artist;
+	 *         false if no artist was modified
 	 */
 	public function updateCover($imageFile, $userId) {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
@@ -80,11 +81,9 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 		if (!empty($matches)) {
 			$artist = $matches[0];
-			if ($artist->getCoverFileId() === null) {
-				$artist->setCoverFileId($imageFile->getId());
-				$this->mapper->update($artist);
-				return true;
-			}
+			$artist->setCoverFileId($imageFile->getId());
+			$this->mapper->update($artist);
+			return $artist->getId();
 		}
 
 		return false;

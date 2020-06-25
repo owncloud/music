@@ -256,14 +256,21 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are folder IDs and values are arrays of track IDs
 	 */
 	public function findTrackAndFolderIds($userId) {
-		$sql = 'SELECT `track`.`id` AS id, `file`.`parent` AS parent '.
-				'FROM `*PREFIX*music_tracks` `track` '.
-				'JOIN `*PREFIX*filecache` `file` '.
-				'ON `track`.`file_id` = `file`.`fileid` '.
-				'WHERE `track`.`user_id` = ?';
+		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS parent
+				FROM `*PREFIX*music_tracks` `track`
+				JOIN `*PREFIX*filecache` `file`
+				ON `track`.`file_id` = `file`.`fileid`
+				WHERE `track`.`user_id` = ?';
 
 		$rows = $this->execute($sql, [$userId])->fetchAll();
 
+		// Sort the results according the file names. This can't be made using ORDERBY in the
+		// SQL query because then we couldn't use the "natural order" comparison algorithm
+		\usort($rows, function($a, $b) {
+			return \strnatcasecmp($a['filename'], $b['filename']);
+		});
+
+		// group the files to parent folder "buckets"
 		$result = [];
 		foreach ($rows as $row) {
 			$result[$row['parent']][] = $row['id'];

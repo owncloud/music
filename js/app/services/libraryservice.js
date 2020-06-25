@@ -227,10 +227,8 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			} else {
 				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
+				// the tracks within each folder are sorted by the file name by the back-end 
 				_.forEach(folders, function(folder) {
-					sortByPlaylistEntryField(folder.tracks, 'title');
-					sortByPlaylistEntryField(folder.tracks, 'artistName');
-
 					_.forEach(folder.tracks, function(trackEntry) {
 						trackEntry.track.folder = folder;
 					});

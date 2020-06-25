@@ -33,18 +33,32 @@ class Maintenance {
 	/**
 	 * Remove cover_file_id from album if the corresponding file does not exist
 	 */
-	private function removeObsoleteCoverImages() {
+	private function removeObsoleteCoverImagesFromTable($table) {
 		return $this->db->executeUpdate(
-			'UPDATE `*PREFIX*music_albums` SET `cover_file_id` = NULL
+			"UPDATE `*PREFIX*$table` SET `cover_file_id` = NULL
 			WHERE `cover_file_id` IS NOT NULL AND `cover_file_id` IN (
 				SELECT `cover_file_id` FROM (
-					SELECT `cover_file_id` FROM `*PREFIX*music_albums`
+					SELECT `cover_file_id` FROM `*PREFIX*$table`
 					LEFT JOIN `*PREFIX*filecache`
 						ON `cover_file_id`=`fileid`
 					WHERE `fileid` IS NULL
 				) mysqlhack
-			)'
+			)"
 		);
+	}
+
+	/**
+	 * Remove cover_file_id from album if the corresponding file does not exist
+	 */
+	private function removeObsoleteAlbumCoverImages() {
+		return $this->removeObsoleteCoverImagesFromTable('music_albums');
+	}
+
+	/**
+	 * Remove cover_file_id from artist if the corresponding file does not exist
+	 */
+	private function removeObsoleteArtistCoverImages() {
+		return $this->removeObsoleteCoverImagesFromTable('music_artists');
 	}
 
 	/**
@@ -131,7 +145,9 @@ class Maintenance {
 	 * @return array describing the number of removed entries per type
 	 */
 	public function cleanUp() {
-		$removedCovers = $this->removeObsoleteCoverImages();
+		$removedCovers = $this->removeObsoleteAlbumCoverImages();
+		$removedCovers += $this->removeObsoleteArtistCoverImages();
+
 		$removedTracks = $this->removeObsoleteTracks();
 		$removedAlbums = $this->removeObsoleteAlbums();
 		$removedArtists = $this->removeObsoleteArtists();

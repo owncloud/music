@@ -31,9 +31,11 @@ use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
+use \OCA\Music\Db\Album;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
+use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\ErrorResponse;
@@ -148,9 +150,9 @@ class AmpacheController extends Controller {
 			case 'ping':
 				return $this->ping($auth);
 			case 'artists':
-				return $this->artists($filter, $exact, $limit, $offset);
+				return $this->artists($filter, $exact, $limit, $offset, $auth);
 			case 'artist':
-				return $this->artist($filter);
+				return $this->artist($filter, $auth);
 			case 'artist_albums':
 				return $this->artist_albums($filter, $auth);
 			case 'album_songs':
@@ -178,16 +180,19 @@ class AmpacheController extends Controller {
 			case 'tag':
 				return $this->tag($filter);
 			case 'tag_artists':
-				return $this->tag_artists($filter, $limit, $offset);
+				return $this->tag_artists($filter, $limit, $offset, $auth);
 			case 'tag_albums':
 				return $this->tag_albums($filter, $limit, $offset, $auth);
 			case 'tag_songs':
 				return $this->tag_songs($filter, $limit, $offset, $auth);
-			# non Ampache API action - used for provide the file
-			case 'play':
-				return $this->play($filter);
-			case '_get_cover':
-				return $this->get_cover($filter);
+
+			# non Ampache API actions
+			case '_play':
+				return $this->_play($filter);
+			case '_get_album_cover':
+				return $this->_get_album_cover($filter);
+			case '_get_artist_cover':
+				return $this->_get_artist_cover($filter);
 		}
 
 		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
@@ -235,15 +240,15 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	protected function artists($filter, $exact, $limit, $offset) {
+	protected function artists($filter, $exact, $limit, $offset, $auth) {
 		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset);
-		return $this->renderArtists($artists);
+		return $this->renderArtists($artists, $auth);
 	}
 
-	protected function artist($artistId) {
+	protected function artist($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
-		return $this->renderArtists([$artist]);
+		return $this->renderArtists([$artist], $auth);
 	}
 
 	protected function artist_albums($artistId, $auth) {
@@ -362,10 +367,10 @@ class AmpacheController extends Controller {
 		return $this->renderTags([$genre]);
 	}
 
-	protected function tag_artists($genreId, $limit, $offset) {
+	protected function tag_artists($genreId, $limit, $offset, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$artists = $this->artistBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
-		return $this->renderArtists($artists);
+		return $this->renderArtists($artists, $auth);
 	}
 
 	protected function tag_albums($genreId, $limit, $offset, $auth) {
@@ -381,7 +386,10 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($tracks, $auth);
 	}
 
-	protected function play($trackId) {
+	/***************************************************************
+	 * API methods which are not part of the Ampache specification *
+	 ***************************************************************/
+	protected function _play($trackId) {
 		$userId = $this->ampacheUser->getUserId();
 
 		try {
@@ -399,27 +407,35 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	/* this is not ampache proto */
-	protected function get_cover($albumId) {
-		$userId = $this->ampacheUser->getUserId();
-		$userFolder = $this->rootFolder->getUserFolder($userId);
+	protected function _get_album_cover($albumId) {
+		return $this->getCover($albumId, $this->albumBusinessLayer);
+	}
 
-		try {
-			$coverData = $this->coverHelper->getCover($albumId, $userId, $userFolder);
-			if ($coverData !== null) {
-				return new FileResponse($coverData);
-			}
-		} catch (BusinessLayerException $e) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album not found');
-		}
-
-		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'album has no cover');
+	protected function _get_artist_cover($artistId) {
+		return $this->getCover($artistId, $this->artistBusinessLayer);
 	}
 
 
 	/********************
 	 * Helper functions *
 	 ********************/
+
+	private function getCover($entityId, BusinessLayer $businessLayer) {
+		$userId = $this->ampacheUser->getUserId();
+		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$entity = $businessLayer->find($entityId, $userId);
+
+		try {
+			$coverData = $this->coverHelper->getCover($entity, $userId, $userFolder);
+			if ($coverData !== null) {
+				return new FileResponse($coverData);
+			}
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'entity not found');
+		}
+
+		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'entity has no cover');
+	}
 
 	private function checkHandshakeTimestamp($timestamp, $currentTime) {
 		$providedTime = \intval($timestamp);
@@ -501,9 +517,17 @@ class AmpacheController extends Controller {
 				. "?action=$action&filter=$filter&auth=$auth";
 	}
 
-	private function createAlbumCoverUrl($album, $auth) {
-		if ($album->getCoverFileId()) {
-			return $this->createAmpacheActionUrl('_get_cover', $album->getId(), $auth);
+	private function createCoverUrl($entity, $auth) {
+		if ($entity instanceof Album) {
+			$type = 'album';
+		} elseif ($entity instanceof Artist) {
+			$type = 'artist';
+		} else {
+			throw new AmpacheException('unexpeted entity type for cover image', 500);
+		}
+
+		if ($entity->getCoverFileId()) {
+			return $this->createAmpacheActionUrl("_get_{$type}_cover", $entity->getId(), $auth);
 		} else {
 			return '';
 		}
@@ -523,18 +547,19 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function renderArtists($artists) {
+	private function renderArtists($artists, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
 			'total_count' => \count($artists),
-			'artist' => \array_map(function($artist) use ($userId, $genreMap) {
+			'artist' => \array_map(function($artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => $artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
 					'albums' => $this->albumBusinessLayer->countByArtist($artist->getId()),
 					'songs' => $this->trackBusinessLayer->countByArtist($artist->getId()),
+					'art' => $this->createCoverUrl($artist, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
 					'tag' => \array_map(function($genreId) use ($genreMap) {
@@ -568,7 +593,7 @@ class AmpacheController extends Controller {
 					'tracks' => $this->trackBusinessLayer->countByAlbum($album->getId()),
 					'rating' => 0,
 					'year' => $album->yearToAPI(),
-					'art' => $this->createAlbumCoverUrl($album, $auth),
+					'art' => $this->createCoverUrl($album, $auth),
 					'preciserating' => 0,
 					'tag' => \array_map(function($genreId) use ($genreMap) {
 						return [
@@ -625,14 +650,14 @@ class AmpacheController extends Controller {
 						'id' => $album->getId(),
 						'value' => $album->getNameString($this->l10n)
 					],
-					'url' => $this->createAmpacheActionUrl('play', $track->getId(), $auth),
+					'url' => $this->createAmpacheActionUrl('_play', $track->getId(), $auth),
 					'time' => $track->getLength(),
 					'year' => $track->getYear(),
 					'track' => $track->getAdjustedTrackNumber(),
 					'bitrate' => $track->getBitrate(),
 					'mime' => $track->getMimetype(),
 					'size' => $track->getSize(),
-					'art' => $this->createAlbumCoverUrl($album, $auth),
+					'art' => $this->createCoverUrl($album, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
 				];

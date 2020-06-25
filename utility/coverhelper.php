@@ -13,7 +13,8 @@
 namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use \OCA\Music\Db\Album;
+use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Cache;
 
 use \OCP\Files\Folder;
@@ -22,12 +23,12 @@ use \OCP\Files\File;
 use \OCP\IConfig;
 
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 /**
  * utility to get cover image for album
  */
 class CoverHelper {
-	private $albumBusinessLayer;
 	private $extractor;
 	private $cache;
 	private $coverSize;
@@ -36,12 +37,10 @@ class CoverHelper {
 	const MAX_SIZE_TO_CACHE = 102400;
 
 	public function __construct(
-			AlbumBusinessLayer $albumBusinessLayer,
 			Extractor $extractor,
 			Cache $cache,
 			IConfig $config,
 			Logger $logger) {
-		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->extractor = $extractor;
 		$this->cache = $cache;
 		$this->logger = $logger;
@@ -51,36 +50,36 @@ class CoverHelper {
 	}
 
 	/**
-	 * Get cover image of the album
+	 * Get cover image of an album or and artist
 	 *
-	 * @param int $albumId
+	 * @param Entity $entity Album or Artist
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int|null $size
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($albumId, $userId, $rootFolder, $size=null) {
+	public function getCover($entity, $userId, $rootFolder, $size=null) {
 		// Skip using cache in case the cover is requested in specific size
 		if ($size) {
-			return $this->readCover($albumId, $userId, $rootFolder, $size);
+			return $this->readCover($entity, $userId, $rootFolder, $size);
 		} else {
-			$dataAndHash = $this->getCoverAndHash($albumId, $userId, $rootFolder);
+			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
 			return $dataAndHash['data'];
 		}
 	}
 
 	/**
-	 * Get cover image of the album along with its hash
+	 * Get cover image of an album or and artist along with the image's hash
 	 * 
 	 * The hash is non-null only in case the cover is/was cached.
 	 *
-	 * @param int $albumId
+	 * @param Entity $entity Album or Artist
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @return array Dictionary with keys 'data' and 'hash'
 	 */
-	public function getCoverAndHash($albumId, $userId, $rootFolder) {
-		$hash = $this->getCachedCoverHash($albumId, $userId);
+	public function getCoverAndHash($entity, $userId, $rootFolder) {
+		$hash = $this->cache->get($userId, self::getHashKey($entity));
 		$data = null;
 
 		if ($hash !== null) {
@@ -88,9 +87,9 @@ class CoverHelper {
 		}
 		if ($data === null) {
 			$hash = null;
-			$data = $this->readCover($albumId, $userId, $rootFolder, $this->coverSize);
+			$data = $this->readCover($entity, $userId, $rootFolder, $this->coverSize);
 			if ($data !== null) {
-				$hash = $this->addCoverToCache($albumId, $userId, $data);
+				$hash = $this->addCoverToCache($entity, $userId, $data);
 			}
 		}
 
@@ -98,23 +97,12 @@ class CoverHelper {
 	}
 
 	/**
-	 * Get hash of the album cover if it is in the cache
-	 *
-	 * @param int $albumId
-	 * @param string $userId
-	 * @return string|null
-	 */
-	public function getCachedCoverHash($albumId, $userId) {
-		return $this->cache->get($userId, 'coverhash_' . $albumId);
-	}
-
-	/**
 	 * Get all album cover hashes for one user.
 	 * @param string $userId
 	 * @return array with album IDs as keys and hashes as values
 	 */
-	public function getAllCachedCoverHashes($userId) {
-		$rows = $this->cache->getAll($userId, 'coverhash_');
+	public function getAllCachedAlbumCoverHashes($userId) {
+		$rows = $this->cache->getAll($userId, 'album_cover_hash_');
 		$hashes = [];
 		foreach ($rows as $row) {
 			$albumId = \explode('_', $row['key'])[1];
@@ -147,15 +135,16 @@ class CoverHelper {
 
 	/**
 	 * Cache the given cover image data
-	 * @param int $albumId
+	 * @param Entity $entity Album or Artist
 	 * @param string $userId
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover
 	 */
-	private function addCoverToCache($albumId, $userId, $coverData) {
+	private function addCoverToCache($entity, $userId, $coverData) {
 		$mime = $coverData['mimetype'];
 		$content = $coverData['content'];
 		$hash = null;
+		$hashKey = self::getHashKey($entity);
 
 		if ($mime && $content) {
 			$size = \strlen($content);
@@ -167,16 +156,16 @@ class CoverHelper {
 				} catch (UniqueConstraintViolationException $ex) {
 					$this->logger->log("Cover with hash $hash is already cached", 'debug');
 				}
-				// cache the hash with albumId as a key
+				// cache the hash with hashKey as a key
 				try {
-					$this->cache->add($userId, 'coverhash_' . $albumId, $hash);
+					$this->cache->add($userId, $hashKey, $hash);
 				} catch (UniqueConstraintViolationException $ex) {
-					$this->logger->log("Cover hash for album $albumId is already cached", 'debug');
+					$this->logger->log("Cover hash with key $hashKey is already cached", 'debug');
 				}
 				// collection.json needs to be regenrated the next time it's fetched
 				$this->cache->remove($userId, 'collection');
 			} else {
-				$this->logger->log("Cover image of album $albumId is large ($size B), skip caching", 'debug');
+				$this->logger->log("Cover image of entity with key $hashKey is large ($size B), skip caching", 'debug');
 			}
 		}
 
@@ -184,27 +173,36 @@ class CoverHelper {
 	}
 
 	/**
-	 * Remove cover image from cache if it is there. Silently do nothing if there
+	 * Remove album cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover.
 	 * @param int $albumId
 	 * @param string $userId
 	 */
-	public function removeCoverFromCache($albumId, $userId) {
-		$this->cache->remove($userId, 'coverhash_' . $albumId);
+	public function removeAlbumCoverFromCache($albumId, $userId) {
+		$this->cache->remove($userId, 'album_cover_hash_' . $albumId);
+	}
+
+	/**
+	 * Remove artist cover image from cache if it is there. Silently do nothing if there
+	 * is no cached cover.
+	 * @param int $artistId
+	 * @param string $userId
+	 */
+	public function removeArtistCoverFromCache($artistId, $userId) {
+		$this->cache->remove($userId, 'artist_cover_hash_' . $artistId);
 	}
 
 	/**
 	 * Read cover image from the file system
-	 * @param integer $albumId
+	 * @param Enity $entity Album or Artist entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int $size Maximum size for the image to read, larger images are scaled down
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($albumId, $userId, $rootFolder, $size) {
+	private function readCover($entity, $userId, $rootFolder, $size) {
 		$response = null;
-		$album = $this->albumBusinessLayer->find($albumId, $userId);
-		$coverId = $album->getCoverFileId();
+		$coverId = $entity->getCoverFileId();
 
 		if ($coverId > 0) {
 			$nodes = $rootFolder->getById($coverId);
@@ -215,7 +213,7 @@ class CoverHelper {
 				$mime = $node->getMimeType();
 
 				if (\strpos($mime, 'audio') === 0) { // embedded cover image
-					$cover = $this->extractor->parseEmbeddedCoverArt($node);
+					$cover = $this->extractor->parseEmbeddedCoverArt($node); // TODO: currently only album cover supported
 
 					if ($cover !== null) {
 						$response = ['mimetype' => $cover['image_mime'], 'content' => $cover['data']];
@@ -226,7 +224,8 @@ class CoverHelper {
 			}
 
 			if ($response === null) {
-				$this->logger->log("Requested cover not found for album $albumId, coverId=$coverId", 'error');
+				$class = \get_class($entity);
+				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
 			} else {
 				$response['content'] = $this->scaleDownAndCrop($response['content'], $size);
 			}
@@ -291,5 +290,20 @@ class CoverHelper {
 			}
 		}
 		return $image;
+	}
+
+	/**
+	 * @param Entity $entity An Album or Artist entity
+	 * @throws InvalidArgumentException if entity is not one of the expected types
+	 * @return string
+	 */
+	private static function getHashKey($entity) {
+		if ($entity instanceof Album) {
+			return 'album_cover_hash_' . $entity->getId();
+		} elseif ($entity instanceof Artist) {
+			return 'artist_cover_hash_' . $entity->getId();
+		} else {
+			throw new \InvalidArgumentException('Unexpected entity type');
+		}
 	}
 }

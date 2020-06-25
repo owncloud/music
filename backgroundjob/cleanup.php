@@ -31,6 +31,6 @@ class CleanUp {
 		$container->query('AmpacheSessionMapper')->cleanUp();
 
 		// find covers - TODO performance stuff - maybe just call this once in an hour
-		$container->query('Scanner')->findCovers();
+		$container->query('Scanner')->findAlbumCovers();
 	}
 }

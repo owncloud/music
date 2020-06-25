@@ -133,6 +133,10 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
 			$this->cache->remove($userId, 'collection');
 		}
+		if ($artistId = $this->artistBusinessLayer->updateCover($file, $userId)) {
+			$this->logger->log("updateImage - the image was set as cover for the artist $artistId", 'debug');
+			$this->coverHelper->removeArtistCoverFromCache($artistId, $userId);
+		}
 	}
 
 	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
@@ -166,14 +170,14 @@ class Scanner extends PublicEmitter {
 			// if present, use the embedded album art as cover for the respective album
 			if ($meta['picture'] != null) {
 				$this->albumBusinessLayer->setCover($fileId, $albumId);
-				$this->coverHelper->removeCoverFromCache($albumId, $userId);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 			}
 			// if this file is an existing file which previously was used as cover for an album but now
 			// the file no longer contains any embedded album art
 			elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
 				$this->albumBusinessLayer->removeCovers([$fileId]);
 				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
-				$this->coverHelper->removeCoverFromCache($albumId, $userId);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 			}
 
 			// invalidate the cache as the music collection was changed
@@ -264,24 +268,40 @@ class Scanner extends PublicEmitter {
 	 * @param string[] $affectedUsers
 	 * @param int[] $affectedAlbums
 	 */
-	private function invalidateCacheOnDelete($affectedUsers, $affectedAlbums) {
+	private function invalidateCacheOnDelete($affectedUsers, $affectedAlbums, $affectedArtists) {
 		// Delete may be for one file or for a folder containing thousands of albums.
 		// If loads of albums got affected, then ditch the whole cache of the affected
 		// users because removing the cached covers one-by-one could delay the delete
 		// operation significantly.
-		if (\count($affectedAlbums) > 100) {
+		$albumCount = \count($affectedAlbums);
+		$artistCount = \count($affectedArtists);
+		$userCount = \count($affectedUsers);
+
+		if ($albumCount + $artistCount > 100) {
+			$this->logger->log("Delete operation affected $albumCount albums and $artistCount artists. " .
+								"Invalidate the whole cache of all affected users ($userCount).", 'debug');
 			foreach ($affectedUsers as $user) {
 				$this->cache->remove($user);
 			}
 		}
 		else {
 			// remove the cached covers
-			foreach ($affectedAlbums as $albumId) {
-				$this->coverHelper->removeCoverFromCache($albumId, null);
+			if ($artistCount > 0) {
+				$this->logger->log("Remove covers of $artistCount artist(s) from the cache (if present)", 'debug');
+				foreach ($affectedArtists as $artistId) {
+					$this->coverHelper->removeArtistCoverFromCache($artistId, null);
+				}
 			}
-			// remove the cached collection
-			foreach ($affectedUsers as $user) {
-				$this->cache->remove($user, 'collection');
+
+			if ($albumCount > 0) {
+				$this->logger->log("Remove covers of $albumCount album(s) from the cache (if present)", 'debug');
+				foreach ($affectedAlbums as $albumId) {
+					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
+				}
+				// remove the cached collection if any album covers were removed
+				foreach ($affectedUsers as $user) {
+					$this->cache->remove($user, 'collection');
+				}
 			}
 		}
 	}
@@ -308,11 +328,12 @@ class Scanner extends PublicEmitter {
 				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
 					$this->albumBusinessLayer->setCover(null, $albumId);
 					$this->findEmbeddedCoverForAlbum($albumId);
-					$this->coverHelper->removeCoverFromCache($albumId, null);
+					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
 				}
 			}
 
-			$this->invalidateCacheOnDelete($result['affectedUsers'], $result['obsoleteAlbums']);
+			$this->invalidateCacheOnDelete(
+					$result['affectedUsers'], $result['obsoleteAlbums'], $result['obsoleteArtists']);
 
 			$this->logger->log('removed entities - ' . \json_encode($result), 'debug');
 		}
@@ -329,14 +350,18 @@ class Scanner extends PublicEmitter {
 		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
 
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
-		$affectedUsers = \array_map(function ($a) {
-			return $a->getUserId();
-		}, $affectedAlbums);
+		$affectedArtists = $this->artistBusinessLayer->removeCovers($fileIds, $userIds);
+
+		$affectedUsers = \array_merge(
+			Util::extractUserIds($affectedAlbums),
+			Util::extractUserIds($affectedArtists)
+		);
 		$affectedUsers = \array_unique($affectedUsers);
 
-		$this->invalidateCacheOnDelete($affectedUsers, Util::extractIds($affectedAlbums));
+		$this->invalidateCacheOnDelete(
+				$affectedUsers, Util::extractIds($affectedAlbums), Util::extractIds($affectedArtists));
 
-		return (\count($affectedAlbums) > 0);
+		return (\count($affectedAlbums) + \count($affectedArtists) > 0);
 	}
 
 	/**
@@ -391,6 +416,22 @@ class Scanner extends PublicEmitter {
 		return array_filter($files, function ($f) {
 			return !self::isPlaylistMime($f->getMimeType());
 		});
+	}
+
+	/**
+	 * search for image files by mimetype inside user specified library path
+	 * (which defaults to user home dir)
+	 *
+	 * @return \OCP\Files\File[]
+	 */
+	private function getImageFiles($userId) {
+		try {
+			$folder = $this->userMusicFolder->getFolder($userId);
+		} catch (\OCP\Files\NotFoundException $e) {
+			return [];
+		}
+
+		return $folder->searchByMime('image');
 	}
 
 	private function getScannedFileIds($userId) {
@@ -517,10 +558,11 @@ class Scanner extends PublicEmitter {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
 		if ($track !== null) {
 			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
+			$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
 			return [
 				'title'      => $track->getTitle(),
 				'artist'     => $artist->getName(),
-				'cover'      => $this->coverHelper->getCover($track->getAlbumId(), $userId, $userFolder),
+				'cover'      => $this->coverHelper->getCover($album, $userId, $userFolder),
 				'in_library' => true
 			];
 		}
@@ -588,8 +630,9 @@ class Scanner extends PublicEmitter {
 	 * Find external cover images for albums which do not yet have one.
 	 * Target either one user or all users.
 	 * @param string|null $userId
+	 * @return true if any albums were updated
 	 */
-	public function findCovers($userId = null) {
+	public function findAlbumCovers($userId = null) {
 		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
@@ -597,6 +640,17 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('album cover(s) were found for user '. $user, 'debug');
 		}
 		return !empty($affectedUsers);
+	}
+
+	/**
+	 * Find external cover images for albums which do not yet have one.
+	 * Target either one user or all users.
+	 * @param string|null $userId
+	 * @return true if any albums were updated
+	 */
+	public function findArtistCovers($userId) {
+		$allImages = $this->getImageFiles($userId);
+		return $this->artistBusinessLayer->updateCovers($allImages, $userId);
 	}
 
 	public function resolveUserFolder($userId) {

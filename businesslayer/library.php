@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -97,7 +97,7 @@ class Library {
 
 	public function toCollection($userId) {
 		$entities = $this->getTracksAlbumsAndArtists($userId);
-		$coverHashes = $this->coverHelper->getAllCachedCoverHashes($userId);
+		$coverHashes = $this->coverHelper->getAllCachedAlbumCoverHashes($userId);
 
 		// Create a multi-level dictionary of tracks where each track can be found
 		// by addressing like $trackDict[artistId][albumId][ordinal]. The tracks are

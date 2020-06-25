@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -361,7 +361,8 @@ class ApiController extends Controller {
 
 		$coversUpdated = false;
 		if ($finalize) {
-			$coversUpdated = $this->scanner->findCovers($this->userId);
+			$coversUpdated = $this->scanner->findAlbumCovers($this->userId)
+							|| $this->scanner->findArtistCovers($this->userId);
 			$totalCount = $this->trackBusinessLayer->count($this->userId);
 			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}
@@ -451,9 +452,24 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function cover($albumIdOrSlug) {
+	public function albumCover($albumIdOrSlug) {
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
-		$coverAndHash = $this->coverHelper->getCoverAndHash($albumId, $this->userId, $this->userFolder);
+		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+		return $this->cover($album);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function artistCover($artistIdOrSlug) {
+		$artistId = $this->getIdFromSlug($artistIdOrSlug);
+		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+		return $this->cover($artist);
+	}
+
+	private function cover($entity) {
+		$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
 
 		if ($coverAndHash['hash'] !== null) {
 			// Cover is in cache. Return a redirection response so that the client

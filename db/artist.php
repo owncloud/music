@@ -22,8 +22,8 @@ use \OCP\AppFramework\Db\Entity;
 /**
  * @method string getName()
  * @method void setName(string $name)
- * @method string getImage()
- * @method void setImage(string $image)
+ * @method int getCoverFileId()
+ * @method void setCoverFileId(int $coverFileId)
  * @method string getUserId()
  * @method void setUserId(string $userId)
  * @method string getMbid()
@@ -35,11 +35,15 @@ use \OCP\AppFramework\Db\Entity;
  */
 class Artist extends Entity {
 	public $name;
-	public $image; // URL
+	public $coverFileId;
 	public $userId;
 	public $mbid;
 	public $hash;
 	public $starred;
+
+	public function __construct() {
+		$this->addType('coverFileId', 'int');
+	}
 
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
@@ -81,6 +85,20 @@ class Artist extends Entity {
 	}
 
 	/**
+	 * Return the cover URL to be used in the Shiva API
+	 * @param IURLGenerator $urlGenerator
+	 * @return string|null
+	 */
+	public function coverToAPI(IURLGenerator $urlGenerator) {
+		$coverUrl = null;
+		if ($this->getCoverFileId() > 0) {
+			$coverUrl = $urlGenerator->linkToRoute('music.api.artistCover',
+					['artistIdOrSlug' => $this->getId()]);
+		}
+		return $coverUrl;
+	}
+
+	/**
 	 * @param IL10N $l10n
 	 * @param array $albums in the "toCollection" format
 	 * @return array
@@ -97,7 +115,7 @@ class Artist extends Entity {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
-			'image' => $this->getImage(),
+			'image' => $this->coverToAPI($urlGenerator),
 			'slug' => $this->getId() . '-' . $this->slugify('name'),
 			'uri' => $this->getUri($urlGenerator)
 		];

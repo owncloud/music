@@ -113,8 +113,13 @@ class Scan extends BaseCommand {
 		}
 
 		$output->writeln("Searching cover images for albums with no cover art set...");
-		if ($this->scanner->findCovers($user)) {
-			$output->writeln("Some cover image(s) were found and added");
+		if ($this->scanner->findAlbumCovers($user)) {
+			$output->writeln("Some album cover image(s) were found and added");
+		}
+
+		$output->writeln("Searching cover images for artists with no cover art set...");
+		if ($this->scanner->findArtistCovers($user)) {
+			$output->writeln("Some artist cover image(s) were found and added");
 		}
 	}
 }

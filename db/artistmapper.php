@@ -14,6 +14,8 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\Utility\Util;
+
 use OCP\IDBConnection;
 
 class ArtistMapper extends BaseMapper {
@@ -51,6 +53,36 @@ class ArtistMapper extends BaseMapper {
 
 		$params = [$userId, $genreId];
 		return $this->findEntities($sql, $params, $limit, $offset);
+	}
+
+	/**
+	 * @param integer[] $coverFileIds
+	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
+	 * @return Artist[] artists which got modified (with incomplete data, only id and user are valid),
+	 *         empty array if none
+	 */
+	public function removeCovers($coverFileIds, $userIds=null) {
+		// find albums using the given file as cover
+		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_artists` WHERE `cover_file_id` IN ' .
+		$this->questionMarks(\count($coverFileIds));
+		$params = $coverFileIds;
+		if ($userIds !== null) {
+			$sql .= ' AND `user_id` IN ' . $this->questionMarks(\count($userIds));
+			$params = \array_merge($params, $userIds);
+		}
+		$artists = $this->findEntities($sql, $params);
+
+		// if any artists found, remove the cover from those
+		$count = \count($artists);
+		if ($count) {
+			$sql = 'UPDATE `*PREFIX*music_artists`
+					SET `cover_file_id` = NULL
+					WHERE `id` IN ' . $this->questionMarks($count);
+			$params = Util::extractIds($artists);
+			$this->execute($sql, $params);
+		}
+
+		return $artists;
 	}
 
 	/**

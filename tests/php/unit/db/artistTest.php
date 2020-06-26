@@ -25,16 +25,16 @@ class ArtistTest extends \PHPUnit_Framework_TestCase {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The name');
-		$artist->setImage('The image url');
+		$artist->setCoverFileId(100);
 
 		$l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
 
 		$this->assertEquals([
 			'id' => 3,
 			'name' => 'The name',
-			'image' => 'The image url',
+			'image' => null,
 			'slug' => $artist->getId() . '-the-name',
-			'uri' => ''
+			'uri' => null
 			], $artist->toAPI($this->urlGenerator, $l10n));
 	}
 

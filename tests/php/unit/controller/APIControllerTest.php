@@ -120,11 +120,11 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
-		$artist1->setImage('The image url');
+		$artist1->setCoverFileId(10);
 		$artist2 = new Artist();
 		$artist2->setId(4);
 		$artist2->setName('The other artist name');
-		$artist2->setImage('The image url number 2');
+		$artist2->setCoverFileId(11);
 
 		$this->artistBusinessLayer->expects($this->once())
 			->method('findAll')
@@ -134,14 +134,14 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = [
 			[
 				'name' => 'The artist name',
-				'image' => 'The image url',
+				'image' => null,
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3
 			],
 			[
 				'name' => 'The other artist name',
-				'image' => 'The image url number 2',
+				'image' => null,
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4
@@ -158,15 +158,15 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
-		$artist1->setImage('The image url');
+		$artist1->setCoverFileId(10);
 		$artist2 = new Artist();
 		$artist2->setId(4);
 		$artist2->setName('The other artist name');
-		$artist2->setImage('The image url number 2');
+		$artist2->setCoverFileId(11);
 		$artist3 = new Artist();
 		$artist3->setId(5);
 		$artist3->setName('The other new artist name');
-		$artist3->setImage('The image url number 3');
+		$artist3->setCoverFileId(12);
 		$album = new Album();
 		$album->setId(4);
 		$album->setName('The name');
@@ -207,7 +207,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = [
 			[
 				'name' => 'The artist name',
-				'image' => 'The image url',
+				'image' => null,
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
@@ -244,7 +244,7 @@ class APIControllerTest extends ControllerTestUtility {
 			],
 			[
 				'name' => 'The other artist name',
-				'image' => 'The image url number 2',
+				'image' => null,
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
@@ -291,11 +291,11 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist1 = new Artist();
 		$artist1->setId(3);
 		$artist1->setName('The artist name');
-		$artist1->setImage('The image url');
+		$artist1->setCoverFileId(100);
 		$artist2 = new Artist();
 		$artist2->setId(4);
 		$artist2->setName('The other artist name');
-		$artist2->setImage('The image url number 2');
+		$artist2->setCoverFileId(200);
 		$album = new Album();
 		$album->setId(4);
 		$album->setName('The name');
@@ -322,7 +322,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = [
 			[
 				'name' => 'The artist name',
-				'image' => 'The image url',
+				'image' => null,
 				'uri' => null,
 				'slug' => '3-the-artist-name',
 				'id' => 3,
@@ -343,7 +343,7 @@ class APIControllerTest extends ControllerTestUtility {
 			],
 			[
 				'name' => 'The other artist name',
-				'image' => 'The image url number 2',
+				'image' => null,
 				'uri' => null,
 				'slug' => '4-the-other-artist-name',
 				'id' => 4,
@@ -374,7 +374,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The artist name');
-		$artist->setImage('The image url');
+		$artist->setCoverFileId(null);
 
 		$artistId = 3;
 
@@ -385,7 +385,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = [
 			'name' => 'The artist name',
-			'image' => 'The image url',
+			'image' => null,
 			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3
@@ -401,7 +401,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist = new Artist();
 		$artist->setId(3);
 		$artist->setName('The artist name');
-		$artist->setImage('The image url');
+		$artist->setCoverFileId(null);
 		$album = new Album();
 		$album->setId(3);
 		$album->setName('The name');
@@ -438,7 +438,7 @@ class APIControllerTest extends ControllerTestUtility {
 
 		$result = [
 			'name' => 'The artist name',
-			'image' => 'The image url',
+			'image' => null,
 			'uri' => null,
 			'slug' => '3-the-artist-name',
 			'id' => 3,
@@ -553,15 +553,15 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist1 = new Artist();
 		$artist1->setId(1);
 		$artist1->setName('The artist name');
-		$artist1->setImage('The image url');
+		$artist1->setCoverFileId(null);
 		$artist2 = new Artist();
 		$artist2->setId(3);
 		$artist2->setName('The artist name3');
-		$artist2->setImage('The image url3');
+		$artist2->setCoverFileId(null);
 		$artist3 = new Artist();
 		$artist3->setId(5);
 		$artist3->setName('The artist name5');
-		$artist3->setImage('The image url5');
+		$artist3->setCoverFileId(100000);
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -605,7 +605,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'artists' => [
 					[
 						'name' => 'The artist name',
-						'image' => 'The image url',
+						'image' => null,
 						'uri' => null,
 						'slug' => '1-the-artist-name',
 						'id' => 1
@@ -639,14 +639,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'artists' => [
 					[
 						'name' => 'The artist name3',
-						'image' => 'The image url3',
+						'image' => null,
 						'uri' => null,
 						'slug' => '3-the-artist-name3',
 						'id' => 3
 					],
 					[
 						'name' => 'The artist name5',
-						'image' => 'The image url5',
+						'image' => null,
 						'uri' => null,
 						'slug' => '5-the-artist-name5',
 						'id' => 5
@@ -689,7 +689,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist = new Artist();
 		$artist->setId(1);
 		$artist->setName('The artist name');
-		$artist->setImage('The image url');
+		$artist->setCoverFileId(199);
 		$track = new Track();
 		$track->setId(1);
 		$track->setTitle('The title');
@@ -726,7 +726,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'artists' => [
 				[
 					'name' => 'The artist name',
-					'image' => 'The image url',
+					'image' => null,
 					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1
@@ -877,11 +877,11 @@ class APIControllerTest extends ControllerTestUtility {
 		$artist = new Artist();
 		$artist->setId(1);
 		$artist->setName('The artist name');
-		$artist->setImage('The image url');
+		$artist->setCoverFileId(1111);
 		$artist2 = new Artist();
 		$artist2->setId(2);
 		$artist2->setName('The other artist name');
-		$artist2->setImage('The image url 2');
+		$artist2->setCoverFileId(2222);
 
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findAll')
@@ -907,7 +907,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'length' => 123,
 				'artist' => [
 					'name' => 'The artist name',
-					'image' => 'The image url',
+					'image' => null,
 					'uri' => null,
 					'slug' => '1-the-artist-name',
 					'id' => 1

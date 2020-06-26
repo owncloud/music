@@ -194,7 +194,7 @@ div:hover > .play-pause,
 	cursor: pointer;
 }
 
-#emptycontent, .emptycontent {
+#app-content .emptycontent {
 	position: fixed;
 	top: 0;
 	background-color: rgba(255,255,255,0.95);
@@ -202,20 +202,20 @@ div:hover > .play-pause,
 	z-index: 1;
 }
 
-#emptycontent.collapsed, .emptycontent.collapsed {
+#app-content .emptycontent.collapsed {
 	top: unset;
 	bottom: 0;
 	padding: 5px 20px;
 }
 
-#emptycontent.collapsed > *, .emptycontent.collapsed > * {
+#app-content .emptycontent.collapsed > * {
 	display: inline-block;
 	margin: 0;
 	height: 40px;
 	background-size: 40px;
 }
 
-#emptycontent.collapsed h2, .emptycontent.collapsed h2 {
+#app-content .emptycontent.collapsed h2 {
 	margin: 0;
 }
 

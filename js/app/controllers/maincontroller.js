@@ -113,7 +113,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('.emptycontent:not(#noSearchResults):not(#toRescan)');
+			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -314,8 +314,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$('#controls').css('min-width', controlsWidth);
 
 		// the "no content"/"click to scan"/"scanning" banner has the same width as controls 
-		$('.emptycontent').css('width', controlsWidth);
-		$('.emptycontent').css('min-width', controlsWidth);
+		$('#app-content .emptycontent').css('width', controlsWidth);
+		$('#app-content .emptycontent').css('min-width', controlsWidth);
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See mobile.css and tablet.css.

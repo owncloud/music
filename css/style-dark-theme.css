@@ -1,4 +1,14 @@
-.dark-theme .svg,
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2019, 2020
+ */
+ 
+ .dark-theme .svg,
 .dark-theme .play-pause {
 	filter: invert(100%);
 }
@@ -11,8 +21,7 @@
 	background-color: transparent;
 }
 
-.dark-theme #emptycontent,
-.dark-theme .emptycontent {
+.dark-theme #app-content .emptycontent {
 	background-color: rgba(24, 24, 24, 0.97);
 }
 

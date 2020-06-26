@@ -31,7 +31,8 @@
 
 #music-user a,
 #music-user .warning a {
-	font-weight: 700 !important; /* use !important to override the core style within .warning */
+	font-weight: normal !important; /* use !important to override the core style within .warning */
+	text-decoration: underline;
 }
 
 #music-user .label-container {

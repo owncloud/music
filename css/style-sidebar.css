@@ -16,6 +16,10 @@
 	display: inline-block;
 }
 
+#app-sidebar .sidebar-content {
+	height: 100%;
+}
+
 #app-sidebar .close {
 	position: fixed;
 	top: 45px;

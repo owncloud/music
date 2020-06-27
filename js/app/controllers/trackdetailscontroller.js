@@ -9,11 +9,10 @@
  */
 
 
-angular.module('Music').controller('DetailsController', [
-	'$rootScope', '$scope', 'Restangular', '$timeout', 'libraryService',
-	function ($rootScope, $scope, Restangular, $timeout, libraryService) {
+angular.module('Music').controller('TrackDetailsController', [
+	'$rootScope', '$scope', 'Restangular', 'libraryService',
+	function ($rootScope, $scope, Restangular, libraryService) {
 
-		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
 		$scope.selectedTab = 'general';
 
 		var currentTrack = null;
@@ -33,20 +32,8 @@ angular.module('Music').controller('DetailsController', [
 			return typeof n === "number" && Math.floor(n) !== n;
 		}
 
-		function adjustFixedPositions() {
-			$timeout(function() {
-				var sidebarWidth = $('#app-sidebar').outerWidth();
-				var albumartWidth = $('#app-sidebar .albumart').outerWidth();
-				var offset = sidebarWidth - albumartWidth;
-				$('#app-sidebar .close').css('right', offset);
-				$('#app-sidebar #follow-playback').css('right', offset);
-
-				$('#app-sidebar .close').css('top', $('#header').outerHeight());
-			});
-		}
-
 		function showDetails(trackId) {
-			adjustFixedPositions();
+			$scope.$parent.adjustFixedPositions();
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;
@@ -73,19 +60,12 @@ angular.module('Music').controller('DetailsController', [
 						$scope.selectedTab = 'general';
 					}
 
-					adjustFixedPositions();
+					$scope.$parent.adjustFixedPositions();
 				});
 			}
 		}
 
-		$rootScope.$on('showDetails', function(event, trackId) {
-			OC.Apps.showAppSidebar();
-			showDetails(trackId);
-		});
-
-		$rootScope.$on('hideDetails', function() {
-			OC.Apps.hideAppSidebar();
-		});
+		$scope.$watch('contentId', showDetails);
 
 		$rootScope.$on('playerProgress', function(event, time) {
 			// check if we are viewing time-synced lyrics of the currently playing track
@@ -108,16 +88,7 @@ angular.module('Music').controller('DetailsController', [
 			}
 		});
 
-		$rootScope.$on('resize', adjustFixedPositions);
-
-		$scope.$watch('selectedTab', adjustFixedPositions);
-
-		$scope.$parent.$watch('currentTrack', function(track) {
-			// show details for the current track if the feature is enabled
-			if ($scope.follow && track && !$('#app-sidebar').hasClass('disappear')) {
-				showDetails(track.id);
-			}
-		});
+		$scope.$watch('selectedTab', $scope.$parent.adjustFixedPositions);
 
 		$scope.formatDetailValue = function(value) {
 			if (isFloat(value)) {
@@ -164,18 +135,6 @@ angular.module('Music').controller('DetailsController', [
 			case 'tracktotal':		return 8;
 			case 'comment':			return 100;
 			default:				return 10;
-			}
-		};
-
-		$scope.toggleFollow = function() {
-			$scope.follow = !$scope.follow;
-			Cookies.set('oc_music_details_follow_playback', $scope.follow.toString(), { expires: 3650 });
-
-			// If "follow playback" was enabled and the currently shown track doesn't match currently
-			// playing track, then immediately switch to the details of the playing track.
-			if ($scope.follow && $scope.$parent.currentTrack
-					&& $scope.$parent.currentTrack.id != currentTrack) {
-				showDetails($scope.$parent.currentTrack.id);
 			}
 		};
 	}

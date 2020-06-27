@@ -8,27 +8,39 @@ msgstr ""
 msgid "(file is not within your music collection folder)"
 msgstr ""
 
-#: ../templates/partials/navigation.php:13
+#: ../templates/partials/navigation.php:17
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:672
+#: ../js/public/app.js:1119
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:667
+#: ../js/public/app.js:1125
+msgid "1 folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../js/public/app.js:1134
+msgid "1 genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../js/public/app.js:1114
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../templates/partials/settingsview.php:57
+#: ../templates/partials/settingsview.php:73
 msgid "About"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:35
+#: ../templates/partials/playlistview.php:37
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
@@ -38,15 +50,19 @@ msgid "Albums"
 msgstr ""
 
 #: ../templates/partials/alltracksview.php:4
-#: ../templates/partials/navigation.php:9
+#: ../templates/partials/navigation.php:13
 msgid "All tracks"
 msgstr ""
 
-#: ../js/public/app.js:946
+#: ../templates/partials/settingsview.php:25
+msgid "Ampache and Subsonic"
+msgstr ""
+
+#: ../js/public/app.js:1491
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/public/app.js:1568
+#: ../js/public/app.js:2449
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -54,8 +70,12 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:64
+#: ../templates/main.php:71
 msgid "Click here to start the scan"
+msgstr ""
+
+#: ../templates/partials/genresview.php:33
+msgid "Click to rescan"
 msgstr ""
 
 #: ../templates/fake-template.php:12
@@ -67,79 +87,98 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:31
+#: ../templates/partials/settingsview.php:45
 msgid "Description"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:45
+#: ../templates/partials/settingsview.php:59
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../templates/partials/albumsview.php:21
-#: ../templates/partials/alltracksview.php:8
-#: ../templates/partials/playlistview.php:25
+#: ../js/public/app.js:3267
+#: ../templates/partials/playlistview.php:26
 msgid "Details"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:47
-msgid "Failed to generated new Ampache key"
+#: ../js/public/app.js:1689
+msgid "Error playing file:"
 msgstr ""
 
-#: ../js/public/app.js:714
+#: ../templates/partials/settingsview.php:61
+msgid "Failed to generate new Ampache/Subsonic password"
+msgstr ""
+
+#: ../js/public/app.js:1212
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:6
+#: ../js/public/app.js:2473
+msgid "Failed to reset the collection:"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:10
 msgid "Failed to save music path"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:23
+#: ../templates/partials/navigation.php:9
+msgid "Folders"
+msgstr ""
+
+#: ../templates/partials/sidebar.php:47
 msgid "Follow playback"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:46
+#: ../templates/partials/sidebar.php:9
+msgid "General"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:60
 msgid "Generate API password"
+msgstr ""
+
+#: ../templates/partials/navigation.php:11
+msgid "Genres"
 msgstr ""
 
 #: ../templates/fake-template.php:13
 msgid "Go to album"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:26
-msgid "Here you can generate passwords to use with the Ampache API, because they can't be stored in a really secure way due to the design of the Ampache API. You can generate as many passwords as you want and revoke them anytime."
+#: ../templates/partials/settingsview.php:40
+msgid "Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:24
+#: ../templates/partials/settingsview.php:33
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:704
+#: ../js/public/app.js:1202
 msgid "Internal server error"
-msgstr ""
-
-#: ../templates/partials/settingsview.php:19
-msgid "Keep in mind, that the Ampache API is just a preview and is unstable. Feel free to report your experience with this feature in the corresponding <a href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also like to have a list of clients to test with. Thanks"
 msgstr ""
 
 #: ../templates/fake-template.php:11
 msgid "Loading…"
 msgstr ""
 
+#: ../templates/partials/sidebar.php:12
+msgid "Lyrics"
+msgstr ""
+
 #: ../templates/fake-template.php:3
-#: ../templates/partials/settingsview.php:62
+#: ../templates/partials/settingsview.php:78
 msgid "Music"
 msgstr ""
 
-#: ../templates/partials/navigation.php:16
+#: ../templates/partials/navigation.php:20
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:63
+#: ../templates/main.php:70
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:75
-#: ../templates/main.php:76
+#: ../templates/main.php:103
+#: ../templates/main.php:104
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
@@ -147,24 +186,32 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../templates/main.php:57
+#: ../templates/main.php:62
 msgid "No music found"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:34
+#: ../templates/main.php:94
+msgid "No search results in this view for <strong>{{ queryString }}</strong>"
+msgstr ""
+
+#: ../templates/partials/playlistview.php:36
 msgid "No tracks"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:8
+#: ../templates/partials/settingsview.php:27
+msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients ↗</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients ↗</a>."
+msgstr ""
+
+#: ../templates/partials/settingsview.php:12
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:52
+#: ../templates/partials/settingsview.php:67
 msgid "Password:"
 msgstr ""
 
-#: ../js/public/app.js:1533
-#: ../templates/partials/settingsview.php:4
+#: ../js/public/app.js:2408
+#: ../templates/partials/settingsview.php:5
 msgid "Path to your music collection"
 msgstr ""
 
@@ -172,31 +219,31 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../templates/partials/albumsview.php:19
-#: ../templates/partials/albumsview.php:6
+#: ../js/public/app.js:3072
+#: ../templates/partials/albumsview.php:24
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:5
 #: ../templates/partials/playlistview.php:5
 msgid "Play"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:64
-msgid "Please report any bugs and issues <a href=\"https://github.com/owncloud/music/issues\"><b>here</b></a>"
+#: ../templates/partials/settingsview.php:80
+msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker ↗</a>"
 msgstr ""
 
 #: ../templates/partials/controls.php:3
 msgid "Previous"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:27
+#: ../templates/partials/playlistview.php:28
 msgid "Remove"
 msgstr ""
 
-#: ../js/public/app.js:947
+#: ../js/public/app.js:1492
 msgid "Remove playlist"
 msgstr ""
 
-#: ../templates/partials/playlistview.php:27
+#: ../templates/partials/playlistview.php:28
 msgid "Remove track from playlist"
 msgstr ""
 
@@ -208,38 +255,42 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:1489
-#: ../js/public/app.js:283
+#: ../js/public/app.js:2139
+#: ../js/public/app.js:317
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:1569
-#: ../templates/partials/settingsview.php:11
+#: ../js/public/app.js:2450
+#: ../templates/partials/settingsview.php:16
 msgid "Reset music collection"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:32
+#: ../templates/partials/settingsview.php:46
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:69
+#: ../templates/main.php:78
 msgid "Scanning music …"
 msgstr ""
 
-#: ../templates/partials/navigation.php:33
+#: ../js/public/app.js:2261
+msgid "Search not available in this view"
+msgstr ""
+
+#: ../templates/partials/navigation.php:38
 #: ../templates/partials/settingsview.php:2
 msgid "Settings"
 msgstr ""
 
-#: ../templates/partials/albumsview.php:21
-msgid "Show all {{ album.tracks.length }} songs …"
+#: ../js/public/app.js:3269
+msgid "Show all {{ count }} songs …"
 msgstr ""
 
 #: ../templates/partials/sidebar.php:5
 msgid "Show in Files"
 msgstr ""
 
-#: ../templates/partials/albumsview.php:21
+#: ../js/public/app.js:3266
 msgid "Show less …"
 msgstr ""
 
@@ -247,28 +298,48 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:1262
+#: ../js/public/app.js:1865
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:15
-msgid "There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href=\"https://github.com/owncloud/music/issues\">issues</a>."
+#: ../templates/main.php:87
+msgid "Some search results are omitted"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:14
+#: ../templates/partials/genresview.php:34
+msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr ""
+
+#: ../templates/partials/sidebar.php:15
+msgid "Technical"
+msgstr ""
+
+#: ../js/public/app.js:2530
+msgid "Text copied to clipboard"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:22
+msgid "There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issues ↗</a>."
+msgstr ""
+
+#: ../templates/partials/settingsview.php:21
 msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:7
+#: ../templates/partials/settingsview.php:11
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:707
+#: ../js/public/app.js:1205
 msgid "Timeout"
 msgstr ""
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
+msgstr ""
+
+#: ../templates/main.php:88
+msgid "Try to refine the search"
 msgstr ""
 
 #: ../templates/fake-template.php:4
@@ -279,19 +350,23 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/main.php:58
+#: ../templates/main.php:63
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:49
-msgid "Use the following credentials to connect to this Ampache instance."
+#: ../templates/partials/settingsview.php:63
+msgid "Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:24
-msgid "Use this address to browse your music collection from any Ampache compatible player."
+#: ../templates/partials/settingsview.php:38
+msgid "Use this address to browse your music collection from a Subsonic compatible player."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:51
+#: ../templates/partials/settingsview.php:33
+msgid "Use this address to browse your music collection from an Ampache compatible player."
+msgstr ""
+
+#: ../templates/partials/settingsview.php:65
 msgid "Username:"
 msgstr ""
 
@@ -301,6 +376,10 @@ msgstr ""
 msgid "Volume"
 msgstr ""
 
-#: ../templates/main.php:70
+#: ../templates/partials/settingsview.php:26
+msgid "You can browse and play your music collection from external applications which support either Ampache or Subsonic API."
+msgstr ""
+
+#: ../templates/main.php:79
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

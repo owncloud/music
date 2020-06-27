@@ -16,6 +16,10 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$rootScope.currentView = window.location.hash;
 
+		$scope.issueTrackerUrl = 'https://github.com/owncloud/music/issues';
+		$scope.ampacheClientsUrl = 'https://github.com/owncloud/music/wiki/Ampache';
+		$scope.subsonicClientsUrl = 'https://github.com/owncloud/music/wiki/Subsonic';
+
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];
 

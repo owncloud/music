@@ -52,7 +52,7 @@ class CoverHelper {
 	/**
 	 * Get cover image of an album or and artist
 	 *
-	 * @param Entity $entity Album or Artist
+	 * @param Album|Artist $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int|null $size
@@ -61,7 +61,7 @@ class CoverHelper {
 	public function getCover($entity, $userId, $rootFolder, $size=null) {
 		// Skip using cache in case the cover is requested in specific size
 		if ($size) {
-			return $this->readCover($entity, $userId, $rootFolder, $size);
+			return $this->readCover($entity, $rootFolder, $size);
 		} else {
 			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
 			return $dataAndHash['data'];
@@ -73,7 +73,7 @@ class CoverHelper {
 	 * 
 	 * The hash is non-null only in case the cover is/was cached.
 	 *
-	 * @param Entity $entity Album or Artist
+	 * @param Album|Artist $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @return array Dictionary with keys 'data' and 'hash'
@@ -87,7 +87,7 @@ class CoverHelper {
 		}
 		if ($data === null) {
 			$hash = null;
-			$data = $this->readCover($entity, $userId, $rootFolder, $this->coverSize);
+			$data = $this->readCover($entity, $rootFolder, $this->coverSize);
 			if ($data !== null) {
 				$hash = $this->addCoverToCache($entity, $userId, $data);
 			}
@@ -195,12 +195,11 @@ class CoverHelper {
 	/**
 	 * Read cover image from the file system
 	 * @param Enity $entity Album or Artist entity
-	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int $size Maximum size for the image to read, larger images are scaled down
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($entity, $userId, $rootFolder, $size) {
+	private function readCover($entity, $rootFolder, $size) {
 		$response = null;
 		$coverId = $entity->getCoverFileId();
 

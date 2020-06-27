@@ -630,7 +630,7 @@ class Scanner extends PublicEmitter {
 	 * Find external cover images for albums which do not yet have one.
 	 * Target either one user or all users.
 	 * @param string|null $userId
-	 * @return true if any albums were updated
+	 * @return bool true if any albums were updated; false otherwise
 	 */
 	public function findAlbumCovers($userId = null) {
 		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
@@ -646,7 +646,7 @@ class Scanner extends PublicEmitter {
 	 * Find external cover images for albums which do not yet have one.
 	 * Target either one user or all users.
 	 * @param string|null $userId
-	 * @return true if any albums were updated
+	 * @return bool true if any albums were updated; false otherwise
 	 */
 	public function findArtistCovers($userId) {
 		$allImages = $this->getImageFiles($userId);

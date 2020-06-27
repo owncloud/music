@@ -29,7 +29,6 @@ use \OCA\Music\Utility\AmpacheUser;
  * Map identified exceptions from the controller to proper Ampache error results.
  */
 class AmpacheMiddleware extends Middleware {
-	private $appname;
 	private $request;
 	private $ampacheSessionMapper;
 	private $ampacheUser;

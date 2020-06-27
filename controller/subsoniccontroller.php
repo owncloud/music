@@ -338,19 +338,22 @@ class SubsonicController extends Controller {
 		$size = $this->request->getParam('size');
 
 		$idParts = \explode('-', $id);
-		if ($idParts[0] == 'album') {
-			$entity = $this->albumBusinessLayer->find($idParts[1], $this->userId);
-		} elseif ($idParts[0] == 'artist') {
-			$entity = $this->artistBusinessLayer->find($idParts[1], $this->userId);
+		$type = $idParts[0];
+		$entityId = (int)($idParts[1]);
+
+		if ($type == 'album') {
+			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
+		} elseif ($type == 'artist') {
+			$entity = $this->artistBusinessLayer->find($entityId, $this->userId);
 		}
 
 		if (!empty($entity)) {
 			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
 			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
-		}
 
-		if ($coverData !== null) {
-			return new FileResponse($coverData);
+			if ($coverData !== null) {
+				return new FileResponse($coverData);
+			}
 		}
 
 		return $this->subsonicErrorResponse(70, "entity $id has no cover");

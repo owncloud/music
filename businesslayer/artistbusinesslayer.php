@@ -70,10 +70,10 @@ class ArtistBusinessLayer extends BusinessLayer {
 	/**
 	 * Use the given file as cover art for an artist if there exists an artist
 	 * with name matching the file name.
-	 * @param File $imageFile
+	 * @param \OCP\Files\File $imageFile
 	 * @param string $userId
-	 * @return artistId of the modified artist if the file was set as cover for an artist;
-	 *         false if no artist was modified
+	 * @return int|false artistId of the modified artist if the file was set as cover for an artist;
+	 *                   false if no artist was modified
 	 */
 	public function updateCover($imageFile, $userId) {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
@@ -93,9 +93,9 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Match the given files by file name to the artist names. If there is a matching
 	 * artist with no cover image already set, the matched file is set to be used as
 	 * cover for this artist.
-	 * @param File[] $imageFiles
+	 * @param \OCP\Files\File[] $imageFiles
 	 * @param string $userId
-	 * @return true if any artist covers were updated
+	 * @return bool true if any artist covers were updated; false otherwise
 	 */
 	public function updateCovers($imageFiles, $userId) {
 		$updated = false;

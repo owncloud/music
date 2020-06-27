@@ -108,6 +108,10 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		};
 
+		$scope.showArtistDetails = function(artist) {
+			console.log('artist details for ' + artist.name);
+		};
+
 		/**
 		 * Two functions for the alphabet-navigation directive integration
 		 */

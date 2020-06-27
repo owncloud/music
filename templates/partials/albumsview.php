@@ -6,6 +6,7 @@
 			level="1"
 			heading="artist.name"
 			on-click="playArtist"
+			on-details-click="showArtistDetails"
 			get-draggable="getArtistDraggable"
 			model="artist"
 			show-play-icon="true">

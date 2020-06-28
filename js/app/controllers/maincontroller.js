@@ -240,13 +240,24 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
-	$scope.showSidebar = function(trackId) {
-		$rootScope.$emit('showDetails', trackId);
+	$scope.showTrackDetails = function(trackId) {
+		$rootScope.$emit('showTrackDetails', trackId);
 		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
 				$rootScope.$emit('scrollToTrack', trackId, 0);
+			}
+		}, 300);
+	};
+
+	$scope.showArtistDetails = function(artist) {
+		$rootScope.$emit('showArtistDetails', artist.id);
+		$('#app-content').addClass('with-app-sidebar');
+		$timeout(function() {
+			var artistElem = document.getElementById('artist-' + artist.id);
+			if (!isElementInViewPort(artistElem)) {
+				$rootScope.$emit('scrollToArtist', artist.id, 0);
 			}
 		}, 300);
 	};

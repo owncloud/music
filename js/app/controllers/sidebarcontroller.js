@@ -34,10 +34,22 @@ angular.module('Music').controller('SidebarController', [
 			OC.Apps.showAppSidebar();
 			$scope.contentType = 'track';
 			$scope.contentId = trackId;
+			$scope.adjustFixedPositions();
 		}
 
-		$rootScope.$on('showDetails', function(event, trackId) {
+		function showArtistDetails(artistId) {
+			OC.Apps.showAppSidebar();
+			$scope.contentType = 'artist';
+			$scope.contentId = artistId;
+			$scope.adjustFixedPositions();
+		}
+
+		$rootScope.$on('showTrackDetails', function(event, trackId) {
 			showTrackDetails(trackId);
+		});
+
+		$rootScope.$on('showArtistDetails', function(event, artistId) {
+			showArtistDetails(artistId);
 		});
 
 		$rootScope.$on('hideDetails', function() {

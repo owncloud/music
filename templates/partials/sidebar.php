@@ -2,6 +2,7 @@
 	<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
 
 	<?php print_unescaped($this->inc('partials/trackdetails')) ?>
+	<?php print_unescaped($this->inc('partials/artistdetails')) ?>
 
 	<img id="follow-playback" class="control toggle small svg"
 		alt="{{ 'Follow playback' | translate }}" title="{{ 'Follow playback' | translate }}"

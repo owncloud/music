@@ -19,7 +19,7 @@
 			tracks="bucket.tracks"
 			get-track-data="getTrackData"
 			play-track="onTrackClick"
-			show-track-details="showSidebar"
+			show-track-details="showTrackDetails"
 			get-draggable="getDraggable"
 		>
 		</track-list>

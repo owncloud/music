@@ -28,7 +28,7 @@
 				tracks="album.tracks"
 				get-track-data="getTrackData"
 				play-track="playTrack"
-				show-track-details="showSidebar"
+				show-track-details="showTrackDetails"
 				get-draggable="getTrackDraggable"
 				collapse-limit="6">
 			</track-list>

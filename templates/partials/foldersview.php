@@ -16,7 +16,7 @@
 				tracks="folder.tracks"
 				get-track-data="getTrackData"
 				play-track="onTrackClick"
-				show-track-details="showSidebar"
+				show-track-details="showTrackDetails"
 				get-draggable="getTrackDraggable"
 				collapse-limit="10">
 		</track-list>

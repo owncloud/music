@@ -18,6 +18,7 @@
 
 #app-sidebar .sidebar-content {
 	height: 100%;
+	width: 100%;
 }
 
 #app-sidebar .close {
@@ -45,6 +46,16 @@
 	height: 35%;
 	background-size: contain;
 	margin-top: 8px;
+	display: table;
+}
+
+#app-sidebar .albumart span {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	opacity: 0.4;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity=40);
 }
 
 #app-sidebar #path {
@@ -90,6 +101,11 @@
 	white-space: pre-wrap;
 }
 
+#app-sidebar #artist-details dt,
+#app-sidebar #artist-details dd {
+	width: 50%;
+}
+
 #app-sidebar .tabsContainer .tab {
 	width: 100%;
 	margin-bottom: 32px;
@@ -123,3 +139,12 @@
 	left: 50%;
 	top: 50%;
 }
+
+#app-sidebar h1 {
+	font-size: 24px;
+	text-align: center;
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+

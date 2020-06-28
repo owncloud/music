@@ -33,7 +33,6 @@ angular.module('Music').controller('TrackDetailsController', [
 		}
 
 		function showDetails(trackId) {
-			$scope.$parent.adjustFixedPositions();
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;

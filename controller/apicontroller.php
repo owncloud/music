@@ -462,10 +462,24 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artistCover($artistIdOrSlug) {
+	public function artistCover($artistIdOrSlug, $originalSize) {
+		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
+
 		$artistId = $this->getIdFromSlug($artistIdOrSlug);
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		return $this->cover($artist);
+
+		if ($originalSize) {
+			$cover = $this->coverHelper->getCover(
+					$artist, $this->userId, $this->userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
+			if ($cover !== null) {
+				return new FileResponse($cover);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			}
+		}
+		else {
+			return $this->cover($artist);
+		}
 	}
 
 	private function cover($entity) {

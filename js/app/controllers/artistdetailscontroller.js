@@ -35,7 +35,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 						$scope.loading = false;
 
 						var url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
-						art.css('background-image', 'url("' + url + ')');
+						art.css('background-image', 'url("' + url + '")');
 					},
 					function(result) {
 						// error handling

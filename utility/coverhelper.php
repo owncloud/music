@@ -35,6 +35,7 @@ class CoverHelper {
 	private $logger;
 
 	const MAX_SIZE_TO_CACHE = 102400;
+	const DO_NOT_CROP_OR_SCALE = -1;
 
 	public function __construct(
 			Extractor $extractor,
@@ -55,7 +56,9 @@ class CoverHelper {
 	 * @param Album|Artist $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
-	 * @param int|null $size
+	 * @param int|null $size Desired (max) image size, null to use the default.
+	 *                       Special value DO_NOT_CROP_OR_SCALE can be used to opt out of
+	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	public function getCover($entity, $userId, $rootFolder, $size=null) {
@@ -196,7 +199,9 @@ class CoverHelper {
 	 * Read cover image from the file system
 	 * @param Enity $entity Album or Artist entity
 	 * @param Folder $rootFolder
-	 * @param int $size Maximum size for the image to read, larger images are scaled down
+	 * @param int $size Maximum size for the image to read, larger images are scaled down.
+	 *                  Special value DO_NOT_CROP_OR_SCALE can be used to opt out of
+	 *                  scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	private function readCover($entity, $rootFolder, $size) {
@@ -225,7 +230,8 @@ class CoverHelper {
 			if ($response === null) {
 				$class = \get_class($entity);
 				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
-			} else {
+			}
+			else if ($size !== self::DO_NOT_CROP_OR_SCALE) {
 				$response['content'] = $this->scaleDownAndCrop($response['content'], $size);
 			}
 		}

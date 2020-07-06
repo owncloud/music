@@ -9,7 +9,7 @@ msgid "(Failed to connect Last.fm)"
 msgstr ""
 
 #: ../templates/partials/artistdetails.php:22
-msgid "(Last.FM has not been set up)"
+msgid "(Last.fm has not been set up)"
 msgstr ""
 
 #: ../templates/fake-template.php:14
@@ -24,25 +24,25 @@ msgstr ""
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:1000
+#: ../js/public/app.js:1023
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1006
+#: ../js/public/app.js:1029
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1015
+#: ../js/public/app.js:1038
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:995
+#: ../js/public/app.js:1018
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -61,7 +61,7 @@ msgid "Admin"
 msgstr ""
 
 #: ../templates/partials/artistdetails.php:23
-msgid "Admin may set up the Last.FM API key to show artist biography here. See the Settings view for details."
+msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
 msgstr ""
 
 #: ../templates/fake-template.php:7
@@ -78,11 +78,11 @@ msgstr ""
 msgid "Ampache and Subsonic"
 msgstr ""
 
-#: ../js/public/app.js:1383
+#: ../js/public/app.js:1406
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/public/app.js:2341
+#: ../js/public/app.js:2364
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -115,13 +115,13 @@ msgstr ""
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../js/public/app.js:3166
-#: ../js/public/app.js:3375
+#: ../js/public/app.js:3189
+#: ../js/public/app.js:3398
 #: ../templates/partials/playlistview.php:26
 msgid "Details"
 msgstr ""
 
-#: ../js/public/app.js:1581
+#: ../js/public/app.js:1604
 msgid "Error playing file:"
 msgstr ""
 
@@ -129,11 +129,11 @@ msgstr ""
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: ../js/public/app.js:1093
+#: ../js/public/app.js:1116
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../js/public/app.js:2365
+#: ../js/public/app.js:2388
 msgid "Failed to reset the collection:"
 msgstr ""
 
@@ -173,7 +173,7 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:1083
+#: ../js/public/app.js:1106
 msgid "Internal server error"
 msgstr ""
 
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: ../js/public/app.js:2300
+#: ../js/public/app.js:2323
 #: ../templates/partials/settingsview.php:5
 msgid "Path to your music collection"
 msgstr ""
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../js/public/app.js:3164
+#: ../js/public/app.js:3187
 #: ../templates/partials/albumsview.php:25
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:5
@@ -280,7 +280,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../js/public/app.js:1384
+#: ../js/public/app.js:1407
 msgid "Remove playlist"
 msgstr ""
 
@@ -296,12 +296,12 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:2031
+#: ../js/public/app.js:2054
 #: ../js/public/app.js:317
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:2342
+#: ../js/public/app.js:2365
 #: ../templates/partials/settingsview.php:16
 msgid "Reset music collection"
 msgstr ""
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Scanning music …"
 msgstr ""
 
-#: ../js/public/app.js:2153
+#: ../js/public/app.js:2176
 msgid "Search not available in this view"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../js/public/app.js:3377
+#: ../js/public/app.js:3400
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
@@ -331,7 +331,7 @@ msgstr ""
 msgid "Show in Files"
 msgstr ""
 
-#: ../js/public/app.js:3374
+#: ../js/public/app.js:3397
 msgid "Show less …"
 msgstr ""
 
@@ -343,7 +343,11 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:1757
+#: ../templates/partials/artistdetails.php:38
+msgid "Similar to"
+msgstr ""
+
+#: ../js/public/app.js:1780
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -355,11 +359,15 @@ msgstr ""
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
+#: ../templates/partials/artistdetails.php:36
+msgid "Tags"
+msgstr ""
+
 #: ../templates/partials/trackdetails.php:14
 msgid "Technical"
 msgstr ""
 
-#: ../js/public/app.js:2422
+#: ../js/public/app.js:2445
 msgid "Text copied to clipboard"
 msgstr ""
 
@@ -379,7 +387,7 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:1086
+#: ../js/public/app.js:1109
 msgid "Timeout"
 msgstr ""
 
@@ -403,7 +411,7 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../js/public/app.js:580
+#: ../js/public/app.js:582
 msgid "Upload image named \"{{name}}\" to anywhere within your library path to see it here."
 msgstr ""
 

@@ -73,7 +73,7 @@
 	<h2 translate>Admin</h2>
 	<div class="clickable" ng-show="!showAdmin" ng-click="showAdmin=true" translate>Show...</div>
 	<div ng-show="showAdmin">
-		<p translate translate-params-filename="'/config/config.php'">
+		<p translate translate-params-filename="'<cloud root>/config/config.php'">
 			There is no settings UI for the cloud-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>.
 		</p>
 		<div>

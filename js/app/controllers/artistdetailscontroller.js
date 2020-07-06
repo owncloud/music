@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('ArtistDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'libraryService',
-	function ($rootScope, $scope, Restangular, libraryService) {
+	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
+	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
 
 		$scope.artist = null;
 		$scope.loading = true;
@@ -41,6 +41,10 @@ angular.module('Music').controller('ArtistDetailsController', [
 						// error handling
 						$scope.artAvailable = false;
 						$scope.loading = false;
+						$scope.noImageHint = gettextCatalog.getString(
+							'Upload image named "{{name}}" to anywhere within your library path to see it here.',
+							{ name: $scope.artist.name + '.*' }
+						);
 					}
 				);
 			}

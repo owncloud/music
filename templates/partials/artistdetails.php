@@ -1,8 +1,7 @@
 <div id="artist-details" class="sidebar-content" ng-controller="ArtistDetailsController" ng-if="contentType=='artist'">
 
 	<div class="albumart" ng-show="!loading">
-		<span ng-if="!artAvailable"
-			title="Upload image named '{{artist.name}}.*' to anywhere within your library path to see it here."
+		<span ng-if="!artAvailable" title="{{ noImageHint }}"
 			translate>(no artist image available)</span>
 	</div>
 

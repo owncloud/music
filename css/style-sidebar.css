@@ -16,6 +16,11 @@
 	display: inline-block;
 }
 
+#app-sidebar .sidebar-content {
+	height: 100%;
+	width: 100%;
+}
+
 #app-sidebar .close {
 	position: fixed;
 	top: 45px;
@@ -41,6 +46,16 @@
 	height: 35%;
 	background-size: contain;
 	margin-top: 8px;
+	display: table;
+}
+
+#app-sidebar .albumart span {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	opacity: 0.4;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity=40);
 }
 
 #app-sidebar #path {
@@ -86,6 +101,11 @@
 	white-space: pre-wrap;
 }
 
+#app-sidebar #artist-content-counts dt,
+#app-sidebar #artist-content-counts dd {
+	width: 50%;
+}
+
 #app-sidebar .tabsContainer .tab {
 	width: 100%;
 	margin-bottom: 32px;
@@ -118,4 +138,53 @@
 	position: absolute;
 	left: 50%;
 	top: 50%;
+}
+
+#app-sidebar h1 {
+	font-size: 24px;
+	text-align: center;
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#app-sidebar #lastfm-info {
+	width: 100%;
+	margin-bottom: 48px;
+}
+
+#app-sidebar #lastfm-info span {
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
+	opacity: 0.4;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity=40);
+}
+
+#app-sidebar #lastfm-info p {
+	white-space: pre-wrap;
+	margin-left: 16px;
+	margin-right: 16px;
+	margin-bottom: 16px;
+}
+
+#app-sidebar #lastfm-info dt {
+	width: 20%;
+}
+
+#app-sidebar #lastfm-info dd {
+	width: 80%;
+}
+
+#app-sidebar #lastfm-info a {
+	text-decoration: underline;
+}
+
+#app-sidebar #lastfm-info a:after {
+	content: " ↗";
+}
+
+#app-sidebar .truncated:after {
+	content: "…";
 }

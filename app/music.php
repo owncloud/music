@@ -57,6 +57,7 @@ use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
+use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\UserMusicFolder;
@@ -104,6 +105,7 @@ class Music extends App {
 				$c->query('CollectionHelper'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
+				$c->query('LastfmService'),
 				$c->query('Maintenance'),
 				$c->query('UserId'),
 				$c->query('L10N'),
@@ -385,6 +387,14 @@ class Music extends App {
 		$container->registerService('DetailsHelper', function ($c) {
 			return new DetailsHelper(
 				$c->query('ExtractorGetID3'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('LastfmService', function ($c) {
+			return new LastfmService(
+				$c->query('ArtistBusinessLayer'),
+				$c->query('Config'),
 				$c->query('Logger')
 			);
 		});

@@ -4,44 +4,64 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 
+#: ../templates/partials/artistdetails.php:25
+msgid "(Failed to connect Last.fm)"
+msgstr ""
+
+#: ../templates/partials/artistdetails.php:22
+msgid "(Last.fm has not been set up)"
+msgstr ""
+
 #: ../templates/fake-template.php:14
 msgid "(file is not within your music collection folder)"
+msgstr ""
+
+#: ../templates/partials/artistdetails.php:4
+msgid "(no artist image available)"
 msgstr ""
 
 #: ../templates/partials/navigation.php:17
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:1119
+#: ../js/public/app.js:1023
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1125
+#: ../js/public/app.js:1029
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1134
+#: ../js/public/app.js:1038
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1114
+#: ../js/public/app.js:1018
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../templates/partials/settingsview.php:73
+#: ../templates/partials/settingsview.php:93
 msgid "About"
 msgstr ""
 
 #: ../templates/partials/playlistview.php:37
 msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:73
+msgid "Admin"
+msgstr ""
+
+#: ../templates/partials/artistdetails.php:23
+msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
 msgstr ""
 
 #: ../templates/fake-template.php:7
@@ -58,11 +78,11 @@ msgstr ""
 msgid "Ampache and Subsonic"
 msgstr ""
 
-#: ../js/public/app.js:1491
+#: ../js/public/app.js:1406
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/public/app.js:2449
+#: ../js/public/app.js:2364
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -70,7 +90,7 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/main.php:71
+#: ../templates/main.php:72
 msgid "Click here to start the scan"
 msgstr ""
 
@@ -95,12 +115,13 @@ msgstr ""
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../js/public/app.js:3267
+#: ../js/public/app.js:3189
+#: ../js/public/app.js:3398
 #: ../templates/partials/playlistview.php:26
 msgid "Details"
 msgstr ""
 
-#: ../js/public/app.js:1689
+#: ../js/public/app.js:1604
 msgid "Error playing file:"
 msgstr ""
 
@@ -108,11 +129,11 @@ msgstr ""
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: ../js/public/app.js:1212
+#: ../js/public/app.js:1116
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../js/public/app.js:2473
+#: ../js/public/app.js:2388
 msgid "Failed to reset the collection:"
 msgstr ""
 
@@ -124,11 +145,11 @@ msgstr ""
 msgid "Folders"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:47
+#: ../templates/partials/sidebar.php:8
 msgid "Follow playback"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:9
+#: ../templates/partials/trackdetails.php:8
 msgid "General"
 msgstr ""
 
@@ -152,20 +173,24 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:1202
+#: ../js/public/app.js:1106
 msgid "Internal server error"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:87
+msgid "Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels."
 msgstr ""
 
 #: ../templates/fake-template.php:11
 msgid "Loading…"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:12
+#: ../templates/partials/trackdetails.php:11
 msgid "Lyrics"
 msgstr ""
 
 #: ../templates/fake-template.php:3
-#: ../templates/partials/settingsview.php:78
+#: ../templates/partials/settingsview.php:98
 msgid "Music"
 msgstr ""
 
@@ -173,12 +198,12 @@ msgstr ""
 msgid "New Playlist"
 msgstr ""
 
-#: ../templates/main.php:70
+#: ../templates/main.php:71
 msgid "New music available"
 msgstr ""
 
-#: ../templates/main.php:103
 #: ../templates/main.php:104
+#: ../templates/main.php:105
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 
@@ -186,11 +211,11 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../templates/main.php:62
+#: ../templates/main.php:63
 msgid "No music found"
 msgstr ""
 
-#: ../templates/main.php:94
+#: ../templates/main.php:95
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 
@@ -199,18 +224,30 @@ msgid "No tracks"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:27
-msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients ↗</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients ↗</a>."
+msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients</a>."
 msgstr ""
 
 #: ../templates/partials/settingsview.php:12
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
+#: ../templates/partials/artistdetails.php:11
+msgid "Number of albums"
+msgstr ""
+
+#: ../templates/partials/artistdetails.php:17
+msgid "Number of performed tracks"
+msgstr ""
+
+#: ../templates/partials/artistdetails.php:14
+msgid "Number of tracks on albums"
+msgstr ""
+
 #: ../templates/partials/settingsview.php:67
 msgid "Password:"
 msgstr ""
 
-#: ../js/public/app.js:2408
+#: ../js/public/app.js:2323
 #: ../templates/partials/settingsview.php:5
 msgid "Path to your music collection"
 msgstr ""
@@ -219,27 +256,31 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../js/public/app.js:3072
-#: ../templates/partials/albumsview.php:24
+#: ../js/public/app.js:3187
+#: ../templates/partials/albumsview.php:25
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:5
 #: ../templates/partials/playlistview.php:5
 msgid "Play"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:80
-msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker ↗</a>"
+#: ../templates/partials/settingsview.php:100
+msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>"
 msgstr ""
 
 #: ../templates/partials/controls.php:3
 msgid "Previous"
 msgstr ""
 
+#: ../templates/partials/artistdetails.php:26
+msgid "Problem connecting Last.fm. The API key may be invalid."
+msgstr ""
+
 #: ../templates/partials/playlistview.php:28
 msgid "Remove"
 msgstr ""
 
-#: ../js/public/app.js:1492
+#: ../js/public/app.js:1407
 msgid "Remove playlist"
 msgstr ""
 
@@ -255,12 +296,12 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:2139
+#: ../js/public/app.js:2054
 #: ../js/public/app.js:317
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:2450
+#: ../js/public/app.js:2365
 #: ../templates/partials/settingsview.php:16
 msgid "Reset music collection"
 msgstr ""
@@ -269,11 +310,11 @@ msgstr ""
 msgid "Revoke API password"
 msgstr ""
 
-#: ../templates/main.php:78
+#: ../templates/main.php:79
 msgid "Scanning music …"
 msgstr ""
 
-#: ../js/public/app.js:2261
+#: ../js/public/app.js:2176
 msgid "Search not available in this view"
 msgstr ""
 
@@ -282,27 +323,35 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../js/public/app.js:3269
+#: ../js/public/app.js:3400
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:5
+#: ../templates/partials/trackdetails.php:4
 msgid "Show in Files"
 msgstr ""
 
-#: ../js/public/app.js:3266
+#: ../js/public/app.js:3397
 msgid "Show less …"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:74
+msgid "Show..."
 msgstr ""
 
 #: ../templates/partials/controls.php:33
 msgid "Shuffle"
 msgstr ""
 
-#: ../js/public/app.js:1865
+#: ../templates/partials/artistdetails.php:38
+msgid "Similar to"
+msgstr ""
+
+#: ../js/public/app.js:1780
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
-#: ../templates/main.php:87
+#: ../templates/main.php:88
 msgid "Some search results are omitted"
 msgstr ""
 
@@ -310,16 +359,24 @@ msgstr ""
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:15
+#: ../templates/partials/artistdetails.php:36
+msgid "Tags"
+msgstr ""
+
+#: ../templates/partials/trackdetails.php:14
 msgid "Technical"
 msgstr ""
 
-#: ../js/public/app.js:2530
+#: ../js/public/app.js:2445
 msgid "Text copied to clipboard"
 msgstr ""
 
+#: ../templates/partials/settingsview.php:76
+msgid "There is no settings UI for the cloud-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>."
+msgstr ""
+
 #: ../templates/partials/settingsview.php:22
-msgid "There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issues ↗</a>."
+msgid "There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issues</a>."
 msgstr ""
 
 #: ../templates/partials/settingsview.php:21
@@ -330,15 +387,19 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:1205
+#: ../js/public/app.js:1109
 msgid "Timeout"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:81
+msgid "To see the Artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href=\"{{url}}\" target=\"_blank\">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key, which can be entered to config.php."
 msgstr ""
 
 #: ../templates/fake-template.php:8
 msgid "Tracks"
 msgstr ""
 
-#: ../templates/main.php:88
+#: ../templates/main.php:89
 msgid "Try to refine the search"
 msgstr ""
 
@@ -350,7 +411,11 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/main.php:63
+#: ../js/public/app.js:582
+msgid "Upload image named \"{{name}}\" to anywhere within your library path to see it here."
+msgstr ""
+
+#: ../templates/main.php:64
 msgid "Upload music in the files app to listen to it here"
 msgstr ""
 
@@ -380,6 +445,6 @@ msgstr ""
 msgid "You can browse and play your music collection from external applications which support either Ampache or Subsonic API."
 msgstr ""
 
-#: ../templates/main.php:79
+#: ../templates/main.php:80
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr ""

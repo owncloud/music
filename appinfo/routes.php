@@ -44,6 +44,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#artists',		'url' => '/api/artists',						'verb' => 'GET'],
 	['name' => 'api#artist',		'url' => '/api/artist/{artistIdOrSlug}',		'verb' => 'GET'],
 	['name' => 'api#artistCover',	'url' => '/api/artist/{artistIdOrSlug}/cover',	'verb' => 'GET'], // non-Shiva extension
+	['name' => 'api#artistDetails',	'url' => '/api/artist/{artistIdOrSlug}/details','verb' => 'GET'], // non-Shiva extension
 	//['name' => 'api#artistShows',	'url' => '/api/artist/{artistIdOrSlug}/shows',	'verb' => 'GET'],
 	['name' => 'api#albums',		'url' => '/api/albums',							'verb' => 'GET'],
 	['name' => 'api#album',			'url' => '/api/album/{albumIdOrSlug}',			'verb' => 'GET'],

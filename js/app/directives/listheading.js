@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 Pauli Järvinen
+ * @copyright 2019, 2020 Pauli Järvinen
  *
  */
 
@@ -21,6 +21,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 	var playText = gettextCatalog.getString('Play');
 	var playIconSrc = OC.imagePath('music','play-big.svg');
+	var detailsText = gettextCatalog.getString('Details');
 
 	/**
 	 * Set up the contents for a given heading element
@@ -36,6 +37,8 @@ function ($rootScope, $timeout, gettextCatalog) {
 		 * Create the contained HTML elements
 		 */
 		function render() {
+			var fragment = document.createDocumentFragment();
+
 			var outerSpan = document.createElement('span');
 			outerSpan.setAttribute('draggable', true);
 			if (data.tooltip) {
@@ -61,16 +64,28 @@ function ($rootScope, $timeout, gettextCatalog) {
 				outerSpan.appendChild(playIcon);
 			}
 
-			return outerSpan;
+			fragment.appendChild(outerSpan);
+
+			if (data.onDetailsClick) {
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				detailsButton.setAttribute('title', detailsText);
+				fragment.appendChild(detailsButton);
+			}
+
+			return fragment;
 		}
 
 		var ngElem = $(data.element);
 
 		/**
-		 * Click handler
+		 * Click handlers
 		 */
 		ngElem.on('click', 'span', function(e) {
 			data.onClick(data.model);
+		});
+		ngElem.on('click', 'button', function(e) {
+			data.onDetailsClick(data.model);
 		});
 
 		/**
@@ -135,6 +150,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 						showPlayIcon: scope.$eval(attrs.showPlayIcon),
 						model: scope.$eval(attrs.model),
 						onClick: scope.$eval(attrs.onClick),
+						onDetailsClick: scope.$eval(attrs.onDetailsClick),
 						getDraggable: scope.$eval(attrs.getDraggable),
 						element: element[0],
 						scope: scope

@@ -24,9 +24,11 @@ use \OCP\IL10N;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
@@ -37,8 +39,8 @@ use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
+use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\Scanner;
-use OCA\Music\BusinessLayer\GenreBusinessLayer;
 
 class ApiController extends Controller {
 
@@ -60,6 +62,8 @@ class ApiController extends Controller {
 	private $coverHelper;
 	/** @var DetailsHelper */
 	private $detailsHelper;
+	/** @var LastfmService */
+	private $lastfmService;
 	/** @var Maintenance */
 	private $maintenance;
 	/** @var string */
@@ -82,6 +86,7 @@ class ApiController extends Controller {
 								CollectionHelper $collectionHelper,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
+								LastfmService $lastfmService,
 								Maintenance $maintenance,
 								$userId,
 								IL10N $l10n,
@@ -97,6 +102,7 @@ class ApiController extends Controller {
 		$this->collectionHelper = $collectionHelper;
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
+		$this->lastfmService = $lastfmService;
 		$this->maintenance = $maintenance;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
@@ -452,6 +458,21 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function artistDetails($artistIdOrSlug) {
+		try {
+			$artistId = $this->getIdFromSlug($artistIdOrSlug);
+			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
+			return new JSONResponse($info);
+		}
+		catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function albumCover($albumIdOrSlug) {
 		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -462,10 +483,24 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artistCover($artistIdOrSlug) {
+	public function artistCover($artistIdOrSlug, $originalSize) {
+		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
+
 		$artistId = $this->getIdFromSlug($artistIdOrSlug);
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		return $this->cover($artist);
+
+		if ($originalSize) {
+			$cover = $this->coverHelper->getCover(
+					$artist, $this->userId, $this->userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
+			if ($cover !== null) {
+				return new FileResponse($cover);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			}
+		}
+		else {
+			return $this->cover($artist);
+		}
 	}
 
 	private function cover($entity) {

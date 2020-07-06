@@ -4,6 +4,7 @@
 \OCP\Util::addScript('music', 'vendor/angular/angular.min');
 \OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
 \OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
+\OCP\Util::addScript('music', 'vendor/angular-sanitize/angular-sanitize.min');
 \OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
 \OCP\Util::addScript('music', 'vendor/aurora/aurora-bundle.min');
 \OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');

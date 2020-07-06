@@ -30,31 +30,6 @@
 	display: none !important;
 }
 
-.track-list .icon-details {
-	display: table-cell;
-	vertical-align: middle;
-	margin: 0;
-	border: none;
-	background-color: transparent;
-	visibility: hidden;
-
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity=50);
-	opacity: 0.5;
-}
-
-.track-list li:hover .icon-details {
-	visibility: visible;
-}
-
-.track-list .icon-details:hover {
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity=100);
-	opacity: 1;
-}
-
 .track-list > li.more-less {
 	padding-left: 18px;
 	padding-top: 6px;

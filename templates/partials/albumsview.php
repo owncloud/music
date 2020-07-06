@@ -6,6 +6,7 @@
 			level="1"
 			heading="artist.name"
 			on-click="playArtist"
+			on-details-click="showArtistDetails"
 			get-draggable="getArtistDraggable"
 			model="artist"
 			show-play-icon="true">
@@ -27,7 +28,7 @@
 				tracks="album.tracks"
 				get-track-data="getTrackData"
 				play-track="playTrack"
-				show-track-details="showSidebar"
+				show-track-details="showTrackDetails"
 				get-draggable="getTrackDraggable"
 				collapse-limit="6">
 			</track-list>

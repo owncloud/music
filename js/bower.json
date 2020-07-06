@@ -5,6 +5,7 @@
     "angular" : "1.7.9",
     "angular-gettext" : "",
     "angular-route" : "1.7.9",
+    "angular-sanitize" : "1.7.9",
     "javascript-detect-element-resize" : "",
     "js-cookie" : "",
     "restangular" : ""

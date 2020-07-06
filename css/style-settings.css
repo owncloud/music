@@ -35,6 +35,11 @@
 	text-decoration: underline;
 }
 
+#music-user a:after,
+#music-user .warning a:after {
+	content: " ↗";
+}
+
 #music-user .label-container {
 	display: inline-block;
 }

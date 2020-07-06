@@ -58,9 +58,27 @@ angular.module('Music').controller('ArtistDetailsController', [
 						$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
 						// modify all links in the biography so that they will open to a new tab
 						$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
+
+						$scope.artistTags = formatTags(result.artist.tags.tag);
+						$scope.similarArtists = formatLinkList(result.artist.similar.artist);
 					}
 				);
 			}
+		}
+
+		function formatTags(tags) {
+			// Filter out the tag "seen live" because it is intended to be used on Last.fm for the feature
+			// which allows filtering based on the tags set by the user herself. As a global tag, it makes
+			// no sense because almost all artists have been seen live by someone.
+			tags = _.reject(tags, {name: 'seen live'});
+			return formatLinkList(tags);
+		}
+
+		function formatLinkList(linkArray) {
+			htmlLinks = _.map(linkArray, function(item) {
+				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+			});
+			return htmlLinks.join(', ');
 		}
 
 		$scope.$watch('contentId', showDetails);

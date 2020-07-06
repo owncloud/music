@@ -101,8 +101,8 @@
 	white-space: pre-wrap;
 }
 
-#app-sidebar #artist-details dt,
-#app-sidebar #artist-details dd {
+#app-sidebar #artist-content-counts dt,
+#app-sidebar #artist-content-counts dd {
 	width: 50%;
 }
 
@@ -150,6 +150,7 @@
 
 #app-sidebar #lastfm-info {
 	width: 100%;
+	margin-bottom: 48px;
 }
 
 #app-sidebar #lastfm-info span {
@@ -163,16 +164,24 @@
 
 #app-sidebar #lastfm-info p {
 	white-space: pre-wrap;
-	margin-bottom: 48px;
 	margin-left: 16px;
 	margin-right: 16px;
+	margin-bottom: 16px;
 }
 
-#app-sidebar #lastfm-info p a {
+#app-sidebar #lastfm-info dt {
+	width: 20%;
+}
+
+#app-sidebar #lastfm-info dd {
+	width: 80%;
+}
+
+#app-sidebar #lastfm-info a {
 	text-decoration: underline;
 }
 
-#app-sidebar #lastfm-info p a:after {
+#app-sidebar #lastfm-info a:after {
 	content: " ↗";
 }
 

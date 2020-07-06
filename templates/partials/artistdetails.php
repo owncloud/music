@@ -7,7 +7,7 @@
 
 	<h1 ng-show="!loading">{{artist.name}}</h1>
 
-	<dl ng-show="!loading">
+	<dl id="artist-content-counts" ng-show="!loading">
 		<dt translate>Number of albums</dt>
 		<dd>{{ artist.albums.length }}</dd>
 
@@ -30,8 +30,15 @@
 			ng-class="{clickable: truncated, truncated: truncated}"
 			ng-bind-html="artistBio | limitTo:(truncated ? 365 : undefined)"
 			ng-click="truncated = false"
-			title="{{ truncated ? ('Click to expand' | translate) : '' }}"></p>
-	</div> 
+			title="{{ truncated ? ('Click to expand' | translate) : '' }}">
+		</p>
+		<dl>
+			<dt ng-if="artistTags" translate>Tags</dt>
+			<dd ng-if="artistTags" ng-bind-html="artistTags"></dd>
+			<dt ng-if="similarArtists" translate>Similar to</dt>
+			<dd ng-if="similarArtists" ng-bind-html="similarArtists"></dd>
+		</dl>
+	</div>
 
 	<div class="icon-loading" ng-show="loading"></div>
 

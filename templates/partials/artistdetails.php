@@ -25,7 +25,12 @@
 		<span ng-if="lastfmInfo.api_key_set && !lastfmInfo.connection_ok"
 			title="{{ 'Problem connecting Last.fm. The API key may be invalid.' | translate }}"
 			translate>(Failed to connect Last.fm)</span>
-		<p ng-bind-html="lastfmInfo.artist.bio.content"></p>
+		<p ng-if="lastfmInfo.artist.bio.content"
+			ng-init="truncated = (lastfmInfo.artist.bio.content.length > 400)"
+			ng-class="{clickable: truncated, truncated: truncated}"
+			ng-bind-html="lastfmInfo.artist.bio.content | limitTo:(truncated ? 365 : undefined)"
+			ng-click="truncated = false"
+			title="{{ truncated ? ('Click to expand' | translate) : '' }}"></p>
 	</div> 
 
 	<div class="icon-loading" ng-show="loading"></div>

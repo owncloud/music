@@ -175,3 +175,7 @@
 #app-sidebar #lastfm-info p a:after {
 	content: " ↗";
 }
+
+#app-sidebar .truncated:after {
+	content: "…";
+}

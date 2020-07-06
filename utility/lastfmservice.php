@@ -48,10 +48,9 @@ class LastfmService {
 			return ['api_key_set' => false];
 		}
 		else {
-			$name = \str_replace(' ', '%20', $artist->getName());
 			$info = \file_get_contents(self::LASTFM_URL .
 					'?method=artist.getInfo' .
-					'&artist=' . $name .
+					'&artist=' . \urlencode($artist->getName()) .
 					'&api_key=' . $this->apiKey .
 					'&format=json');
 

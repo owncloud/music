@@ -16,11 +16,13 @@ angular.module('Music').controller('ArtistDetailsController', [
 		$scope.artist = null;
 		$scope.loading = true;
 		$scope.artAvailable = false;
+		$scope.lastfmInfo = null;
 
 		function showDetails(artistId) {
 			if (!$scope.artist || artistId != $scope.artist.id) {
 				$scope.loading = true;
 				$scope.artAvailable = false;
+				$scope.lastfmInfo = null;
 
 				$scope.artist = libraryService.getArtist(artistId);
 				$scope.artistAlbumTrackCount = _.chain($scope.artist.albums).pluck('tracks').flatten().value().length;
@@ -45,6 +47,12 @@ angular.module('Music').controller('ArtistDetailsController', [
 							'Upload image named "{{name}}" to anywhere within your library path to see it here.',
 							{ name: $scope.artist.name + '.*' }
 						);
+					}
+				);
+
+				Restangular.one('artist', artistId).one('details').get().then(
+					function(result) {
+						$scope.lastfmInfo = result;
 					}
 				);
 			}

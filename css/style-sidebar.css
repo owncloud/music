@@ -148,3 +148,30 @@
 	margin-bottom: 20px;
 }
 
+#app-sidebar #lastfm-info {
+	width: 100%;
+}
+
+#app-sidebar #lastfm-info span {
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
+	opacity: 0.4;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+	filter: alpha(opacity=40);
+}
+
+#app-sidebar #lastfm-info p {
+	white-space: pre-wrap;
+	margin-bottom: 48px;
+	margin-left: 16px;
+	margin-right: 16px;
+}
+
+#app-sidebar #lastfm-info p a {
+	text-decoration: underline;
+}
+
+#app-sidebar #lastfm-info p a:after {
+	content: " ↗";
+}

@@ -70,6 +70,26 @@
 		</div>
 	</div>
 
+	<h2 translate>Admin</h2>
+	<div class="clickable" ng-show="!showAdmin" ng-click="showAdmin=true" translate>Show...</div>
+	<div ng-show="showAdmin">
+		<p translate translate-params-filename="'/config/config.php'">
+			There is no settings UI for the cloud-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>.
+		</p>
+		<div>
+			<p>music.lastfm_api_key</p>
+			<p><em translate translate-params-url="'https://www.last.fm/api/account/create'">
+				To see the Artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{url}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key, which can be entered to config.php.
+			</em></p>
+		</div>
+		<div>
+			<p>music.cover_size</p>
+			<p><em translate>
+				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels.
+			</em></p>
+		</div>
+	</div>
+
 	<h2 translate>About</h2>
 	<div>
 		<p>

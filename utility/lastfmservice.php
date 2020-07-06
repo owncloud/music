@@ -45,16 +45,23 @@ class LastfmService {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
 		if (empty($this->apiKey)) {
-			return ['apiKeySet' => false];
+			return ['api_key_set' => false];
 		}
 		else {
+			$name = \str_replace(' ', '%20', $artist->getName());
 			$info = \file_get_contents(self::LASTFM_URL .
 					'?method=artist.getInfo' .
-					'&artist=' . $artist->getName() .
+					'&artist=' . $name .
 					'&api_key=' . $this->apiKey .
 					'&format=json');
-			$info = \json_decode($info, true);
-			$info['apiKeySet'] = true;
+
+			if ($info === false) {
+				$info = ['connection_ok' => false];
+			} else {
+				$info = \json_decode($info, true);
+				$info['connection_ok'] = true;
+			}
+			$info['api_key_set'] = true;
 			return $info;
 		}
 	}

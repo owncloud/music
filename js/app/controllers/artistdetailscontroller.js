@@ -56,6 +56,8 @@ angular.module('Music').controller('ArtistDetailsController', [
 					function(result) {
 						$scope.lastfmInfo = result;
 						$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
+						// modify all links in the biography so that they will open to a new tab
+						$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
 					}
 				);
 			}

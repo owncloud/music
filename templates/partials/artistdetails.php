@@ -29,7 +29,7 @@
 			ng-init="truncated = (artistBio.length > 400)"
 			ng-class="{clickable: truncated, truncated: truncated}"
 			ng-bind-html="artistBio | limitTo:(truncated ? 365 : undefined)"
-			ng-click="truncated = false"
+			ng-click="truncated = false; adjustFixedPositions()"
 			title="{{ truncated ? ('Click to expand' | translate) : '' }}">
 		</p>
 		<dl>

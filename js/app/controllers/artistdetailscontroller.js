@@ -13,18 +13,22 @@ angular.module('Music').controller('ArtistDetailsController', [
 	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
 	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
 
-		$scope.artist = null;
-		$scope.loading = true;
-		$scope.artAvailable = false;
-		$scope.lastfmInfo = null;
-		$scope.artistBio = null;
+		function resetContents() {
+			$scope.artist = null;
+			$scope.artistAlbumTrackCount = 0;
+			$scope.artistTrackCount = 0;
+			$scope.loading = true;
+			$scope.artAvailable = false;
+			$scope.lastfmInfo = null;
+			$scope.artistBio = null;
+			$scope.artistTags = null;
+			$scope.similarArtists = null;
+		}
+		resetContents();
 
 		function showDetails(artistId) {
 			if (!$scope.artist || artistId != $scope.artist.id) {
-				$scope.loading = true;
-				$scope.artAvailable = false;
-				$scope.lastfmInfo = null;
-				$scope.artistBio = null;
+				resetContents();
 
 				$scope.artist = libraryService.getArtist(artistId);
 				$scope.artistAlbumTrackCount = _.chain($scope.artist.albums).pluck('tracks').flatten().value().length;

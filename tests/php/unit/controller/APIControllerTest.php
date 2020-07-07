@@ -33,6 +33,7 @@ class APIControllerTest extends ControllerTestUtility {
 	private $scanner;
 	private $coverHelper;
 	private $detailsHelper;
+	private $lastfmService;
 	private $maintenance;
 	private $userFolder;
 	private $logger;
@@ -74,6 +75,9 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Utility\DetailsHelper')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Utility\LastfmService')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->maintenance = $this->getMockBuilder('\OCA\Music\Db\Maintenance')
 			->disableOriginalConstructor()
 			->getMock();
@@ -92,6 +96,7 @@ class APIControllerTest extends ControllerTestUtility {
 			$this->collectionHelper,
 			$this->coverHelper,
 			$this->detailsHelper,
+			$this->lastfmService,
 			$this->maintenance,
 			$this->userId,
 			$this->l10n,

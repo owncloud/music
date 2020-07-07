@@ -1,11 +1,11 @@
 {
   "name": "owncloud-music",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "dependencies": {
-    "angular" : "1.7.9",
+    "angular" : "1.8.0",
     "angular-gettext" : "",
-    "angular-route" : "1.7.9",
-    "angular-sanitize" : "1.7.9",
+    "angular-route" : "1.8.0",
+    "angular-sanitize" : "1.8.0",
     "javascript-detect-element-resize" : "",
     "js-cookie" : "",
     "restangular" : ""

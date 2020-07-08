@@ -101,9 +101,12 @@
 	white-space: pre-wrap;
 }
 
-#app-sidebar #artist-content-counts dt,
+#app-sidebar #artist-content-counts dt {
+	width: 65%;
+}
+
 #app-sidebar #artist-content-counts dd {
-	width: 50%;
+	width: 35%;
 }
 
 #app-sidebar .tabsContainer .tab {

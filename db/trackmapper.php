@@ -99,7 +99,7 @@ class TrackMapper extends BaseMapper {
 		$result = $this->execute($sql, [$userId]);
 
 		return \array_map(function ($i) {
-			return $i['file_id'];
+			return (int)$i['file_id'];
 		}, $result->fetchAll());
 	}
 
@@ -149,7 +149,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
 		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
-		return $row['count'];
+		return (int)$row['count'];
 	}
 
 	/**
@@ -160,7 +160,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
-		return $row['count'];
+		return (int)$row['count'];
 	}
 
 	/**
@@ -171,7 +171,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
-		return $row['duration'];
+		return (int)$row['duration'];
 	}
 
 	/**
@@ -187,7 +187,7 @@ class TrackMapper extends BaseMapper {
 						$this->questionMarks(\count($trackIds));
 			$rows = $this->execute($sql, $trackIds)->fetchAll();
 			foreach ($rows as $row) {
-				$result[$row['id']] = $row['length'];
+				$result[$row['id']] = (int)$row['length'];
 			}
 		}
 		return $result;
@@ -273,7 +273,7 @@ class TrackMapper extends BaseMapper {
 		// group the files to parent folder "buckets"
 		$result = [];
 		foreach ($rows as $row) {
-			$result[$row['parent']][] = $row['id'];
+			$result[(int)$row['parent']][] = (int)$row['id'];
 		}
 
 		return $result;
@@ -335,7 +335,7 @@ class TrackMapper extends BaseMapper {
 
 		$result = [];
 		foreach ($rows as $row) {
-			$result[$row['genre_id']][] = $row['id'];
+			$result[(int)$row['genre_id']][] = (int)$row['id'];
 		}
 
 		return $result;

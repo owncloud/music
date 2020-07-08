@@ -375,7 +375,7 @@ class AlbumMapper extends BaseMapper {
 		$params = [$artistId, $artistId];
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
-		return $row['count'];
+		return (int)$row['count'];
 	}
 
 	/**

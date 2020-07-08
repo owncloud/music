@@ -46,7 +46,7 @@ class Util {
 	 * @param array $array
 	 * @return array where keys are the values returned by `getId` of each item
 	 */
-	public static function createIdLookupTable($array) {
+	public static function createIdLookupTable(array $array) {
 		$lut = [];
 		foreach ($array as $item) {
 			$lut[$item->getId()] = $item;
@@ -64,7 +64,7 @@ class Util {
 	 * @param array $a
 	 * @return array
 	 */
-	public static function arrayDiff($b, $a) {
+	public static function arrayDiff(array $b, array $a) {
 		$at = \array_flip($a);
 		$d = [];
 		foreach ($b as $i) {
@@ -81,12 +81,31 @@ class Util {
 	 * @param array $indices
 	 * @return array
 	 */
-	public static function arrayMultiGet($array, $indices) {
+	public static function arrayMultiGet(array $array, $indices) {
 		$result = [];
 		foreach ($indices as $index) {
 			$result[] = $array[$index];
 		}
 		return $result;
+	}
+
+	/**
+	 * Convert the given array $arr so that keys of the potentially multi-dimensional array
+	 * are converted using the mapping given in $dictionary. Keys not found from $dictionary
+	 * are not altered. 
+	 * @param array $arr
+	 * @param array $dictionary
+	 * @return array
+	 */
+	public static function convertArrayKeys(array $arr, array $dictionary) {
+		$newArr = [];
+
+		foreach ($arr as $k => $v) {
+			$key = self::arrayGetOrDefault($dictionary, $k, $k);
+			$newArr[$key] = is_array($v) ? self::convertArrayKeys($v, $dictionary) : $v;
+		}
+
+		return $newArr;
 	}
 
 	/**
@@ -96,7 +115,7 @@ class Util {
 	 * @param mixed|null $default
 	 * @return mixed|null
 	 */
-	public static function arrayGetOrDefault($array, $key, $default=null) {
+	public static function arrayGetOrDefault(array $array, $key, $default=null) {
 		return isset($array[$key]) ? $array[$key] : $default;
 	}
 

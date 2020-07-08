@@ -51,17 +51,7 @@ class GenreMapper extends BaseMapper {
 				GROUP BY `genre`.`id`, `genre`.`name`, `genre`.`lower_name`
 				ORDER BY `genre`.`lower_name`';
 
-		if ($limit) {
-			$sql .= " LIMIT $limit";
-		}
-
-		if ($offset) {
-			$sql .= " OFFSET $offset";
-		}
-
-		$rows = $this->execute($sql, [$userId]);
-
-		return $rows->fetchAll(\PDO::FETCH_CLASS, $this->entityClass);
+		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
 }

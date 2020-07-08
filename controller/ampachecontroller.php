@@ -112,9 +112,9 @@ class AmpacheController extends Controller {
 
 	public function ampacheResponse($content) {
 		if ($this->jsonMode) {
-			return new JSONResponse($content);
+			return new JSONResponse(self::prepareResultForJsonApi($content));
 		} else {
-			return new XMLResponse(['root' => $content], ['id', 'count']);
+			return new XMLResponse(['root' => $content], ['id', 'count', 'code']);
 		}
 	}
 
@@ -554,7 +554,7 @@ class AmpacheController extends Controller {
 		return $this->ampacheResponse([
 			'artist' => \array_map(function($artist) use ($userId, $genreMap, $auth) {
 				return [
-					'id' => $artist->getId(),
+					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
 					'albums' => $this->albumBusinessLayer->countByArtist($artist->getId()),
 					'songs' => $this->trackBusinessLayer->countByArtist($artist->getId()),
@@ -563,7 +563,7 @@ class AmpacheController extends Controller {
 					'preciserating' => 0,
 					'tag' => \array_map(function($genreId) use ($genreMap) {
 						return [
-							'id' => $genreId,
+							'id' => (string)$genreId,
 							'value' => $genreMap[$genreId]->getNameString($this->l10n),
 							'count' => 1
 						];
@@ -582,10 +582,10 @@ class AmpacheController extends Controller {
 			'album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
 				$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 				return [
-					'id' => $album->getId(),
+					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
 					'artist' => [
-						'id' => $artist->getId(),
+						'id' => (string)$artist->getId(),
 						'value' => $artist->getNameString($this->l10n)
 					],
 					'tracks' => $this->trackBusinessLayer->countByAlbum($album->getId()),
@@ -595,7 +595,7 @@ class AmpacheController extends Controller {
 					'preciserating' => 0,
 					'tag' => \array_map(function($genreId) use ($genreMap) {
 						return [
-							'id' => $genreId,
+							'id' => (string)$genreId,
 							'value' => $genreMap[$genreId]->getNameString($this->l10n),
 							'count' => 1
 						];
@@ -633,18 +633,18 @@ class AmpacheController extends Controller {
 				$albumArtist = $album->getAlbumArtist();
 
 				$result = [
-					'id' => $track->getId(),
+					'id' => (string)$track->getId(),
 					'title' => $track->getTitle(),
 					'artist' => [
-						'id' => $artist->getId(),
+						'id' => (string)$artist->getId(),
 						'value' => $artist->getNameString($this->l10n)
 					],
 					'albumartist' => [
-						'id' => $albumArtist->getId(),
+						'id' => (string)$albumArtist->getId(),
 						'value' => $albumArtist->getNameString($this->l10n)
 					],
 					'album' => [
-						'id' => $album->getId(),
+						'id' => (string)$album->getId(),
 						'value' => $album->getNameString($this->l10n)
 					],
 					'url' => $this->createAmpacheActionUrl('_play', $track->getId(), $auth),
@@ -661,11 +661,11 @@ class AmpacheController extends Controller {
 
 				$genreId = $track->getGenreId();
 				if ($genreId !== null) {
-					$result['tag'] = [
-						'id' => $genreId,
+					$result['tag'] = [[
+						'id' => (string)$genreId,
 						'value' => $genreMap[$genreId]->getNameString($this->l10n),
 						'count' => 1
-					];
+					]];
 				}
 				return $result;
 			}, $tracks)
@@ -676,7 +676,7 @@ class AmpacheController extends Controller {
 		return $this->ampacheResponse([
 			'playlist' => \array_map(function($playlist) {
 				return [
-					'id' => $playlist->getId(),
+					'id' => (string)$playlist->getId(),
 					'name' => $playlist->getName(),
 					'owner' => $this->ampacheUser->getUserId(),
 					'items' => $playlist->getTrackCount(),
@@ -690,7 +690,7 @@ class AmpacheController extends Controller {
 		return $this->ampacheResponse([
 			'tag' => \array_map(function($genre) {
 				return [
-					'id' => $genre->getId(),
+					'id' => (string)$genre->getId(),
 					'name' => $genre->getNameString($this->l10n),
 					'albums' => $genre->getAlbumCount(),
 					'artists' => $genre->getArtistCount(),
@@ -703,6 +703,23 @@ class AmpacheController extends Controller {
 		]);
 	}
 
+	/**
+	 * The JSON API has some asymmetries with the JSON API. This function makes the needed
+	 * translations for the result content before it is converted into JSON. 
+	 * @param array $content
+	 * @return array
+	 */
+	private static function prepareResultForJsonApi($content) {
+		if (\array_key_exists('error', $content)) {
+			$content = Util::convertArrayKeys($content, ['value' => 'message']);
+		}
+		else {
+			// in all responses except the error response, the root node is anonymous
+			$content = \array_pop($content);
+			$content = Util::convertArrayKeys($content, ['value' => 'name']);
+		}
+		return $content;
+	}
 }
 
 /**

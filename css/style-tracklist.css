@@ -12,6 +12,10 @@
  * Common rules for the track-list directive
  */
 
+.track-list li {
+	line-height: 20px;
+}
+
 .track-list li,
 .track-list li * {
 	cursor: pointer;

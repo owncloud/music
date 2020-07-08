@@ -29,13 +29,13 @@
 	margin-top: 40px;
 }
 
-#music-user a,
+#music-user a:not(.icon),
 #music-user .warning a {
 	font-weight: normal !important; /* use !important to override the core style within .warning */
 	text-decoration: underline;
 }
 
-#music-user a:after,
+#music-user a:not(.icon):after,
 #music-user .warning a:after {
 	content: " ↗";
 }

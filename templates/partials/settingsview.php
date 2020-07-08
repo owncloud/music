@@ -47,11 +47,11 @@
 		</tr>
 		<tr ng-repeat="key in settings.ampacheKeys">
 			<td>{{key.description}}</td>
-			<td class="key-action"><a ng-class="key.loading ? 'icon-loading-small' : 'icon-delete'" ng-click="removeAPIKey(key)"></a></td>
+			<td class="key-action"><a class="icon" ng-class="key.loading ? 'icon-loading-small' : 'icon-delete'" ng-click="removeAPIKey(key)"></a></td>
 		</tr>
 		<tr id="music-ampache-template-row" class="hidden">
 			<td></td>
-			<td class="key-action"><a class="icon-loading-small" data-id=""></a></td>
+			<td class="key-action"><a class="icon icon-loading-small" data-id=""></a></td>
 		</tr>
 	</table>
 	<div id="music-ampache-form">
@@ -74,18 +74,18 @@
 	<div class="clickable" ng-show="!showAdmin" ng-click="showAdmin=true" translate>Show...</div>
 	<div ng-show="showAdmin">
 		<p translate translate-params-filename="'<cloud root>/config/config.php'">
-			There is no settings UI for the cloud-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>.
+			There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below.
 		</p>
 		<div>
 			<p>music.lastfm_api_key</p>
 			<p><em translate translate-params-url="'https://www.last.fm/api/account/create'">
-				To see the Artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{url}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key, which can be entered to config.php.
+				To see the artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{url}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key.
 			</em></p>
 		</div>
 		<div>
 			<p>music.cover_size</p>
 			<p><em translate>
-				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels.
+				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer.
 			</em></p>
 		</div>
 	</div>

@@ -24,25 +24,25 @@ msgstr ""
 msgid "+ New Playlist"
 msgstr ""
 
-#: ../js/public/app.js:1023
+#: ../js/public/app.js:1027
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1029
+#: ../js/public/app.js:1033
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1038
+#: ../js/public/app.js:1042
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/public/app.js:1018
+#: ../js/public/app.js:1022
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -78,11 +78,11 @@ msgstr ""
 msgid "Ampache and Subsonic"
 msgstr ""
 
-#: ../js/public/app.js:1406
+#: ../js/public/app.js:1410
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/public/app.js:2364
+#: ../js/public/app.js:2368
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
@@ -115,13 +115,13 @@ msgstr ""
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../js/public/app.js:3189
-#: ../js/public/app.js:3398
+#: ../js/public/app.js:3193
+#: ../js/public/app.js:3402
 #: ../templates/partials/playlistview.php:26
 msgid "Details"
 msgstr ""
 
-#: ../js/public/app.js:1604
+#: ../js/public/app.js:1608
 msgid "Error playing file:"
 msgstr ""
 
@@ -129,11 +129,11 @@ msgstr ""
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
-#: ../js/public/app.js:1116
+#: ../js/public/app.js:1120
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../js/public/app.js:2388
+#: ../js/public/app.js:2392
 msgid "Failed to reset the collection:"
 msgstr ""
 
@@ -173,12 +173,12 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../js/public/app.js:1106
+#: ../js/public/app.js:1110
 msgid "Internal server error"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:87
-msgid "Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels."
+msgid "Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer."
 msgstr ""
 
 #: ../templates/fake-template.php:11
@@ -247,7 +247,7 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: ../js/public/app.js:2323
+#: ../js/public/app.js:2327
 #: ../templates/partials/settingsview.php:5
 msgid "Path to your music collection"
 msgstr ""
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../js/public/app.js:3187
+#: ../js/public/app.js:3191
 #: ../templates/partials/albumsview.php:25
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:5
@@ -280,7 +280,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../js/public/app.js:1407
+#: ../js/public/app.js:1411
 msgid "Remove playlist"
 msgstr ""
 
@@ -296,12 +296,12 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/public/app.js:2054
+#: ../js/public/app.js:2058
 #: ../js/public/app.js:317
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../js/public/app.js:2365
+#: ../js/public/app.js:2369
 #: ../templates/partials/settingsview.php:16
 msgid "Reset music collection"
 msgstr ""
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Scanning music …"
 msgstr ""
 
-#: ../js/public/app.js:2176
+#: ../js/public/app.js:2180
 msgid "Search not available in this view"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../js/public/app.js:3400
+#: ../js/public/app.js:3404
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
@@ -331,7 +331,7 @@ msgstr ""
 msgid "Show in Files"
 msgstr ""
 
-#: ../js/public/app.js:3397
+#: ../js/public/app.js:3401
 msgid "Show less …"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "Similar to"
 msgstr ""
 
-#: ../js/public/app.js:1780
+#: ../js/public/app.js:1784
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -367,12 +367,12 @@ msgstr ""
 msgid "Technical"
 msgstr ""
 
-#: ../js/public/app.js:2445
+#: ../js/public/app.js:2449
 msgid "Text copied to clipboard"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:76
-msgid "There is no settings UI for the cloud-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>."
+msgid "There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below."
 msgstr ""
 
 #: ../templates/partials/settingsview.php:22
@@ -387,12 +387,12 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/public/app.js:1109
+#: ../js/public/app.js:1113
 msgid "Timeout"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:81
-msgid "To see the Artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href=\"{{url}}\" target=\"_blank\">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key, which can be entered to config.php."
+msgid "To see the artist biography from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href=\"{{url}}\" target=\"_blank\">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key."
 msgstr ""
 
 #: ../templates/fake-template.php:8
@@ -411,7 +411,7 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../js/public/app.js:582
+#: ../js/public/app.js:586
 msgid "Upload image named \"{{name}}\" to anywhere within your library path to see it here."
 msgstr ""
 

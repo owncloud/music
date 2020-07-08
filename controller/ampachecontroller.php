@@ -552,7 +552,6 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'total_count' => \count($artists),
 			'artist' => \array_map(function($artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => $artist->getId(),
@@ -580,7 +579,6 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'total_count' => \count($albums),
 			'album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
 				$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
 				return [
@@ -629,7 +627,6 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'total_count' => \count($tracks),
 			'song' => \array_map(function($track) use ($auth, $genreMap) {
 				$artist = $track->getArtist();
 				$album = $track->getAlbum();
@@ -677,7 +674,6 @@ class AmpacheController extends Controller {
 
 	private function renderPlaylists($playlists) {
 		return $this->ampacheResponse([
-			'total_count' => [\count($playlists)],
 			'playlist' => \array_map(function($playlist) {
 				return [
 					'id' => $playlist->getId(),
@@ -692,7 +688,6 @@ class AmpacheController extends Controller {
 
 	private function renderTags($genres) {
 		return $this->ampacheResponse([
-			'total_count' => [\count($genres)],
 			'tag' => \array_map(function($genre) {
 				return [
 					'id' => $genre->getId(),

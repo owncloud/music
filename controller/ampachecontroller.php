@@ -355,9 +355,7 @@ class AmpacheController extends Controller {
 	}
 
 	protected function tags($filter, $exact, $limit, $offset) {
-		$userId = $this->ampacheUser->getUserId();
-		// TODO: $filter, $exact
-		$genres = $this->genreBusinessLayer->findAll($userId, SortBy::Name, $limit, $offset);
+		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);
 	}
 

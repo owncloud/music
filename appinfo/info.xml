@@ -7,14 +7,14 @@
 
 In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, search tracks by keywords, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to next files of the folder until stopped. The app includes also a server compatible with Ampache and Subsonic clients.
 
-The Music app also integrates with the mediaSession API (available at least on recent versions of Chrome) both when playing music within Files and in the stand-alone view. When the API is supported by the browser, this allows controlling the playback with the media keys (play/pause/stop/next/prev) on the keyboard even when the browser is not focused, and shows the playback controls also on the lock screen of the OS (at least on Windows 10 and Android).
+The Music app also integrates with the mediaSession API (available at least on recent versions of Chrome and Edge) both when playing music within Files and in the stand-alone view. When the API is supported by the browser, this allows controlling the playback with the media keys (play/pause/stop/next/prev) on the keyboard even when the browser is not focused, and shows the playback controls also on the lock screen of the OS (tested on Windows 10 and Android).
 
 Limitations: The app can handle libraries of more than 50´000 tracks on modern desktop browsers, but the user experience is optimized for somewhat smaller collections. Libraries significantly larger than this may fail to function altogether. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>0.15.0-alpha1</version>
+	<version>0.15.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/87074106-116b9e00-c227-11ea-93dc-25ea86983268.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

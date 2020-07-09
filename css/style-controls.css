@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 #controls {
@@ -51,10 +51,6 @@ body:not(.snapjs-left) #controls.taller-header {
 	padding: 10px;
 	margin: 9px 2px 5px;
 	cursor: pointer;
-
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity = 40);
 	opacity: .4;
 }
 
@@ -70,9 +66,6 @@ body:not(.snapjs-left) #controls.taller-header {
 }
 
 #controls .control:hover, #controls .control:focus {
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity = 100);
 	opacity: 1;
 }
 
@@ -144,8 +137,6 @@ body:not(.snapjs-left) #controls.taller-header {
 }
 
 #controls .buffer-bar {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
-	filter: alpha(opacity = 10);
 	opacity: 0.1;
 }
 
@@ -161,8 +152,6 @@ body:not(.snapjs-left) #controls.taller-header {
 
 .control.toggle.active,
 .control.toggle:hover {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity = 100);
 	opacity: 1;
 }
 
@@ -177,8 +166,6 @@ body:not(.snapjs-left) #controls.taller-header {
 
 #controls #volume-icon {
 	cursor: default;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity = 40);
 	opacity: .4;
 	position: absolute;
 	top: 0;

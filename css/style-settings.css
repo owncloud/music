@@ -67,14 +67,10 @@
 #music-user .clipboardButton {
 	background-size: 16px 16px;
 	padding: 16px;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity=50);
 	opacity: .5;
 }
 
 #music-user .clipboardButton:hover {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity=100);
 	opacity: 1;
 }
 
@@ -106,8 +102,6 @@
 
 #music-user table td.key-action a {
 	padding: 10px 16px;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity=50);
 	opacity: .5;
 }
 

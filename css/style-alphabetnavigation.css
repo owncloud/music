@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 .alphabet-navigation {
@@ -20,8 +20,6 @@
 .alphabet-navigation a {
 	display: block;
 	font-weight: bold;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
-	filter: alpha(opacity = 10);
 	opacity: .1;
 }
 
@@ -31,8 +29,6 @@
 
 .alphabet-navigation a.available {
 	display: block;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity = 40);
 	opacity: .4;
 }
 
@@ -41,8 +37,6 @@
 }
 
 .alphabet-navigation a.available:hover {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-	filter: alpha(opacity = 80);
 	opacity: .8;
 }
 

@@ -29,16 +29,12 @@
 	width: 44px;
 	height: 44px;
 	opacity: 0.5;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity=50);
 	z-index: 1;
 	background-color: #ffffffcc;
 }
 
 #app-sidebar .close:hover {
 	opacity: 1;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity=100);
 }
 
 #app-sidebar .albumart {
@@ -54,8 +50,6 @@
 	vertical-align: middle;
 	text-align: center;
 	opacity: 0.4;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity=40);
 }
 
 #app-sidebar #path {
@@ -85,10 +79,6 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-align: right;
-
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-	filter: alpha(opacity = 50);
 	opacity: .5;
 }
 
@@ -161,8 +151,6 @@
 	text-align: center;
 	margin-top: 40px;
 	opacity: 0.4;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity=40);
 }
 
 #app-sidebar #lastfm-info p {

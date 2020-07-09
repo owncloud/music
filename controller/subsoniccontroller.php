@@ -437,7 +437,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getGenres() {
-		$genres = $this->genreBusinessLayer->findAllWithCounts($this->userId);
+		$genres = $this->genreBusinessLayer->findAll($this->userId, SortBy::Name);
 
 		return $this->subsonicResponse(['genres' =>
 			[

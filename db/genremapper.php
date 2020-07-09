@@ -30,28 +30,25 @@ class GenreMapper extends BaseMapper {
 	}
 
 	/**
-	 * Count tracks, albums, and artists by genre
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
-	 * @return Genre[] with also all the count properties set
+	 * @see \OCA\Music\Db\BaseMapper::selectEntities
+	 * @param string $condition 
+	 * @param string|null $extension
+	 * @return string SQL query
 	 */
-	public function findAllWithCounts($userId, $limit=null, $offset=null) {
-		$sql = 'SELECT
-					`genre`.`id`,
-					`genre`.`name`,
-					`genre`.`lower_name`,
+	protected function selectEntities($condition, $extension=null) {
+		return "SELECT
+					`*PREFIX*music_genres`.`id`,
+					`*PREFIX*music_genres`.`name`,
+					`*PREFIX*music_genres`.`lower_name`,
 					COUNT(`track`.`id`) AS `trackCount`,
 					COUNT(DISTINCT(`track`.`album_id`)) AS `albumCount`,
 					COUNT(DISTINCT(`track`.`artist_id`)) AS `artistCount`
 				FROM `*PREFIX*music_tracks` `track`
-				INNER JOIN `*PREFIX*music_genres` `genre`
-				ON `track`.`genre_id` = `genre`.`id`
-				WHERE `track`.`genre_id` IS NOT NULL and `track`.`user_id` = ?
-				GROUP BY `genre`.`id`, `genre`.`name`, `genre`.`lower_name`
-				ORDER BY `genre`.`lower_name`';
-
-		return $this->findEntities($sql, [$userId], $limit, $offset);
+				INNER JOIN `*PREFIX*music_genres`
+				ON `track`.`genre_id` = `*PREFIX*music_genres`.`id`
+				WHERE `track`.`genre_id` IS NOT NULL AND $condition
+				GROUP BY `*PREFIX*music_genres`.`id`, `*PREFIX*music_genres`.`name`, `*PREFIX*music_genres`.`lower_name`
+				HAVING COUNT(`track`.`id`) > 0";
 	}
 
 }

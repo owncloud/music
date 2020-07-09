@@ -62,25 +62,6 @@ class GenreBusinessLayer extends BusinessLayer {
 			$genre->setTrackIds(Util::arrayGetOrDefault($tracksByGenre, $genre->getId()));
 		}
 
-		// Filter out genres with no tracks
-		return \array_filter($genres, function($genre) {
-			return !empty($genre->getTrackIds());
-		});
-	}
-
-	/**
-	 * Retrun all genres of the user, along with count of tracks, albums, and artists on each genre
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
-	 * @return Genre[]
-	 */
-	public function findAllWithCounts($userId, $limit=null, $offset=null) {
-		$genres = $this->mapper->findAllWithCounts($userId, $limit, $offset);
-
-		// Filter out genres with no entities
-		return \array_filter($genres, function($genre) {
-			return $genre->getTrackCount() > 0 || $genre->getAlbumCount() > 0 || $genre->artistCount() > 0;
-		});
+		return $genres;
 	}
 }

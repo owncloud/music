@@ -45,7 +45,7 @@ abstract class BaseMapper extends Mapper {
 	 * @return Entity
 	 */
 	public function find($id, $userId) {
-		$sql = $this->selectUserEntities('`id` = ?');
+		$sql = $this->selectUserEntities("`{$this->getTableName()}`.`id` = ?");
 		return $this->findEntity($sql, [$userId, $id]);
 	}
 
@@ -57,7 +57,7 @@ abstract class BaseMapper extends Mapper {
 	 */
 	public function findById($ids, $userId=null) {
 		$count = \count($ids);
-		$condition = '`id` IN '. $this->questionMarks($count);
+		$condition = "`{$this->getTableName()}`.`id` IN ". $this->questionMarks($count);
 
 		if (empty($userId)) {
 			$sql = $this->selectEntities($condition);
@@ -102,18 +102,18 @@ abstract class BaseMapper extends Mapper {
 	 * @return Artist[]
 	 */
 	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
-		$nameCol = $this->nameColumn;
+		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
 		if ($name === null) {
-			$condition = "`$nameCol` IS NULL";
+			$condition = "$nameCol IS NULL";
 			$params = [$userId];
 		} elseif ($fuzzy) {
-			$condition = "LOWER(`$nameCol`) LIKE LOWER(?)";
+			$condition = "LOWER($nameCol) LIKE LOWER(?)";
 			$params = [$userId, "%$name%"];
 		} else {
-			$condition = "`$nameCol` = ?";
+			$condition = "$nameCol = ?";
 			$params = [$userId, $name];
 		}
-		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER(`$nameCol`)");
+		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER($nameCol)");
 
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -127,7 +127,9 @@ abstract class BaseMapper extends Mapper {
 	 * @return Entity[]
 	 */
 	public function findAllStarred($userId, $limit=null, $offset=null) {
-		$sql = $this->selectUserEntities('`starred` IS NOT NULL', "ORDER BY LOWER(`{$this->nameColumn}`)");
+		$sql = $this->selectUserEntities(
+				"`{$this->getTableName()}`.`starred` IS NOT NULL",
+				"ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
 		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
@@ -140,7 +142,7 @@ abstract class BaseMapper extends Mapper {
 		if ($count === 0) {
 			return;
 		}
-		$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` IN '. $this->questionMarks($count);
+		$sql = "DELETE FROM `{$this->getTableName()}` WHERE `id` IN ". $this->questionMarks($count);
 		$this->execute($sql, $ids);
 	}
 
@@ -149,8 +151,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param string $userId
 	 */
 	public function count($userId) {
-		$sql = 'SELECT COUNT(*) AS count FROM `' . $this->getTableName() . '` '.
-			'WHERE `user_id` = ?';
+		$sql = "SELECT COUNT(*) AS count FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
 		return \intval($row['count']);
@@ -184,8 +185,8 @@ abstract class BaseMapper extends Mapper {
 			$date = $date->format(self::SQL_DATE_FORMAT);
 		}
 
-		$sql = "UPDATE `{$this->getTableName()}` SET `starred` = ? " .
-				"WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
+		$sql = "UPDATE `{$this->getTableName()}` SET `starred` = ?
+				WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
 		$params = \array_merge([$date], $ids, [$userId]);
 		$this->execute($sql, $params);
 	}
@@ -212,7 +213,7 @@ abstract class BaseMapper extends Mapper {
 	 *                               the conditions in the SQL statement
 	 */
 	protected function selectUserEntities($condition=null, $extension=null) {
-		$allConditions = '`user_id` = ?';
+		$allConditions = "`{$this->getTableName()}`.`user_id` = ?";
 
 		if (!empty($condition)) {
 			$allConditions .= " AND $condition";

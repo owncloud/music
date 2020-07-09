@@ -35,12 +35,12 @@ class Genre extends Entity {
 	public $userId;
 	public $name;
 	public $lowerName;
-
-	// not from the music_genres table
+	// not from the music_genres table but still part of the standard content of this entity
 	public $trackCount;
 	public $albumCount;
 	public $artistCount;
 
+	// not part of the standard content, injected separately when needed
 	public $trackIds;
 
 	public function __construct() {

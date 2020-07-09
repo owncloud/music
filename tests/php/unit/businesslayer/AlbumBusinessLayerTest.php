@@ -67,6 +67,16 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo(null),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getDiscCountByAlbumId')
+			->with($this->equalTo(null),
+					$this->equalTo($this->userId))
+			->will($this->returnValue([1 => 1, 2 => 1, 3 => 1]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getGenresByAlbumId')
+			->with($this->equalTo(null),
+					$this->equalTo($this->userId))
+			->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->findAll($this->userId);
 		$this->assertEquals($this->response, $result);
@@ -99,6 +109,16 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo([$albumId]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getDiscCountByAlbumId')
+			->with($this->equalTo([$albumId]),
+					$this->equalTo($this->userId))
+			->will($this->returnValue([$albumId => 1]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getGenresByAlbumId')
+			->with($this->equalTo([$albumId]),
+					$this->equalTo($this->userId))
+		->will($this->returnValue([]));
 
 		$result = $this->albumBusinessLayer->find($albumId, $this->userId);
 		$this->assertEquals($this->response[$albumId-1], $result);
@@ -121,6 +141,16 @@ class AlbumBusinessLayerTest extends \PHPUnit_Framework_TestCase {
 			]));
 		$this->mapper->expects($this->exactly(1))
 			->method('getYearsByAlbumId')
+			->with($this->equalTo([1, 2]),
+					$this->equalTo($this->userId))
+			->will($this->returnValue([]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getDiscCountByAlbumId')
+			->with($this->equalTo([1, 2]),
+					$this->equalTo($this->userId))
+			->will($this->returnValue([1 => 1, 2 => 1]));
+		$this->mapper->expects($this->exactly(1))
+			->method('getGenresByAlbumId')
 			->with($this->equalTo([1, 2]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue([]));

@@ -10,19 +10,6 @@
  * @copyright Pauli Järvinen 2016 - 2020
  */
 
-// fix SVGs in IE because the scaling is a real PITA
-// https://github.com/owncloud/music/issues/126
-if ($('html').hasClass('ie')) {
-	var replaceSVGs = function() {
-		replaceSVG();
-		// call them periodically to keep track of possible changes in the artist view
-		setTimeout(replaceSVG, 10000);
-	};
-	replaceSVG();
-	setTimeout(replaceSVG, 1000);
-	setTimeout(replaceSVGs, 5000);
-}
-
 angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSanitize', 'ang-drag-drop'])
 	.config(['RestangularProvider', '$routeProvider', '$locationProvider', '$compileProvider',
 		function (RestangularProvider, $routeProvider, $locationProvider, $compileProvider) {

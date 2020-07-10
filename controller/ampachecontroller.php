@@ -702,18 +702,35 @@ class AmpacheController extends Controller {
 	}
 
 	/**
+	 * Array is considered to be "indexed" if its first element has numerical key.
+	 * Empty array is considered to be "indexed".
+	 * @param array $array
+	 */
+	private static function arrayIsIndexed(array $array) {
+		reset($array);
+		return empty($array) || \is_int(key($array));
+	}
+
+	/**
 	 * The JSON API has some asymmetries with the JSON API. This function makes the needed
 	 * translations for the result content before it is converted into JSON. 
 	 * @param array $content
 	 * @return array
 	 */
 	private static function prepareResultForJsonApi($content) {
+		// In all responses returning an array of library entities, the root node is anonymous.
+		// Unwrap the outermost array if it is an associative array with a single array-type value.
+		if (\count($content) === 1 && !self::arrayIsIndexed($content)
+				&& \is_array(\current($content)) && self::arrayIsIndexed(\current($content))) {
+			$content = \array_pop($content);
+		}
+
+		// The key 'value' has a special meaning on XML responses, as it makes the corresponding value
+		// to be treated as text content of the parent element. In the JSON API, these are mostly
+		// substituted with property 'name', but error responses use the property 'message', instead.
 		if (\array_key_exists('error', $content)) {
 			$content = Util::convertArrayKeys($content, ['value' => 'message']);
-		}
-		else {
-			// in all responses except the error response, the root node is anonymous
-			$content = \array_pop($content);
+		} else {
 			$content = Util::convertArrayKeys($content, ['value' => 'name']);
 		}
 		return $content;

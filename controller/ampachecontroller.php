@@ -324,7 +324,8 @@ class AmpacheController extends Controller {
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset);
 
 		// append "All tracks" if not searching by name, and it is not off-limit
-		if (empty($filter) && ($limit === null || \count($playlists) < $limit)) {
+		$allTracksIndex = $this->playlistBusinessLayer->count($userId);
+		if (empty($filter) && self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
 			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}
 
@@ -543,6 +544,17 @@ class AmpacheController extends Controller {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * @param int $index
+	 * @param int|null $offset
+	 * @param int|null $limit
+	 * @return boolean
+	 */
+	private static function indexIsWithinOffsetAndLimit($index, $offset, $limit) {
+		$offset = \intval($offset); // missing offset is interpreted as 0-offset
+		return ($limit === null) || ($index >= $offset && $index < $offset + $limit);
 	}
 
 	private function renderArtists($artists, $auth) {

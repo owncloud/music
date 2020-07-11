@@ -411,7 +411,7 @@ class AmpacheController extends Controller {
 		// All the other unsupported arguments are just ignored, but a request with an offset
 		// is responded with an error. This is becuase the client would probably work in an
 		// unexpected way if it thinks it's streaming from offset but actually it is streaming
-		// from the beginning of the file. Returning an error gives the clien a chance to fallback
+		// from the beginning of the file. Returning an error gives the client a chance to fallback
 		// to other methods of seeking.
 		if ($offset !== null) {
 			throw new AmpacheException('Streaming with time offset is not supported', 405);

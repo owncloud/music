@@ -81,7 +81,7 @@ class Util {
 	 * @param array $indices
 	 * @return array
 	 */
-	public static function arrayMultiGet(array $array, $indices) {
+	public static function arrayMultiGet(array $array, array $indices) {
 		$result = [];
 		foreach ($indices as $index) {
 			$result[] = $array[$index];

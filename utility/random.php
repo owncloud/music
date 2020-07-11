@@ -34,12 +34,18 @@ class Random {
 	 */
 	public static function pickItems($itemArray, $count) {
 		$count = \min($count, \count($itemArray)); // can't return more than all items
-		$indices = \array_rand($itemArray, $count);
-		if ($count == 1) { // return type is not array when randomizing a single index
-			$indices = [$indices];
-		}
 
-		return Util::arrayMultiGet($itemArray, $indices);
+		if ($count == 0) {
+			return [];
+		}
+		else {
+			$indices = \array_rand($itemArray, $count);
+			if ($count == 1) { // return type is not array when randomizing a single index
+				$indices = [$indices];
+			}
+
+			return Util::arrayMultiGet($itemArray, $indices);
+		}
 	}
 
 	/**

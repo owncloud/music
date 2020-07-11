@@ -123,9 +123,9 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function xmlApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+	public function xmlApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
-		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset);
+		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id);
 	}
 
 	/**
@@ -133,12 +133,12 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function jsonApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+	public function jsonApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
-		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset);
+		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id);
 	}
 
-	protected function dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset) {
+	protected function dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
 		$this->logger->log("Ampache action '$action' requested", 'debug');
 
 		$limit = self::validateLimitOrOffset($limit);
@@ -185,14 +185,16 @@ class AmpacheController extends Controller {
 				return $this->tag_albums($filter, $limit, $offset, $auth);
 			case 'tag_songs':
 				return $this->tag_songs($filter, $limit, $offset, $auth);
+			case 'download':
+				return $this->download($id); // args 'type' and 'format' not supported
+			case 'stream':
+				return $this->stream($id, $offset); // args 'type', 'bitrate', 'format', and 'length' not supported
 
 			# non Ampache API actions
-			case '_play':
-				return $this->_play($filter);
 			case '_get_album_cover':
-				return $this->_get_album_cover($filter);
+				return $this->_get_album_cover($id);
 			case '_get_artist_cover':
-				return $this->_get_artist_cover($filter);
+				return $this->_get_artist_cover($id);
 		}
 
 		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
@@ -385,10 +387,7 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($tracks, $auth);
 	}
 
-	/***************************************************************
-	 * API methods which are not part of the Ampache specification *
-	 ***************************************************************/
-	protected function _play($trackId) {
+	protected function download($trackId) {
 		$userId = $this->ampacheUser->getUserId();
 
 		try {
@@ -406,6 +405,24 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	protected function stream($trackId, $offset) {
+		// This is just a dummy implementation. We don't support transcoding or streaming
+		// from a time offset.
+		// All the other unsupported arguments are just ignored, but a request with an offset
+		// is responded with an error. This is becuase the client would probably work in an
+		// unexpected way if it thinks it's streaming from offset but actually it is streaming
+		// from the beginning of the file. Returning an error gives the clien a chance to fallback
+		// to other methods of seeking.
+		if ($offset !== null) {
+			throw new AmpacheException('Streaming with time offset is not supported', 405);
+		}
+
+		return $this->download($trackId);
+	}
+
+	/***************************************************************
+	 * API methods which are not part of the Ampache specification *
+	 ***************************************************************/
 	protected function _get_album_cover($albumId) {
 		return $this->getCover($albumId, $this->albumBusinessLayer);
 	}
@@ -510,10 +527,10 @@ class AmpacheController extends Controller {
 		return $tracks;
 	}
 
-	private function createAmpacheActionUrl($action, $filter, $auth) {
+	private function createAmpacheActionUrl($action, $id, $auth) {
 		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute($api))
-				. "?action=$action&filter=$filter&auth=$auth";
+				. "?action=$action&id=$id&auth=$auth";
 	}
 
 	private function createCoverUrl($entity, $auth) {
@@ -657,7 +674,7 @@ class AmpacheController extends Controller {
 						'id' => (string)$album->getId(),
 						'value' => $album->getNameString($this->l10n)
 					],
-					'url' => $this->createAmpacheActionUrl('_play', $track->getId(), $auth),
+					'url' => $this->createAmpacheActionUrl('download', $track->getId(), $auth),
 					'time' => $track->getLength(),
 					'year' => $track->getYear(),
 					'track' => $track->getAdjustedTrackNumber(),

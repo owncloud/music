@@ -1,3 +1,15 @@
+v0.15.1 2020-07-12
+ * fix unable to scan music after database reset (regression in v0.15.0) (#774)
+ * Ampache:
+   * fix `handshake` and `ping` not working on JSON API (#768)
+   * fix handling of `offset` argument in the action `playlists` (#768)
+   * fix action `tags` to return the genres in alphabetical order (regression in v0.15.0)
+   * provide limited support for actions `download` and `stream` (#768)
+ * Subsonic:
+   * fix an error being logged if `getRandomSongs` called on an empty library (#775)
+   * fix method `getGenres` to return the genres in alphabetical order (regression in v0.15.0)
+ * add optional argument `--folder=<target>` to `occ music:scan` to scan only the specified folder (#771)
+
 v0.15.0 2020-07-10
  * added artist details pane
    * the pane shows artist biography from Last.fm if the API connection has been configured

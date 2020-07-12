@@ -12,17 +12,25 @@
 
 
 angular.module('Music').controller('NavigationController', [
-	'$rootScope', '$scope', 'Restangular', '$timeout', 'playlistService', 'libraryService', 'gettextCatalog',
-	function ($rootScope, $scope, Restangular, $timeout, playlistService, libraryService, gettextCatalog) {
+	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'libraryService', 'gettextCatalog',
+	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
 		$scope.newPlaylistName = '';
+		$scope.popupShownForPlaylist = null;
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
 		// same as above, but for the playlist renaming. Holds the number of the playlist, which is currently edited
 		$scope.showEditForm = null;
+
+		// hide 'more' popup menu of a playlist when user clicks anywhere on the page
+		$document.click(function (event) {
+			$timeout(function() {
+				$scope.popupShownForPlaylist = null;
+			});
+		});
 
 		// Start creating playlist
 		$scope.startCreate = function() {
@@ -44,6 +52,15 @@ angular.module('Music').controller('NavigationController', [
 				});
 
 				$scope.showCreateForm = false;
+			}
+		};
+
+		// Show/hide the more actions menu on a playlist
+		$scope.onPlaylistMoreButton = function(playlist) {
+			if ($scope.popupShownForPlaylist == playlist) {
+				$scope.popupShownForPlaylist = null;
+			} else {
+				$scope.popupShownForPlaylist = playlist;
 			}
 		};
 

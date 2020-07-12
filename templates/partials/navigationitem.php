@@ -20,11 +20,16 @@
 			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
 	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
-		<button class="action icon-delete"
-			ng-click="$parent.$parent.remove(playlist)"
-			alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
-		<button class="action icon-rename"
-			ng-click="$parent.$parent.startEdit(playlist)"
-			alt="{{ 'Rename' | translate }}" title="{{ 'Rename' | translate }}"></button>
+		<span class="icon-more action" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
+		<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
+			<ul>
+				<li ng-click="$parent.$parent.startEdit(playlist)">
+					<a class="icon-rename"><span translate>Rename</span></a>
+				</li>
+				<li ng-click="$parent.$parent.remove(playlist)">
+					<a class="icon-delete"> <span translate>Delete</span></a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </li>

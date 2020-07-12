@@ -48,7 +48,7 @@ class GenreMapper extends BaseMapper {
 				ON `track`.`genre_id` = `*PREFIX*music_genres`.`id`
 				WHERE `track`.`genre_id` IS NOT NULL AND $condition
 				GROUP BY `*PREFIX*music_genres`.`id`, `*PREFIX*music_genres`.`name`, `*PREFIX*music_genres`.`lower_name`
-				HAVING COUNT(`track`.`id`) > 0";
+				HAVING COUNT(`track`.`id`) > 0 $extension";
 	}
 
 }

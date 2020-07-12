@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Db;
@@ -173,12 +173,13 @@ class Maintenance {
 		if ($userId && $allUsers) {
 			throw new InvalidArgumentException('userId should be null if allUsers targeted');
 		}
-	
+
 		$sqls = [
 				'DELETE FROM `*PREFIX*music_tracks`',
 				'DELETE FROM `*PREFIX*music_albums`',
 				'DELETE FROM `*PREFIX*music_artists`',
 				'DELETE FROM `*PREFIX*music_playlists`',
+				'DELETE FROM `*PREFIX*music_genres`',
 				'DELETE FROM `*PREFIX*music_cache`'
 		];
 

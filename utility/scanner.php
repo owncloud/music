@@ -399,21 +399,36 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * search for music files by mimetype inside user specified library path
-	 * (which defaults to user home dir)
+	 * Search for music files by mimetype inside user specified library path
+	 * (which defaults to user home dir). Optionally, limit the search to only
+	 * the specified path. If this path doesn't point within the library path,
+	 * then nothing will be found.
 	 *
+	 * @param string $userId
+	 * @param string|null $path
 	 * @return \OCP\Files\File[]
 	 */
-	private function getMusicFiles($userId) {
+	private function getMusicFiles($userId, $path = null) {
 		try {
 			$folder = $this->userMusicFolder->getFolder($userId);
-		} catch (\OCP\Files\NotFoundException $e) {
+
+			if (!empty($path)) {
+				$userFolder = $this->resolveUserFolder($userId);
+				$requestedFolder = Util::getFolderFromRelativePath($userFolder, $path);
+				if ($folder->isSubNode($requestedFolder) || $folder->getPath() == $requestedFolder->getPath()) {
+					$folder = $requestedFolder;
+				} else {
+					throw new \OCP\Files\NotFoundException();
+				}
+			}
+		}
+		catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
 
 		// Search files with mime 'audio/*' but filter out the playlist files
 		$files = $folder->searchByMime('audio');
-		return array_filter($files, function ($f) {
+		return \array_filter($files, function ($f) {
 			return !self::isPlaylistMime($f->getMimeType());
 		});
 	}
@@ -438,14 +453,14 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function getAllMusicFileIds($userId) {
-		$musicFiles = $this->getMusicFiles($userId);
+	public function getAllMusicFileIds($userId, $path = null) {
+		$musicFiles = $this->getMusicFiles($userId, $path);
 		return Util::extractIds($musicFiles);
 	}
 
-	public function getUnscannedMusicFileIds($userId) {
+	public function getUnscannedMusicFileIds($userId, $path = null) {
 		$scannedIds = $this->getScannedFileIds($userId);
-		$allIds = $this->getAllMusicFileIds($userId);
+		$allIds = $this->getAllMusicFileIds($userId, $path);
 		$unscannedIds = Util::arrayDiff($allIds, $scannedIds);
 
 		$count = \count($unscannedIds);

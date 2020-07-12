@@ -13,7 +13,7 @@
  * @copyright Thomas Müller 2013
  * @copyright Bart Visscher 2013
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Command;
@@ -58,6 +58,12 @@ class Scan extends BaseCommand {
 					InputOption::VALUE_NONE,
 					'rescan also any previously scanned tracks'
 			)
+			->addOption(
+					'folder',
+					null,
+					InputOption::VALUE_OPTIONAL,
+					'scan only files within this folder (path is relative to the user home folder)'
+			)
 		;
 	}
 
@@ -81,11 +87,12 @@ class Scan extends BaseCommand {
 					$output,
 					$input->getOption('rescan'),
 					$input->getOption('clean-obsolete'),
+					$input->getOption('folder'),
 					$input->getOption('debug'));
 		}
 	}
 
-	protected function scanUser($user, OutputInterface $output, $rescan, $cleanObsolete, $debug) {
+	protected function scanUser($user, OutputInterface $output, $rescan, $cleanObsolete, $folder, $debug) {
 		$userHome = $this->scanner->resolveUserFolder($user);
 
 		if ($cleanObsolete) {
@@ -98,12 +105,11 @@ class Scan extends BaseCommand {
 
 		$output->writeln("Start scan for <info>$user</info>");
 		if ($rescan) {
-			$filesToScan = $this->scanner->getAllMusicFileIds($user);
-			$output->writeln('Found ' . \count($filesToScan) . ' music files to scan');
+			$filesToScan = $this->scanner->getAllMusicFileIds($user, $folder);
 		} else {
-			$filesToScan = $this->scanner->getUnscannedMusicFileIds($user);
-			$output->writeln('Found ' . \count($filesToScan) . ' new music files');
+			$filesToScan = $this->scanner->getUnscannedMusicFileIds($user, $folder);
 		}
+		$output->writeln('Found ' . \count($filesToScan) . ' music files to scan' . ($folder ? " in '$folder'" : ''));
 
 		if (\count($filesToScan)) {
 			$processedCount = $this->scanner->scanFiles(

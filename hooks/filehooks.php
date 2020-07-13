@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Hooks;
@@ -73,14 +75,12 @@ class FileHooks {
 			$userFolder = $container->query('UserFolder');
 
 			// When a file is uploaded to a folder shared by link, we end up here without current user.
-			// In that case, fall back to using file owner (available from Node in OC >= 9.0)
+			// In that case, fall back to using file owner
 			if (empty($userId)) {
-				if (\method_exists($node, 'getOwner')) {
-					$owner = $node->getOwner();
-					$userId = $owner ? $owner->getUID() : null;
-					if (!empty($userId)) {
-						$userFolder = $scanner->resolveUserFolder($userId);
-					}
+				$owner = $node->getOwner();
+				$userId = $owner ? $owner->getUID() : null;
+				if (!empty($userId)) {
+					$userFolder = $scanner->resolveUserFolder($userId);
 				}
 			}
 

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Hooks;
@@ -59,23 +61,12 @@ class ShareHooks {
 	 * @param array $params contains the params of the removed share
 	 */
 	public static function itemUnsharedFromSelf($params) {
-		// In Share 1.0 used before OC 9.0, the parameter data of this signal
-		// did not contain all the needed fields, and updating our database based
-		// on such signal would be basically impossible. Handle the signal only
-		// if the needed fields are present.
-		// See: https://github.com/owncloud/core/issues/28337
-		if (\array_key_exists('itemSource', $params)
-			&& \array_key_exists('shareWith', $params)
-			&& \array_key_exists('itemType', $params)
-			&& \array_key_exists('uidOwner', $params)) {
+		// The share recipient may be an individual user or a group, but the item is always removed from
+		// the current user alone.
+		$app = new Music();
+		$removeFromUsers = [ $app->getContainer()->query('UserId') ];
 
-			// The share recipient may be an individual user or a group, but the item is always removed from
-			// the current user alone.
-			$app = new Music();
-			$removeFromUsers = [ $app->getContainer()->query('UserId') ];
-
-			self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
-		}
+		self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
 	}
 
 	/**

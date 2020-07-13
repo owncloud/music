@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\App;
@@ -34,13 +34,10 @@ $appName = $c->query('AppName');
 
 /**
  * Set default content security policy to allow loading media from data URL.
- * The needed API is not available on ownCloud 8.2.
  */
-if (\method_exists(\OC::$server, 'getContentSecurityPolicyManager')) {
-	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-	$policy->addAllowedMediaDomain('data:');
-	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
-}
+$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+$policy->addAllowedMediaDomain('data:');
+\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 
 /**
  * register regular task
@@ -68,7 +65,7 @@ $c->getServer()->getSearch()->registerProvider(
  * The nice way to do this would be
  * \OC::$server->getEventDispatcher()->addListener('OCA\Files::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
  * \OC::$server->getEventDispatcher()->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
- * ... but this doesn't work for shared files on ownCloud 9.0, at least. Hence, we load the scripts
+ * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
  * directly if the requested URL seems to be for Files or Sharing.
  *
  * Furthermore, it would be sensible to load majority of the needed scripts within the main js file (files-music-player)

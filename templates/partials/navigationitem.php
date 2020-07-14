@@ -23,6 +23,9 @@
 		<span class="icon-more action" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
 		<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 			<ul>
+				<li ng-click="$parent.$parent.showDetails(playlist)">
+					<a class="icon-details"> <span translate>Details</span></a>
+				</li>
 				<li ng-click="$parent.$parent.startEdit(playlist)">
 					<a class="icon-rename"><span translate>Rename</span></a>
 				</li>

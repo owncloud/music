@@ -87,11 +87,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function wrapPlaylist(playlist) {
-		return {
-			id: playlist.id,
-			name: playlist.name,
-			tracks: _.map(playlist.trackIds, playlistEntryFromId)
-		};
+		var wrapped = Object.assign({}, playlist);
+		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
+		delete wrapped.trackIds;
+		return wrapped;
 	}
 
 	function wrapFolder(folder) {

@@ -3,6 +3,7 @@
 
 	<?php print_unescaped($this->inc('partials/trackdetails')) ?>
 	<?php print_unescaped($this->inc('partials/artistdetails')) ?>
+	<?php print_unescaped($this->inc('partials/playlistdetails')) ?>
 
 	<img id="follow-playback" class="control toggle small svg"
 		alt="{{ 'Follow playback' | translate }}" title="{{ 'Follow playback' | translate }}"

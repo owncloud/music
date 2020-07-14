@@ -242,7 +242,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showTrackDetails = function(trackId) {
 		$rootScope.$emit('showTrackDetails', trackId);
-		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
@@ -253,7 +252,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showArtistDetails = function(artist) {
 		$rootScope.$emit('showArtistDetails', artist.id);
-		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var artistElem = document.getElementById('artist-' + artist.id);
 			if (!isElementInViewPort(artistElem)) {
@@ -264,8 +262,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
-		$('#app-content').removeClass('with-app-sidebar');
-		$('#app-content').css('margin-right', '');
 	};
 
 	function scrollOffset() {

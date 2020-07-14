@@ -68,6 +68,8 @@ class Playlist extends Entity {
 			'name' => $this->getName(),
 			'trackIds' => $this->getTrackIdsAsArray(),
 			'id' => $this->getId(),
+			'created' => $this->getCreated(),
+			'comment' => $this->getComment()
 		];
 	}
 }

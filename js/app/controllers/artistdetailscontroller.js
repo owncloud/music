@@ -65,6 +65,8 @@ angular.module('Music').controller('ArtistDetailsController', [
 
 						$scope.artistTags = formatTags(result.artist.tags.tag);
 						$scope.similarArtists = formatLinkList(result.artist.similar.artist);
+
+						$scope.$parent.adjustFixedPositions();
 					}
 				);
 			}

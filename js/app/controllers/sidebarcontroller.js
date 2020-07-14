@@ -30,18 +30,24 @@ angular.module('Music').controller('SidebarController', [
 			});
 		};
 
-		function showTrackDetails(trackId) {
+		function showSidebar(type, id) {
 			OC.Apps.showAppSidebar();
-			$scope.contentType = 'track';
-			$scope.contentId = trackId;
+			$('#app-content').addClass('with-app-sidebar');
+			$scope.contentType = type;
+			$scope.contentId = id;
 			$scope.adjustFixedPositions();
 		}
 
+		function showTrackDetails(trackId) {
+			showSidebar('track', trackId);
+		}
+
 		function showArtistDetails(artistId) {
-			OC.Apps.showAppSidebar();
-			$scope.contentType = 'artist';
-			$scope.contentId = artistId;
-			$scope.adjustFixedPositions();
+			showSidebar('artist', artistId);
+		}
+
+		function showPlaylistDetails(playlistId) {
+			showSidebar('playlist', playlistId);
 		}
 
 		$rootScope.$on('showTrackDetails', function(event, trackId) {
@@ -52,8 +58,14 @@ angular.module('Music').controller('SidebarController', [
 			showArtistDetails(artistId);
 		});
 
+		$rootScope.$on('showPlaylistDetails', function(event, playlistId) {
+			showPlaylistDetails(playlistId);
+		});
+
 		$rootScope.$on('hideDetails', function() {
 			OC.Apps.hideAppSidebar();
+			$('#app-content').removeClass('with-app-sidebar');
+			$('#app-content').css('margin-right', '');
 		});
 
 		$rootScope.$on('resize', $scope.adjustFixedPositions);

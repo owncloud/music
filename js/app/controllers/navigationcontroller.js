@@ -64,6 +64,10 @@ angular.module('Music').controller('NavigationController', [
 			}
 		};
 
+		$scope.showDetails = function(playlist) {
+			$rootScope.$emit('showPlaylistDetails', playlist.id);
+		};
+
 		// Start renaming playlist
 		$scope.startEdit = function(playlist) {
 			$scope.showEditForm = playlist.id;
@@ -219,14 +223,14 @@ angular.module('Music').controller('NavigationController', [
 			});
 
 			// Update the currently playing list if necessary
-			if ($rootScope.playingView == "#/playlist/" + playlist.id) {
+			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
 				var newTracks = _.map(trackIds, function(trackId) {
 					return { track: libraryService.getTrack(trackId) };
 				});
 				playlistService.onTracksAdded(newTracks);
 			}
 
-			Restangular.one('playlists', playlist.id).all("add").post({trackIds: trackIds.join(',')});
+			Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')});
 		}
 	}
 ]);

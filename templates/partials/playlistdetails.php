@@ -13,7 +13,10 @@
 		<dd>{{ (playlist.created.replace(' ', 'T') + 'Z') | date : 'medium' }}</dd>
 
 		<dt translate>Comment</dt>
-		<dd>{{ playlist.comment }}</dd>
+		<dd class="clickable"
+			><span ng-show="!editing" ng-click="startEdit()">{{ playlist.comment }}<button class="icon-rename"></button></span
+			><textarea ng-show="editing" type="text" ng-enter="commitEdit()" ng-model="playlist.comment" maxlength="256"></textarea
+		></dd>
 	</dl>
 
 </div>

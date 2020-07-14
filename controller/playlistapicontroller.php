@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -89,7 +89,7 @@ class PlaylistApiController extends Controller {
 			$playlist = $this->playlistBusinessLayer->addTracks(
 					self::toIntArray($trackIds), $playlist->getId(), $this->userId);
 		}
-		
+
 		return $playlist->toAPI();
 	}
 
@@ -146,13 +146,25 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * update a playlist
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
+	 * @param string|null $name
+	 * @param string|null $comment
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update($id, $name) {
-		return $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
+	public function update($id, $name, $comment) {
+		$result = null;
+		if ($name !== null) {
+			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]); 
+		}
+		if ($comment !== null) {
+			$result = $this->modifyPlaylist('setComment', [$comment, $id, $this->userId]);
+		}
+		if ($result === null) {
+			$result = new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'comment'] must be given");
+		}
+		return $result;
 	}
 
 	/**

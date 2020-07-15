@@ -19,7 +19,7 @@
 			ng-class="{ disabled: playlist.name.length == 0 }" 
 			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
-	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
+	<div class="actions" title="" ng-if="playlist && $parent.showEditForm == null">
 		<span class="icon-more action" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
 		<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 			<ul>

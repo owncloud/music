@@ -134,14 +134,14 @@ class PlaylistApiController extends Controller {
 		foreach ($playlist->getTrackIdsAsArray() as $trackId) {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
-			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
+			$songs[] = $song->toAPI($this->urlGenerator);
 		}
 
-		return [
-			'name' => $playlist->getName(),
-			'tracks' => $songs,
-			'id' => $playlist->getId(),
-		];
+		$result = $playlist->toAPI();
+		unset($result['trackIds']);
+		$result['tracks'] = $songs;
+
+		return $result;
 	}
 
 	/**

@@ -16,7 +16,7 @@
 		<li id="new-playlist" class="music-navigation-item">
 			<a id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>+ New Playlist</a>
 			<div class="input-container">
-				<input type="text" class="new-list" ng-show="showCreateForm" 
+				<input type="text" class="new-list" maxlength="256" ng-show="showCreateForm" 
 					placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
 			</div>
 			<div class="actions" ng-show="showCreateForm">

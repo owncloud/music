@@ -30,6 +30,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
+use \OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
 	private $playlistBusinessLayer;
@@ -199,6 +200,30 @@ class PlaylistApiController extends Controller {
 	public function reorder($id, $fromIndex, $toIndex) {
 		return $this->modifyPlaylist('moveTrack',
 				[$fromIndex, $toIndex, $id, $this->userId]);
+	}
+
+	public function exportToFile($id, $path, $oncollision) {
+		try {
+			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
+			$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $path);
+			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u';
+			$filename = $targetFolder->getNonExistingName($filename);
+			$listFile = $targetFolder->newFile($filename);
+
+			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
+
+			$content = '';
+			foreach ($tracks as $track) {
+				$nodes = $this->userFolder->getById($track->getFileId());
+				if (\count($nodes) > 0) {
+					$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
+				}
+			}
+			$listFile->putContent($content);
+		}
+		catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 
 	/**

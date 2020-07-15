@@ -104,6 +104,22 @@ angular.module('Music').controller('NavigationController', [
 				);
 		};
 
+		// Export playlist to file
+		$scope.exportToFile = function(playlist) {
+
+			var onFolderSelected = function(path) {
+				Restangular.one('playlists', playlist.id).all('export').post({path: path});
+			};
+
+			OC.dialogs.filepicker(
+					gettextCatalog.getString('Select target folder'),
+					onFolderSelected,
+					false,
+					'httpd/unix-directory',
+					true
+			);
+		};
+
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {
 			if ($rootScope.playingView == destination) {

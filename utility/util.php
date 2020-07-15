@@ -190,6 +190,30 @@ class Util {
 	}
 
 	/**
+	 * Create relative path from the given working dir (CWD) to the given target path
+	 * @param string $cwdPath Absolute CWD path
+	 * @param string $targetPath Absolute target path
+	 * @return string
+	 */
+	public static function relativePath($cwdPath, $targetPath) {
+		$cwdParts = \explode('/', $cwdPath);
+		$targetParts = \explode('/', $targetPath);
+
+		// remove the common prefix of the paths
+		while (\count($cwdParts) > 0 && \count($targetParts) > 0 && $cwdParts[0] === $targetParts[0]) {
+			\array_shift($cwdParts);
+			\array_shift($targetParts);
+		}
+
+		// prepend up-navigation from CWD to the closest common parent folder with the target
+		for ($i = 0; $i < \count($cwdParts); ++$i) {
+			\array_unshift($targetParts, '..');
+		}
+
+		return \implode('/', $targetParts);
+	}
+
+	/**
 	 * Swap values of two variables in place
 	 * @param mixed $a
 	 * @param mixed $b

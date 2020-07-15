@@ -10,7 +10,7 @@
 		<dd>{{ totalLength | playTime }}</dd>
 
 		<dt translate>Created</dt>
-		<dd>{{ (playlist.created.replace(' ', 'T') + 'Z') | date : 'medium' }}</dd>
+		<dd>{{ createdDate }}</dd>
 
 		<dt translate>Comment</dt>
 		<dd class="clickable"

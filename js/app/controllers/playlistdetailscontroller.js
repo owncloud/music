@@ -16,6 +16,7 @@ angular.module('Music').controller('PlaylistDetailsController', [
 		function resetContents() {
 			$scope.playlist = null;
 			$scope.totalLength = null;
+			$scope.createdDate = null;
 			$scope.editing = false;
 		}
 		resetContents();
@@ -24,6 +25,9 @@ angular.module('Music').controller('PlaylistDetailsController', [
 			if (!$scope.playlist || playlistId != $scope.playlist.id) {
 				resetContents();
 				$scope.playlist = libraryService.getPlaylist(playlistId);
+
+				var date = new Date($scope.playlist.created + 'Z');
+				$scope.createdDate = date.toLocaleString();
 			}
 		});
 

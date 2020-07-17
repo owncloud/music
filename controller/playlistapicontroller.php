@@ -240,10 +240,11 @@ class PlaylistApiController extends Controller {
 				}
 			}
 
-			$content = '';
+			$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 			foreach ($tracks as $track) {
 				$nodes = $this->userFolder->getById($track->getFileId());
 				if (\count($nodes) > 0) {
+					$content .= "#EXTINF:{$track->getLength()},{$track->getTitle()}\n";
 					$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 				}
 			}

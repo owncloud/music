@@ -266,6 +266,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		removePlaylist: function(playlist) {
 			playlists.splice(playlists.indexOf(playlist), 1);
 		},
+		replacePlaylist: function(playlist) {
+			var idx = _.findIndex(playlists, { id: playlist.id });
+			playlists[idx] = wrapPlaylist(playlist);
+		},
 		addToPlaylist: function(playlistId, trackId) {
 			var playlist = this.getPlaylist(playlistId);
 			playlist.tracks.push(playlistEntryFromId(trackId));

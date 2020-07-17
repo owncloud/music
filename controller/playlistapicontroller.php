@@ -23,6 +23,7 @@ use \OCP\IURLGenerator;
 use \OCP\Files\Folder;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
@@ -41,6 +42,7 @@ class PlaylistApiController extends Controller {
 	private $trackBusinessLayer;
 	private $urlGenerator;
 	private $l10n;
+	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -51,7 +53,8 @@ class PlaylistApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								Folder $userFolder,
 								$userId,
-								$l10n) {
+								$l10n,
+								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
@@ -61,6 +64,7 @@ class PlaylistApiController extends Controller {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->l10n = $l10n;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -259,6 +263,60 @@ class PlaylistApiController extends Controller {
 		}
 		catch (\OCP\Files\NotPermittedException $ex) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
+		}
+	}
+
+	/**
+	 * export the playlist to a file
+	 * @param int $id playlist ID
+	 * @param string $filePath path of the file to import
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function importFromFile($id, $filePath) {
+		try {
+			$file = $this->userFolder->get($filePath);
+
+			$trackIds = [];
+			$failedCount = 0;
+
+			$cwd = \dirname($filePath);
+			$fp = $file->fopen('r');
+			while ($line = \fgets($fp)) {
+				$line = \trim($line);
+				if (Util::startsWith($line, '#')) {
+					// comment line
+				} else {
+					$path = Util::resolveRelativePath($cwd, $line);
+					try {
+						$trackFile = $this->userFolder->get($path);
+						if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
+							$trackIds[] = $track->getId();
+						} else {
+							$failedCount++;
+						}
+					}
+					catch (\OCP\Files\NotFoundException $ex) {
+						$failedCount++;
+					}
+				}
+			}
+			\fclose($fp);
+
+			$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
+
+			return new JSONResponse([
+				'playlist' => $playlist->toAPI(),
+				'imported_count' => \count($trackIds),
+				'failed_count' => $failedCount
+			]);
+		}
+		catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		}
 	}
 

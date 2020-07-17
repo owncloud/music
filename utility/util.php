@@ -206,11 +206,38 @@ class Util {
 		}
 
 		// prepend up-navigation from CWD to the closest common parent folder with the target
-		for ($i = 0; $i < \count($cwdParts); ++$i) {
+		for ($i = 0, $count = \count($cwdParts); $i < $count; ++$i) {
 			\array_unshift($targetParts, '..');
 		}
 
 		return \implode('/', $targetParts);
+	}
+
+	/**
+	 * Given a current working directory path (CWD) and a relative path (possibly containing '..' parts),
+	 * form an absolute path matching the relative path. This is a reverse operation for Util::relativePath().
+	 * @param string $cwdPath
+	 * @param string $relativePath
+	 * @return string
+	 */
+	public static function resolveRelativePath($cwdPath, $relativePath) {
+		$cwdParts = \explode('/', $cwdPath);
+		$relativeParts = \explode('/', $relativePath);
+
+		// get rid of the trailing empty part of CWD which appears when CWD has a trailing '/'
+		if ($cwdParts[\count($cwdParts)-1] === '') {
+			\array_pop($cwdParts);
+		}
+
+		foreach ($relativeParts as $part) {
+			if ($part === '..') {
+				\array_pop($cwdParts);
+			} else {
+				\array_push($cwdParts, $part);
+			}
+		}
+
+		return \implode('/', $cwdParts);
 	}
 
 	/**

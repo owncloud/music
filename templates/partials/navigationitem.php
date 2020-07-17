@@ -32,6 +32,9 @@
 				<li ng-click="$parent.$parent.exportToFile(playlist)">
 					<a class="icon-file"><span translate>Export to file</span></a>
 				</li>
+				<li ng-click="$parent.$parent.importFromFile(playlist)">
+					<a class="icon-file"><span translate>Import from file</span></a>
+				</li>
 				<li ng-click="$parent.$parent.remove(playlist)">
 					<a class="icon-delete"> <span translate>Delete</span></a>
 				</li>

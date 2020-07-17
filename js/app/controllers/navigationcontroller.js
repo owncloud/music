@@ -112,7 +112,7 @@ angular.module('Music').controller('NavigationController', [
 			var onConflict = function(path) {
 				OC.dialogs.confirm(
 					gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
-											' Select "No" to export the list with another name.',
+											' Select "No" to export the list with another name. Close the dialog to cancel.',
 											{ filename: playlist.name + '.m3u' }),
 					gettextCatalog.getString('Overwrite existing file'),
 					function (overwrite) {
@@ -162,6 +162,56 @@ angular.module('Music').controller('NavigationController', [
 					'httpd/unix-directory',
 					true
 			);
+		};
+
+		// Import playlist contents from a file
+		$scope.importFromFile = function(playlist) {
+			var onFileSelected = function(file) {
+				Restangular.one('playlists', playlist.id).all('import').post({filePath: file}).then(
+					function(result) {
+						libraryService.replacePlaylist(result.playlist);
+						var message = gettextCatalog.getString('Imported {{ count }} tracks from the file {{ file }}.',
+																{ count: result.imported_count, file: file });
+						if (result.failed_count > 0) {
+							message += ' ' + gettextCatalog.getString('{{ count }} files were skipped.',
+																		{ count: result.failed_count });
+						}
+						OC.Notification.showTemporary(message);
+					},
+					function(error) {
+						OC.Notification.showTemporary(
+								gettextCatalog.getString('Failed to import playlist from file {{ file }}',
+														{ file: file }));
+					}
+				);
+			};
+
+			var selectFile = function() {
+				OC.dialogs.filepicker(
+						gettextCatalog.getString('Import playlist contents from the selected file'),
+						onFileSelected,
+						false,
+						'audio/mpegurl',
+						true
+				);
+			};
+
+			if (playlist.tracks.length > 0) {
+				OC.dialogs.confirm(
+						gettextCatalog.getString('The playlist already contains some tracks. Imported tracks' +
+												' will be appended after the existing contents. Proceed?'),
+						gettextCatalog.getString('Append to an existing playlist?'),
+						function (overwrite) {
+							if (overwrite) {
+								selectFile();
+							}
+						},
+						true // modal
+				);
+			}
+			else {
+				selectFile();
+			}
 		};
 
 		// Play/pause playlist

@@ -107,12 +107,56 @@ angular.module('Music').controller('NavigationController', [
 		// Export playlist to file
 		$scope.exportToFile = function(playlist) {
 
-			var onFolderSelected = function(path) {
-				Restangular.one('playlists', playlist.id).all('export').post({path: path});
+			var onFolderSelected = null; // defined later below
+
+			var onConflict = function(path) {
+				OC.dialogs.confirm(
+					gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
+											' Select "No" to export the list with another name.',
+											{ filename: playlist.name + '.m3u' }),
+					gettextCatalog.getString('Overwrite existing file'),
+					function (overwrite) {
+						if (overwrite) {
+							onFolderSelected(path, 'overwrite');
+						} else {
+							onFolderSelected(path, 'keepboth');
+						}
+					},
+					true // modal
+				);
+			};
+
+			onFolderSelected = function(path, onCollision /*optional*/) {
+				var args = { path: path, oncollision: onCollision || 'abort' };
+				Restangular.one('playlists', playlist.id).all('export').post(args).then(
+					function (result) {
+						OC.Notification.showTemporary(
+							gettextCatalog.getString('Playlist exported to file {{ path }}', { path: result.wrote_to_file }));
+					},
+					function (error) {
+						switch (error.status) {
+						case 409: // conflict
+							onConflict(path);
+							break;
+						case 404: // not found
+							OC.Notification.showTemporary(
+								gettextCatalog.getString('Playlist or folder not found'));
+							break;
+						case 403: // forbidden
+							OC.Notification.showTemporary(
+								gettextCatalog.getString('Writing to the file is not allowed'));
+							break;
+						default: // unexpected
+							OC.Notification.showTemporary(
+								gettextCatalog.getString('Unexpected error'));
+							break;
+						}
+					}
+				);
 			};
 
 			OC.dialogs.filepicker(
-					gettextCatalog.getString('Select target folder'),
+					gettextCatalog.getString('Export playlist to a file in the selected folder'),
 					onFolderSelected,
 					false,
 					'httpd/unix-directory',

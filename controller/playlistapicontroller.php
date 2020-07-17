@@ -202,15 +202,39 @@ class PlaylistApiController extends Controller {
 				[$fromIndex, $toIndex, $id, $this->userId]);
 	}
 
+	/**
+	 * export the playlist to a file
+	 * @param int $id playlist ID
+	 * @param string $path parent folder path
+	 * @param string $oncollision action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function exportToFile($id, $path, $oncollision) {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-			$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $path);
-			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u';
-			$filename = $targetFolder->getNonExistingName($filename);
-			$listFile = $targetFolder->newFile($filename);
-
 			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
+			$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $path);
+
+			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u';
+
+			if ($targetFolder->nodeExists($filename)) {
+				switch ($oncollision) {
+					case 'overwrite':
+						$targetFolder->get($filename)->delete();
+						break;
+					case 'keepboth':
+						$filename = $targetFolder->getNonExistingName($filename);
+						break;
+					default:
+						throw new \RuntimeException('file already exists');
+				}
+			}
 
 			$content = '';
 			foreach ($tracks as $track) {
@@ -219,10 +243,22 @@ class PlaylistApiController extends Controller {
 					$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 				}
 			}
-			$listFile->putContent($content);
+			$file = $targetFolder->newFile($filename);
+			$file->putContent($content);
+
+			return new JSONResponse(['wrote_to_file' => $this->userFolder->getRelativePath($file->getPath())]);
 		}
 		catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
+		}
+		catch (\RuntimeException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
+		}
+		catch (\OCP\Files\NotPermittedException $ex) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}
 	}
 

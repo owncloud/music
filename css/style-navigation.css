@@ -169,3 +169,11 @@
 	margin-right: 11px;
 	margin-top: 1.5px;
 }
+
+.icon-to-file {
+	background-image: url(../../img/to-file.svg);
+}
+
+.icon-from-file {
+	background-image: url(../../img/from-file.svg);
+}

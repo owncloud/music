@@ -149,10 +149,16 @@ class Util {
 	 * Test if given string ends with another given string
 	 * @param string $string
 	 * @param string $potentialEnd
+	 * @param boolean $ignoreCase
 	 * @return boolean
 	 */
-	public static function endsWith($string, $potentialEnd) {
-		return \substr($string, -\strlen($potentialEnd)) === $potentialEnd;
+	public static function endsWith($string, $potentialEnd, $ignoreCase=false) {
+		$actualEnd = \substr($string, -\strlen($potentialEnd));
+		if ($ignoreCase) {
+			$actualEnd = \mb_strtolower($actualEnd);
+			$potentialEnd = \mb_strtolower($potentialEnd);
+		}
+		return $actualEnd === $potentialEnd;
 	}
 
 	/**

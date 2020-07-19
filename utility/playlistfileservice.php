@@ -114,7 +114,11 @@ class PlaylistFileService {
 		$file = $this->userFolder->get($filePath);
 
 		$trackIds = [];
-		$failedCount = 0;
+		$invalidPaths = [];
+
+		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
+		// .m3u as iso-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
+		$encoding = Util::endsWith($filePath, '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'iso-8859-1';
 
 		$cwd = \dirname($filePath);
 		$fp = $file->fopen('r');
@@ -122,18 +126,25 @@ class PlaylistFileService {
 			$line = \trim($line);
 			if (Util::startsWith($line, '#')) {
 				// comment line
-			} else {
+				if (Util::startsWith($line, '#EXTENC:')) {
+					// update the used encoding with the explicitly defined one
+					$encoding = \trim(\substr($line, \strlen('#EXTENC:')));
+				}
+			}
+			else {
+				$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
+
 				$path = Util::resolveRelativePath($cwd, $line);
 				try {
 					$trackFile = $this->userFolder->get($path);
 					if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
 						$trackIds[] = $track->getId();
 					} else {
-						$failedCount++;
+						$invalidPaths[] = $path;
 					}
 				}
 				catch (\OCP\Files\NotFoundException $ex) {
-					$failedCount++;
+					$invalidPaths[] = $path;
 				}
 			}
 		}
@@ -141,10 +152,15 @@ class PlaylistFileService {
 
 		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
 
+		if (\count($invalidPaths) > 0) {
+			$this->logger->log('Some files were not found from the user\'s music library: '
+								. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+		}
+
 		return [
 			'playlist' => $playlist,
 			'imported_count' => \count($trackIds),
-			'failed_count' => $failedCount
+			'failed_count' => \count($invalidPaths)
 		];
 	}	
 }

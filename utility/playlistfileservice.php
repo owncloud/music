@@ -64,7 +64,14 @@ class PlaylistFileService {
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 		$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $folderPath);
 
-		$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u8';
+		// Name the file according the playlist. File names cannot contain the '/' character on Linux, and in
+		// owncloud/Nextcloud, the whole name must fit 250 characters, including the file extension. Reserve
+		// another 5 characters to fit the postfix like " (xx)" on name collisions. If there are more than 100
+		// exports of the same playlist with overly long name, then this function will fail but we can live
+		// with that :).
+		$filename = \str_replace('/', '-', $playlist->getName());
+		$filename = Util::truncate($filename, 250 - 5 - 5);
+		$filename .= '.m3u8';
 
 		if ($targetFolder->nodeExists($filename)) {
 			switch ($collisionMode) {

@@ -155,6 +155,13 @@ angular.module('Music').controller('PlaylistViewController', [
 		subscribe('artistsLoaded', initViewFromRoute);
 		subscribe('playlistsLoaded', initViewFromRoute);
 
+		// Reload the view if the currently viewed playlist got updated (by import from file)
+		subscribe('playlistUpdated', function(event, playlistId) {
+			if ($scope.playlist.id == playlistId) {
+				initViewFromRoute();
+			}
+		});
+
 		function listIsPlaying() {
 			return ($rootScope.playingView === $rootScope.currentView);
 		}

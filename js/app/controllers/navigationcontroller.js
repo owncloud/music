@@ -177,6 +177,7 @@ angular.module('Music').controller('NavigationController', [
 																		{ count: result.failed_count });
 						}
 						OC.Notification.showTemporary(message);
+						$rootScope.$emit('playlistUpdated', playlist.id);
 					},
 					function(error) {
 						OC.Notification.showTemporary(

@@ -225,7 +225,7 @@ class PlaylistApiController extends Controller {
 			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 			$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $path);
 
-			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u';
+			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u8';
 
 			if ($targetFolder->nodeExists($filename)) {
 				switch ($oncollision) {

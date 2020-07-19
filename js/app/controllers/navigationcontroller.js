@@ -113,7 +113,7 @@ angular.module('Music').controller('NavigationController', [
 				OC.dialogs.confirm(
 					gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
 											' Select "No" to export the list with another name. Close the dialog to cancel.',
-											{ filename: playlist.name + '.m3u' }),
+											{ filename: playlist.name + '.m3u8' }),
 					gettextCatalog.getString('Overwrite existing file'),
 					function (overwrite) {
 						if (overwrite) {

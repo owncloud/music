@@ -56,14 +56,13 @@ class PlaylistApiController extends Controller {
 								$l10n,
 								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->userId = $userId;
-		$this->userFolder = $userFolder;
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistFileService = $playlistFileService;
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 	}

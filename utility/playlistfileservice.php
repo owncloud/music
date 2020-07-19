@@ -18,7 +18,6 @@ use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCP\Files\Folder;
-use \OCP\IConfig;
 
 /**
  * Class responsible of exporting playlists to file and importing playlist

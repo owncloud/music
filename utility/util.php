@@ -159,6 +159,7 @@ class Util {
 	 * Multi-byte safe case-insensitive string comparison
 	 * @param string $a
 	 * @param string $b
+	 * @return int < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal. 
 	 */
 	public static function stringCaseCompare($a, $b) {
 		return \strcmp(\mb_strtolower($a), \mb_strtolower($b));

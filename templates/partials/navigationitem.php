@@ -20,7 +20,8 @@
 			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
 	<div class="actions" title="" ng-if="playlist && $parent.showEditForm == null">
-		<span class="icon-more action" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
+		<span class="icon-more" ng-show="!playlist.busy" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
+		<span class="icon-loading-small" ng-show="playlist.busy"></span>
 		<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 			<ul>
 				<li ng-click="$parent.$parent.showDetails(playlist)">

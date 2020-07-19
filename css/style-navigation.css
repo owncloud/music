@@ -91,6 +91,8 @@
 }
 
 #app-navigation .playlist .actions .icon-more {
+	display: inline-block;
+	padding: 5px;
 	opacity: .15;
 	width: 100%;
 	height: 100%;
@@ -101,11 +103,19 @@
 	opacity: 1.0;
 }
 
+#app-navigation .playlist .actions .icon-loading-small {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
 #app-navigation .playlist .actions .popovermenu {
 	display: block;
 	box-sizing: content-box;
 	top: 48px;
-	right: 4px;
 	padding: 0;
 }
 

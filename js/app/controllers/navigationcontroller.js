@@ -127,11 +127,13 @@ angular.module('Music').controller('NavigationController', [
 			};
 
 			onFolderSelected = function(path, onCollision /*optional*/) {
+				playlist.busy = true;
 				var args = { path: path, oncollision: onCollision || 'abort' };
 				Restangular.one('playlists', playlist.id).all('export').post(args).then(
 					function (result) {
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('Playlist exported to file {{ path }}', { path: result.wrote_to_file }));
+						playlist.busy = false;
 					},
 					function (error) {
 						switch (error.status) {
@@ -151,6 +153,7 @@ angular.module('Music').controller('NavigationController', [
 								gettextCatalog.getString('Unexpected error'));
 							break;
 						}
+						playlist.busy = false;
 					}
 				);
 			};
@@ -167,6 +170,7 @@ angular.module('Music').controller('NavigationController', [
 		// Import playlist contents from a file
 		$scope.importFromFile = function(playlist) {
 			var onFileSelected = function(file) {
+				playlist.busy = true;
 				Restangular.one('playlists', playlist.id).all('import').post({filePath: file}).then(
 					function(result) {
 						libraryService.replacePlaylist(result.playlist);
@@ -178,11 +182,13 @@ angular.module('Music').controller('NavigationController', [
 						}
 						OC.Notification.showTemporary(message);
 						$rootScope.$emit('playlistUpdated', playlist.id);
+						playlist.busy = false;
 					},
 					function(error) {
 						OC.Notification.showTemporary(
 								gettextCatalog.getString('Failed to import playlist from file {{ file }}',
 														{ file: file }));
+						playlist.busy = false;
 					}
 				);
 			};

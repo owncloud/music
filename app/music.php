@@ -58,6 +58,7 @@ use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\LastfmService;
+use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\UserMusicFolder;
@@ -131,7 +132,7 @@ class Music extends App {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('UserFolder'),
+				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('Logger')
@@ -388,6 +389,12 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('ExtractorGetID3', function ($c) {
+			return new ExtractorGetID3(
+				$c->query('Logger')
+			);
+		});
+
 		$container->registerService('LastfmService', function ($c) {
 			return new LastfmService(
 				$c->query('ArtistBusinessLayer'),
@@ -396,15 +403,19 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ExtractorGetID3', function ($c) {
-			return new ExtractorGetID3(
+		$container->registerService('Maintenance', function (IAppContainer $c) {
+			return new Maintenance(
+				$c->query('Db'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('Maintenance', function (IAppContainer $c) {
-			return new Maintenance(
-				$c->query('Db'),
+		$container->registerService('PlaylistFileService', function ($c) {
+			return new PlaylistFileService(
+				$c->query('PlaylistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('UserFolder'),
+				$c->query('UserId'),
 				$c->query('Logger')
 			);
 		});

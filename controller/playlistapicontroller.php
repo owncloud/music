@@ -20,7 +20,6 @@ use \OCP\AppFramework\Http\JSONResponse;
 
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
-use \OCP\Files\Folder;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
@@ -31,16 +30,17 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
+use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
+	private $urlGenerator;
 	private $playlistBusinessLayer;
-	private $userId;
-	private $userFolder;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
-	private $urlGenerator;
+	private $playlistFileService;
+	private $userId;
 	private $l10n;
 	private $logger;
 
@@ -51,7 +51,7 @@ class PlaylistApiController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
-								Folder $userFolder,
+								PlaylistFileService $playlistFileService,
 								$userId,
 								$l10n,
 								Logger $logger) {
@@ -63,6 +63,7 @@ class PlaylistApiController extends Controller {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->playlistFileService = $playlistFileService;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 	}
@@ -221,37 +222,8 @@ class PlaylistApiController extends Controller {
 	 */
 	public function exportToFile($id, $path, $oncollision) {
 		try {
-			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
-			$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $path);
-
-			$filename = \str_replace('/', '-', $playlist->getName()) . '.m3u8';
-
-			if ($targetFolder->nodeExists($filename)) {
-				switch ($oncollision) {
-					case 'overwrite':
-						$targetFolder->get($filename)->delete();
-						break;
-					case 'keepboth':
-						$filename = $targetFolder->getNonExistingName($filename);
-						break;
-					default:
-						throw new \RuntimeException('file already exists');
-				}
-			}
-
-			$content = "#EXTM3U\n#EXTENC: UTF-8\n";
-			foreach ($tracks as $track) {
-				$nodes = $this->userFolder->getById($track->getFileId());
-				if (\count($nodes) > 0) {
-					$content .= "#EXTINF:{$track->getLength()},{$track->getTitle()}\n";
-					$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
-				}
-			}
-			$file = $targetFolder->newFile($filename);
-			$file->putContent($content);
-
-			return new JSONResponse(['wrote_to_file' => $this->userFolder->getRelativePath($file->getPath())]);
+			$exportedFilePath = $this->playlistFileService->exportToFile($id, $path, $oncollision);
+			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		}
 		catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
@@ -277,41 +249,9 @@ class PlaylistApiController extends Controller {
 	 */
 	public function importFromFile($id, $filePath) {
 		try {
-			$file = $this->userFolder->get($filePath);
-
-			$trackIds = [];
-			$failedCount = 0;
-
-			$cwd = \dirname($filePath);
-			$fp = $file->fopen('r');
-			while ($line = \fgets($fp)) {
-				$line = \trim($line);
-				if (Util::startsWith($line, '#')) {
-					// comment line
-				} else {
-					$path = Util::resolveRelativePath($cwd, $line);
-					try {
-						$trackFile = $this->userFolder->get($path);
-						if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
-							$trackIds[] = $track->getId();
-						} else {
-							$failedCount++;
-						}
-					}
-					catch (\OCP\Files\NotFoundException $ex) {
-						$failedCount++;
-					}
-				}
-			}
-			\fclose($fp);
-
-			$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
-
-			return new JSONResponse([
-				'playlist' => $playlist->toAPI(),
-				'imported_count' => \count($trackIds),
-				'failed_count' => $failedCount
-			]);
+			$result = $this->playlistFileService->importFromFile($id, $filePath);
+			$result['playlist'] = $result['playlist']->toAPI();
+			return $result;
 		}
 		catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');

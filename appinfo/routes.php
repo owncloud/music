@@ -66,6 +66,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'],
 	['name' => 'playlistApi#exportToFile',	'url' => '/api/playlists/{id}/export',	'verb' => 'POST'],
 	['name' => 'playlistApi#importFromFile','url' => '/api/playlists/{id}/import',	'verb' => 'POST'],
+	['name' => 'playlistApi#parseFile',		'url' => '/api/playlists/file/{fileId}','verb' => 'GET'],
 
 	// settings
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],

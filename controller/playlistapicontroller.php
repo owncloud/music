@@ -18,6 +18,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 
+use \OCP\Files\Folder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -41,6 +42,7 @@ class PlaylistApiController extends Controller {
 	private $trackBusinessLayer;
 	private $playlistFileService;
 	private $userId;
+	private $userFolder;
 	private $l10n;
 	private $logger;
 
@@ -53,6 +55,7 @@ class PlaylistApiController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								PlaylistFileService $playlistFileService,
 								$userId,
+								Folder $userFolder,
 								$l10n,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -63,6 +66,7 @@ class PlaylistApiController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
+		$this->userFolder = $userFolder;
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 	}
@@ -239,7 +243,7 @@ class PlaylistApiController extends Controller {
 	}
 
 	/**
-	 * export the playlist to a file
+	 * import playlist contents from a file
 	 * @param int $id playlist ID
 	 * @param string $filePath path of the file to import
 	 *
@@ -254,6 +258,31 @@ class PlaylistApiController extends Controller {
 		}
 		catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
+		}
+	}
+
+	/**
+	 * read and parse a playlist file
+	 * @param int $fileId ID of the file to parse
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function parseFile($fileId) {
+		try {
+			$result = $this->playlistFileService->parseFile($fileId);
+			$result['files'] = \array_map(function($file) {
+				return [
+					'id' => $file->getId(),
+					'name' => $file->getName(),
+					'path' => Util::urlEncodePath($this->userFolder->getRelativePath($file->getPath())),
+					'mimetype' => $file->getMimeType()
+				];
+			}, $result['files']);
+			return new JSONResponse($result);
 		}
 		catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');

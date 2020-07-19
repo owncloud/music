@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
+use \OCP\Files\File;
 use \OCP\Files\Folder;
 
 /**
@@ -111,16 +112,57 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 */
 	public function importFromFile($id, $filePath) {
-		$file = $this->userFolder->get($filePath);
+		$parsed = $this->doParseFile($this->userFolder->get($filePath));
+		$trackFiles = $parsed['files'];
+		$invalidPaths = $parsed['invalid_paths'];
 
 		$trackIds = [];
+		foreach ($trackFiles as $trackFile) {
+			if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
+				$trackIds[] = $track->getId();
+			} else {
+				$invalidPaths[] = $trackFile->getPath();
+			}
+		}
+
+		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
+
+		if (\count($invalidPaths) > 0) {
+			$this->logger->log('Some files were not found from the user\'s music library: '
+								. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+		}
+
+		return [
+			'playlist' => $playlist,
+			'imported_count' => \count($trackIds),
+			'failed_count' => \count($invalidPaths)
+		];
+	}
+
+	/**
+	 * 
+	 * @param int $fileId
+	 * @throws \OCP\Files\NotFoundException
+	 * @return array
+	 */
+	public function parseFile($fileId) {
+		$nodes = $this->userFolder->getById($fileId);
+		if (\count($nodes) > 0) {
+			return $this->doParseFile($nodes[0]);
+		} else {
+			throw new \OCP\Files\NotFoundException();
+		}
+	}
+
+	private function doParseFile(File $file) {
+		$trackFiles = [];
 		$invalidPaths = [];
 
 		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
-		// .m3u as iso-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
-		$encoding = Util::endsWith($filePath, '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'iso-8859-1';
+		// .m3u as ISO-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
+		$encoding = Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'ISO-8859-1';
 
-		$cwd = \dirname($filePath);
+		$cwd = $this->userFolder->getRelativePath($file->getParent()->getPath());
 		$fp = $file->fopen('r');
 		while ($line = \fgets($fp)) {
 			$line = \trim($line);
@@ -136,31 +178,17 @@ class PlaylistFileService {
 
 				$path = Util::resolveRelativePath($cwd, $line);
 				try {
-					$trackFile = $this->userFolder->get($path);
-					if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
-						$trackIds[] = $track->getId();
-					} else {
-						$invalidPaths[] = $path;
-					}
-				}
-				catch (\OCP\Files\NotFoundException $ex) {
+					$trackFiles[] = $this->userFolder->get($path);
+				} catch (\OCP\Files\NotFoundException $ex) {
 					$invalidPaths[] = $path;
 				}
 			}
 		}
 		\fclose($fp);
 
-		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
-
-		if (\count($invalidPaths) > 0) {
-			$this->logger->log('Some files were not found from the user\'s music library: '
-								. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
-		}
-
 		return [
-			'playlist' => $playlist,
-			'imported_count' => \count($trackIds),
-			'failed_count' => \count($invalidPaths)
+			'files' => $trackFiles,
+			'invalid_paths' => $invalidPaths
 		];
-	}	
+	}
 }

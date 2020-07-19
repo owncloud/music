@@ -139,10 +139,16 @@ class Util {
 	 * Test if given string starts with another given string
 	 * @param string $string
 	 * @param string $potentialStart
+	 * @param boolean $ignoreCase
 	 * @return boolean
 	 */
-	public static function startsWith($string, $potentialStart) {
-		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
+	public static function startsWith($string, $potentialStart, $ignoreCase=false) {
+		$actualStart = \substr($string, 0, \strlen($potentialStart));
+		if ($ignoreCase) {
+			$actualStart= \mb_strtolower($actualStart);
+			$potentialStart= \mb_strtolower($potentialStart);
+		}
+		return $actualStart === $potentialStart;
 	}
 
 	/**
@@ -245,6 +251,16 @@ class Util {
 		}
 
 		return \implode('/', $cwdParts);
+	}
+
+	/**
+	 * Encode a file path so that it can be used as part of a WebDAV URL
+	 * @param string $path
+	 * @return string
+	 */
+	public static function urlEncodePath($path) {
+		// URL encode each part of the file path
+		return \join('/', \array_map('rawurlencode', \explode('/', $path)));
 	}
 
 	/**

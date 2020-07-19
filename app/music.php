@@ -134,6 +134,7 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
+				$c->query('UserFolder'),
 				$c->query('L10N'),
 				$c->query('Logger')
 			);

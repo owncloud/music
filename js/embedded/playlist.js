@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 function Playlist() {
@@ -49,4 +49,7 @@ function Playlist() {
 		return mFiles ? mFiles.length : 0;
 	};
 
+	this.currentFile = function() {
+		return mFiles ? mFiles[mCurrentIndex] : null;
+	};
 }

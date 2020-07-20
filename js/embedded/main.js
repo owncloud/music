@@ -18,105 +18,102 @@ $(document).ready(function() {
 
 function initEmbeddedPlayer() {
 
-	var currentFile = null;
-	var shareToken = $('#sharingToken').val(); // undefined when not on share page
+	var mCurrentFileId = null;
+	var mContext = null;
+	var mPlayingListFile = false;
+	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	// function to get download URL for given file name, created later as it
-	// has to bind some variables not available here
-	var urlForFile = null;
+	var mPlayer = new EmbeddedPlayer(onClose, onNext, onPrev);
+	var mPlaylist = new Playlist();
 
-	var player = new EmbeddedPlayer(onClose, onNext, onPrev);
+	var mAudioMimes = _.filter([
+		'audio/flac',
+		'audio/mp4',
+		'audio/m4b',
+		'audio/mpeg',
+		'audio/ogg',
+		'audio/wav'
+	], mPlayer.canPlayMIME, mPlayer);
+
+	var mPlaylistMimes = [
+		'audio/mpegurl'
+	];
+
 	register();
 
-	var playlist = new Playlist();
+	function urlForFile(file) {
+		var url = mPlayingListFile
+			? OC.linkToRemoteBase('webdav') + file.path
+			: mContext.fileList.getDownloadUrl(file.name, mContext.dir);
+
+		// append request token unless this is a public share
+		if (!mShareToken) {
+			var delimiter = _.includes(url, '?') ? '&' : '?';
+			url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
+		}
+		return url;
+	}
 
 	function onClose() {
-		currentFile = null;
-		playlist.reset();
+		mCurrentFileId = null;
+		mPlayingListFile = false;
+		mPlaylist.reset();
 	}
 
 	function onNext() {
-		jumpToPlaylistFile(playlist.next());
+		jumpToPlaylistFile(mPlaylist.next());
 	}
 
 	function onPrev() {
-		jumpToPlaylistFile(playlist.prev());
+		jumpToPlaylistFile(mPlaylist.prev());
 	}
 
 	function jumpToPlaylistFile(file) {
 		if (!file) {
-			player.close();
+			mPlayer.close();
 		} else {
-			currentFile = file.id;
-			player.playFile(
-				urlForFile(file.name),
+			if (!mPlayingListFile) {
+				mCurrentFileId = file.id;
+			}
+			mPlayer.playFile(
+				urlForFile(file),
 				file.mimetype,
-				currentFile,
+				file.id,
 				file.name,
-				shareToken
+				mShareToken
 			);
 		}
 	}
 
 	function register() {
-		var audioMimes = [
-			'audio/flac',
-			'audio/mp4',
-			'audio/m4b',
-			'audio/mpeg',
-			'audio/ogg',
-			'audio/wav'
-		];
-		var supportedMimes = _.filter(audioMimes, player.canPlayMIME, player);
-
-		// Add play action to file rows with supported mime type.
+		// Add play action to file rows with supported mime type, either audio or playlist.
 		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
 		if (typeof OCA.Files !== 'undefined') {
-			registerFolderPlayer(supportedMimes);
+			registerFolderPlayer(mAudioMimes, openAudioFile);
+			registerFolderPlayer(mPlaylistMimes, openPlaylistFile);
 		}
 
-		// Add player on single-fle-share page if the MIME is supported
+		// Add player on single-fle-share page if the MIME is a supported audio type
 		if ($('#header').hasClass('share-file')) {
-			registerFileSharePlayer(supportedMimes);
+			registerFileSharePlayer(mAudioMimes);
 		}
 	}
 
 	/**
-	 * "Folder player" is used in the Files app and on shared folders
+	 * "Folder player" is used in the Files app and on shared folders to play audio files and playlist files
 	 */
-	function registerFolderPlayer(supportedMimes) {
+	function registerFolderPlayer(mimes, openFileCallback) {
 		// Handle 'play' action on file row
 		var onPlay = function(fileName, context) {
-			player.show();
+			mContext = context;
 
 			// Check if playing file changes
-			var filerow = context.$file;
-			if (currentFile != filerow.attr('data-id')) {
-				currentFile = filerow.attr('data-id');
-
-				urlForFile = function(name) {
-					var url = context.fileList.getDownloadUrl(name, context.dir);
-					// append request token unless this is a public share
-					if (!shareToken) {
-						var delimiter = _.includes(url, '?') ? '&' : '?';
-						url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
-					}
-					return url;
-				};
-
-				player.playFile(
-					urlForFile(fileName),
-					filerow.attr('data-mime'),
-					currentFile,
-					fileName,
-					shareToken
-				);
-
-				playlist.init(context.fileList.files, supportedMimes, currentFile);
-				player.setNextAndPrevEnabled(playlist.length() > 1);
+			if (mCurrentFileId != mContext.$file.attr('data-id')) {
+				mCurrentFileId = mContext.$file.attr('data-id');
+				openFileCallback();
 			}
 			else {
-				player.togglePlayback();
+				mPlayer.togglePlayback();
 			}
 		};
 
@@ -131,7 +128,47 @@ function initEmbeddedPlayer() {
 			);
 			OCA.Files.fileActions.setDefault(mime, 'music-play');
 		};
-		_.forEach(supportedMimes, registerPlayerForMime);
+		_.forEach(mimes, registerPlayerForMime);
+	}
+
+	function openAudioFile() {
+		mPlayingListFile = false;
+
+		mPlayer.show();
+		mPlaylist.init(mContext.fileList.files, mAudioMimes, mCurrentFileId);
+		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
+		jumpToPlaylistFile(mPlaylist.currentFile());
+	}
+
+	function openPlaylistFile() {
+		mPlayingListFile = true;
+
+		mContext.fileList.showFileBusyState(mContext.$file, true);
+		var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': mCurrentFileId});
+		$.get(url, function(data) {
+			if (data.files.length > 0) {
+				mPlayer.show();
+				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
+				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
+				jumpToPlaylistFile(mPlaylist.currentFile());
+			}
+			else {
+				OC.Notification.showTemporary(t('music', 'No files from the playlist could be found'));
+				mCurrentFileId = null;
+			}
+			if (data.invalid_paths.length > 0) {
+				OC.Notification.showTemporary(
+					t('music', 'The playlist contained {count} invalid path(s). See browser console for details.',
+						{count: data.invalid_paths.length}));
+				console.log('The following file(s) from the playlist could not be found:\n' + data.invalid_paths.join(',\n'));
+			}
+
+			mContext.fileList.showFileBusyState(mContext.$file, false);
+		}).fail(function() {
+			mCurrentFileId = null;
+			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
+			mContext.fileList.showFileBusyState(mContext.$file, false);
+		});
 	}
 
 	/**
@@ -139,20 +176,20 @@ function initEmbeddedPlayer() {
 	 */
 	function registerFileSharePlayer(supportedMimes) {
 		var onClick = function() {
-			player.show();
-			if (!currentFile) {
-				currentFile = 1; // bogus id
+			mPlayer.show();
+			if (!mCurrentFileId) {
+				mCurrentFileId = 1; // bogus id
 
-				player.playFile(
+				mPlayer.playFile(
 						$('#downloadURL').val(),
 						$('#mimetype').val(),
 						0,
 						$('#filename').val(),
-						shareToken
+						mShareToken
 				);
 			}
 			else {
-				player.togglePlayback();
+				mPlayer.togglePlayback();
 			}
 		};
 

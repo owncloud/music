@@ -38,7 +38,7 @@ class ShareController extends Controller {
 								IRequest $request,
 								Scanner $scanner,
 								Logger $logger,
-								\OCP\Share\IManager $shareManager = null) {
+								\OCP\Share\IManager $shareManager) {
 		parent::__construct($appname, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;
@@ -52,30 +52,27 @@ class ShareController extends Controller {
 	public function fileInfo($token, $fileId) {
 		$info = null;
 
-		// ShareManager is not present on ownCloud 8.2
-		if (!empty($this->shareManager)) {
-			$share = $this->shareManager->getShareByToken($token);
+		$share = $this->shareManager->getShareByToken($token);
 
-			$fileOwner = $share->getShareOwner();
+		$fileOwner = $share->getShareOwner();
 
-			$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
+		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
 
-			// If non-zero fileId is given, the $share identified by the token should
-			// be the file's parent directory. Otherwise the share is the target file.
-			if ($fileId == 0) {
-				$fileId = $share->getNodeId();
-			} else {
-				$folderId = $share->getNodeId();
-				$matchingFolders = $fileOwnerHome->getById($folderId);
-				if (empty($matchingFolders)
-				|| empty($matchingFolders[0]->getById($fileId))) {
-					// no such shared folder or the folder does not contain the given file
-					$fileId = null;
-				}
+		// If non-zero fileId is given, the $share identified by the token should
+		// be the file's parent directory. Otherwise the share is the target file.
+		if ($fileId == 0) {
+			$fileId = $share->getNodeId();
+		} else {
+			$folderId = $share->getNodeId();
+			$matchingFolders = $fileOwnerHome->getById($folderId);
+			if (empty($matchingFolders)
+			|| empty($matchingFolders[0]->getById($fileId))) {
+				// no such shared folder or the folder does not contain the given file
+				$fileId = null;
 			}
-
-			$info = $this->scanner->getFileInfo($fileId, $fileOwner, $fileOwnerHome);
 		}
+
+		$info = $this->scanner->getFileInfo($fileId, $fileOwner, $fileOwnerHome);
 
 		if ($info) {
 			return new JSONResponse($info);

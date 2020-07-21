@@ -350,11 +350,7 @@ class Music extends App {
 		});
 
 		$container->registerService('ShareManager', function ($c) {
-			if (\method_exists($c->getServer(), 'getShareManager')) {
-				return $c->getServer()->getShareManager();
-			} else {
-				return null;
-			}
+			return $c->getServer()->getShareManager();
 		});
 
 		/**

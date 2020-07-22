@@ -82,6 +82,7 @@ function initEmbeddedPlayer() {
 				file.name,
 				mShareToken
 			);
+			mPlayer.setPlaylistIndex(mPlaylist.currentIndex(), mPlaylist.length());
 		}
 	}
 
@@ -142,12 +143,13 @@ function initEmbeddedPlayer() {
 
 	function openPlaylistFile() {
 		mPlayingListFile = true;
+		var playlistName = mContext.$file.attr('data-file');
 
 		mContext.fileList.showFileBusyState(mContext.$file, true);
 		var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': mCurrentFileId});
 		$.get(url, function(data) {
 			if (data.files.length > 0) {
-				mPlayer.show();
+				mPlayer.show(playlistName);
 				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
 				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 				jumpToPlaylistFile(mPlaylist.currentFile());

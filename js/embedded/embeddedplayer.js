@@ -28,6 +28,8 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
+	var playlistText = null;
+	var playlistNumberText = null;
 
 	function play() {
 		// discard command while switching to new track is ongoing
@@ -85,6 +87,18 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 	function seekForward() {
 		player.seekForward();
+	}
+
+	function createPlaylistArea() {
+		var area = $(document.createElement('div')).attr('id', 'playlist-area');
+
+		playlistText = $(document.createElement('span')).attr('id', 'playlist-name');
+		area.append(playlistText);
+
+		playlistNumberText = $(document.createElement('span'));
+		area.append(playlistNumberText);
+
+		return area;
 	}
 
 	function createPlayButton() {
@@ -272,6 +286,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		nextButton = createNextButton();
 		coverImage = createCoverImage();
 
+		musicControls.append(createPlaylistArea());
 		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
@@ -365,6 +380,10 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		// parsing logic is ported form parseFileName in utility/scanner.php
 		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
 		return match ? match[3] : filename;
+	}
+
+	function dropFileExtension(filename) {
+		return filename.replace(/\.[^/.]+$/, "");
 	}
 
 	function playUrl(url, mime, tempTitle, nextStep) {
@@ -481,10 +500,18 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	 * PUBLIC INTEFACE
 	 */
 
-	this.show = function() {
+	this.show = function(playlistName /*optional*/) {
 		if (!musicControls) {
 			createUi();
 		}
+
+		if (playlistName) {
+			musicControls.addClass('with-playlist');
+			playlistText.text(dropFileExtension(playlistName));
+		} else {
+			musicControls.removeClass('with-playlist');
+		}
+
 		musicControls.css('display', 'inline-block');
 	};
 
@@ -498,6 +525,10 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 				loadFileInfo(fileId, fallbackTitle);
 			}
 		});
+	};
+
+	this.setPlaylistIndex = function(currentIndex, totalCount) {
+		playlistNumberText.text((currentIndex + 1) + ' / ' + totalCount);
 	};
 
 	this.togglePlayback = togglePlayback;

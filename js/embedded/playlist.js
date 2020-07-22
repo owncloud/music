@@ -52,4 +52,9 @@ function Playlist() {
 	this.currentFile = function() {
 		return mFiles ? mFiles[mCurrentIndex] : null;
 	};
+
+	this.currentIndex = function() {
+		return mCurrentIndex;
+	};
+
 }

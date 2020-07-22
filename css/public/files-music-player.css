@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 #music-controls {
@@ -17,6 +17,31 @@
 	background-color: rgba(255, 255, 255, 0.95);
 	z-index: 50;
 	text-align: left;
+}
+
+#music-controls.with-playlist {
+	height: 90px;
+}
+
+#music-controls #playlist-area {
+	display: none;
+	width: 100%;
+	height: 24px;
+}
+
+#music-controls.with-playlist #playlist-area {
+	display: block;
+}
+
+#music-controls #playlist-area span {
+	margin-top: 5px;
+	margin-left: 10px;
+	font-size: 14px;
+}
+
+#music-controls #playlist-area #playlist-name {
+	left: 10px;
+	font-weight: bold;
 }
 
 #music-controls, #music-controls * {

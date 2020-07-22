@@ -13,6 +13,7 @@ $(document).ready(function() {
 	// Initialize our player only if such player is not found.
 	if ($('audio').length === 0) {
 		initEmbeddedPlayer();
+		initPlaylistTabView();
 	}
 });
 
@@ -23,8 +24,8 @@ function initEmbeddedPlayer() {
 	var mPlayingListFile = false;
 	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	var mPlayer = new EmbeddedPlayer(onClose, onNext, onPrev);
-	var mPlaylist = new Playlist();
+	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onShowList);
+	var mPlaylist = new OCA.Music.Playlist();
 
 	var mAudioMimes = _.filter([
 		'audio/flac',
@@ -66,6 +67,10 @@ function initEmbeddedPlayer() {
 
 	function onPrev() {
 		jumpToPlaylistFile(mPlaylist.prev());
+	}
+
+	function onShowList() {
+		mContext.fileList.showDetailsView(mContext.$file.attr('data-file'), OCA.Music.PlaylistTabView.id);
 	}
 
 	function jumpToPlaylistFile(file) {
@@ -143,13 +148,12 @@ function initEmbeddedPlayer() {
 
 	function openPlaylistFile() {
 		mPlayingListFile = true;
-		var playlistName = mContext.$file.attr('data-file');
 
 		mContext.fileList.showFileBusyState(mContext.$file, true);
 		var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': mCurrentFileId});
 		$.get(url, function(data) {
 			if (data.files.length > 0) {
-				mPlayer.show(playlistName);
+				mPlayer.show(mContext.$file.attr('data-file'));
 				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
 				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 				jumpToPlaylistFile(mPlaylist.currentFile());

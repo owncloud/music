@@ -8,7 +8,9 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
-function EmbeddedPlayer(onClose, onNext, onPrev) {
+OCA.Music = OCA.Music || {};
+
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 
 	var player = new PlayerWrapper();
 
@@ -97,6 +99,13 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 		playlistNumberText = $(document.createElement('span'));
 		area.append(playlistNumberText);
+
+		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
+			area.append($(document.createElement('button'))
+				.attr('class', 'icon-menu')
+				.attr('title', t('music', 'Show playlist'))
+				.click(onShowList));
+		}
 
 		return area;
 	}
@@ -539,5 +548,5 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		nextPrevEnabled = enabled;
 		updateNextPrevButtonStatus();
 	};
-}
+};
 

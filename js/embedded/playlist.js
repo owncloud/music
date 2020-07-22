@@ -8,7 +8,9 @@
  * @copyright Pauli Järvinen 2018 - 2020
  */
 
-function Playlist() {
+OCA.Music = OCA.Music || {};
+
+OCA.Music.Playlist = function() {
 
 	var mFiles = null;
 	var mCurrentIndex = null;
@@ -57,4 +59,4 @@ function Playlist() {
 		return mCurrentIndex;
 	};
 
-}
+};

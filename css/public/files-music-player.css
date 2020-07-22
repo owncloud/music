@@ -37,11 +37,28 @@
 	margin-top: 5px;
 	margin-left: 10px;
 	font-size: 14px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: pre;
 }
 
 #music-controls #playlist-area #playlist-name {
 	left: 10px;
 	font-weight: bold;
+	max-width: 66%;
+}
+
+#music-controls #playlist-area .icon-menu {
+	border: none;
+	background-color: transparent;
+	margin-left: 10px;
+	vertical-align: top;
+	margin-top: 8px;
+	opacity: .4;
+}
+
+#music-controls #playlist-area .icon-menu:hover {
+	opacity: 1.0;
 }
 
 #music-controls, #music-controls * {
@@ -55,19 +72,11 @@
 	padding: 10px;
 	margin: 9px 2px 5px;
 	cursor: pointer;
-
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity = 40);
 	opacity: .4;
 }
 
 #music-controls .control.disabled {
 	cursor: default;
-
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=15)";
-	filter: alpha(opacity = 15);
 	opacity: .15;
 }
 
@@ -89,9 +98,6 @@
 
 #music-controls .control:hover:not(.disabled),
 #music-controls .control:focus:not(.disabled) {
-	/* opacity */
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity = 100);
 	opacity: 1;
 }
 
@@ -171,8 +177,6 @@
 }
 
 #music-controls .buffer-bar {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
-	filter: alpha(opacity = 10);
 	opacity: 0.1;
 }
 
@@ -187,8 +191,6 @@
 
 #music-controls #volume-icon {
 	cursor: default;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
-	filter: alpha(opacity = 40);
 	opacity: .4;
 	position: absolute;
 	top: 0;
@@ -298,4 +300,17 @@ body.snapjs-left #music-controls {
 
 #music-controls.dark-theme .svg {
 	filter: invert(100%);
+}
+
+.musicPlaylistTabView > * {
+	margin-left: 30px;
+}
+
+.musicPlaylistTabView p {
+	margin-top: 24px;
+	font-weight: bold;
+}
+
+.musicPlaylistTabView .loading {
+	height: 50px;
 }

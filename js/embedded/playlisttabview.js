@@ -15,18 +15,17 @@ function initPlaylistTabView() {
 			},
 
 			render: function() {
-				this.$el.empty(); // erase any previous content
+				var container = this.$el;
+				container.empty(); // erase any previous content
 
 				var fileInfo = this.getFileInfo();
 
 				if (fileInfo) {
-					var container = this.$el;
 
 					var loadIndicator = $(document.createElement('div')).attr('class', 'loading');
 					container.append(loadIndicator);
 
-					var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': fileInfo.id});
-					$.get(url, function(data) {
+					var onPlaylistLoaded = function(data) {
 						loadIndicator.hide();
 
 						var list = $(document.createElement('ol'));
@@ -45,11 +44,14 @@ function initPlaylistTabView() {
 								failList.append($(document.createElement('li')).text(data.invalid_paths[i]));
 							}
 						}
+					};
 
-					}).fail(function() {
+					var onError = function(error) {
 						loadIndicator.hide();
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
-					});
+					};
+
+					OCA.Music.playlistFileService.readFile(fileInfo.id, onPlaylistLoaded, onError);
 				}
 			},
 

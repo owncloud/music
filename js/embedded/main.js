@@ -150,8 +150,7 @@ function initEmbeddedPlayer() {
 		mPlayingListFile = true;
 
 		mContext.fileList.showFileBusyState(mContext.$file, true);
-		var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': mCurrentFileId});
-		$.get(url, function(data) {
+		var onPlaylistLoaded = function(data) {
 			if (data.files.length > 0) {
 				mPlayer.show(mContext.$file.attr('data-file'));
 				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
@@ -164,17 +163,18 @@ function initEmbeddedPlayer() {
 			}
 			if (data.invalid_paths.length > 0) {
 				OC.Notification.showTemporary(
-					t('music', 'The playlist contained {count} invalid path(s). See browser console for details.',
+					t('music', 'The playlist contained {count} invalid path(s). See the playlist file details.',
 						{count: data.invalid_paths.length}));
-				console.log('The following file(s) from the playlist could not be found:\n' + data.invalid_paths.join(',\n'));
 			}
 
 			mContext.fileList.showFileBusyState(mContext.$file, false);
-		}).fail(function() {
+		};
+		var onError = function() {
 			mCurrentFileId = null;
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
 			mContext.fileList.showFileBusyState(mContext.$file, false);
-		});
+		};
+		OCA.Music.playlistFileService.readFile(mCurrentFileId, onPlaylistLoaded, onError);
 	}
 
 	/**

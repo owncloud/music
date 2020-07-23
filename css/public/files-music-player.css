@@ -314,3 +314,8 @@ body.snapjs-left #music-controls {
 .musicPlaylistTabView .loading {
 	height: 50px;
 }
+
+.musicPlaylistTabView li {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}

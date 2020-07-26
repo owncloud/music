@@ -32,7 +32,6 @@ use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
 use \OCA\Music\Utility\PlaylistFileService;
-use \OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
 	private $urlGenerator;
@@ -278,7 +277,7 @@ class PlaylistApiController extends Controller {
 				return [
 					'id' => $file->getId(),
 					'name' => $file->getName(),
-					'path' => Util::urlEncodePath($this->userFolder->getRelativePath($file->getPath())),
+					'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
 					'mimetype' => $file->getMimeType()
 				];
 			}, $result['files']);

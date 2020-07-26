@@ -41,9 +41,7 @@ function initEmbeddedPlayer() {
 	register();
 
 	function urlForFile(file) {
-		var url = mPlayingListFile
-			? OC.linkToRemoteBase('webdav') + file.path
-			: OCA.Files.App.fileList.getDownloadUrl(file.name, file.path);
+		var url = OCA.Files.App.fileList.getDownloadUrl(file.name, file.path);
 
 		// append request token unless this is a public share
 		if (!mShareToken) {

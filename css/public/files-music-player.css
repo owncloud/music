@@ -314,6 +314,10 @@ body.snapjs-left #music-controls {
 	cursor: pointer;
 }
 
+.musicPlaylistTabView ol li::marker {
+	color: #767676;
+}
+
 .musicPlaylistTabView ol li:hover,
 .musicPlaylistTabView ol li.current {
 	transition: background-color 0.3s ease;

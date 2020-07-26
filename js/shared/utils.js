@@ -44,6 +44,15 @@ OCA.Music.Utils = {
 	 */
 	endsWith: function(str, search) {
 		return str !== null && search !== null && str.slice(-search.length) === search;
-	}
+	},
 
+	/**
+	 * Creates a track title from the file name, dropping the file extension and any
+	 * track number possibly found from the beginning of the file name.
+	 */
+	titleFromFilename: function(filename) {
+		// parsing logic is ported form parseFileName in utility/scanner.php
+		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
+		return match ? match[3] : filename;
+	}
 };

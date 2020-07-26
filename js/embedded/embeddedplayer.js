@@ -386,12 +386,6 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 		});
 	}
 
-	function titleFromFilename(filename) {
-		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
-		return match ? match[3] : filename;
-	}
-
 	function dropFileExtension(filename) {
 		return filename.replace(/\.[^/.]+$/, "");
 	}
@@ -527,7 +521,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 
 	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
 		currentFileId = fileId;
-		var fallbackTitle = titleFromFilename(fileName);
+		var fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
 		playUrl(url, mime, fallbackTitle, function() {
 			if (shareToken) {
 				loadSharedFileInfo(shareToken, fileId, fallbackTitle);

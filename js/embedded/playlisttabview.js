@@ -40,7 +40,7 @@ function initPlaylistTabView() {
 						for (var i = 0; i < data.files.length; ++i) {
 							list.append($(document.createElement('li'))
 										.attr('id', 'music-playlist-item-' + i)
-										.text(data.files[i].name));
+										.text(OCA.Music.Utils.titleFromFilename(data.files[i].name)));
 						}
 
 						// click handler

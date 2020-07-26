@@ -74,7 +74,7 @@ angular.module('Music').controller('GenresViewController', [
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if an individual genre is being played
-			if (OC_Music_Utils.startsWith(playlistId, 'genre-')) {
+			if (OCA.Music.Utils.startsWith(playlistId, 'genre-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

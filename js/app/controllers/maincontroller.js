@@ -21,7 +21,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Add dark-theme class to the #app element if Nextcloud dark theme detected.
 	// Css can then diffentiate the style of the contained elments where necessary.
-	if (OC_Music_Utils.darkThemeActive()) {
+	if (OCA.Music.Utils.darkThemeActive()) {
 		$('#app').addClass('dark-theme');
 	}
 
@@ -268,7 +268,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		var controls = document.getElementById('controls');
 		var header = document.getElementById('header');
 		var offset = controls ? controls.offsetHeight : 0;
-		if (OC_Music_Utils.newLayoutStructure() && header) {
+		if (OCA.Music.Utils.newLayoutStructure() && header) {
 			offset += header.offsetHeight;
 		}
 		return offset;
@@ -276,7 +276,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		if (itemId) {
-			var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+			var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
 			var element = $('#' + itemId);
 			if (container && element) {
 				if (animationTime === undefined) {
@@ -288,7 +288,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.scrollToTop = function() {
-		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+		var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
 		container.scrollTo(0, 0);
 	};
 
@@ -343,7 +343,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	});
 
-	if (OC_Music_Utils.newLayoutStructure()) {
+	if (OCA.Music.Utils.newLayoutStructure()) {
 		$('#controls').addClass('taller-header');
 	}
 

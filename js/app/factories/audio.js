@@ -11,5 +11,5 @@
  */
 
 angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
-	return new PlayerWrapper();
+	return new OCA.Music.PlayerWrapper();
 }]);

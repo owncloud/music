@@ -8,8 +8,10 @@
  * @copyright Pauli Järvinen 2018 - 2020
  */
 
+OCA.Music = OCA.Music || {};
+
 /** @namespace */
-var OC_Music_Utils = {
+OCA.Music.Utils = {
 
 	/**
 	 * Nextcloud 14 has a new overall layout structure which requires some

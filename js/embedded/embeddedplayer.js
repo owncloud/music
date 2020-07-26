@@ -12,7 +12,7 @@ OCA.Music = OCA.Music || {};
 
 OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 
-	var player = new PlayerWrapper();
+	var player = new OCA.Music.PlayerWrapper();
 
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
@@ -306,7 +306,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
-		if (OC_Music_Utils.darkThemeActive()) {
+		if (OCA.Music.Utils.darkThemeActive()) {
 			musicControls.addClass('dark-theme');
 		}
 
@@ -321,7 +321,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 			var width = parentContainer.width();
 			// On the share page and in NC14+, the parent width has the scroll bar width
 			// already subtracted.
-			if (!isSharePage && !OC_Music_Utils.newLayoutStructure()) {
+			if (!isSharePage && !OCA.Music.Utils.newLayoutStructure()) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;

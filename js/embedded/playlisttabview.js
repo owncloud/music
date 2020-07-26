@@ -20,7 +20,7 @@ function initPlaylistTabView() {
 				var container = this.$el;
 				container.empty(); // erase any previous content
 
-				if (OC_Music_Utils.darkThemeActive()) {
+				if (OCA.Music.Utils.darkThemeActive()) {
 					container.addClass('dark-theme');
 				}
 

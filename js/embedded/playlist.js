@@ -42,6 +42,13 @@ OCA.Music.Playlist = function() {
 		return jumpToOffset(-1);
 	};
 
+	this.jumpToIndex = function(index) {
+		if (index < mFiles.length) {
+			mCurrentIndex = index;
+		}
+		return this.currentFile();
+	};
+
 	this.reset = function() {
 		mFiles = null;
 		mCurrentIndex = null;

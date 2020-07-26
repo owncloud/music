@@ -548,5 +548,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 		nextPrevEnabled = enabled;
 		updateNextPrevButtonStatus();
 	};
+
+	this.isVisible = function() {
+		return musicControls !== null && musicControls.is(":visible");
+	};
 };
 

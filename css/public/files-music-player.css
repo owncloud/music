@@ -289,22 +289,7 @@ body.snapjs-left #music-controls {
 	visibility: hidden;
 }
 
-/* Adjustments for the Nextcloud dark theme */
-#music-controls.dark-theme {
-	background-color: rgba(24, 24, 24, 0.95);
-}
-
-#music-controls.dark-theme #albumart {
-	border-color: rgb(64, 64, 64);
-}
-
-#music-controls.dark-theme .svg {
-	filter: invert(100%);
-}
-
-.musicPlaylistTabView > * {
-	margin-left: 30px;
-}
+/* Playlist tab view shown in the Files sidebar */
 
 .musicPlaylistTabView p {
 	margin-top: 24px;
@@ -318,4 +303,37 @@ body.snapjs-left #music-controls {
 .musicPlaylistTabView li {
 	padding-top: 2px;
 	padding-bottom: 2px;
+	padding-left: 8px;
+}
+
+.musicPlaylistTabView ol {
+	list-style: decimal inside;
+}
+
+.musicPlaylistTabView ol li {
+	cursor: pointer;
+}
+
+.musicPlaylistTabView ol li:hover,
+.musicPlaylistTabView ol li.current {
+	transition: background-color 0.3s ease;
+	background-color: #f7f7f7;
+}
+
+/* Adjustments for the Nextcloud dark theme */
+#music-controls.dark-theme {
+	background-color: rgba(24, 24, 24, 0.95);
+}
+
+#music-controls.dark-theme #albumart {
+	border-color: rgb(64, 64, 64);
+}
+
+#music-controls.dark-theme .svg {
+	filter: invert(100%);
+}
+
+.musicPlaylistTabView.dark-theme ol li:hover,
+.musicPlaylistTabView.dark-theme ol li.current {
+	background-color: var(--color-background-dark);
 }

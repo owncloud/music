@@ -71,7 +71,12 @@ function initEmbeddedPlayer() {
 	}
 
 	function onShowList() {
-		OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+		if (mCurrentFile.path == OCA.Files.App.fileList.breadcrumb.dir) {
+			OCA.Files.App.fileList.scrollTo(mCurrentFile.name);
+			OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+		} else {
+			OC.Notification.showTemporary(t('music', 'The option is available only while the parent folder of the playlist file is shown'));
+		}
 	}
 
 	function jumpToPlaylistFile(file) {

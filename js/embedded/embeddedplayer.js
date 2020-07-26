@@ -104,6 +104,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 			area.append($(document.createElement('button'))
 				.attr('class', 'icon-menu')
 				.attr('title', t('music', 'Show playlist'))
+				.attr('alt', t('music', 'Show'))
 				.click(onShowList));
 		}
 

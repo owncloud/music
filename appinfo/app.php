@@ -85,6 +85,7 @@ $loadEmbeddedMusicPlayer = function () use ($appName) {
 $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
+	$url = \explode('?', $url)[0]; // get rid of any query args
 	$isFilesUrl = \preg_match('%/apps/files(/.*)?%', $url);
 	$isShareUrl = \preg_match('%/s/.+%', $url)
 		&& !\preg_match('%/apps/.*%', $url)

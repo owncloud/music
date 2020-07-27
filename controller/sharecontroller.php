@@ -50,12 +50,8 @@ class ShareController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function fileInfo($token, $fileId) {
-		$info = null;
-
 		$share = $this->shareManager->getShareByToken($token);
-
 		$fileOwner = $share->getShareOwner();
-
 		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
 
 		// If non-zero fileId is given, the $share identified by the token should

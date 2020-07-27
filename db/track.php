@@ -14,8 +14,8 @@
 
 namespace OCA\Music\Db;
 
+use \OCP\IL10N;
 use \OCP\IURLGenerator;
-
 use \OCP\AppFramework\Db\Entity;
 
 use \OCA\Music\Utility\Util;
@@ -31,10 +31,12 @@ use \OCA\Music\Utility\Util;
  * @method void setYear(int $year)
  * @method int getArtistId()
  * @method void setArtistId(int $artistId)
- * @method Artist getArtist()
- * @method void setArtist(Artist $artist)
+ * @method string getArtistName()
+ * @method void setArtistName(string $artistName)
  * @method int getAlbumId()
  * @method void setAlbumId(int $albumId)
+ * @method string getAlbumName()
+ * @method void setAlbumName(string $albumName)
  * @method Album getAlbum()
  * @method void setAlbum(Album $album)
  * @method int getLength()
@@ -53,8 +55,8 @@ use \OCA\Music\Utility\Util;
  * @method void setStarred(string $timestamp)
  * @method int getGenreId()
  * @method void setGenreId(int $genreId)
- * @method Genre getGenre()
- * @method void setGenre(Genre $genre)
+ * @method string getGenreName()
+ * @method void setGenreName(string $genreName)
  * @method string getFilename()
  * @method void setFilename(string $filename)
  * @method int getSize()
@@ -80,11 +82,13 @@ class Track extends Entity {
 	public $genreId;
 	public $filename;
 	public $size;
+	// not from the music_tracks table but still part of the standard content of this entity:
+	public $albumName;
+	public $artistName;
+	public $genreName;
 
-	// these don't come from the music_tracks table:
-	public $artist;
+	// the rest of the variables are injected separately when needed
 	public $album;
-	public $genre;
 	public $numberOnPlaylist;
 
 	public function __construct() {
@@ -127,12 +131,24 @@ class Track extends Entity {
 		];
 	}
 
-	public function toCollection($l10n) {
+	public function getArtistNameString(IL10N $l10n) {
+		return $this->getArtistName() ?: Artist::unknownNameString($l10n);
+	}
+
+	public function getAlbumNameString(IL10N $l10n) {
+		return $this->getAlbumName() ?: Album::unknownNameString($l10n);
+	}
+
+	public function getGenreNameString(IL10N $l10n) {
+		return $this->getGenreName() ?: Genre::unknownNameString($l10n);
+	}
+
+	public function toCollection(IL10N $l10n) {
 		return [
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
 			'disk' => $this->getDisk(),
-			'artistName' => $this->getArtist()->getNameString($l10n),
+			'artistName' => $this->getArtistNameString($l10n),
 			'artistId' => $this->getArtistId(),
 			'files' => [$this->getMimetype() => $this->getFileId()],
 			'id' => $this->getId(),
@@ -186,8 +202,7 @@ class Track extends Entity {
 	}
 
 	public static function compareArtistAndTitle(Track $a, Track $b) {
-		$artistResult = Util::stringCaseCompare(
-				$a->getArtist()->getName(), $b->getArtist()->getName());
+		$artistResult = Util::stringCaseCompare($a->getArtistName(), $b->getArtistName());
 
 		return $artistResult ?: Util::stringCaseCompare($a->getTitle(), $b->getTitle());
 	}

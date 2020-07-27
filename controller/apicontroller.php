@@ -335,8 +335,6 @@ class ApiController extends Controller {
 	public function trackByFileId($fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {
-			$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
-			$track->setArtist($this->artistBusinessLayer->find($track->getArtistId(), $this->userId));
 			return new JSONResponse($track->toCollection($this->l10n));
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

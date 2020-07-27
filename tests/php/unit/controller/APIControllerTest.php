@@ -989,6 +989,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setId($trackId);
 		$track->setTitle('The title');
 		$track->setArtistId(3);
+		$track->setArtistName('The track artist');
 		$track->setAlbumId(1);
 		$track->setNumber(4);
 		$track->setDisk(1);
@@ -997,28 +998,10 @@ class APIControllerTest extends ControllerTestUtility {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
-		$album = new Album();
-		$album->setId(1);
-		$album->setAlbumArtistId(1);
-
-		$artist = new Artist();
-		$artist->setId(3);
-		$artist->setName('The track artist');
-		
 		$this->trackBusinessLayer->expects($this->once())
 			->method('findByFileId')
 			->with($this->equalTo($fileId), $this->equalTo($this->userId))
 			->will($this->returnValue($track));
-
-		$this->albumBusinessLayer->expects($this->once())
-			->method('find')
-			->with($this->equalTo($track->getAlbumId()), $this->equalTo($this->userId))
-			->will($this->returnValue($album));
-
-		$this->artistBusinessLayer->expects($this->once())
-			->method('find')
-			->with($this->equalTo($track->getArtistId()), $this->equalTo($this->userId))
-			->will($this->returnValue($artist));
 
 		$result = [
 			'title' => 'The title',

@@ -80,9 +80,9 @@ abstract class BaseMapper extends Mapper {
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		if ($sortBy == SortBy::Name) {
-			$sorting = "ORDER BY LOWER(`{$this->nameColumn}`)";
+			$sorting = "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
 		} elseif ($sortBy == SortBy::Newest) {
-			$sorting = 'ORDER BY `id` DESC'; // abuse the fact that IDs are ever-incrementing values
+			$sorting = "ORDER BY `{$this->getTableName()}`.`id` DESC"; // abuse the fact that IDs are ever-incrementing values
 		} else {
 			$sorting = null;
 		}

@@ -24,6 +24,21 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * Override the base implementation to include data from multiple tables
+	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
+	 * @param string $condition
+	 * @param string|null $extension
+	 * @return string
+	 */
+	protected function selectEntities($condition, $extension=null) {
+		return "SELECT `*PREFIX*music_albums`.*, `artist`.`name` AS `album_artist_name`
+				FROM `*PREFIX*music_albums`
+				INNER JOIN `*PREFIX*music_artists` `artist`
+				ON `*PREFIX*music_albums`.`album_artist_id` = `artist`.`id`
+				WHERE $condition $extension";
+	}
+
+	/**
 	 * returns artist IDs mapped to album IDs
 	 * does not include album_artist_id
 	 *
@@ -132,11 +147,8 @@ class AlbumMapper extends BaseMapper {
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		if ($sortBy === SortBy::Parent) {
-			$sql = 'SELECT `album`.* FROM `*PREFIX*music_albums` `album`
-					INNER JOIN `*PREFIX*music_artists` `artist`
-					ON `album`.`album_artist_id` = `artist`.`id`
-					WHERE `album`.`user_id` = ?
-					ORDER BY LOWER(`artist`.`name`), LOWER(`album`.`name`)';
+			$sorting = 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
+			$sql = $this->selectUserEntities('', $sorting);
 			$params = [$userId];
 			return $this->findEntities($sql, $params, $limit, $offset);
 		} else {
@@ -153,12 +165,17 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[]
 	 */
 	public function findAllByArtist($artistId, $userId) {
-		$sql = 'SELECT * FROM `*PREFIX*music_albums` `album` '.
-			'WHERE `album`.`id` IN (SELECT DISTINCT `album`.`id` FROM '.
-			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ? AND '.
-			'`album`.`user_id` = ? UNION SELECT `track`.`album_id` '.
-			'FROM `*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? AND '.
-			'`track`.`user_id` = ?) ORDER BY LOWER(`album`.`name`)';
+		$sql = $this->selectEntities(
+				'`*PREFIX*music_albums`.`id` IN (
+					SELECT DISTINCT `album`.`id`
+					FROM `*PREFIX*music_albums` `album`
+					WHERE `album`.`album_artist_id` = ? AND `album`.`user_id` = ?
+						UNION
+					SELECT DISTINCT `track`.`album_id`
+					FROM `*PREFIX*music_tracks` `track`
+					WHERE `track`.`artist_id` = ? AND `track`.`user_id` = ?
+				)',
+				'ORDER BY LOWER(`*PREFIX*music_albums`.`name`)');
 		$params = [$artistId, $userId, $artistId, $userId];
 		return $this->findEntities($sql, $params);
 	}
@@ -182,7 +199,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId
 	 * @param int|null $limit
 	 * @param int|null $offset
-	 * @return Artist[]
+	 * @return Album[]
 	 */
 	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
 		$sql = $this->selectUserEntities('EXISTS '.
@@ -192,37 +209,6 @@ class AlbumMapper extends BaseMapper {
 
 		$params = [$userId, $genreId];
 		return $this->findEntities($sql, $params, $limit, $offset);
-	}
-
-	/**
-	 * returns album that matches a name and an album artist ID
-	 *
-	 * @param string|null $albumName name of the album
-	 * @param integer|null $albumArtistId ID of the album artist
-	 * @param string $userId the user ID
-	 * @return Album[]
-	 */
-	public function findAlbum($albumName, $albumArtistId, $userId) {
-		$sql = $this->selectUserEntities();
-		$params = [$userId];
-
-		// add artist id check
-		if ($albumArtistId === null) {
-			$sql .= ' AND `album_artist_id` IS NULL ';
-		} else {
-			$sql .= ' AND `album_artist_id` = ? ';
-			\array_push($params, $albumArtistId);
-		}
-
-		// add album name check
-		if ($albumName === null) {
-			$sql .= ' AND `name` IS NULL ';
-		} else {
-			$sql .= ' AND `name` = ? ';
-			\array_push($params, $albumName);
-		}
-
-		return $this->findEntity($sql, $params);
 	}
 
 	/**
@@ -367,11 +353,15 @@ class AlbumMapper extends BaseMapper {
 	 * @return integer
 	 */
 	public function countByArtist($artistId) {
-		$sql = 'SELECT COUNT(*) AS count FROM '.
-			'(SELECT DISTINCT `track`.`album_id` FROM '.
-			'`*PREFIX*music_tracks` `track` WHERE `track`.`artist_id` = ? '.
-			'UNION SELECT `album`.`id` FROM '.
-			'`*PREFIX*music_albums` `album` WHERE `album`.`album_artist_id` = ?) tmp';
+		$sql = 'SELECT COUNT(*) AS count FROM (
+					SELECT DISTINCT `track`.`album_id`
+					FROM `*PREFIX*music_tracks` `track`
+					WHERE `track`.`artist_id` = ?
+						UNION 
+					SELECT `album`.`id`
+					FROM `*PREFIX*music_albums` `album`
+					WHERE `album`.`album_artist_id` = ?
+				) tmp';
 		$params = [$artistId, $artistId];
 		$result = $this->execute($sql, $params);
 		$row = $result->fetch();
@@ -384,7 +374,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album
 	 */
 	protected function findUniqueEntity($album) {
-		$sql = $this->selectUserEntities('`hash` = ?');
+		$sql = $this->selectUserEntities('`*PREFIX*music_albums`.`hash` = ?');
 		return $this->findEntity($sql, [$album->getUserId(), $album->getHash()]);
 	}
 }

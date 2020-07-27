@@ -14,6 +14,7 @@ namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\Util;
 
 use \OCP\IL10N;
 use \OCP\IURLGenerator;
@@ -55,36 +56,19 @@ class Library {
 		/** @var Artist[] $allArtists */
 		$artists = $this->artistBusinessLayer->findAll($userId);
 
-		$artistsById = [];
-		foreach ($artists as &$artist) {
-			$artistsById[$artist->getId()] = $artist;
-		}
-
-		$albumsById = [];
-		foreach ($albums as &$album) {
-			$albumArtist = $artistsById[$album->getAlbumArtistId()];
-			if (empty($albumArtist)) {
-				$this->logger->log("DB error on album {$album->id} '{$album->name}': ".
-						"album artist missing. Skipping the album.", 'warn');
-			}
-			else {
-				$album->setAlbumArtist($albumArtist);
-				$albumsById[$album->getId()] = $album;
-			}
-		}
+		$artistsById = Util::createIdLookupTable($artists);
+		$albumsById = Util::createIdLookupTable($albums);
 
 		foreach ($tracks as $idx => $track) {
 			$album = $albumsById[$track->getAlbumId()];
-			$trackArtist = $artistsById[$track->getArtistId()];
 
-			if (empty($album) || empty($trackArtist)) {
+			if (empty($album)) {
 				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
-				"album or artist missing. Skipping the track.", 'warn');
+				"album with ID {$track->albumId} not found. Skipping the track.", 'warn');
 				unset($tracks[$idx]);
 			}
 			else {
 				$track->setAlbum($album);
-				$track->setArtist($trackArtist);
 			}
 		}
 

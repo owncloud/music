@@ -22,16 +22,24 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Override the base implementation
+	 * Override the base implementation to include data from multiple tables
 	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
 	 * @param string $condition
 	 * @param string|null $extension
+	 * @return string
 	 */
 	protected function selectEntities($condition, $extension=null) {
-		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`
+		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`,
+						`album`.`name` AS `album_name`, `artist`.`name` AS `artist_name`, `genre`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
 				INNER JOIN `*PREFIX*filecache` `file`
 				ON `*PREFIX*music_tracks`.`file_id` = `file`.`fileid`
+				INNER JOIN `*PREFIX*music_albums` `album`
+				ON `*PREFIX*music_tracks`.`album_id` = `album`.`id`
+				INNER JOIN `*PREFIX*music_artists` `artist`
+				ON `*PREFIX*music_tracks`.`artist_id` = `artist`.`id`
+				LEFT JOIN `*PREFIX*music_genres` `genre`
+				ON `*PREFIX*music_tracks`.`genre_id` = `genre`.`id`
 				WHERE $condition $extension";
 	}
 
@@ -62,7 +70,7 @@ class TrackMapper extends BaseMapper {
 		}
 
 		$sql = $this->selectUserEntities($condition, 
-				'ORDER BY `disk`, `number`, LOWER(`title`)');
+				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`title`)');
 		return $this->findEntities($sql, $params);
 	}
 
@@ -124,7 +132,7 @@ class TrackMapper extends BaseMapper {
 	 */
 	public function findByFileIds($fileIds, $userIds) {
 		$sql = $this->selectEntities(
-				'`user_id` IN ' . $this->questionMarks(\count($userIds)) .
+				'`*PREFIX*music_tracks`.`user_id` IN ' . $this->questionMarks(\count($userIds)) .
 				' AND `file_id` IN '. $this->questionMarks(\count($fileIds)));
 		$params = \array_merge($userIds, $fileIds);
 		return $this->findEntities($sql, $params);
@@ -199,9 +207,9 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByNameRecursive($name, $userId) {
-		$condition = '(`track`.`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
-						' `track`.`album_id` IN (SELECT `id` FROM `*PREFIX*music_albums` WHERE LOWER(`name`) LIKE LOWER(?)) OR '.
-						' LOWER(`track`.`title`) LIKE LOWER(?) )';
+		$condition = '( LOWER(`artist_name`) LIKE LOWER(?) OR
+						LOWER(`album_name`) LIKE LOWER(?) OR
+						LOWER(`title`) LIKE LOWER(?) )';
 		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`title`)');
 		$name = '%' . $name . '%';
 		$params = [$userId, $name, $name, $name];
@@ -232,13 +240,12 @@ class TrackMapper extends BaseMapper {
 
 		if (!empty($artistName)) {
 			if ($fuzzy) {
-				$equality = 'LOWER(`name`) LIKE LOWER(?)';
+				$sqlConditions[] = 'LOWER(`artist_name`) LIKE LOWER(?)';
 				$params[] = "%$artistName%";
 			} else {
-				$equality = '`name` = ?';
+				$sqlConditions[] = '`artist_name` = ?';
 				$params[] = $artistName;
 			}
-			$sqlConditions[] = "`artist_id` IN (SELECT `id` FROM `*PREFIX*music_artists` WHERE $equality)";
 		}
 
 		// at least one condition has to be given, otherwise return an empty set

@@ -255,13 +255,10 @@ class SubsonicController extends Controller {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$artistName = $artist->getNameString($this->l10n);
 		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
 
 		$artistNode = $this->artistToApi($artist);
-		$artistNode['album'] = \array_map(function($album) use ($artistName) {
-			return $this->albumToNewApi($album, $artistName);
-		}, $albums);
+		$artistNode['album'] = \array_map([$this, 'albumToNewApi'], $albums);
 
 		return $this->subsonicResponse(['artist' => $artistNode]);
 	}
@@ -799,11 +796,10 @@ class SubsonicController extends Controller {
 		});
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folderId, $this->userId);
 
-		// A folder may contain thousands of audio files, and getting artist and album data
+		// A folder may contain thousands of audio files, and getting album data
 		// for each of those individually would take a lot of time and great many DB queries.
-		// To prevent having to do this in `trackToApi`, we fetch all the albums and artists
-		// in one go.
-		$this->injectAlbumsArtistsAndGenresToTracks($tracks);
+		// To prevent having to do this in `trackToApi`, we fetch all the albums in one go.
+		$this->injectAlbumsToTracks($tracks);
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
@@ -828,33 +824,24 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse($content);
 	}
 
-	private function injectAlbumsArtistsAndGenresToTracks(&$tracks) {
+	private function injectAlbumsToTracks(&$tracks) {
 		$albumIds = [];
-		$artistIds = [];
 
-		// get unique album and artist IDs
+		// get unique album IDs
 		foreach ($tracks as $track) {
 			$albumIds[$track->getAlbumId()] = 1;
-			$artistIds[$track->getArtistId()] = 1;
 		}
 		$albumIds = \array_keys($albumIds);
-		$artistIds = \array_keys($artistIds);
 
 		// get the corresponding entities from the business layer
 		$albums = $this->albumBusinessLayer->findById($albumIds, $this->userId);
-		$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
-		$genres = $this->genreBusinessLayer->findAll($this->userId);
 
-		// create hash tables "id => entity" for the albums and artists for fast access
+		// create hash tables "id => entity" for the albums for fast access
 		$albumMap = Util::createIdLookupTable($albums);
-		$artistMap = Util::createIdLookupTable($artists);
-		$genreMap = Util::createIdLookupTable($genres);
 
 		// finally, set the references on the tracks
 		foreach ($tracks as &$track) {
 			$track->setAlbum($albumMap[$track->getAlbumId()]);
-			$track->setArtist($artistMap[$track->getArtistId()]);
-			$track->setGenre($genreMap[$track->getGenreId()]);
 		}
 	}
 
@@ -878,19 +865,13 @@ class SubsonicController extends Controller {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$artistName = $artist->getNameString($this->l10n);
 		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
-
-		$children = [];
-		foreach ($albums as $album) {
-			$children[] = $this->albumToOldApi($album, $artistName);
-		}
 
 		return $this->subsonicResponse([
 			'directory' => [
 				'id' => $id,
-				'name' => $artistName,
-				'child' => $children
+				'name' => $artist->getNameString($this->l10n),
+				'child' => \array_map([$this, 'albumToOldApi'], $albums)
 			]
 		]);
 	}
@@ -952,11 +933,10 @@ class SubsonicController extends Controller {
 	/**
 	 * The "old API" format is used e.g. in getMusicDirectory and getAlbumList
 	 * @param Album $album
-	 * @param string|null $artistName
 	 * @return array
 	 */
-	private function albumToOldApi($album, $artistName = null) {
-		$result = $this->albumCommonApiFields($album, $artistName);
+	private function albumToOldApi($album) {
+		$result = $this->albumCommonApiFields($album);
 
 		$result['parent'] = 'artist-' . $album->getAlbumArtistId();
 		$result['title'] = $album->getNameString($this->l10n);
@@ -968,11 +948,10 @@ class SubsonicController extends Controller {
 	/**
 	 * The "new API" format is used e.g. in getAlbum and getAlbumList2
 	 * @param Album $album
-	 * @param string|null $artistName
 	 * @return array
 	 */
-	private function albumToNewApi($album, $artistName = null) {
-		$result = $this->albumCommonApiFields($album, $artistName);
+	private function albumToNewApi($album) {
+		$result = $this->albumCommonApiFields($album);
 
 		$result['artistId'] = 'artist-' . $album->getAlbumArtistId();
 		$result['name'] = $album->getNameString($this->l10n);
@@ -982,15 +961,10 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
-	private function albumCommonApiFields($album, $artistName = null) {
-		if (empty($artistName)) {
-			$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $this->userId);
-			$artistName = $artist->getNameString($this->l10n);
-		}
-
+	private function albumCommonApiFields($album) {
 		$result = [
 			'id' => 'album-' . $album->getId(),
-			'artist' => $artistName
+			'artist' => $album->getAlbumArtistNameString($this->l10n)
 		];
 
 		if (!empty($album->getCoverFileId())) {
@@ -1018,8 +992,8 @@ class SubsonicController extends Controller {
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
 	 * older clients. 
-	 * @param Track $track If the track entity has no album, artist and/or genre references set, then
-	 *                     those are automatically fetched from the respective BusinessLayer modules.
+	 * @param Track $track If the track entity has no album references set, then it is automatically
+	 *                     fetched from the AlbumBusinessLayer module.
 	 * @return array
 	 */
 	private function trackToApi($track) {
@@ -1031,18 +1005,12 @@ class SubsonicController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		$artist = $track->getArtist();
-		if (empty($artist)) {
-			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-			$track->setArtist($artist);
-		}
-
 		$result = [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
 			'title' => $track->getTitle(),
-			'artist' => $artist->getNameString($this->l10n),
+			'artist' => $track->getArtistNameString($this->l10n),
 			'isDir' => false,
 			'album' => $album->getNameString($this->l10n),
 			'year' => $track->getYear(),
@@ -1072,8 +1040,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($track->getGenreId())) {
-			$genre = $track->getGenre() ?: $this->genreBusinessLayer->find($track->getGenreId(), $this->userId);
-			$result['genre'] = $genre->getNameString($this->l10n);
+			$result['genre'] = $track->getGenreNameString($this->l10n);
 		}
 
 		return $result;
@@ -1187,7 +1154,7 @@ class SubsonicController extends Controller {
 	 * Common response building logic for search2, search3, getStarred, and getStarred2
 	 * @param string $title Name of the main node in the response message
 	 * @param array $results Search results with keys 'artists', 'albums', and 'tracks'
-	 * @param boolean $useNewApi Set to true for search3 and getStarred3. There is a difference
+	 * @param boolean $useNewApi Set to true for search3 and getStarred2. There is a difference
 	 *                           in the formatting of the album nodes.
 	 * @return \OCP\AppFramework\Http\Response
 	 */
@@ -1237,7 +1204,7 @@ class SubsonicController extends Controller {
 
 	private function findGenreByName($name) {
 		$genreArr = $this->genreBusinessLayer->findAllByName($name, $this->userId);
-		if (\count($genreArr) == 0 && $name == Genre::unknownGenreName($this->l10n)) {
+		if (\count($genreArr) == 0 && $name == Genre::unknownNameString($this->l10n)) {
 			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
 		}
 		return \count($genreArr) ? $genreArr[0] : null;

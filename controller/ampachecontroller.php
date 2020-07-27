@@ -261,9 +261,8 @@ class AmpacheController extends Controller {
 
 	protected function artist_songs($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
-		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
-		$this->injectArtistAndAlbum($tracks, $artist);
+		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -271,10 +270,8 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
-		$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-		$this->injectArtistAndAlbum($tracks, null, $album);
+		$this->injectAlbum($tracks, $album);
 
 		return $this->renderSongs($tracks, $auth);
 	}
@@ -283,7 +280,7 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 		$trackInArray = [$track];
-		$this->injectArtistAndAlbum($trackInArray);
+		$this->injectAlbum($trackInArray);
 		return $this->renderSongs($trackInArray, $auth);
 	}
 
@@ -297,7 +294,7 @@ class AmpacheController extends Controller {
 		// general case
 		else {
 			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
-			$this->injectArtistAndAlbum($tracks);
+			$this->injectAlbum($tracks);
 		}
 
 		return $this->renderSongs($tracks, $auth);
@@ -306,7 +303,7 @@ class AmpacheController extends Controller {
 	protected function search_songs($filter, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
-		$this->injectArtistAndAlbum($tracks);
+		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -352,7 +349,7 @@ class AmpacheController extends Controller {
 		else {
 			$userId = $this->ampacheUser->getUserId();
 			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);
-			$this->injectArtistAndAlbum($playlistTracks);
+			$this->injectAlbum($playlistTracks);
 		}
 		return $this->renderSongs($playlistTracks, $auth);
 	}
@@ -383,7 +380,7 @@ class AmpacheController extends Controller {
 	protected function tag_songs($genreId, $limit, $offset, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
-		$this->injectArtistAndAlbum($tracks, $artist);
+		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -512,8 +509,8 @@ class AmpacheController extends Controller {
 
 	/**
 	 * Getting all tracks with this helper is more efficient than with `findEntities`
-	 * followed by `injectArtistAndAlbum`. This is because, under the hood, the albums
-	 * and artists are fetched with a single DB query instead of fetching each separately.
+	 * followed by `injectAlbum`. This is because, under the hood, the albums
+	 * are fetched with a single DB query instead of fetching each separately.
 	 * 
 	 * The result set is ordered first by artist and then by song title.
 	 */
@@ -606,14 +603,13 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'album' => \array_map(function($album) use ($userId, $auth, $genreMap) {
-				$artist = $this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId);
+			'album' => \array_map(function($album) use ($auth, $genreMap) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
 					'artist' => [
-						'id' => (string)$artist->getId(),
-						'value' => $artist->getNameString($this->l10n)
+						'id' => (string)$album->getAlbumArtistId(),
+						'value' => $album->getAlbumArtistNameString($this->l10n)
 					],
 					'tracks' => $this->trackBusinessLayer->countByAlbum($album->getId()),
 					'rating' => 0,
@@ -632,43 +628,33 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	private function injectArtistAndAlbum(&$tracks, $commonArtist=null, $commonAlbum=null) {
+	private function injectAlbum(&$tracks, $commonAlbum=null) {
 		$userId = $this->ampacheUser->getUserId();
 
 		foreach ($tracks as &$track) {
-			$artist = $commonArtist ?: $this->artistBusinessLayer->find($track->getArtistId(), $userId);
-			$track->setArtist($artist);
-
 			if (!empty($commonAlbum)) {
 				$track->setAlbum($commonAlbum);
 			} else {
-				$album = $this->albumBusinessLayer->find($track->getAlbumId(), $userId);
-				$album->setAlbumArtist($this->artistBusinessLayer->find($album->getAlbumArtistId(), $userId));
-				$track->setAlbum($album);
+				$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $userId));
 			}
 		}
 	}
 
 	private function renderSongs($tracks, $auth) {
-		$userId = $this->ampacheUser->getUserId();
-		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
-
 		return $this->ampacheResponse([
-			'song' => \array_map(function($track) use ($auth, $genreMap) {
-				$artist = $track->getArtist();
+			'song' => \array_map(function($track) use ($auth) {
 				$album = $track->getAlbum();
-				$albumArtist = $album->getAlbumArtist();
 
 				$result = [
 					'id' => (string)$track->getId(),
 					'title' => $track->getTitle(),
 					'artist' => [
-						'id' => (string)$artist->getId(),
-						'value' => $artist->getNameString($this->l10n)
+						'id' => (string)$track->getArtistId(),
+						'value' => $track->getArtistNameString($this->l10n)
 					],
 					'albumartist' => [
-						'id' => (string)$albumArtist->getId(),
-						'value' => $albumArtist->getNameString($this->l10n)
+						'id' => (string)$album->getAlbumArtistId(),
+						'value' => $album->getAlbumArtistNameString($this->l10n)
 					],
 					'album' => [
 						'id' => (string)$album->getId(),
@@ -690,7 +676,7 @@ class AmpacheController extends Controller {
 				if ($genreId !== null) {
 					$result['tag'] = [[
 						'id' => (string)$genreId,
-						'value' => $genreMap[$genreId]->getNameString($this->l10n),
+						'value' => $track->getGenreNameString($this->l10n),
 						'count' => 1
 					]];
 				}

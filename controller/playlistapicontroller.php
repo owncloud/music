@@ -134,7 +134,6 @@ class PlaylistApiController extends Controller {
 		foreach ($playlist->getTrackIdsAsArray() as $trackId) {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
-			$song->setArtist($this->artistBusinessLayer->find($song->getArtistId(), $this->userId));
 			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
 		}
 

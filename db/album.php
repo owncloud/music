@@ -14,8 +14,8 @@
 
 namespace OCA\Music\Db;
 
+use \OCP\IL10N;
 use \OCP\IURLGenerator;
-
 use \OCP\AppFramework\Db\Entity;
 
 use \OCA\Music\Utility\Util;
@@ -39,8 +39,8 @@ use \OCA\Music\Utility\Util;
  * @method void setUserId(string $userId)
  * @method int getAlbumArtistId()
  * @method void setAlbumArtistId(int $albumArtistId)
- * @method Artist getAlbumArtist()
- * @method void setAlbumArtist(Artist $albumArtist)
+ * @method string getAlbumArtistName()
+ * @method void setAlbumArtistName(string $name)
  * @method string getHash()
  * @method void setHash(string $hash)
  * @method int getNumberOfDisks()
@@ -60,13 +60,13 @@ class Album extends Entity {
 	public $albumArtistId;
 	public $hash;
 	public $starred;
+	public $albumArtistName; // not from music_albums table but still part of the standard content
 
 	// these don't come from the music_albums table
 	public $years;
 	public $genres;
 	public $artistIds;
 	public $numberOfDisks;
-	public $albumArtist;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
@@ -136,19 +136,21 @@ class Album extends Entity {
 	/**
 	 * Returns the name of the album - if empty it returns the translated
 	 * version of "Unknown album"
-	 * @param object $l10n
+	 * @param IL10N $l10n
 	 * @return string
 	 */
-	public function getNameString($l10n) {
-		$name = $this->getName();
-		if ($name === null) {
-			$name = $l10n->t('Unknown album');
-			if (!\is_string($name)) {
-				/** @var \OC_L10N_String $name */
-				$name = $name->__toString();
-			}
-		}
-		return $name;
+	public function getNameString(IL10N $l10n) {
+		return $this->getName() ?: self::unknownNameString($l10n);
+	}
+
+	/**
+	 * Returns the name of the album artist - if empty it returns the translated
+	 * version of "Unknown artist"
+	 * @param IL10N $l10n
+	 * @return string
+	 */
+	public function getAlbumArtistNameString(IL10N $l10n) {
+		return $this->getAlbumArtistName() ?: Artist::unknownNameString($l10n);
 	}
 
 	/**
@@ -186,12 +188,12 @@ class Album extends Entity {
 	/**
 	 * Creates object used for collection API (array with name, year, cover URL and ID)
 	 * @param  IURLGenerator $urlGenerator URL Generator
-	 * @param  object $l10n Localization handler
+	 * @param  IL10N $l10n Localization handler
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
 	 * @param  array $tracks Tracks of the album in the "toCollection" format
 	 * @return array collection API object
 	 */
-	public function toCollection(IURLGenerator $urlGenerator, $l10n, $cachedCoverHash, $tracks) {
+	public function toCollection(IURLGenerator $urlGenerator, IL10N $l10n, $cachedCoverHash, $tracks) {
 		return [
 			'name'      => $this->getNameString($l10n),
 			'year'      => $this->getYearRange(),
@@ -205,10 +207,10 @@ class Album extends Entity {
 	/**
 	 * Creates object used by the shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
 	 * @param  IURLGenerator $urlGenerator URL Generator
-	 * @param  object $l10n Localization handler
+	 * @param  IL10N $l10n Localization handler
 	 * @return array shiva API object
 	 */
-	public function toAPI(IURLGenerator $urlGenerator, $l10n) {
+	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
@@ -225,5 +227,14 @@ class Album extends Entity {
 		$yearResult = \strcmp($a->getYearRange(), $b->getYearRange());
 
 		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
+	}
+
+	public static function unknownNameString(IL10N $l10n) {
+		$name = $l10n->t('Unknown album');
+		if (!\is_string($name)) {
+			/** @var \OC_L10N_String $name */
+			$name = $name->__toString();
+		}
+		return $name;
 	}
 }

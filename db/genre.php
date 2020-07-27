@@ -50,11 +50,7 @@ class Genre extends Entity {
 	}
 
 	public function getNameString(IL10N $l10n) {
-		$name = $this->getName();
-		if (empty($name)) {
-			$name = self::unknownGenreName($l10n);
-		}
-		return $name;
+		return $this->getName() ?: self::unknownNameString($l10n);
 	}
 
 	public function toApi() {
@@ -65,7 +61,7 @@ class Genre extends Entity {
 		];
 	}
 
-	public static function unknownGenreName(IL10N $l10n) {
+	public static function unknownNameString(IL10N $l10n) {
 		$name = $l10n->t('(Unknown genre)');
 		if (!\is_string($name)) {
 			/** @var \OC_L10N_String $name */

@@ -16,6 +16,7 @@ use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\Track;
 
 use \OCP\Files\File;
 use \OCP\Files\Folder;
@@ -90,7 +91,8 @@ class PlaylistFileService {
 		foreach ($tracks as $track) {
 			$nodes = $this->userFolder->getById($track->getFileId());
 			if (\count($nodes) > 0) {
-				$content .= "#EXTINF:{$track->getLength()},{$track->getTitle()}\n";
+				$caption = self::captionForTrack($track);
+				$content .= "#EXTINF:{$track->getLength()},$caption\n";
 				$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 			}
 		}
@@ -190,5 +192,12 @@ class PlaylistFileService {
 			'files' => $trackFiles,
 			'invalid_paths' => $invalidPaths
 		];
+	}
+
+	private static function captionForTrack(Track $track) {
+		$title = $track->getTitle();
+		$artist = $track->getArtistName();
+
+		return empty($artist) ? $title : "$artist - $title";
 	}
 }

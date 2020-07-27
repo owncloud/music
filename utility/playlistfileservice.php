@@ -115,11 +115,12 @@ class PlaylistFileService {
 	 */
 	public function importFromFile($id, $filePath) {
 		$parsed = $this->doParseFile($this->userFolder->get($filePath));
-		$trackFiles = $parsed['files'];
+		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
 		$trackIds = [];
-		foreach ($trackFiles as $trackFile) {
+		foreach ($trackFilesAndCaptions as $trackFileAndCaption) {
+			$trackFile = $trackFileAndCaption['file'];
 			if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
 				$trackIds[] = $track->getId();
 			} else {
@@ -164,23 +165,33 @@ class PlaylistFileService {
 		// .m3u as ISO-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
 		$encoding = Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'ISO-8859-1';
 
+		$caption = null;
+
 		$cwd = $this->userFolder->getRelativePath($file->getParent()->getPath());
 		$fp = $file->fopen('r');
 		while ($line = \fgets($fp)) {
+			$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
 			$line = \trim($line);
 			if (Util::startsWith($line, '#')) {
-				// comment line
-				if (Util::startsWith($line, '#EXTENC:')) {
+				// comment or extended fromat attribute line
+				if ($value = self::extractExtM3uField($line, 'EXTENC')) {
 					// update the used encoding with the explicitly defined one
-					$encoding = \trim(\substr($line, \strlen('#EXTENC:')));
+					$encoding = $value;
+				}
+				elseif ($value = self::extractExtM3uField($line, 'EXTINF')) {
+					// The format should be "length,caption". Set caption to null if the field is badly formatted.
+					$parts = \explode(',', $value, 2);
+					$caption = \trim(Util::arrayGetOrDefault($parts, 1));
 				}
 			}
 			else {
-				$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
-
 				$path = Util::resolveRelativePath($cwd, $line);
 				try {
-					$trackFiles[] = $this->userFolder->get($path);
+					$trackFiles[] = [
+						'file' => $this->userFolder->get($path),
+						'caption' => $caption
+					];
+					$caption = null; // the caption has been used up
 				} catch (\OCP\Files\NotFoundException $ex) {
 					$invalidPaths[] = $path;
 				}
@@ -199,5 +210,13 @@ class PlaylistFileService {
 		$artist = $track->getArtistName();
 
 		return empty($artist) ? $title : "$artist - $title";
+	}
+
+	private static function extractExtM3uField($line, $field) {
+		if (Util::startsWith($line, "#$field:")) {
+			return \trim(\substr($line, \strlen("#$field:")));
+		} else {
+			return null;
+		}
 	}
 }

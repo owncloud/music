@@ -273,12 +273,14 @@ class PlaylistApiController extends Controller {
 	public function parseFile($fileId) {
 		try {
 			$result = $this->playlistFileService->parseFile($fileId);
-			$result['files'] = \array_map(function($file) {
+			$result['files'] = \array_map(function($fileAndCaption) {
+				$file = $fileAndCaption['file'];
 				return [
 					'id' => $file->getId(),
 					'name' => $file->getName(),
 					'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
-					'mimetype' => $file->getMimeType()
+					'mimetype' => $file->getMimeType(),
+					'caption' => $fileAndCaption['caption']
 				];
 			}, $result['files']);
 			return new JSONResponse($result);

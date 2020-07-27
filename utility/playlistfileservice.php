@@ -112,6 +112,7 @@ class PlaylistFileService {
 	 * 			- 'failed_count': An integer showing the number of tracks in the file which could not be imported
 	 * @throws BusinessLayerException if playlist with ID not found
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile($id, $filePath) {
 		$parsed = $this->doParseFile($this->userFolder->get($filePath));
@@ -145,7 +146,8 @@ class PlaylistFileService {
 	/**
 	 * 
 	 * @param int $fileId
-	 * @throws \OCP\Files\NotFoundException
+	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 * @return array
 	 */
 	public function parseFile($fileId) {
@@ -158,8 +160,41 @@ class PlaylistFileService {
 	}
 
 	private function doParseFile(File $file) {
+		$mime = $file->getMimeType();
+
+		if ($mime == 'audio/mpegurl') {
+			$entries = $this->parseM3uFile($file);
+		} elseif ($mime == 'audio/x-scpls') {
+			$entries = $this->parsePlsFile($file);
+		} else {
+			throw new \UnexpectedValueException("file mime type '$mime' is not suported");
+		}
+
+		// find the parsed entries from the file system
 		$trackFiles = [];
 		$invalidPaths = [];
+		$cwd = $this->userFolder->getRelativePath($file->getParent()->getPath());
+
+		foreach ($entries as $entry) {
+			$path = Util::resolveRelativePath($cwd, $entry['path']);
+			try {
+				$trackFiles[] = [
+					'file' => $this->userFolder->get($path),
+					'caption' => $entry['caption']
+				];
+			} catch (\OCP\Files\NotFoundException $ex) {
+				$invalidPaths[] = $path;
+			}
+		}
+
+		return [
+			'files' => $trackFiles,
+			'invalid_paths' => $invalidPaths
+		];
+	}
+
+	private function parseM3uFile(File $file) {
+		$entries = [];
 
 		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
 		// .m3u as ISO-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
@@ -167,7 +202,6 @@ class PlaylistFileService {
 
 		$caption = null;
 
-		$cwd = $this->userFolder->getRelativePath($file->getParent()->getPath());
 		$fp = $file->fopen('r');
 		while ($line = \fgets($fp)) {
 			$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
@@ -185,24 +219,66 @@ class PlaylistFileService {
 				}
 			}
 			else {
-				$path = Util::resolveRelativePath($cwd, $line);
-				try {
-					$trackFiles[] = [
-						'file' => $this->userFolder->get($path),
-						'caption' => $caption
-					];
-					$caption = null; // the caption has been used up
-				} catch (\OCP\Files\NotFoundException $ex) {
-					$invalidPaths[] = $path;
+				$entries[] = [
+					'path' => $line,
+					'caption' => $caption
+				];
+				$caption = null; // the caption has been used up
+			}
+		}
+		\fclose($fp);
+
+		return $entries;
+	}
+
+	private function parsePlsFile(File $file) {
+		$files = [];
+		$titles = [];
+
+		$content = $file->getContent();
+
+		// If the file doesn't seem to be UTF-8, then assume it to be ISO-8859-1
+		if (!\mb_check_encoding($content, 'UTF-8')) {
+			$content = \mb_convert_encoding($content, 'UTF-8', 'ISO-8859-1');
+		}
+
+		$fp = \fopen("php://temp", 'r+');
+		\fputs($fp, $content);
+		\rewind($fp);
+
+		// the first line should always be [playlist]
+		if (\trim(\fgets($fp)) != '[playlist]') {
+			throw new \UnexpectedValueException('the file is not in valid PLS format');
+		}
+
+		// the rest of the non-empty lines should be in format "key=value"
+		while ($line = \fgets($fp)) {
+			$line = \trim($line);
+			// ignore empty and malformed lines
+			if (\strpos($line, '=') !== false) {
+				list($key, $value) = \explode('=', $line, 2);
+				// we are interested only on the File# and Title# lines
+				if (Util::startsWith($key, 'File')) {
+					$idx = \substr($key, \strlen('File'));
+					$files[$idx] = $value;
+				}
+				elseif (Util::startsWith($key, 'Title')) {
+					$idx = \substr($key, \strlen('Title'));
+					$titles[$idx] = $value;
 				}
 			}
 		}
 		\fclose($fp);
 
-		return [
-			'files' => $trackFiles,
-			'invalid_paths' => $invalidPaths
-		];
+		$entries = [];
+		foreach ($files as $idx => $file) {
+			$entries[] = [
+				'path' => $file,
+				'caption' => Util::arrayGetOrDefault($titles, $idx)
+			];
+		}
+
+		return $entries;
 	}
 
 	private static function captionForTrack(Track $track) {

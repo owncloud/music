@@ -261,6 +261,9 @@ class PlaylistApiController extends Controller {
 		catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		}
+		catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		}
 	}
 
 	/**
@@ -287,6 +290,9 @@ class PlaylistApiController extends Controller {
 		}
 		catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
+		}
+		catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
 	}
 

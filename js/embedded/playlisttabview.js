@@ -1,6 +1,6 @@
 OCA.Music = OCA.Music || {};
 
-function initPlaylistTabView() {
+function initPlaylistTabView(playlistMimes) {
 	if (typeof OCA.Files.DetailTabView != 'undefined') {
 		OCA.Music.PlaylistTabView = OCA.Files.DetailTabView.extend({
 			id: 'musicPlaylistTabView',
@@ -80,9 +80,9 @@ function initPlaylistTabView() {
 				if (!fileInfo || fileInfo.isDirectory()) {
 					return false;
 				}
-				var mimetype = fileInfo.get('mimetype') || '';
+				var mimetype = fileInfo.get('mimetype');
 
-				return (['audio/mpegurl'].indexOf(mimetype) > -1);
+				return (mimetype && playlistMimes.indexOf(mimetype) > -1);
 			},
 
 			setCurrentTrack: function(playlistId, trackIndex) {

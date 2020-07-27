@@ -35,7 +35,8 @@ function initEmbeddedPlayer() {
 	], mPlayer.canPlayMIME, mPlayer);
 
 	var mPlaylistMimes = [
-		'audio/mpegurl'
+		'audio/mpegurl',
+		'audio/x-scpls'
 	];
 
 	register();
@@ -103,7 +104,7 @@ function initEmbeddedPlayer() {
 		// Add play action to file rows with supported mime type, either audio or playlist.
 		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
 		if (typeof OCA.Files !== 'undefined') {
-			initPlaylistTabView();
+			initPlaylistTabView(mPlaylistMimes);
 			connectPlaylistTabViewEvents();
 			registerFolderPlayer(mAudioMimes, openAudioFile);
 			registerFolderPlayer(mPlaylistMimes, openPlaylistFile);

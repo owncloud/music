@@ -198,7 +198,7 @@ angular.module('Music').controller('NavigationController', [
 						gettextCatalog.getString('Import playlist contents from the selected file'),
 						onFileSelected,
 						false,
-						'audio/mpegurl',
+						['audio/mpegurl', 'audio/x-scpls'],
 						true
 				);
 			};

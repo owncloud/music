@@ -91,12 +91,17 @@
 }
 
 #app-navigation .playlist .actions .icon-more {
-	display: inline-block;
+	display: none;
 	padding: 5px;
-	opacity: .15;
+	opacity: .4;
 	width: 100%;
 	height: 100%;
 	cursor: pointer;
+}
+
+#app-navigation .playlist.active .actions .icon-more,
+#app-navigation .playlist:hover .actions .icon-more {
+	display: inline-block;
 }
 
 #app-navigation .playlist .actions .icon-more:hover {

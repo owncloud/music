@@ -207,8 +207,8 @@ class TrackMapper extends BaseMapper {
 	 * @return Track[]
 	 */
 	public function findAllByNameRecursive($name, $userId) {
-		$condition = '( LOWER(`artist_name`) LIKE LOWER(?) OR
-						LOWER(`album_name`) LIKE LOWER(?) OR
+		$condition = '( LOWER(`artist`.`name`) LIKE LOWER(?) OR
+						LOWER(`album`.`name`) LIKE LOWER(?) OR
 						LOWER(`title`) LIKE LOWER(?) )';
 		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`title`)');
 		$name = '%' . $name . '%';
@@ -240,10 +240,10 @@ class TrackMapper extends BaseMapper {
 
 		if (!empty($artistName)) {
 			if ($fuzzy) {
-				$sqlConditions[] = 'LOWER(`artist_name`) LIKE LOWER(?)';
+				$sqlConditions[] = 'LOWER(`artist`.`name`) LIKE LOWER(?)';
 				$params[] = "%$artistName%";
 			} else {
-				$sqlConditions[] = '`artist_name` = ?';
+				$sqlConditions[] = '`artist`.`name` = ?';
 				$params[] = $artistName;
 			}
 		}

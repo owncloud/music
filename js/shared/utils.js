@@ -54,5 +54,27 @@ OCA.Music.Utils = {
 		// parsing logic is ported form parseFileName in utility/scanner.php
 		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
 		return match ? match[3] : filename;
+	},
+
+	/**
+	 * Given a file base name, returns the "stem" i.e. the name without extension
+	 */
+	dropFileExtension: function(filename) {
+		return filename.replace(/\.[^/.]+$/, "");
+	},
+
+	/**
+	 * Join two path fragments together, ensuring there is a single '/' between them.
+	 * The first fragment may or may not end with '/' and the second fragment may or may
+	 * not start with '/'.
+	 */
+	joinPath: function(first, second) {
+		if (this.endsWith(first, '/')) {
+			first = first.slice(0, -1);
+		}
+		if (this.startsWith(second, '/')) {
+			second = second.slice(1);
+		}
+		return first + '/' + second;
 	}
 };

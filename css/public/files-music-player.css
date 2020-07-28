@@ -8,6 +8,10 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
+.icon-music-dark {
+	background-image: url(../../img/music-dark.svg);
+}
+
 #music-controls {
 	height: 66px;
 	width: 100%;
@@ -33,7 +37,7 @@
 	display: block;
 }
 
-#music-controls #playlist-area span {
+#music-controls #playlist-area > span {
 	margin-top: 5px;
 	margin-left: 10px;
 	font-size: 14px;
@@ -48,17 +52,69 @@
 	max-width: 66%;
 }
 
-#music-controls #playlist-area .icon-menu {
+#music-controls #playlist-area #menu-container {
+	position: absolute;
+	margin-left: 10px;
+}
+
+#music-controls #playlist-area .icon-more {
 	border: none;
 	background-color: transparent;
-	margin-left: 10px;
 	vertical-align: top;
 	margin-top: 8px;
 	opacity: .4;
 }
 
-#music-controls #playlist-area .icon-menu:hover {
+#music-controls #playlist-area .icon-more:hover {
 	opacity: 1.0;
+}
+
+#music-controls #playlist-area .popovermenu {
+	box-sizing: content-box;
+	padding: 0;
+	bottom: 24px;
+	transform: translateX(50%);
+	right: 50% ;
+	margin-right: 0;
+	display: none;
+}
+
+#music-controls #playlist-area .popovermenu.open {
+	display: block;
+}
+
+#music-controls #playlist-area .popovermenu ul {
+	display: block;
+}
+
+#music-controls #playlist-area .popovermenu ul li {
+	padding: 0 10px 0 0;
+	white-space: nowrap;
+}
+
+#music-controls #playlist-area .popovermenu ul a {
+	opacity: .7;
+	line-height: 36px;
+}
+
+#music-controls #playlist-area .popovermenu ul a:hover {
+	opacity: 1.0;
+}
+
+#music-controls #playlist-area .popovermenu ul a span {
+	display: inline;
+}
+
+#music-controls #playlist-area .popovermenu ul a [class^='icon-'] {
+	padding: 18px 0 18px 36px;
+	background-size: 16px;
+}
+
+/* Place the carret under the popup */
+#music-controls #playlist-area .popovermenu::after {
+	right: 50%;
+	transform: translateX(50%) translateY(100%) rotate(180deg);
+	bottom: 0;
 }
 
 #music-controls, #music-controls * {

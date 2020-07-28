@@ -22,7 +22,7 @@ function initEmbeddedPlayer() {
 	var mPlayingListFile = false;
 	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onShowList);
+	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onShowList, onImportList);
 	var mPlaylist = new OCA.Music.Playlist();
 
 	var mAudioMimes = _.filter([
@@ -69,13 +69,32 @@ function initEmbeddedPlayer() {
 		jumpToPlaylistFile(mPlaylist.prev());
 	}
 
+	function viewingCurrentFileFolder() {
+		return mCurrentFile.path == OCA.Files.App.fileList.breadcrumb.dir;
+	}
+
 	function onShowList() {
-		if (mCurrentFile.path == OCA.Files.App.fileList.breadcrumb.dir) {
+		if (viewingCurrentFileFolder()) {
 			OCA.Files.App.fileList.scrollTo(mCurrentFile.name);
 			OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
 		} else {
 			OC.Notification.showTemporary(t('music', 'The option is available only while the parent folder of the playlist file is shown'));
 		}
+	}
+
+	function onImportList() {
+		// The busy animation is shown on the file item if we are still viewing the folder
+		// where the file resides. The importing itself is possible regardless. 
+		if (viewingCurrentFileFolder()) {
+			var $file = OCA.Files.App.fileList.findFileEl(mCurrentFile.name);
+			OCA.Files.App.fileList.showFileBusyState($file, true);
+		}
+
+		OCA.Music.playlistFileService.importFile(mCurrentFile, function(result) {
+			if ($file) {
+				OCA.Files.App.fileList.showFileBusyState($file, false);
+			}
+		});
 	}
 
 	function jumpToPlaylistFile(file) {

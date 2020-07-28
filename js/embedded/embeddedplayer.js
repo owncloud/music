@@ -10,7 +10,7 @@
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList, onImportList) {
 
 	var player = new OCA.Music.PlayerWrapper();
 
@@ -32,6 +32,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 	var artistText = null;
 	var playlistText = null;
 	var playlistNumberText = null;
+	var playlistMenu = null;
 
 	function play() {
 		// discard command while switching to new track is ongoing
@@ -101,14 +102,46 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 		area.append(playlistNumberText);
 
 		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
-			area.append($(document.createElement('button'))
-				.attr('class', 'icon-menu')
-				.attr('title', t('music', 'Show playlist'))
-				.attr('alt', t('music', 'Show'))
-				.click(onShowList));
+			var menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
+			// "more" button which toggles the popup menu open/closed
+			menuContainer.append($(document.createElement('button'))
+								.attr('class', 'icon-more')
+								.attr('alt', t('music', 'Actions'))
+								.click(function(event) {
+									playlistMenu.toggleClass('open');
+									event.stopPropagation();
+								}));
+			// clicking anywhere else in the document closes the menu
+			$(document).click(function() { playlistMenu.removeClass('open'); });
+
+			playlistMenu = createPopupMenu();
+			menuContainer.append(playlistMenu);
+			area.append(menuContainer);
 		}
 
 		return area;
+	}
+
+	function createPopupMenu() {
+		var menu = $(document.createElement('div'))
+					.attr('id', 'playlist-menu')
+					.attr('class', 'popovermenu bubble');
+		var ul = $(document.createElement('ul'));
+		menu.append(ul);
+
+		ul.append(createMenuItem('icon-music-dark svg', t('music', 'Import to Music'), onImportList));
+		ul.append(createMenuItem('icon-menu', t('music', 'Show playlist'), onShowList));
+
+		return menu;
+	}
+
+	function createMenuItem(iconClasses, text, onClick) {
+		var li = $(document.createElement('li'));
+		var a = $(document.createElement('a')).click(onClick);
+		a.append($(document.createElement('span')).attr('class', iconClasses));
+		a.append($(document.createElement('span')).text(text));
+		li.append(a);
+		return li;
 	}
 
 	function createPlayButton() {
@@ -386,10 +419,6 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 		});
 	}
 
-	function dropFileExtension(filename) {
-		return filename.replace(/\.[^/.]+$/, "");
-	}
-
 	function playUrl(url, mime, tempTitle, nextStep) {
 		pause();
 
@@ -511,7 +540,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList) {
 
 		if (playlistName) {
 			musicControls.addClass('with-playlist');
-			playlistText.text(dropFileExtension(playlistName));
+			playlistText.text(OCA.Music.Utils.dropFileExtension(playlistName));
 		} else {
 			musicControls.removeClass('with-playlist');
 		}

@@ -22,7 +22,7 @@ function initEmbeddedPlayer() {
 	var mPlayingListFile = false;
 	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onShowList, onImportList);
+	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList);
 	var mPlaylist = new OCA.Music.Playlist();
 
 	var mAudioMimes = _.filter([
@@ -73,13 +73,37 @@ function initEmbeddedPlayer() {
 		return mCurrentFile.path == OCA.Files.App.fileList.breadcrumb.dir;
 	}
 
-	function onShowList() {
+	function onMenuOpen($menu) {
+		var $showItem = $menu.find('#playlist-menu-show');
 		if (viewingCurrentFileFolder()) {
-			OCA.Files.App.fileList.scrollTo(mCurrentFile.name);
-			OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+			$showItem.removeClass('disabled');
+			$showItem.removeAttr('title');
 		} else {
-			OC.Notification.showTemporary(t('music', 'The option is available only while the parent folder of the playlist file is shown'));
+			$showItem.addClass('disabled');
+			$showItem.attr('title', t('music', 'The option is available only while the parent folder of the playlist file is shown'));
 		}
+
+		var inLibraryFilesCount = _.where(mPlaylist.files(), {in_library: true}).length;
+		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
+		$importItem = $menu.find('#playlist-menu-import');
+		if (inLibraryFilesCount === 0) {
+			$importItem.addClass('disabled');
+			$importItem.attr('title', t('music', 'None of the playlist files are within your music library'));
+		} else {
+			$importItem.removeClass('disabled');
+			if (outLibraryFilesCount > 0) {
+				$importItem.attr('title',
+						t('music', '{inCount} out of {totalCount} files are within your music library and can be imported',
+						{inCount: inLibraryFilesCount, totalCount: mPlaylist.length()}));
+			} else {
+				$importItem.removeAttr('title');
+			}
+		}
+	}
+
+	function onShowList() {
+		OCA.Files.App.fileList.scrollTo(mCurrentFile.name);
+		OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
 	}
 
 	function onImportList() {

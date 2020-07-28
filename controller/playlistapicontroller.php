@@ -274,16 +274,26 @@ class PlaylistApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function parseFile($fileId) {
+
 		try {
 			$result = $this->playlistFileService->parseFile($fileId);
-			$result['files'] = \array_map(function($fileAndCaption) {
+
+			// Make a lookup table of all the file IDs in the user library to avoid having to run
+			// a DB query for each track in the playlist to check if it is in the library. This
+			// could make a difference in case of a huge playlist.
+			$libFileIds = $this->trackBusinessLayer->findAllFileIds($this->userId);
+			$libFileIds = \array_flip($libFileIds);
+
+			// compose the final result
+			$result['files'] = \array_map(function($fileAndCaption) use ($libFileIds) {
 				$file = $fileAndCaption['file'];
 				return [
 					'id' => $file->getId(),
 					'name' => $file->getName(),
 					'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
 					'mimetype' => $file->getMimeType(),
-					'caption' => $fileAndCaption['caption']
+					'caption' => $fileAndCaption['caption'],
+					'in_library' => isset($libFileIds[$file->getId()])
 				];
 			}, $result['files']);
 			return new JSONResponse($result);

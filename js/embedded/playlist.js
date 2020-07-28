@@ -66,4 +66,7 @@ OCA.Music.Playlist = function() {
 		return mCurrentIndex;
 	};
 
+	this.files = function() {
+		return mFiles;
+	};
 };

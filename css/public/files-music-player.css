@@ -131,9 +131,14 @@
 	opacity: .4;
 }
 
-#music-controls .control.disabled {
-	cursor: default;
-	opacity: .15;
+#music-controls .control.disabled,
+#music-controls #playlist-area .popovermenu ul li.disabled a {
+	cursor: default !important;
+	opacity: .15 !important;
+}
+
+#music-controls #playlist-area .popovermenu ul li.disabled * {
+	cursor: default !important;
 }
 
 #music-controls .control.small {

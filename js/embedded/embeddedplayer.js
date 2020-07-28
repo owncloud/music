@@ -10,7 +10,7 @@
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList, onImportList) {
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList) {
 
 	var player = new OCA.Music.PlayerWrapper();
 
@@ -108,6 +108,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList, onImpor
 								.attr('class', 'icon-more')
 								.attr('alt', t('music', 'Actions'))
 								.click(function(event) {
+									if (!playlistMenu.is(":visible")) {
+										onMenuOpen(playlistMenu);
+									}
 									playlistMenu.toggleClass('open');
 									event.stopPropagation();
 								}));
@@ -129,15 +132,21 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onShowList, onImpor
 		var ul = $(document.createElement('ul'));
 		menu.append(ul);
 
-		ul.append(createMenuItem('icon-music-dark svg', t('music', 'Import to Music'), onImportList));
-		ul.append(createMenuItem('icon-menu', t('music', 'Show playlist'), onShowList));
+		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import to Music'), onImportList));
+		ul.append(createMenuItem('playlist-menu-show', 'icon-menu', t('music', 'Show playlist'), onShowList));
 
 		return menu;
 	}
 
-	function createMenuItem(iconClasses, text, onClick) {
-		var li = $(document.createElement('li'));
-		var a = $(document.createElement('a')).click(onClick);
+	function createMenuItem(id, iconClasses, text, onClick) {
+		var li = $(document.createElement('li')).attr('id', id);
+		var a = $(document.createElement('a')).click(function(event) {
+			if (!li.hasClass('disabled')) {
+				onClick();
+			} else {
+				event.stopPropagation(); // clicking the disabled item doesn't close the menu
+			}
+		});
 		a.append($(document.createElement('span')).attr('class', iconClasses));
 		a.append($(document.createElement('span')).text(text));
 		li.append(a);

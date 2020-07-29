@@ -247,9 +247,14 @@ function initEmbeddedPlayer() {
 				OC.Notification.showTemporary(t('music', 'No files from the playlist could be found'));
 			}
 			if (data.invalid_paths.length > 0) {
-				OC.Notification.showTemporary(
-					t('music', 'The playlist contained {count} invalid path(s). See the playlist file details.',
-						{count: data.invalid_paths.length}));
+				var note = t('music', 'The playlist contained {count} invalid path(s).',
+						{count: data.invalid_paths.length});
+				if (!mShareToken) {
+					// Guide the user to look for details, unless this is a public share where the
+					// details pane is not available.
+					note += ' ' +  t('music', 'See the playlist file details.');
+				}
+				OC.Notification.showTemporary(note);
 			}
 
 			mFileList.showFileBusyState($file, false);
@@ -263,7 +268,7 @@ function initEmbeddedPlayer() {
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
 			mFileList.showFileBusyState($file, false);
 		};
-		OCA.Music.playlistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError);
+		OCA.Music.playlistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
 	}
 
 	/**

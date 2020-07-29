@@ -166,6 +166,7 @@ class Music extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('Scanner'),
+				$c->query('PlaylistFileService'),
 				$c->query('Logger'),
 				$c->query('ShareManager')
 			);

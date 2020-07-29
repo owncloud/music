@@ -15,13 +15,21 @@ OCA.Music.PlaylistFileService = function() {
 	var mFileId = null;
 	var mData = null;
 
-	this.readFile = function(fileId, onSuccess, onFail) {
+	this.readFile = function(fileId, onSuccess, onFail, shareToken /*optional*/) {
 
 		if (fileId == mFileId && mData !== null) {
 			onSuccess(mData);
 		}
 		else {
-			var url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': fileId});
+			var url = null;
+			// valid shareToken means that we are operating on a public share page, and a different URL is needed
+			if (shareToken) {
+				url = OC.generateUrl('apps/music/api/share/{token}/{fileId}/parse',
+									{'token':shareToken, 'fileId':fileId});
+			} else {
+				url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': fileId});
+			}
+
 			$.get(url, function(data) {
 				mFileId = fileId;
 				mData = data;

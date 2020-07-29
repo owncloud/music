@@ -18,8 +18,9 @@ $(document).ready(function() {
 
 function initEmbeddedPlayer() {
 
-	var mCurrentFile = null;
+	var mCurrentFile = null; // may be an audio file or a playlist file
 	var mPlayingListFile = false;
+	var mFileList = null; // FileList from Files or Sharing app
 	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
 	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList);
@@ -42,7 +43,7 @@ function initEmbeddedPlayer() {
 	register();
 
 	function urlForFile(file) {
-		var url = OCA.Files.App.fileList.getDownloadUrl(file.name, file.path);
+		var url = mFileList.getDownloadUrl(file.name, file.path);
 
 		// append request token unless this is a public share
 		if (!mShareToken) {
@@ -70,10 +71,11 @@ function initEmbeddedPlayer() {
 	}
 
 	function viewingCurrentFileFolder() {
-		return mCurrentFile.path == OCA.Files.App.fileList.breadcrumb.dir;
+		return mCurrentFile && mFileList && mCurrentFile.path == mFileList.breadcrumb.dir;
 	}
 
 	function onMenuOpen($menu) {
+		// disable/enable the "Show list" item
 		var $showItem = $menu.find('#playlist-menu-show');
 		if (viewingCurrentFileFolder()) {
 			$showItem.removeClass('disabled');
@@ -83,6 +85,7 @@ function initEmbeddedPlayer() {
 			$showItem.attr('title', t('music', 'The option is available only while the parent folder of the playlist file is shown'));
 		}
 
+		// disable/enable the "Import to Music" item
 		var inLibraryFilesCount = _.where(mPlaylist.files(), {in_library: true}).length;
 		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
 		$importItem = $menu.find('#playlist-menu-import');
@@ -102,21 +105,21 @@ function initEmbeddedPlayer() {
 	}
 
 	function onShowList() {
-		OCA.Files.App.fileList.scrollTo(mCurrentFile.name);
-		OCA.Files.App.fileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+		mFileList.scrollTo(mCurrentFile.name);
+		mFileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
 	}
 
 	function onImportList() {
 		// The busy animation is shown on the file item if we are still viewing the folder
 		// where the file resides. The importing itself is possible regardless. 
 		if (viewingCurrentFileFolder()) {
-			var $file = OCA.Files.App.fileList.findFileEl(mCurrentFile.name);
-			OCA.Files.App.fileList.showFileBusyState($file, true);
+			var $file = mFileList.findFileEl(mCurrentFile.name);
+			mFileList.showFileBusyState($file, true);
 		}
 
 		OCA.Music.playlistFileService.importFile(mCurrentFile, function(result) {
 			if ($file) {
-				OCA.Files.App.fileList.showFileBusyState($file, false);
+				mFileList.showFileBusyState($file, false);
 			}
 		});
 	}
@@ -170,7 +173,8 @@ function initEmbeddedPlayer() {
 					}
 				}
 				else {
-					mCurrentFile = OCA.Files.App.fileList.findFile(playlistName);
+					mFileList = OCA.Files.App.fileList;
+					mCurrentFile = mFileList.findFile(playlistName);
 					openPlaylistFile(function() {
 						jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx));
 					});
@@ -190,7 +194,8 @@ function initEmbeddedPlayer() {
 	function registerFolderPlayer(mimes, openFileCallback) {
 		// Handle 'play' action on file row
 		var onPlay = function(fileName, context) {
-			var file = OCA.Files.App.fileList.findFile(fileName);
+			mFileList = context.fileList;
+			var file = mFileList.findFile(fileName);
 
 			// Check if playing file changes
 			if (mCurrentFile === null || mCurrentFile.id != file.id) {
@@ -220,16 +225,16 @@ function initEmbeddedPlayer() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
-		mPlaylist.init(OCA.Files.App.fileList.files, mAudioMimes, mCurrentFile.id);
+		mPlaylist.init(mFileList.files, mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}
 
 	function openPlaylistFile(onReadyCallback /*optional*/) {
 		mPlayingListFile = true;
-		var $file = OCA.Files.App.fileList.findFileEl(mCurrentFile.name);
+		var $file = mFileList.findFileEl(mCurrentFile.name);
 
-		OCA.Files.App.fileList.showFileBusyState($file, true);
+		mFileList.showFileBusyState($file, true);
 		var onPlaylistLoaded = function(data) {
 			if (data.files.length > 0) {
 				mPlayer.show(mCurrentFile.name);
@@ -247,7 +252,7 @@ function initEmbeddedPlayer() {
 						{count: data.invalid_paths.length}));
 			}
 
-			OCA.Files.App.fileList.showFileBusyState($file, false);
+			mFileList.showFileBusyState($file, false);
 
 			if (onReadyCallback) {
 				onReadyCallback();
@@ -256,7 +261,7 @@ function initEmbeddedPlayer() {
 		var onError = function() {
 			mCurrentFile = null;
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
-			OCA.Files.App.fileList.showFileBusyState($file, false);
+			mFileList.showFileBusyState($file, false);
 		};
 		OCA.Music.playlistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError);
 	}

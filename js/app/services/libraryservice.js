@@ -87,7 +87,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function wrapPlaylist(playlist) {
-		var wrapped = Object.assign({}, playlist);
+		var wrapped = $.extend({}, playlist); // clone the playlist
 		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
 		delete wrapped.trackIds;
 		return wrapped;

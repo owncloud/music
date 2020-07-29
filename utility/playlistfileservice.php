@@ -28,27 +28,23 @@ use \OCP\Files\Folder;
 class PlaylistFileService {
 	private $playlistBusinessLayer;
 	private $trackBusinessLayer;
-	private $userFolder;
-	private $userId;
 	private $logger;
 
 	public function __construct(
 			PlaylistBusinessLayer $playlistBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
-			Folder $userFolder,
-			$userId,
 			Logger $logger) {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->userFolder = $userFolder;
-		$this->userId = $userId;
 		$this->logger = $logger;
 	}
 
 	/**
 	 * export the playlist to a file
 	 * @param int $id playlist ID
-	 * @param string $folderPath parent folder path
+	 * @param string $userId owner of the playlist
+	 * @param Folder $userFolder home dir of the user
+	 * @param string $folderPath target parent folder path
 	 * @param string $collisionMode action to take on file name collision,
 	 *								supported values:
 	 *								- 'overwrite' The existing file will be overwritten
@@ -60,10 +56,10 @@ class PlaylistFileService {
 	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
-	public function exportToFile($id, $folderPath, $collisionMode) {
-		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
-		$targetFolder = Util::getFolderFromRelativePath($this->userFolder, $folderPath);
+	public function exportToFile($id, $userId, $userFolder, $folderPath, $collisionMode) {
+		$playlist = $this->playlistBusinessLayer->find($id, $userId);
+		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
+		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
 
 		// Name the file according the playlist. File names cannot contain the '/' character on Linux, and in
 		// owncloud/Nextcloud, the whole name must fit 250 characters, including the file extension. Reserve
@@ -89,7 +85,7 @@ class PlaylistFileService {
 
 		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 		foreach ($tracks as $track) {
-			$nodes = $this->userFolder->getById($track->getFileId());
+			$nodes = $userFolder->getById($track->getFileId());
 			if (\count($nodes) > 0) {
 				$caption = self::captionForTrack($track);
 				$content .= "#EXTINF:{$track->getLength()},$caption\n";
@@ -99,12 +95,14 @@ class PlaylistFileService {
 		$file = $targetFolder->newFile($filename);
 		$file->putContent($content);
 
-		return $this->userFolder->getRelativePath($file->getPath());
+		return $userFolder->getRelativePath($file->getPath());
 	}
 	
 	/**
 	 * export the playlist to a file
 	 * @param int $id playlist ID
+	 * @param string $userId owner of the playlist
+	 * @param Folder $userFolder user home dir
 	 * @param string $filePath path of the file to import
 	 * @return array with three keys:
 	 * 			- 'playlist': The Playlist entity after the modification
@@ -114,22 +112,22 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
-	public function importFromFile($id, $filePath) {
-		$parsed = $this->doParseFile($this->userFolder->get($filePath));
+	public function importFromFile($id, $userId, $userFolder, $filePath) {
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
 		$trackIds = [];
 		foreach ($trackFilesAndCaptions as $trackFileAndCaption) {
 			$trackFile = $trackFileAndCaption['file'];
-			if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $this->userId)) {
+			if ($track = $this->trackBusinessLayer->findByFileId($trackFile->getId(), $userId)) {
 				$trackIds[] = $track->getId();
 			} else {
 				$invalidPaths[] = $trackFile->getPath();
 			}
 		}
 
-		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $this->userId);
+		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $userId);
 
 		if (\count($invalidPaths) > 0) {
 			$this->logger->log('Some files were not found from the user\'s music library: '
@@ -144,22 +142,23 @@ class PlaylistFileService {
 	}
 
 	/**
-	 * 
-	 * @param int $fileId
+	 * Parse a playlist file and return the contained files
+	 * @param int $fileId playlist file ID
+	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 * @return array
 	 */
-	public function parseFile($fileId) {
-		$nodes = $this->userFolder->getById($fileId);
+	public function parseFile($fileId, $baseFolder) {
+		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
-			return $this->doParseFile($nodes[0]);
+			return $this->doParseFile($nodes[0], $baseFolder);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
 	}
 
-	private function doParseFile(File $file) {
+	private function doParseFile(File $file, $baseFolder) {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
@@ -173,13 +172,13 @@ class PlaylistFileService {
 		// find the parsed entries from the file system
 		$trackFiles = [];
 		$invalidPaths = [];
-		$cwd = $this->userFolder->getRelativePath($file->getParent()->getPath());
+		$cwd = $baseFolder->getRelativePath($file->getParent()->getPath());
 
 		foreach ($entries as $entry) {
 			$path = Util::resolveRelativePath($cwd, $entry['path']);
 			try {
 				$trackFiles[] = [
-					'file' => $this->userFolder->get($path),
+					'file' => $baseFolder->get($path),
 					'caption' => $entry['caption']
 				];
 			} catch (\OCP\Files\NotFoundException $ex) {

@@ -415,8 +415,6 @@ class Music extends App {
 			return new PlaylistFileService(
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('UserFolder'),
-				$c->query('UserId'),
 				$c->query('Logger')
 			);
 		});

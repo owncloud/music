@@ -224,7 +224,8 @@ class PlaylistApiController extends Controller {
 	 */
 	public function exportToFile($id, $path, $oncollision) {
 		try {
-			$exportedFilePath = $this->playlistFileService->exportToFile($id, $path, $oncollision);
+			$exportedFilePath = $this->playlistFileService->exportToFile(
+					$id, $this->userId, $this->userFolder, $path, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
 		}
 		catch (BusinessLayerException $ex) {
@@ -251,7 +252,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function importFromFile($id, $filePath) {
 		try {
-			$result = $this->playlistFileService->importFromFile($id, $filePath);
+			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
 			$result['playlist'] = $result['playlist']->toAPI();
 			return $result;
 		}
@@ -276,7 +277,7 @@ class PlaylistApiController extends Controller {
 	public function parseFile($fileId) {
 
 		try {
-			$result = $this->playlistFileService->parseFile($fileId);
+			$result = $this->playlistFileService->parseFile($fileId, $this->userFolder);
 
 			// Make a lookup table of all the file IDs in the user library to avoid having to run
 			// a DB query for each track in the playlist to check if it is in the library. This

@@ -243,6 +243,8 @@ class PlaylistFileService {
 		}
 
 		$fp = \fopen("php://temp", 'r+');
+		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
 		\fputs($fp, $content);
 		\rewind($fp);
 

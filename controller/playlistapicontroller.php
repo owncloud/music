@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -18,11 +18,12 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 
+use \OCP\Files\Folder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
-use \OCP\Files\Folder;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
@@ -30,16 +31,19 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\APISerializer;
+use \OCA\Music\Utility\PlaylistFileService;
 
 class PlaylistApiController extends Controller {
+	private $urlGenerator;
 	private $playlistBusinessLayer;
-	private $userId;
-	private $userFolder;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
-	private $urlGenerator;
+	private $playlistFileService;
+	private $userId;
+	private $userFolder;
 	private $l10n;
+	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -48,18 +52,22 @@ class PlaylistApiController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
-								Folder $userFolder,
+								PlaylistFileService $playlistFileService,
 								$userId,
-								$l10n) {
+								Folder $userFolder,
+								$l10n,
+								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->userId = $userId;
-		$this->userFolder = $userFolder;
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->playlistFileService = $playlistFileService;
+		$this->userId = $userId;
+		$this->userFolder = $userFolder;
 		$this->l10n = $l10n;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -89,7 +97,7 @@ class PlaylistApiController extends Controller {
 			$playlist = $this->playlistBusinessLayer->addTracks(
 					self::toIntArray($trackIds), $playlist->getId(), $this->userId);
 		}
-		
+
 		return $playlist->toAPI();
 	}
 
@@ -134,25 +142,37 @@ class PlaylistApiController extends Controller {
 		foreach ($playlist->getTrackIdsAsArray() as $trackId) {
 			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
 			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
-			$songs[] = $song->toCollection($this->urlGenerator, $this->userFolder, $this->l10n);
+			$songs[] = $song->toAPI($this->urlGenerator);
 		}
 
-		return [
-			'name' => $playlist->getName(),
-			'tracks' => $songs,
-			'id' => $playlist->getId(),
-		];
+		$result = $playlist->toAPI();
+		unset($result['trackIds']);
+		$result['tracks'] = $songs;
+
+		return $result;
 	}
 
 	/**
 	 * update a playlist
-	 * @param  int $id playlist ID
+	 * @param int $id playlist ID
+	 * @param string|null $name
+	 * @param string|null $comment
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update($id, $name) {
-		return $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
+	public function update($id, $name, $comment) {
+		$result = null;
+		if ($name !== null) {
+			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]); 
+		}
+		if ($comment !== null) {
+			$result = $this->modifyPlaylist('setComment', [$comment, $id, $this->userId]);
+		}
+		if ($result === null) {
+			$result = new ErrorResponse(Http::STATUS_BAD_REQUEST, "at least one of the args ['name', 'comment'] must be given");
+		}
+		return $result;
 	}
 
 	/**
@@ -187,6 +207,104 @@ class PlaylistApiController extends Controller {
 	public function reorder($id, $fromIndex, $toIndex) {
 		return $this->modifyPlaylist('moveTrack',
 				[$fromIndex, $toIndex, $id, $this->userId]);
+	}
+
+	/**
+	 * export the playlist to a file
+	 * @param int $id playlist ID
+	 * @param string $path parent folder path
+	 * @param string $oncollision action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function exportToFile($id, $path, $oncollision) {
+		try {
+			$exportedFilePath = $this->playlistFileService->exportToFile(
+					$id, $this->userId, $this->userFolder, $path, $oncollision);
+			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
+		}
+		catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
+		}
+		catch (\RuntimeException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
+		}
+		catch (\OCP\Files\NotPermittedException $ex) {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
+		}
+	}
+
+	/**
+	 * import playlist contents from a file
+	 * @param int $id playlist ID
+	 * @param string $filePath path of the file to import
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function importFromFile($id, $filePath) {
+		try {
+			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
+			$result['playlist'] = $result['playlist']->toAPI();
+			return $result;
+		}
+		catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
+		}
+		catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * read and parse a playlist file
+	 * @param int $fileId ID of the file to parse
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function parseFile($fileId) {
+
+		try {
+			$result = $this->playlistFileService->parseFile($fileId, $this->userFolder);
+
+			// Make a lookup table of all the file IDs in the user library to avoid having to run
+			// a DB query for each track in the playlist to check if it is in the library. This
+			// could make a difference in case of a huge playlist.
+			$libFileIds = $this->trackBusinessLayer->findAllFileIds($this->userId);
+			$libFileIds = \array_flip($libFileIds);
+
+			// compose the final result
+			$result['files'] = \array_map(function($fileAndCaption) use ($libFileIds) {
+				$file = $fileAndCaption['file'];
+				return [
+					'id' => $file->getId(),
+					'name' => $file->getName(),
+					'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
+					'mimetype' => $file->getMimeType(),
+					'caption' => $fileAndCaption['caption'],
+					'in_library' => isset($libFileIds[$file->getId()])
+				];
+			}, $result['files']);
+			return new JSONResponse($result);
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
+		}
+		catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		}
 	}
 
 	/**

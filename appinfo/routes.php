@@ -53,7 +53,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'api#track',			'url' => '/api/track/{trackIdOrSlug}',			'verb' => 'GET'],
 	//['name' => 'api#trackLyrics',	'url' => '/api/track/{trackIdOrSlug}/lyrics',	'verb' => 'GET'],
 
-	['name' => 'share#fileInfo', 'url' => '/api/share/{token}/{fileId}/info', 'verb' => 'GET'],
+	['name' => 'share#fileInfo',		'url' => '/api/share/{token}/{fileId}/info',	'verb' => 'GET'],
+	['name' => 'share#parsePlaylist',	'url' => '/api/share/{token}/{fileId}/parse',	'verb' => 'GET'],
 
 	// playlist API
 	['name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'],
@@ -64,6 +65,9 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'playlistApi#addTracks',		'url' => '/api/playlists/{id}/add',		'verb' => 'POST'],
 	['name' => 'playlistApi#removeTracks',	'url' => '/api/playlists/{id}/remove',	'verb' => 'POST'],
 	['name' => 'playlistApi#reorder',		'url' => '/api/playlists/{id}/reorder',	'verb' => 'POST'],
+	['name' => 'playlistApi#exportToFile',	'url' => '/api/playlists/{id}/export',	'verb' => 'POST'],
+	['name' => 'playlistApi#importFromFile','url' => '/api/playlists/{id}/import',	'verb' => 'POST'],
+	['name' => 'playlistApi#parseFile',		'url' => '/api/playlists/file/{fileId}','verb' => 'GET'],
 
 	// settings
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],

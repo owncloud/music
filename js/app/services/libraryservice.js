@@ -87,11 +87,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	}
 
 	function wrapPlaylist(playlist) {
-		return {
-			id: playlist.id,
-			name: playlist.name,
-			tracks: _.map(playlist.trackIds, playlistEntryFromId)
-		};
+		var wrapped = $.extend({}, playlist); // clone the playlist
+		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
+		delete wrapped.trackIds;
+		return wrapped;
 	}
 
 	function wrapFolder(folder) {
@@ -266,6 +265,10 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 		},
 		removePlaylist: function(playlist) {
 			playlists.splice(playlists.indexOf(playlist), 1);
+		},
+		replacePlaylist: function(playlist) {
+			var idx = _.findIndex(playlists, { id: playlist.id });
+			playlists[idx] = wrapPlaylist(playlist);
 		},
 		addToPlaylist: function(playlistId, trackId) {
 			var playlist = this.getPlaylist(playlistId);

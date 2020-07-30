@@ -91,6 +91,24 @@
 	white-space: pre-wrap;
 }
 
+#app-sidebar dd button {
+	border: none;
+	background-color: transparent;
+	opacity: 0.5;
+	vertical-align: middle;
+}
+
+#app-sidebar dd span:hover button,
+#app-sidebar dd span button:hover {
+	opacity: 1.0;
+}
+
+#app-sidebar dd textarea {
+	width: 100%;
+	margin-top: -6px;
+	margin-left: -6px;
+}
+
 #app-sidebar #artist-content-counts dt {
 	width: 65%;
 }

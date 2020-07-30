@@ -69,7 +69,7 @@ angular.module('Music').controller('FoldersViewController', [
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if an individual folder is being played
-			if (OC_Music_Utils.startsWith(playlistId, 'folder-')) {
+			if (OCA.Music.Utils.startsWith(playlistId, 'folder-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

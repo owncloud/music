@@ -41,6 +41,7 @@ use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\Util;
 
 class ApiController extends Controller {
 
@@ -420,9 +421,7 @@ class ApiController extends Controller {
 		} else {
 			$node = $nodes[0];
 			$path = $this->userFolder->getRelativePath($node->getPath());
-			// URL encode each part of the file path
-			$path = \join('/', \array_map('rawurlencode', \explode('/', $path)));
-			return new JSONResponse(['path' => $path]);
+			return new JSONResponse(['path' => Util::urlEncodePath($path)]);
 		}
 	}
 

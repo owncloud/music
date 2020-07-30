@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -19,6 +19,7 @@ use \OCP\IRequest;
 
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Http\ErrorResponse;
+use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Scanner;
 
 /**
@@ -31,17 +32,21 @@ class ShareController extends Controller {
 	private $shareManager;
 	/** @var Scanner */
 	private $scanner;
+	/** @var PlaylistFileService */
+	private $playlistFileService;
 	/** @var Logger */
 	private $logger;
 
 	public function __construct($appname,
 								IRequest $request,
 								Scanner $scanner,
+								PlaylistFileService $playlistFileService,
 								Logger $logger,
 								\OCP\Share\IManager $shareManager) {
 		parent::__construct($appname, $request);
 		$this->shareManager = $shareManager;
 		$this->scanner = $scanner;
+		$this->playlistFileService = $playlistFileService;
 		$this->logger = $logger;
 	}
 
@@ -74,6 +79,44 @@ class ShareController extends Controller {
 			return new JSONResponse($info);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function parsePlaylist($token, $fileId) {
+		$share = $this->shareManager->getShareByToken($token);
+		$fileOwner = $share->getShareOwner();
+		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
+
+		$matchingFolders = $fileOwnerHome->getById($share->getNodeId());
+
+		try {
+			if (empty($matchingFolders)) {
+				throw new \OCP\Files\NotFoundException();
+			}
+			$sharedFolder = $matchingFolders[0];
+			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);
+
+			// compose the final result
+			$result['files'] = \array_map(function($fileAndCaption) use ($sharedFolder) {
+				$file = $fileAndCaption['file'];
+				return [
+					'id' => $file->getId(),
+					'name' => $file->getName(),
+					'path' => $sharedFolder->getRelativePath($file->getParent()->getPath()),
+					'mimetype' => $file->getMimeType()
+				];
+			}, $result['files']);
+			return new JSONResponse($result);
+		}
+		catch (\OCP\Files\NotFoundException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
+		}
+		catch (\UnexpectedValueException $ex) {
+			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
 	}
 }

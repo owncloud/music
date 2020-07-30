@@ -12,19 +12,34 @@
 	</a>
 	<div ng-if="playlist && $parent.showEditForm == playlist.id">
 		<div class="input-container">
-			<input type="text" class="edit-list"
+			<input type="text" class="edit-list" maxlength="256"
 				ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 		</div>
 		<button class="action icon-checkmark"
 			ng-class="{ disabled: playlist.name.length == 0 }" 
 			ng-click="$parent.$parent.commitEdit(playlist)"></button>
 	</div>
-	<div class="actions" ng-if="playlist && $parent.showEditForm == null">
-		<button class="action icon-delete"
-			ng-click="$parent.$parent.remove(playlist)"
-			alt="{{ 'Delete' | translate }}" title="{{ 'Delete' | translate }}"></button>
-		<button class="action icon-rename"
-			ng-click="$parent.$parent.startEdit(playlist)"
-			alt="{{ 'Rename' | translate }}" title="{{ 'Rename' | translate }}"></button>
+	<div class="actions" title="" ng-if="playlist && $parent.showEditForm == null">
+		<span class="icon-more" ng-show="!playlist.busy" ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
+		<span class="icon-loading-small" ng-show="playlist.busy"></span>
+		<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
+			<ul>
+				<li ng-click="$parent.$parent.showDetails(playlist)">
+					<a class="icon-details"> <span translate>Details</span></a>
+				</li>
+				<li ng-click="$parent.$parent.startEdit(playlist)">
+					<a class="icon-rename"><span translate>Rename</span></a>
+				</li>
+				<li ng-click="$parent.$parent.exportToFile(playlist)">
+					<a class="icon-to-file"><span translate>Export to file</span></a>
+				</li>
+				<li ng-click="$parent.$parent.importFromFile(playlist)">
+					<a class="icon-from-file"><span translate>Import from file</span></a>
+				</li>
+				<li ng-click="$parent.$parent.remove(playlist)">
+					<a class="icon-delete"> <span translate>Delete</span></a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </li>

@@ -21,7 +21,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Add dark-theme class to the #app element if Nextcloud dark theme detected.
 	// Css can then diffentiate the style of the contained elments where necessary.
-	if (OC_Music_Utils.darkThemeActive()) {
+	if (OCA.Music.Utils.darkThemeActive()) {
 		$('#app').addClass('dark-theme');
 	}
 
@@ -242,7 +242,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showTrackDetails = function(trackId) {
 		$rootScope.$emit('showTrackDetails', trackId);
-		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var trackElem = document.getElementById('track-' + trackId);
 			if (!isElementInViewPort(trackElem)) {
@@ -253,7 +252,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showArtistDetails = function(artist) {
 		$rootScope.$emit('showArtistDetails', artist.id);
-		$('#app-content').addClass('with-app-sidebar');
 		$timeout(function() {
 			var artistElem = document.getElementById('artist-' + artist.id);
 			if (!isElementInViewPort(artistElem)) {
@@ -264,15 +262,13 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
-		$('#app-content').removeClass('with-app-sidebar');
-		$('#app-content').css('margin-right', '');
 	};
 
 	function scrollOffset() {
 		var controls = document.getElementById('controls');
 		var header = document.getElementById('header');
 		var offset = controls ? controls.offsetHeight : 0;
-		if (OC_Music_Utils.newLayoutStructure() && header) {
+		if (OCA.Music.Utils.newLayoutStructure() && header) {
 			offset += header.offsetHeight;
 		}
 		return offset;
@@ -280,7 +276,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		if (itemId) {
-			var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+			var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
 			var element = $('#' + itemId);
 			if (container && element) {
 				if (animationTime === undefined) {
@@ -292,7 +288,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.scrollToTop = function() {
-		var container = OC_Music_Utils.newLayoutStructure() ? $document : $('#app-content');
+		var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
 		container.scrollTo(0, 0);
 	};
 
@@ -347,7 +343,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	});
 
-	if (OC_Music_Utils.newLayoutStructure()) {
+	if (OCA.Music.Utils.newLayoutStructure()) {
 		$('#controls').addClass('taller-header');
 	}
 

@@ -8,9 +8,11 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
-function EmbeddedPlayer(onClose, onNext, onPrev) {
+OCA.Music = OCA.Music || {};
 
-	var player = new PlayerWrapper();
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList) {
+
+	var player = new OCA.Music.PlayerWrapper();
 
 	var volume = Cookies.get('oc_music_volume') || 50;
 	player.setVolume(volume);
@@ -28,6 +30,9 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	var coverImage = null;
 	var titleText = null;
 	var artistText = null;
+	var playlistText = null;
+	var playlistNumberText = null;
+	var playlistMenu = null;
 
 	function play() {
 		// discard command while switching to new track is ongoing
@@ -85,6 +90,67 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 
 	function seekForward() {
 		player.seekForward();
+	}
+
+	function createPlaylistArea() {
+		var area = $(document.createElement('div')).attr('id', 'playlist-area');
+
+		playlistText = $(document.createElement('span')).attr('id', 'playlist-name');
+		area.append(playlistText);
+
+		playlistNumberText = $(document.createElement('span'));
+		area.append(playlistNumberText);
+
+		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
+			var menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
+			// "more" button which toggles the popup menu open/closed
+			menuContainer.append($(document.createElement('button'))
+								.attr('class', 'icon-more')
+								.attr('alt', t('music', 'Actions'))
+								.click(function(event) {
+									if (!playlistMenu.is(":visible")) {
+										onMenuOpen(playlistMenu);
+									}
+									playlistMenu.toggleClass('open');
+									event.stopPropagation();
+								}));
+			// clicking anywhere else in the document closes the menu
+			$(document).click(function() { playlistMenu.removeClass('open'); });
+
+			playlistMenu = createPopupMenu();
+			menuContainer.append(playlistMenu);
+			area.append(menuContainer);
+		}
+
+		return area;
+	}
+
+	function createPopupMenu() {
+		var menu = $(document.createElement('div'))
+					.attr('id', 'playlist-menu')
+					.attr('class', 'popovermenu bubble');
+		var ul = $(document.createElement('ul'));
+		menu.append(ul);
+
+		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import to Music'), onImportList));
+		ul.append(createMenuItem('playlist-menu-show', 'icon-menu', t('music', 'Show playlist'), onShowList));
+
+		return menu;
+	}
+
+	function createMenuItem(id, iconClasses, text, onClick) {
+		var li = $(document.createElement('li')).attr('id', id);
+		var a = $(document.createElement('a')).click(function(event) {
+			if (!li.hasClass('disabled')) {
+				onClick();
+			} else {
+				event.stopPropagation(); // clicking the disabled item doesn't close the menu
+			}
+		});
+		a.append($(document.createElement('span')).attr('class', iconClasses));
+		a.append($(document.createElement('span')).text(text));
+		li.append(a);
+		return li;
 	}
 
 	function createPlayButton() {
@@ -272,6 +338,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		nextButton = createNextButton();
 		coverImage = createCoverImage();
 
+		musicControls.append(createPlaylistArea());
 		musicControls.append(prevButton);
 		musicControls.append(playButton);
 		musicControls.append(pauseButton);
@@ -281,7 +348,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
-		if (OC_Music_Utils.darkThemeActive()) {
+		if (OCA.Music.Utils.darkThemeActive()) {
 			musicControls.addClass('dark-theme');
 		}
 
@@ -296,7 +363,7 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 			var width = parentContainer.width();
 			// On the share page and in NC14+, the parent width has the scroll bar width
 			// already subtracted.
-			if (!isSharePage && !OC_Music_Utils.newLayoutStructure()) {
+			if (!isSharePage && !OCA.Music.Utils.newLayoutStructure()) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;
@@ -359,12 +426,6 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 				cover: null
 			});
 		});
-	}
-
-	function titleFromFilename(filename) {
-		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
-		return match ? match[3] : filename;
 	}
 
 	function playUrl(url, mime, tempTitle, nextStep) {
@@ -481,16 +542,24 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 	 * PUBLIC INTEFACE
 	 */
 
-	this.show = function() {
+	this.show = function(playlistName /*optional*/) {
 		if (!musicControls) {
 			createUi();
 		}
+
+		if (playlistName) {
+			musicControls.addClass('with-playlist');
+			playlistText.text(OCA.Music.Utils.dropFileExtension(playlistName));
+		} else {
+			musicControls.removeClass('with-playlist');
+		}
+
 		musicControls.css('display', 'inline-block');
 	};
 
 	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
 		currentFileId = fileId;
-		var fallbackTitle = titleFromFilename(fileName);
+		var fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
 		playUrl(url, mime, fallbackTitle, function() {
 			if (shareToken) {
 				loadSharedFileInfo(shareToken, fileId, fallbackTitle);
@@ -498,6 +567,10 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 				loadFileInfo(fileId, fallbackTitle);
 			}
 		});
+	};
+
+	this.setPlaylistIndex = function(currentIndex, totalCount) {
+		playlistNumberText.text((currentIndex + 1) + ' / ' + totalCount);
 	};
 
 	this.togglePlayback = togglePlayback;
@@ -508,5 +581,9 @@ function EmbeddedPlayer(onClose, onNext, onPrev) {
 		nextPrevEnabled = enabled;
 		updateNextPrevButtonStatus();
 	};
-}
+
+	this.isVisible = function() {
+		return musicControls !== null && musicControls.is(":visible");
+	};
+};
 

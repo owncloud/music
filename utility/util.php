@@ -139,26 +139,39 @@ class Util {
 	 * Test if given string starts with another given string
 	 * @param string $string
 	 * @param string $potentialStart
+	 * @param boolean $ignoreCase
 	 * @return boolean
 	 */
-	public static function startsWith($string, $potentialStart) {
-		return \substr($string, 0, \strlen($potentialStart)) === $potentialStart;
+	public static function startsWith($string, $potentialStart, $ignoreCase=false) {
+		$actualStart = \substr($string, 0, \strlen($potentialStart));
+		if ($ignoreCase) {
+			$actualStart= \mb_strtolower($actualStart);
+			$potentialStart= \mb_strtolower($potentialStart);
+		}
+		return $actualStart === $potentialStart;
 	}
 
 	/**
 	 * Test if given string ends with another given string
 	 * @param string $string
 	 * @param string $potentialEnd
+	 * @param boolean $ignoreCase
 	 * @return boolean
 	 */
-	public static function endsWith($string, $potentialEnd) {
-		return \substr($string, -\strlen($potentialEnd)) === $potentialEnd;
+	public static function endsWith($string, $potentialEnd, $ignoreCase=false) {
+		$actualEnd = \substr($string, -\strlen($potentialEnd));
+		if ($ignoreCase) {
+			$actualEnd = \mb_strtolower($actualEnd);
+			$potentialEnd = \mb_strtolower($potentialEnd);
+		}
+		return $actualEnd === $potentialEnd;
 	}
 
 	/**
 	 * Multi-byte safe case-insensitive string comparison
 	 * @param string $a
 	 * @param string $b
+	 * @return int < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal. 
 	 */
 	public static function stringCaseCompare($a, $b) {
 		return \strcmp(\mb_strtolower($a), \mb_strtolower($b));
@@ -187,6 +200,67 @@ class Util {
 		} else {
 			return $parentFolder;
 		}
+	}
+
+	/**
+	 * Create relative path from the given working dir (CWD) to the given target path
+	 * @param string $cwdPath Absolute CWD path
+	 * @param string $targetPath Absolute target path
+	 * @return string
+	 */
+	public static function relativePath($cwdPath, $targetPath) {
+		$cwdParts = \explode('/', $cwdPath);
+		$targetParts = \explode('/', $targetPath);
+
+		// remove the common prefix of the paths
+		while (\count($cwdParts) > 0 && \count($targetParts) > 0 && $cwdParts[0] === $targetParts[0]) {
+			\array_shift($cwdParts);
+			\array_shift($targetParts);
+		}
+
+		// prepend up-navigation from CWD to the closest common parent folder with the target
+		for ($i = 0, $count = \count($cwdParts); $i < $count; ++$i) {
+			\array_unshift($targetParts, '..');
+		}
+
+		return \implode('/', $targetParts);
+	}
+
+	/**
+	 * Given a current working directory path (CWD) and a relative path (possibly containing '..' parts),
+	 * form an absolute path matching the relative path. This is a reverse operation for Util::relativePath().
+	 * @param string $cwdPath
+	 * @param string $relativePath
+	 * @return string
+	 */
+	public static function resolveRelativePath($cwdPath, $relativePath) {
+		$cwdParts = \explode('/', $cwdPath);
+		$relativeParts = \explode('/', $relativePath);
+
+		// get rid of the trailing empty part of CWD which appears when CWD has a trailing '/'
+		if ($cwdParts[\count($cwdParts)-1] === '') {
+			\array_pop($cwdParts);
+		}
+
+		foreach ($relativeParts as $part) {
+			if ($part === '..') {
+				\array_pop($cwdParts);
+			} else {
+				\array_push($cwdParts, $part);
+			}
+		}
+
+		return \implode('/', $cwdParts);
+	}
+
+	/**
+	 * Encode a file path so that it can be used as part of a WebDAV URL
+	 * @param string $path
+	 * @return string
+	 */
+	public static function urlEncodePath($path) {
+		// URL encode each part of the file path
+		return \join('/', \array_map('rawurlencode', \explode('/', $path)));
 	}
 
 	/**

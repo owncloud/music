@@ -74,7 +74,7 @@ class DetailsHelper {
 
 			// add track length
 			if (\array_key_exists('playtime_seconds', $data)) {
-				$result['length'] = \ceil($data['playtime_seconds']);
+				$result['length'] = $data['playtime_seconds'];
 			} else {
 				$result['length'] = null;
 			}

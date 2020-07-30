@@ -10,7 +10,9 @@
  * @copyright Pauli Järvinen 2016 - 2020
  */
 
-function PlayerWrapper() {
+OCA.Music = OCA.Music || {};
+
+OCA.Music.PlayerWrapper = function() {
 	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
 	var m_html5audio = null;
 	var m_aurora = null;
@@ -274,4 +276,4 @@ function PlayerWrapper() {
 		// Set the current volume to the newly created/selected player instance
 		this.setVolume(m_volume);
 	};
-}
+};

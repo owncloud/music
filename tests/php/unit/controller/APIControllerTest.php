@@ -1010,6 +1010,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'number' => 4,
 			'disk' => 1,
 			'artistId' => 3,
+			'length' => 123,
 			'files' => [
 				'audio/mp3' => $fileId
 			]

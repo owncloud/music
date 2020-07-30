@@ -37,36 +37,45 @@ angular.module('Music').controller('ArtistDetailsController', [
 				var art = $('#app-sidebar .albumart');
 				art.css('background-image', '');
 
+				// Because of the asynchronous nature of teh REST queries, it is possible that the
+				// current artist has already changed again by the time we get the result. If that has
+				// happened, then the result should be ignored.
 				Restangular.one('artist', artistId).one('cover').get().then(
 					function(result) {
-						$scope.artAvailable = true;
-						$scope.loading = false;
+						if ($scope.artist && $scope.artist.id == artistId) {
+							$scope.artAvailable = true;
+							$scope.loading = false;
 
-						var url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
-						art.css('background-image', 'url("' + url + '")');
+							var url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
+							art.css('background-image', 'url("' + url + '")');
+						}
 					},
 					function(result) {
 						// error handling
-						$scope.artAvailable = false;
-						$scope.loading = false;
-						$scope.noImageHint = gettextCatalog.getString(
-							'Upload image named "{{name}}" to anywhere within your library path to see it here.',
-							{ name: $scope.artist.name + '.*' }
-						);
+						if ($scope.artist && $scope.artist.id == artistId) {
+							$scope.artAvailable = false;
+							$scope.loading = false;
+							$scope.noImageHint = gettextCatalog.getString(
+								'Upload image named "{{name}}" to anywhere within your library path to see it here.',
+								{ name: $scope.artist.name + '.*' }
+							);
+						}
 					}
 				);
 
 				Restangular.one('artist', artistId).one('details').get().then(
 					function(result) {
-						$scope.lastfmInfo = result;
-						$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
-						// modify all links in the biography so that they will open to a new tab
-						$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
+						if ($scope.artist && $scope.artist.id == artistId) {
+							$scope.lastfmInfo = result;
+							$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
+							// modify all links in the biography so that they will open to a new tab
+							$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
 
-						$scope.artistTags = formatTags(result.artist.tags.tag);
-						$scope.similarArtists = formatLinkList(result.artist.similar.artist);
+							$scope.artistTags = formatTags(result.artist.tags.tag);
+							$scope.similarArtists = formatLinkList(result.artist.similar.artist);
 
-						$scope.$parent.adjustFixedPositions();
+							$scope.$parent.adjustFixedPositions();
+						}
 					}
 				);
 			}

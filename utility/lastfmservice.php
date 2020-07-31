@@ -13,6 +13,7 @@
 namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 
 use \OCP\IConfig;
@@ -20,6 +21,7 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 
 
 class LastfmService {
+	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $logger;
 	private $apiKey;
@@ -27,9 +29,11 @@ class LastfmService {
 	const LASTFM_URL = 'http://ws.audioscrobbler.com/2.0/';
 
 	public function __construct(
+			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
 			IConfig $config,
 			Logger $logger) {
+		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->logger = $logger;
 		$this->apiKey = $config->getSystemValue('music.lastfm_api_key');
@@ -44,15 +48,45 @@ class LastfmService {
 	public function getArtistInfo($artistId, $userId) {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
+		return $this->getInfoFromLastFm([
+				'method' => 'artist.getInfo',
+				'artist' => $artist->getName()
+		]);
+	}
+
+	/**
+	 * @param integer $albumId
+	 * @param string $userId
+	 * @return array
+	 * @throws BusinessLayerException if album with the given ID is not found
+	 */
+	public function getAlbumInfo($albumId, $userId) {
+		$album = $this->albumBusinessLayer->find($albumId, $userId);
+
+		return $this->getInfoFromLastFm([
+				'method' => 'album.getInfo',
+				'artist' => $album->getAlbumArtistName(),
+				'album' => $album->getName()
+		]);
+	}
+
+	private function getInfoFromLastFm($args) {
 		if (empty($this->apiKey)) {
 			return ['api_key_set' => false];
 		}
 		else {
-			$info = \file_get_contents(self::LASTFM_URL .
-					'?method=artist.getInfo' .
-					'&artist=' . \urlencode($artist->getName()) .
-					'&api_key=' . $this->apiKey .
-					'&format=json');
+			// append the standard args
+			$args['api_key'] = $this->apiKey;
+			$args['format'] = 'json';
+
+			// glue arg keys and values together ...
+			$args= \array_map(function($key, $value) {
+				return $key . '=' . \urlencode($value);
+			}, \array_keys($args), $args);
+			// ... and form the final query string
+			$queryString = '?' . \implode('&', $args);
+
+			$info = \file_get_contents(self::LASTFM_URL . $queryString);
 
 			if ($info === false) {
 				$info = ['connection_ok' => false];
@@ -64,5 +98,4 @@ class LastfmService {
 			return $info;
 		}
 	}
-
 }

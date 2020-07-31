@@ -455,6 +455,21 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function albumDetails($albumIdOrSlug) {
+		try {
+			$albumId = $this->getIdFromSlug($albumIdOrSlug);
+			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
+			return new JSONResponse($info);
+		}
+		catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function artistDetails($artistIdOrSlug) {
 		try {
 			$artistId = $this->getIdFromSlug($artistIdOrSlug);

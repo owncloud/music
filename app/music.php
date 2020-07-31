@@ -399,6 +399,7 @@ class Music extends App {
 
 		$container->registerService('LastfmService', function ($c) {
 			return new LastfmService(
+				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('Config'),
 				$c->query('Logger')

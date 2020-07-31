@@ -96,6 +96,7 @@
 			<img class="logotype" src="<?php p(OCP\Template::image_path('music', 'logo/music_logotype_horizontal.svg')) ?>" />
 			<br/>
 			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
+			(<a href="https://github.com/owncloud/music/releases" target="_blank" translate>version history</a>)
 		</p>
 		<p translate>
 			Please report any bugs and issues to the <a href="{{issueTrackerUrl}}" target="_blank">issue tracker</a>

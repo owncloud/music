@@ -12,9 +12,9 @@
 
 angular.module('Music').controller('AlbumsViewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
-	'Restangular', '$route', '$timeout', 'gettextCatalog',
+	'Restangular', '$route', '$location', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,
-			Restangular, $route, $timeout, gettextCatalog) {
+			Restangular, $route, $location, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -60,7 +60,10 @@ angular.module('Music').controller('AlbumsViewController', [
 
 			var index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
 			playlistService.setPlaylist(listId, playlist, index);
-			playlistService.publish('play');
+
+			var startOffset = $location.search().offset || null;
+			playlistService.publish('play', startOffset);
+			$location.search('offset', null); // the offset parameter has been used up
 		}
 
 		$scope.playTrack = function(trackId) {

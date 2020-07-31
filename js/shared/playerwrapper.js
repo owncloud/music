@@ -197,6 +197,10 @@ OCA.Music.PlayerWrapper = function() {
 		this.seekMsecs(m_position - msecs);
 	};
 
+	this.playPosition = function() {
+		return m_position;
+	};
+
 	this.setVolume = function(percentage) {
 		m_volume = percentage;
 

@@ -110,21 +110,21 @@ function ($scope, $rootScope, playlistService, libraryService,
 		return null;
 	};
 
-	function setCurrentTrack(playlistEntry) {
+	function setCurrentTrack(playlistEntry, startOffset /*optional*/) {
 		var track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track);
+			playTrack(track, startOffset);
 		} else {
 			$scope.stop();
 		}
 	}
 
 	var pathRequestTimer = null;
-	function playTrack(track) {
+	function playTrack(track, startOffset /*optional*/) {
 		$scope.currentTrack = track;
 		$scope.currentAlbum = track.album;
 
@@ -153,6 +153,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 						$scope.player.fromURL(url, mimeAndId.mime);
 						$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
+						if (startOffset) {
+							$scope.player.seekMsecs(startOffset);
+						}
 						$scope.player.play();
 
 						pathRequestTimer = null;
@@ -229,7 +232,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		playlistService.clearPlaylist();
 	};
 
-	$scope.next = function() {
+	$scope.next = function(startOffset /*optional*/) {
 		var entry = playlistService.jumpToNextTrack(),
 			tracksSkipped = false;
 
@@ -237,12 +240,13 @@ function ($scope, $rootScope, playlistService, libraryService,
 		// audio mimetype
 		while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
 			tracksSkipped = true;
+			startOffset = null; // offset is not meaningful if we couldn't play the requested track
 			entry = playlistService.jumpToNextTrack();
 		}
 		if (tracksSkipped) {
 			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
 		}
-		setCurrentTrack(entry);
+		setCurrentTrack(entry, startOffset);
 	};
 
 	$scope.prev = function() {
@@ -269,7 +273,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', $scope.next /* fetch track and start playing*/);
+	playlistService.subscribe('play', function(event, startOffset /*optional*/) {
+		$scope.next(startOffset); /* fetch track and start playing*/
+	});
 
 	playlistService.subscribe('togglePlayback', $scope.togglePlayback);
 

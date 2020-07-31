@@ -465,12 +465,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	function updateMusicAppLink(data, fileId) {
 		if (data.in_library) {
 			var navigateToMusicApp = function() {
-				window.location = OC.generateUrl('apps/music/#/file/{fileId}', {'fileId':fileId});
+				window.location = OC.generateUrl('apps/music/#/file/{fileId}?offset={offset}',
+						{'fileId':fileId, 'offset': player.playPosition()});
 			};
 			musicAppLinkElements()
 				.css('cursor', 'pointer')
 				.click(navigateToMusicApp)
-				.attr('title', t('music', 'Go to album'));
+				.attr('title', t('music', 'Continue playing in Music'));
 		}
 		else {
 			musicAppLinkElements().attr('title', t('music', '(file is not within your music collection folder)'));

@@ -273,7 +273,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(event, startOffset /*optional*/) {
+	playlistService.subscribe('play', function(event, playingView /*optional, ignored*/, startOffset /*optional*/) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 

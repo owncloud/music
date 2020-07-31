@@ -62,7 +62,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			playlistService.setPlaylist(listId, playlist, index);
 
 			var startOffset = $location.search().offset || null;
-			playlistService.publish('play', startOffset);
+			playlistService.publish('play', null, startOffset);
 			$location.search('offset', null); // the offset parameter has been used up
 		}
 

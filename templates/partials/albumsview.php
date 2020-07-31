@@ -18,6 +18,7 @@
 				heading-ext="decoratedYear(album)"
 				tooltip="album.name + decoratedYear(album)"
 				on-click="playAlbum"
+				on-details-click="showAlbumDetails"
 				get-draggable="getAlbumDraggable"
 				model="album">
 			</list-heading>

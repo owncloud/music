@@ -240,24 +240,31 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
-	$scope.showTrackDetails = function(trackId) {
-		$rootScope.$emit('showTrackDetails', trackId);
+	function showDetails(entityType, id) {
+		var capType = OCA.Music.Utils.capitalize(entityType);
+		var showDetailsEvent = 'show' + capType + 'Details';
+		var scrollEvent = 'scrollTo' + capType;
+		var elemId = entityType + '-' + id;
+
+		$rootScope.$emit(showDetailsEvent, id);
 		$timeout(function() {
-			var trackElem = document.getElementById('track-' + trackId);
-			if (!isElementInViewPort(trackElem)) {
-				$rootScope.$emit('scrollToTrack', trackId, 0);
+			var elem = document.getElementById(elemId);
+			if (!isElementInViewPort(elem)) {
+				$rootScope.$emit(scrollEvent, id, 0);
 			}
 		}, 300);
+	}
+
+	$scope.showTrackDetails = function(trackId) {
+		showDetails('track', trackId);
 	};
 
 	$scope.showArtistDetails = function(artist) {
-		$rootScope.$emit('showArtistDetails', artist.id);
-		$timeout(function() {
-			var artistElem = document.getElementById('artist-' + artist.id);
-			if (!isElementInViewPort(artistElem)) {
-				$rootScope.$emit('scrollToArtist', artist.id, 0);
-			}
-		}, 300);
+		showDetails('artist', artist.id);
+	};
+
+	$scope.showAlbumDetails = function(album) {
+		showDetails('album', album.id);
 	};
 
 	$scope.hideSidebar = function() {

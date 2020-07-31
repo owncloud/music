@@ -117,6 +117,14 @@
 	width: 35%;
 }
 
+#app-sidebar #album-content-counts dt {
+	width: 55%;
+}
+
+#app-sidebar #album-content-counts dd {
+	width: 45%;
+}
+
 #app-sidebar .tabsContainer .tab {
 	width: 100%;
 	margin-bottom: 32px;
@@ -157,6 +165,17 @@
 	width: 100%;
 	margin-top: 20px;
 	margin-bottom: 20px;
+}
+
+#app-sidebar #album-details h1 {
+	margin-top: 8px;
+}
+
+#app-sidebar h2 {
+	text-align: center;
+	width: 100%;
+	margin-top: 16px;
+	margin-bottom: 0;
 }
 
 #app-sidebar #lastfm-info {

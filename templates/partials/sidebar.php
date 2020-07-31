@@ -2,6 +2,7 @@
 	<a class="close icon-close" alt="{{ 'Close' | translate }}" ng-click="hideSidebar()"></a>
 
 	<?php print_unescaped($this->inc('partials/trackdetails')) ?>
+	<?php print_unescaped($this->inc('partials/albumdetails')) ?>
 	<?php print_unescaped($this->inc('partials/artistdetails')) ?>
 	<?php print_unescaped($this->inc('partials/playlistdetails')) ?>
 

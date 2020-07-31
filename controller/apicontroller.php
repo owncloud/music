@@ -485,10 +485,14 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albumCover($albumIdOrSlug) {
-		$albumId = $this->getIdFromSlug($albumIdOrSlug);
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		return $this->cover($album);
+	public function albumCover($albumIdOrSlug, $originalSize) {
+		try {
+			$albumId = $this->getIdFromSlug($albumIdOrSlug);
+			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+			return $this->cover($album, $originalSize);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
 	}
 
 	/**
@@ -496,14 +500,22 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function artistCover($artistIdOrSlug, $originalSize) {
+		try {
+			$artistId = $this->getIdFromSlug($artistIdOrSlug);
+			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			return $this->cover($artist, $originalSize);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	private function cover($entity, $originalSize) {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
 
-		$artistId = $this->getIdFromSlug($artistIdOrSlug);
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-
 		if ($originalSize) {
+			// cover requested in original size, without scaling or cropping
 			$cover = $this->coverHelper->getCover(
-					$artist, $this->userId, $this->userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
+					$entity, $this->userId, $this->userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
 			if ($cover !== null) {
 				return new FileResponse($cover);
 			} else {
@@ -511,22 +523,18 @@ class ApiController extends Controller {
 			}
 		}
 		else {
-			return $this->cover($artist);
-		}
-	}
+			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
 
-	private function cover($entity) {
-		$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
-
-		if ($coverAndHash['hash'] !== null) {
-			// Cover is in cache. Return a redirection response so that the client
-			// will fetch the content through a cacheable route.
-			$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
-			return new RedirectResponse($link);
-		} else if ($coverAndHash['data'] !== null) {
-			return new FileResponse($coverAndHash['data']);
-		} else {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			if ($coverAndHash['hash'] !== null) {
+				// Cover is in cache. Return a redirection response so that the client
+				// will fetch the content through a cacheable route.
+				$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
+				return new RedirectResponse($link);
+			} else if ($coverAndHash['data'] !== null) {
+				return new FileResponse($coverAndHash['data']);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			}
 		}
 	}
 

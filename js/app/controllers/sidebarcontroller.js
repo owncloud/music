@@ -42,24 +42,20 @@ angular.module('Music').controller('SidebarController', [
 			showSidebar('track', trackId);
 		}
 
-		function showArtistDetails(artistId) {
-			showSidebar('artist', artistId);
-		}
-
-		function showPlaylistDetails(playlistId) {
-			showSidebar('playlist', playlistId);
-		}
-
 		$rootScope.$on('showTrackDetails', function(event, trackId) {
 			showTrackDetails(trackId);
 		});
 
+		$rootScope.$on('showAlbumDetails', function(event, albumId) {
+			showSidebar('album', albumId);
+		});
+
 		$rootScope.$on('showArtistDetails', function(event, artistId) {
-			showArtistDetails(artistId);
+			showSidebar('artist', artistId);
 		});
 
 		$rootScope.$on('showPlaylistDetails', function(event, playlistId) {
-			showPlaylistDetails(playlistId);
+			showSidebar('playlist', playlistId);
 		});
 
 		$rootScope.$on('hideDetails', function() {

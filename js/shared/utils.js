@@ -47,6 +47,13 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Capitalizes the firts character of the given string
+	 */
+	capitalize: function(str) {
+		return str && str[0].toUpperCase() + str.slice(1); 
+	},
+
+	/**
 	 * Creates a track title from the file name, dropping the file extension and any
 	 * track number possibly found from the beginning of the file name.
 	 */

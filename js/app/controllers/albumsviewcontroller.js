@@ -198,6 +198,14 @@ angular.module('Music').controller('AlbumsViewController', [
 			scrollToAlbumOfTrack(trackId, animationTime);
 		});
 
+		subscribe('scrollToAlbum', function(event, albumId, animationTime /* optional */) {
+			$scope.$parent.scrollToItem('album-' + albumId, animationTime);
+		});
+
+		subscribe('scrollToArtist', function(event, artistId, animationTime /* optional */) {
+			$scope.$parent.scrollToItem('artist-' + artistId, animationTime);
+		});
+
 		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
 			var track = libraryService.getTrack(trackId);
 			if (track) {

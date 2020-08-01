@@ -17,8 +17,8 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		var currentTrack = null;
 
-		function getFileId(trackId) {
-			var files = libraryService.getTrack(trackId).files;
+		function getFileId() {
+			var files = currentTrack.files;
 			return files[Object.keys(files)[0]];
 		}
 
@@ -33,8 +33,8 @@ angular.module('Music').controller('TrackDetailsController', [
 		}
 
 		function showDetails(trackId) {
-			if (trackId != currentTrack) {
-				currentTrack = trackId;
+			if (!currentTrack || trackId != currentTrack.id) {
+				currentTrack = libraryService.getTrack(trackId);
 				$scope.details = null;
 				$scope.lastfmInfo = null;
 				$scope.lastfmTags = null;
@@ -42,7 +42,7 @@ angular.module('Music').controller('TrackDetailsController', [
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
 
-				var fileId = getFileId(trackId);
+				var fileId = getFileId();
 				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
 
 				Restangular.one('file', fileId).one('details').get().then(function(result) {
@@ -101,7 +101,7 @@ angular.module('Music').controller('TrackDetailsController', [
 		$rootScope.$on('playerProgress', function(event, time) {
 			// check if we are viewing time-synced lyrics of the currently playing track
 			if ($scope.details && $scope.details.lyrics && $scope.details.lyrics.synced
-					&& $scope.$parent.currentTrack.id == currentTrack) {
+					&& $scope.$parent.currentTrack.id == currentTrack.id) {
 				// Check if the highlighted row needs to change. First find the last row
 				// which has been already reached by the playback.
 				var allRows = $("#app-sidebar .lyrics");
@@ -166,6 +166,35 @@ angular.module('Music').controller('TrackDetailsController', [
 			case 'tracktotal':		return 8;
 			case 'comment':			return 100;
 			default:				return 10;
+			}
+		};
+
+		$scope.tagHasDetails = function(tag) {
+			switch (tag.key) {
+			case 'artist':			return currentTrack.artistName == tag.value;
+			case 'album':			return currentTrack.album.name == tag.value;
+			case 'albumartist':		// fall through
+			case 'album_artist':	// fall through
+			case 'band':			return currentTrack.album.artist.name == tag.value;
+			default:				return false;
+			}
+		};
+
+		$scope.showTagDetails = function(tag) {
+			switch (tag.key) {
+			case 'artist':
+				$rootScope.$emit('showArtistDetails', currentTrack.artistId);
+				break;
+			case 'album':
+				$rootScope.$emit('showAlbumDetails', currentTrack.album.id);
+				break;
+			case 'albumartist':		// fall through
+			case 'album_artist':	// fall through
+			case 'band':
+				$rootScope.$emit('showArtistDetails', currentTrack.album.artist.id);
+				break;
+			default:
+				// nothing
 			}
 		};
 	}

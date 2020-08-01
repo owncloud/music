@@ -239,12 +239,12 @@ angular.module('Music').controller('AlbumsViewController', [
 						$scope.playFile(id);
 					} else if (type == 'artist') {
 						var artist = libraryService.getArtist(id);
-						if (artist) {
+						if (artist.albums.length > 0) {
 							$scope.playArtist(artist);
 							$scope.$parent.scrollToItem('artist-' + id);
 						} else {
-							// If there is no such album artist, then maybe this is only a track artist.
-							// Try to find the first track by this artist.
+							// If the artist has no albums, then it can't be used as a play scope.
+							// Find the first track performed by this artist.
 							var tracks = libraryService.findTracksByArtist(id);
 							$scope.playTrack(tracks[0].id);
 							scrollToAlbumOfTrack(tracks[0].id);

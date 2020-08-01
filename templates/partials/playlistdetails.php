@@ -13,8 +13,8 @@
 		<dd>{{ createdDate }}</dd>
 
 		<dt translate>Comment</dt>
-		<dd class="clickable"
-			><span ng-show="!editing" ng-click="startEdit()">{{ playlist.comment }}<button class="icon-rename"></button></span
+		<dd class="clickable" ng-click="startEdit()"
+			><span ng-show="!editing">{{ playlist.comment }}<button class="icon-rename"></button></span
 			><textarea ng-show="editing" type="text" ng-enter="commitEdit()" ng-model="playlist.comment" maxlength="256"></textarea
 		></dd>
 	</dl>

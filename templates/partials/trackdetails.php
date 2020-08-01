@@ -23,7 +23,8 @@
 		<div class="tab" id="generalTabView" ng-show="selectedTab=='general'">
 			<dl class="tags">
 				<dt ng-repeat-start="tag in details.tags | orderBy:tagRank" ng-if="tag.value">{{ formatDetailName(tag.key) }}</dt>
-				<dd ng-repeat-end ng-show="tag.value">{{ formatDetailValue(tag.value) }}</dd>
+				<dd ng-repeat-end ng-show="tag.value" ng-class="{clickable: tagHasDetails(tag)}" ng-click="showTagDetails(tag)"
+				>{{ formatDetailValue(tag.value) }}<button class="icon-info" ng-if="tagHasDetails(tag)"></button></dd>
 	
 				<dt ng-if="details.length">length</dt>
 				<dd ng-if="details.length">{{ details.length | playTime }}</dd>

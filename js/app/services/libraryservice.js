@@ -283,7 +283,19 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {
-			return _.findWhere(artists, { id: Number(id) });
+			var artist = _.findWhere(artists, { id: Number(id) });
+			if (!artist) {
+				// there's no such album artist, try to find a matching track artist (who has no albums)
+				var track = _.findWhere(tracksIndex, { artistId: Number(id)} );
+				if (track) {
+					artist = {
+							id: track.artistId,
+							name: track.artistName,
+							albums: []
+					};
+				}
+			}
+			return artist;
 		},
 		getAllArtists: function() {
 			return artists;

@@ -96,10 +96,12 @@
 	background-color: transparent;
 	opacity: 0.5;
 	vertical-align: middle;
+	margin-top: -3px;
+	margin-bottom: -3px;
 }
 
-#app-sidebar dd span:hover button,
-#app-sidebar dd span button:hover {
+#app-sidebar dd:hover button,
+#app-sidebar dd button:hover {
 	opacity: 1.0;
 }
 
@@ -107,6 +109,11 @@
 	width: 100%;
 	margin-top: -6px;
 	margin-left: -6px;
+}
+
+#app-sidebar dd .icon-info {
+	padding-left: 20px;
+	padding-right: 0;
 }
 
 #app-sidebar #artist-content-counts dt {

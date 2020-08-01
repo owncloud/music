@@ -108,10 +108,6 @@ h1 span:hover .play {
 	white-space: nowrap;
 }
 
-.album-area > h2 > div {
-	display: inline-block;
-}
-
 .album-area > h2 span,
 .album-area > h2 button {
 	cursor: pointer;

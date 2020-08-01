@@ -15,6 +15,7 @@ namespace OCA\Music\Utility;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCP\IConfig;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -23,6 +24,7 @@ use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 class LastfmService {
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
+	private $trackBusinessLayer;
 	private $logger;
 	private $apiKey;
 
@@ -31,10 +33,12 @@ class LastfmService {
 	public function __construct(
 			AlbumBusinessLayer $albumBusinessLayer,
 			ArtistBusinessLayer $artistBusinessLayer,
+			TrackBusinessLayer $trackBusinessLayer,
 			IConfig $config,
 			Logger $logger) {
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->logger = $logger;
 		$this->apiKey = $config->getSystemValue('music.lastfm_api_key');
 	}
@@ -67,6 +71,22 @@ class LastfmService {
 				'method' => 'album.getInfo',
 				'artist' => $album->getAlbumArtistName(),
 				'album' => $album->getName()
+		]);
+	}
+
+	/**
+	 * @param integer $trackId
+	 * @param string $userId
+	 * @return array
+	 * @throws BusinessLayerException if track with the given ID is not found
+	 */
+	public function getTrackInfo($trackId, $userId) {
+		$track= $this->trackBusinessLayer->find($trackId, $userId);
+
+		return $this->getInfoFromLastFm([
+				'method' => 'track.getInfo',
+				'artist' => $track->getArtistName(),
+				'track' => $track->getTitle()
 		]);
 	}
 

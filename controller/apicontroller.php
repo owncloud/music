@@ -445,6 +445,14 @@ class ApiController extends Controller {
 	public function fileDetails($fileId) {
 		$details = $this->detailsHelper->getDetails($fileId, $this->userFolder);
 		if ($details) {
+			// metadata extracted, attempt to include also the data from Last.fm
+			$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
+			if ($track) {
+				$details['lastfm'] = $this->lastfmService->getTrackInfo($track->getId(), $this->userId);
+			} else {
+				$this->logger->log("Track with file ID $fileId was not found => can't fetch info from Last.fm", 'warn');
+			}
+
 			return new JSONResponse($details);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);

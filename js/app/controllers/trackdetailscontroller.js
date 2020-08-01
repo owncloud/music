@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('TrackDetailsController', [
-	'$rootScope', '$scope', 'Restangular', 'libraryService',
-	function ($rootScope, $scope, Restangular, libraryService) {
+	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
+	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
 
 		$scope.selectedTab = 'general';
 
@@ -36,6 +36,8 @@ angular.module('Music').controller('TrackDetailsController', [
 			if (trackId != currentTrack) {
 				currentTrack = trackId;
 				$scope.details = null;
+				$scope.lastfmInfo = null;
+				$scope.lastfmTags = null;
 
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -54,14 +56,44 @@ angular.module('Music').controller('TrackDetailsController', [
 					result.fileinfo = toArray(result.fileinfo);
 					$scope.details = result;
 
-					if ($scope.selectedTab == 'lyrics' && !$scope.details.lyrics) {
-						// 'lyrics' tab is selected but not available => select 'general' tab
+					if (($scope.selectedTab == 'lyrics' && !result.lyrics)
+							|| ($scope.selectedTab == 'lastfm' && (!result.lastfm || !result.lastfm.track))) {
+						// selected tab is not available on this track => select 'general' tab
 						$scope.selectedTab = 'general';
+					}
+
+					if (result.lastfm) {
+						setLastfmInfo(result.lastfm);
 					}
 
 					$scope.$parent.adjustFixedPositions();
 				});
 			}
+		}
+
+		function setLastfmInfo(data) {
+			if ('track' in data) {
+				if ('wiki' in data.track) {
+					$scope.lastfmInfo = data.track.wiki.content || data.track.wiki.summary;
+					// modify all links in the info so that they will open to a new tab
+					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
+				}
+				else {
+					var linkText = gettextCatalog.getString('See the track on Last.fm');
+					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
+				}
+
+				if ('toptags' in data.track) {
+					$scope.lastfmTags = formatTags(data.track.toptags.tag);
+				}
+			}
+		}
+
+		function formatTags(linkArray) {
+			htmlLinks = _.map(linkArray, function(item) {
+				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+			});
+			return htmlLinks.join(', ');
 		}
 
 		$scope.$watch('contentId', showDetails);

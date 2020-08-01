@@ -401,6 +401,7 @@ class Music extends App {
 			return new LastfmService(
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('TrackBusinessLayer'),
 				$c->query('Config'),
 				$c->query('Logger')
 			);

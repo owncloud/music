@@ -13,6 +13,9 @@
 		<li class="tabHeader" ng-class="{selected: selectedTab=='technical'}" ng-click="selectedTab='technical'">
 			<a translate>Technical</a>
 		</li>
+		<li class="tabHeader" ng-class="{selected: selectedTab=='lastfm'}" ng-click="selectedTab='lastfm'" ng-show="details.lastfm.track">
+			<a>Last.fm</a>
+		</li>
 	</ul>
 
 	<div class="tabsContainer" ng-show="details">
@@ -40,6 +43,19 @@
 			</dl>
 		</div>
 
+		<div class="tab" id="lastfm-info" ng-show="selectedTab=='lastfm'">
+			<p ng-if="lastfmInfo"
+				ng-init="truncated = (lastfmInfo.length > 400)"
+				ng-class="{clickable: truncated, truncated: truncated}"
+				ng-bind-html="lastfmInfo | limitTo:(truncated ? 365 : undefined)"
+				ng-click="truncated = false; adjustFixedPositions()"
+				title="{{ truncated ? ('Click to expand' | translate) : '' }}">
+			</p>
+			<dl class="tags" ng-if="lastfmTags">
+				<dt translate>Tags</dt>
+				<dd ng-bind-html="lastfmTags"></dd>
+			</dl>
+		</div>
 	</div>
 
 	<div class="icon-loading" ng-if="!details"></div>

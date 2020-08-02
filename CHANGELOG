@@ -1,3 +1,18 @@
+v0.16.0 2020-08-02
+ * support for playlist files (#777, #652, #645).
+   * exporting playlist to M3U8 file
+   * importing playlist from M3U8, M3U, or PLS file
+   * playing M3U8, M3U, and PLS files directly in Files
+   * the file paths within the playlist file must be relative
+ * playlist details pane
+ * album details pane
+ * Last.fm data on tracks details pane when available
+ * navigation from track details to album and artist details
+ * when navigating from the Files player to Music, continue from the same time offset
+ * add link to the github change log under the About section in the Settings view
+ * fix rendering of lyrics and other track details which use "CR only" new lines (#780)
+ * internal refactoring and minor fixes
+
 v0.15.1 2020-07-12
  * fix unable to scan music after database reset (regression in v0.15.0) (#774)
  * Ampache:

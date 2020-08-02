@@ -3,18 +3,20 @@
 	<id>music</id>
 	<name>Music</name>
 	<summary>Music player, library viewer, and server</summary>
-	<description>Plays audio files directly in the Files view or in a stand-alone library view. Depending on the browser, supports playing file types mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3.
+	<description>Plays audio files directly in the Files view or in a stand-alone library view. Depending on the browser, supports playing file types mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. Also playlist formats m3u, m3u8, and pls are supported.
 
-In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, search tracks by keywords, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to next files of the folder until stopped. The app includes also a server compatible with Ampache and Subsonic clients.
+In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, search tracks by keywords, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to the next files of the folder or playlist until stopped. The app includes also a server compatible with Ampache and Subsonic clients, allowing playback and browsing of the library on various external applications e.g. on Android or iPhone.
 
-The Music app also integrates with the mediaSession API (available at least on recent versions of Chrome and Edge) both when playing music within Files and in the stand-alone view. When the API is supported by the browser, this allows controlling the playback with the media keys (play/pause/stop/next/prev) on the keyboard even when the browser is not focused, and shows the playback controls also on the lock screen of the OS (tested on Windows 10 and Android).
+When browser and OS support available, the Music app can be controlled with the media keys (play/pause/stop/next/prev) on the keyboard or the OS notification center even when the browser is not focused. This is supported at least on Chrome and Edge (tested on Windows 10 and Android).
+
+The admin may set up connection to the Last.fm service, allowing the Music app to show biography and background information of the artists, albums, and tracks.
 
 Limitations: The app can handle libraries of more than 50´000 tracks on modern desktop browsers, but the user experience is optimized for somewhat smaller collections. Libraries significantly larger than this may fail to function altogether. The playback from Files works regardless of the collection size.</description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>0.15.1</version>
+	<version>0.16.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/87253623-7c1a1500-c485-11ea-98b4-625dc55868ac.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

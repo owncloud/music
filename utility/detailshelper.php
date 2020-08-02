@@ -98,11 +98,13 @@ class DetailsHelper {
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
 			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics']);
+			self::sanitizeString($lyrics);
 
 			if ($lyrics === null) {
 				// no unsynchronized lyrics, try to get and convert the potentially syncronized lyrics
 				$lyrics = ExtractorGetID3::getTag($data, 'LYRICS');
-				$parsed = LyricsParser::parseSyncedLyrics($lyrics, $this->logger);
+				self::sanitizeString($lyrics);
+				$parsed = LyricsParser::parseSyncedLyrics($lyrics);
 				if ($parsed) {
 					// the lyrics were indeed time-synced, convert the parsed array to a plain string
 					$lyrics = LyricsParser::syncedToUnsynced($parsed);
@@ -118,8 +120,8 @@ class DetailsHelper {
 	 * be null. In case the result is non-null, there is always at least the key 'unsynced'
 	 * in the result which will hold a string representing the lyrics with no timestamps.
 	 * If found and successfully parsed, there will be also another key 'synced', which will
-	 * hold the time-synced lyrics. These are presented as an associative array where the
-	 * keys are timestamps and values are corresponding lines of text.
+	 * hold the time-synced lyrics. These are presented as an array of arrays of form
+	 * ['time' => int (ms), 'text' => string].
 	 * 
 	 * @param array $tags
 	 * @return array|null
@@ -163,12 +165,16 @@ class DetailsHelper {
 	}
 
 	/**
-	 * Remove potentially invalid characters from the string.
+	 * Remove potentially invalid characters from the string and normalize the line breaks to LF.
 	 * @param $item
 	 */
 	private static function sanitizeString(&$item) {
 		if (is_string($item)) {
 			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+			// The tags could contain line breaks in formats LF, CRLF, or CR, but we want the output
+			// to always use the LF style. Note that the order of the next two lines is important!
+			$item = \str_replace("\r\n", "\n", $item);
+			$item = \str_replace("\r", "\n", $item);
 		}
 	}
 

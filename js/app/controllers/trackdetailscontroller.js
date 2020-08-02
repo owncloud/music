@@ -125,9 +125,6 @@ angular.module('Music').controller('TrackDetailsController', [
 			if (isFloat(value)) {
 				// limit the number of shown digits on floating point numbers
 				return Number(value.toPrecision(6));
-			} else if (_.isString(value)){
-				// convert \r\n -> \n because IE9 prints two new-lines on the former
-				return value.replace(/\r\n/g, '\n');
 			} else {
 				return value;
 			}

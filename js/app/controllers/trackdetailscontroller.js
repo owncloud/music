@@ -84,16 +84,9 @@ angular.module('Music').controller('TrackDetailsController', [
 				}
 
 				if ('toptags' in data.track) {
-					$scope.lastfmTags = formatTags(data.track.toptags.tag);
+					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
 				}
 			}
-		}
-
-		function formatTags(linkArray) {
-			htmlLinks = _.map(linkArray, function(item) {
-				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
-			});
-			return htmlLinks.join(', ');
 		}
 
 		$scope.$watch('contentId', showDetails);

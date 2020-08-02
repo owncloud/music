@@ -84,5 +84,23 @@ angular.module('Music').controller('SidebarController', [
 				showTrackDetails($scope.$parent.currentTrack.id);
 			}
 		};
+
+		$scope.formatLastfmTags = function(tags) {
+			// Filter out the tags intended to be used on Last.fm as personal tags. These make no sense
+			// for us as we are not aware of the user's Last.fm account and we only show global tags.
+			tags = _.reject(tags, {name: 'seen live'});
+			tags = _.reject(tags, {name: 'albums I own'});
+			tags = _.reject(tags, {name: 'vinyls i own'});
+			tags = _.reject(tags, {name: 'favorite albums'});
+			tags = _.reject(tags, {name: 'favourite albums'});
+			return $scope.formatLinkList(tags);
+		};
+
+		$scope.formatLinkList = function(linkArray) {
+			htmlLinks = _.map(linkArray, function(item) {
+				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+			});
+			return htmlLinks.join(', ');
+		};
 	}
 ]);

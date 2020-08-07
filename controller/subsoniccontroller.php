@@ -259,7 +259,7 @@ class SubsonicController extends Controller {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 
 		$artistNode = $this->artistToApi($artist);
 		$artistNode['album'] = \array_map([$this, 'albumToNewApi'], $albums);
@@ -897,7 +897,7 @@ class SubsonicController extends Controller {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$albums = $this->albumBusinessLayer->findAllByAlbumArtist($artistId, $this->userId);
+		$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 
 		return $this->subsonicResponse([
 			'directory' => [
@@ -949,7 +949,7 @@ class SubsonicController extends Controller {
 		$result = [
 			'name' => $artist->getNameString($this->l10n),
 			'id' => $id ? ('artist-' . $id) : '-1', // getArtistInfo may show artists without ID
-			'albumCount' => $this->albumBusinessLayer->countByAlbumArtist($artist->getId())
+			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
 		];
 
 		if (!empty($artist->getCoverFileId())) {

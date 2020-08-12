@@ -44,13 +44,16 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Returns all tracks of the given artist (both album and track artists are considered)
 	 * @param integer $artistId
 	 * @param string $userId
 	 * @return Track[]
 	 */
 	public function findAllByArtist($artistId, $userId) {
-		$sql = $this->selectUserEntities('`artist_id` = ? ', 'ORDER BY LOWER(`title`)');
-		$params = [$userId, $artistId];
+		$sql = $this->selectUserEntities(
+				'`artist_id` = ? OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?) ',
+				'ORDER BY LOWER(`title`)');
+		$params = [$userId, $artistId, $artistId];
 		return $this->findEntities($sql, $params);
 	}
 

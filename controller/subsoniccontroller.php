@@ -1151,30 +1151,36 @@ class SubsonicController extends Controller {
 	 * Common logic for getArtistInfo and getArtistInfo2
 	 */
 	private function doGetArtistInfo($rootName) {
+		$content = [];
+
 		$id = $this->getRequiredParam('id');
-		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
-		// TODO: getArtistInfo may be called for a folder
-		$includeNotPresent = $this->request->getParam('includeNotPresent', false);
-		$includeNotPresent = \filter_var($includeNotPresent, FILTER_VALIDATE_BOOLEAN);
 
-		$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
+		// This function may be called with a folder ID instead of an artist ID in case
+		// the library is being browsed by folders. In that case, return an empty response.
+		if (Util::startsWith($id, 'artist')) {
+			$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
+			$includeNotPresent = $this->request->getParam('includeNotPresent', false);
+			$includeNotPresent = \filter_var($includeNotPresent, FILTER_VALIDATE_BOOLEAN);
 
-		if (isset($info['artist'])) {
-			$content = [
-				'biography' => $info['artist']['bio']['summary'],
-				'lastFmUrl' => $info['artist']['url'],
-				'musicBrainzId' => $info['artist']['mbid']
-			];
+			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 
-			$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);
-			$content['similarArtist'] = \array_map([$this, 'artistToApi'], $similarArtists);
-		}
+			if (isset($info['artist'])) {
+				$content = [
+					'biography' => $info['artist']['bio']['summary'],
+					'lastFmUrl' => $info['artist']['url'],
+					'musicBrainzId' => $info['artist']['mbid']
+				];
 
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		if ($artist->getCoverFileId() !== null) {
-			$url = $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
-					. "?u={$this->request->u}&p={$this->request->p}&v={$this->request->v}&c={$this->request->c}&id=$id";
-			$content['largeImageUrl'] = [$url];
+				$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);
+				$content['similarArtist'] = \array_map([$this, 'artistToApi'], $similarArtists);
+			}
+
+			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			if ($artist->getCoverFileId() !== null) {
+				$url = $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
+						. "?u={$this->request->u}&p={$this->request->p}&v={$this->request->v}&c={$this->request->c}&id=$id";
+				$content['largeImageUrl'] = [$url];
+			}
 		}
 
 		// This method is unusual in how it uses non-attribute elements in the response. On the other hand,

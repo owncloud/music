@@ -250,9 +250,15 @@ Beside those mentioned resources, the following additional resources are impleme
 * `/api/scan`
 * `/api/resetscanned`
 * `/api/cover/{hash}`
+* `/api/artist/{artistId}/cover`
+* `/api/artist/{artistId}/details`
+* `/api/artist/{artistId}/similar`
+* `/api/album/{albumId}/cover`
+* `/api/album/{albumId}/details`
 * Playlist API at `/api/playlists/*`
 * Settings API at `/api/settings/*`
-* [Ampache API](https://github.com/ampache/ampache/wiki/XML-API) at `/ampache/server/xml.server.php`
+* [Ampache XML API](https://github.com/ampache/ampache/wiki/XML-methods) at `/ampache/server/xml.server.php`
+* [Ampache JSON API](https://github.com/ampache/ampache/wiki/JSON-methods) at `/ampache/server/json.server.php`
 * [Subsonic API](http://www.subsonic.org/pages/api.jsp) at `/subsonic/rest/{method}`
 
 ### `/api/log`

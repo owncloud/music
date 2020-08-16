@@ -40,7 +40,9 @@
 				><span class="clickable" ng-repeat-start="similarArtist in similarArtistsInLib"
 					ng-click="onClickKnownArtist(similarArtist.id)">{{ similarArtist.name }}<button class="icon-info"></button></span
 			><span ng-repeat-end ng-if="!$last || similarArtistsNotInLib">,  </span
-			><span ng-bind-html="similarArtistsNotInLib"></span></dd>
+			><span ng-bind-html="similarArtistsNotInLib"></span
+			>  <span class="show-all" ng-if="!allSimilarShown && !allSimilarLoading" ng-click="onShowAllSimilar()" translate>Show all…</span
+			><div class="icon-loading inline" ng-if="allSimilarLoading"></div></dd>
 		</dl>
 	</div>
 

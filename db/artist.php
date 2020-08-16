@@ -32,6 +32,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setHash(string $hash)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
+ * @method string getLastfmUrl()
+ * @method void setLastfmUrl(string $lastfmUrl)
  */
 class Artist extends Entity {
 	public $name;
@@ -40,6 +42,9 @@ class Artist extends Entity {
 	public $mbid;
 	public $hash;
 	public $starred;
+
+	// not part of the standard content, injected separately when needed
+	public $lastfmUrl;
 
 	public function __construct() {
 		$this->addType('coverFileId', 'int');

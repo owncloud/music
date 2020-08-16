@@ -24,6 +24,8 @@ angular.module('Music').controller('ArtistDetailsController', [
 			$scope.artistTags = null;
 			$scope.similarArtistsInLib = null;
 			$scope.similarArtistsNotInLib = null;
+			$scope.allSimilarShown = false;
+			$scope.allSimilarLoading = false;
 		}
 		resetContents();
 
@@ -68,25 +70,44 @@ angular.module('Music').controller('ArtistDetailsController', [
 					function(result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.lastfmInfo = result;
-							$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
-							// modify all links in the biography so that they will open to a new tab
-							$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
-							$scope.artistTags = $scope.formatLastfmTags(result.artist.tags.tag);
 
-							// siliar artists are divided to those within the library and the rest
-							var artistIsInLib = function(artist) {
-								return 'id' in artist;
-							};
-							$scope.similarArtistsInLib = _(result.artist.similar.artist).filter(artistIsInLib);
-							$scope.similarArtistsNotInLib = $scope.formatLinkList( 
-								_(result.artist.similar.artist).reject(artistIsInLib)
-							);
+							if ('artist' in result) {
+								$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
+								// modify all links in the biography so that they will open to a new tab
+								$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
+								$scope.artistTags = $scope.formatLastfmTags(result.artist.tags.tag);
+
+								setSimilarArtists(result.artist.similar.artist);
+							}
 
 							$scope.$parent.adjustFixedPositions();
 						}
 					}
 				);
 			}
+		}
+
+		$scope.onShowAllSimilar = function() {
+			$scope.allSimilarShown = true;
+			$scope.allSimilarLoading = true;
+			Restangular.one('artist', $scope.artist.id).one('similar').get().then(
+				function(result) {
+					setSimilarArtists(result);
+					$scope.allSimilarLoading = false;
+					$scope.$parent.adjustFixedPositions();
+				}
+			);
+		};
+
+		function setSimilarArtists(artists) {
+			// siliar artists are divided to those within the library and the rest
+			var artistIsInLib = function(artist) {
+				return 'id' in artist && artist.id !== null;
+			};
+			$scope.similarArtistsInLib = _(artists).filter(artistIsInLib);
+			$scope.similarArtistsNotInLib = $scope.formatLinkList( 
+				_(artists).reject(artistIsInLib)
+			);
 		}
 
 		$scope.onClickKnownArtist = function(id) {

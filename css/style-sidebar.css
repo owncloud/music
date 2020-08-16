@@ -160,10 +160,18 @@
 	padding: 12px;
 }
 
-#app-sidebar .icon-loading {
+#app-sidebar .icon-loading:not(.inline) {
 	position: absolute;
 	left: 50%;
 	top: 50%;
+}
+
+/* to set size of the loading indicator, we actually have to modify the ::after element */
+#app-sidebar .icon-loading.inline::after {
+	height: 16px;
+	width: 16px;
+	margin-top: -7px;
+	margin-left: -5px;
 }
 
 #app-sidebar h1 {
@@ -215,6 +223,11 @@
 #app-sidebar #lastfm-info .similar-artists .icon-info {
 	padding: 0;
 	margin-right: -3px;
+}
+
+#app-sidebar #lastfm-info .show-all {
+	opacity: .5;
+	cursor: pointer;
 }
 
 #app-sidebar #lastfm-info a {

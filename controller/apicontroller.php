@@ -493,6 +493,27 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function similarArtists($artistIdOrSlug) {
+		try {
+			$artistId = $this->getIdFromSlug($artistIdOrSlug);
+			$similar = $this->lastfmService->getSimilarArtists($artistId, $this->userId, /*includeNotPresent=*/true);
+			return new JSONResponse(\array_map(function($artist) {
+				return [
+					'id' => $artist->getId(),
+					'name' => $artist->getName(),
+					'url' => $artist->getLastfmUrl()
+				];
+			}, $similar));
+		}
+		catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function albumCover($albumIdOrSlug, $originalSize) {
 		try {
 			$albumId = $this->getIdFromSlug($albumIdOrSlug);

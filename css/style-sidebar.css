@@ -100,8 +100,8 @@
 	margin-bottom: -3px;
 }
 
-#app-sidebar dd:hover button,
-#app-sidebar dd button:hover {
+#app-sidebar :hover > button,
+#app-sidebar button:hover {
 	opacity: 1.0;
 }
 
@@ -190,7 +190,7 @@
 	margin-bottom: 48px;
 }
 
-#app-sidebar #lastfm-info span {
+#app-sidebar #lastfm-info .missing-content {
 	width: 100%;
 	text-align: center;
 	margin-top: 40px;
@@ -210,6 +210,11 @@
 
 #app-sidebar #lastfm-info dd {
 	width: 80%;
+}
+
+#app-sidebar #lastfm-info .similar-artists .icon-info {
+	padding: 0;
+	margin-right: -3px;
 }
 
 #app-sidebar #lastfm-info a {

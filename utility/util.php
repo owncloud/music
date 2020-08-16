@@ -109,14 +109,31 @@ class Util {
 	}
 
 	/**
-	 * Get array value if exists, otherwise return a default value or null
+	 * Get array value if exists, otherwise return a default value or null.
+	 * The function supports getting value from a nested array by giving an array-type $key.
+	 * In that case, the first value of the $key is used on the outer-most array, second value
+	 * from $key on the next level, and so on. That is, arrayGetOrDefault($arr, ['a', 'b', 'c'])
+	 * will return $arr['a']['b']['c'] is all the keys along the path are found.
+	 *
 	 * @param array $array
-	 * @param int|string $key
+	 * @param int|string|array $key
 	 * @param mixed|null $default
 	 * @return mixed|null
 	 */
 	public static function arrayGetOrDefault(array $array, $key, $default=null) {
-		return isset($array[$key]) ? $array[$key] : $default;
+		if (!\is_array($key)) {
+			$key = [$key];
+		}
+
+		$temp = $array;
+		foreach ($key as $k) {
+			if (isset($temp[$k])) {
+				$temp = $temp[$k];
+			} else {
+				return $default;
+			}
+		}
+		return $temp;
 	}
 
 	/**

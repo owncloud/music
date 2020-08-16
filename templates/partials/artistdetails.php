@@ -19,7 +19,7 @@
 	</dl>
 
 	<div id="lastfm-info" ng-show="!loading && lastfmInfo">
-		<span ng-if="!lastfmInfo.api_key_set"
+		<span class="missing-content" ng-if="!lastfmInfo.api_key_set"
 			title="{{ 'Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details.' | translate }}"
 			translate>(Last.fm has not been set up)</span>
 		<span ng-if="lastfmInfo.api_key_set && !lastfmInfo.connection_ok"
@@ -35,8 +35,12 @@
 		<dl>
 			<dt ng-if="artistTags" translate>Tags</dt>
 			<dd ng-if="artistTags" ng-bind-html="artistTags"></dd>
-			<dt ng-if="similarArtists" translate>Similar to</dt>
-			<dd ng-if="similarArtists" ng-bind-html="similarArtists"></dd>
+			<dt ng-if="similarArtistsInLib.length || similarArtistsNotInLib" translate>Similar to</dt>
+			<dd ng-if="similarArtistsInLib.length || similarArtistsNotInLib" class="similar-artists"
+				><span class="clickable" ng-repeat-start="similarArtist in similarArtistsInLib"
+					ng-click="onClickKnownArtist(similarArtist.id)">{{ similarArtist.name }}<button class="icon-info"></button></span
+			><span ng-repeat-end ng-if="!$last || similarArtistsNotInLib">,  </span
+			><span ng-bind-html="similarArtistsNotInLib"></span></dd>
 		</dl>
 	</div>
 

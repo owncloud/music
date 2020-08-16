@@ -22,7 +22,8 @@ angular.module('Music').controller('ArtistDetailsController', [
 			$scope.lastfmInfo = null;
 			$scope.artistBio = null;
 			$scope.artistTags = null;
-			$scope.similarArtists = null;
+			$scope.similarArtistsInLib = null;
+			$scope.similarArtistsNotInLib = null;
 		}
 		resetContents();
 
@@ -70,9 +71,16 @@ angular.module('Music').controller('ArtistDetailsController', [
 							$scope.artistBio = result.artist.bio.content || result.artist.bio.summary;
 							// modify all links in the biography so that they will open to a new tab
 							$scope.artistBio = $scope.artistBio.replace(/<a href=/g, '<a target="_blank" href=');
-
 							$scope.artistTags = $scope.formatLastfmTags(result.artist.tags.tag);
-							$scope.similarArtists = $scope.formatLinkList(result.artist.similar.artist);
+
+							// siliar artists are divided to those within the library and the rest
+							var artistIsInLib = function(artist) {
+								return 'id' in artist;
+							};
+							$scope.similarArtistsInLib = _(result.artist.similar.artist).filter(artistIsInLib);
+							$scope.similarArtistsNotInLib = $scope.formatLinkList( 
+								_(result.artist.similar.artist).reject(artistIsInLib)
+							);
 
 							$scope.$parent.adjustFixedPositions();
 						}
@@ -80,6 +88,10 @@ angular.module('Music').controller('ArtistDetailsController', [
 				);
 			}
 		}
+
+		$scope.onClickKnownArtist = function(id) {
+			$rootScope.$emit('showArtistDetails', id);
+		};
 
 		$scope.$watch('contentId', showDetails);
 	}

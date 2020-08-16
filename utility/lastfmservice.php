@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Utility;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -19,7 +20,6 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Artist;
 
 use \OCP\IConfig;
-use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 
 
 class LastfmService {
@@ -53,10 +53,24 @@ class LastfmService {
 	public function getArtistInfo($artistId, $userId) {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
-		return $this->getInfoFromLastFm([
+		$result = $this->getInfoFromLastFm([
 				'method' => 'artist.getInfo',
 				'artist' => $artist->getName()
 		]);
+
+		// add ID to those similar artists which can be found from the library
+		$similar = Util::arrayGetOrDefault($result, ['artist', 'similar', 'artist']);
+		if ($similar !== null) {
+			$result['artist']['similar']['artist'] = \array_map(function($lastfmArtist) use ($userId) {
+				$matching = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
+				if (!empty($matching)) {
+					$lastfmArtist['id'] = $matching[0]->getId();
+				}
+				return $lastfmArtist;
+			}, $similar);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -110,8 +124,9 @@ class LastfmService {
 		]);
 
 		$result = [];
-		if (isset($similarOnLastfm['similarartists']) && isset($similarOnLastfm['similarartists']['artist'])) {
-			foreach ($similarOnLastfm['similarartists']['artist'] as $lastfmArtist) {
+		$similarArr = Util::arrayGetOrDefault($similarOnLastfm, ['similarartists', 'artist']);
+		if ($similarArr !== null) {
+			foreach ($similarArr as $lastfmArtist) {
 				$matchingLibArtists = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
 
 				if (!empty($matchingLibArtists)) {

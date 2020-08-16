@@ -73,11 +73,7 @@ class DetailsHelper {
 			}
 
 			// add track length
-			if (\array_key_exists('playtime_seconds', $data)) {
-				$result['length'] = $data['playtime_seconds'];
-			} else {
-				$result['length'] = null;
-			}
+			$result['length'] = Util::arrayGetOrDefault($data, 'playtime_seconds');
 
 			// add file path
 			$result['path'] = $userFolder->getRelativePath($fileNodes[0]->getPath());

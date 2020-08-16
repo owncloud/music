@@ -61,15 +61,15 @@ Feature: Ampache API
     Then I should get:
       | title                          | artist                   | album                          | time | track |
       | Aç                             | Pascal Boiseau (Pascalb) | Nuance                         | 3    | 7     |
-      | Balrog Boogie                  | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 1     |
-      | Forgotten Days                 | Simon Bowman             | Instrumental Film Music Vol. 1 | 3    | 1     |
+      | Balrog Boogie                  | Diablo Swing Orchestra   | The Butcher's Ballroom         | 2    | 1     |
+      | Forgotten Days                 | Simon Bowman             | Instrumental Film Music Vol. 1 | 2    | 1     |
       | Gunpowder Chant                | Diablo Swing Orchestra   | The Butcher's Ballroom         | 1    | 7     |
-      | Heroines                       | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 2     |
-      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 3    | 1     |
+      | Heroines                       | Diablo Swing Orchestra   | The Butcher's Ballroom         | 2    | 2     |
+      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
       | Nocturne                       | Simon Bowman             | Instrumental Film Music Vol. 1 | 2    | 2     |
       | Poetic Pitbull Revolutions     | Diablo Swing Orchestra   | The Butcher's Ballroom         | 2    | 3     |
       | Rag Doll Physics               | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 4     |
-      | Reverie                        | Simon Bowman             | Orchestral Film Music Vol. 1   | 2    | 9     |
+      | Reverie                        | Simon Bowman             | Orchestral Film Music Vol. 1   | 1    | 9     |
 
   Scenario: List songs that contain "an"
     Given I am logged in with an auth token
@@ -78,7 +78,7 @@ Feature: Ampache API
     Then I should get:
       | title                          | artist                   | album                          | time | track |
       | Gunpowder Chant                | Diablo Swing Orchestra   | The Butcher's Ballroom         | 1    | 7     |
-      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 3    | 1     |
+      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
 
   Scenario: List songs that contain "Mediane"
     Given I am logged in with an auth token
@@ -87,4 +87,4 @@ Feature: Ampache API
     And I request the "songs" resource
     Then I should get:
       | title                          | artist                   | album                          | time | track |
-      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 3    | 1     |
+      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |

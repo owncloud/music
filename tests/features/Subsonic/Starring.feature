@@ -16,7 +16,7 @@ Feature: Subsonic API - Starring
     And I request the "getStarred" resource
     Then I should get XML with "song" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 3         | 2009 | 2     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 0 "album" entries
 
@@ -27,7 +27,7 @@ Feature: Subsonic API - Starring
     And I request the "getStarred" resource
     Then I should get XML with "song" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 3         | 2009 | 2     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 0 "album" entries
@@ -77,7 +77,7 @@ Feature: Subsonic API - Starring
       | The Butcher's Ballroom       | Diablo Swing Orchestra |
     And the XML result should contain "song" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 3         | 2009 | 2     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
 
   Scenario: List starred entities with getStarred2
@@ -92,7 +92,7 @@ Feature: Subsonic API - Starring
       | The Butcher's Ballroom       | Diablo Swing Orchestra | 5         |
     And the XML result should contain "song" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 3         | 2009 | 2     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
 
   Scenario: List starred albums with getAlbumList

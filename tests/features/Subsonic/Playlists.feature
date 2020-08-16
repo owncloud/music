@@ -1,4 +1,4 @@
-Feature: Subsonic API - Get music directory
+Feature: Subsonic API - Playlists
   In order to utilize playlists
   As a user
   I need to be able to create, get, update, and delete playlists
@@ -50,7 +50,7 @@ Feature: Subsonic API - Get music directory
     And I request the "getPlaylist" resource
     Then I should get XML with "entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 3         | 2009 | 1     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
 
   Scenario: Delete the first playlist

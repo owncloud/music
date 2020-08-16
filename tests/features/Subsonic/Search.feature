@@ -34,7 +34,7 @@ Feature: Subsonic API - Search
     And the XML result should contain "song" entries:
       | title           | album                     | artist                    | duration  | year      | track     |
       | Gunpowder Chant | The Butcher's Ballroom    | Diablo Swing Orchestra    | 1         | 2009      | 7         |
-      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 3         | 2006      | 1         |
+      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 2         | 2006      | 1         |
 
   Scenario: Query matches entries of all types, but only albums requested
     When I specify the parameter "query" with value "an"
@@ -66,4 +66,4 @@ Feature: Subsonic API - Search
     And the XML result should contain "song" entries:
       | title           | album                     | artist                    | duration  | year      | track     |
       | Gunpowder Chant | The Butcher's Ballroom    | Diablo Swing Orchestra    | 1         | 2009      | 7         |
-      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 3         | 2006      | 1         |
+      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 2         | 2006      | 1         |

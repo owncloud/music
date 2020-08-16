@@ -22,6 +22,6 @@ Feature: Subsonic API - Get music directory
     And I request the "getMusicDirectory" resource
     Then I should get XML with "child" entries:
       | title   | album  | artist                    | duration | year | track |
-      | Médiane | Nuance | Pascal Boiseau (Pascalb)  | 3        | 2006 | 1     |
+      | Médiane | Nuance | Pascal Boiseau (Pascalb)  | 2        | 2006 | 1     |
       | Aç      | Nuance | Pascal Boiseau (Pascalb)  | 3        | 2006 | 7     |
-      | Vagues  | Nuance | Pascal Boiseau (Pascalb)  | 4        | 2006 | 8     |
+      | Vagues  | Nuance | Pascal Boiseau (Pascalb)  | 3        | 2006 | 8     |

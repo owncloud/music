@@ -78,5 +78,9 @@ angular.module('Music').controller('AlbumDetailsController', [
 		}
 
 		$scope.$watch('contentId', showDetails);
+
+		$scope.showArtist = function() {
+			$rootScope.$emit('showArtistDetails', $scope.album.artist.id);
+		};
 	}
 ]);

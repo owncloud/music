@@ -91,13 +91,18 @@
 	white-space: pre-wrap;
 }
 
-#app-sidebar dd button {
+#app-sidebar button {
 	border: none;
 	background-color: transparent;
 	opacity: 0.5;
 	vertical-align: middle;
 	margin-top: -3px;
 	margin-bottom: -3px;
+}
+
+#app-sidebar h2 .icon-info {
+	margin-bottom: -2px;
+	margin-left: 4px;
 }
 
 #app-sidebar :hover > button,
@@ -111,7 +116,7 @@
 	margin-left: -6px;
 }
 
-#app-sidebar dd .icon-info {
+#app-sidebar .icon-info {
 	padding-left: 20px;
 	padding-right: 0;
 }

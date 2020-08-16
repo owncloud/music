@@ -2,7 +2,7 @@
 
 	<div class="albumart" ng-show="album.cover"></div>
 
-	<h2>{{album.artist.name}}</h2>
+	<h2 class="clickable" ng-click="showArtist()">{{album.artist.name}}<button class="icon-info"></button></h2>
 	<h1>{{album.name}}</h1>
 
 	<dl id="album-content-counts">

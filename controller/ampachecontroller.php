@@ -44,6 +44,7 @@ use \OCA\Music\Http\XMLResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
@@ -60,12 +61,14 @@ class AmpacheController extends Controller {
 	private $rootFolder;
 	private $l10n;
 	private $coverHelper;
+	private $random;
 	private $logger;
 	private $jsonMode;
 
 	const SESSION_EXPIRY_TIME = 6000;
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
-	const API_VERSION = 350001;
+	const API_VERSION = 400001;
+	const API_MIN_COMPATIBLE_VERSION = 350001;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -82,6 +85,7 @@ class AmpacheController extends Controller {
 								AmpacheUser $ampacheUser,
 								$rootFolder,
 								CoverHelper $coverHelper,
+								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 
@@ -103,6 +107,7 @@ class AmpacheController extends Controller {
 		$this->rootFolder = $rootFolder;
 
 		$this->coverHelper = $coverHelper;
+		$this->random = $random;
 		$this->logger = $logger;
 	}
 
@@ -114,7 +119,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse(self::prepareResultForJsonApi($content));
 		} else {
-			return new XMLResponse(['root' => $content], ['id', 'count', 'code']);
+			return new XMLResponse(self::prepareResultForXmlApi($content), ['id', 'count', 'code']);
 		}
 	}
 
@@ -149,6 +154,8 @@ class AmpacheController extends Controller {
 				return $this->handshake($user, $timestamp, $auth);
 			case 'ping':
 				return $this->ping($auth);
+			case 'get_indexes':
+				return $this->get_indexes($filter, $limit, $offset);
 			case 'artists':
 				return $this->artists($filter, $exact, $limit, $offset, $auth);
 			case 'artist':
@@ -175,6 +182,8 @@ class AmpacheController extends Controller {
 				return $this->playlist($filter);
 			case 'playlist_songs':
 				return $this->playlist_songs($filter, $limit, $offset, $auth);
+			case 'playlist_generate':
+				return $this->playlist_generate($filter, $limit, $offset, $auth);
 			case 'tags':
 				return $this->tags($filter, $exact, $limit, $offset);
 			case 'tag':
@@ -218,7 +227,7 @@ class AmpacheController extends Controller {
 
 		return $this->ampacheResponse([
 			'auth' => $token,
-			'version' => self::API_VERSION,
+			'api' => self::API_VERSION,
 			'update' => $currentTimeFormated,
 			'add' => $currentTimeFormated,
 			'clean' => $currentTimeFormated,
@@ -228,18 +237,42 @@ class AmpacheController extends Controller {
 			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
 			'session_expire' => $expiryDateFormated,
 			'tags' => $this->genreBusinessLayer->count($user),
-			'videos' => 0
+			'videos' => 0,
+			'catalogs' => 0
 		]);
 	}
 
 	protected function ping($auth) {
-		if ($auth !== null && $auth !== '') {
-			$this->ampacheSessionMapper->extend($auth, \time() + self::SESSION_EXPIRY_TIME);
+		$response = [
+			// TODO: 'server' => Music app version,
+			'version' => self::API_VERSION,
+			'compatible' => self::API_MIN_COMPATIBLE_VERSION
+		];
+
+		if (!empty($auth)) {
+			$response['session_expire'] = \date('c', $this->ampacheSessionMapper->getExpiryTime($auth));
 		}
 
-		return $this->ampacheResponse([
-			'version' => self::API_VERSION
-		]);
+		return $this->ampacheResponse($response);
+	}
+
+	protected function get_indexes($filter, $limit, $offset) {
+		// TODO: args $add, $update
+		$type = $this->getRequiredParam('type');
+		$userId = $this->ampacheUser->getUserId();
+
+		switch ($type) {
+			case 'playlist':
+				$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, false, $limit, $offset);
+				return $this->renderPlaylistsIndex($playlists);
+			case 'song':
+				$tracks = $this->findEntities($this->trackBusinessLayer, $filter, false, $limit, $offset);
+				return $this->renderSongsIndex($tracks);
+			case 'album': // TODO
+			case 'artist': // TODO
+			default:
+				throw new AmpacheException("Unsupported type $type", 400);
+		}
 	}
 
 	protected function artists($filter, $exact, $limit, $offset, $auth) {
@@ -354,6 +387,52 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($playlistTracks, $auth);
 	}
 
+	protected function playlist_generate($filter, $limit, $offset, $auth) {
+		$mode = $this->request->getParam('mode', 'random');
+		$album = $this->request->getParam('album');
+		$artist = $this->request->getParam('artist');
+		$flag = $this->request->getParam('flag');
+		$format = $this->request->getParam('format', 'song');
+
+		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, false); // $limit and $offset are applied later
+
+		// filter the found tracks according to the additional requirements
+		if ($album !== null) {
+			$tracks = \array_filter($tracks, function($track) use ($album) {
+				return ($track->getAlbumId() == $album);
+			});
+		}
+		if ($artist !== null) {
+			$tracks = \array_filter($tracks, function($track) use ($artist) {
+				return ($track->getArtistId() == $artist);
+			});
+		}
+		if ($flag == 1) {
+			$tracks = \array_filter($tracks, function($track) {
+				return ($track->getStarred() !== null);
+			});
+		}
+		// After filtering, there may be "holes" between the array indices. Reindex the array.
+		$tracks = \array_values($tracks);
+
+		if ($mode == 'random') {
+			$userId = $this->ampacheUser->getUserId();
+			$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $userId, 'ampache_tracks');
+			$tracks = Util::arrayMultiGet($tracks, $indices);
+		} else { // 'recent', 'forgotten', 'unplayed'
+			throw new AmpacheException("Mode '$mode' is not supported", 400);
+		}
+
+		if ($format == 'song') {
+			$this->injectAlbum($tracks);
+			return $this->renderSongs($tracks, $auth);
+		} elseif ($format == 'index') {
+			return $this->renderSongsIndex($tracks);
+		} else {
+			throw new AmpacheException("Format '$format' is not supported", 400);
+		}
+	}
+
 	protected function tags($filter, $exact, $limit, $offset) {
 		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);
@@ -411,7 +490,7 @@ class AmpacheController extends Controller {
 		// from the beginning of the file. Returning an error gives the client a chance to fallback
 		// to other methods of seeking.
 		if ($offset !== null) {
-			throw new AmpacheException('Streaming with time offset is not supported', 405);
+			throw new AmpacheException('Streaming with time offset is not supported', 400);
 		}
 
 		return $this->download($trackId);
@@ -648,6 +727,7 @@ class AmpacheController extends Controller {
 				$result = [
 					'id' => (string)$track->getId(),
 					'title' => $track->getTitle(),
+					'name' => $track->getTitle(),
 					'artist' => [
 						'id' => (string)$track->getArtistId(),
 						'value' => $track->getArtistNameString($this->l10n)
@@ -716,6 +796,38 @@ class AmpacheController extends Controller {
 		]);
 	}
 
+	private function renderSongsIndex($tracks) {
+		return $this->ampacheResponse([
+			'song' => \array_map(function($track) {
+				return [
+					'id' => (string)$track->getId(),
+					'title' => $track->getTitle(),
+					'name' => $track->getTitle(),
+					'artist' => [
+						'id' => (string)$track->getArtistId(),
+						'value' => $track->getArtistNameString($this->l10n)
+					],
+					'album' => [
+						'id' => (string)$track->getAlbumId(),
+						'value' => $track->getAlbumNameString($this->l10n)
+					]
+				];
+			}, $tracks)
+		]);
+	}
+
+	private function renderPlaylistsIndex($playlists) {
+		return $this->ampacheResponse([
+			'playlist' => \array_map(function($playlist) {
+				return [
+					'id' => (string)$playlist->getId(),
+					'name' => $playlist->getName(),
+					'playlisttrack' => $playlist->getTrackIdsAsArray()
+				];
+			}, $playlists)
+		]);
+	}
+
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
 	 * Empty array is considered to be "indexed".
@@ -727,7 +839,7 @@ class AmpacheController extends Controller {
 	}
 
 	/**
-	 * The JSON API has some asymmetries with the JSON API. This function makes the needed
+	 * The JSON API has some asymmetries with the XML API. This function makes the needed
 	 * translations for the result content before it is converted into JSON. 
 	 * @param array $content
 	 * @return array
@@ -749,6 +861,34 @@ class AmpacheController extends Controller {
 			$content = Util::convertArrayKeys($content, ['value' => 'name']);
 		}
 		return $content;
+	}
+
+	/**
+	 * The XML API has some asymmetries with the JSON API. This function makes the needed
+	 * translations for the result content before it is converted into XML. 
+	 * @param array $content
+	 * @return array
+	 */
+	private static function prepareResultForXmlApi($content) {
+		\reset($content);
+		$firstKey = \key($content);
+
+		// all 'entity list' kind of responses shall have the (deprecated) total_count element
+		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist'
+				|| $firstKey == 'playlist' || $firstKey == 'tag') {
+			$content = ['total_count' => \count($content[$firstKey])] + $content;
+		}
+		return ['root' => $content];
+	}
+
+	private function getRequiredParam($paramName) {
+		$param = $this->request->getParam($paramName);
+
+		if ($param === null) {
+			throw new AmpacheException("Required parameter '$paramName' missing", 400);
+		}
+
+		return $param;
 	}
 }
 

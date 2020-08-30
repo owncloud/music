@@ -80,8 +80,10 @@ class AmpacheMiddleware extends Middleware {
 		}
 		else {
 			$user = $this->ampacheSessionMapper->findByToken($token);
-			if ($user !== false && \array_key_exists('user_id', $user)) {
-				$this->ampacheUser->setUserId($user['user_id']);
+			if ($user !== false) {
+				$this->ampacheUser->setUserId($user);
+				// also extend the session deadline on any authorized API call
+				$this->ampacheSessionMapper->extend($token, \time() + AmpacheController::SESSION_EXPIRY_TIME);
 			} else {
 				throw new AmpacheException('Invalid Login - invalid session token', 401);
 			}

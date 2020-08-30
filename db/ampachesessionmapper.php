@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2020
  */
 
 namespace OCA\Music\Db;
@@ -22,17 +24,18 @@ class AmpacheSessionMapper extends Mapper {
 
 	/**
 	 * @param string $token
+	 * @return string|false
 	 */
 	public function findByToken($token) {
-		$sql = 'SELECT `user_id` '.
-			'FROM `*PREFIX*music_ampache_sessions` '.
-			'WHERE `token` = ? AND `expiry` > ?';
+		$sql = 'SELECT `user_id`
+				FROM `*PREFIX*music_ampache_sessions`
+				WHERE `token` = ? AND `expiry` > ?';
 		$params = [$token, \time()];
 
 		$result = $this->execute($sql, $params);
 
-		// false if no row could be fetched
-		return $result->fetch();
+		$row = $result->fetch();
+		return \is_array($row) ? $row['user_id'] : false;
 	}
 
 	/**
@@ -40,18 +43,34 @@ class AmpacheSessionMapper extends Mapper {
 	 * @param integer $expiry
 	 */
 	public function extend($token, $expiry) {
-		$sql = 'UPDATE `*PREFIX*music_ampache_sessions` '.
-			'SET `expiry` = ? '.
-			'WHERE `token` = ?';
+		$sql = 'UPDATE `*PREFIX*music_ampache_sessions`
+				SET `expiry` = ?
+				WHERE `token` = ?';
 
 		$params = [$expiry, $token];
 		$this->execute($sql, $params);
 	}
 
 	public function cleanUp() {
-		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions` '.
-			'WHERE `expiry` < ?';
+		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`
+				WHERE `expiry` < ?';
 		$params = [\time()];
 		$this->execute($sql, $params);
+	}
+
+	/**
+	 * @param string $token
+	 * @return integer|false
+	 */
+	public function getExpiryTime($token) {
+		$sql = 'SELECT `expiry`
+				FROM `*PREFIX*music_ampache_sessions`
+				WHERE `token` = ?';
+		$params = [$token];
+
+		$result = $this->execute($sql, $params);
+
+		$row = $result->fetch();
+		return \is_array($row) ? (int)$row['expiry'] : false;
 	}
 }

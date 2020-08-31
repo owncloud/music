@@ -119,7 +119,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse(self::prepareResultForJsonApi($content));
 		} else {
-			return new XMLResponse(self::prepareResultForXmlApi($content), ['id', 'count', 'code']);
+			return new XMLResponse(self::prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
 		}
 	}
 
@@ -259,7 +259,6 @@ class AmpacheController extends Controller {
 	protected function get_indexes($filter, $limit, $offset) {
 		// TODO: args $add, $update
 		$type = $this->getRequiredParam('type');
-		$userId = $this->ampacheUser->getUserId();
 
 		switch ($type) {
 			case 'playlist':
@@ -423,13 +422,16 @@ class AmpacheController extends Controller {
 			throw new AmpacheException("Mode '$mode' is not supported", 400);
 		}
 
-		if ($format == 'song') {
-			$this->injectAlbum($tracks);
-			return $this->renderSongs($tracks, $auth);
-		} elseif ($format == 'index') {
-			return $this->renderSongsIndex($tracks);
-		} else {
-			throw new AmpacheException("Format '$format' is not supported", 400);
+		switch ($format) {
+			case 'song':
+				$this->injectAlbum($tracks);
+				return $this->renderSongs($tracks, $auth);
+			case 'index':
+				return $this->renderSongsIndex($tracks);
+			case 'id':
+				return $this->renderEntityIds($tracks);
+			default:
+				throw new AmpacheException("Format '$format' is not supported", 400);
 		}
 	}
 
@@ -828,6 +830,10 @@ class AmpacheController extends Controller {
 		]);
 	}
 
+	private function renderEntityIds($entities) {
+		return $this->ampacheResponse(['id' => Util::extractIds($entities)]);
+	}
+
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
 	 * Empty array is considered to be "indexed".
@@ -878,6 +884,14 @@ class AmpacheController extends Controller {
 				|| $firstKey == 'playlist' || $firstKey == 'tag') {
 			$content = ['total_count' => \count($content[$firstKey])] + $content;
 		}
+
+		// for some bizarre reason, the 'id' arrays have 'index' attributes in the XML format
+		if ($firstKey == 'id') {
+			$content['id'] = \array_map(function($id, $index) {
+				return ['index' => $index, 'value' => $id];
+			}, $content['id'], \array_keys($content['id']));
+		}
+
 		return ['root' => $content];
 	}
 

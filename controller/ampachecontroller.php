@@ -156,6 +156,8 @@ class AmpacheController extends Controller {
 				return $this->ping($auth);
 			case 'get_indexes':
 				return $this->get_indexes($filter, $limit, $offset);
+			case 'stats':
+				return $this->stats($limit, $offset, $auth);
 			case 'artists':
 				return $this->artists($filter, $exact, $limit, $offset, $auth);
 			case 'artist':
@@ -274,6 +276,39 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	protected function stats($limit, $offset, $auth) {
+		$type = $this->getRequiredParam('type');
+		$filter = $this->getRequiredParam('filter');
+		$userId = $this->ampacheUser->getUserId();
+
+		if (!\in_array($type, ['song', 'album', 'artist'])) {
+			throw new AmpacheException("Unsupported type $type", 400);
+		}
+		$businessLayer = $this->getBusinessLayer($type);
+
+		switch ($filter) {
+			case 'newest':
+				$entities = $businessLayer->findAll($userId, SortBy::Newest, $limit, $offset);
+				break;
+			case 'flagged':
+				$entities = $businessLayer->findAllStarred($userId, $limit, $offset);
+				break;
+			case 'random':
+				$entities = $businessLayer->findAll($userId, SortBy::None);
+				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_stats_'.$type);
+				$entities = Util::arrayMultiGet($entities, $indices);
+				break;
+			case 'highest':		//TODO
+			case 'frequent':	//TODO
+			case 'recent':		//TODO
+			case 'forgotten':	//TODO
+			default:
+				throw new AmpacheException("Unsupported filter $filter", 400);
+		}
+
+		return $this->renderEntities($entities, $type, $auth);
+	}
+
 	protected function artists($filter, $exact, $limit, $offset, $auth) {
 		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderArtists($artists, $auth);
@@ -294,7 +329,6 @@ class AmpacheController extends Controller {
 	protected function artist_songs($artistId, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByArtist($artistId, $userId);
-		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -303,7 +337,10 @@ class AmpacheController extends Controller {
 
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
-		$this->injectAlbum($tracks, $album);
+
+		foreach ($tracks as &$track) {
+			$track->setAlbum($album);
+		}
 
 		return $this->renderSongs($tracks, $auth);
 	}
@@ -312,7 +349,6 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$track = $this->trackBusinessLayer->find($trackId, $userId);
 		$trackInArray = [$track];
-		$this->injectAlbum($trackInArray);
 		return $this->renderSongs($trackInArray, $auth);
 	}
 
@@ -326,7 +362,6 @@ class AmpacheController extends Controller {
 		// general case
 		else {
 			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
-			$this->injectAlbum($tracks);
 		}
 
 		return $this->renderSongs($tracks, $auth);
@@ -335,7 +370,6 @@ class AmpacheController extends Controller {
 	protected function search_songs($filter, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
-		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -381,7 +415,6 @@ class AmpacheController extends Controller {
 		else {
 			$userId = $this->ampacheUser->getUserId();
 			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);
-			$this->injectAlbum($playlistTracks);
 		}
 		return $this->renderSongs($playlistTracks, $auth);
 	}
@@ -416,7 +449,7 @@ class AmpacheController extends Controller {
 
 		if ($mode == 'random') {
 			$userId = $this->ampacheUser->getUserId();
-			$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $userId, 'ampache_tracks');
+			$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $userId, 'ampache_playlist_generate');
 			$tracks = Util::arrayMultiGet($tracks, $indices);
 		} else { // 'recent', 'forgotten', 'unplayed'
 			throw new AmpacheException("Mode '$mode' is not supported", 400);
@@ -424,7 +457,6 @@ class AmpacheController extends Controller {
 
 		switch ($format) {
 			case 'song':
-				$this->injectAlbum($tracks);
 				return $this->renderSongs($tracks, $auth);
 			case 'index':
 				return $this->renderSongsIndex($tracks);
@@ -461,7 +493,6 @@ class AmpacheController extends Controller {
 	protected function tag_songs($genreId, $limit, $offset, $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
-		$this->injectAlbum($tracks);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -513,6 +544,28 @@ class AmpacheController extends Controller {
 	/********************
 	 * Helper functions *
 	 ********************/
+
+	private function getBusinessLayer($type) {
+		switch ($type) {
+			case 'song':		return $this->trackBusinessLayer;
+			case 'album':		return $this->albumBusinessLayer;
+			case 'artist':		return $this->artistBusinessLayer;
+			case 'playlist':	return $this->playlistBusinessLayer;
+			case 'tag':			return $this->genreBusinessLayer;
+			default:			throw new AmpacheException("Unsupported type $type", 400);
+		}
+	}
+
+	private function renderEntities($entities, $type, $auth) {
+		switch ($type) {
+			case 'song':		return $this->renderSongs($entities, $auth);
+			case 'album':		return $this->renderAlbums($entities, $auth);
+			case 'artist':		return $this->renderArtists($entities, $auth);
+			case 'playlist':	return $this->renderPlaylists($entities);
+			case 'tag':			return $this->renderTags($entities);
+			default:			throw new AmpacheException("Unsupported type $type", 400);
+		}
+	}
 
 	private function getCover($entityId, BusinessLayer $businessLayer) {
 		$userId = $this->ampacheUser->getUserId();
@@ -590,9 +643,10 @@ class AmpacheController extends Controller {
 
 	/**
 	 * Getting all tracks with this helper is more efficient than with `findEntities`
-	 * followed by `injectAlbum`. This is because, under the hood, the albums
-	 * are fetched with a single DB query instead of fetching each separately.
-	 * 
+	 * followed by a call to `albumBusinessLayer->find(...)` on each track.
+	 * This is because, under the hood, the albums are fetched with a single DB query
+	 * instead of fetching each separately.
+	 *
 	 * The result set is ordered first by artist and then by song title.
 	 */
 	private function getAllTracks() {
@@ -709,22 +763,11 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	private function injectAlbum(&$tracks, $commonAlbum=null) {
-		$userId = $this->ampacheUser->getUserId();
-
-		foreach ($tracks as &$track) {
-			if (!empty($commonAlbum)) {
-				$track->setAlbum($commonAlbum);
-			} else {
-				$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $userId));
-			}
-		}
-	}
-
 	private function renderSongs($tracks, $auth) {
 		return $this->ampacheResponse([
 			'song' => \array_map(function($track) use ($auth) {
-				$album = $track->getAlbum();
+				$album = $track->getAlbum()
+						?: $this->albumBusinessLayer->find($track->getAlbumId(), $this->ampacheUser->getUserId());
 
 				$result = [
 					'id' => (string)$track->getId(),

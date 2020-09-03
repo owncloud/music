@@ -262,18 +262,9 @@ class AmpacheController extends Controller {
 		// TODO: args $add, $update
 		$type = $this->getRequiredParam('type');
 
-		switch ($type) {
-			case 'playlist':
-				$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, false, $limit, $offset);
-				return $this->renderPlaylistsIndex($playlists);
-			case 'song':
-				$tracks = $this->findEntities($this->trackBusinessLayer, $filter, false, $limit, $offset);
-				return $this->renderSongsIndex($tracks);
-			case 'album': // TODO
-			case 'artist': // TODO
-			default:
-				throw new AmpacheException("Unsupported type $type", 400);
-		}
+		$businessLayer = $this->getBusinessLayer($type);
+		$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset);
+		return $this->renderEntitiesIndex($entities, $type);
 	}
 
 	protected function stats($limit, $offset, $auth) {
@@ -563,6 +554,16 @@ class AmpacheController extends Controller {
 			case 'artist':		return $this->renderArtists($entities, $auth);
 			case 'playlist':	return $this->renderPlaylists($entities);
 			case 'tag':			return $this->renderTags($entities);
+			default:			throw new AmpacheException("Unsupported type $type", 400);
+		}
+	}
+
+	private function renderEntitiesIndex($entities, $type) {
+		switch ($type) {
+			case 'song':		return $this->renderSongsIndex($entities);
+			case 'album':		return $this->renderAlbumsIndex($entities);
+			case 'artist':		return $this->renderArtistsIndex($entities);
+			case 'playlist':	return $this->renderPlaylistsIndex($entities);
 			default:			throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -858,6 +859,41 @@ class AmpacheController extends Controller {
 					]
 				];
 			}, $tracks)
+		]);
+	}
+
+	private function renderAlbumsIndex($albums) {
+		return $this->ampacheResponse([
+			'album' => \array_map(function($album) {
+				return [
+					'id' => (string)$album->getId(),
+					'name' => $album->getNameString($this->l10n),
+					'artist' => [
+						'id' => (string)$album->getAlbumArtistId(),
+						'value' => $album->getAlbumArtistNameString($this->l10n)
+					]
+				];
+			}, $albums)
+		]);
+	}
+
+	private function renderArtistsIndex($artists) {
+		return $this->ampacheResponse([
+			'artist' => \array_map(function($artist) use ($userId) {
+				$userId = $this->ampacheUser->getUserId();
+				$albums = $this->albumBusinessLayer->findAllByArtist($artist->getId(), $userId);
+
+				return [
+					'id' => (string)$artist->getId(),
+					'name' => $artist->getNameString($this->l10n),
+					'album' => \array_map(function($album) {
+						return [
+							'id' => (string)$album->getId(),
+							'value' => $album->getNameString($this->l10n)
+						];
+					}, $albums)
+				];
+			}, $artists)
 		]);
 	}
 

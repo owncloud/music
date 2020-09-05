@@ -196,6 +196,8 @@ class AmpacheController extends Controller {
 				return $this->tag_albums($filter, $limit, $offset, $auth);
 			case 'tag_songs':
 				return $this->tag_songs($filter, $limit, $offset, $auth);
+			case 'flag':
+				return $this->flag();
 			case 'download':
 				return $this->download($id); // args 'type' and 'format' not supported
 			case 'stream':
@@ -485,6 +487,33 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByGenre($genreId, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
+	}
+
+	protected function flag() {
+		$type = $this->getRequiredParam('type');
+		$id = $this->getRequiredParam('id');
+		$flag = $this->getRequiredParam('flag');
+		$flag = \filter_var($flag, FILTER_VALIDATE_BOOLEAN);
+
+		if (!\in_array($type, ['song', 'album', 'artist'])) {
+			throw new AmpacheException("Unsupported type $type", 400);
+		}
+
+		$userId = $this->ampacheUser->getUserId();
+		$businessLayer = $this->getBusinessLayer($type);
+		if ($flag) {
+			$modifiedCount = $businessLayer->setStarred([$id], $userId);
+			$message = "flag ADDED to $id";
+		} else {
+			$modifiedCount = $businessLayer->unsetStarred([$id], $userId);
+			$message = "flag REMOVED from $id";
+		}
+
+		if ($modifiedCount > 0) {
+			return $this->ampacheResponse(['success' => $message]);
+		} else {
+			throw new AmpacheException("The $type $id was not found", 400);
+		}
 	}
 
 	protected function download($trackId) {

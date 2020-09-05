@@ -178,6 +178,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param DateTime|null $date
 	 * @param integer[] $ids
 	 * @param string $userId
+	 * @return int number of modified entities
 	 */
 	public function setStarredDate($date, $ids, $userId) {
 		$count = \count($ids);
@@ -188,7 +189,7 @@ abstract class BaseMapper extends Mapper {
 		$sql = "UPDATE `{$this->getTableName()}` SET `starred` = ?
 				WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
 		$params = \array_merge([$date], $ids, [$userId]);
-		$this->execute($sql, $params);
+		return $this->execute($sql, $params)->rowCount();
 	}
 
 	/**

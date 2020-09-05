@@ -125,10 +125,13 @@ abstract class BusinessLayer {
 	 * Set the given entities as "starred" on this date
 	 * @param integer[] $ids
 	 * @param string $userId
+	 * @return int number of modified entities
 	 */
 	public function setStarred($ids, $userId) {
 		if (\count($ids) > 0) {
-			$this->mapper->setStarredDate(new \DateTime(), $ids, $userId);
+			return $this->mapper->setStarredDate(new \DateTime(), $ids, $userId);
+		} else {
+			return 0;
 		}
 	}
 
@@ -136,10 +139,13 @@ abstract class BusinessLayer {
 	 * Remove the "starred" status of the given entities
 	 * @param integer[] $ids
 	 * @param string $userId
+	 * @return int number of modified entities
 	 */
 	public function unsetStarred($ids, $userId) {
 		if (\count($ids) > 0) {
-			$this->mapper->setStarredDate(NULL, $ids, $userId);
+			return $this->mapper->setStarredDate(NULL, $ids, $userId);
+		} else {
+			return 0;
 		}
 	}
 

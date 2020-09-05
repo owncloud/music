@@ -152,6 +152,8 @@ class AmpacheController extends Controller {
 		switch ($action) {
 			case 'handshake':
 				return $this->handshake($user, $timestamp, $auth);
+			case 'goodbye':
+				return $this->goodbye($auth);
 			case 'ping':
 				return $this->ping($auth);
 			case 'get_indexes':
@@ -246,6 +248,14 @@ class AmpacheController extends Controller {
 		]);
 	}
 
+	protected function goodbye($auth) {
+		// getting the session should not throw as the middleware has already checked that the token is valid
+		$session = $this->ampacheSessionMapper->findByToken($auth);
+		$this->ampacheSessionMapper->delete($session);
+
+		return $this->ampacheResponse(['success' => "goodbye: $auth"]);
+	}
+
 	protected function ping($auth) {
 		$response = [
 			// TODO: 'server' => Music app version,
@@ -254,7 +264,9 @@ class AmpacheController extends Controller {
 		];
 
 		if (!empty($auth)) {
-			$response['session_expire'] = \date('c', $this->ampacheSessionMapper->getExpiryTime($auth));
+			// getting the session should not throw as the middleware has already checked that the token is valid
+			$session = $this->ampacheSessionMapper->findByToken($auth);
+			$response['session_expire'] = \date('c', $session->getExpiry());
 		}
 
 		return $this->ampacheResponse($response);

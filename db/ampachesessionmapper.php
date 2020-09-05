@@ -24,18 +24,16 @@ class AmpacheSessionMapper extends Mapper {
 
 	/**
 	 * @param string $token
-	 * @return string|false
+	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
+	 * @return AmpacheSession
 	 */
 	public function findByToken($token) {
-		$sql = 'SELECT `user_id`
+		$sql = 'SELECT *
 				FROM `*PREFIX*music_ampache_sessions`
 				WHERE `token` = ? AND `expiry` > ?';
 		$params = [$token, \time()];
 
-		$result = $this->execute($sql, $params);
-
-		$row = $result->fetch();
-		return \is_array($row) ? $row['user_id'] : false;
+		return $this->findEntity($sql, $params);
 	}
 
 	/**
@@ -56,21 +54,5 @@ class AmpacheSessionMapper extends Mapper {
 				WHERE `expiry` < ?';
 		$params = [\time()];
 		$this->execute($sql, $params);
-	}
-
-	/**
-	 * @param string $token
-	 * @return integer|false
-	 */
-	public function getExpiryTime($token) {
-		$sql = 'SELECT `expiry`
-				FROM `*PREFIX*music_ampache_sessions`
-				WHERE `token` = ?';
-		$params = [$token];
-
-		$result = $this->execute($sql, $params);
-
-		$row = $result->fetch();
-		return \is_array($row) ? (int)$row['expiry'] : false;
 	}
 }

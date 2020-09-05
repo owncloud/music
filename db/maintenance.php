@@ -181,7 +181,7 @@ class Maintenance {
 	 */
 	public function resetDb($userId, $allUsers = false) {
 		if ($userId && $allUsers) {
-			throw new InvalidArgumentException('userId should be null if allUsers targeted');
+			throw new \InvalidArgumentException('userId should be null if allUsers targeted');
 		}
 
 		$sqls = [

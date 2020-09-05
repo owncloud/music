@@ -908,7 +908,7 @@ class AmpacheController extends Controller {
 
 	private function renderArtistsIndex($artists) {
 		return $this->ampacheResponse([
-			'artist' => \array_map(function($artist) use ($userId) {
+			'artist' => \array_map(function($artist) {
 				$userId = $this->ampacheUser->getUserId();
 				$albums = $this->albumBusinessLayer->findAllByArtist($artist->getId(), $userId);
 

@@ -20,6 +20,7 @@ use \OCP\Files\Folder;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 

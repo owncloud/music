@@ -25,6 +25,7 @@
 * [David Prevot](https://github.com/DavidPrevot)
 * [Felix Böhm](https://github.com/felixboehm)
 * [Gaurav Narula](https://github.com/gnarula): <gnarula94@gmail.com>
+* [Gavin E](https://github.com/gavine99)
 * [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
 * [Glandos](https://github.com/Glandos)
 * [Gregory Baudet](https://github.com/greku): <gregory.baudet@gmail.com>

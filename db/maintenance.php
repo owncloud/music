@@ -141,6 +141,14 @@ class Maintenance {
 	}
 
 	/**
+	 * Remove bookmarks referring tracks which do not exist
+	 * @return Number of removed bookmarks
+	 */
+	private function removeObsoleteBookmarks() {
+		return $this->removeUnreferencedDbRows('music_bookmarks', 'music_tracks', 'track_id', 'id');
+	}
+
+	/**
 	 * Removes orphaned data from the database
 	 * @return array describing the number of removed entries per type
 	 */
@@ -151,6 +159,7 @@ class Maintenance {
 		$removedTracks = $this->removeObsoleteTracks();
 		$removedAlbums = $this->removeObsoleteAlbums();
 		$removedArtists = $this->removeObsoleteArtists();
+		$removedBookmarks = $this->removeObsoleteBookmarks();
 
 		$removedAlbums += $this->removeAlbumsWithNoArtist();
 		$removedTracks += $this->removeTracksWithNoAlbum();
@@ -160,7 +169,8 @@ class Maintenance {
 			'covers' => $removedCovers,
 			'artists' => $removedArtists,
 			'albums' => $removedAlbums,
-			'tracks' => $removedTracks
+			'tracks' => $removedTracks,
+			'bookmarks' => $removedBookmarks
 		];
 	}
 
@@ -180,6 +190,7 @@ class Maintenance {
 				'DELETE FROM `*PREFIX*music_artists`',
 				'DELETE FROM `*PREFIX*music_playlists`',
 				'DELETE FROM `*PREFIX*music_genres`',
+				'DELETE FROM `*PREFIX*music_bookmarks`',
 				'DELETE FROM `*PREFIX*music_cache`'
 		];
 

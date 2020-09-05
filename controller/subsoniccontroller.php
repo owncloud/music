@@ -25,6 +25,7 @@ use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
@@ -32,6 +33,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Bookmark;
 use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\SortBy;
@@ -54,8 +56,9 @@ class SubsonicController extends Controller {
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
-	private $playlistBusinessLayer;
+	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
+	private $playlistBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
@@ -77,6 +80,7 @@ class SubsonicController extends Controller {
 								IURLGenerator $urlGenerator,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
+								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
@@ -91,6 +95,7 @@ class SubsonicController extends Controller {
 
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
@@ -692,6 +697,55 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getBookmarks() {
+		$bookmarkNodes = [];
+		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
+
+		foreach ($bookmarks as $bookmark) {
+			try {
+				$trackId = $bookmark->getTrackId();
+				$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+				$node = $this->bookmarkToApi($bookmark);
+				$node['entry'] = $this->trackToApi($track);
+				$bookmarkNodes[] = $node;
+			}
+			catch (BusinessLayerException $e) {
+				$this->logger->log("Bookmarked track $trackId not found", 'warn');
+			}
+		}
+
+		return $this->subsonicResponse(['bookmarks' => ['bookmark' => $bookmarkNodes]]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createBookmark() {
+		$this->bookmarkBusinessLayer->addOrUpdate(
+				$this->userId,
+				self::ripIdPrefix($this->getRequiredParam('id')),
+				$this->getRequiredParam('position'),
+				$this->request->getParam('comment')
+		);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function deleteBookmark() {
+		$id = $this->getRequiredParam('id');
+		$trackId = self::ripIdPrefix($id);
+
+		$bookmark = $this->bookmarkBusinessLayer->findByTrack($trackId, $this->userId);
+		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
@@ -879,17 +933,17 @@ class SubsonicController extends Controller {
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
-	
+
 		$indexes = [];
 		foreach ($artists as $artist) {
 			$indexes[$artist->getIndexingChar()][] = $this->artistToApi($artist);
 		}
-	
+
 		$result = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
 			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
 		}
-	
+
 		return $this->subsonicResponse([$rootElementName => ['index' => $result]]);
 	}
 
@@ -1093,7 +1147,22 @@ class SubsonicController extends Controller {
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
 			'comment' => $playlist->getComment() ?: '',
 			'created' => $this->formatDateTime($playlist->getCreated()),
+			//'changed' => '' // added and required in API 1.13.0
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
+		];
+	}
+
+	/**
+	 * @param Bookmark $bookmark
+	 * @return array
+	 */
+	private function bookmarkToApi($bookmark) {
+		return [
+			'position' => $bookmark->getPosition(),
+			'username' => $this->userId,
+			'comment' => $bookmark->getComment() ?: '',
+			'created' => $this->formatDateTime($bookmark->getCreated()),
+			'changed' => $this->formatDateTime($bookmark->getUpdated())
 		];
 	}
 

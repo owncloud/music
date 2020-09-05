@@ -73,7 +73,6 @@ class SubsonicController extends Controller {
 	private $userId;
 	private $format;
 	private $callback;
-	private $timezone;
 
 	public function __construct($appname,
 								IRequest $request,
@@ -109,12 +108,6 @@ class SubsonicController extends Controller {
 		$this->lastfmService = $lastfmService;
 		$this->random = $random;
 		$this->logger = $logger;
-
-		// For timestamps in the Subsonic API, we would prefer to use the local timezone,
-		// but the core has set the default timezone as 'UTC'. Get the timezone from php.ini
-		// if available, and store it for later use.
-		$tz = \ini_get('date.timezone') ?: 'UTC';
-		$this->timezone = new \DateTimeZone($tz);
 	}
 
 	/**
@@ -1403,8 +1396,7 @@ class SubsonicController extends Controller {
 
 	private function formatDateTime($dateString) {
 		$dateTime = new \DateTime($dateString);
-		$dateTime->setTimezone($this->timezone);
-		return $dateTime->format('Y-m-d\TH:i:s');
+		return $dateTime->format('Y-m-d\TH:i:s.v\Z');
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

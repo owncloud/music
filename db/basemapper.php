@@ -22,7 +22,7 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  */
 abstract class BaseMapper extends Mapper {
 
-	const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
+	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
 

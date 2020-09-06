@@ -204,12 +204,8 @@ class AmpacheController extends Controller {
 				return $this->download($id); // args 'type' and 'format' not supported
 			case 'stream':
 				return $this->stream($id, $offset); // args 'type', 'bitrate', 'format', and 'length' not supported
-
-			# non Ampache API actions
-			case '_get_album_cover':
-				return $this->_get_album_cover($id);
-			case '_get_artist_cover':
-				return $this->_get_artist_cover($id);
+			case 'get_art':
+				return $this->get_art($id);
 		}
 
 		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
@@ -561,15 +557,20 @@ class AmpacheController extends Controller {
 		return $this->download($trackId);
 	}
 
-	/***************************************************************
-	 * API methods which are not part of the Ampache specification *
-	 ***************************************************************/
-	protected function _get_album_cover($albumId) {
-		return $this->getCover($albumId, $this->albumBusinessLayer);
-	}
+	protected function get_art($id) {
+		$type = $this->getRequiredParam('type');
 
-	protected function _get_artist_cover($artistId) {
-		return $this->getCover($artistId, $this->artistBusinessLayer);
+		if (!\in_array($type, ['song', 'album', 'artist'])) {
+			throw new AmpacheException("Unsupported type $type", 400);
+		}
+
+		if ($type === 'song') {
+			// map song to its parent album
+			$id = $this->trackBusinessLayer->find($id, $this->ampacheUser->getUserId())->getAlbumId();
+			$type = 'album';
+		}
+
+		return $this->getCover($id, $this->getBusinessLayer($type));
 	}
 
 
@@ -701,10 +702,11 @@ class AmpacheController extends Controller {
 		return $tracks;
 	}
 
-	private function createAmpacheActionUrl($action, $id, $auth) {
+	private function createAmpacheActionUrl($action, $id, $auth, $type=null) {
 		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute($api))
-				. "?action=$action&id=$id&auth=$auth";
+				. "?action=$action&id=$id&auth=$auth"
+				. (!empty($type) ? "&type=$type" : '');
 	}
 
 	private function createCoverUrl($entity, $auth) {
@@ -717,7 +719,7 @@ class AmpacheController extends Controller {
 		}
 
 		if ($entity->getCoverFileId()) {
-			return $this->createAmpacheActionUrl("_get_{$type}_cover", $entity->getId(), $auth);
+			return $this->createAmpacheActionUrl("get_art", $entity->getId(), $auth, $type);
 		} else {
 			return '';
 		}

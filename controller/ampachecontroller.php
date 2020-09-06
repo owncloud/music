@@ -254,7 +254,7 @@ class AmpacheController extends Controller {
 
 	protected function ping($auth) {
 		$response = [
-			// TODO: 'server' => Music app version,
+			'server' => $this->getAppNameAndVersion(),
 			'version' => self::API_VERSION,
 			'compatible' => self::API_MIN_COMPATIBLE_VERSION
 		];
@@ -608,6 +608,16 @@ class AmpacheController extends Controller {
 			case 'playlist':	return $this->renderPlaylistsIndex($entities);
 			default:			throw new AmpacheException("Unsupported type $type", 400);
 		}
+	}
+
+	private function getAppNameAndVersion() {
+		require \OC::$SERVERROOT . '/version.php'; // for vendor name ownlcoud/nextcloud
+
+		// Note: the following is deprecated since NC14 but the replacement
+		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
+		$appVersion = \OCP\App::getAppVersion($this->appName);
+
+		return "$vendor {$this->appName} $appVersion";
 	}
 
 	private function getCover($entityId, BusinessLayer $businessLayer) {

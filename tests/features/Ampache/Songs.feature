@@ -20,6 +20,17 @@ Feature: Ampache API - Songs
       | Rag Doll Physics               | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 4     |
       | Reverie                        | Simon Bowman             | Orchestral Film Music Vol. 1   | 1    | 9     |
 
+  Scenario: List 3 songs with offset
+    Given I am logged in with an auth token
+    When I specify the parameter "limit" with value "3"
+    And I specify the parameter "offset" with value "6"
+    And I request the "songs" resource
+    Then I should get:
+      | title                          | artist                   | album                          | time | track |
+      | Nocturne                       | Simon Bowman             | Instrumental Film Music Vol. 1 | 2    | 2     |
+      | Poetic Pitbull Revolutions     | Diablo Swing Orchestra   | The Butcher's Ballroom         | 2    | 3     |
+      | Rag Doll Physics               | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 4     |
+
   Scenario: List songs that contain "an"
     Given I am logged in with an auth token
     When I specify the parameter "filter" with value "an"
@@ -29,7 +40,17 @@ Feature: Ampache API - Songs
       | Gunpowder Chant                | Diablo Swing Orchestra   | The Butcher's Ballroom         | 1    | 7     |
       | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
 
-  Scenario: List songs that contain "Mediane"
+  Scenario: List songs that contain "an" with offset and limit
+    Given I am logged in with an auth token
+    When I specify the parameter "filter" with value "an"
+    And I specify the parameter "limit" with value "2"
+    And I specify the parameter "offset" with value "1"
+    And I request the "songs" resource
+    Then I should get:
+      | title                          | artist                   | album                          | time | track |
+      | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
+
+  Scenario: List songs that contain exactly "Médiane"
     Given I am logged in with an auth token
     When I specify the parameter "filter" with value "Médiane"
     And I specify the parameter "exact" with value "true"

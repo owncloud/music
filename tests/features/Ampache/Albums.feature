@@ -13,6 +13,16 @@ Feature: Ampache API - Albums
       | Orchestral Film Music Vol. 1                        | Simon Bowman             | 3      | 2013 |
       | The Butcher's Ballroom                              | Diablo Swing Orchestra   | 5      | 2009 |
 
+  Scenario: List 2 albums with offset
+    Given I am logged in with an auth token
+    When I specify the parameter "offset" with value "1"
+    And I specify the parameter "limit" with value "2"
+    And I request the "albums" resource
+    Then I should get:
+      | name                                                | artist                   | tracks | year |
+      | Nuance                                              | Pascal Boiseau (Pascalb) | 3      | 2006 |
+      | Orchestral Film Music Vol. 1                        | Simon Bowman             | 3      | 2013 |
+
   Scenario: List filtered albums
     Given I am logged in with an auth token
     When I specify the parameter "filter" with value "Nuance"

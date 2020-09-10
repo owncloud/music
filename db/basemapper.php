@@ -37,6 +37,14 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Create an empty object of the entity class bound to this mapper
+	 * @return Entity
+	 */
+	public function createEntity() {
+		return new $this->entityClass();
+	}
+
+	/**
 	 * Find a single entity by id and user_id
 	 * @param integer $id
 	 * @param string $userId

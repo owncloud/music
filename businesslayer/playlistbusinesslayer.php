@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Playlist;
+use \OCA\Music\Db\Track;
 
 use \OCA\Music\Utility\Util;
 
@@ -131,11 +132,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 					$track = clone $track;
 				}
 				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
-				$playlistTracks[] = $track;
 			}
 			else {
-				$this->logger->log("Skipped invalid track ID $trackId on playlist $playlistId", 'debug');
+				$this->logger->log("Invalid track ID $trackId found on playlist $playlistId", 'debug');
+				$track = new Track();
+				$track->setId($trackId);
 			}
+			$playlistTracks[] = $track;
 		}
 
 		return $playlistTracks;

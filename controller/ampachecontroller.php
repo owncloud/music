@@ -941,23 +941,24 @@ class AmpacheController extends Controller {
 	private function renderSongs($tracks, $auth) {
 		return $this->ampacheResponse([
 			'song' => \array_map(function($track) use ($auth) {
+				$userId = $this->ampacheUser->getUserId();
 				$album = $track->getAlbum()
-						?: $this->albumBusinessLayer->find($track->getAlbumId(), $this->ampacheUser->getUserId());
+						?: $this->albumBusinessLayer->findOrDefault($track->getAlbumId(), $userId);
 
 				$result = [
 					'id' => (string)$track->getId(),
-					'title' => $track->getTitle(),
-					'name' => $track->getTitle(),
+					'title' => $track->getTitle() ?: '',
+					'name' => $track->getTitle() ?: '',
 					'artist' => [
-						'id' => (string)$track->getArtistId(),
+						'id' => (string)$track->getArtistId() ?: '0',
 						'value' => $track->getArtistNameString($this->l10n)
 					],
 					'albumartist' => [
-						'id' => (string)$album->getAlbumArtistId(),
+						'id' => (string)$album->getAlbumArtistId() ?: '0',
 						'value' => $album->getAlbumArtistNameString($this->l10n)
 					],
 					'album' => [
-						'id' => (string)$album->getId(),
+						'id' => (string)$album->getId() ?: '0',
 						'value' => $album->getNameString($this->l10n)
 					],
 					'url' => $this->createAmpacheActionUrl('download', $track->getId(), $auth),

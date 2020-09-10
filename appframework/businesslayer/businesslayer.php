@@ -77,6 +77,20 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Finds an entity by id, or returns an empty entity instance if the requested one is not found
+	 * @param int $id the id of the entity
+	 * @param string $userId the name of the user for security reasons
+	 * @return Entity the entity
+	 */
+	public function findOrDefault($id, $userId) {
+		try {
+			return $this->find($id, $userId);
+		} catch (BusinessLayerException $ex) {
+			return $this->mapper->createEntity();
+		}
+	}
+
+	/**
 	 * Find all entities matching the given IDs.
 	 * Specifying the user is optional; if omitted, the caller should make sure that
 	 * user's data is not leaked to unauthorized users.

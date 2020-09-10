@@ -460,10 +460,11 @@ class AmpacheController extends Controller {
 			$trackIds = $playlist->getTrackIdsAsArray();
 
 			for ($i = 0, $count = \count($newTrackIds); $i < $count; ++$i) {
-				if (!$this->trackBusinessLayer->exists($newTrackIds[$i], $userId)) {
-					throw new AmpacheException("Invalid song ID $song", 400);
+				$trackId = $newTrackIds[$i];
+				if (!$this->trackBusinessLayer->exists($trackId, $userId)) {
+					throw new AmpacheException("Invalid song ID $trackId", 400);
 				}
-				$trackIds[$newTrackOrdinals[$i]-1] = $newTrackIds[$i];
+				$trackIds[$newTrackOrdinals[$i]-1] = $trackId;
 			}
 
 			$playlist->setTrackIdsFromArray($trackIds);

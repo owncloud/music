@@ -12,8 +12,9 @@
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\AppFramework\Db\Mapper;
+use \OCP\IDBConnection;
 
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 

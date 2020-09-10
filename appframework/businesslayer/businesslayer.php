@@ -29,11 +29,18 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Update an entity in the database
+	 * @param Entity $entity
+	 */
+	public function update($entity) {
+		$this->mapper->update($entity);
+	}
+
+	/**
 	 * Delete an entity
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
-	 * @throws DoesNotExistException if the entity does not exist
-	 * @throws MultipleObjectsReturnedException if more than one entity exists
+	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 */
 	public function delete($id, $userId) {
 		$entity = $this->find($id, $userId);
@@ -147,6 +154,16 @@ abstract class BusinessLayer {
 		} else {
 			return 0;
 		}
+	}
+
+	/**
+	 * Tests if entity with given ID and user ID exists in the database
+	 * @param int $id
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function exists($id, $userId) {
+		return $this->mapper->exists($id, $userId);
 	}
 
 	/**

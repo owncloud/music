@@ -137,6 +137,23 @@ class Util {
 	}
 
 	/**
+	 * Like the built-in \explode(...) function but this one can be safely called with
+	 * null string, and no warning will be emitted. Also, this returns an empty array from
+	 * null and '' inputs while the built-in alternative returns a 1-item array containing
+	 * an empty string.
+	 * @param string $delimiter
+	 * @param string|null $string
+	 * @return array
+	 */
+	public static function explode($delimiter, $string) {
+		if ($string === null || $string === '') {
+			return [];
+		} else {
+			return \explode($delimiter, $string);
+		}
+	}
+
+	/**
 	 * Truncate the given string to maximum length, appendig ellipsis character
 	 * if the truncation happened. Also null argument may be safely passed and
 	 * it remains unaltered.

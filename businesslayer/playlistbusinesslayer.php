@@ -123,14 +123,19 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		$playlistTracks = [];
 		foreach ($trackIds as $index => $trackId) {
-			$track = $tracksById[$trackId];
-			// in case the same track comes up again in the list, clone the track object
-			// to have different numbers on the instances
-			if ($track->getNumberOnPlaylist() !== null) {
-				$track = clone $track;
+			$track = Util::arrayGetOrDefault($tracksById, $trackId);
+			if ($track !== null) {
+				// in case the same track comes up again in the list, clone the track object
+				// to have different numbers on the instances
+				if ($track->getNumberOnPlaylist() !== null) {
+					$track = clone $track;
+				}
+				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
+				$playlistTracks[] = $track;
 			}
-			$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
-			$playlistTracks[] = $track;
+			else {
+				$this->logger->log("Skipped invalid track ID $trackId on playlist $playlistId", 'debug');
+			}
 		}
 
 		return $playlistTracks;

@@ -186,6 +186,16 @@ class AmpacheController extends Controller {
 				return $this->playlist($filter);
 			case 'playlist_songs':
 				return $this->playlist_songs($filter, $limit, $offset, $auth);
+			case 'playlist_create':
+				return $this->playlist_create();
+			case 'playlist_edit':
+				return $this->playlist_edit($filter);
+			case 'playlist_delete':
+				return $this->playlist_delete($filter);
+			case 'playlist_add_song':
+				return $this->playlist_add_song($filter);
+			case 'playlist_remove_song':
+				return $this->playlist_remove_song($filter);
 			case 'playlist_generate':
 				return $this->playlist_generate($filter, $limit, $offset, $auth);
 			case 'tags':
@@ -418,6 +428,117 @@ class AmpacheController extends Controller {
 			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);
 		}
 		return $this->renderSongs($playlistTracks, $auth);
+	}
+
+	protected function playlist_create() {
+		$name = $this->getRequiredParam('name');
+		$playlist = $this->playlistBusinessLayer->create($name, $this->ampacheUser->getUserId());
+		return $this->renderPlaylists([$playlist]);
+	}
+
+	protected function playlist_edit($listId) {
+		$name = $this->request->getParam('name');
+		$items = $this->request->getParam('items'); // track IDs
+		$tracks = $this->request->getParam('tracks'); // 1-based indices of the tracks
+
+		$edited = false;
+		$userId = $this->ampacheUser->getUserId();
+		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
+
+		if (!empty($name)) {
+			$playlist->setName($name);
+			$edited = true;
+		}
+
+		$newTrackIds = Util::explode(',', $items);
+		$newTrackOrdinals = Util::explode(',', $tracks);
+
+		if (\count($newTrackIds) != \count($newTrackOrdinals)) {
+			throw new AmpacheException("Arguments 'items' and 'tracks' must contain equal amount of elements", 400);
+		}
+		else if (\count($newTrackIds) > 0) {
+			$trackIds = $playlist->getTrackIdsAsArray();
+
+			for ($i = 0, $count = \count($newTrackIds); $i < $count; ++$i) {
+				if (!$this->trackBusinessLayer->exists($newTrackIds[$i], $userId)) {
+					throw new AmpacheException("Invalid song ID $song", 400);
+				}
+				$trackIds[$newTrackOrdinals[$i]-1] = $newTrackIds[$i];
+			}
+
+			$playlist->setTrackIdsFromArray($trackIds);
+			$edited = true;
+		}
+
+		if ($edited) {
+			$this->playlistBusinessLayer->update($playlist);
+			return $this->ampacheResponse(['success' => 'playlist changes saved']);
+		} else {
+			throw new AmpacheException('Nothing was changed', 400);
+		}
+	}
+
+	protected function playlist_delete($listId) {
+		$this->playlistBusinessLayer->delete($listId, $this->ampacheUser->getUserId());
+		return $this->ampacheResponse(['success' => 'playlist deleted']);
+	}
+
+	protected function playlist_add_song($listId) {
+		$song = $this->getRequiredParam('song'); // track ID
+		$check = $this->request->getParam('check', false);
+
+		$userId = $this->ampacheUser->getUserId();
+		if (!$this->trackBusinessLayer->exists($song, $userId)) {
+			throw new AmpacheException("Invalid song ID $song", 400);
+		}
+
+		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
+		$trackIds = $playlist->getTrackIdsAsArray();
+
+		if ($check && \in_array($song, $trackIds)) {
+			throw new AmpacheException("Can't add a duplicate item when check is enabled", 400);
+		}
+
+		$trackIds[] = $song;
+		$playlist->setTrackIdsFromArray($trackIds);
+		$this->playlistBusinessLayer->update($playlist);
+		return $this->ampacheResponse(['success' => 'song added to playlist']);
+	}
+
+	protected function playlist_remove_song($listId) {
+		$song = $this->request->getParam('song'); // track ID
+		$track = $this->request->getParam('track'); // 1-based index of the track
+		$clear = $this->request->getParam('clear'); // added in API v420000 but we support this already now
+
+		$playlist = $this->playlistBusinessLayer->find($listId, $this->ampacheUser->getUserId());
+
+		if ((int)$clear === 1) {
+			$trackIds = [];
+			$message = 'all songs removed from playlist';
+		}
+		elseif ($song !== null) {
+			$trackIds = $playlist->getTrackIdsAsArray();
+			if (!\in_array($song, $trackIds)) {
+				throw new AmpacheException("Song $song not found in playlist", 400);
+			}
+			$trackIds = Util::arrayDiff($trackIds, [$song]);
+			$message = 'song removed from playlist';
+		}
+		elseif ($track !== null) {
+			$trackIds = $playlist->getTrackIdsAsArray();
+			if ($track < 1 || $track > \count($trackIds)) {
+				throw new AmpacheException("Track ordinal $track is out of bounds", 400);
+			}
+			unset($trackIds[$track-1]);
+			$message = 'song removed from playlist';
+		}
+		else {
+			throw new AmpacheException("One of the arguments 'clear', 'song', 'track' is required", 400);
+		}
+
+		$playlist->setTrackIdsFromArray($trackIds);
+		$this->playlistBusinessLayer->update($playlist);
+		return $this->ampacheResponse(['success' => $message]);
 	}
 
 	protected function playlist_generate($filter, $limit, $offset, $auth) {

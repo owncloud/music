@@ -147,6 +147,18 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Tests if entity with given ID and user ID exists in the database
+	 * @param int $id
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function exists($id, $userId) {
+		$sql = "SELECT 1 FROM `{$this->getTableName()}` WHERE `id` = ? AND `user_id` = ?";
+		$result = $this->execute($sql, [$id, $userId]);
+		return $result->rowCount() > 0;
+	}
+
+	/**
 	 * Count all entities of a user
 	 * @param string $userId
 	 */

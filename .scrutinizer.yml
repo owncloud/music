@@ -4,15 +4,20 @@ imports:
 
 filter:
     excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js, tests/]
+    dependency_paths:
+        - vendor/christophwurst/nextcloud
 
 tools:
     external_code_coverage:
-        timeout: 600    # Timeout in seconds. 10 minutes
+        timeout: 300    # Timeout in seconds, 5 minutes
         runs: 2         # Scrutinizer waits for the first 2 coverage submissions (unit & integration)
 
 build:
     nodes:
-      analysis:
-          tests:
-              override:
-                  - php-scrutinizer-run
+        analysis:
+            dependencies:
+                before:
+                    - composer require --dev "christophwurst/nextcloud ^12.0.0"
+            tests:
+                override:
+                    - php-scrutinizer-run

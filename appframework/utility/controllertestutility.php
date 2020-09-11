@@ -64,7 +64,7 @@ abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
 	 * Instead of using positional parameters this function instantiates
 	 * a request by using a hashmap so its easier to only set specific params
 	 * @param array $params a hashmap with the parameters for request
-	 * @return Request a request instance
+	 * @return \OCP\IRequest a request instance
 	 */
 	protected function getRequest(array $params=[]) {
 		$mock = $this->getMockBuilder('\OCP\IRequest')

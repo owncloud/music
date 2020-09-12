@@ -113,7 +113,7 @@ class Util {
 	 * The function supports getting value from a nested array by giving an array-type $key.
 	 * In that case, the first value of the $key is used on the outer-most array, second value
 	 * from $key on the next level, and so on. That is, arrayGetOrDefault($arr, ['a', 'b', 'c'])
-	 * will return $arr['a']['b']['c'] is all the keys along the path are found.
+	 * will return $arr['a']['b']['c'] if all the keys along the path are found.
 	 *
 	 * @param array $array
 	 * @param int|string|array $key

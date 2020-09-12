@@ -90,13 +90,19 @@ class ExtractorGetID3 implements Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param \OCP\Files\File $file the media file
-	 * @return array with keys 'mimetype' and 'content'
+	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
 	 */
 	public function parseEmbeddedCoverArt($file) {
 		$fileInfo = $this->extract($file);
 		return self::getTag($fileInfo, 'picture', true);
 	}
 
+	/**
+	 * @param array $fileInfo
+	 * @param string $tag
+	 * @param bool $binaryValued
+	 * @return string|array|null
+	 */
 	public static function getTag($fileInfo, $tag, $binaryValued = false) {
 		$value = null;
 
@@ -115,7 +121,13 @@ class ExtractorGetID3 implements Extractor {
 		return $value;
 	}
 
-	public static function getFirstOfTags($fileInfo, array $tags, $defaultValue = null) {
+	/**
+	 * @param array $fileInfo
+	 * @param string[] $tags
+	 * @param string|array|null $defaultValue
+	 * @return string|array|null
+	 */
+	public static function getFirstOfTags(array $fileInfo, array $tags, $defaultValue = null) {
 		foreach ($tags as $tag) {
 			$value = self::getTag($fileInfo, $tag);
 			if ($value !== null && $value !== '') {

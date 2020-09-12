@@ -6,6 +6,7 @@ filter:
     excluded_paths: [3rdparty/*, js/vendor/*, js/public/app.js, tests/]
     dependency_paths:
         - vendor/christophwurst/nextcloud
+        - vendor/doctrine/dbal
 
 # Code coverage is not collected at the moment to speed up the Scrutinizer analysis, especially on the
 # private fork of the project where there is no Travis running the tests.
@@ -20,6 +21,7 @@ build:
             dependencies:
                 before:
                     - composer require --dev "christophwurst/nextcloud ^12.0.0"
+                    - composer require --dev doctrine/dbal
             tests:
                 override:
                     - php-scrutinizer-run

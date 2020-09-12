@@ -230,11 +230,6 @@ class Album extends Entity {
 	}
 
 	public static function unknownNameString(IL10N $l10n) {
-		$name = $l10n->t('Unknown album');
-		if (!\is_string($name)) {
-			/** @var \OC_L10N_String $name */
-			$name = $name->__toString();
-		}
-		return $name;
+		return (string) $l10n->t('Unknown album');
 	}
 }

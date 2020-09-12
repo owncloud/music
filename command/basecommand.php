@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2020
  */
 
 namespace OCA\Music\Command;
@@ -19,17 +19,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class BaseCommand extends Command {
-	/**
-	 * @var \OCP\IUserManager $userManager
-	 */
 	protected $userManager;
-	/**
-	 * @var \OCP\IGroupManager $groupManager
-	 */
 	protected $groupManager;
 
-	public function __construct(\OCP\IUserManager $userManager,
-			\OCP\IGroupManager $groupManager) {
+	public function __construct(\OCP\IUserManager $userManager, \OCP\IGroupManager $groupManager) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
 		parent::__construct();
@@ -62,7 +55,7 @@ abstract class BaseCommand extends Command {
 		try {
 			self::ensureUsersGiven($input);
 			$argUsers = $this->getArgumentUsers($input);
-			$groupUsers = $this->getArgumentGroups($input);
+			$groupUsers = $this->getArgumentGroupUsers($input);
 			$users = \array_unique(\array_merge($argUsers, $groupUsers));
 			if (!$input->getOption('all') && !\count($users)) {
 				throw new \InvalidArgumentException("No users in selected groups!");
@@ -73,8 +66,14 @@ abstract class BaseCommand extends Command {
 		}
 	}
 
-	private function getArgumentUsers($input) {
+	/**
+	 * @return string[]
+	 */
+	private function getArgumentUsers(InputInterface $input) {
+		/** @var string[] */
 		$users = $input->getArgument('user_id');
+		\assert(\is_array($users));
+
 		foreach ($users as $user) {
 			if (!$this->userManager->userExists($user)) {
 				throw new \InvalidArgumentException("User <error>$user</error> does not exist!");
@@ -83,9 +82,15 @@ abstract class BaseCommand extends Command {
 		return $users;
 	}
 
-	private function getArgumentGroups($input) {
+	/**
+	 * @return string[]
+	 */
+	private function getArgumentGroupUsers(InputInterface $input) {
 		$users = [];
-		foreach (\array_unique($input->getOption('group')) as $group) {
+		$groups = $input->getOption('group');
+		\assert(\is_array($groups));
+
+		foreach ($groups as $group) {
 			if (!$this->groupManager->groupExists($group)) {
 				throw new \InvalidArgumentException("Group <error>$group</error> does not exist!");
 			} else {
@@ -97,7 +102,7 @@ abstract class BaseCommand extends Command {
 		return $users;
 	}
 
-	protected static function ensureUsersGiven($input) {
+	protected static function ensureUsersGiven(InputInterface $input) {
 		if (!$input->getArgument('user_id')
 			&& !$input->getOption('all')
 			&& !$input->getOption('group')) {

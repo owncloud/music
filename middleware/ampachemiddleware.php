@@ -15,6 +15,7 @@
 namespace OCA\Music\Middleware;
 
 use \OCP\IRequest;
+use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Middleware;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -34,9 +35,6 @@ class AmpacheMiddleware extends Middleware {
 	private $ampacheUser;
 	private $logger;
 
-	/**
-	 * @param Request $request an instance of the request
-	 */
 	public function __construct(
 			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper,
 			AmpacheUser $ampacheUser, Logger $logger) {
@@ -54,7 +52,7 @@ class AmpacheMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws AmpacheException when a security check fails
 	 */
-	public function beforeController($controller, $methodName) {
+	public function beforeController(Controller $controller, $methodName) {
 
 		if ($controller instanceof AmpacheController) {
 
@@ -99,9 +97,9 @@ class AmpacheMiddleware extends Middleware {
 	 *                           the controller
 	 * @param \Exception $exception the thrown exception
 	 * @throws \Exception the passed in exception if it wasn't handled
-	 * @return Response a Response object if the exception was handled
+	 * @return \OCP\AppFramework\Http\Response object if the exception was handled
 	 */
-	public function afterException($controller, $methodName, \Exception $exception) {
+	public function afterException(Controller $controller, $methodName, \Exception $exception) {
 		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
 				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());

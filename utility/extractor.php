@@ -26,7 +26,7 @@ interface Extractor {
 	 * extract embedded cover art image from media file
 	 *
 	 * @param \OCP\Files\File $file the media file
-	 * @return array with keys 'mimetype' and 'content'
+	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
 	 */
 	public function parseEmbeddedCoverArt($file);
 }

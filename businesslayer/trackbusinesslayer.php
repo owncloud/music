@@ -129,7 +129,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
 	 * @param string $userId
-	 * @param Folder $userHome
+	 * @param \OCP\Files\Folder $userHome
 	 * @return array of entries like {id: int, name: string, path: string, trackIds: int[]}
 	 */
 	public function findAllFolders($userId, $userHome) {

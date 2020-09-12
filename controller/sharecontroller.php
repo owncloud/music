@@ -15,12 +15,14 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\Files\Folder;
 use \OCP\IRequest;
 
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\Util;
 
 /**
  * End-points for shared audio file handling. Methods of this class may be
@@ -66,8 +68,8 @@ class ShareController extends Controller {
 		} else {
 			$folderId = $share->getNodeId();
 			$matchingFolders = $fileOwnerHome->getById($folderId);
-			if (empty($matchingFolders)
-			|| empty($matchingFolders[0]->getById($fileId))) {
+			$folder = Util::arrayGetOrDefault($matchingFolders, 0);
+			if (!($folder instanceof Folder) || empty($folder->getById($fileId))) {
 				// no such shared folder or the folder does not contain the given file
 				$fileId = null;
 			}
@@ -94,10 +96,10 @@ class ShareController extends Controller {
 		$matchingFolders = $fileOwnerHome->getById($share->getNodeId());
 
 		try {
-			if (empty($matchingFolders)) {
+			$sharedFolder = Util::arrayGetOrDefault($matchingFolders, 0);
+			if (!($sharedFolder instanceof Folder)) {
 				throw new \OCP\Files\NotFoundException();
 			}
-			$sharedFolder = $matchingFolders[0];
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);
 
 			// compose the final result

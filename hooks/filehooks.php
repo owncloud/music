@@ -14,7 +14,9 @@
 
 namespace OCA\Music\Hooks;
 
+use \OCP\AppFramework\IAppContainer;
 use \OCP\Files\FileInfo;
+use \OCP\Files\Node;
 
 use \OCA\Music\App\Music;
 
@@ -27,9 +29,9 @@ class FileHooks {
 
 	/**
 	 * Invoke auto update of music database after file or folder deletion
-	 * @param \OCP\Files\Node $node pointing to the file or folder
+	 * @param Node $node pointing to the file or folder
 	 */
-	public static function deleted($node) {
+	public static function deleted(Node $node) {
 		$app = new Music();
 		$container = $app->getContainer();
 		$scanner = $container->query('Scanner');
@@ -43,9 +45,9 @@ class FileHooks {
 
 	/**
 	 * Invoke auto update of music database after file update or file creation
-	 * @param \OCP\Files\Node $node pointing to the file
+	 * @param Node $node pointing to the file
 	 */
-	public static function updated($node) {
+	public static function updated(Node $node) {
 		// At least on Nextcloud 13, it sometimes happens that this hook is triggered
 		// when the core creates some temporary file and trying to access the provided
 		// node throws an exception, probably because the temp file is already removed
@@ -55,21 +57,21 @@ class FileHooks {
 		// before anything is actually written and while the file is *exlusively locked
 		// because of the write mode*. See #638.
 		$app = new Music();
+		$container = $app->getContainer();
 		try {
-			self::handleUpdated($node, $app);
+			self::handleUpdated($node, $container);
 		} catch (\OCP\Files\NotFoundException $e) {
-			$logger = $app->getContainer()->query('Logger');
+			$logger = $container->query('Logger');
 			$logger->log('FileHooks::updated triggered for a non-existing file', 'warn');
 		} catch (\OCP\Lock\LockedException $e) {
-			$logger = $app->getContainer()->query('Logger');
+			$logger = $container->query('Logger');
 			$logger->log('FileHooks::updated triggered for a locked file ' . $node->getName(), 'warn');
 		}
 	}
 
-	private static function handleUpdated($node, $app) {
+	private static function handleUpdated(Node $node, IAppContainer $container) {
 		// we are interested only about updates on files, not on folders
 		if ($node->getType() == FileInfo::TYPE_FILE) {
-			$container = $app->getContainer();
 			$scanner = $container->query('Scanner');
 			$userId = $container->query('UserId');
 			$userFolder = $container->query('UserFolder');
@@ -98,12 +100,12 @@ class FileHooks {
 	 * @param string $userId
 	 * @param IAppContainer $container
 	 */
-	private static function userHasMusicLib($userId, $container) {
+	private static function userHasMusicLib($userId, IAppContainer $container) {
 		$trackBusinessLayer = $container->query('TrackBusinessLayer');
 		return 0 < $trackBusinessLayer->count($userId);
 	}
 
-	public static function preRenamed($source, $target) {
+	public static function preRenamed(Node $source, Node $target) {
 		// We are interested only if the path of the folder of the file changes:
 		// that could move a music file out of the scanned folder or remove a
 		// cover image file from album folder.
@@ -114,7 +116,7 @@ class FileHooks {
 		}
 	}
 
-	public static function postRenamed($source, $target) {
+	public static function postRenamed(Node $source, Node $target) {
 		// Renaming/moving file may
 		// a) move it into the folder scanned by Music app
 		// b) have influence on the display name of the track

@@ -123,7 +123,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 				: $album1->yearToAPI() - $album2->yearToAPI();
 		});
 
-		if ($limit || $offset) {
+		if ($limit !== null || $offset !== null) {
 			$albums = \array_slice($albums, $offset ?: 0, $limit);
 		}
 

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Controller;
@@ -22,6 +22,7 @@ use \OCP\IURLGenerator;
 use \OCP\Security\ISecureRandom;
 
 use \OCA\Music\Db\AmpacheUserMapper;
+use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\Util;
 use \OCA\Music\Utility\UserMusicFolder;

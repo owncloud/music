@@ -135,7 +135,7 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * Find all user's entities
+	 * Find all user's albums
 	 *
 	 * Overridden from \OCA\Music\Db\BaseMapper to add support for sorting by artist.
 	 *
@@ -143,7 +143,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer|null $limit
 	 * @param integer|null $offset
-	 * @return Entity[]
+	 * @return Album[]
 	 */
 	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
 		if ($sortBy === SortBy::Parent) {

@@ -13,6 +13,7 @@
 namespace OCA\Music\Middleware;
 
 use \OCP\IRequest;
+use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\Response;
 use \OCP\AppFramework\Middleware;
 
@@ -48,7 +49,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws SubsonicException when a security check fails
 	 */
-	public function beforeController($controller, $methodName) {
+	public function beforeController(Controller $controller, $methodName) {
 		if ($controller instanceof SubsonicController) {
 			$this->setupResponseFormat($controller);
 			$this->checkAuthentication($controller);
@@ -58,10 +59,10 @@ class SubsonicMiddleware extends Middleware {
 	/**
 	 * Evaluate the reponse format parameters and setup the controller to use
 	 * the requested format
-	 * @param SubsoniController $controller
+	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function setupResponseFormat($controller) {
+	private function setupResponseFormat(SubsonicController $controller) {
 		$format = $this->request->getParam('f', 'xml');
 		$callback = $this->request->getParam('callback');
 
@@ -79,10 +80,10 @@ class SubsonicMiddleware extends Middleware {
 	/**
 	 * Check that valid credentials have been given.
 	 * Setup the controller with the acitve user if the authentication is ok.
-	 * @param SubsoniController $controller
+	 * @param SubsonicController $controller
 	 * @throws SubsonicException
 	 */
-	private function checkAuthentication($controller) {
+	private function checkAuthentication(SubsonicController $controller) {
 		$user = $this->request->getParam('u');
 		$pass = $this->request->getParam('p');
 
@@ -136,7 +137,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @throws \Exception the passed in exception if it couldn't be handled
 	 * @return Response a Response object in case the exception could be handled
 	 */
-	public function afterException($controller, $methodName, \Exception $exception) {
+	public function afterException(Controller $controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
 				$this->logger->log($exception->getMessage(), 'debug');

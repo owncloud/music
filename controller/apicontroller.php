@@ -398,10 +398,8 @@ class ApiController extends Controller {
 		}
 
 		$nodes = $this->userFolder->getById($track->getFileId());
-		if (\count($nodes) > 0) {
-			// get the first valid node
-			$node = $nodes[0];
-
+		$node = Util::arrayGetOrDefault($nodes, 0);
+		if ($node instanceof \OCP\Files\File) {
 			$mime = $node->getMimeType();
 			$content = $node->getContent();
 			return new FileResponse(['mimetype' => $mime, 'content' => $content]);

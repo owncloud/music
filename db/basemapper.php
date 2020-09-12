@@ -196,7 +196,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Set the "starred" column of the given entities
-	 * @param DateTime|null $date
+	 * @param \DateTime|null $date
 	 * @param integer[] $ids
 	 * @param string $userId
 	 * @return int number of modified entities

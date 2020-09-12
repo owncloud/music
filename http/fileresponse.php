@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2019
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Http;
@@ -27,7 +27,7 @@ class FileResponse extends Response {
 	protected $rangeRequest;
 
 	/**
-	 * @param \OC\Files\Node\File|array $file file
+	 * @param \OCP\Files\File|array $file file
 	 * @param int $statusCode the Http status code, defaults to 200
 	 */
 	public function __construct($file, $statusCode=Http::STATUS_OK) {

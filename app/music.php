@@ -505,7 +505,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ShareHooks', function ($c) {
+		$container->registerService('ShareHooks', function (/** @scrutinizer ignore-unused */ $c) {
 			return new ShareHooks();
 		});
 

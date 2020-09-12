@@ -774,7 +774,7 @@ class SubsonicController extends Controller {
 		foreach ($ids as $prefixedId) {
 			$parts = \explode('-', $prefixedId);
 			$type = $parts[0];
-			$id = $parts[1];
+			$id = (int)$parts[1];
 
 			if ($type == 'track') {
 				$trackIds[] = $id;

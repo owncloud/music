@@ -63,7 +63,7 @@ class CoverHelper {
 	 */
 	public function getCover($entity, $userId, $rootFolder, $size=null) {
 		// Skip using cache in case the cover is requested in specific size
-		if ($size) {
+		if ($size !== null) {
 			return $this->readCover($entity, $rootFolder, $size);
 		} else {
 			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);
@@ -197,7 +197,7 @@ class CoverHelper {
 
 	/**
 	 * Read cover image from the file system
-	 * @param Enity $entity Album or Artist entity
+	 * @param Album|Artist $entity
 	 * @param Folder $rootFolder
 	 * @param int $size Maximum size for the image to read, larger images are scaled down.
 	 *                  Special value DO_NOT_CROP_OR_SCALE can be used to opt out of
@@ -267,38 +267,45 @@ class CoverHelper {
 
 				$dstSize = \min($maxSize, $srcCropSize);
 				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);
-				\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
-				\imagedestroy($img);
 
-				\ob_start();
-				\ob_clean();
-				$mime = $meta['mime'];
-				switch ($mime) {
-					case 'image/jpeg':
-						imagejpeg($scaledImg, null, 75);
-						$image = \ob_get_contents();
-						break;
-					case 'image/png':
-						imagepng($scaledImg, null, 7, PNG_ALL_FILTERS);
-						$image = \ob_get_contents();
-						break;
-					case 'image/gif':
-						imagegif($scaledImg, null);
-						$image = \ob_get_contents();
-						break;
-					default:
-						$this->logger->log("Cover image type $mime not supported for downscaling", 'warning');
-						break;
+				if ($scaledImg === false) {
+					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warning');
+					\imagedestroy($img);
 				}
-				\ob_end_clean();
-				\imagedestroy($scaledImg);
+				else {
+					\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
+					\imagedestroy($img);
+
+					\ob_start();
+					\ob_clean();
+					$mime = $meta['mime'];
+					switch ($mime) {
+						case 'image/jpeg':
+							imagejpeg($scaledImg, null, 75);
+							$image = \ob_get_contents();
+							break;
+						case 'image/png':
+							imagepng($scaledImg, null, 7, PNG_ALL_FILTERS);
+							$image = \ob_get_contents();
+							break;
+						case 'image/gif':
+							imagegif($scaledImg, null);
+							$image = \ob_get_contents();
+							break;
+						default:
+							$this->logger->log("Cover image type $mime not supported for downscaling", 'warning');
+							break;
+					}
+					\ob_end_clean();
+					\imagedestroy($scaledImg);
+				}
 			}
 		}
 		return $image;
 	}
 
 	/**
-	 * @param Entity $entity An Album or Artist entity
+	 * @param Album|Artist $entity
 	 * @throws InvalidArgumentException if entity is not one of the expected types
 	 * @return string
 	 */

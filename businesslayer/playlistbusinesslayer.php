@@ -22,6 +22,10 @@ use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Utility\Util;
 
+/**
+ * Base class functions with actually used inherited types to help IDE and Scrutinizer:
+ * @method Playlist find(int $playlistId, string $userId)
+ */
 class PlaylistBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $trackMapper;

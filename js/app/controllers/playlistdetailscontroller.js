@@ -33,7 +33,7 @@ angular.module('Music').controller('PlaylistDetailsController', [
 
 		$scope.$watchCollection('playlist.tracks', function() {
 			$scope.totalLength = _.reduce($scope.playlist.tracks, function(sum, item) {
-				return sum + item.track.length;
+				return sum + (item.track ? item.track.length : 0); // be prepared for invalid playist entries
 			}, 0);
 		});
 

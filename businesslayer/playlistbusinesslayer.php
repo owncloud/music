@@ -161,9 +161,10 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		// We can't simply sum up the values of $durations array, because the playlist may
 		// contain duplicate entries, and those are not reflected in $durations.
+		// Be also prepared to invalid playlist entries where corresponding track length does not exist.
 		$sum = 0;
 		foreach ($trackIds as $trackId) {
-			$sum += $durations [$trackId];
+			$sum += Util::arrayGetOrDefault($durations, $trackId, 0);
 		}
 
 		return $sum;

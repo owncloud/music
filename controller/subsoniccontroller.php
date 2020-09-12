@@ -1082,7 +1082,7 @@ class SubsonicController extends Controller {
 
 		$album = $track->getAlbum();
 		if (empty($album)) {
-			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+			$album = $this->albumBusinessLayer->findOrDefault($albumId, $this->userId);
 			$track->setAlbum($album);
 		}
 
@@ -1093,7 +1093,7 @@ class SubsonicController extends Controller {
 			'title' => $track->getTitle(),
 			'artist' => $track->getArtistNameString($this->l10n),
 			'isDir' => false,
-			'album' => $album->getNameString($this->l10n),
+			'album' => $track->getAlbumNameString($this->l10n),
 			'year' => $track->getYear(),
 			'size' => $track->getSize(),
 			'contentType' => $track->getMimetype(),
@@ -1107,7 +1107,7 @@ class SubsonicController extends Controller {
 			'type' => 'music'
 		];
 
-		if (!empty($album->getCoverFileId())) {
+		if ($album !== null && !empty($album->getCoverFileId())) {
 			$result['coverArt'] = 'album-' . $album->getId();
 		}
 

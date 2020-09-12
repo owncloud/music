@@ -262,6 +262,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * @param string[] $affectedUsers
 	 * @param int[] $affectedAlbums
+	 * @param int[] $affectedArtists
 	 */
 	private function invalidateCacheOnDelete($affectedUsers, $affectedAlbums, $affectedArtists) {
 		// Delete may be for one file or for a folder containing thousands of albums.
@@ -293,10 +294,12 @@ class Scanner extends PublicEmitter {
 				foreach ($affectedAlbums as $albumId) {
 					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
 				}
-				// remove the cached collection if any album covers were removed
-				foreach ($affectedUsers as $user) {
-					$this->cache->remove($user, 'collection');
-				}
+			}
+
+			// remove the cached collection regardless of if covers were affected; it may be that this
+			// function got called after a track was deleted and there are no album/artist changes
+			foreach ($affectedUsers as $user) {
+				$this->cache->remove($user, 'collection');
 			}
 		}
 	}

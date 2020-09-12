@@ -7,10 +7,12 @@ filter:
     dependency_paths:
         - vendor/christophwurst/nextcloud
 
-tools:
-    external_code_coverage:
-        timeout: 300    # Timeout in seconds, 5 minutes
-        runs: 2         # Scrutinizer waits for the first 2 coverage submissions (unit & integration)
+# Code coverage is not collected at the moment to speed up the Scrutinizer analysis, especially on the
+# private fork of the project where there is no Travis running the tests.
+#tools:
+#    external_code_coverage:
+#        timeout: 300    # Timeout in seconds, 5 minutes
+#        runs: 2         # Scrutinizer waits for the first 2 coverage submissions (unit & integration)
 
 build:
     nodes:

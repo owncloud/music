@@ -24,10 +24,12 @@ use \OCA\Music\Db\SortBy;
 use \OCA\Music\Utility\Util;
 
 class ArtistBusinessLayer extends BusinessLayer {
+	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 
 	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
+		$this->mapper = $artistMapper;
 		$this->logger = $logger;
 	}
 

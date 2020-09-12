@@ -27,12 +27,12 @@ use \OCP\AppFramework\Db\DoesNotExistException;
 
 
 class BookmarkBusinessLayer extends BusinessLayer {
+	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 
-	public function __construct(
-			BookmarkMapper $bookmarkMapper,
-			Logger $logger) {
+	public function __construct(BookmarkMapper $bookmarkMapper, Logger $logger) {
 		parent::__construct($bookmarkMapper);
+		$this->mapper = $bookmarkMapper;
 		$this->logger = $logger;
 	}
 

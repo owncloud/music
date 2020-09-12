@@ -22,11 +22,13 @@ use \OCA\Music\Db\TrackMapper;
 use \OCA\Music\Utility\Util;
 
 class GenreBusinessLayer extends BusinessLayer {
+	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $trackMapper;
 	private $logger;
 
 	public function __construct(GenreMapper $genreMapper, TrackMapper $trackMapper, Logger $logger) {
 		parent::__construct($genreMapper);
+		$this->mapper = $genreMapper;
 		$this->trackMapper = $trackMapper;
 		$this->logger = $logger;
 	}

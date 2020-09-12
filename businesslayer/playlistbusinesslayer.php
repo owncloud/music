@@ -22,6 +22,7 @@ use \OCA\Music\Db\Track;
 use \OCA\Music\Utility\Util;
 
 class PlaylistBusinessLayer extends BusinessLayer {
+	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 	private $trackBusinessLayer;
 
@@ -30,6 +31,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 			TrackBusinessLayer $trackBusinessLayer,
 			Logger $logger) {
 		parent::__construct($playlistMapper);
+		$this->mapper = $playlistMapper;
 		$this->logger = $logger;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 	}

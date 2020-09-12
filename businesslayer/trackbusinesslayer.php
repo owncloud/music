@@ -23,13 +23,14 @@ use \OCA\Music\Db\Track;
 use \OCA\Music\Utility\Util;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 class TrackBusinessLayer extends BusinessLayer {
+	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 
 	public function __construct(TrackMapper $trackMapper, Logger $logger) {
 		parent::__construct($trackMapper);
+		$this->mapper = $trackMapper;
 		$this->logger = $logger;
 	}
 

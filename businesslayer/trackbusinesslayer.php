@@ -36,7 +36,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by artist (both album and track artists are considered)
-	 * @param string $artistId the id of the artist
+	 * @param int $artistId the id of the artist
 	 * @param string $userId the name of the user
 	 * @return array of tracks
 	 */
@@ -46,7 +46,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by album. Optionally, filter also by the performing artist.
-	 * @param string $albumId the id of the album
+	 * @param int $albumId the id of the album
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
@@ -105,7 +105,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns the track for a file id
-	 * @param string $fileId the file id of the track
+	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track|null track
 	 */

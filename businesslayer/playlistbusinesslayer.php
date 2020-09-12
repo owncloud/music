@@ -15,25 +15,26 @@ namespace OCA\Music\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Playlist;
+use \OCA\Music\Db\PlaylistMapper;
 use \OCA\Music\Db\Track;
+use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Utility\Util;
 
 class PlaylistBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
+	private $trackMapper;
 	private $logger;
-	private $trackBusinessLayer;
 
 	public function __construct(
 			PlaylistMapper $playlistMapper,
-			TrackBusinessLayer $trackBusinessLayer,
+			TrackMapper $trackMapper,
 			Logger $logger) {
 		parent::__construct($playlistMapper);
 		$this->mapper = $playlistMapper;
+		$this->trackMapper = $trackMapper;
 		$this->logger = $logger;
-		$this->trackBusinessLayer = $trackBusinessLayer;
 	}
 
 	public function addTracks($trackIds, $playlistId, $userId) {
@@ -118,7 +119,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		$trackIds = \array_slice($trackIds, \intval($offset), $limit);
 
-		$tracks = empty($trackIds) ? [] : $this->trackBusinessLayer->findById($trackIds, $userId);
+		$tracks = empty($trackIds) ? [] : $this->trackMapper->findById($trackIds, $userId);
 
 		// The $tracks contains the songs in unspecified order and with no duplicates.
 		// Build a new array where the tracks are in the same order as in $trackIds.
@@ -156,7 +157,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	public function getDuration($playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
-		$durations = $this->trackBusinessLayer->mapper->getDurations($trackIds);
+		$durations = $this->trackMapper->getDurations($trackIds);
 
 		// We can't simply sum up the values of $durations array, because the playlist may
 		// contain duplicate entries, and those are not reflected in $durations.

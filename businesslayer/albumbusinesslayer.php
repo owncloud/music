@@ -60,7 +60,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all albums filtered by artist (both album and track artists are considered)
-	 * @param string $artistId the id of the artist
+	 * @param integer $artistId the id of the artist
+	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
 	public function findAllByArtist($artistId, $userId) {
@@ -70,7 +71,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all albums filtered by album artist
-	 * @param string $artistId the id of the artist
+	 * @param integer $artistId the id of the artist
+	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
 	public function findAllByAlbumArtist($artistId, $userId) {
@@ -242,7 +244,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * updates the cover for albums in the specified folder without cover
 	 * @param integer $coverFileId the file id of the cover image
 	 * @param integer $folderId the file id of the folder where the albums are looked from
-	 * @return true if one or more albums were influenced
+	 * @return boolean True if one or more albums were influenced
 	 */
 	public function updateFolderCover($coverFileId, $folderId) {
 		return $this->mapper->updateFolderCover($coverFileId, $folderId);

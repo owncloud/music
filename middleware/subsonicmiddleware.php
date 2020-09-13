@@ -49,7 +49,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws SubsonicException when a security check fails
 	 */
-	public function beforeController(Controller $controller, $methodName) {
+	public function beforeController($controller, $methodName) {
 		if ($controller instanceof SubsonicController) {
 			$this->setupResponseFormat($controller);
 			$this->checkAuthentication($controller);
@@ -137,7 +137,7 @@ class SubsonicMiddleware extends Middleware {
 	 * @throws \Exception the passed in exception if it couldn't be handled
 	 * @return Response a Response object in case the exception could be handled
 	 */
-	public function afterException(Controller $controller, $methodName, \Exception $exception) {
+	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
 				$this->logger->log($exception->getMessage(), 'debug');

@@ -52,7 +52,7 @@ class AmpacheMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws AmpacheException when a security check fails
 	 */
-	public function beforeController(Controller $controller, $methodName) {
+	public function beforeController($controller, $methodName) {
 
 		if ($controller instanceof AmpacheController) {
 
@@ -99,7 +99,7 @@ class AmpacheMiddleware extends Middleware {
 	 * @throws \Exception the passed in exception if it wasn't handled
 	 * @return \OCP\AppFramework\Http\Response object if the exception was handled
 	 */
-	public function afterException(Controller $controller, $methodName, \Exception $exception) {
+	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
 				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());

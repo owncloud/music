@@ -1,13 +1,15 @@
+<?php use \OCA\Music\Utility\HtmlUtil ?>
+
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
-			src="<?php p(OCP\Template::image_path('music', 'play-previous.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('play-previous') ?>" />
 		<img ng-click="play()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
-			src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('play-big') ?>" />
 		<img ng-click="pause()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
-			src="<?php p(OCP\Template::image_path('music', 'pause-big.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('pause-big') ?>" />
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
-			src="<?php p(OCP\Template::image_path('music', 'play-next.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('play-next') ?>" />
 	</div>
 
 	<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
@@ -31,14 +33,14 @@
 	</div>
 
 	<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ 'Shuffle' | translate }}"
-		src="<?php p(OCP\Template::image_path('music', 'shuffle.svg')) ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
+		src="<?php HtmlUtil::printSvgPath('shuffle') ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ 'Repeat' | translate }}"
-		src="<?php p(OCP\Template::image_path('music', 'repeat.svg')) ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
+		src="<?php HtmlUtil::printSvgPath('repeat') ?>" ng-class="{active: repeat}" ng-click="toggleRepeat()" />
 	<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
-			src="<?php p(OCP\Template::image_path('music', 'sound.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('sound') ?>" />
 		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume == 0"
-			src="<?php p(OCP\Template::image_path('music', 'sound-off.svg')) ?>" />
+			src="<?php HtmlUtil::printSvgPath('sound-off') ?>" />
 		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 	</div>
 </div>

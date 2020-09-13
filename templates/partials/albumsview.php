@@ -24,7 +24,7 @@
 			</list-heading>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				 src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>" />
+				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>" />
 			<track-list
 				tracks="album.tracks"
 				get-track-data="getTrackData"

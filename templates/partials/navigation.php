@@ -1,6 +1,7 @@
-<script type="text/ng-template" id="navigationitem.html">
-	<?php print_unescaped($this->inc('partials/navigationitem')) ?>
-</script>
+<?php
+use \OCA\Music\Utility\HtmlUtil;
+HtmlUtil::printNgTemplate('navigationitem');
+?>
 
 <div id="app-navigation" ng-controller="NavigationController">
 	<ul>
@@ -34,7 +35,7 @@
 			title="{{ trackCountText(playlist) }}"></li>
 		<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
-				<img class="svg" src="<?php p(OCP\Template::image_path('music', 'settings.svg')) ?>">
+				<img class="svg" src="<?php HtmlUtil::printSvgPath('settings') ?>">
 				{{ 'Settings' | translate }}
 			</a>
 		</li>

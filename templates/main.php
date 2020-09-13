@@ -17,41 +17,31 @@
 \OCP\Util::addStyle('settings', 'settings');
 \OCP\Util::addStyle('music', 'public/app');
 
+use \OCA\Music\Utility\HtmlUtil;
 ?>
 
 
-<div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php p($_['lang']) ?>'">
+<div id="app" ng-app="Music" ng-cloak ng-init="started = false; lang = '<?php HtmlUtil::p($_['lang']) ?>'">
 
-	<script type="text/ng-template" id="albumsview.html">
-		<?php print_unescaped($this->inc('partials/albumsview')) ?>
-	</script>
-	<script type="text/ng-template" id="alltracksview.html">
-		<?php print_unescaped($this->inc('partials/alltracksview')) ?>
-	</script>
-	<script type="text/ng-template" id="foldersview.html">
-		<?php print_unescaped($this->inc('partials/foldersview')) ?>
-	</script>
-	<script type="text/ng-template" id="genresview.html">
-		<?php print_unescaped($this->inc('partials/genresview')) ?>
-	</script>
-	<script type="text/ng-template" id="playlistview.html">
-		<?php print_unescaped($this->inc('partials/playlistview')) ?>
-	</script>
-	<script type="text/ng-template" id="settingsview.html">
-		<?php print_unescaped($this->inc('partials/settingsview')) ?>
-	</script>
-	<script type="text/ng-template" id="alphabetnavigation.html">
-		<?php print_unescaped($this->inc('partials/alphabetnavigation')) ?>
-	</script>
+	<?php 
+	HtmlUtil::printNgTemplate('albumsview');
+	HtmlUtil::printNgTemplate('alltracksview');
+	HtmlUtil::printNgTemplate('foldersview');
+	HtmlUtil::printNgTemplate('genresview');
+	HtmlUtil::printNgTemplate('playlistview');
+	HtmlUtil::printNgTemplate('settingsview');
+	HtmlUtil::printNgTemplate('alphabetnavigation'); 
+	?>
 
 	<div ng-controller="MainController">
-		<?php print_unescaped($this->inc('partials/navigation')) ?>
+		<?php HtmlUtil::printPartial('navigation') ?>
 
 		<div id="app-content">
 
-			<?php print_unescaped($this->inc('partials/controls')) ?>
-
-			<?php print_unescaped($this->inc('partials/sidebar')) ?>
+			<?php
+			HtmlUtil::printPartial('controls');
+			HtmlUtil::printPartial('sidebar');
+			?>
 
 			<div id="app-view" ng-view resize-notifier
 				ng-class="{started: started, 'icon-loading': loadIndicatorVisible()}">
@@ -100,7 +90,7 @@
 			</div>
 
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
-				 class="svg clickable" src="<?php p(OCP\Template::image_path('music', 'reload.svg')) ?>"  ng-click="update()"
+				 class="svg clickable" src="<?php HtmlUtil::printSvgPath('reload') ?>"  ng-click="update()"
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 

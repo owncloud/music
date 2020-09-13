@@ -93,7 +93,7 @@
 	<h2 translate>About</h2>
 	<div>
 		<p>
-			<img class="logotype" src="<?php p(OCP\Template::image_path('music', 'logo/music_logotype_horizontal.svg')) ?>" />
+			<img class="logotype" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('logo/music_logotype_horizontal') ?>" />
 			<br/>
 			<span translate>Music</span> <span>v{{ settings.appVersion }}</span>
 			(<a href="https://github.com/owncloud/music/releases" target="_blank" translate>version history</a>)

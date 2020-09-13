@@ -2,7 +2,7 @@
 	<h1>
 		<span ng-click="onHeaderClick()">
 			<span translate>All tracks</span>
-			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php p(OCP\Template::image_path('music', 'play-big.svg')) ?>"/>
+			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
 		</span>
 	</h1>
 

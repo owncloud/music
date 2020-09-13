@@ -40,6 +40,8 @@ class LyricsParser {
 		$offset = 0;
 
 		$fp = \fopen("php://temp", 'r+');
+		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
 		\fputs($fp, $data);
 		\rewind($fp);
 		while ($line = \fgets($fp)) {
@@ -65,8 +67,8 @@ class LyricsParser {
 	 * If the line defines a time offset, this is returned in the reference paramete. If the offset
 	 * parameter holds a non-zero value on call, the offset is applied on any extracted timestamps. 
 	 *
-	 * @param string $line
-	 * @param int [in|out] $offset
+	 * @param string $line One line from the LRC data
+	 * @param int $offset Input/output value for time offset in milliseconds
 	 * @return array
 	 */
 	private static function parseTimestampedLrcLine($line, &$offset) {
@@ -106,7 +108,7 @@ class LyricsParser {
 	 * @return int
 	 */
 	private static function timestampToMs($timestamp) {
-		\sscanf($timestamp, "%d:%f", $minutes, $seconds);
+		list($minutes, $seconds) = \sscanf($timestamp, "%d:%f");
 		return \intval($seconds * 1000 + $minutes * 60 * 1000);
 	}
 }

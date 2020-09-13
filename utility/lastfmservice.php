@@ -136,9 +136,9 @@ class LastfmService {
 					$result = \array_merge($result, $matchingLibArtists);
 				} else if ($includeNotPresent) {
 					$unfoundArtist = new Artist();
-					$unfoundArtist->setName($lastfmArtist['name']);
-					$unfoundArtist->setMbid($lastfmArtist['mbid']);
-					$unfoundArtist->setLastfmUrl($lastfmArtist['url']);
+					$unfoundArtist->setName(Util::arrayGetOrDefault($lastfmArtist, 'name'));
+					$unfoundArtist->setMbid(Util::arrayGetOrDefault($lastfmArtist, 'mbid'));
+					$unfoundArtist->setLastfmUrl(Util::arrayGetOrDefault($lastfmArtist, 'url'));
 					$result[] = $unfoundArtist;
 				}
 			}

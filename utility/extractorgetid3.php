@@ -94,7 +94,9 @@ class ExtractorGetID3 implements Extractor {
 	 */
 	public function parseEmbeddedCoverArt($file) {
 		$fileInfo = $this->extract($file);
-		return self::getTag($fileInfo, 'picture', true);
+		$pic = self::getTag($fileInfo, 'picture', true);
+		\assert($pic === null || \is_array($pic));
+		return $pic;
 	}
 
 	/**
@@ -104,8 +106,6 @@ class ExtractorGetID3 implements Extractor {
 	 * @return string|array|null
 	 */
 	public static function getTag($fileInfo, $tag, $binaryValued = false) {
-		$value = null;
-
 		$value = Util::arrayGetOrDefault($fileInfo, ['comments', $tag, 0])
 				?: Util::arrayGetOrDefault($fileInfo, ['comments', 'text', $tag]);
 

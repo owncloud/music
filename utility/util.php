@@ -12,6 +12,8 @@
 
 namespace OCA\Music\Utility;
 
+use \OCP\Files\Folder;
+
 /**
  * Miscellaneous static utility functions
  */
@@ -116,13 +118,15 @@ class Util {
 	 * will return $arr['a']['b']['c'] if all the keys along the path are found.
 	 *
 	 * @param array $array
-	 * @param int|string|array $key
+	 * @param int|string|array<int|string> $key
 	 * @param mixed|null $default
 	 * @return mixed|null
 	 */
 	public static function arrayGetOrDefault(array $array, $key, $default=null) {
 		if (!\is_array($key)) {
 			$key = [$key];
+		} elseif (empty($key)) {
+			throw new \InvalidArgumentException('Empty array is not a valid key');
 		}
 
 		$temp = $array;
@@ -228,7 +232,7 @@ class Util {
 	 * @param string $relativePath
 	 * @return Folder
 	 */
-	public static function getFolderFromRelativePath($parentFolder, $relativePath) {
+	public static function getFolderFromRelativePath(Folder $parentFolder, $relativePath) {
 		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
 			return $parentFolder->get($relativePath);
 		} else {

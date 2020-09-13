@@ -734,7 +734,8 @@ class AmpacheController extends Controller {
 	}
 
 	private function getAppNameAndVersion() {
-		require \OC::$SERVERROOT . '/version.php'; // for vendor name ownlcoud/nextcloud
+		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include' 
+		include \OC::$SERVERROOT . '/version.php';
 
 		// Note: the following is deprecated since NC14 but the replacement
 		// \OCP\App\IAppManager::getAppVersion is not available before NC14.

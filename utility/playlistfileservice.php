@@ -206,7 +206,7 @@ class PlaylistFileService {
 			$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
 			$line = \trim($line);
 			if (Util::startsWith($line, '#')) {
-				// comment or extended fromat attribute line
+				// comment or extended format attribute line
 				if ($value = self::extractExtM3uField($line, 'EXTENC')) {
 					// update the used encoding with the explicitly defined one
 					$encoding = $value;
@@ -214,7 +214,10 @@ class PlaylistFileService {
 				elseif ($value = self::extractExtM3uField($line, 'EXTINF')) {
 					// The format should be "length,caption". Set caption to null if the field is badly formatted.
 					$parts = \explode(',', $value, 2);
-					$caption = \trim(Util::arrayGetOrDefault($parts, 1));
+					$caption = Util::arrayGetOrDefault($parts, 1);
+					if (\is_string($caption)) {
+						$caption = \trim($caption);
+					}
 				}
 			}
 			else {

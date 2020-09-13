@@ -1240,8 +1240,9 @@ class SubsonicController extends Controller {
 
 			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 			if ($artist->getCoverFileId() !== null) {
+				$par = $this->request->getParams();
 				$url = $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
-						. "?u={$this->request->u}&p={$this->request->p}&v={$this->request->v}&c={$this->request->c}&id=$id";
+						. "?u={$par['u']}&p={$par['p']}&v={$par['v']}&c={$par['c']}&id=$id";
 				$content['largeImageUrl'] = [$url];
 			}
 		}

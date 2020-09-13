@@ -138,7 +138,7 @@ class CoverHelper {
 
 	/**
 	 * Cache the given cover image data
-	 * @param Entity $entity Album or Artist
+	 * @param Album|Artist $entity
 	 * @param string $userId
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover

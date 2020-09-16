@@ -463,7 +463,7 @@ class AmpacheController extends Controller {
 			for ($i = 0, $count = \count($newTrackIds); $i < $count; ++$i) {
 				$trackId = $newTrackIds[$i];
 				if (!$this->trackBusinessLayer->exists($trackId, $userId)) {
-					throw new AmpacheException("Invalid song ID $trackId", 400);
+					throw new AmpacheException("Invalid song ID $trackId", 404);
 				}
 				$trackIds[$newTrackOrdinals[$i]-1] = $trackId;
 			}
@@ -491,7 +491,7 @@ class AmpacheController extends Controller {
 
 		$userId = $this->ampacheUser->getUserId();
 		if (!$this->trackBusinessLayer->exists($song, $userId)) {
-			throw new AmpacheException("Invalid song ID $song", 400);
+			throw new AmpacheException("Invalid song ID $song", 404);
 		}
 
 		$playlist = $this->playlistBusinessLayer->find($listId, $userId);
@@ -521,7 +521,7 @@ class AmpacheController extends Controller {
 		elseif ($song !== null) {
 			$trackIds = $playlist->getTrackIdsAsArray();
 			if (!\in_array($song, $trackIds)) {
-				throw new AmpacheException("Song $song not found in playlist", 400);
+				throw new AmpacheException("Song $song not found in playlist", 404);
 			}
 			$trackIds = Util::arrayDiff($trackIds, [$song]);
 			$message = 'song removed from playlist';
@@ -529,7 +529,7 @@ class AmpacheController extends Controller {
 		elseif ($track !== null) {
 			$trackIds = $playlist->getTrackIdsAsArray();
 			if ($track < 1 || $track > \count($trackIds)) {
-				throw new AmpacheException("Track ordinal $track is out of bounds", 400);
+				throw new AmpacheException("Track ordinal $track is out of bounds", 404);
 			}
 			unset($trackIds[$track-1]);
 			$message = 'song removed from playlist';
@@ -643,7 +643,7 @@ class AmpacheController extends Controller {
 		if ($modifiedCount > 0) {
 			return $this->ampacheResponse(['success' => $message]);
 		} else {
-			throw new AmpacheException("The $type $id was not found", 400);
+			throw new AmpacheException("The $type $id was not found", 404);
 		}
 	}
 

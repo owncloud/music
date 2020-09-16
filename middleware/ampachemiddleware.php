@@ -105,7 +105,7 @@ class AmpacheMiddleware extends Middleware {
 				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());
 			}
 			elseif ($exception instanceof BusinessLayerException) {
-				return $this->errorResponse($controller, 400, 'Entity not found');
+				return $this->errorResponse($controller, 404, 'Entity not found');
 			}
 		}
 		throw $exception;

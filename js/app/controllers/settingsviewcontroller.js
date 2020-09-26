@@ -122,7 +122,7 @@ angular.module('Music').controller('SettingsViewController', [
 					$scope.settings.ampacheKeys.push({
 						description: $scope.ampacheDescription,
 						id: data.id
-						});
+					});
 					$scope.ampacheDescription = '';
 					$scope.ampachePassword = password;
 				} else {

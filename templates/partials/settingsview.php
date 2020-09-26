@@ -49,10 +49,6 @@
 			<td>{{key.description}}</td>
 			<td class="key-action"><a class="icon" ng-class="key.loading ? 'icon-loading-small' : 'icon-delete'" ng-click="removeAPIKey(key)"></a></td>
 		</tr>
-		<tr id="music-ampache-template-row" class="hidden">
-			<td></td>
-			<td class="key-action"><a class="icon icon-loading-small" data-id=""></a></td>
-		</tr>
 	</table>
 	<div id="music-ampache-form">
 		<input type="text" id="music-ampache-description" ng-model="ampacheDescription"

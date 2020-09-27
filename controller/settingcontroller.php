@@ -21,6 +21,7 @@ use \OCP\IRequest;
 use \OCP\IURLGenerator;
 use \OCP\Security\ISecureRandom;
 
+use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\Scanner;
@@ -36,6 +37,7 @@ class SettingController extends Controller {
 	private $userMusicFolder;
 	private $secureRandom;
 	private $urlGenerator;
+	private $logger;
 
 	public function __construct($appName,
 								IRequest $request,
@@ -44,7 +46,8 @@ class SettingController extends Controller {
 								$userId,
 								UserMusicFolder $userMusicFolder,
 								ISecureRandom $secureRandom,
-								IURLGenerator $urlGenerator) {
+								IURLGenerator $urlGenerator,
+								Logger $logger) {
 		parent::__construct($appName, $request);
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
@@ -53,6 +56,7 @@ class SettingController extends Controller {
 		$this->userMusicFolder = $userMusicFolder;
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -73,9 +77,18 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
+	public function userExcludedPaths($value) {
+		$success = $this->userMusicFolder->setExcludedPaths($this->userId, $value);
+		return new JSONResponse(['success' => $success]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
 	public function getAll() {
 		return [
 			'path' => $this->userMusicFolder->getPath($this->userId),
+			'excludedPaths' => $this->userMusicFolder->getExcludedPaths($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),

@@ -13,13 +13,47 @@
 	</div>
 	<div>
 		<div class="label-container">
+			<label for="excluded-paths" translate>Paths to exclude from your music collection</label>:
+		</div>
+		<em>
+			<p translate>Specify folders within your music collection path which shall be excluded from the scanning.
+				<strong class="clickable" ng-click="showExcludeHint=true" ng-hide="showExcludeHint" translate>Show more…</strong>
+			</p>
+			<div ng-show="showExcludeHint">
+				<p translate>You can use the wild cards '?', '*', and '**':</p>
+				<ul class="info-list">
+					<li translate><strong>?</strong> matches any one character within a path segment</li>
+					<li translate><strong>*</strong> matches zero or more arbitrary characters within a path segment</li>
+					<li translate><strong>**</strong> matches zero or more arbitrary characters including path segment separators '/'</li>
+				</ul>
+				<p translate>Paths with a leading '/' character are resolved relative to the user home directory and others relative to the music library base path.</p>
+				<p translate>Changes to the excluded paths will only take effect upon rescan.</p>
+			</div>
+		</em>
+		<table id="excluded-paths" class="grid" ng-show="settings.ampacheKeys.length">
+			<tr class="excluded-path-row" ng-repeat="path in settings.excludedPaths track by $index">
+				<td><input type="text" ng-model="settings.excludedPaths[$index]" ng-enter="$event.target.blur()" ng-blur="commitExcludedPaths()"/></td>
+				<td class="key-action"><a class="icon icon-folder" ng-click="selectExcludedPath($index)" title="{{ 'Select folder' | translate }}"></a></td>
+				<td class="key-action"><a class="icon icon-delete" ng-click="removeExcludedPath($index)" title="{{ 'Remove' | translate }}"></a></td>
+			</tr>
+			<tr class="add-row" ng-click="addExcludedPath()">
+				<td><a class="icon" ng-class="savingExcludedPaths ? 'icon-loading-small' : 'icon-add'"></a></td>
+				<td class="key-action"></td>
+				<td class="key-action"></td>
+			</tr>
+		</table>
+	</div>
+
+	<h2 translate>Reset</h2>
+	<div>
+		<div class="label-container">
 			<label for="reset-collection" translate>Reset music collection</label>
 		</div>
 		<div class="icon-loading-small" ng-show="resetOngoing" id="reset-in-progress"></div>
 		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete"
 			id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
-		<p><em translate>There should usually be no need to do this. In case you find it necessary, you have probably found a bug which should be reported to the <a href="{{issueTrackerUrl}}" target="_blank">issues</a>.</em></p>
+		<p><em translate>This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href="{{issueTrackerUrl}}" target="_blank">issue tracker</a>.</em></p>
 	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>

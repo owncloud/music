@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019, 2020
  */
 
 namespace OCA\Music\Utility;
@@ -17,6 +17,7 @@ use \OCP\Files\IRootFolder;
 use \OCP\IConfig;
 
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\Utility\Util;
 
 /**
  * Manage the user-specific music folder setting
@@ -42,6 +43,7 @@ class UserMusicFolder {
 	/**
 	 * @param string $userId
 	 * @param string $path
+	 * @return bool
 	 */
 	public function setPath($userId, $path) {
 		$success = false;
@@ -73,11 +75,94 @@ class UserMusicFolder {
 
 	/**
 	 * @param string $userId
+	 * @param string[] $paths
+	 * @return bool
+	 */
+	public function setExcludedPaths($userId, $paths) {
+		$this->configManager->setUserValue($userId, $this->appName, 'excluded_paths', \json_encode($paths));
+		return true;
+	}
+
+	/**
+	 * @param string $userId
+	 * @return string[]
+	 */
+	public function getExcludedPaths($userId) {
+		$paths = $this->configManager->getUserValue($userId, $this->appName, 'excluded_paths');
+		if (empty($paths)) {
+			return [];
+		} else {
+			return \json_decode($paths);
+		}
+	}
+
+	/**
+	 * @param string $userId
 	 * @return Folder
 	 */
 	public function getFolder($userId) {
 		$userHome = $this->rootFolder->getUserFolder($userId);
 		$path = $this->getPath($userId);
 		return Util::getFolderFromRelativePath($userHome, $path);
+	}
+
+	/**
+	 * @param string $filePath
+	 * @param string $userId
+	 * @return boolean
+	 */
+	public function pathBelongsToMusicLibrary($filePath, $userId) {
+		$filePath = self::normalizePath($filePath);
+		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());
+
+		return Util::startsWith($filePath, $musicPath)
+				&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
+	}
+
+	private function pathIsExcluded($filePath, $musicPath, $userId) {
+		$userRootPath = $this->rootFolder->getUserFolder($userId)->getPath();
+		$excludedPaths = $this->getExcludedPaths($userId);
+
+		foreach ($excludedPaths as $excludedPath) {
+			if (Util::startsWith($excludedPath, '/')) {
+				$excludedPath = $userRootPath . $excludedPath;
+			} else {
+				$excludedPath = $musicPath . '/' . $excludedPath;
+			}
+			if (self::pathMatchesPattern($filePath, $excludedPath)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static function pathMatchesPattern($path, $pattern) {
+		if (\strpos($pattern, '*') === false && \strpos($pattern, '?') === false) {
+			// no wildcards, begininning of the path should match the pattern exactly
+			// and the next character after the matching part (if any) should be '/'
+			return Util::startsWith($path, $pattern)
+				&& (\strlen($path) === \strlen($pattern) || $path[\strlen($pattern)] === '/');
+		}
+		else {
+			// some wildcard characters in the pattern, convert the pattern into regex:
+			// - '?' matches exactly one arbitrary character except the directory separator '/'
+			// - '*' matches zero or more arbitrary characters except the directory separator '/'
+			// - '**' matches zero or more arbitrary characters including directory separator '/'
+			$pattern = \preg_quote($pattern, '/');
+			$pattern = \str_replace('\*\*', '.*', $pattern);
+			$pattern = \str_replace('\*', '[^\/]*', $pattern);
+			$pattern = \str_replace('\?', '[^\/]', $pattern);
+			$pattern = '/' . $pattern . '/';
+
+			return (1 === \preg_match($pattern, $path));
+		}
+	}
+
+	private static function normalizePath($path) {
+		// The file system may create paths where there are two consecutive
+		// path seprator characters (/). This was seen with an external local
+		// folder on NC13, but may apply to other cases, too. Normalize such paths.
+		return \str_replace('//', '/', $path);
 	}
 }

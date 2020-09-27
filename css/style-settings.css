@@ -40,6 +40,12 @@
 	content: " ↗";
 }
 
+#music-user ul.info-list {
+	list-style: unset;
+	list-style-position: inside;
+	padding-left: 10px;
+}
+
 #music-user .label-container {
 	display: inline-block;
 }
@@ -47,6 +53,10 @@
 #music-user input:invalid {
 	box-shadow: #F00 0px 0px 1.5px 1px;
 	outline: 0;
+}
+
+#music-user #excluded-paths .key-action {
+	width: 0;
 }
 
 #music-user #reset-collection {
@@ -100,9 +110,21 @@
 	text-align: right;
 }
 
-#music-user table td.key-action a {
+#music-user table td.key-action a,
+#music-user table .add-row td a {
 	padding: 10px 16px;
 	opacity: .5;
+}
+
+#music-user table .add-row,
+#music-user table .add-row * {
+	border: none;
+	cursor: pointer;
+}
+
+#music-user table .excluded-path-row td {
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 #music-user .info, #music-user .warning {

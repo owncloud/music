@@ -160,7 +160,8 @@ class Music extends App {
 				$c->query('UserId'),
 				$c->query('UserMusicFolder'),
 				$c->query('SecureRandom'),
-				$c->query('URLGenerator')
+				$c->query('URLGenerator'),
+				$c->query('Logger')
 			);
 		});
 

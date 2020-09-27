@@ -99,7 +99,7 @@ class Scanner extends PublicEmitter {
 		}
 
 		// skip files that aren't inside the user specified path
-		if (!$this->pathIsUnderMusicFolder($filePath, $userId)) {
+		if (!$this->userMusicFolder->pathBelongsToMusicLibrary($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 			return;
 		}
@@ -118,12 +118,6 @@ class Scanner extends PublicEmitter {
 
 	private static function isPlaylistMime($mime) {
 		return $mime == 'audio/mpegurl' || $mime == 'audio/x-scpls';
-	}
-
-	private function pathIsUnderMusicFolder($filePath, $userId) {
-		$musicFolder = $this->userMusicFolder->getFolder($userId);
-		$musicPath = $musicFolder->getPath();
-		return Util::startsWith($filePath, $musicPath);
 	}
 
 	private function updateImage($file, $userId) {
@@ -424,10 +418,11 @@ class Scanner extends PublicEmitter {
 			return [];
 		}
 
-		// Search files with mime 'audio/*' but filter out the playlist files
+		// Search files with mime 'audio/*' but filter out the playlist files and files under excluded folders
 		$files = $folder->searchByMime('audio');
-		return \array_filter($files, function ($f) {
-			return !self::isPlaylistMime($f->getMimeType());
+		return \array_filter($files, function ($f) use ($userId) {
+			return !self::isPlaylistMime($f->getMimeType())
+				&& $this->userMusicFolder->pathBelongsToMusicLibrary($f->getPath(), $userId);
 		});
 	}
 
@@ -444,7 +439,12 @@ class Scanner extends PublicEmitter {
 			return [];
 		}
 
-		return $folder->searchByMime('image');
+		$images = $folder->searchByMime('image');
+
+		// filter out any images in the excluded folders
+		return \array_filter($images, function($image) use ($userId) {
+			return $this->userMusicFolder->pathBelongsToMusicLibrary($image->getPath(), $userId);
+		});
 	}
 
 	private function getScannedFileIds($userId) {
@@ -598,7 +598,7 @@ class Scanner extends PublicEmitter {
 				'title'      => $metadata['title'],
 				'artist'     => $metadata['artist'],
 				'cover'      => $cover,
-				'in_library' => $this->pathIsUnderMusicFolder($file->getPath(), $userId)
+				'in_library' => $this->userMusicFolder->pathBelongsToMusicLibrary($file->getPath(), $userId)
 			];
 		}
 		return null;

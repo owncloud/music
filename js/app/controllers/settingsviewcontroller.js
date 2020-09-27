@@ -20,6 +20,8 @@ angular.module('Music').controller('SettingsViewController', [
 		$scope.ampacheClientsUrl = 'https://github.com/owncloud/music/wiki/Ampache';
 		$scope.subsonicClientsUrl = 'https://github.com/owncloud/music/wiki/Subsonic';
 
+		var savedExcludedPaths = [];
+
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];
 
@@ -72,6 +74,55 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
+		$scope.selectExcludedPath = function(index) {
+			OC.dialogs.filepicker(
+				gettextCatalog.getString('Path to exclude from your music collection'),
+				function (path) {
+					if (path.substr(-1) !== '/') {
+						path = path + '/';
+					}
+					$scope.settings.excludedPaths[index] = path;
+					$scope.commitExcludedPaths();
+				},
+				false,
+				'httpd/unix-directory',
+				true
+			);
+		};
+
+		$scope.removeExcludedPath = function(index) {
+			$scope.settings.excludedPaths.splice(index, 1);
+			$scope.commitExcludedPaths();
+		};
+
+		$scope.addExcludedPath = function() {
+			$scope.settings.excludedPaths.push('');
+			// no commit here, as the empty path is meaningless
+		};
+
+		$scope.commitExcludedPaths = function() {
+			// Get the entered paths, trimming excess white space and filtering out any empty paths
+			var paths = $scope.settings.excludedPaths;
+			paths = _.map(paths, function(path) { return path.trim(); });
+			paths = _.filter(paths, function(path) { return path !== ''; });
+
+			// Send the paths to the back-end if there are any changes
+			if (!_.isEqual(paths, savedExcludedPaths)) {
+				$scope.savingExcludedPaths = true;
+				Restangular.all('settings/user/exclude_paths').post({value: paths}).then(
+					function(data) {
+						// success
+						$scope.savingExcludedPaths = false;
+						savedExcludedPaths = paths;
+					},
+					function(response) {
+						// error handling
+						$scope.savingExcludedPaths = false;
+					}
+				);
+			}
+		};
+
 		$scope.resetCollection = function() {
 			OC.dialogs.confirm(
 				gettextCatalog.getString('Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!'),
@@ -88,7 +139,7 @@ angular.module('Music').controller('SettingsViewController', [
 						var parent = $scope.$parent;
 						var executeReset = function() {
 							Restangular.all('resetscanned').post().then(
-									function (data) {
+									function(data) {
 										if (data.success) {
 											parent.resetScanned();
 											parent.update();
@@ -166,6 +217,7 @@ angular.module('Music').controller('SettingsViewController', [
 			Restangular.one('settings').get().then(function (value) {
 				$scope.settings = value;
 				$rootScope.loading = false;
+				savedExcludedPaths = _.clone(value.excludedPaths);
 			});
 		});
 

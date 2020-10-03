@@ -140,9 +140,11 @@ class UserMusicFolder {
 	private static function pathMatchesPattern($path, $pattern) {
 		if (\strpos($pattern, '*') === false && \strpos($pattern, '?') === false) {
 			// no wildcards, begininning of the path should match the pattern exactly
-			// and the next character after the matching part (if any) should be '/'
+			// and either the last character of the pattern or the next character after the matching part
+			// (if any) should be '/'
+			$patternLen = \strlen($pattern);
 			return Util::startsWith($path, $pattern)
-				&& (\strlen($path) === \strlen($pattern) || $path[\strlen($pattern)] === '/');
+				&& (\strlen($path) === $patternLen || $pattern[$patternLen-1] === '/' || $path[$patternLen] === '/');
 		}
 		else {
 			// some wildcard characters in the pattern, convert the pattern into regex:

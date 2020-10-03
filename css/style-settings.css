@@ -127,6 +127,10 @@
 	padding-bottom: 3px;
 }
 
+#music-user table .excluded-path-row input[type="text"] {
+	max-width: unset;
+}
+
 #music-user .info, #music-user .warning {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -181,7 +185,7 @@
 }
 
 #music-user input[type="text"] {
-	max-width: 320px;
+	max-width: 330px;
 	width: 100%;
 }
 

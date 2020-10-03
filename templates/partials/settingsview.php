@@ -30,7 +30,7 @@
 				<p translate>Changes to the excluded paths will only take effect upon rescan.</p>
 			</div>
 		</em>
-		<table id="excluded-paths" class="grid" ng-show="settings.ampacheKeys.length">
+		<table id="excluded-paths" class="grid">
 			<tr class="excluded-path-row" ng-repeat="path in settings.excludedPaths track by $index">
 				<td><input type="text" ng-model="settings.excludedPaths[$index]" ng-enter="$event.target.blur()" ng-blur="commitExcludedPaths()"/></td>
 				<td class="key-action"><a class="icon icon-folder" ng-click="selectExcludedPath($index)" title="{{ 'Select folder' | translate }}"></a></td>

@@ -516,17 +516,13 @@ class Scanner extends PublicEmitter {
 	 */
 	public function removeUnavailableFiles($userId, $userHome) {
 		$indexedFiles = $this->getScannedFileIds($userId);
-		$unavailableFiles = [];
-		foreach ($indexedFiles as $fileId) {
-			$fileNodes = $userHome->getById($fileId);
-			if (empty($fileNodes)) {
-				$this->logger->log("File $fileId is not available for user $userId, removing", 'info');
-				$unavailableFiles[] = $fileId;
-			}
-		}
+		$availableFiles = $this->getAllMusicFileIds($userId);
+		$unavailableFiles = Util::arrayDiff($indexedFiles, $availableFiles);
 
 		$count = \count($unavailableFiles);
 		if ($count > 0) {
+			$this->logger->log('The following files are no longer available within the library of the '.
+								"user $userId, removing: " . \print_r($unavailableFiles, true), 'info');
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
 		return $count;

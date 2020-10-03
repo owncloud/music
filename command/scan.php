@@ -99,7 +99,7 @@ class Scan extends BaseCommand {
 			$output->writeln("Checking availability of previously scanned files of <info>$user</info>...");
 			$removedCount = $this->scanner->removeUnavailableFiles($user, $userHome);
 			if ($removedCount > 0) {
-				$output->writeln("Removed $removedCount tracks which are no longer accessible by $user");
+				$output->writeln("Removed $removedCount tracks which are no longer within the library of <info>$user</info>");
 			}
 		}
 

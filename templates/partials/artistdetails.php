@@ -22,7 +22,7 @@
 		<span class="missing-content" ng-if="!lastfmInfo.api_key_set"
 			title="{{ 'Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details.' | translate }}"
 			translate>(Last.fm has not been set up)</span>
-		<span ng-if="lastfmInfo.api_key_set && !lastfmInfo.connection_ok"
+		<span class="missing-content" ng-if="lastfmInfo.api_key_set && !lastfmInfo.connection_ok"
 			title="{{ 'Problem connecting Last.fm. The API key may be invalid.' | translate }}"
 			translate>(Failed to connect Last.fm)</span>
 		<p ng-if="artistBio"

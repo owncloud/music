@@ -138,23 +138,26 @@ class UserMusicFolder {
 	}
 
 	private static function pathMatchesPattern($path, $pattern) {
+		// normalize the pattern so that there is no trailing '/'
+		$pattern = \rtrim($pattern, '/');
+
 		if (\strpos($pattern, '*') === false && \strpos($pattern, '?') === false) {
 			// no wildcards, begininning of the path should match the pattern exactly
-			// and either the last character of the pattern or the next character after the matching part
-			// (if any) should be '/'
+			// and the next character after the matching part (if any) should be '/'
 			$patternLen = \strlen($pattern);
 			return Util::startsWith($path, $pattern)
-				&& (\strlen($path) === $patternLen || $pattern[$patternLen-1] === '/' || $path[$patternLen] === '/');
+				&& (\strlen($path) === $patternLen || $path[$patternLen] === '/');
 		}
 		else {
 			// some wildcard characters in the pattern, convert the pattern into regex:
 			// - '?' matches exactly one arbitrary character except the directory separator '/'
 			// - '*' matches zero or more arbitrary characters except the directory separator '/'
 			// - '**' matches zero or more arbitrary characters including directory separator '/'
-			$pattern = \preg_quote($pattern, '/');
-			$pattern = \str_replace('\*\*', '.*', $pattern);
-			$pattern = \str_replace('\*', '[^\/]*', $pattern);
-			$pattern = \str_replace('\?', '[^\/]', $pattern);
+			$pattern = \preg_quote($pattern, '/');				// escape regex meta characters
+			$pattern = \str_replace('\*\*', '.*', $pattern);	// convert ** to its regex equivaleant
+			$pattern = \str_replace('\*', '[^\/]*', $pattern);	// convert * to its regex equivaleant
+			$pattern = \str_replace('\?', '[^\/]', $pattern);	// convert ? to its regex equivaleant
+			$pattern = $pattern . '(\/.*)?$';					// after given pattern, there should be '/' or nothing
 			$pattern = '/' . $pattern . '/';
 
 			return (1 === \preg_match($pattern, $path));

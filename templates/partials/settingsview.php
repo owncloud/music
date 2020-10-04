@@ -7,7 +7,7 @@
 		<div class="icon-loading-small" ng-show="pathChangeOngoing" id="path-change-in-progress"></div>
 		<input type="text" id="music-path" ng-class="{ 'invisible': pathChangeOngoing }"
 			ng-model="settings.path" ng-click="selectPath()"/>
-		<span style="color:red" ng-show="errorPath" translate>Failed to save music path</span>
+		<span style="color:red" ng-show="errorPath" translate>Failed to save the music collection path</span>
 		<p><em translate>This setting specifies the folder which will be scanned for music.</em></p>
 		<p><em translate>Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists.</em></p>
 	</div>
@@ -42,6 +42,7 @@
 				<td class="key-action"></td>
 			</tr>
 		</table>
+		<span style="color:red" ng-show="errorIgnoredPaths" translate>Failed to save the ignored paths</span>
 	</div>
 
 	<h2 translate>Reset</h2>

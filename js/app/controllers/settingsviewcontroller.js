@@ -113,11 +113,13 @@ angular.module('Music').controller('SettingsViewController', [
 					function(data) {
 						// success
 						$scope.savingExcludedPaths = false;
+						$scope.errorIgnoredPaths = false;
 						savedExcludedPaths = paths;
 					},
 					function(response) {
 						// error handling
 						$scope.savingExcludedPaths = false;
+						$scope.errorIgnoredPaths = true;
 					}
 				);
 			}

@@ -24,6 +24,10 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	var MAX_MATCHES_IN_PLAYLIST = 1000;
 
 	var searchbox = $('#searchbox');
+	if (searchbox.length === 0) {
+		return; // NC20+ with the new "unified search", disable searching for now
+	}
+
 	$scope.queryString = searchbox.val().trim();
 
 	/** Conduct the search when there is a pause in typing in text */

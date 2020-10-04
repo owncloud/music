@@ -8,7 +8,7 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
-$(document).ready(function() {
+window.addEventListener('DOMContentLoaded', function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
 	if ($('audio').length === 0) {

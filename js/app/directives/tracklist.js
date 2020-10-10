@@ -267,7 +267,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		removeChildNodes(data.element[0]);
 
 		var height = estimateContentsHeight(data);
-		placeholder = document.createElement('li');
+		var placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
 		placeholder.className = 'placeholder';
 		data.element[0].appendChild(placeholder);

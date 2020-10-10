@@ -97,7 +97,7 @@ angular.module('Music').controller('SidebarController', [
 		};
 
 		$scope.formatLinkList = function(linkArray) {
-			htmlLinks = _.map(linkArray, function(item) {
+			var htmlLinks = _.map(linkArray, function(item) {
 				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
 			});
 			return htmlLinks.join(', ');

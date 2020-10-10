@@ -1,7 +1,7 @@
 {
 	"name": "music",
 	"description": "Music player and server for ownCloud",
-	"version": "0.0.1",
+	"version": "0.16.1-alpha1",
 	"private": true,
 	"homepage": "https://github.com/owncloud/music",
 	"repository": {
@@ -11,13 +11,13 @@
 	"bugs": "https://github.com/owncloud/music/issues",
 	"dependencies": {},
 	"devDependencies": {
-		"grunt": "*",
+		"grunt": "^1.3.0",
+		"grunt-angular-gettext": "^2.5.3",
 		"grunt-cli": "*",
 		"grunt-contrib-concat": "*",
 		"grunt-contrib-jshint": "*",
-		"grunt-contrib-watch": "*",
-		"grunt-wrap": "*",
-		"grunt-angular-gettext": "*"
+		"grunt-contrib-watch": "^1.1.0",
+		"grunt-wrap": "*"
 	},
 	"engine": "node >= 0.8"
 }

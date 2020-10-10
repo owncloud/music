@@ -289,7 +289,7 @@ function($rootScope, $timeout, inViewService) {
 
 	return {
 		scope: {},
-		controller: function($scope, $element) {
+		controller: ['$scope', '$element', function($scope, $element) {
 			this.inViewPort = false;
 			this.leaveViewPending = false;
 			this.pendingEnterView = null;
@@ -304,7 +304,7 @@ function($rootScope, $timeout, inViewService) {
 			};
 
 			_instances.push(this);
-		},
+		}],
 		link: function(scope, element, attributes, controller) {
 			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
 

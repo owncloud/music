@@ -62,10 +62,12 @@ module.exports = function(grunt) {
 			app: {
 				src: ['<%= meta.productionJs %>app.js'],
 				dest: '<%= meta.productionJs %>app.js',
-				wrapper: [
-					'(function(angular, $, oc_requesttoken, undefined){\n\n\'use strict\';\n\n',
-					'\n})(angular, jQuery, oc_requesttoken);'
-				]
+				options: {
+					wrapper: [
+						'(function(angular, $, oc_requesttoken, undefined){\n\n\'use strict\';\n\n',
+						'\n})(angular, jQuery, oc_requesttoken);'
+					]
+				}
 			}
 		},
 

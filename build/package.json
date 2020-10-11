@@ -35,6 +35,7 @@
 	"engine": "node >= 0.8",
 	"scripts": {
 		"build": "webpack",
-		"watch": "webpack --watch"
+		"build-dev": "webpack --mode=\"development\"",
+		"watch": "webpack --mode=\"development\" --watch"
 	}
 }

@@ -67,7 +67,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 						self.trigger('rendered');
 					};
 
-					var onError = function(error) {
+					var onError = function(_error) {
 						loadIndicator.hide();
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
 					};

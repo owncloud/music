@@ -175,7 +175,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 		}
 	};
 
-	$scope.$watch('volume', function(newValue, oldValue) {
+	$scope.$watch('volume', function(newValue, _oldValue) {
 		$scope.player.setVolume(newValue);
 		Cookies.set('oc_music_volume', newValue, { expires: 3650 });
 	});
@@ -322,7 +322,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 			try {
 				navigator.mediaSession.setActionHandler(action, function() { $timeout(handler); });
 			} catch (error) {
-				console.log("The media control '" + action + "' is not supported by the browser");
+				console.log('The media control "' + action + '"" is not supported by the browser');
 			}
 		};
 
@@ -341,9 +341,9 @@ function ($scope, $rootScope, playlistService, libraryService,
 					artist: track.artistName,
 					album: track.album.name,
 					artwork: [{
-						sizes: "190x190",
+						sizes: '190x190',
 						src: track.album.cover,
-						type: ""
+						type: ''
 					}]
 				});
 			}

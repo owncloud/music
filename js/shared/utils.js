@@ -28,7 +28,7 @@ OCA.Music.Utils = {
 	 */
 	darkThemeActive: function() {
 		// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
-		return OCA.hasOwnProperty('Accessibility')
+		return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility')
 			&& (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
 	},
 
@@ -67,7 +67,7 @@ OCA.Music.Utils = {
 	 * Given a file base name, returns the "stem" i.e. the name without extension
 	 */
 	dropFileExtension: function(filename) {
-		return filename.replace(/\.[^/.]+$/, "");
+		return filename.replace(/\.[^/.]+$/, '');
 	},
 
 	/**

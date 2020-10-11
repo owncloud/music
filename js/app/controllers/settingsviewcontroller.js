@@ -61,7 +61,7 @@ angular.module('Music').controller('SettingsViewController', [
 								}
 								$scope.pathChangeOngoing = false;
 							},
-							function(response) { // error handling
+							function(_error) { // error handling
 								$scope.pathChangeOngoing = false;
 								$scope.errorPath = true;
 							}
@@ -110,13 +110,13 @@ angular.module('Music').controller('SettingsViewController', [
 			if (!_.isEqual(paths, savedExcludedPaths)) {
 				$scope.savingExcludedPaths = true;
 				Restangular.all('settings/user/exclude_paths').post({value: paths}).then(
-					function(data) {
+					function(_data) {
 						// success
 						$scope.savingExcludedPaths = false;
 						$scope.errorIgnoredPaths = false;
 						savedExcludedPaths = paths;
 					},
-					function(response) {
+					function(_error) {
 						// error handling
 						$scope.savingExcludedPaths = false;
 						$scope.errorIgnoredPaths = true;
@@ -148,10 +148,10 @@ angular.module('Music').controller('SettingsViewController', [
 										}
 										$scope.resetOngoing = false;
 									},
-									function(response) { // error handling
+									function(error) { // error handling
 										$scope.resetOngoing = false;
 										OC.Notification.showTemporary(
-												gettextCatalog.getString('Failed to reset the collection: ') + reason);
+												gettextCatalog.getString('Failed to reset the collection: ') + error.status);
 									}
 								);
 						};
@@ -204,7 +204,7 @@ angular.module('Music').controller('SettingsViewController', [
 			range.selectNode(document.getElementById(elementId));
 			window.getSelection().removeAllRanges(); // clear current selection
 			window.getSelection().addRange(range); // to select text
-			var success = document.execCommand("copy");
+			var success = document.execCommand('copy');
 
 			if (success) {
 				OC.Notification.showTemporary(

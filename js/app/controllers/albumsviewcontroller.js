@@ -39,7 +39,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
 		var lastRoute = $route.current;
-		$scope.$on('$locationChangeSuccess', function(event) {
+		$scope.$on('$locationChangeSuccess', function(_event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
 			}

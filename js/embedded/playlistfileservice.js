@@ -49,7 +49,7 @@ OCA.Music.PlaylistFileService = function() {
 			url = OC.generateUrl('apps/music/api/playlists/{listId}/import', {listId: newList.id});
 
 			$.post(url, {filePath: path}, function(result) {
-				var message = t('music', "Imported {count} tracks to a new playlist '{name}'.",
+				var message = t('music', 'Imported {count} tracks to a new playlist \'{name}\'.',
 								{ count: result.imported_count, name: name });
 				if (result.failed_count > 0) {
 					message += ' ' + t('music', '{count} files were skipped.', { count: result.failed_count });

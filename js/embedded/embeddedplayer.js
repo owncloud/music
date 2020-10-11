@@ -108,7 +108,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 								.attr('class', 'icon-more')
 								.attr('alt', t('music', 'Actions'))
 								.click(function(event) {
-									if (!playlistMenu.is(":visible")) {
+									if (!playlistMenu.is(':visible')) {
 										onMenuOpen(playlistMenu);
 									}
 									playlistMenu.toggleClass('open');
@@ -373,7 +373,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
 		// Also the internal layout of the bar is responsive to the available width.
-		resizeControls = function() {
+		var resizeControls = function() {
 			var width = getViewWidth();
 			musicControls.css('width', width);
 			if (width > 768) {
@@ -437,7 +437,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			artist: tempTitle,
 			cover: null
 		});
-		musicAppLinkElements().css('cursor', 'default').off("click");
+		musicAppLinkElements().css('cursor', 'default').off('click');
 
 		// Add a small delay before actually starting to load any data. This is
 		// to avoid flooding HTTP requests in case the user rapidly jumps over
@@ -511,7 +511,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			try {
 				navigator.mediaSession.setActionHandler(action, handler);
 			} catch (error) {
-				console.log("The media control '" + action + "' is not supported by the browser");
+				console.log('The media control "' + action + '" is not supported by the browser');
 			}
 		};
 
@@ -531,9 +531,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				artist: data.artist,
 				album: '',
 				artwork: [{
-					sizes: "200x200",
+					sizes: '200x200',
 					src: data.cover,
-					type: ""
+					type: ''
 				}]
 			});
 		}
@@ -584,7 +584,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	};
 
 	this.isVisible = function() {
-		return musicControls !== null && musicControls.is(":visible");
+		return musicControls !== null && musicControls.is(':visible');
 	};
 };
 

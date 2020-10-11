@@ -53,7 +53,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			Restangular.one('playlists', listId).all("remove").post({indices: trackIndex});
+			Restangular.one('playlists', listId).all('remove').post({indices: trackIndex});
 		};
 
 		function play(startIndex /*optional*/) {
@@ -110,7 +110,7 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			Restangular.one('playlists', listId).all("reorder").post({fromIndex: srcIndex, toIndex: dstIndex});
+			Restangular.one('playlists', listId).all('reorder').post({fromIndex: srcIndex, toIndex: dstIndex});
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {

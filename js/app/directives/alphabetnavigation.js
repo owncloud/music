@@ -23,7 +23,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 		},
 		templateUrl: 'alphabetnavigation.html',
 		replace: true,
-		link: function(scope, element, attrs, ctrl) {
+		link: function(scope, element, _attrs, _ctrl) {
 
 			var links = alphabetIndexingService.indexChars();
 			var linksShort = [
@@ -91,16 +91,16 @@ function($rootScope, $timeout, alphabetIndexingService) {
 
 				if (height < 200) {
 					scope.links = linksExtraShort;
-					element.find("a").removeClass("dotted");
+					element.find('a').removeClass('dotted');
 				} else if (height < 300) {
 					scope.links = linksShort;
-					element.find("a").removeClass("dotted");
+					element.find('a').removeClass('dotted');
 				} else if (height < 450) {
 					scope.links = links;
-					element.find("a").addClass("dotted");
+					element.find('a').addClass('dotted');
 				} else {
 					scope.links = links;
-					element.find("a").removeClass("dotted");
+					element.find('a').removeClass('dotted');
 				}
 				scope.$apply();
 

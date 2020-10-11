@@ -89,7 +89,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		 * Set classes of the track items according to current scope
 		 */
 		function updateClasses() {
-			var elems = htmlElem.querySelectorAll(".playing, .current");
+			var elems = htmlElem.querySelectorAll('.playing, .current');
 			_(elems).each(function (el) {
 				el.classList.remove('current');
 				el.classList.remove('playing');

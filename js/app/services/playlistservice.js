@@ -193,7 +193,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				}
 			}
 		},
-		publish: function(name /*, ...*/) {
+		publish: function(_name /*, ...*/) {
 			// pass all arguments straight through to $rootScope.$emit
 			var args = Array.prototype.slice.call(arguments);
 			$rootScope.$emit.apply($rootScope, args);

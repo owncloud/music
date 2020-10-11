@@ -7,11 +7,11 @@
  * @author Morris Jobke <morris.jobke@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2018 Pauli Järvinen
+ * @copyright 2018 - 2020 Pauli Järvinen
  *
  */
 
-angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
+angular.module('Music').factory('ArtistFactory', ['Restangular', function (Restangular) {
 	return {
 		getArtists: function() {
 			return Restangular.all('prepare_collection').post().then(function(reply) {

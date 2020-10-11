@@ -9,7 +9,7 @@
  *
  */
 
-angular.module('Music').service('libraryService', ['$rootScope', function($rootScope) {
+angular.module('Music').service('libraryService', [function() {
 
 	var artists = null;
 	var albums = null;
@@ -123,7 +123,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 
 			// Skip the normalization if the browser is ancient and doesn't support it
 			if ('normalize' in String.prototype) {
-				str = str.normalize('NFD').replace(diacriticRegExp, "");
+				str = str.normalize('NFD').replace(diacriticRegExp, '');
 			}
 		}
 
@@ -134,7 +134,7 @@ angular.module('Music').service('libraryService', ['$rootScope', function($rootS
 	 *  As an exception, quoted substrings are kept as one entity. The quotation marks are removed.
 	 */
 	function splitSearchQuery(query) {
-		var regExQuoted = /\".*?\"/g;
+		var regExQuoted = /".*?"/g;
 
 		// Get any quoted substring. Also the quotation marks get extracted, and they are sliced off separately.
 		var quoted = query.match(regExQuoted) || [];

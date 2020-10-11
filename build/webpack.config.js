@@ -15,6 +15,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   mode: 'production',
+  devtool: 'source-map',
   entry: {
     app: '../js/config/index.js',
     files_music_player: '../js/embedded/index.js'

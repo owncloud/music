@@ -8,6 +8,7 @@
     "angular-sanitize" : "1.8.0",
     "javascript-detect-element-resize" : "",
     "js-cookie" : "",
+    "lodash" : "",
     "restangular" : ""
   }
 }

@@ -1,21 +1,11 @@
 <?php
 
 // scripts
-\OCP\Util::addScript('music', 'vendor/angular/angular.min');
-\OCP\Util::addScript('music', 'vendor/angular-gettext/dist/angular-gettext.min');
-\OCP\Util::addScript('music', 'vendor/angular-route/angular-route.min');
-\OCP\Util::addScript('music', 'vendor/angular-sanitize/angular-sanitize.min');
-\OCP\Util::addScript('music', 'vendor/angular-scroll/angular-scroll.min');
-\OCP\Util::addScript('music', 'vendor/aurora/aurora-bundle.min');
-\OCP\Util::addScript('music', 'vendor/dragdrop/draganddrop.min');
-\OCP\Util::addScript('music', 'vendor/javascript-detect-element-resize/jquery.resize');
-\OCP\Util::addScript('music', 'vendor/js-cookie/src/js.cookie');
-\OCP\Util::addScript('music', 'vendor/restangular/dist/restangular.min');
-\OCP\Util::addScript('music', 'public/app');
+\OCP\Util::addScript('music', 'public/webpack.app');
 
 // stylesheets
+\OCP\Util::addStyle('music', '../js/public/webpack.app');
 \OCP\Util::addStyle('settings', 'settings');
-\OCP\Util::addStyle('music', 'public/app');
 
 use \OCA\Music\Utility\HtmlUtil;
 ?>

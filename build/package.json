@@ -27,6 +27,7 @@
 	},
 	"engine": "node >= 0.8",
 	"scripts": {
-		"build": "webpack"
+		"build": "webpack",
+		"watch": "webpack --watch"
 	}
 }

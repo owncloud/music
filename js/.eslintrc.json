@@ -1,0 +1,44 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 5
+    },
+    "ignorePatterns": ["/public/*", "/vendor/**", "/l10n/*"],
+    "globals": {
+        "_": "readonly",
+        "$": "readonly",
+        "OC": "readonly",
+        "OCA": "writable",
+        "angular": "readonly",
+        "Cookies": "readonly",
+        "t": "readonly",
+        "AV": "readonly",
+        "MediaMetadata": "readonly"
+    },
+    "rules": {
+        "indent": [
+            "off"
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-unused-vars": [
+            2,
+            {"args": "after-used", "argsIgnorePattern": "^_"}
+        ]
+    }
+}

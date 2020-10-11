@@ -11,9 +11,10 @@
 
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     app: '../js/config/index.js',
     files_music_player: '../js/embedded/index.js'
@@ -29,7 +30,10 @@ module.exports = {
     }
   },
   plugins: [
-    new MiniCssExtractPlugin({filename: 'webpack.app.css'})
+    new MiniCssExtractPlugin({filename: 'webpack.app.css'}),
+    new ESLintPlugin({
+      files: '../js'
+    })
   ],
   module: {
     rules: [
@@ -50,7 +54,7 @@ module.exports = {
             }
           }
         ],
-      },
+      }
     ],
   },
 };

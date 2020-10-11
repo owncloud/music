@@ -16,9 +16,7 @@ function requireAll(context) {
 }
 
 /* Vendor libraries */
-window._ = require('../vendor/lodash');
-window.$ = window.jQuery = require('../vendor/jquery');
-window.angular = require('../vendor/angular');
+window.angular = require('angular');
 require('../vendor/angular-gettext/dist/angular-gettext.js');
 require('../vendor/angular-route/angular-route.js');
 require('../vendor/angular-sanitize/angular-sanitize.js');

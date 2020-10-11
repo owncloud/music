@@ -10,6 +10,7 @@
  */
 
 const path = require('path');
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -28,12 +29,18 @@ module.exports = {
     alias: {
       'angular': path.resolve(__dirname, '../js/vendor/angular'),
       'lodash': path.resolve(__dirname, '../js/vendor/lodash'),
+      'jquery': path.resolve(__dirname, '../js/vendor/jquery/src/jquery')
     }
   },
   plugins: [
     new MiniCssExtractPlugin({filename: 'webpack.app.css'}),
-    new ESLintPlugin({
-      files: '../js'
+    new ESLintPlugin({files: '../js'}),
+    new webpack.ProvidePlugin({
+      '$': 'jquery',
+      'window.$': 'jquery',
+      'jQuery': 'jquery',
+      'window.jQuery': 'jquery',
+      '_': 'lodash'
     })
   ],
   module: {

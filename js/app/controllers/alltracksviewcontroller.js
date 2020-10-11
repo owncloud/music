@@ -85,12 +85,6 @@ angular.module('Music').controller('AllTracksViewController', [
 			return { track: trackId };
 		};
 
-		function findTrackFromBucket(bucket, trackId) {
-			return _(bucket.tracks).find(function(item) {
-				return item.track.id == trackId;
-			});
-		}
-
 		function bucketElementForTrack(trackId) {
 			var track = libraryService.getTrack(trackId);
 			if (track) {

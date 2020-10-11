@@ -14,9 +14,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: '../js/config/index.js',
+  entry: {
+    app: '../js/config/index.js',
+    files_music_player: '../js/embedded/index.js'
+  },
   output: {
-    filename: 'webpack.app.js',
+    filename: 'webpack.[name].js',
     path: path.resolve(__dirname, '../js/public'),
   },
   resolve: {

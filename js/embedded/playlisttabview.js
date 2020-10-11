@@ -1,6 +1,6 @@
 OCA.Music = OCA.Music || {};
 
-function initPlaylistTabView(playlistMimes) {
+OCA.Music.initPlaylistTabView = function(playlistMimes) {
 	if (typeof OCA.Files.DetailTabView != 'undefined') {
 		OCA.Music.PlaylistTabView = OCA.Files.DetailTabView.extend({
 			id: 'musicPlaylistTabView',
@@ -102,4 +102,4 @@ function initPlaylistTabView(playlistMimes) {
 			}
 		});
 	}
-}
+};

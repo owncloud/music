@@ -104,9 +104,9 @@ angular.module('Music').controller('ArtistDetailsController', [
 			var artistIsInLib = function(artist) {
 				return 'id' in artist && artist.id !== null;
 			};
-			$scope.similarArtistsInLib = _(artists).filter(artistIsInLib);
+			$scope.similarArtistsInLib = _.filter(artists, artistIsInLib);
 			$scope.similarArtistsNotInLib = $scope.formatLinkList( 
-				_(artists).reject(artistIsInLib)
+				_.reject(artists, artistIsInLib)
 			);
 		}
 

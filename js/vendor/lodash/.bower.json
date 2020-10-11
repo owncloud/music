@@ -1,0 +1,14 @@
+{
+  "name": "lodash",
+  "homepage": "https://github.com/lodash/lodash",
+  "version": "4.17.15",
+  "_release": "4.17.15",
+  "_resolution": {
+    "type": "version",
+    "tag": "4.17.15",
+    "commit": "ee3991de2ce4d050c7f1a5b402ba308db6983a62"
+  },
+  "_source": "https://github.com/lodash/lodash.git",
+  "_target": "~4.17.0",
+  "_originalSource": "lodash"
+}

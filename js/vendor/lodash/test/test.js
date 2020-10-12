@@ -9741,7 +9741,7 @@
     });
 
     QUnit.test('should compare arrays with circular references', function(assert) {
-      assert.expect(4);
+      assert.expect(6);
 
       var array1 = [],
           array2 = [];
@@ -9766,6 +9766,14 @@
       array2 = ['a', ['a', 'b', 'c'], 'c'];
 
       assert.strictEqual(_.isEqual(array1, array2), false);
+
+      array1 = [[[]]];
+      array1[0][0][0] = array1;
+      array2 = [];
+      array2[0] = array2;
+
+      assert.strictEqual(_.isEqual(array1, array2), false);
+      assert.strictEqual(_.isEqual(array2, array1), false);
     });
 
     QUnit.test('should have transitive equivalence for circular references of arrays', function(assert) {
@@ -9783,7 +9791,7 @@
     });
 
     QUnit.test('should compare objects with circular references', function(assert) {
-      assert.expect(4);
+      assert.expect(6);
 
       var object1 = {},
           object2 = {};
@@ -9808,6 +9816,14 @@
       object2 = { 'a': 1, 'b': { 'a': 1, 'b': 2, 'c': 3 }, 'c': 3 };
 
       assert.strictEqual(_.isEqual(object1, object2), false);
+
+      object1 = {self: {self: {self: {}}}};
+      object1.self.self.self = object1;
+      object2 = {self: {}};
+      object2.self = object2;
+
+      assert.strictEqual(_.isEqual(object1, object2), false);
+      assert.strictEqual(_.isEqual(object2, object1), false);
     });
 
     QUnit.test('should have transitive equivalence for circular references of objects', function(assert) {
@@ -16020,11 +16036,30 @@
       { 'a': 'y', 'b': 2 }
     ];
 
+    var nestedObj = [
+      { id: '4', address: { zipCode: 4, streetName: 'Beta' } },
+      { id: '3', address: { zipCode: 3, streetName: 'Alpha' } },
+      { id: '1', address: { zipCode: 1, streetName: 'Alpha' } },
+      { id: '2', address: { zipCode: 2, streetName: 'Alpha' } },
+      { id: '5', address: { zipCode: 4, streetName: 'Alpha' } },
+    ];
+
     QUnit.test('should sort by a single property by a specified order', function(assert) {
       assert.expect(1);
 
       var actual = _.orderBy(objects, 'a', 'desc');
       assert.deepEqual(actual, [objects[1], objects[3], objects[0], objects[2]]);
+    });
+
+    QUnit.test('should sort by nested key in array format', function(assert) {
+      assert.expect(1);
+
+      var actual = _.orderBy(
+        nestedObj,
+        [['address', 'zipCode'], ['address.streetName']],
+        ['asc', 'desc']
+      );
+      assert.deepEqual(actual, [nestedObj[2], nestedObj[3], nestedObj[1], nestedObj[0], nestedObj[4]]);
     });
 
     QUnit.test('should sort by multiple properties by specified orders', function(assert) {
@@ -20998,6 +21033,16 @@
       assert.strictEqual(actual, 1);
     });
 
+    QUnit.test('`_.' + methodName + '` should avoid calling iteratee when length is 0', function(assert) {
+      var objects = [],
+          iteratee = function() {
+            throw new Error;
+          },
+          actual = func(objects, { 'x': 50 }, iteratee);
+
+      assert.strictEqual(actual, 0);
+    });
+
     QUnit.test('`_.' + methodName + '` should support arrays larger than `MAX_ARRAY_LENGTH / 2`', function(assert) {
       assert.expect(12);
 
@@ -22594,6 +22639,18 @@
       });
 
       assert.deepEqual(actual, expected);
+    });
+
+    QUnit.test('should not let a sourceURL inject code', function(assert) {
+      assert.expect(1);
+
+      var actual,
+          expected = 'no error';
+      try {
+          actual = _.template(expected, {'sourceURL': '\u2028\u2029\n!this would err if it was executed!'})();
+      } catch (e) {}
+
+      assert.equal(actual, expected);
     });
 
     QUnit.test('should work as an iteratee for methods like `_.map`', function(assert) {
@@ -25739,6 +25796,39 @@
       else {
         skipAssert(assert);
       }
+    });
+  });
+
+  // zipObjectDeep prototype pollution
+  ['__proto__', 'constructor', 'prototype'].forEach(function (keyToTest) {
+    QUnit.test('zipObjectDeep is not setting ' + keyToTest + ' on global', function (assert) {
+      assert.expect(1);
+
+      _.zipObjectDeep([keyToTest + '.a'], ['newValue']);
+      // Can't access plain `a` as it's not defined and test fails
+      assert.notEqual(root['a'], 'newValue');
+    });
+
+    QUnit.test('zipObjectDeep is not overwriting ' + keyToTest + ' on vars', function (assert) {
+      assert.expect(3);
+
+      const b = 'oldValue'
+      _.zipObjectDeep([keyToTest + '.b'], ['newValue']);
+      assert.equal(b, 'oldValue');
+      assert.notEqual(root['b'], 'newValue');
+
+      // ensure nothing was created
+      assert.notOk(root['b']);
+    });
+
+    QUnit.test('zipObjectDeep is not overwriting global.' + keyToTest, function (assert) {
+      assert.expect(2);
+
+      _.zipObjectDeep([root + '.' + keyToTest + '.c'], ['newValue']);
+      assert.notEqual(root['c'], 'newValue');
+
+      // ensure nothing was created
+      assert.notOk(root['c']);
     });
   });
 

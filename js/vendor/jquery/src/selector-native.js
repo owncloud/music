@@ -34,7 +34,6 @@ define( [
  */
 
 var hasDuplicate, sortInput,
-	rhtmlSuffix = /HTML$/i,
 	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
 	matches = documentElement.matches ||
 		documentElement.webkitMatchesSelector ||
@@ -201,14 +200,11 @@ jQuery.extend( {
 		return a === bup || !!( bup && bup.nodeType === 1 && adown.contains( bup ) );
 	},
 	isXMLDoc: function( elem ) {
-		var namespace = elem.namespaceURI,
-			documentElement = ( elem.ownerDocument || elem ).documentElement;
 
-		// Assume HTML when documentElement doesn't yet exist, such as inside
-		// document fragments.
-		return !rhtmlSuffix.test( namespace ||
-			documentElement && documentElement.nodeName ||
-			"HTML" );
+		// documentElement is verified for cases where it doesn't yet exist
+		// (such as loading iframes in IE - #4833)
+		var documentElement = elem && ( elem.ownerDocument || elem ).documentElement;
+		return documentElement ? documentElement.nodeName !== "HTML" : false;
 	},
 	expr: {
 		attrHandle: {},

@@ -7,6 +7,7 @@ define( [
 	"./var/rnothtmlwhite",
 	"./css/var/cssExpand",
 	"./css/var/isHiddenWithinTree",
+	"./css/var/swap",
 	"./css/adjustCSS",
 	"./data/var/dataPriv",
 	"./css/showHide",
@@ -19,7 +20,7 @@ define( [
 	"./css",
 	"./effects/Tween"
 ], function( jQuery, camelCase, document, isFunction, rcssNum, rnothtmlwhite, cssExpand,
-	isHiddenWithinTree, adjustCSS, dataPriv, showHide ) {
+	isHiddenWithinTree, swap, adjustCSS, dataPriv, showHide ) {
 
 "use strict";
 
@@ -541,7 +542,7 @@ jQuery.fn.extend( {
 			clearQueue = type;
 			type = undefined;
 		}
-		if ( clearQueue ) {
+		if ( clearQueue && type !== false ) {
 			this.queue( type || "fx", [] );
 		}
 
@@ -624,7 +625,7 @@ jQuery.fn.extend( {
 	}
 } );
 
-jQuery.each( [ "toggle", "show", "hide" ], function( _i, name ) {
+jQuery.each( [ "toggle", "show", "hide" ], function( i, name ) {
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return speed == null || typeof speed === "boolean" ?

@@ -7,7 +7,7 @@
     "angular-route" : "1.8.0",
     "angular-sanitize" : "1.8.0",
     "javascript-detect-element-resize" : "",
-    "jquery" : "",
+    "jquery" : "3.4",
     "js-cookie" : "",
     "lodash" : "",
     "restangular" : ""

@@ -24,10 +24,13 @@ gruntfile=$(CURDIR)/Gruntfile.js
 
 # building the javascript
 build: deps
-	$(grunt_cmd) --config=$(gruntfile) build
+	npm run build
 
-watch: build
-	$(grunt_cmd) --config=$(gruntfile) watch:concat
+build-dev: deps
+	npm run build-dev
+
+watch: deps
+	npm run watch
 
 # general
 deps:

@@ -32,6 +32,7 @@ module.exports = {
       'angular': path.resolve('node_modules', 'angular'),
       'lodash': path.resolve('node_modules', 'lodash'),
       'jquery': path.resolve('node_modules', 'jquery/src/jquery'),
+      'blueimp-md5': path.resolve('node_modules', 'blueimp-md5'),
     }
   },
   plugins: [

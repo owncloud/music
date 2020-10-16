@@ -27,6 +27,7 @@ require('vendor/aurora/mp3.js');
 require('vendor/dragdrop/draganddrop.js');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 window.Cookies = require('node_modules/js-cookie/src/js.cookie.js');
+require('vendor/nextcloud/placeholder.js');
 require('node_modules/restangular');
 
 /* Music app files */

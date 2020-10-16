@@ -159,23 +159,6 @@ angular.module('Music').service('libraryService', [function() {
 		});
 	}
 
-	function fieldPathToGetterFunc(path) {
-		// On the newest underscore.js, this could be achieved with 
-		// return _.property(path.split('.'));
-		// but the cloud core may ship so old underscore.js that property method doesn't support nesting.
-		// The following is a modified copy from the up-to-date sources of underscore.js.
-		path = path.split('.');
-		return function(obj) {
-			for (var i = 0, length = path.length; i < length; i++) {
-				if (obj === null) {
-					return null;
-				}
-				obj = obj[path[i]];
-			}
-			return length ? obj : null;
-		};
-	}
-
 	function search(container, fields, query, maxResults/*optional*/) {
 		maxResults = maxResults || Infinity;
 
@@ -191,7 +174,7 @@ angular.module('Music').service('libraryService', [function() {
 
 		// Field may be given as a '.'-separated path;
 		// convert the fields to corresponding getter functions.
-		var fieldGetterFuncs = _.map(fields, fieldPathToGetterFunc);
+		var fieldGetterFuncs = _.map(fields, _.property);
 
 		var matchCount = 0;
 		var maxLimitReached = false;
@@ -213,7 +196,7 @@ angular.module('Music').service('libraryService', [function() {
 	return {
 		setCollection: function(collection) {
 			artists = transformCollection(collection);
-			albums = _.flatten(_.map(artists, 'albums'));
+			albums = _(artists).map('albums').flatten().value();
 			createTrackContainers();
 		},
 		setPlaylists: function(lists) {
@@ -232,7 +215,7 @@ angular.module('Music').service('libraryService', [function() {
 						trackEntry.track.folder = folder;
 					});
 				});
-				tracksInFolderOrder = _.flatten(_.map(folders, 'tracks'));
+				tracksInFolderOrder = _(folders).map('tracks').flatten().value();
 			}
 		},
 		setGenres: function(genreData) {
@@ -257,7 +240,7 @@ angular.module('Music').service('libraryService', [function() {
 					});
 				});
 
-				tracksInGenreOrder = _.flatten(_.map(genres, 'tracks'));
+				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
 			}
 		},
 		addPlaylist: function(playlist) {

@@ -321,17 +321,17 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromArtist(artistId) {
 			var artist = libraryService.getArtist(artistId);
-			return _.flatten(_.map(_.map(artist.albums, 'id'), trackIdsFromAlbum));
+			return _(artist.albums).map('id').map(trackIdsFromAlbum).flatten().value();
 		}
 
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
-			return _.map(_.map(folder.tracks, 'track'), 'id');
+			return _(folder.tracks).map('track').map('id').value();
 		}
 
 		function trackIdsFromGenre(genreId) {
 			var genre = libraryService.getGenre(genreId);
-			return _.map(_.map(genre.tracks, 'track'), 'id');
+			return _(genre.tracks).map('track').map('id').value();
 		}
 
 		function addTracks(playlist, trackIds) {

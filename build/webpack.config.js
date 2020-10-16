@@ -23,7 +23,7 @@ module.exports = {
   },
   output: {
     filename: 'webpack.[name].js',
-    path: path.resolve(__dirname, '../js/public'),
+    path: path.resolve(__dirname, '../dist'),
   },
   resolve: {
     alias: {
@@ -35,7 +35,7 @@ module.exports = {
     }
   },
   plugins: [
-    new MiniCssExtractPlugin({filename: 'webpack.app.css'}),
+    new MiniCssExtractPlugin({filename: 'webpack.[name].css'}),
     new ESLintPlugin({files: '../js'}),
     new webpack.ProvidePlugin({
       '$': 'jquery',

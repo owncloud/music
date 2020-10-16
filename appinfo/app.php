@@ -69,8 +69,8 @@ $c->getServer()->getSearch()->registerProvider(
  * directly if the requested URL seems to be for Files or Sharing.
  */
 $loadEmbeddedMusicPlayer = function () use ($appName) {
-	\OCP\Util::addScript($appName, 'public/webpack.files_music_player');
-	\OCP\Util::addStyle($appName, 'public/files-music-player');
+	\OCP\Util::addScript($appName, '../dist/webpack.files_music_player');
+	\OCP\Util::addStyle($appName, '../dist/webpack.files_music_player');
 };
 
 $request = \OC::$server->getRequest();

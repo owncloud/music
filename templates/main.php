@@ -1,10 +1,10 @@
 <?php
 
 // scripts
-\OCP\Util::addScript('music', 'public/webpack.app');
+\OCP\Util::addScript('music', '../dist/webpack.app');
 
 // stylesheets
-\OCP\Util::addStyle('music', '../js/public/webpack.app');
+\OCP\Util::addStyle('music', '../dist/webpack.app');
 \OCP\Util::addStyle('settings', 'settings');
 
 use \OCA\Music\Utility\HtmlUtil;

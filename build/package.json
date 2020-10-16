@@ -9,7 +9,18 @@
 		"url": "git@github.com:owncloud/music.git"
 	},
 	"bugs": "https://github.com/owncloud/music/issues",
-	"dependencies": {},
+	"dependencies": {
+		"angular": "^1.8.1",
+		"angular-gettext": "^2.4.1",
+		"angular-route": "^1.8.1",
+		"angular-sanitize": "^1.8.1",
+		"angular-scroll": "^1.0.2",
+		"javascript-detect-element-resize": "^0.5.3",
+		"jquery": "^3.4.1",
+		"js-cookie": "^2.2.1",
+		"lodash": "^4.17.20",
+		"restangular": "^1.6.1"
+	},
 	"devDependencies": {
 		"css-loader": "^4.3.0",
 		"eslint": "^7.11.0",

@@ -27,9 +27,11 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'angular': path.resolve(__dirname, '../js/vendor/angular'),
-      'lodash': path.resolve(__dirname, '../js/vendor/lodash'),
-      'jquery': path.resolve(__dirname, '../js/vendor/jquery/src/jquery')
+      'node_modules': path.resolve(__dirname, 'node_modules'),
+      'vendor': path.resolve(__dirname, '../js/vendor'),
+      'angular': path.resolve('node_modules', 'angular'),
+      'lodash': path.resolve('node_modules', 'lodash'),
+      'jquery': path.resolve('node_modules', 'jquery/src/jquery'),
     }
   },
   plugins: [

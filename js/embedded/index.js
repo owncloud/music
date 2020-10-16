@@ -9,12 +9,12 @@
  */
 
 /* Vendor libraries */
-window.AV = require('../vendor/aurora/aurora.js');
-require('../vendor/aurora/flac.js');
-require('../vendor/aurora/mp3.js');
-require('../vendor/javascript-detect-element-resize/jquery.resize.js');
-require('../vendor/jquery-initialize/jquery.initialize.js');
-window.Cookies = require('../vendor/js-cookie/src/js.cookie.js');
+window.AV = require('vendor/aurora/aurora.js');
+require('vendor/aurora/flac.js');
+require('vendor/aurora/mp3.js');
+require('node_modules/javascript-detect-element-resize/jquery.resize.js');
+require('vendor/jquery-initialize/jquery.initialize.js');
+window.Cookies = require('node_modules/js-cookie/src/js.cookie.js');
 
 /* Embedded player files */
 require('../shared/playerwrapper.js');

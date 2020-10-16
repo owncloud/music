@@ -17,17 +17,17 @@ function requireAll(context) {
 
 /* Vendor libraries */
 window.angular = require('angular');
-require('../vendor/angular-gettext/dist/angular-gettext.js');
-require('../vendor/angular-route/angular-route.js');
-require('../vendor/angular-sanitize/angular-sanitize.js');
-require('../vendor/angular-scroll/angular-scroll.js');
-window.AV = require('../vendor/aurora/aurora.js');
-require('../vendor/aurora/flac.js');
-require('../vendor/aurora/mp3.js');
-require('../vendor/dragdrop/draganddrop.js');
-require('../vendor/javascript-detect-element-resize/jquery.resize.js');
-window.Cookies = require('../vendor/js-cookie/src/js.cookie.js');
-require('../vendor/restangular');
+require('node_modules/angular-gettext/dist/angular-gettext.js');
+require('node_modules/angular-route/angular-route.js');
+require('node_modules/angular-sanitize/angular-sanitize.js');
+require('node_modules/angular-scroll/angular-scroll.js');
+window.AV = require('vendor/aurora/aurora.js');
+require('vendor/aurora/flac.js');
+require('vendor/aurora/mp3.js');
+require('vendor/dragdrop/draganddrop.js');
+require('node_modules/javascript-detect-element-resize/jquery.resize.js');
+window.Cookies = require('node_modules/js-cookie/src/js.cookie.js');
+require('node_modules/restangular');
 
 // Put back the functions removed by Lodash 4.x
 _.mixin({

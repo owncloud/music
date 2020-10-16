@@ -98,7 +98,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-			var tracks = _.flatten(_.pluck(artist.albums, 'tracks'));
+			var tracks = _.flatten(_.map(artist.albums, 'tracks'));
 			playTracks('artist-' + artist.id, tracks);
 		};
 

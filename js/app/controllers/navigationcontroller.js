@@ -316,22 +316,22 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromAlbum(albumId) {
 			var album = libraryService.getAlbum(albumId);
-			return _.pluck(album.tracks, 'id');
+			return _.map(album.tracks, 'id');
 		}
 
 		function trackIdsFromArtist(artistId) {
 			var artist = libraryService.getArtist(artistId);
-			return _.flatten(_.map(_.pluck(artist.albums, 'id'), trackIdsFromAlbum));
+			return _.flatten(_.map(_.map(artist.albums, 'id'), trackIdsFromAlbum));
 		}
 
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
-			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
+			return _.map(_.map(folder.tracks, 'track'), 'id');
 		}
 
 		function trackIdsFromGenre(genreId) {
 			var genre = libraryService.getGenre(genreId);
-			return _.pluck(_.pluck(genre.tracks, 'track'), 'id');
+			return _.map(_.map(genre.tracks, 'track'), 'id');
 		}
 
 		function addTracks(playlist, trackIds) {

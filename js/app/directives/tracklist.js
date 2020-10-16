@@ -43,7 +43,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	$rootScope.$on('searchMatchedTracks', function(event, matchingTracks) {
 		// store only the IDs of the matching tracks; store them in sorted array
 		// to enable binary search
-		searchModeTrackMatches = _.pluck(matchingTracks, 'id');
+		searchModeTrackMatches = _.map(matchingTracks, 'id');
 		searchModeTrackMatches.sort(function(a,b) { return a - b; });
 	}); 
 	$rootScope.$on('searchOff', function() {

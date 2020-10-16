@@ -101,7 +101,7 @@ angular.module('Music').service('libraryService', [function() {
 
 	function createTrackContainers() {
 		// album order "playlist"
-		var tracks = _.flatten(_.pluck(albums, 'tracks'));
+		var tracks = _.flatten(_.map(albums, 'tracks'));
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
 
 		// alphabetic order "playlist"
@@ -213,7 +213,7 @@ angular.module('Music').service('libraryService', [function() {
 	return {
 		setCollection: function(collection) {
 			artists = transformCollection(collection);
-			albums = _.flatten(_.pluck(artists, 'albums'));
+			albums = _.flatten(_.map(artists, 'albums'));
 			createTrackContainers();
 		},
 		setPlaylists: function(lists) {
@@ -232,7 +232,7 @@ angular.module('Music').service('libraryService', [function() {
 						trackEntry.track.folder = folder;
 					});
 				});
-				tracksInFolderOrder = _.flatten(_.pluck(folders, 'tracks'));
+				tracksInFolderOrder = _.flatten(_.map(folders, 'tracks'));
 			}
 		},
 		setGenres: function(genreData) {
@@ -257,7 +257,7 @@ angular.module('Music').service('libraryService', [function() {
 					});
 				});
 
-				tracksInGenreOrder = _.flatten(_.pluck(genres, 'tracks'));
+				tracksInGenreOrder = _.flatten(_.map(genres, 'tracks'));
 			}
 		},
 		addPlaylist: function(playlist) {
@@ -283,10 +283,10 @@ angular.module('Music').service('libraryService', [function() {
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		getArtist: function(id) {
-			var artist = _.findWhere(artists, { id: Number(id) });
+			var artist = _.find(artists, { id: Number(id) });
 			if (!artist) {
 				// there's no such album artist, try to find a matching track artist (who has no albums)
-				var track = _.findWhere(tracksIndex, { artistId: Number(id)} );
+				var track = _.find(tracksIndex, { artistId: Number(id)} );
 				if (track) {
 					artist = {
 							id: track.artistId,
@@ -301,7 +301,7 @@ angular.module('Music').service('libraryService', [function() {
 			return artists;
 		},
 		getAlbum: function(id) {
-			return _.findWhere(albums, { id: Number(id) });
+			return _.find(albums, { id: Number(id) });
 		},
 		getAlbumCount: function() {
 			return albums ? albums.length : 0;
@@ -325,19 +325,19 @@ angular.module('Music').service('libraryService', [function() {
 			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
 		},
 		getPlaylist: function(id) {
-			return _.findWhere(playlists, { id: Number(id) });
+			return _.find(playlists, { id: Number(id) });
 		},
 		getAllPlaylists: function() {
 			return playlists;
 		},
 		getFolder: function(id) {
-			return _.findWhere(folders, { id: Number(id) });
+			return _.find(folders, { id: Number(id) });
 		},
 		getAllFolders: function() {
 			return folders;
 		},
 		getGenre: function(id) {
-			return _.findWhere(genres, { id: Number(id) });
+			return _.find(genres, { id: Number(id) });
 		},
 		getAllGenres: function() {
 			return genres;
@@ -383,7 +383,7 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
 			var list = this.getPlaylist(playlistId) || [];
-			list = _.pluck(list.tracks, 'track');
+			list = _.map(list.tracks, 'track');
 			list = _.uniq(list);
 			return search(list, ['title', 'artistName'], query, maxResults);
 		},

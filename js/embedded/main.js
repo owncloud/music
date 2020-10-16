@@ -295,7 +295,7 @@ function initEmbeddedPlayer() {
 		// The feature is disabled on old IE versions where there's no MutationObserver and
 		// $.initialize would not work.
 		if (typeof MutationObserver !== 'undefined'
-				&& _.contains(supportedMimes, $('#mimetype').val()))
+				&& _.includes(supportedMimes, $('#mimetype').val()))
 		{
 			// The #publicpreview is added dynamically by another script.
 			// Augment it with the click handler once it gets added.

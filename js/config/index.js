@@ -29,12 +29,6 @@ require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 window.Cookies = require('node_modules/js-cookie/src/js.cookie.js');
 require('node_modules/restangular');
 
-// Put back the functions removed by Lodash 4.x
-_.mixin({
-	pluck: _.map,
-	findWhere: _.find
-});
-
 /* Music app files */
 require('./app.js');
 requireAll(require.context('../app', /*use subdirectories:*/ true));

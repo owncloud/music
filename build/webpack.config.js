@@ -64,6 +64,10 @@ module.exports = {
             }
           }
         ],
+      },
+      {
+        include: path.resolve('node_modules', 'lodash'),
+        parser: { amd: false }
       }
     ],
   },

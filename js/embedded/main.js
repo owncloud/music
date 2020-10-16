@@ -86,7 +86,7 @@ function initEmbeddedPlayer() {
 		}
 
 		// disable/enable the "Import to Music" item
-		var inLibraryFilesCount = _.where(mPlaylist.files(), {in_library: true}).length;
+		var inLibraryFilesCount = _.filter(mPlaylist.files(), {in_library: true}).length;
 		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
 		var $importItem = $menu.find('#playlist-menu-import');
 		if (inLibraryFilesCount === 0) {

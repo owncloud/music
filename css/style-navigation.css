@@ -56,11 +56,11 @@
 }
 
 #app-navigation .current:not(.playing) :hover .play-pause {
-	background-image: url(../../img/play-big.svg);
+	background-image: url(../img/play-big.svg);
 }
 
 #app-navigation .current.playing :hover .play-pause {
-	background-image: url(../../img/pause-big.svg)
+	background-image: url(../img/pause-big.svg)
 }
 
 #app-navigation li > a#create {
@@ -186,9 +186,9 @@
 }
 
 .icon-to-file {
-	background-image: url(../../img/to-file.svg);
+	background-image: url(../img/to-file.svg);
 }
 
 .icon-from-file {
-	background-image: url(../../img/from-file.svg);
+	background-image: url(../img/from-file.svg);
 }

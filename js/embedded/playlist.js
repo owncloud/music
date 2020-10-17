@@ -26,7 +26,7 @@ OCA.Music.Playlist = function() {
 
 	this.init = function(folderFiles, supportedMimes, firstFileId) {
 		mFiles = _.filter(folderFiles, function(file) {
-			return _.contains(supportedMimes, file.mimetype);
+			return _.includes(supportedMimes, file.mimetype);
 		});
 		mCurrentIndex = _.findIndex(mFiles, function(file) {
 			// types int/string depend on the cloud version, don't use ===

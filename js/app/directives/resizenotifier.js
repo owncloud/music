@@ -10,7 +10,7 @@
  */
 
 angular.module('Music').directive('resizeNotifier', ['$rootScope', function($rootScope) {
-	return function(scope, element, attrs, ctrl) {
+	return function(scope, element, _attrs, _ctrl) {
 		element.resize(function() {
 			$rootScope.$emit('resize', element);
 		});

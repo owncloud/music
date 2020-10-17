@@ -81,10 +81,10 @@ function ($rootScope, $timeout, gettextCatalog) {
 		/**
 		 * Click handlers
 		 */
-		ngElem.on('click', 'span', function(e) {
+		ngElem.on('click', 'span', function(_e) {
 			data.onClick(data.model);
 		});
-		ngElem.on('click', 'button', function(e) {
+		ngElem.on('click', 'button', function(_e) {
 			data.onDetailsClick(data.model);
 		});
 

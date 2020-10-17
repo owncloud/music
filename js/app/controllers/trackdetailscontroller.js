@@ -29,7 +29,7 @@ angular.module('Music').controller('TrackDetailsController', [
 		}
 
 		function isFloat(n) {
-			return typeof n === "number" && Math.floor(n) !== n;
+			return typeof n === 'number' && Math.floor(n) !== n;
 		}
 
 		function showDetails(trackId) {
@@ -97,7 +97,7 @@ angular.module('Music').controller('TrackDetailsController', [
 					&& $scope.$parent.currentTrack.id == currentTrack.id) {
 				// Check if the highlighted row needs to change. First find the last row
 				// which has been already reached by the playback.
-				var allRows = $("#app-sidebar .lyrics");
+				var allRows = $('#app-sidebar .lyrics');
 				for (var i = allRows.length - 1; i >= 0; --i) {
 					var curRow = $(allRows[i]);
 					if (Number(curRow.attr('data-timestamp')) <= time) {

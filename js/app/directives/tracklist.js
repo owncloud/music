@@ -43,7 +43,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	$rootScope.$on('searchMatchedTracks', function(event, matchingTracks) {
 		// store only the IDs of the matching tracks; store them in sorted array
 		// to enable binary search
-		searchModeTrackMatches = _(matchingTracks).pluck('id');
+		searchModeTrackMatches = _.map(matchingTracks, 'id');
 		searchModeTrackMatches.sort(function(a,b) { return a - b; });
 	}); 
 	$rootScope.$on('searchOff', function() {
@@ -53,7 +53,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		return searchModeTrackMatches !== null;
 	}
 	function trackMatchedInSearch(trackId) {
-		return _.indexOf(searchModeTrackMatches, trackId, true) !== -1;
+		return _.sortedIndexOf(searchModeTrackMatches, trackId) !== -1;
 	}
 
 	function trackIdFromElementId(elemId) {
@@ -89,7 +89,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 		 * Set classes of the track items according to current scope
 		 */
 		function updateClasses() {
-			var elems = htmlElem.querySelectorAll(".playing, .current");
+			var elems = htmlElem.querySelectorAll('.playing, .current');
 			_(elems).each(function (el) {
 				el.classList.remove('current');
 				el.classList.remove('playing');

@@ -34,7 +34,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 				resetContents();
 
 				$scope.artist = libraryService.getArtist(artistId);
-				$scope.artistAlbumTrackCount = _.chain($scope.artist.albums).pluck('tracks').flatten().value().length;
+				$scope.artistAlbumTrackCount = _($scope.artist.albums).map('tracks').flatten().size();
 				$scope.artistTrackCount = libraryService.findTracksByArtist(artistId).length;
 
 				var art = $('#app-sidebar .albumart');
@@ -44,7 +44,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 				// current artist has already changed again by the time we get the result. If that has
 				// happened, then the result should be ignored.
 				Restangular.one('artist', artistId).one('cover').get().then(
-					function(result) {
+					function(_result) {
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.artAvailable = true;
 							$scope.loading = false;
@@ -53,7 +53,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 							art.css('background-image', 'url("' + url + '")');
 						}
 					},
-					function(result) {
+					function(_error) {
 						// error handling
 						if ($scope.artist && $scope.artist.id == artistId) {
 							$scope.artAvailable = false;
@@ -104,9 +104,9 @@ angular.module('Music').controller('ArtistDetailsController', [
 			var artistIsInLib = function(artist) {
 				return 'id' in artist && artist.id !== null;
 			};
-			$scope.similarArtistsInLib = _(artists).filter(artistIsInLib);
+			$scope.similarArtistsInLib = _.filter(artists, artistIsInLib);
 			$scope.similarArtistsNotInLib = $scope.formatLinkList( 
-				_(artists).reject(artistIsInLib)
+				_.reject(artists, artistIsInLib)
 			);
 		}
 

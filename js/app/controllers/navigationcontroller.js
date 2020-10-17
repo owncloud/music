@@ -26,7 +26,7 @@ angular.module('Music').controller('NavigationController', [
 		$scope.showEditForm = null;
 
 		// hide 'more' popup menu of a playlist when user clicks anywhere on the page
-		$document.click(function (event) {
+		$document.click(function(_event) {
 			$timeout(function() {
 				$scope.popupShownForPlaylist = null;
 			});
@@ -184,7 +184,7 @@ angular.module('Music').controller('NavigationController', [
 						$rootScope.$emit('playlistUpdated', playlist.id);
 						playlist.busy = false;
 					},
-					function(error) {
+					function(_error) {
 						OC.Notification.showTemporary(
 								gettextCatalog.getString('Failed to import playlist from file {{ file }}',
 														{ file: file }));
@@ -305,7 +305,7 @@ angular.module('Music').controller('NavigationController', [
 			} else if ('genre' in droppedItem) {
 				$scope.addGenre(playlist, droppedItem.genre);
 			} else {
-				console.error("Unknwon entity dropped on playlist");
+				console.error('Unknwon entity dropped on playlist');
 			}
 		};
 
@@ -316,22 +316,22 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromAlbum(albumId) {
 			var album = libraryService.getAlbum(albumId);
-			return _.pluck(album.tracks, 'id');
+			return _.map(album.tracks, 'id');
 		}
 
 		function trackIdsFromArtist(artistId) {
 			var artist = libraryService.getArtist(artistId);
-			return _.flatten(_.map(_.pluck(artist.albums, 'id'), trackIdsFromAlbum));
+			return _(artist.albums).map('id').map(trackIdsFromAlbum).flatten().value();
 		}
 
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
-			return _.pluck(_.pluck(folder.tracks, 'track'), 'id');
+			return _(folder.tracks).map('track').map('id').value();
 		}
 
 		function trackIdsFromGenre(genreId) {
 			var genre = libraryService.getGenre(genreId);
-			return _.pluck(_.pluck(genre.tracks, 'track'), 'id');
+			return _(genre.tracks).map('track').map('id').value();
 		}
 
 		function addTracks(playlist, trackIds) {

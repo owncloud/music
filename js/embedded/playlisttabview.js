@@ -1,6 +1,6 @@
 OCA.Music = OCA.Music || {};
 
-function initPlaylistTabView(playlistMimes) {
+OCA.Music.initPlaylistTabView = function(playlistMimes) {
 	if (typeof OCA.Files.DetailTabView != 'undefined') {
 		OCA.Music.PlaylistTabView = OCA.Files.DetailTabView.extend({
 			id: 'musicPlaylistTabView',
@@ -67,7 +67,7 @@ function initPlaylistTabView(playlistMimes) {
 						self.trigger('rendered');
 					};
 
-					var onError = function(error) {
+					var onError = function(_error) {
 						loadIndicator.hide();
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
 					};
@@ -102,4 +102,4 @@ function initPlaylistTabView(playlistMimes) {
 			}
 		});
 	}
-}
+};

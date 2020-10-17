@@ -10,6 +10,6 @@
  * @copyrigth Pauli Järvinen 2017 - 2020
  */
 
-angular.module('Music').factory('Audio', ['$rootScope', function ($rootScope) {
+angular.module('Music').factory('Audio', [function () {
 	return new OCA.Music.PlayerWrapper();
 }]);

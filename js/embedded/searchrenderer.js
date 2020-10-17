@@ -18,7 +18,7 @@
 			search.setRenderer('music_album', this.renderResult);
 			search.setRenderer('music_track', this.renderResult);
 		},
-		renderResult: function($row, item) {
+		renderResult: function($row, _item) {
 			$row.find('td.icon')
 			.css('background-image', 'url(' + OC.imagePath('music', 'music-dark') + ')')
 			.css('opacity', '.4');

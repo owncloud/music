@@ -86,9 +86,9 @@ function initEmbeddedPlayer() {
 		}
 
 		// disable/enable the "Import to Music" item
-		var inLibraryFilesCount = _.where(mPlaylist.files(), {in_library: true}).length;
+		var inLibraryFilesCount = _.filter(mPlaylist.files(), {in_library: true}).length;
 		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
-		$importItem = $menu.find('#playlist-menu-import');
+		var $importItem = $menu.find('#playlist-menu-import');
 		if (inLibraryFilesCount === 0) {
 			$importItem.addClass('disabled');
 			$importItem.attr('title', t('music', 'None of the playlist files are within your music library'));
@@ -117,7 +117,7 @@ function initEmbeddedPlayer() {
 			mFileList.showFileBusyState($file, true);
 		}
 
-		OCA.Music.playlistFileService.importFile(mCurrentFile, function(result) {
+		OCA.Music.playlistFileService.importFile(mCurrentFile, function(_result) {
 			if ($file) {
 				mFileList.showFileBusyState($file, false);
 			}
@@ -150,7 +150,7 @@ function initEmbeddedPlayer() {
 		// Add play action to file rows with supported mime type, either audio or playlist.
 		// Protect against cases where this script gets (accidentally) loaded outside of the Files app.
 		if (typeof OCA.Files !== 'undefined') {
-			initPlaylistTabView(mPlaylistMimes);
+			OCA.Music.initPlaylistTabView(mPlaylistMimes);
 			connectPlaylistTabViewEvents();
 			registerFolderPlayer(mAudioMimes, openAudioFile);
 			registerFolderPlayer(mPlaylistMimes, openPlaylistFile);
@@ -294,11 +294,9 @@ function initEmbeddedPlayer() {
 		// Add click handler to the file preview if this is a supported file.
 		// The feature is disabled on old IE versions where there's no MutationObserver and
 		// $.initialize would not work.
-		if (typeof MutationObserver !== "undefined"
-				&& _.contains(supportedMimes, $('#mimetype').val()))
+		if (typeof MutationObserver !== 'undefined'
+				&& _.includes(supportedMimes, $('#mimetype').val()))
 		{
-			actionRegisteredForSingleShare = true;
-
 			// The #publicpreview is added dynamically by another script.
 			// Augment it with the click handler once it gets added.
 			$.initialize('img.publicpreview', function() {

@@ -69,7 +69,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 
 	// drop the planned play order but preserve the history
 	function dropFuturePlayOrder() {
-		playOrder = _.first(playOrder, playOrderIter + 1);
+		playOrder = _.take(playOrder, playOrderIter + 1);
 	}
 
 	function insertMany(hostArray, targetIndex, insertedItems) {
@@ -177,9 +177,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			var newIndices = _.range(prevListSize, playlist.length);
 			if (prevShuffleState) {
 				// Shuffle the new tracks with the remaining tracks on the list
-				var remaining = _.tail(playOrder, playOrderIter+1);
+				var remaining = _.drop(playOrder, playOrderIter+1);
 				remaining = _.shuffle(remaining.concat(newIndices));
-				playOrder = _.first(playOrder, playOrderIter+1).concat(remaining);
+				playOrder = _.take(playOrder, playOrderIter+1).concat(remaining);
 			}
 			else {
 				// Try to find the next position of the previously last track of the list,
@@ -193,7 +193,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				}
 			}
 		},
-		publish: function(name /*, ...*/) {
+		publish: function(_name /*, ...*/) {
 			// pass all arguments straight through to $rootScope.$emit
 			var args = Array.prototype.slice.call(arguments);
 			$rootScope.$emit.apply($rootScope, args);

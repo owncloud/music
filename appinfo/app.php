@@ -67,19 +67,10 @@ $c->getServer()->getSearch()->registerProvider(
  * \OC::$server->getEventDispatcher()->addListener('OCA\Files_Sharing::loadAdditionalScripts', $loadEmbeddedMusicPlayer);
  * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
  * directly if the requested URL seems to be for Files or Sharing.
- *
- * Furthermore, it would be sensible to load majority of the needed scripts within the main js file (files-music-player)
- * with OC.addScript() only when the player is actually used. However, this doesn't seem to work on Nextcloud 12.0.0,
- * probably because of https://github.com/nextcloud/server/issues/5314.
  */
 $loadEmbeddedMusicPlayer = function () use ($appName) {
-	\OCP\Util::addScript($appName, 'vendor/aurora/aurora-bundle.min');
-	\OCP\Util::addScript($appName, 'vendor/javascript-detect-element-resize/jquery.resize');
-	\OCP\Util::addScript($appName, 'vendor/jquery-initialize/jquery.initialize.min');
-	\OCP\Util::addScript($appName, 'vendor/js-cookie/src/js.cookie');
-	\OCP\Util::addScript($appName, 'public/files-music-player');
-
-	\OCP\Util::addStyle($appName, 'public/files-music-player');
+	\OCP\Util::addScript($appName, '../dist/webpack.files_music_player');
+	\OCP\Util::addStyle($appName, '../dist/webpack.files_music_player');
 };
 
 $request = \OC::$server->getRequest();

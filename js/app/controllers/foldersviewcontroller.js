@@ -77,7 +77,7 @@ angular.module('Music').controller('FoldersViewController', [
 		/**
 		 * Gets track data to be dislayed in the tracklist directive
 		 */
-		$scope.getTrackData = function(listItem, index, scope) {
+		$scope.getTrackData = function(listItem, index, _scope) {
 			var track = listItem.track;
 			return {
 				title: track.artistName + ' - ' + track.title,

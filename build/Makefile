@@ -24,10 +24,13 @@ gruntfile=$(CURDIR)/Gruntfile.js
 
 # building the javascript
 build: deps
-	$(grunt_cmd) --config=$(gruntfile) build
+	npm run build
 
-watch: build
-	$(grunt_cmd) --config=$(gruntfile) watch:concat
+build-dev: deps
+	npm run build-dev
+
+watch: deps
+	npm run watch
 
 # general
 deps:
@@ -49,5 +52,4 @@ release: build
 	cd .. && \
 	git archive HEAD --format=zip --prefix=music/ > music.zip && \
 	cd .. && \
-	zip -g music/music.zip music/js/public/*.js && \
-	zip -g music/music.zip music/css/public/*.css
+	zip -g music/music.zip music/dist/**

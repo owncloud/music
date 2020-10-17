@@ -34,7 +34,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 				resetContents();
 
 				$scope.artist = libraryService.getArtist(artistId);
-				$scope.artistAlbumTrackCount = _($scope.artist.albums).map('tracks').flatten().value().length;
+				$scope.artistAlbumTrackCount = _($scope.artist.albums).map('tracks').flatten().size();
 				$scope.artistTrackCount = libraryService.findTracksByArtist(artistId).length;
 
 				var art = $('#app-sidebar .albumart');

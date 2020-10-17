@@ -21,12 +21,10 @@ require('node_modules/angular-gettext');
 require('node_modules/angular-route');
 require('node_modules/angular-sanitize');
 require('node_modules/angular-scroll');
-window.AV = require('vendor/aurora/aurora.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('vendor/dragdrop/draganddrop.js');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');
-window.Cookies = require('node_modules/js-cookie');
 require('vendor/nextcloud/placeholder.js');
 require('node_modules/restangular');
 

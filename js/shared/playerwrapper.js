@@ -253,7 +253,7 @@ OCA.Music.PlayerWrapper = function() {
 					m_aurora.stop();
 				}
 
-				m_aurora = AV.Player.fromURL(url);
+				m_aurora = window.AV.Player.fromURL(url);
 				m_aurora.asset.source.chunkSize=524288;
 
 				m_aurora.on('buffer', function(percent) {

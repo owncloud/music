@@ -9,12 +9,10 @@
  */
 
 /* Vendor libraries */
-window.AV = require('vendor/aurora/aurora.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 require('vendor/jquery-initialize');
-window.Cookies = require('node_modules/js-cookie');
 
 /* Embedded player files */
 require('../shared/playerwrapper.js');

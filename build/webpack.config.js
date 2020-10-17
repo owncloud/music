@@ -43,7 +43,9 @@ module.exports = {
       'window.$': 'jquery',
       'jQuery': 'jquery',
       'window.jQuery': 'jquery',
-      '_': 'lodash'
+      '_': 'lodash',
+      'window.AV': 'vendor/aurora/aurora.js',
+      'Cookies': 'node_modules/js-cookie'
     })
   ],
   module: {

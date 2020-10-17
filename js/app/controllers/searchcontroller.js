@@ -23,45 +23,60 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	var MAX_MATCHES = 5000;
 	var MAX_MATCHES_IN_PLAYLIST = 1000;
 
+	var searchform = $('.searchbox');
 	var searchbox = $('#searchbox');
-	if (searchbox.length === 0) {
-		return; // NC20+ with the new "unified search", disable searching for now
+
+	if (searchbox.length === 0) { // NC 20+
+		$.initialize('.unified-search__form', function(index_, elem) {
+			searchform = $(elem);
+			searchbox = searchform.find('input');
+			init();
+		});
+	}
+	else { // NC < 20 or OC
+		init();
+		// the keyboard shortcut has to be registered manually, on NC20 this is handled by the core
+		registerCtrlF();
 	}
 
-	$scope.queryString = searchbox.val().trim();
+	function init() {
+		$scope.queryString = searchbox.val().trim();
 
-	/** Conduct the search when there is a pause in typing in text */
-	var checkQueryChange = _.debounce(function() {
-		if ($scope.queryString != searchbox.val().trim()) {
-			onEnterSearchString();
-		}
-	}, 250);
-	searchbox.bind('propertychange change keyup input paste', checkQueryChange);
+		/** Conduct the search when there is a pause in typing in text */
+		var checkQueryChange = _.debounce(function() {
+			if ($scope.queryString != searchbox.val().trim()) {
+				onEnterSearchString();
+			}
+		}, 250);
+		searchbox.bind('propertychange change keyup input paste', checkQueryChange);
 
-	/** Handle clearing the searchbox. This has to be registered to the parent form
-	 *  of the #searchbox element.
-	 */
-	$('.searchbox').on('reset', function() {
-		$scope.queryString = '';
-		$scope.$apply(startProgress);
-		$timeout(clearSearch);
-	});
+		/** Handle clearing the searchbox. This has to be registered to the parent form
+		 *  of the #searchbox element.
+		 */
+		searchform.on('reset', function() {
+			$scope.queryString = '';
+			$scope.$apply(startProgress);
+			$timeout(clearSearch);
+		});
 
-	/** Catch ctrl+f except when the Settings view is active */
-	$document.bind('keydown', function(e) {
-		if ($rootScope.currentView !== '#/settings' && e.ctrlKey && e.key === 'f') {
-			searchbox.focus();
-			return false;
-		}
-		return true;
-	});
+		/** Run search when enter pressed within the searchbox */
+		searchbox.bind('keydown', function (event) {
+			if (event.which === 13) {
+				onEnterSearchString();
+			}
+		});
+	}
 
-	/** Run search when enter pressed within the searchbox */
-	searchbox.bind('keydown', function (event) {
-		if (event.which === 13) {
-			onEnterSearchString();
-		}
-	});
+	function registerCtrlF() {
+		/** Catch ctrl+f except when the Settings view is active */
+		$document.bind('keydown', function(e) {
+			if ($rootScope.currentView !== '#/settings' && e.ctrlKey && e.key === 'f') {
+				searchbox.focus();
+				return false;
+			}
+			return true;
+		});
+	}
 
 	/** Search query is considered to be empty if it contains only whitespace and/or quotes (") */
 	function queryIsEmpty() {

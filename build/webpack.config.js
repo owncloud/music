@@ -18,8 +18,8 @@ module.exports = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    app: '../js/config/index.js',
-    files_music_player: '../js/embedded/index.js'
+    app: '../js/index.app.js',
+    files_music_player: '../js/index.embedded.js'
   },
   output: {
     filename: 'webpack.[name].js',

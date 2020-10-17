@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 		nggettext_extract: {
 			pot: {
 				files: {
-					'../l10n/templates/music.pot': ['../templates/**/*.php', '../js/public/*.js']
+					'../l10n/templates/music.pot': ['../templates/**/*.php', '../js/app/**/*.js']
 				}
 			},
 		},
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
 					module: 'Music'
 				},
 				files: {
-					'../js/l10n/translations.js': ['../l10n/**/music.po']
+					'../js/app/l10n/translations.js': ['../l10n/**/music.po']
 				}
 			},
 		}

@@ -8,7 +8,7 @@
     "parserOptions": {
         "ecmaVersion": 5
     },
-    "ignorePatterns": ["/public/*", "/vendor/**", "/l10n/*"],
+    "ignorePatterns": ["/vendor/**", "app/l10n/*"],
     "globals": {
         "_": "readonly",
         "$": "readonly",

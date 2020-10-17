@@ -8,6 +8,13 @@
  * @copyright Pauli Järvinen 2020
  */
 
+/**
+ * `require` all modules in the given webpack context
+ */
+function requireAll(context) {
+	context.keys().forEach(context);
+}
+
 /* Vendor libraries */
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
@@ -15,11 +22,6 @@ require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 require('vendor/jquery-initialize');
 
 /* Embedded player files */
-require('../shared/playerwrapper.js');
-require('../shared/utils.js');
-require('./embeddedplayer.js');
-require('./main.js');
-require('./playlist.js');
-require('./playlistfileservice.js');
-require('./playlisttabview.js');
-require('./searchrenderer.js');
+requireAll(require.context('./shared', /*use subdirectories:*/ false));
+requireAll(require.context('./embedded', /*use subdirectories:*/ false));
+requireAll(require.context('../css/embedded', /*use subdirectories:*/ false));

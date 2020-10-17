@@ -29,9 +29,7 @@ require('vendor/nextcloud/placeholder.js');
 require('node_modules/restangular');
 
 /* Music app files */
-require('./app.js');
-requireAll(require.context('../app', /*use subdirectories:*/ true));
-requireAll(require.context('../l10n', /*use subdirectories:*/ false));
-requireAll(require.context('../shared', /*use subdirectories:*/ false));
-requireAll(require.context('../../img', /*use subdirectories:*/ true));
-requireAll(require.context('../../css', /*use subdirectories:*/ false));
+requireAll(require.context('./app', /*use subdirectories:*/ true));
+requireAll(require.context('./shared', /*use subdirectories:*/ false));
+requireAll(require.context('../img', /*use subdirectories:*/ true));
+requireAll(require.context('../css', /*use subdirectories:*/ false));

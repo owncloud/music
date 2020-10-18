@@ -16,7 +16,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>0.16.1-alpha1</version>
+	<version>0.17.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/87253623-7c1a1500-c485-11ea-98b4-625dc55868ac.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>
@@ -28,7 +28,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<dependencies>
 		<php min-version="7.0" max-version="7.4"/>
 		<owncloud min-version="10" max-version="10" />
-		<nextcloud min-version="13" max-version="19" />
+		<nextcloud min-version="13" max-version="20" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

@@ -1,3 +1,49 @@
+v0.17.0 2020-10-18
+ * support for Nextcloud 20 (#790)
+ * provide settings option to exclude paths from the music library (#762)
+   * adding excluded paths takes effect only upon rescan, but the command line tool `occ music:scan --remove-obsolete` can be used for this
+ * improved performance for the option `--remove-obsolete` of the `occ music:scan` command
+ * update getID3 library to the development version 1.9.20-202010031049 to fix an issue in parsing WAV files with a `bext` chunk (#788)
+ * improvements to the artist details pane when Last.fm connection is set up:
+   * clicking a similar artist opens it within the details pane if the artist is present in the music library
+   * more similar artists can be fetched with the link "Show all..."
+ * enable navigation from the album details pane to the album artist details
+ * Subsonic API:
+   * API version updated to 1.11.0
+   * added methods `getArtistInfo` and `getArtistInfo2`
+   * added methods `getSimilarSongs` and `getSimilarSongs2`
+   * added methods `getBookmarks`, `createBookmark`, and `deleteBookmark` (loosely based on the work by @gavine99 on #752)
+   * when listing albums of an artist, include also albums where the artist is only featured and not the album artist
+   * use UTC time and the "zulu format" on all timestamps (similar to "real" Subsonic server)
+ * Ampache API:
+   * API version updated to 400001 (aka v4.0.0) (#727)
+   * added action `get_indexes`
+   * added action `stats` (only filters `newest`, `flagged`, and `random` supported for now)
+   * added action `flag`
+   * added action `goodbye`
+   * added action `get_art`
+   * added action `playlist_generate` (only mode `random` is supported for now)
+   * added action `playlist_create`
+   * added action `playlist_edit`
+   * added action `playlist_delete`
+   * added action `playlist_add_song`
+   * added action `playlist_remove_song`
+   * the `total_count` element was once again added to the XML responses because Amproid client was found to depend on it
+   * for song responses, the 'title' element has been duplicated with another key 'name' because this is how the API is specified
+   * the session lifetime is now extended with any valid authorized API call and not just with the `ping` call
+   * the response to `ping` now contains also the lowest compatible API version, session expiry time, and the app name and version
+   * the response to `handshake` now has key `api` instead of `version`
+   * use error code 404 in case the requested entity is not found (matches the "real" Ampache server and recently updated specification of the API v4.x)
+ * fix a bug in the cache invalidation which could lead to already deleted tracks showing up on the web UI
+ * fix the front-end breaking on minification (similar to the old bug #434)
+ * bundle the front-end code and vendor libraries using webpack
+   * includes jQuery 3.4.1 which is used instead of the older version shipped with the cloud
+   * includes lodash.sh 4.17.20 which is now used instead of underscore.js shipped with the cloud
+   * includes AngularJS 1.8.1 (up from version 1.8.0)
+   * + number of smaller vendor libraries, some of which were updated, too
+ * small UI tweaks
+ * internal refactoring
+
 v0.16.0 2020-08-02
  * support for playlist files (#777, #652, #645).
    * exporting playlist to M3U8 file

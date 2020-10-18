@@ -307,7 +307,7 @@ function initEmbeddedPlayer() {
 				// At least in ownCloud 10 and Nextcloud 11-13, there is such an oversight
 				// that if MP3 file has no embedded cover, then the placeholder is not shown
 				// either. Fix that on our own.
-				previewImg.error(function() {
+				previewImg.on('error', function() {
 					previewImg.attr('src', OC.imagePath('core', 'filetypes/audio'));
 					previewImg.css('width', '128px');
 					previewImg.css('height', '128px');

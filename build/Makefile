@@ -52,4 +52,6 @@ release: build
 	cd .. && \
 	git archive HEAD --format=zip --prefix=music/ > music.zip && \
 	cd .. && \
-	zip -g music/music.zip music/dist/**
+	zip -g music/music.zip music/dist/*.js \
+	zip -g music/music.zip music/dist/*.css \
+	zip -g music/music.zip music/dist/img/**

@@ -160,7 +160,7 @@ class AmpacheController extends Controller {
 			case 'get_indexes':
 				return $this->get_indexes($filter, $limit, $offset);
 			case 'stats':
-				return $this->stats($limit, $offset, $auth);
+				return $this->stats($filter, $limit, $offset, $auth);
 			case 'artists':
 				return $this->artists($filter, $exact, $limit, $offset, $auth);
 			case 'artist':
@@ -288,10 +288,17 @@ class AmpacheController extends Controller {
 		return $this->renderEntitiesIndex($entities, $type);
 	}
 
-	protected function stats($limit, $offset, $auth) {
+	protected function stats($filter, $limit, $offset, $auth) {
 		$type = $this->getRequiredParam('type');
-		$filter = $this->getRequiredParam('filter');
 		$userId = $this->ampacheUser->getUserId();
+
+		// Support for API v3.x: Originally, there was no 'filter' argument and the 'type'
+		// argument had that role. The action only supported albums in this old format.
+		// The 'filter' argument was added and role of 'type' changed in API v4.0.
+		if (empty($filter)) {
+			$filter = $type;
+			$type = 'album';
+		}
 
 		if (!\in_array($type, ['song', 'album', 'artist'])) {
 			throw new AmpacheException("Unsupported type $type", 400);

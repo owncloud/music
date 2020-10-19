@@ -1,3 +1,7 @@
+v0.17.1 2020-10-20
+ * fix web UI not loading on ownCloud when installed from the release package (#792)
+ * the issue above does not affect Nextcloud, and there's no reason to publish this version in the Nextcloud app store
+
 v0.17.0 2020-10-18
  * support for Nextcloud 20 (#790)
  * provide settings option to exclude paths from the music library (#762)

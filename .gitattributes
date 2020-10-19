@@ -1,6 +1,6 @@
 /build export-ignore
-/css export-ignore
-/js export-ignore
+/css/* export-ignore
+/js/* export-ignore
 /l10n/*/*.po export-ignore
 /tests export-ignore
 .gitattributes export-ignore

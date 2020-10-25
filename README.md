@@ -16,10 +16,10 @@ Music player embedded into the files view:
 ![files view](https://user-images.githubusercontent.com/8565946/43827500-9f45beb6-9b02-11e8-8884-39ed2f0daa54.png)
 
 Integration with the media control panel in Chrome:
-<img src="https://user-images.githubusercontent.com/8565946/79892129-b8038800-840a-11ea-8925-7c9fa06f08c9.png" alt="Chrome media control panel" width="60%"/>
+<img src="https://user-images.githubusercontent.com/16665512/96973502-4373e800-1518-11eb-9f99-9446d3dbf19a.jpg" alt="Chrome media control panel" width="60%"/>
 
 Mobile layout and media control integration to the lock screen and notification center with Chrome on Android:
-<img src="https://user-images.githubusercontent.com/8565946/79892137-bb970f00-840a-11ea-8082-d051e0dcd352.png" alt="Mobile layout" width="30%"/>    <img src="https://user-images.githubusercontent.com/8565946/79892141-bdf96900-840a-11ea-8ab7-b5afefa712d7.png" alt="Android lock screen" width="30%"/>    <img src="https://user-images.githubusercontent.com/8565946/79892145-bfc32c80-840a-11ea-88c3-0911d22b45cc.png" alt="Android notification center" width="30%"/>
+<img src="https://user-images.githubusercontent.com/16665512/96973698-89c94700-1518-11eb-8f9b-dc31ad529345.jpg" alt="Mobile layout" width="30%"/>    <img src="https://user-images.githubusercontent.com/8565946/79892141-bdf96900-840a-11ea-8ab7-b5afefa712d7.png" alt="Android lock screen" width="30%"/>    <img src="https://user-images.githubusercontent.com/8565946/79892145-bfc32c80-840a-11ea-88c3-0911d22b45cc.png" alt="Android notification center" width="30%"/>
 
 ## Supported formats
 

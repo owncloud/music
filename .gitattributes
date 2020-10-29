@@ -1,8 +1,3 @@
-/build export-ignore
-/css/* export-ignore
-/js/* export-ignore
-/l10n/*/*.po export-ignore
-/tests export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .php_cs.dist export-ignore
@@ -10,3 +5,4 @@
 .travis.yml export-ignore
 composer.json export-ignore
 composer.lock export-ignore
+behat.yml.travis export-ignore

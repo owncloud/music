@@ -34,7 +34,6 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 		<!-- update metadata cache when create/update/delete a file -->
 		<filesystem/>
 	</types>
-	<ocsid>164319</ocsid>
 	<repair-steps>
 		<pre-migration>
 			<step>OCA\Music\Migration\PreMigration</step>

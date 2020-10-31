@@ -177,7 +177,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'prev')
 			.attr('class', 'control svg small disabled')
-			.attr('src', OC.imagePath('music', 'play-previous'))
+			.attr('src', OC.imagePath('music', 'skip-previous'))
 			.attr('alt', t('music', 'Previous'))
 			.click(previous);
 	}
@@ -186,7 +186,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'next')
 			.attr('class', 'control svg small disabled')
-			.attr('src', OC.imagePath('music', 'play-next'))
+			.attr('src', OC.imagePath('music', 'skip-next'))
 			.attr('alt', t('music', 'Next'))
 			.click(next);
 	}

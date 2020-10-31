@@ -3,13 +3,13 @@
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
-			src="<?php HtmlUtil::printSvgPath('play-previous') ?>" />
+			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
 		<img ng-click="play()" ng-hide="playing" class="control svg" alt="{{ 'Play' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('play-big') ?>" />
 		<img ng-click="pause()" ng-show="playing" class="control svg" alt="{{ 'Pause' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('pause-big') ?>" />
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
-			src="<?php HtmlUtil::printSvgPath('play-next') ?>" />
+			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
 	<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"

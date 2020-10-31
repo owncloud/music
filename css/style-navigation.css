@@ -38,7 +38,7 @@
 	cursor: pointer;
 }
 
-#app-navigation .music-navigation-item:not(:hover):not(.active) .music-navigation-item-content > span {
+#app-navigation .music-navigation-item:not(:hover):not(.active) .music-navigation-item-content {
 	opacity: 0.7;
 }
 
@@ -60,12 +60,18 @@
 
 #app-navigation .play-pause-button {
 	display: inline-block;
-	width: 25px;
+	width: 40px;
 	height: 100%;
+	background-size: 16px;
+}
+
+#app-navigation .play-pause-button:hover,
+#app-navigation .current .play-pause-button {
+	background-image: unset
 }
 
 #app-navigation .play-pause {
-	margin-left: 9px;
+	margin-left: 16px;
 }
 
 #app-navigation .current:not(.playing) :hover .play-pause {
@@ -76,14 +82,28 @@
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-navigation li > a#create {
-	padding-left: 18px !important;
+#app-navigation #new-playlist > * {
+	display: inline-block;
+	height: 100%;
 }
 
-#app-navigation li > a:first-child img {
-	margin-bottom: 0;
-	width: 10px;
-	margin-left: 5px;
+#app-navigation #new-playlist .icon-add {
+	width: 40px;
+	height: 44px;
+	cursor: pointer;
+}
+
+#app-navigation #new-playlist:not(:hover) .icon-add {
+	opacity: 0.7;
+}
+
+#app-navigation #new-playlist #create {
+	padding-left: 4px;
+	box-shadow: unset;
+	position: absolute;
+	width: auto;
+	right: 0;
+	left: 40px;
 }
 
 #app-navigation li.drag-hover {
@@ -161,8 +181,8 @@
 
 #app-navigation .input-container {
 	position: absolute;
-	left: 0;
-	right: 85px;
+	left: 35px;
+	right: 65px;
 	width: auto;
 }
 
@@ -170,11 +190,12 @@
 	width: 100%;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
-	margin-left: 21px;
+	margin-left: 0;
 	margin-bottom: 6px;
 	margin-top: 6px;
 	margin-right: 5px;
 	height: 32px;
+	cursor: text;
 }
 
 #app-navigation .icon-checkmark {
@@ -204,4 +225,20 @@
 
 .icon-from-file {
 	background-image: url(../img/from-file.svg);
+}
+
+.icon-album {
+	background-image: url(../img/album.svg);
+}
+
+.icon-folder-nav {
+	background-image: url(../img/folder.svg);
+}
+
+.icon-audiotrack {
+	background-image: url(../img/audiotrack.svg);
+}
+
+.icon-library-music {
+	background-image: url(../img/library-music.svg);
 }

@@ -2,7 +2,8 @@
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
 	>
-		<div class="play-pause-button" ng-hide="playlist && $parent.showEditForm == playlist.id"
+		<div class="play-pause-button svg" ng-hide="playlist && $parent.showEditForm == playlist.id"
+			ng-class="icon ? 'icon-' + icon : ''"
 			ng-click="$parent.togglePlay(destination, playlist); $event.stopPropagation()"
 			title="{{ (($parent.playingView == destination && $parent.playing) ? 'Pause' : 'Play list') | translate }}"
 		>

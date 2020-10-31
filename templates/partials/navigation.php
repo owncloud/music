@@ -6,24 +6,27 @@ HtmlUtil::printNgTemplate('navigationitem');
 <div id="app-navigation" ng-controller="NavigationController">
 	<ul>
 		<li navigation-item text="'Albums' | translate" destination="'#'"
-			title="{{ albumCountText() }}"></li>
+			title="{{ albumCountText() }}" icon="'album'"></li>
 		<li navigation-item text="'Folders' | translate" destination="'#/folders'"
-			title="{{ folderCountText() }}"></li>
+			title="{{ folderCountText() }}" icon="'folder-nav'"></li>
 		<li navigation-item text="'Genres' | translate" destination="'#/genres'"
-			title="{{ genresCountText() }}"></li>
+			title="{{ genresCountText() }}" icon="'audiotrack'"></li>
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
-			title="{{ trackCountText() }}"></li>
+			title="{{ trackCountText() }}" icon="'library-music'"></li>
 		<li class="app-navigation-separator"></li>
-		<li id="new-playlist" class="music-navigation-item">
-			<a id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>+ New Playlist</a>
-			<div class="input-container">
-				<input type="text" class="new-list" maxlength="256" ng-show="showCreateForm" 
-					placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
-			</div>
-			<div class="actions" ng-show="showCreateForm">
-				<button class="action icon-checkmark app-navigation-noclose"
-					ng-class="{ disabled: newPlaylistName.length == 0}" ng-click="commitCreate()"></button>
-				<button class="action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
+		<li class="music-navigation-item">
+			<div id="new-playlist" class="music-navigation-item-content">
+				<div class="icon-add" ng-click="startCreate()"></div>
+				<div id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
+				<div class="input-container" ng-show="showCreateForm">
+					<input type="text" class="new-list" maxlength="256"
+						placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
+				</div>
+				<div class="actions" ng-show="showCreateForm">
+					<button class="action icon-checkmark app-navigation-noclose"
+						ng-class="{ disabled: newPlaylistName.length == 0}" ng-click="commitCreate()"></button>
+					<button class="action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
+				</div>
 			</div>
 		</li>
 		<li navigation-item

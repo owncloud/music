@@ -8,8 +8,8 @@
  * @copyright Pauli Järvinen 2019, 2020
  */
  
- .dark-theme .svg,
-.dark-theme .play-pause {
+.dark-theme .svg,
+.dark-theme :not(.svg) > .play-pause {
 	filter: invert(100%);
 }
 

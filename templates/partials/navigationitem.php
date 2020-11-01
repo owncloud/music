@@ -28,7 +28,7 @@
 					<li ng-click="$parent.$parent.showDetails(playlist)">
 						<a class="icon-details"> <span translate>Details</span></a>
 					</li>
-					<li ng-click="$parent.$parent.startEdit(playlist)">
+					<li ng-click="$parent.$parent.startEdit(playlist)" class="app-navigation-noclose">
 						<a class="icon-rename"><span translate>Rename</span></a>
 					</li>
 					<li ng-click="$parent.$parent.exportToFile(playlist)">

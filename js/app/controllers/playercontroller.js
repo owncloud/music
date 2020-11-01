@@ -78,23 +78,11 @@ function ($scope, $rootScope, playlistService, libraryService,
 	});
 
 	var titleApp = $('title').html().trim();
-	var titleSong = '';
-	var titleIcon = '';
-
-	function updateWindowTitle() {
-		$('title').html(titleIcon + titleSong + titleApp);
-	}
-
-	// display a play icon in the title if a song is playing
-	$scope.$watch('playing', function(newValue) {
-		titleIcon = newValue ? '▶ ' : '';
-		updateWindowTitle();
-	});
 
 	// display the song name and artist in the title when there is current track
 	$scope.$watch('currentTrack', function(newTrack) {
-		titleSong = newTrack ? newTrack.title + ' (' + newTrack.artistName + ') - ' : '';
-		updateWindowTitle();
+		var titleSong = newTrack ? newTrack.title + ' (' + newTrack.artistName + ') - ' : '';
+		$('title').html(titleSong + titleApp);
 	});
 
 	$scope.getPlayableFileId = function (track) {

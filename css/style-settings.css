@@ -116,6 +116,11 @@
 	opacity: .5;
 }
 
+#music-user table td.key-action a:hover,
+#music-user table .add-row td a:hover {
+	opacity: 1;
+}
+
 #music-user table .add-row,
 #music-user table .add-row * {
 	border: none;

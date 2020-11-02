@@ -68,9 +68,9 @@ $c->getServer()->getSearch()->registerProvider(
  * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
  * directly if the requested URL seems to be for Files or Sharing.
  */
-$loadEmbeddedMusicPlayer = function () use ($appName) {
-	\OCP\Util::addScript($appName, '../dist/webpack.files_music_player');
-	\OCP\Util::addStyle($appName, '../dist/webpack.files_music_player');
+$loadEmbeddedMusicPlayer = function () {
+	\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
+	\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
 };
 
 $request = \OC::$server->getRequest();

@@ -1,13 +1,14 @@
 <?php
 
+use \OCA\Music\Utility\HtmlUtil;
+
 // scripts
-\OCP\Util::addScript('music', '../dist/webpack.app');
+HtmlUtil::addWebpackScript('app');
 
 // stylesheets
-\OCP\Util::addStyle('music', '../dist/webpack.app');
+HtmlUtil::addWebpackStyle('app');
 \OCP\Util::addStyle('settings', 'settings');
 
-use \OCA\Music\Utility\HtmlUtil;
 ?>
 
 

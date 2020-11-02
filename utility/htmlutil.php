@@ -71,4 +71,28 @@ class HtmlUtil {
 
 		return $data;
 	}
+
+	/**
+	 * @param string $name
+	 */
+	public static function addWebpackScript($name) {
+		$manifest = self::getManifest();
+		$hashedName = \substr($manifest["$name.js"], 0, -3); // the extension is cropped from the name in $manifest
+		\OCP\Util::addScript('music', '../dist/' . $hashedName);
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public static function addWebpackStyle($name) {
+		$manifest = self::getManifest();
+		$hashedName = \substr($manifest["$name.css"], 0, -4); // the extension is cropped from the name in $manifest
+		\OCP\Util::addStyle('music', '../dist/' . $hashedName);
+	}
+
+	private static function getManifest() {
+		$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'dist', 'manifest.json']);
+		$manifest = \file_get_contents($manifestPath);
+		return \json_decode($manifest, true);
+	}
 }

@@ -13,6 +13,8 @@ const path = require('path');
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 module.exports = {
   mode: 'production',
@@ -22,7 +24,7 @@ module.exports = {
     files_music_player: '../js/index.embedded.js'
   },
   output: {
-    filename: 'webpack.[name].js',
+    filename: 'webpack.[name].[contenthash].js',
     path: path.resolve(__dirname, '../dist'),
   },
   resolve: {
@@ -36,7 +38,8 @@ module.exports = {
     }
   },
   plugins: [
-    new MiniCssExtractPlugin({filename: 'webpack.[name].css'}),
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({filename: 'webpack.[name].[contenthash].css'}),
     new ESLintPlugin({files: '../js'}),
     new webpack.ProvidePlugin({
       '$': 'jquery',
@@ -46,7 +49,8 @@ module.exports = {
       '_': 'lodash',
       'window.AV': 'vendor/aurora/aurora.js',
       'Cookies': 'node_modules/js-cookie'
-    })
+    }),
+    new WebpackAssetsManifest(),
   ],
   module: {
     rules: [

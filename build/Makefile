@@ -54,6 +54,7 @@ release: build
 	cd .. && \
 	zip -g music/music.zip music/dist/*.js && \
 	zip -g music/music.zip music/dist/*.css && \
+	zip -g music/music.zip music/dist/*.json && \
 	zip -g music/music.zip music/dist/img/** && \
 	zip -d music/music.zip "music/build/*" && \
 	zip -d music/music.zip "music/css/*.css" && \

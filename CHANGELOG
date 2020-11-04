@@ -1,3 +1,15 @@
+v0.17.2 2020-11-04
+ * UI tweaks:
+   * add icons to the navigation pane (#794)
+   * use more appropriate icons for the "skip next" and "skip previous" buttons
+   * highlight the settings view 'Remove' and 'Select folder' buttons on hover
+   * mobile layout: do not auto-close the navigation pane when playlist "Rename" selected
+   * removed the play icon from the browser window title (previously shown while playing)
+ * prevent log file exploding in size on some systems if the DB content is in inconsistent state (#793)
+ * fix the github "Source code (zip/tar.gz)" files to properly include also the .js/.css sources (this has been broken since v0.12.0)
+ * attach a hash to the webpack .js and .css bundle names, ensuring they will get reloaded after the update (without user needing to make forced reload on the browser)
+ * update AngularJS to version 1.8.2
+
 v0.17.1 2020-10-20
  * fix web UI not loading on ownCloud when installed from the release package (#792)
  * the issue above does not affect Nextcloud, and there's no reason to publish this version in the Nextcloud app store

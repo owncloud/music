@@ -16,7 +16,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>0.17.1</version>
+	<version>0.17.2</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/87253623-7c1a1500-c485-11ea-98b4-625dc55868ac.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

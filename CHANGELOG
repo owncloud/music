@@ -1,3 +1,7 @@
+v0.17.3 2020-11-07
+ * fix 'Delete' and some other actions not working correctly on Files when Music v0.17.2 installed (#798) (this was a webpack build issue, no source code change was needed)
+ * fix `occ` commands of the Music app not working if Nextcloud Mail is installed (#799)
+
 v0.17.2 2020-11-04
  * UI tweaks:
    * add icons to the navigation pane (#794)

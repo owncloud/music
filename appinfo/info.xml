@@ -7,7 +7,7 @@
 
 In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, search tracks by keywords, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to the next files of the folder or playlist until stopped. The app includes also a server compatible with Ampache and Subsonic clients, allowing playback and browsing of the library on various external applications e.g. on Android or iPhone.
 
-When browser and OS support available, the Music app can be controlled with the media keys (play/pause/stop/next/prev) on the keyboard or the OS notification center even when the browser is not focused. This is supported at least on Chrome and Edge (tested on Windows 10 and Android).
+When browser and OS support available, the Music app can be controlled with the media keys (play/pause/stop/next/prev) on the keyboard or the OS notification center even when the browser is not focused.
 
 The admin may set up connection to the Last.fm service, allowing the Music app to show biography and background information of the artists, albums, and tracks.
 
@@ -16,7 +16,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>0.17.2</version>
+	<version>0.17.3</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/87253623-7c1a1500-c485-11ea-98b4-625dc55868ac.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827480-978865f2-9b02-11e8-97fd-b46d3e171fd7.png</screenshot>

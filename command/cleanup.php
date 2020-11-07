@@ -7,16 +7,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 namespace OCA\Music\Command;
 
 use OCA\Music\Db\Maintenance;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Cleanup extends Command {
@@ -40,5 +38,6 @@ class Cleanup extends Command {
 		$output->writeln('Running cleanup task...');
 		$removedEtries = $this->maintenance->cleanUp();
 		$output->writeln("Removed entries: " . \json_encode($removedEtries));
+		return 0;
 	}
 }

@@ -61,8 +61,10 @@ abstract class BaseCommand extends Command {
 				throw new \InvalidArgumentException("No users in selected groups!");
 			}
 			$this->doExecute($input, $output, $users);
+			return 0;
 		} catch (\InvalidArgumentException $e) {
 			$output->writeln($e->getMessage());
+			return 1;
 		}
 	}
 

@@ -48,7 +48,7 @@ l10n-compile: deps
 	cd ../l10n; ./l10n.pl music write
 
 # releasing
-release: build
+release:
 	cd .. && \
 	git archive HEAD --format=zip --prefix=music/ > music.zip && \
 	cd .. && \

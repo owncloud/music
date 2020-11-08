@@ -9,6 +9,7 @@
  *
  */
 
+import playIconName from '../../../img/play-big.svg';
 
 /**
  * This custom directive produces a self-contained list heading widget which
@@ -20,7 +21,7 @@ angular.module('Music').directive('listHeading', ['$rootScope', '$timeout', 'get
 function ($rootScope, $timeout, gettextCatalog) {
 
 	var playText = gettextCatalog.getString('Play');
-	var playIconSrc = OC.imagePath('music','play-big.svg');
+	var playIconSrc = OC.filePath('music', 'dist', playIconName);
 	var detailsText = gettextCatalog.getString('Details');
 
 	/**

@@ -1,3 +1,5 @@
+import musicIcon from '../../img/music-dark.svg';
+
 (function() {
 	/**
 	 * This custom renderer handles rendering Music app search results shown within the Files app
@@ -20,7 +22,7 @@
 		},
 		renderResult: function($row, _item) {
 			$row.find('td.icon')
-			.css('background-image', 'url(' + OC.imagePath('music', 'music-dark') + ')')
+			.css('background-image', 'url(' + OC.filePath('music', 'dist', musicIcon) + ')')
 			.css('opacity', '.4');
 			return $row;
 		}

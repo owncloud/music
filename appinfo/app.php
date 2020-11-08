@@ -28,7 +28,7 @@ $appName = $c->query('AppName');
 		'order' => 10,
 		'name' => $c->query('L10N')->t('Music'),
 		'href' => $c->query('URLGenerator')->linkToRoute('music.page.index'),
-		'icon' => $c->query('URLGenerator')->imagePath($appName, 'music.svg')
+		'icon' => \OCA\Music\Utility\HtmlUtil::getSvgPath('music')
 	];
 });
 

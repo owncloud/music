@@ -30,7 +30,17 @@ class HtmlUtil {
 	 * @param string $iconName Name of the icon without path or the '.svg' suffix
 	 */
 	public static function printSvgPath($iconName) {
-		print(\OCP\Template::image_path('music', $iconName.'.svg'));
+		print(self::getSvgPath($iconName));
+	}
+
+	/**
+	 * Get path to a icon of the Music app
+	 * @param string $iconName Name of the icon without path or the '.svg' suffix
+	 */
+	public static function getSvgPath($iconName) {
+		$manifest = self::getManifest();
+		$hashedName = $manifest["img/$iconName.svg"];
+		return \OCP\Template::image_path('music', '../dist/' . $hashedName);
 	}
 
 	/**
@@ -90,9 +100,13 @@ class HtmlUtil {
 		\OCP\Util::addStyle('music', '../dist/' . $hashedName);
 	}
 
+	private static $manifest = null;
 	private static function getManifest() {
-		$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'dist', 'manifest.json']);
-		$manifest = \file_get_contents($manifestPath);
-		return \json_decode($manifest, true);
+		if (self::$manifest === null) {
+			$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'dist', 'manifest.json']);
+			$manifestText = \file_get_contents($manifestPath);
+			self::$manifest = \json_decode($manifestText, true);
+		}
+		return self::$manifest;
 	}
 }

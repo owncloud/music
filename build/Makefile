@@ -59,6 +59,8 @@ release:
 	zip -d music/music.zip "music/build/*" && \
 	zip -d music/music.zip "music/css/*.css" && \
 	zip -d music/music.zip "music/css/*/" && \
+	zip -d music/music.zip "music/img/*.svg" && \
+	zip -d music/music.zip "music/img/*/*" && \
 	zip -d music/music.zip "music/js/*.js*" && \
 	zip -d music/music.zip "music/js/*/*" && \
 	zip -d music/music.zip "music/l10n/*/*" && \

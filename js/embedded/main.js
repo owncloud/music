@@ -8,6 +8,9 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
+import playIcon from '../../img/play-big.svg';
+
+
 window.addEventListener('DOMContentLoaded', function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
 	// Initialize our player only if such player is not found.
@@ -212,7 +215,7 @@ function initEmbeddedPlayer() {
 					mime,
 					'music-play',
 					OC.PERMISSION_READ,
-					OC.imagePath('music', 'play-big'),
+					OC.filePath('music', 'dist', playIcon),
 					onPlay,
 					t('music', 'Play')
 			);

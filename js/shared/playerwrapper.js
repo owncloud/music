@@ -184,17 +184,17 @@ OCA.Music.PlayerWrapper = function() {
 	};
 
 	this.seek = function(ratio) {
-		this.seekMsecs(ratio * m_duration);
+		m_self.seekMsecs(ratio * m_duration);
 	};
 
 	this.seekForward = function(msecs /*optional*/) {
 		msecs = msecs || 10000;
-		this.seekMsecs(m_position + msecs);
+		m_self.seekMsecs(m_position + msecs);
 	};
 
 	this.seekBackward = function(msecs /*optional*/) {
 		msecs = msecs || 10000;
-		this.seekMsecs(m_position - msecs);
+		m_self.seekMsecs(m_position - msecs);
 	};
 
 	this.playPosition = function() {

@@ -17,7 +17,7 @@
 		"angular-scroll": "^1.0.2",
 		"blueimp-md5": "^2.18.0",
 		"javascript-detect-element-resize": "^0.5.3",
-		"jquery": "^3.4.1",
+		"jquery": "^3.5.1",
 		"js-cookie": "^2.2.1",
 		"lodash": "^4.17.20",
 		"restangular": "^1.6.1"

@@ -220,7 +220,11 @@ class PlaylistFileService {
 		while ($line = \fgets($fp)) {
 			$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
 			$line = \trim($line);
-			if (Util::startsWith($line, '#')) {
+
+			if ($line === '') {
+				// empty line => skip
+			}
+			elseif (Util::startsWith($line, '#')) {
 				// comment or extended format attribute line
 				if ($value = self::extractExtM3uField($line, 'EXTENC')) {
 					// update the used encoding with the explicitly defined one

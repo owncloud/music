@@ -231,9 +231,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			var ratio = 0;
 			if (songLength_s === 0) {
 				text.text(t('music', 'Loading…'));
-			} else {
+			} else if ($.isNumeric(songLength_s)) {
 				text.text(formatTime(playTime_s) + '/' + formatTime(songLength_s));
 				ratio = playTime_s / songLength_s;
+			} else {
+				text.text(formatTime(playTime_s));
 			}
 			playBar.css('width', 100 * ratio + '%');
 		}
@@ -252,9 +254,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			setCursorType('default');
 		});
 		player.on('ready', function() {
-			if (player.seekingSupported()) {
-				setCursorType('pointer');
-			}
+			// nothing to do
 		});
 		player.on('buffer', function(percent) {
 			bufferBar.css('width', Math.round(percent) + '%');
@@ -266,6 +266,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		player.on('duration', function(msecs) {
 			songLength_s = Math.round(msecs/1000);
 			updateProgress();
+			if (player.seekingSupported()) {
+				setCursorType('pointer');
+			}
 		});
 		player.on('play', function() {
 			playButton.css('display', 'none');
@@ -436,7 +439,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	}
 
-	function playUrl(url, mime, tempTitle, nextStep) {
+	function playUrl(url, mime, tempTitle, nextStep /*optional*/) {
 		pause();
 
 		// Set placeholders for track info fields, proper data is filled once received
@@ -457,7 +460,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			playDelayTimer = null;
 			player.fromURL(url, mime);
 			play();
-			nextStep();
+			if (nextStep) {
+				nextStep();
+			}
 
 			// 'Previous' button is enalbed regardless of the playlist size if seeking is
 			// supported for the file being played 
@@ -575,6 +580,15 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			} else {
 				loadFileInfo(fileId, fallbackTitle);
 			}
+		});
+	};
+
+	this.playExtUrl = function(url, caption) {
+		playUrl(url, null, '');
+		updateMetadata({
+			title: caption,
+			artist: '',
+			cover: null
 		});
 	};
 

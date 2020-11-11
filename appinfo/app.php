@@ -33,13 +33,6 @@ $appName = $c->query('AppName');
 });
 
 /**
- * Set default content security policy to allow loading media from data URL.
- */
-$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-$policy->addAllowedMediaDomain('data:');
-\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
-
-/**
  * register regular task
  */
 \OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\CleanUp', 'run']);
@@ -60,6 +53,17 @@ $c->getServer()->getSearch()->registerProvider(
 );
 
 /**
+ * Set default content security policy to allow loading media from data URL or any http(s) URL.
+ */
+function allowMediaSourcesInCsp() {
+	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+	$policy->addAllowedMediaDomain('data:');
+	$policy->addAllowedMediaDomain('http://*:*');
+	$policy->addAllowedMediaDomain('https://*:*');
+	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+}
+
+/**
  * Load embedded music player for Files and Sharing apps
  *
  * The nice way to do this would be
@@ -68,10 +72,10 @@ $c->getServer()->getSearch()->registerProvider(
  * ... but this doesn't work for shared files on ownCloud 10.0, at least. Hence, we load the scripts
  * directly if the requested URL seems to be for Files or Sharing.
  */
-$loadEmbeddedMusicPlayer = function () {
+function loadEmbeddedMusicPlayer() {
 	\OCA\Music\Utility\HtmlUtil::addWebpackScript('files_music_player');
 	\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
-};
+}
 
 $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {
@@ -81,7 +85,13 @@ if (isset($request->server['REQUEST_URI'])) {
 	$isShareUrl = \preg_match('%/s/.+%', $url)
 		&& !\preg_match('%/apps/.*%', $url)
 		&& !\preg_match('%.*/authenticate%', $url);
+	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
+
 	if ($isFilesUrl || $isShareUrl) {
-		$loadEmbeddedMusicPlayer();
+		allowMediaSourcesInCsp();
+		loadEmbeddedMusicPlayer();
+	}
+	elseif ($isMusicUrl) {
+		allowMediaSourcesInCsp();
 	}
 }

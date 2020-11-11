@@ -285,17 +285,26 @@ class PlaylistApiController extends Controller {
 			$libFileIds = $this->trackBusinessLayer->findAllFileIds($this->userId);
 			$libFileIds = \array_flip($libFileIds);
 
+			$bogusUrlId = -1;
+
 			// compose the final result
-			$result['files'] = \array_map(function($fileAndCaption) use ($libFileIds) {
-				$file = $fileAndCaption['file'];
-				return [
-					'id' => $file->getId(),
-					'name' => $file->getName(),
-					'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
-					'mimetype' => $file->getMimeType(),
-					'caption' => $fileAndCaption['caption'],
-					'in_library' => isset($libFileIds[$file->getId()])
-				];
+			$result['files'] = \array_map(function($fileInfo) use ($libFileIds, &$bogusUrlId) {
+				if (isset($fileInfo['url'])) {
+					$fileInfo['id'] = $bogusUrlId--;
+					$fileInfo['mimetype'] = null;
+					return $fileInfo;
+				}
+				else {
+					$file = $fileInfo['file'];
+					return [
+						'id' => $file->getId(),
+						'name' => $file->getName(),
+						'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
+						'mimetype' => $file->getMimeType(),
+						'caption' => $fileInfo['caption'],
+						'in_library' => isset($libFileIds[$file->getId()])
+					];
+				}
 			}, $result['files']);
 			return new JSONResponse($result);
 		}

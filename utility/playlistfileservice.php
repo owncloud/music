@@ -113,7 +113,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile($id, $userId, $userFolder, $filePath) {
-		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder);
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, /*allowUrls=*/false);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -152,13 +152,13 @@ class PlaylistFileService {
 	public function parseFile($fileId, $baseFolder) {
 		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
-			return $this->doParseFile($nodes[0], $baseFolder);
+			return $this->doParseFile($nodes[0], $baseFolder, /*allowUrls=*/true);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
 	}
 
-	private function doParseFile(File $file, $baseFolder) {
+	private function doParseFile(File $file, $baseFolder, $allowUrls) {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
@@ -175,14 +175,29 @@ class PlaylistFileService {
 		$cwd = $baseFolder->getRelativePath($file->getParent()->getPath());
 
 		foreach ($entries as $entry) {
-			$path = Util::resolveRelativePath($cwd, $entry['path']);
-			try {
-				$trackFiles[] = [
-					'file' => $baseFolder->get($path),
-					'caption' => $entry['caption']
-				];
-			} catch (\OCP\Files\NotFoundException $ex) {
-				$invalidPaths[] = $path;
+			$path = $entry['path'];
+
+			if (Util::startsWith($path, 'http')) {
+				if ($allowUrls) {
+					$trackFiles[] = [
+						'url' => $path,
+						'caption' => $entry['caption']
+					];
+				} else {
+					$invalidPaths[] = $path;
+				}
+			}
+			else {
+				$path = Util::resolveRelativePath($cwd, $path);
+
+				try {
+					$trackFiles[] = [
+						'file' => $baseFolder->get($path),
+						'caption' => $entry['caption']
+					];
+				} catch (\OCP\Files\NotFoundException $ex) {
+					$invalidPaths[] = $path;
+				}
 			}
 		}
 

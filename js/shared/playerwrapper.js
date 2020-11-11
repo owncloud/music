@@ -21,6 +21,7 @@ OCA.Music.PlayerWrapper = function() {
 	var m_volume = 100;
 	var m_playing = false;
 	var m_url = null;
+	var m_streamingExtUrl = false;
 	var m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
@@ -162,7 +163,9 @@ OCA.Music.PlayerWrapper = function() {
 	this.seekingSupported = function() {
 		// Seeking is not implemented in aurora/flac.js and does not work on all
 		// files with aurora/mp3.js. Hence, we disable seeking with aurora.
-		return (m_underlyingPlayer == 'html5');
+		// Also, seeking requires that we know a valid duration for the file/stream;
+		// this is not always the case with external streams.
+		return (m_underlyingPlayer == 'html5' && $.isNumeric(m_duration) && m_duration > 0);
 	};
 
 	this.seekMsecs = function(msecs) {
@@ -234,8 +237,9 @@ OCA.Music.PlayerWrapper = function() {
 		this.trigger('loading');
 
 		m_url = url;
+		m_streamingExtUrl = (mime === null); // null-mime is used to mark an external stream URL
 
-		if (canPlayWithHtml5(mime)) {
+		if (m_streamingExtUrl || canPlayWithHtml5(mime)) {
 			m_underlyingPlayer = 'html5';
 		} else {
 			m_underlyingPlayer = 'aurora';

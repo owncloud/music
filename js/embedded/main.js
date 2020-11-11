@@ -134,13 +134,17 @@ function initEmbeddedPlayer() {
 			if (!mPlayingListFile) {
 				mCurrentFile = file;
 			}
-			mPlayer.playFile(
-				urlForFile(file),
-				file.mimetype,
-				file.id,
-				file.name,
-				mShareToken
-			);
+			if ('url' in file) {
+				mPlayer.playExtUrl(file.url, file.caption);
+			} else {
+				mPlayer.playFile(
+					urlForFile(file),
+					file.mimetype,
+					file.id,
+					file.name,
+					mShareToken
+				);
+			}
 			mPlayer.setPlaylistIndex(mPlaylist.currentIndex(), mPlaylist.length());
 			if (OCA.Music.playlistTabView) {
 				// this will also take care of clearing any existing focus if the mCurrentFile is not a playlist

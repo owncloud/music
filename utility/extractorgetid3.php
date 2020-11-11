@@ -106,8 +106,9 @@ class ExtractorGetID3 implements Extractor {
 	 * @return string|array|null
 	 */
 	public static function getTag($fileInfo, $tag, $binaryValued = false) {
-		$value = Util::arrayGetOrDefault($fileInfo, ['comments', $tag, 0])
-				?: Util::arrayGetOrDefault($fileInfo, ['comments', 'text', $tag]);
+		$value = $fileInfo['comments'][$tag][0]
+				?? $fileInfo['comments']['text'][$tag]
+				?? null;
 
 		if ($value !== null && !$binaryValued) {
 			// Ensure that the tag contains only valid utf-8 characters.

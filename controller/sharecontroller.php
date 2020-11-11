@@ -68,7 +68,7 @@ class ShareController extends Controller {
 		} else {
 			$folderId = $share->getNodeId();
 			$matchingFolders = $fileOwnerHome->getById($folderId);
-			$folder = Util::arrayGetOrDefault($matchingFolders, 0);
+			$folder = $matchingFolders[0] ?? null;
 			if (!($folder instanceof Folder) || empty($folder->getById($fileId))) {
 				// no such shared folder or the folder does not contain the given file
 				$fileId = null;
@@ -96,7 +96,7 @@ class ShareController extends Controller {
 		$matchingFolders = $fileOwnerHome->getById($share->getNodeId());
 
 		try {
-			$sharedFolder = Util::arrayGetOrDefault($matchingFolders, 0);
+			$sharedFolder = $matchingFolders[0] ?? null;
 			if (!($sharedFolder instanceof Folder)) {
 				throw new \OCP\Files\NotFoundException();
 			}

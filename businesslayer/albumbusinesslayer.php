@@ -170,10 +170,10 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 			foreach ($albums as &$album) {
 				$albumId = $album->getId();
-				$album->setArtistIds(Util::arrayGetOrDefault($artists, $albumId, []));
-				$album->setNumberOfDisks(Util::arrayGetOrDefault($diskCounts, $albumId, 1));
-				$album->setGenres(Util::arrayGetOrDefault($genres, $albumId));
-				$album->setYears(Util::arrayGetOrDefault($years, $albumId));
+				$album->setArtistIds($artists[$albumId] ?? []);
+				$album->setNumberOfDisks($diskCounts[$albumId] ?? 1);
+				$album->setGenres($genres[$albumId] ?? null);
+				$album->setYears($years[$albumId] ?? null);
 			}
 		}
 		return $albums;

@@ -243,12 +243,12 @@ class Scanner extends PublicEmitter {
 
 		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);
 
-		$meta['length'] = Util::arrayGetOrDefault($fileInfo, 'playtime_seconds');
+		$meta['length'] = $fileInfo['playtime_seconds'] ?? null;
 		if ($meta['length'] !== null) {
 			$meta['length'] = \round($meta['length']);
 		}
 
-		$meta['bitrate'] = Util::arrayGetOrDefault($fileInfo, ['audio', 'bitrate']);
+		$meta['bitrate'] = $fileInfo['audio']['bitrate'] ?? null;
 
 		return $meta;
 	}

@@ -75,7 +75,7 @@ class DetailsHelper {
 			}
 
 			// add track length
-			$result['length'] = Util::arrayGetOrDefault($data, 'playtime_seconds');
+			$result['length'] = $data['playtime_seconds'] ?? null;
 
 			// add file path
 			$result['path'] = $userFolder->getRelativePath($fileNodes[0]->getPath());
@@ -125,12 +125,12 @@ class DetailsHelper {
 	 * @return array|null
 	 */
 	private static function transformLyrics(array $tags) {
-		$lyrics = Util::arrayGetOrDefault($tags, 'LYRICS'); // may be synced or unsynced
+		$lyrics = $tags['LYRICS'] ?? null; // may be synced or unsynced
 		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
-		$unsyncedLyrics = Util::arrayGetOrDefault($tags, 'unsynchronised_lyric')
-						?: Util::arrayGetOrDefault($tags, 'unsynced lyrics')
-						?: LyricsParser::syncedToUnsynced($syncedLyrics)
-						?: $lyrics;
+		$unsyncedLyrics = $tags['unsynchronised_lyric']
+						?? $tags['unsynced lyrics']
+						?? LyricsParser::syncedToUnsynced($syncedLyrics)
+						?? $lyrics;
 
 		if ($unsyncedLyrics !== null) {
 			$result = ['unsynced' => $unsyncedLyrics];

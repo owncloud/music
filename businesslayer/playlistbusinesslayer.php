@@ -131,7 +131,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		$playlistTracks = [];
 		foreach ($trackIds as $index => $trackId) {
-			$track = Util::arrayGetOrDefault($tracksById, $trackId);
+			$track = $tracksById[$trackId] ?? null;
 			if ($track !== null) {
 				// in case the same track comes up again in the list, clone the track object
 				// to have different numbers on the instances
@@ -168,7 +168,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		// Be also prepared to invalid playlist entries where corresponding track length does not exist.
 		$sum = 0;
 		foreach ($trackIds as $trackId) {
-			$sum += Util::arrayGetOrDefault($durations, $trackId, 0);
+			$sum += $durations[$trackId] ?? 0;
 		}
 
 		return $sum;

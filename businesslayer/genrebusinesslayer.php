@@ -61,7 +61,7 @@ class GenreBusinessLayer extends BusinessLayer {
 		$tracksByGenre = $this->trackMapper->mapGenreIdsToTrackIds($userId);
 
 		foreach ($genres as &$genre) {
-			$genre->setTrackIds(Util::arrayGetOrDefault($tracksByGenre, $genre->getId()));
+			$genre->setTrackIds($tracksByGenre[$genre->getId()] ?? null);
 		}
 
 		return $genres;

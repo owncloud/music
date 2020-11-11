@@ -59,7 +59,7 @@ class LastfmService {
 		]);
 
 		// add ID to those similar artists which can be found from the library
-		$similar = Util::arrayGetOrDefault($result, ['artist', 'similar', 'artist']);
+		$similar = $result['artist']['similar']['artist'] ?? null;
 		if ($similar !== null) {
 			$result['artist']['similar']['artist'] = \array_map(function($lastfmArtist) use ($userId) {
 				$matching = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
@@ -124,7 +124,7 @@ class LastfmService {
 		]);
 
 		$result = [];
-		$similarArr = Util::arrayGetOrDefault($similarOnLastfm, ['similarartists', 'artist']);
+		$similarArr = $similarOnLastfm['similarartists']['artist'] ?? null;
 		if ($similarArr !== null) {
 			foreach ($similarArr as $lastfmArtist) {
 				$matchingLibArtists = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
@@ -136,9 +136,9 @@ class LastfmService {
 					$result = \array_merge($result, $matchingLibArtists);
 				} else if ($includeNotPresent) {
 					$unfoundArtist = new Artist();
-					$unfoundArtist->setName(Util::arrayGetOrDefault($lastfmArtist, 'name'));
-					$unfoundArtist->setMbid(Util::arrayGetOrDefault($lastfmArtist, 'mbid'));
-					$unfoundArtist->setLastfmUrl(Util::arrayGetOrDefault($lastfmArtist, 'url'));
+					$unfoundArtist->setName($lastfmArtist['name'] ?? null);
+					$unfoundArtist->setMbid($lastfmArtist['mbid'] ?? null);
+					$unfoundArtist->setLastfmUrl($lastfmArtist['url'] ?? null);
 					$result[] = $unfoundArtist;
 				}
 			}

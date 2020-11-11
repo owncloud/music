@@ -103,41 +103,11 @@ class Util {
 		$newArr = [];
 
 		foreach ($arr as $k => $v) {
-			$key = self::arrayGetOrDefault($dictionary, $k, $k);
+			$key = $dictionary[$k] ?? $k;
 			$newArr[$key] = is_array($v) ? self::convertArrayKeys($v, $dictionary) : $v;
 		}
 
 		return $newArr;
-	}
-
-	/**
-	 * Get array value if exists, otherwise return a default value or null.
-	 * The function supports getting value from a nested array by giving an array-type $key.
-	 * In that case, the first value of the $key is used on the outer-most array, second value
-	 * from $key on the next level, and so on. That is, arrayGetOrDefault($arr, ['a', 'b', 'c'])
-	 * will return $arr['a']['b']['c'] if all the keys along the path are found.
-	 *
-	 * @param array $array
-	 * @param int|string|array<int|string> $key
-	 * @param mixed|null $default
-	 * @return mixed|null
-	 */
-	public static function arrayGetOrDefault(array $array, $key, $default=null) {
-		if (!\is_array($key)) {
-			$key = [$key];
-		} elseif (empty($key)) {
-			throw new \InvalidArgumentException('Empty array is not a valid key');
-		}
-
-		$temp = $array;
-		foreach ($key as $k) {
-			if (isset($temp[$k])) {
-				$temp = $temp[$k];
-			} else {
-				return $default;
-			}
-		}
-		return $temp;
 	}
 
 	/**

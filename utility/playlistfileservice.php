@@ -233,7 +233,7 @@ class PlaylistFileService {
 				elseif ($value = self::extractExtM3uField($line, 'EXTINF')) {
 					// The format should be "length,caption". Set caption to null if the field is badly formatted.
 					$parts = \explode(',', $value, 2);
-					$caption = Util::arrayGetOrDefault($parts, 1);
+					$caption = $parts[1] ?? null;
 					if (\is_string($caption)) {
 						$caption = \trim($caption);
 					}
@@ -297,7 +297,7 @@ class PlaylistFileService {
 		foreach ($files as $idx => $file) {
 			$entries[] = [
 				'path' => $file,
-				'caption' => Util::arrayGetOrDefault($titles, $idx)
+				'caption' => $titles[$idx] ?? null
 			];
 		}
 

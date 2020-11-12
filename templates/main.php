@@ -2,12 +2,9 @@
 
 use \OCA\Music\Utility\HtmlUtil;
 
-// scripts
+// add the webpack assets, containing all the .js and .css for the Music app
 HtmlUtil::addWebpackScript('app');
-
-// stylesheets
 HtmlUtil::addWebpackStyle('app');
-\OCP\Util::addStyle('settings', 'settings');
 
 ?>
 

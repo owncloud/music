@@ -88,51 +88,74 @@
 	margin: 10px 0;
 }
 
+/* Table rules borrowed from nextcloud/settings/css/settings.scss */
+#music-user table.grid {
+	width: 100%;
+}
+
+#music-user table.grid th {
+	height: 2em;
+	color: #999;
+	border-bottom: 1px solid #ebebeb;
+	padding: 0 0.5em;
+	padding-left: 0.8em;
+	text-align: left;
+	font-weight: normal;
+}
+
+#music-user table.grid td {
+	border-bottom: 1px solid #ebebeb;
+	padding: 0 0.5em;
+	padding-left: 0.8em;
+	text-align: left;
+	font-weight: normal;
+}
+
 /* TABLE FIXES */
-#music-user table tr.head:hover, #music-user table tr.head:active {
+#music-user table.grid tr.head:hover, #music-user table tr.head:active {
 	background-color: inherit;
 }
 
-#music-user table {
+#music-user table.grid {
 	max-width: 600px;
 	white-space: normal;
 }
 
-#music-user table td {
+#music-user table.grid td {
 	padding: 10px;
 }
 
-#music-user table th.key-action {
+#music-user table.grid th.key-action {
 	padding-right: 15px;
 }
 
-#music-user table td.key-action, #music-user table th.key-action {
+#music-user table.grid td.key-action, #music-user table th.key-action {
 	text-align: right;
 }
 
-#music-user table td.key-action a,
-#music-user table .add-row td a {
+#music-user table.grid td.key-action a,
+#music-user table.grid .add-row td a {
 	padding: 10px 16px;
 	opacity: .5;
 }
 
-#music-user table td.key-action a:hover,
-#music-user table .add-row td a:hover {
+#music-user table.grid td.key-action a:hover,
+#music-user table.grid .add-row td a:hover {
 	opacity: 1;
 }
 
-#music-user table .add-row,
-#music-user table .add-row * {
+#music-user table.grid .add-row,
+#music-user table.grid .add-row * {
 	border: none;
 	cursor: pointer;
 }
 
-#music-user table .excluded-path-row td {
+#music-user table.grid .excluded-path-row td {
 	padding-top: 3px;
 	padding-bottom: 3px;
 }
 
-#music-user table .excluded-path-row input[type="text"] {
+#music-user table.grid .excluded-path-row input[type="text"] {
 	max-width: unset;
 }
 

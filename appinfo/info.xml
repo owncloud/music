@@ -26,7 +26,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<php min-version="7.0" max-version="7.4"/>
+		<php min-version="7.1" max-version="7.4"/>
 		<owncloud min-version="10" max-version="10" />
 		<nextcloud min-version="13" max-version="20" />
 	</dependencies>

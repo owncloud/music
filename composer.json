@@ -1,12 +1,13 @@
 {
     "require-dev": {
         "behat/behat": "~3.0.15",
+        "friendsofphp/php-cs-fixer": "~2.0",
         "guzzlehttp/guzzle": "~6.0",
         "phpunit/phpunit": "^5.0"
     },
     "config": {
         "platform": {
-            "php": "7.0.0"
+            "php": "7.1.0"
         }
     }
 }

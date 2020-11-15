@@ -31,8 +31,6 @@ matrix:
     - env: DB=pgsql CLOUD=nextcloud CORE_BRANCH=stable15
 
     # PHP versions
-    - php: 7.0
-      env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
     - php: 7.1
       env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable15
     - php: 7.3

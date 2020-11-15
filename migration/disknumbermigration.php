@@ -52,7 +52,7 @@ class DiskNumberMigration implements IRepairStep {
 			try {
 				$this->executeMigrationSteps($output);
 			} catch (\Exception $e) {
-				$output->warning('Unexpected exception ' . get_class($e) . ' during Music disk-number-migration. ' . 
+				$output->warning('Unexpected exception ' . \get_class($e) . ' during Music disk-number-migration. ' .
 								'The music DB may need to be rebuilt.');
 			}
 		}
@@ -82,8 +82,8 @@ class DiskNumberMigration implements IRepairStep {
 	 * Copy disk numbers from the albums table to the tracks table
 	 */
 	private function copyDiskNumberToTracks() {
-		$sql = 'UPDATE `*PREFIX*music_tracks` '. 
-				'SET `disk` = (SELECT `disk` '. 
+		$sql = 'UPDATE `*PREFIX*music_tracks` '.
+				'SET `disk` = (SELECT `disk` '.
 				'              FROM `*PREFIX*music_albums` '.
 				'              WHERE `*PREFIX*music_tracks`.`album_id` = `*PREFIX*music_albums`.`id`) '.
 				'WHERE `disk` IS NULL';
@@ -117,8 +117,7 @@ class DiskNumberMigration implements IRepairStep {
 				// another disk of the same album => merge
 				$affectedTracks += $this->moveTracksBetweenAlbums($id, $prevId);
 				$this->obsoleteAlbums[] = $id;
-			}
-			else {
+			} else {
 				$prevId = $id;
 				$prevUser = $user;
 				$prevArtist = $artist;
@@ -145,7 +144,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * Delete from the albums table those rows which were made obsolete by the previous steps
 	 */
 	private function removeObsoleteAlbums() {
-		$count = count($this->obsoleteAlbums);
+		$count = \count($this->obsoleteAlbums);
 
 		if ($count > 0) {
 			$sql = 'DELETE FROM `*PREFIX*music_albums` '.
@@ -176,8 +175,7 @@ class DiskNumberMigration implements IRepairStep {
 						'UPDATE `*PREFIX*music_albums` SET `hash` = ? WHERE `id` = ?',
 						[$hash, $row['id']]
 				);
-			}
-			catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+			} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 				$this->mergeFailureAlbums[] = $row['id'];
 			}
 		}
@@ -192,7 +190,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * app.
 	 */
 	private function removeAlbumsWhichFailedMerging() {
-		$count = count($this->mergeFailureAlbums);
+		$count = \count($this->mergeFailureAlbums);
 
 		if ($count > 0) {
 			$sql = 'DELETE FROM `*PREFIX*music_albums` '.

@@ -21,7 +21,6 @@ use \OCA\Music\Db\Artist;
 
 use \OCP\IConfig;
 
-
 class LastfmService {
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -50,7 +49,7 @@ class LastfmService {
 	 * @return array
 	 * @throws BusinessLayerException if artist with the given ID is not found
 	 */
-	public function getArtistInfo($artistId, $userId) {
+	public function getArtistInfo(int $artistId, string $userId) : array {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
 		$result = $this->getInfoFromLastFm([
@@ -61,7 +60,7 @@ class LastfmService {
 		// add ID to those similar artists which can be found from the library
 		$similar = $result['artist']['similar']['artist'] ?? null;
 		if ($similar !== null) {
-			$result['artist']['similar']['artist'] = \array_map(function($lastfmArtist) use ($userId) {
+			$result['artist']['similar']['artist'] = \array_map(function ($lastfmArtist) use ($userId) {
 				$matching = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
 				if (!empty($matching)) {
 					$lastfmArtist['id'] = $matching[0]->getId();
@@ -79,7 +78,7 @@ class LastfmService {
 	 * @return array
 	 * @throws BusinessLayerException if album with the given ID is not found
 	 */
-	public function getAlbumInfo($albumId, $userId) {
+	public function getAlbumInfo(int $albumId, string $userId) : array {
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 
 		return $this->getInfoFromLastFm([
@@ -95,7 +94,7 @@ class LastfmService {
 	 * @return array
 	 * @throws BusinessLayerException if track with the given ID is not found
 	 */
-	public function getTrackInfo($trackId, $userId) {
+	public function getTrackInfo(int $trackId, string $userId) : array {
 		$track= $this->trackBusinessLayer->find($trackId, $userId);
 
 		return $this->getInfoFromLastFm([
@@ -106,16 +105,16 @@ class LastfmService {
 	}
 
 	/**
-	 * Get artists from the user's library similar to the given artist 
+	 * Get artists from the user's library similar to the given artist
 	 * @param integer $artistId
 	 * @param string $userId
 	 * @parma bool $includeNotPresent When true, the result may include also artists which
-	 *                                are not found from the user's music library. Such 
+	 *                                are not found from the user's music library. Such
 	 *                                artists have many fields including `id` set as null.
 	 * @return Artist[]
 	 * @throws BusinessLayerException if artist with the given ID is not found
 	 */
-	public function getSimilarArtists($artistId, $userId, $includeNotPresent=false) {
+	public function getSimilarArtists(int $artistId, string $userId, $includeNotPresent=false) : array {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
 		$similarOnLastfm = $this->getInfoFromLastFm([
@@ -134,7 +133,7 @@ class LastfmService {
 						$matchArtist->setLastfmUrl($lastfmArtist['url']);
 					}
 					$result = \array_merge($result, $matchingLibArtists);
-				} else if ($includeNotPresent) {
+				} elseif ($includeNotPresent) {
 					$unfoundArtist = new Artist();
 					$unfoundArtist->setName($lastfmArtist['name'] ?? null);
 					$unfoundArtist->setMbid($lastfmArtist['mbid'] ?? null);
@@ -150,14 +149,13 @@ class LastfmService {
 	private function getInfoFromLastFm($args) {
 		if (empty($this->apiKey)) {
 			return ['api_key_set' => false];
-		}
-		else {
+		} else {
 			// append the standard args
 			$args['api_key'] = $this->apiKey;
 			$args['format'] = 'json';
 
 			// glue arg keys and values together ...
-			$args= \array_map(function($key, $value) {
+			$args= \array_map(function ($key, $value) {
 				return $key . '=' . \urlencode($value);
 			}, \array_keys($args), $args);
 			// ... and form the final query string

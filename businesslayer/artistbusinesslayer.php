@@ -23,6 +23,12 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Utility\Util;
 
+/**
+ * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
+ * @method Artist find(int $trackId, string $userId)
+ * @method Artist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Artist[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ */
 class ArtistBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
@@ -37,7 +43,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Finds all artists who have at least one album
 	 * @param string $userId the name of the user
 	 * @param integer $sortBy sort order of the result set
-	 * @return \OCA\Music\Db\Artist[] artists
+	 * @return Artist[] artists
 	 */
 	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
 		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
@@ -49,7 +55,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @param int|null $limit
 	 * @param int|null $offset
-	 * @return \OCA\Music\Db\Artist[] artists
+	 * @return Artist[] artists
 	 */
 	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
 		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
@@ -59,7 +65,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Adds an artist if it does not exist already or updates an existing artist
 	 * @param string $name the name of the artist
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Artist The added/updated artist
+	 * @return Artist The added/updated artist
 	 */
 	public function addOrUpdateArtist($name, $userId) {
 		$artist = new Artist();

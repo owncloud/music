@@ -430,8 +430,7 @@ class AmpacheController extends Controller {
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlistTracks = $this->getAllTracks();
 			$playlistTracks = \array_slice($playlistTracks, $offset, $limit);
-		}
-		else {
+		} else {
 			$userId = $this->ampacheUser->getUserId();
 			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);
 		}
@@ -463,8 +462,7 @@ class AmpacheController extends Controller {
 
 		if (\count($newTrackIds) != \count($newTrackOrdinals)) {
 			throw new AmpacheException("Arguments 'items' and 'tracks' must contain equal amount of elements", 400);
-		}
-		else if (\count($newTrackIds) > 0) {
+		} elseif (\count($newTrackIds) > 0) {
 			$trackIds = $playlist->getTrackIdsAsArray();
 
 			for ($i = 0, $count = \count($newTrackIds); $i < $count; ++$i) {
@@ -524,24 +522,21 @@ class AmpacheController extends Controller {
 		if ((int)$clear === 1) {
 			$trackIds = [];
 			$message = 'all songs removed from playlist';
-		}
-		elseif ($song !== null) {
+		} elseif ($song !== null) {
 			$trackIds = $playlist->getTrackIdsAsArray();
 			if (!\in_array($song, $trackIds)) {
 				throw new AmpacheException("Song $song not found in playlist", 404);
 			}
 			$trackIds = Util::arrayDiff($trackIds, [$song]);
 			$message = 'song removed from playlist';
-		}
-		elseif ($track !== null) {
+		} elseif ($track !== null) {
 			$trackIds = $playlist->getTrackIdsAsArray();
 			if ($track < 1 || $track > \count($trackIds)) {
 				throw new AmpacheException("Track ordinal $track is out of bounds", 404);
 			}
 			unset($trackIds[$track-1]);
 			$message = 'song removed from playlist';
-		}
-		else {
+		} else {
 			throw new AmpacheException("One of the arguments 'clear', 'song', 'track' is required", 400);
 		}
 
@@ -561,17 +556,17 @@ class AmpacheController extends Controller {
 
 		// filter the found tracks according to the additional requirements
 		if ($album !== null) {
-			$tracks = \array_filter($tracks, function($track) use ($album) {
+			$tracks = \array_filter($tracks, function ($track) use ($album) {
 				return ($track->getAlbumId() == $album);
 			});
 		}
 		if ($artist !== null) {
-			$tracks = \array_filter($tracks, function($track) use ($artist) {
+			$tracks = \array_filter($tracks, function ($track) use ($artist) {
 				return ($track->getArtistId() == $artist);
 			});
 		}
 		if ($flag == 1) {
-			$tracks = \array_filter($tracks, function($track) {
+			$tracks = \array_filter($tracks, function ($track) {
 				return ($track->getStarred() !== null);
 			});
 		}
@@ -703,7 +698,6 @@ class AmpacheController extends Controller {
 		return $this->getCover($id, $this->getBusinessLayer($type));
 	}
 
-
 	/********************
 	 * Helper functions *
 	 ********************/
@@ -741,7 +735,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function getAppNameAndVersion() {
-		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include' 
+		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
 		include \OC::$SERVERROOT . '/version.php';
 
 		// Note: the following is deprecated since NC14 but the replacement
@@ -896,7 +890,7 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'artist' => \array_map(function($artist) use ($userId, $genreMap, $auth) {
+			'artist' => \array_map(function ($artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
@@ -905,7 +899,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($artist, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
-					'tag' => \array_map(function($genreId) use ($genreMap) {
+					'tag' => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
 							'value' => $genreMap[$genreId]->getNameString($this->l10n),
@@ -923,7 +917,7 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'album' => \array_map(function($album) use ($auth, $genreMap) {
+			'album' => \array_map(function ($album) use ($auth, $genreMap) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -936,7 +930,7 @@ class AmpacheController extends Controller {
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album, $auth),
 					'preciserating' => 0,
-					'tag' => \array_map(function($genreId) use ($genreMap) {
+					'tag' => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
 							'value' => $genreMap[$genreId]->getNameString($this->l10n),
@@ -950,7 +944,7 @@ class AmpacheController extends Controller {
 
 	private function renderSongs($tracks, $auth) {
 		return $this->ampacheResponse([
-			'song' => \array_map(function($track) use ($auth) {
+			'song' => \array_map(function ($track) use ($auth) {
 				$userId = $this->ampacheUser->getUserId();
 				$album = $track->getAlbum()
 						?: $this->albumBusinessLayer->findOrDefault($track->getAlbumId(), $userId);
@@ -998,7 +992,7 @@ class AmpacheController extends Controller {
 
 	private function renderPlaylists($playlists) {
 		return $this->ampacheResponse([
-			'playlist' => \array_map(function($playlist) {
+			'playlist' => \array_map(function ($playlist) {
 				return [
 					'id' => (string)$playlist->getId(),
 					'name' => $playlist->getName(),
@@ -1012,7 +1006,7 @@ class AmpacheController extends Controller {
 
 	private function renderTags($genres) {
 		return $this->ampacheResponse([
-			'tag' => \array_map(function($genre) {
+			'tag' => \array_map(function ($genre) {
 				return [
 					'id' => (string)$genre->getId(),
 					'name' => $genre->getNameString($this->l10n),
@@ -1029,7 +1023,7 @@ class AmpacheController extends Controller {
 
 	private function renderSongsIndex($tracks) {
 		return $this->ampacheResponse([
-			'song' => \array_map(function($track) {
+			'song' => \array_map(function ($track) {
 				return [
 					'id' => (string)$track->getId(),
 					'title' => $track->getTitle(),
@@ -1049,7 +1043,7 @@ class AmpacheController extends Controller {
 
 	private function renderAlbumsIndex($albums) {
 		return $this->ampacheResponse([
-			'album' => \array_map(function($album) {
+			'album' => \array_map(function ($album) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -1064,14 +1058,14 @@ class AmpacheController extends Controller {
 
 	private function renderArtistsIndex($artists) {
 		return $this->ampacheResponse([
-			'artist' => \array_map(function($artist) {
+			'artist' => \array_map(function ($artist) {
 				$userId = $this->ampacheUser->getUserId();
 				$albums = $this->albumBusinessLayer->findAllByArtist($artist->getId(), $userId);
 
 				return [
 					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
-					'album' => \array_map(function($album) {
+					'album' => \array_map(function ($album) {
 						return [
 							'id' => (string)$album->getId(),
 							'value' => $album->getNameString($this->l10n)
@@ -1084,7 +1078,7 @@ class AmpacheController extends Controller {
 
 	private function renderPlaylistsIndex($playlists) {
 		return $this->ampacheResponse([
-			'playlist' => \array_map(function($playlist) {
+			'playlist' => \array_map(function ($playlist) {
 				return [
 					'id' => (string)$playlist->getId(),
 					'name' => $playlist->getName(),
@@ -1104,13 +1098,13 @@ class AmpacheController extends Controller {
 	 * @param array $array
 	 */
 	private static function arrayIsIndexed(array $array) {
-		reset($array);
-		return empty($array) || \is_int(key($array));
+		\reset($array);
+		return empty($array) || \is_int(\key($array));
 	}
 
 	/**
 	 * The JSON API has some asymmetries with the XML API. This function makes the needed
-	 * translations for the result content before it is converted into JSON. 
+	 * translations for the result content before it is converted into JSON.
 	 * @param array $content
 	 * @return array
 	 */
@@ -1135,7 +1129,7 @@ class AmpacheController extends Controller {
 
 	/**
 	 * The XML API has some asymmetries with the JSON API. This function makes the needed
-	 * translations for the result content before it is converted into XML. 
+	 * translations for the result content before it is converted into XML.
 	 * @param array $content
 	 * @return array
 	 */
@@ -1151,7 +1145,7 @@ class AmpacheController extends Controller {
 
 		// for some bizarre reason, the 'id' arrays have 'index' attributes in the XML format
 		if ($firstKey == 'id') {
-			$content['id'] = \array_map(function($id, $index) {
+			$content['id'] = \array_map(function ($id, $index) {
 				return ['index' => $index, 'value' => $id];
 			}, $content['id'], \array_keys($content['id']));
 		}
@@ -1171,11 +1165,10 @@ class AmpacheController extends Controller {
 }
 
 /**
- * Adapter class which acts like the Playlist class for the purpose of 
- * AmpacheController::renderPlaylists but contains all the track of the user. 
+ * Adapter class which acts like the Playlist class for the purpose of
+ * AmpacheController::renderPlaylists but contains all the track of the user.
  */
 class AmpacheController_AllTracksPlaylist {
-
 	private $user;
 	private $trackBusinessLayer;
 	private $l10n;

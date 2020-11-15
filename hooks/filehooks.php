@@ -100,7 +100,7 @@ class FileHooks {
 	 * @param string $userId
 	 * @param IAppContainer $container
 	 */
-	private static function userHasMusicLib($userId, IAppContainer $container) {
+	private static function userHasMusicLib(string $userId, IAppContainer $container) {
 		$trackBusinessLayer = $container->query('TrackBusinessLayer');
 		return 0 < $trackBusinessLayer->count($userId);
 	}

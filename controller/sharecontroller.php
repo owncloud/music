@@ -103,7 +103,7 @@ class ShareController extends Controller {
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);
 
 			// compose the final result
-			$result['files'] = \array_map(function($fileAndCaption) use ($sharedFolder) {
+			$result['files'] = \array_map(function ($fileAndCaption) use ($sharedFolder) {
 				$file = $fileAndCaption['file'];
 				return [
 					'id' => $file->getId(),
@@ -113,11 +113,9 @@ class ShareController extends Controller {
 				];
 			}, $result['files']);
 			return new JSONResponse($result);
-		}
-		catch (\OCP\Files\NotFoundException $ex) {
+		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
-		}
-		catch (\UnexpectedValueException $ex) {
+		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
 	}

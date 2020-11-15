@@ -33,7 +33,7 @@ abstract class BusinessLayer {
 	 * Update an entity in the database
 	 * @param Entity $entity
 	 */
-	public function update($entity) {
+	public function update(Entity $entity) {
 		$this->mapper->update($entity);
 	}
 
@@ -43,7 +43,7 @@ abstract class BusinessLayer {
 	 * @param string $userId the name of the user for security reasons
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 */
-	public function delete($id, $userId) {
+	public function delete(int $id, string $userId) {
 		$entity = $this->find($id, $userId);
 		$this->mapper->delete($entity);
 	}
@@ -54,7 +54,7 @@ abstract class BusinessLayer {
 	 * we can actually trust the passed IDs (e.g. file deleted hook).
 	 * @param array $ids the ids of the entities which should be deleted
 	 */
-	public function deleteById($ids) {
+	public function deleteById(array $ids) {
 		if (\count($ids) > 0) {
 			$this->mapper->deleteById($ids);
 		}
@@ -67,7 +67,7 @@ abstract class BusinessLayer {
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 * @return Entity the entity
 	 */
-	public function find($id, $userId) {
+	public function find(int $id, string $userId) : Entity {
 		try {
 			return $this->mapper->find($id, $userId);
 		} catch (DoesNotExistException $ex) {
@@ -83,7 +83,7 @@ abstract class BusinessLayer {
 	 * @param string $userId the name of the user for security reasons
 	 * @return Entity the entity
 	 */
-	public function findOrDefault($id, $userId) {
+	public function findOrDefault(int $id, string $userId) : Entity {
 		try {
 			return $this->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
@@ -99,7 +99,7 @@ abstract class BusinessLayer {
 	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids, $userId=null) {
+	public function findById(array $ids, string $userId=null) : array {
 		if (\count($ids) > 0) {
 			return $this->mapper->findById($ids, $userId);
 		} else {
@@ -115,7 +115,8 @@ abstract class BusinessLayer {
 	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+	public function findAll(
+			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
 		return $this->mapper->findAll($userId, $sortBy, $limit, $offset);
 	}
 
@@ -128,7 +129,8 @@ abstract class BusinessLayer {
 	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+	public function findAllByName(
+			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null) : array {
 		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset);
 	}
 
@@ -139,17 +141,17 @@ abstract class BusinessLayer {
 	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
-	public function findAllStarred($userId, $limit=null, $offset=null) {
+	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
 		return $this->mapper->findAllStarred($userId, $limit, $offset);
 	}
 
 	/**
 	 * Set the given entities as "starred" on this date
-	 * @param integer[] $ids
+	 * @param int[] $ids
 	 * @param string $userId
 	 * @return int number of modified entities
 	 */
-	public function setStarred($ids, $userId) {
+	public function setStarred(array $ids, string $userId) : int {
 		if (\count($ids) > 0) {
 			return $this->mapper->setStarredDate(new \DateTime(), $ids, $userId);
 		} else {
@@ -163,9 +165,9 @@ abstract class BusinessLayer {
 	 * @param string $userId
 	 * @return int number of modified entities
 	 */
-	public function unsetStarred($ids, $userId) {
+	public function unsetStarred(array $ids, string $userId) : int {
 		if (\count($ids) > 0) {
-			return $this->mapper->setStarredDate(NULL, $ids, $userId);
+			return $this->mapper->setStarredDate(null, $ids, $userId);
 		} else {
 			return 0;
 		}
@@ -177,7 +179,7 @@ abstract class BusinessLayer {
 	 * @param string $userId
 	 * @return bool
 	 */
-	public function exists($id, $userId) {
+	public function exists(int $id, string $userId) : bool {
 		return $this->mapper->exists($id, $userId);
 	}
 
@@ -185,8 +187,7 @@ abstract class BusinessLayer {
 	 * Get the number of entities
 	 * @param string $userId
 	 */
-	public function count($userId) {
+	public function count(string $userId) {
 		return $this->mapper->count($userId);
 	}
-
 }

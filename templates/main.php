@@ -11,14 +11,14 @@ HtmlUtil::addWebpackStyle('app');
 
 <div id="app" ng-app="Music" ng-strict-di ng-cloak ng-init="started = false; lang = '<?php HtmlUtil::p($_['lang']) ?>'">
 
-	<?php 
+	<?php
 	HtmlUtil::printNgTemplate('albumsview');
 	HtmlUtil::printNgTemplate('alltracksview');
 	HtmlUtil::printNgTemplate('foldersview');
 	HtmlUtil::printNgTemplate('genresview');
 	HtmlUtil::printNgTemplate('playlistview');
 	HtmlUtil::printNgTemplate('settingsview');
-	HtmlUtil::printNgTemplate('alphabetnavigation'); 
+	HtmlUtil::printNgTemplate('alphabetnavigation');
 	?>
 
 	<div ng-controller="MainController">

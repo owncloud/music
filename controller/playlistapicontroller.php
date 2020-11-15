@@ -108,7 +108,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function delete($id) {
+	public function delete(int $id) {
 		$this->playlistBusinessLayer->delete($id, $this->userId);
 		return [];
 	}
@@ -120,7 +120,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function get($id, $fulltree) {
+	public function get(int $id, $fulltree) {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 
@@ -161,10 +161,10 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function update($id, $name, $comment) {
+	public function update(int $id, string $name = null, string $comment = null) {
 		$result = null;
 		if ($name !== null) {
-			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]); 
+			$result = $this->modifyPlaylist('rename', [$name, $id, $this->userId]);
 		}
 		if ($comment !== null) {
 			$result = $this->modifyPlaylist('setComment', [$comment, $id, $this->userId]);
@@ -182,7 +182,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function addTracks($id, $trackIds) {
+	public function addTracks(int $id, $trackIds) {
 		return $this->modifyPlaylist('addTracks', [self::toIntArray($trackIds), $id, $this->userId]);
 	}
 
@@ -193,7 +193,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function removeTracks($id, $indices) {
+	public function removeTracks(int $id, $indices) {
 		return $this->modifyPlaylist('removeTracks', [self::toIntArray($indices), $id, $this->userId]);
 	}
 
@@ -204,7 +204,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function reorder($id, $fromIndex, $toIndex) {
+	public function reorder(int $id, $fromIndex, $toIndex) {
 		return $this->modifyPlaylist('moveTrack',
 				[$fromIndex, $toIndex, $id, $this->userId]);
 	}
@@ -222,22 +222,18 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportToFile($id, $path, $oncollision) {
+	public function exportToFile(int $id, string $path, string $oncollision) {
 		try {
 			$exportedFilePath = $this->playlistFileService->exportToFile(
 					$id, $this->userId, $this->userFolder, $path, $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
-		}
-		catch (BusinessLayerException $ex) {
+		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
-		}
-		catch (\OCP\Files\NotFoundException $ex) {
+		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
-		}
-		catch (\RuntimeException $ex) {
+		} catch (\RuntimeException $ex) {
 			return new ErrorResponse(Http::STATUS_CONFLICT, $ex->getMessage());
-		}
-		catch (\OCP\Files\NotPermittedException $ex) {
+		} catch (\OCP\Files\NotPermittedException $ex) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'user is not allowed to write to the target file');
 		}
 	}
@@ -250,19 +246,16 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function importFromFile($id, $filePath) {
+	public function importFromFile(int $id, string $filePath) {
 		try {
 			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
 			$result['playlist'] = $result['playlist']->toAPI();
 			return $result;
-		}
-		catch (BusinessLayerException $ex) {
+		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
-		}
-		catch (\OCP\Files\NotFoundException $ex) {
+		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
-		}
-		catch (\UnexpectedValueException $ex) {
+		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
 	}
@@ -274,8 +267,7 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function parseFile($fileId) {
-
+	public function parseFile(int $fileId) {
 		try {
 			$result = $this->playlistFileService->parseFile($fileId, $this->userFolder);
 
@@ -288,13 +280,12 @@ class PlaylistApiController extends Controller {
 			$bogusUrlId = -1;
 
 			// compose the final result
-			$result['files'] = \array_map(function($fileInfo) use ($libFileIds, &$bogusUrlId) {
+			$result['files'] = \array_map(function ($fileInfo) use ($libFileIds, &$bogusUrlId) {
 				if (isset($fileInfo['url'])) {
 					$fileInfo['id'] = $bogusUrlId--;
 					$fileInfo['mimetype'] = null;
 					return $fileInfo;
-				}
-				else {
+				} else {
 					$file = $fileInfo['file'];
 					return [
 						'id' => $file->getId(),
@@ -307,11 +298,9 @@ class PlaylistApiController extends Controller {
 				}
 			}, $result['files']);
 			return new JSONResponse($result);
-		}
-		catch (\OCP\Files\NotFoundException $ex) {
+		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
-		}
-		catch (\UnexpectedValueException $ex) {
+		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
 		}
 	}
@@ -322,7 +311,7 @@ class PlaylistApiController extends Controller {
 	 * @param array $funcParams Parameters to pass to the function 'funcName'
 	 * @return \OCP\AppFramework\Http\JSONResponse JSON representation of the modified playlist
 	 */
-	private function modifyPlaylist($funcName, $funcParams) {
+	private function modifyPlaylist(string $funcName, array $funcParams) : \OCP\AppFramework\Http\JSONResponse {
 		try {
 			$playlist = \call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
 			return $playlist->toAPI();
@@ -336,7 +325,7 @@ class PlaylistApiController extends Controller {
 	 * @param string $listAsString Comma-separated integer values in string
 	 * @return int[]
 	 */
-	private static function toIntArray($listAsString) {
+	private static function toIntArray(string $listAsString) : array {
 		return \array_map('intval', \explode(',', $listAsString));
 	}
 }

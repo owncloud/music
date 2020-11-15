@@ -66,7 +66,7 @@ abstract class ControllerTestUtility extends \PHPUnit\Framework\TestCase {
 	 * @param array $params a hashmap with the parameters for request
 	 * @return \PHPUnit_Framework_MockObject_MockObject acting as \OCP\IRequest instance
 	 */
-	protected function getRequest(array $params=[]) {
+	protected function getRequest(array $params=[]) : \PHPUnit_Framework_MockObject_MockObject {
 		$mock = $this->getMockBuilder('\OCP\IRequest')
 			->getMock();
 

@@ -20,20 +20,20 @@ use \OCP\IURLGenerator;
 use \OCP\AppFramework\Db\Entity;
 
 /**
- * @method string getName()
- * @method void setName(string $name)
- * @method int getCoverFileId()
- * @method void setCoverFileId(int $coverFileId)
+ * @method ?string getName()
+ * @method void setName(?string $name)
+ * @method ?int getCoverFileId()
+ * @method void setCoverFileId(?int $coverFileId)
  * @method string getUserId()
  * @method void setUserId(string $userId)
- * @method string getMbid()
- * @method void setMbid(string $mbid)
+ * @method ?string getMbid()
+ * @method void setMbid(?string $mbid)
  * @method string getHash()
  * @method void setHash(string $hash)
- * @method string getStarred()
- * @method void setStarred(string $timestamp)
- * @method string getLastfmUrl()
- * @method void setLastfmUrl(string $lastfmUrl)
+ * @method ?string getStarred()
+ * @method void setStarred(?string $timestamp)
+ * @method ?string getLastfmUrl()
+ * @method void setLastfmUrl(?string $lastfmUrl)
  */
 class Artist extends Entity {
 	public $name;

@@ -141,7 +141,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
-			throw new \Exception('Not all elements are in the result set - ' . $actualCount . 
+			throw new \Exception('Not all elements are in the result set - ' . $actualCount .
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
@@ -174,7 +174,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$expectedCount = self::tableSize($table);
 		$actualCount = \count($elements);
 		if ($expectedCount !== $actualCount) {
-			throw new \Exception('Not all elements are in the result set - ' . $actualCount . 
+			throw new \Exception('Not all elements are in the result set - ' . $actualCount .
 								' does not match the expected ' . $expectedCount . PHP_EOL . \json_encode($this->json));
 		}
 	}
@@ -189,7 +189,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		$actualCount = \count($elements);
 
 		if ((int)$expectedCount !== $actualCount) {
-			throw new \Exception('Unexpected number of entries in the result set - ' . $actualCount . 
+			throw new \Exception('Unexpected number of entries in the result set - ' . $actualCount .
 								' does not match the expected ' . $expectedCount . PHP_EOL . $this->xml->asXML());
 		}
 	}
@@ -237,5 +237,4 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	public function iSpecifyTheParameterWithTheStoredValueOf($option, $source) {
 		$this->options[$option] = $this->storedValues[$source];
 	}
-
 }

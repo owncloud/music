@@ -90,8 +90,7 @@ if (isset($request->server['REQUEST_URI'])) {
 	if ($isFilesUrl || $isShareUrl) {
 		allowMediaSourcesInCsp();
 		loadEmbeddedMusicPlayer();
-	}
-	elseif ($isMusicUrl) {
+	} elseif ($isMusicUrl) {
 		allowMediaSourcesInCsp();
 	}
 }

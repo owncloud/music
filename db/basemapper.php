@@ -22,7 +22,6 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  * Common base class for data access classes of the Music app
  */
 abstract class BaseMapper extends Mapper {
-
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
@@ -64,7 +63,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids, $userId=null) {
+	public function findById($ids, $userId=null) : array {
 		$count = \count($ids);
 		$condition = "`{$this->getTableName()}`.`id` IN ". $this->questionMarks($count);
 
@@ -80,7 +79,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's entities
-	 * 
+	 *
 	 * @param string $userId
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer|null $limit
@@ -102,7 +101,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's entities matching the given name
-	 * 
+	 *
 	 * @param string|null $name
 	 * @param string $userId
 	 * @param bool $fuzzy
@@ -129,7 +128,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's starred entities
-	 * 
+	 *
 	 * @param string $userId
 	 * @param integer|null $limit
 	 * @param integer|null $offset

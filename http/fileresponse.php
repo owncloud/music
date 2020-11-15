@@ -30,7 +30,7 @@ class FileResponse extends Response {
 	 * @param \OCP\Files\File|array $file file
 	 * @param int $statusCode the Http status code, defaults to 200
 	 */
-	public function __construct($file, $statusCode=Http::STATUS_OK) {
+	public function __construct($file, int $statusCode=Http::STATUS_OK) {
 		if (\is_array($file)) {
 			$this->file = $file['content'];
 			$mime = $file['mimetype'];
@@ -77,7 +77,7 @@ class FileResponse extends Response {
 	 * Returns the rendered json
 	 * @return string the file
 	 */
-	public function render() {
+	public function render() : ?string {
 		if ($this->rangeRequest) {
 			// Request Range Not Satisfiable
 			if (!isset($this->start) || !isset($this->end) || $this->start > $this->end) {

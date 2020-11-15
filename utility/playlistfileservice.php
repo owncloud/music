@@ -56,7 +56,8 @@ class PlaylistFileService {
 	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
-	public function exportToFile($id, $userId, $userFolder, $folderPath, $collisionMode) {
+	public function exportToFile(
+			int $id, string $userId, Folder $userFolder, string $folderPath, string $collisionMode) : string {
 		$playlist = $this->playlistBusinessLayer->find($id, $userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
@@ -97,7 +98,7 @@ class PlaylistFileService {
 
 		return $userFolder->getRelativePath($file->getPath());
 	}
-	
+
 	/**
 	 * export the playlist to a file
 	 * @param int $id playlist ID
@@ -112,7 +113,7 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
-	public function importFromFile($id, $userId, $userFolder, $filePath) {
+	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
 		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, /*allowUrls=*/false);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
@@ -149,7 +150,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 * @return array
 	 */
-	public function parseFile($fileId, $baseFolder) {
+	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
 			return $this->doParseFile($nodes[0], $baseFolder, /*allowUrls=*/true);
@@ -158,7 +159,7 @@ class PlaylistFileService {
 		}
 	}
 
-	private function doParseFile(File $file, $baseFolder, $allowUrls) {
+	private function doParseFile(File $file, Folder $baseFolder, bool $allowUrls) : array {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
@@ -186,8 +187,7 @@ class PlaylistFileService {
 				} else {
 					$invalidPaths[] = $path;
 				}
-			}
-			else {
+			} else {
 				$path = Util::resolveRelativePath($cwd, $path);
 
 				try {
@@ -207,7 +207,7 @@ class PlaylistFileService {
 		];
 	}
 
-	private function parseM3uFile(File $file) {
+	private function parseM3uFile(File $file) : array {
 		$entries = [];
 
 		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
@@ -223,14 +223,12 @@ class PlaylistFileService {
 
 			if ($line === '') {
 				// empty line => skip
-			}
-			elseif (Util::startsWith($line, '#')) {
+			} elseif (Util::startsWith($line, '#')) {
 				// comment or extended format attribute line
 				if ($value = self::extractExtM3uField($line, 'EXTENC')) {
 					// update the used encoding with the explicitly defined one
 					$encoding = $value;
-				}
-				elseif ($value = self::extractExtM3uField($line, 'EXTINF')) {
+				} elseif ($value = self::extractExtM3uField($line, 'EXTINF')) {
 					// The format should be "length,caption". Set caption to null if the field is badly formatted.
 					$parts = \explode(',', $value, 2);
 					$caption = $parts[1] ?? null;
@@ -238,8 +236,7 @@ class PlaylistFileService {
 						$caption = \trim($caption);
 					}
 				}
-			}
-			else {
+			} else {
 				$entries[] = [
 					'path' => $line,
 					'caption' => $caption
@@ -252,7 +249,7 @@ class PlaylistFileService {
 		return $entries;
 	}
 
-	private function parsePlsFile(File $file) {
+	private function parsePlsFile(File $file) : array {
 		$files = [];
 		$titles = [];
 
@@ -284,8 +281,7 @@ class PlaylistFileService {
 				if (Util::startsWith($key, 'File')) {
 					$idx = \substr($key, \strlen('File'));
 					$files[$idx] = $value;
-				}
-				elseif (Util::startsWith($key, 'Title')) {
+				} elseif (Util::startsWith($key, 'Title')) {
 					$idx = \substr($key, \strlen('Title'));
 					$titles[$idx] = $value;
 				}
@@ -304,14 +300,14 @@ class PlaylistFileService {
 		return $entries;
 	}
 
-	private static function captionForTrack(Track $track) {
+	private static function captionForTrack(Track $track) : string {
 		$title = $track->getTitle();
 		$artist = $track->getArtistName();
 
 		return empty($artist) ? $title : "$artist - $title";
 	}
 
-	private static function extractExtM3uField($line, $field) {
+	private static function extractExtM3uField($line, $field) : ?string {
 		if (Util::startsWith($line, "#$field:")) {
 			return \trim(\substr($line, \strlen("#$field:")));
 		} else {

@@ -32,7 +32,7 @@ class ArtistBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testFindById() {
 		$artistIds = [1,2,3];
-		$response = '';
+		$response = [];
 		$this->mapper->expects($this->once())
 			->method('findById')
 			->with($this->equalTo($artistIds),

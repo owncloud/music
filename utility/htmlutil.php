@@ -21,7 +21,7 @@ class HtmlUtil {
 	 * Sanitized printing
 	 * @param string $string
 	 */
-	public static function p($string) {
+	public static function p(string $string) {
 		print(/** @scrutinizer ignore-type */ \OCP\Util::sanitizeHTML($string));
 	}
 
@@ -29,7 +29,7 @@ class HtmlUtil {
 	 * Print path to a icon of the Music app
 	 * @param string $iconName Name of the icon without path or the '.svg' suffix
 	 */
-	public static function printSvgPath($iconName) {
+	public static function printSvgPath(string $iconName) {
 		print(self::getSvgPath($iconName));
 	}
 
@@ -37,7 +37,7 @@ class HtmlUtil {
 	 * Get path to a icon of the Music app
 	 * @param string $iconName Name of the icon without path or the '.svg' suffix
 	 */
-	public static function getSvgPath($iconName) {
+	public static function getSvgPath(string $iconName) {
 		$manifest = self::getManifest();
 		$hashedName = $manifest["img/$iconName.svg"];
 		return \OCP\Template::image_path('music', '../dist/' . $hashedName);
@@ -47,7 +47,7 @@ class HtmlUtil {
 	 * Print AngularJS template whose contents can be found under templates/partials
 	 * @param string $templateName
 	 */
-	public static function printNgTemplate($templateName) {
+	public static function printNgTemplate(string $templateName) {
 		print(
 			'<script type="text/ng-template" id="'.$templateName.'.html">' .
 				self::partialContent($templateName) .
@@ -59,14 +59,14 @@ class HtmlUtil {
 	 * Print a partial template
 	 * @param string $partialName Name of the file under templates/partials without the '.php' suffix
 	 */
-	public static function printPartial($partialName) {
+	public static function printPartial(string $partialName) {
 		print(self::partialContent($partialName));
 	}
 
 	/**
 	 * @param string $partialName
 	 */
-	private static function partialContent($partialName) {
+	private static function partialContent(string $partialName) {
 		$fileName = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'templates', 'partials', $partialName.'.php']);
 
 		\ob_start();
@@ -85,7 +85,7 @@ class HtmlUtil {
 	/**
 	 * @param string $name
 	 */
-	public static function addWebpackScript($name) {
+	public static function addWebpackScript(string $name) {
 		$manifest = self::getManifest();
 		$hashedName = \substr($manifest["$name.js"], 0, -3); // the extension is cropped from the name in $manifest
 		\OCP\Util::addScript('music', '../dist/' . $hashedName);
@@ -94,7 +94,7 @@ class HtmlUtil {
 	/**
 	 * @param string $name
 	 */
-	public static function addWebpackStyle($name) {
+	public static function addWebpackStyle(string $name) {
 		$manifest = self::getManifest();
 		$hashedName = \substr($manifest["$name.css"], 0, -4); // the extension is cropped from the name in $manifest
 		\OCP\Util::addStyle('music', '../dist/' . $hashedName);

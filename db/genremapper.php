@@ -43,7 +43,7 @@ class GenreMapper extends BaseMapper {
 	/**
 	 * Create SQL query to select genres. Unlike the function selectEntities used by the
 	 * base class BaseMapper, this function returns also the genres with no tracks at all.
-	 * @param string $condition 
+	 * @param string $condition
 	 * @param string|null $extension
 	 * @return string SQL query
 	 */
@@ -62,5 +62,4 @@ class GenreMapper extends BaseMapper {
 				GROUP BY `*PREFIX*music_genres`.`id`, `*PREFIX*music_genres`.`name`, `*PREFIX*music_genres`.`lower_name`
 				$extension";
 	}
-
 }

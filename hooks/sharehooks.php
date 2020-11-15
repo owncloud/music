@@ -36,7 +36,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnshared($params) {
+	public static function itemUnshared(array $params) {
 		$shareType = $params['shareType'];
 		$app = new Music();
 
@@ -60,7 +60,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets unshared by the share recipient
 	 * @param array $params contains the params of the removed share
 	 */
-	public static function itemUnsharedFromSelf($params) {
+	public static function itemUnsharedFromSelf(array $params) {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
 		$app = new Music();
@@ -73,7 +73,7 @@ class ShareHooks {
 	 * Invoke auto update of music database after item gets shared
 	 * @param array $params contains the params of the added share
 	 */
-	public static function itemShared($params) {
+	public static function itemShared(array $params) {
 		// Do not auto-update database when a folder is shared. The folder might contain
 		// thousands of audio files, and indexing them could take minutes or hours. The sharee
 		// user will be prompted to update database the next time she opens the Music app.

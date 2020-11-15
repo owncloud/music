@@ -216,7 +216,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param integer $folderId
 	 * @return boolean True if one or more albums were influenced
 	 */
-	public function updateFolderCover($coverFileId, $folderId) {
+	public function updateFolderCover($coverFileId, $folderId) : bool {
 		$sql = 'SELECT DISTINCT `tracks`.`album_id`
 				FROM `*PREFIX*music_tracks` `tracks`
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
@@ -255,7 +255,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[] albums which got modified (with incomplete data, only id and user are valid),
 	 *         empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null) {
+	public function removeCovers($coverFileIds, $userIds=null) : array {
 		// find albums using the given file as cover
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_albums` WHERE `cover_file_id` IN ' .
 			$this->questionMarks(\count($coverFileIds));

@@ -25,6 +25,8 @@ use \OCA\Music\Utility\Util;
 /**
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:
  * @method Playlist find(int $playlistId, string $userId)
+ * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Playlist[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
  */
 class PlaylistBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
@@ -139,8 +141,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 					$track = clone $track;
 				}
 				$track->setNumberOnPlaylist(\intval($offset) + $index + 1);
-			}
-			else {
+			} else {
 				$this->logger->log("Invalid track ID $trackId found on playlist $playlistId", 'debug');
 				$track = new Track();
 				$track->setId($trackId);
@@ -153,7 +154,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * get the total duration of all the tracks on a playlist
-	 * 
+	 *
 	 * @param int $playlistId
 	 * @param string $userId
 	 * @return int duration in seconds
@@ -173,5 +174,4 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 		return $sum;
 	}
-
 }

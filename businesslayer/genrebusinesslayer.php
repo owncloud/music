@@ -17,10 +17,17 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\GenreMapper;
+use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Utility\Util;
 
+/**
+ * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
+ * @method Genre find(int $genreId, string $userId)
+ * @method Genre[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Genre[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ */
 class GenreBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $trackMapper;
@@ -57,7 +64,7 @@ class GenreBusinessLayer extends BusinessLayer {
 	 * @return Genre[] where each instance has also the trackIds property set
 	 */
 	public function findAllWithTrackIds($userId, $limit=null, $offset=null) {
-		$genres = $this->findAll($userId, $limit, $offset);
+		$genres = $this->findAll($userId, SortBy::Name, $limit, $offset);
 		$tracksByGenre = $this->trackMapper->mapGenreIdsToTrackIds($userId);
 
 		foreach ($genres as &$genre) {

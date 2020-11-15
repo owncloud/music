@@ -16,8 +16,6 @@ use \OCP\Files\Folder;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
-
-
 class DetailsHelper {
 	private $extractor;
 	private $logger;
@@ -34,7 +32,7 @@ class DetailsHelper {
 	 * @param Folder $userFolder
 	 * $return array|null
 	 */
-	public function getDetails($fileId, Folder $userFolder) {
+	public function getDetails(int $fileId, Folder $userFolder) {
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
@@ -69,9 +67,11 @@ class DetailsHelper {
 			$lyricsNode = self::transformLyrics($result['tags']);
 			if ($lyricsNode !== null) {
 				$result['lyrics'] = $lyricsNode;
-				unset($result['tags']['LYRICS']);
-				unset($result['tags']['unsynchronised_lyric']);
-				unset($result['tags']['unsynced lyrics']);
+				unset(
+					$result['tags']['LYRICS'],
+					$result['tags']['unsynchronised_lyric'],
+					$result['tags']['unsynced lyrics']
+				);
 			}
 
 			// add track length
@@ -90,7 +90,7 @@ class DetailsHelper {
 	 * @param Folder $userFolder
 	 * $return string|null
 	 */
-	public function getLyrics($fileId, Folder $userFolder) {
+	public function getLyrics(int $fileId, Folder $userFolder) {
 		$lyrics = null;
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
@@ -120,11 +120,11 @@ class DetailsHelper {
 	 * If found and successfully parsed, there will be also another key 'synced', which will
 	 * hold the time-synced lyrics. These are presented as an array of arrays of form
 	 * ['time' => int (ms), 'text' => string].
-	 * 
+	 *
 	 * @param array $tags
 	 * @return array|null
 	 */
-	private static function transformLyrics(array $tags) {
+	private static function transformLyrics(array $tags) : ?array {
 		$lyrics = $tags['LYRICS'] ?? null; // may be synced or unsynced
 		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
 		$unsyncedLyrics = $tags['unsynchronised_lyric']
@@ -136,12 +136,11 @@ class DetailsHelper {
 			$result = ['unsynced' => $unsyncedLyrics];
 
 			if ($syncedLyrics !== null) {
-				$result['synced'] = \array_map(function($timestamp, $text) {
+				$result['synced'] = \array_map(function ($timestamp, $text) {
 					return ['time' => \max(0, $timestamp), 'text' => $text];
 				}, \array_keys($syncedLyrics), $syncedLyrics);
 			}
-		}
-		else {
+		} else {
 			$result = null;
 		}
 
@@ -151,10 +150,8 @@ class DetailsHelper {
 	/**
 	 * Base64 encode the picture binary data and wrap it so that it can be directly used as
 	 * src of an HTML img element.
-	 * @param string $pic
-	 * @return string|null
 	 */
-	private static function encodePictureTag($pic) {
+	private static function encodePictureTag(array $pic) : ?string {
 		if ($pic['data']) {
 			return 'data:' . $pic['image_mime'] . ';base64,' . \base64_encode($pic['data']);
 		} else {
@@ -166,7 +163,7 @@ class DetailsHelper {
 	 * Remove potentially invalid characters from the string and normalize the line breaks to LF.
 	 * @param string|array $item
 	 */
-	private static function sanitizeString(&$item) {
+	private static function sanitizeString(&$item) : void {
 		if (\is_string($item)) {
 			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
 			// The tags could contain line breaks in formats LF, CRLF, or CR, but we want the output
@@ -182,7 +179,7 @@ class DetailsHelper {
 	 * @param array $array
 	 * @return array
 	 */
-	private static function flattenComments(array $array) {
+	private static function flattenComments(array $array) : array {
 		// key 'text' is an exception, its value is an associative array
 		$textArray = null;
 
@@ -197,9 +194,8 @@ class DetailsHelper {
 		if (!empty($textArray)) {
 			$array = \array_merge($array, $textArray);
 			unset($array['text']);
-		} 
+		}
 
 		return $array;
 	}
-
 }

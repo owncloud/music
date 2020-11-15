@@ -59,5 +59,4 @@ class BogusTrackRemoval implements IRepairStep {
 		$sql = "DELETE FROM `*PREFIX*music_tracks` WHERE `mimetype` = 'audio/mpegurl' OR `mimetype` = 'audio/x-scpls'";
 		return $this->db->executeUpdate($sql);
 	}
-
 }

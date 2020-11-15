@@ -24,6 +24,12 @@ use \OCA\Music\Utility\Util;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
 
+/**
+ * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
+ * @method Track find(int $trackId, string $userId)
+ * @method Track[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
+ * @method Track[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ */
 class TrackBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
@@ -160,15 +166,13 @@ class TrackBusinessLayer extends BusinessLayer {
 				if ($entry['path'] === '') {
 					$entry = null;
 				}
-			}
-			else {
+			} else {
 				// shared folder or parent folder of a shared file or an externally mounted folder
 				$folderNode = $userHome->getById($folderId);
 				if (\count($folderNode) === 0) {
 					// other user's folder with files shared with this user (mapped under root)
 					$entry = null;
-				}
-				else {
+				} else {
 					$entry = [
 						'name' => $folderNode[0]->getName(),
 						'path' => $userHome->getRelativePath($folderNode[0]->getPath())

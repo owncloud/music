@@ -71,7 +71,7 @@ abstract class BaseCommand extends Command {
 	/**
 	 * @return string[]
 	 */
-	private function getArgumentUsers(InputInterface $input) {
+	private function getArgumentUsers(InputInterface $input) : array {
 		/** @var string[] */
 		$users = $input->getArgument('user_id');
 		\assert(\is_array($users));
@@ -87,7 +87,7 @@ abstract class BaseCommand extends Command {
 	/**
 	 * @return string[]
 	 */
-	private function getArgumentGroupUsers(InputInterface $input) {
+	private function getArgumentGroupUsers(InputInterface $input) : array {
 		$users = [];
 		$groups = $input->getOption('group');
 		\assert(\is_array($groups));

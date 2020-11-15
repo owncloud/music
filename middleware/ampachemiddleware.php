@@ -52,10 +52,8 @@ class AmpacheMiddleware extends Middleware {
 	 * @param string $methodName the name of the method
 	 * @throws AmpacheException when a security check fails
 	 */
-	public function beforeController($controller, $methodName) {
-
+	public function beforeController(Controller $controller, string $methodName) {
 		if ($controller instanceof AmpacheController) {
-
 			if ($methodName === 'jsonApi') {
 				$controller->setJsonMode(true);
 			}
@@ -75,15 +73,13 @@ class AmpacheMiddleware extends Middleware {
 			if ($this->request['action'] !== 'ping') {
 				throw new AmpacheException('Invalid Login - session token missing', 401);
 			}
-		}
-		else {
+		} else {
 			try {
 				$session = $this->ampacheSessionMapper->findByToken($token);
 				$this->ampacheUser->setUserId($session->getUserId());
 				// also extend the session deadline on any authorized API call
 				$this->ampacheSessionMapper->extend($token, \time() + AmpacheController::SESSION_EXPIRY_TIME);
-			}
-			catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
+			} catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
 				throw new AmpacheException('Invalid Login - invalid session token', 401);
 			}
 		}
@@ -99,19 +95,19 @@ class AmpacheMiddleware extends Middleware {
 	 * @throws \Exception the passed in exception if it wasn't handled
 	 * @return \OCP\AppFramework\Http\Response object if the exception was handled
 	 */
-	public function afterException($controller, $methodName, \Exception $exception) {
+	public function afterException(
+			Controller $controller, string $methodName, \Exception $exception) : \OCP\AppFramework\Http\Response {
 		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
 				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());
-			}
-			elseif ($exception instanceof BusinessLayerException) {
+			} elseif ($exception instanceof BusinessLayerException) {
 				return $this->errorResponse($controller, 404, 'Entity not found');
 			}
 		}
 		throw $exception;
 	}
 
-	private function errorResponse(AmpacheController $controller, $code, $message) {
+	private function errorResponse(AmpacheController $controller, int $code, string $message) {
 		$this->logger->log($message, 'debug');
 
 		return $controller->ampacheResponse([

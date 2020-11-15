@@ -23,7 +23,7 @@ class MethodAnnotationReader {
 	 * @param object|string $object an object or classname
 	 * @param string $method the method which we want to inspect for annotations
 	 */
-	public function __construct($object, $method) {
+	public function __construct($object, string $method) {
 		$this->annotations = [];
 
 		$reflection = new \ReflectionMethod($object, $method);
@@ -39,7 +39,7 @@ class MethodAnnotationReader {
 	 * @param string $name the name of the annotation
 	 * @return bool true if the annotation is found
 	 */
-	public function hasAnnotation($name) {
+	public function hasAnnotation(string $name) : bool {
 		return \in_array($name, $this->annotations);
 	}
 }

@@ -22,10 +22,10 @@ use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Utility to build and cache the monolithic json data describing the whole music library.
- * 
+ *
  * There has to be a logged-in user to use this class, the userId is injected via the class
  * constructor.
- * 
+ *
  * This class utilizes two caching mechanism: file-backed \OCP\ICache and database-backed
  * \OCA\Music\Db\Cache. The actual json data is stored in the former and a hash of the data
  * is stored into the latter. The hash is used as a flag indicating that the data is valid.
@@ -96,5 +96,4 @@ class CollectionHelper {
 		$this->dbCache->add($this->userId, 'collection', $hash);
 		$this->fileCache->set('music_collection.json', $json, 5*365*24*60*60);
 	}
-
 }

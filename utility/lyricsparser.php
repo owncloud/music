@@ -12,7 +12,6 @@
 
 namespace OCA\Music\Utility;
 
-
 class LyricsParser {
 
 	/**
@@ -23,7 +22,7 @@ class LyricsParser {
 	 * @param array|null $parsedSyncedLyrics
 	 * @return string|null
 	 */
-	public static function syncedToUnsynced($parsedSyncedLyrics) {
+	public static function syncedToUnsynced(?array $parsedSyncedLyrics) {
 		return ($parsedSyncedLyrics === null) ? null : \implode("\n", $parsedSyncedLyrics);
 	}
 
@@ -31,27 +30,29 @@ class LyricsParser {
 	 * Parse timestamped lyrics from the given string, and return the parsed data.
 	 * Return null if the string does not appear to be timestamped lyric in the LRC format.
 	 *
-	 * @param string $data
 	 * @return array|null The keys of the array are timestamps in milliseconds and values are
 	 *                    corresponding lines of lyrics.
 	 */
-	public static function parseSyncedLyrics($data) {
+	public static function parseSyncedLyrics(?string $data) : ?array {
 		$parsedLyrics = [];
-		$offset = 0;
 
-		$fp = \fopen("php://temp", 'r+');
-		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+		if (!empty($data)) {
+			$offset = 0;
 
-		\fputs($fp, $data);
-		\rewind($fp);
-		while ($line = \fgets($fp)) {
-			$lineParseResult = self::parseTimestampedLrcLine($line, $offset);
-			$parsedLyrics += $lineParseResult;
+			$fp = \fopen("php://temp", 'r+');
+			\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
+			\fputs($fp, $data);
+			\rewind($fp);
+			while ($line = \fgets($fp)) {
+				$lineParseResult = self::parseTimestampedLrcLine($line, $offset);
+				$parsedLyrics += $lineParseResult;
+			}
+			\fclose($fp);
+
+			// sort the parsed lyric lines according the timestamps (which are keys of the array)
+			\ksort($parsedLyrics);
 		}
-		\fclose($fp);
-
-		// sort the parsed lyric lines according the timestamps (which are keys of the array)
-		\ksort($parsedLyrics);
 
 		return \count($parsedLyrics) > 0 ? $parsedLyrics : null;
 	}
@@ -65,13 +66,13 @@ class LyricsParser {
 	 *    meaning that the same line of text is repeated multiple times during the song
 	 *
 	 * If the line defines a time offset, this is returned in the reference paramete. If the offset
-	 * parameter holds a non-zero value on call, the offset is applied on any extracted timestamps. 
+	 * parameter holds a non-zero value on call, the offset is applied on any extracted timestamps.
 	 *
 	 * @param string $line One line from the LRC data
 	 * @param int $offset Input/output value for time offset in milliseconds
 	 * @return array
 	 */
-	private static function parseTimestampedLrcLine($line, &$offset) {
+	private static function parseTimestampedLrcLine(string $line, int &$offset) : array {
 		$result = [];
 		$line = \trim($line);
 
@@ -86,8 +87,7 @@ class LyricsParser {
 			$offsetMatch = [];
 			if (\preg_match('/\[offset:(\d+)\]/', $tags, $offsetMatch)) {
 				$offset = \intval($offsetMatch[1]);
-			}
-			elseif (\preg_match_all('/\[(\d\d:\d\d(\.\d\d)?)\]/', $tags, $timestampMatches)) {
+			} elseif (\preg_match_all('/\[(\d\d:\d\d(\.\d\d)?)\]/', $tags, $timestampMatches)) {
 				// some timestamp(s) were found
 				$timestamps = $timestampMatches[1];
 
@@ -103,11 +103,8 @@ class LyricsParser {
 
 	/**
 	 * Convert timestamp in "mm:ss.ff" format to milliseconds
-	 * 
-	 * @param string $timestamp
-	 * @return int
 	 */
-	private static function timestampToMs($timestamp) {
+	private static function timestampToMs(string $timestamp) : int {
 		list($minutes, $seconds) = \sscanf($timestamp, "%d:%f");
 		return \intval($seconds * 1000 + $minutes * 60 * 1000);
 	}

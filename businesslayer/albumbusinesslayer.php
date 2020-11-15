@@ -24,6 +24,8 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Utility\Util;
 
+use \OCP\AppFramework\Db\Entity;
+
 class AlbumBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
@@ -40,7 +42,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return Album album
 	 */
-	public function find($albumId, $userId) {
+	public function find(int $albumId, string $userId) : Entity {
 		$album = parent::find($albumId, $userId);
 		return $this->injectExtraFields([$album], $userId)[0];
 	}
@@ -53,7 +55,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer|null $offset
 	 * @return Album[] albums
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
 		$albums = parent::findAll($userId, $sortBy, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId, true);
 	}
@@ -64,7 +66,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
-	public function findAllByArtist($artistId, $userId) {
+	public function findAllByArtist(int $artistId, string $userId) : array {
 		$albums = $this->mapper->findAllByArtist($artistId, $userId);
 		return $this->injectExtraFields($albums, $userId);
 	}
@@ -75,7 +77,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
-	public function findAllByAlbumArtist($artistId, $userId) {
+	public function findAllByAlbumArtist(int $artistId, string $userId) : array {
 		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
 		$albums = $this->injectExtraFields($albums, $userId);
 		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
@@ -90,7 +92,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int|null $offset
 	 * @return Album[] albums
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, int $limit=null, int $offset=null) : array {
 		$albums = $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
@@ -104,7 +106,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int|null $offset
 	 * @return Album[] albums
 	 */
-	public function findAllByYearRange($fromYear, $toYear, $userId, $limit=null, $offset=null) {
+	public function findAllByYearRange(
+			int $fromYear, int $toYear, string $userId, int $limit=null, int $offset=null) : array {
 		$reverseOrder = false;
 		if ($fromYear > $toYear) {
 			$reverseOrder = true;
@@ -112,12 +115,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 		}
 
 		// Implement all the custom logic of this function here, without special Mapper function
-		$albums = \array_filter($this->findAll($userId), function($album) use ($fromYear, $toYear) {
+		$albums = \array_filter($this->findAll($userId), function ($album) use ($fromYear, $toYear) {
 			$years = $album->getYears();
 			return (!empty($years) && \min($years) <= $toYear && \max($years) >= $fromYear);
 		});
 
-		\usort($albums, function($album1, $album2) use ($reverseOrder) {
+		\usort($albums, function ($album1, $album2) use ($reverseOrder) {
 			return $reverseOrder
 				? $album2->yearToAPI() - $album1->yearToAPI()
 				: $album1->yearToAPI() - $album2->yearToAPI();
@@ -139,7 +142,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $offset
 	 * @return Album[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+	public function findAllByName(
+			string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null) : array {
 		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
@@ -153,7 +157,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 *                        the database query.
 	 * @return Album[]
 	 */
-	private function injectExtraFields($albums, $userId, $allAlbums = false) {
+	private function injectExtraFields(array $albums, string $userId, bool $allAlbums = false) : array {
 		if (\count($albums) > 0) {
 			// In case we are injecting data to a lot of albums, do not limit the
 			// SQL SELECTs to only those albums. Very large amount of SQL host parameters
@@ -184,7 +188,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByArtist($artistId) {
+	public function countByArtist(int $artistId) : int {
 		return $this->mapper->countByArtist($artistId);
 	}
 
@@ -193,11 +197,11 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByAlbumArtist($artistId) {
+	public function countByAlbumArtist(int $artistId) : int {
 		return $this->mapper->countByAlbumArtist($artistId);
 	}
 
-	public function findAlbumOwner($albumId) {
+	public function findAlbumOwner(int $albumId) : string {
 		$entities = $this->findById([$albumId]);
 		if (\count($entities) != 1) {
 			throw new BusinessLayerException(
@@ -214,7 +218,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string $userId
 	 * @return Album The added/updated album
 	 */
-	public function addOrUpdateAlbum($name, $albumArtistId, $userId) {
+	public function addOrUpdateAlbum(string $name, int $albumArtistId, string $userId) : Album {
 		$album = new Album();
 		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setUserId($userId);
@@ -235,7 +239,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int[] $fileIds
 	 * @return boolean
 	 */
-	public function albumCoverIsOneOfFiles($albumId, $fileIds) {
+	public function albumCoverIsOneOfFiles(int $albumId, array $fileIds) : bool {
 		$albums = $this->findById([$albumId]);
 		return (\count($albums) && \in_array($albums[0]->getCoverFileId(), $fileIds));
 	}
@@ -246,16 +250,16 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param integer $folderId the file id of the folder where the albums are looked from
 	 * @return boolean True if one or more albums were influenced
 	 */
-	public function updateFolderCover($coverFileId, $folderId) {
+	public function updateFolderCover(int $coverFileId, int $folderId) : bool {
 		return $this->mapper->updateFolderCover($coverFileId, $folderId);
 	}
 
 	/**
 	 * set cover file for a specified album
-	 * @param integer $coverFileId the file id of the cover image
-	 * @param integer $albumId the id of the album to be modified
+	 * @param int|null $coverFileId the file id of the cover image
+	 * @param int $albumId the id of the album to be modified
 	 */
-	public function setCover($coverFileId, $albumId) {
+	public function setCover(?int $coverFileId, int $albumId) {
 		$this->mapper->setCover($coverFileId, $albumId);
 	}
 
@@ -265,7 +269,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Album[] albums which got modified, empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null) {
+	public function removeCovers(array $coverFileIds, array $userIds=null) : array {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 
@@ -274,7 +278,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param string|null $userId target user; omit to target all users
 	 * @return array of users whose collections got modified
 	 */
-	public function findCovers($userId = null) {
+	public function findCovers(string $userId = null) : array {
 		$affectedUsers = [];
 		$albums = $this->mapper->getAlbumsWithoutCover($userId);
 		foreach ($albums as $album) {

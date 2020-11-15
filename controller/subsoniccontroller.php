@@ -115,7 +115,7 @@ class SubsonicController extends Controller {
 	 * @param string $format Response format: xml/json/jsonp
 	 * @param string|null $callback Function name to use if the @a $format is 'jsonp'
 	 */
-	public function setResponseFormat($format, $callback) {
+	public function setResponseFormat(string $format, string $callback = null) {
 		$this->format = $format;
 		$this->callback = $callback;
 	}
@@ -124,7 +124,7 @@ class SubsonicController extends Controller {
 	 * Called by the middleware once the user credentials have been checked
 	 * @param string $userId
 	 */
-	public function setAuthenticatedUser($userId) {
+	public function setAuthenticatedUser(string $userId) {
 		$this->userId = $userId;
 	}
 
@@ -305,7 +305,7 @@ class SubsonicController extends Controller {
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
 
 		$albumNode = $this->albumToNewApi($album);
-		$albumNode['song'] = \array_map(function($track) use ($album) {
+		$albumNode['song'] = \array_map(function ($track) use ($album) {
 			$track->setAlbum($album);
 			return $this->trackToApi($track);
 		}, $tracks);
@@ -340,13 +340,13 @@ class SubsonicController extends Controller {
 		}
 
 		if ($fromYear !== null) {
-			$trackPool = \array_filter($trackPool, function($track) use ($fromYear) {
+			$trackPool = \array_filter($trackPool, function ($track) use ($fromYear) {
 				return ($track->getYear() !== null && $track->getYear() >= $fromYear);
 			});
 		}
 
 		if ($toYear !== null) {
-			$trackPool = \array_filter($trackPool, function($track) use ($toYear) {
+			$trackPool = \array_filter($trackPool, function ($track) use ($toYear) {
 				return ($track->getYear() !== null && $track->getYear() <= $toYear);
 			});
 		}
@@ -400,8 +400,7 @@ class SubsonicController extends Controller {
 		if ($matchingCount === 0) {
 			$this->logger->log("No matching track for title '$titlePar' and artist '$artistPar'", 'debug');
 			return $this->subsonicResponse(['lyrics' => new \stdClass]);
-		}
-		else {
+		} else {
 			if ($matchingCount > 1) {
 				$this->logger->log("Found $matchingCount tracks matching title ".
 									"'$titlePar' and artist '$artistPar'; using the first", 'debug');
@@ -469,7 +468,7 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse(['genres' =>
 			[
-				'genre' => \array_map(function($genre) {
+				'genre' => \array_map(function ($genre) {
 					return [
 						'songCount' => $genre->getTrackCount(),
 						'albumCount' => $genre->getAlbumCount(),
@@ -682,7 +681,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	 private function getPodcasts() {
+	private function getPodcasts() {
 		// Feature not supported, return an empty list
 		return $this->subsonicResponse([
 			'podcasts' => [
@@ -705,8 +704,7 @@ class SubsonicController extends Controller {
 				$node = $this->bookmarkToApi($bookmark);
 				$node['entry'] = $this->trackToApi($track);
 				$bookmarkNodes[] = $node;
-			}
-			catch (BusinessLayerException $e) {
+			} catch (BusinessLayerException $e) {
 				$this->logger->log("Bookmarked track $trackId not found", 'warn');
 			}
 		}
@@ -796,7 +794,7 @@ class SubsonicController extends Controller {
 		];
 	}
 
-	/** 
+	/**
 	 * Get values for parameter which may be present multiple times in the query
 	 * string or POST data.
 	 * @param string $paramName
@@ -814,7 +812,7 @@ class SubsonicController extends Controller {
 		// POST data is available if the method is POST
 		if ($this->request->getMethod() == 'POST') {
 			$values = \array_merge($values,
-					$this->parseRepeatedKeyValues($paramName, file_get_contents('php://input')));
+					$this->parseRepeatedKeyValues($paramName, \file_get_contents('php://input')));
 		}
 
 		return $values;
@@ -968,7 +966,7 @@ class SubsonicController extends Controller {
 				'id' => $id,
 				'parent' => 'artist-' . $album->getAlbumArtistId(),
 				'name' => $albumName,
-				'child' => \array_map(function($track) use ($album) {
+				'child' => \array_map(function ($track) use ($album) {
 					$track->setAlbum($album);
 					return $this->trackToApi($track);
 				}, $tracks)
@@ -1004,7 +1002,7 @@ class SubsonicController extends Controller {
 			$result['coverArt'] = 'artist-' . $artist->getId();
 		}
 
-		if ($artist->getStarred() != null) {
+		if (!empty($artist->getStarred())) {
 			$result['starred'] = $this->formatDateTime($artist->getStarred());
 		}
 
@@ -1057,7 +1055,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($album->getGenres())) {
-			$result['genre'] = \implode(', ', \array_map(function($genreId) {
+			$result['genre'] = \implode(', ', \array_map(function ($genreId) {
 				return $this->genreBusinessLayer->find($genreId, $this->userId)->getNameString($this->l10n);
 			}, $album->getGenres()));
 		}
@@ -1072,7 +1070,7 @@ class SubsonicController extends Controller {
 	/**
 	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
 	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
-	 * older clients. 
+	 * older clients.
 	 * @param Track $track If the track entity has no album references set, then it is automatically
 	 *                     fetched from the AlbumBusinessLayer module.
 	 * @return array
@@ -1401,13 +1399,13 @@ class SubsonicController extends Controller {
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
-		$content['status'] = $status; 
+		$content['status'] = $status;
 		$content['version'] = self::API_VERSION;
 		$responseData = ['subsonic-response' => $content];
 
 		if ($this->format == 'json') {
 			$response = new JSONResponse($responseData);
-		} else if ($this->format == 'jsonp') {
+		} elseif ($this->format == 'jsonp') {
 			$responseData = \json_encode($responseData);
 			$response = new DataDisplayResponse("{$this->callback}($responseData);");
 			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');

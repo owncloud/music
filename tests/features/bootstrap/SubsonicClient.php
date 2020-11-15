@@ -58,8 +58,7 @@ class SubsonicClient {
 
 		if (empty($rootElem)) {
 			throw new SubsonicClientException('Invalid response, no root element found');
-		}
-		else if ($rootElem['status'] != 'ok') {
+		} elseif ($rootElem['status'] != 'ok') {
 			$error = $rootElem->xpath('error')[0];
 			throw new SubsonicClientException('Subsonic error: ' . $error['code'] . ' - ' . $error['message']);
 		}
@@ -89,8 +88,7 @@ class SubsonicClient {
 
 		if (empty($rootElem)) {
 			throw new SubsonicClientException('Invalid response, no root element found');
-		}
-		else if ($rootElem['status'] != 'ok') {
+		} elseif ($rootElem['status'] != 'ok') {
 			$error = $rootElem['error'];
 			throw new SubsonicClientException('Subsonic error: ' . $error['code'] . ' - ' . $error['message']);
 		}

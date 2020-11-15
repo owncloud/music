@@ -16,6 +16,8 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 
+use \OCP\Files\File;
+
 /**
  * an extractor class for getID3
  */
@@ -51,10 +53,10 @@ class ExtractorGetID3 implements Extractor {
 	/**
 	 * get metadata info for a media file
 	 *
-	 * @param \OCP\Files\File $file the file
+	 * @param File $file the file
 	 * @return array extracted data
 	 */
-	public function extract($file) {
+	public function extract(File $file) : array {
 		$this->initGetID3();
 
 		try {
@@ -62,14 +64,13 @@ class ExtractorGetID3 implements Extractor {
 		} catch (\Exception $e) {
 			// There are probably more than one reason, why openeing a file may fail.
 			// Some of the problems throw exceptions, and others just return null or false.
-			$this->logger->log('Exception ' . get_class($e) . ' when opening file', 'error');
+			$this->logger->log('Exception ' . \get_class($e) . ' when opening file', 'error');
 		}
 
 		if (empty($fp)) {
 			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
 			$metadata = [];
-		}
-		else {
+		} else {
 			$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $fp);
 
 			$this->getID3->CopyTagsToComments($metadata);
@@ -89,10 +90,10 @@ class ExtractorGetID3 implements Extractor {
 	/**
 	 * extract embedded cover art image from media file
 	 *
-	 * @param \OCP\Files\File $file the media file
+	 * @param File $file the media file
 	 * @return array|null Dictionary with keys 'mimetype' and 'content', or null if not found
 	 */
-	public function parseEmbeddedCoverArt($file) {
+	public function parseEmbeddedCoverArt(File $file) : ?array {
 		$fileInfo = $this->extract($file);
 		$pic = self::getTag($fileInfo, 'picture', true);
 		\assert($pic === null || \is_array($pic));
@@ -105,7 +106,7 @@ class ExtractorGetID3 implements Extractor {
 	 * @param bool $binaryValued
 	 * @return string|array|null
 	 */
-	public static function getTag($fileInfo, $tag, $binaryValued = false) {
+	public static function getTag(array $fileInfo, string $tag, bool $binaryValued = false) {
 		$value = $fileInfo['comments'][$tag][0]
 				?? $fileInfo['comments']['text'][$tag]
 				?? null;

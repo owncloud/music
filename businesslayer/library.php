@@ -66,8 +66,7 @@ class Library {
 				$this->logger->log("DB error on track {$track->id} '{$track->title}': ".
 				"album with ID {$track->albumId} not found. Skipping the track.", 'warn');
 				unset($tracks[$idx]);
-			}
-			else {
+			} else {
 				$track->setAlbum($album);
 			}
 		}
@@ -96,7 +95,6 @@ class Library {
 		// dictionary and creating artists and albums in the "toCollection" format.
 		$collection = [];
 		foreach ($trackDict as $artistId => $artistTracksByAlbum) {
-
 			$artistAlbums = [];
 			foreach ($artistTracksByAlbum as $albumId => $albumTracks) {
 				$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
@@ -109,6 +107,4 @@ class Library {
 
 		return $collection;
 	}
-
 }
-	

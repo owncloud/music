@@ -15,7 +15,6 @@ namespace OCA\Music\Utility;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\Cache;
 
-
 class Random {
 	private $cache;
 	private $logger;
@@ -32,13 +31,12 @@ class Random {
 	 * @param int $count
 	 * @return array
 	 */
-	public static function pickItems($itemArray, $count) {
+	public static function pickItems(array $itemArray, int $count) : array {
 		$count = \min($count, \count($itemArray)); // can't return more than all items
 
 		if ($count == 0) {
 			return [];
-		}
-		else {
+		} else {
 			$indices = \array_rand($itemArray, $count);
 			if ($count == 1) { // return type is not array when randomizing a single index
 				$indices = [$indices];
@@ -55,7 +53,7 @@ class Random {
 	 * the same index more than once. This requires persistence and identifying the
 	 * logical array in question. The array is identified by the user ID and a free
 	 * text identifier supplied by the caller.
-	 * 
+	 *
 	 * For a single logical array, the indices are shuffled every time when the
 	 * page 0 is requested. Also, if the size of the array in question has changed
 	 * since the previous call, then the indices are reshuffled.
@@ -67,7 +65,7 @@ class Random {
 	 * @param string $arrId
 	 * @return int[]
 	 */
-	public function getIndices($arrSize, $offset, $count, $userId, $arrId) {
+	public function getIndices(int $arrSize, int $offset, int $count, string $userId, string $arrId) : array {
 		$cacheKey = 'random_indices_' . $arrId;
 
 		$indices = self::decodeIndices($this->cache->get($userId, $cacheKey));

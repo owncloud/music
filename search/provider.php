@@ -89,5 +89,4 @@ class Provider extends \OCP\Search\Provider {
 
 		return $results;
 	}
-
 }

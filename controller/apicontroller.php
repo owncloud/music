@@ -116,7 +116,7 @@ class ApiController extends Controller {
 	 * @param string $slug the slug
 	 * @return integer the id
 	 */
-	protected static function getIdFromSlug($slug) {
+	protected static function getIdFromSlug(string $slug) : int {
 		$split = \explode('-', $slug, 2);
 
 		return (int)$split[0];
@@ -141,7 +141,6 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function collection() {
-
 		$collectionJson = $this->collectionHelper->getJson();
 		$response = new DataDisplayResponse($collectionJson);
 		$response->addHeader('Content-Type', 'application/json; charset=utf-8');
@@ -175,7 +174,9 @@ class ApiController extends Controller {
 		$genres = $this->genreBusinessLayer->findAllWithTrackIds($this->userId);
 		$unscanned =  $this->trackBusinessLayer->findFilesWithoutScannedGenre($this->userId);
 		return new JSONResponse([
-			'genres' => \array_map(function($g) {return $g->toApi();}, $genres),
+			'genres' => \array_map(function ($g) {
+				return $g->toApi();
+			}, $genres),
 			'unscanned' => $unscanned
 		]);
 	}
@@ -190,7 +191,7 @@ class ApiController extends Controller {
 		/** @var Artist[] $artists */
 		$artists = $this->artistBusinessLayer->findAll($this->userId);
 
-		$artists = \array_map(function($a) use ($fulltree, $includeAlbums) {
+		$artists = \array_map(function ($a) use ($fulltree, $includeAlbums) {
 			return $this->artistToApi($a, $includeAlbums || $fulltree, $fulltree);
 		}, $artists);
 
@@ -217,13 +218,13 @@ class ApiController extends Controller {
 	 * @param boolean $includeTracks (ignored if $includeAlbums==false)
 	 * @return array
 	 */
-	private function artistToApi($artist, $includeAlbums, $includeTracks) {
+	private function artistToApi(Artist $artist, bool $includeAlbums, bool $includeTracks) : array {
 		$artistInApi = $artist->toAPI($this->urlGenerator, $this->l10n);
 		if ($includeAlbums) {
 			$artistId = $artist->getId();
 			$albums = $this->albumBusinessLayer->findAllByArtist($artistId, $this->userId);
 
-			$artistInApi['albums'] = \array_map(function($a) use ($includeTracks) {
+			$artistInApi['albums'] = \array_map(function ($a) use ($includeTracks) {
 				return $this->albumToApi($a, $includeTracks, false);
 			}, $albums);
 		}
@@ -242,7 +243,7 @@ class ApiController extends Controller {
 			$albums = $this->albumBusinessLayer->findAll($this->userId);
 		}
 
-		$albums = \array_map(function($a) use ($fulltree) {
+		$albums = \array_map(function ($a) use ($fulltree) {
 			return $this->albumToApi($a, $fulltree, $fulltree);
 		}, $albums);
 
@@ -268,13 +269,13 @@ class ApiController extends Controller {
 	 * @param boolean $includeAlbums
 	 * @return array
 	 */
-	private function albumToApi($album, $includeTracks, $includeArtists) {
+	private function albumToApi(Album $album, bool $includeTracks, bool $includeArtists) : array {
 		$albumInApi = $album->toAPI($this->urlGenerator, $this->l10n);
 
 		if ($includeTracks) {
 			$albumId = $album->getId();
 			$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $this->userId);
-			$albumInApi['tracks'] = \array_map(function($t) {
+			$albumInApi['tracks'] = \array_map(function ($t) {
 				return $t->toAPI($this->urlGenerator);
 			}, $tracks);
 		}
@@ -282,7 +283,7 @@ class ApiController extends Controller {
 		if ($includeArtists) {
 			$artistIds = $album->getArtistIds();
 			$artists = $this->artistBusinessLayer->findById($artistIds, $this->userId);
-			$albumInApi['artists'] = \array_map(function($a) {
+			$albumInApi['artists'] = \array_map(function ($a) {
 				return $a->toAPI($this->urlGenerator, $this->l10n);
 			}, $artists);
 		}
@@ -466,8 +467,7 @@ class ApiController extends Controller {
 			$albumId = $this->getIdFromSlug($albumIdOrSlug);
 			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
 			return new JSONResponse($info);
-		}
-		catch (BusinessLayerException $e) {
+		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -481,8 +481,7 @@ class ApiController extends Controller {
 			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 			return new JSONResponse($info);
-		}
-		catch (BusinessLayerException $e) {
+		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -495,15 +494,14 @@ class ApiController extends Controller {
 		try {
 			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$similar = $this->lastfmService->getSimilarArtists($artistId, $this->userId, /*includeNotPresent=*/true);
-			return new JSONResponse(\array_map(function($artist) {
+			return new JSONResponse(\array_map(function ($artist) {
 				return [
 					'id' => $artist->getId(),
 					'name' => $artist->getName(),
 					'url' => $artist->getLastfmUrl()
 				];
 			}, $similar));
-		}
-		catch (BusinessLayerException $e) {
+		} catch (BusinessLayerException $e) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -548,8 +546,7 @@ class ApiController extends Controller {
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}
-		}
-		else {
+		} else {
 			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
 
 			if ($coverAndHash['hash'] !== null) {
@@ -557,7 +554,7 @@ class ApiController extends Controller {
 				// will fetch the content through a cacheable route.
 				$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
 				return new RedirectResponse($link);
-			} else if ($coverAndHash['data'] !== null) {
+			} elseif ($coverAndHash['data'] !== null) {
 				return new FileResponse($coverAndHash['data']);
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);

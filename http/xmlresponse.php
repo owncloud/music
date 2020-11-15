@@ -21,12 +21,11 @@ use OCP\AppFramework\Http\Response;
  * One array should not mix string and integer keys, that will lead to undefined
  * outcome. Furthermore, array with integer keys is supported only as payload of
  * an array with string keys.
- * 
+ *
  * Note that this response type has been created to fulfill the needs of the
  * SubsonicController and may not be suitable for all other purposes.
  */
 class XMLResponse extends Response {
-
 	private $content;
 	private $doc;
 	private $attributeKeys;
@@ -72,30 +71,25 @@ class XMLResponse extends Response {
 				$child->appendChild($this->doc->createTextNode($value));
 				$parentNode->appendChild($child);
 			}
-		}
-		elseif (\is_array($value)) {
+		} elseif (\is_array($value)) {
 			if (self::arrayIsIndexed($value)) {
 				foreach ($value as $child) {
 					$this->addChildElement($parentNode, $key, $child, /*allowAttribute=*/false);
 				}
-			}
-			else { // associative array
+			} else { // associative array
 				$element = $this->doc->createElement($key);
 				$parentNode->appendChild($element);
 				foreach ($value as $childKey => $childValue) {
 					$this->addChildElement($element, $childKey, $childValue);
 				}
 			}
-		}
-		elseif ($value instanceof \stdClass) {
+		} elseif ($value instanceof \stdClass) {
 			// empty element
 			$element = $this->doc->createElement($key);
 			$parentNode->appendChild($element);
-		}
-		elseif ($value === null) {
+		} elseif ($value === null) {
 			// skip
-		}
-		else {
+		} else {
 			throw new \Exception("Unexpected value type for key $key");
 		}
 	}
@@ -114,7 +108,7 @@ class XMLResponse extends Response {
 	 * @param array $array
 	 */
 	private static function arrayIsIndexed(array $array) {
-		reset($array);
-		return empty($array) || \is_int(key($array));
+		\reset($array);
+		return empty($array) || \is_int(\key($array));
 	}
 }

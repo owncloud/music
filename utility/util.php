@@ -22,10 +22,8 @@ class Util {
 	/**
 	 * Extract ID of each array element by calling getId and return
 	 * the IDs as an array
-	 * @param array $arr
-	 * @return array
 	 */
-	public static function extractIds(array $arr) {
+	public static function extractIds(array $arr) : array {
 		return \array_map(function ($i) {
 			return $i->getId();
 		}, $arr);
@@ -34,10 +32,8 @@ class Util {
 	/**
 	 * Extract User ID of each array element by calling getUserId and return
 	 * the IDs as an array
-	 * @param array $arr
-	 * @return array
 	 */
-	public static function extractUserIds(array $arr) {
+	public static function extractUserIds(array $arr) : array {
 		return \array_map(function ($i) {
 			return $i->getUserId();
 		}, $arr);
@@ -45,10 +41,9 @@ class Util {
 
 	/**
 	 * Create look-up table from given array of items which have a `getId` function.
-	 * @param array $array
 	 * @return array where keys are the values returned by `getId` of each item
 	 */
-	public static function createIdLookupTable(array $array) {
+	public static function createIdLookupTable(array $array) : array {
 		$lut = [];
 		foreach ($array as $item) {
 			$lut[$item->getId()] = $item;
@@ -62,11 +57,8 @@ class Util {
 	 * at the expense of higher RAM usage and can be used only for arrays of
 	 * integers or strings.
 	 * From https://stackoverflow.com/a/8827033
-	 * @param array $b
-	 * @param array $a
-	 * @return array
 	 */
-	public static function arrayDiff(array $b, array $a) {
+	public static function arrayDiff(array $b, array $a) : array {
 		$at = \array_flip($a);
 		$d = [];
 		foreach ($b as $i) {
@@ -79,11 +71,8 @@ class Util {
 
 	/**
 	 * Get multiple items from @a $array, as indicated by a second array @a $indices.
-	 * @param array $array
-	 * @param array $indices
-	 * @return array
 	 */
-	public static function arrayMultiGet(array $array, array $indices) {
+	public static function arrayMultiGet(array $array, array $indices) : array {
 		$result = [];
 		foreach ($indices as $index) {
 			$result[] = $array[$index];
@@ -94,17 +83,14 @@ class Util {
 	/**
 	 * Convert the given array $arr so that keys of the potentially multi-dimensional array
 	 * are converted using the mapping given in $dictionary. Keys not found from $dictionary
-	 * are not altered. 
-	 * @param array $arr
-	 * @param array $dictionary
-	 * @return array
+	 * are not altered.
 	 */
-	public static function convertArrayKeys(array $arr, array $dictionary) {
+	public static function convertArrayKeys(array $arr, array $dictionary) : array {
 		$newArr = [];
 
 		foreach ($arr as $k => $v) {
 			$key = $dictionary[$k] ?? $k;
-			$newArr[$key] = is_array($v) ? self::convertArrayKeys($v, $dictionary) : $v;
+			$newArr[$key] = \is_array($v) ? self::convertArrayKeys($v, $dictionary) : $v;
 		}
 
 		return $newArr;
@@ -119,7 +105,7 @@ class Util {
 	 * @param string|null $string
 	 * @return array
 	 */
-	public static function explode($delimiter, $string) {
+	public static function explode(string $delimiter, ?string $string) : array {
 		if ($string === null || $string === '') {
 			return [];
 		} else {
@@ -131,11 +117,8 @@ class Util {
 	 * Truncate the given string to maximum length, appendig ellipsis character
 	 * if the truncation happened. Also null argument may be safely passed and
 	 * it remains unaltered.
-	 * @param string|null $string
-	 * @param int $maxLength
-	 * @return string|null
 	 */
-	public static function truncate($string, $maxLength) {
+	public static function truncate(?string $string, int $maxLength) : ?string {
 		if ($string === null) {
 			return null;
 		} else {
@@ -145,12 +128,8 @@ class Util {
 
 	/**
 	 * Test if given string starts with another given string
-	 * @param string $string
-	 * @param string $potentialStart
-	 * @param boolean $ignoreCase
-	 * @return boolean
 	 */
-	public static function startsWith($string, $potentialStart, $ignoreCase=false) {
+	public static function startsWith(string $string, string $potentialStart, bool $ignoreCase=false) : bool {
 		$actualStart = \substr($string, 0, \strlen($potentialStart));
 		if ($ignoreCase) {
 			$actualStart= \mb_strtolower($actualStart);
@@ -161,12 +140,8 @@ class Util {
 
 	/**
 	 * Test if given string ends with another given string
-	 * @param string $string
-	 * @param string $potentialEnd
-	 * @param boolean $ignoreCase
-	 * @return boolean
 	 */
-	public static function endsWith($string, $potentialEnd, $ignoreCase=false) {
+	public static function endsWith(string $string, string $potentialEnd, bool $ignoreCase=false) : bool {
 		$actualEnd = \substr($string, -\strlen($potentialEnd));
 		if ($ignoreCase) {
 			$actualEnd = \mb_strtolower($actualEnd);
@@ -177,34 +152,32 @@ class Util {
 
 	/**
 	 * Multi-byte safe case-insensitive string comparison
-	 * @param string $a
-	 * @param string $b
-	 * @return int < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal. 
+	 * @return int < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal.
 	 */
-	public static function stringCaseCompare($a, $b) {
+	public static function stringCaseCompare(string $a, string $b) : int {
 		return \strcmp(\mb_strtolower($a), \mb_strtolower($b));
 	}
 
 	/**
 	 * Convert file size given in bytes to human-readable format
-	 * @param int $bytes
-	 * @param int $decimals
-	 * @return string
 	 */
-	public static function formatFileSize($bytes, $decimals = 1) {
+	public static function formatFileSize(int $bytes, int $decimals = 1) : string {
 		$units = 'BKMGTP';
 		$factor = \floor((\strlen($bytes) - 1) / 3);
 		return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
 	}
 
 	/**
-	 * @param Folder $parentFolder
-	 * @param string $relativePath
-	 * @return Folder
+	 * Get a Folder object using a parent Folder object and a relative path
 	 */
-	public static function getFolderFromRelativePath(Folder $parentFolder, $relativePath) {
+	public static function getFolderFromRelativePath(Folder $parentFolder, string $relativePath) : Folder {
 		if ($relativePath !== null && $relativePath !== '/' && $relativePath !== '') {
-			return $parentFolder->get($relativePath);
+			$node = $parentFolder->get($relativePath);
+			if ($node instanceof Folder) {
+				return $node;
+			} else {
+				throw new \InvalidArgumentException('Path points to a file while folder expected');
+			}
 		} else {
 			return $parentFolder;
 		}
@@ -214,9 +187,8 @@ class Util {
 	 * Create relative path from the given working dir (CWD) to the given target path
 	 * @param string $cwdPath Absolute CWD path
 	 * @param string $targetPath Absolute target path
-	 * @return string
 	 */
-	public static function relativePath($cwdPath, $targetPath) {
+	public static function relativePath(string $cwdPath, string $targetPath) : string {
 		$cwdParts = \explode('/', $cwdPath);
 		$targetParts = \explode('/', $targetPath);
 
@@ -237,11 +209,8 @@ class Util {
 	/**
 	 * Given a current working directory path (CWD) and a relative path (possibly containing '..' parts),
 	 * form an absolute path matching the relative path. This is a reverse operation for Util::relativePath().
-	 * @param string $cwdPath
-	 * @param string $relativePath
-	 * @return string
 	 */
-	public static function resolveRelativePath($cwdPath, $relativePath) {
+	public static function resolveRelativePath(string $cwdPath, string $relativePath) : string {
 		$cwdParts = \explode('/', $cwdPath);
 		$relativeParts = \explode('/', $relativePath);
 
@@ -263,10 +232,8 @@ class Util {
 
 	/**
 	 * Encode a file path so that it can be used as part of a WebDAV URL
-	 * @param string $path
-	 * @return string
 	 */
-	public static function urlEncodePath($path) {
+	public static function urlEncodePath(string $path) : string {
 		// URL encode each part of the file path
 		return \join('/', \array_map('rawurlencode', \explode('/', $path)));
 	}
@@ -276,7 +243,7 @@ class Util {
 	 * @param mixed $a
 	 * @param mixed $b
 	 */
-	public static function swap(&$a, &$b) {
+	public static function swap(&$a, &$b) : void {
 		$temp = $a;
 		$a = $b;
 		$b = $temp;

@@ -23,14 +23,13 @@ use \OCA\Music\Utility\Util;
  * Manage the user-specific music folder setting
  */
 class UserMusicFolder {
-
 	private $appName;
 	private $configManager;
 	private $rootFolder;
 	private $logger;
 
 	public function __construct(
-			$appName,
+			string $appName,
 			IConfig $configManager,
 			IRootFolder $rootFolder,
 			Logger $logger) {
@@ -45,7 +44,7 @@ class UserMusicFolder {
 	 * @param string $path
 	 * @return bool
 	 */
-	public function setPath($userId, $path) {
+	public function setPath(string $userId, string $path) : bool {
 		$success = false;
 
 		$userHome = $this->rootFolder->getUserFolder($userId);
@@ -68,7 +67,7 @@ class UserMusicFolder {
 	 * @param string $userId
 	 * @return string
 	 */
-	public function getPath($userId) {
+	public function getPath(string $userId) : string {
 		$path = $this->configManager->getUserValue($userId, $this->appName, 'path');
 		return $path ?: '/';
 	}
@@ -78,7 +77,7 @@ class UserMusicFolder {
 	 * @param string[] $paths
 	 * @return bool
 	 */
-	public function setExcludedPaths($userId, $paths) {
+	public function setExcludedPaths(string $userId, array $paths) : bool {
 		$this->configManager->setUserValue($userId, $this->appName, 'excluded_paths', \json_encode($paths));
 		return true;
 	}
@@ -87,7 +86,7 @@ class UserMusicFolder {
 	 * @param string $userId
 	 * @return string[]
 	 */
-	public function getExcludedPaths($userId) {
+	public function getExcludedPaths(string $userId) : array {
 		$paths = $this->configManager->getUserValue($userId, $this->appName, 'excluded_paths');
 		if (empty($paths)) {
 			return [];
@@ -100,7 +99,7 @@ class UserMusicFolder {
 	 * @param string $userId
 	 * @return Folder
 	 */
-	public function getFolder($userId) {
+	public function getFolder(string $userId) : Folder {
 		$userHome = $this->rootFolder->getUserFolder($userId);
 		$path = $this->getPath($userId);
 		return Util::getFolderFromRelativePath($userHome, $path);
@@ -111,7 +110,7 @@ class UserMusicFolder {
 	 * @param string $userId
 	 * @return boolean
 	 */
-	public function pathBelongsToMusicLibrary($filePath, $userId) {
+	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {
 		$filePath = self::normalizePath($filePath);
 		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());
 
@@ -119,7 +118,7 @@ class UserMusicFolder {
 				&& !$this->pathIsExcluded($filePath, $musicPath, $userId);
 	}
 
-	private function pathIsExcluded($filePath, $musicPath, $userId) {
+	private function pathIsExcluded(string $filePath, string $musicPath, string $userId) : bool {
 		$userRootPath = $this->rootFolder->getUserFolder($userId)->getPath();
 		$excludedPaths = $this->getExcludedPaths($userId);
 
@@ -137,7 +136,7 @@ class UserMusicFolder {
 		return false;
 	}
 
-	private static function pathMatchesPattern($path, $pattern) {
+	private static function pathMatchesPattern(string $path, string $pattern) : bool {
 		// normalize the pattern so that there is no trailing '/'
 		$pattern = \rtrim($pattern, '/');
 
@@ -147,8 +146,7 @@ class UserMusicFolder {
 			$patternLen = \strlen($pattern);
 			return Util::startsWith($path, $pattern)
 				&& (\strlen($path) === $patternLen || $path[$patternLen] === '/');
-		}
-		else {
+		} else {
 			// some wildcard characters in the pattern, convert the pattern into regex:
 			// - '?' matches exactly one arbitrary character except the directory separator '/'
 			// - '*' matches zero or more arbitrary characters except the directory separator '/'
@@ -160,11 +158,11 @@ class UserMusicFolder {
 			$pattern = $pattern . '(\/.*)?$';					// after given pattern, there should be '/' or nothing
 			$pattern = '/' . $pattern . '/';
 
-			return (1 === \preg_match($pattern, $path));
+			return (\preg_match($pattern, $path) === 1);
 		}
 	}
 
-	private static function normalizePath($path) {
+	private static function normalizePath(string $path) : string {
 		// The file system may create paths where there are two consecutive
 		// path seprator characters (/). This was seen with an external local
 		// folder on NC13, but may apply to other cases, too. Normalize such paths.

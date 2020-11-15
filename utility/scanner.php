@@ -79,12 +79,12 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
-	 * @param \OCP\Files\File $file the file
+	 * @param File $file the file
 	 * @param string $userId
-	 * @param \OCP\Files\Folder $userHome
+	 * @param Folder $userHome
 	 * @param string|null $filePath Deduced from $file if not given
 	 */
-	public function update($file, $userId, $userHome, $filePath = null) {
+	public function update(File $file, string $userId, Folder $userHome, string $filePath = null) : void {
 		if ($filePath === null) {
 			$filePath = $file->getPath();
 		}
@@ -158,7 +158,7 @@ class Scanner extends PublicEmitter {
 
 			// add/update track and get track entity
 			$track = $this->trackBusinessLayer->addOrUpdateTrack(
-					$meta['title'], $meta['trackNumber'],  $meta['discNumber'], $meta['year'], $genre->getId(),
+					$meta['title'], $meta['trackNumber'], $meta['discNumber'], $meta['year'], $genre->getId(),
 					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
 			// if present, use the embedded album art as cover for the respective album
@@ -273,20 +273,19 @@ class Scanner extends PublicEmitter {
 			foreach ($affectedUsers as $user) {
 				$this->cache->remove($user);
 			}
-		}
-		else {
+		} else {
 			// remove the cached covers
 			if ($artistCount > 0) {
 				$this->logger->log("Remove covers of $artistCount artist(s) from the cache (if present)", 'debug');
 				foreach ($affectedArtists as $artistId) {
-					$this->coverHelper->removeArtistCoverFromCache($artistId, null);
+					$this->coverHelper->removeArtistCoverFromCache($artistId);
 				}
 			}
 
 			if ($albumCount > 0) {
 				$this->logger->log("Remove covers of $albumCount album(s) from the cache (if present)", 'debug');
 				foreach ($affectedAlbums as $albumId) {
-					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
+					$this->coverHelper->removeAlbumCoverFromCache($albumId);
 				}
 			}
 
@@ -320,7 +319,7 @@ class Scanner extends PublicEmitter {
 				if ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, $fileIds)) {
 					$this->albumBusinessLayer->setCover(null, $albumId);
 					$this->findEmbeddedCoverForAlbum($albumId);
-					$this->coverHelper->removeAlbumCoverFromCache($albumId, null);
+					$this->coverHelper->removeAlbumCoverFromCache($albumId);
 				}
 			}
 
@@ -374,11 +373,11 @@ class Scanner extends PublicEmitter {
 	 * Remove all audio files and cover images in the given folder from the database.
 	 * This gets called when a folder is deleted or unshared from the user.
 	 *
-	 * @param \OCP\Files\Folder $folder
+	 * @param Folder $folder
 	 * @param string[]|null $userIds the IDs of the users to remove the folder from; if omitted,
 	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
-	public function deleteFolder($folder, $userIds=null) {
+	public function deleteFolder(Folder $folder, $userIds=null) : ?array {
 		$audioFiles = $folder->searchByMime('audio');
 		if (\count($audioFiles) > 0) {
 			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
@@ -398,9 +397,9 @@ class Scanner extends PublicEmitter {
 	 *
 	 * @param string $userId
 	 * @param string|null $path
-	 * @return \OCP\Files\File[]
+	 * @return File[]
 	 */
-	private function getMusicFiles($userId, $path = null) {
+	private function getMusicFiles(string $userId, string $path = null) : array {
 		try {
 			$folder = $this->userMusicFolder->getFolder($userId);
 
@@ -413,8 +412,7 @@ class Scanner extends PublicEmitter {
 					throw new \OCP\Files\NotFoundException();
 				}
 			}
-		}
-		catch (\OCP\Files\NotFoundException $e) {
+		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
 
@@ -430,9 +428,9 @@ class Scanner extends PublicEmitter {
 	 * search for image files by mimetype inside user specified library path
 	 * (which defaults to user home dir)
 	 *
-	 * @return \OCP\Files\File[]
+	 * @return File[]
 	 */
-	private function getImageFiles($userId) {
+	private function getImageFiles(string $userId) : array {
 		try {
 			$folder = $this->userMusicFolder->getFolder($userId);
 		} catch (\OCP\Files\NotFoundException $e) {
@@ -442,7 +440,7 @@ class Scanner extends PublicEmitter {
 		$images = $folder->searchByMime('image');
 
 		// filter out any images in the excluded folders
-		return \array_filter($images, function($image) use ($userId) {
+		return \array_filter($images, function ($image) use ($userId) {
 			return $this->userMusicFolder->pathBelongsToMusicLibrary($image->getPath(), $userId);
 		});
 	}
@@ -627,12 +625,10 @@ class Scanner extends PublicEmitter {
 				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
 				$this->maintenance->resetDb($userId);
 			}
-		}
-		catch (\OCP\Files\NotFoundException $e) {
+		} catch (\OCP\Files\NotFoundException $e) {
 			$this->logger->log('One of the paths was invalid, erasing the previous collection content', 'warn');
 			$this->maintenance->resetDb($userId);
 		}
-
 	}
 
 	/**
@@ -653,8 +649,7 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Find external cover images for albums which do not yet have one.
-	 * Target either one user or all users.
-	 * @param string|null $userId
+	 * @param string $userId
 	 * @return bool true if any albums were updated; false otherwise
 	 */
 	public function findArtistCovers($userId) {

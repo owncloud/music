@@ -178,8 +178,7 @@ class Track extends Entity {
 		// Number on playlist overrides the track number if it is set.
 		if ($this->numberOnPlaylist !== null) {
 			$trackNumber = $this->numberOnPlaylist;
-		}
-		else {
+		} else {
 			// On single-disk albums, the track number is given as-is.
 			// On multi-disk albums, the disk-number is applied to the track number.
 			// In case we have no Album reference, the best we can do is to apply the

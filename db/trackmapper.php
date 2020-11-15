@@ -72,7 +72,7 @@ class TrackMapper extends BaseMapper {
 			$params[] = $artistId;
 		}
 
-		$sql = $this->selectUserEntities($condition, 
+		$sql = $this->selectUserEntities($condition,
 				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`title`)');
 		return $this->findEntities($sql, $params);
 	}
@@ -276,7 +276,7 @@ class TrackMapper extends BaseMapper {
 
 		// Sort the results according the file names. This can't be made using ORDERBY in the
 		// SQL query because then we couldn't use the "natural order" comparison algorithm
-		\usort($rows, function($a, $b) {
+		\usort($rows, function ($a, $b) {
 			return \strnatcasecmp($a['filename'], $b['filename']);
 		});
 

@@ -47,7 +47,7 @@ class CoverHelper {
 		$this->logger = $logger;
 
 		// Read the cover size to use from config.php or use the default
-		$this->coverSize = intval($config->getSystemValue('music.cover_size')) ?: 380;
+		$this->coverSize = \intval($config->getSystemValue('music.cover_size')) ?: 380;
 	}
 
 	/**
@@ -61,7 +61,7 @@ class CoverHelper {
 	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($entity, $userId, $rootFolder, $size=null) {
+	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null) {
 		// Skip using cache in case the cover is requested in specific size
 		if ($size !== null) {
 			return $this->readCover($entity, $rootFolder, $size);
@@ -73,7 +73,7 @@ class CoverHelper {
 
 	/**
 	 * Get cover image of an album or and artist along with the image's hash
-	 * 
+	 *
 	 * The hash is non-null only in case the cover is/was cached.
 	 *
 	 * @param Album|Artist $entity
@@ -81,7 +81,7 @@ class CoverHelper {
 	 * @param Folder $rootFolder
 	 * @return array Dictionary with keys 'data' and 'hash'
 	 */
-	public function getCoverAndHash($entity, $userId, $rootFolder) {
+	public function getCoverAndHash($entity, string $userId, Folder $rootFolder) : array {
 		$hash = $this->cache->get($userId, self::getHashKey($entity));
 		$data = null;
 
@@ -104,7 +104,7 @@ class CoverHelper {
 	 * @param string $userId
 	 * @return array with album IDs as keys and hashes as values
 	 */
-	public function getAllCachedAlbumCoverHashes($userId) {
+	public function getAllCachedAlbumCoverHashes(string $userId) : array {
 		$rows = $this->cache->getAll($userId, 'album_cover_hash_');
 		$hashes = [];
 		foreach ($rows as $row) {
@@ -122,7 +122,7 @@ class CoverHelper {
 	 * @param bool $asBase64
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCoverFromCache($hash, $userId, $asBase64 = false) {
+	public function getCoverFromCache(string $hash, string $userId, bool $asBase64 = false) {
 		$cached = $this->cache->get($userId, 'cover_' . $hash);
 		if ($cached !== null) {
 			$delimPos = \strpos($cached, '|');
@@ -143,7 +143,7 @@ class CoverHelper {
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover
 	 */
-	private function addCoverToCache($entity, $userId, $coverData) {
+	private function addCoverToCache($entity, string $userId, array $coverData) {
 		$mime = $coverData['mimetype'];
 		$content = $coverData['content'];
 		$hash = null;
@@ -177,21 +177,17 @@ class CoverHelper {
 
 	/**
 	 * Remove album cover image from cache if it is there. Silently do nothing if there
-	 * is no cached cover.
-	 * @param int $albumId
-	 * @param string $userId
+	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeAlbumCoverFromCache($albumId, $userId) {
+	public function removeAlbumCoverFromCache(int $albumId, string $userId=null) {
 		$this->cache->remove($userId, 'album_cover_hash_' . $albumId);
 	}
 
 	/**
 	 * Remove artist cover image from cache if it is there. Silently do nothing if there
-	 * is no cached cover.
-	 * @param int $artistId
-	 * @param string $userId
+	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeArtistCoverFromCache($artistId, $userId) {
+	public function removeArtistCoverFromCache(int $artistId, string $userId=null) {
 		$this->cache->remove($userId, 'artist_cover_hash_' . $artistId);
 	}
 
@@ -204,7 +200,7 @@ class CoverHelper {
 	 *                  scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($entity, $rootFolder, $size) {
+	private function readCover($entity, Folder $rootFolder, int $size) {
 		$response = null;
 		$coverId = $entity->getCoverFileId();
 
@@ -230,8 +226,7 @@ class CoverHelper {
 			if ($response === null) {
 				$class = \get_class($entity);
 				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
-			}
-			else if ($size !== self::DO_NOT_CROP_OR_SCALE) {
+			} elseif ($size !== self::DO_NOT_CROP_OR_SCALE) {
 				$response['content'] = $this->scaleDownAndCrop($response['content'], $size);
 			}
 		}
@@ -259,8 +254,7 @@ class CoverHelper {
 
 			if ($img === false) {
 				$this->logger->log('Failed to open cover image for downscaling', 'warning');
-			}
-			else {
+			} else {
 				$srcCropSize = \min($srcWidth, $srcHeight);
 				$srcX = ($srcWidth - $srcCropSize) / 2;
 				$srcY = ($srcHeight - $srcCropSize) / 2;
@@ -271,8 +265,7 @@ class CoverHelper {
 				if ($scaledImg === false) {
 					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warning');
 					\imagedestroy($img);
-				}
-				else {
+				} else {
 					\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
 					\imagedestroy($img);
 

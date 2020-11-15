@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Db;
 
-class TrackTest extends \PHPUnit_Framework_TestCase {
+class TrackTest extends \PHPUnit\Framework\TestCase {
 	private $urlGenerator;
 
 	protected function setUp() {

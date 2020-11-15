@@ -18,7 +18,7 @@ use OCP\AppFramework\Http\Response;
 /**
  * Simple utility class for testing controllers
  */
-abstract class ControllerTestUtility extends \PHPUnit_Framework_TestCase {
+abstract class ControllerTestUtility extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Checks if a controllermethod has the expected annotations

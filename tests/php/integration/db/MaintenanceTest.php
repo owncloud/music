@@ -14,7 +14,7 @@ namespace OCA\Music\Db;
 
 use Doctrine\DBAL\Connection;
 
-class MaintenanceTest extends \PHPUnit_Framework_TestCase {
+class MaintenanceTest extends \PHPUnit\Framework\TestCase {
 
 	/** @var Connection */
 	private $db;

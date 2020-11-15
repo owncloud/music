@@ -73,7 +73,7 @@ class AmpacheClient {
 			throw new Exception('Unsupported method: ' . $method);
 		}
 
-		$client = new Client();
+		$client = new Client(['verify' => false]);
 		$response = $client->get($this->baseUrl, [
 			'query' => \array_merge([
 				'action' => $method,

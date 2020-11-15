@@ -99,7 +99,7 @@ class SubsonicClient {
 	}
 
 	private function doRequest($method, $options) {
-		$client = new Client();
+		$client = new Client(['verify' => false]);
 		return $client->get($this->baseUrl . $method, [
 			'query' => \array_merge([
 				'u' => $this->userName,

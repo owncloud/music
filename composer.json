@@ -2,7 +2,7 @@
     "require-dev": {
         "behat/behat": "~3.0",
         "guzzlehttp/guzzle": "~6.0",
-        "phpunit/phpunit": "^6.0",
+        "phpunit/phpunit": "^7.0",
         "owncloud/coding-standard": "^2.0"
     },
     "config": {

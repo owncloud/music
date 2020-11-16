@@ -44,11 +44,14 @@ class SubsonicMiddleware extends Middleware {
 	 * nothing if the call in question is not routed to SubsonicController. In
 	 * case of Subsonic call, this checks the user authentication.
 	 *
+	 * NOTE: Type declarations cannot be used on this function signature because that would be
+	 * in conflict with the base class which is not in our hands.
+	 *
 	 * @param Controller $controller the controller that is being called
 	 * @param string $methodName the name of the method
 	 * @throws SubsonicException when a security check fails
 	 */
-	public function beforeController(Controller $controller, string $methodName) {
+	public function beforeController($controller, $methodName) {
 		if ($controller instanceof SubsonicController) {
 			$this->setupResponseFormat($controller);
 			$this->checkAuthentication($controller);
@@ -130,14 +133,16 @@ class SubsonicMiddleware extends Middleware {
 	 * no-one else intercepts them. The default handler logs the error and returns response
 	 * code 500.
 	 *
+	 * NOTE: Type declarations cannot be used on this function signature because that would be
+	 * in conflict with the base class which is not in our hands.
+	 *
 	 * @param Controller $controller the controller that was being called
 	 * @param string $methodName the name of the method that was called on the controller
 	 * @param \Exception $exception the thrown exception
 	 * @throws \Exception the passed in exception if it couldn't be handled
 	 * @return Response a Response object in case the exception could be handled
 	 */
-	public function afterException(
-			Controller $controller, string $methodName, \Exception $exception) : \OCP\AppFramework\Http\Response {
+	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof SubsonicController) {
 			if ($exception instanceof SubsonicException) {
 				$this->logger->log($exception->getMessage(), 'debug');

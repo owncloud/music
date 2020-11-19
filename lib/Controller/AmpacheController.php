@@ -41,7 +41,7 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Http\XMLResponse;
+use \OCA\Music\Http\XmlResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
@@ -120,7 +120,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse(self::prepareResultForJsonApi($content));
 		} else {
-			return new XMLResponse(self::prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
+			return new XmlResponse(self::prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
 		}
 	}
 

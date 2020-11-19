@@ -38,7 +38,7 @@ class ExtractorGetID3 implements Extractor {
 	 */
 	private function initGetID3() {
 		if ($this->getID3 === null) {
-			require_once __DIR__ . '/../3rdparty/getID3/getid3/getid3.php';
+			require_once __DIR__ . '/../../3rdparty/getID3/getid3/getid3.php';
 			$this->getID3 = new \getID3();
 			$this->getID3->encoding = 'UTF-8';
 			$this->getID3->option_tags_html = false; // HTML-encoded tags are not needed

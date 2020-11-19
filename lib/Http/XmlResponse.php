@@ -25,7 +25,7 @@ use OCP\AppFramework\Http\Response;
  * Note that this response type has been created to fulfill the needs of the
  * SubsonicController and may not be suitable for all other purposes.
  */
-class XMLResponse extends Response {
+class XmlResponse extends Response {
 	private $content;
 	private $doc;
 	private $attributeKeys;

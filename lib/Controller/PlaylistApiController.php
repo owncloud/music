@@ -30,7 +30,7 @@ use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Utility\APISerializer;
+use \OCA\Music\Utility\ApiSerializer;
 use \OCA\Music\Utility\PlaylistFileService;
 
 class PlaylistApiController extends Controller {
@@ -78,7 +78,7 @@ class PlaylistApiController extends Controller {
 	 */
 	public function getAll() {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
-		$serializer = new APISerializer();
+		$serializer = new ApiSerializer();
 
 		return $serializer->serialize($playlists);
 	}

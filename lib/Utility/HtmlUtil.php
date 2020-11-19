@@ -67,7 +67,7 @@ class HtmlUtil {
 	 * @param string $partialName
 	 */
 	private static function partialContent(string $partialName) {
-		$fileName = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'templates', 'partials', $partialName.'.php']);
+		$fileName = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), '..', 'templates', 'partials', $partialName.'.php']);
 
 		\ob_start();
 		try {
@@ -103,7 +103,7 @@ class HtmlUtil {
 	private static $manifest = null;
 	private static function getManifest() {
 		if (self::$manifest === null) {
-			$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'dist', 'manifest.json']);
+			$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), '..', 'dist', 'manifest.json']);
 			$manifestText = \file_get_contents($manifestPath);
 			self::$manifest = \json_decode($manifestText, true);
 		}

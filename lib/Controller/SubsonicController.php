@@ -41,7 +41,7 @@ use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
 use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Http\XMLResponse;
+use \OCA\Music\Http\XmlResponse;
 
 use \OCA\Music\Middleware\SubsonicException;
 
@@ -1413,7 +1413,7 @@ class SubsonicController extends Controller {
 			if (\is_array($useAttributes)) {
 				$useAttributes = \array_merge($useAttributes, ['status', 'version']);
 			}
-			$response = new XMLResponse($responseData, $useAttributes);
+			$response = new XmlResponse($responseData, $useAttributes);
 		}
 
 		return $response;

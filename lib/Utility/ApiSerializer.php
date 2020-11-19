@@ -16,7 +16,7 @@ namespace OCA\Music\Utility;
  * This class is used to serialize any data object to an array that can be
  * returned as any response (JSON, XML, ...)
  */
-class APISerializer {
+class ApiSerializer {
 	public function serialize($data) {
 		$result = [];
 

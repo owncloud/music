@@ -60,13 +60,13 @@ class MaintenanceTest extends \PHPUnit\Framework\TestCase {
 
 		foreach ($tables as $table) {
 			$qb = $this->db->createQueryBuilder();
-			$qb->select('COUNT(*)')
+			$qb->select('COUNT(*) AS count')
 				->from('`*PREFIX*' . $table . '`')
 				->where('`user_id` = :user_id')
 				->setParameter(':user_id', $user);
 			$stmt = $qb->execute();
 			$row = $stmt->fetch();
-			$count = $row['COUNT(*)'];
+			$count = $row['count'];
 
 			$this->assertEquals(0, $count);
 		}

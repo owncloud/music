@@ -995,11 +995,11 @@ class SubsonicController extends Controller {
 		$result = [
 			'name' => $artist->getNameString($this->l10n),
 			'id' => $id ? ('artist-' . $id) : '-1', // getArtistInfo may show artists without ID
-			'albumCount' => $this->albumBusinessLayer->countByArtist($artist->getId())
+			'albumCount' => $id ? $this->albumBusinessLayer->countByArtist($id) : 0
 		];
 
 		if (!empty($artist->getCoverFileId())) {
-			$result['coverArt'] = 'artist-' . $artist->getId();
+			$result['coverArt'] = $result['id'];
 		}
 
 		if (!empty($artist->getStarred())) {

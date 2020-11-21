@@ -793,8 +793,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function startNewSession($user, $expiryDate) {
-		// this can cause collision, but it's just a temporary token
-		$token = \md5(\uniqid(\rand(), true));
+		$token = \bin2hex(\random_bytes(16));
 
 		// create new session
 		$session = new AmpacheSession();

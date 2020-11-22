@@ -1,7 +1,7 @@
 node_modules/
 *.log
 build/artifacts
-build/music.zip
+music.zip
 .rvm
 
 # just sane ignores
@@ -29,6 +29,7 @@ RCS/*
 # eclipse
 .project
 .settings
+.buildpath
 
 # netbeans
 nbproject
@@ -59,5 +60,6 @@ bin/
 tests/behat.yml
 /vendor/
 /.php_cs.cache
+
 
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -14,7 +14,8 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class TrackMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -24,11 +25,8 @@ class TrackMapper extends BaseMapper {
 	/**
 	 * Override the base implementation to include data from multiple tables
 	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
-	 * @param string $condition
-	 * @param string|null $extension
-	 * @return string
 	 */
-	protected function selectEntities($condition, $extension=null) {
+	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`,
 						`album`.`name` AS `album_name`, `artist`.`name` AS `artist_name`, `genre`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
@@ -372,7 +370,7 @@ class TrackMapper extends BaseMapper {
 	 * @param Track $track
 	 * @return Track
 	 */
-	protected function findUniqueEntity($track) {
+	protected function findUniqueEntity(Entity $track) : Entity {
 		return $this->findByFileId($track->getFileId(), $track->getUserId());
 	}
 }

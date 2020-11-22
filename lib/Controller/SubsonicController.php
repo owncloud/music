@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -327,7 +327,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getRandomSongs() {
-		$size = $this->request->getParam('size', 10);
+		$size = (int)$this->request->getParam('size', 10);
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
 		$genre = $this->request->getParam('genre');
 		$fromYear = $this->request->getParam('fromYear');
@@ -363,7 +363,7 @@ class SubsonicController extends Controller {
 	 */
 	private function getCoverArt() {
 		$id = $this->getRequiredParam('id');
-		$size = $this->request->getParam('size');
+		$size = (int)$this->request->getParam('size');
 
 		$idParts = \explode('-', $id);
 		$type = $idParts[0];
@@ -485,8 +485,8 @@ class SubsonicController extends Controller {
 	 */
 	private function getSongsByGenre() {
 		$genre = $this->getRequiredParam('genre');
-		$count = $this->request->getParam('count', 10);
-		$offset = $this->request->getParam('offset', 0);
+		$count = (int)$this->request->getParam('count', 10);
+		$offset = (int)$this->request->getParam('offset', 0);
 
 		$tracks = $this->findTracksByGenre($genre, $count, $offset);
 
@@ -510,7 +510,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getPlaylist() {
-		$id = $this->getRequiredParam('id');
+		$id = (int)$this->getRequiredParam('id');
 		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 
@@ -538,7 +538,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function updatePlaylist() {
-		$listId = $this->getRequiredParam('playlistId');
+		$listId = (int)$this->getRequiredParam('playlistId');
 		$newName = $this->request->getParam('name');
 		$newComment = $this->request->getParam('comment');
 		$songIdsToAdd = $this->getRepeatedParam('songIdToAdd');
@@ -568,7 +568,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function deletePlaylist() {
-		$id = $this->getRequiredParam('id');
+		$id = (int)$this->getRequiredParam('id');
 		$this->playlistBusinessLayer->delete($id, $this->userId);
 		return $this->subsonicResponse([]);
 	}
@@ -1055,7 +1055,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($album->getGenres())) {
-			$result['genre'] = \implode(', ', \array_map(function ($genreId) {
+			$result['genre'] = \implode(', ', \array_map(function (int $genreId) {
 				return $this->genreBusinessLayer->find($genreId, $this->userId)->getNameString($this->l10n);
 			}, $album->getGenres()));
 		}
@@ -1164,9 +1164,9 @@ class SubsonicController extends Controller {
 	 */
 	private function albumsForGetAlbumList() {
 		$type = $this->getRequiredParam('type');
-		$size = $this->request->getParam('size', 10);
+		$size = (int)$this->request->getParam('size', 10);
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
-		$offset = $this->request->getParam('offset', 0);
+		$offset = (int)$this->request->getParam('offset', 0);
 
 		$albums = [];
 
@@ -1257,7 +1257,7 @@ class SubsonicController extends Controller {
 	 */
 	private function doGetSimilarSongs($rootName) {
 		$id = $this->getRequiredParam('id');
-		$count = $this->request->getParam('count', 50);
+		$count = (int)$this->request->getParam('count', 50);
 
 		if (Util::startsWith($id, 'artist')) {
 			$artistId = self::ripIdPrefix($id);
@@ -1294,12 +1294,12 @@ class SubsonicController extends Controller {
 	 */
 	private function doSearch() {
 		$query = $this->getRequiredParam('query');
-		$artistCount = $this->request->getParam('artistCount', 20);
-		$artistOffset = $this->request->getParam('artistOffset', 0);
-		$albumCount = $this->request->getParam('albumCount', 20);
-		$albumOffset = $this->request->getParam('albumOffset', 0);
-		$songCount = $this->request->getParam('songCount', 20);
-		$songOffset = $this->request->getParam('songOffset', 0);
+		$artistCount = (int)$this->request->getParam('artistCount', 20);
+		$artistOffset = (int)$this->request->getParam('artistOffset', 0);
+		$albumCount = (int)$this->request->getParam('albumCount', 20);
+		$albumOffset = (int)$this->request->getParam('albumOffset', 0);
+		$songCount = (int)$this->request->getParam('songCount', 20);
+		$songOffset = (int)$this->request->getParam('songOffset', 0);
 
 		if (empty($query)) {
 			throw new SubsonicException("The 'query' argument is mandatory", 10);

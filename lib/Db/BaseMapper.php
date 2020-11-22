@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -12,8 +12,10 @@
 
 namespace OCA\Music\Db;
 
+use \OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\AppFramework\Db\Mapper;
+use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCP\IDBConnection;
 
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -26,33 +28,24 @@ abstract class BaseMapper extends Mapper {
 
 	protected $nameColumn;
 
-	/**
-	 * @param IDBConnection $db
-	 * @param string $tableName
-	 * @param string $entityClass
-	 */
-	public function __construct(IDBConnection $db, $tableName, $entityClass, $nameColumn) {
+	public function __construct(IDBConnection $db, string $tableName, string $entityClass, string $nameColumn) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
 	}
 
 	/**
 	 * Create an empty object of the entity class bound to this mapper
-	 * @return Entity
 	 */
-	public function createEntity() {
+	public function createEntity() : Entity {
 		return new $this->entityClass();
 	}
 
 	/**
 	 * Find a single entity by id and user_id
-	 * @param integer $id
-	 * @param string $userId
 	 * @throws DoesNotExistException if the entity does not exist
 	 * @throws MultipleObjectsReturnedException if more than one entity exists
-	 * @return Entity
 	 */
-	public function find($id, $userId) {
+	public function find(int $id, string $userId) : Entity {
 		$sql = $this->selectUserEntities("`{$this->getTableName()}`.`id` = ?");
 		return $this->findEntity($sql, [$userId, $id]);
 	}
@@ -63,7 +56,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param string|null $userId
 	 * @return Entity[]
 	 */
-	public function findById($ids, $userId=null) : array {
+	public function findById(array $ids, string $userId=null) : array {
 		$count = \count($ids);
 		$condition = "`{$this->getTableName()}`.`id` IN ". $this->questionMarks($count);
 
@@ -79,14 +72,9 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's entities
-	 *
-	 * @param string $userId
-	 * @param integer $sortBy sort order of the result set
-	 * @param integer|null $limit
-	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
 		if ($sortBy == SortBy::Name) {
 			$sorting = "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
 		} elseif ($sortBy == SortBy::Newest) {
@@ -101,15 +89,10 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's entities matching the given name
-	 *
-	 * @param string|null $name
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Artist[]
+	 * @return Entity[]
 	 */
-	public function findAllByName($name, $userId, $fuzzy = false, $limit=null, $offset=null) {
+	public function findAllByName(
+			?string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null) : array {
 		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
 		if ($name === null) {
 			$condition = "$nameCol IS NULL";
@@ -128,13 +111,9 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's starred entities
-	 *
-	 * @param string $userId
-	 * @param integer|null $limit
-	 * @param integer|null $offset
 	 * @return Entity[]
 	 */
-	public function findAllStarred($userId, $limit=null, $offset=null) {
+	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
 		$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
 				"ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
@@ -145,7 +124,7 @@ abstract class BaseMapper extends Mapper {
 	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
-	public function deleteById($ids) {
+	public function deleteById(array $ids) : void {
 		$count = \count($ids);
 		if ($count === 0) {
 			return;
@@ -156,11 +135,8 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Tests if entity with given ID and user ID exists in the database
-	 * @param int $id
-	 * @param string $userId
-	 * @return bool
 	 */
-	public function exists($id, $userId) {
+	public function exists(int $id, string $userId) : bool {
 		$sql = "SELECT 1 FROM `{$this->getTableName()}` WHERE `id` = ? AND `user_id` = ?";
 		$result = $this->execute($sql, [$id, $userId]);
 		return $result->rowCount() > 0;
@@ -168,9 +144,8 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Count all entities of a user
-	 * @param string $userId
 	 */
-	public function count($userId) {
+	public function count(string $userId) : int {
 		$sql = "SELECT COUNT(*) AS count FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$result = $this->execute($sql, [$userId]);
 		$row = $result->fetch();
@@ -180,10 +155,9 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
-	 * @param Entity $entity
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 */
-	public function insertOrUpdate($entity) {
+	public function insertOrUpdate(Entity $entity) : Entity {
 		try {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
@@ -200,7 +174,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param string $userId
 	 * @return int number of modified entities
 	 */
-	public function setStarredDate($date, $ids, $userId) {
+	public function setStarredDate(?\DateTime $date, array $ids, string $userId) : int {
 		$count = \count($ids);
 		if (!empty($date)) {
 			$date = $date->format(self::SQL_DATE_FORMAT);
@@ -214,9 +188,8 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * helper creating a string like '(?,?,?)' with the specified number of elements
-	 * @param int $count
 	 */
-	protected function questionMarks($count) {
+	protected function questionMarks(int $count) : string {
 		$questionMarks = [];
 		for ($i = 0; $i < $count; $i++) {
 			$questionMarks[] = '?';
@@ -233,7 +206,7 @@ abstract class BaseMapper extends Mapper {
 	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
 	 *                               the conditions in the SQL statement
 	 */
-	protected function selectUserEntities($condition=null, $extension=null) {
+	protected function selectUserEntities(string $condition=null, string $extension=null) : string {
 		$allConditions = "`{$this->getTableName()}`.`user_id` = ?";
 
 		if (!empty($condition)) {
@@ -250,15 +223,13 @@ abstract class BaseMapper extends Mapper {
 	 * @param string|null $extension Any extension (e.g. ORDER BY, LIMIT) to be added after
 	 *                               the conditions in the SQL statement
 	 */
-	protected function selectEntities($condition, $extension=null) {
+	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
 	}
 
 	/**
 	 * Find an entity which has the same identity as the supplied entity.
 	 * How the identity of the entity is defined, depends on the derived concrete class.
-	 * @param Entity $entity
-	 * @return Entity
 	 */
-	abstract protected function findUniqueEntity($entity);
+	abstract protected function findUniqueEntity(Entity $entity) : Entity;
 }

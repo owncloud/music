@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -12,7 +12,8 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class GenreMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -24,7 +25,7 @@ class GenreMapper extends BaseMapper {
 	 * @param Genre $genre
 	 * @return Genre
 	 */
-	protected function findUniqueEntity($genre) {
+	protected function findUniqueEntity(Entity $genre) : Entity {
 		$sql = $this->selectGenres('`*PREFIX*music_genres`.`user_id` = ? AND `lower_name` = ?');
 		return $this->findEntity($sql, [$genre->getUserId(), $genre->getLowerName()]);
 	}
@@ -32,22 +33,18 @@ class GenreMapper extends BaseMapper {
 	/**
 	 * Create SQL query which selects genres excluding any empty genres (having no tracks)
 	 * @see \OCA\Music\Db\BaseMapper::selectEntities
-	 * @param string $condition
-	 * @param string|null $extension
 	 * @return string SQL query
 	 */
-	protected function selectEntities($condition, $extension=null) {
+	protected function selectEntities(string $condition, string $extension=null) : string {
 		return $this->selectGenres($condition, 'HAVING COUNT(`track`.`id`) > 0 ' . $extension);
 	}
 
 	/**
 	 * Create SQL query to select genres. Unlike the function selectEntities used by the
 	 * base class BaseMapper, this function returns also the genres with no tracks at all.
-	 * @param string $condition
-	 * @param string|null $extension
 	 * @return string SQL query
 	 */
-	private function selectGenres($condition, $extension=null) {
+	private function selectGenres(string $condition, string $extension=null) : string {
 		return "SELECT
 					`*PREFIX*music_genres`.`id`,
 					`*PREFIX*music_genres`.`name`,

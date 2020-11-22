@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -58,9 +58,11 @@ class XmlResponse extends Response {
 	private function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
 		if (\is_bool($value)) {
 			$value = $value ? 'true' : 'false';
+		} elseif (\is_numeric($value)) {
+			$value = (string)$value;
 		}
 
-		if (\is_string($value) || \is_numeric($value)) {
+		if (\is_string($value)) {
 			// key 'value' has a special meaning
 			if ($key == 'value') {
 				$parentNode->appendChild($this->doc->createTextNode($value));

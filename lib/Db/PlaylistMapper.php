@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -16,7 +16,8 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -38,7 +39,7 @@ class PlaylistMapper extends BaseMapper {
 	 * @param Playlist $playlist
 	 * @return Playlist
 	 */
-	protected function findUniqueEntity($playlist) {
+	protected function findUniqueEntity(Entity $playlist) : Entity {
 		// The playlist table has no unique constraints, and hence, this function
 		// should never be called.
 		throw new \BadMethodCallException('not supported');

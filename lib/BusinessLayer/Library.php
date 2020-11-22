@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -49,11 +49,8 @@ class Library {
 		// Get all the entities from the DB first. The order of queries is important if we are in
 		// the middle of a scanning process: we don't want to get tracks which do not yet have
 		// an album entry or albums which do not yet have artist entry.
-		/** @var Track[] $allTracks */
 		$tracks = $this->trackBusinessLayer->findAll($userId);
-		/** @var Album[] $allAlbums */
 		$albums = $this->albumBusinessLayer->findAll($userId);
-		/** @var Artist[] $allArtists */
 		$artists = $this->artistBusinessLayer->findAll($userId);
 
 		$artistsById = Util::createIdLookupTable($artists);

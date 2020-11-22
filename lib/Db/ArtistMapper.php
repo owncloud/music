@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -16,7 +16,8 @@ namespace OCA\Music\Db;
 
 use \OCA\Music\Utility\Util;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -90,7 +91,7 @@ class ArtistMapper extends BaseMapper {
 	 * @param Artist $artist
 	 * @return Artist
 	 */
-	protected function findUniqueEntity($artist) {
+	protected function findUniqueEntity(Entity $artist) : Entity {
 		$sql = $this->selectUserEntities('`hash` = ?');
 		return $this->findEntity($sql, [$artist->getUserId(), $artist->getHash()]);
 	}

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -97,6 +97,16 @@ class Util {
 	}
 
 	/**
+	 * Walk through the given, potentially multi-dimensional, array and cast all leaf nodes
+	 * to integer type. The array is modified in-place.
+	 */
+	public static function intCastArrayValues(array $arr) : void {
+		\array_walk_recursive($arr, function(&$value) {
+			$value = \intval($value);
+		});
+	}
+
+	/**
 	 * Like the built-in \explode(...) function but this one can be safely called with
 	 * null string, and no warning will be emitted. Also, this returns an empty array from
 	 * null and '' inputs while the built-in alternative returns a 1-item array containing
@@ -154,8 +164,8 @@ class Util {
 	 * Multi-byte safe case-insensitive string comparison
 	 * @return int < 0 if $a is less than $b; > 0 if $a is greater than $b, and 0 if they are equal.
 	 */
-	public static function stringCaseCompare(string $a, string $b) : int {
-		return \strcmp(\mb_strtolower($a), \mb_strtolower($b));
+	public static function stringCaseCompare(?string $a, ?string $b) : int {
+		return \strcmp(\mb_strtolower($a ?? ''), \mb_strtolower($b ?? ''));
 	}
 
 	/**

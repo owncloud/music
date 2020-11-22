@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -256,8 +256,8 @@ class CoverHelper {
 				$this->logger->log('Failed to open cover image for downscaling', 'warning');
 			} else {
 				$srcCropSize = \min($srcWidth, $srcHeight);
-				$srcX = ($srcWidth - $srcCropSize) / 2;
-				$srcY = ($srcHeight - $srcCropSize) / 2;
+				$srcX = (int)(($srcWidth - $srcCropSize) / 2);
+				$srcY = (int)(($srcHeight - $srcCropSize) / 2);
 
 				$dstSize = \min($maxSize, $srcCropSize);
 				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);

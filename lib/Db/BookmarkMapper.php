@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -14,7 +14,8 @@
 
 namespace OCA\Music\Db;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class BookmarkMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -36,7 +37,7 @@ class BookmarkMapper extends BaseMapper {
 	 * @param Bookmark $bookmark
 	 * @return Bookmark
 	 */
-	protected function findUniqueEntity($bookmark) {
+	protected function findUniqueEntity(Entity $bookmark) : Entity {
 		return $this->findByTrack($bookmark->getTrackId(), $bookmark->getUserId());
 	}
 }

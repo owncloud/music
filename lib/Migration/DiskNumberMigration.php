@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -111,7 +111,7 @@ class DiskNumberMigration implements IRepairStep {
 			$id = $row['id'];
 			$user = $row['user_id'];
 			$artist = $row['album_artist_id'];
-			$name = \mb_strtolower($row['name']);
+			$name = isset($row['name']) ? \mb_strtolower($row['name']) : null;
 
 			if ($user === $prevUser && $artist === $prevArtist && $name === $prevName) {
 				// another disk of the same album => merge
@@ -166,7 +166,7 @@ class DiskNumberMigration implements IRepairStep {
 
 		$affectedRows = 0;
 		foreach ($rows as $row) {
-			$lowerName = \mb_strtolower($row['name']);
+			$lowerName = \mb_strtolower($row['name'] ?? '');
 			$artist = $row['album_artist_id'];
 			$hash = \hash('md5', "$lowerName|$artist");
 

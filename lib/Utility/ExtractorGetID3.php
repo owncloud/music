@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -104,14 +104,14 @@ class ExtractorGetID3 implements Extractor {
 	 * @param array $fileInfo
 	 * @param string $tag
 	 * @param bool $binaryValued
-	 * @return string|array|null
+	 * @return string|int|array|null
 	 */
 	public static function getTag(array $fileInfo, string $tag, bool $binaryValued = false) {
 		$value = $fileInfo['comments'][$tag][0]
 				?? $fileInfo['comments']['text'][$tag]
 				?? null;
 
-		if ($value !== null && !$binaryValued) {
+		if (\is_string($value) && !$binaryValued) {
 			// Ensure that the tag contains only valid utf-8 characters.
 			// Illegal characters may result, if the file metadata has a mismatch
 			// between claimed and actual encoding. Invalid characters could break
@@ -127,7 +127,7 @@ class ExtractorGetID3 implements Extractor {
 	 * @param array $fileInfo
 	 * @param string[] $tags
 	 * @param string|array|null $defaultValue
-	 * @return string|array|null
+	 * @return string|int|array|null
 	 */
 	public static function getFirstOfTags(array $fileInfo, array $tags, $defaultValue = null) {
 		foreach ($tags as $tag) {

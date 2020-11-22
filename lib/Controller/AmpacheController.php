@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -71,7 +71,7 @@ class AmpacheController extends Controller {
 	const API_VERSION = 400001;
 	const API_MIN_COMPATIBLE_VERSION = 350001;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
 								$l10n,
 								IURLGenerator $urlGenerator,
@@ -164,59 +164,59 @@ class AmpacheController extends Controller {
 			case 'artists':
 				return $this->artists($filter, $exact, $limit, $offset, $auth);
 			case 'artist':
-				return $this->artist($filter, $auth);
+				return $this->artist((int)$filter, $auth);
 			case 'artist_albums':
-				return $this->artist_albums($filter, $auth);
+				return $this->artist_albums((int)$filter, $auth);
 			case 'album_songs':
-				return $this->album_songs($filter, $auth);
+				return $this->album_songs((int)$filter, $auth);
 			case 'albums':
 				return $this->albums($filter, $exact, $limit, $offset, $auth);
 			case 'album':
-				return $this->album($filter, $auth);
+				return $this->album((int)$filter, $auth);
 			case 'artist_songs':
-				return $this->artist_songs($filter, $auth);
+				return $this->artist_songs((int)$filter, $auth);
 			case 'songs':
 				return $this->songs($filter, $exact, $limit, $offset, $auth);
 			case 'song':
-				return $this->song($filter, $auth);
+				return $this->song((int)$filter, $auth);
 			case 'search_songs':
 				return $this->search_songs($filter, $auth);
 			case 'playlists':
 				return $this->playlists($filter, $exact, $limit, $offset);
 			case 'playlist':
-				return $this->playlist($filter);
+				return $this->playlist((int)$filter);
 			case 'playlist_songs':
-				return $this->playlist_songs($filter, $limit, $offset, $auth);
+				return $this->playlist_songs((int)$filter, $limit, $offset, $auth);
 			case 'playlist_create':
 				return $this->playlist_create();
 			case 'playlist_edit':
-				return $this->playlist_edit($filter);
+				return $this->playlist_edit((int)$filter);
 			case 'playlist_delete':
-				return $this->playlist_delete($filter);
+				return $this->playlist_delete((int)$filter);
 			case 'playlist_add_song':
-				return $this->playlist_add_song($filter);
+				return $this->playlist_add_song((int)$filter);
 			case 'playlist_remove_song':
-				return $this->playlist_remove_song($filter);
+				return $this->playlist_remove_song((int)$filter);
 			case 'playlist_generate':
 				return $this->playlist_generate($filter, $limit, $offset, $auth);
 			case 'tags':
 				return $this->tags($filter, $exact, $limit, $offset);
 			case 'tag':
-				return $this->tag($filter);
+				return $this->tag((int)$filter);
 			case 'tag_artists':
-				return $this->tag_artists($filter, $limit, $offset, $auth);
+				return $this->tag_artists((int)$filter, $limit, $offset, $auth);
 			case 'tag_albums':
-				return $this->tag_albums($filter, $limit, $offset, $auth);
+				return $this->tag_albums((int)$filter, $limit, $offset, $auth);
 			case 'tag_songs':
-				return $this->tag_songs($filter, $limit, $offset, $auth);
+				return $this->tag_songs((int)$filter, $limit, $offset, $auth);
 			case 'flag':
 				return $this->flag();
 			case 'download':
-				return $this->download($id); // args 'type' and 'format' not supported
+				return $this->download((int)$id); // args 'type' and 'format' not supported
 			case 'stream':
-				return $this->stream($id, $offset); // args 'type', 'bitrate', 'format', and 'length' not supported
+				return $this->stream((int)$id, $offset); // args 'type', 'bitrate', 'format', and 'length' not supported
 			case 'get_art':
-				return $this->get_art($id);
+				return $this->get_art((int)$id);
 		}
 
 		$this->logger->log("Unsupported Ampache action '$action' requested", 'warn');
@@ -573,6 +573,10 @@ class AmpacheController extends Controller {
 		// After filtering, there may be "holes" between the array indices. Reindex the array.
 		$tracks = \array_values($tracks);
 
+		// Arguments 'limit' and 'offset' are optional
+		$limit = $limit ?? \count($tracks);
+		$offset = $offset ?? 0;
+
 		if ($mode == 'random') {
 			$userId = $this->ampacheUser->getUserId();
 			$indices = $this->random->getIndices(\count($tracks), $offset, $limit, $userId, 'ampache_playlist_generate');
@@ -649,7 +653,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	protected function download($trackId) {
+	protected function download(int $trackId) {
 		$userId = $this->ampacheUser->getUserId();
 
 		try {
@@ -667,7 +671,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	protected function stream($trackId, $offset) {
+	protected function stream(int $trackId, $offset) {
 		// This is just a dummy implementation. We don't support transcoding or streaming
 		// from a time offset.
 		// All the other unsupported arguments are just ignored, but a request with an offset
@@ -682,7 +686,7 @@ class AmpacheController extends Controller {
 		return $this->download($trackId);
 	}
 
-	protected function get_art($id) {
+	protected function get_art(int $id) {
 		$type = $this->getRequiredParam('type');
 
 		if (!\in_array($type, ['song', 'album', 'artist'])) {
@@ -745,7 +749,7 @@ class AmpacheController extends Controller {
 		return "$vendor {$this->appName} $appVersion";
 	}
 
-	private function getCover($entityId, BusinessLayer $businessLayer) {
+	private function getCover(int $entityId, BusinessLayer $businessLayer) {
 		$userId = $this->ampacheUser->getUserId();
 		$userFolder = $this->rootFolder->getUserFolder($userId);
 		$entity = $businessLayer->find($entityId, $userId);

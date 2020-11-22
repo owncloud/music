@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -51,7 +51,7 @@ class GenreBusinessLayer extends BusinessLayer {
 
 		$genre = new Genre();
 		$genre->setName($name);
-		$genre->setLowerName(\mb_strtolower($name));
+		$genre->setLowerName(\mb_strtolower($name ?? ''));
 		$genre->setUserId($userId);
 		return $this->mapper->insertOrUpdate($genre);
 	}

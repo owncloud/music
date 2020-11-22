@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -113,13 +113,18 @@ class ApiController extends Controller {
 
 	/**
 	 * Extracts the id from an unique slug (id-slug)
-	 * @param string $slug the slug
-	 * @return integer the id
+	 * @param string|int $slug the slug
+	 * @return int the id
 	 */
-	protected static function getIdFromSlug(string $slug) : int {
-		$split = \explode('-', $slug, 2);
-
-		return (int)$split[0];
+	protected static function getIdFromSlug($slug) : int {
+		if (\is_string($slug)) {
+			$split = \explode('-', $slug, 2);
+			return (int)$split[0];
+		} elseif (\is_int($slug)) {
+			return $slug;
+		} else {
+			throw new \InvalidArgumentException();
+		}
 	}
 
 	/**
@@ -235,9 +240,9 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums($artist, $fulltree) {
+	public function albums(?int $artist, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		if ($artist) {
+		if ($artist !== null) {
 			$albums = $this->albumBusinessLayer->findAllByArtist($artist, $this->userId);
 		} else {
 			$albums = $this->albumBusinessLayer->findAll($this->userId);
@@ -334,7 +339,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function trackByFileId($fileId) {
+	public function trackByFileId(int $fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {
 			return new JSONResponse($track->toCollection($this->l10n));
@@ -358,7 +363,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function scan($files, $finalize) {
+	public function scan(string $files, $finalize) {
 		// extract the parameters
 		$fileIds = \array_map('intval', \explode(',', $files));
 		$finalize = \filter_var($finalize, FILTER_VALIDATE_BOOLEAN);
@@ -392,7 +397,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function download($fileId) {
+	public function download(int $fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track === null) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'track not found');
@@ -413,7 +418,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function filePath($fileId) {
+	public function filePath(int $fileId) {
 		$nodes = $this->userFolder->getById($fileId);
 		if (\count($nodes) == 0) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
@@ -428,7 +433,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileInfo($fileId) {
+	public function fileInfo(int $fileId) {
 		$info = $this->scanner->getFileInfo($fileId, $this->userId, $this->userFolder);
 		if ($info) {
 			return new JSONResponse($info);
@@ -441,7 +446,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function fileDetails($fileId) {
+	public function fileDetails(int $fileId) {
 		$details = $this->detailsHelper->getDetails($fileId, $this->userFolder);
 		if ($details) {
 			// metadata extracted, attempt to include also the data from Last.fm

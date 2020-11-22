@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -16,7 +16,8 @@ namespace OCA\Music\Db;
 
 use \OCA\Music\Utility\Util;
 
-use OCP\IDBConnection;
+use \OCP\AppFramework\Db\Entity;
+use \OCP\IDBConnection;
 
 class AlbumMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
@@ -26,11 +27,8 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * Override the base implementation to include data from multiple tables
 	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
-	 * @param string $condition
-	 * @param string|null $extension
-	 * @return string
 	 */
-	protected function selectEntities($condition, $extension=null) {
+	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT `*PREFIX*music_albums`.*, `artist`.`name` AS `album_artist_name`
 				FROM `*PREFIX*music_albums`
 				INNER JOIN `*PREFIX*music_artists` `artist`
@@ -46,7 +44,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return array int => int[], keys are albums IDs and values are arrays of artist IDs
 	 */
-	public function getPerformingArtistsByAlbumId($albumIds, $userId) {
+	public function getPerformingArtistsByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`artist_id`
 				FROM `*PREFIX*music_tracks` `track`
 				WHERE `track`.`user_id` = ? ';
@@ -58,7 +56,9 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$artistIds = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		Util::intCastArrayValues($artistIds);
+		return $artistIds;
 	}
 
 	/**
@@ -68,7 +68,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return array int => int[], keys are albums IDs and values are arrays of years
 	 */
-	public function getYearsByAlbumId($albumIds, $userId) {
+	public function getYearsByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `track`.`album_id`, `track`.`year`
 				FROM `*PREFIX*music_tracks` `track`
 				WHERE `track`.`user_id` = ?
@@ -81,7 +81,9 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$years = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		Util::intCastArrayValues($years);
+		return $years;
 	}
 
 	/**
@@ -89,9 +91,9 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => string[], keys are albums IDs and values are arrays of genres
+	 * @return array int => int[], keys are albums IDs and values are arrays of genre IDs
 	 */
-	public function getGenresByAlbumId($albumIds, $userId) {
+	public function getGenresByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT DISTINCT `album_id`, `genre_id`
 				FROM `*PREFIX*music_tracks`
 				WHERE `user_id` = ?
@@ -104,7 +106,9 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		return $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$genreIds = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		Util::intCastArrayValues($genreIds);
+		return $genreIds;
 	}
 
 	/**
@@ -114,7 +118,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return array int => int, keys are albums IDs and values are disk counts
 	 */
-	public function getDiscCountByAlbumId($albumIds, $userId) {
+	public function getDiscCountByAlbumId(?array $albumIds, string $userId) : array {
 		$sql = 'SELECT `album_id`, MAX(`disk`) AS `disc_count`
 				FROM `*PREFIX*music_tracks`
 				WHERE `user_id` = ?
@@ -129,7 +133,7 @@ class AlbumMapper extends BaseMapper {
 		$result = $this->execute($sql, $params);
 		$diskCountByAlbum = [];
 		while ($row = $result->fetch()) {
-			$diskCountByAlbum[$row['album_id']] = $row['disc_count'];
+			$diskCountByAlbum[$row['album_id']] = (int)$row['disc_count'];
 		}
 		return $diskCountByAlbum;
 	}
@@ -145,7 +149,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param integer|null $offset
 	 * @return Album[]
 	 */
-	public function findAll($userId, $sortBy=SortBy::None, $limit=null, $offset=null) {
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
 		if ($sortBy === SortBy::Parent) {
 			$sorting = 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
 			$sql = $this->selectUserEntities('', $sorting);
@@ -164,7 +168,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAllByArtist($artistId, $userId) {
+	public function findAllByArtist(int $artistId, string $userId) : array {
 		$sql = $this->selectEntities(
 				'`*PREFIX*music_albums`.`id` IN (
 					SELECT DISTINCT `album`.`id`
@@ -188,20 +192,16 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAllByAlbumArtist($artistId, $userId) {
+	public function findAllByAlbumArtist(int $artistId, string $userId) : array {
 		$sql = $this->selectUserEntities('`album_artist_id` = ?');
 		$params = [$userId, $artistId];
 		return $this->findEntities($sql, $params);
 	}
 
 	/**
-	 * @param int $genreId
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Album[]
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, int $limit=null, int $offset=null) : array {
 		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_tracks` `track`
 				  WHERE `*PREFIX*music_albums`.`id` = `track`.`album_id`
@@ -212,11 +212,9 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $coverFileId
-	 * @param integer $folderId
 	 * @return boolean True if one or more albums were influenced
 	 */
-	public function updateFolderCover($coverFileId, $folderId) : bool {
+	public function updateFolderCover(int $coverFileId, int $folderId) : bool {
 		$sql = 'SELECT DISTINCT `tracks`.`album_id`
 				FROM `*PREFIX*music_tracks` `tracks`
 				JOIN `*PREFIX*filecache` `files` ON `tracks`.`file_id` = `files`.`fileid`
@@ -238,10 +236,9 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $coverFileId
-	 * @param integer $albumId
+	 * Set file ID to be used as cover for an album
 	 */
-	public function setCover($coverFileId, $albumId) {
+	public function setCover(?int $coverFileId, int $albumId) : void {
 		$sql = 'UPDATE `*PREFIX*music_albums`
 				SET `cover_file_id` = ?
 				WHERE `id` = ?';
@@ -255,7 +252,7 @@ class AlbumMapper extends BaseMapper {
 	 * @return Album[] albums which got modified (with incomplete data, only id and user are valid),
 	 *         empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null) : array {
+	public function removeCovers(array $coverFileIds, array $userIds=null) : array {
 		// find albums using the given file as cover
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_albums` WHERE `cover_file_id` IN ' .
 			$this->questionMarks(\count($coverFileIds));
@@ -283,7 +280,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string|null $userId target user; omit to target all users
 	 * @return array of dictionaries with keys [albumId, userId, parentFolderId]
 	 */
-	public function getAlbumsWithoutCover($userId = null) {
+	public function getAlbumsWithoutCover(string $userId = null) : array {
 		$sql = 'SELECT DISTINCT `albums`.`id`, `albums`.`user_id`, `files`.`parent`
 				FROM `*PREFIX*music_albums` `albums`
 				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
@@ -298,20 +295,18 @@ class AlbumMapper extends BaseMapper {
 		$return = [];
 		while ($row = $result->fetch()) {
 			$return[] = [
-				'albumId' => $row['id'],
+				'albumId' => (int)$row['id'],
 				'userId' => $row['user_id'],
-				'parentFolderId' => $row['parent']
+				'parentFolderId' => (int)$row['parent']
 			];
 		}
 		return $return;
 	}
 
 	/**
-	 * @param integer $albumId
-	 * @param integer $parentFolderId
 	 * @return boolean True if a cover image was found and added for the album
 	 */
-	public function findAlbumCover($albumId, $parentFolderId) {
+	public function findAlbumCover(int $albumId, int $parentFolderId) : bool {
 		$return = false;
 		$coverNames = ['cover', 'albumart', 'front', 'folder'];
 		$imagesSql = 'SELECT `fileid`, `name`
@@ -340,7 +335,7 @@ class AlbumMapper extends BaseMapper {
 				}
 				return $indexA > $indexB;
 			});
-			$imageId = $images[0]['fileid'];
+			$imageId = (int)$images[0]['fileid'];
 			$this->setCover($imageId, $albumId);
 			$return = true;
 		}
@@ -352,7 +347,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByArtist($artistId) {
+	public function countByArtist(int $artistId) : int {
 		$sql = 'SELECT COUNT(*) AS count FROM (
 					SELECT DISTINCT `track`.`album_id`
 					FROM `*PREFIX*music_tracks` `track`
@@ -373,7 +368,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param integer $artistId
 	 * @return integer
 	 */
-	public function countByAlbumArtist($artistId) {
+	public function countByAlbumArtist(int $artistId) : int {
 		$sql = 'SELECT COUNT(*) AS count
 				FROM `*PREFIX*music_albums` `album`
 				WHERE `album`.`album_artist_id` = ?';
@@ -388,7 +383,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param Album $album
 	 * @return Album
 	 */
-	protected function findUniqueEntity($album) {
+	protected function findUniqueEntity(Entity $album) : Entity {
 		$sql = $this->selectUserEntities('`*PREFIX*music_albums`.`hash` = ?');
 		return $this->findEntity($sql, [$album->getUserId(), $album->getHash()]);
 	}

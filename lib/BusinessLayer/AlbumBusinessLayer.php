@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -226,7 +226,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 		// Generate hash from the set of fields forming the album identity to prevent duplicates.
 		// The uniqueness of album name is evaluated in case-insensitive manner.
-		$lowerName = \mb_strtolower($album->getName());
+		$lowerName = \mb_strtolower($album->getName() ?? '');
 		$hash = \hash('md5', "$lowerName|$albumArtistId");
 		$album->setHash($hash);
 
@@ -276,7 +276,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	/**
 	 * try to find cover arts for albums without covers
 	 * @param string|null $userId target user; omit to target all users
-	 * @return array of users whose collections got modified
+	 * @return string[] users whose collections got modified
 	 */
 	public function findCovers(string $userId = null) : array {
 		$affectedUsers = [];

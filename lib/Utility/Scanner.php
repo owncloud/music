@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * ownCloud - Music app
@@ -666,9 +666,10 @@ class Scanner extends PublicEmitter {
 	}
 
 	private static function normalizeOrdinal($ordinal) {
-		// convert format '1/10' to '1'
-		$tmp = \explode('/', $ordinal);
-		$ordinal = $tmp[0];
+		if (\is_string($ordinal)) {
+			// convert format '1/10' to '1'
+			$ordinal = \explode('/', $ordinal)[0];
+		}
 
 		// check for numeric values - cast them to int and verify it's a natural number above 0
 		if (\is_numeric($ordinal) && ((int)$ordinal) > 0) {
@@ -680,7 +681,8 @@ class Scanner extends PublicEmitter {
 		return $ordinal;
 	}
 
-	private static function parseFileName($fileName) {
+	private static function parseFileName(string $fileName) : array {
+		$matches = null;
 		// If the file name starts e.g like "12. something" or "12 - something", the
 		// preceeding number is extracted as track number. Everything after the optional
 		// track number + delimiters part but before the file extension is extracted as title.
@@ -692,10 +694,12 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private static function normalizeYear($date) {
+	private static function normalizeYear($date) : ?int {
+		$matches = null;
+
 		if (\ctype_digit($date)) {
 			return (int)$date; // the date is a valid year as-is
-		} elseif (\preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
+		} elseif (\is_string($date) && \preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
 			return (int)$matches[1]; // year from ISO-formatted date yyyy-mm-dd
 		} else {
 			return null;

@@ -4,7 +4,7 @@ If you have questions about how to install or use ownCloud, please direct these 
 
 ### Short version
 
- * The [**issue template can be found here**][template]. Please always use the issue template when reporting issues.
+ * The [**issue template can be found here**][https://github.com/owncloud/core/blob/master/.github/ISSUE_TEMPLATE/issue_template.md]. Please always use the issue template when reporting issues.
 
 ### Guidelines
 * Please search the existing issues first, it's likely that your issue was already reported or even fixed.

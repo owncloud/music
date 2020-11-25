@@ -60,6 +60,9 @@ function allowMediaSourcesInCsp() {
 	$policy->addAllowedMediaDomain('data:');
 	$policy->addAllowedMediaDomain('http://*:*');
 	$policy->addAllowedMediaDomain('https://*:*');
+	$policy->addAllowedConnectDomain('http://*:*');
+	$policy->addAllowedConnectDomain('https://*:*');
+	$policy->addAllowedChildSrcDomain('blob:');
 	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 }
 

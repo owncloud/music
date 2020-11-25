@@ -10,11 +10,14 @@
  * @copyright Pauli Järvinen 2016 - 2020
  */
 
+import Hls from 'node_modules/hls.js/dist/hls.light.js';
+
 OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = function() {
 	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
 	var m_html5audio = null;
+	var m_hls = null;
 	var m_aurora = null;
 	var m_position = 0;
 	var m_duration = 0;
@@ -28,6 +31,9 @@ OCA.Music.PlayerWrapper = function() {
 
 	function initHtml5() {
 		m_html5audio = document.createElement('audio');
+		if (Hls.isSupported()) {
+			m_hls = new Hls();
+		}
 
 		var getBufferedEnd = function() {
 			// The buffer may contain holes after seeking but just ignore those.
@@ -233,6 +239,12 @@ OCA.Music.PlayerWrapper = function() {
 		return canPlayWithHtml5(mime) || canPlayWithAurora;
 	};
 
+	function isHlsUrl(url) {
+		url = url.toLowerCase();
+		return OCA.Music.Utils.endsWith(url, 'm3u8')
+			|| OCA.Music.Utils.endsWith(url, 'm3u');
+	}
+
 	this.fromURL = function(url, mime) {
 		this.trigger('loading');
 
@@ -249,7 +261,13 @@ OCA.Music.PlayerWrapper = function() {
 		switch (m_underlyingPlayer) {
 			case 'html5':
 				m_html5audio.pause();
-				m_html5audio.src = url;
+				if (m_streamingExtUrl && m_hls !== null && isHlsUrl(url)) {
+					m_hls.detachMedia();
+					m_hls.loadSource(url);
+					m_hls.attachMedia(m_html5audio);
+				} else {
+					m_html5audio.src = url;
+				}
 				break;
 
 			case 'aurora':

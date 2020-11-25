@@ -16,6 +16,7 @@
 		"angular-sanitize": "^1.8.2",
 		"angular-scroll": "^1.0.2",
 		"blueimp-md5": "^2.18.0",
+		"hls.js": "^0.14.16",
 		"javascript-detect-element-resize": "^0.5.3",
 		"jquery": "^3.5.1",
 		"js-cookie": "^2.2.1",

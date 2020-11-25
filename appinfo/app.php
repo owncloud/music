@@ -53,16 +53,18 @@ $c->getServer()->getSearch()->registerProvider(
 );
 
 /**
- * Set default content security policy to allow loading media from data URL or any http(s) URL.
+ * Set content security policy to allow streaming media from any external source
  */
-function allowMediaSourcesInCsp() {
+function adjustCsp() {
 	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-	$policy->addAllowedMediaDomain('data:');
 	$policy->addAllowedMediaDomain('http://*:*');
 	$policy->addAllowedMediaDomain('https://*:*');
+	// the next 5 rules are needed to use hls.js to stream from HLS type sources
+	$policy->addAllowedMediaDomain('data:');
+	$policy->addAllowedMediaDomain('blob:');
+	$policy->addAllowedChildSrcDomain('blob:');
 	$policy->addAllowedConnectDomain('http://*:*');
 	$policy->addAllowedConnectDomain('https://*:*');
-	$policy->addAllowedChildSrcDomain('blob:');
 	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 }
 
@@ -91,9 +93,9 @@ if (isset($request->server['REQUEST_URI'])) {
 	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
 
 	if ($isFilesUrl || $isShareUrl) {
-		allowMediaSourcesInCsp();
+		adjustCsp();
 		loadEmbeddedMusicPlayer();
 	} elseif ($isMusicUrl) {
-		allowMediaSourcesInCsp();
+		adjustCsp();
 	}
 }

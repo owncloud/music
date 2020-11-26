@@ -13,7 +13,6 @@
 namespace OCA\Music\Http;
 
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http;
 
 /**
  * A renderer for files

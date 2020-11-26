@@ -17,7 +17,6 @@ use \OCP\Files\IRootFolder;
 use \OCP\IConfig;
 
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Utility\Util;
 
 /**
  * Manage the user-specific music folder setting

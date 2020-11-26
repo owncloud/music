@@ -22,7 +22,6 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Scanner;
-use \OCA\Music\Utility\Util;
 
 /**
  * End-points for shared audio file handling. Methods of this class may be

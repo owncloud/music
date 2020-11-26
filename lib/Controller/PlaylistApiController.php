@@ -28,7 +28,6 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Db\Playlist;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\ApiSerializer;
 use \OCA\Music\Utility\PlaylistFileService;

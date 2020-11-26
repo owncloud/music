@@ -35,7 +35,7 @@ $appName = $c->query('AppName');
 /**
  * register regular task
  */
-\OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\CleanUp', 'run']);
+\OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\Cleanup', 'run']);
 
 /**
  * register hooks

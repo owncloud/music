@@ -14,6 +14,7 @@ import skipPreviousIcon from '../../img/skip-previous.svg';
 import skipNextIcon from '../../img/skip-next.svg';
 import soundIcon from '../../img/sound.svg';
 import closeIcon from '../../img/close.svg';
+import radioIcon from '../../img/radio.svg';
 
 
 OCA.Music = OCA.Music || {};
@@ -588,7 +589,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		updateMetadata({
 			title: caption,
 			artist: '',
-			cover: null
+			cover: OC.filePath('music', 'dist', radioIcon)
 		});
 	};
 

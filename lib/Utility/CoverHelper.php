@@ -23,7 +23,6 @@ use \OCP\Files\File;
 use \OCP\IConfig;
 
 use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 /**
  * utility to get cover image for album
@@ -299,7 +298,7 @@ class CoverHelper {
 
 	/**
 	 * @param Album|Artist $entity
-	 * @throws InvalidArgumentException if entity is not one of the expected types
+	 * @throws \InvalidArgumentException if entity is not one of the expected types
 	 * @return string
 	 */
 	private static function getHashKey($entity) {

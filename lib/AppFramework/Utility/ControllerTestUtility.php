@@ -13,6 +13,7 @@
 
 namespace OCA\Music\AppFramework\Utility;
 
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Response;
 
 /**
@@ -26,8 +27,7 @@ abstract class ControllerTestUtility extends \PHPUnit\Framework\TestCase {
 	 * @param array $expected an array containing the expected annotations
 	 * @param array $valid if you define your own annotations, pass them here
 	 */
-	protected function assertAnnotations($controller, $method, array $expected,
-										array $valid=[]) {
+	protected function assertAnnotations($controller, $method, array $expected, array $valid=[]) {
 		$standard = [
 			'PublicPage',
 			'NoAdminRequired',
@@ -67,8 +67,7 @@ abstract class ControllerTestUtility extends \PHPUnit\Framework\TestCase {
 	 * @return \PHPUnit_Framework_MockObject_MockObject acting as \OCP\IRequest instance
 	 */
 	protected function getRequest(array $params=[]) : \PHPUnit_Framework_MockObject_MockObject {
-		$mock = $this->getMockBuilder('\OCP\IRequest')
-			->getMock();
+		$mock = $this->getMockBuilder('\OCP\IRequest')->getMock();
 
 		$merged = [];
 

@@ -465,7 +465,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				nextStep();
 			}
 
-			// 'Previous' button is enalbed regardless of the playlist size if seeking is
+			// 'Previous' button is enabled regardless of the playlist size if seeking is
 			// supported for the file being played 
 			updateNextPrevButtonStatus();
 		}, 300);

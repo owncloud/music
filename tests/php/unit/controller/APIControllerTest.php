@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\AppFramework\Utility\ControllerTestUtility;
+use \OCA\Music\Tests\Utility\ControllerTestUtility;
 use \OCP\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Artist;

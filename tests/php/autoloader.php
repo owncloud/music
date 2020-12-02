@@ -15,7 +15,13 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 // to execute without owncloud, we need to create our own classloader
 \spl_autoload_register(function ($className) {
-	if (\strpos($className, 'OCA\\Music') === 0) {
+	if (\strpos($className, 'OCA\\Music\\Tests\\Utility') === 0) {
+		$path = \str_replace('\\', '/', \substr($className, 23)) . '.php';
+		$relPath = __DIR__ . '/utility' . $path;
+		if (\file_exists($relPath)) {
+			require_once $relPath;
+		}
+	} elseif (\strpos($className, 'OCA\\Music') === 0) {
 		$path = \str_replace('\\', '/', \substr($className, 9)) . '.php';
 		$relPath = __DIR__ . '/../../lib' . $path;
 		if (\file_exists($relPath)) {

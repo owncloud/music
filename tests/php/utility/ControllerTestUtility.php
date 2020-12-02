@@ -11,8 +11,9 @@
  * @copyright Bernhard Posselt 2012, 2014
  */
 
-namespace OCA\Music\AppFramework\Utility;
+namespace OCA\Music\Tests\Utility;
 
+use OCA\Music\AppFramework\Utility\MethodAnnotationReader;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Response;
 

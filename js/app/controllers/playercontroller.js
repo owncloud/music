@@ -239,7 +239,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if ($scope.position.current > 2.0 && $scope.player.seekingSupported()) {
+		if ($scope.position.current > 2.0) {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less

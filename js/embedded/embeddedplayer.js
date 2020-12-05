@@ -73,7 +73,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function previous() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if (playTime_s > 2.0 && player.seekingSupported()) {
+		if (playTime_s > 2.0) {
 			player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -82,7 +82,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		// Jump to the beginning of the current track even if the track has played less than 2 secs
 		// but there's no previous track to jump to
-		else if (player.seekingSupported()) {
+		else {
 			player.seek(0);
 		}
 	}
@@ -185,7 +185,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	function createPrevButton() {
 		return $(document.createElement('img'))
 			.attr('id', 'prev')
-			.attr('class', 'control svg small disabled')
+			.attr('class', 'control svg small')
 			.attr('src', OC.filePath('music', 'dist', skipPreviousIcon))
 			.attr('alt', t('music', 'Previous'))
 			.click(previous);
@@ -464,10 +464,6 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			if (nextStep) {
 				nextStep();
 			}
-
-			// 'Previous' button is enabled regardless of the playlist size if seeking is
-			// supported for the file being played 
-			updateNextPrevButtonStatus();
 		}, 300);
 	}
 
@@ -498,17 +494,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
 
-	function updateNextPrevButtonStatus() {
+	function updateNextButtonStatus() {
 		if (nextPrevEnabled) {
 			nextButton.removeClass('disabled');
 		} else {
 			nextButton.addClass('disabled');
-		}
-
-		if (nextPrevEnabled || player.seekingSupported()) {
-			prevButton.removeClass('disabled');
-		} else {
-			prevButton.addClass('disabled');
 		}
 	}
 
@@ -603,7 +593,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	this.setNextAndPrevEnabled = function(enabled) {
 		nextPrevEnabled = enabled;
-		updateNextPrevButtonStatus();
+		updateNextButtonStatus();
+		// "Previous" button is enabled regardless of the list size as it can be used to jump to the beginning of the track
 	};
 
 	this.isVisible = function() {

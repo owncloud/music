@@ -175,7 +175,7 @@ OCA.Music.PlayerWrapper = function() {
 	};
 
 	this.seekMsecs = function(msecs) {
-		if (this.seekingSupported()) {
+		if (m_self.seekingSupported()) {
 			switch (m_underlyingPlayer) {
 				case 'html5':
 					m_html5audio.currentTime = msecs / 1000;
@@ -185,6 +185,17 @@ OCA.Music.PlayerWrapper = function() {
 						m_aurora.seek(msecs);
 					}
 					break;
+			}
+		}
+		else if (msecs === 0) {
+			// seeking to the beginning can be simulated even when seeking in general is not supported
+			var url = m_url;
+			var playing = m_playing;
+			m_self.stop();
+			m_self.fromURL(url);
+			m_self.trigger('progress', 0);
+			if (playing) {
+				this.play();
 			}
 		}
 		else {

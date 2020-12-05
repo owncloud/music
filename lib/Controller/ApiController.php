@@ -76,7 +76,7 @@ class ApiController extends Controller {
 	/** @var Logger */
 	private $logger;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								TrackBusinessLayer $trackbusinesslayer,
@@ -89,9 +89,9 @@ class ApiController extends Controller {
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
-								$userId,
+								string $userId,
 								IL10N $l10n,
-								/*Folder*/ $userFolder, // no type-hint as this may sometimes be null
+								?Folder $userFolder, // null if this gets called after the user has logged out
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;

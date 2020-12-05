@@ -110,11 +110,11 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private static function isPlaylistMime($mime) {
+	private static function isPlaylistMime(string $mime) : bool {
 		return $mime == 'audio/mpegurl' || $mime == 'audio/x-scpls';
 	}
 
-	private function updateImage($file, $userId) {
+	private function updateImage(File $file, string $userId) : void {
 		$coverFileId = $file->getId();
 		$parentFolderId = $file->getParent()->getId();
 		if ($this->albumBusinessLayer->updateFolderCover($coverFileId, $parentFolderId)) {
@@ -127,7 +127,7 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function updateAudio($file, $userId, $userHome, $filePath, $mimetype) {
+	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype) : void {
 		if (\ini_get('allow_url_fopen')) {
 			$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
@@ -178,7 +178,7 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function extractMetadata($file, $userHome, $filePath) {
+	private function extractMetadata(File $file, Folder $userHome, string $filePath) : array {
 		$fieldsFromFileName = self::parseFileName($file->getName());
 		$fileInfo = $this->extractor->extract($file);
 		$meta = [];
@@ -252,7 +252,7 @@ class Scanner extends PublicEmitter {
 	 * @param int[] $affectedAlbums
 	 * @param int[] $affectedArtists
 	 */
-	private function invalidateCacheOnDelete($affectedUsers, $affectedAlbums, $affectedArtists) {
+	private function invalidateCacheOnDelete(array $affectedUsers, array $affectedAlbums, array $affectedArtists) : void {
 		// Delete may be for one file or for a folder containing thousands of albums.
 		// If loads of albums got affected, then ditch the whole cache of the affected
 		// users because removing the cached covers one-by-one could delay the delete
@@ -296,7 +296,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteAudio($fileIds, $userIds=null) {
+	private function deleteAudio(array $fileIds, array $userIds=null) : bool {
 		$this->logger->log('deleteAudio - '. \implode(', ', $fileIds), 'debug');
 		$this->emit('\OCA\Music\Utility\Scanner', 'delete', [$fileIds, $userIds]);
 
@@ -331,7 +331,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds
 	 * @return boolean true if anything was removed
 	 */
-	private function deleteImage($fileIds, $userIds=null) {
+	private function deleteImage(array $fileIds, array $userIds=null) : bool {
 		$this->logger->log('deleteImage - '. \implode(', ', $fileIds), 'debug');
 
 		$affectedAlbums = $this->albumBusinessLayer->removeCovers($fileIds, $userIds);
@@ -356,7 +356,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds the IDs of the users to remove the file from; if omitted,
 	 *                               the file is removed from all users (ie. owner and sharees)
 	 */
-	public function delete($fileId, $userIds=null) {
+	public function delete(int $fileId, array $userIds=null) : void {
 		if (!$this->deleteAudio([$fileId], $userIds) && !$this->deleteImage([$fileId], $userIds)) {
 			$this->logger->log("deleted file $fileId was not an indexed " .
 					'audio file or a cover image', 'debug');
@@ -371,7 +371,7 @@ class Scanner extends PublicEmitter {
 	 * @param string[]|null $userIds the IDs of the users to remove the folder from; if omitted,
 	 *                               the folder is removed from all users (ie. owner and sharees)
 	 */
-	public function deleteFolder(Folder $folder, $userIds=null) : ?array {
+	public function deleteFolder(Folder $folder, array $userIds=null) : void {
 		$audioFiles = $folder->searchByMime('audio');
 		if (\count($audioFiles) > 0) {
 			$this->deleteAudio(Util::extractIds($audioFiles), $userIds);
@@ -439,16 +439,16 @@ class Scanner extends PublicEmitter {
 		});
 	}
 
-	private function getScannedFileIds($userId) {
+	private function getScannedFileIds(string $userId) : array {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
-	public function getAllMusicFileIds($userId, $path = null) {
+	public function getAllMusicFileIds(string $userId, string $path = null) : array {
 		$musicFiles = $this->getMusicFiles($userId, $path);
 		return Util::extractIds($musicFiles);
 	}
 
-	public function getUnscannedMusicFileIds($userId, $path = null) {
+	public function getUnscannedMusicFileIds(string $userId, string $path = null) : array {
 		$scannedIds = $this->getScannedFileIds($userId);
 		$allIds = $this->getAllMusicFileIds($userId, $path);
 		$unscannedIds = Util::arrayDiff($allIds, $scannedIds);
@@ -463,7 +463,7 @@ class Scanner extends PublicEmitter {
 		return $unscannedIds;
 	}
 
-	public function scanFiles($userId, $userHome, $fileIds, OutputInterface $debugOutput = null) {
+	public function scanFiles(string $userId, Folder $userHome, array $fileIds, OutputInterface $debugOutput = null) : int {
 		$count = \count($fileIds);
 		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
@@ -506,7 +506,7 @@ class Scanner extends PublicEmitter {
 	 * @param Folder $userHome
 	 * @return Number of removed files
 	 */
-	public function removeUnavailableFiles($userId, $userHome) {
+	public function removeUnavailableFiles(string $userId, Folder $userHome) : int {
 		$indexedFiles = $this->getScannedFileIds($userId);
 		$availableFiles = $this->getAllMusicFileIds($userId);
 		$unavailableFiles = Util::arrayDiff($indexedFiles, $availableFiles);
@@ -525,7 +525,7 @@ class Scanner extends PublicEmitter {
 	 * under the configured music path.
 	 * @param string $userId
 	 */
-	private function removeFilesNotUnderMusicFolder($userId) {
+	private function removeFilesNotUnderMusicFolder(string $userId) : void {
 		$indexedFiles = $this->getScannedFileIds($userId);
 		$validFiles = Util::extractIds($this->getMusicFiles($userId));
 		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
@@ -536,12 +536,8 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Parse and get basic info about a file. The file does not have to be indexed in the database.
-	 * @param string $fileId
-	 * @param string $userId
-	 * @param Folder $userFolder
-	 * $return array|null
 	 */
-	public function getFileInfo($fileId, $userId, $userFolder) {
+	public function getFileInfo(int $fileId, string $userId, Folder $userFolder) : ?array {
 		$info = $this->getIndexedFileInfo($fileId, $userId, $userFolder)
 			?: $this->getUnindexedFileInfo($fileId, $userId, $userFolder);
 
@@ -555,7 +551,7 @@ class Scanner extends PublicEmitter {
 		return $info;
 	}
 
-	private function getIndexedFileInfo($fileId, $userId, $userFolder) {
+	private function getIndexedFileInfo(int $fileId, string $userId, Folder $userFolder) : ?array {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $userId);
 		if ($track !== null) {
 			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $userId);
@@ -570,7 +566,7 @@ class Scanner extends PublicEmitter {
 		return null;
 	}
 
-	private function getUnindexedFileInfo($fileId, $userId, $userFolder) {
+	private function getUnindexedFileInfo(int $fileId, string $userId, Folder $userFolder) : ?array {
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
 			$file = $fileNodes[0];
@@ -594,12 +590,8 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Update music path
-	 *
-	 * @param string $oldPath
-	 * @param string $newPath
-	 * @param string $userId
 	 */
-	public function updatePath($oldPath, $newPath, $userId) {
+	public function updatePath(string $oldPath, string $newPath, string $userId) : void {
 		$this->logger->log("Changing music collection path of user $userId from $oldPath to $newPath", 'info');
 
 		$userHome = $this->resolveUserFolder($userId);
@@ -631,7 +623,7 @@ class Scanner extends PublicEmitter {
 	 * @param string|null $userId
 	 * @return bool true if any albums were updated; false otherwise
 	 */
-	public function findAlbumCovers($userId = null) {
+	public function findAlbumCovers(string $userId = null) : bool {
 		$affectedUsers = $this->albumBusinessLayer->findCovers($userId);
 		// scratch the cache for those users whose music collection was touched
 		foreach ($affectedUsers as $user) {
@@ -646,20 +638,20 @@ class Scanner extends PublicEmitter {
 	 * @param string $userId
 	 * @return bool true if any albums were updated; false otherwise
 	 */
-	public function findArtistCovers($userId) {
+	public function findArtistCovers(string $userId) : bool {
 		$allImages = $this->getImageFiles($userId);
 		return $this->artistBusinessLayer->updateCovers($allImages, $userId);
 	}
 
-	public function resolveUserFolder($userId) {
+	public function resolveUserFolder(string $userId) : Folder {
 		return $this->rootFolder->getUserFolder($userId);
 	}
 
-	private static function isNullOrEmpty($string) {
+	private static function isNullOrEmpty(string $string) : bool {
 		return $string === null || $string === '';
 	}
 
-	private static function normalizeOrdinal($ordinal) {
+	private static function normalizeOrdinal($ordinal) : ?int {
 		if (\is_string($ordinal)) {
 			// convert format '1/10' to '1'
 			$ordinal = \explode('/', $ordinal)[0];
@@ -707,7 +699,7 @@ class Scanner extends PublicEmitter {
 	 * @param string|null $userId name of user, deducted from $albumId if omitted
 	 * @param Folder|null $userFolder home folder of user, deducted from $userId if omitted
 	 */
-	private function findEmbeddedCoverForAlbum($albumId, $userId=null, $userFolder=null) {
+	private function findEmbeddedCoverForAlbum(int $albumId, string $userId=null, Folder $userFolder=null) : void {
 		if ($userId === null) {
 			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
 		}

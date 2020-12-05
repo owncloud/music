@@ -23,7 +23,7 @@ function ($scope, $rootScope, playlistService, libraryService,
 	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
 	$scope.volume = parseInt(Cookies.get('oc_music_volume')) || 50;  // volume can be 0~100
-	$scope.repeat = Cookies.get('oc_music_repeat') == 'true';
+	$scope.repeat = Cookies.get('oc_music_repeat') || 'false';
 	$scope.shuffle = Cookies.get('oc_music_shuffle') == 'true';
 	$scope.position = {
 		bufferPercent: '0%',
@@ -57,7 +57,12 @@ function ($scope, $rootScope, playlistService, libraryService,
 		$rootScope.$emit('playerProgress', currentTime);
 	});
 	onPlayerEvent('end', function() {
-		$scope.next();
+		if ($scope.repeat === 'one') {
+			$scope.player.seek(0);
+			$scope.player.play();
+		} else {
+			$scope.next();
+		}
 	});
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
@@ -175,9 +180,14 @@ function ($scope, $rootScope, playlistService, libraryService,
 	};
 
 	$scope.toggleRepeat = function() {
-		$scope.repeat = !$scope.repeat;
-		playlistService.setRepeat($scope.repeat);
-		Cookies.set('oc_music_repeat', $scope.repeat.toString(), { expires: 3650 });
+		var nextState = {
+			'false'	: 'true',
+			'true'	: 'one',
+			'one'	: 'false'
+		};
+		$scope.repeat = nextState[$scope.repeat];
+		playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
+		Cookies.set('oc_music_repeat', $scope.repeat, { expires: 3650 });
 	};
 
 	$scope.setTime = function(position, duration) {

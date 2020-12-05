@@ -92,12 +92,6 @@ class Scanner extends PublicEmitter {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
-		if (!($file instanceof File) || !$userId || !($userHome instanceof Folder)) {
-			$this->logger->log('Invalid arguments given to Scanner.update - file='.\get_class($file).
-					", userId=$userId, userHome=".\get_class($userHome), 'warn');
-			return;
-		}
-
 		// skip files that aren't inside the user specified path
 		if (!$this->userMusicFolder->pathBelongsToMusicLibrary($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');

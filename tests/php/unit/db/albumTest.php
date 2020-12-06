@@ -19,6 +19,18 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->urlGenerator
+			->method('linkToRoute')
+			->will($this->returnCallback([$this, 'linkToRouteMock']));
+	}
+
+	public static function linkToRouteMock(string $route, array $args) : string {
+		switch ($route) {
+			case 'music.api.artist':		return "/link/to/artist/{$args['artistIdOrSlug']}";
+			case 'music.api.album':			return "/link/to/album/{$args['albumIdOrSlug']}";
+			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumIdOrSlug']}";
+			default:						return "(mock missing for route $route)";
+		}
 	}
 
 	public function testToAPI() {
@@ -36,13 +48,13 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 			'id' => 3,
 			'name' => 'The name',
 			'year' => 2013,
-			'cover' => null,
+			'cover' => '/link/to/album/cover/3',
 			'slug' => '3-the-name',
 			'artists' => [
-				['id' => 1, 'uri' => null],
-				['id' => 2, 'uri' => null]
+				['id' => 1, 'uri' => '/link/to/artist/1'],
+				['id' => 2, 'uri' => '/link/to/artist/2']
 			],
-			'uri' => null,
+			'uri' => '/link/to/album/3',
 			'albumArtistId' => 3,
 			], $album->toAPI($this->urlGenerator, $l10n));
 	}

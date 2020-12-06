@@ -12,10 +12,8 @@
 
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'libraryService',
-'Audio', 'Restangular', 'gettextCatalog', '$timeout', '$document',
-function ($scope, $rootScope, playlistService, libraryService,
-		Audio, Restangular, gettextCatalog, $timeout, $document) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettextCatalog', '$timeout', '$document',
+function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalog, $timeout, $document) {
 
 	$scope.loading = false;
 	$scope.player = Audio;

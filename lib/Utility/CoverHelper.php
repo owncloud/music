@@ -106,8 +106,9 @@ class CoverHelper {
 	public function getAllCachedAlbumCoverHashes(string $userId) : array {
 		$rows = $this->cache->getAll($userId, 'album_cover_hash_');
 		$hashes = [];
+		$prefixLen = \strlen('album_cover_hash_');
 		foreach ($rows as $row) {
-			$albumId = \explode('_', $row['key'])[1];
+			$albumId = \substr($row['key'], $prefixLen);
 			$hashes[$albumId] = $row['data'];
 		}
 		return $hashes;

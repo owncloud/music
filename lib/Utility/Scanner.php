@@ -188,29 +188,29 @@ class Scanner extends PublicEmitter {
 		$meta['albumArtist'] = ExtractorGetID3::getFirstOfTags($fileInfo, ['band', 'albumartist', 'album artist', 'album_artist']);
 
 		// use artist and albumArtist as fallbacks for each other
-		if (self::isNullOrEmpty($meta['albumArtist'])) {
+		if (!self::isNonEmptyString($meta['albumArtist'])) {
 			$meta['albumArtist'] = $meta['artist'];
 		}
 
-		if (self::isNullOrEmpty($meta['artist'])) {
+		if (!self::isNonEmptyString($meta['artist'])) {
 			$meta['artist'] = $meta['albumArtist'];
 		}
 
 		// set 'Unknown Artist' in case neither artist nor albumArtist was found
-		if (self::isNullOrEmpty($meta['artist'])) {
+		if (!self::isNonEmptyString($meta['artist'])) {
 			$meta['artist'] = null;
 			$meta['albumArtist'] = null;
 		}
 
 		// title
 		$meta['title'] = ExtractorGetID3::getTag($fileInfo, 'title');
-		if (self::isNullOrEmpty($meta['title'])) {
+		if (!self::isNonEmptyString($meta['title'])) {
 			$meta['title'] = $fieldsFromFileName['title'];
 		}
 
 		// album
 		$meta['album'] = ExtractorGetID3::getTag($fileInfo, 'album');
-		if (self::isNullOrEmpty($meta['album'])) {
+		if (!self::isNonEmptyString($meta['album'])) {
 			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
 			$dirPath = \dirname($filePath);
 			if ($userHome->getPath() === $dirPath) {
@@ -647,8 +647,8 @@ class Scanner extends PublicEmitter {
 		return $this->rootFolder->getUserFolder($userId);
 	}
 
-	private static function isNullOrEmpty(string $string) : bool {
-		return $string === null || $string === '';
+	private static function isNonEmptyString(/*mixed*/ $item) : bool {
+		return \is_string($item) && \trim($item) !== '';
 	}
 
 	private static function normalizeOrdinal($ordinal) : ?int {

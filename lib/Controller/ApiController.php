@@ -19,6 +19,7 @@ use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\AppFramework\Http\RedirectResponse;
+use \OCP\AppFramework\Http\Response;
 use \OCP\Files\Folder;
 use \OCP\IL10N;
 use \OCP\IRequest;
@@ -89,7 +90,7 @@ class ApiController extends Controller {
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
-								string $userId,
+								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								?Folder $userFolder, // null if this gets called after the user has logged out
 								Logger $logger) {
@@ -585,7 +586,7 @@ class ApiController extends Controller {
 		}
 	}
 
-	private static function setClientCaching(&$httpResponse, $days=365) {
+	private static function setClientCaching(Response &$httpResponse, int $days=365) : void {
 		$httpResponse->cacheFor($days * 24 * 60 * 60);
 		$httpResponse->addHeader('Pragma', 'cache');
 	}

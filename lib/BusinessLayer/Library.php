@@ -94,7 +94,7 @@ class Library {
 		foreach ($trackDict as $artistId => $artistTracksByAlbum) {
 			$artistAlbums = [];
 			foreach ($artistTracksByAlbum as $albumId => $albumTracks) {
-				$coverHash = isset($coverHashes[$albumId]) ? $coverHashes[$albumId] : null;
+				$coverHash = $coverHashes[$albumId] ?? null;
 				$artistAlbums[] = $entities['albums'][$albumId]->toCollection(
 						$this->urlGenerator, $this->l10n, $coverHash, $albumTracks);
 			}

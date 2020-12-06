@@ -79,7 +79,7 @@ class Album extends Entity {
 	 * @param \OCP\IURLGenerator $urlGenerator
 	 * @return string the url
 	 */
-	public function getUri(IURLGenerator $urlGenerator) {
+	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.api.album',
 			['albumIdOrSlug' => $this->id]
@@ -91,7 +91,7 @@ class Album extends Entity {
 	 * @param \OCP\IURLGenerator $urlGenerator URLGenerator
 	 * @return array
 	 */
-	public function getArtists(IURLGenerator $urlGenerator) {
+	public function getArtists(IURLGenerator $urlGenerator) : array {
 		$artists = [];
 		foreach ($this->artistIds as $artistId) {
 			$artists[] = [
@@ -112,7 +112,7 @@ class Album extends Entity {
 	 * year ranges could be e.g. null, '2016', and '1995 - 2000'.
 	 * @return string|null
 	 */
-	public function getYearRange() {
+	public function getYearRange() : ?string {
 		$count = empty($this->years) ? 0 : \count($this->years);
 
 		if ($count == 0) {
@@ -129,8 +129,8 @@ class Album extends Entity {
 	 * In case the album has multiple years, output the largest of these in the API.
 	 * @return int|null
 	 */
-	public function yearToAPI() {
-		return empty($this->years) ? null : \max($this->years);
+	public function yearToAPI() : ?int {
+		return empty($this->years) ? null : (int)\max($this->years);
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Album extends Entity {
 	 * @param IL10N $l10n
 	 * @return string
 	 */
-	public function getNameString(IL10N $l10n) {
+	public function getNameString(IL10N $l10n) : string {
 		return $this->getName() ?: self::unknownNameString($l10n);
 	}
 
@@ -149,7 +149,7 @@ class Album extends Entity {
 	 * @param IL10N $l10n
 	 * @return string
 	 */
-	public function getAlbumArtistNameString(IL10N $l10n) {
+	public function getAlbumArtistNameString(IL10N $l10n) : string {
 		return $this->getAlbumArtistName() ?: Artist::unknownNameString($l10n);
 	}
 
@@ -158,7 +158,7 @@ class Album extends Entity {
 	 * @param IURLGenerator $urlGenerator
 	 * @return string|null
 	 */
-	public function coverToAPI(IURLGenerator $urlGenerator) {
+	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.albumCover',
@@ -173,9 +173,9 @@ class Album extends Entity {
 	 * URL with image hash.
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
-	 * $return string|null
+	 * @return string|null
 	 */
-	public function coverToCollection(IURLGenerator $urlGenerator, $cachedCoverHash) {
+	public function coverToCollection(IURLGenerator $urlGenerator, ?string $cachedCoverHash) : ?string {
 		if (!empty($cachedCoverHash)) {
 			return $urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $cachedCoverHash]);
 		} elseif ($this->getCoverFileId() > 0) {
@@ -190,10 +190,10 @@ class Album extends Entity {
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  IL10N $l10n Localization handler
 	 * @param  string|null $cachedCoverHash Cached cover image hash if available
-	 * @param  array $tracks Tracks of the album in the "toCollection" format
+	 * @param  Track[] $tracks Tracks of the album in the "toCollection" format
 	 * @return array collection API object
 	 */
-	public function toCollection(IURLGenerator $urlGenerator, IL10N $l10n, $cachedCoverHash, $tracks) {
+	public function toCollection(IURLGenerator $urlGenerator, IL10N $l10n, ?string $cachedCoverHash, array $tracks) : array {
 		return [
 			'name'      => $this->getNameString($l10n),
 			'year'      => $this->getYearRange(),
@@ -210,7 +210,7 @@ class Album extends Entity {
 	 * @param  IL10N $l10n Localization handler
 	 * @return array shiva API object
 	 */
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) {
+	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'name'          => $this->getNameString($l10n),
 			'year'          => $this->yearToAPI(),
@@ -223,13 +223,13 @@ class Album extends Entity {
 		];
 	}
 
-	public static function compareYearAndName(Album $a, Album $b) {
+	public static function compareYearAndName(Album $a, Album $b) : int {
 		$yearResult = \strcmp($a->getYearRange(), $b->getYearRange());
 
 		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
 	}
 
-	public static function unknownNameString(IL10N $l10n) {
+	public static function unknownNameString(IL10N $l10n) : string {
 		return (string) $l10n->t('Unknown album');
 	}
 }

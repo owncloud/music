@@ -28,7 +28,7 @@ class Cache {
 	 * @param string $key
 	 * @param string $data
 	 */
-	public function add($userId, $key, $data) {
+	public function add(string $userId, string $key, string $data) : void {
 		$sql = 'INSERT INTO `*PREFIX*music_cache`
 				(`user_id`, `key`, `data`) VALUES (?, ?, ?)';
 		$this->db->executeUpdate($sql, [$userId, $key, $data]);
@@ -39,7 +39,7 @@ class Cache {
 	 * @param string $key
 	 * @param string $data
 	 */
-	public function update($userId, $key, $data) {
+	public function update(string $userId, string $key, string $data) : void {
 		$sql = 'UPDATE `*PREFIX*music_cache` SET `data` = ?
 				WHERE `user_id` = ? AND `key` = ?';
 		$this->db->executeUpdate($sql, [$data, $userId, $key]);
@@ -50,7 +50,7 @@ class Cache {
 	 * @param string $key
 	 * @param string $data
 	 */
-	public function set($userId, $key, $data) {
+	public function set(string $userId, string $key, string $data) : void {
 		try {
 			$this->add($userId, $key, $data);
 		} catch (UniqueConstraintViolationException $e) {
@@ -64,7 +64,7 @@ class Cache {
 	 * @param string $userId User to target, omit to target all users
 	 * @param string $key Key to target, omit to target all keys
 	 */
-	public function remove($userId = null, $key = null) {
+	public function remove(string $userId = null, string $key = null) : void {
 		$sql = 'DELETE FROM `*PREFIX*music_cache`';
 		$params = [];
 		if ($userId !== null) {
@@ -87,7 +87,7 @@ class Cache {
 	 * @param string $key
 	 * @return string|null
 	 */
-	public function get($userId, $key) {
+	public function get(string $userId, string $key) : ?string {
 		$sql = 'SELECT `data` FROM `*PREFIX*music_cache`
 				WHERE `user_id` = ? AND `key` = ?';
 		$result = $this->db->executeQuery($sql, [$userId, $key]);
@@ -103,7 +103,7 @@ class Cache {
 	 * @param string|null $prefix
 	 * @return array of arrays with keys 'key', 'data'
 	 */
-	public function getAll($userId, $prefix = null) {
+	public function getAll(string $userId, string $prefix = null) : array {
 		$sql = 'SELECT `key`, `data` FROM `*PREFIX*music_cache`
 				WHERE `user_id` = ?';
 		$params = [$userId];
@@ -118,5 +118,18 @@ class Cache {
 		$result->closeCursor();
 
 		return $rows;
+	}
+
+	/**
+	 * Given a cache key and its exact content, return the owning user
+	 */
+	public function getOwner(string $key, string $data) : ?string {
+		$sql = 'SELECT `user_id` FROM `*PREFIX*music_cache`
+				WHERE `key` = ? AND `data` = ?';
+		$result = $this->db->executeQuery($sql, [$key, $data]);
+		$rows = $result->fetchAll();
+		$result->closeCursor();
+		
+		return \count($rows) ? $rows[0]['user_id'] : null;
 	}
 }

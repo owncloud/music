@@ -306,9 +306,20 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	});
 
 	/**
+	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,
+	* the loading happens in a context where the normal session cookies are not available. Hence, for the
+	* server, this looks like there's no logged in user. The token is used as an alternative means of
+	* authentication, which will provide access only to the cover art images.
+	*/
+	var coverArtToken = null;
+	$rootScope.$on('newCoverArtToken', function(_event, token) {
+		coverArtToken = token;
+	});
+
+	/**
 	 * Integration to the media control panel available on Chrome starting from version 73 and Edge from
-	 * version 83. In Firefox, it is still disabled in the version 77, but a partially working support can
-	 * be enabled via the advanced settings.
+	 * version 83. In Firefox, the API is enabled by default at least in the version 83, although at least
+	 * partial support has been available already starting from the version 74 via the advanced settings.
 	 *
 	 * The API brings the bindings with the special multimedia keys possibly present on the keyboard,
 	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
@@ -338,7 +349,7 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 					album: track.album.name,
 					artwork: [{
 						sizes: '190x190',
-						src: track.album.cover,
+						src: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
 						type: ''
 					}]
 				});

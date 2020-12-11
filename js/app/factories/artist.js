@@ -11,10 +11,11 @@
  *
  */
 
-angular.module('Music').factory('ArtistFactory', ['Restangular', function (Restangular) {
+angular.module('Music').factory('ArtistFactory', ['Restangular', '$rootScope', function (Restangular, $rootScope) {
 	return {
 		getArtists: function() {
 			return Restangular.all('prepare_collection').post().then(function(reply) {
+				$rootScope.$emit('newCoverArtToken', reply.cover_token);
 				return Restangular.all('collection').getList({hash: reply.hash});
 			});
 		}

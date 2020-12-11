@@ -25,6 +25,13 @@ class Random {
 	}
 
 	/**
+	 * Create cryptographicaly secure random string
+	 */
+	public static function secure(int $length) : string {
+		return \bin2hex(\random_bytes($length));
+	}
+
+	/**
 	 * Get desired number of random items from the given array
 	 *
 	 * @param array $itemArray

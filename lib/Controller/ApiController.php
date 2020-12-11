@@ -139,7 +139,12 @@ class ApiController extends Controller {
 			$this->collectionHelper->getJson();
 			$hash = $this->collectionHelper->getCachedJsonHash();
 		}
-		return new JSONResponse(['hash' => $hash]);
+		$coverToken = $this->coverHelper->createAccessToken($this->userId);
+
+		return new JSONResponse([
+			'hash' => $hash,
+			'cover_token' => $coverToken
+		]);
 	}
 
 	/**
@@ -513,47 +518,51 @@ class ApiController extends Controller {
 	}
 
 	/**
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function albumCover($albumIdOrSlug, $originalSize) {
+	public function albumCover($albumIdOrSlug, $originalSize, $coverToken) {
+		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+		
 		try {
 			$albumId = $this->getIdFromSlug($albumIdOrSlug);
-			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-			return $this->cover($album, $originalSize);
+			$album = $this->albumBusinessLayer->find($albumId, $userId);
+			return $this->cover($album, $userId, $originalSize);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
 	/**
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function artistCover($artistIdOrSlug, $originalSize) {
+	public function artistCover($artistIdOrSlug, $originalSize, $coverToken) {
+		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+		
 		try {
 			$artistId = $this->getIdFromSlug($artistIdOrSlug);
-			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-			return $this->cover($artist, $originalSize);
+			$artist = $this->artistBusinessLayer->find($artistId, $userId);
+			return $this->cover($artist, $userId, $originalSize);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
-	private function cover($entity, $originalSize) {
+	private function cover($entity, $userId, $originalSize) {
 		$originalSize = \filter_var($originalSize, FILTER_VALIDATE_BOOLEAN);
+		$userFolder = $this->userFolder ?? $this->scanner->resolveUserFolder($userId);
 
 		if ($originalSize) {
 			// cover requested in original size, without scaling or cropping
-			$cover = $this->coverHelper->getCover(
-					$entity, $this->userId, $this->userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
+			$cover = $this->coverHelper->getCover($entity, $userId, $userFolder, CoverHelper::DO_NOT_CROP_OR_SCALE);
 			if ($cover !== null) {
 				return new FileResponse($cover);
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}
 		} else {
-			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $this->userId, $this->userFolder);
+			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $userId, $userFolder);
 
 			if ($coverAndHash['hash'] !== null) {
 				// Cover is in cache. Return a redirection response so that the client
@@ -569,11 +578,12 @@ class ApiController extends Controller {
 	}
 
 	/**
-	 * @NoAdminRequired
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function cachedCover($hash) {
-		$coverData = $this->coverHelper->getCoverFromCache($hash, $this->userId);
+	public function cachedCover(string $hash, ?string $coverToken) {
+		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+		$coverData = $this->coverHelper->getCoverFromCache($hash, $userId);
 
 		if ($coverData !== null) {
 			$response =  new FileResponse($coverData);

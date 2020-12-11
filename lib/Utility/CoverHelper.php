@@ -311,4 +311,31 @@ class CoverHelper {
 			throw new \InvalidArgumentException('Unexpected entity type');
 		}
 	}
+
+	/**
+	 * Create and store an access token which can be used to read cover images of a user.
+	 * A user may have only one valid cover image access token at a time; the latest token
+	 * always overwrites the previously obtained one.
+	 * 
+	 * The reason this is needed is because the mediaSession in Firefox loads the cover images
+	 * in a context where normal cookies and other standard request headers are not available. 
+	 * Hence, we need to provide the cover images as "public" resources, i.e. without requiring 
+	 * that the caller is logged in to the cloud. But still, we don't want to let just anyone 
+	 * load the user data. The solution is to use a temporary token which grants access just to
+	 * the cover images. This token can be then sent as URL argument by the mediaSession.
+	 */
+	public function createAccessToken(string $userId) : string {
+		$token = Random::secure(32);
+		// It might be neater to use a dedicated DB table for this, but the generic cache table
+		// will do, at least for now.
+		$this->cache->set($userId, 'cover_access_token', $token);
+		return $token;
+	}
+
+	/**
+	 * @see CoverHelper::createAccessToken
+	 */
+	public function getUserForAccessToken(string $token) : ?string {
+		return $this->cache->getOwner('cover_access_token', $token);
+	}
 }

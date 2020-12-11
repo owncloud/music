@@ -797,7 +797,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function startNewSession($user, $expiryDate) {
-		$token = \bin2hex(\random_bytes(16));
+		$token = Random::secure(16);
 
 		// create new session
 		$session = new AmpacheSession();

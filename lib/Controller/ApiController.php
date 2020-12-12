@@ -564,9 +564,11 @@ class ApiController extends Controller {
 		} else {
 			$coverAndHash = $this->coverHelper->getCoverAndHash($entity, $userId, $userFolder);
 
-			if ($coverAndHash['hash'] !== null) {
+			if ($coverAndHash['hash'] !== null && $this->userId !== null) {
 				// Cover is in cache. Return a redirection response so that the client
 				// will fetch the content through a cacheable route.
+				// The redirection is not used in case this is a call from the Firefox mediaSession API with not
+				// logged in user.
 				$link = $this->urlGenerator->linkToRoute('music.api.cachedCover', ['hash' => $coverAndHash['hash']]);
 				return new RedirectResponse($link);
 			} elseif ($coverAndHash['data'] !== null) {

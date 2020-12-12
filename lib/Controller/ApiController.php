@@ -404,17 +404,10 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function download(int $fileId) {
-		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
-		if ($track === null) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'track not found');
-		}
-
-		$nodes = $this->userFolder->getById($track->getFileId());
+		$nodes = $this->userFolder->getById($fileId);
 		$node = $nodes[0] ?? null;
 		if ($node instanceof \OCP\Files\File) {
-			$mime = $node->getMimeType();
-			$content = $node->getContent();
-			return new FileResponse(['mimetype' => $mime, 'content' => $content]);
+			return new FileResponse($node);
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'file not found');

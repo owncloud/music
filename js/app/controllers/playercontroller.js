@@ -89,8 +89,8 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	});
 
 	$scope.getPlayableFileId = function (track) {
-		for(var mimeType in track.files) {
-			if($scope.player.canPlayMIME(mimeType)) {
+		for (var mimeType in track.files) {
+			if ($scope.player.canPlayMIME(mimeType)) {
 				return {
 					'mime': mimeType,
 					'id': track.files[mimeType]
@@ -114,7 +114,24 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		}
 	}
 
-	var pathRequestTimer = null;
+	/*
+	 * Create a debounced function which starts playing the currently selected track.
+	 * The debounce is used to limit the number of GET requests when repeatedly changing
+	 * the playing track like when rapidly and repeatedly clicking the 'Skip next' button.
+	 * Too high number of simultaneous GET requests could easily jam a low-power server.
+	 */
+	var debouncedPlayCurrentTrack = _.debounce(function(startOffset /*optional*/) {
+		var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
+		var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
+		$scope.player.fromURL(url, mimeAndId.mime);
+		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
+
+		if (startOffset) {
+			$scope.player.seekMsecs(startOffset);
+		}
+		$scope.player.play();
+	}, 300);
+
 	function playTrack(track, startOffset /*optional*/) {
 		$scope.currentTrack = track;
 		$scope.currentAlbum = track.album;
@@ -122,38 +139,8 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		// Pause any previous playback
 		$scope.player.pause();
 
-		// Execute the action with small delay. This is to limit the number of GET requests
-		// when repeatedly changing the playing track like when rapidly and repeatedly clicking
-		// the Next button. Too high number of simultaneous GET requests could easily jam a
-		// low-power server.
-		if (pathRequestTimer !== null) {
-			$timeout.cancel(pathRequestTimer);
-		}
-
-		pathRequestTimer = $timeout(function() {
-			// Get path to the track and from a webDAV URL. The webDAV URL is 
-			// then passed to PlayerWrapper for playing.
-			var mimeAndId = $scope.getPlayableFileId(track);
-			Restangular.one('file', mimeAndId.id).one('path').get().then(
-				function(result) {
-					// It is possible that the active track has already changed again by the time we get
-					// the URI. Do not start playback in that case.
-					if (track == $scope.currentTrack) {
-						var url = OC.linkToRemoteBase('webdav') + result.path +
-								'?requesttoken=' + encodeURIComponent(OC.requestToken);
-						$scope.player.fromURL(url, mimeAndId.mime);
-						$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
-
-						if (startOffset) {
-							$scope.player.seekMsecs(startOffset);
-						}
-						$scope.player.play();
-
-						pathRequestTimer = null;
-					}
-				}
-			);
-		}, 300);
+		// Star the playback with a small delay. 
+		debouncedPlayCurrentTrack(startOffset);
 	}
 
 	$scope.setLoading = function(loading) {

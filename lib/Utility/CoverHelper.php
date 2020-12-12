@@ -334,8 +334,16 @@ class CoverHelper {
 
 	/**
 	 * @see CoverHelper::createAccessToken
+	 * @throws \OutOfBoundsException if the token is not valid
 	 */
-	public function getUserForAccessToken(string $token) : ?string {
-		return $this->cache->getOwner('cover_access_token', $token);
+	public function getUserForAccessToken(?string $token) : string {
+		if ($token === null) {
+			throw new \OutOfBoundsException('Cannot get user for a null token');
+		}
+		$userId = $this->cache->getOwner('cover_access_token', $token);
+		if ($userId === null) {
+			throw new \OutOfBoundsException('No userId found for the given token');
+		}
+		return $userId;
 	}
 }

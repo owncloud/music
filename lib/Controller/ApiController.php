@@ -522,15 +522,15 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function albumCover($albumIdOrSlug, $originalSize, $coverToken) {
-		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-		
 		try {
+			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
 			$albumId = $this->getIdFromSlug($albumIdOrSlug);
 			$album = $this->albumBusinessLayer->find($albumId, $userId);
 			return $this->cover($album, $userId, $originalSize);
-		} catch (BusinessLayerException $ex) {
+		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
+			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		}
+		} 
 	}
 
 	/**
@@ -538,13 +538,13 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function artistCover($artistIdOrSlug, $originalSize, $coverToken) {
-		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-		
 		try {
+			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
 			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			return $this->cover($artist, $userId, $originalSize);
-		} catch (BusinessLayerException $ex) {
+		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
+			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
@@ -582,16 +582,19 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function cachedCover(string $hash, ?string $coverToken) {
-		$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-		$coverData = $this->coverHelper->getCoverFromCache($hash, $userId);
-
-		if ($coverData !== null) {
+		try {
+			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
+			$coverData = $this->coverHelper->getCoverFromCache($hash, $userId);
+			if ($coverData === null) {
+				throw new \OutOfBoundsException("Cover with hash $hash not found");
+			}
 			$response =  new FileResponse($coverData);
 			// instruct also the client-side to cache the result, this is safe
 			// as the resource URI contains the image hash
 			self::setClientCaching($response);
 			return $response;
-		} else {
+		} catch (\OutOfBoundsException $ex) {
+			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}

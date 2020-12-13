@@ -64,6 +64,8 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	});
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
+		// Seeking may be possible once the duration is available
+		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 	});
 	onPlayerEvent('error', function(url) {
 		var filename = url.split('?').shift().split('/').pop();
@@ -124,7 +126,6 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
 		var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
 		$scope.player.fromURL(url, mimeAndId.mime);
-		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 
 		if (startOffset) {
 			$scope.player.seekMsecs(startOffset);
@@ -136,8 +137,9 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		$scope.currentTrack = track;
 		$scope.currentAlbum = track.album;
 
-		// Pause any previous playback
+		// Pause any previous playback and don't indicate support for seeking before we actually know it
 		$scope.player.pause();
+		$scope.seekCursorType = 'default';
 
 		// Star the playback with a small delay. 
 		debouncedPlayCurrentTrack(startOffset);

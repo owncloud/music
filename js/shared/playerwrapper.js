@@ -187,7 +187,7 @@ OCA.Music.PlayerWrapper = function() {
 					break;
 			}
 		}
-		else if (msecs === 0) {
+		else if (msecs === 0 && m_duration > 0) {
 			// seeking to the beginning can be simulated even when seeking in general is not supported
 			var url = m_url;
 			var playing = m_playing;
@@ -257,6 +257,8 @@ OCA.Music.PlayerWrapper = function() {
 	}
 
 	this.fromURL = function(url, mime) {
+		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
+		m_position = 0;
 		this.trigger('loading');
 
 		m_url = url;

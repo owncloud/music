@@ -308,12 +308,12 @@ class PlaylistApiController extends Controller {
 	 * Modify playlist by calling a supplied method from PlaylistBusinessLayer
 	 * @param string $funcName  Name of a function to call from PlaylistBusinessLayer
 	 * @param array $funcParams Parameters to pass to the function 'funcName'
-	 * @return \OCP\AppFramework\Http\JSONResponse JSON representation of the modified playlist
+	 * @return JSONResponse JSON representation of the modified playlist
 	 */
-	private function modifyPlaylist(string $funcName, array $funcParams) : \OCP\AppFramework\Http\JSONResponse {
+	private function modifyPlaylist(string $funcName, array $funcParams) : JSONResponse {
 		try {
 			$playlist = \call_user_func_array([$this->playlistBusinessLayer, $funcName], $funcParams);
-			return $playlist->toAPI();
+			return new JSONResponse($playlist->toAPI());
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -321,10 +321,10 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * Get integer array passed as parameter to the Playlist API
-	 * @param string $listAsString Comma-separated integer values in string
+	 * @param string|int $listAsString Comma-separated integer values in string, or a single integer
 	 * @return int[]
 	 */
-	private static function toIntArray(string $listAsString) : array {
-		return \array_map('intval', \explode(',', $listAsString));
+	private static function toIntArray(/*mixed*/ $listAsString) : array {
+		return \array_map('intval', \explode(',', (string)$listAsString));
 	}
 }

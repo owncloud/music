@@ -19,7 +19,10 @@ function requireAll(context) {
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');
-require('vendor/jquery-initialize');
+// jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10
+if (typeof MutationObserver !== 'undefined') {
+	require('vendor/jquery-initialize');
+}
 
 /* Embedded player files */
 requireAll(require.context('./shared', /*use subdirectories:*/ false));

@@ -754,7 +754,7 @@ try {
 if (!OggDemuxer) return;
 
 OggDemuxer.plugins.push({
-  magic: "\177FLAC",
+  magic: "\x7fFLAC", // Note: Octal escape \177 replaced with the corresponding hexadecimal escape \x7f within the ownCloud Music project because octal esacapes are not allowed in the strcit mode
   
   init: function() {
     this.list = new AV.BufferList();

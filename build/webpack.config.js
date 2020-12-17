@@ -75,6 +75,16 @@ module.exports = {
       {
         include: path.resolve('node_modules', 'lodash'),
         parser: { amd: false }
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
       }
     ],
   },

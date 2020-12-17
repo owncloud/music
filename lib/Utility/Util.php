@@ -167,6 +167,13 @@ class Util {
 	public static function stringCaseCompare(?string $a, ?string $b) : int {
 		return \strcmp(\mb_strtolower($a ?? ''), \mb_strtolower($b ?? ''));
 	}
+	
+	/**
+	 * Test if $item is a string and not empty or only consisting of whitespace
+	 */
+	public static function isNonEmptyString(/*mixed*/ $item) : bool {
+		return \is_string($item) && \trim($item) !== '';
+	}
 
 	/**
 	 * Convert file size given in bytes to human-readable format

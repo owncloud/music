@@ -32,21 +32,23 @@ class DetailsHelper {
 	 * @param Folder $userFolder
 	 * $return array|null
 	 */
-	public function getDetails(int $fileId, Folder $userFolder) {
-		$fileNodes = $userFolder->getById($fileId);
-		if (\count($fileNodes) > 0) {
-			$data = $this->extractor->extract($fileNodes[0]);
+	public function getDetails(int $fileId, Folder $userFolder) : ?array {
+		$file = $userFolder->getById($fileId)[0] ?? null;
+		if ($file !== null) {
+			$data = $this->extractor->extract($file);
+			$audio = $data['audio'] ?: [];
+			$comments = $data['comments'] ?: [];
 
-			// remove intermediate arrays and map null comments into an empty array
-			$data['comments'] = self::flattenComments($data['comments'] ?: []);
+			// remove intermediate arrays
+			$comments = self::flattenComments($comments);
 
 			// cleanup strings from invalid characters
-			\array_walk($data['audio'], ['self', 'sanitizeString']);
-			\array_walk($data['comments'], ['self', 'sanitizeString']);
+			\array_walk($audio, ['self', 'sanitizeString']);
+			\array_walk($comments, ['self', 'sanitizeString']);
 
 			$result = [
-				'fileinfo' => $data['audio'],
-				'tags' => $data['comments']
+				'fileinfo' => $audio,
+				'tags' => $comments
 			];
 
 			// binary data has to be encoded
@@ -78,7 +80,7 @@ class DetailsHelper {
 			$result['length'] = $data['playtime_seconds'] ?? null;
 
 			// add file path
-			$result['path'] = $userFolder->getRelativePath($fileNodes[0]->getPath());
+			$result['path'] = $userFolder->getRelativePath($file->getPath());
 
 			return $result;
 		}

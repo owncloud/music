@@ -154,8 +154,11 @@ class LastfmService {
 			$args['api_key'] = $this->apiKey;
 			$args['format'] = 'json';
 
+			// remove args with null or empty values
+			$args = \array_filter($args, [Util::class, 'isNonEmptyString']);
+
 			// glue arg keys and values together ...
-			$args= \array_map(function ($key, $value) {
+			$args = \array_map(function ($key, $value) {
 				return $key . '=' . \urlencode($value);
 			}, \array_keys($args), $args);
 			// ... and form the final query string

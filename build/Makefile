@@ -18,10 +18,6 @@
 
 # Makefile for building the project
 
-# common directories
-grunt_cmd=grunt
-gruntfile=$(CURDIR)/Gruntfile.js
-
 # building the javascript
 build: deps
 	npm run build
@@ -41,10 +37,10 @@ l10n-clone:
 	python ./duplicate-lang.py --path=../l10n bg_BG:bg cs_CZ:cs fi_FI:fi hu_HU:hu nb_NO:nb sk_SK:sk th_TH:th
 
 l10n-extract: deps
-	$(grunt_cmd) --config=$(gruntfile) nggettext_extract
+	npm run l10n-extract
 
 l10n-compile: deps
-	$(grunt_cmd) --config=$(gruntfile) nggettext_compile
+	npm run l10n-compile
 	cd ../l10n; ./l10n.pl music write
 
 # releasing

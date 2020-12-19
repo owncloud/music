@@ -26,6 +26,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.12.10",
 		"@babel/preset-env": "^7.12.11",
+		"angular-gettext-cli": "^1.2.0",
 		"babel-loader": "^8.2.2",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^4.3.0",
@@ -37,9 +38,6 @@
 		"eslint-plugin-standard": "^4.1.0",
 		"eslint-webpack-plugin": "^2.4.1",
 		"file-loader": "^6.2.0",
-		"grunt": "^1.3.0",
-		"grunt-angular-gettext": "^2.5.3",
-		"grunt-cli": "^1.3.2",
 		"mini-css-extract-plugin": "^1.3.3",
 		"style-loader": "^2.0.0",
 		"webpack": "^4.44.2",
@@ -50,6 +48,8 @@
 	"scripts": {
 		"build": "webpack",
 		"build-dev": "webpack --mode=\"development\"",
-		"watch": "webpack --mode=\"development\" --watch"
+		"watch": "webpack --mode=\"development\" --watch",
+		"l10n-extract": "angular-gettext-cli --files {../templates/**/*.php,../js/app/*/*.js} --dest ../l10n/templates/music.pot",
+		"l10n-compile": "angular-gettext-cli --compile --files ../l10n/**/music.po --dest ../js/app/l10n/translations.js --module Music"
 	}
 }

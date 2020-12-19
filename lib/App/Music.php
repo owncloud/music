@@ -25,6 +25,7 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Controller\AmpacheController;
@@ -32,6 +33,7 @@ use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
+use \OCA\Music\Controller\RadioApiController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Controller\ShareController;
 use \OCA\Music\Controller\SubsonicController;
@@ -45,6 +47,7 @@ use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\RadioStationMapper;
 use \OCA\Music\Db\TrackMapper;
 
 use \OCA\Music\Hooks\FileHooks;
@@ -151,6 +154,17 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('RadioApiController', function ($c) {
+			return new RadioApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('RadioStationBusinessLayer'),
+				$c->query('PlaylistFileService'),
+				$c->query('UserId'),
+				$c->query('Logger')
+			);
+		});
+
 		$container->registerService('SettingController', function ($c) {
 			return new SettingController(
 				$c->query('AppName'),
@@ -247,6 +261,13 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('RadioStationBusinessLayer', function ($c) {
+			return new RadioStationBusinessLayer(
+				$c->query('RadioStationMapper'),
+				$c->query('Logger')
+			);
+		});
+
 		$container->registerService('Library', function ($c) {
 			return new Library(
 				$c->query('AlbumBusinessLayer'),
@@ -313,6 +334,12 @@ class Music extends App {
 
 		$container->registerService('BookmarkMapper', function (IAppContainer $c) {
 			return new BookmarkMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('RadioStationMapper', function (IAppContainer $c) {
+			return new RadioStationMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});

@@ -71,6 +71,16 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'playlistApi#importFromFile','url' => '/api/playlists/{id}/import',	'verb' => 'POST'],
 	['name' => 'playlistApi#parseFile',		'url' => '/api/playlists/file/{fileId}','verb' => 'GET'],
 
+	// radio API
+	['name' => 'radioApi#getAll',			'url' => '/api/radio',					'verb' => 'GET'],
+	['name' => 'radioApi#create',			'url' => '/api/radio',					'verb' => 'POST'],
+	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
+	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
+	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
+	['name' => 'radioApi#exportToFile',		'url' => '/api/radio/{id}/export',		'verb' => 'POST'],
+	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
+	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
+
 	// settings
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],
 	['name' => 'setting#userPath',			'url' => '/api/settings/user/path',			'verb' => 'POST'],

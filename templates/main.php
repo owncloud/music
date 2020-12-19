@@ -17,6 +17,7 @@ HtmlUtil::addWebpackStyle('app');
 	HtmlUtil::printNgTemplate('foldersview');
 	HtmlUtil::printNgTemplate('genresview');
 	HtmlUtil::printNgTemplate('playlistview');
+	HtmlUtil::printNgTemplate('radioview');
 	HtmlUtil::printNgTemplate('settingsview');
 	HtmlUtil::printNgTemplate('alphabetnavigation');
 	?>

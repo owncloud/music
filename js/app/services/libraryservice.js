@@ -21,6 +21,7 @@ angular.module('Music').service('libraryService', [function() {
 	var playlists = null;
 	var folders = null;
 	var genres = null;
+	var radioStations = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -243,6 +244,14 @@ angular.module('Music').service('libraryService', [function() {
 				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
 			}
 		},
+		setRadioStations: function(radioStationsData) {
+			radioStations = _.map(radioStationsData, playlistEntry);
+		},
+		removeRadioStation: function(station) {
+			var idx = radioStations.indexOf(station);
+			radioStations.splice(idx, 1);
+			return idx;
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -325,6 +334,9 @@ angular.module('Music').service('libraryService', [function() {
 		getAllGenres: function() {
 			return genres;
 		},
+		getRadioStations: function() {
+			return radioStations;
+		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -339,6 +351,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		genresLoaded: function() {
 			return genres !== null;
+		},
+		radioStationsLoaded: function() {
+			return radioStations !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);

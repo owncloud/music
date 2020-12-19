@@ -72,6 +72,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.radioCountText = function() {
+		if (libraryService.radioStationsLoaded()) {
+			var stationCount = libraryService.getRadioStations().length;
+			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
@@ -147,6 +156,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 					gettextCatalog.getString('Failed to load the collection: ') + reason);
 		});
 
+		// The radio stations are loaded in parallel with the music collection
+		Restangular.one('radio').get().then(function(radioStations) {
+			libraryService.setRadioStations(radioStations);
+			$rootScope.$emit('radioStationsLoaded');
+		});
 	};
 
 	// initial loading of artists

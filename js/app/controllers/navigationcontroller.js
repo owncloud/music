@@ -254,6 +254,8 @@ angular.module('Music').controller('NavigationController', [
 					});
 				} else if (destination == '#/genres') {
 					play('genres', libraryService.getTracksInGenreOrder());
+				} else if (destination === '#/radio') {
+					play('radio', libraryService.getRadioStations());
 				} else {
 					play('playlist-' + playlist.id, playlist.tracks);
 				}

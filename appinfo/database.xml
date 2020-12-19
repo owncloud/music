@@ -369,6 +369,44 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*music_radio_stations</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+			<field>
+				<name>stream_url</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>256</length>
+			</field>
+			<field>
+				<name>home_url</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
 		<name>*dbprefix*music_ampache_sessions</name>
 		<declaration>
 			<field>

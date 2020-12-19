@@ -14,7 +14,7 @@ import skipPreviousIcon from '../../img/skip-previous.svg';
 import skipNextIcon from '../../img/skip-next.svg';
 import soundIcon from '../../img/sound.svg';
 import closeIcon from '../../img/close.svg';
-import radioIcon from '../../img/radio.svg';
+import radioIcon from '../../img/radio-file.svg';
 
 
 OCA.Music = OCA.Music || {};

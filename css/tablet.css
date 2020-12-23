@@ -32,7 +32,8 @@
 }
 
 .tablet #controls .albumart {
-	margin-left: 0;
+	margin-left: 8px;
+	margin-right: 0;
 }
 
 .tablet #controls .song-info {

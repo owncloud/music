@@ -9,7 +9,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2017, 2018
+ * @copyright Pauli Järvinen 2017 - 2020
  */
 
 /* Adjust to layout with collapsible navigation bar */
@@ -141,4 +141,9 @@
 }
 .mobile.portrait #controls .control.small {
 	margin-left: -4px;
+}
+
+/* extra narrow screen may result on desktop browser when manually resizing the window; drop non-essential elements */
+.extra-narrow #controls .albumart {
+	display: none;
 }

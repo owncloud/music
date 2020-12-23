@@ -30,7 +30,7 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		total: 0
 	};
 
-	playlistService.setRepeat($scope.repeat);
+	playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
 	playlistService.setShuffle($scope.shuffle);
 
 	// Player events may fire synchronously or asynchronously. Utilize $timeout

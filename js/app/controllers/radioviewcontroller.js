@@ -52,10 +52,10 @@ angular.module('Music').controller('RadioViewController', [
 			Restangular.one('radio', station.id).remove().then(
 				function() {
 					station.busy = false;
-					var removedIndex = libraryService.removeRadioStation(station);
+					var removedIndex = libraryService.removeRadioStation(station.id);
 					// Remove also from the play queue if the radio is currently playing
 					if (listIsPlaying()) {
-						var playingIndex = $scope.getCurrentTrackIndex();
+						var playingIndex = $scope.getCurrentStationIndex();
 						if (removedIndex <= playingIndex) {
 							--playingIndex;
 						}

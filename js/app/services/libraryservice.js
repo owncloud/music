@@ -247,8 +247,8 @@ angular.module('Music').service('libraryService', [function() {
 		setRadioStations: function(radioStationsData) {
 			radioStations = _.map(radioStationsData, playlistEntry);
 		},
-		removeRadioStation: function(station) {
-			var idx = radioStations.indexOf(station);
+		removeRadioStation: function(stationId) {
+			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
 			radioStations.splice(idx, 1);
 			return idx;
 		},

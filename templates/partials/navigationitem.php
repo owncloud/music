@@ -15,9 +15,9 @@
 				<input type="text" class="edit-list" maxlength="256"
 					ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
-			<button class="action icon-checkmark"
+			<button class="action icon-checkmark app-navigation-noclose"
 				ng-class="{ disabled: playlist.name.length == 0 }" 
-				ng-click="$parent.$parent.commitEdit(playlist)"></button>
+				ng-click="$parent.$parent.commitEdit(playlist); $event.stopPropagation()"></button>
 		</div>
 		<div class="actions" title="" ng-show="playlist && $parent.showEditForm == null">
 			<span class="icon-more" ng-show="!playlist.busy"
@@ -26,7 +26,7 @@
 			<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 				<ul>
 					<li ng-click="$parent.$parent.showDetails(playlist)">
-						<a class="icon-details"> <span translate>Details</span></a>
+						<a class="icon-details"><span translate>Details</span></a>
 					</li>
 					<li ng-click="$parent.$parent.startEdit(playlist)" class="app-navigation-noclose">
 						<a class="icon-rename"><span translate>Rename</span></a>
@@ -38,7 +38,7 @@
 						<a class="icon-from-file"><span translate>Import from file</span></a>
 					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
-						<a class="icon-delete"> <span translate>Delete</span></a>
+						<a class="icon-delete"><span translate>Delete</span></a>
 					</li>
 				</ul>
 			</div>

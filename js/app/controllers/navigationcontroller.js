@@ -61,11 +61,21 @@ angular.module('Music').controller('NavigationController', [
 				$scope.popupShownForPlaylist = null;
 			} else {
 				$scope.popupShownForPlaylist = playlist;
+
+				// clicking on any action in the popup closes the popup menu and stops the propagation (to avoid the unwanted view switches)
+				$('.popovermenu').off('click');
+				$('.popovermenu').on('click', 'li', function(event) {
+					$timeout(function() {
+						$scope.popupShownForPlaylist = null;
+					});
+					event.stopPropagation();
+				})
 			}
 		};
 
 		$scope.showDetails = function(playlist) {
 			$rootScope.$emit('showPlaylistDetails', playlist.id);
+			collapsePaneOnMobile();
 		};
 
 		// Start renaming playlist
@@ -285,7 +295,14 @@ angular.module('Music').controller('NavigationController', [
 				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
 				$rootScope.$emit('deactivateView');
 			}
+			collapsePaneOnMobile();
 		};
+
+		function collapsePaneOnMobile() {
+			if ($('body').hasClass('snapjs-left')) {
+				$('#app-navigation-toggle').click();
+			}
+		}
 
 		$rootScope.$on('viewDeactivated', function() {
 			// carry on with the navigation once the previous view is deactivated

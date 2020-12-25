@@ -19,6 +19,7 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.newPlaylistName = '';
 		$scope.popupShownForPlaylist = null;
+		$scope.radioBusy = false;
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
@@ -196,7 +197,7 @@ angular.module('Music').controller('NavigationController', [
 					},
 					function(_error) {
 						OC.Notification.showTemporary(
-								gettextCatalog.getString('Failed to import playlist from file {{ file }}',
+								gettextCatalog.getString('Failed to import playlist from the file {{ file }}',
 														{ file: file }));
 						playlist.busy = false;
 					}
@@ -229,6 +230,41 @@ angular.module('Music').controller('NavigationController', [
 			else {
 				selectFile();
 			}
+		};
+
+		// Import radio stations from a playlist file
+		$scope.importFromFileToRadio = function() {
+			var onFileSelected = function(file) {
+				$scope.radioBusy = true;
+				Restangular.all('radio/import').post({filePath: file}).then(
+					function(result) {
+						libraryService.addRadioStations(result.stations);
+						var message = gettextCatalog.getString('Imported {{ count }} radio stations from the file {{ file }}.',
+																{ count: result.stations.length, file: file });
+						if (result.failed_count > 0) {
+							message += ' ' + gettextCatalog.getString('{{ count }} entries were skipped.',
+																		{ count: result.failed_count });
+						}
+						OC.Notification.showTemporary(message);
+						$rootScope.$emit('playlistUpdated', 'radio');
+						$scope.radioBusy = false;
+					},
+					function(_error) {
+						OC.Notification.showTemporary(
+								gettextCatalog.getString('Failed to import radio stations from the file {{ file }}',
+														{ file: file }));
+						$scope.radioBusy = false;
+					}
+				);
+			};
+
+			OC.dialogs.filepicker(
+					gettextCatalog.getString('Import radio stations from the selected file'),
+					onFileSelected,
+					false,
+					['audio/mpegurl', 'audio/x-scpls'],
+					true
+			);
 		};
 
 		// Play/pause playlist

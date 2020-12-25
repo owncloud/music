@@ -15,6 +15,7 @@ namespace OCA\Music\Utility;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Track;
 
@@ -27,14 +28,21 @@ use \OCP\Files\Folder;
  */
 class PlaylistFileService {
 	private $playlistBusinessLayer;
+	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $logger;
 
+	private const PARSE_LOCAL_FILES_ONLY = 1;
+	private const PARSE_URLS_ONLY = 2;
+	private const PARSE_LOCAL_FILES_AND_URLS = 3;
+
 	public function __construct(
 			PlaylistBusinessLayer $playlistBusinessLayer,
+			RadioStationBusinessLayer $radioStationBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
 			Logger $logger) {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->logger = $logger;
 	}
@@ -100,7 +108,7 @@ class PlaylistFileService {
 	}
 
 	/**
-	 * export the playlist to a file
+	 * import playlist contents from a file
 	 * @param int $id playlist ID
 	 * @param string $userId owner of the playlist
 	 * @param Folder $userFolder user home dir
@@ -114,7 +122,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, /*allowUrls=*/false);
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -143,6 +151,41 @@ class PlaylistFileService {
 	}
 
 	/**
+	 * import stream URLs from a playlist file and store them as internet radio stations
+	 * @param string $userId owner of the playlist
+	 * @param Folder $userFolder user home dir
+	 * @param string $filePath path of the file to import
+	 * @return array with three keys:
+	 * 			- 'playlist': The Playlist entity after the modification
+	 * 			- 'imported_count': An integer showing the number of tracks imported
+	 * 			- 'failed_count': An integer showing the number of tracks in the file which could not be imported
+	 * @throws BusinessLayerException if playlist with ID not found
+	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
+	 */
+	public function importRadioStationsFromFile(string $userId, Folder $userFolder, string $filePath) : array {
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_URLS_ONLY);
+		$trackFilesAndCaptions = $parsed['files'];
+		$invalidPaths = $parsed['invalid_paths'];
+
+		$stations = [];
+		foreach ($trackFilesAndCaptions as $trackFileAndCaption) {
+			$stations[] = $this->radioStationBusinessLayer->create(
+					$userId, $trackFileAndCaption['caption'], $trackFileAndCaption['url']);
+		}
+
+		if (\count($invalidPaths) > 0) {
+			$this->logger->log('Some entries in the file were not valid streaming URLs: '
+					. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+		}
+
+		return [
+			'stations' => $stations,
+			'failed_count' => \count($invalidPaths)
+		];
+	}
+
+	/**
 	 * Parse a playlist file and return the contained files
 	 * @param int $fileId playlist file ID
 	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
@@ -153,13 +196,20 @@ class PlaylistFileService {
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
-			return $this->doParseFile($nodes[0], $baseFolder, /*allowUrls=*/true);
+			return $this->doParseFile($nodes[0], $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
 	}
 
-	private function doParseFile(File $file, Folder $baseFolder, bool $allowUrls) : array {
+	/**
+	 * @param File $file The playlist file to parse
+	 * @param Folder $baseFolder Base folder for the local files
+	 * @param int $mode One of self::[PARSE_LOCAL_FILES_ONLY, PARSE_URLS_ONLY, PARSE_LOCAL_FILES_AND_URLS]
+	 * @throws \UnexpectedValueException
+	 * @return array
+	 */
+	private function doParseFile(File $file, ?Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
@@ -179,7 +229,7 @@ class PlaylistFileService {
 			$path = $entry['path'];
 
 			if (Util::startsWith($path, 'http')) {
-				if ($allowUrls) {
+				if ($mode !== self::PARSE_LOCAL_FILES_ONLY) {
 					$trackFiles[] = [
 						'url' => $path,
 						'caption' => $entry['caption']
@@ -188,14 +238,18 @@ class PlaylistFileService {
 					$invalidPaths[] = $path;
 				}
 			} else {
-				$path = Util::resolveRelativePath($cwd, $path);
+				if ($mode !== self::PARSE_URLS_ONLY) {
+					$path = Util::resolveRelativePath($cwd, $path);
 
-				try {
-					$trackFiles[] = [
-						'file' => $baseFolder->get($path),
-						'caption' => $entry['caption']
-					];
-				} catch (\OCP\Files\NotFoundException $ex) {
+					try {
+						$trackFiles[] = [
+							'file' => $baseFolder->get($path),
+							'caption' => $entry['caption']
+						];
+					} catch (\OCP\Files\NotFoundException $ex) {
+						$invalidPaths[] = $path;
+					}
+				} else {
 					$invalidPaths[] = $path;
 				}
 			}

@@ -1,4 +1,4 @@
-<li class="music-navigation-item" ng-class="{active: $parent.currentView == destination, playlist: playlist}">
+<li class="music-navigation-item" ng-class="{'active': $parent.currentView == destination, 'item-with-actions': playlist || destination=='#/radio'}">
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
 	>
@@ -39,6 +39,21 @@
 					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
 						<a class="icon-delete"><span translate>Delete</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#/radio'">
+			<span class="icon-more" ng-show="!$parent.radioBusy"
+				ng-click="$parent.onPlaylistMoreButton('radio'); $event.stopPropagation()"></span>
+			<span class="icon-loading-small" ng-show="$parent.radioBusy"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'radio'">
+				<ul>
+					<!-- <li ng-click="$parent.exportRadioToFile()">
+						<a class="icon-to-file"><span translate>Export to file</span></a>
+					</li> -->
+					<li ng-click="$parent.importFromFileToRadio()">
+						<a class="icon-from-file"><span translate>Import from file</span></a>
 					</li>
 				</ul>
 			</div>

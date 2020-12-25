@@ -161,6 +161,7 @@ class Music extends App {
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
+				$c->query('UserFolder'),
 				$c->query('Logger')
 			);
 		});
@@ -464,6 +465,7 @@ class Music extends App {
 		$container->registerService('PlaylistFileService', function ($c) {
 			return new PlaylistFileService(
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Logger')
 			);

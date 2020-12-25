@@ -16,6 +16,7 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
 
+use \OCP\Files\Folder;
 use \OCP\IRequest;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -29,6 +30,7 @@ class RadioApiController extends Controller {
 	private $businessLayer;
 	private $playlistFileService;
 	private $userId;
+	private $userFolder;
 	private $logger;
 
 	public function __construct(string $appname,
@@ -36,11 +38,13 @@ class RadioApiController extends Controller {
 								RadioStationBusinessLayer $businessLayer,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
+								Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->businessLayer = $businessLayer;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
+		$this->userFolder = $userFolder;
 		$this->logger = $logger;
 	}
 
@@ -162,13 +166,11 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function importFromFile(int $id, string $filePath) {
+	public function importFromFile(string $filePath) {
 		try {
-			$result = $this->playlistFileService->importFromFile($id, $this->userId, $this->userFolder, $filePath);
-			$result['playlist'] = $result['playlist']->toAPI();
+			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
+			$result['stations'] = Util::arrayMapMethod($result['stations'], 'toApi');
 			return $result;
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		} catch (\UnexpectedValueException $ex) {

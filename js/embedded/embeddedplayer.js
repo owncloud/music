@@ -578,7 +578,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		playUrl(url, null, '');
 		updateMetadata({
 			title: caption,
-			artist: '',
+			artist: url,
 			cover: OC.filePath('music', 'dist', radioIcon)
 		});
 	};

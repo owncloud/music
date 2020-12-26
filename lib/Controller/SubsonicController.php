@@ -31,6 +31,7 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\Album;
@@ -61,6 +62,7 @@ class SubsonicController extends Controller {
 	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
+	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
@@ -86,6 +88,7 @@ class SubsonicController extends Controller {
 								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
 								UserMusicFolder $userMusicFolder,
@@ -101,6 +104,7 @@ class SubsonicController extends Controller {
 		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
@@ -575,6 +579,23 @@ class SubsonicController extends Controller {
 		$id = (int)$this->getRequiredParam('id');
 		$this->playlistBusinessLayer->delete($id, $this->userId);
 		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getInternetRadioStations() {
+		$stations = $this->radioStationBusinessLayer->findAll($this->userId);
+
+		return $this->subsonicResponse(['internetRadioStations' =>
+				['internetRadioStation' => \array_map(function($station) {
+					return [
+						'id' => $station->getId(),
+						'name' => $station->getName(),
+						'streamUrl' => $station->getStreamUrl()
+					];
+				}, $stations)]
+		]);
 	}
 
 	/**

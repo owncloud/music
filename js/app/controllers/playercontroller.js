@@ -82,7 +82,11 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		$rootScope.playing = false;
 	});
 
-	var titleApp = $('title').html().trim();
+	$scope.durationKnown = function() {
+		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
+	};
+
+	const titleApp = $('title').html().trim();
 
 	// display the song name and artist in the title when there is current track
 	$scope.$watch('currentTrack', function(newTrack) {

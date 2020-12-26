@@ -23,7 +23,8 @@
 		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
 	</div>
 	<div ng-show="currentTrack" class="progress-info">
-		<span ng-hide="loading" class="muted">{{ position.current | playTime }}/{{ position.total | playTime }}</span>
+		<span ng-show="!loading" class="muted">{{ position.current | playTime }}</span><span 
+			ng-show="!loading && durationKnown()" class="muted">/{{ position.total | playTime }}</span>
 		<span ng-show="loading" class="muted">Loading...</span>
 		<div class="progress">
 			<div class="seek-bar" ng-click="seek($event)" ng-style="{'cursor': seekCursorType}">

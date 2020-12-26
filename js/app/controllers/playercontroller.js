@@ -132,7 +132,7 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	 * Too high number of simultaneous GET requests could easily jam a low-power server.
 	 */
 	var debouncedPlayCurrentTrack = _.debounce(function(startOffset /*optional*/) {
-		if ('stream_url' in $scope.currentTrack) {
+		if (currentTrackIsStream()) {
 			$scope.player.fromURL($scope.currentTrack.stream_url, null);
 		}
 		else {
@@ -156,6 +156,10 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 		// Star the playback with a small delay. 
 		debouncedPlayCurrentTrack(startOffset);
+	}
+
+	function currentTrackIsStream() {
+		return $scope.currentTrack?.stream_url !== undefined;
 	}
 
 	$scope.setLoading = function(loading) {
@@ -253,8 +257,9 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	};
 
 	$scope.prev = function() {
-		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if ($scope.position.current > 2.0) {
+		// Jump to the beginning of the current track if it has already played more than 2 secs.
+		// This is disalbed for exteranl streams where jumping to the beginning often does not work.
+		if ($scope.position.current > 2.0 && !currentTrackIsStream()) {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -284,7 +289,7 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
-			if ('stream_url' in $scope.currentTrack) {
+			if (currentTrackIsStream()) {
 				$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
 			} else {
 				$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);

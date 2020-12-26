@@ -23,11 +23,11 @@
 		</li>
 	</ul>
 
-	<div class="emptycontent" ng-show="stations.length == 0">
+	<div id="noStations" class="emptycontent clickable" ng-show="stations.length == 0" ng-click="showRadioHint()">
 		<div class="icon-radio svg"></div>
 		<div>
 			<h2 translate>No stations</h2>
-			<p translate>Import stations from PLS or M3U files</p>
+			<p translate>Click to show "Getting started"</p>
 		</div>
 	</div>
 

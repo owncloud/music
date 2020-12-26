@@ -36,7 +36,7 @@ HtmlUtil::addWebpackStyle('app');
 				ng-class="{started: started, 'icon-loading': loadIndicatorVisible()}">
 			</div>
 
-			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && currentView!='#/settings'">
+			<div id="emptycontent" class="emptycontent" ng-show="noMusicAvailable && viewingLibrary()">
 				<div class="icon-audio svg"></div>
 				<div>
 					<h2 translate>No music found</h2>
@@ -44,7 +44,7 @@ HtmlUtil::addWebpackStyle('app');
 				</div>
 			</div>
 
-			<div id="toScan" class="emptycontent clickable" ng-show="toScan && currentView!='#/settings'" ng-click="startScanning()">
+			<div id="toScan" class="emptycontent clickable" ng-show="toScan && viewingLibrary()" ng-click="startScanning()">
 				<div class="icon-audio svg"></div>
 				<div>
 					<h2 translate>New music available</h2>
@@ -52,7 +52,7 @@ HtmlUtil::addWebpackStyle('app');
 				</div>
 			</div>
 
-			<div id="scanning" class="emptycontent" ng-show="scanning && currentView!='#/settings'">
+			<div id="scanning" class="emptycontent" ng-show="scanning && viewingLibrary()">
 				<div class="icon-loading svg"></div>
 				<div>
 					<h2 translate>Scanning music …</h2>

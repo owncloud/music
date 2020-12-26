@@ -49,6 +49,9 @@
 			<span class="icon-loading-small" ng-show="$parent.radioBusy"></span>
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'radio'">
 				<ul>
+					<li ng-click="$parent.showRadioHint()">
+						<a class="icon-details"><span translate>Getting started</span></a>
+					</li>
 					<!-- <li ng-click="$parent.exportRadioToFile()">
 						<a class="icon-to-file"><span translate>Export to file</span></a>
 					</li> -->

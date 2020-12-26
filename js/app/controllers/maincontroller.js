@@ -84,8 +84,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
-			|| (contentNotReady && $rootScope.currentView != '#/settings');
+			|| (contentNotReady && $scope.viewingLibrary());
 	};
+
+	$scope.viewingLibrary = function() {
+		 return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
+	}
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
@@ -122,7 +126,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan)');
+			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan):not(#noStations)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -279,6 +283,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showAlbumDetails = function(album) {
 		showDetails('album', album.id);
+	};
+
+	$scope.showRadioHint = function() {
+		$rootScope.$emit('showRadioHint');
 	};
 
 	$scope.hideSidebar = function() {

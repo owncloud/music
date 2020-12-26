@@ -235,14 +235,26 @@
 	cursor: pointer;
 }
 
-#app-sidebar #lastfm-info a {
+#app-sidebar #lastfm-info a,
+#app-sidebar .tutorial a {
 	text-decoration: underline;
 }
 
-#app-sidebar #lastfm-info a:after {
+#app-sidebar #lastfm-info a:after,
+#app-sidebar .tutorial a:after {
 	content: " ↗";
 }
 
 #app-sidebar .truncated:after {
 	content: "…";
+}
+
+#app-sidebar .tutorial {
+	list-style: decimal outside;
+	margin: 15px 15px 15px 30px;
+}
+
+#app-sidebar .tutorial li {
+	display: list-item;
+	margin-bottom: 10px;
 }

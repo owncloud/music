@@ -388,5 +388,9 @@ angular.module('Music').service('libraryService', [function() {
 			list = _.uniq(list);
 			return search(list, ['title', 'artistName'], query, maxResults);
 		},
+		searchRadioStations: function(query, maxResults/*optional*/) {
+			var stations = _.map(radioStations, 'track');
+			return search(stations, ['name', 'stream_url'], query, maxResults);
+		},
 	};
 }]);

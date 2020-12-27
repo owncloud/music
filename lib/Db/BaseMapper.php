@@ -134,6 +134,14 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Delete all entities of the given user
+	 */
+	public function deleteAll(string $userId) : void {
+		$sql = "DELETE FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$this->execute($sql, [$userId]);
+	}
+
+	/**
 	 * Tests if entity with given ID and user ID exists in the database
 	 */
 	public function exists(int $id, string $userId) : bool {

@@ -160,15 +160,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 					gettextCatalog.getString('Failed to load the collection: ') + reason);
 		});
 
-		// The radio stations are loaded in parallel with the music collection
+	};
+
+	$scope.updateRadio = function() {
 		Restangular.one('radio').get().then(function(radioStations) {
 			libraryService.setRadioStations(radioStations);
 			$rootScope.$emit('radioStationsLoaded');
 		});
 	};
 
-	// initial loading of artists
+	// initial loading of artists and radio stations
 	$scope.update();
+	$scope.updateRadio();
 
 	var FILES_TO_SCAN_PER_STEP = 10;
 	var filesToScan = null;

@@ -50,11 +50,20 @@
 		<div class="label-container">
 			<label for="reset-collection" translate>Reset music collection</label>
 		</div>
-		<div class="icon-loading-small" ng-show="resetOngoing" id="reset-in-progress"></div>
-		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete"
-			id="reset-collection" ng-click="resetCollection()"/>
+		<div class="icon-loading-small reset-in-progress" ng-show="collectionResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': collectionResetOngoing }"
+			class="icon-delete reset-button" id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
 		<p><em translate>This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href="{{issueTrackerUrl}}" target="_blank">issue tracker</a>.</em></p>
+	</div>
+	<div>
+		<div class="label-container">
+			<label for="reset-radio" translate>Reset internet radio stations</label>
+		</div>
+		<div class="icon-loading-small reset-in-progress" ng-show="radioResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': radioResetOngoing }"
+			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
+		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
 	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>

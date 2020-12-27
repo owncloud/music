@@ -80,6 +80,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#exportToFile',		'url' => '/api/radio/{id}/export',		'verb' => 'POST'],
 	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
+	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
 
 	// settings
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],

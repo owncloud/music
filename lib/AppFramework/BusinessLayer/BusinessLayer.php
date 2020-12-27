@@ -33,7 +33,7 @@ abstract class BusinessLayer {
 	 * Update an entity in the database
 	 * @param Entity $entity
 	 */
-	public function update(Entity $entity) {
+	public function update(Entity $entity) : void {
 		$this->mapper->update($entity);
 	}
 
@@ -43,7 +43,7 @@ abstract class BusinessLayer {
 	 * @param string $userId the name of the user for security reasons
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 */
-	public function delete(int $id, string $userId) {
+	public function delete(int $id, string $userId) : void {
 		$entity = $this->find($id, $userId);
 		$this->mapper->delete($entity);
 	}
@@ -54,10 +54,17 @@ abstract class BusinessLayer {
 	 * we can actually trust the passed IDs (e.g. file deleted hook).
 	 * @param array $ids the ids of the entities which should be deleted
 	 */
-	public function deleteById(array $ids) {
+	public function deleteById(array $ids) : void {
 		if (\count($ids) > 0) {
 			$this->mapper->deleteById($ids);
 		}
+	}
+
+	/**
+	 * Delete all entities of the given user
+	 */
+	public function deleteAll(string $userId) : void {
+		$this->mapper->deleteAll($userId);
 	}
 
 	/**
@@ -187,7 +194,7 @@ abstract class BusinessLayer {
 	 * Get the number of entities
 	 * @param string $userId
 	 */
-	public function count(string $userId) {
+	public function count(string $userId) : int {
 		return $this->mapper->count($userId);
 	}
 }

@@ -178,4 +178,14 @@ class RadioApiController extends Controller {
 		}
 	}
 
+	/**
+	 * reset all the radio stations of the user
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function resetAll() {
+		$this->businessLayer->deleteAll($this->userId);
+		return new JSONResponse(['success' => true]);
+	}
 }

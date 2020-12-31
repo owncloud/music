@@ -1190,8 +1190,8 @@ class SubsonicController extends Controller {
 				$albums = $this->findAlbumsByGenre($genre, $size, $offset);
 				break;
 			case 'byYear':
-				$fromYear = $this->getRequiredParam('fromYear');
-				$toYear = $this->getRequiredParam('toYear');
+				$fromYear = (int)$this->getRequiredParam('fromYear');
+				$toYear = (int)$this->getRequiredParam('toYear');
 				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
 				break;
 			case 'newest':

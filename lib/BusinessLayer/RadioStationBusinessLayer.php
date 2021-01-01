@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -41,12 +41,12 @@ class RadioStationBusinessLayer extends BusinessLayer {
 	public function create(string $userId, ?string $name, string $streamUrl, ?string $homeUrl = null) : RadioStation {
 		$station = new RadioStation();
 
-		if ($streamUrl !== null && \strlen($streamUrl) > 256) {
-			throw new BusinessLayerException("URL maximum length (256) exceeded: $streamUrl");
+		if ($streamUrl !== null && \strlen($streamUrl) > 2048) {
+			throw new BusinessLayerException("URL maximum length (2048) exceeded: $streamUrl");
 		}
 
-		if ($homeUrl !== null && \strlen($homeUrl) > 256) {
-			throw new BusinessLayerException("URL maximum length (256) exceeded: $homeUrl");
+		if ($homeUrl !== null && \strlen($homeUrl) > 2048) {
+			throw new BusinessLayerException("URL maximum length (2048) exceeded: $homeUrl");
 		}
 
 		$station->setUserId($userId);

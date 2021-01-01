@@ -395,13 +395,13 @@
 				<name>stream_url</name>
 				<type>text</type>
 				<notnull>true</notnull>
-				<length>256</length>
+				<length>2048</length>
 			</field>
 			<field>
 				<name>home_url</name>
 				<type>text</type>
 				<notnull>false</notnull>
-				<length>256</length>
+				<length>2048</length>
 			</field>
 		</declaration>
 	</table>

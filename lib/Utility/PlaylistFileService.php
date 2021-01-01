@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Utility;
@@ -228,7 +228,7 @@ class PlaylistFileService {
 		foreach ($entries as $entry) {
 			$path = $entry['path'];
 
-			if (Util::startsWith($path, 'http')) {
+			if (Util::startsWith($path, 'http', /*ignoreCase=*/true)) {
 				if ($mode !== self::PARSE_LOCAL_FILES_ONLY) {
 					$trackFiles[] = [
 						'url' => $path,

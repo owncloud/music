@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Controller;
@@ -38,7 +38,7 @@ class RadioApiController extends Controller {
 								RadioStationBusinessLayer $businessLayer,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
-								Folder $userFolder,
+								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->businessLayer = $businessLayer;

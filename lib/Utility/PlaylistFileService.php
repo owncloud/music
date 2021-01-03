@@ -327,10 +327,11 @@ class PlaylistFileService {
 
 		// the rest of the non-empty lines should be in format "key=value"
 		while ($line = \fgets($fp)) {
-			$line = \trim($line);
 			// ignore empty and malformed lines
 			if (\strpos($line, '=') !== false) {
 				list($key, $value) = \explode('=', $line, 2);
+				$key = \trim($key);
+				$value = \trim($value);
 				// we are interested only on the File# and Title# lines
 				if (Util::startsWith($key, 'File')) {
 					$idx = \substr($key, \strlen('File'));

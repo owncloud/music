@@ -9,10 +9,12 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\App;
+
+use \OCP\AppFramework\IAppContainer;
 
 $app = new Music();
 
@@ -53,19 +55,31 @@ $c->getServer()->getSearch()->registerProvider(
 );
 
 /**
- * Set content security policy to allow streaming media from any external source
+ * Set content security policy to allow streaming media from the configured external sources if we have a logged-in user
  */
-function adjustCsp() {
-	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-	$policy->addAllowedMediaDomain('http://*:*');
-	$policy->addAllowedMediaDomain('https://*:*');
-	// the next 5 rules are needed to use hls.js to stream from HLS type sources
-	$policy->addAllowedMediaDomain('data:');
-	$policy->addAllowedMediaDomain('blob:');
-	$policy->addAllowedChildSrcDomain('blob:');
-	$policy->addAllowedConnectDomain('http://*:*');
-	$policy->addAllowedConnectDomain('https://*:*');
-	\OC::$server->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+function adjustCsp(IAppContainer $container) {
+	$user = $container->query('UserId');
+	if ($user !== null) {
+		$businessLayer = $container->query('RadioSourceBusinessLayer');
+		$sources = $businessLayer->findAll($user);
+	}
+
+	// Even the static sources data: and blob: are unnecessary if there are no allowed radio sources
+	if (!empty($sources)) {
+		$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+
+		// these three are needed by hls.js to stream HLS type sources
+		$policy->addAllowedMediaDomain('data:');
+		$policy->addAllowedMediaDomain('blob:');
+		$policy->addAllowedChildSrcDomain('blob:');
+
+		foreach ($sources as $source) {
+			$policy->addAllowedMediaDomain($source->getUrl());
+			$policy->addAllowedConnectDomain($source->getUrl()); // for hls.js
+		}
+
+		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+	}
 }
 
 /**
@@ -92,10 +106,12 @@ if (isset($request->server['REQUEST_URI'])) {
 		&& !\preg_match('%.*/authenticate%', $url);
 	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
 
-	if ($isFilesUrl || $isShareUrl) {
-		adjustCsp();
+	if ($isFilesUrl) {
+		adjustCsp($c);
+		loadEmbeddedMusicPlayer();
+	} elseif ($isShareUrl) {
 		loadEmbeddedMusicPlayer();
 	} elseif ($isMusicUrl) {
-		adjustCsp();
+		adjustCsp($c);
 	}
 }

@@ -25,6 +25,7 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\RadioSourceBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -47,6 +48,7 @@ use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\RadioSourceMapper;
 use \OCA\Music\Db\RadioStationMapper;
 use \OCA\Music\Db\TrackMapper;
 
@@ -77,7 +79,7 @@ class Music extends App {
 		/**
 		 * Controllers
 		 */
-		$container->registerService('AmpacheController', function ($c) {
+		$container->registerService('AmpacheController', function (IAppContainer $c) {
 			return new AmpacheController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -99,7 +101,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ApiController', function ($c) {
+		$container->registerService('ApiController', function (IAppContainer $c) {
 			return new ApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -121,7 +123,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('PageController', function ($c) {
+		$container->registerService('PageController', function (IAppContainer $c) {
 			return new PageController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -129,7 +131,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('PlaylistApiController', function ($c) {
+		$container->registerService('PlaylistApiController', function (IAppContainer $c) {
 			return new PlaylistApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -146,7 +148,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('LogController', function ($c) {
+		$container->registerService('LogController', function (IAppContainer $c) {
 			return new LogController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -154,10 +156,11 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('RadioApiController', function ($c) {
+		$container->registerService('RadioApiController', function (IAppContainer $c) {
 			return new RadioApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('RadioSourceBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
@@ -166,7 +169,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('SettingController', function ($c) {
+		$container->registerService('SettingController', function (IAppContainer $c) {
 			return new SettingController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -180,7 +183,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('ShareController', function ($c) {
+		$container->registerService('ShareController', function (IAppContainer $c) {
 			return new ShareController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -191,7 +194,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('SubsonicController', function ($c) {
+		$container->registerService('SubsonicController', function (IAppContainer $c) {
 			return new SubsonicController(
 				$c->query('AppName'),
 				$c->query('Request'),
@@ -219,21 +222,21 @@ class Music extends App {
 		 * Business Layer
 		 */
 
-		$container->registerService('TrackBusinessLayer', function ($c) {
+		$container->registerService('TrackBusinessLayer', function (IAppContainer $c) {
 			return new TrackBusinessLayer(
 				$c->query('TrackMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('ArtistBusinessLayer', function ($c) {
+		$container->registerService('ArtistBusinessLayer', function (IAppContainer $c) {
 			return new ArtistBusinessLayer(
 				$c->query('ArtistMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('GenreBusinessLayer', function ($c) {
+		$container->registerService('GenreBusinessLayer', function (IAppContainer $c) {
 			return new GenreBusinessLayer(
 				$c->query('GenreMapper'),
 				$c->query('TrackMapper'),
@@ -241,14 +244,14 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('AlbumBusinessLayer', function ($c) {
+		$container->registerService('AlbumBusinessLayer', function (IAppContainer $c) {
 			return new AlbumBusinessLayer(
 				$c->query('AlbumMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('PlaylistBusinessLayer', function ($c) {
+		$container->registerService('PlaylistBusinessLayer', function (IAppContainer $c) {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
 				$c->query('TrackMapper'),
@@ -256,21 +259,28 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('BookmarkBusinessLayer', function ($c) {
+		$container->registerService('BookmarkBusinessLayer', function (IAppContainer $c) {
 			return new BookmarkBusinessLayer(
 				$c->query('BookmarkMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('RadioStationBusinessLayer', function ($c) {
+		$container->registerService('RadioSourceBusinessLayer', function (IAppContainer $c) {
+			return new RadioSourceBusinessLayer(
+				$c->query('RadioSourceMapper'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('RadioStationBusinessLayer', function (IAppContainer $c) {
 			return new RadioStationBusinessLayer(
 				$c->query('RadioStationMapper'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('Library', function ($c) {
+		$container->registerService('Library', function (IAppContainer $c) {
 			return new Library(
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
@@ -340,6 +350,12 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('RadioSourceMapper', function (IAppContainer $c) {
+			return new RadioSourceMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
 		$container->registerService('RadioStationMapper', function (IAppContainer $c) {
 			return new RadioStationMapper(
 				$c->getServer()->getDatabaseConnection()
@@ -350,7 +366,7 @@ class Music extends App {
 		 * Core
 		 */
 
-		$container->registerService('Config', function ($c) {
+		$container->registerService('Config', function (IAppContainer $c) {
 			return $c->getServer()->getConfig();
 		});
 
@@ -362,47 +378,47 @@ class Music extends App {
 			return $c->getServer()->getCache();
 		});
 
-		$container->registerService('L10N', function ($c) {
+		$container->registerService('L10N', function (IAppContainer $c) {
 			return $c->getServer()->getL10N($c->query('AppName'));
 		});
 
-		$container->registerService('Logger', function ($c) {
+		$container->registerService('Logger', function (IAppContainer $c) {
 			return new Logger(
 				$c->query('AppName'),
 				$c->getServer()->getLogger()
 			);
 		});
 
-		$container->registerService('URLGenerator', function ($c) {
+		$container->registerService('URLGenerator', function (IAppContainer $c) {
 			return $c->getServer()->getURLGenerator();
 		});
 
-		$container->registerService('UserFolder', function ($c) {
+		$container->registerService('UserFolder', function (IAppContainer $c) {
 			return $c->getServer()->getUserFolder();
 		});
 
-		$container->registerService('RootFolder', function ($c) {
+		$container->registerService('RootFolder', function (IAppContainer $c) {
 			return $c->getServer()->getRootFolder();
 		});
 
-		$container->registerService('UserId', function ($c) {
+		$container->registerService('UserId', function (IAppContainer $c) {
 			$user = $c->getServer()->getUserSession()->getUser();
 			return $user ? $user->getUID() : null;
 		});
 
-		$container->registerService('SecureRandom', function ($c) {
+		$container->registerService('SecureRandom', function (IAppContainer $c) {
 			return $c->getServer()->getSecureRandom();
 		});
 
-		$container->registerService('UserManager', function ($c) {
+		$container->registerService('UserManager', function (IAppContainer $c) {
 			return $c->getServer()->getUserManager();
 		});
 
-		$container->registerService('GroupManager', function ($c) {
+		$container->registerService('GroupManager', function (IAppContainer $c) {
 			return $c->getServer()->getGroupManager();
 		});
 
-		$container->registerService('ShareManager', function ($c) {
+		$container->registerService('ShareManager', function (IAppContainer $c) {
 			return $c->getServer()->getShareManager();
 		});
 
@@ -414,7 +430,7 @@ class Music extends App {
 			return new AmpacheUser();
 		});
 
-		$container->registerService('CollectionHelper', function ($c) {
+		$container->registerService('CollectionHelper', function (IAppContainer $c) {
 			return new CollectionHelper(
 				$c->query('Library'),
 				$c->query('FileCache'),
@@ -424,7 +440,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('CoverHelper', function ($c) {
+		$container->registerService('CoverHelper', function (IAppContainer $c) {
 			return new CoverHelper(
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
@@ -433,20 +449,20 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('DetailsHelper', function ($c) {
+		$container->registerService('DetailsHelper', function (IAppContainer $c) {
 			return new DetailsHelper(
 				$c->query('ExtractorGetID3'),
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('ExtractorGetID3', function ($c) {
+		$container->registerService('ExtractorGetID3', function (IAppContainer $c) {
 			return new ExtractorGetID3(
 				$c->query('Logger')
 			);
 		});
 
-		$container->registerService('LastfmService', function ($c) {
+		$container->registerService('LastfmService', function (IAppContainer $c) {
 			return new LastfmService(
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
@@ -463,7 +479,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('PlaylistFileService', function ($c) {
+		$container->registerService('PlaylistFileService', function (IAppContainer $c) {
 			return new PlaylistFileService(
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
@@ -479,7 +495,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('Scanner', function ($c) {
+		$container->registerService('Scanner', function (IAppContainer $c) {
 			return new Scanner(
 				$c->query('ExtractorGetID3'),
 				$c->query('ArtistBusinessLayer'),
@@ -496,7 +512,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('UserMusicFolder', function ($c) {
+		$container->registerService('UserMusicFolder', function (IAppContainer $c) {
 			return new UserMusicFolder(
 				$c->query('AppName'),
 				$c->query('Config'),
@@ -509,7 +525,7 @@ class Music extends App {
 		 * Middleware
 		 */
 
-		$container->registerService('AmpacheMiddleware', function ($c) {
+		$container->registerService('AmpacheMiddleware', function (IAppContainer $c) {
 			return new AmpacheMiddleware(
 				$c->query('Request'),
 				$c->query('AmpacheSessionMapper'),
@@ -519,7 +535,7 @@ class Music extends App {
 		});
 		$container->registerMiddleWare('AmpacheMiddleware');
 
-		$container->registerService('SubsonicMiddleware', function ($c) {
+		$container->registerService('SubsonicMiddleware', function (IAppContainer $c) {
 			return new SubsonicMiddleware(
 				$c->query('Request'),
 				$c->query('AmpacheUserMapper'), /* not a mistake, the mapper is shared between the APIs */
@@ -531,17 +547,17 @@ class Music extends App {
 		/**
 		 * Hooks
 		 */
-		$container->registerService('FileHooks', function ($c) {
+		$container->registerService('FileHooks', function (IAppContainer $c) {
 			return new FileHooks(
 				$c->getServer()->getRootFolder()
 			);
 		});
 
-		$container->registerService('ShareHooks', function (/** @scrutinizer ignore-unused */ $c) {
+		$container->registerService('ShareHooks', function (IAppContainer /** @scrutinizer ignore-unused */ $c) {
 			return new ShareHooks();
 		});
 
-		$container->registerService('UserHooks', function ($c) {
+		$container->registerService('UserHooks', function (IAppContainer $c) {
 			return new UserHooks(
 				$c->query('ServerContainer')->getUserManager(),
 				$c->query('Maintenance')

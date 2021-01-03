@@ -21,13 +21,15 @@ use \OCP\IRequest;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\BusinessLayer\RadioSourceBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Util;
 
 class RadioApiController extends Controller {
-	private $businessLayer;
+	private $sourceBusinessLayer;
+	private $stationBusinessLayer;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
@@ -35,13 +37,15 @@ class RadioApiController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
-								RadioStationBusinessLayer $businessLayer,
+								RadioSourceBusinessLayer $sourceBusinessLayer,
+								RadioStationBusinessLayer $stationBusinessLayer,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
 								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->businessLayer = $businessLayer;
+		$this->sourceBusinessLayer = $sourceBusinessLayer;
+		$this->stationBusinessLayer = $stationBusinessLayer;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
@@ -55,7 +59,7 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getAll() {
-		$stations = $this->businessLayer->findAll($this->userId);
+		$stations = $this->stationBusinessLayer->findAll($this->userId);
 		return Util::arrayMapMethod($stations, 'toApi');
 	}
 
@@ -69,7 +73,7 @@ class RadioApiController extends Controller {
 		if ($streamUrl === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'streamUrl' not given");
 		} else {
-			$station = $this->businessLayer->create($this->userId, $name, $streamUrl, $homeUrl);
+			$station = $this->stationBusinessLayer->create($this->userId, $name, $streamUrl, $homeUrl);
 			return $station->toApi();
 		}
 	}
@@ -81,19 +85,23 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function delete(int $id) {
-		$this->businessLayer->delete($id, $this->userId);
-		return [];
+		try {
+			$this->stationBusinessLayer->delete($id, $this->userId);
+			return [];
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 
 	/**
-	 * lists a single playlist
+	 * get a single radio station
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function get(int $id) {
 		try {
-			$station = $this->businessLayer->find($id, $this->userId);
+			$station = $this->stationBusinessLayer->find($id, $this->userId);
 			return $station->toAPI();
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
@@ -112,7 +120,7 @@ class RadioApiController extends Controller {
 		}
 
 		try {
-			$station = $this->businessLayer->find($id, $this->userId);
+			$station = $this->stationBusinessLayer->find($id, $this->userId);
 			if ($name !== null) {
 				$station->setName($name);
 			}
@@ -122,7 +130,7 @@ class RadioApiController extends Controller {
 			if ($homeUrl !== null) {
 				$station->setHomeUrl($homeUrl);
 			}
-			$this->businessLayer->update($station);
+			$this->stationBusinessLayer->update($station);
 
 			return new JSONResponse($station->toApi());
 		} catch (BusinessLayerException $ex) {
@@ -169,12 +177,16 @@ class RadioApiController extends Controller {
 	public function importFromFile(string $filePath) {
 		try {
 			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
+			$result['new_sources'] = $this->addStationsAsAllowedSources($result['stations']);
+			$result['new_sources'] = Util::arrayMapMethod($result['new_sources'], 'getUrl');
 			$result['stations'] = Util::arrayMapMethod($result['stations'], 'toApi');
 			return $result;
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist file not found');
 		} catch (\UnexpectedValueException $ex) {
 			return new ErrorResponse(Http::STATUS_UNSUPPORTED_MEDIA_TYPE, $ex->getMessage());
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
 		}
 	}
 
@@ -185,7 +197,99 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function resetAll() {
-		$this->businessLayer->deleteAll($this->userId);
+		$this->stationBusinessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	 * lists all allowed radio stream sources
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getAllSources() {
+		$stations = $this->sourceBusinessLayer->findAll($this->userId);
+		return Util::arrayMapMethod($stations, 'toApi');
+	}
+
+	/**
+	 * add an allowed radio stream source
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function addSource($url) {
+		try {
+			$source = $this->sourceBusinessLayer->addIfNotExists($this->userId, $url);
+			if ($source !== null) {
+				return $source->toApi();
+			} else {
+				return new \OCA\Music\Http\ErrorResponse(Http::CONFLICT, 'The URL was already listed as allowed');
+			}
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * deletes an allowed radio stream source
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function deleteSource(int $id) {
+		try {
+			$this->sourceBusinessLayer->delete($id, $this->userId);
+			return [];
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * get a single allowed radio stream source
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getSource(int $id) {
+		try {
+			$source = $this->sourceBusinessLayer->find($id, $this->userId);
+			return $source->toAPI();
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * update an allowed radio stream source
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function updateSource(int $id, string $url) {
+		try {
+			$source = $this->sourceBusinessLayer->find($id, $this->userId);
+			$source->setUrl($url);
+			$this->sourceBusinessLayer->update($source);
+			return new JSONResponse($source->toApi());
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * @param RadioStation[] $stations
+	 * @return string[]
+	 */
+	private function addStationsAsAllowedSources(array $stations) : array {
+		$newSources = [];
+		foreach ($stations as $station) {
+			$source = $this->sourceBusinessLayer->addIfNotExists($this->userId, $station->getStreamUrl());
+			if ($source !== null) {
+				$newSources[] = $source;
+			}
+		}
+		return $newSources;
 	}
 }

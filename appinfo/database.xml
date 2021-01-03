@@ -407,6 +407,54 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*music_radio_sources</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>url</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>2048</length>
+			</field>
+			<field>
+				<name>hash</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>added</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
+
+			<index>
+				<name>music_radio_sources_index</name>
+				<unique>true</unique>
+				<field>
+					<name>hash</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
+
+	<table>
 		<name>*dbprefix*music_ampache_sessions</name>
 		<declaration>
 			<field>

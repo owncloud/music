@@ -44,7 +44,7 @@ class XmlResponse extends Response {
 			$content = ['root' => $content];
 		}
 		$this->content = $content;
-		$this->doc = new \DOMDocument();
+		$this->doc = new \DOMDocument('1.0', 'UTF-8');
 		$this->doc->formatOutput = true;
 		$this->attributeKeys = $attributes;
 	}

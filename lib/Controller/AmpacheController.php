@@ -429,7 +429,7 @@ class AmpacheController extends Controller {
 	protected function playlist_songs($listId, $limit, $offset, $auth) {
 		if ($listId == self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlistTracks = $this->getAllTracks();
-			$playlistTracks = \array_slice($playlistTracks, $offset, $limit);
+			$playlistTracks = \array_slice($playlistTracks, $offset ?? 0, $limit);
 		} else {
 			$userId = $this->ampacheUser->getUserId();
 			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($listId, $userId, $limit, $offset);

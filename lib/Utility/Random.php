@@ -65,20 +65,21 @@ class Random {
 	 * page 0 is requested. Also, if the size of the array in question has changed
 	 * since the previous call, then the indices are reshuffled.
 	 *
-	 * @param int $arrSize
-	 * @param int $offset
-	 * @param int $count
-	 * @param string $userId
-	 * @param string $arrId
+	 * @param int $arrSize Size of the aray for which random indices are to be generated
+	 * @param int|null $offset Offset to get only part of the results (paging), null implies offset 0
+	 * @param int|null $count Result size to get only part of the results (paging), null gets all the remaining indices from the @a offset
+	 * @param string $userId The current user ID
+	 * @param string $arrId Identier for the logical array to facilitate paging
 	 * @return int[]
 	 */
-	public function getIndices(int $arrSize, int $offset, int $count, string $userId, string $arrId) : array {
+	public function getIndices(int $arrSize, ?int $offset, ?int $count, string $userId, string $arrId) : array {
+		$offset = $offset ?? 0;
 		$cacheKey = 'random_indices_' . $arrId;
 
 		$indices = self::decodeIndices($this->cache->get($userId, $cacheKey));
 
 		// reshuffle if necessary
-		if ($offset == 0 || \count($indices) != $arrSize) {
+		if ($offset === 0 || \count($indices) != $arrSize) {
 			if ($arrSize > 0) {
 				$indices = \range(0, $arrSize - 1);
 			} else {

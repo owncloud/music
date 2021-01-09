@@ -38,7 +38,7 @@
 	cursor: pointer;
 }
 
-#app-navigation .music-navigation-item:not(:hover):not(.active) .music-navigation-item-content {
+#app-navigation .music-navigation-item:not(:hover):not(.active):not(.menu-open) .music-navigation-item-content {
 	opacity: 0.7;
 }
 
@@ -133,6 +133,7 @@
 }
 
 #app-navigation .item-with-actions.active .actions .icon-more,
+#app-navigation .item-with-actions.menu-open .actions .icon-more,
 #app-navigation .item-with-actions:hover .actions .icon-more {
 	display: inline-block;
 }

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 OCA.Music = OCA.Music || {};
@@ -83,5 +83,28 @@ OCA.Music.Utils = {
 			second = second.slice(1);
 		}
 		return first + '/' + second;
+	},
+
+	/**
+	 * Format the given seconds value as play time. The format includes hours if and only if the
+	 * given input time is more than one hour. The output format looks like 1:01 or 1:01:01.
+	 * That is, unlike the rest of the parts, the part before the first ':' does not have a leading zero.
+	 */
+	formatPlayTime: function(input_s) {
+		// Format the given integer with two digits, prepending with a leading zero if necessary
+		var fmtTwoDigits = function(integer) {
+			return (integer < 10 ? '0' : '') + integer;
+		};
+
+		var hours = Math.floor(input_s / 3600);
+		var minutes = Math.floor((input_s - hours*3600) / 60);
+		var seconds = Math.floor(input_s % 60);
+
+		if (hours > 0) {
+			return hours + ':' + fmtTwoDigits(minutes) + ':' + fmtTwoDigits(seconds);
+		} else {
+			return minutes + ':' + fmtTwoDigits(seconds);
+		}
 	}
+
 };

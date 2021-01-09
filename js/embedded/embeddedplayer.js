@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 import playIcon from '../../img/play-big.svg';
@@ -222,21 +222,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		// Progress updating
 		var songLength_s = 0;
 
-		function formatTime(seconds) {
-			var minutes = Math.floor(seconds/60);
-			seconds = Math.floor(seconds - (minutes * 60));
-			return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-		}
-
 		function updateProgress() {
+			var fmt = OCA.Music.Utils.formatPlayTime; // give a shorthand name for the utility function
 			var ratio = 0;
 			if (songLength_s === 0) {
 				text.text(t('music', 'Loading…'));
 			} else if ($.isNumeric(songLength_s)) {
-				text.text(formatTime(playTime_s) + '/' + formatTime(songLength_s));
+				text.text(fmt(playTime_s) + '/' + fmt(songLength_s));
 				ratio = playTime_s / songLength_s;
 			} else {
-				text.text(formatTime(playTime_s));
+				text.text(fmt(playTime_s));
 			}
 			playBar.css('width', 100 * ratio + '%');
 		}
@@ -261,11 +256,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			bufferBar.css('width', Math.round(percent) + '%');
 		});
 		player.on('progress', function(msecs) {
-			playTime_s = Math.round(msecs/1000);
+			playTime_s = msecs/1000;
 			updateProgress();
 		});
 		player.on('duration', function(msecs) {
-			songLength_s = Math.round(msecs/1000);
+			songLength_s = msecs/1000;
 			updateProgress();
 			if (player.seekingSupported()) {
 				setCursorType('pointer');

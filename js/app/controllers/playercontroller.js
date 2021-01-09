@@ -68,8 +68,7 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 	});
 	onPlayerEvent('error', function(url) {
-		var filename = url.split('?').shift().split('/').pop();
-		OC.Notification.showTemporary(gettextCatalog.getString('Error playing file: ' + filename));
+		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL: ' + url));
 		$scope.next();
 	});
 	onPlayerEvent('play', function() {

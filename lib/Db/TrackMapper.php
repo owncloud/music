@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -328,7 +328,7 @@ class TrackMapper extends BaseMapper {
 		$sql = 'SELECT DISTINCT(`genre_id`) FROM `*PREFIX*music_tracks` WHERE
 				`genre_id` IS NOT NULL AND `user_id` = ? AND `artist_id` = ?';
 		$rows = $this->execute($sql, [$userId, $artistId]);
-		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN);
 	}
 
 	/**
@@ -339,7 +339,7 @@ class TrackMapper extends BaseMapper {
 	public function mapGenreIdsToTrackIds($userId) {
 		$sql = 'SELECT `id`, `genre_id` FROM `*PREFIX*music_tracks`
 				WHERE `genre_id` IS NOT NULL and `user_id` = ?';
-		$rows = $this->execute($sql, [$userId]);
+		$rows = $this->execute($sql, [$userId])->fetchAll();
 
 		$result = [];
 		foreach ($rows as $row) {
@@ -362,7 +362,7 @@ class TrackMapper extends BaseMapper {
 				ON `track`.`file_id` = `file`.`fileid`
 				WHERE `genre_id` IS NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId]);
-		return $rows->fetchAll(\PDO::FETCH_COLUMN, 0);
+		return $rows->fetchAll(\PDO::FETCH_COLUMN);
 	}
 
 	/**

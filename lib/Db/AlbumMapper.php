@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -56,7 +56,10 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$artistIds = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$artistIds = [];
+		while ($row = $result->fetch()) {
+			$artistIds[$row['album_id']][] = $row['artist_id'];
+		}
 		Util::intCastArrayValues($artistIds);
 		return $artistIds;
 	}
@@ -81,7 +84,10 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$years = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$years = [];
+		while ($row = $result->fetch()) {
+			$years[$row['album_id']][] = $row['year'];
+		}
 		Util::intCastArrayValues($years);
 		return $years;
 	}
@@ -106,7 +112,10 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$genreIds = $result->fetchAll(\PDO::FETCH_COLUMN|\PDO::FETCH_GROUP);
+		$genreIds = [];
+		while ($row = $result->fetch()) {
+			$genreIds[$row['album_id']][] = $row['genre_id'];
+		}
 		Util::intCastArrayValues($genreIds);
 		return $genreIds;
 	}

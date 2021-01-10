@@ -250,11 +250,18 @@
 }
 
 #app-sidebar .tutorial {
+	padding: 15px 15px 45px 15px;
+}
+
+#app-sidebar .tutorial * {
+	margin-bottom: 10px;
+}
+
+#app-sidebar .tutorial ol {
 	list-style: decimal outside;
-	margin: 15px 15px 15px 30px;
+	margin-left: 15px;
 }
 
 #app-sidebar .tutorial li {
 	display: list-item;
-	margin-bottom: 10px;
 }

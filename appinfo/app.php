@@ -58,24 +58,33 @@ $c->getServer()->getSearch()->registerProvider(
  * Set content security policy to allow streaming media from the configured external sources if we have a logged-in user
  */
 function adjustCsp(IAppContainer $container) {
-	$user = $container->query('UserId');
-	if ($user !== null) {
-		$businessLayer = $container->query('RadioSourceBusinessLayer');
-		$sources = $businessLayer->findAll($user);
+	/** @var \OCP\IConfig $config */
+	$config = $container->query('Config');
+	$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
+	$radioHlsSources = $config->getSystemValue('music.allowed_radio_hls_src', []);
+
+	if (\is_string($radioSources)) {
+		$radioSources = [$radioSources];
+	}
+	if (\is_string($radioHlsSources)) {
+		$radioHlsSources = [$radioHlsSources];
 	}
 
-	// Even the static sources data: and blob: are unnecessary if there are no allowed radio sources
-	if (!empty($sources)) {
+	if (!empty($radioSources) || !empty($radioHlsSources)) {
 		$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
 
-		// these three are needed by hls.js to stream HLS type sources
-		$policy->addAllowedMediaDomain('data:');
-		$policy->addAllowedMediaDomain('blob:');
-		$policy->addAllowedChildSrcDomain('blob:');
+		foreach ($radioSources as $source) {
+			$policy->addAllowedMediaDomain($source);
+		}
 
-		foreach ($sources as $source) {
-			$policy->addAllowedMediaDomain($source->getUrl());
-			$policy->addAllowedConnectDomain($source->getUrl()); // for hls.js
+		foreach ($radioHlsSources as $source) {
+			$policy->addAllowedConnectDomain($source);
+		}
+
+		// Also the media sources data: and blob: are needed if there are any allowed HLS sources
+		if (!empty($radioHlsSources)) {
+			$policy->addAllowedMediaDomain('data:');
+			$policy->addAllowedMediaDomain('blob:');
 		}
 
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);

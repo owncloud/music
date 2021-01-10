@@ -69,7 +69,10 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	});
 	onPlayerEvent('error', function(url) {
 		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL: ' + url));
-		$scope.next();
+		// Jump automatically to the next track unless we were playing an external stream
+		if (!currentTrackIsStream()) {
+			$scope.next();
+		}
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;

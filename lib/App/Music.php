@@ -25,7 +25,6 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\RadioSourceBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -48,7 +47,6 @@ use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
-use \OCA\Music\Db\RadioSourceMapper;
 use \OCA\Music\Db\RadioStationMapper;
 use \OCA\Music\Db\TrackMapper;
 
@@ -160,7 +158,6 @@ class Music extends App {
 			return new RadioApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
-				$c->query('RadioSourceBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
@@ -266,14 +263,7 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('RadioSourceBusinessLayer', function (IAppContainer $c) {
-			return new RadioSourceBusinessLayer(
-				$c->query('RadioSourceMapper'),
-				$c->query('Logger')
-			);
-		});
-
-		$container->registerService('RadioStationBusinessLayer', function (IAppContainer $c) {
+		$container->registerService('RadioStationBusinessLayer', function ($c) {
 			return new RadioStationBusinessLayer(
 				$c->query('RadioStationMapper'),
 				$c->query('Logger')
@@ -346,12 +336,6 @@ class Music extends App {
 
 		$container->registerService('BookmarkMapper', function (IAppContainer $c) {
 			return new BookmarkMapper(
-				$c->getServer()->getDatabaseConnection()
-			);
-		});
-
-		$container->registerService('RadioSourceMapper', function (IAppContainer $c) {
-			return new RadioSourceMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});

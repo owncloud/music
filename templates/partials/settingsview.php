@@ -128,6 +128,21 @@
 				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer.
 			</em></p>
 		</div>
+		<div>
+			<p>music.allowed_radio_src</p>
+			<p><em translate translate-params-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'">
+				Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{url}}" target="_blank">media-src</a>.
+			</em></p>
+		</div>
+		<div>
+			<p>music.allowed_radio_hls_src</p>
+			<p><em translate
+					translate-params-connect-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/connect-src'"
+					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
+			>
+				Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{connectSrcUrl}}" target="_blank">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
+			</em></p>
+		</div>
 	</div>
 
 	<h2 translate>About</h2>

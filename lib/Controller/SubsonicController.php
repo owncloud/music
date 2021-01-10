@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019, 2020
+ * @copyright Pauli Järvinen 2019 - 2021
  */
 
 namespace OCA\Music\Controller;
@@ -18,6 +18,7 @@ use \OCP\AppFramework\Http\JSONResponse;
 use \OCP\Files\File;
 use \OCP\Files\Folder;
 use \OCP\IRequest;
+use \OCP\IUserManager;
 use \OCP\IURLGenerator;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
@@ -63,6 +64,7 @@ class SubsonicController extends Controller {
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
+	private $userManager;
 	private $userMusicFolder;
 	private $l10n;
 	private $coverHelper;
@@ -78,6 +80,7 @@ class SubsonicController extends Controller {
 								IRequest $request,
 								$l10n,
 								IURLGenerator $urlGenerator,
+								IUserManager $userManager,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								BookmarkBusinessLayer $bookmarkBusinessLayer,
@@ -101,6 +104,7 @@ class SubsonicController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
+		$this->userManager = $userManager;
 		$this->l10n = $l10n;
 		$this->userMusicFolder = $userMusicFolder;
 		$this->coverHelper = $coverHelper;
@@ -616,12 +620,18 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getAvatar() {
-		// TODO: Use 'username' parameter to fetch user-specific avatar from the OC core.
-		// Remember to check the permission.
-		// For now, use the Music app logo for all users.
-		$fileName = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), 'img', 'logo', 'music_logo.png']);
-		$content = \file_get_contents($fileName);
-		return new FileResponse(['content' => $content, 'mimetype' => 'image/png']);
+		$username = $this->getRequiredParam('username');
+		if ($username != $this->userId) {
+			throw new SubsonicException("{$this->userId} is not authorized to get avatar for other users.", 50);
+		}
+
+		$image = $this->userManager->get($username)->getAvatarImage(150);
+
+		if ($image !== null) {
+			return new FileResponse(['content' => $image->data(), 'mimetype' => $image->mimeType()]);
+		} else {
+			return $this->subsonicErrorResponse(70, 'user has no avatar');
+		}
 	}
 
 	/**

@@ -246,9 +246,13 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		setRadioStations: function(radioStationsData) {
 			radioStations = _.map(radioStationsData, playlistEntry);
+			sortByPlaylistEntryField(radioStations, 'stream_url');
+			sortByPlaylistEntryField(radioStations, 'name');
 		},
 		addRadioStations: function(radioStationsData) {
 			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
+			sortByPlaylistEntryField(radioStations, 'stream_url');
+			sortByPlaylistEntryField(radioStations, 'name');
 		},
 		removeRadioStation: function(stationId) {
 			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);

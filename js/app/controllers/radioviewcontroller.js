@@ -101,7 +101,15 @@ angular.module('Music').controller('RadioViewController', [
 		// Reload the view if the stations got updated (by import from file)
 		subscribe('playlistUpdated', function(event, playlistId) {
 			if (playlistId === 'radio') {
+				var playingIdx = $scope.getCurrentStationIndex();
+				var playingStation = (playingIdx !== null) ? $scope.stations[playingIdx] : null;
+
 				initView();
+
+				if (playingStation !== null) {
+					var newIndex = _.indexOf($scope.stations, playingStation);
+					playlistService.onPlaylistModified($scope.stations, newIndex);
+				}
 			}
 		});
 

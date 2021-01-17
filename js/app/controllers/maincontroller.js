@@ -28,7 +28,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, listEntry){
+	playlistService.subscribe('trackChanged', function(e, listEntry) {
 		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});

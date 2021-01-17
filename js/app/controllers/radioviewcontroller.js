@@ -61,6 +61,11 @@ angular.module('Music').controller('RadioViewController', [
 						}
 						playlistService.onPlaylistModified($scope.stations, playingIndex);
 					}
+					// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
+					// to ensure that the alphabet navigation has up-to-date item count available when it handles the event.
+					$timeout(function() {
+						$rootScope.$emit('radioStationsChanged');
+					});
 				},
 				function (error) {
 					station.busy = false;
@@ -110,12 +115,29 @@ angular.module('Music').controller('RadioViewController', [
 					var newIndex = _.indexOf($scope.stations, playingStation);
 					playlistService.onPlaylistModified($scope.stations, newIndex);
 				}
+
+				// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
+				// to ensure that the alphabet navigation has up-to-date item count available when it handles the event.
+				$timeout(function() {
+					$rootScope.$emit('radioStationsChanged');
+				});
 			}
 		});
 
 		function listIsPlaying() {
 			return ($rootScope.playingView === $rootScope.currentView);
 		}
+
+		/**
+		 * Two functions for the alphabet-navigation directive integration
+		 */
+		$scope.getStationTitle = function(index) {
+			var station = $scope.stations[index].track;
+			return station.name || station.stream_url
+		};
+		$scope.getStationElementId = function(index) {
+			return 'radio-station-' + $scope.stations[index].track.id
+		};
 
 		// Init happens either immediately (after making the loading animation visible)
 		// or once the radio stations have been loaded

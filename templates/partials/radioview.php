@@ -23,6 +23,10 @@
 		</li>
 	</ul>
 
+	<alphabet-navigation ng-if="stations && stations.length" item-count="stations.length"
+		get-elem-title="getStationTitle" get-elem-id="getStationElementId" scroll-to-target="scrollToItem">
+	</alphabet-navigation>
+
 	<div id="noStations" class="emptycontent clickable" ng-show="stations.length == 0" ng-click="showRadioHint()">
 		<div class="icon-radio svg"></div>
 		<div>

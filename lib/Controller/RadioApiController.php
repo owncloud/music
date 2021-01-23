@@ -135,7 +135,9 @@ class RadioApiController extends Controller {
 	}
 
 	/**
-	 * export the station to a file
+	 * export all radio stations to a file
+	 *
+	 * @param string $name target file name without the file extension
 	 * @param string $path parent folder path
 	 * @param string $oncollision action to take on file name collision,
 	 *								supported values:
@@ -146,13 +148,11 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function exportToFile(int $id, string $path, string $oncollision) {
+	public function exportAllToFile(string $name, string $path, string $oncollision) {
 		try {
-			$exportedFilePath = $this->playlistFileService->exportToFile(
-					$id, $this->userId, $this->userFolder, $path, $oncollision);
+			$exportedFilePath = $this->playlistFileService->exportRadioStationsToFile(
+					$this->userId, $this->userFolder, $path, $name . '.m3u8', $oncollision);
 			return new JSONResponse(['wrote_to_file' => $exportedFilePath]);
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'playlist not found');
 		} catch (\OCP\Files\NotFoundException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, 'folder not found');
 		} catch (\RuntimeException $ex) {

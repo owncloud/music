@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
 use \OCP\Files\File;
@@ -78,19 +79,7 @@ class PlaylistFileService {
 		$filename = \str_replace('/', '-', $playlist->getName());
 		$filename = Util::truncate($filename, 250 - 5 - 5);
 		$filename .= '.m3u8';
-
-		if ($targetFolder->nodeExists($filename)) {
-			switch ($collisionMode) {
-				case 'overwrite':
-					$targetFolder->get($filename)->delete();
-					break;
-				case 'keepboth':
-					$filename = $targetFolder->getNonExistingName($filename);
-					break;
-				default:
-					throw new \RuntimeException('file already exists');
-			}
-		}
+		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
 
 		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 		foreach ($tracks as $track) {
@@ -100,6 +89,41 @@ class PlaylistFileService {
 				$content .= "#EXTINF:{$track->getLength()},$caption\n";
 				$content .= Util::relativePath($targetFolder->getPath(), $nodes[0]->getPath()) . "\n";
 			}
+		}
+		$file = $targetFolder->newFile($filename);
+		$file->putContent($content);
+
+		return $userFolder->getRelativePath($file->getPath());
+	}
+
+	/**
+	 * export all the radio stations of a user to a file
+	 * @param string $userId user
+	 * @param Folder $userFolder home dir of the user
+	 * @param string $folderPath target parent folder path
+	 * @param string $filename target file name
+	 * @param string $collisionMode action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 * @return string path of the written file
+	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
+	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
+	 */
+	public function exportRadioStationsToFile(
+			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode) : string {
+		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
+
+		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
+
+		$stations = $this->radioStationBusinessLayer->findAll($userId, SortBy::Name);
+
+		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
+		foreach ($stations as $station) {
+			$content .= "#EXTINF:1,{$station->getName()}\n";
+			$content .= $station->getStreamUrl() . "\n";
 		}
 		$file = $targetFolder->newFile($filename);
 		$file->putContent($content);
@@ -152,14 +176,12 @@ class PlaylistFileService {
 
 	/**
 	 * import stream URLs from a playlist file and store them as internet radio stations
-	 * @param string $userId owner of the playlist
+	 * @param string $userId user
 	 * @param Folder $userFolder user home dir
 	 * @param string $filePath path of the file to import
-	 * @return array with three keys:
-	 * 			- 'playlist': The Playlist entity after the modification
-	 * 			- 'imported_count': An integer showing the number of tracks imported
-	 * 			- 'failed_count': An integer showing the number of tracks in the file which could not be imported
-	 * @throws BusinessLayerException if playlist with ID not found
+	 * @return array with two keys:
+	 * 			- 'stations': Array of RadioStation objects imported from the file
+	 * 			- 'failed_count': An integer showing the number of entries in the file which were not valid URLs
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
@@ -353,6 +375,22 @@ class PlaylistFileService {
 		}
 
 		return $entries;
+	}
+
+	private static function checkFileNameConflict(Folder $targetFolder, string $filename, string $collisionMode) : string {
+		if ($targetFolder->nodeExists($filename)) {
+			switch ($collisionMode) {
+				case 'overwrite':
+					$targetFolder->get($filename)->delete();
+					break;
+				case 'keepboth':
+					$filename = $targetFolder->getNonExistingName($filename);
+					break;
+				default:
+					throw new \RuntimeException('file already exists');
+			}
+		}
+		return $filename;
 	}
 
 	private static function captionForTrack(Track $track) : string {

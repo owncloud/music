@@ -125,6 +125,25 @@ angular.module('Music').controller('NavigationController', [
 			playlistFileService.importPlaylist(playlist);
 		};
 
+		// Export radio stations to a file
+		$scope.exportRadioToFile = function() {
+			playlistFileService.exportRadio().then(
+				function() { // success
+					$scope.radioBusy = false;
+				},
+				function() { // failure
+					$scope.radioBusy = false;
+				},
+				function(state) { // notification about state change
+					if (state == 'started') {
+						$scope.radioBusy = true;
+					} else if (state == 'stopped') {
+						$scope.radioBusy = false;
+					}
+				}
+			);
+		};
+
 		// Import radio stations from a playlist file
 		$scope.importFromFileToRadio = function() {
 			playlistFileService.importRadio().then(

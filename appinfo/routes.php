@@ -77,7 +77,6 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
 	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
 	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
-	['name' => 'radioApi#exportToFile',		'url' => '/api/radio/{id}/export',		'verb' => 'POST'],
 	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],

@@ -36,11 +36,11 @@
 					<li ng-click="$parent.$parent.startEdit(playlist)" class="app-navigation-noclose">
 						<a class="icon-rename"><span translate>Rename</span></a>
 					</li>
-					<li ng-click="$parent.$parent.exportToFile(playlist)">
-						<a class="icon-to-file"><span translate>Export to file</span></a>
-					</li>
 					<li ng-click="$parent.$parent.importFromFile(playlist)">
 						<a class="icon-from-file"><span translate>Import from file</span></a>
+					</li>
+					<li ng-click="$parent.$parent.exportToFile(playlist)">
+						<a class="icon-to-file"><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
 						<a class="icon-delete"><span translate>Delete</span></a>
@@ -62,6 +62,9 @@
 					</li> -->
 					<li ng-click="$parent.importFromFileToRadio()">
 						<a class="icon-from-file"><span translate>Import from file</span></a>
+					</li>
+					<li ng-click="$parent.exportRadioToFile()">
+						<a class="icon-to-file"><span translate>Export to file</span></a>
 					</li>
 				</ul>
 			</div>

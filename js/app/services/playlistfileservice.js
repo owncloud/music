@@ -12,30 +12,51 @@ angular.module('Music').service('playlistFileService', [
 '$rootScope', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
 function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
+	function onExportConflict(path, name, retryFunc) {
+		OC.dialogs.confirm(
+			gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
+									' Select "No" to export the list with another name. Close the dialog to cancel.',
+									{ filename: name + '.m3u8' }),
+			gettextCatalog.getString('Overwrite existing file'),
+			function (overwrite) {
+				if (overwrite) {
+					retryFunc(path, 'overwrite');
+				} else {
+					retryFunc(path, 'keepboth');
+				}
+			},
+			true // modal
+		);
+	}
+
+	/** return true if a retry attempt was fired and false if the operation was aborted */
+	function handleExportError(httpError, path, playlistName, retryFunc) {
+		switch (httpError) {
+		case 409: // conflict
+			onExportConflict(path, playlistName, retryFunc);
+			return true;
+		case 404: // not found
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Playlist or folder not found'));
+			return false;
+		case 403: // forbidden
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Writing to the file is not allowed'));
+			return false;
+		default: // unexpected
+			OC.Notification.showTemporary(
+				gettextCatalog.getString('Unexpected error'));
+			return false;
+		}
+	}
+
+
 	return {
+
 		// Export playlist to file
 		exportPlaylist: function(playlist) {
 
-			var onFolderSelected = null; // defined later below
-
-			var onConflict = function(path) {
-				OC.dialogs.confirm(
-					gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
-											' Select "No" to export the list with another name. Close the dialog to cancel.',
-											{ filename: playlist.name + '.m3u8' }),
-					gettextCatalog.getString('Overwrite existing file'),
-					function (overwrite) {
-						if (overwrite) {
-							onFolderSelected(path, 'overwrite');
-						} else {
-							onFolderSelected(path, 'keepboth');
-						}
-					},
-					true // modal
-				);
-			};
-
-			onFolderSelected = function(path, onCollision /*optional*/) {
+			function onFolderSelected(path, onCollision /*optional*/) {
 				playlist.busy = true;
 				var args = { path: path, oncollision: onCollision || 'abort' };
 				Restangular.one('playlists', playlist.id).all('export').post(args).then(
@@ -45,27 +66,11 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 						playlist.busy = false;
 					},
 					function (error) {
-						switch (error.status) {
-						case 409: // conflict
-							onConflict(path);
-							break;
-						case 404: // not found
-							OC.Notification.showTemporary(
-								gettextCatalog.getString('Playlist or folder not found'));
-							break;
-						case 403: // forbidden
-							OC.Notification.showTemporary(
-								gettextCatalog.getString('Writing to the file is not allowed'));
-							break;
-						default: // unexpected
-							OC.Notification.showTemporary(
-								gettextCatalog.getString('Unexpected error'));
-							break;
-						}
+						handleExportError(error.status, path, playlist.name, onFolderSelected);
 						playlist.busy = false;
 					}
 				);
-			};
+			}
 
 			OC.dialogs.filepicker(
 					gettextCatalog.getString('Export playlist to a file in the selected folder'),
@@ -74,6 +79,42 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 					'httpd/unix-directory',
 					true
 			);
+		},
+
+
+		// Export radio stations to file
+		exportRadio: function() {
+			var deferred = $q.defer();
+			var name = gettextCatalog.getString('Internet radio');
+
+			function onFolderSelected(path, onCollision /*optional*/) {
+				deferred.notify('started');
+				var args = { path: path, name: name, oncollision: onCollision || 'abort' };
+				Restangular.all('radio/export').post(args).then(
+					function (result) {
+						OC.Notification.showTemporary(
+							gettextCatalog.getString('Radio stations exported to file {{ path }}', { path: result.wrote_to_file }));
+						deferred.resolve();
+					},
+					function (error) {
+						deferred.notify('stopped');
+						var retry = handleExportError(error.status, path, name, onFolderSelected);
+						if (!retry) {
+							deferred.reject();
+						}
+					}
+				);
+			}
+
+			OC.dialogs.filepicker(
+					gettextCatalog.getString('Export radio stations to a file in the selected folder'),
+					onFolderSelected,
+					false,
+					'httpd/unix-directory',
+					true
+			);
+
+			return deferred.promise;
 		},
 
 		// Import playlist contents from a file
@@ -135,7 +176,7 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 			var deferred = $q.defer();
 
 			var onFileSelected = function(file) {
-				deferred.notify('import started');
+				deferred.notify('started');
 
 				return Restangular.all('radio/import').post({filePath: file}).then(
 					function(result) {

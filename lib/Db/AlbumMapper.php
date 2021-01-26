@@ -58,9 +58,8 @@ class AlbumMapper extends BaseMapper {
 		$result = $this->execute($sql, $params);
 		$artistIds = [];
 		while ($row = $result->fetch()) {
-			$artistIds[$row['album_id']][] = $row['artist_id'];
+			$artistIds[$row['album_id']][] = (int)$row['artist_id'];
 		}
-		Util::intCastArrayValues($artistIds);
 		return $artistIds;
 	}
 
@@ -86,9 +85,8 @@ class AlbumMapper extends BaseMapper {
 		$result = $this->execute($sql, $params);
 		$years = [];
 		while ($row = $result->fetch()) {
-			$years[$row['album_id']][] = $row['year'];
+			$years[$row['album_id']][] = (int)$row['year'];
 		}
-		Util::intCastArrayValues($years);
 		return $years;
 	}
 
@@ -114,9 +112,8 @@ class AlbumMapper extends BaseMapper {
 		$result = $this->execute($sql, $params);
 		$genreIds = [];
 		while ($row = $result->fetch()) {
-			$genreIds[$row['album_id']][] = $row['genre_id'];
+			$genreIds[$row['album_id']][] = (int)$row['genre_id'];
 		}
-		Util::intCastArrayValues($genreIds);
 		return $genreIds;
 	}
 

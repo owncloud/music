@@ -32,7 +32,7 @@ OCA.Music.PlayerWrapper = function() {
 	function initHtml5() {
 		m_html5audio = document.createElement('audio');
 		if (Hls.isSupported()) {
-			m_hls = new Hls();
+			m_hls = new Hls({ enableWorker: false });
 		}
 
 		var getBufferedEnd = function() {

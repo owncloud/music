@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2018 - 2020 Pauli Järvinen
+ * @copyright 2018 - 2021 Pauli Järvinen
  *
  */
 
@@ -43,6 +43,8 @@ function($rootScope, $timeout, alphabetIndexingService) {
 			}
 
 			function setUpMainLinks() {
+				scope.targets = {}; // erase any previous targets first
+
 				for (var linkIdx = 0, itemIdx = 0;
 					linkIdx < links.length && itemIdx < scope.itemCount;
 					++linkIdx)
@@ -125,7 +127,8 @@ function($rootScope, $timeout, alphabetIndexingService) {
 			var unsubscribeFuncs = [
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden),
-				$rootScope.$on('artistsLoaded', setUpTargets)
+				$rootScope.$on('artistsLoaded', setUpTargets),
+				$rootScope.$on('radioStationsChanged', setUpTargets)
 			];
 
 			// unsubscribe listeners when the scope is destroyed

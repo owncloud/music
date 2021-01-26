@@ -12,16 +12,19 @@
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
-	<div ng-show="currentAlbum" ng-click="scrollToCurrentTrack()"
-		class="albumart clickable" cover="{{ currentAlbum.cover }}"
-		albumart="{{ currentAlbum.name }}" title="{{ currentAlbum.name }}" ></div>
+	<div ng-show="currentTrack.album" ng-click="scrollToCurrentTrack()"
+		class="albumart clickable" cover="{{ currentTrack.album.cover }}"
+		albumart="{{ currentTrack.album.name }}" title="{{ currentTrack.album.name }}" ></div>
+
+	<div ng-show="currentTrack.stream_url" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
-		<span class="title" title="{{ currentTrack.title }}">{{ currentTrack.title }}</span><br />
-		<span class="artist" title="{{ currentTrack.artistName }}">{{ currentTrack.artistName }}</span>
+		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />
+		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
 	</div>
-	<div ng-show="currentTrack.title" class="progress-info">
-		<span ng-hide="loading" class="muted">{{ position.current | playTime }}/{{ position.total | playTime }}</span>
+	<div ng-show="currentTrack" class="progress-info">
+		<span ng-show="!loading" class="muted">{{ position.current | playTime }}</span><span 
+			ng-show="!loading && durationKnown()" class="muted">/{{ position.total | playTime }}</span>
 		<span ng-show="loading" class="muted">Loading...</span>
 		<div class="progress">
 			<div class="seek-bar" ng-click="seek($event)" ng-style="{'cursor': seekCursorType}">

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Utility;
@@ -15,7 +15,9 @@ namespace OCA\Music\Utility;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
 use \OCP\Files\File;
@@ -27,14 +29,21 @@ use \OCP\Files\Folder;
  */
 class PlaylistFileService {
 	private $playlistBusinessLayer;
+	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $logger;
 
+	private const PARSE_LOCAL_FILES_ONLY = 1;
+	private const PARSE_URLS_ONLY = 2;
+	private const PARSE_LOCAL_FILES_AND_URLS = 3;
+
 	public function __construct(
 			PlaylistBusinessLayer $playlistBusinessLayer,
+			RadioStationBusinessLayer $radioStationBusinessLayer,
 			TrackBusinessLayer $trackBusinessLayer,
 			Logger $logger) {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->logger = $logger;
 	}
@@ -70,19 +79,7 @@ class PlaylistFileService {
 		$filename = \str_replace('/', '-', $playlist->getName());
 		$filename = Util::truncate($filename, 250 - 5 - 5);
 		$filename .= '.m3u8';
-
-		if ($targetFolder->nodeExists($filename)) {
-			switch ($collisionMode) {
-				case 'overwrite':
-					$targetFolder->get($filename)->delete();
-					break;
-				case 'keepboth':
-					$filename = $targetFolder->getNonExistingName($filename);
-					break;
-				default:
-					throw new \RuntimeException('file already exists');
-			}
-		}
+		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
 
 		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
 		foreach ($tracks as $track) {
@@ -100,7 +97,42 @@ class PlaylistFileService {
 	}
 
 	/**
-	 * export the playlist to a file
+	 * export all the radio stations of a user to a file
+	 * @param string $userId user
+	 * @param Folder $userFolder home dir of the user
+	 * @param string $folderPath target parent folder path
+	 * @param string $filename target file name
+	 * @param string $collisionMode action to take on file name collision,
+	 *								supported values:
+	 *								- 'overwrite' The existing file will be overwritten
+	 *								- 'keepboth' The new file is named with a suffix to make it unique
+	 *								- 'abort' (default) The operation will fail
+	 * @return string path of the written file
+	 * @throws \OCP\Files\NotFoundException if the $folderPath is not a valid folder
+	 * @throws \RuntimeException on name conflict if $collisionMode == 'abort'
+	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
+	 */
+	public function exportRadioStationsToFile(
+			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode) : string {
+		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
+
+		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
+
+		$stations = $this->radioStationBusinessLayer->findAll($userId, SortBy::Name);
+
+		$content = "#EXTM3U\n#EXTENC: UTF-8\n";
+		foreach ($stations as $station) {
+			$content .= "#EXTINF:1,{$station->getName()}\n";
+			$content .= $station->getStreamUrl() . "\n";
+		}
+		$file = $targetFolder->newFile($filename);
+		$file->putContent($content);
+
+		return $userFolder->getRelativePath($file->getPath());
+	}
+
+	/**
+	 * import playlist contents from a file
 	 * @param int $id playlist ID
 	 * @param string $userId owner of the playlist
 	 * @param Folder $userFolder user home dir
@@ -114,7 +146,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, /*allowUrls=*/false);
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -143,6 +175,39 @@ class PlaylistFileService {
 	}
 
 	/**
+	 * import stream URLs from a playlist file and store them as internet radio stations
+	 * @param string $userId user
+	 * @param Folder $userFolder user home dir
+	 * @param string $filePath path of the file to import
+	 * @return array with two keys:
+	 * 			- 'stations': Array of RadioStation objects imported from the file
+	 * 			- 'failed_count': An integer showing the number of entries in the file which were not valid URLs
+	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
+	 */
+	public function importRadioStationsFromFile(string $userId, Folder $userFolder, string $filePath) : array {
+		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_URLS_ONLY);
+		$trackFilesAndCaptions = $parsed['files'];
+		$invalidPaths = $parsed['invalid_paths'];
+
+		$stations = [];
+		foreach ($trackFilesAndCaptions as $trackFileAndCaption) {
+			$stations[] = $this->radioStationBusinessLayer->create(
+					$userId, $trackFileAndCaption['caption'], $trackFileAndCaption['url']);
+		}
+
+		if (\count($invalidPaths) > 0) {
+			$this->logger->log('Some entries in the file were not valid streaming URLs: '
+					. \json_encode($invalidPaths, JSON_PARTIAL_OUTPUT_ON_ERROR), 'warn');
+		}
+
+		return [
+			'stations' => $stations,
+			'failed_count' => \count($invalidPaths)
+		];
+	}
+
+	/**
 	 * Parse a playlist file and return the contained files
 	 * @param int $fileId playlist file ID
 	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
@@ -153,13 +218,20 @@ class PlaylistFileService {
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
-			return $this->doParseFile($nodes[0], $baseFolder, /*allowUrls=*/true);
+			return $this->doParseFile($nodes[0], $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
 	}
 
-	private function doParseFile(File $file, Folder $baseFolder, bool $allowUrls) : array {
+	/**
+	 * @param File $file The playlist file to parse
+	 * @param Folder $baseFolder Base folder for the local files
+	 * @param int $mode One of self::[PARSE_LOCAL_FILES_ONLY, PARSE_URLS_ONLY, PARSE_LOCAL_FILES_AND_URLS]
+	 * @throws \UnexpectedValueException
+	 * @return array
+	 */
+	private function doParseFile(File $file, ?Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
@@ -178,8 +250,8 @@ class PlaylistFileService {
 		foreach ($entries as $entry) {
 			$path = $entry['path'];
 
-			if (Util::startsWith($path, 'http')) {
-				if ($allowUrls) {
+			if (Util::startsWith($path, 'http', /*ignoreCase=*/true)) {
+				if ($mode !== self::PARSE_LOCAL_FILES_ONLY) {
 					$trackFiles[] = [
 						'url' => $path,
 						'caption' => $entry['caption']
@@ -188,14 +260,18 @@ class PlaylistFileService {
 					$invalidPaths[] = $path;
 				}
 			} else {
-				$path = Util::resolveRelativePath($cwd, $path);
+				if ($mode !== self::PARSE_URLS_ONLY) {
+					$path = Util::resolveRelativePath($cwd, $path);
 
-				try {
-					$trackFiles[] = [
-						'file' => $baseFolder->get($path),
-						'caption' => $entry['caption']
-					];
-				} catch (\OCP\Files\NotFoundException $ex) {
+					try {
+						$trackFiles[] = [
+							'file' => $baseFolder->get($path),
+							'caption' => $entry['caption']
+						];
+					} catch (\OCP\Files\NotFoundException $ex) {
+						$invalidPaths[] = $path;
+					}
+				} else {
 					$invalidPaths[] = $path;
 				}
 			}
@@ -273,10 +349,11 @@ class PlaylistFileService {
 
 		// the rest of the non-empty lines should be in format "key=value"
 		while ($line = \fgets($fp)) {
-			$line = \trim($line);
 			// ignore empty and malformed lines
 			if (\strpos($line, '=') !== false) {
 				list($key, $value) = \explode('=', $line, 2);
+				$key = \trim($key);
+				$value = \trim($value);
 				// we are interested only on the File# and Title# lines
 				if (Util::startsWith($key, 'File')) {
 					$idx = \substr($key, \strlen('File'));
@@ -298,6 +375,22 @@ class PlaylistFileService {
 		}
 
 		return $entries;
+	}
+
+	private static function checkFileNameConflict(Folder $targetFolder, string $filename, string $collisionMode) : string {
+		if ($targetFolder->nodeExists($filename)) {
+			switch ($collisionMode) {
+				case 'overwrite':
+					$targetFolder->get($filename)->delete();
+					break;
+				case 'keepboth':
+					$filename = $targetFolder->getNonExistingName($filename);
+					break;
+				default:
+					throw new \RuntimeException('file already exists');
+			}
+		}
+		return $filename;
 	}
 
 	private static function captionForTrack(Track $track) : string {

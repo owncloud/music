@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 import playIcon from '../../img/play-big.svg';
@@ -26,7 +26,7 @@ function initEmbeddedPlayer() {
 	var mFileList = null; // FileList from Files or Sharing app
 	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList);
+	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
 	var mPlaylist = new OCA.Music.Playlist();
 
 	var mAudioMimes = _.filter([
@@ -88,22 +88,40 @@ function initEmbeddedPlayer() {
 			$showItem.attr('title', t('music', 'The option is available only while the parent folder of the playlist file is shown'));
 		}
 
-		// disable/enable the "Import to Music" item
-		var inLibraryFilesCount = _.filter(mPlaylist.files(), {in_library: true}).length;
+		// disable/enable the "Import list to Music" item
+		var inLibraryFilesCount = _(mPlaylist.files()).filter('in_library').size();
+		var extStreamsCount = _(mPlaylist.files()).filter('url').size();
 		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
-		var $importItem = $menu.find('#playlist-menu-import');
+
+		var $importListItem = $menu.find('#playlist-menu-import');
+		var $importRadioItem = $menu.find('#playlist-menu-import-radio');
+
 		if (inLibraryFilesCount === 0) {
-			$importItem.addClass('disabled');
-			$importItem.attr('title', t('music', 'None of the playlist files are within your music library'));
+			$importListItem.addClass('disabled');
+			$importListItem.attr('title', t('music', 'None of the playlist files are within your music library'));
 		} else {
-			$importItem.removeClass('disabled');
+			$importListItem.removeClass('disabled');
 			if (outLibraryFilesCount > 0) {
-				$importItem.attr('title',
+				$importListItem.attr('title',
 						t('music', '{inCount} out of {totalCount} files are within your music library and can be imported',
 						{inCount: inLibraryFilesCount, totalCount: mPlaylist.length()}));
 			} else {
-				$importItem.removeAttr('title');
+				$importListItem.removeAttr('title');
 			}
+		}
+
+		// hide the "Import radio to Music" if there are no external streams on the list
+		if (extStreamsCount === 0) {
+			$importRadioItem.addClass('hidden');
+		} else {
+			$importRadioItem.removeClass('hidden');
+		}
+
+		// hide the "Import list to Music" if there are only external streams on the list
+		if (extStreamsCount === mPlaylist.length()) {
+			$importListItem.addClass('hidden');
+		} else {
+			$importListItem.removeClass('hidden');
 		}
 	}
 
@@ -113,6 +131,14 @@ function initEmbeddedPlayer() {
 	}
 
 	function onImportList() {
+		doImportFromFile(OCA.Music.playlistFileService.importPlaylist);
+	}
+
+	function onImportRadio() {
+		doImportFromFile(OCA.Music.playlistFileService.importRadio);
+	}
+
+	function doImportFromFile(serviceImportFunc) {
 		// The busy animation is shown on the file item if we are still viewing the folder
 		// where the file resides. The importing itself is possible regardless. 
 		if (viewingCurrentFileFolder()) {
@@ -120,7 +146,7 @@ function initEmbeddedPlayer() {
 			mFileList.showFileBusyState($file, true);
 		}
 
-		OCA.Music.playlistFileService.importFile(mCurrentFile, function(_result) {
+		serviceImportFunc(mCurrentFile, function(_result) {
 			if ($file) {
 				mFileList.showFileBusyState($file, false);
 			}

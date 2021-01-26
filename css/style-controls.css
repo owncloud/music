@@ -79,6 +79,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	vertical-align: top;
 }
 
+.icon-radio {
+	background-image: url(../img/radio.svg);
+}
+
 #controls .song-info {
 	position: relative;
 	height: 58px;

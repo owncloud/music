@@ -235,14 +235,33 @@
 	cursor: pointer;
 }
 
-#app-sidebar #lastfm-info a {
+#app-sidebar #lastfm-info a,
+#app-sidebar .tutorial a {
 	text-decoration: underline;
 }
 
-#app-sidebar #lastfm-info a:after {
+#app-sidebar #lastfm-info a:after,
+#app-sidebar .tutorial a:after {
 	content: " ↗";
 }
 
 #app-sidebar .truncated:after {
 	content: "…";
+}
+
+#app-sidebar .tutorial {
+	padding: 15px 15px 45px 15px;
+}
+
+#app-sidebar .tutorial * {
+	margin-bottom: 10px;
+}
+
+#app-sidebar .tutorial ol {
+	list-style: decimal outside;
+	margin-left: 15px;
+}
+
+#app-sidebar .tutorial li {
+	display: list-item;
 }

@@ -10,6 +10,7 @@
  * @copyright Pauli Järvinen 2017 - 2020
  */
 
+import radioIcon from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettextCatalog', '$timeout', '$document',
@@ -18,7 +19,6 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	$scope.loading = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
-	$scope.currentAlbum = null;
 	$scope.seekCursorType = 'default';
 	$scope.volume = parseInt(Cookies.get('oc_music_volume')) || 50;  // volume can be 0~100
 	$scope.repeat = Cookies.get('oc_music_repeat') || 'false';
@@ -68,9 +68,11 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 	});
 	onPlayerEvent('error', function(url) {
-		var filename = url.split('?').shift().split('/').pop();
-		OC.Notification.showTemporary(gettextCatalog.getString('Error playing file: ' + filename));
-		$scope.next();
+		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL: ' + url));
+		// Jump automatically to the next track unless we were playing an external stream
+		if (!currentTrackIsStream()) {
+			$scope.next();
+		}
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
@@ -82,11 +84,20 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 		$rootScope.playing = false;
 	});
 
-	var titleApp = $('title').html().trim();
+	$scope.durationKnown = function() {
+		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
+	};
+
+	const titleApp = $('title').html().trim();
 
 	// display the song name and artist in the title when there is current track
 	$scope.$watch('currentTrack', function(newTrack) {
-		var titleSong = newTrack ? newTrack.title + ' (' + newTrack.artistName + ') - ' : '';
+		var titleSong = '';
+		if (newTrack?.title !== undefined) {
+			titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+		} else if (newTrack?.name !== undefined) {
+			titleSong = newTrack.name + ' - ';
+		}
 		$('title').html(titleSong + titleApp);
 	});
 
@@ -123,9 +134,14 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	 * Too high number of simultaneous GET requests could easily jam a low-power server.
 	 */
 	var debouncedPlayCurrentTrack = _.debounce(function(startOffset /*optional*/) {
-		var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
-		var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
-		$scope.player.fromURL(url, mimeAndId.mime);
+		if (currentTrackIsStream()) {
+			$scope.player.fromURL($scope.currentTrack.stream_url, null);
+		}
+		else {
+			var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
+			var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
+			$scope.player.fromURL(url, mimeAndId.mime);
+		}
 
 		if (startOffset) {
 			$scope.player.seekMsecs(startOffset);
@@ -135,7 +151,6 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 	function playTrack(track, startOffset /*optional*/) {
 		$scope.currentTrack = track;
-		$scope.currentAlbum = track.album;
 
 		// Pause any previous playback and don't indicate support for seeking before we actually know it
 		$scope.player.pause();
@@ -143,6 +158,10 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 		// Star the playback with a small delay. 
 		debouncedPlayCurrentTrack(startOffset);
+	}
+
+	function currentTrackIsStream() {
+		return $scope.currentTrack?.stream_url !== undefined;
 	}
 
 	$scope.setLoading = function(loading) {
@@ -211,32 +230,38 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 	$scope.stop = function() {
 		$scope.player.stop();
 		$scope.currentTrack = null;
-		$scope.currentAlbum = null;
 		$rootScope.playing = false;
 		$rootScope.started = false;
 		playlistService.clearPlaylist();
 	};
 
 	$scope.next = function(startOffset /*optional*/) {
-		var entry = playlistService.jumpToNextTrack(),
-			tracksSkipped = false;
+		var entry = playlistService.jumpToNextTrack();
 
-		// get the next track as long as the current one contains no playable
-		// audio mimetype
-		while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
-			tracksSkipped = true;
-			startOffset = null; // offset is not meaningful if we couldn't play the requested track
-			entry = playlistService.jumpToNextTrack();
+		// For ordinary tracks, skip the tracks with unsupported MIME types.
+		// For external streams, we don't know the MIME type, and we just assume that they can be played.
+		if (entry?.track?.files !== undefined) {
+			var tracksSkipped = false;
+
+			// get the next track as long as the current one contains no playable
+			// audio mimetype
+			while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
+				tracksSkipped = true;
+				startOffset = null; // offset is not meaningful if we couldn't play the requested track
+				entry = playlistService.jumpToNextTrack();
+			}
+			if (tracksSkipped) {
+				OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
+			}
 		}
-		if (tracksSkipped) {
-			OC.Notification.showTemporary(gettextCatalog.getString('Some not playable tracks were skipped.'));
-		}
+
 		setCurrentTrack(entry, startOffset);
 	};
 
 	$scope.prev = function() {
-		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if ($scope.position.current > 2.0) {
+		// Jump to the beginning of the current track if it has already played more than 2 secs.
+		// This is disalbed for exteranl streams where jumping to the beginning often does not work.
+		if ($scope.position.current > 2.0 && !currentTrackIsStream()) {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -266,7 +291,11 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
-			$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
+			if (currentTrackIsStream()) {
+				$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
+			} else {
+				$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
+			}
 		}
 	};
 
@@ -293,6 +322,14 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 		return true;
 	});
+
+	$scope.primaryTitle = function() {
+		return $scope.currentTrack?.title ?? $scope.currentTrack?.name ?? null;
+	};
+
+	$scope.secondaryTitle = function() {
+		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.stream_url ?? null;
+	};
 
 	/**
 	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,
@@ -332,16 +369,29 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 		$scope.$watch('currentTrack', function(track) {
 			if (track) {
-				navigator.mediaSession.metadata = new MediaMetadata({
-					title: track.title,
-					artist: track.artistName,
-					album: track.album.name,
-					artwork: [{
-						sizes: '190x190',
-						src: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
-						type: ''
-					}]
-				});
+				if ('stream_url' in track) {
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: track.name,
+						artist: track.stream_url,
+						artwork: [{
+							sizes: '190x190',
+							src: OC.filePath('music', 'dist', radioIcon),
+							type: 'image/svg+xml'
+						}]
+					});
+				}
+				else {
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: track.title,
+						artist: track.artistName,
+						album: track.album.name,
+						artwork: [{
+							sizes: '190x190',
+							src: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+							type: ''
+						}]
+					});
+				}
 			}
 		});
 	}

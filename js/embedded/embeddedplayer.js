@@ -19,7 +19,7 @@ import radioIcon from '../../img/radio-file.svg';
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList) {
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio) {
 
 	var player = new OCA.Music.PlayerWrapper();
 
@@ -73,7 +73,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function previous() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs
-		if (playTime_s > 2.0) {
+		if (playTime_s > 2.0 && !isExternalStream()) {
 			player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -99,6 +99,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	function seekForward() {
 		player.seekForward();
+	}
+
+	function isExternalStream() {
+		return currentFileId === null;
 	}
 
 	function createPlaylistArea() {
@@ -141,7 +145,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		var ul = $(document.createElement('ul'));
 		menu.append(ul);
 
-		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import to Music'), onImportList));
+		ul.append(createMenuItem('playlist-menu-import-radio', 'icon-radio-nav svg', t('music', 'Import radio to Music'), onImportRadio));
+		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import list to Music'), onImportList));
 		ul.append(createMenuItem('playlist-menu-show', 'icon-menu', t('music', 'Show playlist'), onShowList));
 
 		return menu;
@@ -570,6 +575,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	};
 
 	this.playExtUrl = function(url, caption) {
+		currentFileId = null;
 		playUrl(url, null, '');
 		updateMetadata({
 			title: caption,

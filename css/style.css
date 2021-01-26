@@ -221,7 +221,8 @@ div:hover > .play-pause,
 }
 
 #toScan:hover *,
-#toRescan:hover * {
+#toRescan:hover *,
+#noStations:hover * {
 	color: #000;
 	opacity: 1;
 }

@@ -121,6 +121,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			matchingTracks = searchInGenresView(query);
 		} else if (view == '#/alltracks') {
 			matchingTracks = searchInAllTracksView(query);
+		} else if (view == '#/radio') {
+			matchingTracks = searchInRadioView(query);
 		} else if (view.startsWith('#/playlist/')) {
 			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
 		} else {
@@ -216,6 +218,15 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		// mark parent buckets
 		_(buckets).each(function(value, bucketId) {
 			$('#track-bucket-' + bucketId).addClass('matched');
+		});
+
+		return matches;
+	}
+
+	function searchInRadioView(query) {
+		var matches = libraryService.searchRadioStations(query, MAX_MATCHES_IN_PLAYLIST);
+		_(matches.result).each(function(station) {
+			$('#radio-station-' + station.id).addClass('matched');
 		});
 
 		return matches;

@@ -21,6 +21,7 @@ angular.module('Music').service('libraryService', [function() {
 	var playlists = null;
 	var folders = null;
 	var genres = null;
+	var radioStations = null;
 
 	/** 
 	 * Sort array according to a specified text field.
@@ -243,6 +244,21 @@ angular.module('Music').service('libraryService', [function() {
 				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
 			}
 		},
+		setRadioStations: function(radioStationsData) {
+			radioStations = _.map(radioStationsData, playlistEntry);
+			sortByPlaylistEntryField(radioStations, 'stream_url');
+			sortByPlaylistEntryField(radioStations, 'name');
+		},
+		addRadioStations: function(radioStationsData) {
+			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
+			sortByPlaylistEntryField(radioStations, 'stream_url');
+			sortByPlaylistEntryField(radioStations, 'name');
+		},
+		removeRadioStation: function(stationId) {
+			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
+			radioStations.splice(idx, 1);
+			return idx;
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -325,6 +341,9 @@ angular.module('Music').service('libraryService', [function() {
 		getAllGenres: function() {
 			return genres;
 		},
+		getRadioStations: function() {
+			return radioStations;
+		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -339,6 +358,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		genresLoaded: function() {
 			return genres !== null;
+		},
+		radioStationsLoaded: function() {
+			return radioStations !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
@@ -369,6 +391,10 @@ angular.module('Music').service('libraryService', [function() {
 			list = _.map(list.tracks, 'track');
 			list = _.uniq(list);
 			return search(list, ['title', 'artistName'], query, maxResults);
+		},
+		searchRadioStations: function(query, maxResults/*optional*/) {
+			var stations = _.map(radioStations, 'track');
+			return search(stations, ['name', 'stream_url'], query, maxResults);
 		},
 	};
 }]);

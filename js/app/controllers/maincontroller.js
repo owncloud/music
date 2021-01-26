@@ -28,7 +28,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;
-	playlistService.subscribe('trackChanged', function(e, listEntry){
+	playlistService.subscribe('trackChanged', function(e, listEntry) {
 		$scope.currentTrack = listEntry.track;
 		$scope.currentTrackIndex = playlistService.getCurrentIndex();
 	});
@@ -72,11 +72,24 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.radioCountText = function() {
+		if (libraryService.radioStationsLoaded()) {
+			var stationCount = libraryService.getRadioStations().length;
+			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
-			|| (contentNotReady && $rootScope.currentView != '#/settings');
+			|| (contentNotReady && $scope.viewingLibrary());
 	};
+
+	$scope.viewingLibrary = function() {
+		 return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
+	}
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
@@ -113,7 +126,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan)');
+			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan):not(#noStations)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -149,8 +162,16 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	};
 
-	// initial loading of artists
+	$scope.updateRadio = function() {
+		Restangular.one('radio').get().then(function(radioStations) {
+			libraryService.setRadioStations(radioStations);
+			$rootScope.$emit('radioStationsLoaded');
+		});
+	};
+
+	// initial loading of artists and radio stations
 	$scope.update();
+	$scope.updateRadio();
 
 	var FILES_TO_SCAN_PER_STEP = 10;
 	var filesToScan = null;
@@ -265,6 +286,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showAlbumDetails = function(album) {
 		showDetails('album', album.id);
+	};
+
+	$scope.showRadioHint = function() {
+		$rootScope.$emit('showRadioHint');
 	};
 
 	$scope.hideSidebar = function() {

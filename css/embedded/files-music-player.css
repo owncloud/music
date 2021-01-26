@@ -5,11 +5,15 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 .icon-music-dark {
 	background-image: url(../../img/music-dark.svg);
+}
+
+.icon-radio-nav {
+	background-image: url(../../img/radio.svg);
 }
 
 #music-controls {
@@ -139,6 +143,10 @@
 
 #music-controls #playlist-area .popovermenu ul li.disabled * {
 	cursor: default !important;
+}
+
+#music-controls #playlist-area .popovermenu .hidden {
+	display: none;
 }
 
 #music-controls .control.small {

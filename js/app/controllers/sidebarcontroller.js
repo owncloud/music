@@ -58,6 +58,10 @@ angular.module('Music').controller('SidebarController', [
 			showSidebar('playlist', playlistId);
 		});
 
+		$rootScope.$on('showRadioHint', function() {
+			showSidebar('radio', null);
+		});
+
 		$rootScope.$on('hideDetails', function() {
 			OC.Apps.hideAppSidebar();
 			$('#app-content').removeClass('with-app-sidebar');

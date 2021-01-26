@@ -14,6 +14,9 @@ HtmlUtil::printNgTemplate('navigationitem');
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}" icon="'library-music'"></li>
 		<li class="app-navigation-separator"></li>
+		<li navigation-item text="'Internet radio' | translate" destination="'#/radio'"
+			title="{{ radioCountText() }}" icon="'radio'"></li>
+		<li class="app-navigation-separator"></li>
 		<li class="music-navigation-item">
 			<div id="new-playlist" class="music-navigation-item-content">
 				<div class="icon-add" ng-click="startCreate()"></div>

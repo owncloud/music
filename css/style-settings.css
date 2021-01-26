@@ -59,7 +59,7 @@
 	width: 52px;
 }
 
-#music-user #reset-collection {
+#music-user .reset-button {
 	border: 0;
 	background-color: transparent;
 	vertical-align: middle;
@@ -67,7 +67,7 @@
 }
 
 #music-user #path-change-in-progress,
-#music-user #reset-in-progress {
+#music-user .reset-in-progress {
 	display: inline-block;
 	vertical-align: middle;
 	top: -3px;

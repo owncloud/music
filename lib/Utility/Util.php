@@ -20,13 +20,21 @@ use \OCP\Files\Folder;
 class Util {
 
 	/**
+	 * Map the given array by calling a named member function for each of the array elements
+	 */
+	public static function arrayMapMethod(array $arr, string $methodName) : array {
+		$func = function ($obj) use ($methodName) {
+			return $obj->$methodName();
+		};
+		return \array_map($func, $arr);
+	}
+
+	/**
 	 * Extract ID of each array element by calling getId and return
 	 * the IDs as an array
 	 */
 	public static function extractIds(array $arr) : array {
-		return \array_map(function ($i) {
-			return $i->getId();
-		}, $arr);
+		return self::arrayMapMethod($arr, 'getId');
 	}
 
 	/**
@@ -34,9 +42,7 @@ class Util {
 	 * the IDs as an array
 	 */
 	public static function extractUserIds(array $arr) : array {
-		return \array_map(function ($i) {
-			return $i->getUserId();
-		}, $arr);
+		return self::arrayMapMethod($arr, 'getUserId');
 	}
 
 	/**

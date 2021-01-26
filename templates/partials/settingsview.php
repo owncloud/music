@@ -50,11 +50,20 @@
 		<div class="label-container">
 			<label for="reset-collection" translate>Reset music collection</label>
 		</div>
-		<div class="icon-loading-small" ng-show="resetOngoing" id="reset-in-progress"></div>
-		<input type="button" ng-class="{ 'invisible': resetOngoing }" class="icon-delete"
-			id="reset-collection" ng-click="resetCollection()"/>
+		<div class="icon-loading-small reset-in-progress" ng-show="collectionResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': collectionResetOngoing }"
+			class="icon-delete reset-button" id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
 		<p><em translate>This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href="{{issueTrackerUrl}}" target="_blank">issue tracker</a>.</em></p>
+	</div>
+	<div>
+		<div class="label-container">
+			<label for="reset-radio" translate>Reset internet radio stations</label>
+		</div>
+		<div class="icon-loading-small reset-in-progress" ng-show="radioResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': radioResetOngoing }"
+			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
+		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
 	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
@@ -117,6 +126,21 @@
 			<p>music.cover_size</p>
 			<p><em translate>
 				Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer.
+			</em></p>
+		</div>
+		<div>
+			<p>music.allowed_radio_src</p>
+			<p><em translate translate-params-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'">
+				Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{url}}" target="_blank">media-src</a>.
+			</em></p>
+		</div>
+		<div>
+			<p>music.allowed_radio_hls_src</p>
+			<p><em translate
+					translate-params-connect-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/connect-src'"
+					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
+			>
+				Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{connectSrcUrl}}" target="_blank">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
 			</em></p>
 		</div>
 	</div>

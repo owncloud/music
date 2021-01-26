@@ -89,3 +89,7 @@
 .playlist-area .track-list li div:hover .action {
 	visibility: visible;
 }
+
+.playlist-area .track-list .icon-loading-small {
+	margin-bottom: -3px;
+}

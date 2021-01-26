@@ -131,7 +131,7 @@ angular.module('Music').controller('SettingsViewController', [
 				gettextCatalog.getString('Reset music collection'),
 				function(confirmed) {
 					if (confirmed) {
-						$scope.resetOngoing = true;
+						$scope.collectionResetOngoing = true;
 
 						// stop any ongoing scan before posting the reset command
 						$scope.$parent.stopScanning();
@@ -146,10 +146,10 @@ angular.module('Music').controller('SettingsViewController', [
 											parent.resetScanned();
 											parent.update();
 										}
-										$scope.resetOngoing = false;
+										$scope.collectionResetOngoing = false;
 									},
 									function(error) { // error handling
-										$scope.resetOngoing = false;
+										$scope.collectionResetOngoing = false;
 										OC.Notification.showTemporary(
 												gettextCatalog.getString('Failed to reset the collection: ') + error.status);
 									}
@@ -162,6 +162,36 @@ angular.module('Music').controller('SettingsViewController', [
 						// in undeterministic order. This is because modern browsers typically hold several
 						// TCP connections and successive messages are often sent through different TCP pipes.
 						$timeout(executeReset, 100);
+					}
+				},
+				true
+			);
+		};
+
+		$scope.resetRadio = function() {
+			OC.dialogs.confirm(
+				gettextCatalog.getString('Are you sure to permanently erase all the configured internet radio stations?'),
+				gettextCatalog.getString('Reset internet radio stations'),
+				function(confirmed) {
+					if (confirmed) {
+						$scope.radioResetOngoing = true;
+
+						// $scope.$parent may not be available any more in the callback in case
+						// the user has navigated to another view in the meantime
+						var parent = $scope.$parent;
+						Restangular.all('radio/reset').post().then(
+								function(data) {
+									if (data.success) {
+										parent.updateRadio();
+									}
+									$scope.radioResetOngoing = false;
+								},
+								function(error) { // error handling
+									$scope.radioResetOngoing = false;
+									OC.Notification.showTemporary(
+											gettextCatalog.getString('Failed to reset the radio stations: ') + error.status);
+								}
+							);
 					}
 				},
 				true

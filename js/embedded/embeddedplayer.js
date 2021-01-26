@@ -19,7 +19,7 @@ import radioIcon from '../../img/radio-file.svg';
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList) {
+OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio) {
 
 	var player = new OCA.Music.PlayerWrapper();
 
@@ -145,7 +145,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		var ul = $(document.createElement('ul'));
 		menu.append(ul);
 
-		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import to Music'), onImportList));
+		ul.append(createMenuItem('playlist-menu-import-radio', 'icon-radio-nav svg', t('music', 'Import radio to Music'), onImportRadio));
+		ul.append(createMenuItem('playlist-menu-import', 'icon-music-dark svg', t('music', 'Import list to Music'), onImportList));
 		ul.append(createMenuItem('playlist-menu-show', 'icon-menu', t('music', 'Show playlist'), onShowList));
 
 		return menu;

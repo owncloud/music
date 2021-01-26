@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 OCA.Music = OCA.Music || {};
@@ -38,7 +38,7 @@ OCA.Music.PlaylistFileService = function() {
 		}
 	};
 
-	this.importFile = function(file, onDone) {
+	this.importPlaylist = function(file, onDone) {
 		var name = OCA.Music.Utils.dropFileExtension(file.name);
 		var path = OCA.Music.Utils.joinPath(file.path, file.name);
 
@@ -64,6 +64,25 @@ OCA.Music.PlaylistFileService = function() {
 
 		}).fail(function() {
 			OC.Notification.showTemporary(t('music', 'Failed to create a new playlist'));
+			onDone(false);
+		});
+	};
+
+	this.importRadio = function(file, onDone) {
+		var path = OCA.Music.Utils.joinPath(file.path, file.name);
+
+		var url = OC.generateUrl('apps/music/api/radio/import');
+
+		$.post(url, {filePath: path}, function(result) {
+			var message = t('music', 'Imported {count} radio stations.', { count: result.stations.length });
+			if (result.failed_count > 0) {
+				message += ' ' + t('music', '{count} entries were skipped.', { count: result.failed_count });
+			}
+			OC.Notification.showTemporary(message);
+			onDone(true);
+		}).fail(function() {
+			OC.Notification.showTemporary(
+					t('music', 'Failed to import the playlist file {file}', { file: file.name }));
 			onDone(false);
 		});
 	};

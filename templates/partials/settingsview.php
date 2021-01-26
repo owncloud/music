@@ -118,8 +118,11 @@
 		</p>
 		<div>
 			<p>music.lastfm_api_key</p>
-			<p><em translate translate-params-url="'https://www.last.fm/api/account/create'">
-				To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{url}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key.
+			<p><em translate 
+					translate-params-lastfm-url="'https://www.last.fm/api/account/create'"
+					translate-params-guide-url="'https://github.com/owncloud/music/wiki/Setting-up-Last.fm-connection'"
+			>
+				To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href="{{lastfmUrl}}" target="_blank">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key. For more details, see the <a href="{{guideUrl}}" target="_blank">tutorial</a>.
 			</em></p>
 		</div>
 		<div>

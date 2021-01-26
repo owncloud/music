@@ -43,7 +43,7 @@ class RadioApiController extends Controller {
 		parent::__construct($appname, $request);
 		$this->businessLayer = $businessLayer;
 		$this->playlistFileService = $playlistFileService;
-		$this->userId = $userId;
+		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->userFolder = $userFolder;
 		$this->logger = $logger;
 	}
@@ -149,6 +149,11 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function exportAllToFile(string $name, string $path, string $oncollision) {
+		if ($this->userFolder === null) {
+			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
+			// But in that case, the framework should block the execution before it reaches here.
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
+		}
 		try {
 			$exportedFilePath = $this->playlistFileService->exportRadioStationsToFile(
 					$this->userId, $this->userFolder, $path, $name . '.m3u8', $oncollision);
@@ -170,6 +175,11 @@ class RadioApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function importFromFile(string $filePath) {
+		if ($this->userFolder === null) {
+			// This shouldn't get actually run. The folder may be null in case the user has already logged out.
+			// But in that case, the framework should block the execution before it reaches here.
+			return new ErrorResponse(Http::STATUS_UNAUTHORIZED, 'no valid user folder got');
+		}
 		try {
 			$result = $this->playlistFileService->importRadioStationsFromFile($this->userId, $this->userFolder, $filePath);
 			$result['stations'] = Util::arrayMapMethod($result['stations'], 'toApi');

@@ -52,7 +52,7 @@ class SettingController extends Controller {
 
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->scanner = $scanner;
-		$this->userId = $userId;
+		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->userMusicFolder = $userMusicFolder;
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;

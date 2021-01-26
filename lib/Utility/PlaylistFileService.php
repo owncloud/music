@@ -231,7 +231,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException
 	 * @return array
 	 */
-	private function doParseFile(File $file, ?Folder $baseFolder, int $mode) : array {
+	private function doParseFile(File $file, Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {

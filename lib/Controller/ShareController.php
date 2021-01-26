@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Controller;
@@ -55,7 +55,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function fileInfo($token, $fileId) {
+	public function fileInfo(string $token, int $fileId) {
 		$share = $this->shareManager->getShareByToken($token);
 		$fileOwner = $share->getShareOwner();
 		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);
@@ -70,7 +70,7 @@ class ShareController extends Controller {
 			$folder = $matchingFolders[0] ?? null;
 			if (!($folder instanceof Folder) || empty($folder->getById($fileId))) {
 				// no such shared folder or the folder does not contain the given file
-				$fileId = null;
+				$fileId = -1;
 			}
 		}
 
@@ -87,7 +87,7 @@ class ShareController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function parsePlaylist($token, $fileId) {
+	public function parsePlaylist(string $token, int $fileId) {
 		$share = $this->shareManager->getShareByToken($token);
 		$fileOwner = $share->getShareOwner();
 		$fileOwnerHome = $this->scanner->resolveUserFolder($fileOwner);

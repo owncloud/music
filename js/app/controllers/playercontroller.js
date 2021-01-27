@@ -7,14 +7,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 import radioIcon from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'Restangular', 'gettextCatalog', '$timeout', '$document',
-function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalog, $timeout, $document) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', '$timeout', '$document',
+function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, $document) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -329,6 +329,48 @@ function ($scope, $rootScope, playlistService, Audio, Restangular, gettextCatalo
 
 	$scope.secondaryTitle = function() {
 		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.stream_url ?? null;
+	};
+
+	const playScopeNames = {
+		'albums'	: gettextCatalog.getString('Albums'),
+		'folders'	: gettextCatalog.getString('Folders'),
+		'genres'	: gettextCatalog.getString('Genres'),
+		'alltracks'	: gettextCatalog.getString('All tracks'),
+		'radio'		: gettextCatalog.getString('Internet radio'),
+		'album'		: gettextCatalog.getString('Album'),
+		'artist'	: gettextCatalog.getString('Artist'),
+		'folder'	: gettextCatalog.getString('Folder'),
+		'genre'		: gettextCatalog.getString('Genre'),
+		'playlist'	: gettextCatalog.getString('Playlist')
+	};
+
+	function playScopeName() {
+		var listId = playlistService.getCurrentPlaylistId();
+		var key = listId.split('-', 1)[0];
+		return playScopeNames[key];
+	}
+
+	$scope.shuffleTooltip = function() {
+		var command = gettextCatalog.getString('Shuffle');
+		var cmdScope = $scope.shuffle ? playScopeName() : gettextCatalog.getString('Off');
+		return command + ' (' + cmdScope + ')';
+	};
+
+	$scope.repeatTooltip = function() {
+		var command = gettextCatalog.getString('Repeat');
+		var cmdScope = '';
+		switch ($scope.repeat) {
+			case 'false':
+				cmdScope = gettextCatalog.getString('Off');
+				break;
+			case 'one':
+				cmdScope = gettextCatalog.getString('Track');
+				break;
+			case 'true':
+				cmdScope = playScopeName();
+				break;
+		}
+		return command + ' (' + cmdScope + ')';
 	};
 
 	/**

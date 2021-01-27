@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Utility;
@@ -514,7 +514,7 @@ class Scanner extends PublicEmitter {
 		$count = \count($unavailableFiles);
 		if ($count > 0) {
 			$this->logger->log('The following files are no longer available within the library of the '.
-								"user $userId, removing: " . \print_r($unavailableFiles, true), 'info');
+				"user $userId, removing: " . /** @scrutinizer ignore-type */ \print_r($unavailableFiles, true), 'info');
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
 		return $count;

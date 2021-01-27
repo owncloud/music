@@ -294,8 +294,8 @@ class PlaylistFileService {
 
 		$fp = $file->fopen('r');
 		while ($line = \fgets($fp)) {
-			$line = \mb_convert_encoding($line, \mb_internal_encoding(), $encoding);
-			$line = \trim($line);
+			$line = \mb_convert_encoding($line, /** @scrutinizer ignore-type */ \mb_internal_encoding(), $encoding);
+			$line = \trim(/** @scrutinizer ignore-type */ $line);
 
 			if ($line === '') {
 				// empty line => skip
@@ -339,7 +339,7 @@ class PlaylistFileService {
 		$fp = \fopen("php://temp", 'r+');
 		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
 
-		\fputs($fp, $content);
+		\fputs($fp, /** @scrutinizer ignore-type */ $content);
 		\rewind($fp);
 
 		// the first line should always be [playlist]

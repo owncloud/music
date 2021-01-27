@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Utility;
@@ -45,7 +45,7 @@ class Random {
 			return [];
 		} else {
 			$indices = \array_rand($itemArray, $count);
-			if ($count == 1) { // return type is not array when randomizing a single index
+			if (!\is_array($indices)) { // array_rand does not return an array if $count == 1
 				$indices = [$indices];
 			}
 			\shuffle($indices);

@@ -371,7 +371,7 @@ class SubsonicController extends Controller {
 	 */
 	private function getCoverArt() {
 		$id = $this->getRequiredParam('id');
-		$size = (int)$this->request->getParam('size');
+		$size = (int)$this->request->getParam('size') ?: null; // null should not be int-casted
 
 		$idParts = \explode('-', $id);
 		$type = $idParts[0];

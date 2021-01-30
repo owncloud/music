@@ -294,7 +294,9 @@ angular.module('Music').controller('NavigationController', [
 				playlistService.onTracksAdded(newTracks);
 			}
 
-			Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')});
+			Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
+				playlist.updated = result.updated;
+			});
 		}
 	}
 ]);

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -161,6 +161,28 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see \OCP\AppFramework\Db\Mapper::insert()
+	 */
+	public function insert(Entity $entity) : Entity {
+		$now = new \DateTime();
+		$nowStr = $now->format(self::SQL_DATE_FORMAT);
+		$entity->setCreated($nowStr);
+		$entity->setUpdated($nowStr);
+		return parent::insert($entity);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \OCP\AppFramework\Db\Mapper::update()
+	 */
+	public function update(Entity $entity) : Entity {
+		$now = new \DateTime();
+		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
+		return parent::update($entity);
+	}
+
+	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
 	 * @return Entity The inserted or updated entity, containing also the id field
@@ -171,6 +193,7 @@ abstract class BaseMapper extends Mapper {
 		} catch (UniqueConstraintViolationException $ex) {
 			$existingEntity = $this->findUniqueEntity($entity);
 			$entity->setId($existingEntity->getId());
+			$entity->setCreated($existingEntity->getCreated());
 			return $this->update($entity);
 		}
 	}

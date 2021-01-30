@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Db;
@@ -23,12 +23,18 @@ use \OCP\AppFramework\Db\Entity;
  * @method setStreamUrl(string $url)
  * @method string getHomeUrl()
  * @method setHomeUrl(string $url)
+ * @method string getCreated()
+ * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  */
 class RadioStation extends Entity {
 	public $userId;
 	public $name;
 	public $streamUrl;
 	public $homeUrl;
+	public $created;
+	public $updated;
 
 	public function toApi() : array {
 		return [

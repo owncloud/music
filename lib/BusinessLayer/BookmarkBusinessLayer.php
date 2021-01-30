@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -17,7 +17,6 @@ namespace OCA\Music\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\BaseMapper;
 use \OCA\Music\Db\BookmarkMapper;
 use \OCA\Music\Db\Bookmark;
 
@@ -49,21 +48,11 @@ class BookmarkBusinessLayer extends BusinessLayer {
 	 * @return Bookmark
 	 */
 	public function addOrUpdate($userId, $trackId, $position, $comment) {
-		$updateTime = new \DateTime();
-		$updateTime = $updateTime->format(BaseMapper::SQL_DATE_FORMAT);
-
-		try {
-			$bookmark = $this->findByTrack($trackId, $userId);
-		} catch (DoesNotExistException $e) {
-			$bookmark = new Bookmark();
-			$bookmark->setCreated($updateTime);
-		}
-
+		$bookmark = new Bookmark();
 		$bookmark->setUserId($userId);
 		$bookmark->setTrackId($trackId);
 		$bookmark->setPosition($position);
 		$bookmark->setComment(Util::truncate($comment, 256));
-		$bookmark->setUpdated($updateTime);
 
 		return $this->mapper->insertOrUpdate($bookmark);
 	}

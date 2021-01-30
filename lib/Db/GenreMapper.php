@@ -49,6 +49,8 @@ class GenreMapper extends BaseMapper {
 					`*PREFIX*music_genres`.`id`,
 					`*PREFIX*music_genres`.`name`,
 					`*PREFIX*music_genres`.`lower_name`,
+					`*PREFIX*music_genres`.`created`,
+					`*PREFIX*music_genres`.`updated`,
 					COUNT(`track`.`id`) AS `trackCount`,
 					COUNT(DISTINCT(`track`.`album_id`)) AS `albumCount`,
 					COUNT(DISTINCT(`track`.`artist_id`)) AS `artistCount`
@@ -56,7 +58,12 @@ class GenreMapper extends BaseMapper {
 				LEFT JOIN `*PREFIX*music_tracks` `track`
 				ON `track`.`genre_id` = `*PREFIX*music_genres`.`id`
 				WHERE $condition
-				GROUP BY `*PREFIX*music_genres`.`id`, `*PREFIX*music_genres`.`name`, `*PREFIX*music_genres`.`lower_name`
+				GROUP BY
+					`*PREFIX*music_genres`.`id`,
+					`*PREFIX*music_genres`.`name`,
+					`*PREFIX*music_genres`.`lower_name`,
+					`*PREFIX*music_genres`.`created`,
+					`*PREFIX*music_genres`.`updated`
 				$extension";
 	}
 }

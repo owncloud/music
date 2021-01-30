@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -25,6 +25,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method setUserId(string $userId)
  * @method string getCreated()
  * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  * @method string getComment()
  * @method setComment(string $comment)
  */
@@ -33,6 +35,7 @@ class Playlist extends Entity {
 	public $userId;
 	public $trackIds;
 	public $created;
+	public $updated;
 	public $comment;
 
 	/**

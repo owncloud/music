@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -32,6 +32,10 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
+ * @method string getCreated()
+ * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  * @method ?string getLastfmUrl()
  * @method void setLastfmUrl(?string $lastfmUrl)
  */
@@ -42,6 +46,8 @@ class Artist extends Entity {
 	public $mbid;
 	public $hash;
 	public $starred;
+	public $created;
+	public $updated;
 
 	// not part of the standard content, injected separately when needed
 	public $lastfmUrl;

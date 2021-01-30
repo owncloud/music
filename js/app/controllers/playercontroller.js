@@ -346,8 +346,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 	function playScopeName() {
 		var listId = playlistService.getCurrentPlaylistId();
-		var key = listId.split('-', 1)[0];
-		return playScopeNames[key];
+		if (listId !== null) {
+			var key = listId.split('-', 1)[0];
+			return playScopeNames[key];
+		} else {
+			return '';
+		}
 	}
 
 	$scope.shuffleTooltip = function() {

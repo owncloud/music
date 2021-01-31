@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -120,11 +120,16 @@ abstract class BusinessLayer {
 	 * @param integer $sortBy sort order of the result set
 	 * @param integer|null $limit
 	 * @param integer|null $offset
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
 	 */
 	public function findAll(
-			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
-		return $this->mapper->findAll($userId, $sortBy, $limit, $offset);
+			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		return $this->mapper->findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
 	/**
@@ -134,11 +139,16 @@ abstract class BusinessLayer {
 	 * @param bool $fuzzy
 	 * @param integer|null $limit
 	 * @param integer|null $offset
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null) : array {
-		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset);
+			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
 	/**

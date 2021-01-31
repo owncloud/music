@@ -149,20 +149,20 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * Overridden from \OCA\Music\Db\BaseMapper to add support for sorting by artist.
 	 *
-	 * @param string $userId
-	 * @param integer $sortBy sort order of the result set
-	 * @param integer|null $limit
-	 * @param integer|null $offset
+	 * {@inheritdoc}
+	 * @see BaseMapper::findAll()
 	 * @return Album[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		if ($sortBy === SortBy::Parent) {
 			$sorting = 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
-			$sql = $this->selectUserEntities('', $sorting);
-			$params = [$userId];
+			[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+			$sql = $this->selectUserEntities($condition, $sorting);
+			\array_unshift($params, $userId);
 			return $this->findEntities($sql, $params, $limit, $offset);
 		} else {
-			return parent::findAll($userId, $sortBy, $limit, $offset);
+			return parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		}
 	}
 

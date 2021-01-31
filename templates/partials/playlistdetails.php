@@ -12,6 +12,9 @@
 		<dt translate>Created</dt>
 		<dd>{{ createdDate }}</dd>
 
+		<dt translate>Updated</dt>
+		<dd>{{ updatedDate }}</dd>
+
 		<dt translate>Comment</dt>
 		<dd class="clickable" ng-click="startEdit()"
 			><span ng-show="!editing">{{ playlist.comment }}<button class="icon-rename"></button></span

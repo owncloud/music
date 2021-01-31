@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -55,6 +55,10 @@ use \OCA\Music\Utility\Util;
  * @method void setStarred(string $timestamp)
  * @method int getGenreId()
  * @method void setGenreId(int $genreId)
+ * @method string getCreated()
+ * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  * @method string getGenreName()
  * @method void setGenreName(string $genreName)
  * @method string getFilename()
@@ -80,6 +84,8 @@ class Track extends Entity {
 	public $mbid;
 	public $starred;
 	public $genreId;
+	public $created;
+	public $updated;
 	public $filename;
 	public $size;
 	// not from the music_tracks table but still part of the standard content of this entity:

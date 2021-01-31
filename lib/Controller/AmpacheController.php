@@ -129,9 +129,9 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function xmlApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
+	public function xmlApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id, $add, $update) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
-		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id);
+		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id, $add, $update);
 	}
 
 	/**
@@ -139,12 +139,12 @@ class AmpacheController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function jsonApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
+	public function jsonApi($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id, $add, $update) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
-		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id);
+		return $this->dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id, $add, $update);
 	}
 
-	protected function dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id) {
+	protected function dispatch($action, $user, $timestamp, $auth, $filter, $exact, $limit, $offset, $id, $add, $update) {
 		$this->logger->log("Ampache action '$action' requested", 'debug');
 
 		$limit = self::validateLimitOrOffset($limit);
@@ -158,11 +158,11 @@ class AmpacheController extends Controller {
 			case 'ping':
 				return $this->ping($auth);
 			case 'get_indexes':
-				return $this->get_indexes($filter, $limit, $offset);
+				return $this->get_indexes($filter, $limit, $offset, $add, $update);
 			case 'stats':
 				return $this->stats($filter, $limit, $offset, $auth);
 			case 'artists':
-				return $this->artists($filter, $exact, $limit, $offset, $auth);
+				return $this->artists($filter, $exact, $limit, $offset, $add, $update, $auth);
 			case 'artist':
 				return $this->artist((int)$filter, $auth);
 			case 'artist_albums':
@@ -170,19 +170,19 @@ class AmpacheController extends Controller {
 			case 'album_songs':
 				return $this->album_songs((int)$filter, $auth);
 			case 'albums':
-				return $this->albums($filter, $exact, $limit, $offset, $auth);
+				return $this->albums($filter, $exact, $limit, $offset, $add, $update, $auth);
 			case 'album':
 				return $this->album((int)$filter, $auth);
 			case 'artist_songs':
 				return $this->artist_songs((int)$filter, $auth);
 			case 'songs':
-				return $this->songs($filter, $exact, $limit, $offset, $auth);
+				return $this->songs($filter, $exact, $limit, $offset, $add, $update, $auth);
 			case 'song':
 				return $this->song((int)$filter, $auth);
 			case 'search_songs':
 				return $this->search_songs($filter, $auth);
 			case 'playlists':
-				return $this->playlists($filter, $exact, $limit, $offset);
+				return $this->playlists($filter, $exact, $limit, $offset, $add, $update);
 			case 'playlist':
 				return $this->playlist((int)$filter);
 			case 'playlist_songs':
@@ -235,20 +235,20 @@ class AmpacheController extends Controller {
 		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
 		$token = $this->startNewSession($user, $expiryDate);
 
-		$currentTimeFormated = \date('c', $currentTime);
-		$expiryDateFormated = \date('c', $expiryDate);
+		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
+		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 
 		return $this->ampacheResponse([
 			'auth' => $token,
 			'api' => self::API_VERSION,
-			'update' => $currentTimeFormated,
-			'add' => $currentTimeFormated,
-			'clean' => $currentTimeFormated,
+			'update' => $updateTime->format('c'),
+			'add' => $addTime->format('c'),
+			'clean' => \date('c', $currentTime), // TODO: actual time of the latest item removal
 			'songs' => $this->trackBusinessLayer->count($user),
 			'artists' => $this->artistBusinessLayer->count($user),
 			'albums' => $this->albumBusinessLayer->count($user),
 			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
-			'session_expire' => $expiryDateFormated,
+			'session_expire' => \date('c', $expiryDate),
 			'tags' => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
 			'catalogs' => 0
@@ -279,12 +279,11 @@ class AmpacheController extends Controller {
 		return $this->ampacheResponse($response);
 	}
 
-	protected function get_indexes($filter, $limit, $offset) {
-		// TODO: args $add, $update
+	protected function get_indexes($filter, $limit, $offset, $add, $update) {
 		$type = $this->getRequiredParam('type');
 
 		$businessLayer = $this->getBusinessLayer($type);
-		$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset);
+		$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
 		return $this->renderEntitiesIndex($entities, $type);
 	}
 
@@ -328,8 +327,8 @@ class AmpacheController extends Controller {
 		return $this->renderEntities($entities, $type, $auth);
 	}
 
-	protected function artists($filter, $exact, $limit, $offset, $auth) {
-		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset);
+	protected function artists($filter, $exact, $limit, $offset, $add, $update, $auth) {
+		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderArtists($artists, $auth);
 	}
 
@@ -371,16 +370,16 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($trackInArray, $auth);
 	}
 
-	protected function songs($filter, $exact, $limit, $offset, $auth) {
+	protected function songs($filter, $exact, $limit, $offset, $add, $update, $auth) {
 
 		// optimized handling for fetching the whole library
 		// note: the ordering of the songs differs between these two cases
-		if (empty($filter) && !$limit && !$offset) {
+		if (empty($filter) && !$limit && !$offset && empty($add) && empty($update)) {
 			$tracks = $this->getAllTracks();
 		}
 		// general case
 		else {
-			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset);
+			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		}
 
 		return $this->renderSongs($tracks, $auth);
@@ -392,8 +391,8 @@ class AmpacheController extends Controller {
 		return $this->renderSongs($tracks, $auth);
 	}
 
-	protected function albums($filter, $exact, $limit, $offset, $auth) {
-		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset);
+	protected function albums($filter, $exact, $limit, $offset, $add, $update, $auth) {
+		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderAlbums($albums, $auth);
 	}
 
@@ -403,13 +402,14 @@ class AmpacheController extends Controller {
 		return $this->renderAlbums([$album], $auth);
 	}
 
-	protected function playlists($filter, $exact, $limit, $offset) {
+	protected function playlists($filter, $exact, $limit, $offset, $add, $update) {
 		$userId = $this->ampacheUser->getUserId();
-		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset);
+		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 
 		// append "All tracks" if not searching by name, and it is not off-limit
 		$allTracksIndex = $this->playlistBusinessLayer->count($userId);
-		if (empty($filter) && self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
+		if (empty($filter) && empty($add) && empty($update)
+				&& self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
 			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}
 
@@ -811,14 +811,25 @@ class AmpacheController extends Controller {
 		return $token;
 	}
 
-	private function findEntities(BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null) {
+	private function findEntities(
+			BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null, $add=null, $update=null) : array {
+
 		$userId = $this->ampacheUser->getUserId();
+
+		// It's not documented, but Ampache supports also specifying date range on `add` and `update` parameters
+		// by using '/' as separator. If there is no such separator, then the value is used as a lower limit.
+		$add = Util::explode('/', $add);
+		$update = Util::explode('/', $update);
+		$addMin = $add[0] ?? null;
+		$addMax = $add[1] ?? null;
+		$updateMin = $update[0] ?? null;
+		$updateMax = $update[1] ?? null;
 
 		if ($filter) {
 			$fuzzy = !((boolean) $exact);
-			return $businessLayer->findAllByName($filter, $userId, $fuzzy, $limit, $offset);
+			return $businessLayer->findAllByName($filter, $userId, $fuzzy, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
 		} else {
-			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset);
+			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
 		}
 	}
 
@@ -869,7 +880,7 @@ class AmpacheController extends Controller {
 	 * @param string $value
 	 * @return integer|null
 	 */
-	private static function validateLimitOrOffset($value) {
+	private static function validateLimitOrOffset($value) : ?int {
 		if (\ctype_digit(\strval($value)) && $value !== 0) {
 			return \intval($value);
 		} else {

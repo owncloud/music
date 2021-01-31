@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -74,9 +74,6 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$playlist = new Playlist();
 		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
-
-		$now = new \DateTime();
-		$playlist->setCreated($now->format(PlaylistMapper::SQL_DATE_FORMAT));
 
 		return $this->mapper->insert($playlist);
 	}

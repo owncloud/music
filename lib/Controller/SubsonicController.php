@@ -1074,7 +1074,8 @@ class SubsonicController extends Controller {
 	private function albumCommonApiFields($album) {
 		$result = [
 			'id' => 'album-' . $album->getId(),
-			'artist' => $album->getAlbumArtistNameString($this->l10n)
+			'artist' => $album->getAlbumArtistNameString($this->l10n),
+			'created' => $this->formatDateTime($album->getCreated())
 		];
 
 		if (!empty($album->getCoverFileId())) {
@@ -1133,7 +1134,8 @@ class SubsonicController extends Controller {
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $track->getArtistId(),
-			'type' => 'music'
+			'type' => 'music',
+			'created' => $this->formatDateTime($track->getCreated())
 		];
 
 		if ($album !== null && !empty($album->getCoverFileId())) {
@@ -1170,7 +1172,7 @@ class SubsonicController extends Controller {
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
 			'comment' => $playlist->getComment() ?: '',
 			'created' => $this->formatDateTime($playlist->getCreated()),
-			//'changed' => '' // added and required in API 1.13.0
+			'changed' => $this->formatDateTime($playlist->getUpdated())
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
 		];
 	}
@@ -1417,16 +1419,18 @@ class SubsonicController extends Controller {
 
 	/**
 	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
-	 * @param string $id
-	 * @return integer
 	 */
-	private static function ripIdPrefix($id) {
+	private static function ripIdPrefix(string $id) : int {
 		return (int)(\explode('-', $id)[1]);
 	}
 
-	private function formatDateTime($dateString) {
-		$dateTime = new \DateTime($dateString);
-		return $dateTime->format('Y-m-d\TH:i:s.v\Z');
+	private function formatDateTime(?string $dateString) : ?string {
+		if ($dateString !== null) {
+			$dateTime = new \DateTime($dateString);
+			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
+		} else {
+			return null;
+		}
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

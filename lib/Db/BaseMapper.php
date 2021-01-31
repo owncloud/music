@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -72,9 +72,14 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * Find all user's entities
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		if ($sortBy == SortBy::Name) {
 			$sorting = "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
 		} elseif ($sortBy == SortBy::Newest) {
@@ -82,17 +87,24 @@ abstract class BaseMapper extends Mapper {
 		} else {
 			$sorting = null;
 		}
-		$sql = $this->selectUserEntities('', $sorting);
-		$params = [$userId];
+		[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+		$sql = $this->selectUserEntities($condition, $sorting);
+		\array_unshift($params, $userId);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
 	 * Find all user's entities matching the given name
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
 	 */
 	public function findAllByName(
-			?string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null) : array {
+		?string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
+		?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+
 		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
 		if ($name === null) {
 			$condition = "$nameCol IS NULL";
@@ -104,6 +116,13 @@ abstract class BaseMapper extends Mapper {
 			$condition = "$nameCol = ?";
 			$params = [$userId, $name];
 		}
+
+		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+		if (!empty($timestampConds)) {
+			$condition .= ' AND ' . $timestampConds;
+			$params = \array_merge($params, $timestampParams);
+		}
+
 		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER($nameCol)");
 
 		return $this->findEntities($sql, $params, $limit, $offset);
@@ -161,6 +180,28 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see \OCP\AppFramework\Db\Mapper::insert()
+	 */
+	public function insert(Entity $entity) : Entity {
+		$now = new \DateTime();
+		$nowStr = $now->format(self::SQL_DATE_FORMAT);
+		$entity->setCreated($nowStr);
+		$entity->setUpdated($nowStr);
+		return parent::insert($entity);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \OCP\AppFramework\Db\Mapper::update()
+	 */
+	public function update(Entity $entity) : Entity {
+		$now = new \DateTime();
+		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
+		return parent::update($entity);
+	}
+
+	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
 	 * @return Entity The inserted or updated entity, containing also the id field
@@ -171,6 +212,7 @@ abstract class BaseMapper extends Mapper {
 		} catch (UniqueConstraintViolationException $ex) {
 			$existingEntity = $this->findUniqueEntity($entity);
 			$entity->setId($existingEntity->getId());
+			$entity->setCreated($existingEntity->getCreated());
 			return $this->update($entity);
 		}
 	}
@@ -192,6 +234,22 @@ abstract class BaseMapper extends Mapper {
 				WHERE `id` IN {$this->questionMarks($count)} AND `user_id` = ?";
 		$params = \array_merge([$date], $ids, [$userId]);
 		return $this->execute($sql, $params)->rowCount();
+	}
+
+	public function latestInsertTime(string $userId) : ?\DateTime {
+		$sql = "SELECT MAX(`{$this->getTableName()}`.`created`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+
+		return ($createdTime === null) ? null : new \DateTime($createdTime);
+	}
+
+	public function latestUpdateTime(string $userId) : ?\DateTime {
+		$sql = "SELECT MAX(`{$this->getTableName()}`.`updated`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+
+		return ($createdTime === null) ? null : new \DateTime($createdTime);
 	}
 
 	/**
@@ -233,6 +291,36 @@ abstract class BaseMapper extends Mapper {
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
+	}
+
+	/**
+	 * @return array with two values: The SQL condition as string and the SQL parameters as string[]
+	 */
+	protected function formatTimestampConditions(?string $createdMin, ?string $createdMax, ?string $updatedMin, ?string $updatedMax) : array {
+		$conditions = [];
+		$params = [];
+		
+		if (!empty($createdMin)) {
+			$conditions[] = "`{$this->getTableName()}`.`created` >= ?";
+			$params[] = $createdMin;
+		}
+		
+		if (!empty($createdMax)) {
+			$conditions[] = "`{$this->getTableName()}`.`created` <= ?";
+			$params[] = $createdMax;
+		}
+		
+		if (!empty($updatedMin)) {
+			$conditions[] = "`{$this->getTableName()}`.`updated` >= ?";
+			$params[] = $updatedMin;
+		}
+		
+		if (!empty($updatedMax)) {
+			$conditions[] = "`{$this->getTableName()}`.`updated` <= ?";
+			$params[] = $updatedMax;
+		}
+		
+		return [\implode(' AND ', $conditions), $params];
 	}
 
 	/**

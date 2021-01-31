@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -37,10 +37,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Return an album
-	 * @param integer $albumId the id of the album
-	 * @param string $userId the name of the user
-	 * @return Album album
+	 * {@inheritdoc}
+	 * @see BusinessLayer::find()
+	 * @return Album
 	 */
 	public function find(int $albumId, string $userId) : Entity {
 		$album = parent::find($albumId, $userId);
@@ -48,15 +47,13 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Returns all albums
-	 * @param string $userId the name of the user
-	 * @param integer $sortBy Sorting order of the result, default to unspecified
-	 * @param integer|null $limit
-	 * @param integer|null $offset
-	 * @return Album[] albums
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAll()
+	 * @return Album[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null) : array {
-		$albums = parent::findAll($userId, $sortBy, $limit, $offset);
+	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		$albums = parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId, true);
 	}
 
@@ -134,17 +131,14 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Return all albums with name matching the search criteria
-	 * @param string $name
-	 * @param string $userId
-	 * @param bool $fuzzy
-	 * @param integer $limit
-	 * @param integer $offset
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllByName()
 	 * @return Album[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null) : array {
-		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset);
+			string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

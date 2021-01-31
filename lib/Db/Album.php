@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -47,6 +47,10 @@ use \OCA\Music\Utility\Util;
  * @method void setNumberOfDisks(int $count)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
+ * @method string getCreated()
+ * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  * @method array getGenres()
  * @method void setGenres(array $genres)
  */
@@ -60,6 +64,8 @@ class Album extends Entity {
 	public $albumArtistId;
 	public $hash;
 	public $starred;
+	public $created;
+	public $updated;
 	public $albumArtistName; // not from music_albums table but still part of the standard content
 
 	// these don't come from the music_albums table

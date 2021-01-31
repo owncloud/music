@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -103,5 +103,27 @@ class Library {
 		}
 
 		return $collection;
+	}
+
+	/**
+	 * Get the timestamp of the latest insert operation on the library
+	 */
+	public function latestInsertTime(string $userId) : \DateTime {
+		return \max(
+			$this->artistBusinessLayer->latestInsertTime($userId),
+			$this->albumBusinessLayer->latestInsertTime($userId),
+			$this->trackBusinessLayer->latestInsertTime($userId)
+		);
+	}
+
+	/**
+	 * Get the timestamp of the latest update operation on the library
+	 */
+	public function latestUpdateTime(string $userId) : \DateTime {
+		return \max(
+			$this->artistBusinessLayer->latestUpdateTime($userId),
+			$this->albumBusinessLayer->latestUpdateTime($userId),
+			$this->trackBusinessLayer->latestUpdateTime($userId)
+		);
 	}
 }

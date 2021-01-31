@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 
@@ -17,18 +17,28 @@ angular.module('Music').controller('PlaylistDetailsController', [
 			$scope.playlist = null;
 			$scope.totalLength = null;
 			$scope.createdDate = null;
+			$scope.updatedDate = null;
 			$scope.editing = false;
 		}
 		resetContents();
+
+		function formatTimestamp(timestamp) {
+			var date = new Date(timestamp + 'Z');
+			return date.toLocaleString();
+		}
 
 		$scope.$watch('contentId', function(playlistId) {
 			if (!$scope.playlist || playlistId != $scope.playlist.id) {
 				resetContents();
 				$scope.playlist = libraryService.getPlaylist(playlistId);
 
-				var date = new Date($scope.playlist.created + 'Z');
-				$scope.createdDate = date.toLocaleString();
+				$scope.createdDate = formatTimestamp($scope.playlist.created);
+				$scope.updatedDate = formatTimestamp($scope.playlist.updated);
 			}
+		});
+
+		$scope.$watch('playlist.updated', function(updated) {
+			$scope.updatedDate = formatTimestamp(updated);
 		});
 
 		$scope.$watchCollection('playlist.tracks', function() {

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Db;
@@ -22,6 +22,10 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setName(string $name)
  * @method string getLowerName()
  * @method void setLowerName(string $lowerName)
+ * @method string getCreated()
+ * @method setCreated(string $timestamp)
+ * @method string getUpdated()
+ * @method setUpdated(string $timestamp)
  * @method int getTrackCount()
  * @method void setTrackCount(int $count)
  * @method int getAlbumCount()
@@ -35,6 +39,8 @@ class Genre extends Entity {
 	public $userId;
 	public $name;
 	public $lowerName;
+	public $created;
+	public $updated;
 	// not from the music_genres table but still part of the standard content of this entity
 	public $trackCount;
 	public $albumCount;

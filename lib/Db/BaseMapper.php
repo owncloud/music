@@ -236,6 +236,22 @@ abstract class BaseMapper extends Mapper {
 		return $this->execute($sql, $params)->rowCount();
 	}
 
+	public function latestInsertTime(string $userId) : ?\DateTime {
+		$sql = "SELECT MAX(`{$this->getTableName()}`.`created`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+
+		return ($createdTime === null) ? null : new \DateTime($createdTime);
+	}
+
+	public function latestUpdateTime(string $userId) : ?\DateTime {
+		$sql = "SELECT MAX(`{$this->getTableName()}`.`updated`) FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+		$createdTime = $result->fetch(\PDO::FETCH_COLUMN);
+
+		return ($createdTime === null) ? null : new \DateTime($createdTime);
+	}
+
 	/**
 	 * helper creating a string like '(?,?,?)' with the specified number of elements
 	 */

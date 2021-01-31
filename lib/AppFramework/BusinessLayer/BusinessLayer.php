@@ -207,4 +207,18 @@ abstract class BusinessLayer {
 	public function count(string $userId) : int {
 		return $this->mapper->count($userId);
 	}
+
+	/**
+	 * Get the timestamp of the latest insert operation on the entity type in question
+	 */
+	public function latestInsertTime(string $userId) : \DateTime {
+		return $this->mapper->latestInsertTime($userId) ?? new \DateTime('1970-01-01');
+	}
+	
+	/**
+	 * Get the timestamp of the latest update operation on the entity type in question
+	 */
+	public function latestUpdateTime(string $userId) : \DateTime {
+		return $this->mapper->latestUpdateTime($userId) ?? new \DateTime('1970-01-01');
+	}
 }

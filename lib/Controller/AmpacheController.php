@@ -235,20 +235,20 @@ class AmpacheController extends Controller {
 		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
 		$token = $this->startNewSession($user, $expiryDate);
 
-		$currentTimeFormated = \date('c', $currentTime);
-		$expiryDateFormated = \date('c', $expiryDate);
+		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
+		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 
 		return $this->ampacheResponse([
 			'auth' => $token,
 			'api' => self::API_VERSION,
-			'update' => $currentTimeFormated,
-			'add' => $currentTimeFormated,
-			'clean' => $currentTimeFormated,
+			'update' => $updateTime->format('c'),
+			'add' => $addTime->format('c'),
+			'clean' => \date('c', $currentTime), // TODO: actual time of the latest item removal
 			'songs' => $this->trackBusinessLayer->count($user),
 			'artists' => $this->artistBusinessLayer->count($user),
 			'albums' => $this->albumBusinessLayer->count($user),
 			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
-			'session_expire' => $expiryDateFormated,
+			'session_expire' => \date('c', $expiryDate),
 			'tags' => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
 			'catalogs' => 0

@@ -1,3 +1,40 @@
+v1.0.0 2020-02-xx
+ * move to semantic version numbering
+   * major version is incremented when the new version drops support for some ownCloud, Nextcloud, or PHP version
+   * minor version is incremented when the new version has new features but no compatibility break occurs
+   * patch version is incremented when the new version has only bug fixes and/or trivially small tweaks
+ * drop support for PHP 7.0
+ * support importing and playing external streams (#784)
+   * new view 'Internet radio' added to the application web UI
+   * radio stations may be imported from playlist files (PLS, M3U, or M3U8)
+   * radio stations may be exported to playlist file (M3U8)
+   * external streams stored in the playlist files may be played within the Files app
+   * also HLS type streams are supported, but their source hosts must be separately white-listed for security reasons
+ * add 'repeat one' as a third state for the 'Repeat' button (#808)
+ * workaround to show the album cover images on the mediaSession (the OS integration) also on Firefox
+ * hide album art from the controls pane on extra narrow window (360px or less)
+ * show list numbering in the playlist sidebar tab within Files also on NC20
+ * allow jumping to the beginning of the playing track with the 'skip previous' button also when playing with the fallback Aurora.js solution
+ * Subsonic:
+   * add API method `getInternetRadioStations`
+   * add property `created` to all album and song responses (#817)
+   * add property `changed` to all playlist responses
+   * return the actual user avatar with `getAvatar` (the logic to return the app logo as the avatar had got broken on v0.17.0)
+   * include the encoding attribute in all the XML responses
+ * Ampache:
+   * support `add` and `update` filters in the actions `get_indexes`, `artists`, `albums`, `songs`, and `playlists`
+   * return proper `update` and `add` values in the `handshake` response (similar to the unmerged PR #514)
+   * include the encoding attribute in all the XML responses
+ * fix play time showing as "0:60" for half a second before changing to "1:00" (#814)
+ * fix the support for IE10 and IE11 (broken since v0.17.0)
+ * fix seeking with the media control "fast forward" and "rewind" buttons
+ * fix parsing M3U files with empty lines (some garbage was being parsed from them)
+ * fix a performance issue on album art loading (issue was introduced in v0.15.0)
+ * fix layout and behavioral issues with the navigation pane and especially the actions popup
+ * update jQuery library to v3.5.1
+ * several other minor fixes and tweaks
+ * lot of internal refactoring
+
 v0.17.3 2020-11-07
  * fix 'Delete' and some other actions not working correctly on Files when Music v0.17.2 installed (#798) (this was a webpack build issue, no source code change was needed)
  * fix `occ` commands of the Music app not working if Nextcloud Mail is installed (#799)

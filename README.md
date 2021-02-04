@@ -10,7 +10,7 @@
 Music player and server for ownCloud and Nextcloud. Shows audio files stored in your cloud categorized by artists and albums. Supports mp3, and depending on the browser, many other audio formats too. Supports shuffle play and playlists. The Music app also allows serving audio files from your cloud to external applications which are compatible either with Ampache or Subsonic.
 
 The full-screen albums view:
-![library view](https://user-images.githubusercontent.com/8565946/87253623-7c1a1500-c485-11ea-98b4-625dc55868ac.png)
+![library view](https://user-images.githubusercontent.com/8565946/107080070-6b523780-67f9-11eb-8adc-314059b04c1d.png)
 
 Music player embedded into the files view:
 ![files view](https://user-images.githubusercontent.com/8565946/43827500-9f45beb6-9b02-11e8-8884-39ed2f0daa54.png)

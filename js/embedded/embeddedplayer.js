@@ -449,7 +449,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			artist: tempTitle,
 			cover: null
 		});
-		musicAppLinkElements().css('cursor', 'default').off('click');
+		musicAppLinkElements().css('cursor', 'default').off('click').attr('title', '');
 
 		// Add a small delay before actually starting to load any data. This is
 		// to avoid flooding HTTP requests in case the user rapidly jumps over

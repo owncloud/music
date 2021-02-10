@@ -101,55 +101,10 @@ https://cloud.domain.org/index.php/apps/music/subsonic
 #### Authentication
 
 Ampache and Subsonic don't use your ownCloud password for authentication. Instead, you need to use a specifically generated APIKEY with them.
-The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app. When you create the APIKEY, the application shows also the username you should use on your Ampache/Subsonic client. Typically, this is your ownCloud login name but it may also be an UUID in case you have set up LDAP authentication.
+The APIKEY is generated through the Music app settings accessible from the link at the bottom of the left pane within the app. The generated APIKEY is shown upon creation but it is impossible to retrieve it at later time. If you forget or misplace the key, you can always delete it and generate a new one.
 
-You may use the `/api/settings/userkey/generate` endpoint to programatically generate a random password. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
-Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
+When you create the APIKEY, the application shows also the username you should use on your Ampache/Subsonic client. Typically, this is your ownCloud login name but it may also be an UUID in case you have set up LDAP authentication.
 
-```
-POST /api/settings/userkey/generate
-```
-
-Parameters:
-
-```
-{
-	"length": <length>,
-	"description": <description>
-}
-```
-
-Response (success):
-
-```
-HTTP/1.1 201 Created
-
-{
-	"id": <userkey_id>,
-	"password": <random_password>,
-	"description": <description>
-}
-```
-
-Response (error - no description provided):
-
-```
-HTTP/1.1 400 Bad request
-
-{
-	"message": "Please provide a description"
-}
-```
-
-Response (error - error while saving password):
-
-```
-HTTP/1.1 500 Internal Server Error
-
-{
-	"message": "Error while saving the credentials"
-}
-```
 
 ### Installation
 
@@ -230,9 +185,9 @@ For the acceptance tests, you need to upload all the tracks from the following z
 
 ## API
 
-The Music app implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
+The Music app back-end implements the [Shiva API](https://shiva.readthedocs.org/en/latest/resources/base.html) except the resources `/artists/<int:artist_id>/shows`, `/tracks/<int:track_id>/lyrics` and the meta resources. You can use this API under `https://own.cloud.example.org/index.php/apps/music/api/`.
 
-Beside those mentioned resources, the following additional resources are implemented:
+However, the front-end of the Music app nowadays doesn't use any part of the Shiva API. Instead, the following proprietary REST endpoints are used:
 
 * `/api/log`
 * `/api/prepare_collection`
@@ -253,8 +208,14 @@ Beside those mentioned resources, the following additional resources are impleme
 * `/api/artist/{artistId}/similar`
 * `/api/album/{albumId}/cover`
 * `/api/album/{albumId}/details`
+* `/api/share/{token}/{fileId}/info`
+* `/api/share/{token}/{fileId}/parse`
 * Playlist API at `/api/playlists/*`
+* Radio API at `/api/radio/*`
 * Settings API at `/api/settings/*`
+
+To connect external client applications, partial implementations of the following APIs are available:
+
 * [Ampache XML API](https://github.com/ampache/ampache/wiki/XML-methods) at `/ampache/server/xml.server.php`
 * [Ampache JSON API](https://github.com/ampache/ampache/wiki/JSON-methods) at `/ampache/server/json.server.php`
 * [Subsonic API](http://www.subsonic.org/pages/api.jsp) at `/subsonic/rest/{method}`
@@ -358,3 +319,54 @@ Response:
 			]
 		}
 	]
+
+### Creating APIKEY for Subsonic/Ampache
+
+The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
+Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
+
+```
+POST /api/settings/userkey/generate
+```
+
+Parameters:
+
+```
+{
+	"length": <length>,
+	"description": <description>
+}
+```
+
+Response (success):
+
+```
+HTTP/1.1 201 Created
+
+{
+	"id": <userkey_id>,
+	"password": <random_password>,
+	"description": <description>
+}
+```
+
+Response (error - no description provided):
+
+```
+HTTP/1.1 400 Bad request
+
+{
+	"message": "Please provide a description"
+}
+```
+
+Response (error - error while saving password):
+
+```
+HTTP/1.1 500 Internal Server Error
+
+{
+	"message": "Error while saving the credentials"
+}
+```
+

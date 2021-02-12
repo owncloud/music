@@ -50,6 +50,15 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		}
 	}
 
+	function showFolderPicker(caption, onSelectedCallback) {
+		OC.dialogs.filepicker(
+				caption,
+				(datapath, _returnType) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
+				false,
+				'httpd/unix-directory',
+				true
+		);
+	}
 
 	return {
 
@@ -72,12 +81,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 				);
 			}
 
-			OC.dialogs.filepicker(
-					gettextCatalog.getString('Export playlist to a file in the selected folder'),
-					onFolderSelected,
-					false,
-					'httpd/unix-directory',
-					true
+			showFolderPicker(
+				gettextCatalog.getString('Export playlist to a file in the selected folder'),
+				onFolderSelected
 			);
 		},
 
@@ -106,12 +112,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 				);
 			}
 
-			OC.dialogs.filepicker(
-					gettextCatalog.getString('Export radio stations to a file in the selected folder'),
-					onFolderSelected,
-					false,
-					'httpd/unix-directory',
-					true
+			showFolderPicker(
+				gettextCatalog.getString('Export radio stations to a file in the selected folder'),
+				onFolderSelected
 			);
 
 			return deferred.promise;

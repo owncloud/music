@@ -1,4 +1,4 @@
-v1.0.0 2020-02-xx
+v1.0.0 2020-02-05
  * move to semantic version numbering
    * major version is incremented when the new version drops support for some ownCloud, Nextcloud, or PHP version
    * minor version is incremented when the new version has new features but no compatibility break occurs

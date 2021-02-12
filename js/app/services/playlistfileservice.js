@@ -54,9 +54,19 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		OC.dialogs.filepicker(
 				caption,
 				(datapath, _returnType) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
-				false,
+				false, // <! multiselect
 				'httpd/unix-directory',
-				true
+				true // <! modal
+		);
+	}
+
+	function showPlaylistFilePicker(caption, onSelectedCallback) {
+		OC.dialogs.filepicker(
+				caption,
+				(datapath, _returnType) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
+				false, // <! multiselect
+				['audio/mpegurl', 'audio/x-scpls'],
+				true // <! modal
 		);
 	}
 
@@ -147,12 +157,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 			};
 
 			var selectFile = function() {
-				OC.dialogs.filepicker(
+				showPlaylistFilePicker(
 						gettextCatalog.getString('Import playlist contents from the selected file'),
-						onFileSelected,
-						false,
-						['audio/mpegurl', 'audio/x-scpls'],
-						true
+						onFileSelected
 				);
 			};
 
@@ -203,12 +210,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 				);
 			};
 
-			OC.dialogs.filepicker(
+			showPlaylistFilePicker(
 					gettextCatalog.getString('Import radio stations from the selected file'),
-					onFileSelected,
-					false,
-					['audio/mpegurl', 'audio/x-scpls'],
-					true
+					onFileSelected
 			);
 
 			return deferred.promise;

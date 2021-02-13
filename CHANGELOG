@@ -1,4 +1,10 @@
-v1.0.0 2020-02-05
+v1.0.1 2021-02-13
+ * fix playlist and radio exporting not working on Nextcloud versions after 13 (bug introduced in v1.0.0) (#822)
+ * fix a minor layout issue in the Internet radio "Getting started" text
+ * fix wrong tooltip sometimes being shown in the music player embedded to Files
+ * this version is not released in the ownCloud marketplace because it brings significant benefit only for the Nextcloud users
+
+v1.0.0 2021-02-05
  * move to semantic version numbering
    * major version is incremented when the new version drops support for some ownCloud, Nextcloud, or PHP version
    * minor version is incremented when the new version has new features but no compatibility break occurs

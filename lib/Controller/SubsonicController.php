@@ -532,12 +532,23 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function createPlaylist() {
-		$name = $this->getRequiredParam('name');
+		$name = $this->request->getParam('name');
+		$listId = $this->request->getParam('playlistId');
 		$songIds = $this->getRepeatedParam('songId');
 		$songIds = \array_map('self::ripIdPrefix', $songIds);
 
-		$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
-		$this->playlistBusinessLayer->addTracks($songIds, $playlist->getId(), $this->userId);
+		// If playlist ID has been passed, then this method actually updates an existing list instead of creating a new one.
+		// The updating can't be used to rename the list, even if both ID and name are given (this is how the real Subsonic works, too).
+		if (!empty($listId)) {
+			$playlist = $this->playlistBusinessLayer->find((int)$listId, $this->userId);
+		} elseif (!empty($name)) {
+			$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
+		} else {
+			throw new SubsonicException('Playlist ID or name must be specified.', 10);
+		}
+
+		$playlist->setTrackIdsFromArray($songIds);
+		$this->playlistBusinessLayer->update($playlist);
 
 		return $this->subsonicResponse([]);
 	}

@@ -15,7 +15,7 @@
 
 * [7ebra](https://github.com/7ebra)
 * [Arboss](https://github.com/arboss)
-* [Armin]
+* Armin
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
 * [Cbxk1xg](https://github.com/cbxk1xg)
@@ -30,7 +30,7 @@
 * [Glandos](https://github.com/Glandos)
 * [Gregory Baudet](https://github.com/greku): <gregory.baudet@gmail.com>
 * [Jbtbnl](https://github.com/jbtbnl)
-* [Jean-Marie de Boer] (https://github.com/jmdeboer-surfsara): <jean-marie.deboer@surfsara.nl>
+* [Jean-Marie de Boer](https://github.com/jmdeboer-surfsara): <jean-marie.deboer@surfsara.nl>
 * [Jonathan Kawohl](https://github.com/Kawohl)
 * [Jérôme Pouiller](https://github.com/jerome-pouiller)
 * [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>
@@ -48,6 +48,7 @@
 * [Rello](https://github.com/rello)
 * [Roland Hager](https://github.com/roha4000)
 * [Selpelt](https://github.com/selpelt)
+* [Sicco van Sas](https://github.com/siccovansas)
 * [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
 * [Thomas Pulzer](https://github.com/Faldon)
 * [Victor Dubiniuk](https://github.com/VicDeo): <victor.dubiniuk@gmail.com>

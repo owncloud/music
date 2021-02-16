@@ -1,3 +1,13 @@
+## [Unreleased]
+### Fixed
+- Subsonic: [Jamstash](https://github.com/tsquillario/Jamstash) not working with its default configuration
+  [#787](https://github.com/owncloud/music/issues/787)
+- Subsonic: Method `createPlaylist` not supporting the editing of existing playlists, breaking the playlist reordering on [Jamstash](https://github.com/tsquillario/Jamstash)
+
+### Changed
+- Use the [Keep a CHANGELOG format](https://keepachangelog.com) for the changelog to show the latest changes in the Apps management of Nextcloud.
+  [#824](https://github.com/owncloud/music/issues/824) @siccovansas
+
 ## 1.0.1 - 2021-02-13
 - fix playlist and radio exporting not working on Nextcloud versions after 13 (bug introduced in v1.0.0) (#822)
 - fix a minor layout issue in the Internet radio "Getting started" text

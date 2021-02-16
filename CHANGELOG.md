@@ -1,5 +1,6 @@
 ## [Unreleased]
 ### Fixed
+- Scan stopping if a track with unknown album encourtered within the root folder (bug introduced in v1.0.0)
 - Subsonic: [Jamstash](https://github.com/tsquillario/Jamstash) not working with its default configuration
   [#787](https://github.com/owncloud/music/issues/787)
 - Subsonic: Method `createPlaylist` not supporting the editing of existing playlists, breaking the playlist reordering on [Jamstash](https://github.com/tsquillario/Jamstash)

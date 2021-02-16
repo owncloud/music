@@ -207,12 +207,12 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Adds an album if it does not exist already or updates an existing album
-	 * @param string $name the name of the album
+	 * @param string|null $name the name of the album
 	 * @param integer $albumArtistId
 	 * @param string $userId
 	 * @return Album The added/updated album
 	 */
-	public function addOrUpdateAlbum(string $name, int $albumArtistId, string $userId) : Album {
+	public function addOrUpdateAlbum(?string $name, int $albumArtistId, string $userId) : Album {
 		$album = new Album();
 		$album->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$album->setUserId($userId);

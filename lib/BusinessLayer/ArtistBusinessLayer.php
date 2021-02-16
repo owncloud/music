@@ -63,7 +63,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Adds an artist if it does not exist already or updates an existing artist
-	 * @param string $name the name of the artist
+	 * @param string|null $name the name of the artist
 	 * @param string $userId the name of the user
 	 * @return Artist The added/updated artist
 	 */

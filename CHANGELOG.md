@@ -153,10 +153,10 @@
 - fix the "empty album slots" layout problem reintroduced by Nextcloud 18 (#773)
 - Ampache API improvements:
   * initial JSON API support (#768)
-    * the API is not yet frozen by Ampache and the spec still has some inconsistencies
+    + the API is not yet frozen by Ampache and the spec still has some inconsistencies
   * remove the <total_count> element from all results
-    * this has been deprecated by Ampache, and none of the known clients seem to utilize it
-    * removing the element already now simplified the implementation of the JSON API support
+    + this has been deprecated by Ampache, and none of the known clients seem to utilize it
+    + removing the element already now simplified the implementation of the JSON API support
   * fix action `tag` returning the requested genre without track/album/artist counts
   * support `filter` and `exact` arguments also in the `tags` action (allows searching genre by name)
   * add <art> element to the artist results
@@ -681,22 +681,22 @@ Known bugs:
 
 - Ampache API (unstable)
   * security
-    * user can generate passwords to use with the Ampache API
-    * ability to revoke those passwords
+    + user can generate passwords to use with the Ampache API
+    + ability to revoke those passwords
   * new DB tables:
-    * ampache_sessions - session tokens
-    * ampache_users - generated passwords
+    + ampache_sessions - session tokens
+    + ampache_users - generated passwords
   * Ampache API (ADD and UPDATE parameters are unsupported yet):
-    * handshake
-    * ping
-    * artists
-    * artist_albums
-    * album_songs
-    * albums
-    * artist_songs (also supports offset & limit)
-    * songs
-    * song
-    * search_song
+    + handshake
+    + ping
+    + artists
+    + artist_albums
+    + album_songs
+    + albums
+    + artist_songs (also supports offset & limit)
+    + songs
+    + song
+    + search_song
   * delivery of music file with ampache token
   * middleware to authenticate user with ampache token
 

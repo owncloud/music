@@ -230,7 +230,7 @@ class Album extends Entity {
 	}
 
 	public static function compareYearAndName(Album $a, Album $b) : int {
-		$yearResult = \strcmp($a->getYearRange(), $b->getYearRange());
+		$yearResult = \strcmp($a->getYearRange() ?? '', $b->getYearRange() ?? '');
 
 		return $yearResult ?: Util::stringCaseCompare($a->getName(), $b->getName());
 	}

@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.0.2 - 2021-02-18
 ### Fixed
 - Scan stopping if a track with unknown album encourtered within the root folder (bug introduced in v1.0.0)
 - Subsonic: [Jamstash](https://github.com/tsquillario/Jamstash) not working with its default configuration

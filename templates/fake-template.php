@@ -10,5 +10,4 @@ while extraction, because this string is located in PHP code -->
 <!-- localizations for files-music-plalyer -->
 <span translate>Loading…</span>
 <span translate>Close</span>
-<span translate>Go to album</span>
 <span translate>(file is not within your music collection folder)</span>

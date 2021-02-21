@@ -16,7 +16,8 @@
 			<label for="excluded-paths" translate>Paths to exclude from your music collection</label>:
 		</div>
 		<em>
-			<p translate>Specify folders within your music collection path which shall be excluded from the scanning.
+			<p>
+				<span translate>Specify folders within your music collection path which shall be excluded from the scanning.</span>
 				<strong class="clickable" ng-click="showExcludeHint=true" ng-hide="showExcludeHint" translate>Show more…</strong>
 			</p>
 			<div ng-show="showExcludeHint">

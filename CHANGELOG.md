@@ -1,3 +1,10 @@
+## [Unreleased]
+### Added
+- Almost comprehensive Finnish translation
+
+### Changed
+- Library getID3 to development version 1.9.20-202102260858, fixing e.g. [scan stalling](https://help.nextcloud.com/t/glacial-import-too-many-songs/107732) on some corrupted files
+
 ## 1.0.2 - 2021-02-18
 ### Fixed
 - Scan stopping if a track with unknown album encourtered within the root folder (bug introduced in v1.0.0)

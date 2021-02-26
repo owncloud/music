@@ -460,9 +460,61 @@ class getid3_riff extends getid3_handler
 					}
 				}
 
-				if (isset($thisfile_riff_WAVE['wamd'][0]['data'])) {
+				if (isset($thisfile_riff_WAVE['guan'][0]['data'])) {
 					// shortcut
-					//$thisfile_riff_WAVE_wamd_0 = &$thisfile_riff_WAVE['wamd'][0];
+					$thisfile_riff_WAVE_guan_0 = &$thisfile_riff_WAVE['guan'][0];
+					if (!empty($thisfile_riff_WAVE_guan_0['data']) && (substr($thisfile_riff_WAVE_guan_0['data'], 0, 14) == 'GUANO|Version:')) {
+						$thisfile_riff['guano'] = array();
+						foreach (explode("\n", $thisfile_riff_WAVE_guan_0['data']) as $line) {
+							if ($line) {
+								@list($key, $value) = explode(':', $line, 2);
+								if (substr($value, 0, 3) == '[{"') {
+									if ($decoded = @json_decode($value, true)) {
+										if (!empty($decoded) && (count($decoded) == 1)) {
+											$value = $decoded[0];
+										} else {
+											$value = $decoded;
+										}
+									}
+								}
+								$thisfile_riff['guano'] = array_merge_recursive($thisfile_riff['guano'], getid3_lib::CreateDeepArray($key, '|', $value));
+							}
+						}
+
+						// https://www.wildlifeacoustics.com/SCHEMA/GUANO.html
+						foreach ($thisfile_riff['guano'] as $key => $value) {
+							switch ($key) {
+								case 'Loc Position':
+									if (preg_match('#^([\\+\\-]?[0-9]+\\.[0-9]+) ([\\+\\-]?[0-9]+\\.[0-9]+)$#', $value, $matches)) {
+										list($dummy, $latitude, $longitude) = $matches;
+										$thisfile_riff['comments']['gps_latitude'][0]  = floatval($latitude);
+										$thisfile_riff['comments']['gps_longitude'][0] = floatval($longitude);
+										$thisfile_riff['guano'][$key] = floatval($latitude).' '.floatval($longitude);
+									}
+									break;
+								case 'Loc Elevation': // Elevation/altitude above mean sea level in meters
+									$thisfile_riff['comments']['gps_altitude'][0] = floatval($value);
+									$thisfile_riff['guano'][$key] = (float) $value;
+									break;
+								case 'Filter HP':        // High-pass filter frequency in kHz
+								case 'Filter LP':        // Low-pass filter frequency in kHz
+								case 'Humidity':         // Relative humidity as a percentage
+								case 'Length':           // Recording length in seconds
+								case 'Loc Accuracy':     // Estimated Position Error in meters
+								case 'Temperature Ext':  // External temperature in degrees Celsius outside the recorder's housing
+								case 'Temperature Int':  // Internal temperature in degrees Celsius inside the recorder's housing
+									$thisfile_riff['guano'][$key] = (float) $value;
+									break;
+								case 'Samplerate':       // Recording sample rate, Hz
+								case 'TE':               // Time-expansion factor. If not specified, then 1 (no time-expansion a.k.a. direct-recording) is assumed.
+									$thisfile_riff['guano'][$key] = (int) $value;
+									break;
+							}
+						}
+
+					} else {
+						$this->warning('RIFF.guan data not in expected format');
+					}
 				}
 
 				if (!isset($thisfile_audio['bitrate']) && isset($thisfile_riff_audio[$streamindex]['bitrate'])) {
@@ -1526,6 +1578,7 @@ class getid3_riff extends getid3_handler
 
 		$RIFFchunk = false;
 		$FoundAllChunksWeNeed = false;
+		$AC3syncwordBytes = pack('n', getid3_ac3::syncword); // 0x0B77 -> "\x0B\x77"
 
 		try {
 			$this->fseek($startoffset);
@@ -1587,8 +1640,7 @@ class getid3_riff extends getid3_handler
 											unset($getid3_temp, $getid3_mp3);
 										}
 
-									} elseif (strpos($FirstFourBytes, getid3_ac3::syncword) === 0) {
-
+									} elseif (strpos($FirstFourBytes, $AC3syncwordBytes) === 0) {
 										// AC3
 										$getid3_temp = new getID3();
 										$getid3_temp->openfile($this->getid3->filename, null, $this->getid3->fp);
@@ -1664,7 +1716,7 @@ class getid3_riff extends getid3_handler
 										unset($getid3_temp, $getid3_mp3);
 									}
 
-								} elseif (($isRegularAC3 = (substr($testData, 0, 2) == getid3_ac3::syncword)) || substr($testData, 8, 2) == strrev(getid3_ac3::syncword)) {
+								} elseif (($isRegularAC3 = (substr($testData, 0, 2) == $AC3syncwordBytes)) || substr($testData, 8, 2) == strrev($AC3syncwordBytes)) {
 
 									// This is probably AC-3 data
 									$getid3_temp = new getID3();

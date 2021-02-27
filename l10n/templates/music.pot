@@ -636,6 +636,10 @@ msgstr ""
 msgid "The stream is of HLS type, indicated by a URL ending with '.m3u' or '.m3u8'. For such streams, the source host must be specifically allowed by the cloud adminstator. See the 'Admin' section within the Music app Settings view for details."
 msgstr ""
 
+#: ../templates/partials/radiohint.php:20
+msgid "There are a couple of typical reasons why a configured radio station might not play on your browser:"
+msgstr ""
+
 #: ../templates/partials/settingsview.php:117
 msgid "There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below."
 msgstr ""

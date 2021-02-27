@@ -17,7 +17,7 @@
 
 		<h2 translate>Troubleshooting</h2>
 
-		<p>There are a couple of typical reasons why a configured radio station might not play on your browser:</p>
+		<p translate>There are a couple of typical reasons why a configured radio station might not play on your browser:</p>
 
 		<ol>
 			<li translate>The stream is of HLS type, indicated by a URL ending with '.m3u' or '.m3u8'. For such streams, the source host must be specifically allowed by the cloud adminstator. See the 'Admin' section within the Music app Settings view for details.</li>

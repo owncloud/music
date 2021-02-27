@@ -7,14 +7,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 
 class Cache {
 	private $db;
@@ -31,7 +31,7 @@ class Cache {
 	public function add(string $userId, string $key, string $data) : void {
 		$sql = 'INSERT INTO `*PREFIX*music_cache`
 				(`user_id`, `key`, `data`) VALUES (?, ?, ?)';
-		$this->db->executeUpdate($sql, [$userId, $key, $data]);
+		$this->executeUpdate($sql, [$userId, $key, $data]);
 	}
 
 	/**
@@ -42,7 +42,7 @@ class Cache {
 	public function update(string $userId, string $key, string $data) : void {
 		$sql = 'UPDATE `*PREFIX*music_cache` SET `data` = ?
 				WHERE `user_id` = ? AND `key` = ?';
-		$this->db->executeUpdate($sql, [$data, $userId, $key]);
+		$this->executeUpdate($sql, [$data, $userId, $key]);
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Cache {
 			$sql .= ' WHERE `key` = ?';
 			$params[] = $key;
 		}
-		$this->db->executeUpdate($sql, $params);
+		$this->executeUpdate($sql, $params);
 	}
 
 	/**
@@ -131,5 +131,20 @@ class Cache {
 		$result->closeCursor();
 		
 		return \count($rows) ? $rows[0]['user_id'] : null;
+	}
+
+	private function executeUpdate(string $sql, array $params) {
+		try {
+			return $this->db->executeUpdate($sql, $params);
+		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
+		} catch (\OCP\DB\Exception $e) {
+			// Nextcloud 21
+			if ($e->getReason() == \OCP\DB\Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+				throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
+			} else {
+				throw $e;
+			}
+		}
 	}
 }

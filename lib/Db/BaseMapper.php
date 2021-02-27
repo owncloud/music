@@ -18,7 +18,7 @@ use \OCP\AppFramework\Db\Mapper;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCP\IDBConnection;
 
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 
 /**
  * Common base class for data access classes of the Music app
@@ -188,7 +188,19 @@ abstract class BaseMapper extends Mapper {
 		$nowStr = $now->format(self::SQL_DATE_FORMAT);
 		$entity->setCreated($nowStr);
 		$entity->setUpdated($nowStr);
-		return parent::insert($entity);
+
+		try {
+			return parent::insert($entity);
+		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
+		} catch (\OCP\DB\Exception $e) {
+			// Nextcloud 21
+			if ($e->getReason() == \OCP\DB\Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+				throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**

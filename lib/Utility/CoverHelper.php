@@ -7,12 +7,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Cache;
@@ -21,8 +22,6 @@ use \OCP\Files\Folder;
 use \OCP\Files\File;
 
 use \OCP\IConfig;
-
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * utility to get cover image for album

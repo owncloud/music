@@ -7,18 +7,17 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\Db\Cache;
 
 use \OCP\ICache;
-
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Utility to build and cache the monolithic json data describing the whole music library.

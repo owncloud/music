@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Support for Nextcloud 21
+  [#830](https://github.com/owncloud/music/issues/830)
 - Almost comprehensive Finnish translation
 
 ### Changed

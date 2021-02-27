@@ -7,8 +7,10 @@
  *
  * @author Alessandro Cosentino <cosenal@gmail.com>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Tests\Utility;
@@ -54,7 +56,7 @@ abstract class ControllerTestUtility extends \PHPUnit\Framework\TestCase {
 	 * @param array $expected an array with the expected headers
 	 * @param Response $response the response which we want to test for headers
 	 */
-	protected function assertHeaders(array $expected=[], Response $response) {
+	protected function assertHeaders(array $expected, Response $response) {
 		$headers = $response->getHeaders();
 		foreach ($expected as $header) {
 			$this->assertTrue(\in_array($header, $headers));

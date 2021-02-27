@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019 - 2021
  */
 
 use GuzzleHttp\Client;
@@ -49,7 +49,7 @@ class SubsonicClient {
 		$response = $this->doRequest($method, $options);
 
 		try {
-			$xml = self::getXml($response);
+			$xml = ClientUtil::getXml($response);
 		} catch (Exception $e) {
 			throw new SubsonicClientException('Could not parse XML', 0, $e);
 		}
@@ -108,32 +108,4 @@ class SubsonicClient {
 		]);
 	}
 
-	/**
-	 * Get XML from HTTP response. There used to be method $response->xml() in Guzzle 5.x but not
-	 * anymore in 6.x. The logic below is copied from the old xml() method.
-	 */
-	private static function getXml($response, array $config = []) {
-		$disableEntities = \libxml_disable_entity_loader(true);
-		$internalErrors = \libxml_use_internal_errors(true);
-		try {
-			// Allow XML to be retrieved even if there is no response body
-			$xml = new \SimpleXMLElement(
-				(string) $response->getBody() ?: '<root />',
-				isset($config['libxml_options']) ? $config['libxml_options'] : LIBXML_NONET,
-				false,
-				isset($config['ns']) ? $config['ns'] : '',
-				isset($config['ns_is_prefix']) ? $config['ns_is_prefix'] : false
-			);
-			\libxml_disable_entity_loader($disableEntities);
-			\libxml_use_internal_errors($internalErrors);
-		} catch (\Exception $e) {
-			\libxml_disable_entity_loader($disableEntities);
-			\libxml_use_internal_errors($internalErrors);
-			throw new Exception(
-				'Unable to parse response body into XML: ' . $e->getMessage() .
-				'; libxml error: ' . \libxml_get_last_error()->message
-			);
-		}
-		return $xml;
-	}
 }

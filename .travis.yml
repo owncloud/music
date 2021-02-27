@@ -26,8 +26,10 @@ matrix:
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable18
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable19
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable20
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable21
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
+    - php: 7.3
+      env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable21
+    - php: 7.3
+      env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
 
     # PostgreSQL
     - env: DB=pgsql CLOUD=nextcloud CORE_BRANCH=stable15

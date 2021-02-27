@@ -71,6 +71,7 @@ before_install:
   - sh -c "if [ '$CLOUD' = 'owncloud' ]; then git clone https://github.com/owncloud/core.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"
   - cd core
   - git submodule update --init
+  - mkdir data
   # On ownCloud 10.x, we need to run 'make'. Furthermore, the Makefile is not totally compatible
   # with our Travis environment and has to be patched slightly.
   - sh -c "if [ '$CLOUD' = 'owncloud' ] && [ $CORE_BRANCH = 'stable10' -o $CORE_BRANCH = 'master' ]; then sed -i 's/php \$(COMPOSER_BIN)/\$(COMPOSER_BIN)/g' Makefile; make; fi;"
@@ -79,18 +80,18 @@ before_install:
 
 before_script:
   # setup ownCloud
-  - php -f core/occ maintenance:install --database-name oc_autotest --database-user oc_autotest --admin-user admin --admin-pass admin --database $DB --database-pass='' -vvv
-  - php -f core/occ app:enable music
-  - php -f core/occ user:add ampache --password-from-env
+  - cd core
+  - ./occ maintenance:install --database-name oc_autotest --database-user oc_autotest --admin-user admin --admin-pass admin --database $DB --database-pass=''
+  - ./occ app:enable music
+  - ./occ user:add ampache --password-from-env
   # download test data (only if not cached already)
-  - core/apps/music/tests/downloadTestData.sh ${TRAVIS_BUILD_DIR}/../core/data/ampache
-  - php -f core/occ files:scan ampache
-  - php -f core/occ music:scan ampache
+  - apps/music/tests/downloadTestData.sh ${TRAVIS_BUILD_DIR}/../core/data/ampache
+  - ./occ files:scan ampache
+  - ./occ music:scan ampache
   # add Ampache API key with ampache as password for user ampache
   - bash -c "if [ '$DB' == 'sqlite' ]; then sqlite3 data/owncloud.db 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
   - bash -c "if [ '$DB' == 'mysql' ]; then mysql -u oc_autotest oc_autotest -e 'INSERT INTO oc_music_ampache_users (user_id, hash) VALUES (\"ampache\", \"3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18\");'; fi"
   - bash -c "if [ '$DB' == 'pgsql' ]; then psql -U oc_autotest -d oc_autotest -w -c \"INSERT INTO oc_music_ampache_users (user_id, hash) VALUES ('ampache', '3e60b24e84cfa047e41b6867efc3239149c54696844fd3a77731d6d8bb105f18');\"; fi"
-  - cd core
   - php -S localhost:8888 -t . &
   - cd apps/music
   - cp tests/behat.yml.travis tests/behat.yml
@@ -106,5 +107,5 @@ script:
   - bash -c "if [ '$CORE_BRANCH' == 'stable13' ]; then php ocular.phar code-coverage:upload --format=php-clover ../clover-integration.xml; fi"
 
   # debug section to check what went wrong
-  - cat ../../../data/${CLOUD}.log
+  - cat ../../../data/$CLOUD.log
 

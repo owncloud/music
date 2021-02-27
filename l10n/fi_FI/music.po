@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-02-21 15:06+0200\n"
+"PO-Revision-Date: 2021-02-27 19:41+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -377,6 +377,10 @@ msgid ""
 "the link \"Save current list as playlist for your media player: PLS\" on top "
 "of the view to get all the matching stations."
 msgstr ""
+"Paina hakutulosnäkymässä yksittäisen löydetyn aseman \"levyke\"-kuvaketta "
+"ladataksesi aseman PLS-tiedostona. Vaihtoehtoisesti voit painaa näkymän "
+"ylälaidassa olevaa linkkiä \"Save current list as playlist for your media "
+"player: PLS\" saadaksesi kaikki löydetyt asemat."
 
 #: ../js/app/controllers/maincontroller.js:150
 msgid "Internal server error"
@@ -561,9 +565,13 @@ msgid ""
 "Press the … symbol next to the navigation item \"Internet radio\" and select "
 "\"Import from file\". Find the previously uploaded PLS file and press "
 "\"Choose\". A loading spinner is shown for a while next to the \"Internet "
-"radio\" link. When it dissappears, the importing is done and the channels "
+"radio\" link. When it disappears, the importing is done and the channels "
 "should become available in the view."
 msgstr ""
+"Paina ...-symbolia \"Internet radio\"-linkin vieressä ja valitse \"Tuo "
+"tiedostosta\". Etsi aiemmin ladattu PLS-tiedosto ja paina \"Valitse\". "
+"\"Internet radio\"-linkin vieressä näkyy jonkin aikaa latauskuvake. Kun se "
+"katoaa, tuonti on valmis ja kanavien pitäisi tulla näkymässä saataville."
 
 #: ../templates/partials/controls.php:5
 msgid "Previous"
@@ -720,7 +728,7 @@ msgstr "Tunnisteet"
 
 #: ../templates/partials/trackdetails.php:14
 msgid "Technical"
-msgstr "Tekniset"
+msgstr "Tekniset tiedot"
 
 #: ../js/app/controllers/settingsviewcontroller.js:241
 msgid "Text copied to clipboard"
@@ -732,6 +740,9 @@ msgid ""
 "will. You might want to keep it, though, because it is also possible to play "
 "the radio stations directly within the Files app by opening the PLS file."
 msgstr ""
+"PLS-tiedostoa ei enää tarvita tuonnin jälkeen, ja voit halutessasi poistaa "
+"sen. Saatat kuitenkin haluta säilyttää sen, koska on myös mahdollista "
+"toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla PLS-tiedosto."
 
 #: ../js/app/services/playlistfileservice.js:17
 msgid ""
@@ -759,6 +770,11 @@ msgid ""
 "browser is being used, but still, there are numerous stations which will not "
 "work."
 msgstr ""
+"Striimi on aidosti rikki tai sellaisessa muodossa, että joko Musiikki-"
+"sovellus tai selaimesi ei pysty käsittelemään sitä. Suurimman osan Community "
+"Radio Browser -palvelusta löytyvistä radioasemista pitäisi toimia Musiikki-"
+"sovelluksessa, kun käytetään valtavirran selainta, mutta silti on olemassa "
+"lukuisia asemia, jotka eivät toimi."
 
 #: ../templates/partials/radiohint.php:23
 msgid ""
@@ -767,6 +783,18 @@ msgid ""
 "adminstator. See the 'Admin' section within the Music app Settings view for "
 "details."
 msgstr ""
+"Striimi on HLS-tyyppinen, mikä ilmenee URL-osoitteesta, joka päättyy '.m3u' "
+"tai '.m3u8'. Tällaisten striimien kanssa pilven ylläpitäjän on erikseen "
+"sallittava lähdeosoite. Lisätietoja on Musiikki-sovelluksen Asetukset-"
+"näkymän Ylläpito-osiossa."
+
+#: ../templates/partials/radiohint.php:20
+msgid ""
+"There are a couple of typical reasons why a configured radio station might "
+"not play on your browser:"
+msgstr ""
+"Määritetyn radioaseman toisto-ongelmiin selaimessa voi olla muutama "
+"tyypillinen syy:"
 
 #: ../templates/partials/settingsview.php:117
 msgid ""
@@ -882,7 +910,7 @@ msgstr ""
 #: ../templates/partials/radiohint.php:11
 msgid ""
 "Upload the previously obtained PLS file to your cloud using the Files app."
-msgstr ""
+msgstr "Lataa aiemmin saamasi PLS-tiedosto pilveen Tiedostot-sovelluksella."
 
 #: ../templates/partials/radiohint.php:7
 msgid ""
@@ -891,6 +919,9 @@ msgid ""
 "search, you may also browse the channels in Community Radio Browser by "
 "category or popularity."
 msgstr ""
+"Käytä Community Radio Browser -palvelun <a href=\"{{url}}\" target=\"_blank"
+"\">hakua</a> löytääksesi kiinnostavat radioasemat. Haun sijaan voit myös "
+"selata palvelussa kanavia kategorian tai suosion mukaan."
 
 #: ../templates/partials/settingsview.php:104
 msgid ""
@@ -934,7 +965,7 @@ msgid ""
 "which support either Ampache or Subsonic API."
 msgstr ""
 "Voit selata ja soittaa musiikkikokoelmaasi ulkoisilla sovelluksilla, jotka "
-"tukevat joko Ampache- tai Subsonic-rajapintaa"
+"tukevat joko Ampache- tai Subsonic-rajapintaa."
 
 #: ../templates/partials/settingsview.php:24
 msgid "You can use the wild cards '?', '*', and '**':"
@@ -948,6 +979,12 @@ msgid ""
 "page. On the desktop browsers, such settings can usually be found by "
 "clicking the icon right next to the address bar on its left side."
 msgstr ""
+"Pilvesi käyttää HTTPS-yhteyttä, mutta striimattu URL-osoite käyttää HTTP-"
+"yhteyttä. Oletusarvoisesti selaimesi saattaa estää tällaisen käytön. Tämän "
+"voi usein ohittaa selaimessa sallimalla erikseen \"vähemmän turvallisen "
+"sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa tällaiset asetukset "
+"löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
+"kuvaketta."
 
 #: ../templates/partials/settingsview.php:158
 msgid "version history"

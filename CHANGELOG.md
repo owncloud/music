@@ -2,7 +2,7 @@
 ### Added
 - Support for Nextcloud 21
   [#830](https://github.com/owncloud/music/issues/830)
-- Almost comprehensive Finnish translation
+- Comprehensive Finnish translation for the main application
 
 ### Changed
 - Library getID3 to development version 1.9.20-202102260858, fixing e.g. [scan stalling](https://help.nextcloud.com/t/glacial-import-too-many-songs/107732) on some corrupted files

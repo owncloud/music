@@ -459,7 +459,7 @@ msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" 
 msgstr ""
 
 #: ../templates/partials/radiohint.php:13
-msgid "Press the … symbol next to the navigation item \"Internet radio\" and select \"Import from file\". Find the previously uploaded PLS file and press \"Choose\". A loading spinner is shown for a while next to the \"Internet radio\" link. When it dissappears, the importing is done and the channels should become available in the view."
+msgid "Press the … symbol next to the navigation item \"Internet radio\" and select \"Import from file\". Find the previously uploaded PLS file and press \"Choose\". A loading spinner is shown for a while next to the \"Internet radio\" link. When it disappears, the importing is done and the channels should become available in the view."
 msgstr ""
 
 #: ../templates/partials/controls.php:5

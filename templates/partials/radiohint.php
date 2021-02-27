@@ -10,7 +10,7 @@
 
 			<li translate>Upload the previously obtained PLS file to your cloud using the Files app.</li>
 
-			<li translate>Press the … symbol next to the navigation item "Internet radio" and select "Import from file". Find the previously uploaded PLS file and press "Choose". A loading spinner is shown for a while next to the "Internet radio" link. When it dissappears, the importing is done and the channels should become available in the view.</li>
+			<li translate>Press the … symbol next to the navigation item "Internet radio" and select "Import from file". Find the previously uploaded PLS file and press "Choose". A loading spinner is shown for a while next to the "Internet radio" link. When it disappears, the importing is done and the channels should become available in the view.</li>
 
 			<li translate>The PLS file is no longer needed after the import and you may delete it at will. You might want to keep it, though, because it is also possible to play the radio stations directly within the Files app by opening the PLS file.</li>
 		</ol>

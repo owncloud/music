@@ -65,9 +65,12 @@ before_install:
   - if [[ "$DB" == 'mysql' ]]; then mysql -u root -e 'CREATE DATABASE oc_autotest;'; fi
   - if [[ "$DB" == 'mysql' ]]; then mysql -u root -e "CREATE USER 'oc_autotest'@'localhost' IDENTIFIED BY '';"; fi
   - if [[ "$DB" == 'mysql' ]]; then mysql -u root -e "GRANT ALL ON oc_autotest.* TO 'oc_autotest'@'localhost';"; fi
-
+  
+  # The behat version working on PHP 7.1 doesn't work on PHP 8.0 and vice versa. Substitute the locked dependencies with newer when using PHP 8.0.
+  - sh -c "if [ '${TRAVIS_PHP_VERSION:0:3}' = '8.0' ]; then rm composer.lock; cp composer.php8.json composer.json; fi;"
   - composer self-update
   - composer install
+  
   - cd ..
   - sh -c "if [ '$CLOUD' = 'nextcloud' ]; then git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"
   - sh -c "if [ '$CLOUD' = 'owncloud' ]; then git clone https://github.com/owncloud/core.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"

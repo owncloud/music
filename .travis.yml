@@ -46,7 +46,6 @@ matrix:
   allow_failures:
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
     - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable21
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
   fast_finish: true
 

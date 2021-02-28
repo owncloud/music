@@ -23,7 +23,7 @@ class MaintenanceTest extends \PHPUnit\Framework\TestCase {
 
 	private $logger;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		/** @var Connection db */
 		$this->db = \OC::$server->getDatabaseConnection();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')

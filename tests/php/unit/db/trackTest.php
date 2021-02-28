@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -15,7 +17,7 @@ namespace OCA\Music\Db;
 class TrackTest extends \PHPUnit\Framework\TestCase {
 	private $urlGenerator;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -22,7 +24,7 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $albums;
 	private $artistIds;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\AlbumMapper')
 			->disableOriginalConstructor()
 			->getMock();

@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -15,7 +17,7 @@ namespace OCA\Music\Db;
 class ArtistTest extends \PHPUnit\Framework\TestCase {
 	private $urlGenerator;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
@@ -43,16 +45,9 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 		$artist->setName(null);
 
 		$l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
-		$l10nString = $this->getMockBuilder('\OC_L10N_String')
-			->disableOriginalConstructor()
-			->setMethods(['__toString'])
-			->getMock();
-		$l10nString->expects($this->any())
-			->method('__toString')
-			->will($this->returnValue('Unknown artist'));
 		$l10n->expects($this->any())
 			->method('t')
-			->will($this->returnValue($l10nString));
+			->will($this->returnValue('Unknown artist'));
 
 		$this->assertEquals('Unknown artist', $artist->getNameString($l10n));
 		$artist->setName('Artist name');

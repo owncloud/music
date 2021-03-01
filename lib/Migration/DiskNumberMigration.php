@@ -175,7 +175,7 @@ class DiskNumberMigration implements IRepairStep {
 						'UPDATE `*PREFIX*music_albums` SET `hash` = ? WHERE `id` = ?',
 						[$hash, $row['id']]
 				);
-			} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException | \OCP\DB\Exception $e) {
+			} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException | \OCP\DB\Exception $e) {
 				$this->mergeFailureAlbums[] = $row['id'];
 			}
 		}

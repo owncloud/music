@@ -5,4 +5,5 @@
 .travis.yml export-ignore
 composer.json export-ignore
 composer.lock export-ignore
+composer.php8.json export-ignore
 behat.yml.travis export-ignore

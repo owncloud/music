@@ -1,7 +1,8 @@
-## [Unreleased]
+## 1.0.3 - 2021-03-01
 ### Added
 - Support for Nextcloud 21
   [#830](https://github.com/owncloud/music/issues/830)
+- Support for PHP 8.0
 - Comprehensive Finnish translation for the main application
 
 ### Changed

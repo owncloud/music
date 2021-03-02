@@ -14,8 +14,7 @@ env:
 matrix:
   include:
     # ownCloud versions
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master
+    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=10.0.10
 
     # Nextcloud versions
     - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable13
@@ -43,10 +42,6 @@ matrix:
       env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable18
     - php: 8.0
       env: DB=mysql CLOUD=nextcloud CORE_BRANCH=stable21
-  allow_failures:
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=stable10
-    - env: DB=mysql CLOUD=owncloud CORE_BRANCH=master
-    - env: DB=mysql CLOUD=nextcloud CORE_BRANCH=master
   fast_finish: true
 
 branches:
@@ -75,13 +70,10 @@ before_install:
   
   - cd ..
   - sh -c "if [ '$CLOUD' = 'nextcloud' ]; then git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"
-  - sh -c "if [ '$CLOUD' = 'owncloud' ]; then git clone https://github.com/owncloud/core.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"
+  - sh -c "if [ '$CLOUD' = 'owncloud' ]; then wget https://download.owncloud.org/community/owncloud-${CORE_BRANCH}.zip; unzip owncloud-${CORE_BRANCH}.zip; mv owncloud core; fi;"
   - cd core
-  - git submodule update --init
+  - sh -c "if [ '$CLOUD' = 'nextcloud' ]; then git submodule update --init; fi;"
   - mkdir data
-  # On ownCloud 10.x, we need to run 'make'. Furthermore, the Makefile is not totally compatible
-  # with our Travis environment and has to be patched slightly.
-  - sh -c "if [ '$CLOUD' = 'owncloud' ] && [ $CORE_BRANCH = 'stable10' -o $CORE_BRANCH = 'master' ]; then sed -i 's/php \$(COMPOSER_BIN)/\$(COMPOSER_BIN)/g' Makefile; make; fi;"
   - cd ..
   - mv music core/apps/
 

@@ -70,6 +70,9 @@ before_install:
   - composer self-update
   - composer install
   
+  # The Nextcloud version in the master branch is almost always one which is not yet officially supported by the Music app. To enable testing, hack the supported NC version to a high value.
+  - sh -c "if [ '$CLOUD' = 'nextcloud' ] && [ $CORE_BRANCH = 'master' ]; then sed -i -r 's/(<nextcloud min-version=\"..\" max-version=\")../\1255/g' appinfo/info.xml; fi;"
+  
   - cd ..
   - sh -c "if [ '$CLOUD' = 'nextcloud' ]; then git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"
   - sh -c "if [ '$CLOUD' = 'owncloud' ]; then git clone https://github.com/owncloud/core.git --recursive --depth 1 -b $CORE_BRANCH core; fi;"

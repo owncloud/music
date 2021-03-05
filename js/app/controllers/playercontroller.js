@@ -304,7 +304,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 			var func = null;
 			switch (e.which) {
 				case 32: //space
-					func = $scope.togglePlayback;
+					func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
 					break;
 				case 37: // arrow left
 					func = $scope.prev;

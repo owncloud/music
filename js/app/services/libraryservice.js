@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2020 Pauli Järvinen
+ * @copyright 2017 - 2021 Pauli Järvinen
  *
  */
 
@@ -24,13 +24,14 @@ angular.module('Music').service('libraryService', [function() {
 	var radioStations = null;
 
 	/** 
-	 * Sort array according to a specified text field.
+	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
 	 * Note:  The exact ordering is browser-dependant and usually affected by the browser language.
 	 * Note2: The array is sorted in-place instead of returning a new array.
 	 */
 	function sortByTextField(items, field) {
+		var getSortProperty = _.property(field);
 		items.sort(function(a, b) {
-			return a[field].localeCompare(b[field]);
+			return getSortProperty(a).localeCompare(getSortProperty(b));
 		});
 	}
 
@@ -38,9 +39,14 @@ angular.module('Music').service('libraryService', [function() {
 	 * Like sortByTextField but to be used with arrays of playlist entries where
 	 * field is within outer field "track".
 	 */
-	function sortByPlaylistEntryField(items, field) {
+	function sortByPlaylistEntryTextField(items, field) {
+		return sortByTextField(items, 'track.' + field);
+	}
+
+	function sortByNumericField(items, field) {
+		var getSortProperty = _.property(field);
 		items.sort(function(a, b) {
-			return a.track[field].localeCompare(b.track[field]);
+			return Number(getSortProperty(a)) - Number(getSortProperty(b));
 		});
 	}
 
@@ -233,8 +239,8 @@ angular.module('Music').service('libraryService', [function() {
 				}
 
 				_.forEach(genres, function(genre) {
-					sortByPlaylistEntryField(genre.tracks, 'title');
-					sortByPlaylistEntryField(genre.tracks, 'artistName');
+					sortByPlaylistEntryTextField(genre.tracks, 'title');
+					sortByPlaylistEntryTextField(genre.tracks, 'artistName');
 
 					_.forEach(genre.tracks, function(trackEntry) {
 						trackEntry.track.genre = genre;
@@ -246,13 +252,13 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		setRadioStations: function(radioStationsData) {
 			radioStations = _.map(radioStationsData, playlistEntry);
-			sortByPlaylistEntryField(radioStations, 'stream_url');
-			sortByPlaylistEntryField(radioStations, 'name');
+			sortByPlaylistEntryTextField(radioStations, 'stream_url');
+			sortByPlaylistEntryTextField(radioStations, 'name');
 		},
 		addRadioStations: function(radioStationsData) {
 			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
-			sortByPlaylistEntryField(radioStations, 'stream_url');
-			sortByPlaylistEntryField(radioStations, 'name');
+			sortByPlaylistEntryTextField(radioStations, 'stream_url');
+			sortByPlaylistEntryTextField(radioStations, 'name');
 		},
 		removeRadioStation: function(stationId) {
 			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
@@ -280,6 +286,27 @@ angular.module('Music').service('libraryService', [function() {
 		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
 			var playlist = this.getPlaylist(playlistId);
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
+		},
+		sortPlaylist: function(playlistId, byProperty) {
+			var playlist = this.getPlaylist(playlistId);
+			switch (byProperty) {
+			case 'track':
+				sortByTextField(playlist.tracks, 'track.title');
+				break;
+			case 'album':
+				sortByTextField(playlist.tracks, 'track.title');
+				sortByNumericField(playlist.tracks, 'track.number');
+				sortByNumericField(playlist.tracks, 'track.disk');
+				sortByTextField(playlist.tracks, 'track.album.name');
+				break;
+			case 'artist':
+				sortByTextField(playlist.tracks, 'track.title');
+				sortByTextField(playlist.tracks, 'track.artistName');
+				break;
+			default:
+				console.error('Unexpected playlist sort property ' + byProperty);
+				break;
+			}
 		},
 		getArtist: function(id) {
 			var artist = _.find(artists, { id: Number(id) });

@@ -24,9 +24,9 @@
 				ng-class="{ disabled: playlist.name.length == 0 }" 
 				ng-click="$parent.$parent.commitEdit(playlist); $event.stopPropagation()"></button>
 		</div>
-		<div class="actions" title="" ng-show="playlist && $parent.showEditForm == null">
+		<div class="actions" ng-init="subMenuShown = false" title="" ng-show="playlist && $parent.showEditForm == null">
 			<span class="icon-more" ng-show="!playlist.busy"
-				ng-click="$parent.$parent.onPlaylistMoreButton(playlist); $event.stopPropagation()"></span>
+				ng-click="$parent.$parent.onPlaylistMoreButton(playlist); subMenuShown = false; $event.stopPropagation()"></span>
 			<span class="icon-loading-small" ng-show="playlist.busy"></span>
 			<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 				<ul>
@@ -41,6 +41,22 @@
 					</li>
 					<li ng-click="$parent.$parent.exportToFile(playlist)">
 						<a class="icon-to-file"><span translate>Export to file</span></a>
+					</li>
+					<li ng-click="subMenuShown = !subMenuShown; $event.stopPropagation()">
+						<a class="icon-sort-by-alpha"><span translate>Sort …</span></a>
+						<div class="popovermenu bubble submenu" ng-show="subMenuShown">
+							<ul>
+								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'track')">
+									<a><span translate>by title</span></a>
+								</li>
+								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'artist')">
+									<a><span translate>by artist</span></a>
+								</li>
+								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'album')">
+									<a><span translate>by album</span></a>
+								</li>
+							</ul>
+						</div>
 					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
 						<a class="icon-delete"><span translate>Delete</span></a>
@@ -57,9 +73,6 @@
 					<li ng-click="$parent.showRadioHint()">
 						<a class="icon-details"><span translate>Getting started</span></a>
 					</li>
-					<!-- <li ng-click="$parent.exportRadioToFile()">
-						<a class="icon-to-file"><span translate>Export to file</span></a>
-					</li> -->
 					<li ng-click="$parent.importFromFileToRadio()">
 						<a class="icon-from-file"><span translate>Import from file</span></a>
 					</li>

@@ -112,7 +112,7 @@ msgstr ""
 msgid "Are you sure to permanently erase all the configured internet radio stations?"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:104
+#: ../js/app/controllers/navigationcontroller.js:120
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:46
+#: ../templates/partials/navigationitem.php:62
 #: ../templates/partials/radioview.php:20
 msgid "Delete"
 msgstr ""
@@ -202,7 +202,7 @@ msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:43
-#: ../templates/partials/navigationitem.php:67
+#: ../templates/partials/navigationitem.php:80
 msgid "Export to file"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:58
+#: ../templates/partials/navigationitem.php:74
 msgid "Getting started"
 msgstr ""
 
@@ -285,7 +285,7 @@ msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:40
-#: ../templates/partials/navigationitem.php:64
+#: ../templates/partials/navigationitem.php:77
 msgid "Import from file"
 msgstr ""
 
@@ -480,7 +480,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:105
+#: ../js/app/controllers/navigationcontroller.js:121
 msgid "Remove playlist"
 msgstr ""
 
@@ -596,6 +596,10 @@ msgstr ""
 
 #: ../templates/partials/genresview.php:34
 msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr ""
+
+#: ../templates/partials/navigationitem.php:46
+msgid "Sort …"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:20
@@ -757,6 +761,18 @@ msgstr ""
 
 #: ../templates/partials/radiohint.php:25
 msgid "Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP scheme. By default, your browser might block such accees. To overcome this, you may be able to set your browser to allow \"Insecure content\" on this page. On the desktop browsers, such settings can usually be found by clicking the icon right next to the address bar on its left side."
+msgstr ""
+
+#: ../templates/partials/navigationitem.php:56
+msgid "by album"
+msgstr ""
+
+#: ../templates/partials/navigationitem.php:53
+msgid "by artist"
+msgstr ""
+
+#: ../templates/partials/navigationitem.php:50
+msgid "by title"
 msgstr ""
 
 #: ../templates/partials/settingsview.php:158

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 #app-navigation {
@@ -175,6 +175,10 @@
 	opacity: 1.0;
 }
 
+#app-navigation .popovermenu.submenu span {
+	margin-left: 16px;
+}
+
 #app-navigation button.disabled {
 	opacity: .5;
 	pointer-events: none;
@@ -226,6 +230,10 @@
 
 .icon-from-file {
 	background-image: url(../img/from-file.svg);
+}
+
+.icon-sort-by-alpha {
+	background-image: url(../img/sort-by-alpha.svg);
 }
 
 .icon-album {

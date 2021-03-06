@@ -43,6 +43,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
+	public function setTracks($trackIds, $playlistId, $userId) {
+		$playlist = $this->find($playlistId, $userId);
+		$playlist->setTrackIdsFromArray($trackIds);
+		$this->mapper->update($playlist);
+		return $playlist;
+	}
+
 	public function addTracks($trackIds, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$prevTrackIds = $playlist->getTrackIdsAsArray();

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 
@@ -96,6 +96,22 @@ angular.module('Music').controller('NavigationController', [
 				Restangular.one('playlists', playlist.id).put({name: playlist.name});
 				$scope.showEditForm = null;
 			}
+		};
+
+		// Sort playlist
+		$scope.sortPlaylist = function(playlist, byProperty) {
+			libraryService.sortPlaylist(playlist.id, byProperty);
+
+			// Update the currently playing list if necessary
+			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
+				var playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
+				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
+			}
+
+			var trackIds = _.map(playlist.tracks, 'track.id');
+			Restangular.one('playlists', playlist.id).put({ trackIds: trackIds.join(',') }).then(function (result) {
+				playlist.updated = result.updated;
+			});
 		};
 
 		// Remove playlist

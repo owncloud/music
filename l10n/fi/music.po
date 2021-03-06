@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-02-27 19:41+0200\n"
+"PO-Revision-Date: 2021-03-06 22:37+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -144,7 +144,7 @@ msgid ""
 msgstr ""
 "Oletko varma, että haluat pysyvästi poistaa kaikki internet radio -asemat?"
 
-#: ../js/app/controllers/navigationcontroller.js:104
+#: ../js/app/controllers/navigationcontroller.js:120
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
@@ -226,7 +226,7 @@ msgstr "Kommentti"
 msgid "Created"
 msgstr "Luotu"
 
-#: ../templates/partials/navigationitem.php:46
+#: ../templates/partials/navigationitem.php:62
 #: ../templates/partials/radioview.php:20
 msgid "Delete"
 msgstr "Poista"
@@ -258,7 +258,7 @@ msgid "Export radio stations to a file in the selected folder"
 msgstr "Vie radio-kanavat tiedostoon valitussa kansiossa"
 
 #: ../templates/partials/navigationitem.php:43
-#: ../templates/partials/navigationitem.php:67
+#: ../templates/partials/navigationitem.php:80
 msgid "Export to file"
 msgstr "Vie tiedostoon"
 
@@ -328,7 +328,7 @@ msgstr "Genre"
 msgid "Genres"
 msgstr "Genret"
 
-#: ../templates/partials/navigationitem.php:58
+#: ../templates/partials/navigationitem.php:74
 msgid "Getting started"
 msgstr "Aloitusohje"
 
@@ -351,7 +351,7 @@ msgstr ""
 "php'."
 
 #: ../templates/partials/navigationitem.php:40
-#: ../templates/partials/navigationitem.php:64
+#: ../templates/partials/navigationitem.php:77
 msgid "Import from file"
 msgstr "Tuo tiedostosta"
 
@@ -593,7 +593,7 @@ msgstr "Radio-asemat vietiin tiedostoon {{ path }}"
 msgid "Remove"
 msgstr "Poista"
 
-#: ../js/app/controllers/navigationcontroller.js:105
+#: ../js/app/controllers/navigationcontroller.js:121
 msgid "Remove playlist"
 msgstr "Poista soittolista"
 
@@ -712,6 +712,10 @@ msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 "Kirjastossasi on kappaleita, jotka tulee uudelleen skannata ennen kuin "
 "niiden genre voidaan näyttää"
+
+#: ../templates/partials/navigationitem.php:46
+msgid "Sort …"
+msgstr "Järjestä …"
 
 #: ../templates/partials/settingsview.php:20
 msgid ""
@@ -986,6 +990,18 @@ msgstr ""
 "sisällön\" näyttäminen tällä sivulla. Työpöytäselaimissa tällaiset asetukset "
 "löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
 "kuvaketta."
+
+#: ../templates/partials/navigationitem.php:56
+msgid "by album"
+msgstr "albumin mukaan"
+
+#: ../templates/partials/navigationitem.php:53
+msgid "by artist"
+msgstr "esittäjän mukaan"
+
+#: ../templates/partials/navigationitem.php:50
+msgid "by title"
+msgstr "nimen mukaan"
 
 #: ../templates/partials/settingsview.php:158
 msgid "version history"

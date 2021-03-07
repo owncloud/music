@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 
@@ -53,7 +53,9 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			Restangular.one('playlists', listId).all('remove').post({indices: trackIndex});
+			Restangular.one('playlists', listId).all('remove').post({indices: trackIndex}).then(function (result) {
+				$scope.playlist.updated = result.updated;
+			});
 		};
 
 		function play(startIndex /*optional*/) {
@@ -110,7 +112,9 @@ angular.module('Music').controller('PlaylistViewController', [
 				playlistService.onPlaylistModified($scope.tracks, playingIndex);
 			}
 
-			Restangular.one('playlists', listId).all('reorder').post({fromIndex: srcIndex, toIndex: dstIndex});
+			Restangular.one('playlists', listId).all('reorder').post({fromIndex: srcIndex, toIndex: dstIndex}).then(function (result) {
+				$scope.playlist.updated = result.updated;
+			});
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {

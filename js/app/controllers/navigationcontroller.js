@@ -289,12 +289,12 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
-			return _(folder.tracks).map('track').map('id').value();
+			return _.map(folder.tracks, 'track.id');
 		}
 
 		function trackIdsFromGenre(genreId) {
 			var genre = libraryService.getGenre(genreId);
-			return _(genre.tracks).map('track').map('id').value();
+			return _.map(genre.tracks, 'track.id');
 		}
 
 		function addTracks(playlist, trackIds) {

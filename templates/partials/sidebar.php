@@ -7,6 +7,7 @@
 	HtmlUtil::printPartial('albumdetails');
 	HtmlUtil::printPartial('artistdetails');
 	HtmlUtil::printPartial('playlistdetails');
+	HtmlUtil::printPartial('radiostationdetails');
 	HtmlUtil::printPartial('radiohint');
 	?>
 

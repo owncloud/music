@@ -58,6 +58,10 @@ angular.module('Music').controller('SidebarController', [
 			showSidebar('playlist', playlistId);
 		});
 
+		$rootScope.$on('showRadioStationDetails', function(event, stationId) {
+			showSidebar('radioStation', stationId);
+		});
+
 		$rootScope.$on('showRadioHint', function() {
 			showSidebar('radio', null);
 		});

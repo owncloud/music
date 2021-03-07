@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 
@@ -151,7 +151,7 @@ angular.module('Music').controller('RadioViewController', [
 
 		function initView() {
 			$scope.incrementalLoadLimit = 0;
-			$scope.stations = libraryService.getRadioStations();
+			$scope.stations = libraryService.getAllRadioStations();
 			$timeout(showMore);
 		}
 

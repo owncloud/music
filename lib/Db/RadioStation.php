@@ -41,7 +41,9 @@ class RadioStation extends Entity {
 			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'stream_url' => $this->getStreamUrl(),
-			'home_url' => $this->getHomeUrl()
+			'home_url' => $this->getHomeUrl(),
+			'created' => $this->getCreated(),
+			'updated' => $this->getUpdated()
 		];
 	}
 }

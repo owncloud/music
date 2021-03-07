@@ -368,7 +368,10 @@ angular.module('Music').service('libraryService', [function() {
 		getAllGenres: function() {
 			return genres;
 		},
-		getRadioStations: function() {
+		getRadioStation: function(id) {
+			return _.find(radioStations, ['track.id', Number(id)])?.track;
+		},
+		getAllRadioStations: function() {
 			return radioStations;
 		},
 		findTracksByArtist: function(artistId) {

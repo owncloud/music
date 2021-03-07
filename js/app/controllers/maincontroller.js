@@ -74,7 +74,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.radioCountText = function() {
 		if (libraryService.radioStationsLoaded()) {
-			var stationCount = libraryService.getRadioStations().length;
+			var stationCount = libraryService.getAllRadioStations().length;
 			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
 		} else {
 			return '';
@@ -265,7 +265,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		var capType = OCA.Music.Utils.capitalize(entityType);
 		var showDetailsEvent = 'show' + capType + 'Details';
 		var scrollEvent = 'scrollTo' + capType;
-		var elemId = entityType + '-' + id;
+		var elemId = _.kebabCase(entityType) + '-' + id;
 
 		$rootScope.$emit(showDetailsEvent, id);
 		$timeout(function() {
@@ -286,6 +286,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showAlbumDetails = function(album) {
 		showDetails('album', album.id);
+	};
+
+	$scope.showRadioStationDetails = function(station) {
+		showDetails('radioStation', station.id);
 	};
 
 	$scope.showRadioHint = function() {

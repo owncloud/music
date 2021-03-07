@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 angular.module('Music').controller('MainController', [
@@ -270,7 +270,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$rootScope.$emit(showDetailsEvent, id);
 		$timeout(function() {
 			var elem = document.getElementById(elemId);
-			if (!isElementInViewPort(elem)) {
+			if (elem !== null && !isElementInViewPort(elem)) {
 				$rootScope.$emit(scrollEvent, id, 0);
 			}
 		}, 300);

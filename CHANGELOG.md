@@ -7,6 +7,7 @@
 ### Fixed
 - Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)
 - Playlist "updated" timestamp not updating on the UI when tracks removed or manually reordered
+- View unnecessarily scrolling when opening track details in the playlist view
 
 ## 1.0.3 - 2021-03-01
 ### Added

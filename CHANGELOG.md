@@ -1,3 +1,12 @@
+## [Unreleased]
+### Added
+- Action to sort a playlist by title, album, or artist
+  [#689](https://github.com/owncloud/music/issues/689)
+- Keyboard shortcut shift+space to stop the playback
+
+### Fixed
+- Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)
+
 ## 1.0.3 - 2021-03-01
 ### Added
 - Support for Nextcloud 21

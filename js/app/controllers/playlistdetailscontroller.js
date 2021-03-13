@@ -63,7 +63,9 @@ angular.module('Music').controller('PlaylistDetailsController', [
 		$scope.commitEdit = function() {
 			// push the change to the server only if the comment has actually changed
 			if (initialComment !== $scope.playlist.comment) {
-				Restangular.one('playlists', $scope.playlist.id).put({comment: $scope.playlist.comment});
+				Restangular.one('playlists', $scope.playlist.id).put({comment: $scope.playlist.comment}).then(function (result) {
+					$scope.playlist.updated = result.updated;
+				});
 			}
 			$scope.editing = false;
 		};

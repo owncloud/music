@@ -93,7 +93,9 @@ angular.module('Music').controller('NavigationController', [
 		// Commit renaming of playlist
 		$scope.commitEdit = function(playlist) {
 			if (playlist.name.length > 0) {
-				Restangular.one('playlists', playlist.id).put({name: playlist.name});
+				Restangular.one('playlists', playlist.id).put({name: playlist.name}).then(function (result) {
+					playlist.updated = result.updated;
+				});
 				$scope.showEditForm = null;
 			}
 		};

@@ -8,7 +8,7 @@
 
 ### Fixed
 - Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)
-- Playlist "updated" timestamp not updating on the UI when tracks removed or manually reordered
+- Playlist "updated" timestamp not updating on the UI when tracks removed or manually reordered or name or comment modified
 - View unnecessarily scrolling when opening track details in the playlist view
 - The color of the icon in the "no search results" box in the NC dark mode
 

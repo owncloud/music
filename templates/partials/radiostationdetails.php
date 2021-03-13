@@ -24,7 +24,7 @@
 		<dt translate>Created</dt>
 		<dd>{{ createdDate }}</dd>
 
-		<dt translate>Updated</dt>
+		<dt translate>Modified</dt>
 		<dd>{{ updatedDate }}</dd>
 	</dl>
 

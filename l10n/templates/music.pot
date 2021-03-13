@@ -112,7 +112,7 @@ msgstr ""
 msgid "Are you sure to permanently erase all the configured internet radio stations?"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:120
+#: ../js/app/controllers/navigationcontroller.js:122
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Click to rescan"
 msgstr ""
 
-#: ../templates/partials/radioview.php:34
+#: ../templates/partials/radioview.php:36
 msgid "Click to show \"Getting started\""
 msgstr ""
 
@@ -166,11 +166,12 @@ msgid "Comment"
 msgstr ""
 
 #: ../templates/partials/playlistdetails.php:12
+#: ../templates/partials/radiostationdetails.php:24
 msgid "Created"
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:62
-#: ../templates/partials/radioview.php:20
+#: ../templates/partials/radioview.php:22
 msgid "Delete"
 msgstr ""
 
@@ -186,6 +187,7 @@ msgstr ""
 #: ../js/app/directives/tracklist.js:36
 #: ../templates/partials/navigationitem.php:34
 #: ../templates/partials/playlistview.php:24
+#: ../templates/partials/radioview.php:20
 msgid "Details"
 msgstr ""
 
@@ -251,7 +253,7 @@ msgstr ""
 msgid "Folders"
 msgstr ""
 
-#: ../templates/partials/sidebar.php:14
+#: ../templates/partials/sidebar.php:15
 msgid "Follow playback"
 msgstr ""
 
@@ -335,9 +337,18 @@ msgstr ""
 msgid "Lyrics"
 msgstr ""
 
+#: ../templates/partials/playlistdetails.php:15
+#: ../templates/partials/radiostationdetails.php:27
+msgid "Modified"
+msgstr ""
+
 #: ../templates/fake-template.php:3
 #: ../templates/partials/settingsview.php:157
 msgid "Music"
+msgstr ""
+
+#: ../templates/partials/radiostationdetails.php:6
+msgid "Name"
 msgstr ""
 
 #: ../templates/partials/navigation.php:23
@@ -366,7 +377,7 @@ msgstr ""
 msgid "No search results in this view for <strong>{{ queryString }}</strong>"
 msgstr ""
 
-#: ../templates/partials/radioview.php:33
+#: ../templates/partials/radioview.php:35
 msgid "No stations"
 msgstr ""
 
@@ -471,6 +482,10 @@ msgstr ""
 msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 
+#: ../templates/partials/radiostationdetails.php:3
+msgid "Radio station"
+msgstr ""
+
 #: ../js/app/services/playlistfileservice.js:112
 msgid "Radio stations exported to file {{ path }}"
 msgstr ""
@@ -480,7 +495,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:121
+#: ../js/app/controllers/navigationcontroller.js:123
 msgid "Remove playlist"
 msgstr ""
 
@@ -502,7 +517,7 @@ msgid "Repeat"
 msgstr ""
 
 #: ../js/app/controllers/albumsviewcontroller.js:261
-#: ../js/app/controllers/playlistviewcontroller.js:191
+#: ../js/app/controllers/playlistviewcontroller.js:195
 msgid "Requested entry was not found"
 msgstr ""
 
@@ -606,6 +621,10 @@ msgstr ""
 msgid "Specify folders within your music collection path which shall be excluded from the scanning."
 msgstr ""
 
+#: ../templates/partials/radiostationdetails.php:12
+msgid "Stream URL"
+msgstr ""
+
 #: ../templates/partials/albumdetails.php:31
 #: ../templates/partials/artistdetails.php:36
 #: ../templates/partials/trackdetails.php:56
@@ -703,10 +722,6 @@ msgstr ""
 
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
-msgstr ""
-
-#: ../templates/partials/playlistdetails.php:15
-msgid "Updated"
 msgstr ""
 
 #: ../js/app/controllers/artistdetailscontroller.js:61

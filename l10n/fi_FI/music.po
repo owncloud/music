@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-03-06 22:37+0200\n"
+"PO-Revision-Date: 2021-03-14 00:27+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -143,7 +143,7 @@ msgid ""
 msgstr ""
 "Oletko varma, että haluat pysyvästi poistaa kaikki internet radio -asemat?"
 
-#: ../js/app/controllers/navigationcontroller.js:120
+#: ../js/app/controllers/navigationcontroller.js:122
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
@@ -209,7 +209,7 @@ msgstr "Napsauta aloittaaksesi skannauksen"
 msgid "Click to rescan"
 msgstr "Napsauta skannataksesi uudestaan"
 
-#: ../templates/partials/radioview.php:34
+#: ../templates/partials/radioview.php:36
 msgid "Click to show \"Getting started\""
 msgstr "Avaa Aloitusohje napsauttamalla"
 
@@ -222,11 +222,12 @@ msgid "Comment"
 msgstr "Kommentti"
 
 #: ../templates/partials/playlistdetails.php:12
+#: ../templates/partials/radiostationdetails.php:24
 msgid "Created"
 msgstr "Luotu"
 
 #: ../templates/partials/navigationitem.php:62
-#: ../templates/partials/radioview.php:20
+#: ../templates/partials/radioview.php:22
 msgid "Delete"
 msgstr "Poista"
 
@@ -241,6 +242,7 @@ msgstr "Kuvaus (esim. sovelluksen nimi)"
 #: ../js/app/directives/listheading.js:25 ../js/app/directives/tracklist.js:36
 #: ../templates/partials/navigationitem.php:34
 #: ../templates/partials/playlistview.php:24
+#: ../templates/partials/radioview.php:20
 msgid "Details"
 msgstr "Tiedot"
 
@@ -306,7 +308,7 @@ msgstr "Kansio"
 msgid "Folders"
 msgstr "Kansiot"
 
-#: ../templates/partials/sidebar.php:14
+#: ../templates/partials/sidebar.php:15
 msgid "Follow playback"
 msgstr "Seuraa toistoa"
 
@@ -416,9 +418,18 @@ msgstr "Ladataan…"
 msgid "Lyrics"
 msgstr "Lyriikat"
 
+#: ../templates/partials/playlistdetails.php:15
+#: ../templates/partials/radiostationdetails.php:27
+msgid "Modified"
+msgstr "Muokattu"
+
 #: ../templates/fake-template.php:3 ../templates/partials/settingsview.php:157
 msgid "Music"
 msgstr "Musiikki"
+
+#: ../templates/partials/radiostationdetails.php:6
+msgid "Name"
+msgstr "Nimi"
 
 #: ../templates/partials/navigation.php:23
 #: ../templates/partials/navigation.php:26
@@ -448,7 +459,7 @@ msgstr ""
 "Hakusanalla <strong>{{ queryString }}</strong> ei löytynyt tuloksia tästä "
 "näkymästä"
 
-#: ../templates/partials/radioview.php:33
+#: ../templates/partials/radioview.php:35
 msgid "No stations"
 msgstr "Ei asemia"
 
@@ -583,22 +594,26 @@ msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 "Virhe yhdistettäessä Last.fm-palveluun. API-avain saattaa olla virheellinen."
 
+#: ../templates/partials/radiostationdetails.php:3
+msgid "Radio station"
+msgstr "Radioasema"
+
 #: ../js/app/services/playlistfileservice.js:112
 msgid "Radio stations exported to file {{ path }}"
-msgstr "Radio-asemat vietiin tiedostoon {{ path }}"
+msgstr "Radioasemat vietiin tiedostoon {{ path }}"
 
 #: ../templates/partials/playlistview.php:26
 #: ../templates/partials/settingsview.php:38
 msgid "Remove"
 msgstr "Poista"
 
-#: ../js/app/controllers/navigationcontroller.js:121
+#: ../js/app/controllers/navigationcontroller.js:123
 msgid "Remove playlist"
 msgstr "Poista soittolista"
 
 #: ../js/app/controllers/radioviewcontroller.js:39
 msgid "Remove radio station"
-msgstr "Poista radio-asema"
+msgstr "Poista radioasema"
 
 #: ../templates/partials/playlistview.php:26
 msgid "Remove track from playlist"
@@ -614,7 +629,7 @@ msgid "Repeat"
 msgstr "Kertaa"
 
 #: ../js/app/controllers/albumsviewcontroller.js:261
-#: ../js/app/controllers/playlistviewcontroller.js:191
+#: ../js/app/controllers/playlistviewcontroller.js:195
 msgid "Requested entry was not found"
 msgstr "Pyydettyä riviä ei löytynyt"
 
@@ -724,6 +739,10 @@ msgstr ""
 "Määritä musiikkikokoelman polkuun kuuluvat kansiot, jotka jätetään "
 "skannauksen ulkopuolelle."
 
+#: ../templates/partials/radiostationdetails.php:12
+msgid "Stream URL"
+msgstr "Striimin URL"
+
 #: ../templates/partials/albumdetails.php:31
 #: ../templates/partials/artistdetails.php:36
 #: ../templates/partials/trackdetails.php:56
@@ -814,7 +833,7 @@ msgstr ""
 #: ../templates/partials/settingsview.php:67
 msgid ""
 "This action erases all the stations shown in the \"Internet radio\" view."
-msgstr "Tämä toiminto tyhjentää kaikki asemat \"Internet radio\"-näkymästä."
+msgstr "Tämä toiminto tyhjentää kaikki asemat Internet radio -näkymästä."
 
 #: ../templates/partials/settingsview.php:57
 msgid ""
@@ -892,10 +911,6 @@ msgstr "Tuntematon albumi"
 #: ../templates/fake-template.php:5
 msgid "Unknown artist"
 msgstr "Tuntematon esittäjä"
-
-#: ../templates/partials/playlistdetails.php:15
-msgid "Updated"
-msgstr "Päivitetty"
 
 #: ../js/app/controllers/artistdetailscontroller.js:61
 msgid ""
@@ -1017,6 +1032,9 @@ msgstr "{{ count }} tiedostoa ohitettiin."
 #: ../templates/main.php:59
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
+
+#~ msgid "Updated"
+#~ msgstr "Päivitetty"
 
 #~ msgid "Invalid path"
 #~ msgstr "Virheellinen polku"

@@ -62,14 +62,14 @@ HtmlUtil::addWebpackStyle('app');
 
 			<div id="searchContainer" ng-controller="SearchController">
 				<div id="searchResultsOmitted" class="emptycontent" ng-show="searchResultsOmitted">
-					<div class="icon-search svg"></div>
+					<div class="icon-search"></div>
 					<div>
 						<h2 translate>Some search results are omitted</h2>
 						<p translate>Try to refine the search</p>
 					</div>
 				</div>
 				<div id="noSearchResults" class="emptycontent" ng-show="noSearchResults">
-					<div class="icon-search svg"></div>
+					<div class="icon-search"></div>
 					<div>
 						<h2 translate>
 							No search results in this view for <strong>{{ queryString }}</strong>
@@ -79,7 +79,7 @@ HtmlUtil::addWebpackStyle('app');
 			</div>
 
 			<img id="updateData" ng-show="updateAvailable && currentView!='#/settings'"
-				 class="svg clickable" src="<?php HtmlUtil::printSvgPath('reload') ?>"  ng-click="update()"
+				 class="svg clickable" src="<?php HtmlUtil::printSvgPath('reload') ?>" ng-click="update()"
 				 alt  ="{{ 'New music available. Click here to reload the music library.' | translate }}"
 				 title="{{ 'New music available. Click here to reload the music library.' | translate }}" >
 

@@ -51,12 +51,14 @@ angular.module('Music').controller('PlaylistDetailsController', [
 
 		// Start editing the comment
 		$scope.startEdit = function() {
-			$scope.editing = true;
-			initialComment = $scope.playlist.comment;
-			// Move the focus to the input field
-			$timeout(function() {
-				$('#app-sidebar dd textarea').focus();
-			});
+			if (!$scope.editing) {
+				$scope.editing = true;
+				initialComment = $scope.playlist.comment;
+				// Move the focus to the input field
+				$timeout(function() {
+					$('#app-sidebar dd textarea').focus();
+				});
+			}
 		};
 
 		// Commit editing the comment

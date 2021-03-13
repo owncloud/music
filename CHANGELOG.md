@@ -4,6 +4,7 @@
   [#689](https://github.com/owncloud/music/issues/689)
 - Keyboard shortcut shift+space to stop the playback
 - Details pane for radio stations
+- Tooltip showing the full version of any truncated title in the details pane
 
 ### Fixed
 - Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)

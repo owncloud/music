@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 
@@ -78,6 +78,25 @@ angular.module('Music').controller('SidebarController', [
 			// show details for the current track if the feature is enabled
 			if ($scope.follow && track && !$('#app-sidebar').hasClass('disappear')) {
 				showTrackDetails(track.id);
+			}
+		});
+
+		// A bit hacky logic is needed to show tooltip on truncated detail titles (showing the full title)
+		const ctx = document.createElement('canvas').getContext('2d');
+		$(document).on('mouseenter', '#app-sidebar dt', function() {
+			const $this = $(this);
+
+			const styles = getComputedStyle(this);
+			ctx.font = `${styles.fontSize} ${styles.fontFamily}`;
+			const text = ctx.measureText(this.innerText);
+
+			const needsTooltip = (text.width > $this.width());
+			const hasTooltip = $this.is("[title]");
+
+			if (needsTooltip && !hasTooltip) {
+				$this.attr('title', $this.text());
+			} else if (!needsTooltip && hasTooltip) {
+				$this.removeAttr('title');
 			}
 		});
 

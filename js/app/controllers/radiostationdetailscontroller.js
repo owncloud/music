@@ -36,33 +36,47 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			}
 		});
 
-		/* TODO: Editing support; the following commented code is from playlist details but the editing here shall work a bit differently
+		$scope.$watch('station.updated', function(updated) {
+			$scope.updatedDate = formatTimestamp(updated);
+		});
 
-		var initialComment = null;
+		var initialName = null;
+		var initialStreamUrl = null;
 
-		// Start editing the comment
-		$scope.startEdit = function() {
-			$scope.editing = true;
-			initialComment = $scope.playlist.comment;
-			// Move the focus to the input field
-			$timeout(function() {
-				$('#app-sidebar dd textarea').focus();
-			});
+		// Enter the edit mode
+		$scope.startEdit = function(targetEditor) {
+			if (!$scope.editing) {
+				$scope.editing = true;
+				initialName = $scope.station.name;
+				initialStreamUrl = $scope.station.stream_url;
+				// Move the focus to the clicked input field
+				$timeout(function() {
+					$(targetEditor).focus();
+				});
+			}
 		};
 
-		// Commit editing the comment
+		// Commit the edited content
 		$scope.commitEdit = function() {
-			// push the change to the server only if the comment has actually changed
-			if (initialComment !== $scope.playlist.comment) {
-				Restangular.one('playlists', $scope.playlist.id).put({comment: $scope.playlist.comment});
+			// do not allow committing if the stream URL is empty
+			if ($scope.station.stream_url.length > 0) {
+				// push the change to the server only if the data has actually changed
+				if (initialName !== $scope.station.name || initialStreamUrl !== $scope.station.stream_url) {
+					Restangular.one('radio', $scope.station.id).put(_.pick($scope.station, 'name', 'stream_url')).then(
+						function (result) {
+							$scope.station.updated = result.updated;
+						}
+					);
+				}
+				$scope.editing = false;
 			}
+		};
+
+		// Rollback any edited content
+		$scope.cancelEdit = function() {
+			$scope.station.name = initialName;
+			$scope.station.stream_url = initialStreamUrl;
 			$scope.editing = false;
 		};
-
-		// Commit editing when user clicks outside the textarea
-		$('#app-sidebar dd textarea').blur(function() {
-			$timeout($scope.commitEdit);
-		});
-		*/
 	}
 ]);

@@ -3,7 +3,7 @@
 - Action to sort a playlist by title, album, or artist
   [#689](https://github.com/owncloud/music/issues/689)
 - Keyboard shortcut shift+space to stop the playback
-- Details pane for radio stations
+- Details pane for radio stations, including support for modifying the station name and the stream URL
 - Tooltip showing the full version of any truncated title in the details pane
 
 ### Fixed

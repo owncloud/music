@@ -14,7 +14,7 @@
 				<div ng-click="onStationClick($index)">
 					<div class="play-pause"></div>
 					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ ::(station.name || station.stream_url) }}</div>
+					<div>{{ station.name || station.stream_url }}</div>
 				</div>
 				<button class="action icon-details" ng-click="showRadioStationDetails(station)"
 					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"></button>

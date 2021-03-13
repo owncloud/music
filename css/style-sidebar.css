@@ -69,6 +69,10 @@
 	padding: 0 16px 16px 16px;
 }
 
+#app-sidebar #radio-station-details dl {
+	padding-top: 6px;
+}
+
 #app-sidebar dt {
 	float: left;
 	width: 30%;
@@ -91,7 +95,7 @@
 	white-space: pre-wrap;
 }
 
-#app-sidebar button {
+#app-sidebar .clickable button {
 	border: none;
 	background-color: transparent;
 	opacity: 0.5;
@@ -110,10 +114,12 @@
 	opacity: 1.0;
 }
 
-#app-sidebar dd textarea {
+#app-sidebar dd textarea,
+#app-sidebar dd input {
 	width: 100%;
 	margin-top: -6px;
 	margin-left: -6px;
+	cursor: text;
 }
 
 #app-sidebar .icon-info {
@@ -265,4 +271,9 @@
 
 #app-sidebar .tutorial li {
 	display: list-item;
+}
+
+#app-sidebar button.disabled {
+	opacity: .5;
+	pointer-events: none;
 }

@@ -103,17 +103,16 @@ angular.module('Music').controller('RadioViewController', [
 			}
 		});
 
-		// Reload the view if the stations got updated (by import from file)
-		subscribe('playlistUpdated', function(event, playlistId) {
+		// Reload the view if the stations got updated (by import from file or renaming a station)
+		subscribe('playlistUpdated', function(event, playlistId, onlyReorder) {
 			if (playlistId === 'radio') {
-				var playingIdx = $scope.getCurrentStationIndex();
-				var playingStation = (playingIdx !== null) ? $scope.stations[playingIdx] : null;
+				if (onlyReorder !== true) {
+					initView();
+				}
 
-				initView();
-
-				if (playingStation !== null) {
-					var newIndex = _.indexOf($scope.stations, playingStation);
-					playlistService.onPlaylistModified($scope.stations, newIndex);
+				if (listIsPlaying()) {
+					var playingIndex = _.findIndex($scope.stations, { track: $scope.$parent.currentTrack });
+					playlistService.onPlaylistModified($scope.stations, playingIndex);
 				}
 
 				// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously

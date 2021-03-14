@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('RadioStationDetailsController', [
-	'$scope', '$timeout', 'Restangular', 'libraryService',
-	function ($scope, $timeout, Restangular, libraryService) {
+	'$scope', '$rootScope', '$timeout', 'Restangular', 'libraryService',
+	function ($scope, $rootScope, $timeout, Restangular, libraryService) {
 
 		function resetContents() {
 			$scope.station = null;
@@ -69,6 +69,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 					);
 				}
 				$scope.editing = false;
+				libraryService.sortRadioStations();
+				$rootScope.$emit('playlistUpdated', 'radio', /*onlyReorder=*/true);
 			}
 		};
 

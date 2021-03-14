@@ -11,7 +11,8 @@
 - Playlist "updated" timestamp not updating on the UI when tracks removed or manually reordered or name or comment modified
 - View unnecessarily scrolling when opening track details in the playlist view
 - The color of the icon in the "no search results" box in the NC dark mode
-- Playlist comment modification not synced to server if the text box was clicked again after the modification
+- Playlist comment modification not synced to server if the text box was clicked again after the modification but before defocusing the field
+- Details pane "Follow playback" not working correctly when playing Internet radio
 
 ## 1.0.3 - 2021-03-01
 ### Added

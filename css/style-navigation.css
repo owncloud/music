@@ -168,11 +168,16 @@
 
 #app-navigation .item-with-actions .actions .popovermenu ul a {
 	background-position: 10px center;
+	background-size: 16px;
 	opacity: .7;
 }
 
 #app-navigation .item-with-actions .actions .popovermenu ul a:hover {
 	opacity: 1.0;
+}
+
+#app-navigation .popovermenu.submenu a {
+	padding-left: 0;
 }
 
 #app-navigation .popovermenu.submenu span {

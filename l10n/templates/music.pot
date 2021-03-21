@@ -68,6 +68,10 @@ msgstr ""
 msgid "About"
 msgstr ""
 
+#: ../templates/partials/navigationitem.php:83
+msgid "Add manually"
+msgstr ""
+
 #: ../templates/partials/playlistview.php:35
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
@@ -166,7 +170,7 @@ msgid "Comment"
 msgstr ""
 
 #: ../templates/partials/playlistdetails.php:12
-#: ../templates/partials/radiostationdetails.php:24
+#: ../templates/partials/radiostationdetails.php:25
 msgid "Created"
 msgstr ""
 
@@ -338,7 +342,7 @@ msgid "Lyrics"
 msgstr ""
 
 #: ../templates/partials/playlistdetails.php:15
-#: ../templates/partials/radiostationdetails.php:27
+#: ../templates/partials/radiostationdetails.php:28
 msgid "Modified"
 msgstr ""
 
@@ -347,7 +351,7 @@ msgstr ""
 msgid "Music"
 msgstr ""
 
-#: ../templates/partials/radiostationdetails.php:6
+#: ../templates/partials/radiostationdetails.php:7
 msgid "Name"
 msgstr ""
 
@@ -363,6 +367,10 @@ msgstr ""
 #: ../templates/main.php:83
 #: ../templates/main.php:84
 msgid "New music available. Click here to reload the music library."
+msgstr ""
+
+#: ../templates/partials/radiostationdetails.php:4
+msgid "New radio station"
 msgstr ""
 
 #: ../templates/partials/controls.php:11
@@ -621,7 +629,7 @@ msgstr ""
 msgid "Specify folders within your music collection path which shall be excluded from the scanning."
 msgstr ""
 
-#: ../templates/partials/radiostationdetails.php:12
+#: ../templates/partials/radiostationdetails.php:13
 msgid "Stream URL"
 msgstr ""
 

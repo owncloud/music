@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-03-14 00:27+0200\n"
+"PO-Revision-Date: 2021-03-21 22:22+0200\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -89,6 +89,10 @@ msgstr ""
 #: ../templates/partials/settingsview.php:152
 msgid "About"
 msgstr "Tietoja"
+
+#: ../templates/partials/navigationitem.php:83
+msgid "Add manually"
+msgstr "Lisää manuaalisesti"
 
 #: ../templates/partials/playlistview.php:35
 msgid "Add tracks with drag and drop from Albums or other playlists"
@@ -222,7 +226,7 @@ msgid "Comment"
 msgstr "Kommentti"
 
 #: ../templates/partials/playlistdetails.php:12
-#: ../templates/partials/radiostationdetails.php:24
+#: ../templates/partials/radiostationdetails.php:25
 msgid "Created"
 msgstr "Luotu"
 
@@ -419,7 +423,7 @@ msgid "Lyrics"
 msgstr "Lyriikat"
 
 #: ../templates/partials/playlistdetails.php:15
-#: ../templates/partials/radiostationdetails.php:27
+#: ../templates/partials/radiostationdetails.php:28
 msgid "Modified"
 msgstr "Muokattu"
 
@@ -427,7 +431,7 @@ msgstr "Muokattu"
 msgid "Music"
 msgstr "Musiikki"
 
-#: ../templates/partials/radiostationdetails.php:6
+#: ../templates/partials/radiostationdetails.php:7
 msgid "Name"
 msgstr "Nimi"
 
@@ -444,6 +448,10 @@ msgstr "Uusia kappaleita saatavilla"
 msgid "New music available. Click here to reload the music library."
 msgstr ""
 "Uusia kappaleita saatavilla. Napsauta päivittääksesi musiikkikirjastosi."
+
+#: ../templates/partials/radiostationdetails.php:4
+msgid "New radio station"
+msgstr "Uusi radioasema"
 
 #: ../templates/partials/controls.php:11
 msgid "Next"
@@ -739,7 +747,7 @@ msgstr ""
 "Määritä musiikkikokoelman polkuun kuuluvat kansiot, jotka jätetään "
 "skannauksen ulkopuolelle."
 
-#: ../templates/partials/radiostationdetails.php:12
+#: ../templates/partials/radiostationdetails.php:13
 msgid "Stream URL"
 msgstr "Striimin URL"
 

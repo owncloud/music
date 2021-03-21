@@ -15,6 +15,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 
 		function resetContents() {
 			$scope.station = null;
+			$scope.stationName = null;
+			$scope.streamUrl = null;
 			$scope.createdDate = null;
 			$scope.updatedDate = null;
 			$scope.editing = false;
@@ -31,6 +33,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 				resetContents();
 				$scope.station = libraryService.getRadioStation(stationId);
 
+				$scope.stationName = $scope.station.name;
+				$scope.streamUrl = $scope.station.stream_url;
 				$scope.createdDate = formatTimestamp($scope.station.created);
 				$scope.updatedDate = formatTimestamp($scope.station.updated);
 			}
@@ -40,15 +44,10 @@ angular.module('Music').controller('RadioStationDetailsController', [
 			$scope.updatedDate = formatTimestamp(updated);
 		});
 
-		var initialName = null;
-		var initialStreamUrl = null;
-
 		// Enter the edit mode
 		$scope.startEdit = function(targetEditor) {
 			if (!$scope.editing) {
 				$scope.editing = true;
-				initialName = $scope.station.name;
-				initialStreamUrl = $scope.station.stream_url;
 				// Move the focus to the clicked input field
 				$timeout(function() {
 					$(targetEditor).focus();
@@ -59,10 +58,12 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		// Commit the edited content
 		$scope.commitEdit = function() {
 			// do not allow committing if the stream URL is empty
-			if ($scope.station.stream_url.length > 0) {
+			if ($scope.streamUrl.length > 0) {
 				// push the change to the server only if the data has actually changed
-				if (initialName !== $scope.station.name || initialStreamUrl !== $scope.station.stream_url) {
-					Restangular.one('radio', $scope.station.id).put(_.pick($scope.station, 'name', 'stream_url')).then(
+				if ($scope.stationName !== $scope.station.name || $scope.streamUrl !== $scope.station.stream_url) {
+					$scope.station.name = $scope.stationName;
+					$scope.station.stream_url = $scope.streamUrl;
+					Restangular.one('radio', $scope.station.id).put({name: $scope.stationName, streamUrl: $scope.streamUrl}).then(
 						function (result) {
 							$scope.station.updated = result.updated;
 						}
@@ -76,8 +77,8 @@ angular.module('Music').controller('RadioStationDetailsController', [
 
 		// Rollback any edited content
 		$scope.cancelEdit = function() {
-			$scope.station.name = initialName;
-			$scope.station.stream_url = initialStreamUrl;
+			$scope.stationName = $scope.station.name;
+			$scope.streamUrl = $scope.station.stream_url;
 			$scope.editing = false;
 		};
 	}

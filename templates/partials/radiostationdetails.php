@@ -5,14 +5,14 @@
 	<dl class="tags">
 		<dt translate>Name</dt>
 		<dd class="clickable" ng-click="startEdit(nameEditor)"
-			><span ng-show="!editing">{{ station.name }}<button class="icon-rename"></button></span
-			><input ng-show="editing" ng-ref="nameEditor" type="text" ng-enter="commitEdit()" ng-model="station.name" maxlength="256"
+			><span ng-show="!editing">{{ stationName }}<button class="icon-rename"></button></span
+			><input ng-show="editing" ng-ref="nameEditor" type="text" ng-enter="commitEdit()" ng-model="stationName" maxlength="256"
 		/></dd>
 
 		<dt translate>Stream URL</dt>
 		<dd class="clickable" ng-click="startEdit(streamUrlEditor)"
-			><span ng-show="!editing">{{ station.stream_url }}<button class="icon-rename"></button></span
-			><textarea ng-show="editing" ng-ref="streamUrlEditor" type="text" ng-enter="commitEdit()" ng-model="station.stream_url" maxlength="2048"></textarea
+			><span ng-show="!editing">{{ streamUrl }}<button class="icon-rename"></button></span
+			><textarea ng-show="editing" ng-ref="streamUrlEditor" type="text" ng-enter="commitEdit()" ng-model="streamUrl" maxlength="2048"></textarea
 		></dd>
 
 		<dt ng-show="editing"></dt>

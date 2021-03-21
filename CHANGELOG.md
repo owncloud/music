@@ -6,6 +6,10 @@
 - Details pane for radio stations, including support for modifying the station name and the stream URL
 - Tooltip showing the full version of any truncated title in the details pane
 
+### Changed
+- jQuery library updated from 3.5.1 to 3.6.0
+- lodash library updated from 4.17.20 to 4.17.21
+
 ### Fixed
 - Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)
 - Playlist "updated" timestamp not updating on the UI when tracks removed or manually reordered or name or comment modified

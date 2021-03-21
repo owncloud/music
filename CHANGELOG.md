@@ -13,6 +13,8 @@
 - The color of the icon in the "no search results" box in the NC dark mode
 - Playlist comment modification not synced to server if the text box was clicked again after the modification but before defocusing the field
 - Details pane "Follow playback" not working correctly when playing Internet radio
+- Some external deployment scripts ignoring the empty but vital Music app directories
+  [#838](https://github.com/owncloud/music/issues/838)
 
 ## 1.0.3 - 2021-03-01
 ### Added

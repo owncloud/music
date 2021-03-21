@@ -177,6 +177,10 @@ angular.module('Music').controller('NavigationController', [
 			);
 		};
 
+		$scope.addRadio = function() {
+			$rootScope.$emit('showRadioStationDetails', null);
+		};
+
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {
 			if ($rootScope.playingView == destination) {

@@ -24,20 +24,34 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		resetContents();
 
 		function formatTimestamp(timestamp) {
-			var date = new Date(timestamp + 'Z');
-			return date.toLocaleString();
+			if (!timestamp) {
+				return null;
+			} else {
+				var date = new Date(timestamp + 'Z');
+				return date.toLocaleString();
+			}
 		}
 
 		$scope.$watch('contentId', function(stationId) {
 			if (!$scope.station || stationId != $scope.station.id) {
 				resetContents();
-				$scope.station = libraryService.getRadioStation(stationId);
 
-				$scope.stationName = $scope.station.name;
-				$scope.streamUrl = $scope.station.stream_url;
-				$scope.createdDate = formatTimestamp($scope.station.created);
-				$scope.updatedDate = formatTimestamp($scope.station.updated);
+				if (stationId === null) {
+					$scope.editing = true;
+					$timeout(function() {
+						$('#radio-name-editor').focus();
+					});
+				} else {
+					$scope.station = libraryService.getRadioStation(stationId);
+
+					$scope.stationName = $scope.station.name;
+					$scope.streamUrl = $scope.station.stream_url;
+				}
 			}
+		});
+
+		$scope.$watch('station.created', function(created) {
+			$scope.createdDate = formatTimestamp(created);
 		});
 
 		$scope.$watch('station.updated', function(updated) {
@@ -59,27 +73,46 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		$scope.commitEdit = function() {
 			// do not allow committing if the stream URL is empty
 			if ($scope.streamUrl.length > 0) {
-				// push the change to the server only if the data has actually changed
-				if ($scope.stationName !== $scope.station.name || $scope.streamUrl !== $scope.station.stream_url) {
-					$scope.station.name = $scope.stationName;
-					$scope.station.stream_url = $scope.streamUrl;
-					Restangular.one('radio', $scope.station.id).put({name: $scope.stationName, streamUrl: $scope.streamUrl}).then(
+				const newData = {name: $scope.stationName, streamUrl: $scope.streamUrl};
+
+				if ($scope.station === null) { // creating new
+					Restangular.all('radio').post(newData).then(
 						function (result) {
-							$scope.station.updated = result.updated;
+							libraryService.addRadioStation(result);
+							$scope.$parent.$parent.contentId = result.id;
+							$rootScope.$emit('playlistUpdated', 'radio', /*onlyReorder=*/false);
 						}
 					);
 				}
+				else {
+					// push the change to the server only if the data has actually changed
+					if ($scope.stationName !== $scope.station.name || $scope.streamUrl !== $scope.station.stream_url) {
+						$scope.station.name = $scope.stationName;
+						$scope.station.stream_url = $scope.streamUrl;
+						Restangular.one('radio', $scope.station.id).put(newData).then(
+							function (result) {
+								$scope.station.updated = result.updated;
+							}
+						);
+					}
+					libraryService.sortRadioStations();
+					$rootScope.$emit('playlistUpdated', 'radio', /*onlyReorder=*/true);
+				}
 				$scope.editing = false;
-				libraryService.sortRadioStations();
-				$rootScope.$emit('playlistUpdated', 'radio', /*onlyReorder=*/true);
 			}
 		};
 
 		// Rollback any edited content
 		$scope.cancelEdit = function() {
-			$scope.stationName = $scope.station.name;
-			$scope.streamUrl = $scope.station.stream_url;
-			$scope.editing = false;
+			if ($scope.station === null) { // creating new
+				$scope.stationName = null;
+				$scope.streamUrl = null;
+				$rootScope.$emit('hideDetails');
+			} else {
+				$scope.stationName = $scope.station.name;
+				$scope.streamUrl = $scope.station.stream_url;
+				$scope.editing = false;
+			}
 		};
 	}
 ]);

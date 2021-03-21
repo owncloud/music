@@ -258,6 +258,9 @@ angular.module('Music').service('libraryService', [function() {
 			sortByPlaylistEntryTextField(radioStations, 'stream_url');
 			sortByPlaylistEntryTextField(radioStations, 'name');
 		},
+		addRadioStation: function(radioStationData) {
+			this.addRadioStations([radioStationData]);
+		},
 		addRadioStations: function(radioStationsData) {
 			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
 			sortByPlaylistEntryTextField(radioStations, 'stream_url');

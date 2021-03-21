@@ -79,6 +79,9 @@
 					<li ng-click="$parent.exportRadioToFile()">
 						<a class="icon-to-file"><span translate>Export to file</span></a>
 					</li>
+					<li ng-click="$parent.addRadio()">
+						<a class="icon-add"><span translate>Add manually</span></a>
+					</li>
 				</ul>
 			</div>
 		</div>

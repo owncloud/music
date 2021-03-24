@@ -11,6 +11,8 @@
 ### Changed
 - jQuery library updated from 3.5.1 to 3.6.0
 - lodash library updated from 4.17.20 to 4.17.21
+- getID3 library updated from 1.9.20-202102260858 to 1.9.20-202103112222 (commit a309234) to fix error on parsing WAV files
+  [#837](https://github.com/owncloud/music/issues/837)
 
 ### Fixed
 - Potential database corruption if updating from Music version < 0.13.0 (introduced in v1.0.3)

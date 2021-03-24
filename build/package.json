@@ -1,7 +1,7 @@
 {
 	"name": "music",
 	"description": "Music player and server for ownCloud and Nextcloud",
-	"version": "1.0.3",
+	"version": "1.1.0",
 	"private": true,
 	"homepage": "https://github.com/owncloud/music",
 	"repository": {

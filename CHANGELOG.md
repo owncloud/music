@@ -1,10 +1,10 @@
-## [Unreleased]
+## 1.1.0 - 2021-03-24
 ### Added
 - Action to sort a playlist by title, album, or artist
   [#689](https://github.com/owncloud/music/issues/689)
 - Keyboard shortcut shift+space to stop the playback
 - Details pane for radio stations
-- Support for editing the name and the stream URL of radio stations
+- Support for editing the name and the stream URL of the radio stations
 - Support for creating new radio stations by manually entering the data
 - Tooltip showing the full version of any truncated title in the details pane
 

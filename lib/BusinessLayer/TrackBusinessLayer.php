@@ -89,6 +89,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track[] tracks
 	 */
 	public function findAllByNameRecursive($name, $userId) {
+		$name = \trim($name);
 		return $this->mapper->findAllByNameRecursive($name, $userId);
 	}
 
@@ -100,6 +101,9 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @return \OCA\Music\Db\Track[] Tracks matching the criteria
 	 */
 	public function findAllByNameAndArtistName($name, $artistName, $userId) {
+		$name = \trim($name ?? '');
+		$artistName = \trim($artistName ?? '');
+
 		// find exact matches first and then append fuzzy matches which are not exact matches
 		$strictMatches = $this->mapper->findAllByNameAndArtistName($name, $artistName, false, $userId);
 		$fuzzyMatches = $this->mapper->findAllByNameAndArtistName($name, $artistName, true, $userId);

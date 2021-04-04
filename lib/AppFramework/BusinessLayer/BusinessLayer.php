@@ -148,6 +148,7 @@ abstract class BusinessLayer {
 	public function findAllByName(
 			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		$name = \trim($name);
 		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 

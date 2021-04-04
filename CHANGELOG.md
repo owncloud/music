@@ -1,3 +1,7 @@
+## [Unreleased]
+### Changed
+- Clicking the song info area on player bar now activates the playing view and scrolls to the current track (instead of just scrolling to the current track if available in the current view)
+
 ## 1.1.0 - 2021-03-24
 ### Added
 - Action to sort a playlist by title, album, or artist

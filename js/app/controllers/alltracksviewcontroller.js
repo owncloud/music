@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 
@@ -118,6 +118,7 @@ angular.module('Music').controller('AllTracksViewController', [
 				$scope.trackBuckets = createTrackBuckets();
 				$timeout(function() {
 					$rootScope.loading = false;
+					$rootScope.$emit('viewActivated');
 				});
 			}
 		}

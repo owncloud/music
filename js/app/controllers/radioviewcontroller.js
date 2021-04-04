@@ -167,6 +167,7 @@ angular.module('Music').controller('RadioViewController', [
 					$timeout(showMore);
 				} else {
 					$rootScope.loading = false;
+					$rootScope.$emit('viewActivated');
 				}
 			}
 		}

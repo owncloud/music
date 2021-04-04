@@ -179,6 +179,7 @@ angular.module('Music').controller('PlaylistViewController', [
 					$timeout(showMore);
 				} else {
 					$rootScope.loading = false;
+					$rootScope.$emit('viewActivated');
 				}
 			}
 		}

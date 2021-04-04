@@ -328,6 +328,39 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		container.scrollTo(0, 0);
 	};
 
+	// Navigate to a view selected from the navigation bar
+	var navigationDestination = null;
+	var afterNavigationCallback = null;
+	$scope.navigateTo = function(destination, callback /*optional*/) {
+		if ($rootScope.currentView != destination) {
+			$rootScope.currentView = null;
+			navigationDestination = destination;
+			afterNavigationCallback = callback || null;
+			$rootScope.loading = true;
+			// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
+			$rootScope.$emit('deactivateView');
+		}
+		$scope.collapseNavigationPaneOnMobile();
+	};
+
+	$scope.collapseNavigationPaneOnMobile = function() {
+		if ($('body').hasClass('snapjs-left')) {
+			$('#app-navigation-toggle').click();
+		}
+	};
+
+	$rootScope.$on('viewDeactivated', function() {
+		// carry on with the navigation once the previous view is deactivated
+		window.location.hash = navigationDestination;
+	});
+
+	$rootScope.$on('viewActivated', function() {
+		// execute the callback after view activation if any
+		if (afterNavigationCallback !== null) {
+			$timeout(afterNavigationCallback);
+		}
+	});
+
 	// Test if element is at least partially within the view-port
 	function isElementInViewPort(el) {
 		return inViewService.isElementInViewPort(el, -scrollOffset());

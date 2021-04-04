@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -288,6 +288,8 @@ angular.module('Music').controller('AlbumsViewController', [
 					} else {
 						updateHighlight(playlistService.getCurrentPlaylistId());
 					}
+
+					$rootScope.$emit('viewActivated');
 				}
 			}
 		}

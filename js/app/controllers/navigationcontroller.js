@@ -76,7 +76,7 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.showDetails = function(playlist) {
 			$rootScope.$emit('showPlaylistDetails', playlist.id);
-			collapsePaneOnMobile();
+			$scope.collapseNavigationPaneOnMobile();
 		};
 
 		// Start renaming playlist
@@ -236,30 +236,6 @@ angular.module('Music').controller('NavigationController', [
 		$scope.addGenre = function(playlist, genreId) {
 			addTracks(playlist, trackIdsFromGenre(genreId));
 		};
-
-		// Navigate to a view selected from the navigation bar
-		var navigationDestination = null;
-		$scope.navigateTo = function(destination) {
-			if ($rootScope.currentView != destination) {
-				$rootScope.currentView = null;
-				navigationDestination = destination;
-				$rootScope.loading = true;
-				// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
-				$rootScope.$emit('deactivateView');
-			}
-			collapsePaneOnMobile();
-		};
-
-		function collapsePaneOnMobile() {
-			if ($('body').hasClass('snapjs-left')) {
-				$('#app-navigation-toggle').click();
-			}
-		}
-
-		$rootScope.$on('viewDeactivated', function() {
-			// carry on with the navigation once the previous view is deactivated
-			window.location.hash = navigationDestination;
-		});
 
 		// An item dragged and dropped on a navigation bar playlist item
 		$scope.dropOnPlaylist = function(droppedItem, playlist) {

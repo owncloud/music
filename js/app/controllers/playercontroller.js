@@ -291,10 +291,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
-			if (currentTrackIsStream()) {
-				$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
+			const doScroll = function() {
+				if (currentTrackIsStream()) {
+					$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
+				} else {
+					$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
+				}
+			};
+
+			if ($rootScope.currentView !== $rootScope.playingView) {
+				$scope.navigateTo($rootScope.playingView, doScroll);
 			} else {
-				$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
+				doScroll();
 			}
 		}
 	};

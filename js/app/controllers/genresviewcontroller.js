@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 
@@ -183,6 +183,7 @@ angular.module('Music').controller('GenresViewController', [
 				} else {
 					$rootScope.loading = false;
 					updateHighlight(playlistService.getCurrentPlaylistId());
+					$rootScope.$emit('viewActivated');
 				}
 			}
 		}

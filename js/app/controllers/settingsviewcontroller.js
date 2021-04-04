@@ -7,7 +7,7 @@
  * @author Gregory Baudet <gregory.baudet@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 angular.module('Music').controller('SettingsViewController', [
@@ -250,6 +250,7 @@ angular.module('Music').controller('SettingsViewController', [
 				$scope.settings = value;
 				$rootScope.loading = false;
 				savedExcludedPaths = _.clone(value.excludedPaths);
+				$rootScope.$emit('viewActivated');
 			});
 		});
 

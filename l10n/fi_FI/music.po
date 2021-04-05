@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-03-21 22:22+0200\n"
+"PO-Revision-Date: 2021-04-05 13:45+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -118,16 +118,16 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta esittäjän taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
-#: ../js/app/controllers/playercontroller.js:340
+#: ../js/app/controllers/playercontroller.js:348
 msgid "Album"
 msgstr "Albumi"
 
-#: ../js/app/controllers/playercontroller.js:335
+#: ../js/app/controllers/playercontroller.js:343
 #: ../templates/fake-template.php:7 ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr "Albumit"
 
-#: ../js/app/controllers/playercontroller.js:338
+#: ../js/app/controllers/playercontroller.js:346
 #: ../templates/partials/alltracksview.php:4
 #: ../templates/partials/navigation.php:14
 msgid "All tracks"
@@ -191,7 +191,7 @@ msgstr ""
 "osoitteet lisätään Content-Security-Policy-otsikkoon <a href=\"{{url}}\" "
 "target=\"_blank\">media-src</a>."
 
-#: ../js/app/controllers/playercontroller.js:341
+#: ../js/app/controllers/playercontroller.js:349
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -208,6 +208,10 @@ msgstr ""
 #: ../templates/main.php:51
 msgid "Click here to start the scan"
 msgstr "Napsauta aloittaaksesi skannauksen"
+
+#: ../js/app/controllers/sidebarcontroller.js:21
+msgid "Click to expand"
+msgstr "Laajenna napsauttamalla"
 
 #: ../templates/partials/genresview.php:33
 msgid "Click to rescan"
@@ -303,11 +307,11 @@ msgstr "Ohitettavien polkujen tallentaminen epäonnistui"
 msgid "Failed to save the music collection path"
 msgstr "Musiikkikokoelman polun tallentaminen epäonnistui"
 
-#: ../js/app/controllers/playercontroller.js:342
+#: ../js/app/controllers/playercontroller.js:350
 msgid "Folder"
 msgstr "Kansio"
 
-#: ../js/app/controllers/playercontroller.js:336
+#: ../js/app/controllers/playercontroller.js:344
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr "Kansiot"
@@ -324,11 +328,11 @@ msgstr "Yleinen"
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: ../js/app/controllers/playercontroller.js:343
+#: ../js/app/controllers/playercontroller.js:351
 msgid "Genre"
 msgstr "Genre"
 
-#: ../js/app/controllers/playercontroller.js:337
+#: ../js/app/controllers/playercontroller.js:345
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr "Genret"
@@ -392,7 +396,7 @@ msgstr ""
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
-#: ../js/app/controllers/playercontroller.js:339
+#: ../js/app/controllers/playercontroller.js:347
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -512,8 +516,8 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: ../js/app/controllers/playercontroller.js:359
-#: ../js/app/controllers/playercontroller.js:368
+#: ../js/app/controllers/playercontroller.js:367
+#: ../js/app/controllers/playercontroller.js:376
 msgid "Off"
 msgstr "Pois"
 
@@ -559,7 +563,7 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../js/app/controllers/playercontroller.js:344
+#: ../js/app/controllers/playercontroller.js:352
 msgid "Playlist"
 msgstr "Soittolista"
 
@@ -631,13 +635,13 @@ msgstr "Poista kappale soittolistalta"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: ../js/app/controllers/playercontroller.js:364
+#: ../js/app/controllers/playercontroller.js:372
 #: ../templates/partials/controls.php:40
 msgid "Repeat"
 msgstr "Kertaa"
 
 #: ../js/app/controllers/albumsviewcontroller.js:261
-#: ../js/app/controllers/playlistviewcontroller.js:195
+#: ../js/app/controllers/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr "Pyydettyä riviä ei löytynyt"
 
@@ -712,7 +716,7 @@ msgstr "Näytä enemmän…"
 msgid "Show..."
 msgstr "Näytä…"
 
-#: ../js/app/controllers/playercontroller.js:358
+#: ../js/app/controllers/playercontroller.js:366
 #: ../templates/partials/controls.php:38
 msgid "Shuffle"
 msgstr "Sekoita"
@@ -892,7 +896,7 @@ msgstr ""
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
-#: ../js/app/controllers/playercontroller.js:371
+#: ../js/app/controllers/playercontroller.js:379
 msgid "Track"
 msgstr "Kappale"
 

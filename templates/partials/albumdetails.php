@@ -25,7 +25,7 @@
 			ng-class="{clickable: truncated, truncated: truncated}"
 			ng-bind-html="albumInfo | limitTo:(truncated ? 365 : undefined)"
 			ng-click="truncated = false; adjustFixedPositions()"
-			title="{{ truncated ? ('Click to expand' | translate) : '' }}">
+			title="{{ truncated ? clickToExpandText : '' }}">
 		</p>
 		<dl>
 			<dt ng-if="albumTags" translate>Tags</dt>

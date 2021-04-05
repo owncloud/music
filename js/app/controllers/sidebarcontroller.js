@@ -10,13 +10,15 @@
 
 
 angular.module('Music').controller('SidebarController', [
-	'$rootScope', '$scope', '$timeout',
-	function ($rootScope, $scope, $timeout) {
+	'$rootScope', '$scope', '$timeout', 'gettextCatalog',
+	function ($rootScope, $scope, $timeout, gettextCatalog) {
 
 		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
 
 		$scope.contentType = null;
 		$scope.contentId = null;
+
+		$scope.clickToExpandText = gettextCatalog.getString('Click to expand');
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {

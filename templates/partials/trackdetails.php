@@ -50,7 +50,7 @@
 				ng-class="{clickable: truncated, truncated: truncated}"
 				ng-bind-html="lastfmInfo | limitTo:(truncated ? 365 : undefined)"
 				ng-click="truncated = false; adjustFixedPositions()"
-				title="{{ truncated ? ('Click to expand' | translate) : '' }}">
+				title="{{ truncated ? clickToExpandText : '' }}">
 			</p>
 			<dl class="tags" ng-if="lastfmTags">
 				<dt translate>Tags</dt>

@@ -18,15 +18,15 @@ def clone_lang(l10n_path, src_lang, dst_lang):
 	src_path = os.path.join(l10n_path, src_lang, 'music.po')
 	dst_path = os.path.join(l10n_path, dst_lang, 'music.po')
 
-	with open(src_path) as f:
+	with open(src_path, 'rb') as f:
 		content = f.read()
 
-	content = content.replace('Language: ' + src_lang, 'Language: ' + dst_lang, 1)
+	content = content.replace(('Language: ' + src_lang).encode(), ('Language: ' + dst_lang).encode(), 1)
 
 	ensure_parent_dir_exists(dst_path)
 	# Write the file in binary mode to keep the Unix-style endlines even if running on Windows
-	with open(dst_path, "wb") as f:
-		f.write('# Cloned from ' + src_path + ' by duplicate-lang.py\n')
+	with open(dst_path, 'wb') as f:
+		f.write(('# Cloned from ' + src_path + ' by duplicate-lang.py\n').encode())
 		f.write(content)
 
 if __name__ == '__main__':

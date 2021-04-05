@@ -449,4 +449,40 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 			}
 		});
 	}
+
+	/**
+	 * Desktop notifications
+	 */
+	if (typeof Notification !== 'undefined') {
+		const showNotification = function(track) {
+			var notification;
+			if ('stream_url' in track) {
+				notification = new Notification(track.name, {
+					body: track.stream_url,
+					icon: OC.filePath('music', 'dist', radioIcon),
+					silent: true
+				});
+			}
+			else {
+				notification = new Notification(track.title, {
+					body: track.artistName + '\n' + track.album.name,
+					icon: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+					silent: true
+				});
+			}
+			notification.onclick = $scope.scrollToCurrentTrack;
+		};
+
+		$scope.$watch('currentTrack', function(track) {
+			if (Notification.permission === 'granted') {
+				showNotification(track);
+			} else if (Notification.permission !== 'denied') {
+				Notification.requestPermission().then(permission => {
+					if (permission === 'granted') {
+						showNotification(track);
+					}
+				});
+			}
+		});
+	}
 }]);

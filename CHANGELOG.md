@@ -1,4 +1,8 @@
 ## [Unreleased]
+### Added
+- Desktop notification shown when the playing song changes
+  [#828](https://github.com/owncloud/music/issues/828)
+
 ### Changed
 - Clicking the song info area on player bar now activates the playing view and scrolls to the current track (instead of just scrolling to the current track if available in the current view)
 - Ampache/Subsonic: Trim whitespace from the begin and end of search query string

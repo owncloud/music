@@ -454,8 +454,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	 * Desktop notifications
 	 */
 	if (typeof Notification !== 'undefined') {
-		const showNotification = function(track) {
-			var notification;
+		var notification = null;
+		const showNotification = _.debounce(function(track) {
+			// close any previous notification first
+			if (notification !== null) {
+				notification.close();
+				notification = null;
+			}
+
 			if ('stream_url' in track) {
 				notification = new Notification(track.name, {
 					body: track.stream_url,
@@ -471,17 +477,25 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				});
 			}
 			notification.onclick = $scope.scrollToCurrentTrack;
-		};
+		}, 500);
 
 		$scope.$watch('currentTrack', function(track) {
-			if (Notification.permission === 'granted') {
-				showNotification(track);
-			} else if (Notification.permission !== 'denied') {
-				Notification.requestPermission().then(permission => {
-					if (permission === 'granted') {
-						showNotification(track);
-					}
-				});
+			if (track) {
+				if (Notification.permission === 'granted') {
+					showNotification(track);
+				} else if (Notification.permission !== 'denied') {
+					Notification.requestPermission().then(function(permission) {
+						if (permission === 'granted') {
+							showNotification(track);
+						}
+					});
+				}
+			} else {
+				showNotification.cancel();
+				if (notification !== null) {
+					notification.close();
+					notification = null;
+				}
 			}
 		});
 	}

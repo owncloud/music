@@ -252,7 +252,7 @@ class CoverHelper {
 			$img = imagecreatefromstring($image);
 
 			if ($img === false) {
-				$this->logger->log('Failed to open cover image for downscaling', 'warning');
+				$this->logger->log('Failed to open cover image for downscaling', 'warn');
 			} else {
 				$srcCropSize = \min($srcWidth, $srcHeight);
 				$srcX = (int)(($srcWidth - $srcCropSize) / 2);
@@ -262,7 +262,7 @@ class CoverHelper {
 				$scaledImg = \imagecreatetruecolor($dstSize, $dstSize);
 
 				if ($scaledImg === false) {
-					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warning');
+					$this->logger->log("Failed to create scaled image of size $dstSize x $dstSize", 'warn');
 					\imagedestroy($img);
 				} else {
 					\imagecopyresampled($scaledImg, $img, 0, 0, $srcX, $srcY, $dstSize, $dstSize, $srcCropSize, $srcCropSize);
@@ -285,7 +285,7 @@ class CoverHelper {
 							$image = \ob_get_contents();
 							break;
 						default:
-							$this->logger->log("Cover image type $mime not supported for downscaling", 'warning');
+							$this->logger->log("Cover image type $mime not supported for downscaling", 'warn');
 							break;
 					}
 					\ob_end_clean();

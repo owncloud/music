@@ -752,9 +752,9 @@ class AmpacheController extends Controller {
 	private function getCover(int $entityId, BusinessLayer $businessLayer) {
 		$userId = $this->ampacheUser->getUserId();
 		$userFolder = $this->rootFolder->getUserFolder($userId);
-		$entity = $businessLayer->find($entityId, $userId);
 
 		try {
+			$entity = $businessLayer->find($entityId, $userId);
 			$coverData = $this->coverHelper->getCover($entity, $userId, $userFolder);
 			if ($coverData !== null) {
 				return new FileResponse($coverData);

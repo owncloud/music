@@ -9,7 +9,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 /* Adjust to layout with collapsible navigation bar */
@@ -42,8 +42,8 @@
 }
 
 /* smaller album art */
-.mobile .album-area > .albumart,
-.mobile .album-area > img {
+.mobile #albums:not(.compact) .album-area > .albumart,
+.mobile #albums:not(.compact) .album-area > .overlay {
 	line-height: 50px;
 	font-size: 30px;
 	width: 50px;
@@ -51,7 +51,7 @@
 	float: left;
 }
 /* also adjust the overlay */
-.mobile .album-area > img.overlay {
+.mobile #albums:not(.compact) .album-area > .overlay {
 	margin-left: -37px;
 	padding: 0;
 	width: 25px;
@@ -60,21 +60,23 @@
 }
 
 /* nicely display album name next to cover */
-.mobile .album-area h2 {
+.mobile #albums:not(.compact) .album-area h2 {
 	padding: 0px 15px;
 	position: absolute;
 	left: 56px;
-	max-width: 75%;
 	white-space: normal;
 	height: 50px;
 	line-height: 50px;
+}
+.mobile .album-area h2 {
+	max-width: 75%;
 }
 
 .mobile .album-area > h2 > div {
 	line-height: 1.2;
 }
 /* move track list to the left so it’s visible on small screens */
-.mobile .album-area .track-list {
+.mobile #albums:not(.compact) .album-area .track-list {
 	margin-left: 0;
 	padding-top: 15px;
 	clear: both;

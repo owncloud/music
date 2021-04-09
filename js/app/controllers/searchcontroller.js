@@ -138,7 +138,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		$rootScope.$emit('searchMatchedTracks', matchingTracks.result);
 
 		$('#app-view').addClass('searchmode');
-
+		$rootScope.searchMode = true;
 		$rootScope.$emit('inViewObserver_visibilityEvent', true);
 
 		endProgress();
@@ -245,6 +245,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		$rootScope.$emit('searchOff');
 		$('#app-view').removeClass('searchmode');
 		$('.matched').removeClass('matched');
+		$rootScope.searchMode = false;
 		$rootScope.$emit('inViewObserver_visibilityEvent', false);
 		$scope.searchResultsOmitted = false;
 		$scope.noSearchResults = false;

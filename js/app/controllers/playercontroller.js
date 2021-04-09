@@ -462,20 +462,15 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				notification = null;
 			}
 
+			let args = {silent: true};
 			if ('stream_url' in track) {
-				notification = new Notification(track.name, {
-					body: track.stream_url,
-					icon: OC.filePath('music', 'dist', radioIcon),
-					silent: true
-				});
+				args.body = track.stream_url;
+				args.icon = OC.filePath('music', 'dist', radioIcon);
+			} else {
+				args.body = track.artistName + '\n' + track.album.name;
+				args.icon = track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : '');
 			}
-			else {
-				notification = new Notification(track.title, {
-					body: track.artistName + '\n' + track.album.name,
-					icon: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
-					silent: true
-				});
-			}
+			notification = new Notification(track.title ?? track.name, args);
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 

@@ -12,9 +12,9 @@
 
 angular.module('Music').controller('AlbumsViewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
-	'Restangular', '$route', '$location', '$timeout', 'gettextCatalog',
+	'Restangular', '$document', '$route', '$location', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,
-			Restangular, $route, $location, $timeout, gettextCatalog) {
+			Restangular, $document, $route, $location, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
 
@@ -43,6 +43,20 @@ angular.module('Music').controller('AlbumsViewController', [
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
 			}
+		});
+
+		// Compact/normal layout
+		$scope.compact = false;
+		$document.bind('keydown', function(e) {
+			// toggle compact mode with alt+c
+			if (e.target == document.body && e.which == 67 && e.altKey) {
+				$timeout(function() {
+					$scope.compact = !$scope.compact;
+					$('#albums').toggleClass('compact', $scope.compact);
+				});
+				return false;
+			}
+			return true;
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
@@ -307,6 +321,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('deactivateView', function() {
+			$document.unbind('keydown');
 			$timeout(function() {
 				$rootScope.$emit('viewDeactivated');
 			});

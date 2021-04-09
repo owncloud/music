@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 #notification a {
@@ -120,7 +120,7 @@ h1 span:hover .play {
 }
 
 .album-area > .albumart,
-.album-area > img {
+.album-area > .overlay {
 	float: left;
 	width: 190px;
 	height: 190px;
@@ -128,9 +128,10 @@ h1 span:hover .play {
 	font-size: 105px;
 }
 
-.album-area > img.overlay {
+.album-area > .overlay {
 	margin-left: -190px;
 	padding: 46px;
+	visibility: hidden;
 }
 
 .album-area h2:hover ~ .overlay,
@@ -244,4 +245,27 @@ div:hover > .play-pause,
 
 .highlight {
 	background-color: rgba(0,0,0,0.025);
+}
+
+.flip-vertically {
+	transform: scaleY(-1);
+}
+
+/* Albums view compact mode */
+#albums.compact h2 {
+	padding-left: 48px;
+}
+
+#albums.compact .album-area > .albumart,
+#albums.compact .album-area > .overlay {
+	margin-top: -52px;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 24px;
+}
+
+#albums.compact .album-area > .overlay {
+	margin-left: 0;
+	padding: 0;
 }

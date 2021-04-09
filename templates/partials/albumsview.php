@@ -11,7 +11,7 @@
 			model="artist"
 			show-play-icon="true">
 		</list-heading>
-		<div class="album-area" id="album-{{ ::album.id }}" ng-repeat="album in artist.albums">
+		<div class="album-area" id="album-{{ ::album.id }}" ng-repeat="album in artist.albums" ng-init="album.tracksExpanded=false">
 			<list-heading 
 				level="2"
 				heading="album.name"
@@ -23,9 +23,13 @@
 				model="album">
 			</list-heading>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
-			<img ng-click="playAlbum(album)" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>" />
+			<img ng-if="!compact" class="play overlay svg" alt="{{ 'Play' | translate }}"
+				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>" ng-click="playAlbum(album)" />
+			<img ng-if="compact" class="overlay svg" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"
+				 ng-class="{ 'flip-vertically': album.tracksExpanded }"
+				 ng-click="album.tracksExpanded = !album.tracksExpanded; $event.stopPropagation()" />
 			<track-list
+				ng-show="!compact || album.tracksExpanded"
 				tracks="album.tracks"
 				get-track-data="getTrackData"
 				play-track="playTrack"

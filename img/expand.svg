@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+ <defs>
+  <filter id="a" style="color-interpolation-filters:sRGB" height="1.5994" width="1.6006" y="-.29971" x="-.30029">
+   <feGaussianBlur stdDeviation="1.2386625"/>
+  </filter>
+ </defs>
+ <path d="M0 0h24v24H0z" fill="none"/>
+ <path filter="url(#a)" stroke="#fff" stroke-width="2" d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" fill="#fff"/>
+ <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+</svg>

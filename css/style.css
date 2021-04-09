@@ -251,14 +251,26 @@ div:hover > .play-pause,
 	transform: scaleY(-1);
 }
 
+
 /* Albums view compact mode */
-#albums.compact h2 {
+#albums.compact .artist-area h1 {
+	font-size: 24px;
+}
+
+#albums.compact .album-area h2 {
 	padding-left: 48px;
+	font-size: 16px;
+	padding-bottom: 8px;
+}
+
+#albums.compact .album-area {
+	padding-top: 2px;
+	padding-bottom: 10px;
 }
 
 #albums.compact .album-area > .albumart,
 #albums.compact .album-area > .overlay {
-	margin-top: -52px;
+	margin-top: -40px;
 	width: 40px;
 	height: 40px;
 	line-height: 40px;

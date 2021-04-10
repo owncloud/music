@@ -1,7 +1,8 @@
 <li class="music-navigation-item"
 	ng-class="{	'active': $parent.currentView == destination,
 				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
-							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio'),
+							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
+							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums'),
 				'item-with-actions': playlist || destination=='#/radio' || destination=='#' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"

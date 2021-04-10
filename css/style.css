@@ -110,6 +110,7 @@ h2 span:hover .play {
 	display: table-cell;
 	max-width: 424px;
 	font-size: 21px;
+	line-height: 30px;
 	padding-bottom: 21px;
 	text-overflow: ellipsis;
 	overflow: hidden;

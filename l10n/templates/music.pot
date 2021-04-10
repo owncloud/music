@@ -68,7 +68,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:83
+#: ../templates/partials/navigationitem.php:84
 msgid "Add manually"
 msgstr ""
 
@@ -173,12 +173,16 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+#: ../templates/partials/navigationitem.php:98
+msgid "Compact layout"
+msgstr ""
+
 #: ../templates/partials/playlistdetails.php:12
 #: ../templates/partials/radiostationdetails.php:25
 msgid "Created"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:62
+#: ../templates/partials/navigationitem.php:63
 #: ../templates/partials/radioview.php:22
 msgid "Delete"
 msgstr ""
@@ -193,7 +197,7 @@ msgstr ""
 
 #: ../js/app/directives/listheading.js:25
 #: ../js/app/directives/tracklist.js:36
-#: ../templates/partials/navigationitem.php:34
+#: ../templates/partials/navigationitem.php:35
 #: ../templates/partials/playlistview.php:24
 #: ../templates/partials/radioview.php:20
 msgid "Details"
@@ -211,8 +215,8 @@ msgstr ""
 msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:43
-#: ../templates/partials/navigationitem.php:80
+#: ../templates/partials/navigationitem.php:44
+#: ../templates/partials/navigationitem.php:81
 msgid "Export to file"
 msgstr ""
 
@@ -282,7 +286,7 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:74
+#: ../templates/partials/navigationitem.php:75
 msgid "Getting started"
 msgstr ""
 
@@ -294,8 +298,8 @@ msgstr ""
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:40
-#: ../templates/partials/navigationitem.php:77
+#: ../templates/partials/navigationitem.php:41
+#: ../templates/partials/navigationitem.php:78
 msgid "Import from file"
 msgstr ""
 
@@ -397,6 +401,10 @@ msgstr ""
 msgid "No tracks"
 msgstr ""
 
+#: ../templates/partials/navigationitem.php:95
+msgid "Normal layout"
+msgstr ""
+
 #: ../templates/partials/settingsview.php:72
 msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients</a>."
 msgstr ""
@@ -457,7 +465,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../js/app/directives/listheading.js:23
-#: ../templates/partials/albumsview.php:26
+#: ../templates/partials/albumsview.php:27
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:7
 #: ../templates/partials/playlistview.php:5
@@ -519,7 +527,7 @@ msgstr ""
 msgid "Remove track from playlist"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:37
+#: ../templates/partials/navigationitem.php:38
 msgid "Rename"
 msgstr ""
 
@@ -528,7 +536,7 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/app/controllers/albumsviewcontroller.js:261
+#: ../js/app/controllers/albumsviewcontroller.js:274
 #: ../js/app/controllers/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr ""
@@ -625,7 +633,7 @@ msgstr ""
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:46
+#: ../templates/partials/navigationitem.php:47
 msgid "Sort …"
 msgstr ""
 
@@ -790,15 +798,15 @@ msgstr ""
 msgid "Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP scheme. By default, your browser might block such accees. To overcome this, you may be able to set your browser to allow \"Insecure content\" on this page. On the desktop browsers, such settings can usually be found by clicking the icon right next to the address bar on its left side."
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:56
+#: ../templates/partials/navigationitem.php:57
 msgid "by album"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:53
+#: ../templates/partials/navigationitem.php:54
 msgid "by artist"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:50
+#: ../templates/partials/navigationitem.php:51
 msgid "by title"
 msgstr ""
 

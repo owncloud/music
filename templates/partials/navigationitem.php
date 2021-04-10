@@ -2,7 +2,7 @@
 	ng-class="{	'active': $parent.currentView == destination,
 				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio'),
-				'item-with-actions': playlist || destination=='#/radio' }"
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
@@ -81,6 +81,20 @@
 					</li>
 					<li ng-click="$parent.addRadio()">
 						<a class="icon-add"><span translate>Add manually</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#'">
+			<span class="icon-more"
+				ng-click="$parent.onPlaylistMoreButton('albums'); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'albums'">
+				<ul>
+					<li ng-click="$parent.toggleAlbumsCompactLayout(false)">
+						<a ng-class="$parent.albumsCompactLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"><span translate>Normal layout</span></a>
+					</li>
+					<li ng-click="$parent.toggleAlbumsCompactLayout(true)">
+						<a ng-class="$parent.albumsCompactLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"><span translate>Compact layout</span></a>
 					</li>
 				</ul>
 			</div>

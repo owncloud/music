@@ -260,3 +260,11 @@
 .icon-radio {
 	background-image: url(../img/radio.svg);
 }
+
+.icon-radio-button {
+	background-image: url(../img/radio-button.svg);
+}
+
+.icon-radio-button-checked {
+	background-image: url(../img/radio-button-checked.svg);
+}

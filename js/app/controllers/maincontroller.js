@@ -343,6 +343,20 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.collapseNavigationPaneOnMobile();
 	};
 
+	// Compact/normal layout of the Albums view
+	$scope.albumsCompactLayout = false;
+	$scope.toggleAlbumsCompactLayout = function(useCompact /*optional, invert current value if omitted */) {
+		if (typeof useCompact === 'undefined') {
+			useCompact = !$scope.albumsCompactLayout;
+		}
+		$scope.albumsCompactLayout = useCompact;
+		$('#albums').toggleClass('compact', useCompact);
+		$rootScope.$emit('albumsLayoutChanged');
+
+		// also navigate to the Albums view if not already open
+		$scope.navigateTo('#');
+	};
+
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
 			$('#app-navigation-toggle').click();

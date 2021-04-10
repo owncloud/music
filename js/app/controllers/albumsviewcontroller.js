@@ -18,6 +18,9 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		$rootScope.currentView = '#';
 
+		// apply the layout mode stored by the maincontroller
+		$('#albums').toggleClass('compact', $scope.albumsCompactLayout);
+
 		// When making the view visible, the artists are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of albums (like several thousands).
@@ -45,15 +48,11 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		});
 
-		// Compact/normal layout
-		$scope.compact = false;
+		// View-specific keyboard shortcuts
 		$document.bind('keydown', function(e) {
 			// toggle compact mode with alt+c
 			if (e.target == document.body && e.which == 67 && e.altKey) {
-				$timeout(function() {
-					$scope.compact = !$scope.compact;
-					$('#albums').toggleClass('compact', $scope.compact);
-				});
+				$timeout($scope.toggleAlbumsCompactLayout);
 				return false;
 			}
 			return true;

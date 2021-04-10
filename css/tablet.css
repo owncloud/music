@@ -9,14 +9,14 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 .tablet .album-area {
 	width: 100%;
 }
 
-.tablet .album-area > h2 {
+.tablet #albums:not(.compact) .album-area > h2 {
 	white-space: normal;
 	max-width: unset;
 }

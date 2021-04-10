@@ -50,8 +50,8 @@
 /**
  * View specific rules for the track-list directive in the 'Albums' view
  */
- 
-#albums:not(.compact) .album-area .track-list {
+
+.album-area .track-list {
 	margin-left: 195px;
 }
 
@@ -73,8 +73,13 @@
 	vertical-align: bottom;
 }
 
+
+#albums.compact .album-area .track-list {
+	margin-left: 30px;
+}
+
 #albums.compact .album-area .track-list li > div > span {
-	max-width: 395px;
+	max-width: 365px;
 }
 
 /**

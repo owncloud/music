@@ -82,10 +82,10 @@
 	clear: both;
 }
 /* align track title to the left with album title */
-.mobile .album-area .track-list > li:not(.more-less) {
+.mobile #albums:not(.compact) .album-area .track-list > li:not(.more-less) {
 	padding-left: 40px;
 }
-.mobile .album-area .track-list > li.more-less {
+.mobile #albums:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 57px;
 }
 
@@ -145,7 +145,16 @@
 	margin-left: -4px;
 }
 
-/* extra narrow screen may result on desktop browser when manually resizing the window; drop non-essential elements */
+/* extra narrow screen may result on desktop browser when manually resizing the window; drop non-essential elements and margins */
 .extra-narrow #controls .albumart {
 	display: none;
+}
+.extra-narrow #albums.compact .album-area .track-list {
+	margin-left: 0;
+}
+.extra-narrow #albums:not(.compact) .album-area .track-list > li:not(.more-less) {
+	padding-left: 0;
+}
+.extra-narrow #albums:not(.compact) .album-area .track-list > li.more-less {
+	padding-left: 18px;
 }

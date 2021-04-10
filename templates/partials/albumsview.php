@@ -20,7 +20,8 @@
 				on-click="playAlbum"
 				on-details-click="showAlbumDetails"
 				get-draggable="getAlbumDraggable"
-				model="album">
+				model="album"
+				show-play-icon="true">
 			</list-heading>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-if="!compact" class="play overlay svg" alt="{{ 'Play' | translate }}"

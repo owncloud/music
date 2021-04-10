@@ -88,7 +88,15 @@ h1 .play {
 	height: 16px;
 }
 
-h1 span:hover .play {
+h2 .play {
+	margin-left: 10px;
+	cursor: pointer;
+	width: 13px;
+	height: 13px;
+}
+
+h1 span:hover .play,
+h2 span:hover .play {
 	visibility: visible
 }
 
@@ -134,7 +142,6 @@ h1 span:hover .play {
 	visibility: hidden;
 }
 
-.album-area h2:hover ~ .overlay,
 .album-area .albumart:hover ~ .overlay,
 .album-area .overlay:hover {
 	visibility: visible;
@@ -261,6 +268,17 @@ div:hover > .play-pause,
 	padding-left: 48px;
 	font-size: 16px;
 	padding-bottom: 8px;
+}
+
+#albums.compact h1 .play {
+	margin-bottom: 1px;
+	width: 13px;
+	height: 13px;
+}
+
+#albums.compact h2 .play {
+	width: 11px;
+	height: 11px;
 }
 
 #albums.compact .album-area {

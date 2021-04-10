@@ -25,8 +25,9 @@
 			</list-heading>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
 			<img ng-if="!albumsCompactLayout" class="play overlay svg" alt="{{ 'Play' | translate }}"
-				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>" ng-click="playAlbum(album)" />
-			<img ng-if="albumsCompactLayout && !searchMode" class="overlay svg" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"
+				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-overlay') ?>" ng-click="playAlbum(album)" />
+			<img ng-if="albumsCompactLayout && !searchMode" class="overlay svg" 
+				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"
 				 ng-class="{ 'flip-vertically': album.tracksExpanded }"
 				 ng-click="album.tracksExpanded = !album.tracksExpanded; $event.stopPropagation()" />
 			<track-list

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 #notification a {
@@ -88,7 +88,15 @@ h1 .play {
 	height: 16px;
 }
 
-h1 span:hover .play {
+h2 .play {
+	margin-left: 10px;
+	cursor: pointer;
+	width: 13px;
+	height: 13px;
+}
+
+h1 span:hover .play,
+h2 span:hover .play {
 	visibility: visible
 }
 
@@ -102,6 +110,7 @@ h1 span:hover .play {
 	display: table-cell;
 	max-width: 424px;
 	font-size: 21px;
+	line-height: 30px;
 	padding-bottom: 21px;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -120,7 +129,7 @@ h1 span:hover .play {
 }
 
 .album-area > .albumart,
-.album-area > img {
+.album-area > .overlay {
 	float: left;
 	width: 190px;
 	height: 190px;
@@ -128,12 +137,12 @@ h1 span:hover .play {
 	font-size: 105px;
 }
 
-.album-area > img.overlay {
+.album-area > .overlay {
 	margin-left: -190px;
 	padding: 46px;
+	visibility: hidden;
 }
 
-.album-area h2:hover ~ .overlay,
 .album-area .albumart:hover ~ .overlay,
 .album-area .overlay:hover {
 	visibility: visible;
@@ -244,4 +253,52 @@ div:hover > .play-pause,
 
 .highlight {
 	background-color: rgba(0,0,0,0.025);
+}
+
+.flip-vertically {
+	transform: scaleY(-1);
+}
+
+
+/* Albums view compact mode */
+#albums.compact .artist-area h1 {
+	font-size: 24px;
+}
+
+#albums.compact .album-area h2 {
+	padding-left: 48px;
+	font-size: 16px;
+	padding-bottom: 8px;
+	max-width: 331px;
+}
+
+#albums.compact h1 .play {
+	margin-bottom: 1px;
+	width: 13px;
+	height: 13px;
+}
+
+#albums.compact h2 .play {
+	width: 11px;
+	height: 11px;
+}
+
+#albums.compact .album-area {
+	padding-top: 2px;
+	padding-bottom: 10px;
+	width: 387px;
+}
+
+#albums.compact .album-area > .albumart,
+#albums.compact .album-area > .overlay {
+	margin-top: -40px;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 24px;
+}
+
+#albums.compact .album-area > .overlay {
+	margin-left: 0;
+	padding: 0;
 }

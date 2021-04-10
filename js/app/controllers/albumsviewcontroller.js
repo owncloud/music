@@ -12,11 +12,14 @@
 
 angular.module('Music').controller('AlbumsViewController', [
 	'$scope', '$rootScope', 'playlistService', 'libraryService',
-	'Restangular', '$route', '$location', '$timeout', 'gettextCatalog',
+	'Restangular', '$document', '$route', '$location', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, libraryService,
-			Restangular, $route, $location, $timeout, gettextCatalog) {
+			Restangular, $document, $route, $location, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = '#';
+
+		// apply the layout mode stored by the maincontroller
+		$('#albums').toggleClass('compact', $scope.albumsCompactLayout);
 
 		// When making the view visible, the artists are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
@@ -43,6 +46,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
 			}
+		});
+
+		// View-specific keyboard shortcuts
+		$document.bind('keydown', function(e) {
+			// toggle compact mode with alt+c
+			if (e.target == document.body && e.which == 67 && e.altKey) {
+				$timeout($scope.toggleAlbumsCompactLayout);
+				return false;
+			}
+			return true;
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
@@ -307,6 +320,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('deactivateView', function() {
+			$document.unbind('keydown');
 			$timeout(function() {
 				$rootScope.$emit('viewDeactivated');
 			});

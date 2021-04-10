@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019, 2020 Pauli Järvinen
+ * @copyright 2019 - 2021 Pauli Järvinen
  *
  */
 
@@ -47,6 +47,7 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 	$rootScope.$on('artistsLoaded', throttledOnScroll);
+	$rootScope.$on('albumsLayoutChanged', throttledOnScroll);
 	$rootScope.$watch('loading', throttledOnScroll);
 
 	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {

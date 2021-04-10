@@ -2,6 +2,8 @@
 ### Added
 - Desktop notification shown when the playing song changes
   [#828](https://github.com/owncloud/music/issues/828)
+- Alternative compact layout for the Albums view
+  [#840](https://github.com/owncloud/music/issues/840)
 
 ### Changed
 - Clicking the song info area on player bar now activates the playing view and scrolls to the current track (instead of just scrolling to the current track if available in the current view)

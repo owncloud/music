@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-04-05 13:45+0300\n"
+"PO-Revision-Date: 2021-04-10 19:04+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -91,7 +91,7 @@ msgstr ""
 msgid "About"
 msgstr "Tietoja"
 
-#: ../templates/partials/navigationitem.php:83
+#: ../templates/partials/navigationitem.php:84
 msgid "Add manually"
 msgstr "Lisää manuaalisesti"
 
@@ -230,12 +230,16 @@ msgstr "Sulje"
 msgid "Comment"
 msgstr "Kommentti"
 
+#: ../templates/partials/navigationitem.php:98
+msgid "Compact layout"
+msgstr "Kompakti asettelu"
+
 #: ../templates/partials/playlistdetails.php:12
 #: ../templates/partials/radiostationdetails.php:25
 msgid "Created"
 msgstr "Luotu"
 
-#: ../templates/partials/navigationitem.php:62
+#: ../templates/partials/navigationitem.php:63
 #: ../templates/partials/radioview.php:22
 msgid "Delete"
 msgstr "Poista"
@@ -249,7 +253,7 @@ msgid "Description (e.g. App name)"
 msgstr "Kuvaus (esim. sovelluksen nimi)"
 
 #: ../js/app/directives/listheading.js:25 ../js/app/directives/tracklist.js:36
-#: ../templates/partials/navigationitem.php:34
+#: ../templates/partials/navigationitem.php:35
 #: ../templates/partials/playlistview.php:24
 #: ../templates/partials/radioview.php:20
 msgid "Details"
@@ -267,8 +271,8 @@ msgstr "Vie soittolista tiedostoon valitussa kansiossa"
 msgid "Export radio stations to a file in the selected folder"
 msgstr "Vie radio-kanavat tiedostoon valitussa kansiossa"
 
-#: ../templates/partials/navigationitem.php:43
-#: ../templates/partials/navigationitem.php:80
+#: ../templates/partials/navigationitem.php:44
+#: ../templates/partials/navigationitem.php:81
 msgid "Export to file"
 msgstr "Vie tiedostoon"
 
@@ -338,7 +342,7 @@ msgstr "Genre"
 msgid "Genres"
 msgstr "Genret"
 
-#: ../templates/partials/navigationitem.php:74
+#: ../templates/partials/navigationitem.php:75
 msgid "Getting started"
 msgstr "Aloitusohje"
 
@@ -360,8 +364,8 @@ msgstr ""
 "Jos tämä URL-osoite ei toimi, yritä lisätä sen perään '/server/xml.server."
 "php'."
 
-#: ../templates/partials/navigationitem.php:40
-#: ../templates/partials/navigationitem.php:77
+#: ../templates/partials/navigationitem.php:41
+#: ../templates/partials/navigationitem.php:78
 msgid "Import from file"
 msgstr "Tuo tiedostosta"
 
@@ -480,6 +484,10 @@ msgstr "Ei asemia"
 msgid "No tracks"
 msgstr "Ei kappaleita"
 
+#: ../templates/partials/navigationitem.php:95
+msgid "Normal layout"
+msgstr "Normaali asettelu"
+
 #: ../templates/partials/settingsview.php:72
 msgid ""
 "Note that Music may not be compatible with all Ampache/Subsonic clients. "
@@ -556,7 +564,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: ../js/app/directives/listheading.js:23
-#: ../templates/partials/albumsview.php:26
+#: ../templates/partials/albumsview.php:27
 #: ../templates/partials/alltracksview.php:5
 #: ../templates/partials/controls.php:7
 #: ../templates/partials/playlistview.php:5
@@ -632,7 +640,7 @@ msgstr "Poista radioasema"
 msgid "Remove track from playlist"
 msgstr "Poista kappale soittolistalta"
 
-#: ../templates/partials/navigationitem.php:37
+#: ../templates/partials/navigationitem.php:38
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
@@ -641,7 +649,7 @@ msgstr "Nimeä uudelleen"
 msgid "Repeat"
 msgstr "Kertaa"
 
-#: ../js/app/controllers/albumsviewcontroller.js:261
+#: ../js/app/controllers/albumsviewcontroller.js:274
 #: ../js/app/controllers/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr "Pyydettyä riviä ei löytynyt"
@@ -740,7 +748,7 @@ msgstr ""
 "Kirjastossasi on kappaleita, jotka tulee uudelleen skannata ennen kuin "
 "niiden genre voidaan näyttää"
 
-#: ../templates/partials/navigationitem.php:46
+#: ../templates/partials/navigationitem.php:47
 msgid "Sort …"
 msgstr "Järjestä …"
 
@@ -1018,15 +1026,15 @@ msgstr ""
 "löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
 "kuvaketta."
 
-#: ../templates/partials/navigationitem.php:56
+#: ../templates/partials/navigationitem.php:57
 msgid "by album"
 msgstr "albumin mukaan"
 
-#: ../templates/partials/navigationitem.php:53
+#: ../templates/partials/navigationitem.php:54
 msgid "by artist"
 msgstr "esittäjän mukaan"
 
-#: ../templates/partials/navigationitem.php:50
+#: ../templates/partials/navigationitem.php:51
 msgid "by title"
 msgstr "nimen mukaan"
 

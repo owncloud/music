@@ -344,7 +344,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	// Compact/normal layout of the Albums view
-	$scope.albumsCompactLayout = false;
+	$scope.albumsCompactLayout = (Cookies.get('oc_music_albums_compact') === 'true');
 	$scope.toggleAlbumsCompactLayout = function(useCompact /*optional, invert current value if omitted */) {
 		if (typeof useCompact === 'undefined') {
 			useCompact = !$scope.albumsCompactLayout;
@@ -352,6 +352,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.albumsCompactLayout = useCompact;
 		$('#albums').toggleClass('compact', useCompact);
 		$rootScope.$emit('albumsLayoutChanged');
+
+		Cookies.set('oc_music_albums_compact', useCompact.toString(), { expires: 3650 });
 
 		// also navigate to the Albums view if not already open
 		$scope.navigateTo('#');

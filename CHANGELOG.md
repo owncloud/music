@@ -10,6 +10,9 @@
 - Ampache/Subsonic: Trim whitespace from the begin and end of search query string
 - Play icon overlay on top of album cover modified to be clearly visible both on dark and light backgrounds
 
+### Fixed
+- Details icon not being shown after a truncated album title in the Albums view
+
 ## 1.1.0 - 2021-03-24
 ### Added
 - Action to sort a playlist by title, album, or artist

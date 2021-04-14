@@ -101,7 +101,7 @@ h2 span:hover .play {
 }
 
 .album-area {
-	padding: 14px 28px 14px 14px;
+	padding: 14px;
 	width: 480px;
 	float: left;
 }
@@ -112,9 +112,14 @@ h2 span:hover .play {
 	font-size: 21px;
 	line-height: 30px;
 	padding-bottom: 21px;
-	text-overflow: ellipsis;
-	overflow: hidden;
 	white-space: nowrap;
+}
+
+.album-area > h2 > span {
+	float: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: calc(100% - 24px);
 }
 
 .album-area > h2 span,
@@ -135,6 +140,7 @@ h2 span:hover .play {
 	height: 190px;
 	line-height: 190px;
 	font-size: 105px;
+	cursor: pointer;
 }
 
 .album-area > .overlay {
@@ -146,7 +152,6 @@ h2 span:hover .play {
 .album-area .albumart:hover ~ .overlay,
 .album-area .overlay:hover {
 	visibility: visible;
-	cursor: pointer;
 }
 
 .play-pause {
@@ -269,7 +274,7 @@ div:hover > .play-pause,
 	padding-left: 48px;
 	font-size: 16px;
 	padding-bottom: 8px;
-	max-width: 331px;
+	max-width: 360px;
 }
 
 #albums.compact h1 .play {

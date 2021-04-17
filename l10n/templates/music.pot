@@ -52,19 +52,19 @@ msgid_plural "{{ count }} tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../templates/partials/settingsview.php:28
+#: ../templates/partials/settingsview.php:30
 msgid "<strong>**</strong> matches zero or more arbitrary characters including path segment separators '/'"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:27
+#: ../templates/partials/settingsview.php:29
 msgid "<strong>*</strong> matches zero or more arbitrary characters within a path segment"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:26
+#: ../templates/partials/settingsview.php:28
 msgid "<strong>?</strong> matches any one character within a path segment"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:152
+#: ../templates/partials/settingsview.php:162
 msgid "About"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:114
+#: ../templates/partials/settingsview.php:124
 msgid "Admin"
 msgstr ""
 
@@ -104,7 +104,7 @@ msgstr ""
 msgid "All tracks"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:70
+#: ../templates/partials/settingsview.php:80
 msgid "Ampache and Subsonic"
 msgstr ""
 
@@ -128,11 +128,11 @@ msgstr ""
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:143
+#: ../templates/partials/settingsview.php:153
 msgid "Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:137
+#: ../templates/partials/settingsview.php:147
 msgid "Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{url}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr ""
 msgid "Artists"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:31
+#: ../templates/partials/settingsview.php:33
 msgid "Changes to the excluded paths will only take effect upon rescan."
 msgstr ""
 
@@ -187,11 +187,11 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:90
+#: ../templates/partials/settingsview.php:100
 msgid "Description"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:100
+#: ../templates/partials/settingsview.php:110
 msgid "Description (e.g. App name)"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Failed to delete the radio station:"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:102
+#: ../templates/partials/settingsview.php:112
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
@@ -248,11 +248,11 @@ msgstr ""
 msgid "Failed to reset the radio stations:"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:46
+#: ../templates/partials/settingsview.php:48
 msgid "Failed to save the ignored paths"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:10
+#: ../templates/partials/settingsview.php:12
 msgid "Failed to save the music collection path"
 msgstr ""
 
@@ -273,7 +273,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:101
+#: ../templates/partials/settingsview.php:111
 msgid "Generate API password"
 msgstr ""
 
@@ -290,11 +290,11 @@ msgstr ""
 msgid "Getting started"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:85
+#: ../templates/partials/settingsview.php:95
 msgid "Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:78
+#: ../templates/partials/settingsview.php:88
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Internet radio stations"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:131
+#: ../templates/partials/settingsview.php:141
 msgid "Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer."
 msgstr ""
 
@@ -355,7 +355,7 @@ msgid "Modified"
 msgstr ""
 
 #: ../templates/fake-template.php:3
-#: ../templates/partials/settingsview.php:157
+#: ../templates/partials/settingsview.php:167
 msgid "Music"
 msgstr ""
 
@@ -405,11 +405,11 @@ msgstr ""
 msgid "Normal layout"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:72
+#: ../templates/partials/settingsview.php:82
 msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients</a>."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:12
+#: ../templates/partials/settingsview.php:14
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
@@ -439,7 +439,7 @@ msgstr ""
 msgid "Overwrite existing file"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:108
+#: ../templates/partials/settingsview.php:118
 msgid "Password:"
 msgstr ""
 
@@ -448,15 +448,19 @@ msgid "Path to exclude from your music collection"
 msgstr ""
 
 #: ../js/app/controllers/settingsviewcontroller.js:38
-#: ../templates/partials/settingsview.php:5
+#: ../templates/partials/settingsview.php:7
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:16
+#: ../templates/partials/settingsview.php:4
+msgid "Paths"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:18
 msgid "Paths to exclude from your music collection"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:30
+#: ../templates/partials/settingsview.php:32
 msgid "Paths with a leading '/' character are resolved relative to the user home directory and others relative to the music library base path."
 msgstr ""
 
@@ -485,7 +489,7 @@ msgstr ""
 msgid "Playlist or folder not found"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:160
+#: ../templates/partials/settingsview.php:170
 msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>"
 msgstr ""
 
@@ -511,7 +515,7 @@ msgid "Radio stations exported to file {{ path }}"
 msgstr ""
 
 #: ../templates/partials/playlistview.php:26
-#: ../templates/partials/settingsview.php:38
+#: ../templates/partials/settingsview.php:40
 msgid "Remove"
 msgstr ""
 
@@ -536,26 +540,26 @@ msgstr ""
 msgid "Repeat"
 msgstr ""
 
-#: ../js/app/controllers/albumsviewcontroller.js:274
+#: ../js/app/controllers/albumsviewcontroller.js:275
 #: ../js/app/controllers/playlistviewcontroller.js:196
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:49
+#: ../templates/partials/settingsview.php:51
 msgid "Reset"
 msgstr ""
 
 #: ../js/app/controllers/settingsviewcontroller.js:174
-#: ../templates/partials/settingsview.php:62
+#: ../templates/partials/settingsview.php:64
 msgid "Reset internet radio stations"
 msgstr ""
 
 #: ../js/app/controllers/settingsviewcontroller.js:131
-#: ../templates/partials/settingsview.php:52
+#: ../templates/partials/settingsview.php:54
 msgid "Reset music collection"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:91
+#: ../templates/partials/settingsview.php:101
 msgid "Revoke API password"
 msgstr ""
 
@@ -575,7 +579,7 @@ msgstr ""
 msgid "See the track on Last.fm"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:37
+#: ../templates/partials/settingsview.php:39
 msgid "Select folder"
 msgstr ""
 
@@ -596,6 +600,10 @@ msgstr ""
 msgid "Show all…"
 msgstr ""
 
+#: ../templates/partials/settingsview.php:77
+msgid "Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site."
+msgstr ""
+
 #: ../templates/partials/trackdetails.php:4
 msgid "Show in Files"
 msgstr ""
@@ -604,11 +612,11 @@ msgstr ""
 msgid "Show less …"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:21
+#: ../templates/partials/settingsview.php:23
 msgid "Show more…"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:115
+#: ../templates/partials/settingsview.php:125
 msgid "Show..."
 msgstr ""
 
@@ -633,11 +641,15 @@ msgstr ""
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
+#: ../templates/partials/settingsview.php:74
+msgid "Song change notifications"
+msgstr ""
+
 #: ../templates/partials/navigationitem.php:47
 msgid "Sort …"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:20
+#: ../templates/partials/settingsview.php:22
 msgid "Specify folders within your music collection path which shall be excluded from the scanning."
 msgstr ""
 
@@ -655,7 +667,7 @@ msgstr ""
 msgid "Technical"
 msgstr ""
 
-#: ../js/app/controllers/settingsviewcontroller.js:241
+#: ../js/app/controllers/settingsviewcontroller.js:255
 msgid "Text copied to clipboard"
 msgstr ""
 
@@ -683,23 +695,23 @@ msgstr ""
 msgid "There are a couple of typical reasons why a configured radio station might not play on your browser:"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:117
+#: ../templates/partials/settingsview.php:127
 msgid "There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:67
+#: ../templates/partials/settingsview.php:69
 msgid "This action erases all the stations shown in the \"Internet radio\" view."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:57
+#: ../templates/partials/settingsview.php:59
 msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:58
+#: ../templates/partials/settingsview.php:60
 msgid "This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:11
+#: ../templates/partials/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
@@ -707,7 +719,7 @@ msgstr ""
 msgid "Timeout"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:122
+#: ../templates/partials/settingsview.php:132
 msgid "To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key. For more details, see the <a href=\"{{guideUrl}}\" target=\"_blank\">tutorial</a>."
 msgstr ""
 
@@ -744,6 +756,10 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
+#: ../templates/partials/settingsview.php:78
+msgid "Unlike the other settings, this switch is stored per browser and not per user account."
+msgstr ""
+
 #: ../js/app/controllers/artistdetailscontroller.js:61
 msgid "Upload image named \"{{name}}\" to anywhere within your library path to see it here."
 msgstr ""
@@ -760,19 +776,23 @@ msgstr ""
 msgid "Use the Community Radio Browser <a href=\"{{url}}\" target=\"_blank\">search</a> to find the radio stations of interest. Instead of using the search, you may also browse the channels in Community Radio Browser by category or popularity."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:104
+#: ../templates/partials/settingsview.php:114
 msgid "Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:83
+#: ../templates/partials/settingsview.php:93
 msgid "Use this address to browse your music collection from a Subsonic compatible player."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:78
+#: ../templates/partials/settingsview.php:88
 msgid "Use this address to browse your music collection from an Ampache compatible player."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:106
+#: ../templates/partials/settingsview.php:72
+msgid "User interface"
+msgstr ""
+
+#: ../templates/partials/settingsview.php:116
 msgid "Username:"
 msgstr ""
 
@@ -786,11 +806,11 @@ msgstr ""
 msgid "Writing to the file is not allowed"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:71
+#: ../templates/partials/settingsview.php:81
 msgid "You can browse and play your music collection from external applications which support either Ampache or Subsonic API."
 msgstr ""
 
-#: ../templates/partials/settingsview.php:24
+#: ../templates/partials/settingsview.php:26
 msgid "You can use the wild cards '?', '*', and '**':"
 msgstr ""
 
@@ -810,7 +830,7 @@ msgstr ""
 msgid "by title"
 msgstr ""
 
-#: ../templates/partials/settingsview.php:158
+#: ../templates/partials/settingsview.php:168
 msgid "version history"
 msgstr ""
 

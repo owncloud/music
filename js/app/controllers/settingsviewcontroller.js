@@ -198,6 +198,20 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
+		$scope.songNotificationsEnabled = (Cookies.get('oc_music_song_notifications') !== 'false');
+
+		$scope.$watch('songNotificationsEnabled', function(enabled) {
+			Cookies.set('oc_music_song_notifications', enabled.toString());
+
+			if (enabled && Notification.permission !== 'granted') {
+				Notification.requestPermission().then(function(permission) {
+					if (permission !== 'granted') {
+						$timeout(() => $scope.songNotificationsEnabled = false);
+					}
+				});
+			}
+		});
+
 		$scope.addAPIKey = function() {
 			var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6);
 			Restangular.all('settings/userkey/add').post({ password: password, description: $scope.ampacheDescription }).then(function(data) {

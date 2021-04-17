@@ -1,5 +1,7 @@
 <div class="view-container" id="music-user" ng-show="!loading">
 	<h1 translate>Settings</h1>
+
+	<h2 translate>Paths</h2>
 	<div>
 		<div class="label-container">
 			<label for="music-path" translate>Path to your music collection</label>:
@@ -66,6 +68,14 @@
 			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
 		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
 	</div>
+
+	<h2 translate>User interface</h2>
+	<div class="label-container">
+		<label for="song-notifications-toggle" translate>Song change notifications</label>
+	</div>
+	<input type="checkbox" id="song-notifications-toggle" ng-model="songNotificationsEnabled"/>
+	<p><em translate>Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site.</em></p>
+	<p><em translate>Unlike the other settings, this switch is stored per browser and not per user account.</em></p>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>

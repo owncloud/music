@@ -475,7 +475,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 		}, 500);
 
 		$scope.$watch('currentTrack', function(track) {
-			if (track) {
+			var enabled = (Cookies.get('oc_music_song_notifications') !== 'false');
+
+			if (enabled && track) {
 				if (Notification.permission === 'granted') {
 					showNotification(track);
 				} else if (Notification.permission !== 'denied') {

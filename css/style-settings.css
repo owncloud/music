@@ -67,11 +67,13 @@
 }
 
 #music-user #path-change-in-progress,
-#music-user .reset-in-progress {
+#music-user .reset-in-progress,
+#music-user #song-notifications-toggle {
 	display: inline-block;
 	vertical-align: middle;
 	top: -3px;
 	left: 5px;
+	cursor: pointer;
 }
 
 #music-user .clipboardButton {

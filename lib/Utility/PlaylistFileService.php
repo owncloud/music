@@ -146,7 +146,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
+		$parsed = self::doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -186,7 +186,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importRadioStationsFromFile(string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = $this->doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_URLS_ONLY);
+		$parsed = self::doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_URLS_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -218,7 +218,7 @@ class PlaylistFileService {
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
 		$nodes = $baseFolder->getById($fileId);
 		if (\count($nodes) > 0) {
-			return $this->doParseFile($nodes[0], $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
+			return self::doParseFile($nodes[0], $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
@@ -231,13 +231,13 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException
 	 * @return array
 	 */
-	private function doParseFile(File $file, Folder $baseFolder, int $mode) : array {
+	private static function doParseFile(File $file, Folder $baseFolder, int $mode) : array {
 		$mime = $file->getMimeType();
 
 		if ($mime == 'audio/mpegurl') {
-			$entries = $this->parseM3uFile($file);
+			$entries = self::parseM3uFile($file);
 		} elseif ($mime == 'audio/x-scpls') {
-			$entries = $this->parsePlsFile($file);
+			$entries = self::parsePlsFile($file);
 		} else {
 			throw new \UnexpectedValueException("file mime type '$mime' is not suported");
 		}
@@ -261,14 +261,14 @@ class PlaylistFileService {
 				}
 			} else {
 				if ($mode !== self::PARSE_URLS_ONLY) {
-					$path = Util::resolveRelativePath($cwd, $path);
+					$entryFile = self::findFile($baseFolder, $cwd, $path);
 
-					try {
+					if ($entryFile !== null) {
 						$trackFiles[] = [
-							'file' => $baseFolder->get($path),
+							'file' => $entryFile,
 							'caption' => $entry['caption']
 						];
-					} catch (\OCP\Files\NotFoundException $ex) {
+					} else {
 						$invalidPaths[] = $path;
 					}
 				} else {
@@ -283,7 +283,7 @@ class PlaylistFileService {
 		];
 	}
 
-	private function parseM3uFile(File $file) : array {
+	private static function parseM3uFile(File $file) : array {
 		$entries = [];
 
 		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
@@ -325,7 +325,7 @@ class PlaylistFileService {
 		return $entries;
 	}
 
-	private function parsePlsFile(File $file) : array {
+	private static function parsePlsFile(File $file) : array {
 		$files = [];
 		$titles = [];
 
@@ -405,6 +405,24 @@ class PlaylistFileService {
 			return \trim(\substr($line, \strlen("#$field:")));
 		} else {
 			return null;
+		}
+	}
+
+	private static function findFile(Folder $baseFolder, string $cwd, string $path) : ?File {
+		$absPath = Util::resolveRelativePath($cwd, $path);
+
+		try {
+			return $baseFolder->get($absPath);
+		} catch (\OCP\Files\NotFoundException | \OCP\Files\NotPermittedException $ex) {
+			/* In case the file is not found and the path contains any backslashes, consider the possibility
+			 * that the path follows the Windows convention of using backslashes as path separators.
+			 */
+			if (\strpos($path, '\\') !== false) {
+				$path = \str_replace('\\', '/', $path);
+				return self::findFile($baseFolder, $cwd, $path);
+			} else {
+				return null;
+			}
 		}
 	}
 }

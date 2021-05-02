@@ -412,7 +412,12 @@ class PlaylistFileService {
 		$absPath = Util::resolveRelativePath($cwd, $path);
 
 		try {
-			return $baseFolder->get($absPath);
+			$file = $baseFolder->get($absPath);
+			if ($file instanceof File) {
+				return $file;
+			} else {
+				return null;
+			}
 		} catch (\OCP\Files\NotFoundException | \OCP\Files\NotPermittedException $ex) {
 			/* In case the file is not found and the path contains any backslashes, consider the possibility
 			 * that the path follows the Windows convention of using backslashes as path separators.

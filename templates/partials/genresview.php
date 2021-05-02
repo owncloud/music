@@ -1,5 +1,5 @@
 <div class="view-container" id="genres-area" ng-show="!loading && !loadingCollection">
-	<div class="playlist-area genre-area" id="genre-{{ ::genre.id }}" in-view-observer
+	<div class="playlist-area genre-area flat-list-view" id="genre-{{ ::genre.id }}" in-view-observer
 		in-view-observer-margin="1000"
 		ng-repeat="genre in genres | limitTo: incrementalLoadLimit"
 	>

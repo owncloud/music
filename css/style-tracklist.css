@@ -83,15 +83,13 @@
 }
 
 /**
- * View specific rules for the track-list directive in the 'All tracks' and 'Folders' views
+ * Rules for the track-list directive in "flat list views" like 'All tracks', 'Genres', and 'Folders'
  */
 
-#alltracks-area .track-list,
-#folders-area .track-list {
+.flat-list-view .track-list {
 	margin-right: 50px;
 }
 
-#alltracks-area .track-list li > div > span,
-#folders-area .track-list li > div > span {
+.flat-list-view .track-list li > div > span {
 	white-space: normal;
 }

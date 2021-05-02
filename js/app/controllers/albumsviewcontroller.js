@@ -242,6 +242,16 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		}
 
+		function updateColumnLayout() {
+			// Use the single-column layout if there's not enough room for two columns or more
+			var containerWidth = $('#albums').width();
+			var colWidth = $scope.albumsCompactLayout ? 387 : 480;
+			$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
+		}
+
+		subscribe('resize', updateColumnLayout);
+		subscribe('albumsLayoutChanged', updateColumnLayout);
+
 		function initializePlayerStateFromURL() {
 			var hashParts = window.location.hash.substr(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {

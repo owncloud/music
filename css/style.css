@@ -308,3 +308,18 @@ div:hover > .play-pause,
 	margin-left: 0;
 	padding: 0;
 }
+
+/* Albums view single column layout when there's no room for two columns or more */
+#albums.single-col .album-area {
+	width: 100%;
+}
+
+#albums.single-col .album-area > h2 {
+	max-width: 80vw;
+}
+
+#albums.single-col .album-area .track-list li > div > span {
+	white-space: normal;
+	vertical-align: top;
+	max-width: unset;
+}

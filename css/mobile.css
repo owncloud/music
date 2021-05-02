@@ -37,7 +37,6 @@
 
 /* adjust album area to screen width */
 .mobile .album-area {
-	width: 100%;
 	padding: 10px 30px 0 6px;
 }
 
@@ -86,13 +85,6 @@
 }
 .mobile #albums:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 57px;
-}
-
-/* allow track name to span the whole view width and on multiple lines */
-.mobile .album-area .track-list li > div > span {
-	white-space: normal;
-	vertical-align: top;
-	max-width: unset;
 }
 
 /* layout the play bar elements for less space */

@@ -12,19 +12,8 @@
  * @copyright Pauli Järvinen 2016 - 2021
  */
 
-.tablet .album-area {
-	width: 100%;
-}
-
 .tablet #albums:not(.compact) .album-area > h2 {
 	white-space: normal;
-	max-width: unset;
-}
-
-.tablet .album-area .track-list li > div > span {
-	white-space: normal;
-	vertical-align: top;
-	max-width: unset;
 }
 
 .tablet #play-controls {

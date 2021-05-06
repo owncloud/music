@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Hooks;
@@ -38,7 +38,7 @@ class ShareHooks {
 	 */
 	public static function itemUnshared(array $params) {
 		$shareType = $params['shareType'];
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 
 		// react only on user and group shares
 		if ($shareType == \OCP\Share::SHARE_TYPE_USER) {
@@ -63,7 +63,7 @@ class ShareHooks {
 	public static function itemUnsharedFromSelf(array $params) {
 		// The share recipient may be an individual user or a group, but the item is always removed from
 		// the current user alone.
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 		$removeFromUsers = [ $app->getContainer()->query('UserId') ];
 
 		self::removeSharedItem($app, $params['itemType'], $params['itemSource'], $params['uidOwner'], $removeFromUsers);
@@ -79,7 +79,7 @@ class ShareHooks {
 		// user will be prompted to update database the next time she opens the Music app.
 		// Similarly, do not auto-update on group shares.
 		if ($params['itemType'] === 'file' && $params['shareType'] == \OCP\Share::SHARE_TYPE_USER) {
-			$app = new Music();
+			$app = \OC::$server->query(Music::class);
 			$container = $app->getContainer();
 			$scanner = $container->query('Scanner');
 			$sharerFolder = $container->query('UserFolder');

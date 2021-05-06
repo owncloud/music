@@ -11,12 +11,12 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Leizh 2014
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 use \OCA\Music\App\Music;
 
-$app = new Music();
+$app = \OC::$server->query(Music::class);
 $c = $app->getContainer();
 
 $application->add(new OCA\Music\Command\Scan(

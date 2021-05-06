@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Search;
@@ -38,7 +38,7 @@ class Provider extends \OCP\Search\Provider {
 	private $logger;
 
 	public function __construct() {
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 		$c = $app->getContainer();
 
 		$this->artistMapper = $c->query('ArtistMapper');

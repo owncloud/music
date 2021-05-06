@@ -9,14 +9,14 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music;
 
 use \OCA\Music\App\Music;
 
-$app = new Music();
+$app = \OC::$server->query(Music::class);
 
 $app->registerRoutes($this, ['routes' => [
 	// page

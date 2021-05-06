@@ -16,7 +16,7 @@ namespace OCA\Music\App;
 
 use \OCP\AppFramework\IAppContainer;
 
-$app = new Music();
+$app = \OC::$server->query(Music::class);
 
 $c = $app->getContainer();
 $appName = $c->query('AppName');
@@ -55,7 +55,7 @@ $c->getServer()->getSearch()->registerProvider(
 );
 
 /**
- * Set content security policy to allow streaming media from the configured external sources if we have a logged-in user
+ * Set content security policy to allow streaming media from the configured external sources
  */
 function adjustCsp(IAppContainer $container) {
 	/** @var \OCP\IConfig $config */

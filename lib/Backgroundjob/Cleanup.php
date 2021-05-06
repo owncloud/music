@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Backgroundjob;
@@ -20,7 +22,7 @@ class Cleanup {
 	 * Run background cleanup task
 	 */
 	public static function run() {
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 
 		$container = $app->getContainer();
 

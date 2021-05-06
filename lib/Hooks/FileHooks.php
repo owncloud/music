@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Hooks;
@@ -32,7 +32,7 @@ class FileHooks {
 	 * @param Node $node pointing to the file or folder
 	 */
 	public static function deleted(Node $node) {
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 		$container = $app->getContainer();
 		$scanner = $container->query('Scanner');
 
@@ -56,7 +56,7 @@ class FileHooks {
 		// File::fopen, this hook gets triggered immediately after the opening succeeds,
 		// before anything is actually written and while the file is *exlusively locked
 		// because of the write mode*. See #638.
-		$app = new Music();
+		$app = \OC::$server->query(Music::class);
 		$container = $app->getContainer();
 		try {
 			self::handleUpdated($node, $container);

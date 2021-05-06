@@ -1122,7 +1122,7 @@ class SubsonicController extends Controller {
 		$albumId = $track->getAlbumId();
 
 		$album = $track->getAlbum();
-		if (empty($album)) {
+		if ($album === null && $albumId !== null) {
 			$album = $this->albumBusinessLayer->findOrDefault($albumId, $this->userId);
 			$track->setAlbum($album);
 		}
@@ -1131,13 +1131,13 @@ class SubsonicController extends Controller {
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
-			'title' => $track->getTitle(),
+			'title' => $track->getTitle() ?? '',
 			'artist' => $track->getArtistNameString($this->l10n),
 			'isDir' => false,
 			'album' => $track->getAlbumNameString($this->l10n),
 			'year' => $track->getYear(),
-			'size' => $track->getSize(),
-			'contentType' => $track->getMimetype(),
+			'size' => $track->getSize() ?? 0,
+			'contentType' => $track->getMimetype() ?? '',
 			'suffix' => $track->getFileExtension(),
 			'duration' => $track->getLength() ?: 0,
 			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps

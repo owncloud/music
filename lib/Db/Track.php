@@ -203,7 +203,7 @@ class Track extends Entity {
 	}
 
 	public function getFileExtension() {
-		$parts = \explode('.', $this->getFilename());
+		$parts = \explode('.', $this->getFilename() ?? '');
 		return \end($parts);
 	}
 

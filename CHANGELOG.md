@@ -14,6 +14,10 @@
 
 ### Fixed
 - Details icon not being shown after a truncated album title in the Albums view
+- Errors being spammed to the log on NC18+ with PHP older than 7.4 when config.php has `'debug' => true`
+  [#849](https://github.com/owncloud/music/issues/849)
+- Subsonic method `getPlaylist` breaking if the list has any invalid tracks
+  [#853](https://github.com/owncloud/music/issues/853)
 
 ## 1.1.0 - 2021-03-24
 ### Added

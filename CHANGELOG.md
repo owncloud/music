@@ -18,6 +18,8 @@
   [#849](https://github.com/owncloud/music/issues/849)
 - Subsonic method `getPlaylist` breaking if the list has any invalid tracks
   [#853](https://github.com/owncloud/music/issues/853)
+- Ampache methods returning empty result sets to Amarok which passes (invalid) argument `limit=0`
+  [#854](https://github.com/owncloud/music/issues/854)
 
 ## 1.1.0 - 2021-03-24
 ### Added

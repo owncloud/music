@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Controller;
@@ -881,11 +881,8 @@ class AmpacheController extends Controller {
 	 * @return integer|null
 	 */
 	private static function validateLimitOrOffset($value) : ?int {
-		if (\ctype_digit(\strval($value)) && $value !== 0) {
-			return \intval($value);
-		} else {
-			return null;
-		}
+		$value = (int)$value;
+		return ($value > 0) ? $value : null;
 	}
 
 	/**

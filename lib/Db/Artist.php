@@ -69,7 +69,7 @@ class Artist extends Entity {
 
 	/**
 	 * Get initial character of the artist name in upper case.
-	 * This is intended to be used as index in a list of aritsts.
+	 * This is intended to be used as index in a list of artists.
 	 */
 	public function getIndexingChar() {
 		// For unknown artists, use '?'

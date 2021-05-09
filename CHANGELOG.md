@@ -23,6 +23,8 @@
 - Non-ASCII characters breaking scanning if PHP has been configured to use internal encoding other than UTF-8
   [#846](https://github.com/owncloud/music/issues/846)
 - Scanning with `occ` breaking if option `--debug` given
+- Scanning not working if the `allow_url_fopen` is disabled in php.ini
+  [#763](https://github.com/owncloud/music/issues/763)
 
 ## 1.1.0 - 2021-03-24
 ### Added

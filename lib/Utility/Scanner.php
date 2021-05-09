@@ -69,12 +69,6 @@ class Scanner extends PublicEmitter {
 		$this->maintenance = $maintenance;
 		$this->userMusicFolder = $userMusicFolder;
 		$this->rootFolder = $rootFolder;
-
-		// Trying to enable stream support
-		if (\ini_get('allow_url_fopen') !== '1') {
-			$this->logger->log('allow_url_fopen is disabled. It is strongly advised to enable it in your php.ini', 'warn');
-			@\ini_set('allow_url_fopen', '1');
-		}
 	}
 
 	/**
@@ -128,54 +122,52 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype) : void {
-		if (\ini_get('allow_url_fopen')) {
-			$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
+		$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
-			$meta = $this->extractMetadata($file, $userHome, $filePath);
-			$fileId = $file->getId();
+		$meta = $this->extractMetadata($file, $userHome, $filePath);
+		$fileId = $file->getId();
 
-			// add/update artist and get artist entity
-			$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);
-			$artistId = $artist->getId();
+		// add/update artist and get artist entity
+		$artist = $this->artistBusinessLayer->addOrUpdateArtist($meta['artist'], $userId);
+		$artistId = $artist->getId();
 
-			// add/update albumArtist and get artist entity
-			$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($meta['albumArtist'], $userId);
-			$albumArtistId = $albumArtist->getId();
+		// add/update albumArtist and get artist entity
+		$albumArtist = $this->artistBusinessLayer->addOrUpdateArtist($meta['albumArtist'], $userId);
+		$albumArtistId = $albumArtist->getId();
 
-			// add/update album and get album entity
-			$album = $this->albumBusinessLayer->addOrUpdateAlbum(
-					$meta['album'], $albumArtistId, $userId);
-			$albumId = $album->getId();
+		// add/update album and get album entity
+		$album = $this->albumBusinessLayer->addOrUpdateAlbum(
+				$meta['album'], $albumArtistId, $userId);
+		$albumId = $album->getId();
 
-			// add/update genre and get genre entity
-			$genre = $this->genreBusinessLayer->addOrUpdateGenre($meta['genre'], $userId);
+		// add/update genre and get genre entity
+		$genre = $this->genreBusinessLayer->addOrUpdateGenre($meta['genre'], $userId);
 
-			// add/update track and get track entity
-			$track = $this->trackBusinessLayer->addOrUpdateTrack(
-					$meta['title'], $meta['trackNumber'], $meta['discNumber'], $meta['year'], $genre->getId(),
-					$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
+		// add/update track and get track entity
+		$track = $this->trackBusinessLayer->addOrUpdateTrack(
+				$meta['title'], $meta['trackNumber'], $meta['discNumber'], $meta['year'], $genre->getId(),
+				$artistId, $albumId, $fileId, $mimetype, $userId, $meta['length'], $meta['bitrate']);
 
-			// if present, use the embedded album art as cover for the respective album
-			if ($meta['picture'] != null) {
-				$this->albumBusinessLayer->setCover($fileId, $albumId);
-				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
-			}
-			// if this file is an existing file which previously was used as cover for an album but now
-			// the file no longer contains any embedded album art
-			elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
-				$this->albumBusinessLayer->removeCovers([$fileId]);
-				$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
-				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
-			}
-
-			// invalidate the cache as the music collection was changed
-			$this->cache->remove($userId, 'collection');
-		
-			// debug logging
-			$this->logger->log('imported entities - ' .
-					"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
-					'debug');
+		// if present, use the embedded album art as cover for the respective album
+		if ($meta['picture'] != null) {
+			$this->albumBusinessLayer->setCover($fileId, $albumId);
+			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 		}
+		// if this file is an existing file which previously was used as cover for an album but now
+		// the file no longer contains any embedded album art
+		elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
+			$this->albumBusinessLayer->removeCovers([$fileId]);
+			$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
+			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
+		}
+
+		// invalidate the cache as the music collection was changed
+		$this->cache->remove($userId, 'collection');
+	
+		// debug logging
+		$this->logger->log('imported entities - ' .
+				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
+				'debug');
 	}
 
 	private function extractMetadata(File $file, Folder $userHome, string $filePath) : array {

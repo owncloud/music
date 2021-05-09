@@ -22,6 +22,7 @@
   [#854](https://github.com/owncloud/music/issues/854)
 - Non-ASCII characters breaking scanning if PHP has been configured to use internal encoding other than UTF-8
   [#846](https://github.com/owncloud/music/issues/846)
+- Scanning with `occ` breaking if option `--debug` given
 
 ## 1.1.0 - 2021-03-24
 ### Added

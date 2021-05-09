@@ -72,6 +72,8 @@ class Music extends App {
 	public function __construct(array $urlParams=[]) {
 		parent::__construct('music', $urlParams);
 
+		\mb_internal_encoding('UTF-8');
+
 		$container = $this->getContainer();
 
 		/**

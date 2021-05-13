@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.2.0 - 2021-05-13
 ### Added
 - Desktop notification shown when the playing song changes (with a setting to opt out)
   [#828](https://github.com/owncloud/music/issues/828)

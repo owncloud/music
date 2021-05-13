@@ -16,10 +16,11 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/107080070-6b523780-67f9-11eb-8adc-314059b04c1d.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/107083303-17961d00-67fe-11eb-8b1c-5ad94b08a7bb.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/118117379-39520200-b3f4-11eb-81de-6ec7aee5903a.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827491-9ae81a8a-9b02-11e8-8b8a-3e8dce76107a.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/43827500-9f45beb6-9b02-11e8-8884-39ed2f0daa54.png</screenshot>
 	<website>https://github.com/owncloud/music</website>

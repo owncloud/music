@@ -60,4 +60,8 @@ release:
 	zip -d music/music.zip "music/js/*.js*" && \
 	zip -d music/music.zip "music/js/*/*" && \
 	zip -d music/music.zip "music/l10n/*/*" && \
-	zip -d music/music.zip "music/tests/*"
+	zip -d music/music.zip "music/tests/*" && \
+	cp music/music.zip music/music-nc.zip && \
+	mv music/music.zip music/music-oc.zip && \
+	zip -d music/music-nc.zip "music/appinfo/database.xml" && \
+	zip -d music/music-oc.zip "music/lib/Migration/Version*Date*.php"

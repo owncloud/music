@@ -53,6 +53,7 @@ matrix:
 branches:
   only:
     - master
+    - travis
 
 cache:
   directories:
@@ -73,6 +74,11 @@ before_install:
   
   # The Nextcloud version in the master branch is almost always one which is not yet officially supported by the Music app. To enable testing, hack the supported NC version to a high value.
   - sh -c "if [ '$CLOUD' = 'nextcloud' ] && [ $CORE_VER = 'master' ]; then sed -i -r 's/(<nextcloud min-version=\"..\" max-version=\")../\1255/g' appinfo/info.xml; fi;"
+  
+  # Nextcloud has deprecated the use of database.xml to specify the database schema a long time ago, and NC22 removes the support entirely.
+  # Meanwhile, the replacement "Migrations" system does not work with ownCloud which still happily uses database.xml. To overcome this, our source 
+  # repository contains both mechanisms. The database.xml is deleted when deploying for NC, and the migrations script is disregarded by oC by default.
+  - if [[ "$CLOUD" == 'nextcloud' ]]; then rm appinfo/database.xml; fi
   
   - cd ..
   - sh -c "if [ '$CLOUD' = 'nextcloud' ]; then git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b $CORE_VER core; fi;"

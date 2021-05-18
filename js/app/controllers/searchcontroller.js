@@ -253,6 +253,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	}
 
 	$rootScope.$on('deactivateView', function() {
+		$rootScope.searchMode = false;
 		$scope.searchResultsOmitted = false;
 		$scope.noSearchResults = false;
 		$rootScope.$emit('searchOff');

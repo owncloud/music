@@ -1,3 +1,7 @@
+## [Unreleased]
+### Fixed
+- Albums compact layout not collapsing albums if view switched while the search box had some text
+
 ## 1.2.0 - 2021-05-13
 ### Added
 - Desktop notification shown when the playing song changes (with a setting to opt out)

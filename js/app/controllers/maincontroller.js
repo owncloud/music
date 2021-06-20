@@ -88,8 +88,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.viewingLibrary = function() {
-		 return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
-	}
+		return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
+	};
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;

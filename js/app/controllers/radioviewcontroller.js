@@ -132,10 +132,10 @@ angular.module('Music').controller('RadioViewController', [
 		 */
 		$scope.getStationTitle = function(index) {
 			var station = $scope.stations[index].track;
-			return station.name || station.stream_url
+			return station.name || station.stream_url;
 		};
 		$scope.getStationElementId = function(index) {
-			return 'radio-station-' + $scope.stations[index].track.id
+			return 'radio-station-' + $scope.stations[index].track.id;
 		};
 
 		// Init happens either immediately (after making the loading animation visible)

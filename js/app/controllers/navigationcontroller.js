@@ -70,7 +70,7 @@ angular.module('Music').controller('NavigationController', [
 						$scope.popupShownForPlaylist = null;
 					});
 					event.stopPropagation();
-				})
+				});
 			}
 		};
 

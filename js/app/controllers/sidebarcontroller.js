@@ -109,7 +109,7 @@ angular.module('Music').controller('SidebarController', [
 			const text = ctx.measureText(this.innerText);
 
 			const needsTooltip = (text.width > $this.width());
-			const hasTooltip = $this.is("[title]");
+			const hasTooltip = $this.is('[title]');
 
 			if (needsTooltip && !hasTooltip) {
 				$this.attr('title', $this.text());

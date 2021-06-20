@@ -37,6 +37,7 @@ use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\Track;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\FileStreamResponse;
 use \OCA\Music\Utility\CollectionHelper;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
@@ -407,7 +408,7 @@ class ApiController extends Controller {
 		$nodes = $this->userFolder->getById($fileId);
 		$node = $nodes[0] ?? null;
 		if ($node instanceof \OCP\Files\File) {
-			return new FileResponse($node);
+			return new FileStreamResponse($node);
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'file not found');

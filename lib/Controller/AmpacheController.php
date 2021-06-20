@@ -41,6 +41,7 @@ use \OCA\Music\Db\SortBy;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\FileStreamResponse;
 use \OCA\Music\Http\XmlResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
@@ -662,10 +663,10 @@ class AmpacheController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 		}
 
-		$files = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId());
+		$file = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId())[0] ?? null;
 
-		if (\count($files) === 1) {
-			return new FileResponse($files[0]);
+		if ($file instanceof \OCP\Files\File) {
+			return new FileStreamResponse($file);
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

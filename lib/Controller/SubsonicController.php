@@ -43,6 +43,7 @@ use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
 use \OCA\Music\Http\FileResponse;
+use \OCA\Music\Http\FileStreamResponse;
 use \OCA\Music\Http\XmlResponse;
 
 use \OCA\Music\Middleware\SubsonicException;
@@ -446,7 +447,7 @@ class SubsonicController extends Controller {
 		$file = $this->getFilesystemNode($track->getFileId());
 
 		if ($file instanceof File) {
-			return new FileResponse($file);
+			return new FileStreamResponse($file);
 		} else {
 			return $this->subsonicErrorResponse(70, 'file not found');
 		}

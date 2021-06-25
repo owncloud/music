@@ -242,7 +242,7 @@ class getid3_lib
 	/**
 	 * ANSI/IEEE Standard 754-1985, Standard for Binary Floating Point Arithmetic
 	 *
-	 * @link http://www.psc.edu/general/software/packages/ieee/ieee.html
+	 * @link https://web.archive.org/web/20120325162206/http://www.psc.edu/general/software/packages/ieee/ieee.php
 	 * @link http://www.scri.fsu.edu/~jac/MAD3401/Backgrnd/ieee.html
 	 *
 	 * @param string $byteword
@@ -294,12 +294,12 @@ class getid3_lib
 
 		if (($exponent == (pow(2, $exponentbits) - 1)) && ($fraction != 0)) {
 			// Not a Number
-			$floatvalue = false;
+			$floatvalue = NAN;
 		} elseif (($exponent == (pow(2, $exponentbits) - 1)) && ($fraction == 0)) {
 			if ($signbit == '1') {
-				$floatvalue = '-infinity';
+				$floatvalue = -INF;
 			} else {
-				$floatvalue = '+infinity';
+				$floatvalue = INF;
 			}
 		} elseif (($exponent == 0) && ($fraction == 0)) {
 			if ($signbit == '1') {
@@ -427,14 +427,20 @@ class getid3_lib
 	 * @return string
 	 */
 	public static function Dec2Bin($number) {
+		if (!is_numeric($number)) {
+			// https://github.com/JamesHeinrich/getID3/issues/299
+			trigger_error('TypeError: Dec2Bin(): Argument #1 ($number) must be numeric, '.gettype($number).' given', E_USER_WARNING);
+			return '';
+		}
+		$bytes = array();
 		while ($number >= 256) {
-			$bytes[] = (($number / 256) - (floor($number / 256))) * 256;
+			$bytes[] = (int) (($number / 256) - (floor($number / 256))) * 256;
 			$number = floor($number / 256);
 		}
-		$bytes[] = $number;
+		$bytes[] = (int) $number;
 		$binstring = '';
-		for ($i = 0; $i < count($bytes); $i++) {
-			$binstring = (($i == count($bytes) - 1) ? decbin($bytes[$i]) : str_pad(decbin($bytes[$i]), 8, '0', STR_PAD_LEFT)).$binstring;
+		foreach ($bytes as $i => $byte) {
+			$binstring = (($i == count($bytes) - 1) ? decbin($byte) : str_pad(decbin($byte), 8, '0', STR_PAD_LEFT)).$binstring;
 		}
 		return $binstring;
 	}
@@ -665,6 +671,7 @@ class getid3_lib
 		// or
 		//   $foo['path']['to']['my'] = 'file.txt';
 		$ArrayPath = ltrim($ArrayPath, $Separator);
+		$ReturnedArray = array();
 		if (($pos = strpos($ArrayPath, $Separator)) !== false) {
 			$ReturnedArray[substr($ArrayPath, 0, $pos)] = self::CreateDeepArray(substr($ArrayPath, $pos + 1), $Separator, $Value);
 		} else {
@@ -720,18 +727,14 @@ class getid3_lib
 	 */
 	public static function XML2array($XMLstring) {
 		if (function_exists('simplexml_load_string') && function_exists('libxml_disable_entity_loader')) {
-			if (PHP_VERSION_ID < 80000) {
-				// http://websec.io/2012/08/27/Preventing-XEE-in-PHP.html
-				// https://core.trac.wordpress.org/changeset/29378
-				// This function has been deprecated in PHP 8.0 because in libxml 2.9.0, external entity loading is
-				// disabled by default, so this function is no longer needed to protect against XXE attacks.
-				$loader = libxml_disable_entity_loader(true);
-			}
+			// http://websec.io/2012/08/27/Preventing-XEE-in-PHP.html
+			// https://core.trac.wordpress.org/changeset/29378
+			// This function has been deprecated in PHP 8.0 because in libxml 2.9.0, external entity loading is
+			// disabled by default, but is still needed when LIBXML_NOENT is used.
+			$loader = @libxml_disable_entity_loader(true);
 			$XMLobject = simplexml_load_string($XMLstring, 'SimpleXMLElement', LIBXML_NOENT);
 			$return = self::SimpleXMLelement2array($XMLobject);
-			if (PHP_VERSION_ID < 80000 && isset($loader)) {
-				libxml_disable_entity_loader($loader);
-			}
+			@libxml_disable_entity_loader($loader);
 			return $return;
 		}
 		return false;
@@ -1606,14 +1609,16 @@ class getid3_lib
 			}
 
 			// attempt to standardize spelling of returned keys
-			$StandardizeFieldNames = array(
-				'tracknumber' => 'track_number',
-				'track'       => 'track_number',
-			);
-			foreach ($StandardizeFieldNames as $badkey => $goodkey) {
-				if (array_key_exists($badkey, $ThisFileInfo['comments']) && !array_key_exists($goodkey, $ThisFileInfo['comments'])) {
-					$ThisFileInfo['comments'][$goodkey] = $ThisFileInfo['comments'][$badkey];
-					unset($ThisFileInfo['comments'][$badkey]);
+			if (!empty($ThisFileInfo['comments'])) {
+				$StandardizeFieldNames = array(
+					'tracknumber' => 'track_number',
+					'track'       => 'track_number',
+				);
+				foreach ($StandardizeFieldNames as $badkey => $goodkey) {
+					if (array_key_exists($badkey, $ThisFileInfo['comments']) && !array_key_exists($goodkey, $ThisFileInfo['comments'])) {
+						$ThisFileInfo['comments'][$goodkey] = $ThisFileInfo['comments'][$badkey];
+						unset($ThisFileInfo['comments'][$badkey]);
+					}
 				}
 			}
 
@@ -1739,6 +1744,7 @@ class getid3_lib
 	 * @return float|bool
 	 */
 	public static function getFileSizeSyscall($path) {
+		$commandline = null;
 		$filesize = false;
 
 		if (GETID3_OS_ISWINDOWS) {

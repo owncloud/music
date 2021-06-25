@@ -1,4 +1,11 @@
 ## [Unreleased]
+### Changed
+- Stream audio files without first allocating the whole file to RAM, to avoid extensive RAM use with large files
+  [#864](https://github.com/owncloud/music/issues/864)
+- Updated the getID3 library to version 1.9.20-202106221748 to fix scan errors with PHP8
+  [#856](https://github.com/owncloud/music/issues/856)
+  [#867](https://github.com/owncloud/music/issues/867)
+
 ### Fixed
 - Albums compact layout not collapsing albums if view switched while the search box had some text
 

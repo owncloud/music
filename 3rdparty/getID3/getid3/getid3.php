@@ -53,7 +53,7 @@ if ($open_basedir) {
 		if (substr($basedir, -1, 1) != DIRECTORY_SEPARATOR) {
 			$basedir .= DIRECTORY_SEPARATOR;
 		}
-		if (preg_match('#^'.preg_quote($basedir).'#', $temp_dir)) {
+		if (strpos($temp_dir, $basedir) === 0) {
 			$found_valid_tempdir = true;
 			break;
 		}
@@ -387,7 +387,7 @@ class getID3
 	 */
 	protected $startup_warning = '';
 
-	const VERSION           = '1.9.20-202103112222';
+	const VERSION           = '1.9.20-202106221748';
 	const FREAD_BUFFER_SIZE = 32768;
 
 	const ATTACHMENTS_NONE   = false;
@@ -2371,6 +2371,8 @@ abstract class getid3_handler
 	 * @throws getid3_exception
 	 */
 	public function saveAttachment($name, $offset, $length, $image_mime=null) {
+		$fp_dest = null;
+		$dest = null;
 		try {
 
 			// do not extract at all

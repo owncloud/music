@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Added
+- Support for Nextcloud 22
+
 ### Changed
 - Stream audio files without first allocating the whole file to RAM, to avoid extensive RAM use with large files
   [#864](https://github.com/owncloud/music/issues/864)

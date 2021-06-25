@@ -29,7 +29,7 @@ Limitations: The app can handle libraries of more than 50´000 tracks on modern 
 	<dependencies>
 		<php min-version="7.1" max-version="8.0"/>
 		<owncloud min-version="10" max-version="10" />
-		<nextcloud min-version="13" max-version="21" />
+		<nextcloud min-version="13" max-version="22" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->

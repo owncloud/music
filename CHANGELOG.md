@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.2.1 - 2021-06-27
 ### Added
 - Support for Nextcloud 22
 
@@ -8,6 +8,8 @@
 - Updated the getID3 library to version 1.9.20-202106221748 to fix scan errors with PHP8
   [#856](https://github.com/owncloud/music/issues/856)
   [#867](https://github.com/owncloud/music/issues/867)
+- Deliveries for ownCloud and Nextcloud are now technically incompatible and not just signed differently
+  [#865](https://github.com/owncloud/music/issues/865)
 
 ### Fixed
 - Albums compact layout not collapsing albums if view switched while the search box had some text

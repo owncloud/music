@@ -5,6 +5,7 @@
 
 ### Changed
 - Show the play icon overlay on album cover also in the Albums compact layout while in search mode
+- Show icon also for the playlists in the navigation pane
 
 ## 1.2.1 - 2021-06-27
 ### Added

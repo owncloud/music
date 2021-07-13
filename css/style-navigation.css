@@ -268,3 +268,7 @@
 .icon-radio-button-checked {
 	background-image: url(../img/radio-button-checked.svg);
 }
+
+.icon-playlist {
+	background-image: url(../img/playlist-play.svg);
+}

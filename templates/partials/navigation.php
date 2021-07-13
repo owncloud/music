@@ -38,7 +38,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 			ui-on-drop="dropOnPlaylist($data, playlist)"
 			drop-validate="allowDrop(playlist)"
 			drag-hover-class="drag-hover"
-			title="{{ trackCountText(playlist) }}"></li>
+			title="{{ trackCountText(playlist) }}"
+			icon="'playlist'"></li>
 		<li class="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
 				<img class="svg" src="<?php HtmlUtil::printSvgPath('settings') ?>">

@@ -135,5 +135,17 @@ angular.module('Music').controller('SidebarController', [
 			});
 			return htmlLinks.join(', ');
 		};
+
+		$scope.scrollToEntity = function(type, entity) {
+			const doScroll = function() {
+				$rootScope.$emit('scrollTo' + OCA.Music.Utils.capitalize(type), entity.id);
+			};
+
+			if ($rootScope.currentView !== '#') {
+				$scope.navigateTo('#', doScroll);
+			} else {
+				doScroll();
+			}
+		};
 	}
 ]);

@@ -1,3 +1,8 @@
+## [Unreleased]
+### Added
+- Scrolling to the album by clicking the album name or image on the album details pane
+- Scrolling to the artist by clicking the artist name or image on the artist details pane
+
 ## 1.2.1 - 2021-06-27
 ### Added
 - Support for Nextcloud 22

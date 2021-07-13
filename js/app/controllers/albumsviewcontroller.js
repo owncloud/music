@@ -217,7 +217,16 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('scrollToArtist', function(event, artistId, animationTime /* optional */) {
-			$scope.$parent.scrollToItem('artist-' + artistId, animationTime);
+			const elemId = 'artist-' + artistId;
+			if ($('#' + elemId).length) {
+				$scope.$parent.scrollToItem(elemId, animationTime);
+			} else {
+				// No such artist element, this is probably just a performing artist on some track.
+				// Find the first album with a track performed by this artist.
+				const tracks = libraryService.findTracksByArtist(artistId);
+				scrollToAlbumOfTrack(tracks[0].id);
+			}
+			
 		});
 
 		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
@@ -313,7 +322,7 @@ angular.module('Music').controller('AlbumsViewController', [
 						updateHighlight(playlistService.getCurrentPlaylistId());
 					}
 
-					$rootScope.$emit('viewActivated');
+					$timeout(() => $rootScope.$emit('viewActivated'));
 				}
 			}
 		}
@@ -332,9 +341,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		subscribe('deactivateView', function() {
 			$document.unbind('keydown', handleKeyDown);
-			$timeout(function() {
-				$rootScope.$emit('viewDeactivated');
-			});
+			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}
 ]);

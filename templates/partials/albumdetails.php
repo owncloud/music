@@ -1,9 +1,9 @@
 <div id="album-details" class="sidebar-content" ng-controller="AlbumDetailsController" ng-if="contentType=='album'">
 
-	<div class="albumart" ng-show="album.cover"></div>
+	<div class="albumart clickable" ng-show="album.cover" ng-click="scrollToEntity('album', album)"></div>
 
 	<h2 class="clickable" ng-click="showArtist()">{{album.artist.name}}<button class="icon-info"></button></h2>
-	<h1>{{album.name}}</h1>
+	<h1 class="clickable" ng-click="scrollToEntity('album', album)">{{album.name}}</h1>
 
 	<dl id="album-content-counts">
 		<dt translate>Number of tracks</dt>

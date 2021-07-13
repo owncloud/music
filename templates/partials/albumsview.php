@@ -24,7 +24,7 @@
 				show-play-icon="true">
 			</list-heading>
 			<div ng-click="playAlbum(album)" class="albumart" cover="{{ album.cover }}" albumart="{{ album.name }}"></div>
-			<img ng-if="!albumsCompactLayout" class="play overlay svg" alt="{{ 'Play' | translate }}"
+			<img ng-if="!albumsCompactLayout || searchMode" class="play overlay svg" alt="{{ 'Play' | translate }}"
 				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-overlay') ?>" ng-click="playAlbum(album)" />
 			<img ng-if="albumsCompactLayout && !searchMode" class="overlay svg" 
 				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"

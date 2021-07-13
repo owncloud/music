@@ -146,7 +146,6 @@ h2 span:hover .play {
 
 .album-area > .overlay {
 	margin-left: -190px;
-	padding: 24px;
 	visibility: hidden;
 }
 
@@ -306,7 +305,6 @@ div:hover > .play-pause,
 
 #albums.compact .album-area > .overlay {
 	margin-left: 0;
-	padding: 0;
 }
 
 /* Albums view single column layout when there's no room for two columns or more */

@@ -3,6 +3,9 @@
 - Scrolling to the album by clicking the album name or image on the album details pane
 - Scrolling to the artist by clicking the artist name or image on the artist details pane
 
+### Changed
+- Show the play icon overlay on album cover also in the Albums compact layout while in search mode
+
 ## 1.2.1 - 2021-06-27
 ### Added
 - Support for Nextcloud 22

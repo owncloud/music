@@ -149,8 +149,8 @@ angular.module('Music').controller('AlbumsViewController', [
 			return getDraggable('album', album);
 		};
 
-		$scope.getArtistDraggable = function(album) {
-			return getDraggable('artist', album);
+		$scope.getArtistDraggable = function(artist) {
+			return getDraggable('artist', artist);
 		};
 
 		$scope.decoratedYear = function(album) {
@@ -193,7 +193,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			} else {
 				// multidisk album
 				var number = track.disk + '-';
-				number += (track.number !== null) ? track.number : '?';
+				number += track.number ?? '?';
 				return number;
 			}
 		}

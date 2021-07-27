@@ -33,6 +33,7 @@ use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
+use \OCA\Music\Controller\PodcastApiController;
 use \OCA\Music\Controller\RadioApiController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Controller\ShareController;
@@ -144,6 +145,15 @@ class Music extends App {
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('L10N'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastApiController', function (IAppContainer $c) {
+			return new PodcastApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('UserId'),
 				$c->query('Logger')
 			);
 		});

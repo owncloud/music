@@ -81,7 +81,14 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
 
-	// settings
+	// podcast API
+	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',				'verb' => 'GET'],
+	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',				'verb' => 'POST'],
+	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',			'verb' => 'GET'],
+	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',			'verb' => 'DELETE'],
+	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',			'verb' => 'POST'],
+
+	// settings API
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],
 	['name' => 'setting#userPath',			'url' => '/api/settings/user/path',			'verb' => 'POST'],
 	['name' => 'setting#userExcludedPaths',	'url' => '/api/settings/user/exclude_paths','verb' => 'POST'],

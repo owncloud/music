@@ -169,9 +169,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	};
 
+	$scope.updatePodcasts = function() {
+		Restangular.one('podcasts').get().then(function(podcasts) {
+			libraryService.setPodcasts(podcasts);
+			$rootScope.$emit('podcastsLoaded');
+		});
+	};
+
 	// initial loading of artists and radio stations
 	$scope.update();
 	$scope.updateRadio();
+	$scope.updatePodcasts();
 
 	var FILES_TO_SCAN_PER_STEP = 10;
 	var filesToScan = null;

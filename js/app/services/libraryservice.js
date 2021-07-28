@@ -22,6 +22,7 @@ angular.module('Music').service('libraryService', [function() {
 	var folders = null;
 	var genres = null;
 	var radioStations = null;
+	var podcastChannels = null;
 
 	/** 
 	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
@@ -271,6 +272,9 @@ angular.module('Music').service('libraryService', [function() {
 			radioStations.splice(idx, 1);
 			return idx;
 		},
+		setPodcasts: function(podcastsData) {
+			podcastChannels = podcastsData;
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},
@@ -380,6 +384,9 @@ angular.module('Music').service('libraryService', [function() {
 		getAllRadioStations: function() {
 			return radioStations;
 		},
+		getAllPodcastChannels: function() {
+			return podcastChannels;
+		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -397,6 +404,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		radioStationsLoaded: function() {
 			return radioStations !== null;
+		},
+		podcastsLoaded: function() {
+			return podcastChannels !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);

@@ -261,6 +261,10 @@
 	background-image: url(../img/radio.svg);
 }
 
+.icon-podcast {
+	background-image: url(../img/podcasts.svg);
+}
+
 .icon-radio-button {
 	background-image: url(../img/radio-button.svg);
 }

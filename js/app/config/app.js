@@ -50,6 +50,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				templateUrl:'radioview.html'
 			};
 
+			var podcastsControllerConfig = {
+				controller:'PodcastsViewController',
+				templateUrl:'podcastsview.html'
+			};
+
 			var settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
@@ -71,6 +76,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				.when('/folders',              foldersControllerConfig)
 				.when('/genres',               genresControllerConfig)
 				.when('/radio',                radioControllerConfig)
+				.when('/podcasts',             podcastsControllerConfig)
 				.when('/settings',             settingsControllerConfig);
 		}
 	])

@@ -41,25 +41,21 @@
 }
 
 /* smaller album art */
-.mobile #albums:not(.compact) .album-area > .albumart,
-.mobile #albums:not(.compact) .album-area > .overlay {
+.mobile .view-container:not(.compact) .album-area > .albumart,
+.mobile .view-container:not(.compact) .album-area > .overlay {
 	line-height: 50px;
 	font-size: 30px;
 	width: 50px;
 	height: 50px;
 	float: left;
 }
-/* also adjust the overlay */
-.mobile #albums:not(.compact) .album-area > .overlay {
-	margin-left: -37px;
-	padding: 0;
-	width: 25px;
-	height: 25px;
-	margin-top: 13px;
+/* also adjust the overlay position */
+.mobile .view-container:not(.compact) .album-area > .overlay {
+	margin-left: -50px;
 }
 
 /* nicely display album name next to cover */
-.mobile #albums:not(.compact) .album-area h2 {
+.mobile .view-container:not(.compact) .album-area h2 {
 	padding: 0px 15px;
 	position: absolute;
 	left: 56px;
@@ -74,16 +70,16 @@
 	line-height: 1.2;
 }
 /* move track list to the left so it’s visible on small screens */
-.mobile #albums:not(.compact) .album-area .track-list {
+.mobile .view-container:not(.compact) .album-area .track-list {
 	margin-left: 0;
 	padding-top: 15px;
 	clear: both;
 }
 /* align track title to the left with album title */
-.mobile #albums:not(.compact) .album-area .track-list > li:not(.more-less) {
+.mobile .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
 	padding-left: 40px;
 }
-.mobile #albums:not(.compact) .album-area .track-list > li.more-less {
+.mobile .view-container:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 57px;
 }
 
@@ -140,12 +136,12 @@
 .extra-narrow #controls .albumart {
 	display: none;
 }
-.extra-narrow #albums.compact .album-area .track-list {
+.extra-narrow .view-container.compact .album-area .track-list {
 	margin-left: 0;
 }
-.extra-narrow #albums:not(.compact) .album-area .track-list > li:not(.more-less) {
+.extra-narrow .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
 	padding-left: 0;
 }
-.extra-narrow #albums:not(.compact) .album-area .track-list > li.more-less {
+.extra-narrow .view-container:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 18px;
 }

@@ -7,7 +7,7 @@
  * @author Moritz Meißelbach <moritz@meisselba.ch>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2017 Moritz Meißelbach
- * @copyright 2018 - 2020 Pauli Järvinen
+ * @copyright 2018 - 2021 Pauli Järvinen
  *
  */
 
@@ -23,8 +23,8 @@
  * removed and listeners de-registered once the list instance leaves the viewport.
  */
 
-angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', '$timeout', 'gettextCatalog',
-function ($rootScope, $interpolate, $timeout, gettextCatalog) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog',
+function ($rootScope, $interpolate, gettextCatalog) {
 
 	var trackTemplate = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
@@ -154,13 +154,15 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			var listItemContent = document.createElement('div');
 			var trackData = data.getTrackData(track, index, data.scope);
 			listItemContent.innerHTML = trackRenderer(trackData);
-			listItemContent.setAttribute('draggable', true);
+			listItemContent.setAttribute('draggable', data.getDraggable !== undefined);
 			listItem.appendChild(listItemContent);
 
-			var detailsButton = document.createElement('button');
-			detailsButton.className = 'icon-details';
-			detailsButton.title = detailsText;
-			listItem.appendChild(detailsButton);
+			if (data.showTrackDetails) {
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				detailsButton.title = detailsText;
+				listItem.appendChild(detailsButton);
+			}
 
 			listItem.id = 'track-' + trackData.id;
 			if (className) {

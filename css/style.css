@@ -266,36 +266,36 @@ div:hover > .play-pause,
 
 
 /* Albums view compact mode */
-#albums.compact .artist-area h1 {
+.view-container.compact .artist-area h1 {
 	font-size: 24px;
 }
 
-#albums.compact .album-area h2 {
+.view-container.compact .album-area h2 {
 	padding-left: 48px;
 	font-size: 16px;
 	padding-bottom: 8px;
 	max-width: 360px;
 }
 
-#albums.compact h1 .play {
+.view-container.compact h1 .play {
 	margin-bottom: 1px;
 	width: 13px;
 	height: 13px;
 }
 
-#albums.compact h2 .play {
+.view-container.compact h2 .play {
 	width: 11px;
 	height: 11px;
 }
 
-#albums.compact .album-area {
+.view-container.compact .album-area {
 	padding-top: 2px;
 	padding-bottom: 10px;
 	width: 387px;
 }
 
-#albums.compact .album-area > .albumart,
-#albums.compact .album-area > .overlay {
+.view-container.compact .album-area > .albumart,
+.view-container.compact .album-area > .overlay {
 	margin-top: -40px;
 	width: 40px;
 	height: 40px;
@@ -303,20 +303,20 @@ div:hover > .play-pause,
 	font-size: 24px;
 }
 
-#albums.compact .album-area > .overlay {
+.view-container.compact .album-area > .overlay {
 	margin-left: 0;
 }
 
-/* Albums view single column layout when there's no room for two columns or more */
-#albums.single-col .album-area {
+/* Albums and Podcasts view single column layout when there's no room for two columns or more */
+.single-col .album-area {
 	width: 100%;
 }
 
-#albums.single-col .album-area > h2 {
+.single-col .album-area > h2 {
 	max-width: 80vw;
 }
 
-#albums.single-col .album-area .track-list li > div > span {
+.single-col .album-area .track-list li > div > span {
 	white-space: normal;
 	vertical-align: top;
 	max-width: unset;

@@ -52,6 +52,8 @@ class PodcastApiController extends Controller {
 			'https://feeds.npr.org/510289/podcast.xml'
 		];
 
+		$episodeCounter = 0;
+
 		foreach ($rssFeeds as $index => $feed) {
 			$xmlTree = \simplexml_load_string(
 				\file_get_contents($feed),
@@ -66,6 +68,7 @@ class PodcastApiController extends Controller {
 
 			foreach ($xmlTree->channel->item as $item) {
 				$channel['episodes'][] = [
+					'id' => ++$episodeCounter,
 					'title' => (string)$item->title,
 					'url' => (string)$item->enclosure->attributes()['url']
 				];

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019, 2020 Pauli Järvinen
+ * @copyright 2019 - 2021 Pauli Järvinen
  *
  */
 
@@ -17,8 +17,8 @@ import playIconName from '../../../img/play-big.svg';
  * Respectively, contents are cleared when the widget leaves the viewport.
  */
 
-angular.module('Music').directive('listHeading', ['$rootScope', '$timeout', 'gettextCatalog',
-function ($rootScope, $timeout, gettextCatalog) {
+angular.module('Music').directive('listHeading', ['$rootScope', 'gettextCatalog',
+function ($rootScope, gettextCatalog) {
 
 	var playText = gettextCatalog.getString('Play');
 	var playIconSrc = OC.filePath('music', 'dist', playIconName);
@@ -41,7 +41,7 @@ function ($rootScope, $timeout, gettextCatalog) {
 			var fragment = document.createDocumentFragment();
 
 			var outerSpan = document.createElement('span');
-			outerSpan.setAttribute('draggable', true);
+			outerSpan.setAttribute('draggable', data.getDraggable !== undefined);
 			if (data.tooltip) {
 				outerSpan.setAttribute('title', data.tooltip);
 			}

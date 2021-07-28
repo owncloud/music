@@ -16,6 +16,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 		<li class="app-navigation-separator"></li>
 		<li navigation-item text="'Internet radio' | translate" destination="'#/radio'"
 			title="{{ radioCountText() }}" icon="'radio'"></li>
+		<li navigation-item text="'Podcasts' | translate" destination="'#/podcasts'"
+			title="{{ podcastsCountText() }}" icon="'podcast'"></li>
 		<li class="app-navigation-separator"></li>
 		<li class="music-navigation-item">
 			<div id="new-playlist" class="music-navigation-item-content">

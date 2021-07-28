@@ -87,6 +87,10 @@ function adjustCsp(IAppContainer $container) {
 			$policy->addAllowedMediaDomain('blob:');
 		}
 
+		// Allow loading (podcast cover) images from external sources
+		$policy->addAllowedImageDomain('http://*:*');
+		$policy->addAllowedImageDomain('https://*:*');
+
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 	}
 }

@@ -25,8 +25,8 @@ use \OCA\Music\Utility\Util;
  * @method void setName(string $name)
  * @method string getMbid()
  * @method void setMbid(string $mbid)
- * @method array getYears()
- * @method void setYears(array $years)
+ * @method ?array getYears()
+ * @method void setYears(?array $years)
  * @method int getDisk()
  * @method void setDisk(int $discnumber)
  * @method string getMbidGroup()
@@ -51,8 +51,8 @@ use \OCA\Music\Utility\Util;
  * @method setCreated(string $timestamp)
  * @method string getUpdated()
  * @method setUpdated(string $timestamp)
- * @method array getGenres()
- * @method void setGenres(array $genres)
+ * @method ?array getGenres()
+ * @method void setGenres(?array $genres)
  */
 class Album extends Entity {
 	public $name;
@@ -68,9 +68,9 @@ class Album extends Entity {
 	public $updated;
 	public $albumArtistName; // not from music_albums table but still part of the standard content
 
-	// these don't come from the music_albums table
+	// extra fields injected separately by AlbumBusinessLayer
 	public $years;
-	public $genres;
+	public $genres; // *partial* Genre objects, not all properties are set
 	public $artistIds;
 	public $numberOfDisks;
 
@@ -211,7 +211,7 @@ class Album extends Entity {
 	}
 
 	/**
-	 * Creates object used by the shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
+	 * Creates object used by the Shiva API (array with name, year, cover URL, ID, slug, URI and artists Array)
 	 * @param  IURLGenerator $urlGenerator URL Generator
 	 * @param  IL10N $l10n Localization handler
 	 * @return array shiva API object

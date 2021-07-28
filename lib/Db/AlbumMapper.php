@@ -95,12 +95,14 @@ class AlbumMapper extends BaseMapper {
 	 *
 	 * @param integer[]|null $albumIds IDs of the albums; get all albums of the user if null given
 	 * @param string $userId the user ID
-	 * @return array int => int[], keys are albums IDs and values are arrays of genre IDs
+	 * @return array int => Genre[], keys are albums IDs and values are arrays of *partial* Genre objects (only id and name properties set)
 	 */
 	public function getGenresByAlbumId(?array $albumIds, string $userId) : array {
-		$sql = 'SELECT DISTINCT `album_id`, `genre_id`
+		$sql = 'SELECT DISTINCT `album_id`, `genre_id`, `*PREFIX*music_genres`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
-				WHERE `user_id` = ?
+				LEFT JOIN `*PREFIX*music_genres`
+				ON `genre_id` = `*PREFIX*music_genres`.`id`
+				WHERE `*PREFIX*music_tracks`.`user_id` = ?
 				AND `genre_id` IS NOT NULL ';
 		$params = [$userId];
 
@@ -110,11 +112,15 @@ class AlbumMapper extends BaseMapper {
 		}
 
 		$result = $this->execute($sql, $params);
-		$genreIds = [];
+		$genres = [];
 		while ($row = $result->fetch()) {
-			$genreIds[$row['album_id']][] = (int)$row['genre_id'];
+			$genre = new Genre();
+			$genre->setUserId($userId);
+			$genre->setId((int)$row['genre_id']);
+			$genre->setName($row['genre_name']);
+			$genres[$row['album_id']][] = $genre;
 		}
-		return $genreIds;
+		return $genres;
 	}
 
 	/**

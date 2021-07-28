@@ -1099,8 +1099,8 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($album->getGenres())) {
-			$result['genre'] = \implode(', ', \array_map(function (int $genreId) {
-				return $this->genreBusinessLayer->find($genreId, $this->userId)->getNameString($this->l10n);
+			$result['genre'] = \implode(', ', \array_map(function (Genre $genre) {
+				return $genre->getNameString($this->l10n);
 			}, $album->getGenres()));
 		}
 

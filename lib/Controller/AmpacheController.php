@@ -924,12 +924,8 @@ class AmpacheController extends Controller {
 	}
 
 	private function renderAlbums($albums, $auth) {
-		$userId = $this->ampacheUser->getUserId();
-
-		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
-
 		return $this->ampacheResponse([
-			'album' => \array_map(function ($album) use ($auth, $genreMap) {
+			'album' => \array_map(function ($album) use ($auth) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -942,10 +938,10 @@ class AmpacheController extends Controller {
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album, $auth),
 					'preciserating' => 0,
-					'tag' => \array_map(function ($genreId) use ($genreMap) {
+					'tag' => \array_map(function ($genre) {
 						return [
-							'id' => (string)$genreId,
-							'value' => $genreMap[$genreId]->getNameString($this->l10n),
+							'id' => (string)$genre->getId(),
+							'value' => $genre->getNameString($this->l10n),
 							'count' => 1
 						];
 					}, $album->getGenres())

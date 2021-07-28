@@ -7,6 +7,10 @@
 - Show the play icon overlay on album cover also in the Albums compact layout while in search mode
 - Show icon also for the playlists in the navigation pane
 
+### Fixed
+- Performance problem on Subsonic actions `getAlbumList` and `getAlbumList2` with huge libraries
+  [#873](https://github.com/owncloud/music/issues/873)
+
 ## 1.2.1 - 2021-06-27
 ### Added
 - Support for Nextcloud 22

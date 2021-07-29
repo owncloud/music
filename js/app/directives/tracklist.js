@@ -34,7 +34,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 	// Localized strings
 	var lessText = gettextCatalog.getString('Show less …');
 	var detailsText = gettextCatalog.getString('Details');
-	var moreText = function(count) {
+	var moreText = function(count) { // this is the default implementation, may be overridden with attributes
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 
@@ -132,7 +132,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 
 				lessEl.innerHTML = lessText;
 				lessEl.className = 'muted more-less collapsible';
-				moreEl.innerHTML = moreText(data.tracks.length);
+				moreEl.innerHTML = data.showCollapsedText(data.tracks.length);
 				moreEl.className = 'muted more-less';
 				trackListFragment.appendChild(lessEl);
 				trackListFragment.appendChild(moreEl);
@@ -325,6 +325,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				showTrackDetails: scope.$eval(attrs.showTrackDetails),
 				getDraggable: scope.$eval(attrs.getDraggable),
 				collapseLimit: attrs.collapseLimit || 999999,
+				showCollapsedText: scope.$eval(attrs.showCollapsedText) ?? moreText,
 				listeners: null,
 				scope: scope,
 				element: element

@@ -16,7 +16,8 @@
 				tracks="channel.episodes"
 				get-track-data="getEpisodeData"
 				play-track="playEpisode"
-				collapse-limit="6">
+				collapse-limit="6"
+				show-collapsed-text="getMoreEpisodesText">
 			</track-list>
 		</div>
 	</div>

@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('PodcastsViewController', [
-	'$scope', '$rootScope', 'playlistService', 'libraryService', '$location', '$timeout',
-	function ($scope, $rootScope, playlistService, libraryService, $location, $timeout) {
+	'$scope', '$rootScope', 'playlistService', 'libraryService', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, playlistService, libraryService, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -78,7 +78,7 @@ angular.module('Music').controller('PodcastsViewController', [
 		};
 
 		/**
-		 * Gets track data to be dislayed in the tracklist directive
+		 * Two functions for the tracklist directive integration
 		 */
 		$scope.getEpisodeData = function(episode, _index, _scope) {
 			return {
@@ -87,6 +87,9 @@ angular.module('Music').controller('PodcastsViewController', [
 				number: null,
 				id: episode.id
 			};
+		};
+		$scope.getMoreEpisodesText = function(count) {
+			return gettextCatalog.getString('Show all {{ count }} episodes …', { count: count });
 		};
 
 		// emited on end of playlist by playerController

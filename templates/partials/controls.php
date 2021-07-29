@@ -12,11 +12,11 @@
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
-	<div ng-show="currentTrack.album" ng-click="scrollToCurrentTrack()"
-		class="albumart clickable" cover="{{ currentTrack.album.cover }}"
-		albumart="{{ currentTrack.album.name }}" title="{{ currentTrack.album.name }}" ></div>
+	<div ng-show="!currentTrackIsRadio()" ng-click="scrollToCurrentTrack()"
+		class="albumart clickable" cover="{{ coverArt() }}"
+		albumart="{{ coverArtTitle() }}" title="{{ coverArtTitle() }}" ></div>
 
-	<div ng-show="currentTrack.stream_url" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
+	<div ng-show="currentTrackIsRadio()" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
 		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />

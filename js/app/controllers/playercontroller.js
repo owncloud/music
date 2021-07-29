@@ -94,7 +94,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.$watch('currentTrack', function(newTrack) {
 		var titleSong = '';
 		if (newTrack?.title !== undefined) {
-			titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+			if (newTrack?.channel) {
+				titleSong = newTrack.title + ' (' + newTrack.channel.title + ') - ';
+			} else {
+				titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+			}
 		} else if (newTrack?.name !== undefined) {
 			titleSong = newTrack.name + ' - ';
 		}
@@ -163,6 +167,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	function currentTrackIsStream() {
 		return $scope.currentTrack?.stream_url !== undefined;
 	}
+
+	$scope.currentTrackIsRadio = function() {
+		return currentTrackIsStream() && $scope.currentTrack.channel === undefined; // stream but not podcast
+	};
 
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
@@ -260,8 +268,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs.
-		// This is disalbed for exteranl streams where jumping to the beginning often does not work.
-		if ($scope.position.current > 2.0 && !currentTrackIsStream()) {
+		// This is disalbed for radio streams where jumping to the beginning often does not work.
+		if ($scope.position.current > 2.0 && !$scope.currentTrackIsRadio()) {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -292,8 +300,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
 			const doScroll = function() {
-				if (currentTrackIsStream()) {
+				if ($scope.currentTrackIsRadio()) {
 					$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
+				} else if (currentTrackIsStream()) {
+					$rootScope.$emit('scrollToPodcastEpisode', $scope.currentTrack.id);
 				} else {
 					$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 				}
@@ -336,7 +346,15 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.stream_url ?? null;
+	};
+
+	$scope.coverArt = function() {
+		return $scope.currentTrack?.album?.cover ?? $scope.currentTrack?.channel?.image ?? null;
+	};
+
+	$scope.coverArtTitle = function() {
+		return $scope.currentTrack?.album?.name ?? $scope.currentTrack?.channel?.title ?? null;
 	};
 
 	const playScopeNames = {
@@ -423,7 +441,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 		$scope.$watch('currentTrack', function(track) {
 			if (track) {
-				if ('stream_url' in track) {
+				if ($scope.currentTrackIsRadio()) {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.name,
 						artist: track.stream_url,
@@ -437,11 +455,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				else {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.title,
-						artist: track.artistName,
-						album: track.album.name,
+						artist: track?.artistName,
+						album: track?.album?.name ?? track?.channel?.title,
 						artwork: [{
 							sizes: '190x190',
-							src: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+							src: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
 							type: ''
 						}]
 					});
@@ -462,15 +480,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				notification = null;
 			}
 
-			let args = {silent: true};
-			if ('stream_url' in track) {
-				args.body = track.stream_url;
-				args.icon = OC.filePath('music', 'dist', radioIcon);
-			} else {
-				args.body = track.artistName + '\n' + track.album.name;
-				args.icon = track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : '');
-			}
-			notification = new Notification(track.title ?? track.name, args);
+			let args = {
+				silent: true,
+				body: $scope.secondaryTitle() + '\n' + (track?.album?.name ?? ''),
+				icon: $scope.currentTrackIsRadio()
+					? OC.filePath('music', 'dist', radioIcon)
+					: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : '')
+			};
+			notification = new Notification($scope.primaryTitle(), args);
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 

@@ -119,6 +119,11 @@ angular.module('Music').controller('SidebarController', [
 		});
 
 		$scope.formatLastfmTags = function(tags) {
+			// Last.fm returns individual JSON object in place of array in case there is just one item
+			if (!Array.isArray(tags)) {
+				tags = [tags];
+			}
+
 			// Filter out the tags intended to be used on Last.fm as personal tags. These make no sense
 			// for us as we are not aware of the user's Last.fm account and we only show global tags.
 			tags = _.reject(tags, {name: 'seen live'});
@@ -130,6 +135,11 @@ angular.module('Music').controller('SidebarController', [
 		};
 
 		$scope.formatLinkList = function(linkArray) {
+			// Last.fm returns individual JSON object in place of array in case there is just one item
+			if (!Array.isArray(linkArray)) {
+				linkArray = [linkArray];
+			}
+
 			var htmlLinks = _.map(linkArray, function(item) {
 				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
 			});

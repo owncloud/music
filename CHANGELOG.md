@@ -10,6 +10,7 @@
 ### Fixed
 - Performance problem on Subsonic actions `getAlbumList` and `getAlbumList2` with huge libraries
   [#873](https://github.com/owncloud/music/issues/873)
+- Last.fm details view not showing the tag correctly if the track/album/artist has only one tag
 
 ## 1.2.1 - 2021-06-27
 ### Added

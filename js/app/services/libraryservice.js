@@ -275,6 +275,12 @@ angular.module('Music').service('libraryService', [function() {
 		setPodcasts: function(podcastsData) {
 			podcastChannels = podcastsData;
 			sortByTextField(podcastChannels, 'title');
+			// set the parent references for each episode 
+			_.forEach(podcastChannels, function(channel) {
+				_.forEach(channel.episodes, function(episode) {
+					episode.channel = channel;
+				});
+			});
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
@@ -384,6 +390,12 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		getAllRadioStations: function() {
 			return radioStations;
+		},
+		getPodcastEpisode: function(id) {
+			return _(podcastChannels).map('episodes').flatten().find({ id: Number(id) });
+		},
+		getPodcastChannel: function(id) {
+			return _.find(podcastChannels, { id: Number(id) });
 		},
 		getAllPodcastChannels: function() {
 			return podcastChannels;

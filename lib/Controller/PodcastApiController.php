@@ -49,7 +49,10 @@ class PodcastApiController extends Controller {
 		// TODO: This is just a mock-up
 		$rssFeeds = [
 			'https://audioboom.com/channels/5039800.rss',
-			'https://feeds.npr.org/510289/podcast.xml'
+			'https://feeds.npr.org/510289/podcast.xml',
+			'http://rss.acast.com/jaljilla',
+			'https://feeds.soundcloud.com/users/soundcloud:users:206661862/sounds.rss',
+			'https://ostanasuntoja.libsyn.com/rss'
 		];
 
 		$episodeCounter = 0;
@@ -70,7 +73,7 @@ class PodcastApiController extends Controller {
 				$channel['episodes'][] = [
 					'id' => ++$episodeCounter,
 					'title' => (string)$item->title,
-					'url' => (string)$item->enclosure->attributes()['url']
+					'stream_url' => (string)$item->enclosure->attributes()['url']
 				];
 			}
 

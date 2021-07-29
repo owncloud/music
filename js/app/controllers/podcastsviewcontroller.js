@@ -26,53 +26,45 @@ angular.module('Music').controller('PodcastsViewController', [
 		});
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
-		function playTracks(listId, tracks, startIndex /*optional*/) {
-			var playlist = _.map(tracks, function(track) {
-				return { track: track };
+		function playEpisodes(listId, episodes) {
+			var playlist = _.map(episodes, function(episode) {
+				return { track: episode };
 			});
-			playlistService.setPlaylist(listId, playlist, startIndex);
+			playlistService.setPlaylist(listId, playlist);
 			playlistService.publish('play');
 		}
 
-		function playPlaylistFromTrack(listId, playlist, track) {
-			var index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
+		function playPlaylistFromEpisode(listId, playlist, episode) {
+			var index = _.findIndex(playlist, function(i) {return i.track.id == episode.id;});
 			playlistService.setPlaylist(listId, playlist, index);
-
-			var startOffset = $location.search().offset || null;
-			playlistService.publish('play', null, startOffset);
-			$location.search('offset', null); // the offset parameter has been used up
+			playlistService.publish('play');
 		}
 
-		$scope.playTrack = function(trackId) {
-			var track = libraryService.getTrack(trackId);
+		$scope.playEpisode = function(episodeId) {
+			var episode = libraryService.getPodcastEpisode(episodeId);
 			var currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
-			if (currentTrack && track.id === currentTrack.id) {
+			if (currentTrack && episode.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
 			else {
 				var currentListId = playlistService.getCurrentPlaylistId();
 
-				// start playing the album/artist from this track if the clicked track belongs
-				// to album/artist which is the current play scope
-				if (currentListId === 'album-' + track.album.id || currentListId === 'artist-' + track.album.artist.id) {
-					playPlaylistFromTrack(currentListId, playlistService.getCurrentPlaylist(), track);
+				// start playing the channel from this episode if the clicked track belongs
+				// to a channel which is the current play scope
+				if (currentListId === 'podcast-channel-' + episode.channel.id) {
+					playPlaylistFromEpisode(currentListId, playlistService.getCurrentPlaylist(), episode);
 				}
-				// on any other track, start playing the collection from this track
+				// on any other episode, start playing just the episode
 				else {
-					playPlaylistFromTrack('albums', libraryService.getTracksInAlbumOrder(), track);
+					playEpisodes('podcast-episode-' + episode.id, [episode]);
 				}
 			}
 		};
 
-		$scope.playAlbum = function(album) {
-			playTracks('album-' + album.id, album.tracks);
-		};
-
-		$scope.playArtist = function(artist) {
-			var tracks = _.flatten(_.map(artist.albums, 'tracks'));
-			playTracks('artist-' + artist.id, tracks);
+		$scope.playChannel = function(channel) {
+			playEpisodes('podcast-channel-' + channel.id, channel.episodes);
 		};
 
 		/**
@@ -102,45 +94,27 @@ angular.module('Music').controller('PodcastsViewController', [
 			updateHighlight(null);
 		});
 
-		subscribe('playlistChanged', function(e, playlistId) {
+		subscribe('playlistChanged', function(_event, playlistId) {
 			updateHighlight(playlistId);
 		});
 
-		subscribe('scrollToTrack', function(event, trackId, animationTime /* optional */) {
-			scrollToAlbumOfTrack(trackId, animationTime);
-		});
-
-		subscribe('scrollToAlbum', function(event, albumId, animationTime /* optional */) {
-			$scope.$parent.scrollToItem('album-' + albumId, animationTime);
-		});
-
-		subscribe('scrollToArtist', function(event, artistId, animationTime /* optional */) {
-			const elemId = 'artist-' + artistId;
-			if ($('#' + elemId).length) {
-				$scope.$parent.scrollToItem(elemId, animationTime);
-			} else {
-				// No such artist element, this is probably just a performing artist on some track.
-				// Find the first album with a track performed by this artist.
-				const tracks = libraryService.findTracksByArtist(artistId);
-				scrollToAlbumOfTrack(tracks[0].id);
+		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime /* optional */) {
+			var episode = libraryService.getPodcastEpisode(episodeId);
+			if (episode) {
+				$scope.$parent.scrollToItem('podcast-channel-' + episode.channel.id, animationTime);
 			}
-			
 		});
 
-		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
-			var track = libraryService.getTrack(trackId);
-			if (track) {
-				$scope.$parent.scrollToItem('album-' + track.album.id, animationTime);
-			}
-		}
+		subscribe('scrollToPodcastChannel', function(_event, channelId, animationTime /* optional */) {
+			$scope.$parent.scrollToItem('podcast-channel-' + channelId, animationTime);
+		});
 
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
 			$('.highlight').removeClass('highlight');
 
-			// add highlighting if album or artist is being played
-			if (OCA.Music.Utils.startsWith(playlistId, 'album-')
-					|| OCA.Music.Utils.startsWith(playlistId, 'artist-')) {
+			// add highlighting if a channel is being played
+			if (OCA.Music.Utils.startsWith(playlistId, 'podcast-channel-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}
@@ -163,9 +137,9 @@ angular.module('Music').controller('PodcastsViewController', [
 			}
 		}
 
-		// Start making artists visible immediatedly if the artists are already loaded.
-		// Otherwise it happens on the 'artistsLoaded' event handler.
-		if (libraryService.radioStationsLoaded()) {
+		// Make the content visible immediatedly if the podcasts are already loaded.
+		// Otherwise it happens on the 'podcastsLoaded' event handler.
+		if (libraryService.podcastsLoaded()) {
 			onContentReady();
 		}
 

@@ -120,6 +120,9 @@ h2 span:hover .play {
 	float: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.album-area > h2.with-details > span {
 	max-width: calc(100% - 24px);
 }
 

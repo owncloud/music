@@ -72,6 +72,7 @@ function ($rootScope, gettextCatalog) {
 				detailsButton.className = 'icon-details';
 				detailsButton.setAttribute('title', detailsText);
 				fragment.appendChild(detailsButton);
+				data.element.className = 'with-details';
 			}
 
 			return fragment;

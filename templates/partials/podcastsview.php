@@ -4,6 +4,7 @@
 			<list-heading 
 				level="2"
 				heading="channel.title"
+				tooltip="channel.title"
 				on-click="playChannel"
 				model="channel"
 				show-play-icon="true">

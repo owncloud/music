@@ -274,6 +274,7 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		setPodcasts: function(podcastsData) {
 			podcastChannels = podcastsData;
+			sortByTextField(podcastChannels, 'title');
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));

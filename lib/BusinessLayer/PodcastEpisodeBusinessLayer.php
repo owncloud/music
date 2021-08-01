@@ -16,6 +16,7 @@ use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
+use \OCA\Music\Db\BaseMapper;
 use \OCA\Music\Db\PodcastEpisodeMapper;
 use \OCA\Music\Db\PodcastEpisode;
 
@@ -42,12 +43,64 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
-	public function create(string $userId, string $rssUrl, \SimpleXMLElement $xmlNode) : PodcastEpisode {
-		$channel = new PodcastEpisode();
+	public function create(string $userId, int $channelId, \SimpleXMLElement $xmlNode) : PodcastEpisode {
+		$episode = self::parseEpisodeFromXml($xmlNode, $this->logger);
 
-		// TODO
+		$episode->setUserId($userId);
+		$episode->setChannelId($channelId);
 
-		return $this->mapper->insert($channel);
+		return $this->mapper->insert($episode);
 	}
 
+	private static function parseEpisodeFromXml(\SimpleXMLElement $xmlNode, Logger $logger) : PodcastEpisode {
+		$episode = new PodcastEpisode();
+
+		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+
+		if (!$xmlNode->enclosure || !$xmlNode->enclosure->attributes()) {
+			$logger->log("No stream URL for the episode " . $xmlNode->title, 'debug');
+			$streamUrl = null;
+			$mimetype = null;
+			$size = null;
+		} else {
+			$streamUrl = (string)$xmlNode->enclosure->attributes()['url'];
+			$mimetype = (string)$xmlNode->enclosure->attributes()['type'];
+			$size = (int)$xmlNode->enclosure->attributes()['length'];
+		}
+
+		$guid = (string)$xmlNode->guid ?: $streamUrl;
+		if (!$guid) {
+			throw new \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException(
+					'Invalid episode, neither <guid> nor <enclosure url> is included');
+		}
+
+		$episode->setStreamUrl( Util::truncate($streamUrl, 2048) );
+		$episode->setMimetype( Util::truncate($mimetype, 256) );
+		$episode->setSize( $size );
+		$episode->setDuration( self::parseDuration((string)$itunesNodes->duration) );
+		$episode->setGuid( Util::truncate($guid, 2048) );
+		$episode->setGuidHash( \hash('md5', $guid) );
+		$episode->setTitle( Util::truncate((string)$xmlNode->title, 256) );
+		$episode->setEpisode( (int)$itunesNodes->episode ?: null );
+		$episode->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
+		$episode->setPublished( \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)($xmlNode->pubDate))) );
+		$episode->setKeywords( Util::truncate((string)$itunesNodes->keywords, 256) );
+		$episode->setCopyright( Util::truncate((string)$xmlNode->copyright, 256) );
+		$episode->setAuthor( Util::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
+		$episode->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
+
+		return $episode;
+	}
+
+	private static function parseDuration(string $data) :?int {
+		$matches = null;
+
+		if (\ctype_digit($data)) {
+			return (int)$data; // plain seconds
+		} elseif (\is_string($data) && \preg_match('/^(\d\d):(\d\d):(\d\d).*/', $data, $matches) === 1) {
+			return (int)$matches[1] * 3600 + (int)$matches[2] * 60 + (int)$matches[3]; // HH:MM:SS
+		} else {
+			return null; // no value or unsupported format
+		}
+	}
 }

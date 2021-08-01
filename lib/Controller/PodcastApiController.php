@@ -75,10 +75,16 @@ class PodcastApiController extends Controller {
 			];
 
 			foreach ($xmlTree->channel->item as $item) {
+				if (!$item->enclosure || !$item->enclosure->attributes() || !$item->enclosure->attributes()['url']) {
+					$this->logger->log("No stream URL for the episode " . $item->title, 'debug');
+					$streamUrl = null;
+				} else {
+					$streamUrl = (string)$item->enclosure->attributes()['url'];
+				}
 				$channel['episodes'][] = [
 					'id' => ++$episodeCounter,
 					'title' => (string)$item->title,
-					'stream_url' => (string)$item->enclosure->attributes()['url']
+					'stream_url' => $streamUrl
 				];
 			}
 

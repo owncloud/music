@@ -16,6 +16,7 @@ use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
+use \OCA\Music\Db\BaseMapper;
 use \OCA\Music\Db\PodcastChannelMapper;
 use \OCA\Music\Db\PodcastChannel;
 
@@ -42,12 +43,38 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
-	public function create(string $userId, string $rssUrl, \SimpleXMLElement $xmlNode) : PodcastChannel {
-		$channel = new PodcastChannel();
+	public function create(string $userId, string $rssUrl, string $rssContent, \SimpleXMLElement $xmlNode) : PodcastChannel {
+		$channel = self::parseChannelFromXml($xmlNode);
 
-		// TODO
+		$channel->setUserId( $userId );
+		$channel->setRssUrl( Util::truncate($rssUrl, 2048) );
+		$channel->setRssHash( \hash('md5', $rssUrl) );
+		$channel->setContentHash( \hash('md5', $rssContent) );
+		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
 
 		return $this->mapper->insert($channel);
+	}
+
+	private static function parseChannelFromXml(\SimpleXMLElement $xmlNode) : PodcastChannel {
+		$channel = new PodcastChannel();
+
+		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
+
+		// TODO: handling for invalid data
+		$channel->setSourceUpdated( \date(BaseMapper::SQL_DATE_FORMAT,
+				\strtotime((string)($xmlNode->lastBuildDate ?: $xmlNode->pubDate))) );
+		$channel->setTitle( Util::truncate((string)$xmlNode->title, 256) );
+		$channel->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
+		$channel->setLanguage( Util::truncate((string)$xmlNode->language, 32) );
+		$channel->setCopyright( Util::truncate((string)$xmlNode->copyright, 256) );
+		$channel->setAuthor( Util::truncate((string)($xmlNode->author ?: $itunesNodes->author), 256) );
+		$channel->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
+		$channel->setImageUrl( (string)$xmlNode->image->url );
+		$channel->setCategory( \implode(', ', \array_map(function ($category) {
+			return $category->attributes()['text'];
+		}, \iterator_to_array($itunesNodes->category, false))) );
+
+		return $channel;
 	}
 
 }

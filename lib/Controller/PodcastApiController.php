@@ -20,21 +20,26 @@ use \OCP\IRequest;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
-	private $businessLayer;
-	private $playlistFileService;
+	private $channelBusinessLayer;
+	private $episodeBusinessLayer;
 	private $userId;
-	private $userFolder;
 	private $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
+								PodcastChannelBusinessLayer $channelBusinessLayer,
+								PodcastEpisodeBusinessLayer $episodeBusinessLayer,
 								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
+		$this->channelBusinessLayer = $channelBusinessLayer;
+		$this->episodeBusinessLayer = $episodeBusinessLayer;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->logger = $logger;
 	}

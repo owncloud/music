@@ -25,6 +25,8 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -48,6 +50,8 @@ use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\PodcastChannelMapper;
+use \OCA\Music\Db\PodcastEpisodeMapper;
 use \OCA\Music\Db\RadioStationMapper;
 use \OCA\Music\Db\TrackMapper;
 
@@ -153,6 +157,8 @@ class Music extends App {
 			return new PodcastApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('UserId'),
 				$c->query('Logger')
 			);
@@ -268,6 +274,20 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('PodcastChannelBusinessLayer', function (IAppContainer $c) {
+			return new PodcastChannelBusinessLayer(
+				$c->query('PodcastChannelMapper'),
+				$c->query('Logger')
+			);
+		});
+			
+		$container->registerService('PodcastEpisodeBusinessLayer', function (IAppContainer $c) {
+			return new PodcastEpisodeBusinessLayer(
+				$c->query('PodcastEpisodeMapper'),
+				$c->query('Logger')
+			);
+		});
+
 		$container->registerService('BookmarkBusinessLayer', function (IAppContainer $c) {
 			return new BookmarkBusinessLayer(
 				$c->query('BookmarkMapper'),
@@ -336,6 +356,18 @@ class Music extends App {
 
 		$container->registerService('PlaylistMapper', function (IAppContainer $c) {
 			return new PlaylistMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('PodcastChannelMapper', function (IAppContainer $c) {
+			return new PodcastChannelMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('PodcastEpisodeMapper', function (IAppContainer $c) {
+			return new PodcastEpisodeMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});

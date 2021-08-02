@@ -68,11 +68,17 @@ class PodcastAdd extends BaseCommand {
 	}
 
 	private function addPodcast(string $userId, string $rss, OutputInterface $output) {
-		$output->writeln("Adding podcast feed <info>$rss</info> for user <info>$userId</info>");
-
 		$content = \file_get_contents($rss);
-		$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($content === false) {
+			throw new \InvalidArgumentException("Invalid URL <error>$rss</error>!");
+		}
 
+		$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($xmlTree === false || !$xmlTree->channel) {
+			throw new \InvalidArgumentException("The document at URL <error>$rss</error> is not a valid podcast RSS feed!");
+		}
+
+		$output->writeln("Adding podcast feed <info>$rss</info> for user <info>$userId</info>");
 		try {
 			$channel = $this->channelBusinessLayer->create($userId, $rss, $content, $xmlTree->channel);
 

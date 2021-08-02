@@ -282,6 +282,13 @@ angular.module('Music').service('libraryService', [function() {
 				});
 			});
 		},
+		addPodcastChannel: function(channel) {
+			_.forEach(channel.episodes, function(episode) {
+				episode.channel = channel;
+			});
+			podcastChannels.push(channel);
+			sortByTextField(podcastChannels, 'title');
+		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
 		},

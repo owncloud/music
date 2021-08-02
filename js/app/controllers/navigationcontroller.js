@@ -20,6 +20,7 @@ angular.module('Music').controller('NavigationController', [
 		$scope.newPlaylistName = '';
 		$scope.popupShownForPlaylist = null;
 		$scope.radioBusy = false;
+		$scope.podcastsBusy = false;
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
@@ -179,6 +180,48 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.addRadio = function() {
 			$rootScope.$emit('showRadioStationDetails', null);
+		};
+
+		$scope.addPodcast = function() {
+			const subscribePodcastChannel = function(url) {
+				$scope.podcastsBusy = true;
+				Restangular.all('podcasts').post({url: url}).then(
+					function (result) {
+						libraryService.addPodcastChannel(result);
+						OC.Notification.showTemporary(
+							gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
+						$scope.podcastsBusy = false;
+						if ($rootScope.currentView === '#/podcasts') {
+							$timeout(() => $rootScope.$emit('viewContentChanged'));
+						}
+					},
+					function (error) {
+						var errMsg;
+						if (error.status === 400) {
+							errMsg = gettextCatalog.getString('Invalid RSS feed URL');
+						} else if (error.status === 409) {
+							errMsg = gettextCatalog.getString('This channel is already subscribed');
+						} else {
+							errMsg = gettextCatalog.getString('Failed to add the podcast channel');
+						}
+						OC.Notification.showTemporary(errMsg);
+						$scope.podcastsBusy = false;
+					}
+				);
+			};
+
+			OC.dialogs.prompt(
+					gettextCatalog.getString('Add a new podcast channel from an RSS feed'),
+					gettextCatalog.getString('Add channel'),
+					function (confirmed, url) {
+						if (confirmed) {
+							subscribePodcastChannel(url);
+						}
+					},
+					true, // modal
+					gettextCatalog.getString('URL'),
+					false // password
+			);
 		};
 
 		// Play/pause playlist

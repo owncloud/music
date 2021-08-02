@@ -48,6 +48,7 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 	$rootScope.$on('artistsLoaded', throttledOnScroll);
 	$rootScope.$on('albumsLayoutChanged', throttledOnScroll);
+	$rootScope.$on('viewContentChanged', throttledOnScroll);
 	$rootScope.$watch('loading', throttledOnScroll);
 
 	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {

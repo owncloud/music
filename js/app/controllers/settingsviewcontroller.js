@@ -198,6 +198,36 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
+		$scope.resetPodcasts = function() {
+			OC.dialogs.confirm(
+				gettextCatalog.getString('Are you sure to permanently erase all the configured podcast channels?'),
+				gettextCatalog.getString('Reset podcast channels'),
+				function(confirmed) {
+					if (confirmed) {
+						$scope.podcastsResetOngoing = true;
+
+						// $scope.$parent may not be available any more in the callback in case
+						// the user has navigated to another view in the meantime
+						var parent = $scope.$parent;
+						Restangular.all('podcasts/reset').post().then(
+								function(data) {
+									if (data.success) {
+										parent.updatePodcasts();
+									}
+									$scope.podcastsResetOngoing = false;
+								},
+								function(error) { // error handling
+									$scope.podcastsResetOngoing = false;
+									OC.Notification.showTemporary(
+											gettextCatalog.getString('Failed to reset the podcast channels: ') + error.status);
+								}
+							);
+					}
+				},
+				true
+			);
+		};
+
 		$scope.songNotificationsEnabled = (Cookies.get('oc_music_song_notifications') !== 'false');
 
 		$scope.$watch('songNotificationsEnabled', function(enabled) {

@@ -68,6 +68,15 @@
 			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
 		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
 	</div>
+	<div>
+		<div class="label-container">
+			<label for="reset-podcasts" translate>Reset podcast channels</label>
+		</div>
+		<div class="icon-loading-small reset-in-progress" ng-show="podcastsResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': podcastsResetOngoing }"
+			class="icon-delete reset-button" id="reset-podcasts" ng-click="resetPodcasts()"/>
+		<p><em translate>This action erases all the channels shown in the "Podcasts" view.</em></p>
+	</div>
 
 	<h2 translate>User interface</h2>
 	<div class="label-container">

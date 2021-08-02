@@ -52,17 +52,17 @@ class PodcastApiController extends Controller {
 	 */
 	public function getAll() {
 		$episodes = $this->episodeBusinessLayer->findAll($this->userId);
-		$episodesLut = [];
+		$episodesPerChannel = [];
 		foreach ($episodes as $episode) {
-			$episodesLut[$episode->getChannelId()][] = $episode->toApi();
+			$episodesPerChannel[$episode->getChannelId()][] = $episode;
 		}
 
-		$channels = Util::arrayMapMethod($this->channelBusinessLayer->findAll($this->userId), 'toApi');
+		$channels = $this->channelBusinessLayer->findAll($this->userId);
 		foreach ($channels as &$channel) {
-			$channel['episodes'] = $episodesLut[$channel['id']] ?? [];
+			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
 		}
 
-		return $channels;
+		return Util::arrayMapMethod($channels, 'toApi');
 	}
 
 	/**
@@ -74,9 +74,35 @@ class PodcastApiController extends Controller {
 	public function subscribe(?string $url) {
 		if ($url === null) {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'url' not given");
-		} else {
-			// TODO
 		}
+
+		$content = \file_get_contents($url);
+		if ($content === false) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Invalid URL $url");
+		}
+
+		$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
+		if ($xmlTree === false || !$xmlTree->channel) {
+			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "The document at URL $url is not a valid podcast RSS feed");
+		}
+
+		try {
+			$channel = $this->channelBusinessLayer->create($this->userId, $url, $content, $xmlTree->channel);
+		} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
+			return new ErrorResponse(Http::STATUS_CONFLICT, 'User already has this podcast channel subscribed');
+		}
+
+		$episodes = [];
+		foreach ($xmlTree->channel->item as $episodeNode) {
+			try {
+				$episodes[] = $this->episodeBusinessLayer->create($this->userId, $channel->getId(), $episodeNode);
+			} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
+				$this->logger->log("Skipping a duplicate podcast episode with guid '{$episodeNode->guid}'", 'debug');
+			}
+		}
+
+		$channel->setEpisodes($episodes);
+		return $channel->toApi();
 	}
 
 	/**
@@ -87,21 +113,25 @@ class PodcastApiController extends Controller {
 	 */
 	public function unsubscribe(int $id) {
 		try {
-			// TODO
+			$this->channelBusinessLayer->delete($id, $this->userId); // throws if not found
+			$this->episodeBusinessLayer->deleteByChannel($id, $this->userId); // does not throw
+			return new JSONResponse(['success' => true]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
 
 	/**
-	 * get a single radio station
+	 * get a single podcast channel
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
 	public function get(int $id) {
 		try {
-			// TODO
+			$channel = $this->channelBusinessLayer->find($id, $this->userId);
+			$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $this->userId));
+			return $channel->toApi();
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
@@ -114,7 +144,8 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function resetAll() {
-		// TODO
+		$this->episodeBusinessLayer->deleteAll($this->userId);
+		$this->channelBusinessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
 }

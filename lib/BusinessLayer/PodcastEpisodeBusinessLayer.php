@@ -43,6 +43,17 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
+	/**
+	 * @return PodcastEpisode[]
+	 */
+	public function findAllByChannel(int $channelId, string $userId) : array {
+		return $this->mapper->findAllByChannel($channelId, $userId);
+	}
+
+	public function deleteByChannel(int $channelId, string $userId) : void {
+		$this->mapper->deleteByChannel($channelId, $userId);
+	}
+
 	public function create(string $userId, int $channelId, \SimpleXMLElement $xmlNode) : PodcastEpisode {
 		$episode = self::parseEpisodeFromXml($xmlNode, $this->logger);
 

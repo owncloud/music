@@ -148,8 +148,17 @@ abstract class BaseMapper extends Mapper {
 		if ($count === 0) {
 			return;
 		}
-		$sql = "DELETE FROM `{$this->getTableName()}` WHERE `id` IN ". $this->questionMarks($count);
-		$this->execute($sql, $ids);
+		$this->deleteByCond('`id` IN ' . $this->questionMarks($count), $ids);
+	}
+
+	/**
+	 * Delete all entities matching the given SQL condition
+	 * @param string $condition SQL 'WHERE' condition (without the keyword 'WHERE')
+	 * @param array $params SQL parameters for the condition
+	 */
+	protected function deleteByCond(string $condition, array $params) : void {
+		$sql = "DELETE FROM `{$this->getTableName()}` WHERE ". $condition;
+		$this->execute($sql, $params);
 	}
 
 	/**

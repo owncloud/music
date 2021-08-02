@@ -13,6 +13,7 @@
 namespace OCA\Music\Db;
 
 use \OCP\AppFramework\Db\Entity;
+use \OCA\Music\Utility\Util;
 
 /**
  * @method string getUserId()
@@ -47,6 +48,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setCreated(string $timestamp)
  * @method string getUpdated()
  * @method void setUpdated(string $timestamp)
+ * @method PodcastEpisode[] getEpisodes()
+ * @method void setEpisodes(PodcastEpisode[] $episodes)
  */
 class PodcastChannel extends Entity {
 	public $userId;
@@ -66,11 +69,20 @@ class PodcastChannel extends Entity {
 	public $created;
 	public $updated;
 
+	// not part of the default content, may be injected separately
+	public $episodes;
+
 	public function toApi() : array {
-		return [
+		$result = [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
 			'image' => $this->getImageUrl()
 		];
+
+		if ($this->episodes !== null) {
+			$result['episodes'] = Util::arrayMapMethod($this->episodes, 'toApi');
+		}
+
+		return $result;
 	}
 }

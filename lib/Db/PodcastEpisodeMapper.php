@@ -21,6 +21,18 @@ class PodcastEpisodeMapper extends BaseMapper {
 	}
 
 	/**
+	 * @return PodcastEpisode[]
+	 */
+	public function findAllByChannel(int $channelId, string $userId) : array {
+		$sql = $this->selectUserEntities("`channel_id` = ?");
+		return $this->findEntities($sql, [$userId, $channelId]);
+	}
+
+	public function deleteByChannel(int $channelId, string $userId) : void {
+		$this->deleteByCond('`channel_id` = ? AND `user_id` = ?', [$channelId, $userId]);
+	}
+
+	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param PodcastEpisode $episode
 	 * @return PodcastEpisode

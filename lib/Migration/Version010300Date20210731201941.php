@@ -175,7 +175,7 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'notnull' => false,
 			]);
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['guid_hash', 'user_id'], 'music_podcast_episodes_index');
+			$table->addUniqueIndex(['guid_hash', 'channel_id', 'user_id'], 'music_podcast_episodes_index');
 		}
 
 		return $schema;

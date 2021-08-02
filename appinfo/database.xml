@@ -697,6 +697,9 @@
 					<name>guid_hash</name>
 				</field>
 				<field>
+					<name>channel_id</name>
+				</field>
+				<field>
 					<name>user_id</name>
 				</field>
 			</index>

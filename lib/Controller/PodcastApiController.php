@@ -51,47 +51,18 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getAll() {
-		// TODO: This is just a mock-up
-		$rssFeeds = [
-			'https://audioboom.com/channels/5039800.rss',
-			'https://feeds.npr.org/510289/podcast.xml',
-			'http://rss.acast.com/jaljilla',
-			'https://feeds.soundcloud.com/users/soundcloud:users:206661862/sounds.rss',
-			'https://ostanasuntoja.libsyn.com/rss'
-		];
-
-		$episodeCounter = 0;
-
-		foreach ($rssFeeds as $index => $feed) {
-			$xmlTree = \simplexml_load_string(
-				\file_get_contents($feed),
-				\SimpleXMLElement::class,
-				LIBXML_NOCDATA);
-
-			$channel = [
-				'id' => $index + 1,
-				'title' => (string)$xmlTree->channel->title,
-				'image' => (string)$xmlTree->channel->image->url
-			];
-
-			foreach ($xmlTree->channel->item as $item) {
-				if (!$item->enclosure || !$item->enclosure->attributes() || !$item->enclosure->attributes()['url']) {
-					$this->logger->log("No stream URL for the episode " . $item->title, 'debug');
-					$streamUrl = null;
-				} else {
-					$streamUrl = (string)$item->enclosure->attributes()['url'];
-				}
-				$channel['episodes'][] = [
-					'id' => ++$episodeCounter,
-					'title' => (string)$item->title,
-					'stream_url' => $streamUrl
-				];
-			}
-
-			$result[] = $channel;
+		$episodes = $this->episodeBusinessLayer->findAll($this->userId);
+		$episodesLut = [];
+		foreach ($episodes as $episode) {
+			$episodesLut[$episode->getChannelId()][] = $episode->toApi();
 		}
 
-		return $result;
+		$channels = Util::arrayMapMethod($this->channelBusinessLayer->findAll($this->userId), 'toApi');
+		foreach ($channels as &$channel) {
+			$channel['episodes'] = $episodesLut[$channel['id']] ?? [];
+		}
+
+		return $channels;
 	}
 
 	/**

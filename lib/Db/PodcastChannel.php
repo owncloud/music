@@ -69,7 +69,8 @@ class PodcastChannel extends Entity {
 	public function toApi() : array {
 		return [
 			'id' => $this->getId(),
-			'title' => $this->getTitle()
+			'title' => $this->getTitle(),
+			'image' => $this->getImageUrl()
 		];
 	}
 }

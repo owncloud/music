@@ -88,7 +88,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.viewingLibrary = function() {
-		return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
+		return $rootScope.currentView != '#/settings'
+			&& $rootScope.currentView != '#/radio'
+			&& $rootScope.currentView != '#/podcasts';
 	};
 
 	$scope.update = function() {
@@ -126,7 +128,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan):not(#noStations)');
+			var collapsiblePopups = $('#app-content .emptycontent:not(.no-collapse)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {

@@ -237,9 +237,7 @@ div:hover > .play-pause,
 	margin: 0;
 }
 
-#toScan:hover *,
-#toRescan:hover *,
-#noStations:hover * {
+#app-content .emptycontent.clickable:hover * {
 	color: #000;
 	opacity: 1;
 }

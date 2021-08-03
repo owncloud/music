@@ -29,7 +29,7 @@
 	background-color: rgba(24, 24, 24, 0.97);
 }
 
-.dark-theme #toScan:hover * {
+.dark-theme #app-content .emptycontent.clickable:hover * {
 	color: #eeeeee;
 }
 

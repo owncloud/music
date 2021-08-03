@@ -223,6 +223,7 @@ angular.module('Music').controller('NavigationController', [
 					false // password
 			);
 		};
+		$rootScope.$on('showAddPodcast', $scope.addPodcast);
 
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {

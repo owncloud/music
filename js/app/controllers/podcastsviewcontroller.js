@@ -67,6 +67,10 @@ angular.module('Music').controller('PodcastsViewController', [
 			playEpisodes('podcast-channel-' + channel.id, channel.episodes);
 		};
 
+		$scope.showAddPodcast = function() {
+			$rootScope.$emit('showAddPodcast'); // actual implementation in NavigationController
+		};
+
 		/**
 		 * Two functions for the alphabet-navigation directive integration
 		 */

@@ -32,6 +32,18 @@ class PodcastEpisodeMapper extends BaseMapper {
 		$this->deleteByCond('`channel_id` = ? AND `user_id` = ?', [$channelId, $userId]);
 	}
 
+	public function deleteByChannelExcluding(int $channelId, array $excludedIds, string $userId) : void {
+		$excludeCount = \count($excludedIds);
+		if ($excludeCount === 0) {
+			$this->deleteByChannel($channelId, $userId);
+		} else {
+			$this->deleteByCond(
+				'`channel_id` = ? AND `user_id` = ? AND `id` NOT IN ' . $this->questionMarks($excludeCount),
+				\array_merge([$channelId, $userId], $excludedIds)
+			);
+		}
+	}
+
 	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param PodcastEpisode $episode
@@ -39,6 +51,6 @@ class PodcastEpisodeMapper extends BaseMapper {
 	 */
 	protected function findUniqueEntity(Entity $episode) : Entity {
 		$sql = $this->selectUserEntities("`guid_hash` = ?");
-		return $this->findEntity($sql, [$entity->getUserId(), $entity->getGuidHash()]);
+		return $this->findEntity($sql, [$episode->getUserId(), $episode->getGuidHash()]);
 	}
 }

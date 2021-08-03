@@ -86,6 +86,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',				'verb' => 'POST'],
 	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',			'verb' => 'GET'],
 	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',			'verb' => 'DELETE'],
+	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',	'verb' => 'POST'],
 	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',			'verb' => 'POST'],
 
 	// settings API

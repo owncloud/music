@@ -25,7 +25,7 @@ use \OCA\Music\Utility\Util;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
- * @method PodcastEpisode find(int $stationId, string $userId)
+ * @method PodcastEpisode find(int $episodeId, string $userId)
  * @method PodcastEpisode[] findAll(
  *			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
  *			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
@@ -54,13 +54,17 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$this->mapper->deleteByChannel($channelId, $userId);
 	}
 
-	public function create(string $userId, int $channelId, \SimpleXMLElement $xmlNode) : PodcastEpisode {
+	public function deleteByChannelExcluding(int $channelId, array $excludedIds, string $userId) : void {
+		$this->mapper->deleteByChannelExcluding($channelId, $excludedIds, $userId);
+	}
+
+	public function addOrUpdate(string $userId, int $channelId, \SimpleXMLElement $xmlNode) : PodcastEpisode {
 		$episode = self::parseEpisodeFromXml($xmlNode, $this->logger);
 
 		$episode->setUserId($userId);
 		$episode->setChannelId($channelId);
 
-		return $this->mapper->insert($episode);
+		return $this->mapper->insertOrUpdate($episode);
 	}
 
 	private static function parseEpisodeFromXml(\SimpleXMLElement $xmlNode, Logger $logger) : PodcastEpisode {

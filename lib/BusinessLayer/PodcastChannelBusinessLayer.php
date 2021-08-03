@@ -25,7 +25,7 @@ use \OCA\Music\Utility\Util;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
- * @method PodcastChannel find(int $stationId, string $userId)
+ * @method PodcastChannel find(int $channelId, string $userId)
  * @method PodcastChannel[] findAll(
  *			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
  *			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
@@ -44,7 +44,8 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	}
 
 	public function create(string $userId, string $rssUrl, string $rssContent, \SimpleXMLElement $xmlNode) : PodcastChannel {
-		$channel = self::parseChannelFromXml($xmlNode);
+		$channel = new PodcastChannel();
+		self::parseChannelDataFromXml($xmlNode, $channel);
 
 		$channel->setUserId( $userId );
 		$channel->setRssUrl( Util::truncate($rssUrl, 2048) );
@@ -55,9 +56,28 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		return $this->mapper->insert($channel);
 	}
 
-	private static function parseChannelFromXml(\SimpleXMLElement $xmlNode) : PodcastChannel {
-		$channel = new PodcastChannel();
+	/**
+	 * @param PodcastChannel $channel Input/output parameter for the channel
+	 * @param string $rssContent Raw content of the RSS feed
+	 * @param \SimpleXMLElement $xmlNode <channel> node parsed from the RSS feed
+	 * @return boolean true if the new content differed from the previously cached content
+	 */
+	public function updateChannel(PodcastChannel &$channel, string $rssContent, \SimpleXMLElement $xmlNode) {
+		$contentChanged = false;
+		$contentHash = \hash('md5', $rssContent);
 
+		if ($channel->getContentHash() !== $contentHash) {
+			$contentChanged = true;
+			self::parseChannelDataFromXml($xmlNode, $channel);
+			$channel->setContentHash($contentHash);
+		}
+		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
+
+		$this->update($channel);
+		return $contentChanged;
+	}
+
+	private static function parseChannelDataFromXml(\SimpleXMLElement $xmlNode, PodcastChannel &$channel) : void {
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
 
 		// TODO: handling for invalid data
@@ -73,8 +93,6 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		$channel->setCategory( \implode(', ', \array_map(function ($category) {
 			return $category->attributes()['text'];
 		}, \iterator_to_array($itunesNodes->category, false))) );
-
-		return $channel;
 	}
 
 }

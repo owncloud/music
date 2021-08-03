@@ -76,7 +76,8 @@ class PodcastChannel extends Entity {
 		$result = [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
-			'image' => $this->getImageUrl()
+			'image' => $this->getImageUrl(),
+			'hash' => $this->getContentHash()
 		];
 
 		if ($this->episodes !== null) {

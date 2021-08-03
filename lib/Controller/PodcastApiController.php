@@ -94,11 +94,7 @@ class PodcastApiController extends Controller {
 
 		$episodes = [];
 		foreach ($xmlTree->channel->item as $episodeNode) {
-			try {
-				$episodes[] = $this->episodeBusinessLayer->create($this->userId, $channel->getId(), $episodeNode);
-			} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
-				$this->logger->log("Skipping a duplicate podcast episode with guid '{$episodeNode->guid}'", 'debug');
-			}
+			$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $channel->getId(), $episodeNode);
 		}
 
 		$channel->setEpisodes($episodes);
@@ -135,6 +131,62 @@ class PodcastApiController extends Controller {
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
+	}
+
+	/**
+	 * check a single channel for updates
+	 * @param int $id Channel ID
+	 * @param string|null $prevHash Previous content hash known by the client. If given, the result will tell
+	 *								if the channel content has updated from this state. If omitted, the result
+	 *								will thell if the channel changed from its previous server-known state.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function updateChannel(int $id, ?string $prevHash) {
+		$updated = false;
+
+		try {
+			$channel = $this->channelBusinessLayer->find($id, $this->userId);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+
+		$xmlTree = false;
+		$content = \file_get_contents($channel->getRssUrl());
+		if ($content === null) {
+			$this->logger->log("Could not load RSS feed for channel {$channel->id}", 'warn');
+		} else {
+			$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
+		}
+
+		if ($xmlTree === false || !$xmlTree->channel) {
+			$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
+			return new JSONResponse(['success' => false]);
+		} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel)) {
+			// channel content has actually changed, update the episodes too
+			$episodes = [];
+			foreach ($xmlTree->channel->item as $episodeNode) {
+				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $id, $episodeNode);
+			}
+			$channel->setEpisodes($episodes);
+			$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $this->userId);
+			$updated = true;
+		} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
+			// the channel content is not new for the server but it is still new for the client
+			$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $this->userId));
+			$updated = true;
+		}
+
+		$response = [
+			'success' => true,
+			'updated' => $updated,
+		];
+		if ($updated) {
+			$response['channel'] = $channel->toApi();
+		}
+
+		return new JSONResponse($response);
 	}
 
 	/**

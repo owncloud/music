@@ -12,8 +12,8 @@
 
 
 angular.module('Music').controller('NavigationController', [
-	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'playlistFileService', 'libraryService', 'gettextCatalog',
-	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, playlistFileService, libraryService, gettextCatalog) {
+	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
+	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
@@ -182,48 +182,17 @@ angular.module('Music').controller('NavigationController', [
 			$rootScope.$emit('showRadioStationDetails', null);
 		};
 
-		$scope.addPodcast = function() {
-			const subscribePodcastChannel = function(url) {
-				$scope.podcastsBusy = true;
-				Restangular.all('podcasts').post({url: url}).then(
-					function (result) {
-						libraryService.addPodcastChannel(result);
-						OC.Notification.showTemporary(
-							gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
-						$scope.podcastsBusy = false;
-						if ($rootScope.currentView === '#/podcasts') {
-							$timeout(() => $rootScope.$emit('viewContentChanged'));
-						}
-					},
-					function (error) {
-						var errMsg;
-						if (error.status === 400) {
-							errMsg = gettextCatalog.getString('Invalid RSS feed URL');
-						} else if (error.status === 409) {
-							errMsg = gettextCatalog.getString('This channel is already subscribed');
-						} else {
-							errMsg = gettextCatalog.getString('Failed to add the podcast channel');
-						}
-						OC.Notification.showTemporary(errMsg);
-						$scope.podcastsBusy = false;
-					}
-				);
-			};
+		$scope.addPodcast = podcastService.showAddPodcastDialog;
 
-			OC.dialogs.prompt(
-					gettextCatalog.getString('Add a new podcast channel from an RSS feed'),
-					gettextCatalog.getString('Add channel'),
-					function (confirmed, url) {
-						if (confirmed) {
-							subscribePodcastChannel(url);
-						}
-					},
-					true, // modal
-					gettextCatalog.getString('URL'),
-					false // password
-			);
+		$scope.reloadPodcasts = podcastService.reloadAllPodcasts;
+
+		$scope.anyPodcastChannels = function() {
+			return libraryService.getPodcastChannelsCount() > 0;
 		};
-		$rootScope.$on('showAddPodcast', $scope.addPodcast);
+
+		$rootScope.$on('podcastsBusyEvent', function(_event, busy) {
+			$scope.podcastsBusy = busy;
+		});
 
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {

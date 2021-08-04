@@ -9,8 +9,8 @@
  */
 
 angular.module('Music').controller('PodcastsViewController', [
-	'$scope', '$rootScope', 'playlistService', 'libraryService', '$timeout', 'gettextCatalog',
-	function ($scope, $rootScope, playlistService, libraryService, $timeout, gettextCatalog) {
+	'$scope', '$rootScope', 'playlistService', 'podcastService', 'libraryService', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, playlistService, podcastService, libraryService, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -67,9 +67,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			playEpisodes('podcast-channel-' + channel.id, channel.episodes);
 		};
 
-		$scope.showAddPodcast = function() {
-			$rootScope.$emit('showAddPodcast'); // actual implementation in NavigationController
-		};
+		$scope.showAddPodcast = podcastService.showAddPodcastDialog;
 
 		/**
 		 * Two functions for the alphabet-navigation directive integration

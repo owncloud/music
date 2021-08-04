@@ -176,6 +176,14 @@
 	opacity: 1.0;
 }
 
+#app-navigation .item-with-actions .actions .popovermenu ul li.disabled a {
+	opacity: .15 !important;
+}
+
+#app-navigation .item-with-actions .actions .popovermenu ul li.disabled * {
+	cursor: default !important;
+}
+
 #app-navigation .popovermenu.submenu a {
 	padding-left: 0;
 }
@@ -263,6 +271,10 @@
 
 .icon-podcast {
 	background-image: url(../img/podcasts.svg);
+}
+
+.icon-reload {
+	background-image: url(../img/reload.svg);
 }
 
 .icon-radio-button {

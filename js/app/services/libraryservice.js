@@ -107,6 +107,12 @@ angular.module('Music').service('libraryService', [function() {
 		return wrapped;
 	}
 
+	function initPodcastChannel(channel) {
+		_.forEach(channel.episodes, function(episode) {
+			episode.channel = channel;
+		});
+	}
+
 	function createTrackContainers() {
 		// album order "playlist"
 		var tracks = _.flatten(_.map(albums, 'tracks'));
@@ -276,18 +282,17 @@ angular.module('Music').service('libraryService', [function() {
 			podcastChannels = podcastsData;
 			sortByTextField(podcastChannels, 'title');
 			// set the parent references for each episode 
-			_.forEach(podcastChannels, function(channel) {
-				_.forEach(channel.episodes, function(episode) {
-					episode.channel = channel;
-				});
-			});
+			_.forEach(podcastChannels, initPodcastChannel);
 		},
 		addPodcastChannel: function(channel) {
-			_.forEach(channel.episodes, function(episode) {
-				episode.channel = channel;
-			});
+			initPodcastChannel(channel);
 			podcastChannels.push(channel);
 			sortByTextField(podcastChannels, 'title');
+		},
+		replacePodcastChannel: function(channel) {
+			initPodcastChannel(channel);
+			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			podcastChannels[idx] = channel;
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
@@ -354,7 +359,7 @@ angular.module('Music').service('libraryService', [function() {
 			return _.find(albums, { id: Number(id) });
 		},
 		getAlbumCount: function() {
-			return albums ? albums.length : 0;
+			return albums?.length ?? 0;
 		},
 		getTrack: function(id) {
 			return tracksIndex[id];
@@ -372,7 +377,7 @@ angular.module('Music').service('libraryService', [function() {
 			return tracksInGenreOrder;
 		},
 		getTrackCount: function() {
-			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
+			return tracksInAlphaOrder?.length ?? 0;
 		},
 		getPlaylist: function(id) {
 			return _.find(playlists, { id: Number(id) });
@@ -406,6 +411,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		getAllPodcastChannels: function() {
 			return podcastChannels;
+		},
+		getPodcastChannelsCount: function() {
+			return podcastChannels?.length ?? 0;
 		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});

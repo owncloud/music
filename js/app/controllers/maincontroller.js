@@ -81,6 +81,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.podcastsCountText = function() {
+		if (libraryService.podcastsLoaded()) {
+			var channelsCount = libraryService.getPodcastChannelsCount();
+			return gettextCatalog.getPlural(channelsCount, '1 channel', '{{ count }} channels', { count: channelsCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading

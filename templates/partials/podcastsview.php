@@ -7,9 +7,13 @@
 				tooltip="channel.title"
 				on-click="playChannel"
 				model="channel"
+				actions="[
+					{ icon: 'reload', text: 'Reload', callback: reloadChannel },
+					{ icon: 'delete', text: 'Remove', callback: removeChannel }
+				]"
 				show-play-icon="true">
 			</list-heading>
-			<div ng-click="playAlbum(album)" class="albumart" cover="{{ channel.image }}" albumart="{{ channel.title }}"></div>
+			<div class="albumart" cover="{{ channel.image }}" albumart="{{ channel.title }}"></div>
 			<img class="play overlay svg" alt="{{ 'Play' | translate }}"
 				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-overlay') ?>" ng-click="playChannel(channel)" />
 			<track-list

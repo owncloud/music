@@ -23,6 +23,8 @@ function ($rootScope, gettextCatalog) {
 	var playText = gettextCatalog.getString('Play');
 	var playIconSrc = OC.filePath('music', 'dist', playIconName);
 	var detailsText = gettextCatalog.getString('Details');
+	var actionsMenu = null;
+	var actionsMenuOwner = null;
 
 	/**
 	 * Set up the contents for a given heading element
@@ -45,6 +47,7 @@ function ($rootScope, gettextCatalog) {
 			if (data.tooltip) {
 				outerSpan.setAttribute('title', data.tooltip);
 			}
+			outerSpan.className = 'heading';
 
 			var innerSpan = document.createElement('span');
 			innerSpan.innerHTML = data.heading;
@@ -72,10 +75,65 @@ function ($rootScope, gettextCatalog) {
 				detailsButton.className = 'icon-details';
 				detailsButton.setAttribute('title', detailsText);
 				fragment.appendChild(detailsButton);
-				data.element.className = 'with-details';
+				data.element.className = 'with-actions';
+			}
+			else if (data.actions) {
+				var moreButton = document.createElement('button');
+				moreButton.className = 'icon-more';
+				fragment.appendChild(moreButton);
+				data.element.className = 'with-actions';
+			}
+			else {
+				data.element.className = '';
 			}
 
 			return fragment;
+		}
+
+		function createActionsMenu(actions) {
+			var container = document.createElement('div');
+			container.className = 'popovermenu bubble heading-actions';
+			var list = document.createElement('ul');
+			container.appendChild(list);
+
+			for (var action of actions) {
+				var listitem = document.createElement('li');
+				var link = document.createElement('a');
+				link.className = 'icon-' + action.icon;
+				var span = document.createElement('span');
+				span.innerText = gettextCatalog.getString(action.text);
+				// Note: l10n-extract cannot find localised string defined like above.
+				// Ensure that the same string can be extracted from somewhere else.
+				$(listitem).data('callback', action.callback);
+				link.appendChild(span);
+				listitem.appendChild(link);
+				list.appendChild(listitem);
+			}
+
+			return container;
+		}
+
+		function toggleActionsMenu() {
+			if (actionsMenu) {
+				actionsMenuOwner.removeChild(actionsMenu);
+				actionsMenu = null;
+			}
+
+			if (actionsMenuOwner !== data.element) {
+				actionsMenu = createActionsMenu(data.actions);
+				data.element.appendChild(actionsMenu);
+				actionsMenuOwner = data.element;
+			}
+
+			if (!actionsMenu) {
+				actionsMenuOwner = null;
+			}
+		}
+
+		function closeActionsMenu() {
+			actionsMenuOwner.removeChild(actionsMenu);
+			actionsMenu = null;
+			actionsMenuOwner = null;
 		}
 
 		var ngElem = $(data.element);
@@ -83,11 +141,18 @@ function ($rootScope, gettextCatalog) {
 		/**
 		 * Click handlers
 		 */
-		ngElem.on('click', 'span', function(_e) {
+		ngElem.on('click', '.heading', function(_e) {
 			data.onClick(data.model);
 		});
-		ngElem.on('click', 'button', function(_e) {
+		ngElem.on('click', '.icon-details', function(_e) {
 			data.onDetailsClick(data.model);
+		});
+		ngElem.on('click', '.icon-more', function(_e) {
+			toggleActionsMenu();
+		});
+		ngElem.on('click', 'li', function(_e) {
+			$(this).data('callback')(data.model);
+			closeActionsMenu();
 		});
 
 		/**
@@ -124,6 +189,7 @@ function ($rootScope, gettextCatalog) {
 
 	function setupPlaceholder(data) {
 		data.element.innerHTML = data.heading;
+		data.element.className = 'placeholder';
 	}
 
 	/**
@@ -153,10 +219,15 @@ function ($rootScope, gettextCatalog) {
 						model: scope.$eval(attrs.model),
 						onClick: scope.$eval(attrs.onClick),
 						onDetailsClick: scope.$eval(attrs.onDetailsClick),
+						actions: scope.$eval(attrs.actions),
 						getDraggable: scope.$eval(attrs.getDraggable),
 						element: element[0],
 						scope: scope
 					};
+
+					if (data.onDetailsClick && data.actions) {
+						console.error('Invalid configuration for list heading, a heading cannot have both details button and actions menu');
+					}
 
 					// Populate the heading first with a placeholder.
 					// The placeholder is replaced with the actual content once the element

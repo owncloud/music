@@ -134,6 +134,38 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 				}
 			};
 			processNextChannel();
+		},
+
+		// Remove a single previously subscribed podcast channel
+		removePodcastChannel: function(channel) {
+			const doDelete = function() {
+				Restangular.one('podcasts', channel.id).remove().then(
+					function (result) {
+						if (!result.success) {
+							OC.Notification.showTemporary(
+									gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
+						} else {
+							libraryService.removePodcastChannel(channel);
+							$timeout(() => $rootScope.$emit('viewContentChanged'));
+						}
+					},
+					function (_error) {
+						OC.Notification.showTemporary(
+								gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
+					}
+				);
+			};
+
+			OC.dialogs.confirm(
+					gettextCatalog.getString('Are you sure to remove the podcast channel "{{ title }}"?', { title: channel.title }),
+					gettextCatalog.getString('Remove channel'),
+					function(confirmed) {
+						if (confirmed) {
+							doDelete();
+						}
+					},
+					true
+			);
 		}
 	};
 }]);

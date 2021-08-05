@@ -68,6 +68,8 @@ angular.module('Music').controller('PodcastsViewController', [
 		};
 
 		$scope.showAddPodcast = podcastService.showAddPodcastDialog;
+		$scope.reloadChannel = podcastService.reloadPodcastChannel;
+		$scope.removeChannel = podcastService.removePodcastChannel;
 
 		/**
 		 * Two functions for the alphabet-navigation directive integration

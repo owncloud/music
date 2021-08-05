@@ -311,11 +311,14 @@ function($rootScope, $timeout, inViewService) {
 			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
 
 			// Remove this instance from the static array if this would still be there upon destruction.
-			// This seems to happen when the album view contents are updated during/after scanning.
+			// This happens when removing individual channels from the podcasts view but also  seems to 
+			// happen when the album library view contents are updated during/after scanning.
 			scope.$on('$destroy', function() {
 				var index = _instances.indexOf(controller);
 				if (index !== -1) {
 					_instances.splice(index, 1);
+					_firstIndexInView = 0;
+					_lastIndexInView = -1;
 				}
 			});
 

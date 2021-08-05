@@ -108,11 +108,15 @@ h2 span:hover .play {
 
 .album-area > h2 {
 	display: table-cell;
+	position: relative;
 	max-width: 424px;
 	font-size: 21px;
 	line-height: 30px;
 	padding-bottom: 21px;
 	white-space: nowrap;
+}
+
+.album-area > h2.placeholder {
 	overflow: hidden;
 }
 
@@ -122,7 +126,7 @@ h2 span:hover .play {
 	text-overflow: ellipsis;
 }
 
-.album-area > h2.with-details > span {
+.album-area > h2.with-actions > span {
 	max-width: calc(100% - 24px);
 }
 
@@ -185,7 +189,8 @@ div:hover > .play-pause,
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-view .icon-details {
+#app-view .icon-details,
+#app-view .icon-more {
 	display: table-cell;
 	vertical-align: middle;
 	margin: 0;
@@ -195,12 +200,21 @@ div:hover > .play-pause,
 	opacity: 0.5;
 }
 
-#app-view :hover > .icon-details {
+#app-view :hover > .icon-details,
+#app-view :hover > .icon-more {
 	visibility: visible;
 }
 
-#app-view .icon-details:hover {
+#app-view .icon-details:hover,
+#app-view .icon-more:hover {
 	opacity: 1;
+}
+
+#app-view .heading-actions {
+	display: block;
+	font-size: 13px;
+	top: 40px;
+	right: -10px;
 }
 
 .muted {

@@ -1,5 +1,7 @@
-<!--  this template is just a fake template it's purpose is to get fetched
-while extraction, because this string is located in PHP code -->
+<!-- this is just a fake template whose purpose is to get fetched while extracting localized content;
+     the listed strings are defined in a manner which doesn't support extraction from where they are used -->
+
+<!-- localized strings in PHP code -->
 <span translate>Music</span>
 <span translate>Unknown album</span>
 <span translate>Unknown artist</span>
@@ -11,3 +13,6 @@ while extraction, because this string is located in PHP code -->
 <span translate>Loading…</span>
 <span translate>Close</span>
 <span translate>(file is not within your music collection folder)</span>
+
+<!-- localizations for the podcasts action menu -->
+<span translate>Reload</span>

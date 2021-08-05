@@ -279,10 +279,10 @@ angular.module('Music').service('libraryService', [function() {
 			return idx;
 		},
 		setPodcasts: function(podcastsData) {
-			podcastChannels = podcastsData;
-			sortByTextField(podcastChannels, 'title');
+			sortByTextField(podcastsData, 'title');
 			// set the parent references for each episode 
-			_.forEach(podcastChannels, initPodcastChannel);
+			_.forEach(podcastsData, initPodcastChannel);
+			podcastChannels = podcastsData;
 		},
 		addPodcastChannel: function(channel) {
 			initPodcastChannel(channel);
@@ -293,6 +293,10 @@ angular.module('Music').service('libraryService', [function() {
 			initPodcastChannel(channel);
 			var idx = _.findIndex(podcastChannels, { id: channel.id });
 			podcastChannels[idx] = channel;
+		},
+		removePodcastChannel: function(channel) {
+			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			podcastChannels.splice(idx, 1);
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));

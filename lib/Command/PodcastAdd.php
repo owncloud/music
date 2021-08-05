@@ -57,7 +57,7 @@ class PodcastAdd extends BaseCommand {
 		}
 
 		if ($input->getOption('all')) {
-			$users = $this->userManager->callForAllUsers(function($user) use ($output, $rss) {
+			$this->userManager->callForAllUsers(function($user) use ($output, $rss) {
 				$this->addPodcast($user->getUID(), $rss, $output);
 			});
 		} else {
@@ -83,7 +83,7 @@ class PodcastAdd extends BaseCommand {
 			$channel = $this->channelBusinessLayer->create($userId, $rss, $content, $xmlTree->channel);
 
 			foreach ($xmlTree->channel->item as $episodeNode) {
-				$this->episodeBusinessLayer->create($userId, $channel->getId(), $episodeNode);
+				$this->episodeBusinessLayer->addOrUpdate($userId, $channel->getId(), $episodeNode);
 			}
 		} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
 			$output->writeln('User already has this podcast channel, skipping');

@@ -94,7 +94,9 @@ class PodcastApiController extends Controller {
 
 		$episodes = [];
 		foreach ($xmlTree->channel->item as $episodeNode) {
-			$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $channel->getId(), $episodeNode);
+			if ($episodeNode !== null) {
+				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $channel->getId(), $episodeNode);
+			}
 		}
 
 		$channel->setEpisodes($episodes);
@@ -138,7 +140,7 @@ class PodcastApiController extends Controller {
 	 * @param int $id Channel ID
 	 * @param string|null $prevHash Previous content hash known by the client. If given, the result will tell
 	 *								if the channel content has updated from this state. If omitted, the result
-	 *								will thell if the channel changed from its previous server-known state.
+	 *								will tell if the channel changed from its previous server-known state.
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -167,7 +169,9 @@ class PodcastApiController extends Controller {
 			// channel content has actually changed, update the episodes too
 			$episodes = [];
 			foreach ($xmlTree->channel->item as $episodeNode) {
-				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $id, $episodeNode);
+				if ($episodeNode !== null) {
+					$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $id, $episodeNode);
+				}
 			}
 			$channel->setEpisodes($episodes);
 			$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $this->userId);

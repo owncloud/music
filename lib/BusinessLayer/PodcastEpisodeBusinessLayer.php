@@ -26,12 +26,8 @@ use \OCA\Music\Utility\Util;
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method PodcastEpisode find(int $episodeId, string $userId)
- * @method PodcastEpisode[] findAll(
- *			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
- *			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
- * @method PodcastEpisode[] findAllByName(
- *			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
- *			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @method PodcastEpisode[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  */
 class PodcastEpisodeBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type

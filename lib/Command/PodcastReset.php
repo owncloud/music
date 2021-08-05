@@ -43,7 +43,7 @@ class PodcastReset extends BaseCommand {
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if ($input->getOption('all')) {
-			$users = $this->userManager->callForAllUsers(function($user) use ($output) {
+			$this->userManager->callForAllUsers(function($user) use ($output) {
 				$this->resetPodcasts($user->getUID(), $output);
 			});
 		} else {

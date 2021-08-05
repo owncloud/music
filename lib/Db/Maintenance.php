@@ -149,6 +149,14 @@ class Maintenance {
 	}
 
 	/**
+	 * Remove podcast episodes which have a non-existing podcast channel
+	 * @return Number of removed albums
+	 */
+	private function removeObsoletePodcastEpisodes() {
+		return $this->removeUnreferencedDbRows('music_podcast_episodes', 'music_podcast_channels', 'channel_id', 'id');
+	}
+
+	/**
 	 * Removes orphaned data from the database
 	 * @return array describing the number of removed entries per type
 	 */
@@ -160,6 +168,7 @@ class Maintenance {
 		$removedAlbums = $this->removeObsoleteAlbums();
 		$removedArtists = $this->removeObsoleteArtists();
 		$removedBookmarks = $this->removeObsoleteBookmarks();
+		$removedEpisodes = $this->removeObsoletePodcastEpisodes();
 
 		$removedAlbums += $this->removeAlbumsWithNoArtist();
 		$removedTracks += $this->removeTracksWithNoAlbum();
@@ -170,7 +179,8 @@ class Maintenance {
 			'artists' => $removedArtists,
 			'albums' => $removedAlbums,
 			'tracks' => $removedTracks,
-			'bookmarks' => $removedBookmarks
+			'bookmarks' => $removedBookmarks,
+			'podcast_episodes' => $removedEpisodes
 		];
 	}
 

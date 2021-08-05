@@ -43,31 +43,26 @@ class PodcastAdd extends BaseCommand {
 			->addOption(
 					'rss',
 					null,
-					InputOption::VALUE_REQUIRED,
+					InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
 					'URL to an RSS feed'
 			)
 		;
 	}
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
-		$rss = $input->getOption('rss');
+		$rssUrls = $input->getOption('rss');
 
-		if (!$rss) {
+		if (!$rssUrls) {
 			throw new \InvalidArgumentException("The named argument <error>rss</error> must be given!");
 		}
+		\assert(\is_array($rssUrls));
 
-		if ($input->getOption('all')) {
-			$this->userManager->callForAllUsers(function($user) use ($output, $rss) {
-				$this->addPodcast($user->getUID(), $rss, $output);
-			});
-		} else {
-			foreach ($users as $userId) {
-				$this->addPodcast($userId, $rss, $output);
-			}
+		foreach ($rssUrls as $rss) {
+			$this->addPodcast($rss, $input, $output, $users);
 		}
 	}
 
-	private function addPodcast(string $userId, string $rss, OutputInterface $output) {
+	private function addPodcast(string $rss, InputInterface $input, OutputInterface $output, $users) : void {
 		$content = \file_get_contents($rss);
 		if ($content === false) {
 			throw new \InvalidArgumentException("Invalid URL <error>$rss</error>!");
@@ -78,12 +73,26 @@ class PodcastAdd extends BaseCommand {
 			throw new \InvalidArgumentException("The document at URL <error>$rss</error> is not a valid podcast RSS feed!");
 		}
 
-		$output->writeln("Adding podcast feed <info>$rss</info> for user <info>$userId</info>");
-		try {
-			$channel = $this->channelBusinessLayer->create($userId, $rss, $content, $xmlTree->channel);
+		if ($input->getOption('all')) {
+			$this->userManager->callForAllUsers(function($user) use ($output, $rss, $content, $xmlTree) {
+				$this->addPodcastForUser($user->getUID(), $rss, $content, $xmlTree->channel, $output);
+			});
+		} else {
+			foreach ($users as $userId) {
+				$this->addPodcastForUser($userId, $rss, $content, $xmlTree->channel, $output);
+			}
+		}
+	}
 
-			foreach ($xmlTree->channel->item as $episodeNode) {
-				$this->episodeBusinessLayer->addOrUpdate($userId, $channel->getId(), $episodeNode);
+	private function addPodcastForUser(string $userId, string $rss, string $content, \SimpleXMLElement $xmlNode, OutputInterface $output) : void {
+		$output->writeln("Adding podcast channel <info>{$xmlNode->title}</info> for user <info>$userId</info>");
+		try {
+			$channel = $this->channelBusinessLayer->create($userId, $rss, $content, $xmlNode);
+
+			foreach ($xmlNode->item as $episodeNode) {
+				if ($episodeNode !== null) {
+					$this->episodeBusinessLayer->addOrUpdate($userId, $channel->getId(), $episodeNode);
+				}
 			}
 		} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
 			$output->writeln('User already has this podcast channel, skipping');

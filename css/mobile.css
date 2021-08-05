@@ -65,10 +65,14 @@
 .mobile .album-area h2 {
 	max-width: 75%;
 }
-
 .mobile .album-area > h2 > div {
 	line-height: 1.2;
 }
+.mobile #app-view .heading-actions {
+	top: 50px;
+	right: 5px;
+}
+
 /* move track list to the left so it’s visible on small screens */
 .mobile .view-container:not(.compact) .album-area .track-list {
 	margin-left: 0;

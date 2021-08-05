@@ -13,7 +13,6 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\BaseMapper;
@@ -46,7 +45,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		$channel->setUserId( $userId );
 		$channel->setRssUrl( Util::truncate($rssUrl, 2048) );
 		$channel->setRssHash( \hash('md5', $rssUrl) );
-		$channel->setContentHash( \hash('md5', $rssContent) );
+		$channel->setContentHash( self::calculateContentHash($rssContent) );
 		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
 
 		return $this->mapper->insert($channel);
@@ -60,7 +59,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	 */
 	public function updateChannel(PodcastChannel &$channel, string $rssContent, \SimpleXMLElement $xmlNode) {
 		$contentChanged = false;
-		$contentHash = \hash('md5', $rssContent);
+		$contentHash = self::calculateContentHash($rssContent);
 
 		if ($channel->getContentHash() !== $contentHash) {
 			$contentChanged = true;
@@ -73,12 +72,34 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		return $contentChanged;
 	}
 
+	private static function calculateContentHash(string $rssContent) : string {
+		// Exclude the tag <lastBuildDate> from the calculation. This is because many podcast feeds update that
+		// very often, e.g. every 15 minutes, even when nothing else has changed. Including such a volatile field
+		// on the hash would cause a lot of unnecessary updating of the database contents.
+		$ctx = \hash_init('md5');
+
+		$head = \strstr($rssContent, '<lastBuildDate>', true);
+		$tail = ($head === false) ? false : \strstr($rssContent, '</lastBuildDate>', false);
+
+		if ($tail === false) {
+			// tag not found, just calculate the hash from the whole content
+			\hash_update($ctx, $rssContent);
+		} else {
+			\hash_update($ctx, $head);
+			\hash_update($ctx, $tail);
+		}
+
+		return \hash_final($ctx);
+	}
+
 	private static function parseChannelDataFromXml(\SimpleXMLElement $xmlNode, PodcastChannel &$channel) : void {
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
 
-		// TODO: handling for invalid data
-		$channel->setSourceUpdated( \date(BaseMapper::SQL_DATE_FORMAT,
-				\strtotime((string)($xmlNode->lastBuildDate ?: $xmlNode->pubDate))) );
+		if ($xmlNode->pubDate) {
+			$channel->setPublished( \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)($xmlNode->pubDate))) );
+		} else {
+			$channel->setPublished(null);
+		}
 		$channel->setTitle( Util::truncate((string)$xmlNode->title, 256) );
 		$channel->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
 		$channel->setLanguage( Util::truncate((string)$xmlNode->language, 32) );

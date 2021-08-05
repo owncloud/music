@@ -58,7 +58,7 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 			$table->addColumn('update_checked', 'datetime', [
 				'notnull' => true,
 			]);
-			$table->addColumn('source_updated', 'datetime', [
+			$table->addColumn('published', 'datetime', [
 				'notnull' => false,
 			]);
 			$table->addColumn('title', 'string', [

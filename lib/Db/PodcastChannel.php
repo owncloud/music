@@ -26,8 +26,8 @@ use \OCA\Music\Utility\Util;
  * @method void setContentHash(string $hash)
  * @method string getUpdateChecked()
  * @method void setUpdateChecked(string $timestamp)
- * @method string getSourceUpdated()
- * @method void setSourceUpdated(string $timestamp)
+ * @method string getPublished()
+ * @method void setPublished(string $timestamp)
  * @method string getTitle()
  * @method void setTitle(string $title)
  * @method string getLinkUrl()
@@ -57,7 +57,7 @@ class PodcastChannel extends Entity {
 	public $rssHash;
 	public $contentHash;
 	public $updateChecked;
-	public $sourceUpdated;
+	public $published;
 	public $title;
 	public $linkUrl;
 	public $language;

@@ -65,26 +65,44 @@ class PodcastService {
 		$channels = $this->channelBusinessLayer->findAll($userId, SortBy::Name);
 
 		if ($includeEpisodes) {
-			$episodes = $this->episodeBusinessLayer->findAll($userId);
-			$episodesPerChannel = [];
-			foreach ($episodes as $episode) {
-				$episodesPerChannel[$episode->getChannelId()][] = $episode;
-			}
-
-			foreach ($channels as &$channel) {
-				$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
-			}
+			$this->injectEpisodes($channels, $userId, /*$allChannelsIncluded=*/ true);
 		}
 
 		return $channels;
 	}
 
+	/**
+	 * Get a specified podcast episode of a user
+	 */
 	public function getEpisode(int $id, string $userId) : ?PodcastEpisode {
 		try {
 			return $this->episodeBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
 			$this->logger->log("Requested episode $id not found: " . $ex->getMessage(), 'warn');
 			return null;
+		}
+	}
+
+	/**
+	 * Inject episodes to the given podcast channels
+	 * @param PodcastChannel[] $channels input/output 
+	 * @param bool $allChannelsIncluded Set this to true if $channels contains all the podcasts of the user.
+	 *									This helps in optimizing the DB query.
+	 */
+	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
+		if ($allChannelsIncluded || \count($channels) > 999) {
+			$episodes = $this->episodeBusinessLayer->findAll($userId);
+		} else {
+			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);
+		}
+
+		$episodesPerChannel = [];
+		foreach ($episodes as $episode) {
+			$episodesPerChannel[$episode->getChannelId()][] = $episode;
+		}
+
+		foreach ($channels as &$channel) {
+			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
 		}
 	}
 

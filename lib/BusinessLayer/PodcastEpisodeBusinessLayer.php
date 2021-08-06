@@ -40,10 +40,14 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * @param int|int[] $channelId
 	 * @return PodcastEpisode[]
 	 */
-	public function findAllByChannel(int $channelId, string $userId) : array {
-		return $this->mapper->findAllByChannel($channelId, $userId);
+	public function findAllByChannel($channelIds, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if (!\is_array($channelIds)) {
+			$channelIds = [$channelIds];
+		}
+		return $this->mapper->findAllByChannel($channelIds, $userId, $limit, $offset);
 	}
 
 	public function deleteByChannel(int $channelId, string $userId) : void {

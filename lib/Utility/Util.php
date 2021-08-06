@@ -184,10 +184,25 @@ class Util {
 	/**
 	 * Convert file size given in bytes to human-readable format
 	 */
-	public static function formatFileSize(int $bytes, int $decimals = 1) : string {
-		$units = 'BKMGTP';
-		$factor = \floor((\strlen((string)$bytes) - 1) / 3);
-		return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
+	public static function formatFileSize(?int $bytes, int $decimals = 1) : ?string {
+		if ($bytes === null) {
+			return null;
+		} else {
+			$units = 'BKMGTP';
+			$factor = \floor((\strlen((string)$bytes) - 1) / 3);
+			return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
+		}
+	}
+
+	/**
+	 * Convert time given as seconds to the HH:MM:SS format
+	 */
+	public static function formatTime(?int $seconds) : ?string {
+		if ($seconds === null) {
+			return null;
+		} else {
+			return \sprintf('%02d:%02d:%02d', ($seconds/3600), ($seconds/60%60), $seconds%60);
+		}
 	}
 
 	/**

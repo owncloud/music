@@ -13,6 +13,7 @@
 namespace OCA\Music\Db;
 
 use \OCP\AppFramework\Db\Entity;
+use \OCA\Music\Utility\Util;
 
 /**
  * @method string getUserId()
@@ -85,6 +86,24 @@ class PodcastEpisode extends Entity {
 			'title' => $this->getTitle(),
 			'stream_url' => $this->getStreamUrl(),
 			'mimetype' => $this->getMimetype()
+		];
+	}
+
+	public function toAmpacheApi() : array {
+		return [
+			'id' => (string)$this->getId(),
+			'name' => $this->getTitle(),
+			'title' => $this->getTitle(),
+			'description' => $this->getDescription(),
+			'author' => $this->getAuthor(),
+			'author_full' => $this->getAuthor(),
+			'website' => $this->getLinkUrl(),
+			'pubdate' => $this->getPublished(), // TODO: format?
+			'state' => 'Completed',
+			'filelength' => Util::formatTime($this->getDuration()),
+			'filesize' => Util::formatFileSize($this->getSize(), 2),
+			'mime' => $this->getMimetype(),
+			'url' => $this->getStreamUrl()
 		];
 	}
 

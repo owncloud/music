@@ -21,11 +21,17 @@ class PodcastEpisodeMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param int[] $channelIds
 	 * @return PodcastEpisode[]
 	 */
-	public function findAllByChannel(int $channelId, string $userId) : array {
-		$sql = $this->selectUserEntities("`channel_id` = ?");
-		return $this->findEntities($sql, [$userId, $channelId]);
+	public function findAllByChannel(array $channelIds, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$channelCount = \count($channelIds);
+		if ($channelCount === 0) {
+			return [];
+		} else {
+			$sql = $this->selectUserEntities('`channel_id` IN ' . $this->questionMarks($channelCount));
+			return $this->findEntities($sql, \array_merge([$userId], $channelIds), $limit, $offset);
+		}
 	}
 
 	public function deleteByChannel(int $channelId, string $userId) : void {

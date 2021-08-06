@@ -140,6 +140,17 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Find IDs of all user's entities of this kind
+	 * @return int[]
+	 */
+	public function findAllIds(string $userId) : array {
+		$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+
+		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
 	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */

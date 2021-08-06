@@ -164,6 +164,14 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Find IDs of all user's entities of this kind
+	 * @return int[]
+	 */
+	public function findAllIds(string $userId) : array {
+		return $this->mapper->findAllIds($userId);
+	}
+
+	/**
 	 * Set the given entities as "starred" on this date
 	 * @param int[] $ids
 	 * @param string $userId

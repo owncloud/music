@@ -17,6 +17,8 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\Db\PodcastChannel;
+use \OCA\Music\Db\PodcastEpisode;
+use \OCA\Music\Db\SortBy;
 
 
 class PodcastService {
@@ -60,7 +62,7 @@ class PodcastService {
 	 * @return PodcastChannel[]
 	 */
 	public function getAllChannels(string $userId, bool $includeEpisodes) : array {
-		$channels = $this->channelBusinessLayer->findAll($userId);
+		$channels = $this->channelBusinessLayer->findAll($userId, SortBy::Name);
 
 		if ($includeEpisodes) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId);
@@ -75,6 +77,15 @@ class PodcastService {
 		}
 
 		return $channels;
+	}
+
+	public function getEpisode(int $id, string $userId) : ?PodcastEpisode {
+		try {
+			return $this->episodeBusinessLayer->find($id, $userId);
+		} catch (BusinessLayerException $ex) {
+			$this->logger->log("Requested episode $id not found: " . $ex->getMessage(), 'warn');
+			return null;
+		}
 	}
 
 	/**
@@ -177,6 +188,29 @@ class PodcastService {
 			'updated' => $updated,
 			'channel' => $channel
 		];
+	}
+
+	/**
+	 * Check updates for all chanenls of the user, one-by-one
+	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
+	 *			where each int represent number of channels in that category
+	 */
+	public function updateAllChannels(string $userId) : array {
+		$result = ['changed' => 0, 'unchanged' => 0, 'failed' => 0];
+		$ids = $this->channelBusinessLayer->findAllIds($userId);
+
+		foreach ($ids as $id) {
+			$channelResult = $this->updateChannel($id, $userId);
+			if ($channelResult['updated']) {
+				$result['changed']++;
+			} elseif ($channelResult['status'] === self::STATUS_OK) {
+				$result['unchanged']++;
+			} else {
+				$result['failed']++;
+			}
+		}
+
+		return $result;
 	}
 
 	/**

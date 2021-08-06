@@ -71,7 +71,7 @@ class PodcastEpisode extends Entity {
 	public $description;
 	public $created;
 	public $updated;
-	
+
 	public function __construct() {
 		$this->addType('channelId', 'int');
 		$this->addType('size', 'int');
@@ -86,5 +86,14 @@ class PodcastEpisode extends Entity {
 			'stream_url' => $this->getStreamUrl(),
 			'mimetype' => $this->getMimetype()
 		];
+	}
+
+	public function getYear() : ?int {
+		$matches = null;
+		if (\is_string($this->published) && \preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $this->published, $matches) === 1) {
+			return (int)$matches[1];
+		} else {
+			return null;
+		}
 	}
 }

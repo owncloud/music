@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Http\RedirectResponse;
 use \OCP\Files\File;
 use \OCP\Files\Folder;
 use \OCP\IRequest;
@@ -39,6 +40,8 @@ use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Bookmark;
 use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
+use \OCA\Music\Db\PodcastChannel;
+use \OCA\Music\Db\PodcastEpisode;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
@@ -51,6 +54,7 @@ use \OCA\Music\Middleware\SubsonicException;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\LastfmService;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
@@ -63,7 +67,6 @@ class SubsonicController extends Controller {
 	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
-	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;
@@ -73,6 +76,7 @@ class SubsonicController extends Controller {
 	private $coverHelper;
 	private $detailsHelper;
 	private $lastfmService;
+	private $podcastService;
 	private $random;
 	private $logger;
 	private $userId;
@@ -96,6 +100,7 @@ class SubsonicController extends Controller {
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
+								PodcastService $podcastService,
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -115,6 +120,7 @@ class SubsonicController extends Controller {
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
+		$this->podcastService = $podcastService;
 		$this->random = $random;
 		$this->logger = $logger;
 	}
@@ -382,6 +388,8 @@ class SubsonicController extends Controller {
 			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
 		} elseif ($type == 'artist') {
 			$entity = $this->artistBusinessLayer->find($entityId, $this->userId);
+		} elseif ($type == 'podcast_channel') {
+			$entity = $this->podcastService->getChannel($entityId, $this->userId, /*$includeEpisodes=*/ false);
 		}
 
 		if (!empty($entity)) {
@@ -441,15 +449,29 @@ class SubsonicController extends Controller {
 	 */
 	private function download() {
 		$id = $this->getRequiredParam('id');
-		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 
-		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		$file = $this->getFilesystemNode($track->getFileId());
+		$idParts = \explode('-', $id);
+		$type = $idParts[0];
+		$entityId = (int)($idParts[1]);
 
-		if ($file instanceof File) {
-			return new FileStreamResponse($file);
+		if ($type === 'track') {
+			$track = $this->trackBusinessLayer->find($entityId, $this->userId);
+			$file = $this->getFilesystemNode($track->getFileId());
+
+			if ($file instanceof File) {
+				return new FileStreamResponse($file);
+			} else {
+				return $this->subsonicErrorResponse(70, 'file not found');
+			}
+		} elseif ($type === 'podcast_episode') {
+			$episode = $this->podcastService->getEpisode($entityId, $this->userId);
+			if ($episode instanceof PodcastEpisode) {
+				return new RedirectResponse($episode->getStreamUrl());
+			} else {
+				return $this->subsonicErrorResponse(70, 'episode not found');
+			}
 		} else {
-			return $this->subsonicErrorResponse(70, 'file not found');
+			return $this->subsonicErrorResponse(0, "id of type $type not supported");
 		}
 	}
 
@@ -632,7 +654,7 @@ class SubsonicController extends Controller {
 				'playlistRole' => true,
 				'coverArtRole' => false,
 				'commentRole' => false,
-				'podcastRole' => false,
+				'podcastRole' => true,
 				'streamRole' => true,
 				'jukeboxRole' => false,
 				'shareRole' => false,
@@ -725,10 +747,23 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getPodcasts() {
-		// Feature not supported, return an empty list
+		$includeEpisodes = \filter_var($this->request->getParam('includeEpisodes', true), FILTER_VALIDATE_BOOLEAN);
+		$id = $this->request->getParam('id');
+
+		if ($id !== null) {
+			$id = self::ripIdPrefix($id);
+			$channel = $this->podcastService->getChannel($id, $this->userId, $includeEpisodes);
+			if ($channel === null) {
+				throw new SubsonicException('Requested channel not found', 70);
+			}
+			$channels = [$channel];
+		} else {
+			$channels = $this->podcastService->getAllChannels($this->userId, $includeEpisodes);
+		}
+
 		return $this->subsonicResponse([
 			'podcasts' => [
-				'channel' => []
+				'channel' => \array_map([$this, 'podcastChannelToApi'], $channels)
 			]
 		]);
 	}
@@ -736,7 +771,55 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function refreshPodcasts() {
+		$this->podcastService->updateAllChannels($this->userId);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createPodcastChannel() {
+		$url = $this->getRequiredParam('url');
+		$result = $this->podcastService->subscribe($url, $this->userId);
+
+		switch ($result['status']) {
+			case PodcastService::STATUS_OK:
+				return $this->subsonicResponse([]);
+			case PodcastService::STATUS_INVALID_URL:
+				throw new SubsonicException("Invalid URL $url", 0);
+			case PodcastService::STATUS_INVALID_RSS:
+				throw new SubsonicException("The document at URL $url is not a valid podcast RSS feed", 0);
+			case PodcastService::STATUS_ALREADY_EXISTS:
+				throw new SubsonicException('User already has this podcast channel subscribed', 0);
+			default:
+				throw new SubsonicException("Unexpected status code {$result['status']}", 0);
+		}
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function deletePodcastChannel() {
+		$id = $this->getRequiredParam('id');
+		$id = self::ripIdPrefix($id);
+		$status = $this->podcastService->unsubscribe($id, $this->userId);
+
+		switch ($status) {
+			case PodcastService::STATUS_OK:
+				return $this->subsonicResponse([]);
+			case PodcastService::STATUS_NOT_FOUND:
+				throw new SubsonicException('Channel to be deleted not found', 70);
+			default:
+				throw new SubsonicException("Unexpected status code $status", 0);
+		}
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getBookmarks() {
+		// TODO: support for podcast episode bookmarks
 		$bookmarkNodes = [];
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
 
@@ -759,6 +842,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function createBookmark() {
+		// TODO: support for podcast episode bookmarks
 		$this->bookmarkBusinessLayer->addOrUpdate(
 				$this->userId,
 				self::ripIdPrefix($this->getRequiredParam('id')),
@@ -772,6 +856,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function deleteBookmark() {
+		// TODO: support for podcast episode bookmarks
 		$id = $this->getRequiredParam('id');
 		$trackId = self::ripIdPrefix($id);
 
@@ -1186,6 +1271,46 @@ class SubsonicController extends Controller {
 			'created' => $this->formatDateTime($playlist->getCreated()),
 			'changed' => $this->formatDateTime($playlist->getUpdated())
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
+		];
+	}
+
+	private function podcastChannelToApi(PodcastChannel $channel) : array {
+		$result = [
+			'id' => 'podcast_channel-' . $channel->getId(),
+			'url' => $channel->getRssUrl(),
+			'title' => $channel->getTitle(),
+			'description' => $channel->getDescription(),
+			'coverArt' => 'podcast_channel-' . $channel->getId(),
+			'originalImageUrl' => $channel->getImageUrl(),
+			'status' => 'completed'
+		];
+
+		if ($channel->getEpisodes() !== null) {
+			$result['episode'] = \array_map([$this, 'podcastEpisodeToApi'], $channel->getEpisodes());
+		}
+
+		return $result;
+	}
+
+	private function podcastEpisodeToApi(PodcastEpisode $episode) : array {
+		return [
+			'id' => 'podcast_episode-' . $episode->getId(),
+			'streamId' => 'podcast_episode-' . $episode->getId(),
+			'channelId' => 'podcast_channel-' . $episode->getChannelId(),
+			'title' => $episode->getTitle(),
+			'description' => $episode->getDescription(),
+			'publishDate' => $this->formatDateTime($episode->getPublished()),
+			'status' => 'completed',
+			'parent' => $episode->getChannelId(),
+			'isDir' => false,
+			'year' => $episode->getYear(),
+			'genre' => 'Podcast',
+			'coverArt' => 'podcast_channel-' . $episode->getChannelId(),
+			'size' => $episode->getSize(),
+			'contentType' => $episode->getMimetype(),
+			//'suffix' => 'mp3',
+			'duration' => $episode->getDuration(),
+			//'bitRate' => 128
 		];
 	}
 

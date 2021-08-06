@@ -17,6 +17,7 @@ use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Cache;
+use \OCA\Music\Db\PodcastChannel;
 
 use \OCP\Files\Folder;
 use \OCP\Files\File;
@@ -51,7 +52,7 @@ class CoverHelper {
 	/**
 	 * Get cover image of an album or and artist
 	 *
-	 * @param Album|Artist $entity
+	 * @param Album|Artist|PodcastChannel $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int|null $size Desired (max) image size, null to use the default.
@@ -191,26 +192,47 @@ class CoverHelper {
 	}
 
 	/**
-	 * Read cover image from the file system
-	 * @param Album|Artist $entity
+	 * Read cover image from the entity-specific file or URL and scale it unless the caller opts out of it
+	 * @param Album|Artist|PodcastChannel $entity
 	 * @param Folder $rootFolder
 	 * @param int $size Maximum size for the image to read, larger images are scaled down.
 	 *                  Special value DO_NOT_CROP_OR_SCALE can be used to opt out of
 	 *                  scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCover($entity, Folder $rootFolder, int $size) {
+	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
+		if ($entity instanceof PodcastChannel) {
+			$response = ['mimetype' => null, 'content' => \file_get_contents($entity->getImageUrl())];
+		} else {
+			$response = $this->readCoverFromLocalFile($entity, $rootFolder);
+		}
+
+		if ($response !== null) {
+			if ($size !== self::DO_NOT_CROP_OR_SCALE) {
+				$response = $this->scaleDownAndCrop($response, $size);
+			} elseif ($response['mimetype'] === null) {
+				$response['mimetype'] = self::autoDetectMime($response['content']);
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Read cover image from the file system
+	 * @param Album|Artist $entity
+	 * @param Folder $rootFolder
+	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
+	 */
+	private function readCoverFromLocalFile($entity, Folder $rootFolder) {
 		$response = null;
+
 		$coverId = $entity->getCoverFileId();
-
 		if ($coverId > 0) {
-			$nodes = $rootFolder->getById($coverId);
-			if (\count($nodes) > 0) {
-				// get the first valid node (there shouldn't be more than one node anyway)
-				/* @var $node File */
-				$node = $nodes[0];
+			$node = $rootFolder->getById($coverId)[0] ?? null;
+			if ($node instanceof File) {
 				$mime = $node->getMimeType();
-
+				
 				if (\strpos($mime, 'audio') === 0) { // embedded cover image
 					$cover = $this->extractor->parseEmbeddedCoverArt($node); // TODO: currently only album cover supported
 
@@ -225,8 +247,6 @@ class CoverHelper {
 			if ($response === null) {
 				$class = \get_class($entity);
 				$this->logger->log("Requested cover not found for $class entity {$entity->getId()}, coverId=$coverId", 'error');
-			} elseif ($size !== self::DO_NOT_CROP_OR_SCALE) {
-				$response['content'] = $this->scaleDownAndCrop($response['content'], $size);
 			}
 		}
 
@@ -238,18 +258,18 @@ class CoverHelper {
 	 *
 	 * If one of the dimensions of the image is smaller than the maximum, then just
 	 * crop to square shape but do not scale.
-	 * @param string $image The image to be scaled down as string
+	 * @param array $image The image to be scaled down in format accepted by \OCA\Music\Http\FileResponse
 	 * @param integer $maxSize The maximum size in pixels for the square shaped output
-	 * @return string The processed image as string
+	 * @return array The processed image in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function scaleDownAndCrop($image, $maxSize) {
-		$meta = \getimagesizefromstring($image);
+	public function scaleDownAndCrop(array $image, int $maxSize) : array {
+		$meta = \getimagesizefromstring($image['content']);
 		$srcWidth = $meta[0];
 		$srcHeight = $meta[1];
 
 		// only process picture if it's larger than target size or not perfect square
 		if ($srcWidth > $maxSize || $srcHeight > $maxSize || $srcWidth != $srcHeight) {
-			$img = imagecreatefromstring($image);
+			$img = imagecreatefromstring($image['content']);
 
 			if ($img === false) {
 				$this->logger->log('Failed to open cover image for downscaling', 'warn');
@@ -270,22 +290,22 @@ class CoverHelper {
 
 					\ob_start();
 					\ob_clean();
-					$mime = $meta['mime'];
-					switch ($mime) {
+					$image['mimetype'] = $meta['mime']; // override the supplied mime with the auto-detected one
+					switch ($image['mimetype']) {
 						case 'image/jpeg':
 							imagejpeg($scaledImg, null, 75);
-							$image = \ob_get_contents();
+							$image['content'] = \ob_get_contents();
 							break;
 						case 'image/png':
 							imagepng($scaledImg, null, 7, PNG_ALL_FILTERS);
-							$image = \ob_get_contents();
+							$image['content'] = \ob_get_contents();
 							break;
 						case 'image/gif':
 							imagegif($scaledImg, null);
-							$image = \ob_get_contents();
+							$image['content'] = \ob_get_contents();
 							break;
 						default:
-							$this->logger->log("Cover image type $mime not supported for downscaling", 'warn');
+							$this->logger->log("Cover image type {$image['mimetype']} not supported for downscaling", 'warn');
 							break;
 					}
 					\ob_end_clean();
@@ -296,8 +316,12 @@ class CoverHelper {
 		return $image;
 	}
 
+	private static function autoDetectMime($imageContent) {
+		return \getimagesizefromstring($imageContent)['mime'];
+	}
+
 	/**
-	 * @param Album|Artist $entity
+	 * @param Album|Artist|PodcastChannel $entity
 	 * @throws \InvalidArgumentException if entity is not one of the expected types
 	 * @return string
 	 */
@@ -306,6 +330,8 @@ class CoverHelper {
 			return 'album_cover_hash_' . $entity->getId();
 		} elseif ($entity instanceof Artist) {
 			return 'artist_cover_hash_' . $entity->getId();
+		} elseif ($entity instanceof PodcastChannel) {
+			return 'podcast_cover_hash' . $entity->getId();
 		} else {
 			throw new \InvalidArgumentException('Unexpected entity type');
 		}

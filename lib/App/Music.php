@@ -69,6 +69,7 @@ use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\PlaylistFileService;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\UserMusicFolder;
@@ -157,8 +158,7 @@ class Music extends App {
 			return new PodcastApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
-				$c->query('PodcastChannelBusinessLayer'),
-				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('PodcastService'),
 				$c->query('UserId'),
 				$c->query('Logger')
 			);
@@ -512,6 +512,14 @@ class Music extends App {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastService', function (IAppContainer $c) {
+			return new PodcastService(
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('Logger')
 			);
 		});

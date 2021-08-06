@@ -18,28 +18,23 @@ use \OCP\AppFramework\Http\JSONResponse;
 
 use \OCP\IRequest;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\Http\ErrorResponse;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
-	private $channelBusinessLayer;
-	private $episodeBusinessLayer;
+	private $podcastService;
 	private $userId;
 	private $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
-								PodcastChannelBusinessLayer $channelBusinessLayer,
-								PodcastEpisodeBusinessLayer $episodeBusinessLayer,
+								PodcastService $podcastService,
 								?string $userId,
 								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->channelBusinessLayer = $channelBusinessLayer;
-		$this->episodeBusinessLayer = $episodeBusinessLayer;
+		$this->podcastService = $podcastService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->logger = $logger;
 	}
@@ -51,17 +46,7 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getAll() {
-		$episodes = $this->episodeBusinessLayer->findAll($this->userId);
-		$episodesPerChannel = [];
-		foreach ($episodes as $episode) {
-			$episodesPerChannel[$episode->getChannelId()][] = $episode;
-		}
-
-		$channels = $this->channelBusinessLayer->findAll($this->userId);
-		foreach ($channels as &$channel) {
-			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);
-		}
-
+		$channels = $this->podcastService->getAllChannels($this->userId, /*$includeEpisodes=*/ true);
 		return Util::arrayMapMethod($channels, 'toApi');
 	}
 
@@ -76,31 +61,20 @@ class PodcastApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Mandatory argument 'url' not given");
 		}
 
-		$content = \file_get_contents($url);
-		if ($content === false) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Invalid URL $url");
-		}
+		$result = $this->podcastService->subscribe($url, $this->userId);
 
-		$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
-		if ($xmlTree === false || !$xmlTree->channel) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, "The document at URL $url is not a valid podcast RSS feed");
+		switch ($result['status']) {
+			case PodcastService::STATUS_OK:
+				return $result['channel']->toApi();
+			case PodcastService::STATUS_INVALID_URL:
+				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "Invalid URL $url");
+			case PodcastService::STATUS_INVALID_RSS:
+				return new ErrorResponse(Http::STATUS_BAD_REQUEST, "The document at URL $url is not a valid podcast RSS feed");
+			case PodcastService::STATUS_ALREADY_EXISTS:
+				return new ErrorResponse(Http::STATUS_CONFLICT, 'User already has this podcast channel subscribed');
+			default:
+				return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, "Unexpected status code {$result['status']}");
 		}
-
-		try {
-			$channel = $this->channelBusinessLayer->create($this->userId, $url, $content, $xmlTree->channel);
-		} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {
-			return new ErrorResponse(Http::STATUS_CONFLICT, 'User already has this podcast channel subscribed');
-		}
-
-		$episodes = [];
-		foreach ($xmlTree->channel->item as $episodeNode) {
-			if ($episodeNode !== null) {
-				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $channel->getId(), $episodeNode);
-			}
-		}
-
-		$channel->setEpisodes($episodes);
-		return $channel->toApi();
 	}
 
 	/**
@@ -110,12 +84,15 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function unsubscribe(int $id) {
-		try {
-			$this->channelBusinessLayer->delete($id, $this->userId); // throws if not found
-			$this->episodeBusinessLayer->deleteByChannel($id, $this->userId); // does not throw
-			return new JSONResponse(['success' => true]);
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		$status = $this->podcastService->unsubscribe($id, $this->userId);
+
+		switch ($status) {
+			case PodcastService::STATUS_OK:
+				return new JSONResponse(['success' => true]);
+			case PodcastService::STATUS_NOT_FOUND:
+				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			default:
+				return new ErrorResponse(Http::STATUS_INTERNAL_SERVER_ERROR, "Unexpected status code $status");
 		}
 	}
 
@@ -126,12 +103,12 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function get(int $id) {
-		try {
-			$channel = $this->channelBusinessLayer->find($id, $this->userId);
-			$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $this->userId));
+		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ true);
+
+		if ($channel !== null) {
 			return $channel->toApi();
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -146,48 +123,14 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function updateChannel(int $id, ?string $prevHash) {
-		$updated = false;
-
-		try {
-			$channel = $this->channelBusinessLayer->find($id, $this->userId);
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
-		}
-
-		$xmlTree = false;
-		$content = \file_get_contents($channel->getRssUrl());
-		if ($content === null) {
-			$this->logger->log("Could not load RSS feed for channel {$channel->id}", 'warn');
-		} else {
-			$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
-		}
-
-		if ($xmlTree === false || !$xmlTree->channel) {
-			$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
-			return new JSONResponse(['success' => false]);
-		} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel)) {
-			// channel content has actually changed, update the episodes too
-			$episodes = [];
-			foreach ($xmlTree->channel->item as $episodeNode) {
-				if ($episodeNode !== null) {
-					$episodes[] = $this->episodeBusinessLayer->addOrUpdate($this->userId, $id, $episodeNode);
-				}
-			}
-			$channel->setEpisodes($episodes);
-			$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $this->userId);
-			$updated = true;
-		} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
-			// the channel content is not new for the server but it is still new for the client
-			$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $this->userId));
-			$updated = true;
-		}
+		$updateResult = $this->podcastService->updateChannel($id, $this->userId, $prevHash);
 
 		$response = [
-			'success' => true,
-			'updated' => $updated,
+			'success' => ($updateResult['status'] === PodcastService::STATUS_OK),
+			'updated' => $updateResult['updated']
 		];
-		if ($updated) {
-			$response['channel'] = $channel->toApi();
+		if ($updateResult['updated']) {
+			$response['channel'] = $updateResult['channel']->toApi();
 		}
 
 		return new JSONResponse($response);
@@ -200,8 +143,7 @@ class PodcastApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function resetAll() {
-		$this->episodeBusinessLayer->deleteAll($this->userId);
-		$this->channelBusinessLayer->deleteAll($this->userId);
+		$this->podcastService->resetAll($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
 }

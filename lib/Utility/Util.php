@@ -206,6 +206,18 @@ class Util {
 	}
 
 	/**
+	 * Convert date and time given in the SQL format to the ISO "Zulu format"
+	 */
+	public static function formatZuluDateTime(?string $dbDateString) : ?string {
+		if ($dbDateString === null) {
+			return null;
+		} else {
+			$dateTime = new \DateTime($dbDateString);
+			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
+		}
+	}
+
+	/**
 	 * Get a Folder object using a parent Folder object and a relative path
 	 */
 	public static function getFolderFromRelativePath(Folder $parentFolder, string $relativePath) : Folder {

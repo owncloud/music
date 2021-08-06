@@ -108,4 +108,22 @@ class PodcastChannel extends Entity {
 
 		return $result;
 	}
+
+	public function toSubsonicApi() : array {
+		$result = [
+			'id' => 'podcast_channel-' . $this->getId(),
+			'url' => $this->getRssUrl(),
+			'title' => $this->getTitle(),
+			'description' => $this->getDescription(),
+			'coverArt' => 'podcast_channel-' . $this->getId(),
+			'originalImageUrl' => $this->getImageUrl(),
+			'status' => 'completed'
+		];
+
+		if ($this->getEpisodes() !== null) {
+			$result['episode'] = Util::arrayMapMethod($this->episodes, 'toSubsonicApi');
+		}
+
+		return $result;
+	}
 }

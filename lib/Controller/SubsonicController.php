@@ -763,7 +763,7 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse([
 			'podcasts' => [
-				'channel' => \array_map([$this, 'podcastChannelToApi'], $channels)
+				'channel' => Util::arrayMapMethod($channels, 'toSubsonicApi')
 			]
 		]);
 	}
@@ -1131,7 +1131,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($artist->getStarred())) {
-			$result['starred'] = $this->formatDateTime($artist->getStarred());
+			$result['starred'] = Util::formatZuluDateTime($artist->getStarred());
 		}
 
 		return $result;
@@ -1172,7 +1172,7 @@ class SubsonicController extends Controller {
 		$result = [
 			'id' => 'album-' . $album->getId(),
 			'artist' => $album->getAlbumArtistNameString($this->l10n),
-			'created' => $this->formatDateTime($album->getCreated())
+			'created' => Util::formatZuluDateTime($album->getCreated())
 		];
 
 		if (!empty($album->getCoverFileId())) {
@@ -1180,7 +1180,7 @@ class SubsonicController extends Controller {
 		}
 
 		if ($album->getStarred() != null) {
-			$result['starred'] = $this->formatDateTime($album->getStarred());
+			$result['starred'] = Util::formatZuluDateTime($album->getStarred());
 		}
 
 		if (!empty($album->getGenres())) {
@@ -1232,7 +1232,7 @@ class SubsonicController extends Controller {
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $track->getArtistId(),
 			'type' => 'music',
-			'created' => $this->formatDateTime($track->getCreated())
+			'created' => Util::formatZuluDateTime($track->getCreated())
 		];
 
 		if ($album !== null && !empty($album->getCoverFileId())) {
@@ -1245,7 +1245,7 @@ class SubsonicController extends Controller {
 		}
 
 		if ($track->getStarred() != null) {
-			$result['starred'] = $this->formatDateTime($track->getStarred());
+			$result['starred'] = Util::formatZuluDateTime($track->getStarred());
 		}
 
 		if (!empty($track->getGenreId())) {
@@ -1268,49 +1268,9 @@ class SubsonicController extends Controller {
 			'songCount' => $playlist->getTrackCount(),
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
 			'comment' => $playlist->getComment() ?: '',
-			'created' => $this->formatDateTime($playlist->getCreated()),
-			'changed' => $this->formatDateTime($playlist->getUpdated())
+			'created' => Util::formatZuluDateTime($playlist->getCreated()),
+			'changed' => Util::formatZuluDateTime($playlist->getUpdated())
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
-		];
-	}
-
-	private function podcastChannelToApi(PodcastChannel $channel) : array {
-		$result = [
-			'id' => 'podcast_channel-' . $channel->getId(),
-			'url' => $channel->getRssUrl(),
-			'title' => $channel->getTitle(),
-			'description' => $channel->getDescription(),
-			'coverArt' => 'podcast_channel-' . $channel->getId(),
-			'originalImageUrl' => $channel->getImageUrl(),
-			'status' => 'completed'
-		];
-
-		if ($channel->getEpisodes() !== null) {
-			$result['episode'] = \array_map([$this, 'podcastEpisodeToApi'], $channel->getEpisodes());
-		}
-
-		return $result;
-	}
-
-	private function podcastEpisodeToApi(PodcastEpisode $episode) : array {
-		return [
-			'id' => 'podcast_episode-' . $episode->getId(),
-			'streamId' => 'podcast_episode-' . $episode->getId(),
-			'channelId' => 'podcast_channel-' . $episode->getChannelId(),
-			'title' => $episode->getTitle(),
-			'description' => $episode->getDescription(),
-			'publishDate' => $this->formatDateTime($episode->getPublished()),
-			'status' => 'completed',
-			'parent' => $episode->getChannelId(),
-			'isDir' => false,
-			'year' => $episode->getYear(),
-			'genre' => 'Podcast',
-			'coverArt' => 'podcast_channel-' . $episode->getChannelId(),
-			'size' => $episode->getSize(),
-			'contentType' => $episode->getMimetype(),
-			//'suffix' => 'mp3',
-			'duration' => $episode->getDuration(),
-			//'bitRate' => 128
 		];
 	}
 
@@ -1323,8 +1283,8 @@ class SubsonicController extends Controller {
 			'position' => $bookmark->getPosition(),
 			'username' => $this->userId,
 			'comment' => $bookmark->getComment() ?: '',
-			'created' => $this->formatDateTime($bookmark->getCreated()),
-			'changed' => $this->formatDateTime($bookmark->getUpdated())
+			'created' => Util::formatZuluDateTime($bookmark->getCreated()),
+			'changed' => Util::formatZuluDateTime($bookmark->getUpdated())
 		];
 	}
 
@@ -1559,15 +1519,6 @@ class SubsonicController extends Controller {
 	 */
 	private static function ripIdPrefix(string $id) : int {
 		return (int)(\explode('-', $id)[1]);
-	}
-
-	private function formatDateTime(?string $dateString) : ?string {
-		if ($dateString !== null) {
-			$dateTime = new \DateTime($dateString);
-			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
-		} else {
-			return null;
-		}
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

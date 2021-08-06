@@ -107,6 +107,28 @@ class PodcastEpisode extends Entity {
 		];
 	}
 
+	public function toSubsonicApi() : array {
+		return [
+			'id' => 'podcast_episode-' . $this->getId(),
+			'streamId' => 'podcast_episode-' . $this->getId(),
+			'channelId' => 'podcast_channel-' . $this->getChannelId(),
+			'title' => $this->getTitle(),
+			'description' => $this->getDescription(),
+			'publishDate' => Util::formatZuluDateTime($this->getPublished()),
+			'status' => 'completed',
+			'parent' => $this->getChannelId(),
+			'isDir' => false,
+			'year' => $this->getYear(),
+			'genre' => 'Podcast',
+			'coverArt' => 'podcast_channel-' . $this->getChannelId(),
+			'size' => $this->getSize(),
+			'contentType' => $this->getMimetype(),
+			//'suffix' => 'mp3',
+			'duration' => $this->getDuration(),
+			//'bitRate' => 128
+		];
+	}
+
 	public function getYear() : ?int {
 		$matches = null;
 		if (\is_string($this->published) && \preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $this->published, $matches) === 1) {

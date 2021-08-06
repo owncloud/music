@@ -474,5 +474,9 @@ angular.module('Music').service('libraryService', [function() {
 			var stations = _.map(radioStations, 'track');
 			return search(stations, ['name', 'stream_url'], query, maxResults);
 		},
+		searchPodcasts: function(query, maxResults/*optional*/) {
+			var episodes = _(podcastChannels).map('episodes').flatten().value();
+			return search(episodes, ['title', 'channel.title'], query, maxResults);
+		},
 	};
 }]);

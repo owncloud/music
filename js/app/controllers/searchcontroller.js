@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 /**
@@ -123,6 +123,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			matchingTracks = searchInAllTracksView(query);
 		} else if (view == '#/radio') {
 			matchingTracks = searchInRadioView(query);
+		} else if (view == '#/podcasts') {
+			matchingTracks = searchInPodcastsView(query);
 		} else if (view.startsWith('#/playlist/')) {
 			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
 		} else {
@@ -228,6 +230,27 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		_(matches.result).each(function(station) {
 			$('#radio-station-' + station.id).addClass('matched');
 		});
+
+		return matches;
+	}
+
+	function searchInPodcastsView(query) {
+		var matches = libraryService.searchPodcasts(query, MAX_MATCHES);
+
+		// mark episode matches and collect the unique parent channels
+		var channels = {};
+		_(matches.result).each(function(episode) {
+			$('#track-' + episode.id).addClass('matched');
+			channels[episode.channel.id] = 1;
+		});
+
+		// mark parent channels of the matches
+		_(channels).each(function(_value, channelId) {
+			$('#podcast-channel-' + channelId).addClass('matched');
+		});
+
+		// podcasts view has a single ".artist-area" which should be always "matched" i.e. not hidden
+		$('.artist-area').addClass('matched');
 
 		return matches;
 	}

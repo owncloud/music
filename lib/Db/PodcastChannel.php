@@ -120,7 +120,7 @@ class PodcastChannel extends Entity {
 			'status' => 'completed'
 		];
 
-		if ($this->getEpisodes() !== null) {
+		if ($this->episodes !== null) {
 			$result['episode'] = Util::arrayMapMethod($this->episodes, 'toSubsonicApi');
 		}
 

@@ -85,7 +85,7 @@ class PodcastService {
 
 	/**
 	 * Inject episodes to the given podcast channels
-	 * @param PodcastChannel[] $channels input/output 
+	 * @param PodcastChannel[] $channels input/output
 	 * @param bool $allChannelsIncluded Set this to true if $channels contains all the podcasts of the user.
 	 *									This helps in optimizing the DB query.
 	 */
@@ -164,6 +164,7 @@ class PodcastService {
 	public function updateChannel(int $id, string $userId, ?string $prevHash = null) : array {
 		$updated = false;
 		$status = self::STATUS_OK;
+		$channel = null;
 
 		try {
 			$channel = $this->channelBusinessLayer->find($id, $userId);
@@ -172,7 +173,8 @@ class PodcastService {
 			$status = self::STATUS_NOT_FOUND;
 		}
 
-		if ($channel) {
+		if ($channel !== null) {
+			$xmlTree = null;
 			$content = \file_get_contents($channel->getRssUrl());
 			if ($content === null) {
 				$status = self::STATUS_INVALID_URL;
@@ -196,7 +198,7 @@ class PodcastService {
 				$updated = true;
 			} else if ($prevHash !== null && $prevHash !== $channel->getContentHash()) {
 				// the channel content is not new for the server but it is still new for the client
-				$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $this->userId));
+				$channel->setEpisodes($this->episodeBusinessLayer->findAllByChannel($id, $userId));
 				$updated = true;
 			}
 		}

@@ -40,7 +40,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 
 	// Search support
 	var searchModeTrackMatches = null;
-	$rootScope.$on('searchMatchedTracks', function(event, matchingTracks) {
+	$rootScope.$on('searchMatchedTracks', function(_event, matchingTracks) {
 		// store only the IDs of the matching tracks; store them in sorted array
 		// to enable binary search
 		searchModeTrackMatches = _.map(matchingTracks, 'id');

@@ -40,7 +40,6 @@ use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Bookmark;
 use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
-use \OCA\Music\Db\PodcastChannel;
 use \OCA\Music\Db\PodcastEpisode;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
@@ -67,6 +66,7 @@ class SubsonicController extends Controller {
 	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
+	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $urlGenerator;

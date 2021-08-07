@@ -75,7 +75,7 @@ class CoverHelper {
 	 *
 	 * The hash is non-null only in case the cover is/was cached.
 	 *
-	 * @param Album|Artist $entity
+	 * @param Album|Artist|PodcastChannel $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @return array Dictionary with keys 'data' and 'hash'
@@ -138,7 +138,7 @@ class CoverHelper {
 
 	/**
 	 * Cache the given cover image data
-	 * @param Album|Artist $entity
+	 * @param Album|Artist|PodcastChannel $entity
 	 * @param string $userId
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover

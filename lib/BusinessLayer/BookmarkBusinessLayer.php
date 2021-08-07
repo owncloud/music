@@ -41,16 +41,13 @@ class BookmarkBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * @param string $userId
-	 * @param int $trackId
-	 * @param int $position
-	 * @param string|null $comment
-	 * @return Bookmark
+	 * @param int $type One of [Bookmark::TYPE_TRACK, Bookmark::TYPE_PODCAST_EPISODE]
 	 */
-	public function addOrUpdate($userId, $trackId, $position, $comment) {
+	public function addOrUpdate(string $userId, int $type, int $entryId, int $position, ?string $comment) : Bookmark {
 		$bookmark = new Bookmark();
 		$bookmark->setUserId($userId);
-		$bookmark->setTrackId($trackId);
+		$bookmark->setType($type);
+		$bookmark->setEntryId($entryId);
 		$bookmark->setPosition($position);
 		$bookmark->setComment(Util::truncate($comment, 256));
 
@@ -58,12 +55,10 @@ class BookmarkBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * @param int $trackId
-	 * @param string $userId
+	 * @param int $type One of [Bookmark::TYPE_TRACK, Bookmark::TYPE_PODCAST_EPISODE]
 	 * @throws DoesNotExistException if such bookmark does not exist
-	 * @return Bookmark
 	 */
-	public function findByTrack($trackId, $userId) {
-		return $this->mapper->findByTrack($trackId, $userId);
+	public function findByEntry(int $type, int $entryId, string $userId) : Bookmark {
+		return $this->mapper->findByEntry($type, $entryId, $userId);
 	}
 }

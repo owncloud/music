@@ -839,6 +839,7 @@
 			</index>
 		</declaration>
 	</table>
+
 	<table>
 		<name>*dbprefix*music_bookmarks</name>
 		<declaration>
@@ -857,9 +858,15 @@
 				<length>64</length>
 			</field>
 			<field>
-				<name>track_id</name>
+				<name>type</name>
 				<type>integer</type>
 				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>entry_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<comments>ID of a track or a podcast episode, depending on the column 'type'</comments>
 			</field>
 			<field>
 				<name>position</name>
@@ -884,13 +891,16 @@
 			</field>
 
 			<index>
-				<name>music_bookmarks_user_track</name>
+				<name>music_bookmarks_index</name>
 				<unique>true</unique>
 				<field>
 					<name>user_id</name>
 				</field>
 				<field>
-					<name>track_id</name>
+					<name>type</name>
+				</field>
+				<field>
+					<name>entry_id</name>
 				</field>
 			</index>
 		</declaration>

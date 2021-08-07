@@ -120,7 +120,7 @@ class PodcastEpisode extends Entity {
 			'description' => $this->getDescription(),
 			'publishDate' => Util::formatZuluDateTime($this->getPublished()),
 			'status' => 'completed',
-			'parent' => $this->getChannelId(),
+			'parent' => 'podcast_channel-' . $this->getChannelId(),
 			'isDir' => false,
 			'year' => $this->getYear(),
 			'genre' => 'Podcast',

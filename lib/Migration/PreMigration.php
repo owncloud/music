@@ -62,6 +62,10 @@ class PreMigration implements IRepairStep {
 			$tablesToErase[] = 'music_playlists';
 		}
 
+		if (\version_compare($installedVersion, '1.3.0-alpha2', '<')) {
+			$tablesToErase[] = 'music_bookmarks';
+		}
+
 		// Invalidate the cache on each update (if there is one).
 		// This might not be strictly necessary on all migrations, but it will do no harm.
 		$tablesToErase[] = 'music_cache';

@@ -184,6 +184,16 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['guid_hash', 'channel_id', 'user_id'], 'music_podcast_episodes_index');
 		}
 
+		$table = $schema->getTable('music_bookmarks');
+		if (!$table->hasColumn('type')) {
+			$table->addColumn('type', 'integer', [
+				'notnull' => true,
+			]);
+			$table->dropIndex('music_bookmarks_user_track');
+			$table->renameColumn('track_id', 'entry_id');
+			$table->addUniqueIndex(['user_id', 'type', 'entry_id'], 'music_bookmarks_index');
+		}
+
 		return $schema;
 	}
 

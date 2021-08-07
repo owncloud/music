@@ -234,8 +234,12 @@ class SubsonicController extends Controller {
 			return $this->getMusicDirectoryForFolder($id);
 		} elseif (Util::startsWith($id, 'artist-')) {
 			return $this->getMusicDirectoryForArtist($id);
-		} else {
+		} elseif (Util::startsWith($id, 'album-')) {
 			return $this->getMusicDirectoryForAlbum($id);
+		} elseif (Util::startsWith($id, 'podcast_channel-')) {
+			return $this->getMusicDirectoryForPodcastChannel($id);
+		} else {
+			throw new SubsonicException("Unsupported id format $id");
 		}
 	}
 
@@ -831,19 +835,26 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getBookmarks() {
-		// TODO: support for podcast episode bookmarks
 		$bookmarkNodes = [];
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
 
 		foreach ($bookmarks as $bookmark) {
 			try {
-				$trackId = $bookmark->getTrackId();
-				$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-				$node = $this->bookmarkToApi($bookmark);
-				$node['entry'] = $this->trackToApi($track);
+				$node = $bookmark->toSubsonicApi();
+
+				$entryId = $bookmark->getEntryId();
+				$type = $bookmark->getType();
+				if ($type === Bookmark::TYPE_TRACK) {
+					$node['entry'] = $this->trackToApi($this->trackBusinessLayer->find($entryId, $this->userId));
+				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
+					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
+				} else {
+					$this->logger->log("Bookmark {$bookmark->getId()} had unexpected entry type $type", 'warn');
+				}
+
 				$bookmarkNodes[] = $node;
 			} catch (BusinessLayerException $e) {
-				$this->logger->log("Bookmarked track $trackId not found", 'warn');
+				$this->logger->log("Bookmarked entry with type $type and id $entryId not found", 'warn');
 			}
 		}
 
@@ -854,11 +865,12 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function createBookmark() {
-		// TODO: support for podcast episode bookmarks
+		list($type, $id) = $this->getBookamrkIdParam();
 		$this->bookmarkBusinessLayer->addOrUpdate(
 				$this->userId,
-				self::ripIdPrefix($this->getRequiredParam('id')),
-				$this->getRequiredParam('position'),
+				$type,
+				$id,
+				(int)$this->getRequiredParam('position'),
 				$this->request->getParam('comment')
 		);
 		return $this->subsonicResponse([]);
@@ -868,11 +880,9 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function deleteBookmark() {
-		// TODO: support for podcast episode bookmarks
-		$id = $this->getRequiredParam('id');
-		$trackId = self::ripIdPrefix($id);
+		list($type, $id) = $this->getBookamrkIdParam();
 
-		$bookmark = $this->bookmarkBusinessLayer->findByTrack($trackId, $this->userId);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $id, $this->userId);
 		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
 
 		return $this->subsonicResponse([]);
@@ -881,6 +891,21 @@ class SubsonicController extends Controller {
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
+
+	private function getBookamrkIdParam() : array {
+		$id = $this->getRequiredParam('id');
+		list($typeName, $entityId) = \explode('-', $id);
+
+		if ($typeName === 'track') {
+			$type = Bookmark::TYPE_TRACK;
+		} elseif ($typeName === 'podcast_episode') {
+			$type = Bookmark::TYPE_PODCAST_EPISODE;
+		} else {
+			throw new SubsonicException("Unsupported ID format $id", 0);
+		}
+
+		return [$type, (int)$entityId];
+	}
 
 	private function getRequiredParam($paramName) {
 		$param = $this->request->getParam($paramName);
@@ -1123,6 +1148,23 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	private function getMusicDirectoryForPodcastChannel($id) {
+		$channelId = self::ripIdPrefix($id); // get rid of 'podcast_channel-' prefix
+		$channel = $this->podcastService->getChannel($channelId, $this->userId, /*$includeEpisodes=*/ true);
+
+		if ($channel === null) {
+			throw new SubsonicException("Podcast channel $channelId not found", 0);
+		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'name' => $channel->getTitle(),
+				'child' => Util::arrayMapMethod($channel->getEpisodes(), 'toSubsonicApi')
+			]
+		]);
+	}
+
 	/**
 	 * @param Folder $folder
 	 * @return array
@@ -1292,20 +1334,6 @@ class SubsonicController extends Controller {
 			'created' => Util::formatZuluDateTime($playlist->getCreated()),
 			'changed' => Util::formatZuluDateTime($playlist->getUpdated())
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
-		];
-	}
-
-	/**
-	 * @param Bookmark $bookmark
-	 * @return array
-	 */
-	private function bookmarkToApi($bookmark) {
-		return [
-			'position' => $bookmark->getPosition(),
-			'username' => $this->userId,
-			'comment' => $bookmark->getComment() ?: '',
-			'created' => Util::formatZuluDateTime($bookmark->getCreated()),
-			'changed' => Util::formatZuluDateTime($bookmark->getUpdated())
 		];
 	}
 

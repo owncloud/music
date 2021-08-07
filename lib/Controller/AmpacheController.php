@@ -1080,7 +1080,7 @@ class AmpacheController extends Controller {
 							'value' => $genre->getNameString($this->l10n),
 							'count' => 1
 						];
-					}, $album->getGenres())
+					}, $album->getGenres() ?? [])
 				];
 			}, $albums)
 		]);

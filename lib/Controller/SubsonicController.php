@@ -32,6 +32,8 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -66,6 +68,8 @@ class SubsonicController extends Controller {
 	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
+	private $podcastChannelBusinessLayer;
+	private $podcastEpisodeBusinessLayer;
 	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
@@ -93,6 +97,8 @@ class SubsonicController extends Controller {
 								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
@@ -110,6 +116,8 @@ class SubsonicController extends Controller {
 		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
+		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
 		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
@@ -698,6 +706,8 @@ class SubsonicController extends Controller {
 		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->setStarred($targetIds['albums'], $this->userId);
 		$this->artistBusinessLayer->setStarred($targetIds['artists'], $this->userId);
+		$this->podcastChannelBusinessLayer->setStarred($targetIds['podcast_channels'], $this->userId);
+		$this->podcastEpisodeBusinessLayer->setStarred($targetIds['podcast_episodes'], $this->userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -711,6 +721,8 @@ class SubsonicController extends Controller {
 		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $this->userId);
 		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $this->userId);
+		$this->podcastChannelBusinessLayer->unsetStarred($targetIds['podcast_channels'], $this->userId);
+		$this->podcastEpisodeBusinessLayer->unsetStarred($targetIds['podcast_episodes'], $this->userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -893,9 +905,12 @@ class SubsonicController extends Controller {
 		$artistIds = \array_map('self::ripIdPrefix', $artistIds);
 
 		// song IDs from newer clients and song/folder/album/artist IDs from older clients
+		// also podcast IDs may come here; that is not documented part of the API but at least DSub does that
 		$ids = $this->getRepeatedParam('id');
 
 		$trackIds = [];
+		$channelIds = [];
+		$episodeIds = [];
 
 		foreach ($ids as $prefixedId) {
 			$parts = \explode('-', $prefixedId);
@@ -908,6 +923,10 @@ class SubsonicController extends Controller {
 				$albumIds[] = $id;
 			} elseif ($type == 'artist') {
 				$artistIds[] = $id;
+			} elseif ($type == 'podcast_channel') {
+				$channelIds[] = $id;
+			} elseif ($type == 'podcast_episode') {
+				$episodeIds[] = $id;
 			} elseif ($type == 'folder') {
 				throw new SubsonicException('Starring folders is not supported', 0);
 			} else {
@@ -918,7 +937,9 @@ class SubsonicController extends Controller {
 		return [
 			'tracks' => $trackIds,
 			'albums' => $albumIds,
-			'artists' => $artistIds
+			'artists' => $artistIds,
+			'podcast_channels' => $channelIds,
+			'podcast_episodes' => $episodeIds
 		];
 	}
 

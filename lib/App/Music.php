@@ -224,6 +224,8 @@ class Music extends App {
 				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
@@ -284,7 +286,7 @@ class Music extends App {
 				$c->query('Logger')
 			);
 		});
-			
+
 		$container->registerService('PodcastEpisodeBusinessLayer', function (IAppContainer $c) {
 			return new PodcastEpisodeBusinessLayer(
 				$c->query('PodcastEpisodeMapper'),

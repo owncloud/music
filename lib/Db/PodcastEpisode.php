@@ -48,6 +48,8 @@ use \OCA\Music\Utility\Util;
  * @method void setAuthor(string $author)
  * @method string getDescription()
  * @method void setDescription(string $description)
+ * @method string getStarred()
+ * @method void setStarred(string $timestamp)
  * @method string getCreated()
  * @method void setCreated(string $timestamp)
  * @method string getUpdated()
@@ -70,6 +72,7 @@ class PodcastEpisode extends Entity {
 	public $copyright;
 	public $author;
 	public $description;
+	public $starred;
 	public $created;
 	public $updated;
 
@@ -101,14 +104,15 @@ class PodcastEpisode extends Entity {
 			'pubdate' => $this->getPublished(), // TODO: format?
 			'state' => 'Completed',
 			'filelength' => Util::formatTime($this->getDuration()),
-			'filesize' => Util::formatFileSize($this->getSize(), 2),
+			'filesize' => Util::formatFileSize($this->getSize(), 2) . 'B',
 			'mime' => $this->getMimetype(),
-			'url' => $this->getStreamUrl()
+			'url' => $this->getStreamUrl(),
+			'flag' => empty($this->getStarred()) ? 0 : 1,
 		];
 	}
 
 	public function toSubsonicApi() : array {
-		return [
+		$result = [
 			'id' => 'podcast_episode-' . $this->getId(),
 			'streamId' => 'podcast_episode-' . $this->getId(),
 			'channelId' => 'podcast_channel-' . $this->getChannelId(),
@@ -127,6 +131,12 @@ class PodcastEpisode extends Entity {
 			'duration' => $this->getDuration(),
 			//'bitRate' => 128
 		];
+
+		if (!empty($this->starred)) {
+			$result['starred'] = Util::formatZuluDateTime($this->starred);
+		}
+
+		return $result;
 	}
 
 	public function getYear() : ?int {

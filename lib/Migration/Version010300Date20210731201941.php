@@ -92,6 +92,9 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'notnull' => false,
 				'length' => 256,
 			]);
+			$table->addColumn('starred', 'datetime', [
+				'notnull' => false,
+			]);
 			$table->addColumn('created', 'datetime', [
 				'notnull' => false,
 			]);
@@ -166,6 +169,9 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'length' => 256,
 			]);
 			$table->addColumn('description', 'text', [
+				'notnull' => false,
+			]);
+			$table->addColumn('starred', 'datetime', [
 				'notnull' => false,
 			]);
 			$table->addColumn('created', 'datetime', [

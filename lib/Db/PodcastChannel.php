@@ -44,6 +44,8 @@ use \OCA\Music\Utility\Util;
  * @method void setImageUrl(string $url)
  * @method string getCategory()
  * @method void setCategory(string $category)
+ * @method string getStarred()
+ * @method void setStarred(string $timestamp)
  * @method string getCreated()
  * @method void setCreated(string $timestamp)
  * @method string getUpdated()
@@ -66,6 +68,7 @@ class PodcastChannel extends Entity {
 	public $description;
 	public $imageUrl;
 	public $category;
+	public $starred;
 	public $created;
 	public $updated;
 
@@ -99,7 +102,8 @@ class PodcastChannel extends Entity {
 			'sync_date' => $this->getUpdateChecked(), // TODO: should we format this?
 			'public_url' => $this->getLinkUrl(),
 			'website' => $this->getLinkUrl(),
-			'art' => $this->imageUrl
+			'art' => $this->getImageUrl(),
+			'flag' => empty($this->getStarred()) ? 0 : 1,
 		];
 
 		if ($this->episodes !== null) {
@@ -119,6 +123,10 @@ class PodcastChannel extends Entity {
 			'originalImageUrl' => $this->getImageUrl(),
 			'status' => 'completed'
 		];
+
+		if (!empty($this->starred)) {
+			$result['starred'] = Util::formatZuluDateTime($this->starred);
+		}
 
 		if ($this->episodes !== null) {
 			$result['episode'] = Util::arrayMapMethod($this->episodes, 'toSubsonicApi');

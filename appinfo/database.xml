@@ -554,6 +554,11 @@
 				<length>256</length>
 			</field>
 			<field>
+				<name>starred</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
 				<name>created</name>
 				<type>timestamp</type>
 				<notnull>false</notnull>
@@ -677,6 +682,11 @@
 >			<field>
 				<name>description</name>
 				<type>clob</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>starred</name>
+				<type>timestamp</type>
 				<notnull>false</notnull>
 			</field>
 			<field>

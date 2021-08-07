@@ -41,6 +41,7 @@ use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\SortBy;
+use \OCA\Music\Db\Track;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
@@ -329,7 +330,9 @@ class AmpacheController extends Controller {
 			$type = 'album';
 		}
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		// Note: according to the API documentation, types 'podcast' and 'podcast_episode' should not
+		// be supported. However, we can make this extension with no extra effort.
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 		$businessLayer = $this->getBusinessLayer($type);
@@ -750,7 +753,7 @@ class AmpacheController extends Controller {
 		$flag = $this->getRequiredParam('flag');
 		$flag = \filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -758,10 +761,10 @@ class AmpacheController extends Controller {
 		$businessLayer = $this->getBusinessLayer($type);
 		if ($flag) {
 			$modifiedCount = $businessLayer->setStarred([$id], $userId);
-			$message = "flag ADDED to $id";
+			$message = "flag ADDED to $type $id";
 		} else {
 			$modifiedCount = $businessLayer->unsetStarred([$id], $userId);
-			$message = "flag REMOVED from $id";
+			$message = "flag REMOVED from $type $id";
 		}
 
 		if ($modifiedCount > 0) {
@@ -1033,7 +1036,7 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'artist' => \array_map(function ($artist) use ($userId, $genreMap, $auth) {
+			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
@@ -1042,6 +1045,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($artist, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
+					'flag' => empty($artist->getStarred()) ? 0 : 1,
 					'tag' => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
@@ -1056,7 +1060,7 @@ class AmpacheController extends Controller {
 
 	private function renderAlbums($albums, $auth) {
 		return $this->ampacheResponse([
-			'album' => \array_map(function ($album) use ($auth) {
+			'album' => \array_map(function (Album $album) use ($auth) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -1069,6 +1073,7 @@ class AmpacheController extends Controller {
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album, $auth),
 					'preciserating' => 0,
+					'flag' => empty($album->getStarred()) ? 0 : 1,
 					'tag' => \array_map(function ($genre) {
 						return [
 							'id' => (string)$genre->getId(),
@@ -1083,7 +1088,7 @@ class AmpacheController extends Controller {
 
 	private function renderSongs($tracks, $auth) {
 		return $this->ampacheResponse([
-			'song' => \array_map(function ($track) use ($auth) {
+			'song' => \array_map(function (Track $track) use ($auth) {
 				$userId = $this->ampacheUser->getUserId();
 				$album = $track->getAlbum()
 						?: $this->albumBusinessLayer->findOrDefault($track->getAlbumId(), $userId);
@@ -1114,6 +1119,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($album, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
+					'flag' => empty($track->getStarred()) ? 0 : 1,
 				];
 
 				$genreId = $track->getGenreId();

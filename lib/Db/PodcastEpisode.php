@@ -92,6 +92,27 @@ class PodcastEpisode extends Entity {
 		];
 	}
 
+	public function detailsToApi() : array {
+		return [
+			'id' => $this->getId(),
+			'channel_id' => $this->getChannelId(),
+			'title' => $this->getTitle(),
+			'episode' => $this->getEpisode(),
+			'description' => $this->getDescription(),
+			'link_url' => $this->getLinkUrl(),
+			'stream_url' => $this->getStreamUrl(),
+			'mimetype' => $this->getMimetype(),
+			'author' => $this->getAuthor(),
+			'copyright' => $this->getCopyright(),
+			'duration' => $this->getDuration(),
+			'size' => $this->getSize(),
+			'bit_rate' => $this->getBitrate(),
+			'guid' => $this->getGuid(),
+			'keywords' => $this->getKeywords(),
+			'published' => $this->getPublished(),
+		];
+	}
+
 	public function toAmpacheApi() : array {
 		return [
 			'id' => (string)$this->getId(),

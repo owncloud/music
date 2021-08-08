@@ -113,6 +113,38 @@ class PodcastApiController extends Controller {
 	}
 
 	/**
+	 * get details for a podcast channel
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function channelDetails(int $id) {
+		$channel = $this->podcastService->getChannel($id, $this->userId, /*includeEpisodes=*/ false);
+
+		if ($channel !== null) {
+			return $channel->detailsToApi();
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * get details for a podcast episode
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function episodeDetails(int $id) {
+		$episode = $this->podcastService->getEpisode($id, $this->userId);
+
+		if ($episode !== null) {
+			return $episode->detailsToApi();
+		} else {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
 	 * check a single channel for updates
 	 * @param int $id Channel ID
 	 * @param string|null $prevHash Previous content hash known by the client. If given, the result will tell

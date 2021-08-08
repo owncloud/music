@@ -90,6 +90,23 @@ class PodcastChannel extends Entity {
 		return $result;
 	}
 
+	public function detailsToApi() : array {
+		return [
+			'id' => $this->getId(),
+			'title' => $this->getTitle(),
+			'description' => $this->getDescription(),
+			'image' => $this->getImageUrl(),
+			'link_url' =>  $this->getLinkUrl(),
+			'rss_url' => $this->getRssUrl(),
+			'language' => $this->getLanguage(),
+			'copyright' => $this->getCopyright(),
+			'author' => $this->getAuthor(),
+			'category' => $this->getCategory(),
+			'published' => $this->getPublished(),
+			'update_checked' => $this->getUpdateChecked(),
+		];
+	}
+
 	public function toAmpacheApi() : array {
 		$result = [
 			'id' => (string)$this->getId(),

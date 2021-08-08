@@ -82,12 +82,14 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
 
 	// podcast API
-	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',				'verb' => 'GET'],
-	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',				'verb' => 'POST'],
-	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',			'verb' => 'GET'],
-	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',			'verb' => 'DELETE'],
-	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',	'verb' => 'POST'],
-	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',			'verb' => 'POST'],
+	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],
+	['name' => 'podcastApi#subscribe',		'url' => '/api/podcasts',						'verb' => 'POST'],
+	['name' => 'podcastApi#get',			'url' => '/api/podcasts/{id}',					'verb' => 'GET'],
+	['name' => 'podcastApi#channelDetails',	'url' => '/api/podcasts/{id}/details',			'verb' => 'GET'],
+	['name' => 'podcastApi#episodeDetails',	'url' => '/api/podcasts/episodes/{id}/details',	'verb' => 'GET'],
+	['name' => 'podcastApi#unsubscribe',	'url' => '/api/podcasts/{id}',					'verb' => 'DELETE'],
+	['name' => 'podcastApi#updateChannel',	'url' => '/api/podcasts/{id}/update',			'verb' => 'POST'],
+	['name' => 'podcastApi#resetAll',		'url' => '/api/podcasts/reset',					'verb' => 'POST'],
 
 	// settings API
 	['name' => 'setting#getAll',			'url' => '/api/settings',					'verb' => 'GET'],

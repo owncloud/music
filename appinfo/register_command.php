@@ -46,6 +46,10 @@ $application->add(new OCA\Music\Command\PodcastAdd(
 $application->add(new OCA\Music\Command\PodcastReset(
 		$c->query('UserManager'),
 		$c->query('GroupManager'),
-		$c->query('PodcastChannelBusinessLayer'),
-		$c->query('PodcastEpisodeBusinessLayer')
+		$c->query('PodcastService')
+));
+$application->add(new OCA\Music\Command\PodcastUpdate(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('PodcastService')
 ));

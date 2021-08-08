@@ -215,7 +215,7 @@ class PodcastService {
 	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
 	 *			where each int represent number of channels in that category
 	 */
-	public function updateAllChannels(string $userId) : array {
+	public function updateAllChannels(string $userId, ?callable $progressCallback = null) : array {
 		$result = ['changed' => 0, 'unchanged' => 0, 'failed' => 0];
 		$ids = $this->channelBusinessLayer->findAllIds($userId);
 
@@ -227,6 +227,10 @@ class PodcastService {
 				$result['unchanged']++;
 			} else {
 				$result['failed']++;
+			}
+
+			if ($progressCallback !== null) {
+				$progressCallback($channelResult);
 			}
 		}
 

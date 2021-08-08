@@ -16,7 +16,7 @@ use OCA\Music\Utility\PodcastService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PodcastReset extends BaseCommand {
+class PodcastUpdate extends BaseCommand {
 
 	/** @var PodcastService */
 	private $podcastService;
@@ -31,25 +31,37 @@ class PodcastReset extends BaseCommand {
 
 	protected function doConfigure() {
 		$this
-			->setName('music:podcast-reset')
-			->setDescription('remove all podcast channels of one or more users')
+			->setName('music:podcast-update')
+			->setDescription('update podcast channels of one or more users from their sources')
 		;
 	}
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
 		if ($input->getOption('all')) {
 			$this->userManager->callForAllUsers(function($user) use ($output) {
-				$this->resetPodcasts($user->getUID(), $output);
+				$this->updateForUser($user->getUID(), $output);
 			});
 		} else {
 			foreach ($users as $userId) {
-				$this->resetPodcasts($userId, $output);
+				$this->updateForUser($userId, $output);
 			}
 		}
 	}
 
-	private function resetPodcasts(string $userId, OutputInterface $output) {
-		$output->writeln("Reset all podcasts of the user <info>$userId</info>");
-		$this->podcastService->resetAll($userId);
+	private function updateForUser(string $userId, OutputInterface $output) : void {
+		$output->writeln("Updating podcasts of <info>$userId</info>...");
+		$this->podcastService->updateAllChannels($userId, function ($channelResult) use ($output) {
+			$channel = $channelResult['channel'] ?? null;
+			$id = $channel->getId() ?? -1;
+			$title = $channel->getTitle() ?? '(unknown)';
+
+			if ($channelResult['updated']) {
+				$output->writeln("  Channel $id <info>$title</info> was updated");
+			} elseif ($channelResult['status'] === PodcastService::STATUS_OK) {
+				$output->writeln("  Channel $id <info>$title</info> had no changes");
+			} else {
+				$output->writeln("  Channel $id <error>$title</error> update failed");
+			}
+		});
 	}
 }

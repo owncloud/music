@@ -127,9 +127,9 @@ class PodcastEpisode extends Entity {
 			'coverArt' => 'podcast_channel-' . $this->getChannelId(),
 			'size' => $this->getSize(),
 			'contentType' => $this->getMimetype(),
-			//'suffix' => 'mp3',
+			'suffix' => $this->getSuffix(),
 			'duration' => $this->getDuration(),
-			//'bitRate' => 128
+			'bitRate' => empty($this->getBitrate()) ? 0 : (int)\round($this->getBitrate()/1000), // convert bps to kbps
 		];
 
 		if (!empty($this->starred)) {
@@ -145,6 +145,65 @@ class PodcastEpisode extends Entity {
 			return (int)$matches[1];
 		} else {
 			return null;
+		}
+	}
+
+	/** @return ?int bits per second (bps) */
+	public function getBitrate() : ?float {
+		if (empty($this->size) || empty($this->duration)) {
+			return null;
+		} else {
+			return $this->size / $this->duration * 8;
+		}
+	}
+
+	public function getSuffix() : ?string {
+		return self::mimeToSuffix($this->mimetype) ?? self::extractSuffixFromUrl($this->streamUrl);
+	}
+
+	private static function mimeToSuffix(?string $mime) : ?string {
+		// a relevant subset from https://stackoverflow.com/a/53662733/4348850 wit a few additions
+		$mime_map = [
+			'audio/x-acc'					=> 'aac',
+			'audio/ac3'						=> 'ac3',
+			'audio/x-aiff'					=> 'aif',
+			'audio/aiff'					=> 'aif',
+			'audio/x-au'					=> 'au',
+			'audio/x-flac'					=> 'flac',
+			'audio/x-m4a'					=> 'm4a',
+			'audio/mp4'						=> 'm4a',
+			'audio/midi'					=> 'mid',
+			'audio/mpeg'					=> 'mp3',
+			'audio/mpg'						=> 'mp3',
+			'audio/mpeg3'					=> 'mp3',
+			'audio/mp3'						=> 'mp3',
+			'audio/ogg'						=> 'ogg',
+			'application/ogg'				=> 'ogg',
+			'audio/x-realaudio'				=> 'ra',
+			'audio/x-pn-realaudio'			=> 'ram',
+			'audio/x-wav'					=> 'wav',
+			'audio/wave'					=> 'wav',
+			'audio/wav'						=> 'wav',
+			'audio/x-ms-wma'				=> 'wma',
+			'audio/m4b'						=> 'm4b',
+			'application/vnd.apple.mpegurl'	=> 'm3u',
+			'audio/mpegurl'					=> 'm3u',
+		];
+
+		return $mime_map[$mime] ?? null;
+	}
+
+	private static function extractSuffixFromUrl(?string $url) : ?string {
+		if ($url === null) {
+			return null;
+		} else {
+			$path = \parse_url($url, PHP_URL_PATH);
+			$ext = \pathinfo($path, PATHINFO_EXTENSION);
+			if (\is_string($ext) && !empty($ext)) {
+				return $ext;
+			} else {
+				return null;
+			}
 		}
 	}
 }

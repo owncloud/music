@@ -1241,7 +1241,7 @@ class SubsonicController extends Controller {
 			$result['coverArt'] = 'album-' . $album->getId();
 		}
 
-		if ($album->getStarred() != null) {
+		if (!empty($album->getStarred())) {
 			$result['starred'] = Util::formatZuluDateTime($album->getStarred());
 		}
 
@@ -1288,7 +1288,7 @@ class SubsonicController extends Controller {
 			'contentType' => $track->getMimetype() ?? '',
 			'suffix' => $track->getFileExtension(),
 			'duration' => $track->getLength() ?: 0,
-			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
+			'bitRate' => empty($track->getBitrate()) ? 0 : (int)\round($track->getBitrate()/1000), // convert bps to kbps
 			//'path' => '',
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
@@ -1306,7 +1306,7 @@ class SubsonicController extends Controller {
 			$result['track'] = $trackNumber;
 		}
 
-		if ($track->getStarred() != null) {
+		if (!empty($track->getStarred())) {
 			$result['starred'] = Util::formatZuluDateTime($track->getStarred());
 		}
 

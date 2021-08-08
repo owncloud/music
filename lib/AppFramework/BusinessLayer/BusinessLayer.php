@@ -172,6 +172,14 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Find IDs of all users owning any entities of this business layer
+	 * @return string[]
+	 */
+	public function findAllUsers() : array {
+		return $this->mapper->findAllUsers();
+	}
+
+	/**
 	 * Set the given entities as "starred" on this date
 	 * @param int[] $ids
 	 * @param string $userId
@@ -223,7 +231,7 @@ abstract class BusinessLayer {
 	public function latestInsertTime(string $userId) : \DateTime {
 		return $this->mapper->latestInsertTime($userId) ?? new \DateTime('1970-01-01');
 	}
-	
+
 	/**
 	 * Get the timestamp of the latest update operation on the entity type in question
 	 */

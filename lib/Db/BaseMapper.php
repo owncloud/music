@@ -151,6 +151,17 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Find IDs of all users owning any entities of this mapper
+	 * @return string[]
+	 */
+	public function findAllUsers() : array {
+		$sql = "SELECT DISTINCT(`user_id`) FROM `{$this->getTableName()}`";
+		$result = $this->execute($sql);
+
+		return $result->fetchAll(\PDO::FETCH_COLUMN);
+	}
+
+	/**
 	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
@@ -331,27 +342,27 @@ abstract class BaseMapper extends Mapper {
 	protected function formatTimestampConditions(?string $createdMin, ?string $createdMax, ?string $updatedMin, ?string $updatedMax) : array {
 		$conditions = [];
 		$params = [];
-		
+
 		if (!empty($createdMin)) {
 			$conditions[] = "`{$this->getTableName()}`.`created` >= ?";
 			$params[] = $createdMin;
 		}
-		
+
 		if (!empty($createdMax)) {
 			$conditions[] = "`{$this->getTableName()}`.`created` <= ?";
 			$params[] = $createdMax;
 		}
-		
+
 		if (!empty($updatedMin)) {
 			$conditions[] = "`{$this->getTableName()}`.`updated` >= ?";
 			$params[] = $updatedMin;
 		}
-		
+
 		if (!empty($updatedMax)) {
 			$conditions[] = "`{$this->getTableName()}`.`updated` <= ?";
 			$params[] = $updatedMax;
 		}
-		
+
 		return [\implode(' AND ', $conditions), $params];
 	}
 

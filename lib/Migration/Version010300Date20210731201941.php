@@ -190,7 +190,10 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'notnull' => true,
 			]);
 			$table->dropIndex('music_bookmarks_user_track');
-			$table->renameColumn('track_id', 'entry_id');
+			$table->dropColumn('track_id');
+			$table->addColumn('entry_id', 'integer', [
+				'notnull' => true,
+			]);
 			$table->addUniqueIndex(['user_id', 'type', 'entry_id'], 'music_bookmarks_index');
 		}
 

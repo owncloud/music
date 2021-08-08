@@ -164,13 +164,13 @@ class PodcastService {
 	public function updateChannel(int $id, string $userId, ?string $prevHash = null) : array {
 		$updated = false;
 		$status = self::STATUS_OK;
-		$channel = null;
 
 		try {
 			$channel = $this->channelBusinessLayer->find($id, $userId);
 		} catch (BusinessLayerException $ex) {
 			$this->logger->log("Channel $id to be updated not found: " . $ex->getMessage(), 'warn');
 			$status = self::STATUS_NOT_FOUND;
+			$channel = null;
 		}
 
 		if ($channel !== null) {

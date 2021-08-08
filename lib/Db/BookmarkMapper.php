@@ -17,6 +17,10 @@ namespace OCA\Music\Db;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\IDBConnection;
 
+/**
+ * Type hint a base class methdo to help Scrutinizer
+ * @method Bookmark findEntity(string $sql, array $params=[], ?int $limit=null, ?int $offset=null)
+ */
 class BookmarkMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_bookmarks', '\OCA\Music\Db\Bookmark', 'comment');
@@ -33,6 +37,7 @@ class BookmarkMapper extends BaseMapper {
 	 * @return Bookmark
 	 */
 	protected function findUniqueEntity(Entity $bookmark) : Entity {
+		assert($bookmark instanceof Bookmark);
 		return $this->findByEntry($bookmark->getType(), $bookmark->getEntryId(), $bookmark->getUserId());
 	}
 }

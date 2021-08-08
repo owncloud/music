@@ -15,6 +15,10 @@ namespace OCA\Music\Db;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\IDBConnection;
 
+/**
+ * Type hint a base class methdo to help Scrutinizer
+ * @method PodcastChannel insert(PodcastChannel $channel)
+ */
 class PodcastChannelMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_podcast_channels', '\OCA\Music\Db\PodcastChannel', 'title');

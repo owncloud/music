@@ -23,24 +23,24 @@ use \OCA\Music\Utility\Util;
 /**
  * @method string getTitle()
  * @method void setTitle(string $title)
- * @method int getNumber()
- * @method void setNumber(int $number)
- * @method int getDisk()
- * @method void setDisk(int $disk)
- * @method int getYear()
- * @method void setYear(int $year)
+ * @method ?int getNumber()
+ * @method void setNumber(?int $number)
+ * @method ?int getDisk()
+ * @method void setDisk(?int $disk)
+ * @method ?int getYear()
+ * @method void setYear(?int $year)
  * @method int getArtistId()
  * @method void setArtistId(int $artistId)
- * @method string getArtistName()
- * @method void setArtistName(string $artistName)
+ * @method ?string getArtistName()
+ * @method void setArtistName(?string $artistName)
  * @method int getAlbumId()
  * @method void setAlbumId(int $albumId)
- * @method string getAlbumName()
- * @method void setAlbumName(string $albumName)
- * @method Album getAlbum()
- * @method void setAlbum(Album $album)
- * @method int getLength()
- * @method void setLength(int $length)
+ * @method ?string getAlbumName()
+ * @method void setAlbumName(?string $albumName)
+ * @method ?Album getAlbum()
+ * @method void setAlbum(?Album $album)
+ * @method ?int getLength()
+ * @method void setLength(?int $length)
  * @method int getFileId()
  * @method void setFileId(int $fileId)
  * @method int getBitrate()
@@ -49,24 +49,24 @@ use \OCA\Music\Utility\Util;
  * @method void setMimetype(string $mimetype)
  * @method string getUserId()
  * @method void setUserId(string $userId)
- * @method string getMbid()
- * @method void setMbid(string $mbid)
- * @method string getStarred()
- * @method void setStarred(string $timestamp)
- * @method int getGenreId()
- * @method void setGenreId(int $genreId)
+ * @method ?string getMbid()
+ * @method void setMbid(?string $mbid)
+ * @method ?string getStarred()
+ * @method void setStarred(?string $timestamp)
+ * @method ?int getGenreId()
+ * @method void setGenreId(?int $genreId)
  * @method string getCreated()
  * @method setCreated(string $timestamp)
  * @method string getUpdated()
  * @method setUpdated(string $timestamp)
- * @method string getGenreName()
- * @method void setGenreName(string $genreName)
+ * @method ?string getGenreName()
+ * @method void setGenreName(?string $genreName)
  * @method string getFilename()
  * @method void setFilename(string $filename)
  * @method int getSize()
  * @method void setSize(int $size)
- * @method int getNumberOnPlaylist()
- * @method void setNumberOnPlaylist(int $number)
+ * @method ?int getNumberOnPlaylist()
+ * @method void setNumberOnPlaylist(?int $number)
  */
 class Track extends Entity {
 	public $title;
@@ -86,9 +86,9 @@ class Track extends Entity {
 	public $genreId;
 	public $created;
 	public $updated;
+	// not from the music_tracks table but still part of the standard content of this entity:
 	public $filename;
 	public $size;
-	// not from the music_tracks table but still part of the standard content of this entity:
 	public $albumName;
 	public $artistName;
 	public $genreName;

@@ -839,11 +839,11 @@ class SubsonicController extends Controller {
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
 
 		foreach ($bookmarks as $bookmark) {
-			try {
-				$node = $bookmark->toSubsonicApi();
+			$node = $bookmark->toSubsonicApi();
+			$entryId = $bookmark->getEntryId();
+			$type = $bookmark->getType();
 
-				$entryId = $bookmark->getEntryId();
-				$type = $bookmark->getType();
+			try {
 				if ($type === Bookmark::TYPE_TRACK) {
 					$node['entry'] = $this->trackToApi($this->trackBusinessLayer->find($entryId, $this->userId));
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
@@ -851,7 +851,6 @@ class SubsonicController extends Controller {
 				} else {
 					$this->logger->log("Bookmark {$bookmark->getId()} had unexpected entry type $type", 'warn');
 				}
-
 				$bookmarkNodes[] = $node;
 			} catch (BusinessLayerException $e) {
 				$this->logger->log("Bookmarked entry with type $type and id $entryId not found", 'warn');

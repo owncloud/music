@@ -156,9 +156,9 @@ class PodcastService {
 
 	/**
 	 * Check a single podcast channel for updates
-	 * @param string|null $prevHash Previous content hash known by the client. If given, the result will tell
-	 *								if the channel content has updated from this state. If omitted, the result
-	 *								will tell if the channel changed from its previous server-known state.
+	 * @param ?string $prevHash Previous content hash known by the client. If given, the result will tell
+	 *							if the channel content has updated from this state. If omitted, the result
+	 *							will tell if the channel changed from its previous server-known state.
 	 * @return array like ['status' => int, 'updated' => bool, 'channel' => ?PodcastChannel]
 	 */
 	public function updateChannel(int $id, string $userId, ?string $prevHash = null) : array {
@@ -215,9 +215,14 @@ class PodcastService {
 	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
 	 *			where each int represent number of channels in that category
 	 */
-	public function updateAllChannels(string $userId, ?callable $progressCallback = null) : array {
+	public function updateAllChannels(string $userId, ?float $olderThan, ?callable $progressCallback = null) : array {
 		$result = ['changed' => 0, 'unchanged' => 0, 'failed' => 0];
-		$ids = $this->channelBusinessLayer->findAllIds($userId);
+
+		if ($olderThan === null) {
+			$ids = $this->channelBusinessLayer->findAllIds($userId);
+		} else {
+			$ids = $this->channelBusinessLayer->findAllIdsNotUpdatedForHours($userId, $olderThan);
+		}
 
 		foreach ($ids as $id) {
 			$channelResult = $this->updateChannel($id, $userId);

@@ -14,6 +14,7 @@ namespace OCA\Music\Command;
 
 use OCA\Music\Utility\PodcastService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PodcastUpdate extends BaseCommand {
@@ -33,24 +34,36 @@ class PodcastUpdate extends BaseCommand {
 		$this
 			->setName('music:podcast-update')
 			->setDescription('update podcast channels of one or more users from their sources')
+			->addOption(
+				'older-than',
+				null,
+				InputOption::VALUE_REQUIRED,
+				'check updates only for channels which have not been checked for this many hours (sub-hour resolution supported with decimals)'
+			)
 		;
 	}
 
 	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+		$olderThan = $input->getOption('older-than');
+		if ($olderThan !== null) {
+			$olderThan = (float)$olderThan;
+		}
+
 		if ($input->getOption('all')) {
-			$this->userManager->callForAllUsers(function($user) use ($output) {
-				$this->updateForUser($user->getUID(), $output);
+			$this->userManager->callForAllUsers(function($user) use ($output, $olderThan) {
+				$this->updateForUser($user->getUID(), $olderThan, $output);
 			});
 		} else {
 			foreach ($users as $userId) {
-				$this->updateForUser($userId, $output);
+				$this->updateForUser($userId, $olderThan, $output);
 			}
 		}
 	}
 
-	private function updateForUser(string $userId, OutputInterface $output) : void {
+	private function updateForUser(string $userId, ?float $olderThan, OutputInterface $output) : void {
 		$output->writeln("Updating podcasts of <info>$userId</info>...");
-		$this->podcastService->updateAllChannels($userId, function ($channelResult) use ($output) {
+
+		$result = $this->podcastService->updateAllChannels($userId, $olderThan, function ($channelResult) use ($output) {
 			$channel = $channelResult['channel'] ?? null;
 			$id = $channel->getId() ?? -1;
 			$title = $channel->getTitle() ?? '(unknown)';
@@ -63,5 +76,9 @@ class PodcastUpdate extends BaseCommand {
 				$output->writeln("  Channel $id <error>$title</error> update failed");
 			}
 		});
+
+		if ($result['changed'] + $result['unchanged'] + $result['failed'] === 0) {
+			$output->writeln("  (no channels to update)");
+		}
 	}
 }

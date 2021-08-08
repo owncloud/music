@@ -38,6 +38,17 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
+	/**
+	 * @return int[]
+	 */
+	public function findAllIdsNotUpdatedForHours(string $userId, float $minAgeHours) : array {
+		$minAgeSeconds = (int)($minAgeHours * 3600);
+		$timeLimit = new \DateTime();
+		$timeLimit->modify("-$minAgeSeconds second");
+
+		return $this->mapper->findAllIdsWithNoUpdateSince($userId, $timeLimit);
+	}
+
 	public function create(string $userId, string $rssUrl, string $rssContent, \SimpleXMLElement $xmlNode) : PodcastChannel {
 		$channel = new PodcastChannel();
 		self::parseChannelDataFromXml($xmlNode, $channel);

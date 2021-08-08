@@ -25,6 +25,16 @@ class PodcastChannelMapper extends BaseMapper {
 	}
 
 	/**
+	 * @return int[]
+	 */
+	public function findAllIdsWithNoUpdateSince(string $userId, \DateTime $timeLimit) : array {
+		$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `user_id` = ? AND `update_checked` < ?";
+		$result = $this->execute($sql, [$userId, $timeLimit->format(BaseMapper::SQL_DATE_FORMAT)]);
+
+		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param PodcastChannel $channel
 	 * @return PodcastChannel

@@ -63,10 +63,14 @@ class PodcastUpdate extends BaseCommand {
 	private function updateForUser(string $userId, ?float $olderThan, OutputInterface $output) : void {
 		$output->writeln("Updating podcasts of <info>$userId</info>...");
 
-		$result = $this->podcastService->updateAllChannels($userId, $olderThan, function ($channelResult) use ($output) {
-			$channel = $channelResult['channel'] ?? null;
-			$id = $channel->getId() ?? -1;
-			$title = $channel->getTitle() ?? '(unknown)';
+		$result = $this->podcastService->updateAllChannels($userId, $olderThan, function (array $channelResult) use ($output) {
+			if (isset($channelResult['channel'])) {
+				$id = $channelResult['channel']->getId();
+				$title = $channelResult['channel']->getTitle();
+			} else {
+				$id = -1;
+				$title = '(unknown)';
+			}
 
 			if ($channelResult['updated']) {
 				$output->writeln("  Channel $id <info>$title</info> was updated");

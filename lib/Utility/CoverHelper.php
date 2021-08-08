@@ -60,7 +60,7 @@ class CoverHelper {
 	 *                       scaling and cropping altogether.
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null) {
+	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null) : ?array {
 		// Skip using cache in case the cover is requested in specific size
 		if ($size !== null) {
 			return $this->readCover($entity, $rootFolder, $size);
@@ -122,7 +122,7 @@ class CoverHelper {
 	 * @param bool $asBase64
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	public function getCoverFromCache(string $hash, string $userId, bool $asBase64 = false) {
+	public function getCoverFromCache(string $hash, string $userId, bool $asBase64 = false) : ?array {
 		$cached = $this->cache->get($userId, 'cover_' . $hash);
 		if ($cached !== null) {
 			$delimPos = \strpos($cached, '|');
@@ -143,7 +143,7 @@ class CoverHelper {
 	 * @param array $coverData
 	 * @return string|null Hash of the cached cover
 	 */
-	private function addCoverToCache($entity, string $userId, array $coverData) {
+	private function addCoverToCache($entity, string $userId, array $coverData) : ?string {
 		$mime = $coverData['mimetype'];
 		$content = $coverData['content'];
 		$hash = null;
@@ -179,7 +179,7 @@ class CoverHelper {
 	 * Remove album cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeAlbumCoverFromCache(int $albumId, string $userId=null) {
+	public function removeAlbumCoverFromCache(int $albumId, string $userId=null) : void {
 		$this->cache->remove($userId, 'album_cover_hash_' . $albumId);
 	}
 
@@ -187,7 +187,7 @@ class CoverHelper {
 	 * Remove artist cover image from cache if it is there. Silently do nothing if there
 	 * is no cached cover. All users are targeted if no $userId passed.
 	 */
-	public function removeArtistCoverFromCache(int $artistId, string $userId=null) {
+	public function removeArtistCoverFromCache(int $artistId, string $userId=null) : void {
 		$this->cache->remove($userId, 'artist_cover_hash_' . $artistId);
 	}
 
@@ -224,7 +224,7 @@ class CoverHelper {
 	 * @param Folder $rootFolder
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
-	private function readCoverFromLocalFile($entity, Folder $rootFolder) {
+	private function readCoverFromLocalFile($entity, Folder $rootFolder) : ?array {
 		$response = null;
 
 		$coverId = $entity->getCoverFileId();
@@ -232,7 +232,7 @@ class CoverHelper {
 			$node = $rootFolder->getById($coverId)[0] ?? null;
 			if ($node instanceof File) {
 				$mime = $node->getMimeType();
-				
+
 				if (\strpos($mime, 'audio') === 0) { // embedded cover image
 					$cover = $this->extractor->parseEmbeddedCoverArt($node); // TODO: currently only album cover supported
 
@@ -316,16 +316,14 @@ class CoverHelper {
 		return $image;
 	}
 
-	private static function autoDetectMime($imageContent) {
+	private static function autoDetectMime(string $imageContent) : string {
 		return \getimagesizefromstring($imageContent)['mime'];
 	}
 
 	/**
-	 * @param Album|Artist|PodcastChannel $entity
 	 * @throws \InvalidArgumentException if entity is not one of the expected types
-	 * @return string
 	 */
-	private static function getHashKey($entity) {
+	private static function getHashKey($entity) : string {
 		if ($entity instanceof Album) {
 			return 'album_cover_hash_' . $entity->getId();
 		} elseif ($entity instanceof Artist) {
@@ -341,11 +339,11 @@ class CoverHelper {
 	 * Create and store an access token which can be used to read cover images of a user.
 	 * A user may have only one valid cover image access token at a time; the latest token
 	 * always overwrites the previously obtained one.
-	 * 
+	 *
 	 * The reason this is needed is because the mediaSession in Firefox loads the cover images
-	 * in a context where normal cookies and other standard request headers are not available. 
-	 * Hence, we need to provide the cover images as "public" resources, i.e. without requiring 
-	 * that the caller is logged in to the cloud. But still, we don't want to let just anyone 
+	 * in a context where normal cookies and other standard request headers are not available.
+	 * Hence, we need to provide the cover images as "public" resources, i.e. without requiring
+	 * that the caller is logged in to the cloud. But still, we don't want to let just anyone
 	 * load the user data. The solution is to use a temporary token which grants access just to
 	 * the cover images. This token can be then sent as URL argument by the mediaSession.
 	 */

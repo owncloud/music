@@ -215,7 +215,7 @@ class PodcastService {
 	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
 	 *			where each int represent number of channels in that category
 	 */
-	public function updateAllChannels(string $userId, ?float $olderThan, ?callable $progressCallback = null) : array {
+	public function updateAllChannels(string $userId, ?float $olderThan = null, ?callable $progressCallback = null) : array {
 		$result = ['changed' => 0, 'unchanged' => 0, 'failed' => 0];
 
 		if ($olderThan === null) {

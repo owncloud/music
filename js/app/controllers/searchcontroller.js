@@ -240,7 +240,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		// mark episode matches and collect the unique parent channels
 		var channels = {};
 		_(matches.result).each(function(episode) {
-			$('#track-' + episode.id).addClass('matched');
+			$('#podcast-episode-' + episode.id).addClass('matched');
 			channels[episode.channel.id] = 1;
 		});
 

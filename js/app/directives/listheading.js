@@ -144,10 +144,10 @@ function ($rootScope, gettextCatalog) {
 		ngElem.on('click', '.heading', function(_e) {
 			data.onClick(data.model);
 		});
-		ngElem.on('click', '.icon-details', function(_e) {
+		ngElem.on('click', 'button.icon-details', function(_e) {
 			data.onDetailsClick(data.model);
 		});
-		ngElem.on('click', '.icon-more', function(_e) {
+		ngElem.on('click', 'button.icon-more', function(_e) {
 			toggleActionsMenu();
 		});
 		ngElem.on('click', 'li', function(_e) {

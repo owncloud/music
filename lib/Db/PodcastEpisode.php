@@ -95,10 +95,10 @@ class PodcastEpisode extends Entity {
 	public function detailsToApi() : array {
 		return [
 			'id' => $this->getId(),
-			'channel_id' => $this->getChannelId(),
 			'title' => $this->getTitle(),
 			'episode' => $this->getEpisode(),
 			'description' => $this->getDescription(),
+			'channel_id' => $this->getChannelId(),
 			'link_url' => $this->getLinkUrl(),
 			'stream_url' => $this->getStreamUrl(),
 			'mimetype' => $this->getMimetype(),

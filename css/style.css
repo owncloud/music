@@ -189,8 +189,8 @@ div:hover > .play-pause,
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-view .icon-details,
-#app-view .icon-more {
+#app-view button.icon-details,
+#app-view button.icon-more {
 	display: table-cell;
 	vertical-align: middle;
 	margin: 0;
@@ -200,13 +200,13 @@ div:hover > .play-pause,
 	opacity: 0.5;
 }
 
-#app-view :hover > .icon-details,
-#app-view :hover > .icon-more {
+#app-view :hover > button.icon-details,
+#app-view :hover > button.icon-more {
 	visibility: visible;
 }
 
-#app-view .icon-details:hover,
-#app-view .icon-more:hover {
+#app-view button.icon-details:hover,
+#app-view button.icon-more:hover {
 	opacity: 1;
 }
 

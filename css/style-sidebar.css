@@ -92,7 +92,6 @@
 	padding-top: 0;
 	padding-bottom: 6px;
 	padding-right: 0;
-	white-space: pre-wrap;
 }
 
 #app-sidebar .clickable button {
@@ -242,11 +241,14 @@
 }
 
 #app-sidebar #lastfm-info a,
+#app-sidebar #podcast-details a,
+#app-sidebar #podcast-details a *,
 #app-sidebar .tutorial a {
 	text-decoration: underline;
 }
 
 #app-sidebar #lastfm-info a:after,
+#app-sidebar #podcast-details a:after,
 #app-sidebar .tutorial a:after {
 	content: " ↗";
 }
@@ -283,4 +285,8 @@
 #app-sidebar button.disabled {
 	opacity: .5;
 	pointer-events: none;
+}
+
+#app-sidebar #podcast-details .tags {
+	margin-top: 24px;
 }

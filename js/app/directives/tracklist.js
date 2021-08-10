@@ -56,14 +56,6 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		return _.sortedIndexOf(searchModeTrackMatches, trackId) !== -1;
 	}
 
-	function trackIdFromElementId(elemId) {
-		if (elemId && elemId.substring(0, 6) === 'track-') {
-			return parseInt(elemId.split('-')[1]);
-		} else {
-			return null;
-		}
-	}
-
 	/**
 	 * Set up the track items and the listeners for a given <ul> element
 	 */
@@ -164,7 +156,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				listItem.appendChild(detailsButton);
 			}
 
-			listItem.id = 'track-' + trackData.id;
+			listItem.id = data.trackIdPrefix + trackData.id;
 			if (className) {
 				listItem.className = className;
 			}
@@ -176,6 +168,14 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			}
 
 			return listItem;
+		}
+
+		function trackIdFromElementId(elemId) {
+			if (elemId && elemId.startsWith(data.trackIdPrefix)) {
+				return parseInt(elemId.split('-').pop());
+			} else {
+				return null;
+			}
 		}
 
 		/**
@@ -326,6 +326,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				getDraggable: scope.$eval(attrs.getDraggable),
 				collapseLimit: attrs.collapseLimit || 999999,
 				showCollapsedText: scope.$eval(attrs.showCollapsedText) ?? moreText,
+				trackIdPrefix: (scope.$eval(attrs.trackIdPrefix) ?? 'track') + '-',
 				listeners: null,
 				scope: scope,
 				element: element

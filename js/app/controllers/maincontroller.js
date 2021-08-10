@@ -315,6 +315,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$rootScope.$emit('showRadioHint');
 	};
 
+	$scope.showPodcastChannelDetails = function(channel) {
+		showDetails('podcastChannel', channel.id);
+	};
+
+	$scope.showPodcastEpisodeDetails = function(episodeId) {
+		showDetails('podcastEpisode', episodeId);
+	};
+
 	$scope.hideSidebar = function() {
 		$rootScope.$emit('hideDetails');
 	};

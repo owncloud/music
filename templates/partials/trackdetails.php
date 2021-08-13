@@ -45,13 +45,7 @@
 		</div>
 
 		<div class="tab" id="lastfm-info" ng-show="selectedTab=='lastfm'">
-			<p ng-if="lastfmInfo"
-				ng-init="truncated = (lastfmInfo.length > 400)"
-				ng-class="{clickable: truncated, truncated: truncated}"
-				ng-bind-html="lastfmInfo | limitTo:(truncated ? 365 : undefined)"
-				ng-click="truncated = false; adjustFixedPositions()"
-				title="{{ truncated ? clickToExpandText : '' }}">
-			</p>
+			<p ng-if="lastfmInfo" collapsible-html="lastfmInfo" on-expand="adjustFixedPositions"></p>
 			<dl class="tags" ng-if="lastfmTags">
 				<dt translate>Tags</dt>
 				<dd ng-bind-html="lastfmTags"></dd>

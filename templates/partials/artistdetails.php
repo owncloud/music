@@ -25,13 +25,7 @@
 		<span class="missing-content" ng-if="lastfmInfo.api_key_set && !lastfmInfo.connection_ok"
 			title="{{ 'Problem connecting Last.fm. The API key may be invalid.' | translate }}"
 			translate>(Failed to connect Last.fm)</span>
-		<p ng-if="artistBio"
-			ng-init="truncated = (artistBio.length > 400)"
-			ng-class="{clickable: truncated, truncated: truncated}"
-			ng-bind-html="artistBio | limitTo:(truncated ? 365 : undefined)"
-			ng-click="truncated = false; adjustFixedPositions()"
-			title="{{ truncated ? clickToExpandText : '' }}">
-		</p>
+		<p ng-if="artistBio" collapsible-html="artistBio" on-expand="adjustFixedPositions"></p>
 		<dl>
 			<dt ng-if="artistTags" translate>Tags</dt>
 			<dd ng-if="artistTags" ng-bind-html="artistTags"></dd>

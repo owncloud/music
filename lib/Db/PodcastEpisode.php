@@ -36,6 +36,8 @@ use \OCA\Music\Utility\Util;
  * @method void setTitle(string $title)
  * @method int getEpisode()
  * @method void setEpisode(int $episode)
+ * @method int getSeason()
+ * @method void setSeason(int $season)
  * @method string getLinkUrl()
  * @method void setLinkUrl(string $url)
  * @method string getPublished()
@@ -66,6 +68,7 @@ class PodcastEpisode extends Entity {
 	public $guidHash;
 	public $title;
 	public $episode;
+	public $season;
 	public $linkUrl;
 	public $published;
 	public $keywords;
@@ -87,6 +90,7 @@ class PodcastEpisode extends Entity {
 		return [
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
+			'ordinal' => $this->getEpisodeWithSeason(),
 			'stream_url' => $this->getStreamUrl(),
 			'mimetype' => $this->getMimetype()
 		];
@@ -97,6 +101,7 @@ class PodcastEpisode extends Entity {
 			'id' => $this->getId(),
 			'title' => $this->getTitle(),
 			'episode' => $this->getEpisode(),
+			'season' => $this->getSeason(),
 			'description' => $this->getDescription(),
 			'channel_id' => $this->getChannelId(),
 			'link_url' => $this->getLinkUrl(),
@@ -138,6 +143,7 @@ class PodcastEpisode extends Entity {
 			'streamId' => 'podcast_episode-' . $this->getId(),
 			'channelId' => 'podcast_channel-' . $this->getChannelId(),
 			'title' => $this->getTitle(),
+			'track' => $this->getEpisode(),
 			'description' => $this->getDescription(),
 			'publishDate' => Util::formatZuluDateTime($this->getPublished()),
 			'status' => 'completed',
@@ -157,6 +163,16 @@ class PodcastEpisode extends Entity {
 			$result['starred'] = Util::formatZuluDateTime($this->starred);
 		}
 
+		return $result;
+	}
+
+	public function getEpisodeWithSeason() : ?string {
+		$result = (string)$this->getEpisode();
+		// the season is considered only if there actually is an episode
+		$season = $this->getSeason();
+		if ($result !== null && $season !== null) {
+			$result = "$season-$result";
+		}
 		return $result;
 	}
 

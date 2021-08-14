@@ -95,8 +95,9 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$episode->setDuration( self::parseDuration((string)$itunesNodes->duration) );
 		$episode->setGuid( Util::truncate($guid, 2048) );
 		$episode->setGuidHash( \hash('md5', $guid) );
-		$episode->setTitle( Util::truncate((string)$xmlNode->title, 256) );
+		$episode->setTitle( self::parseTitle($itunesNodes->title, $xmlNode->title, $itunesNodes->episode) );
 		$episode->setEpisode( (int)$itunesNodes->episode ?: null );
+		$episode->setSeason( (int)$itunesNodes->season ?: null );
 		$episode->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
 		$episode->setPublished( \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)($xmlNode->pubDate))) );
 		$episode->setKeywords( Util::truncate((string)$itunesNodes->keywords, 256) );
@@ -105,6 +106,24 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$episode->setDescription( (string)($xmlNode->description ?: $itunesNodes->summary) );
 
 		return $episode;
+	}
+
+	private static function parseTitle($itunesTitle, $title, $episode) : ?string {
+		// Prefer to use the iTunes title over the standard title, becuase sometimes,
+		// the generic title contains the episode number which is also provided separately
+		// while the iTunes title does not.
+		$result = (string)($itunesTitle ?: $title);
+
+		// If there still is the same episode number prefixed in the beginning of the title
+		// as is provided separately, attempt to crop that.
+		if ($episode) {
+			$matches = null;
+			if (\preg_match("/^$episode\s*[\.:-]\s*(.+)$/", $result, $matches) === 1) {
+				$result = $matches[1];
+			}
+		}
+
+		return Util::truncate($result, 256);
 	}
 
 	private static function parseDuration(string $data) :?int {

@@ -149,6 +149,9 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 			$table->addColumn('episode', 'integer', [
 				'notnull' => false,
 			]);
+			$table->addColumn('season', 'integer', [
+				'notnull' => false,
+			]);
 			$table->addColumn('link_url', 'string', [
 				'notnull' => true,
 				'length' => 2048,

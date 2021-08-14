@@ -651,6 +651,11 @@
 				<notnull>false</notnull>
 			</field>
 			<field>
+				<name>season</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
 				<name>link_url</name>
 				<type>text</type>
 				<notnull>true</notnull>

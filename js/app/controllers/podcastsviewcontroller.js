@@ -88,7 +88,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			return {
 				title: episode.title,
 				tooltip: episode.title,
-				number: null,
+				number: episode.ordinal,
 				id: episode.id
 			};
 		};

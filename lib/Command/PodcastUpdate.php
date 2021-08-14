@@ -40,6 +40,12 @@ class PodcastUpdate extends BaseCommand {
 				InputOption::VALUE_REQUIRED,
 				'check updates only for channels which have not been checked for this many hours (sub-hour resolution supported with decimals)'
 			)
+			->addOption(
+				'force',
+				null,
+				InputOption::VALUE_NONE,
+				'update episodes even if there doesn\'t appear to be any changes'
+			)
 		;
 	}
 
@@ -48,22 +54,23 @@ class PodcastUpdate extends BaseCommand {
 		if ($olderThan !== null) {
 			$olderThan = (float)$olderThan;
 		}
+		$force = (bool)$input->getOption('force');
 
 		if ($input->getOption('all')) {
 			$this->userManager->callForAllUsers(function($user) use ($output, $olderThan) {
-				$this->updateForUser($user->getUID(), $olderThan, $output);
+				$this->updateForUser($user->getUID(), $olderThan, $force, $output);
 			});
 		} else {
 			foreach ($users as $userId) {
-				$this->updateForUser($userId, $olderThan, $output);
+				$this->updateForUser($userId, $olderThan, $force, $output);
 			}
 		}
 	}
 
-	private function updateForUser(string $userId, ?float $olderThan, OutputInterface $output) : void {
+	private function updateForUser(string $userId, ?float $olderThan, bool $force, OutputInterface $output) : void {
 		$output->writeln("Updating podcasts of <info>$userId</info>...");
 
-		$result = $this->podcastService->updateAllChannels($userId, $olderThan, function (array $channelResult) use ($output) {
+		$result = $this->podcastService->updateAllChannels($userId, $olderThan, $force, function (array $channelResult) use ($output) {
 			if (isset($channelResult['channel'])) {
 				$id = $channelResult['channel']->getId();
 				$title = $channelResult['channel']->getTitle();

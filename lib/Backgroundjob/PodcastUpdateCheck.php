@@ -36,7 +36,7 @@ class PodcastUpdateCheck {
 			$channelsChecked = 0;
 
 			foreach ($users as $userId) {
-				$podcastService->updateAllChannels($userId, $minInterval, function (array $channelResult) use ($logger, $userId, &$channelsChecked) {
+				$podcastService->updateAllChannels($userId, $minInterval, false, function (array $channelResult) use ($logger, $userId, &$channelsChecked) {
 					$id = (isset($channelResult['channel'])) ? $channelResult['channel']->getId() : -1;
 
 					if ($channelResult['updated']) {

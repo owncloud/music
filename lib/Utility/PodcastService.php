@@ -159,9 +159,12 @@ class PodcastService {
 	 * @param ?string $prevHash Previous content hash known by the client. If given, the result will tell
 	 *							if the channel content has updated from this state. If omitted, the result
 	 *							will tell if the channel changed from its previous server-known state.
+	 * @param bool $force Value true will cause the episodes to be parsed and updated to the database even
+	 *					in case the RSS hasn't been changed at all since the previous update. This might be
+	 *					useful during the development or if the previous update was unexpectedly aborted.
 	 * @return array like ['status' => int, 'updated' => bool, 'channel' => ?PodcastChannel]
 	 */
-	public function updateChannel(int $id, string $userId, ?string $prevHash = null) : array {
+	public function updateChannel(int $id, string $userId, ?string $prevHash = null, bool $force = false) : array {
 		$updated = false;
 		$status = self::STATUS_OK;
 
@@ -185,8 +188,8 @@ class PodcastService {
 			if (!$xmlTree || !$xmlTree->channel) {
 				$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
 				$status = self::STATUS_INVALID_RSS;
-			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel)) {
-				// channel content has actually changed, update the episodes too
+			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel) || $force) {
+				// update the episodes too if channel content has actually changed or update is forced
 				$episodes = [];
 				foreach ($xmlTree->channel->item as $episodeNode) {
 					if ($episodeNode !== null) {
@@ -215,7 +218,9 @@ class PodcastService {
 	 * @return array like ['changed' => int, 'unchanged' => int, 'failed' => int]
 	 *			where each int represent number of channels in that category
 	 */
-	public function updateAllChannels(string $userId, ?float $olderThan = null, ?callable $progressCallback = null) : array {
+	public function updateAllChannels(
+			string $userId, ?float $olderThan = null, bool $force = false, ?callable $progressCallback = null) : array {
+
 		$result = ['changed' => 0, 'unchanged' => 0, 'failed' => 0];
 
 		if ($olderThan === null) {
@@ -225,7 +230,7 @@ class PodcastService {
 		}
 
 		foreach ($ids as $id) {
-			$channelResult = $this->updateChannel($id, $userId);
+			$channelResult = $this->updateChannel($id, $userId, null, $force);
 			if ($channelResult['updated']) {
 				$result['changed']++;
 			} elseif ($channelResult['status'] === self::STATUS_OK) {

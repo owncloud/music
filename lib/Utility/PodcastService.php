@@ -91,7 +91,7 @@ class PodcastService {
 	 */
 	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
 		if ($allChannelsIncluded || \count($channels) > 999) {
-			$episodes = $this->episodeBusinessLayer->findAll($userId);
+			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
 			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);
 		}
@@ -127,14 +127,8 @@ class PodcastService {
 			return ['status' => self::STATUS_ALREADY_EXISTS, 'channel' => null];
 		}
 
-		$episodes = [];
-		foreach ($xmlTree->channel->item as $episodeNode) {
-			if ($episodeNode !== null) {
-				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($userId, $channel->getId(), $episodeNode);
-			}
-		}
-
-		$channel->setEpisodes($episodes);
+		$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $channel->getId());
+		$channel->setEpisodes(\array_reverse($episodes));
 
 		return ['status' => self::STATUS_OK, 'channel' => $channel];
 	}
@@ -190,12 +184,7 @@ class PodcastService {
 				$status = self::STATUS_INVALID_RSS;
 			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel) || $force) {
 				// update the episodes too if channel content has actually changed or update is forced
-				$episodes = [];
-				foreach ($xmlTree->channel->item as $episodeNode) {
-					if ($episodeNode !== null) {
-						$episodes[] = $this->episodeBusinessLayer->addOrUpdate($userId, $id, $episodeNode);
-					}
-				}
+				$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $id);
 				$channel->setEpisodes($episodes);
 				$this->episodeBusinessLayer->deleteByChannelExcluding($id, Util::extractIds($episodes), $userId);
 				$updated = true;
@@ -253,6 +242,17 @@ class PodcastService {
 	public function resetAll(string $userId) : void {
 		$this->episodeBusinessLayer->deleteAll($userId);
 		$this->channelBusinessLayer->deleteAll($userId);
+	}
+
+	private function updateEpisodesFromXml(\SimpleXMLElement $items, string $userId, int $channelId) : array {
+		$episodes = [];
+		// loop the episodes from XML in reverse order to get chronological order
+		for ($count = \count($items), $i = $count-1; $i >= 0; --$i) {
+			if ($items[$i] !== null) {
+				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($userId, $channelId, $items[$i]);
+			}
+		}
+		return $episodes;
 	}
 
 }

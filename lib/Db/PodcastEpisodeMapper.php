@@ -29,7 +29,9 @@ class PodcastEpisodeMapper extends BaseMapper {
 		if ($channelCount === 0) {
 			return [];
 		} else {
-			$sql = $this->selectUserEntities('`channel_id` IN ' . $this->questionMarks($channelCount));
+			$condition = '`channel_id` IN ' . $this->questionMarks($channelCount);
+			$sorting = 'ORDER BY `id` DESC';
+			$sql = $this->selectUserEntities($condition, $sorting);
 			return $this->findEntities($sql, \array_merge([$userId], $channelIds), $limit, $offset);
 		}
 	}

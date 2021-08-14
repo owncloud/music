@@ -66,7 +66,7 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'length' => 256,
 			]);
 			$table->addColumn('link_url', 'string', [
-				'notnull' => true,
+				'notnull' => false,
 				'length' => 2048,
 			]);
 			$table->addColumn('language', 'string', [
@@ -85,7 +85,7 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'notnull' => false,
 			]);
 			$table->addColumn('image_url', 'string', [
-				'notnull' => true,
+				'notnull' => false,
 				'length' => 2048,
 			]);
 			$table->addColumn('category', 'string', [
@@ -121,11 +121,11 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'unsigned' => true,
 			]);
 			$table->addColumn('stream_url', 'string', [
-				'notnull' => true,
+				'notnull' => false,
 				'length' => 2048,
 			]);
 			$table->addColumn('mimetype', 'string', [
-				'notnull' => true,
+				'notnull' => false,
 				'length' => 256,
 			]);
 			$table->addColumn('size', 'integer', [
@@ -153,7 +153,7 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 				'notnull' => false,
 			]);
 			$table->addColumn('link_url', 'string', [
-				'notnull' => true,
+				'notnull' => false,
 				'length' => 2048,
 			]);
 			$table->addColumn('published', 'datetime', [

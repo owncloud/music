@@ -515,7 +515,7 @@
 			<field>
 				<name>link_url</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>2048</length>
 			</field>
 			<field>
@@ -544,7 +544,7 @@
 			<field>
 				<name>image_url</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>2048</length>
 			</field>
 			<field>
@@ -608,13 +608,13 @@
 			<field>
 				<name>stream_url</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>2048</length>
 			</field>
 			<field>
 				<name>mimetype</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>256</length>
 			</field>
 			<field>
@@ -658,7 +658,7 @@
 			<field>
 				<name>link_url</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>2048</length>
 			</field>
 			<field>

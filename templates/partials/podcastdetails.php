@@ -7,7 +7,10 @@
 		<dt ng-repeat-start="(key, value) in details" ng-if="keyShown(key, value)">{{ formatKey(key) }}</dt>
 		<dd ng-if="keyShown(key, value) && keyHasDetails(key)" class="clickable"
 			ng-click="showKeyDetails(key, value)">{{ formatValue(key, value) }}<button class="icon-info"></button></dd>
-		<dd ng-repeat-end ng-if="keyShown(key, value) && !keyHasDetails(key)" ng-bind-html="formatValue(key, value)"></dd>
+		<dd ng-if="keyShown(key, value) && keyMayCollapse(key)"
+			collapsible-html="formatValue(key, value)" on-expand="adjustFixedPositions"></dd>
+		<dd ng-repeat-end ng-if="keyShown(key, value) && !keyHasDetails(key) && !keyMayCollapse(key)"
+			ng-bind-html="formatValue(key, value)"></dd>
 
 	</dl>
 </div>

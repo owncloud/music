@@ -88,7 +88,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			});
 
 			if (data.scope.currentTrack) {
-				var currentTrack = htmlElem.querySelector('#track-' + data.scope.currentTrack.id);
+				var currentTrack = htmlElem.querySelector('#' + data.trackIdPrefix + data.scope.currentTrack.id);
 				if (currentTrack) {
 					currentTrack.classList.add('current');
 					if ($rootScope.playing) {

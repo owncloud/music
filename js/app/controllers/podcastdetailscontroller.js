@@ -112,7 +112,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 
 		$scope.keyMayCollapse = function(key) {
 			return (key === 'description');
-		}
+		};
 
 		$scope.keyHasDetails = function(key) {
 			return (key === 'channel_id');

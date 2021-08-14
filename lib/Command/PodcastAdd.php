@@ -90,9 +90,10 @@ class PodcastAdd extends BaseCommand {
 			$channel = $this->channelBusinessLayer->create($userId, $rss, $content, $xmlNode);
 
 			// loop the episodes from XML in reverse order to get chronological order
+			$items = $xmlNode->item;
 			for ($count = \count($items), $i = $count-1; $i >= 0; --$i) {
 				if ($items[$i] !== null) {
-					$this->episodeBusinessLayer->addOrUpdate($userId, $channelId, $items[$i]);
+					$this->episodeBusinessLayer->addOrUpdate($userId, $channel->getId(), $items[$i]);
 				}
 			}
 		} catch (\OCA\Music\AppFramework\Db\UniqueConstraintViolationException $ex) {

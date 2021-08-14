@@ -57,7 +57,7 @@ class PodcastUpdate extends BaseCommand {
 		$force = (bool)$input->getOption('force');
 
 		if ($input->getOption('all')) {
-			$this->userManager->callForAllUsers(function($user) use ($output, $olderThan) {
+			$this->userManager->callForAllUsers(function($user) use ($output, $olderThan, $force) {
 				$this->updateForUser($user->getUID(), $olderThan, $force, $output);
 			});
 		} else {

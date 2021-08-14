@@ -131,7 +131,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 
 		if (\ctype_digit($data)) {
 			return (int)$data; // plain seconds
-		} elseif (\is_string($data) && \preg_match('/^(\d\d):(\d\d):(\d\d).*/', $data, $matches) === 1) {
+		} elseif (\preg_match('/^(\d\d):(\d\d):(\d\d).*/', $data, $matches) === 1) {
 			return (int)$matches[1] * 3600 + (int)$matches[2] * 60 + (int)$matches[3]; // HH:MM:SS
 		} else {
 			return null; // no value or unsupported format

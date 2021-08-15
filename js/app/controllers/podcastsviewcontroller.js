@@ -27,9 +27,7 @@ angular.module('Music').controller('PodcastsViewController', [
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playEpisodes(listId, episodes) {
-			var playlist = _.map(episodes, function(episode) {
-				return { track: episode };
-			});
+			var playlist = _.map(episodes, (episode) => ({track: episode}));
 			playlistService.setPlaylist(listId, playlist);
 			playlistService.publish('play');
 		}

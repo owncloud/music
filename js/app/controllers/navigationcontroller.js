@@ -219,6 +219,8 @@ angular.module('Music').controller('NavigationController', [
 					play('genres', libraryService.getTracksInGenreOrder());
 				} else if (destination === '#/radio') {
 					play('radio', libraryService.getAllRadioStations());
+				} else if (destination === '#/podcasts') {
+					play('podcasts', _.map(libraryService.getAllPodcastEpisodes(), (episode) => ({track: episode})));
 				} else {
 					play('playlist-' + playlist.id, playlist.tracks);
 				}

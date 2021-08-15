@@ -410,6 +410,9 @@ angular.module('Music').service('libraryService', [function() {
 		getPodcastEpisode: function(id) {
 			return _(podcastChannels).map('episodes').flatten().find({ id: Number(id) });
 		},
+		getAllPodcastEpisodes: function() {
+			return _(podcastChannels).map('episodes').flatten().value();
+		},
 		getPodcastChannel: function(id) {
 			return _.find(podcastChannels, { id: Number(id) });
 		},

@@ -105,6 +105,8 @@ $app->registerRoutes($this, ['routes' => [
 	// Ampache API - POST version for JustPlayer. Defining 'postfix' allows binding two routes to the same handler.
 	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php',	'verb' => 'POST',	'postfix' => '_post'],
 	['name' => 'ampache#jsonApi',	'url' => '/ampache/server/json.server.php',	'verb' => 'POST',	'postfix' => '_post'],
+	// Ampache API - Workaround for AmpacheAlbumPlayer
+	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php/',	'verb' => 'GET',	'postfix' => '_aap'],
 
 	// Subsonic API http://www.subsonic.org/pages/api.jsp
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.

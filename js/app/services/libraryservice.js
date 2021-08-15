@@ -94,6 +94,11 @@ angular.module('Music').service('libraryService', [function() {
 		return playlistEntry(tracksIndex[trackId]);
 	}
 
+	function wrapRadioStation(station) {
+		station.type = 'radio';
+		return playlistEntry(station);
+	}
+
 	function wrapPlaylist(playlist) {
 		var wrapped = $.extend({}, playlist); // clone the playlist
 		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
@@ -110,6 +115,7 @@ angular.module('Music').service('libraryService', [function() {
 	function initPodcastChannel(channel) {
 		_.forEach(channel.episodes, function(episode) {
 			episode.channel = channel;
+			episode.type = 'podcast';
 		});
 	}
 
@@ -125,6 +131,7 @@ angular.module('Music').service('libraryService', [function() {
 
 		// tracks index
 		_.forEach(tracks, function(track) {
+			track.type = 'song';
 			tracksIndex[track.id] = track;
 		});
 	}
@@ -258,7 +265,7 @@ angular.module('Music').service('libraryService', [function() {
 			}
 		},
 		setRadioStations: function(radioStationsData) {
-			radioStations = _.map(radioStationsData, playlistEntry);
+			radioStations = _.map(radioStationsData, wrapRadioStation);
 			this.sortRadioStations();
 		},
 		sortRadioStations: function() {
@@ -269,7 +276,7 @@ angular.module('Music').service('libraryService', [function() {
 			this.addRadioStations([radioStationData]);
 		},
 		addRadioStations: function(radioStationsData) {
-			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
+			radioStations = radioStations.concat(_.map(radioStationsData, wrapRadioStation));
 			sortByPlaylistEntryTextField(radioStations, 'stream_url');
 			sortByPlaylistEntryTextField(radioStations, 'name');
 		},

@@ -12,24 +12,24 @@
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />
 	</div>
 
-	<div ng-show="!currentTrackIsRadio()" ng-click="scrollToCurrentTrack()"
+	<div ng-show="currentTrack.type != 'radio'" ng-click="scrollToCurrentTrack()"
 		class="albumart clickable" cover="{{ coverArt() }}"
 		albumart="{{ coverArtTitle() }}" title="{{ coverArtTitle() }}" ></div>
 
-	<div ng-show="currentTrackIsRadio()" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
+	<div ng-show="currentTrack.type == 'radio'" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
 		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />
 		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
 	</div>
 	<div ng-show="currentTrack" class="progress-info">
-		<span ng-show="!loading" class="muted">{{ position.current | playTime }}</span><span 
+		<span ng-show="!loading" class="muted">{{ position.current | playTime }}</span><span
 			ng-show="!loading && durationKnown()" class="muted">/{{ position.total | playTime }}</span>
 		<span ng-show="loading" class="muted">Loading...</span>
 		<div class="progress">
 			<div class="seek-bar" ng-click="seek($event)" ng-style="{'cursor': seekCursorType}">
 				<div class="buffer-bar" ng-style="{'width': position.bufferPercent, 'cursor': seekCursorType}"></div>
-				<div class="play-bar" ng-show="position.total" 
+				<div class="play-bar" ng-show="position.total"
 					ng-style="{'width': position.currentPercent, 'cursor': seekCursorType}"></div>
 			</div>
 		</div>

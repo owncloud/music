@@ -24,7 +24,8 @@
 				show-track-details="showPodcastEpisodeDetails"
 				collapse-limit="6"
 				show-collapsed-text="getMoreEpisodesText"
-				track-id-prefix="'podcast-episode'">
+				track-id-prefix="'podcast-episode'"
+				content-type="'podcast'">
 			</track-list>
 		</div>
 	</div>

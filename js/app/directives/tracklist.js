@@ -87,7 +87,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				el.classList.remove('playing');
 			});
 
-			if (data.scope.currentTrack) {
+			if (data.scope.currentTrack?.type === data.contentType) {
 				var currentTrack = htmlElem.querySelector('#' + data.trackIdPrefix + data.scope.currentTrack.id);
 				if (currentTrack) {
 					currentTrack.classList.add('current');
@@ -327,6 +327,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				collapseLimit: attrs.collapseLimit || 999999,
 				showCollapsedText: scope.$eval(attrs.showCollapsedText) ?? moreText,
 				trackIdPrefix: (scope.$eval(attrs.trackIdPrefix) ?? 'track') + '-',
+				contentType: scope.$eval(attrs.contentType) ?? 'song',
 				listeners: null,
 				scope: scope,
 				element: element

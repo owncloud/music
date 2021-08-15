@@ -168,10 +168,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 		return $scope.currentTrack?.stream_url !== undefined;
 	}
 
-	$scope.currentTrackIsRadio = function() {
-		return currentTrackIsStream() && $scope.currentTrack.channel === undefined; // stream but not podcast
-	};
-
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
 		if (loading) {
@@ -269,7 +265,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs.
 		// This is disalbed for radio streams where jumping to the beginning often does not work.
-		if ($scope.position.current > 2.0 && !$scope.currentTrackIsRadio()) {
+		if ($scope.position.current > 2.0 && $scope.currentTrack?.type !== 'radio') {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -300,9 +296,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
 			const doScroll = function() {
-				if ($scope.currentTrackIsRadio()) {
+				if ($scope.currentTrack.type === 'radio') {
 					$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
-				} else if (currentTrackIsStream()) {
+				} else if ($scope.currentTrack.type === 'podcast') {
 					$rootScope.$emit('scrollToPodcastEpisode', $scope.currentTrack.id);
 				} else {
 					$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
@@ -444,7 +440,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 		$scope.$watch('currentTrack', function(track) {
 			if (track) {
-				if ($scope.currentTrackIsRadio()) {
+				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.name,
 						artist: track.stream_url,
@@ -486,7 +482,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 			let args = {
 				silent: true,
 				body: $scope.secondaryTitle() + '\n' + (track?.album?.name ?? ''),
-				icon: $scope.currentTrackIsRadio()
+				icon: (track?.type === 'radio')
 					? OC.filePath('music', 'dist', radioIcon)
 					: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : '')
 			};

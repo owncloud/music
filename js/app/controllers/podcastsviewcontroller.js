@@ -62,7 +62,9 @@ angular.module('Music').controller('PodcastsViewController', [
 		};
 
 		$scope.playChannel = function(channel) {
-			playEpisodes('podcast-channel-' + channel.id, channel.episodes);
+			// play the episodes from bottom to top ie. from the oldest to newest
+			const episodes = _.clone(channel.episodes).reverse();
+			playEpisodes('podcast-channel-' + channel.id, episodes);
 		};
 
 		$scope.showAddPodcast = podcastService.showAddPodcastDialog;

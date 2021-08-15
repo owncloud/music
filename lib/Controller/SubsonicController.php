@@ -61,7 +61,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.11.0';
+	const API_VERSION = '1.13.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -319,6 +319,14 @@ class SubsonicController extends Controller {
 	 */
 	private function getSimilarSongs2() {
 		return $this->doGetSimilarSongs('similarSongs2');
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getTopSongs() {
+		// TODO: Not supported yet
+		return $this->subsonicResponse(['topSongs' => []]);
 	}
 
 	/**
@@ -787,6 +795,21 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function getNewestPodcasts() {
+		$count = (int)$this->request->getParam('count', 20);
+
+		$episodes = $this->podcastService->getLatestEpisodes($this->userId, $count);
+
+		return $this->subsonicResponse([
+			'newestPodcasts' => [
+				'episode' => Util::arrayMapMethod($episodes, 'toSubsonicApi')
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function refreshPodcasts() {
 		$this->podcastService->updateAllChannels($this->userId);
 		return $this->subsonicResponse([]);
@@ -884,6 +907,22 @@ class SubsonicController extends Controller {
 		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $id, $this->userId);
 		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
 
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getPlayQueue() {
+		// TODO: not supported yet
+		return $this->subsonicResponse(['playQueue' => []]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function savePlayQueue() {
+		// TODO: not supported yet
 		return $this->subsonicResponse([]);
 	}
 
@@ -1407,7 +1446,7 @@ class SubsonicController extends Controller {
 				$content = [
 					'biography' => $info['artist']['bio']['summary'],
 					'lastFmUrl' => $info['artist']['url'],
-					'musicBrainzId' => $info['artist']['mbid']
+					'musicBrainzId' => $info['artist']['mbid'] ?? null
 				];
 
 				$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);

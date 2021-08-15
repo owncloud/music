@@ -84,6 +84,14 @@ class PodcastService {
 	}
 
 	/**
+	 * Get the latest added podcast episodes
+	 * @return PodcastEpisode[]
+	 */
+	public function getLatestEpisodes(string $userId, int $maxCount) : array {
+		return $this->episodeBusinessLayer->findAll($userId, SortBy::Newest, $maxCount);
+	}
+
+	/**
 	 * Inject episodes to the given podcast channels
 	 * @param PodcastChannel[] $channels input/output
 	 * @param bool $allChannelsIncluded Set this to true if $channels contains all the podcasts of the user.

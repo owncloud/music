@@ -358,22 +358,25 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	};
 
 	const playScopeNames = {
-		'albums'	: gettextCatalog.getString('Albums'),
-		'folders'	: gettextCatalog.getString('Folders'),
-		'genres'	: gettextCatalog.getString('Genres'),
-		'alltracks'	: gettextCatalog.getString('All tracks'),
-		'radio'		: gettextCatalog.getString('Internet radio'),
-		'album'		: gettextCatalog.getString('Album'),
-		'artist'	: gettextCatalog.getString('Artist'),
-		'folder'	: gettextCatalog.getString('Folder'),
-		'genre'		: gettextCatalog.getString('Genre'),
-		'playlist'	: gettextCatalog.getString('Playlist')
+		'albums'			: gettextCatalog.getString('Albums'),
+		'folders'			: gettextCatalog.getString('Folders'),
+		'genres'			: gettextCatalog.getString('Genres'),
+		'alltracks'			: gettextCatalog.getString('All tracks'),
+		'radio'				: gettextCatalog.getString('Internet radio'),
+		'podcasts'			: gettextCatalog.getString('Podcasts'),
+		'album'				: gettextCatalog.getString('Album'),
+		'artist'			: gettextCatalog.getString('Artist'),
+		'folder'			: gettextCatalog.getString('Folder'),
+		'genre'				: gettextCatalog.getString('Genre'),
+		'playlist'			: gettextCatalog.getString('Playlist'),
+		'podcast-channel'	: gettextCatalog.getString('Channel'),
+		'podcast-episode'	: gettextCatalog.getString('Episode'),
 	};
 
 	function playScopeName() {
 		var listId = playlistService.getCurrentPlaylistId();
 		if (listId !== null) {
-			var key = listId.split('-', 1)[0];
+			var key = listId.split('-').slice(0, -1).join('-') || listId;
 			return playScopeNames[key];
 		} else {
 			return '';

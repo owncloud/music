@@ -89,8 +89,27 @@ angular.module('Music').controller('PodcastDetailsController', [
 
 		$scope.formatKey = function(rawName) {
 			switch (rawName) {
-			case 'channel_id':	return 'channel';
-			default:			return rawName.replace(/_/g, ' ').toLowerCase();
+			case 'title':			return gettextCatalog.getString('title');
+			case 'description':		return gettextCatalog.getString('description');
+			case 'link_url':		return gettextCatalog.getString('website');
+			case 'rss_url':			return gettextCatalog.getString('RSS URL');
+			case 'language':		return gettextCatalog.getString('language');
+			case 'copyright':		return gettextCatalog.getString('copyright');
+			case 'author':			return gettextCatalog.getString('author');
+			case 'category':		return gettextCatalog.getString('category');
+			case 'published':		return gettextCatalog.getString('published');
+			case 'update_checked':	return gettextCatalog.getString('updates checked');
+			case 'episode':			return gettextCatalog.getString('episode');
+			case 'season':			return gettextCatalog.getString('season');
+			case 'channel_id':		return gettextCatalog.getString('channel');
+			case 'stream_url':		return gettextCatalog.getString('stream URL');
+			case 'mimetype':		return gettextCatalog.getString('MIME type');
+			case 'duration':		return gettextCatalog.getString('duration');
+			case 'size':			return gettextCatalog.getString('size');
+			case 'bit_rate':		return gettextCatalog.getString('bit rate');
+			case 'guid':			return gettextCatalog.getString('GUID');
+			case 'keywords':		return gettextCatalog.getString('keywords');
+			default:				return rawName;
 			}
 		};
 

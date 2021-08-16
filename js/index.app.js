@@ -15,6 +15,10 @@ function requireAll(context) {
 	context.keys().forEach(context);
 }
 
+/* Polyfills for IE compatibility */
+require('node_modules/core-js/features/string/replace-all');
+require('node_modules/core-js/features/string/starts-with');
+
 /* Vendor libraries */
 window.angular = require('angular');
 require('node_modules/angular-gettext');

@@ -2,7 +2,7 @@
 
 	<div class="albumart clickable" ng-show="details.image" ng-click="scrollToEntity(contentType, entity)"></div>
 
-	<dl class="tags">
+	<dl class="tags" ng-show="details">
 
 		<dt ng-repeat-start="(key, value) in details" ng-if="keyShown(key, value)">{{ formatKey(key) }}</dt>
 		<dd ng-if="keyShown(key, value) && keyHasDetails(key)" class="clickable"
@@ -13,4 +13,6 @@
 			ng-bind-html="formatValue(key, value)"></dd>
 
 	</dl>
+
+	<div class="icon-loading" ng-if="!details"></div>
 </div>

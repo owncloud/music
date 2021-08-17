@@ -151,47 +151,6 @@
 	height: 100%;
 }
 
-#app-navigation .item-with-actions .actions .popovermenu {
-	display: block;
-	box-sizing: content-box;
-	top: 48px;
-	padding: 0;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul {
-	display: block;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul li {
-	padding: 0;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul a {
-	background-position: 10px center;
-	background-size: 16px;
-	opacity: .7;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul a:hover {
-	opacity: 1.0;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul li.disabled a {
-	opacity: .15 !important;
-}
-
-#app-navigation .item-with-actions .actions .popovermenu ul li.disabled * {
-	cursor: default !important;
-}
-
-#app-navigation .popovermenu.submenu a {
-	padding-left: 0;
-}
-
-#app-navigation .popovermenu.submenu span {
-	margin-left: 16px;
-}
-
 #app-navigation button.disabled {
 	opacity: .5;
 	pointer-events: none;

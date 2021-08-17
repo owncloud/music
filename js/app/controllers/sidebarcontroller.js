@@ -74,6 +74,8 @@ angular.module('Music').controller('SidebarController', [
 			OC.Apps.hideAppSidebar();
 			$('#app-content').removeClass('with-app-sidebar');
 			$('#app-content').css('margin-right', '');
+			$scope.contentId = null;
+			$scope.contentType = null;
 		});
 
 		$rootScope.$on('resize', $scope.adjustFixedPositions);

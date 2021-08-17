@@ -17,6 +17,13 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		var currentTrack = null;
 
+		function resetContents() {
+			currentTrack = null;
+			$scope.details = null;
+			$scope.lastfmInfo = null;
+			$scope.lastfmTags = null;
+		}
+
 		function getFileId() {
 			var files = currentTrack.files;
 			return files[Object.keys(files)[0]];
@@ -34,10 +41,8 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		function showDetails(trackId) {
 			if (!currentTrack || trackId != currentTrack.id) {
+				resetContents();
 				currentTrack = libraryService.getTrack(trackId);
-				$scope.details = null;
-				$scope.lastfmInfo = null;
-				$scope.lastfmTags = null;
 
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -89,7 +94,13 @@ angular.module('Music').controller('TrackDetailsController', [
 			}
 		}
 
-		$scope.$watch('contentId', showDetails);
+		$scope.$watch('contentId', function(newId) {
+			if (newId !== null) {
+				showDetails(newId);
+			} else {
+				resetContents();
+			}
+		});
 
 		$rootScope.$on('playerProgress', function(event, time) {
 			// check if we are viewing time-synced lyrics of the currently playing track

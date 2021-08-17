@@ -13,8 +13,11 @@ angular.module('Music').controller('PodcastDetailsController', [
 	'$rootScope', '$scope', 'Restangular', 'gettextCatalog', 'libraryService',
 	function ($rootScope, $scope, Restangular, gettextCatalog, libraryService) {
 
-		$scope.details = null;
-		$scope.entity = null;
+		function resetContents() {
+			$scope.details = null;
+			$scope.entity = null;
+		}
+		resetContents();
 
 		function formatTimestamp(timestamp) {
 			if (!timestamp) {
@@ -50,8 +53,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 
 		function showDetails() {
 			if ($scope.contentType && $scope.contentId) {
-				$scope.details = null;
-				$scope.entity = null;
+				resetContents();
 
 				var albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
@@ -81,7 +83,13 @@ angular.module('Music').controller('PodcastDetailsController', [
 			}
 		}
 
-		$scope.$watch('contentId', showDetails);
+		$scope.$watch('contentId', function(newId) {
+			if (newId !== null) {
+				showDetails();
+			} else {
+				resetContents();
+			}
+		});
 
 		$scope.keyShown = function(key, value) {
 			return value !== null && value !== '' && key !== 'id' && key !== 'image';

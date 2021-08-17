@@ -184,7 +184,13 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.addPodcast = podcastService.showAddPodcastDialog;
 
-		$scope.reloadPodcasts = podcastService.reloadAllPodcasts;
+		$scope.reloadPodcasts = function (event) {
+			if ($scope.anyPodcastChannels()) {
+				podcastService.reloadAllPodcasts();
+			} else {
+				event.stopPropagation();
+			}
+		};
 
 		$scope.anyPodcastChannels = function() {
 			return libraryService.getPodcastChannelsCount() > 0;

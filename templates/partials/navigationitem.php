@@ -7,7 +7,7 @@
 				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
-		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
+		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
 	>
 		<div class="play-pause-button svg" ng-hide="playlist && $parent.showEditForm == playlist.id"
 			ng-class="icon ? 'icon-' + icon : ''"
@@ -23,7 +23,7 @@
 					ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
 			<button class="action icon-checkmark app-navigation-noclose"
-				ng-class="{ disabled: playlist.name.length == 0 }" 
+				ng-class="{ disabled: playlist.name.length == 0 }"
 				ng-click="$parent.$parent.commitEdit(playlist); $event.stopPropagation()"></button>
 		</div>
 		<div class="actions" ng-init="subMenuShown = false" title="" ng-show="playlist && $parent.showEditForm == null">
@@ -96,7 +96,7 @@
 					<li ng-click="$parent.addPodcast()">
 						<a class="icon-add"><span translate>Add from RSS feed</span></a>
 					</li>
-					<li ng-click="$parent.reloadPodcasts()" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
+					<li ng-click="$parent.reloadPodcasts($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
 						<a class="icon-reload"><span translate>Reload channels</span></a>
 					</li>
 				</ul>

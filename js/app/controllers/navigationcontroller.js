@@ -147,13 +147,9 @@ angular.module('Music').controller('NavigationController', [
 		// Export radio stations to a file
 		$scope.exportRadioToFile = function() {
 			playlistFileService.exportRadio().then(
-				function() { // success
-					$scope.radioBusy = false;
-				},
-				function() { // failure
-					$scope.radioBusy = false;
-				},
-				function(state) { // notification about state change
+				() => $scope.radioBusy = false, // success
+				() => $scope.radioBusy = false, // failure
+				(state) => { // notification about state change
 					if (state == 'started') {
 						$scope.radioBusy = true;
 					} else if (state == 'stopped') {
@@ -166,15 +162,9 @@ angular.module('Music').controller('NavigationController', [
 		// Import radio stations from a playlist file
 		$scope.importFromFileToRadio = function() {
 			playlistFileService.importRadio().then(
-				function() { // success
-					$scope.radioBusy = false;
-				},
-				function() { // failure
-					$scope.radioBusy = false;
-				},
-				function() { // notification about import actually starting
-					$scope.radioBusy = true;
-				}
+				() => $scope.radioBusy = false, // success
+				() => $scope.radioBusy = false, // failure
+				() => $scope.radioBusy = true   // notification about import actually starting
 			);
 		};
 
@@ -182,11 +172,18 @@ angular.module('Music').controller('NavigationController', [
 			$rootScope.$emit('showRadioStationDetails', null);
 		};
 
-		$scope.addPodcast = podcastService.showAddPodcastDialog;
+		$scope.addPodcast = function() {
+			podcastService.showAddPodcastDialog().then(
+				() => $scope.podcastsBusy = false, // success
+				() => $scope.podcastsBusy = false, // failure
+				() => $scope.podcastsBusy = true,  // started
+			);
+		};
 
 		$scope.reloadPodcasts = function (event) {
 			if ($scope.anyPodcastChannels()) {
-				podcastService.reloadAllPodcasts();
+				$scope.podcastsBusy = true;
+				podcastService.reloadAllPodcasts().then(() => $scope.podcastsBusy = false);
 			} else {
 				event.stopPropagation();
 			}
@@ -195,10 +192,6 @@ angular.module('Music').controller('NavigationController', [
 		$scope.anyPodcastChannels = function() {
 			return libraryService.getPodcastChannelsCount() > 0;
 		};
-
-		$rootScope.$on('podcastsBusyEvent', function(_event, busy) {
-			$scope.podcastsBusy = busy;
-		});
 
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {

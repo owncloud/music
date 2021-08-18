@@ -126,7 +126,7 @@ h2 span:hover .play {
 	text-overflow: ellipsis;
 }
 
-.album-area > h2.with-actions > span {
+.album-area > h2.with-actions:not(.busy) > span {
 	max-width: calc(100% - 24px);
 }
 
@@ -208,6 +208,19 @@ div:hover > .play-pause,
 #app-view button.icon-details:hover,
 #app-view button.icon-more:hover {
 	opacity: 1;
+}
+
+#app-view h2 .icon-loading-small {
+	top: 11px;
+	left: 3px;
+}
+
+#app-view h2:not(.busy) .icon-loading-small {
+	display: none;
+}
+
+#app-view h2.busy .icon-more {
+	display: none;
 }
 
 #app-view .heading-actions {

@@ -67,9 +67,26 @@ angular.module('Music').controller('PodcastsViewController', [
 			playEpisodes('podcast-channel-' + channel.id, episodes);
 		};
 
-		$scope.showAddPodcast = podcastService.showAddPodcastDialog;
-		$scope.reloadChannel = podcastService.reloadPodcastChannel;
-		$scope.removeChannel = podcastService.removePodcastChannel;
+		$scope.showAddPodcast = function() {
+			podcastService.showAddPodcastDialog().then(
+				() => $rootScope.loading = false, // success
+				() => $rootScope.loading = false, // failure
+				() => $rootScope.loading = true,  // adding actually started
+			);
+		};
+
+		$scope.reloadChannel = function(channel) {
+			channel.busy = true;
+			podcastService.reloadPodcastChannel(channel).then(() => channel.busy = false);
+		}; 
+
+		$scope.removeChannel = function(channel) {
+			podcastService.removePodcastChannel(channel).then(
+				() => channel.busy = false, // success
+				() => channel.busy = false, // failure
+				() => channel.busy = true,  // removing actually started
+			);
+		};
 
 		/**
 		 * Two functions for the alphabet-navigation directive integration

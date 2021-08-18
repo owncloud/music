@@ -42,17 +42,19 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 
 		// Show a popup dialog to add a new podcast channel from an RSS feed
 		showAddPodcastDialog: function() {
+			const deferred = $q.defer();
+
 			const subscribePodcastChannel = function(url) {
-				$rootScope.$emit('podcastsBusyEvent', true);
+				deferred.notify('started');
 				Restangular.all('podcasts').post({url: url}).then(
 					function (result) {
 						libraryService.addPodcastChannel(result);
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
-						$rootScope.$emit('podcastsBusyEvent', false);
 						if ($rootScope.currentView === '#/podcasts') {
 							$timeout(() => $rootScope.$emit('viewContentChanged'));
 						}
+						deferred.resolve();
 					},
 					function (error) {
 						var errMsg;
@@ -64,7 +66,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 							errMsg = gettextCatalog.getString('Failed to add the podcast channel');
 						}
 						OC.Notification.showTemporary(errMsg);
-						$rootScope.$emit('podcastsBusyEvent', false);
+						deferred.reject();
 					}
 				);
 			};
@@ -81,12 +83,13 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 					gettextCatalog.getString('URL'),
 					false // password
 			);
+
+			return deferred.promise;
 		},
 
 		// Refresh the contents of the given podcast channel
 		reloadPodcastChannel: function(channel) {
-			$rootScope.$emit('podcastsBusyEvent', true);
-			reloadChannel(channel).then(function(result) {
+			return reloadChannel(channel).then(function(result) {
 				if (result?.updated) {
 					OC.Notification.showTemporary(
 							gettextCatalog.getString('The channel was updated from the source'));
@@ -96,17 +99,15 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 				} else {
 					// nothing to do, error has already been shown by the reloadChannel function
 				}
-				$rootScope.$emit('podcastsBusyEvent', false);
 			});
 		},
 
 		// Refresh the contents of all the subscribed podcast channels
 		reloadAllPodcasts: function() {
+			const deferred = $q.defer();
 			const channels = libraryService.getAllPodcastChannels();
 			var index = 0;
 			var changeCount = 0;
-
-			$rootScope.$emit('podcastsBusyEvent', true);
 
 			const processNextChannel = function() {
 				if (index < channels.length) {
@@ -119,8 +120,6 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 					});
 				}
 				else {
-					$rootScope.$emit('podcastsBusyEvent', false);
-
 					if (changeCount === 0) {
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('All channels were already up-to-date'));
@@ -131,27 +130,37 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 								'Changes were loaded for {{ count }} channels', { count: changeCount })
 						);
 					}
+
+					deferred.resolve();
 				}
 			};
 			processNextChannel();
+
+			return deferred.promise;
 		},
 
 		// Remove a single previously subscribed podcast channel
 		removePodcastChannel: function(channel) {
+			const deferred = $q.defer();
+
 			const doDelete = function() {
+				deferred.notify('started');
 				Restangular.one('podcasts', channel.id).remove().then(
 					function (result) {
 						if (!result.success) {
 							OC.Notification.showTemporary(
 									gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
+							deferred.reject();
 						} else {
 							libraryService.removePodcastChannel(channel);
 							$timeout(() => $rootScope.$emit('viewContentChanged'));
+							deferred.resolve();
 						}
 					},
 					function (_error) {
 						OC.Notification.showTemporary(
 								gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
+						deferred.reject();
 					}
 				);
 			};
@@ -166,6 +175,8 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 					},
 					true
 			);
+
+			return deferred.promise;
 		}
 	};
 }]);

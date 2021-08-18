@@ -30,6 +30,9 @@ function ($rootScope, gettextCatalog) {
 	 * Set up the contents for a given heading element
 	 */
 	function setup(data) {
+		const ngElem = $(data.element);
+		data.listeners = [];
+
 		/**
 		 * Remove any placeholder and add the proper content
 		 */
@@ -81,6 +84,11 @@ function ($rootScope, gettextCatalog) {
 				var moreButton = document.createElement('button');
 				moreButton.className = 'icon-more';
 				fragment.appendChild(moreButton);
+
+				var loadSpinner = document.createElement('span');
+				loadSpinner.className = 'icon-loading-small';
+				fragment.appendChild(loadSpinner);
+
 				data.element.className = 'with-actions';
 			}
 			else {
@@ -136,7 +144,17 @@ function ($rootScope, gettextCatalog) {
 			actionsMenuOwner = null;
 		}
 
-		var ngElem = $(data.element);
+		/**
+		 * Sync the "busy" state of the model
+		 */
+		data.listeners.push(
+			data.scope.$watch(() => data.model.busy, updateModelBusy),
+		);
+		updateModelBusy(data.model.busy);
+
+		function updateModelBusy(busy) {
+			ngElem.toggleClass('busy', (busy === true));
+		}
 
 		/**
 		 * Click handlers
@@ -185,6 +203,8 @@ function ($rootScope, gettextCatalog) {
 
 	function tearDown(data) {
 		$(data.element).off();
+		_(data.listeners).each((unsubFunc) => unsubFunc());
+		data.listeners = null;
 	}
 
 	function setupPlaceholder(data) {
@@ -222,7 +242,8 @@ function ($rootScope, gettextCatalog) {
 						actions: scope.$eval(attrs.actions),
 						getDraggable: scope.$eval(attrs.getDraggable),
 						element: element[0],
-						scope: scope
+						scope: scope,
+						listeners: null
 					};
 
 					if (data.onDetailsClick && data.actions) {

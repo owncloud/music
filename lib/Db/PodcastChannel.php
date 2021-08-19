@@ -115,8 +115,8 @@ class PodcastChannel extends Entity {
 			'language' => $this->getLanguage(),
 			'copyright' => $this->getCopyright(),
 			'feed_url' => $this->getRssUrl(),
-			'build_date' => $this->getPublished(), // TODO: not actually the lastBuildDate...; should we format this?
-			'sync_date' => $this->getUpdateChecked(), // TODO: should we format this?
+			'build_date' => Util::formatDateTimeUtcOffset($this->getPublished()), // TODO: not actually the lastBuildDate...
+			'sync_date' => Util::formatDateTimeUtcOffset($this->getUpdateChecked()),
 			'public_url' => $this->getLinkUrl(),
 			'website' => $this->getLinkUrl(),
 			'art' => $this->getImageUrl(),

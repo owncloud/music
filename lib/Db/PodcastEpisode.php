@@ -127,7 +127,7 @@ class PodcastEpisode extends Entity {
 			'author' => $this->getAuthor(),
 			'author_full' => $this->getAuthor(),
 			'website' => $this->getLinkUrl(),
-			'pubdate' => $this->getPublished(), // TODO: format?
+			'pubdate' => Util::formatDateTimeUtcOffset($this->getPublished()),
 			'state' => 'Completed',
 			'filelength' => Util::formatTime($this->getDuration()),
 			'filesize' => Util::formatFileSize($this->getSize(), 2) . 'B',

@@ -161,7 +161,7 @@ class PodcastService {
 	 * @param ?string $prevHash Previous content hash known by the client. If given, the result will tell
 	 *							if the channel content has updated from this state. If omitted, the result
 	 *							will tell if the channel changed from its previous server-known state.
-	 * @param bool $force Value true will cause the episodes to be parsed and updated to the database even
+	 * @param bool $force Value true will cause the channel to be parsed and updated to the database even
 	 *					in case the RSS hasn't been changed at all since the previous update. This might be
 	 *					useful during the development or if the previous update was unexpectedly aborted.
 	 * @return array like ['status' => int, 'updated' => bool, 'channel' => ?PodcastChannel]
@@ -190,7 +190,7 @@ class PodcastService {
 			if (!$xmlTree || !$xmlTree->channel) {
 				$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
 				$status = self::STATUS_INVALID_RSS;
-			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel) || $force) {
+			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
 				// update the episodes too if channel content has actually changed or update is forced
 				$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $id);
 				$channel->setEpisodes($episodes);

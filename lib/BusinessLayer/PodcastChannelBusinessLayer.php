@@ -66,13 +66,15 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	 * @param PodcastChannel $channel Input/output parameter for the channel
 	 * @param string $rssContent Raw content of the RSS feed
 	 * @param \SimpleXMLElement $xmlNode <channel> node parsed from the RSS feed
-	 * @return boolean true if the new content differed from the previously cached content
+	 * @param boolean $force Value true will cause the channel to be updated to the DB even
+	 * 						if there appears to be no changes since the previous update
+	 * @return boolean true if the new content differed from the previously cached content or update was forced
 	 */
-	public function updateChannel(PodcastChannel &$channel, string $rssContent, \SimpleXMLElement $xmlNode) {
+	public function updateChannel(PodcastChannel &$channel, string $rssContent, \SimpleXMLElement $xmlNode, bool $force = false) {
 		$contentChanged = false;
 		$contentHash = self::calculateContentHash($rssContent);
 
-		if ($channel->getContentHash() !== $contentHash) {
+		if ($channel->getContentHash() !== $contentHash || $force) {
 			$contentChanged = true;
 			self::parseChannelDataFromXml($xmlNode, $channel);
 			$channel->setContentHash($contentHash);

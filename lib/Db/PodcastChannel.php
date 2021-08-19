@@ -28,6 +28,8 @@ use \OCA\Music\Utility\Util;
  * @method void setUpdateChecked(string $timestamp)
  * @method string getPublished()
  * @method void setPublished(string $timestamp)
+ * @method string getLastBuildDate()
+ * @method void setLastBuildDate(string $timestamp)
  * @method string getTitle()
  * @method void setTitle(string $title)
  * @method string getLinkUrl()
@@ -60,6 +62,7 @@ class PodcastChannel extends Entity {
 	public $contentHash;
 	public $updateChecked;
 	public $published;
+	public $lastBuildDate;
 	public $title;
 	public $linkUrl;
 	public $language;
@@ -103,6 +106,7 @@ class PodcastChannel extends Entity {
 			'author' => $this->getAuthor(),
 			'category' => $this->getCategory(),
 			'published' => $this->getPublished(),
+			'last_build_date' => $this->getLastBuildDate(),
 			'update_checked' => $this->getUpdateChecked(),
 		];
 	}
@@ -115,7 +119,7 @@ class PodcastChannel extends Entity {
 			'language' => $this->getLanguage(),
 			'copyright' => $this->getCopyright(),
 			'feed_url' => $this->getRssUrl(),
-			'build_date' => Util::formatDateTimeUtcOffset($this->getPublished()), // TODO: not actually the lastBuildDate...
+			'build_date' => Util::formatDateTimeUtcOffset($this->getLastBuildDate()),
 			'sync_date' => Util::formatDateTimeUtcOffset($this->getUpdateChecked()),
 			'public_url' => $this->getLinkUrl(),
 			'website' => $this->getLinkUrl(),

@@ -106,11 +106,8 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 	private static function parseChannelDataFromXml(\SimpleXMLElement $xmlNode, PodcastChannel &$channel) : void {
 		$itunesNodes = $xmlNode->children('http://www.itunes.com/dtds/podcast-1.0.dtd');
 
-		if ($xmlNode->pubDate) {
-			$channel->setPublished( \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)($xmlNode->pubDate))) );
-		} else {
-			$channel->setPublished(null);
-		}
+		$channel->setPublished( self::parseDateTime($xmlNode->pubDate) );
+		$channel->setLastBuildDate( self::parseDateTime($xmlNode->lastBuildDate) );
 		$channel->setTitle( Util::truncate((string)$xmlNode->title, 256) );
 		$channel->setLinkUrl( Util::truncate((string)$xmlNode->link, 2048) );
 		$channel->setLanguage( Util::truncate((string)$xmlNode->language, 32) );
@@ -123,4 +120,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		}, \iterator_to_array($itunesNodes->category, false))) );
 	}
 
+	private static function parseDateTime(\SimpleXMLElement $xmlNode) : ?string {
+		return $xmlNode ? \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)$xmlNode)) : null;
+	}
 }

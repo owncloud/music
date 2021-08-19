@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-08-15 22:03+0300\n"
+"PO-Revision-Date: 2021-08-19 23:45+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -97,11 +97,11 @@ msgstr ""
 msgid "About"
 msgstr "Tietoja"
 
-#: ../js/app/services/podcastservice.js:73
+#: ../js/app/services/podcastservice.js:75
 msgid "Add a new podcast channel from an RSS feed"
 msgstr "Uuden podcast-kanavan lisääminen RSS-syötteestä"
 
-#: ../js/app/services/podcastservice.js:74
+#: ../js/app/services/podcastservice.js:76
 msgid "Add channel"
 msgstr "Lisää kanava"
 
@@ -137,20 +137,20 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta esittäjän taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
-#: ../js/app/controllers/playercontroller.js:367
+#: ../js/app/controllers/playercontroller.js:363
 msgid "Album"
 msgstr "Albumi"
 
-#: ../js/app/controllers/playercontroller.js:361
+#: ../js/app/controllers/playercontroller.js:357
 #: ../templates/fake-template.php:9 ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr "Albumit"
 
-#: ../js/app/services/podcastservice.js:126
+#: ../js/app/services/podcastservice.js:125
 msgid "All channels were already up-to-date"
 msgstr "Kaikki kanavat olivat jo ajan tasalla"
 
-#: ../js/app/controllers/playercontroller.js:364
+#: ../js/app/controllers/playercontroller.js:360
 #: ../templates/partials/alltracksview.php:4
 #: ../templates/partials/navigation.php:14
 msgid "All tracks"
@@ -178,7 +178,7 @@ msgstr "Oletko varma, että haluat pysyvästi poistaa kaikki podcast-kanavat?"
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr "Oletko varma, että haluat poistaa soittolistan \"{{ name }}\"?"
 
-#: ../js/app/services/podcastservice.js:160
+#: ../js/app/services/podcastservice.js:169
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
 
@@ -222,7 +222,7 @@ msgstr ""
 "osoitteet lisätään Content-Security-Policy-otsikkoon <a href=\"{{url}}\" "
 "target=\"_blank\">media-src</a>."
 
-#: ../js/app/controllers/playercontroller.js:368
+#: ../js/app/controllers/playercontroller.js:364
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -236,13 +236,13 @@ msgstr ""
 "Muutokset pois jätettyihin polkuihin astuvat voimaan vasta uudelleen "
 "skannauksen jälkeen."
 
-#: ../js/app/services/podcastservice.js:129
+#: ../js/app/services/podcastservice.js:128
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Yhdelle kanavalle ladattiin muutoksia"
 msgstr[1] "{{ count }} kanavalle ladattiin muutoksia"
 
-#: ../js/app/controllers/playercontroller.js:372
+#: ../js/app/controllers/playercontroller.js:368
 msgid "Channel"
 msgstr "Kanava"
 
@@ -250,7 +250,7 @@ msgstr "Kanava"
 msgid "Click here to start the scan"
 msgstr "Napsauta aloittaaksesi skannauksen"
 
-#: ../templates/partials/podcastsview.php:40
+#: ../templates/partials/podcastsview.php:41
 msgid "Click to add your first podcast channel"
 msgstr "Napsauta lisätäksesi ensimmäisen podcast-kanavan"
 
@@ -278,8 +278,8 @@ msgstr "Kommentti"
 msgid "Compact layout"
 msgstr "Kompakti asettelu"
 
-#: ../js/app/services/podcastservice.js:146
-#: ../js/app/services/podcastservice.js:154
+#: ../js/app/services/podcastservice.js:152
+#: ../js/app/services/podcastservice.js:162
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr "Oletko varma, että haluat poistaa kanavan \"{{ title }}\"?"
 
@@ -312,7 +312,7 @@ msgstr "Kuvaus (esim. sovelluksen nimi)"
 msgid "Details"
 msgstr "Tiedot"
 
-#: ../js/app/controllers/playercontroller.js:373
+#: ../js/app/controllers/playercontroller.js:369
 msgid "Episode"
 msgstr "Jakso"
 
@@ -333,7 +333,7 @@ msgstr "Vie radio-kanavat tiedostoon valitussa kansiossa"
 msgid "Export to file"
 msgstr "Vie tiedostoon"
 
-#: ../js/app/services/podcastservice.js:64
+#: ../js/app/services/podcastservice.js:66
 msgid "Failed to add the podcast channel"
 msgstr "Podcast-kanavan lisääminen epäonnistui"
 
@@ -377,11 +377,11 @@ msgstr "Ohitettavien polkujen tallentaminen epäonnistui"
 msgid "Failed to save the music collection path"
 msgstr "Musiikkikokoelman polun tallentaminen epäonnistui"
 
-#: ../js/app/controllers/playercontroller.js:369
+#: ../js/app/controllers/playercontroller.js:365
 msgid "Folder"
 msgstr "Kansio"
 
-#: ../js/app/controllers/playercontroller.js:362
+#: ../js/app/controllers/playercontroller.js:358
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr "Kansiot"
@@ -390,7 +390,7 @@ msgstr "Kansiot"
 msgid "Follow playback"
 msgstr "Seuraa toistoa"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:110
+#: ../js/app/controllers/podcastdetailscontroller.js:119
 msgid "GUID"
 msgstr "GUID"
 
@@ -402,11 +402,11 @@ msgstr "Yleinen"
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: ../js/app/controllers/playercontroller.js:370
+#: ../js/app/controllers/playercontroller.js:366
 msgid "Genre"
 msgstr "Genre"
 
-#: ../js/app/controllers/playercontroller.js:363
+#: ../js/app/controllers/playercontroller.js:359
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr "Genret"
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
-#: ../js/app/controllers/playercontroller.js:365
+#: ../js/app/controllers/playercontroller.js:361
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -480,7 +480,7 @@ msgstr "Internet radio"
 msgid "Internet radio stations"
 msgstr "Internet radio -asemat"
 
-#: ../js/app/services/podcastservice.js:60
+#: ../js/app/services/podcastservice.js:62
 msgid "Invalid RSS feed URL"
 msgstr "Epäkelpo RSS-syötteen osoite"
 
@@ -504,7 +504,7 @@ msgstr "Ladataan…"
 msgid "Lyrics"
 msgstr "Lyriikat"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:106
+#: ../js/app/controllers/podcastdetailscontroller.js:115
 msgid "MIME type"
 msgstr "MIME-tyyppi"
 
@@ -543,7 +543,7 @@ msgstr "Uusi radioasema"
 msgid "Next"
 msgstr "Seuraava"
 
-#: ../templates/partials/podcastsview.php:39
+#: ../templates/partials/podcastsview.php:40
 msgid "No channels"
 msgstr "Ei kanavia"
 
@@ -614,8 +614,8 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: ../js/app/controllers/playercontroller.js:388
-#: ../js/app/controllers/playercontroller.js:397
+#: ../js/app/controllers/playercontroller.js:384
+#: ../js/app/controllers/playercontroller.js:393
 msgid "Off"
 msgstr "Pois"
 
@@ -666,7 +666,7 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../js/app/controllers/playercontroller.js:371
+#: ../js/app/controllers/playercontroller.js:367
 msgid "Playlist"
 msgstr "Soittolista"
 
@@ -686,11 +686,11 @@ msgstr ""
 "Ilmoita mahdollisista virheistä ja ongelmista <a href="
 "\"{{issueTrackerUrl}}\" target=\"_blank\">seurantaan</a>"
 
-#: ../js/app/services/podcastservice.js:51
+#: ../js/app/services/podcastservice.js:53
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Podcast-kanava \"{{ title }}\" lisättiin"
 
-#: ../js/app/controllers/playercontroller.js:366
+#: ../js/app/controllers/playercontroller.js:362
 #: ../templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr "Podcastit"
@@ -718,7 +718,7 @@ msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 "Virhe yhdistettäessä Last.fm-palveluun. API-avain saattaa olla virheellinen."
 
-#: ../js/app/controllers/podcastdetailscontroller.js:95
+#: ../js/app/controllers/podcastdetailscontroller.js:103
 msgid "RSS URL"
 msgstr "RSS-osoite"
 
@@ -743,7 +743,7 @@ msgstr "Päivitä kanavat"
 msgid "Remove"
 msgstr "Poista"
 
-#: ../js/app/services/podcastservice.js:161
+#: ../js/app/services/podcastservice.js:170
 msgid "Remove channel"
 msgstr "Poista kanava"
 
@@ -763,7 +763,7 @@ msgstr "Poista kappale soittolistalta"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: ../js/app/controllers/playercontroller.js:393
+#: ../js/app/controllers/playercontroller.js:389
 #: ../templates/partials/controls.php:40
 msgid "Repeat"
 msgstr "Kertaa"
@@ -808,7 +808,7 @@ msgstr "Haku ei ole käytettävissä tässä näkymässä"
 msgid "See the album on Last.fm"
 msgstr "Katso albumia Last.fm-palvelussa"
 
-#: ../js/app/controllers/trackdetailscontroller.js:82
+#: ../js/app/controllers/trackdetailscontroller.js:87
 msgid "See the track on Last.fm"
 msgstr "Katso kappaletta Last.fm-palveussa"
 
@@ -825,7 +825,7 @@ msgstr "Radio-asemien asettaminen"
 msgid "Settings"
 msgstr "Asetukset"
 
-#: ../js/app/controllers/podcastsviewcontroller.js:96
+#: ../js/app/controllers/podcastsviewcontroller.js:113
 msgid "Show all {{ count }} episodes …"
 msgstr "Näytä kaikki {{ count }} jaksoa…"
 
@@ -861,7 +861,7 @@ msgstr "Näytä enemmän…"
 msgid "Show..."
 msgstr "Näytä…"
 
-#: ../js/app/controllers/playercontroller.js:387
+#: ../js/app/controllers/playercontroller.js:383
 #: ../templates/partials/controls.php:38
 msgid "Shuffle"
 msgstr "Sekoita"
@@ -870,7 +870,7 @@ msgstr "Sekoita"
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
-#: ../js/app/controllers/playercontroller.js:262
+#: ../js/app/controllers/playercontroller.js:258
 msgid "Some not playable tracks were skipped."
 msgstr "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa."
 
@@ -928,11 +928,11 @@ msgstr ""
 "sen. Saatat kuitenkin haluta säilyttää sen, koska on myös mahdollista "
 "toistaa radioasemia suoraan Tiedostot-sovelluksessa avaamalla PLS-tiedosto."
 
-#: ../js/app/services/podcastservice.js:95
+#: ../js/app/services/podcastservice.js:98
 msgid "The channel was already up-to-date"
 msgstr "Kanava oli jo ajan tasalla"
 
-#: ../js/app/services/podcastservice.js:92
+#: ../js/app/services/podcastservice.js:95
 msgid "The channel was updated from the source"
 msgstr "Kanava päivitettiin lähteestä"
 
@@ -1026,7 +1026,7 @@ msgstr ""
 "Tämä toiminto nollaa kaikki skannatut kappaleet ja kaikki käyttäjän luomat "
 "soittolistat. Tämän jälkeen kokoelma voidaan skannata uudelleen tyhjästä."
 
-#: ../js/app/services/podcastservice.js:62
+#: ../js/app/services/podcastservice.js:64
 msgid "This channel is already subscribed"
 msgstr "Tämä kanava on jo tilattu"
 
@@ -1071,7 +1071,7 @@ msgstr ""
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
-#: ../js/app/controllers/playercontroller.js:400
+#: ../js/app/controllers/playercontroller.js:396
 msgid "Track"
 msgstr "Kappale"
 
@@ -1087,7 +1087,7 @@ msgstr "Vian etsintä"
 msgid "Try to refine the search"
 msgstr "Yritä tarkentaa hakua"
 
-#: ../js/app/services/podcastservice.js:81
+#: ../js/app/services/podcastservice.js:83
 msgid "URL"
 msgstr "URL"
 
@@ -1212,13 +1212,17 @@ msgstr ""
 "löytyvät yleensä napsauttamalla osoiterivin vasemmalla puolella olevaa "
 "kuvaketta."
 
-#: ../js/app/controllers/podcastdetailscontroller.js:98
+#: ../js/app/controllers/podcastdetailscontroller.js:106
 msgid "author"
 msgstr "tekijä"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:109
+#: ../js/app/controllers/podcastdetailscontroller.js:118
 msgid "bit rate"
 msgstr "bittinopeus"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:109
+msgid "build date"
+msgstr "koostettu"
 
 #: ../templates/partials/navigationitem.php:58
 msgid "by album"
@@ -1232,59 +1236,59 @@ msgstr "esittäjän mukaan"
 msgid "by title"
 msgstr "nimen mukaan"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:99
+#: ../js/app/controllers/podcastdetailscontroller.js:107
 msgid "category"
 msgstr "luokka"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:104
+#: ../js/app/controllers/podcastdetailscontroller.js:113
 msgid "channel"
 msgstr "kanava"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:97
+#: ../js/app/controllers/podcastdetailscontroller.js:105
 msgid "copyright"
 msgstr "tekijänoikeus"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:93
+#: ../js/app/controllers/podcastdetailscontroller.js:101
 msgid "description"
 msgstr "kuvaus"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:107
+#: ../js/app/controllers/podcastdetailscontroller.js:116
 msgid "duration"
 msgstr "kesto"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:102
+#: ../js/app/controllers/podcastdetailscontroller.js:111
 msgid "episode"
 msgstr "jakso"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:111
+#: ../js/app/controllers/podcastdetailscontroller.js:120
 msgid "keywords"
 msgstr "avainsanat"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:96
+#: ../js/app/controllers/podcastdetailscontroller.js:104
 msgid "language"
 msgstr "kieli"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:100
+#: ../js/app/controllers/podcastdetailscontroller.js:108
 msgid "published"
 msgstr "julkaistu"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:103
+#: ../js/app/controllers/podcastdetailscontroller.js:112
 msgid "season"
 msgstr "tuotantokausi"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:108
+#: ../js/app/controllers/podcastdetailscontroller.js:117
 msgid "size"
 msgstr "koko"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:105
+#: ../js/app/controllers/podcastdetailscontroller.js:114
 msgid "stream URL"
 msgstr "striimin URL"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:92
+#: ../js/app/controllers/podcastdetailscontroller.js:100
 msgid "title"
 msgstr "otsikko"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:101
+#: ../js/app/controllers/podcastdetailscontroller.js:110
 msgid "updates checked"
 msgstr "päivitykset tarkastettu"
 
@@ -1292,7 +1296,7 @@ msgstr "päivitykset tarkastettu"
 msgid "version history"
 msgstr "versiohistoria"
 
-#: ../js/app/controllers/podcastdetailscontroller.js:94
+#: ../js/app/controllers/podcastdetailscontroller.js:102
 msgid "website"
 msgstr "web-sivu"
 

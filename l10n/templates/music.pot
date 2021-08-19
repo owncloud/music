@@ -74,11 +74,11 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:73
+#: ../js/app/services/podcastservice.js:75
 msgid "Add a new podcast channel from an RSS feed"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:74
+#: ../js/app/services/podcastservice.js:76
 msgid "Add channel"
 msgstr ""
 
@@ -106,21 +106,21 @@ msgstr ""
 msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:367
+#: ../js/app/controllers/playercontroller.js:363
 msgid "Album"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:361
+#: ../js/app/controllers/playercontroller.js:357
 #: ../templates/fake-template.php:9
 #: ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:126
+#: ../js/app/services/podcastservice.js:125
 msgid "All channels were already up-to-date"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:364
+#: ../js/app/controllers/playercontroller.js:360
 #: ../templates/partials/alltracksview.php:4
 #: ../templates/partials/navigation.php:14
 msgid "All tracks"
@@ -146,7 +146,7 @@ msgstr ""
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:160
+#: ../js/app/services/podcastservice.js:169
 msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
 msgstr ""
 
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{url}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:368
+#: ../js/app/controllers/playercontroller.js:364
 msgid "Artist"
 msgstr ""
 
@@ -178,13 +178,13 @@ msgstr ""
 msgid "Changes to the excluded paths will only take effect upon rescan."
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:129
+#: ../js/app/services/podcastservice.js:128
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/playercontroller.js:372
+#: ../js/app/controllers/playercontroller.js:368
 msgid "Channel"
 msgstr ""
 
@@ -192,7 +192,7 @@ msgstr ""
 msgid "Click here to start the scan"
 msgstr ""
 
-#: ../templates/partials/podcastsview.php:40
+#: ../templates/partials/podcastsview.php:41
 msgid "Click to add your first podcast channel"
 msgstr ""
 
@@ -221,8 +221,8 @@ msgstr ""
 msgid "Compact layout"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:146
-#: ../js/app/services/podcastservice.js:154
+#: ../js/app/services/podcastservice.js:152
+#: ../js/app/services/podcastservice.js:162
 msgid "Could not remove the channel \"{{ title }}\""
 msgstr ""
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:373
+#: ../js/app/controllers/playercontroller.js:369
 msgid "Episode"
 msgstr ""
 
@@ -277,7 +277,7 @@ msgstr ""
 msgid "Export to file"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:64
+#: ../js/app/services/podcastservice.js:66
 msgid "Failed to add the podcast channel"
 msgstr ""
 
@@ -321,11 +321,11 @@ msgstr ""
 msgid "Failed to save the music collection path"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:369
+#: ../js/app/controllers/playercontroller.js:365
 msgid "Folder"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:362
+#: ../js/app/controllers/playercontroller.js:358
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr ""
@@ -334,7 +334,7 @@ msgstr ""
 msgid "Follow playback"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:110
+#: ../js/app/controllers/podcastdetailscontroller.js:119
 msgid "GUID"
 msgstr ""
 
@@ -346,11 +346,11 @@ msgstr ""
 msgid "Generate API password"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:370
+#: ../js/app/controllers/playercontroller.js:366
 msgid "Genre"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:363
+#: ../js/app/controllers/playercontroller.js:359
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr ""
@@ -396,7 +396,7 @@ msgstr ""
 msgid "Internal server error"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:365
+#: ../js/app/controllers/playercontroller.js:361
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Internet radio stations"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:60
+#: ../js/app/services/podcastservice.js:62
 msgid "Invalid RSS feed URL"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Lyrics"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:106
+#: ../js/app/controllers/podcastdetailscontroller.js:115
 msgid "MIME type"
 msgstr ""
 
@@ -462,7 +462,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../templates/partials/podcastsview.php:39
+#: ../templates/partials/podcastsview.php:40
 msgid "No channels"
 msgstr ""
 
@@ -515,8 +515,8 @@ msgstr ""
 msgid "Number of tracks on albums"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:388
-#: ../js/app/controllers/playercontroller.js:397
+#: ../js/app/controllers/playercontroller.js:384
+#: ../js/app/controllers/playercontroller.js:393
 msgid "Off"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:371
+#: ../js/app/controllers/playercontroller.js:367
 msgid "Playlist"
 msgstr ""
 
@@ -579,11 +579,11 @@ msgstr ""
 msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:51
+#: ../js/app/services/podcastservice.js:53
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:366
+#: ../js/app/controllers/playercontroller.js:362
 #: ../templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr ""
@@ -601,7 +601,7 @@ msgstr ""
 msgid "Problem connecting Last.fm. The API key may be invalid."
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:95
+#: ../js/app/controllers/podcastdetailscontroller.js:103
 msgid "RSS URL"
 msgstr ""
 
@@ -626,7 +626,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:161
+#: ../js/app/services/podcastservice.js:170
 msgid "Remove channel"
 msgstr ""
 
@@ -646,7 +646,7 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:393
+#: ../js/app/controllers/playercontroller.js:389
 #: ../templates/partials/controls.php:40
 msgid "Repeat"
 msgstr ""
@@ -691,7 +691,7 @@ msgstr ""
 msgid "See the album on Last.fm"
 msgstr ""
 
-#: ../js/app/controllers/trackdetailscontroller.js:82
+#: ../js/app/controllers/trackdetailscontroller.js:87
 msgid "See the track on Last.fm"
 msgstr ""
 
@@ -708,7 +708,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../js/app/controllers/podcastsviewcontroller.js:96
+#: ../js/app/controllers/podcastsviewcontroller.js:113
 msgid "Show all {{ count }} episodes …"
 msgstr ""
 
@@ -740,7 +740,7 @@ msgstr ""
 msgid "Show..."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:387
+#: ../js/app/controllers/playercontroller.js:383
 #: ../templates/partials/controls.php:38
 msgid "Shuffle"
 msgstr ""
@@ -749,7 +749,7 @@ msgstr ""
 msgid "Similar to"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:262
+#: ../js/app/controllers/playercontroller.js:258
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -795,11 +795,11 @@ msgstr ""
 msgid "The PLS file is no longer needed after the import and you may delete it at will. You might want to keep it, though, because it is also possible to play the radio stations directly within the Files app by opening the PLS file."
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:95
+#: ../js/app/services/podcastservice.js:98
 msgid "The channel was already up-to-date"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:92
+#: ../js/app/services/podcastservice.js:95
 msgid "The channel was updated from the source"
 msgstr ""
 
@@ -843,7 +843,7 @@ msgstr ""
 msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:62
+#: ../js/app/services/podcastservice.js:64
 msgid "This channel is already subscribed"
 msgstr ""
 
@@ -868,7 +868,7 @@ msgstr ""
 msgid "Total length"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:400
+#: ../js/app/controllers/playercontroller.js:396
 msgid "Track"
 msgstr ""
 
@@ -884,7 +884,7 @@ msgstr ""
 msgid "Try to refine the search"
 msgstr ""
 
-#: ../js/app/services/podcastservice.js:81
+#: ../js/app/services/podcastservice.js:83
 msgid "URL"
 msgstr ""
 
@@ -966,12 +966,16 @@ msgstr ""
 msgid "Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP scheme. By default, your browser might block such accees. To overcome this, you may be able to set your browser to allow \"Insecure content\" on this page. On the desktop browsers, such settings can usually be found by clicking the icon right next to the address bar on its left side."
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:98
+#: ../js/app/controllers/podcastdetailscontroller.js:106
 msgid "author"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:109
+#: ../js/app/controllers/podcastdetailscontroller.js:118
 msgid "bit rate"
+msgstr ""
+
+#: ../js/app/controllers/podcastdetailscontroller.js:109
+msgid "build date"
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:58
@@ -986,59 +990,59 @@ msgstr ""
 msgid "by title"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:99
+#: ../js/app/controllers/podcastdetailscontroller.js:107
 msgid "category"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:104
+#: ../js/app/controllers/podcastdetailscontroller.js:113
 msgid "channel"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:97
+#: ../js/app/controllers/podcastdetailscontroller.js:105
 msgid "copyright"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:93
+#: ../js/app/controllers/podcastdetailscontroller.js:101
 msgid "description"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:107
+#: ../js/app/controllers/podcastdetailscontroller.js:116
 msgid "duration"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:102
+#: ../js/app/controllers/podcastdetailscontroller.js:111
 msgid "episode"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:111
+#: ../js/app/controllers/podcastdetailscontroller.js:120
 msgid "keywords"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:96
+#: ../js/app/controllers/podcastdetailscontroller.js:104
 msgid "language"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:100
+#: ../js/app/controllers/podcastdetailscontroller.js:108
 msgid "published"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:103
+#: ../js/app/controllers/podcastdetailscontroller.js:112
 msgid "season"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:108
+#: ../js/app/controllers/podcastdetailscontroller.js:117
 msgid "size"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:105
+#: ../js/app/controllers/podcastdetailscontroller.js:114
 msgid "stream URL"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:92
+#: ../js/app/controllers/podcastdetailscontroller.js:100
 msgid "title"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:101
+#: ../js/app/controllers/podcastdetailscontroller.js:110
 msgid "updates checked"
 msgstr ""
 
@@ -1046,7 +1050,7 @@ msgstr ""
 msgid "version history"
 msgstr ""
 
-#: ../js/app/controllers/podcastdetailscontroller.js:94
+#: ../js/app/controllers/podcastdetailscontroller.js:102
 msgid "website"
 msgstr ""
 

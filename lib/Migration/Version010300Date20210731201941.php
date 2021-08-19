@@ -61,6 +61,9 @@ class Version010300Date20210731201941 extends SimpleMigrationStep {
 			$table->addColumn('published', 'datetime', [
 				'notnull' => false,
 			]);
+			$table->addColumn('last_build_date', 'datetime', [
+				'notnull' => false,
+			]);
 			$table->addColumn('title', 'string', [
 				'notnull' => false,
 				'length' => 256,

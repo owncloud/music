@@ -507,6 +507,11 @@
 				<notnull>false</notnull>
 			</field>
 			<field>
+				<name>last_build_date</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
 				<name>title</name>
 				<type>text</type>
 				<notnull>false</notnull>

@@ -106,6 +106,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 			case 'author':			return gettextCatalog.getString('author');
 			case 'category':		return gettextCatalog.getString('category');
 			case 'published':		return gettextCatalog.getString('published');
+			case 'last_build_date':	return gettextCatalog.getString('build date');
 			case 'update_checked':	return gettextCatalog.getString('updates checked');
 			case 'episode':			return gettextCatalog.getString('episode');
 			case 'season':			return gettextCatalog.getString('season');
@@ -128,6 +129,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 			case 'size':			return OCA.Music.Utils.formatFileSize(value);
 			case 'bit_rate':		return OCA.Music.Utils.formatBitrate(value);
 			case 'published':		// fall through
+			case 'last_build_date':	// fall through
 			case 'update_checked':	return formatTimestamp(value);
 			case 'link_url':		// fall through
 			case 'rss_url':			// fall through

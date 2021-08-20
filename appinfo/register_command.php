@@ -37,3 +37,19 @@ $application->add(new OCA\Music\Command\ResetCache(
 $application->add(new OCA\Music\Command\Cleanup(
 		$c->query('Maintenance')
 ));
+$application->add(new OCA\Music\Command\PodcastAdd(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('PodcastChannelBusinessLayer'),
+		$c->query('PodcastEpisodeBusinessLayer')
+));
+$application->add(new OCA\Music\Command\PodcastReset(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('PodcastService')
+));
+$application->add(new OCA\Music\Command\PodcastUpdate(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('PodcastService')
+));

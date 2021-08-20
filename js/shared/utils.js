@@ -105,6 +105,21 @@ OCA.Music.Utils = {
 		} else {
 			return minutes + ':' + fmtTwoDigits(seconds);
 		}
-	}
+	},
 
+	/**
+	 * Format a file size given as bytes in human-readable format.
+	 * Source: https://stackoverflow.com/a/20732091/4348850
+	 */
+	formatFileSize: function(size) {
+		var i = (size == 0) ? 0 : Math.floor( Math.log(size) / Math.log(1024) );
+		return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'KiB', 'MiB', 'GiB', 'TiB'][i];
+	},
+
+	/**
+	 * Format baud rate given as bit per second to kilobits per second with integer precission
+	 */
+	formatBitrate: function(bitsPerSecond) {
+		return (bitsPerSecond / 1000).toFixed() + ' kbps';
+	}
 };

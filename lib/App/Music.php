@@ -25,6 +25,8 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -33,6 +35,7 @@ use \OCA\Music\Controller\ApiController;
 use \OCA\Music\Controller\LogController;
 use \OCA\Music\Controller\PageController;
 use \OCA\Music\Controller\PlaylistApiController;
+use \OCA\Music\Controller\PodcastApiController;
 use \OCA\Music\Controller\RadioApiController;
 use \OCA\Music\Controller\SettingController;
 use \OCA\Music\Controller\ShareController;
@@ -47,6 +50,8 @@ use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\GenreMapper;
 use \OCA\Music\Db\Maintenance;
 use \OCA\Music\Db\PlaylistMapper;
+use \OCA\Music\Db\PodcastChannelMapper;
+use \OCA\Music\Db\PodcastEpisodeMapper;
 use \OCA\Music\Db\RadioStationMapper;
 use \OCA\Music\Db\TrackMapper;
 
@@ -64,6 +69,7 @@ use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\ExtractorGetID3;
 use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\PlaylistFileService;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Scanner;
 use \OCA\Music\Utility\UserMusicFolder;
@@ -91,8 +97,11 @@ class Music extends App {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
+				$c->query('PodcastService'),
 				$c->query('AmpacheUser'),
 				$c->query('RootFolder'),
 				$c->query('CoverHelper'),
@@ -144,6 +153,16 @@ class Music extends App {
 				$c->query('UserId'),
 				$c->query('UserFolder'),
 				$c->query('L10N'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastApiController', function (IAppContainer $c) {
+			return new PodcastApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('PodcastService'),
+				$c->query('UserId'),
 				$c->query('Logger')
 			);
 		});
@@ -205,6 +224,8 @@ class Music extends App {
 				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
@@ -212,6 +233,7 @@ class Music extends App {
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
+				$c->query('PodcastService'),
 				$c->query('Random'),
 				$c->query('Logger')
 			);
@@ -254,6 +276,20 @@ class Music extends App {
 			return new PlaylistBusinessLayer(
 				$c->query('PlaylistMapper'),
 				$c->query('TrackMapper'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastChannelBusinessLayer', function (IAppContainer $c) {
+			return new PodcastChannelBusinessLayer(
+				$c->query('PodcastChannelMapper'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastEpisodeBusinessLayer', function (IAppContainer $c) {
+			return new PodcastEpisodeBusinessLayer(
+				$c->query('PodcastEpisodeMapper'),
 				$c->query('Logger')
 			);
 		});
@@ -326,6 +362,18 @@ class Music extends App {
 
 		$container->registerService('PlaylistMapper', function (IAppContainer $c) {
 			return new PlaylistMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('PodcastChannelMapper', function (IAppContainer $c) {
+			return new PodcastChannelMapper(
+				$c->getServer()->getDatabaseConnection()
+			);
+		});
+
+		$container->registerService('PodcastEpisodeMapper', function (IAppContainer $c) {
+			return new PodcastEpisodeMapper(
 				$c->getServer()->getDatabaseConnection()
 			);
 		});
@@ -470,6 +518,14 @@ class Music extends App {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('PodcastService', function (IAppContainer $c) {
+			return new PodcastService(
+				$c->query('PodcastChannelBusinessLayer'),
+				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('Logger')
 			);
 		});

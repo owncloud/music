@@ -77,7 +77,13 @@ angular.module('Music').controller('AlbumDetailsController', [
 			}
 		}
 
-		$scope.$watch('contentId', showDetails);
+		$scope.$watch('contentId', function(newId) {
+			if (newId !== null) {
+				showDetails(newId);
+			} else {
+				resetContents();
+			}
+		});
 
 		$scope.showArtist = function() {
 			$rootScope.$emit('showArtistDetails', $scope.album.artist.id);

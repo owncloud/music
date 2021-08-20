@@ -35,9 +35,10 @@ $appName = $c->query('AppName');
 });
 
 /**
- * register regular task
+ * register regular tasks
  */
 \OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\Cleanup', 'run']);
+\OC::$server->getJobList()->add('OC\BackgroundJob\Legacy\RegularJob', ['OCA\Music\Backgroundjob\PodcastUpdateCheck', 'run']);
 
 /**
  * register hooks
@@ -86,6 +87,10 @@ function adjustCsp(IAppContainer $container) {
 			$policy->addAllowedMediaDomain('data:');
 			$policy->addAllowedMediaDomain('blob:');
 		}
+
+		// Allow loading (podcast cover) images from external sources
+		$policy->addAllowedImageDomain('http://*:*');
+		$policy->addAllowedImageDomain('https://*:*');
 
 		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 	}

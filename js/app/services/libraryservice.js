@@ -22,6 +22,7 @@ angular.module('Music').service('libraryService', [function() {
 	var folders = null;
 	var genres = null;
 	var radioStations = null;
+	var podcastChannels = null;
 
 	/** 
 	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
@@ -93,6 +94,11 @@ angular.module('Music').service('libraryService', [function() {
 		return playlistEntry(tracksIndex[trackId]);
 	}
 
+	function wrapRadioStation(station) {
+		station.type = 'radio';
+		return playlistEntry(station);
+	}
+
 	function wrapPlaylist(playlist) {
 		var wrapped = $.extend({}, playlist); // clone the playlist
 		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
@@ -104,6 +110,13 @@ angular.module('Music').service('libraryService', [function() {
 		var wrapped = wrapPlaylist(folder);
 		wrapped.path = folder.path;
 		return wrapped;
+	}
+
+	function initPodcastChannel(channel) {
+		_.forEach(channel.episodes, function(episode) {
+			episode.channel = channel;
+			episode.type = 'podcast';
+		});
 	}
 
 	function createTrackContainers() {
@@ -118,6 +131,7 @@ angular.module('Music').service('libraryService', [function() {
 
 		// tracks index
 		_.forEach(tracks, function(track) {
+			track.type = 'song';
 			tracksIndex[track.id] = track;
 		});
 	}
@@ -251,7 +265,7 @@ angular.module('Music').service('libraryService', [function() {
 			}
 		},
 		setRadioStations: function(radioStationsData) {
-			radioStations = _.map(radioStationsData, playlistEntry);
+			radioStations = _.map(radioStationsData, wrapRadioStation);
 			this.sortRadioStations();
 		},
 		sortRadioStations: function() {
@@ -262,7 +276,7 @@ angular.module('Music').service('libraryService', [function() {
 			this.addRadioStations([radioStationData]);
 		},
 		addRadioStations: function(radioStationsData) {
-			radioStations = radioStations.concat(_.map(radioStationsData, playlistEntry));
+			radioStations = radioStations.concat(_.map(radioStationsData, wrapRadioStation));
 			sortByPlaylistEntryTextField(radioStations, 'stream_url');
 			sortByPlaylistEntryTextField(radioStations, 'name');
 		},
@@ -270,6 +284,26 @@ angular.module('Music').service('libraryService', [function() {
 			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
 			radioStations.splice(idx, 1);
 			return idx;
+		},
+		setPodcasts: function(podcastsData) {
+			sortByTextField(podcastsData, 'title');
+			// set the parent references for each episode 
+			_.forEach(podcastsData, initPodcastChannel);
+			podcastChannels = podcastsData;
+		},
+		addPodcastChannel: function(channel) {
+			initPodcastChannel(channel);
+			podcastChannels.push(channel);
+			sortByTextField(podcastChannels, 'title');
+		},
+		replacePodcastChannel: function(channel) {
+			initPodcastChannel(channel);
+			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			podcastChannels[idx] = channel;
+		},
+		removePodcastChannel: function(channel) {
+			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			podcastChannels.splice(idx, 1);
 		},
 		addPlaylist: function(playlist) {
 			playlists.push(wrapPlaylist(playlist));
@@ -336,7 +370,7 @@ angular.module('Music').service('libraryService', [function() {
 			return _.find(albums, { id: Number(id) });
 		},
 		getAlbumCount: function() {
-			return albums ? albums.length : 0;
+			return albums?.length ?? 0;
 		},
 		getTrack: function(id) {
 			return tracksIndex[id];
@@ -354,7 +388,7 @@ angular.module('Music').service('libraryService', [function() {
 			return tracksInGenreOrder;
 		},
 		getTrackCount: function() {
-			return tracksInAlphaOrder ? tracksInAlphaOrder.length : 0;
+			return tracksInAlphaOrder?.length ?? 0;
 		},
 		getPlaylist: function(id) {
 			return _.find(playlists, { id: Number(id) });
@@ -380,6 +414,21 @@ angular.module('Music').service('libraryService', [function() {
 		getAllRadioStations: function() {
 			return radioStations;
 		},
+		getPodcastEpisode: function(id) {
+			return _(podcastChannels).map('episodes').flatten().find({ id: Number(id) });
+		},
+		getAllPodcastEpisodes: function() {
+			return _(podcastChannels).map('episodes').flatten().value();
+		},
+		getPodcastChannel: function(id) {
+			return _.find(podcastChannels, { id: Number(id) });
+		},
+		getAllPodcastChannels: function() {
+			return podcastChannels;
+		},
+		getPodcastChannelsCount: function() {
+			return podcastChannels?.length ?? 0;
+		},
 		findTracksByArtist: function(artistId) {
 			return _.filter(tracksIndex, {artistId: Number(artistId)});
 		},
@@ -397,6 +446,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		radioStationsLoaded: function() {
 			return radioStations !== null;
+		},
+		podcastsLoaded: function() {
+			return podcastChannels !== null;
 		},
 		searchTracks: function(query, maxResults/*optional*/) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
@@ -431,6 +483,10 @@ angular.module('Music').service('libraryService', [function() {
 		searchRadioStations: function(query, maxResults/*optional*/) {
 			var stations = _.map(radioStations, 'track');
 			return search(stations, ['name', 'stream_url'], query, maxResults);
+		},
+		searchPodcasts: function(query, maxResults/*optional*/) {
+			var episodes = _(podcastChannels).map('episodes').flatten().value();
+			return search(episodes, ['title', 'channel.title'], query, maxResults);
 		},
 	};
 }]);

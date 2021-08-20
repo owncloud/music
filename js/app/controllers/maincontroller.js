@@ -81,6 +81,15 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
+	$scope.podcastsCountText = function() {
+		if (libraryService.podcastsLoaded()) {
+			var channelsCount = libraryService.getPodcastChannelsCount();
+			return gettextCatalog.getPlural(channelsCount, '1 channel', '{{ count }} channels', { count: channelsCount });
+		} else {
+			return '';
+		}
+	};
+
 	$scope.loadIndicatorVisible = function() {
 		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
 		return $rootScope.loading
@@ -88,7 +97,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.viewingLibrary = function() {
-		return $rootScope.currentView != '#/settings' && $rootScope.currentView != '#/radio';
+		return $rootScope.currentView != '#/settings'
+			&& $rootScope.currentView != '#/radio'
+			&& $rootScope.currentView != '#/podcasts';
 	};
 
 	$scope.update = function() {
@@ -126,7 +137,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('#app-content .emptycontent:not(#noSearchResults):not(#toRescan):not(#noStations)');
+			var collapsiblePopups = $('#app-content .emptycontent:not(.no-collapse)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -169,9 +180,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	};
 
+	$scope.updatePodcasts = function() {
+		Restangular.one('podcasts').get().then(function(podcasts) {
+			libraryService.setPodcasts(podcasts);
+			$rootScope.$emit('podcastsLoaded');
+		});
+	};
+
 	// initial loading of artists and radio stations
 	$scope.update();
 	$scope.updateRadio();
+	$scope.updatePodcasts();
 
 	var FILES_TO_SCAN_PER_STEP = 10;
 	var filesToScan = null;
@@ -294,6 +313,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showRadioHint = function() {
 		$rootScope.$emit('showRadioHint');
+	};
+
+	$scope.showPodcastChannelDetails = function(channel) {
+		showDetails('podcastChannel', channel.id);
+	};
+
+	$scope.showPodcastEpisodeDetails = function(episodeId) {
+		showDetails('podcastEpisode', episodeId);
 	};
 
 	$scope.hideSidebar = function() {

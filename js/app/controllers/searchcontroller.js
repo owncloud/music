@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 /**
@@ -17,8 +17,8 @@
  * on our own, on the front-end.
  */
 angular.module('Music').controller('SearchController', [
-'$scope', '$rootScope', 'libraryService', 'alphabetIndexingService', '$timeout', '$document', 'gettextCatalog',
-function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout, $document, gettextCatalog) {
+'$scope', '$rootScope', 'libraryService', '$timeout', '$document', 'gettextCatalog',
+function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalog) {
 
 	var MAX_MATCHES = 5000;
 	var MAX_MATCHES_IN_PLAYLIST = 1000;
@@ -27,7 +27,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 	var searchbox = $('#searchbox');
 
 	if (searchbox.length === 0) { // NC 20+
-		$.initialize('.unified-search__form', function(index_, elem) {
+		$.initialize('.unified-search__form', function(_index, elem) {
 			searchform = $(elem);
 			searchbox = searchform.find('input');
 			init();
@@ -123,6 +123,8 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 			matchingTracks = searchInAllTracksView(query);
 		} else if (view == '#/radio') {
 			matchingTracks = searchInRadioView(query);
+		} else if (view == '#/podcasts') {
+			matchingTracks = searchInPodcastsView(query);
 		} else if (view.startsWith('#/playlist/')) {
 			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
 		} else {
@@ -157,12 +159,12 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		});
 
 		// mark parent artists of the matches
-		_(artists).each(function(value, artistId) {
+		_(artists).each(function(_value, artistId) {
 			$('#artist-' + artistId).addClass('matched');
 		});
 
 		// mark parent albums of the matches
-		_(albums).each(function(value, albumId) {
+		_(albums).each(function(_value, albumId) {
 			$('#album-' + albumId).addClass('matched');
 		});
 
@@ -180,7 +182,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		});
 
 		// mark parent folders of the matches
-		_(folders).each(function(value, folderId) {
+		_(folders).each(function(_value, folderId) {
 			$('#folder-' + folderId).addClass('matched');
 		});
 
@@ -198,7 +200,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		});
 
 		// mark parent folders of the matches
-		_(genres).each(function(value, genreId) {
+		_(genres).each(function(_value, genreId) {
 			$('#genre-' + genreId).addClass('matched');
 		});
 
@@ -216,7 +218,7 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		});
 
 		// mark parent buckets
-		_(buckets).each(function(value, bucketId) {
+		_(buckets).each(function(_value, bucketId) {
 			$('#track-bucket-' + bucketId).addClass('matched');
 		});
 
@@ -228,6 +230,27 @@ function ($scope, $rootScope, libraryService, alphabetIndexingService, $timeout,
 		_(matches.result).each(function(station) {
 			$('#radio-station-' + station.id).addClass('matched');
 		});
+
+		return matches;
+	}
+
+	function searchInPodcastsView(query) {
+		var matches = libraryService.searchPodcasts(query, MAX_MATCHES);
+
+		// mark episode matches and collect the unique parent channels
+		var channels = {};
+		_(matches.result).each(function(episode) {
+			$('#podcast-episode-' + episode.id).addClass('matched');
+			channels[episode.channel.id] = 1;
+		});
+
+		// mark parent channels of the matches
+		_(channels).each(function(_value, channelId) {
+			$('#podcast-channel-' + channelId).addClass('matched');
+		});
+
+		// podcasts view has a single ".artist-area" which should be always "matched" i.e. not hidden
+		$('.artist-area').addClass('matched');
 
 		return matches;
 	}

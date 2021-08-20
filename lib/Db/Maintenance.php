@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -68,9 +68,10 @@ class Maintenance {
 	 * @param string $refTable
 	 * @param string $tgtTableKey
 	 * @param string $refTableKey
+	 * @param string|null $extraCond
 	 * @return Number of removed rows
 	 */
-	private function removeUnreferencedDbRows($tgtTable, $refTable, $tgtTableKey, $refTableKey) {
+	private function removeUnreferencedDbRows($tgtTable, $refTable, $tgtTableKey, $refTableKey, $extraCond=null) {
 		$tgtTable = '*PREFIX*' . $tgtTable;
 		$refTable = '*PREFIX*' . $refTable;
 
@@ -83,6 +84,8 @@ class Maintenance {
 					WHERE `$refTable`.`$refTableKey` IS NULL
 				) mysqlhack
 			)"
+			.
+			(empty($extraCond) ? '' : " AND $extraCond")
 		);
 	}
 
@@ -145,7 +148,16 @@ class Maintenance {
 	 * @return Number of removed bookmarks
 	 */
 	private function removeObsoleteBookmarks() {
-		return $this->removeUnreferencedDbRows('music_bookmarks', 'music_tracks', 'track_id', 'id');
+		return $this->removeUnreferencedDbRows('music_bookmarks', 'music_tracks', 'entry_id', 'id', '`type` = 1')
+			+ $this->removeUnreferencedDbRows('music_bookmarks', 'music_podcast_episodes', 'entry_id', 'id', '`type` = 2');
+	}
+
+	/**
+	 * Remove podcast episodes which have a non-existing podcast channel
+	 * @return Number of removed albums
+	 */
+	private function removeObsoletePodcastEpisodes() {
+		return $this->removeUnreferencedDbRows('music_podcast_episodes', 'music_podcast_channels', 'channel_id', 'id');
 	}
 
 	/**
@@ -160,6 +172,7 @@ class Maintenance {
 		$removedAlbums = $this->removeObsoleteAlbums();
 		$removedArtists = $this->removeObsoleteArtists();
 		$removedBookmarks = $this->removeObsoleteBookmarks();
+		$removedEpisodes = $this->removeObsoletePodcastEpisodes();
 
 		$removedAlbums += $this->removeAlbumsWithNoArtist();
 		$removedTracks += $this->removeTracksWithNoAlbum();
@@ -170,7 +183,8 @@ class Maintenance {
 			'artists' => $removedArtists,
 			'albums' => $removedAlbums,
 			'tracks' => $removedTracks,
-			'bookmarks' => $removedBookmarks
+			'bookmarks' => $removedBookmarks,
+			'podcast_episodes' => $removedEpisodes
 		];
 	}
 

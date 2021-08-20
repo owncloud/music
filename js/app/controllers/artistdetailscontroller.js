@@ -114,6 +114,12 @@ angular.module('Music').controller('ArtistDetailsController', [
 			$rootScope.$emit('showArtistDetails', id);
 		};
 
-		$scope.$watch('contentId', showDetails);
+		$scope.$watch('contentId', function(newId) {
+			if (newId !== null) {
+				showDetails(newId);
+			} else {
+				resetContents();
+			}
+		});
 	}
 ]);

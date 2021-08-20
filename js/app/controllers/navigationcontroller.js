@@ -12,14 +12,15 @@
 
 
 angular.module('Music').controller('NavigationController', [
-	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'playlistFileService', 'libraryService', 'gettextCatalog',
-	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, playlistFileService, libraryService, gettextCatalog) {
+	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
+	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
 		$scope.newPlaylistName = '';
 		$scope.popupShownForPlaylist = null;
 		$scope.radioBusy = false;
+		$scope.podcastsBusy = false;
 
 		// holds the state of the editor (visible or not)
 		$scope.showCreateForm = false;
@@ -146,13 +147,9 @@ angular.module('Music').controller('NavigationController', [
 		// Export radio stations to a file
 		$scope.exportRadioToFile = function() {
 			playlistFileService.exportRadio().then(
-				function() { // success
-					$scope.radioBusy = false;
-				},
-				function() { // failure
-					$scope.radioBusy = false;
-				},
-				function(state) { // notification about state change
+				() => $scope.radioBusy = false, // success
+				() => $scope.radioBusy = false, // failure
+				(state) => { // notification about state change
 					if (state == 'started') {
 						$scope.radioBusy = true;
 					} else if (state == 'stopped') {
@@ -165,20 +162,35 @@ angular.module('Music').controller('NavigationController', [
 		// Import radio stations from a playlist file
 		$scope.importFromFileToRadio = function() {
 			playlistFileService.importRadio().then(
-				function() { // success
-					$scope.radioBusy = false;
-				},
-				function() { // failure
-					$scope.radioBusy = false;
-				},
-				function() { // notification about import actually starting
-					$scope.radioBusy = true;
-				}
+				() => $scope.radioBusy = false, // success
+				() => $scope.radioBusy = false, // failure
+				() => $scope.radioBusy = true   // notification about import actually starting
 			);
 		};
 
 		$scope.addRadio = function() {
 			$rootScope.$emit('showRadioStationDetails', null);
+		};
+
+		$scope.addPodcast = function() {
+			podcastService.showAddPodcastDialog().then(
+				() => $scope.podcastsBusy = false, // success
+				() => $scope.podcastsBusy = false, // failure
+				() => $scope.podcastsBusy = true,  // started
+			);
+		};
+
+		$scope.reloadPodcasts = function (event) {
+			if ($scope.anyPodcastChannels()) {
+				$scope.podcastsBusy = true;
+				podcastService.reloadAllPodcasts().then(() => $scope.podcastsBusy = false);
+			} else {
+				event.stopPropagation();
+			}
+		};
+
+		$scope.anyPodcastChannels = function() {
+			return libraryService.getPodcastChannelsCount() > 0;
 		};
 
 		// Play/pause playlist
@@ -206,6 +218,8 @@ angular.module('Music').controller('NavigationController', [
 					play('genres', libraryService.getTracksInGenreOrder());
 				} else if (destination === '#/radio') {
 					play('radio', libraryService.getAllRadioStations());
+				} else if (destination === '#/podcasts') {
+					play('podcasts', _.map(libraryService.getAllPodcastEpisodes(), (episode) => ({track: episode})));
 				} else {
 					play('playlist-' + playlist.id, playlist.tracks);
 				}

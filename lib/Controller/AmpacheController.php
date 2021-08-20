@@ -17,6 +17,7 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Http\RedirectResponse;
 use \OCP\IRequest;
 use \OCP\IURLGenerator;
 
@@ -30,6 +31,8 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use \OCA\Music\Db\Album;
@@ -38,6 +41,7 @@ use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\SortBy;
+use \OCA\Music\Db\Track;
 
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
@@ -46,6 +50,7 @@ use \OCA\Music\Http\XmlResponse;
 
 use \OCA\Music\Utility\AmpacheUser;
 use \OCA\Music\Utility\CoverHelper;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\Util;
 
@@ -56,8 +61,11 @@ class AmpacheController extends Controller {
 	private $artistBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
+	private $podcastChannelBusinessLayer;
+	private $podcastEpisodeBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
+	private $podcastService;
 	private $ampacheUser;
 	private $urlGenerator;
 	private $rootFolder;
@@ -69,7 +77,7 @@ class AmpacheController extends Controller {
 
 	const SESSION_EXPIRY_TIME = 6000;
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
-	const API_VERSION = 400001;
+	const API_VERSION = 440000;
 	const API_MIN_COMPATIBLE_VERSION = 350001;
 
 	public function __construct(string $appname,
@@ -82,8 +90,11 @@ class AmpacheController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
+								PodcastService $podcastService,
 								AmpacheUser $ampacheUser,
 								$rootFolder,
 								CoverHelper $coverHelper,
@@ -97,8 +108,11 @@ class AmpacheController extends Controller {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
+		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
+		$this->podcastService = $podcastService;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10n = $l10n;
 
@@ -200,6 +214,20 @@ class AmpacheController extends Controller {
 				return $this->playlist_remove_song((int)$filter);
 			case 'playlist_generate':
 				return $this->playlist_generate($filter, $limit, $offset, $auth);
+			case 'podcasts':
+				return $this->podcasts($filter, $exact, $limit, $offset);
+			case 'podcast':
+				return $this->podcast((int)$filter);
+			case 'podcast_create':
+				return $this->podcast_create();
+			case 'podcast_delete':
+				return $this->podcast_delete((int)$filter);
+			case 'podcast_episodes':
+				return $this->podcast_episodes((int)$filter, $limit, $offset);
+			case 'podcast_episode':
+				return $this->podcast_episode((int)$filter);
+			case 'update_podcast':
+				return $this->update_podcast((int)$id);
 			case 'tags':
 				return $this->tags($filter, $exact, $limit, $offset);
 			case 'tag':
@@ -213,9 +241,9 @@ class AmpacheController extends Controller {
 			case 'flag':
 				return $this->flag();
 			case 'download':
-				return $this->download((int)$id); // args 'type' and 'format' not supported
+				return $this->download((int)$id); // arg 'format' not supported
 			case 'stream':
-				return $this->stream((int)$id, $offset); // args 'type', 'bitrate', 'format', and 'length' not supported
+				return $this->stream((int)$id, $offset); // args 'bitrate', 'format', and 'length' not supported
 			case 'get_art':
 				return $this->get_art((int)$id);
 		}
@@ -249,6 +277,8 @@ class AmpacheController extends Controller {
 			'artists' => $this->artistBusinessLayer->count($user),
 			'albums' => $this->albumBusinessLayer->count($user),
 			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
+			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
+			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
 			'session_expire' => \date('c', $expiryDate),
 			'tags' => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
@@ -300,7 +330,9 @@ class AmpacheController extends Controller {
 			$type = 'album';
 		}
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		// Note: according to the API documentation, types 'podcast' and 'podcast_episode' should not
+		// be supported. However, we can make this extension with no extra effort.
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 		$businessLayer = $this->getBusinessLayer($type);
@@ -598,6 +630,94 @@ class AmpacheController extends Controller {
 		}
 	}
 
+	protected function podcasts($filter, $exact, $limit, $offset) {
+		$channels = $this->findEntities($this->podcastChannelBusinessLayer, $filter, $exact, $limit, $offset);
+
+		if ($this->request->getParam('include') === 'episodes') {
+			$userId = $this->ampacheUser->getUserId();
+			$actuallyLimited = ($limit !== null && $limit < $this->podcastChannelBusinessLayer->count($userId));
+			$allChannelsIncluded = (!$filter && !$actuallyLimited && !$offset);
+			$this->podcastService->injectEpisodes($channels, $userId, $allChannelsIncluded);
+		}
+
+		return $this->renderPodcastChannels($channels);
+	}
+
+	protected function podcast(int $channelId) {
+		$userId = $this->ampacheUser->getUserId();
+		$channel = $this->podcastChannelBusinessLayer->find($channelId, $userId);
+
+		if ($this->request->getParam('include') === 'episodes') {
+			$channel->setEpisodes($this->podcastEpisodeBusinessLayer->findAllByChannel($channelId, $userId));
+		}
+
+		return $this->renderPodcastChannels([$channel]);
+	}
+
+	protected function podcast_create() {
+		$url = $this->getRequiredParam('url');
+		$userId = $this->ampacheUser->getUserId();
+		$result = $this->podcastService->subscribe($url, $userId);
+
+		switch ($result['status']) {
+			case PodcastService::STATUS_OK:
+				return $this->renderPodcastChannels([$result['channel']]);
+			case PodcastService::STATUS_INVALID_URL:
+				throw new AmpacheException("Invalid URL $url", 400);
+			case PodcastService::STATUS_INVALID_RSS:
+				throw new AmpacheException("The document at URL $url is not a valid podcast RSS feed", 400);
+			case PodcastService::STATUS_ALREADY_EXISTS:
+				throw new AmpacheException('User already has this podcast channel subscribed', 400);
+			default:
+				throw new AmpacheException("Unexpected status code {$result['status']}", 400);
+		}
+	}
+
+	protected function podcast_delete(int $channelId) {
+		$userId = $this->ampacheUser->getUserId();
+		$status = $this->podcastService->unsubscribe($channelId, $userId);
+
+		switch ($status) {
+			case PodcastService::STATUS_OK:
+				return $this->ampacheResponse(['success' => 'podcast deleted']);
+			case PodcastService::STATUS_NOT_FOUND:
+				throw new AmpacheException('Channel to be deleted not found', 404);
+			default:
+				throw new AmpacheException("Unexpected status code $status", 400);
+		}
+	}
+
+	protected function podcast_episodes(int $channelId, $limit, $offset) {
+		$userId = $this->ampacheUser->getUserId();
+		$episodes = $this->podcastEpisodeBusinessLayer->findAllByChannel($channelId, $userId, $limit, $offset);
+		return $this->renderPodcastEpisodes($episodes);
+	}
+
+	protected function podcast_episode(int $episodeId) {
+		$userId = $this->ampacheUser->getUserId();
+		$episode = $this->podcastEpisodeBusinessLayer->find($episodeId, $userId);
+		return $this->renderPodcastEpisodes([$episode]);
+	}
+
+	protected function update_podcast(int $channelId) {
+		$userId = $this->ampacheUser->getUserId();
+		$result = $this->podcastService->updateChannel($channelId, $userId);
+
+		switch ($result['status']) {
+			case PodcastService::STATUS_OK:
+				$message = $result['updated'] ? 'channel was updated from the souce' : 'no changes found';
+				return $this->ampacheResponse(['success' => $message]);
+			case PodcastService::STATUS_NOT_FOUND:
+				throw new AmpacheException('Channel to be updated not found', 404);
+			case PodcastService::STATUS_INVALID_URL:
+				throw new AmpacheException('failed to read from the channel URL', 400);
+			case PodcastService::STATUS_INVALID_RSS:
+				throw new AmpacheException('the document at the channel URL is not a valid podcast RSS feed', 400);
+			default:
+				throw new AmpacheException("Unexpected status code {$result['status']}", 400);
+		}
+	}
+
 	protected function tags($filter, $exact, $limit, $offset) {
 		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);
@@ -633,7 +753,7 @@ class AmpacheController extends Controller {
 		$flag = $this->getRequiredParam('flag');
 		$flag = \filter_var($flag, FILTER_VALIDATE_BOOLEAN);
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -641,10 +761,10 @@ class AmpacheController extends Controller {
 		$businessLayer = $this->getBusinessLayer($type);
 		if ($flag) {
 			$modifiedCount = $businessLayer->setStarred([$id], $userId);
-			$message = "flag ADDED to $id";
+			$message = "flag ADDED to $type $id";
 		} else {
 			$modifiedCount = $businessLayer->unsetStarred([$id], $userId);
-			$message = "flag REMOVED from $id";
+			$message = "flag REMOVED from $type $id";
 		}
 
 		if ($modifiedCount > 0) {
@@ -655,20 +775,28 @@ class AmpacheController extends Controller {
 	}
 
 	protected function download(int $trackId) {
+		$type = $this->request->getParam('type', 'song');
 		$userId = $this->ampacheUser->getUserId();
 
-		try {
-			$track = $this->trackBusinessLayer->find($trackId, $userId);
-		} catch (BusinessLayerException $e) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
-		}
+		if ($type === 'song') {
+			try {
+				$track = $this->trackBusinessLayer->find($trackId, $userId);
+			} catch (BusinessLayerException $e) {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
+			}
 
-		$file = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId())[0] ?? null;
+			$file = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId())[0] ?? null;
 
-		if ($file instanceof \OCP\Files\File) {
-			return new FileStreamResponse($file);
+			if ($file instanceof \OCP\Files\File) {
+				return new FileStreamResponse($file);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			}
+		} elseif ($type === 'podcast') {
+			$episode = $this->podcastEpisodeBusinessLayer->find($trackId, $userId);
+			return new RedirectResponse($episode->getStreamUrl());
 		} else {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+			throw new AmpacheException("Unsupported type '$type'", 400);
 		}
 	}
 
@@ -690,7 +818,7 @@ class AmpacheController extends Controller {
 	protected function get_art(int $id) {
 		$type = $this->getRequiredParam('type');
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -709,33 +837,39 @@ class AmpacheController extends Controller {
 
 	private function getBusinessLayer($type) {
 		switch ($type) {
-			case 'song':		return $this->trackBusinessLayer;
-			case 'album':		return $this->albumBusinessLayer;
-			case 'artist':		return $this->artistBusinessLayer;
-			case 'playlist':	return $this->playlistBusinessLayer;
-			case 'tag':			return $this->genreBusinessLayer;
-			default:			throw new AmpacheException("Unsupported type $type", 400);
+			case 'song':			return $this->trackBusinessLayer;
+			case 'album':			return $this->albumBusinessLayer;
+			case 'artist':			return $this->artistBusinessLayer;
+			case 'playlist':		return $this->playlistBusinessLayer;
+			case 'podcast':			return $this->podcastChannelBusinessLayer;
+			case 'podcast_episode':	return $this->podcastEpisodeBusinessLayer;
+			case 'tag':				return $this->genreBusinessLayer;
+			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
 
 	private function renderEntities($entities, $type, $auth) {
 		switch ($type) {
-			case 'song':		return $this->renderSongs($entities, $auth);
-			case 'album':		return $this->renderAlbums($entities, $auth);
-			case 'artist':		return $this->renderArtists($entities, $auth);
-			case 'playlist':	return $this->renderPlaylists($entities);
-			case 'tag':			return $this->renderTags($entities);
-			default:			throw new AmpacheException("Unsupported type $type", 400);
+			case 'song':			return $this->renderSongs($entities, $auth);
+			case 'album':			return $this->renderAlbums($entities, $auth);
+			case 'artist':			return $this->renderArtists($entities, $auth);
+			case 'playlist':		return $this->renderPlaylists($entities);
+			case 'podcast':			return $this->renderPodcastChannels($entities);
+			case 'podcast_episode':	return $this->renderPodcastEpisodes($entities);
+			case 'tag':				return $this->renderTags($entities);
+			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
 
 	private function renderEntitiesIndex($entities, $type) {
 		switch ($type) {
-			case 'song':		return $this->renderSongsIndex($entities);
-			case 'album':		return $this->renderAlbumsIndex($entities);
-			case 'artist':		return $this->renderArtistsIndex($entities);
-			case 'playlist':	return $this->renderPlaylistsIndex($entities);
-			default:			throw new AmpacheException("Unsupported type $type", 400);
+			case 'song':			return $this->renderSongsIndex($entities);
+			case 'album':			return $this->renderAlbumsIndex($entities);
+			case 'artist':			return $this->renderArtistsIndex($entities);
+			case 'playlist':		return $this->renderPlaylistsIndex($entities);
+			case 'podcast':			return $this->renderPodcastChannelsIndex($entities);
+			case 'podcast_episode':	return $this->renderPodcastEpisodesIndex($entities);
+			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
 
@@ -902,7 +1036,7 @@ class AmpacheController extends Controller {
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
 		return $this->ampacheResponse([
-			'artist' => \array_map(function ($artist) use ($userId, $genreMap, $auth) {
+			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
@@ -911,6 +1045,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($artist, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
+					'flag' => empty($artist->getStarred()) ? 0 : 1,
 					'tag' => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
@@ -925,7 +1060,7 @@ class AmpacheController extends Controller {
 
 	private function renderAlbums($albums, $auth) {
 		return $this->ampacheResponse([
-			'album' => \array_map(function ($album) use ($auth) {
+			'album' => \array_map(function (Album $album) use ($auth) {
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -938,13 +1073,14 @@ class AmpacheController extends Controller {
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album, $auth),
 					'preciserating' => 0,
+					'flag' => empty($album->getStarred()) ? 0 : 1,
 					'tag' => \array_map(function ($genre) {
 						return [
 							'id' => (string)$genre->getId(),
 							'value' => $genre->getNameString($this->l10n),
 							'count' => 1
 						];
-					}, $album->getGenres())
+					}, $album->getGenres() ?? [])
 				];
 			}, $albums)
 		]);
@@ -952,7 +1088,7 @@ class AmpacheController extends Controller {
 
 	private function renderSongs($tracks, $auth) {
 		return $this->ampacheResponse([
-			'song' => \array_map(function ($track) use ($auth) {
+			'song' => \array_map(function (Track $track) use ($auth) {
 				$userId = $this->ampacheUser->getUserId();
 				$album = $track->getAlbum()
 						?: $this->albumBusinessLayer->findOrDefault($track->getAlbumId(), $userId);
@@ -983,6 +1119,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($album, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
+					'flag' => empty($track->getStarred()) ? 0 : 1,
 				];
 
 				$genreId = $track->getGenreId();
@@ -1009,6 +1146,18 @@ class AmpacheController extends Controller {
 					'type' => 'Private'
 				];
 			}, $playlists)
+		]);
+	}
+
+	private function renderPodcastChannels(array $channels) {
+		return $this->ampacheResponse([
+			'podcast' => Util::arrayMapMethod($channels, 'toAmpacheApi')
+		]);
+	}
+
+	private function renderPodcastEpisodes(array $episodes) {
+		return $this->ampacheResponse([
+			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi')
 		]);
 	}
 
@@ -1096,6 +1245,16 @@ class AmpacheController extends Controller {
 		]);
 	}
 
+	private function renderPodcastChannelsIndex(array $channels) {
+		// The v4 API spec does not give any examples of this, and the v5 example is almost identical to the v4 "normal" result
+		return $this->renderPodcastChannels($channels);
+	}
+
+	private function renderPodcastEpisodesIndex(array $episodes) {
+		// The v4 API spec does not give any examples of this, and the v5 example is almost identical to the v4 "normal" result
+		return $this->renderPodcastEpisodes($episodes);
+	}
+
 	private function renderEntityIds($entities) {
 		return $this->ampacheResponse(['id' => Util::extractIds($entities)]);
 	}
@@ -1146,8 +1305,8 @@ class AmpacheController extends Controller {
 		$firstKey = \key($content);
 
 		// all 'entity list' kind of responses shall have the (deprecated) total_count element
-		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist'
-				|| $firstKey == 'playlist' || $firstKey == 'tag') {
+		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist' || $firstKey == 'playlist'
+				|| $firstKey == 'tag' || $firstKey == 'podcast' || $firstKey == 'podcast_episode') {
 			$content = ['total_count' => \count($content[$firstKey])] + $content;
 		}
 

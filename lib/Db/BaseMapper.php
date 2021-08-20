@@ -140,6 +140,28 @@ abstract class BaseMapper extends Mapper {
 	}
 
 	/**
+	 * Find IDs of all user's entities of this kind
+	 * @return int[]
+	 */
+	public function findAllIds(string $userId) : array {
+		$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$result = $this->execute($sql, [$userId]);
+
+		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
+	 * Find IDs of all users owning any entities of this mapper
+	 * @return string[]
+	 */
+	public function findAllUsers() : array {
+		$sql = "SELECT DISTINCT(`user_id`) FROM `{$this->getTableName()}`";
+		$result = $this->execute($sql);
+
+		return $result->fetchAll(\PDO::FETCH_COLUMN);
+	}
+
+	/**
 	 * Delete all entities with given IDs without specifying the user
 	 * @param integer[] $ids  IDs of the entities to be deleted
 	 */
@@ -148,8 +170,17 @@ abstract class BaseMapper extends Mapper {
 		if ($count === 0) {
 			return;
 		}
-		$sql = "DELETE FROM `{$this->getTableName()}` WHERE `id` IN ". $this->questionMarks($count);
-		$this->execute($sql, $ids);
+		$this->deleteByCond('`id` IN ' . $this->questionMarks($count), $ids);
+	}
+
+	/**
+	 * Delete all entities matching the given SQL condition
+	 * @param string $condition SQL 'WHERE' condition (without the keyword 'WHERE')
+	 * @param array $params SQL parameters for the condition
+	 */
+	protected function deleteByCond(string $condition, array $params) : void {
+		$sql = "DELETE FROM `{$this->getTableName()}` WHERE ". $condition;
+		$this->execute($sql, $params);
 	}
 
 	/**
@@ -311,27 +342,27 @@ abstract class BaseMapper extends Mapper {
 	protected function formatTimestampConditions(?string $createdMin, ?string $createdMax, ?string $updatedMin, ?string $updatedMax) : array {
 		$conditions = [];
 		$params = [];
-		
+
 		if (!empty($createdMin)) {
 			$conditions[] = "`{$this->getTableName()}`.`created` >= ?";
 			$params[] = $createdMin;
 		}
-		
+
 		if (!empty($createdMax)) {
 			$conditions[] = "`{$this->getTableName()}`.`created` <= ?";
 			$params[] = $createdMax;
 		}
-		
+
 		if (!empty($updatedMin)) {
 			$conditions[] = "`{$this->getTableName()}`.`updated` >= ?";
 			$params[] = $updatedMin;
 		}
-		
+
 		if (!empty($updatedMax)) {
 			$conditions[] = "`{$this->getTableName()}`.`updated` <= ?";
 			$params[] = $updatedMax;
 		}
-		
+
 		return [\implode(' AND ', $conditions), $params];
 	}
 

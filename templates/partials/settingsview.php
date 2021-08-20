@@ -68,6 +68,15 @@
 			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
 		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
 	</div>
+	<div>
+		<div class="label-container">
+			<label for="reset-podcasts" translate>Reset podcast channels</label>
+		</div>
+		<div class="icon-loading-small reset-in-progress" ng-show="podcastsResetOngoing"></div>
+		<input type="button" ng-class="{ 'invisible': podcastsResetOngoing }"
+			class="icon-delete reset-button" id="reset-podcasts" ng-click="resetPodcasts()"/>
+		<p><em translate>This action erases all the channels shown in the "Podcasts" view.</em></p>
+	</div>
 
 	<h2 translate>User interface</h2>
 	<div class="label-container">
@@ -129,7 +138,7 @@
 		</p>
 		<div>
 			<p>music.lastfm_api_key</p>
-			<p><em translate 
+			<p><em translate
 					translate-params-lastfm-url="'https://www.last.fm/api/account/create'"
 					translate-params-guide-url="'https://github.com/owncloud/music/wiki/Setting-up-Last.fm-connection'"
 			>
@@ -156,6 +165,13 @@
 			>
 				Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{connectSrcUrl}}" target="_blank">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
 			</em></p>
+		</div>
+		<div>
+			<p>music.podcast_auto_update_interval</p>
+			<p>
+				<em translate>The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours.</em><br/>
+				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
+			</p>
 		</div>
 	</div>
 

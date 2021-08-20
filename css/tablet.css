@@ -12,7 +12,7 @@
  * @copyright Pauli Järvinen 2016 - 2021
  */
 
-.tablet #albums:not(.compact) .album-area > h2 {
+.tablet .view-container:not(.compact) .album-area > h2 {
 	white-space: normal;
 }
 

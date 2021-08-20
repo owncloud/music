@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019, 2020 Pauli Järvinen
+ * @copyright 2019 - 2021 Pauli Järvinen
  *
  */
 
@@ -17,17 +17,22 @@ import playIconName from '../../../img/play-big.svg';
  * Respectively, contents are cleared when the widget leaves the viewport.
  */
 
-angular.module('Music').directive('listHeading', ['$rootScope', '$timeout', 'gettextCatalog',
-function ($rootScope, $timeout, gettextCatalog) {
+angular.module('Music').directive('listHeading', ['$rootScope', 'gettextCatalog',
+function ($rootScope, gettextCatalog) {
 
 	var playText = gettextCatalog.getString('Play');
 	var playIconSrc = OC.filePath('music', 'dist', playIconName);
 	var detailsText = gettextCatalog.getString('Details');
+	var actionsMenu = null;
+	var actionsMenuOwner = null;
 
 	/**
 	 * Set up the contents for a given heading element
 	 */
 	function setup(data) {
+		const ngElem = $(data.element);
+		data.listeners = [];
+
 		/**
 		 * Remove any placeholder and add the proper content
 		 */
@@ -41,10 +46,11 @@ function ($rootScope, $timeout, gettextCatalog) {
 			var fragment = document.createDocumentFragment();
 
 			var outerSpan = document.createElement('span');
-			outerSpan.setAttribute('draggable', true);
+			outerSpan.setAttribute('draggable', data.getDraggable !== undefined);
 			if (data.tooltip) {
 				outerSpan.setAttribute('title', data.tooltip);
 			}
+			outerSpan.className = 'heading';
 
 			var innerSpan = document.createElement('span');
 			innerSpan.innerHTML = data.heading;
@@ -72,21 +78,99 @@ function ($rootScope, $timeout, gettextCatalog) {
 				detailsButton.className = 'icon-details';
 				detailsButton.setAttribute('title', detailsText);
 				fragment.appendChild(detailsButton);
+				data.element.className = 'with-actions';
+			}
+			else if (data.actions) {
+				var moreButton = document.createElement('button');
+				moreButton.className = 'icon-more';
+				fragment.appendChild(moreButton);
+
+				var loadSpinner = document.createElement('span');
+				loadSpinner.className = 'icon-loading-small';
+				fragment.appendChild(loadSpinner);
+
+				data.element.className = 'with-actions';
+			}
+			else {
+				data.element.className = '';
 			}
 
 			return fragment;
 		}
 
-		var ngElem = $(data.element);
+		function createActionsMenu(actions) {
+			var container = document.createElement('div');
+			container.className = 'popovermenu bubble heading-actions';
+			var list = document.createElement('ul');
+			container.appendChild(list);
+
+			for (var action of actions) {
+				var listitem = document.createElement('li');
+				var link = document.createElement('a');
+				link.className = 'icon-' + action.icon;
+				var span = document.createElement('span');
+				span.innerText = gettextCatalog.getString(action.text);
+				// Note: l10n-extract cannot find localised string defined like above.
+				// Ensure that the same string can be extracted from somewhere else.
+				$(listitem).data('callback', action.callback);
+				link.appendChild(span);
+				listitem.appendChild(link);
+				list.appendChild(listitem);
+			}
+
+			return container;
+		}
+
+		function toggleActionsMenu() {
+			if (actionsMenu) {
+				actionsMenuOwner.removeChild(actionsMenu);
+				actionsMenu = null;
+			}
+
+			if (actionsMenuOwner !== data.element) {
+				actionsMenu = createActionsMenu(data.actions);
+				data.element.appendChild(actionsMenu);
+				actionsMenuOwner = data.element;
+			}
+
+			if (!actionsMenu) {
+				actionsMenuOwner = null;
+			}
+		}
+
+		function closeActionsMenu() {
+			actionsMenuOwner.removeChild(actionsMenu);
+			actionsMenu = null;
+			actionsMenuOwner = null;
+		}
+
+		/**
+		 * Sync the "busy" state of the model
+		 */
+		data.listeners.push(
+			data.scope.$watch(() => data.model.busy, updateModelBusy),
+		);
+		updateModelBusy(data.model.busy);
+
+		function updateModelBusy(busy) {
+			ngElem.toggleClass('busy', (busy === true));
+		}
 
 		/**
 		 * Click handlers
 		 */
-		ngElem.on('click', 'span', function(_e) {
+		ngElem.on('click', '.heading', function(_e) {
 			data.onClick(data.model);
 		});
-		ngElem.on('click', 'button', function(_e) {
+		ngElem.on('click', 'button.icon-details', function(_e) {
 			data.onDetailsClick(data.model);
+		});
+		ngElem.on('click', 'button.icon-more', function(_e) {
+			toggleActionsMenu();
+		});
+		ngElem.on('click', 'li', function(_e) {
+			$(this).data('callback')(data.model);
+			closeActionsMenu();
 		});
 
 		/**
@@ -119,10 +203,13 @@ function ($rootScope, $timeout, gettextCatalog) {
 
 	function tearDown(data) {
 		$(data.element).off();
+		_(data.listeners).each((unsubFunc) => unsubFunc());
+		data.listeners = null;
 	}
 
 	function setupPlaceholder(data) {
 		data.element.innerHTML = data.heading;
+		data.element.className = 'placeholder';
 	}
 
 	/**
@@ -152,10 +239,16 @@ function ($rootScope, $timeout, gettextCatalog) {
 						model: scope.$eval(attrs.model),
 						onClick: scope.$eval(attrs.onClick),
 						onDetailsClick: scope.$eval(attrs.onDetailsClick),
+						actions: scope.$eval(attrs.actions),
 						getDraggable: scope.$eval(attrs.getDraggable),
 						element: element[0],
-						scope: scope
+						scope: scope,
+						listeners: null
 					};
+
+					if (data.onDetailsClick && data.actions) {
+						console.error('Invalid configuration for list heading, a heading cannot have both details button and actions menu');
+					}
 
 					// Populate the heading first with a placeholder.
 					// The placeholder is replaced with the actual content once the element

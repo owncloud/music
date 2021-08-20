@@ -173,7 +173,7 @@ class Util {
 	public static function stringCaseCompare(?string $a, ?string $b) : int {
 		return \strcmp(\mb_strtolower($a ?? ''), \mb_strtolower($b ?? ''));
 	}
-	
+
 	/**
 	 * Test if $item is a string and not empty or only consisting of whitespace
 	 */
@@ -184,10 +184,49 @@ class Util {
 	/**
 	 * Convert file size given in bytes to human-readable format
 	 */
-	public static function formatFileSize(int $bytes, int $decimals = 1) : string {
-		$units = 'BKMGTP';
-		$factor = \floor((\strlen((string)$bytes) - 1) / 3);
-		return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
+	public static function formatFileSize(?int $bytes, int $decimals = 1) : ?string {
+		if ($bytes === null) {
+			return null;
+		} else {
+			$units = 'BKMGTP';
+			$factor = \floor((\strlen((string)$bytes) - 1) / 3);
+			return \sprintf("%.{$decimals}f", $bytes / \pow(1024, $factor)) . @$units[(int)$factor];
+		}
+	}
+
+	/**
+	 * Convert time given as seconds to the HH:MM:SS format
+	 */
+	public static function formatTime(?int $seconds) : ?string {
+		if ($seconds === null) {
+			return null;
+		} else {
+			return \sprintf('%02d:%02d:%02d', ($seconds/3600), ($seconds/60%60), $seconds%60);
+		}
+	}
+
+	/**
+	 * Convert date and time given in the SQL format to the ISO UTC "Zulu format" e.g. "2021-08-19T19:33:15Z"
+	 */
+	public static function formatZuluDateTime(?string $dbDateString) : ?string {
+		if ($dbDateString === null) {
+			return null;
+		} else {
+			$dateTime = new \DateTime($dbDateString);
+			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
+		}
+	}
+
+	/**
+	 * Convert date and time given in the SQL format to the ISO UTC "offset format" e.g. "2021-08-19T19:33:15+00:00"
+	 */
+	public static function formatDateTimeUtcOffset(?string $dbDateString) : ?string {
+		if ($dbDateString === null) {
+			return null;
+		} else {
+			$dateTime = new \DateTime($dbDateString);
+			return $dateTime->format('c');
+		}
 	}
 
 	/**

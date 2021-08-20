@@ -9,6 +9,7 @@
 	HtmlUtil::printPartial('playlistdetails');
 	HtmlUtil::printPartial('radiostationdetails');
 	HtmlUtil::printPartial('radiohint');
+	HtmlUtil::printPartial('podcastdetails');
 	?>
 
 	<img id="follow-playback" class="control toggle small svg"

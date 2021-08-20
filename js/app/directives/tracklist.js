@@ -7,7 +7,7 @@
  * @author Moritz Meißelbach <moritz@meisselba.ch>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2017 Moritz Meißelbach
- * @copyright 2018 - 2020 Pauli Järvinen
+ * @copyright 2018 - 2021 Pauli Järvinen
  *
  */
 
@@ -23,8 +23,8 @@
  * removed and listeners de-registered once the list instance leaves the viewport.
  */
 
-angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', '$timeout', 'gettextCatalog',
-function ($rootScope, $interpolate, $timeout, gettextCatalog) {
+angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog',
+function ($rootScope, $interpolate, gettextCatalog) {
 
 	var trackTemplate = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
@@ -34,13 +34,13 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	// Localized strings
 	var lessText = gettextCatalog.getString('Show less …');
 	var detailsText = gettextCatalog.getString('Details');
-	var moreText = function(count) {
+	var moreText = function(count) { // this is the default implementation, may be overridden with attributes
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 
 	// Search support
 	var searchModeTrackMatches = null;
-	$rootScope.$on('searchMatchedTracks', function(event, matchingTracks) {
+	$rootScope.$on('searchMatchedTracks', function(_event, matchingTracks) {
 		// store only the IDs of the matching tracks; store them in sorted array
 		// to enable binary search
 		searchModeTrackMatches = _.map(matchingTracks, 'id');
@@ -54,14 +54,6 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 	}
 	function trackMatchedInSearch(trackId) {
 		return _.sortedIndexOf(searchModeTrackMatches, trackId) !== -1;
-	}
-
-	function trackIdFromElementId(elemId) {
-		if (elemId && elemId.substring(0, 6) === 'track-') {
-			return parseInt(elemId.split('-')[1]);
-		} else {
-			return null;
-		}
 	}
 
 	/**
@@ -95,8 +87,8 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 				el.classList.remove('playing');
 			});
 
-			if (data.scope.currentTrack) {
-				var currentTrack = htmlElem.querySelector('#track-' + data.scope.currentTrack.id);
+			if (data.scope.currentTrack?.type === data.contentType) {
+				var currentTrack = htmlElem.querySelector('#' + data.trackIdPrefix + data.scope.currentTrack.id);
 				if (currentTrack) {
 					currentTrack.classList.add('current');
 					if ($rootScope.playing) {
@@ -132,7 +124,7 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 
 				lessEl.innerHTML = lessText;
 				lessEl.className = 'muted more-less collapsible';
-				moreEl.innerHTML = moreText(data.tracks.length);
+				moreEl.innerHTML = data.showCollapsedText(data.tracks.length);
 				moreEl.className = 'muted more-less';
 				trackListFragment.appendChild(lessEl);
 				trackListFragment.appendChild(moreEl);
@@ -154,15 +146,17 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			var listItemContent = document.createElement('div');
 			var trackData = data.getTrackData(track, index, data.scope);
 			listItemContent.innerHTML = trackRenderer(trackData);
-			listItemContent.setAttribute('draggable', true);
+			listItemContent.setAttribute('draggable', data.getDraggable !== undefined);
 			listItem.appendChild(listItemContent);
 
-			var detailsButton = document.createElement('button');
-			detailsButton.className = 'icon-details';
-			detailsButton.title = detailsText;
-			listItem.appendChild(detailsButton);
+			if (data.showTrackDetails) {
+				var detailsButton = document.createElement('button');
+				detailsButton.className = 'icon-details';
+				detailsButton.title = detailsText;
+				listItem.appendChild(detailsButton);
+			}
 
-			listItem.id = 'track-' + trackData.id;
+			listItem.id = data.trackIdPrefix + trackData.id;
 			if (className) {
 				listItem.className = className;
 			}
@@ -174,6 +168,14 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 			}
 
 			return listItem;
+		}
+
+		function trackIdFromElementId(elemId) {
+			if (elemId && elemId.startsWith(data.trackIdPrefix)) {
+				return parseInt(elemId.split('-').pop());
+			} else {
+				return null;
+			}
 		}
 
 		/**
@@ -323,6 +325,9 @@ function ($rootScope, $interpolate, $timeout, gettextCatalog) {
 				showTrackDetails: scope.$eval(attrs.showTrackDetails),
 				getDraggable: scope.$eval(attrs.getDraggable),
 				collapseLimit: attrs.collapseLimit || 999999,
+				showCollapsedText: scope.$eval(attrs.showCollapsedText) ?? moreText,
+				trackIdPrefix: (scope.$eval(attrs.trackIdPrefix) ?? 'track') + '-',
+				contentType: scope.$eval(attrs.contentType) ?? 'song',
 				listeners: null,
 				scope: scope,
 				element: element

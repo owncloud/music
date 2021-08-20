@@ -1,0 +1,53 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2021
+ */
+
+#app .popovermenu {
+	display: block;
+	box-sizing: content-box;
+	top: 48px;
+	padding: 0;
+}
+
+#app .popovermenu ul {
+	display: block;
+}
+
+#app .popovermenu ul li {
+	padding: 0;
+	line-height: 44px;
+}
+
+#app .popovermenu ul li a {
+	padding-left: 32px;
+	padding-right: 12px;
+	background-position: 10px center;
+	background-size: 16px;
+	opacity: .7;
+}
+
+#app .popovermenu ul a:hover {
+	opacity: 1.0;
+}
+
+#app .popovermenu ul li.disabled a {
+	opacity: .15 !important;
+}
+
+#app .popovermenu ul li.disabled * {
+	cursor: default !important;
+}
+
+#app .popovermenu.submenu a {
+	padding-left: 0;
+}
+
+#app .popovermenu.submenu span {
+	margin-left: 16px;
+}

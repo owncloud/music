@@ -18,6 +18,7 @@ HtmlUtil::addWebpackStyle('app');
 	HtmlUtil::printNgTemplate('genresview');
 	HtmlUtil::printNgTemplate('playlistview');
 	HtmlUtil::printNgTemplate('radioview');
+	HtmlUtil::printNgTemplate('podcastsview');
 	HtmlUtil::printNgTemplate('settingsview');
 	HtmlUtil::printNgTemplate('alphabetnavigation');
 	?>
@@ -68,7 +69,7 @@ HtmlUtil::addWebpackStyle('app');
 						<p translate>Try to refine the search</p>
 					</div>
 				</div>
-				<div id="noSearchResults" class="emptycontent" ng-show="noSearchResults">
+				<div id="noSearchResults" class="emptycontent no-collapse" ng-show="noSearchResults">
 					<div class="icon-search"></div>
 					<div>
 						<h2 translate>

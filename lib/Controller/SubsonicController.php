@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\DataDisplayResponse;
 use \OCP\AppFramework\Http\JSONResponse;
+use \OCP\AppFramework\Http\RedirectResponse;
 use \OCP\Files\File;
 use \OCP\Files\Folder;
 use \OCP\IRequest;
@@ -31,6 +32,8 @@ use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use \OCA\Music\BusinessLayer\GenreBusinessLayer;
 use \OCA\Music\BusinessLayer\Library;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 
@@ -39,6 +42,7 @@ use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Bookmark;
 use \OCA\Music\Db\Genre;
 use \OCA\Music\Db\Playlist;
+use \OCA\Music\Db\PodcastEpisode;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
@@ -51,18 +55,21 @@ use \OCA\Music\Middleware\SubsonicException;
 use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\LastfmService;
+use \OCA\Music\Utility\PodcastService;
 use \OCA\Music\Utility\Random;
 use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.11.0';
+	const API_VERSION = '1.13.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
+	private $podcastChannelBusinessLayer;
+	private $podcastEpisodeBusinessLayer;
 	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
@@ -73,6 +80,7 @@ class SubsonicController extends Controller {
 	private $coverHelper;
 	private $detailsHelper;
 	private $lastfmService;
+	private $podcastService;
 	private $random;
 	private $logger;
 	private $userId;
@@ -89,6 +97,8 @@ class SubsonicController extends Controller {
 								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
+								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
@@ -96,6 +106,7 @@ class SubsonicController extends Controller {
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
+								PodcastService $podcastService,
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -105,6 +116,8 @@ class SubsonicController extends Controller {
 		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
+		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
 		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
@@ -115,6 +128,7 @@ class SubsonicController extends Controller {
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
+		$this->podcastService = $podcastService;
 		$this->random = $random;
 		$this->logger = $logger;
 	}
@@ -220,8 +234,12 @@ class SubsonicController extends Controller {
 			return $this->getMusicDirectoryForFolder($id);
 		} elseif (Util::startsWith($id, 'artist-')) {
 			return $this->getMusicDirectoryForArtist($id);
-		} else {
+		} elseif (Util::startsWith($id, 'album-')) {
 			return $this->getMusicDirectoryForAlbum($id);
+		} elseif (Util::startsWith($id, 'podcast_channel-')) {
+			return $this->getMusicDirectoryForPodcastChannel($id);
+		} else {
+			throw new SubsonicException("Unsupported id format $id");
 		}
 	}
 
@@ -306,6 +324,14 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
+	private function getTopSongs() {
+		// TODO: Not supported yet
+		return $this->subsonicResponse(['topSongs' => []]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
 	private function getAlbum() {
 		$id = $this->getRequiredParam('id');
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
@@ -382,6 +408,8 @@ class SubsonicController extends Controller {
 			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
 		} elseif ($type == 'artist') {
 			$entity = $this->artistBusinessLayer->find($entityId, $this->userId);
+		} elseif ($type == 'podcast_channel') {
+			$entity = $this->podcastService->getChannel($entityId, $this->userId, /*$includeEpisodes=*/ false);
 		}
 
 		if (!empty($entity)) {
@@ -441,15 +469,29 @@ class SubsonicController extends Controller {
 	 */
 	private function download() {
 		$id = $this->getRequiredParam('id');
-		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 
-		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		$file = $this->getFilesystemNode($track->getFileId());
+		$idParts = \explode('-', $id);
+		$type = $idParts[0];
+		$entityId = (int)($idParts[1]);
 
-		if ($file instanceof File) {
-			return new FileStreamResponse($file);
+		if ($type === 'track') {
+			$track = $this->trackBusinessLayer->find($entityId, $this->userId);
+			$file = $this->getFilesystemNode($track->getFileId());
+
+			if ($file instanceof File) {
+				return new FileStreamResponse($file);
+			} else {
+				return $this->subsonicErrorResponse(70, 'file not found');
+			}
+		} elseif ($type === 'podcast_episode') {
+			$episode = $this->podcastService->getEpisode($entityId, $this->userId);
+			if ($episode instanceof PodcastEpisode) {
+				return new RedirectResponse($episode->getStreamUrl());
+			} else {
+				return $this->subsonicErrorResponse(70, 'episode not found');
+			}
 		} else {
-			return $this->subsonicErrorResponse(70, 'file not found');
+			return $this->subsonicErrorResponse(0, "id of type $type not supported");
 		}
 	}
 
@@ -632,7 +674,7 @@ class SubsonicController extends Controller {
 				'playlistRole' => true,
 				'coverArtRole' => false,
 				'commentRole' => false,
-				'podcastRole' => false,
+				'podcastRole' => true,
 				'streamRole' => true,
 				'jukeboxRole' => false,
 				'shareRole' => false,
@@ -676,6 +718,8 @@ class SubsonicController extends Controller {
 		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->setStarred($targetIds['albums'], $this->userId);
 		$this->artistBusinessLayer->setStarred($targetIds['artists'], $this->userId);
+		$this->podcastChannelBusinessLayer->setStarred($targetIds['podcast_channels'], $this->userId);
+		$this->podcastEpisodeBusinessLayer->setStarred($targetIds['podcast_episodes'], $this->userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -689,6 +733,8 @@ class SubsonicController extends Controller {
 		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $this->userId);
 		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $this->userId);
+		$this->podcastChannelBusinessLayer->unsetStarred($targetIds['podcast_channels'], $this->userId);
+		$this->podcastEpisodeBusinessLayer->unsetStarred($targetIds['podcast_episodes'], $this->userId);
 
 		return $this->subsonicResponse([]);
 	}
@@ -725,12 +771,87 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getPodcasts() {
-		// Feature not supported, return an empty list
+		$includeEpisodes = \filter_var($this->request->getParam('includeEpisodes', true), FILTER_VALIDATE_BOOLEAN);
+		$id = $this->request->getParam('id');
+
+		if ($id !== null) {
+			$id = self::ripIdPrefix($id);
+			$channel = $this->podcastService->getChannel($id, $this->userId, $includeEpisodes);
+			if ($channel === null) {
+				throw new SubsonicException('Requested channel not found', 70);
+			}
+			$channels = [$channel];
+		} else {
+			$channels = $this->podcastService->getAllChannels($this->userId, $includeEpisodes);
+		}
+
 		return $this->subsonicResponse([
 			'podcasts' => [
-				'channel' => []
+				'channel' => Util::arrayMapMethod($channels, 'toSubsonicApi')
 			]
 		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getNewestPodcasts() {
+		$count = (int)$this->request->getParam('count', 20);
+
+		$episodes = $this->podcastService->getLatestEpisodes($this->userId, $count);
+
+		return $this->subsonicResponse([
+			'newestPodcasts' => [
+				'episode' => Util::arrayMapMethod($episodes, 'toSubsonicApi')
+			]
+		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function refreshPodcasts() {
+		$this->podcastService->updateAllChannels($this->userId);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createPodcastChannel() {
+		$url = $this->getRequiredParam('url');
+		$result = $this->podcastService->subscribe($url, $this->userId);
+
+		switch ($result['status']) {
+			case PodcastService::STATUS_OK:
+				return $this->subsonicResponse([]);
+			case PodcastService::STATUS_INVALID_URL:
+				throw new SubsonicException("Invalid URL $url", 0);
+			case PodcastService::STATUS_INVALID_RSS:
+				throw new SubsonicException("The document at URL $url is not a valid podcast RSS feed", 0);
+			case PodcastService::STATUS_ALREADY_EXISTS:
+				throw new SubsonicException('User already has this podcast channel subscribed', 0);
+			default:
+				throw new SubsonicException("Unexpected status code {$result['status']}", 0);
+		}
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function deletePodcastChannel() {
+		$id = $this->getRequiredParam('id');
+		$id = self::ripIdPrefix($id);
+		$status = $this->podcastService->unsubscribe($id, $this->userId);
+
+		switch ($status) {
+			case PodcastService::STATUS_OK:
+				return $this->subsonicResponse([]);
+			case PodcastService::STATUS_NOT_FOUND:
+				throw new SubsonicException('Channel to be deleted not found', 70);
+			default:
+				throw new SubsonicException("Unexpected status code $status", 0);
+		}
 	}
 
 	/**
@@ -741,14 +862,21 @@ class SubsonicController extends Controller {
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->userId);
 
 		foreach ($bookmarks as $bookmark) {
+			$node = $bookmark->toSubsonicApi();
+			$entryId = $bookmark->getEntryId();
+			$type = $bookmark->getType();
+
 			try {
-				$trackId = $bookmark->getTrackId();
-				$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-				$node = $this->bookmarkToApi($bookmark);
-				$node['entry'] = $this->trackToApi($track);
+				if ($type === Bookmark::TYPE_TRACK) {
+					$node['entry'] = $this->trackToApi($this->trackBusinessLayer->find($entryId, $this->userId));
+				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
+					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
+				} else {
+					$this->logger->log("Bookmark {$bookmark->getId()} had unexpected entry type $type", 'warn');
+				}
 				$bookmarkNodes[] = $node;
 			} catch (BusinessLayerException $e) {
-				$this->logger->log("Bookmarked track $trackId not found", 'warn');
+				$this->logger->log("Bookmarked entry with type $type and id $entryId not found", 'warn');
 			}
 		}
 
@@ -759,10 +887,12 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function createBookmark() {
+		list($type, $id) = $this->getBookamrkIdParam();
 		$this->bookmarkBusinessLayer->addOrUpdate(
 				$this->userId,
-				self::ripIdPrefix($this->getRequiredParam('id')),
-				$this->getRequiredParam('position'),
+				$type,
+				$id,
+				(int)$this->getRequiredParam('position'),
 				$this->request->getParam('comment')
 		);
 		return $this->subsonicResponse([]);
@@ -772,18 +902,48 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function deleteBookmark() {
-		$id = $this->getRequiredParam('id');
-		$trackId = self::ripIdPrefix($id);
+		list($type, $id) = $this->getBookamrkIdParam();
 
-		$bookmark = $this->bookmarkBusinessLayer->findByTrack($trackId, $this->userId);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $id, $this->userId);
 		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
 
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getPlayQueue() {
+		// TODO: not supported yet
+		return $this->subsonicResponse(['playQueue' => []]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function savePlayQueue() {
+		// TODO: not supported yet
 		return $this->subsonicResponse([]);
 	}
 
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
+
+	private function getBookamrkIdParam() : array {
+		$id = $this->getRequiredParam('id');
+		list($typeName, $entityId) = \explode('-', $id);
+
+		if ($typeName === 'track') {
+			$type = Bookmark::TYPE_TRACK;
+		} elseif ($typeName === 'podcast_episode') {
+			$type = Bookmark::TYPE_PODCAST_EPISODE;
+		} else {
+			throw new SubsonicException("Unsupported ID format $id", 0);
+		}
+
+		return [$type, (int)$entityId];
+	}
 
 	private function getRequiredParam($paramName) {
 		$param = $this->request->getParam($paramName);
@@ -808,9 +968,12 @@ class SubsonicController extends Controller {
 		$artistIds = \array_map('self::ripIdPrefix', $artistIds);
 
 		// song IDs from newer clients and song/folder/album/artist IDs from older clients
+		// also podcast IDs may come here; that is not documented part of the API but at least DSub does that
 		$ids = $this->getRepeatedParam('id');
 
 		$trackIds = [];
+		$channelIds = [];
+		$episodeIds = [];
 
 		foreach ($ids as $prefixedId) {
 			$parts = \explode('-', $prefixedId);
@@ -823,6 +986,10 @@ class SubsonicController extends Controller {
 				$albumIds[] = $id;
 			} elseif ($type == 'artist') {
 				$artistIds[] = $id;
+			} elseif ($type == 'podcast_channel') {
+				$channelIds[] = $id;
+			} elseif ($type == 'podcast_episode') {
+				$episodeIds[] = $id;
 			} elseif ($type == 'folder') {
 				throw new SubsonicException('Starring folders is not supported', 0);
 			} else {
@@ -833,7 +1000,9 @@ class SubsonicController extends Controller {
 		return [
 			'tracks' => $trackIds,
 			'albums' => $albumIds,
-			'artists' => $artistIds
+			'artists' => $artistIds,
+			'podcast_channels' => $channelIds,
+			'podcast_episodes' => $episodeIds
 		];
 	}
 
@@ -1017,6 +1186,23 @@ class SubsonicController extends Controller {
 		]);
 	}
 
+	private function getMusicDirectoryForPodcastChannel($id) {
+		$channelId = self::ripIdPrefix($id); // get rid of 'podcast_channel-' prefix
+		$channel = $this->podcastService->getChannel($channelId, $this->userId, /*$includeEpisodes=*/ true);
+
+		if ($channel === null) {
+			throw new SubsonicException("Podcast channel $channelId not found", 0);
+		}
+
+		return $this->subsonicResponse([
+			'directory' => [
+				'id' => $id,
+				'name' => $channel->getTitle(),
+				'child' => Util::arrayMapMethod($channel->getEpisodes(), 'toSubsonicApi')
+			]
+		]);
+	}
+
 	/**
 	 * @param Folder $folder
 	 * @return array
@@ -1046,7 +1232,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($artist->getStarred())) {
-			$result['starred'] = $this->formatDateTime($artist->getStarred());
+			$result['starred'] = Util::formatZuluDateTime($artist->getStarred());
 		}
 
 		return $result;
@@ -1087,15 +1273,15 @@ class SubsonicController extends Controller {
 		$result = [
 			'id' => 'album-' . $album->getId(),
 			'artist' => $album->getAlbumArtistNameString($this->l10n),
-			'created' => $this->formatDateTime($album->getCreated())
+			'created' => Util::formatZuluDateTime($album->getCreated())
 		];
 
 		if (!empty($album->getCoverFileId())) {
 			$result['coverArt'] = 'album-' . $album->getId();
 		}
 
-		if ($album->getStarred() != null) {
-			$result['starred'] = $this->formatDateTime($album->getStarred());
+		if (!empty($album->getStarred())) {
+			$result['starred'] = Util::formatZuluDateTime($album->getStarred());
 		}
 
 		if (!empty($album->getGenres())) {
@@ -1141,13 +1327,13 @@ class SubsonicController extends Controller {
 			'contentType' => $track->getMimetype() ?? '',
 			'suffix' => $track->getFileExtension(),
 			'duration' => $track->getLength() ?: 0,
-			'bitRate' => \round($track->getBitrate()/1000) ?: 0, // convert bps to kbps
+			'bitRate' => empty($track->getBitrate()) ? 0 : (int)\round($track->getBitrate()/1000), // convert bps to kbps
 			//'path' => '',
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $track->getArtistId(),
 			'type' => 'music',
-			'created' => $this->formatDateTime($track->getCreated())
+			'created' => Util::formatZuluDateTime($track->getCreated())
 		];
 
 		if ($album !== null && !empty($album->getCoverFileId())) {
@@ -1159,8 +1345,8 @@ class SubsonicController extends Controller {
 			$result['track'] = $trackNumber;
 		}
 
-		if ($track->getStarred() != null) {
-			$result['starred'] = $this->formatDateTime($track->getStarred());
+		if (!empty($track->getStarred())) {
+			$result['starred'] = Util::formatZuluDateTime($track->getStarred());
 		}
 
 		if (!empty($track->getGenreId())) {
@@ -1183,23 +1369,9 @@ class SubsonicController extends Controller {
 			'songCount' => $playlist->getTrackCount(),
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
 			'comment' => $playlist->getComment() ?: '',
-			'created' => $this->formatDateTime($playlist->getCreated()),
-			'changed' => $this->formatDateTime($playlist->getUpdated())
+			'created' => Util::formatZuluDateTime($playlist->getCreated()),
+			'changed' => Util::formatZuluDateTime($playlist->getUpdated())
 			//'coverArt' => '' // added in API 1.11.0 but is optional even there
-		];
-	}
-
-	/**
-	 * @param Bookmark $bookmark
-	 * @return array
-	 */
-	private function bookmarkToApi($bookmark) {
-		return [
-			'position' => $bookmark->getPosition(),
-			'username' => $this->userId,
-			'comment' => $bookmark->getComment() ?: '',
-			'created' => $this->formatDateTime($bookmark->getCreated()),
-			'changed' => $this->formatDateTime($bookmark->getUpdated())
 		];
 	}
 
@@ -1274,7 +1446,7 @@ class SubsonicController extends Controller {
 				$content = [
 					'biography' => $info['artist']['bio']['summary'],
 					'lastFmUrl' => $info['artist']['url'],
-					'musicBrainzId' => $info['artist']['mbid']
+					'musicBrainzId' => $info['artist']['mbid'] ?? null
 				];
 
 				$similarArtists = $this->lastfmService->getSimilarArtists($artistId, $this->userId, $includeNotPresent);
@@ -1434,15 +1606,6 @@ class SubsonicController extends Controller {
 	 */
 	private static function ripIdPrefix(string $id) : int {
 		return (int)(\explode('-', $id)[1]);
-	}
-
-	private function formatDateTime(?string $dateString) : ?string {
-		if ($dateString !== null) {
-			$dateTime = new \DateTime($dateString);
-			return $dateTime->format('Y-m-d\TH:i:s.v\Z');
-		} else {
-			return null;
-		}
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

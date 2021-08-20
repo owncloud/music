@@ -2,11 +2,12 @@
 	ng-class="{	'active': $parent.currentView == destination,
 				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
+							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
 							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums'),
-				'item-with-actions': playlist || destination=='#/radio' || destination=='#' }"
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
-		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}" 
+		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
 	>
 		<div class="play-pause-button svg" ng-hide="playlist && $parent.showEditForm == playlist.id"
 			ng-class="icon ? 'icon-' + icon : ''"
@@ -22,7 +23,7 @@
 					ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
 			<button class="action icon-checkmark app-navigation-noclose"
-				ng-class="{ disabled: playlist.name.length == 0 }" 
+				ng-class="{ disabled: playlist.name.length == 0 }"
 				ng-click="$parent.$parent.commitEdit(playlist); $event.stopPropagation()"></button>
 		</div>
 		<div class="actions" ng-init="subMenuShown = false" title="" ng-show="playlist && $parent.showEditForm == null">
@@ -82,6 +83,21 @@
 					</li>
 					<li ng-click="$parent.addRadio()">
 						<a class="icon-add"><span translate>Add manually</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#/podcasts'">
+			<span class="icon-more" ng-show="!$parent.podcastsBusy"
+				ng-click="$parent.onPlaylistMoreButton('podcasts'); $event.stopPropagation()"></span>
+			<span class="icon-loading-small" ng-show="$parent.podcastsBusy"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'podcasts'">
+				<ul>
+					<li ng-click="$parent.addPodcast()">
+						<a class="icon-add"><span translate>Add from RSS feed</span></a>
+					</li>
+					<li ng-click="$parent.reloadPodcasts($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
+						<a class="icon-reload"><span translate>Reload channels</span></a>
 					</li>
 				</ul>
 			</div>

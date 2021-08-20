@@ -64,7 +64,7 @@ angular.module('Music').controller('RadioViewController', [
 					// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
 					// to ensure that the alphabet navigation has up-to-date item count available when it handles the event.
 					$timeout(function() {
-						$rootScope.$emit('radioStationsChanged');
+						$rootScope.$emit('viewContentChanged');
 					});
 				},
 				function (error) {
@@ -118,7 +118,7 @@ angular.module('Music').controller('RadioViewController', [
 				// Fire an event to tell the alphabet navigation about the change. This must happen asynchronously
 				// to ensure that the alphabet navigation has up-to-date item count available when it handles the event.
 				$timeout(function() {
-					$rootScope.$emit('radioStationsChanged');
+					$rootScope.$emit('viewContentChanged');
 				});
 			}
 		});

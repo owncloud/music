@@ -94,7 +94,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.$watch('currentTrack', function(newTrack) {
 		var titleSong = '';
 		if (newTrack?.title !== undefined) {
-			titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+			if (newTrack?.channel) {
+				titleSong = newTrack.title + ' (' + newTrack.channel.title + ') - ';
+			} else {
+				titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+			}
 		} else if (newTrack?.name !== undefined) {
 			titleSong = newTrack.name + ' - ';
 		}
@@ -260,8 +264,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 	$scope.prev = function() {
 		// Jump to the beginning of the current track if it has already played more than 2 secs.
-		// This is disalbed for exteranl streams where jumping to the beginning often does not work.
-		if ($scope.position.current > 2.0 && !currentTrackIsStream()) {
+		// This is disalbed for radio streams where jumping to the beginning often does not work.
+		if ($scope.position.current > 2.0 && $scope.currentTrack?.type !== 'radio') {
 			$scope.player.seek(0);
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
@@ -292,8 +296,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.scrollToCurrentTrack = function() {
 		if ($scope.currentTrack) {
 			const doScroll = function() {
-				if (currentTrackIsStream()) {
+				if ($scope.currentTrack.type === 'radio') {
 					$rootScope.$emit('scrollToStation', $scope.currentTrack.id);
+				} else if ($scope.currentTrack.type === 'podcast') {
+					$rootScope.$emit('scrollToPodcastEpisode', $scope.currentTrack.id);
 				} else {
 					$rootScope.$emit('scrollToTrack', $scope.currentTrack.id);
 				}
@@ -336,26 +342,37 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.stream_url ?? null;
+	};
+
+	$scope.coverArt = function() {
+		return $scope.currentTrack?.album?.cover ?? $scope.currentTrack?.channel?.image ?? null;
+	};
+
+	$scope.coverArtTitle = function() {
+		return $scope.currentTrack?.album?.name ?? $scope.currentTrack?.channel?.title ?? null;
 	};
 
 	const playScopeNames = {
-		'albums'	: gettextCatalog.getString('Albums'),
-		'folders'	: gettextCatalog.getString('Folders'),
-		'genres'	: gettextCatalog.getString('Genres'),
-		'alltracks'	: gettextCatalog.getString('All tracks'),
-		'radio'		: gettextCatalog.getString('Internet radio'),
-		'album'		: gettextCatalog.getString('Album'),
-		'artist'	: gettextCatalog.getString('Artist'),
-		'folder'	: gettextCatalog.getString('Folder'),
-		'genre'		: gettextCatalog.getString('Genre'),
-		'playlist'	: gettextCatalog.getString('Playlist')
+		'albums'			: gettextCatalog.getString('Albums'),
+		'folders'			: gettextCatalog.getString('Folders'),
+		'genres'			: gettextCatalog.getString('Genres'),
+		'alltracks'			: gettextCatalog.getString('All tracks'),
+		'radio'				: gettextCatalog.getString('Internet radio'),
+		'podcasts'			: gettextCatalog.getString('Podcasts'),
+		'album'				: gettextCatalog.getString('Album'),
+		'artist'			: gettextCatalog.getString('Artist'),
+		'folder'			: gettextCatalog.getString('Folder'),
+		'genre'				: gettextCatalog.getString('Genre'),
+		'playlist'			: gettextCatalog.getString('Playlist'),
+		'podcast-channel'	: gettextCatalog.getString('Channel'),
+		'podcast-episode'	: gettextCatalog.getString('Episode'),
 	};
 
 	function playScopeName() {
 		var listId = playlistService.getCurrentPlaylistId();
 		if (listId !== null) {
-			var key = listId.split('-', 1)[0];
+			var key = listId.split('-').slice(0, -1).join('-') || listId;
 			return playScopeNames[key];
 		} else {
 			return '';
@@ -423,7 +440,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 		$scope.$watch('currentTrack', function(track) {
 			if (track) {
-				if ('stream_url' in track) {
+				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.name,
 						artist: track.stream_url,
@@ -437,11 +454,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				else {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.title,
-						artist: track.artistName,
-						album: track.album.name,
+						artist: track?.artistName,
+						album: track?.album?.name ?? track?.channel?.title,
 						artwork: [{
 							sizes: '190x190',
-							src: track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
+							src: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : ''),
 							type: ''
 						}]
 					});
@@ -462,15 +479,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 				notification = null;
 			}
 
-			let args = {silent: true};
-			if ('stream_url' in track) {
-				args.body = track.stream_url;
-				args.icon = OC.filePath('music', 'dist', radioIcon);
-			} else {
-				args.body = track.artistName + '\n' + track.album.name;
-				args.icon = track.album.cover + (coverArtToken ? ('?coverToken=' + coverArtToken) : '');
-			}
-			notification = new Notification(track.title ?? track.name, args);
+			let args = {
+				silent: true,
+				body: $scope.secondaryTitle() + '\n' + (track?.album?.name ?? ''),
+				icon: (track?.type === 'radio')
+					? OC.filePath('music', 'dist', radioIcon)
+					: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : '')
+			};
+			notification = new Notification($scope.primaryTitle(), args);
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 

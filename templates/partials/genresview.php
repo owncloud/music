@@ -25,7 +25,7 @@
 		get-elem-title="getGenreName" get-elem-id="getGenreElementId" scroll-to-target="scrollToItem">
 	</alphabet-navigation>
 
-	<div id="toRescan" class="emptycontent clickable" ng-click="startScanning()"
+	<div id="toRescan" class="emptycontent clickable no-collapse" ng-click="startScanning()"
 		ng-show="!scanning && !toScan && !noMusicAvailable && filesWithUnscannedGenre && filesWithUnscannedGenre.length"
 	>
 		<div class="icon-audio svg"></div>

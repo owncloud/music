@@ -27,6 +27,11 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('deactivateView', eraseInstances);
 	$rootScope.$on('artistsUpdating', eraseInstances);
 
+	function invalidateInViewRange() {
+		_firstIndexInView = 0;
+		_lastIndexInView = -1;
+	}
+
 	function eraseInstances() {
 		// cancel any pending notifications first
 		_(_instances).each(function(inst) {
@@ -36,8 +41,7 @@ function($rootScope, $timeout, inViewService) {
 		});
 
 		_instances = [];
-		_firstIndexInView = 0;
-		_lastIndexInView = -1;
+		invalidateInViewRange();
 	}
 
 	var throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
@@ -48,6 +52,7 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 	$rootScope.$on('artistsLoaded', throttledOnScroll);
 	$rootScope.$on('albumsLayoutChanged', throttledOnScroll);
+	$rootScope.$on('viewContentChanged', throttledOnScroll);
 	$rootScope.$watch('loading', throttledOnScroll);
 
 	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {
@@ -278,8 +283,7 @@ function($rootScope, $timeout, inViewService) {
 				inst.inViewPort = false;
 			}
 		});
-		_firstIndexInView = 0;
-		_lastIndexInView = -1;
+		invalidateInViewRange();
 	}
 
 	function updateStatusForAll(skipDelays/*optional*/) {
@@ -304,17 +308,34 @@ function($rootScope, $timeout, inViewService) {
 				this.listeners.push(listener);
 			};
 
-			_instances.push(this);
+			// The proper operation of the module depends on instances being in the proper vertical order in the _instances array.
+			// This should be trivially true for static sets of instances. However, if new instances may be added dynamically, then
+			// we often need to insert the new instance in the middle of the array.
+			var nextSibling = this.element.nextElementSibling;
+			if (nextSibling === null || this.element.className !== nextSibling.className || this.element.tagName !== nextSibling.tagName) {
+				// this is the last (repeated) element of its kind
+				_instances.push(this);
+			} else {
+				var idx = _.findIndex(_instances, { element: this.element.nextElementSibling });
+				if (idx === -1) {
+					console.error('failed to find place for the new inViewObserver');
+				} else {
+					_instances.splice(idx, 0, this);
+					invalidateInViewRange();
+				}
+			}
 		}],
-		link: function(scope, element, attributes, controller) {
+		link: function(scope, _element, attributes, controller) {
 			controller.viewPortMargin = Number(attributes.inViewObserverMargin) || 500;
 
 			// Remove this instance from the static array if this would still be there upon destruction.
-			// This seems to happen when the album view contents are updated during/after scanning.
+			// This happens when removing individual channels from the podcasts view but also  seems to 
+			// happen when the album library view contents are updated during/after scanning.
 			scope.$on('$destroy', function() {
 				var index = _instances.indexOf(controller);
 				if (index !== -1) {
 					_instances.splice(index, 1);
+					invalidateInViewRange();
 				}
 			});
 

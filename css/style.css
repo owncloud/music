@@ -108,11 +108,15 @@ h2 span:hover .play {
 
 .album-area > h2 {
 	display: table-cell;
+	position: relative;
 	max-width: 424px;
 	font-size: 21px;
 	line-height: 30px;
 	padding-bottom: 21px;
 	white-space: nowrap;
+}
+
+.album-area > h2.placeholder {
 	overflow: hidden;
 }
 
@@ -120,6 +124,9 @@ h2 span:hover .play {
 	float: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.album-area > h2.with-actions:not(.busy) > span {
 	max-width: calc(100% - 24px);
 }
 
@@ -182,7 +189,8 @@ div:hover > .play-pause,
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-view .icon-details {
+#app-view button.icon-details,
+#app-view button.icon-more {
 	display: table-cell;
 	vertical-align: middle;
 	margin: 0;
@@ -192,12 +200,34 @@ div:hover > .play-pause,
 	opacity: 0.5;
 }
 
-#app-view :hover > .icon-details {
+#app-view :hover > button.icon-details,
+#app-view :hover > button.icon-more {
 	visibility: visible;
 }
 
-#app-view .icon-details:hover {
+#app-view button.icon-details:hover,
+#app-view button.icon-more:hover {
 	opacity: 1;
+}
+
+#app-view h2 .icon-loading-small {
+	top: 11px;
+	left: 3px;
+}
+
+#app-view h2:not(.busy) .icon-loading-small {
+	display: none;
+}
+
+#app-view h2.busy .icon-more {
+	display: none;
+}
+
+#app-view .heading-actions {
+	display: block;
+	font-size: 13px;
+	top: 40px;
+	right: -10px;
 }
 
 .muted {
@@ -234,9 +264,7 @@ div:hover > .play-pause,
 	margin: 0;
 }
 
-#toScan:hover *,
-#toRescan:hover *,
-#noStations:hover * {
+#app-content .emptycontent.clickable:hover * {
 	color: #000;
 	opacity: 1;
 }
@@ -266,36 +294,37 @@ div:hover > .play-pause,
 
 
 /* Albums view compact mode */
-#albums.compact .artist-area h1 {
+.view-container.compact .artist-area h1 {
 	font-size: 24px;
 }
 
-#albums.compact .album-area h2 {
+.view-container.compact .album-area h2 {
 	padding-left: 48px;
 	font-size: 16px;
 	padding-bottom: 8px;
 	max-width: 360px;
 }
 
-#albums.compact h1 .play {
+.view-container.compact h1 .play {
 	margin-bottom: 1px;
 	width: 13px;
 	height: 13px;
 }
 
-#albums.compact h2 .play {
+.view-container.compact h2 .play {
 	width: 11px;
 	height: 11px;
 }
 
-#albums.compact .album-area {
+.view-container.compact .album-area {
 	padding-top: 2px;
 	padding-bottom: 10px;
 	width: 387px;
 }
 
-#albums.compact .album-area > .albumart,
-#albums.compact .album-area > .overlay {
+.view-container.compact .album-area > .albumart,
+.view-container.compact .album-area > .overlay {
+	position: relative;
 	margin-top: -40px;
 	width: 40px;
 	height: 40px;
@@ -303,20 +332,20 @@ div:hover > .play-pause,
 	font-size: 24px;
 }
 
-#albums.compact .album-area > .overlay {
+.view-container.compact .album-area > .overlay {
 	margin-left: 0;
 }
 
-/* Albums view single column layout when there's no room for two columns or more */
-#albums.single-col .album-area {
+/* Albums and Podcasts view single column layout when there's no room for two columns or more */
+.single-col .album-area {
 	width: 100%;
 }
 
-#albums.single-col .album-area > h2 {
+.single-col .album-area > h2 {
 	max-width: 80vw;
 }
 
-#albums.single-col .album-area .track-list li > div > span {
+.single-col .album-area .track-list li > div > span {
 	white-space: normal;
 	vertical-align: top;
 	max-width: unset;

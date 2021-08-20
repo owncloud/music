@@ -10,15 +10,13 @@
 
 
 angular.module('Music').controller('SidebarController', [
-	'$rootScope', '$scope', '$timeout', 'gettextCatalog',
-	function ($rootScope, $scope, $timeout, gettextCatalog) {
+	'$rootScope', '$scope', '$timeout',
+	function ($rootScope, $scope, $timeout) {
 
 		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
 
 		$scope.contentType = null;
 		$scope.contentId = null;
-
-		$scope.clickToExpandText = gettextCatalog.getString('Click to expand');
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
@@ -40,23 +38,23 @@ angular.module('Music').controller('SidebarController', [
 			$scope.adjustFixedPositions();
 		}
 
-		$rootScope.$on('showTrackDetails', function(event, trackId) {
+		$rootScope.$on('showTrackDetails', function(_event, trackId) {
 			showSidebar('track', trackId);
 		});
 
-		$rootScope.$on('showAlbumDetails', function(event, albumId) {
+		$rootScope.$on('showAlbumDetails', function(_event, albumId) {
 			showSidebar('album', albumId);
 		});
 
-		$rootScope.$on('showArtistDetails', function(event, artistId) {
+		$rootScope.$on('showArtistDetails', function(_event, artistId) {
 			showSidebar('artist', artistId);
 		});
 
-		$rootScope.$on('showPlaylistDetails', function(event, playlistId) {
+		$rootScope.$on('showPlaylistDetails', function(_event, playlistId) {
 			showSidebar('playlist', playlistId);
 		});
 
-		$rootScope.$on('showRadioStationDetails', function(event, stationId) {
+		$rootScope.$on('showRadioStationDetails', function(_event, stationId) {
 			showSidebar('radioStation', stationId);
 		});
 
@@ -64,16 +62,30 @@ angular.module('Music').controller('SidebarController', [
 			showSidebar('radio', null);
 		});
 
+		$rootScope.$on('showPodcastChannelDetails', function(_event, channelId) {
+			showSidebar('podcastChannel', channelId);
+		});
+
+		$rootScope.$on('showPodcastEpisodeDetails', function(_event, episodeId) {
+			showSidebar('podcastEpisode', episodeId);
+		});
+
 		$rootScope.$on('hideDetails', function() {
 			OC.Apps.hideAppSidebar();
 			$('#app-content').removeClass('with-app-sidebar');
 			$('#app-content').css('margin-right', '');
+			$scope.contentId = null;
+			$scope.contentType = null;
 		});
 
 		$rootScope.$on('resize', $scope.adjustFixedPositions);
 
 		function contentTypeForCurrentPlay() {
-			return ($rootScope.playingView === '#/radio') ? 'radioStation' : 'track';
+			switch ($rootScope.playingView) {
+				case '#/radio':		return 'radioStation';
+				case '#/podcasts':	return 'podcastEpisode';
+				default:			return 'track';
+			}
 		}
 
 		function showDetailsForCurrentPlay() {
@@ -151,8 +163,15 @@ angular.module('Music').controller('SidebarController', [
 				$rootScope.$emit('scrollTo' + OCA.Music.Utils.capitalize(type), entity.id);
 			};
 
-			if ($rootScope.currentView !== '#') {
-				$scope.navigateTo('#', doScroll);
+			var destinationView = '#';
+			if (type.startsWith('radio')) {
+				destinationView = '#/radio';
+			} else if (type.startsWith('podcast')) {
+				destinationView = '#/podcasts';
+			}
+
+			if ($rootScope.currentView !== destinationView) {
+				$scope.navigateTo(destinationView, doScroll);
 			} else {
 				doScroll();
 			}

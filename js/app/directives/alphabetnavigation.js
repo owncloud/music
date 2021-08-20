@@ -128,7 +128,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden),
 				$rootScope.$on('artistsLoaded', setUpTargets),
-				$rootScope.$on('radioStationsChanged', setUpTargets)
+				$rootScope.$on('viewContentChanged', setUpTargets)
 			];
 
 			// unsubscribe listeners when the scope is destroyed

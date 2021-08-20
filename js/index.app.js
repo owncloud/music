@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 /**
@@ -18,6 +18,7 @@ function requireAll(context) {
 /* Polyfills for IE compatibility */
 require('node_modules/core-js/features/string/replace-all');
 require('node_modules/core-js/features/string/starts-with');
+require('node_modules/core-js/features/string/ends-with');
 
 /* Vendor libraries */
 window.angular = require('angular');

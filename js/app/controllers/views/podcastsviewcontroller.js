@@ -138,7 +138,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if a channel is being played
-			if (OCA.Music.Utils.startsWith(playlistId, 'podcast-channel-')) {
+			if (playlistId.startsWith('podcast-channel-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

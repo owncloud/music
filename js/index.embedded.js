@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 /**
@@ -14,6 +14,9 @@
 function requireAll(context) {
 	context.keys().forEach(context);
 }
+
+/* Polyfills for IE compatibility */
+require('node_modules/core-js/features/string/ends-with');
 
 /* Vendor libraries */
 require('vendor/aurora/flac.js');

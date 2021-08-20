@@ -245,8 +245,7 @@ angular.module('Music').controller('AlbumsViewController', [
 			$('.highlight').removeClass('highlight');
 
 			// add highlighting if album or artist is being played
-			if (OCA.Music.Utils.startsWith(playlistId, 'album-')
-					|| OCA.Music.Utils.startsWith(playlistId, 'artist-')) {
+			if (playlistId?.startsWith('album-') || playlistId?.startsWith('artist-')) {
 				$('#' + playlistId).addClass('highlight');
 			}
 		}

@@ -33,20 +33,6 @@ OCA.Music.Utils = {
 	},
 
 	/**
-	 * Test if the string @a str starts with another string @a search
-	 */
-	startsWith: function(str, search) {
-		return str !== null && search !== null && str.slice(0, search.length) === search;
-	},
-
-	/**
-	 * Test if the string @a str ends with another string @a search
-	 */
-	endsWith: function(str, search) {
-		return str !== null && search !== null && str.slice(-search.length) === search;
-	},
-
-	/**
 	 * Capitalizes the firts character of the given string
 	 */
 	capitalize: function(str) {
@@ -76,10 +62,10 @@ OCA.Music.Utils = {
 	 * not start with '/'.
 	 */
 	joinPath: function(first, second) {
-		if (this.endsWith(first, '/')) {
+		if (first.endsWith('/')) {
 			first = first.slice(0, -1);
 		}
-		if (this.startsWith(second, '/')) {
+		if (second.startsWith('/')) {
 			second = second.slice(1);
 		}
 		return first + '/' + second;

@@ -252,8 +252,7 @@ OCA.Music.PlayerWrapper = function() {
 
 	function isHlsUrl(url) {
 		url = url.toLowerCase();
-		return OCA.Music.Utils.endsWith(url, 'm3u8')
-			|| OCA.Music.Utils.endsWith(url, 'm3u');
+		return url.endsWith('.m3u8') || url.endsWith('.m3u');
 	}
 
 	this.fromURL = function(url, mime) {

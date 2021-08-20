@@ -122,7 +122,7 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		}, \iterator_to_array($itunesNodes->category, false))) );
 	}
 
-	private static function parseDateTime(\SimpleXMLElement $xmlNode) : ?string {
+	private static function parseDateTime(?\SimpleXMLElement $xmlNode) : ?string {
 		return $xmlNode ? \date(BaseMapper::SQL_DATE_FORMAT, \strtotime((string)$xmlNode)) : null;
 	}
 }

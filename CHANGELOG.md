@@ -2,10 +2,21 @@
 ### Added
 - Scrolling to the album by clicking the album name or image on the album details pane
 - Scrolling to the artist by clicking the artist name or image on the artist details pane
+- Support for podcasts
+  [#875](https://github.com/owncloud/music/pull/875)
+  * Dedicated view on the web UI
+  * Check for new episodes manually or automatically on the background by schedule
+  * Details pane for podcast channels and episodes
+  * Searching/filtering in the podcasts view by channel and episode titles
+  * Subsonic API including methods `getPodcasts`, `getNewestPodcasts`, `refreshPodcasts`, `createPodcastChannel`, `deletePodcastChannel`
+  * Ampache API including methods `podcasts`, `podcast`, `podcast_create`, `podcast_delete`, `podcast_episodes`, `podcast_episode`, `update_podcast`
+  * `occ` commands `music:podcast-add`, `music:podcast-reset`, `music:podcast-update`
 
 ### Changed
 - Show the play icon overlay on album cover also in the Albums compact layout while in search mode
 - Show icon also for the playlists in the navigation pane
+- Subsonic API version updated to 1.13.0
+- Ampache API version updated to 4.4.0 (aka 440000)
 
 ### Fixed
 - Performance problem on Subsonic actions `getAlbumList` and `getAlbumList2` with huge libraries

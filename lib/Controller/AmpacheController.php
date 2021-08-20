@@ -818,7 +818,7 @@ class AmpacheController extends Controller {
 	protected function get_art(int $id) {
 		$type = $this->getRequiredParam('type');
 
-		if (!\in_array($type, ['song', 'album', 'artist'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 

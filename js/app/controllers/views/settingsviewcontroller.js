@@ -33,13 +33,32 @@ angular.module('Music').controller('SettingsViewController', [
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
-		$scope.selectPath = function() {
+		function folderPicker(title, callback, path = '') {
+			// The filepicker interface wants to get the initial path without a trailing slash
+			if (path.endsWith('/')) {
+				path = path.slice(0, -1);
+			}
+
 			OC.dialogs.filepicker(
+				title,
+				function (selectedPath) {
+					if (!selectedPath.endsWith('/')) {
+						selectedPath = selectedPath + '/';
+					}
+					callback(selectedPath);
+				},
+				false, // multiselect
+				'httpd/unix-directory',
+				true, // modal
+				undefined, // type (only on NC, use default)
+				path // initial folder, only on NC16+
+			);
+		}
+
+		$scope.selectPath = function() {
+			folderPicker(
 				gettextCatalog.getString('Path to your music collection'),
 				function (path) {
-					if (path.substr(-1) !== '/') {
-						path = path + '/';
-					}
 					if ($scope.settings.path !== path) {
 						$scope.pathChangeOngoing = true;
 
@@ -67,26 +86,18 @@ angular.module('Music').controller('SettingsViewController', [
 							}
 						);
 					}
-				},
-				false,
-				'httpd/unix-directory',
-				true
+				}
 			);
 		};
 
 		$scope.selectExcludedPath = function(index) {
-			OC.dialogs.filepicker(
+			folderPicker(
 				gettextCatalog.getString('Path to exclude from your music collection'),
 				function (path) {
-					if (path.substr(-1) !== '/') {
-						path = path + '/';
-					}
 					$scope.settings.excludedPaths[index] = path;
 					$scope.commitExcludedPaths();
 				},
-				false,
-				'httpd/unix-directory',
-				true
+				$scope.settings.path // initial folder, only on NC16+
 			);
 		};
 

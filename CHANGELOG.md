@@ -15,6 +15,8 @@
 ### Changed
 - Show the play icon overlay on album cover also in the Albums compact layout while in search mode
 - Show icon also for the playlists in the navigation pane
+- Excluded folder picker UI is launched with the music library path set as the base path (requires NC16+)
+  [#876](https://github.com/owncloud/music/issues/876)
 - Subsonic API version updated to 1.13.0
 - Ampache API version updated to 4.4.0 (aka 440000)
 

@@ -19,6 +19,7 @@
   [#876](https://github.com/owncloud/music/issues/876)
 - Subsonic API version updated to 1.13.0
 - Ampache API version updated to 4.4.0 (aka 440000)
+- Updated getID3 library to the version 1.9.20-202107131440
 
 ### Fixed
 - Performance problem on Subsonic actions `getAlbumList` and `getAlbumList2` with huge libraries

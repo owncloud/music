@@ -48,8 +48,9 @@ class HtmlUtil {
 	 * @param string $templateName
 	 */
 	public static function printNgTemplate(string $templateName) {
+		$id = \array_slice(\explode('/', $templateName), -1)[0];
 		print(
-			'<script type="text/ng-template" id="'.$templateName.'.html">' .
+			'<script type="text/ng-template" id="'.$id.'.html">' .
 				self::partialContent($templateName) .
 			'</script>'
 		);

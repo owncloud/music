@@ -12,14 +12,14 @@ HtmlUtil::addWebpackStyle('app');
 <div id="app" ng-app="Music" ng-strict-di ng-cloak ng-init="started = false; lang = '<?php HtmlUtil::p($_['lang']) ?>'">
 
 	<?php
-	HtmlUtil::printNgTemplate('albumsview');
-	HtmlUtil::printNgTemplate('alltracksview');
-	HtmlUtil::printNgTemplate('foldersview');
-	HtmlUtil::printNgTemplate('genresview');
-	HtmlUtil::printNgTemplate('playlistview');
-	HtmlUtil::printNgTemplate('radioview');
-	HtmlUtil::printNgTemplate('podcastsview');
-	HtmlUtil::printNgTemplate('settingsview');
+	HtmlUtil::printNgTemplate('views/albumsview');
+	HtmlUtil::printNgTemplate('views/alltracksview');
+	HtmlUtil::printNgTemplate('views/foldersview');
+	HtmlUtil::printNgTemplate('views/genresview');
+	HtmlUtil::printNgTemplate('views/playlistview');
+	HtmlUtil::printNgTemplate('views/radioview');
+	HtmlUtil::printNgTemplate('views/podcastsview');
+	HtmlUtil::printNgTemplate('views/settingsview');
 	HtmlUtil::printNgTemplate('alphabetnavigation');
 	?>
 
@@ -30,7 +30,7 @@ HtmlUtil::addWebpackStyle('app');
 
 			<?php
 			HtmlUtil::printPartial('controls');
-			HtmlUtil::printPartial('sidebar');
+			HtmlUtil::printPartial('sidebar/sidebar');
 			?>
 
 			<div id="app-view" ng-view resize-notifier

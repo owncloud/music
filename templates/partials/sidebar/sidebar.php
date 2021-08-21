@@ -3,13 +3,13 @@
 
 	<?php
 	use \OCA\Music\Utility\HtmlUtil;
-	HtmlUtil::printPartial('trackdetails');
-	HtmlUtil::printPartial('albumdetails');
-	HtmlUtil::printPartial('artistdetails');
-	HtmlUtil::printPartial('playlistdetails');
-	HtmlUtil::printPartial('radiostationdetails');
-	HtmlUtil::printPartial('radiohint');
-	HtmlUtil::printPartial('podcastdetails');
+	HtmlUtil::printPartial('sidebar/trackdetails');
+	HtmlUtil::printPartial('sidebar/albumdetails');
+	HtmlUtil::printPartial('sidebar/artistdetails');
+	HtmlUtil::printPartial('sidebar/playlistdetails');
+	HtmlUtil::printPartial('sidebar/radiostationdetails');
+	HtmlUtil::printPartial('sidebar/radiohint');
+	HtmlUtil::printPartial('sidebar/podcastdetails');
 	?>
 
 	<img id="follow-playback" class="control toggle small svg"

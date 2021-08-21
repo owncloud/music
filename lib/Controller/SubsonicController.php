@@ -168,7 +168,38 @@ class SubsonicController extends Controller {
 		if (\method_exists($this, $method)) {
 			$annotationReader = new MethodAnnotationReader($this, $method);
 			if ($annotationReader->hasAnnotation('SubsonicAPI')) {
-				return $this->$method();
+				// inject request parameters
+				$refMethod = new \ReflectionMethod($this, $method);
+
+				$parameterValues = [];
+				foreach ($refMethod->getParameters() as $parameter) {
+					$paramName = $parameter->getName();
+					$type = $parameter->getType();
+					$typeName = (string)$type;
+
+					if ($typeName === 'array') {
+						$parameterValue = $this->getRepeatedParam($paramName);
+					} else {
+						$parameterValue = $this->request->getParam($paramName);
+					}
+
+					if (!$type->allowsNull() && $parameterValue === null) {
+						throw new SubsonicException("Required parameter '$paramName' missing", 10);
+					}
+
+					// cast non-null values to requested type
+					if ($parameterValue !== null) {
+						if ($typeName === 'int' || $typeName === 'integer') {
+							$parameterValue = (int)$parameterValue;
+						} elseif ($typeName === 'bool' || $typeName == 'boolean') {
+							$parameterValue = \filter_var($parameterValue, FILTER_VALIDATE_BOOLEAN);
+						}
+					}
+
+					$parameterValues[] = $parameterValue;
+				}
+
+				return \call_user_func_array([$this, $method], $parameterValues);
 			}
 		}
 
@@ -214,10 +245,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getIndexes() {
-		$id = $this->request->getParam('musicFolderId');
-
-		if ($id === 'folders') {
+	private function getIndexes(string $musicFolderId) {
+		if ($musicFolderId === 'folders') {
 			return $this->getIndexesForFolders();
 		} else {
 			return $this->getIndexesForArtists();
@@ -227,9 +256,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getMusicDirectory() {
-		$id = $this->getRequiredParam('id');
-
+	private function getMusicDirectory(string $id) {
 		if (Util::startsWith($id, 'folder-')) {
 			return $this->getMusicDirectoryForFolder($id);
 		} elseif (Util::startsWith($id, 'artist-')) {
@@ -246,8 +273,9 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getAlbumList() {
-		$albums = $this->albumsForGetAlbumList();
+	private function getAlbumList(string $type, ?int $size, ?int $offset,
+			?string $genre, ?int $fromYear, ?int $toYear) {
+		$albums = $this->albumsForGetAlbumList($type, $size, $offset, $genre, $fromYear, $toYear);
 		return $this->subsonicResponse(['albumList' =>
 				['album' => \array_map([$this, 'albumToOldApi'], $albums)]
 		]);
@@ -256,7 +284,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getAlbumList2() {
+	private function getAlbumList2(string $type, ?int $size, ?int $offset,
+			?string $genre, ?int $fromYear, ?int $toYear) {
 		/*
 		 * According to the API specification, the difference between this and getAlbumList
 		 * should be that this function would organize albums according the metadata while
@@ -264,7 +293,7 @@ class SubsonicController extends Controller {
 		 * also in getAlbumList, because that's more natural for the Music app and many/most
 		 * clients do not support getAlbumList2.
 		 */
-		$albums = $this->albumsForGetAlbumList();
+		$albums = $this->albumsForGetAlbumList($type, $size, $offset, $genre, $fromYear, $toYear);
 		return $this->subsonicResponse(['albumList2' =>
 				['album' => \array_map([$this, 'albumToNewApi'], $albums)]
 		]);
@@ -280,8 +309,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getArtist() {
-		$id = $this->getRequiredParam('id');
+	private function getArtist(string $id) {
 		$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
 
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
@@ -296,29 +324,29 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getArtistInfo() {
-		return $this->doGetArtistInfo('artistInfo');
+	private function getArtistInfo(string $id, ?bool $includeNotPresent) {
+		return $this->doGetArtistInfo('artistInfo', $id, $includeNotPresent);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getArtistInfo2() {
-		return $this->doGetArtistInfo('artistInfo2');
+	private function getArtistInfo2(string $id, ?bool $includeNotPresent) {
+		return $this->doGetArtistInfo('artistInfo2', $id, $includeNotPresent);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getSimilarSongs() {
-		return $this->doGetSimilarSongs('similarSongs');
+	private function getSimilarSongs(string $id, ?int $count) {
+		return $this->doGetSimilarSongs('similarSongs', $id, $count);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getSimilarSongs2() {
-		return $this->doGetSimilarSongs('similarSongs2');
+	private function getSimilarSongs2(string $id, ?int $count) {
+		return $this->doGetSimilarSongs('similarSongs2', $id, $count);
 	}
 
 	/**
@@ -332,8 +360,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getAlbum() {
-		$id = $this->getRequiredParam('id');
+	private function getAlbum(string $id) {
 		$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
 
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
@@ -350,8 +377,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getSong() {
-		$id = $this->getRequiredParam('id');
+	private function getSong(string $id) {
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 
@@ -361,12 +387,9 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getRandomSongs() {
-		$size = (int)$this->request->getParam('size', 10);
+	private function getRandomSongs(?int $size, ?string $genre, ?string $fromYear, ?string $toYear) {
+		$size = $size ?: 10;
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
-		$genre = $this->request->getParam('genre');
-		$fromYear = $this->request->getParam('fromYear');
-		$toYear = $this->request->getParam('toYear');
 
 		if ($genre !== null) {
 			$trackPool = $this->findTracksByGenre($genre);
@@ -396,10 +419,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getCoverArt() {
-		$id = $this->getRequiredParam('id');
-		$size = (int)$this->request->getParam('size') ?: null; // null should not be int-casted
-
+	private function getCoverArt(string $id, ?int $size) {
 		$idParts = \explode('-', $id);
 		$type = $idParts[0];
 		$entityId = (int)($idParts[1]);
@@ -427,29 +447,26 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getLyrics() {
-		$artistPar = $this->request->getParam('artist');
-		$titlePar = $this->request->getParam('title');
-
-		$matches = $this->trackBusinessLayer->findAllByNameAndArtistName($titlePar, $artistPar, $this->userId);
+	private function getLyrics(?string $artist, ?string $title) {
+		$matches = $this->trackBusinessLayer->findAllByNameAndArtistName($title, $artist, $this->userId);
 		$matchingCount = \count($matches);
 
 		if ($matchingCount === 0) {
-			$this->logger->log("No matching track for title '$titlePar' and artist '$artistPar'", 'debug');
+			$this->logger->log("No matching track for title '$title' and artist '$artist'", 'debug');
 			return $this->subsonicResponse(['lyrics' => new \stdClass]);
 		} else {
 			if ($matchingCount > 1) {
 				$this->logger->log("Found $matchingCount tracks matching title ".
-									"'$titlePar' and artist '$artistPar'; using the first", 'debug');
+								"'$title' and artist '$artist'; using the first", 'debug');
 			}
 			$track = $matches[0];
 
-			$artist = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
+			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
 			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
 			$lyrics = $this->detailsHelper->getLyrics($track->getFileId(), $rootFolder);
 
 			return $this->subsonicResponse(['lyrics' => [
-					'artist' => $artist->getNameString($this->l10n),
+					'artist' => $artistObj->getNameString($this->l10n),
 					'title' => $track->getTitle(),
 					'value' => $lyrics
 			]]);
@@ -459,17 +476,15 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function stream() {
+	private function stream(string $id) {
 		// We don't support transcaoding, so 'stream' and 'download' act identically
-		return $this->download();
+		return $this->download($id);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function download() {
-		$id = $this->getRequiredParam('id');
-
+	private function download(string $id) {
 		$idParts = \explode('-', $id);
 		$type = $idParts[0];
 		$entityId = (int)($idParts[1]);
@@ -498,16 +513,18 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function search2() {
-		$results = $this->doSearch();
+	private function search2(string $query, ?int $artistCount, ?int $artistOffset,
+			?int $albumCount, ?int $albumOffset, ?int $songCount, ?int $songOffset) {
+		$results = $this->doSearch($query, $artistCount, $artistOffset, $albumCount, $albumOffset, $songCount, $songOffset);
 		return $this->searchResponse('searchResult2', $results, /*$useNewApi=*/false);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function search3() {
-		$results = $this->doSearch();
+	private function search3(string $query, ?int $artistCount, ?int $artistOffset,
+			?int $albumCount, ?int $albumOffset, ?int $songCount, ?int $songOffset) {
+		$results = $this->doSearch($query, $artistCount, $artistOffset, $albumCount, $albumOffset, $songCount, $songOffset);
 		return $this->searchResponse('searchResult3', $results, /*$useNewApi=*/true);
 	}
 
@@ -534,10 +551,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getSongsByGenre() {
-		$genre = $this->getRequiredParam('genre');
-		$count = (int)$this->request->getParam('count', 10);
-		$offset = (int)$this->request->getParam('offset', 0);
+	private function getSongsByGenre(string $genre, ?int $count, ?int $offset) {
+		$count = $count ?: 10;
 
 		$tracks = $this->findTracksByGenre($genre, $count, $offset);
 
@@ -560,8 +575,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getPlaylist() {
-		$id = (int)$this->getRequiredParam('id');
+	private function getPlaylist(int $id) {
 		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 
@@ -574,16 +588,13 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function createPlaylist() {
-		$name = $this->request->getParam('name');
-		$listId = $this->request->getParam('playlistId');
-		$songIds = $this->getRepeatedParam('songId');
-		$songIds = \array_map('self::ripIdPrefix', $songIds);
+	private function createPlaylist(?string $name, ?string $playlistId, array $songId) {
+		$songIds = \array_map('self::ripIdPrefix', $songId);
 
 		// If playlist ID has been passed, then this method actually updates an existing list instead of creating a new one.
 		// The updating can't be used to rename the list, even if both ID and name are given (this is how the real Subsonic works, too).
-		if (!empty($listId)) {
-			$playlist = $this->playlistBusinessLayer->find((int)$listId, $this->userId);
+		if (!empty($playlistId)) {
+			$playlist = $this->playlistBusinessLayer->find((int)$playlistId, $this->userId);
 		} elseif (!empty($name)) {
 			$playlist = $this->playlistBusinessLayer->create($name, $this->userId);
 		} else {
@@ -599,28 +610,24 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function updatePlaylist() {
-		$listId = (int)$this->getRequiredParam('playlistId');
-		$newName = $this->request->getParam('name');
-		$newComment = $this->request->getParam('comment');
-		$songIdsToAdd = $this->getRepeatedParam('songIdToAdd');
-		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdsToAdd);
-		$songIndicesToRemove = $this->getRepeatedParam('songIndexToRemove');
+	private function updatePlaylist(int $playlistId, ?string $name, ?string $comment, array $songIdToAdd, array $songIndexToRemove) {
+		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdToAdd);
+		$songIndicesToRemove = \array_map('intval', $this->getRepeatedParam('songIndexToRemove'));
 
-		if (!empty($newName)) {
-			$this->playlistBusinessLayer->rename($newName, $listId, $this->userId);
+		if (!empty($name)) {
+			$this->playlistBusinessLayer->rename($name, $playlistId, $this->userId);
 		}
 
-		if ($newComment !== null) {
-			$this->playlistBusinessLayer->setComment($newComment, $listId, $this->userId);
+		if ($comment!== null) {
+			$this->playlistBusinessLayer->setComment($comment, $playlistId, $this->userId);
 		}
 
 		if (!empty($songIndicesToRemove)) {
-			$this->playlistBusinessLayer->removeTracks($songIndicesToRemove, $listId, $this->userId);
+			$this->playlistBusinessLayer->removeTracks($songIndicesToRemove, $playlistId, $this->userId);
 		}
 
 		if (!empty($songIdsToAdd)) {
-			$this->playlistBusinessLayer->addTracks($songIdsToAdd, $listId, $this->userId);
+			$this->playlistBusinessLayer->addTracks($songIdsToAdd, $playlistId, $this->userId);
 		}
 
 		return $this->subsonicResponse([]);
@@ -629,8 +636,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function deletePlaylist() {
-		$id = (int)$this->getRequiredParam('id');
+	private function deletePlaylist(int $id) {
 		$this->playlistBusinessLayer->delete($id, $this->userId);
 		return $this->subsonicResponse([]);
 	}
@@ -655,9 +661,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getUser() {
-		$username = $this->getRequiredParam('username');
-
+	private function getUser(string $username) {
 		if ($username != $this->userId) {
 			throw new SubsonicException("{$this->userId} is not authorized to get details for other users.", 50);
 		}
@@ -694,8 +698,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getAvatar() {
-		$username = $this->getRequiredParam('username');
+	private function getAvatar(string $username) {
 		if ($username != $this->userId) {
 			throw new SubsonicException("{$this->userId} is not authorized to get avatar for other users.", 50);
 		}
@@ -712,8 +715,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function star() {
-		$targetIds = $this->getStarringParameters();
+	private function star(array $id, array $albumId, array $artistId) {
+		$targetIds = self::parseStarringParameters($id, $albumId, $artistId);
 
 		$this->trackBusinessLayer->setStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->setStarred($targetIds['albums'], $this->userId);
@@ -727,8 +730,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function unstar() {
-		$targetIds = $this->getStarringParameters();
+	private function unstar(array $id, array $albumId, array $artistId) {
+		$targetIds = self::parseStarringParameters($id, $albumId, $artistId);
 
 		$this->trackBusinessLayer->unsetStarred($targetIds['tracks'], $this->userId);
 		$this->albumBusinessLayer->unsetStarred($targetIds['albums'], $this->userId);
@@ -770,9 +773,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getPodcasts() {
-		$includeEpisodes = \filter_var($this->request->getParam('includeEpisodes', true), FILTER_VALIDATE_BOOLEAN);
-		$id = $this->request->getParam('id');
+	private function getPodcasts(?bool $includeEpisodes, ?string $id) {
+		$includeEpisodes = $includeEpisodes ?? true;
 
 		if ($id !== null) {
 			$id = self::ripIdPrefix($id);
@@ -795,8 +797,8 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getNewestPodcasts() {
-		$count = (int)$this->request->getParam('count', 20);
+	private function getNewestPodcasts(?int $count) {
+		$count = $count ?: 20;
 
 		$episodes = $this->podcastService->getLatestEpisodes($this->userId, $count);
 
@@ -818,8 +820,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function createPodcastChannel() {
-		$url = $this->getRequiredParam('url');
+	private function createPodcastChannel(string $url) {
 		$result = $this->podcastService->subscribe($url, $this->userId);
 
 		switch ($result['status']) {
@@ -839,8 +840,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function deletePodcastChannel() {
-		$id = $this->getRequiredParam('id');
+	private function deletePodcastChannel(string $id) {
 		$id = self::ripIdPrefix($id);
 		$status = $this->podcastService->unsubscribe($id, $this->userId);
 
@@ -886,25 +886,19 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function createBookmark() {
-		list($type, $id) = $this->getBookamrkIdParam();
-		$this->bookmarkBusinessLayer->addOrUpdate(
-				$this->userId,
-				$type,
-				$id,
-				(int)$this->getRequiredParam('position'),
-				$this->request->getParam('comment')
-		);
+	private function createBookmark(string $id, int $position, ?string $comment) {
+		list($type, $entityId) = self::parseBookamrkIdParam($id);
+		$this->bookmarkBusinessLayer->addOrUpdate($this->userId, $type, $entityId, $position, $comment);
 		return $this->subsonicResponse([]);
 	}
 
 	/**
 	 * @SubsonicAPI
 	 */
-	private function deleteBookmark() {
-		list($type, $id) = $this->getBookamrkIdParam();
+	private function deleteBookmark(string $id) {
+		list($type, $entityId) = self::parseBookamrkIdParam($id);
 
-		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $id, $this->userId);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($type, $entityId, $this->userId);
 		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $this->userId);
 
 		return $this->subsonicResponse([]);
@@ -930,8 +924,13 @@ class SubsonicController extends Controller {
 	 * Helper methods
 	 *------------------------------------------------------------------------*/
 
-	private function getBookamrkIdParam() : array {
-		$id = $this->getRequiredParam('id');
+	private static function ensureParamHasValue(string $paramName, /*mixed*/ $paramValue) {
+		if ($paramValue === null || $paramValue === '') {
+			throw new SubsonicException("Required parameter '$paramName' missing", 10);
+		}
+	}
+
+	private static function parseBookamrkIdParam(string $id) : array {
 		list($typeName, $entityId) = \explode('-', $id);
 
 		if ($typeName === 'track') {
@@ -945,31 +944,18 @@ class SubsonicController extends Controller {
 		return [$type, (int)$entityId];
 	}
 
-	private function getRequiredParam($paramName) {
-		$param = $this->request->getParam($paramName);
-
-		if ($param === null) {
-			throw new SubsonicException("Required parameter '$paramName' missing", 10);
-		}
-
-		return $param;
-	}
-
 	/**
-	 * Get parameters used in the `star` and `unstar` API methods
+	 * Parse parameters used in the `star` and `unstar` API methods
 	 */
-	private function getStarringParameters() {
+	private static function parseStarringParameters(array $ids, array $albumIds, array $artistIds) {
 		// album IDs from newer clients
-		$albumIds = $this->getRepeatedParam('albumId');
 		$albumIds = \array_map('self::ripIdPrefix', $albumIds);
 
 		// artist IDs from newer clients
-		$artistIds = $this->getRepeatedParam('artistId');
 		$artistIds = \array_map('self::ripIdPrefix', $artistIds);
 
-		// song IDs from newer clients and song/folder/album/artist IDs from older clients
-		// also podcast IDs may come here; that is not documented part of the API but at least DSub does that
-		$ids = $this->getRepeatedParam('id');
+		// Song IDs from newer clients and song/folder/album/artist IDs from older clients are all packed in $ids.
+		// Also podcast IDs may come there; that is not documented part of the API but at least DSub does that.
 
 		$trackIds = [];
 		$channelIds = [];
@@ -1379,11 +1365,10 @@ class SubsonicController extends Controller {
 	 * Common logic for getAlbumList and getAlbumList2
 	 * @return Album[]
 	 */
-	private function albumsForGetAlbumList() {
-		$type = $this->getRequiredParam('type');
-		$size = (int)$this->request->getParam('size', 10);
+	private function albumsForGetAlbumList(string $type, ?int $size, ?int $offset,
+			?string $genre, ?int $fromYear, ?int $toYear) : array {
+		$size = $size ?: 10;
 		$size = \min($size, 500); // the API spec limits the maximum amount to 500
-		$offset = (int)$this->request->getParam('offset', 0);
 
 		$albums = [];
 
@@ -1403,12 +1388,12 @@ class SubsonicController extends Controller {
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Parent, $size, $offset);
 				break;
 			case 'byGenre':
-				$genre = $this->getRequiredParam('genre');
+				self::ensureParamHasValue('genre', $genre);
 				$albums = $this->findAlbumsByGenre($genre, $size, $offset);
 				break;
 			case 'byYear':
-				$fromYear = (int)$this->getRequiredParam('fromYear');
-				$toYear = (int)$this->getRequiredParam('toYear');
+				self::ensureParamHasValue('fromYear', $fromYear);
+				self::ensureParamHasValue('toYear', $toYear);
 				$albums = $this->albumBusinessLayer->findAllByYearRange($fromYear, $toYear, $this->userId, $size, $offset);
 				break;
 			case 'newest':
@@ -1428,17 +1413,14 @@ class SubsonicController extends Controller {
 	/**
 	 * Common logic for getArtistInfo and getArtistInfo2
 	 */
-	private function doGetArtistInfo($rootName) {
+	private function doGetArtistInfo(string $rootName, string $id, ?bool $includeNotPresent) {
 		$content = [];
-
-		$id = $this->getRequiredParam('id');
 
 		// This function may be called with a folder ID instead of an artist ID in case
 		// the library is being browsed by folders. In that case, return an empty response.
 		if (Util::startsWith($id, 'artist')) {
 			$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
-			$includeNotPresent = $this->request->getParam('includeNotPresent', false);
-			$includeNotPresent = \filter_var($includeNotPresent, FILTER_VALIDATE_BOOLEAN);
+			$includeNotPresent = $includeNotPresent ?? false;
 
 			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 
@@ -1472,9 +1454,8 @@ class SubsonicController extends Controller {
 	/**
 	 * Common logic for getSimilarSongs and getSimilarSongs2
 	 */
-	private function doGetSimilarSongs($rootName) {
-		$id = $this->getRequiredParam('id');
-		$count = (int)$this->request->getParam('count', 50);
+	private function doGetSimilarSongs(string $rootName, string $id, ?int $count) {
+		$count = $count ?: 50;
 
 		if (Util::startsWith($id, 'artist')) {
 			$artistId = self::ripIdPrefix($id);
@@ -1509,14 +1490,11 @@ class SubsonicController extends Controller {
 	 * Common logic for search2 and search3
 	 * @return array with keys 'artists', 'albums', and 'tracks'
 	 */
-	private function doSearch() {
-		$query = $this->getRequiredParam('query');
-		$artistCount = (int)$this->request->getParam('artistCount', 20);
-		$artistOffset = (int)$this->request->getParam('artistOffset', 0);
-		$albumCount = (int)$this->request->getParam('albumCount', 20);
-		$albumOffset = (int)$this->request->getParam('albumOffset', 0);
-		$songCount = (int)$this->request->getParam('songCount', 20);
-		$songOffset = (int)$this->request->getParam('songOffset', 0);
+	private function doSearch(string $query, ?int $artistCount, ?int $artistOffset,
+			?int $albumCount, ?int $albumOffset, ?int $songCount, ?int $songOffset) {
+		$artistCount = $artistCount ?? 20;
+		$albumCount = $albumCount ?? 20;
+		$songCount = $songCount ?? 20;
 
 		if (empty($query)) {
 			throw new SubsonicException("The 'query' argument is mandatory", 10);

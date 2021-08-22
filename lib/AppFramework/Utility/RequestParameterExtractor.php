@@ -18,9 +18,11 @@ use OCP\IRequest;
  */
 class RequestParameterExtractor {
 	private $request;
+	private $customFilters;
 
-	public function __construct(IRequest $request) {
+	public function __construct(IRequest $request, array $customFilters = []) {
 		$this->request = $request;
+		$this->customFilters = $customFilters;
 	}
 
 	/**
@@ -46,6 +48,10 @@ class RequestParameterExtractor {
 			$parameterValue = $this->getRepeatedParam($paramName);
 		} else {
 			$parameterValue = $this->request->getParam($paramName);
+		}
+
+		if (\array_key_exists($paramName, $this->customFilters)) {
+			$parameterValue = $this->customFilters[$paramName]($parameterValue);
 		}
 
 		if ($parameterValue === null) {

@@ -17,6 +17,7 @@
 - Show icon also for the playlists in the navigation pane
 - Excluded folder picker UI is launched with the music library path set as the base path (requires NC16+)
   [#876](https://github.com/owncloud/music/issues/876)
+- Limit all Ampache results to maximum of 5000 entries to follow the API specification
 - Subsonic API version updated to 1.13.0
 - Ampache API version updated to 4.4.0 (aka 440000)
 - Updated getID3 library to the version 1.9.20-202107131440

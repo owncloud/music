@@ -25,6 +25,8 @@ use \OCP\IURLGenerator;
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use \OCA\Music\AppFramework\Utility\RequestParameterExtractor;
+use \OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
 
 use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -168,38 +170,12 @@ class SubsonicController extends Controller {
 		if (\method_exists($this, $method)) {
 			$annotationReader = new MethodAnnotationReader($this, $method);
 			if ($annotationReader->hasAnnotation('SubsonicAPI')) {
-				// inject request parameters
-				$refMethod = new \ReflectionMethod($this, $method);
-
-				$parameterValues = [];
-				foreach ($refMethod->getParameters() as $parameter) {
-					$paramName = $parameter->getName();
-					$type = (string)$parameter->getType();
-
-					if ($type === 'array') {
-						$parameterValue = $this->getRepeatedParam($paramName);
-					} else {
-						$parameterValue = $this->request->getParam($paramName);
-					}
-
-					if ($parameterValue === null) {
-						if ($parameter->isOptional()) {
-							$parameterValue = $parameter->getDefaultValue();
-						} elseif (!$parameter->allowsNull()) {
-							throw new SubsonicException("Required parameter '$paramName' missing", 10);
-						}
-					} else {
-						// cast non-null values to requested type
-						if ($type === 'int' || $type === 'integer') {
-							$parameterValue = (int)$parameterValue;
-						} elseif ($type === 'bool' || $type === 'boolean') {
-							$parameterValue = \filter_var($parameterValue, FILTER_VALIDATE_BOOLEAN);
-						}
-					}
-
-					$parameterValues[] = $parameterValue;
+				$parameterExtractor = new RequestParameterExtractor($this->request);
+				try {
+					$parameterValues = $parameterExtractor->getParametersForMethod($this, $method);
+				} catch (RequestParameterExtractorException $ex) {
+					return $this->subsonicErrorResponse(10, $ex->getMessage());
 				}
-
 				return \call_user_func_array([$this, $method], $parameterValues);
 			}
 		}
@@ -610,7 +586,7 @@ class SubsonicController extends Controller {
 	 */
 	private function updatePlaylist(int $playlistId, ?string $name, ?string $comment, array $songIdToAdd, array $songIndexToRemove) {
 		$songIdsToAdd = \array_map('self::ripIdPrefix', $songIdToAdd);
-		$songIndicesToRemove = \array_map('intval', $this->getRepeatedParam('songIndexToRemove'));
+		$songIndicesToRemove = \array_map('intval', $songIndexToRemove);
 
 		if (!empty($name)) {
 			$this->playlistBusinessLayer->rename($name, $playlistId, $this->userId);
@@ -984,52 +960,6 @@ class SubsonicController extends Controller {
 			'podcast_channels' => $channelIds,
 			'podcast_episodes' => $episodeIds
 		];
-	}
-
-	/**
-	 * Get values for parameter which may be present multiple times in the query
-	 * string or POST data.
-	 * @param string $paramName
-	 * @return string[]
-	 */
-	private function getRepeatedParam($paramName) {
-		// We can't use the IRequest object nor $_GET and $_POST to get the data
-		// because all of these are based to the idea of unique parameter names.
-		// If the same name is repeated, only the last value is saved. Hence, we
-		// need to parse the raw data manually.
-
-		// query string is always present (although it could be empty)
-		$values = $this->parseRepeatedKeyValues($paramName, $_SERVER['QUERY_STRING']);
-
-		// POST data is available if the method is POST
-		if ($this->request->getMethod() == 'POST') {
-			$values = \array_merge($values,
-					$this->parseRepeatedKeyValues($paramName, \file_get_contents('php://input')));
-		}
-
-		return $values;
-	}
-
-	/**
-	 * Parse a string like "someKey=value1&someKey=value2&anotherKey=valueA&someKey=value3"
-	 * and return an array of values for the given key
-	 * @param string $key
-	 * @param string $data
-	 */
-	private function parseRepeatedKeyValues($key, $data) {
-		$result = [];
-
-		$keyValuePairs = \explode('&', $data);
-
-		foreach ($keyValuePairs as $pair) {
-			$keyAndValue = \explode('=', $pair);
-
-			if ($keyAndValue[0] == $key) {
-				$result[] = $keyAndValue[1];
-			}
-		}
-
-		return $result;
 	}
 
 	private function getFilesystemNode($id) {

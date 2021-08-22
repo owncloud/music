@@ -76,4 +76,14 @@ class Playlist extends Entity {
 			'comment' => $this->getComment()
 		];
 	}
+
+	public function toAmpacheApi() {
+		return [
+			'id' => (string)$this->getId(),
+			'name' => $this->getName(),
+			'owner' => $this->getUserId(),
+			'items' => $this->getTrackCount(),
+			'type' => 'Private'
+		];
+	}
 }

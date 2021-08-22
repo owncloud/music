@@ -67,6 +67,19 @@ class Genre extends Entity {
 		];
 	}
 
+	public function toAmpacheApi(IL10N $l10n) {
+		return [
+			'id' => (string)$this->getId(),
+			'name' => $this->getNameString($l10n),
+			'albums' => $this->getAlbumCount(),
+			'artists' => $this->getArtistCount(),
+			'songs' => $this->getTrackCount(),
+			'videos' => 0,
+			'playlists' => 0,
+			'stream' => 0
+		];
+	}
+
 	public static function unknownNameString(IL10N $l10n) {
 		return (string) $l10n->t('(Unknown genre)');
 	}

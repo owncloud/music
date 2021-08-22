@@ -42,6 +42,7 @@ use \OCA\Music\Db\AmpacheUserMapper;
 use \OCA\Music\Db\AmpacheSession;
 use \OCA\Music\Db\AmpacheSessionMapper;
 use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
@@ -390,7 +391,8 @@ class AmpacheController extends Controller {
 
 		// optimized handling for fetching the whole library
 		// note: the ordering of the songs differs between these two cases
-		if (empty($filter) && !$limit && !$offset && empty($add) && empty($update)) {
+		$effectivelyLimited = ($limit < $this->trackBusinessLayer->count($this->ampacheUser->getUserId()));
+		if (empty($filter) && !$effectivelyLimited && !$offset && empty($add) && empty($update)) {
 			$tracks = $this->getAllTracks();
 		}
 		// general case
@@ -1179,17 +1181,9 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	private function renderPlaylists($playlists) {
+	private function renderPlaylists(array $playlists) {
 		return $this->ampacheResponse([
-			'playlist' => \array_map(function ($playlist) {
-				return [
-					'id' => (string)$playlist->getId(),
-					'name' => $playlist->getName(),
-					'owner' => $this->ampacheUser->getUserId(),
-					'items' => $playlist->getTrackCount(),
-					'type' => 'Private'
-				];
-			}, $playlists)
+			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi')
 		]);
 	}
 
@@ -1207,18 +1201,7 @@ class AmpacheController extends Controller {
 
 	private function renderTags($genres) {
 		return $this->ampacheResponse([
-			'tag' => \array_map(function ($genre) {
-				return [
-					'id' => (string)$genre->getId(),
-					'name' => $genre->getNameString($this->l10n),
-					'albums' => $genre->getAlbumCount(),
-					'artists' => $genre->getArtistCount(),
-					'songs' => $genre->getTrackCount(),
-					'videos' => 0,
-					'playlists' => 0,
-					'stream' => 0
-				];
-			}, $genres)
+			'tag' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
 		]);
 	}
 
@@ -1370,13 +1353,12 @@ class AmpacheController extends Controller {
  * Adapter class which acts like the Playlist class for the purpose of
  * AmpacheController::renderPlaylists but contains all the track of the user.
  */
-class AmpacheController_AllTracksPlaylist {
-	private $user;
+class AmpacheController_AllTracksPlaylist extends Playlist {
 	private $trackBusinessLayer;
 	private $l10n;
 
-	public function __construct($user, $trackBusinessLayer, $l10n) {
-		$this->user = $user;
+	public function __construct($userId, $trackBusinessLayer, $l10n) {
+		$this->userId = $userId;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->l10n = $l10n;
 	}
@@ -1390,6 +1372,6 @@ class AmpacheController_AllTracksPlaylist {
 	}
 
 	public function getTrackCount() {
-		return $this->trackBusinessLayer->count($this->user);
+		return $this->trackBusinessLayer->count($this->userId);
 	}
 }

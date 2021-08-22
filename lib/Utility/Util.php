@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Utility;
@@ -22,9 +22,9 @@ class Util {
 	/**
 	 * Map the given array by calling a named member function for each of the array elements
 	 */
-	public static function arrayMapMethod(array $arr, string $methodName) : array {
-		$func = function ($obj) use ($methodName) {
-			return $obj->$methodName();
+	public static function arrayMapMethod(array $arr, string $methodName, array $methodArgs=[]) : array {
+		$func = function ($obj) use ($methodName, $methodArgs) {
+			return \call_user_func_array([$obj, $methodName], $methodArgs);
 		};
 		return \array_map($func, $arr);
 	}

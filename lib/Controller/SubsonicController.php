@@ -999,7 +999,7 @@ class SubsonicController extends Controller {
 		// A folder may contain thousands of audio files, and getting album data
 		// for each of those individually would take a lot of time and great many DB queries.
 		// To prevent having to do this in `trackToApi`, we fetch all the albums in one go.
-		$this->injectAlbumsToTracks($tracks);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
@@ -1022,27 +1022,6 @@ class SubsonicController extends Controller {
 		}
 
 		return $this->subsonicResponse($content);
-	}
-
-	private function injectAlbumsToTracks(&$tracks) {
-		$albumIds = [];
-
-		// get unique album IDs
-		foreach ($tracks as $track) {
-			$albumIds[$track->getAlbumId()] = 1;
-		}
-		$albumIds = \array_keys($albumIds);
-
-		// get the corresponding entities from the business layer
-		$albums = $this->albumBusinessLayer->findById($albumIds, $this->userId);
-
-		// create hash tables "id => entity" for the albums for fast access
-		$albumMap = Util::createIdLookupTable($albums);
-
-		// finally, set the references on the tracks
-		foreach ($tracks as &$track) {
-			$track->setAlbum($albumMap[$track->getAlbumId()]);
-		}
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {

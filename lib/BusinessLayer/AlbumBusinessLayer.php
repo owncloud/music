@@ -21,6 +21,7 @@ use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\SortBy;
+use \OCA\Music\Db\Track;
 
 use \OCA\Music\Utility\Util;
 
@@ -283,5 +284,35 @@ class AlbumBusinessLayer extends BusinessLayer {
 			}
 		}
 		return \array_keys($affectedUsers);
+	}
+
+	/**
+	 * Given an array of Track objects, inject the corresponding Album object to each of them
+	 * @param Track[] $tracks (in|out)
+	 */
+	public function injectAlbumsToTracks(array &$tracks, string $userId) {
+		$albumIds = [];
+
+		// get unique album IDs
+		foreach ($tracks as $track) {
+			$albumIds[$track->getAlbumId()] = 1;
+		}
+		$albumIds = \array_keys($albumIds);
+
+		// get the corresponding entities from the business layer (or all albums if count is very high,
+		// see AlbumBusinessLayer::injectExtraFields for rationale)
+		if (\count($albumIds) <= 999 && \count($albumIds) < $this->count($userId)) {
+			$albums = $this->findById($albumIds, $userId);
+		} else {
+			$albums = $this->findAll($userId);
+		}
+
+		// create hash tables "id => entity" for the albums for fast access
+		$albumMap = Util::createIdLookupTable($albums);
+
+		// finally, set the references on the tracks
+		foreach ($tracks as &$track) {
+			$track->setAlbum($albumMap[$track->getAlbumId()] ?? new Album());
+		}
 	}
 }

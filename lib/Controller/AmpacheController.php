@@ -361,14 +361,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function album_songs(int $filter, string $auth) {
 		$userId = $this->ampacheUser->getUserId();
-
-		$album = $this->albumBusinessLayer->find($filter, $userId);
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId);
-
-		foreach ($tracks as &$track) {
-			$track->setAlbum($album);
-		}
-
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -389,17 +382,7 @@ class AmpacheController extends Controller {
 			string $auth, ?string $filter, ?string $add, ?string $update,
 			int $limit, int $offset=0, bool $exact=false) {
 
-		// optimized handling for fetching the whole library
-		// note: the ordering of the songs differs between these two cases
-		$effectivelyLimited = ($limit < $this->trackBusinessLayer->count($this->ampacheUser->getUserId()));
-		if (empty($filter) && !$effectivelyLimited && !$offset && empty($add) && empty($update)) {
-			$tracks = $this->getAllTracks();
-		}
-		// general case
-		else {
-			$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
-		}
-
+		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -468,14 +451,18 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function playlist_songs(string $auth, int $filter, int $limit, int $offset=0) {
+		$userId = $this->ampacheUser->getUserId();
 		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
-			$playlistTracks = $this->getAllTracks();
-			$playlistTracks = \array_slice($playlistTracks, $offset ?? 0, $limit);
+			$tracks = $this->trackBusinessLayer->findAll($userId);
+			\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+			foreach ($tracks as $index => &$track) {
+				$track->setNumberOnPlaylist($index + 1);
+			}
+			$tracks = \array_slice($tracks, $offset ?? 0, $limit);
 		} else {
-			$userId = $this->ampacheUser->getUserId();
-			$playlistTracks = $this->playlistBusinessLayer->getPlaylistTracks($filter, $userId, $limit, $offset);
+			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($filter, $userId, $limit, $offset);
 		}
-		return $this->renderSongs($playlistTracks, $auth);
+		return $this->renderSongs($tracks, $auth);
 	}
 
 	/**
@@ -1025,24 +1012,6 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	/**
-	 * Getting all tracks with this helper is more efficient than with `findEntities`
-	 * followed by a call to `albumBusinessLayer->find(...)` on each track.
-	 * This is because, under the hood, the albums are fetched with a single DB query
-	 * instead of fetching each separately.
-	 *
-	 * The result set is ordered first by artist and then by song title.
-	 */
-	private function getAllTracks() {
-		$userId = $this->ampacheUser->getUserId();
-		$tracks = $this->library->getTracksAlbumsAndArtists($userId)['tracks'];
-		\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
-		foreach ($tracks as $index => &$track) {
-			$track->setNumberOnPlaylist($index + 1);
-		}
-		return $tracks;
-	}
-
 	private function createAmpacheActionUrl($action, $id, $auth, $type=null) {
 		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute($api))
@@ -1132,12 +1101,13 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	private function renderSongs($tracks, $auth) {
+	private function renderSongs(array $tracks, string $auth) {
+		$userId = $this->ampacheUser->getUserId();
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
+
 		return $this->ampacheResponse([
 			'song' => \array_map(function (Track $track) use ($auth) {
-				$userId = $this->ampacheUser->getUserId();
-				$album = $track->getAlbum()
-						?: $this->albumBusinessLayer->findOrDefault($track->getAlbumId(), $userId);
+				$album = $track->getAlbum();
 
 				$result = [
 					'id' => (string)$track->getId(),

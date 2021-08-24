@@ -26,7 +26,9 @@ class AlbumMapper extends BaseMapper {
 
 	/**
 	 * Override the base implementation to include data from multiple tables
-	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::selectEntities()
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT `*PREFIX*music_albums`.*, `artist`.`name` AS `album_artist_name`
@@ -34,6 +36,20 @@ class AlbumMapper extends BaseMapper {
 				INNER JOIN `*PREFIX*music_artists` `artist`
 				ON `*PREFIX*music_albums`.`album_artist_id` = `artist`.`id`
 				WHERE $condition $extension";
+	}
+
+	/**
+	 * Overridden from \OCA\Music\Db\BaseMapper to add support for sorting by artist.
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::formatSortingClause()
+	 */
+	protected function formatSortingClause(int $sortBy) : ?string {
+		if ($sortBy === SortBy::Parent) {
+			return 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
+		} else {
+			return parent::formatSortingClause($sortBy);
+		}
 	}
 
 	/**
@@ -148,28 +164,6 @@ class AlbumMapper extends BaseMapper {
 			$diskCountByAlbum[$row['album_id']] = (int)$row['disc_count'];
 		}
 		return $diskCountByAlbum;
-	}
-
-	/**
-	 * Find all user's albums
-	 *
-	 * Overridden from \OCA\Music\Db\BaseMapper to add support for sorting by artist.
-	 *
-	 * {@inheritdoc}
-	 * @see BaseMapper::findAll()
-	 * @return Album[]
-	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
-							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
-		if ($sortBy === SortBy::Parent) {
-			$sorting = 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
-			[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
-			$sql = $this->selectUserEntities($condition, $sorting);
-			\array_unshift($params, $userId);
-			return $this->findEntities($sql, $params, $limit, $offset);
-		} else {
-			return parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
-		}
 	}
 
 	/**
@@ -364,7 +358,7 @@ class AlbumMapper extends BaseMapper {
 					SELECT DISTINCT `track`.`album_id`
 					FROM `*PREFIX*music_tracks` `track`
 					WHERE `track`.`artist_id` = ?
-						UNION 
+						UNION
 					SELECT `album`.`id`
 					FROM `*PREFIX*music_albums` `album`
 					WHERE `album`.`album_artist_id` = ?

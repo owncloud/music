@@ -80,13 +80,7 @@ abstract class BaseMapper extends Mapper {
 	 */
 	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
-		if ($sortBy == SortBy::Name) {
-			$sorting = "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
-		} elseif ($sortBy == SortBy::Newest) {
-			$sorting = "ORDER BY `{$this->getTableName()}`.`id` DESC"; // abuse the fact that IDs are ever-incrementing values
-		} else {
-			$sorting = null;
-		}
+		$sorting = $this->formatSortingClause($sortBy);
 		[$condition, $params] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
 		$sql = $this->selectUserEntities($condition, $sorting);
 		\array_unshift($params, $userId);
@@ -364,6 +358,20 @@ abstract class BaseMapper extends Mapper {
 		}
 
 		return [\implode(' AND ', $conditions), $params];
+	}
+
+	/**
+	 * Convert given sorting condition to an SQL clause. Derived class may overide this if necessary.
+	 * @param int $sortBy One of the constants defined in the class SortBy
+	 */
+	protected function formatSortingClause(int $sortBy) : ?string {
+		if ($sortBy == SortBy::Name) {
+			return "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
+		} elseif ($sortBy == SortBy::Newest) {
+			return "ORDER BY `{$this->getTableName()}`.`id` DESC"; // abuse the fact that IDs are ever-incrementing values
+		} else {
+			return null;
+		}
 	}
 
 	/**

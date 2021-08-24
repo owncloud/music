@@ -18,8 +18,6 @@ use \OCP\IL10N;
 use \OCP\IURLGenerator;
 use \OCP\AppFramework\Db\Entity;
 
-use \OCA\Music\Utility\Util;
-
 /**
  * @method string getTitle()
  * @method void setTitle(string $title)
@@ -207,9 +205,4 @@ class Track extends Entity {
 		return \end($parts);
 	}
 
-	public static function compareArtistAndTitle(Track $a, Track $b) {
-		$artistResult = Util::stringCaseCompare($a->getArtistName(), $b->getArtistName());
-
-		return $artistResult ?: Util::stringCaseCompare($a->getTitle(), $b->getTitle());
-	}
 }

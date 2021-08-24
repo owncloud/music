@@ -24,7 +24,9 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Override the base implementation to include data from multiple tables
-	 * @see \OCA\Music\Db\BaseMapper::selectEntities()
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::selectEntities()
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`,
@@ -39,6 +41,20 @@ class TrackMapper extends BaseMapper {
 				LEFT JOIN `*PREFIX*music_genres` `genre`
 				ON `*PREFIX*music_tracks`.`genre_id` = `genre`.`id`
 				WHERE $condition $extension";
+	}
+
+	/**
+	 * Overridden from the base implementation to add support for sorting by artist.
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::formatSortingClause()
+	 */
+	protected function formatSortingClause(int $sortBy) : ?string {
+		if ($sortBy === SortBy::Parent) {
+			return 'ORDER BY LOWER(`artist_name`), LOWER(`title`)';
+		} else {
+			return parent::formatSortingClause($sortBy);
+		}
 	}
 
 	/**

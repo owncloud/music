@@ -453,12 +453,10 @@ class AmpacheController extends Controller {
 	protected function playlist_songs(string $auth, int $filter, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
 		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
-			$tracks = $this->trackBusinessLayer->findAll($userId);
-			\usort($tracks, ['\OCA\Music\Db\Track', 'compareArtistAndTitle']);
+			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Parent, $limit, $offset);
 			foreach ($tracks as $index => &$track) {
 				$track->setNumberOnPlaylist($index + 1);
 			}
-			$tracks = \array_slice($tracks, $offset ?? 0, $limit);
 		} else {
 			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($filter, $userId, $limit, $offset);
 		}

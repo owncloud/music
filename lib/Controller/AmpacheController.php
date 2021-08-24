@@ -1103,49 +1103,15 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 
+		$createPlayUrl = function(Track $track) use ($auth) : string {
+			return $this->createAmpacheActionUrl('download', $track->getId(), $auth);
+		};
+		$createImageUrl = function(Track $track) use ($auth) : string {
+			return $this->createCoverUrl($track->getAlbum(), $auth);
+		};
+
 		return $this->ampacheResponse([
-			'song' => \array_map(function (Track $track) use ($auth) {
-				$album = $track->getAlbum();
-
-				$result = [
-					'id' => (string)$track->getId(),
-					'title' => $track->getTitle() ?: '',
-					'name' => $track->getTitle() ?: '',
-					'artist' => [
-						'id' => (string)$track->getArtistId() ?: '0',
-						'value' => $track->getArtistNameString($this->l10n)
-					],
-					'albumartist' => [
-						'id' => (string)$album->getAlbumArtistId() ?: '0',
-						'value' => $album->getAlbumArtistNameString($this->l10n)
-					],
-					'album' => [
-						'id' => (string)$album->getId() ?: '0',
-						'value' => $album->getNameString($this->l10n)
-					],
-					'url' => $this->createAmpacheActionUrl('download', $track->getId(), $auth),
-					'time' => $track->getLength(),
-					'year' => $track->getYear(),
-					'track' => $track->getAdjustedTrackNumber(),
-					'bitrate' => $track->getBitrate(),
-					'mime' => $track->getMimetype(),
-					'size' => $track->getSize(),
-					'art' => $this->createCoverUrl($album, $auth),
-					'rating' => 0,
-					'preciserating' => 0,
-					'flag' => empty($track->getStarred()) ? 0 : 1,
-				];
-
-				$genreId = $track->getGenreId();
-				if ($genreId !== null) {
-					$result['tag'] = [[
-						'id' => (string)$genreId,
-						'value' => $track->getGenreNameString($this->l10n),
-						'count' => 1
-					]];
-				}
-				return $result;
-			}, $tracks)
+			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl])
 		]);
 	}
 

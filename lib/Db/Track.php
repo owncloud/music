@@ -147,7 +147,7 @@ class Track extends Entity {
 		return $this->getGenreName() ?: Genre::unknownNameString($l10n);
 	}
 
-	public function toCollection(IL10N $l10n) {
+	public function toCollection(IL10N $l10n) : array {
 		return [
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
@@ -160,7 +160,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator) {
+	public function toAPI(IURLGenerator $urlGenerator) : array {
 		return [
 			'title' => $this->getTitle(),
 			'ordinal' => $this->getAdjustedTrackNumber(),
@@ -176,6 +176,50 @@ class Track extends Entity {
 			'slug' => $this->getId() . '-' . $this->slugify('title'),
 			'uri' => $this->getUri($urlGenerator)
 		];
+	}
+
+	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl) : array {
+		$album = $this->getAlbum();
+
+		$result = [
+			'id' => (string)$this->getId(),
+			'title' => $this->getTitle() ?: '',
+			'name' => $this->getTitle() ?: '',
+			'artist' => [
+				'id' => (string)$this->getArtistId() ?: '0',
+				'value' => $this->getArtistNameString($l10n)
+			],
+			'albumartist' => [
+				'id' => (string)$album->getAlbumArtistId() ?: '0',
+				'value' => $album->getAlbumArtistNameString($l10n)
+			],
+			'album' => [
+				'id' => (string)$album->getId() ?: '0',
+				'value' => $album->getNameString($l10n)
+			],
+			'url' => $createPlayUrl($this),
+			'time' => $this->getLength(),
+			'year' => $this->getYear(),
+			'track' => $this->getAdjustedTrackNumber(),
+			'bitrate' => $this->getBitrate(),
+			'mime' => $this->getMimetype(),
+			'size' => $this->getSize(),
+			'art' => $createImageUrl($this),
+			'rating' => 0,
+			'preciserating' => 0,
+			'flag' => empty($this->getStarred()) ? 0 : 1,
+		];
+
+		$genreId = $this->getGenreId();
+		if ($genreId !== null) {
+			$result['tag'] = [[
+				'id' => (string)$genreId,
+				'value' => $this->getGenreNameString($l10n),
+				'count' => 1
+			]];
+		}
+
+		return $result;
 	}
 
 	public function getAdjustedTrackNumber() {

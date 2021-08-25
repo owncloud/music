@@ -11,6 +11,7 @@
   * Subsonic API including methods `getPodcasts`, `getNewestPodcasts`, `refreshPodcasts`, `createPodcastChannel`, `deletePodcastChannel`
   * Ampache API including methods `podcasts`, `podcast`, `podcast_create`, `podcast_delete`, `podcast_episodes`, `podcast_episode`, `update_podcast`
   * `occ` commands `music:podcast-add`, `music:podcast-reset`, `music:podcast-update`
+- Subsonic method `getTopSongs`
 
 ### Changed
 - Show the play icon overlay on album cover also in the Albums compact layout while in search mode

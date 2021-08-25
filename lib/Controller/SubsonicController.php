@@ -329,9 +329,11 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getTopSongs() {
-		// TODO: Not supported yet
-		return $this->subsonicResponse(['topSongs' => []]);
+	private function getTopSongs(string $artist, int $count=50) {
+		$tracks = $this->lastfmService->getTopTracks($artist, $this->userId, $count);
+		return $this->subsonicResponse(['topSongs' =>
+			['song' => \array_map([$this, 'trackToApi'], $tracks)]
+		]);
 	}
 
 	/**

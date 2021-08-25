@@ -18,6 +18,7 @@ use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Artist;
+use \OCA\Music\Db\Track;
 
 use \OCP\IConfig;
 
@@ -144,6 +145,42 @@ class LastfmService {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Get artist tracks from the user's library, sorted by their popularity on Last.fm
+	 * @param int $maxCount Number of tracks to request from Last.fm. Note that the function may return much
+	 *						less tracks if the top tracks from Last.fm are not present in the user's library.
+	 * @return Track[]
+	 */
+	public function getTopTracks(string $artistName, string $userId, int $maxCount) : array {
+		$foundTracks = [];
+
+		$artist = $this->artistBusinessLayer->findAllByName($artistName, $userId, /*$fuzzy=*/false, /*$limit=*/1)[0] ?? null;
+
+		if ($artist !== null) {
+			$lastfmResult = $this->getInfoFromLastFm([
+				'method' => 'artist.getTopTracks',
+				'artist' => $artistName,
+				'limit' => $maxCount
+			]);
+			$topTracksOnLastfm = $lastfmResult['toptracks']['track'] ?? null;
+
+			if ($topTracksOnLastfm !== null) {
+				$libTracks = $this->trackBusinessLayer->findAllByArtist($artist->getId(), $userId);
+
+				foreach ($topTracksOnLastfm as $lastfmTrack) {
+					foreach ($libTracks as $libTrack) {
+						if (\mb_strtolower($lastfmTrack['name']) === \mb_strtolower($libTrack->getTitle())) {
+							$foundTracks[] = $libTrack;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return $foundTracks;
 	}
 
 	private function getInfoFromLastFm($args) {

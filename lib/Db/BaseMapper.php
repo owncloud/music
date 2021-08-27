@@ -19,6 +19,7 @@ use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCP\IDBConnection;
 
 use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use \OCA\Music\Utility\Util;
 
 /**
  * Common base class for data access classes of the Music app
@@ -105,7 +106,7 @@ abstract class BaseMapper extends Mapper {
 			$params = [$userId];
 		} elseif ($fuzzy) {
 			$condition = "LOWER($nameCol) LIKE LOWER(?)";
-			$params = [$userId, "%$name%"];
+			$params = [$userId, self::prepareFuzzySearchString($name)];
 		} else {
 			$condition = "LOWER($nameCol) = LOWER(?)";
 			$params = [$userId, $name];
@@ -372,6 +373,22 @@ abstract class BaseMapper extends Mapper {
 		} else {
 			return null;
 		}
+	}
+
+	protected static function prepareFuzzySearchString(string $input) : string {
+		// possibly multiparted query enclosed in quotation marks is handled as a single substing,
+		// while the default interpretation of multipart string is that each of the parts can be found
+		// separately as substing in the given order
+		if (Util::startsWith($input, '"') && Util::endsWith($input, '"')) {
+			// remove the quotation
+			$pattern = \substr($input, 1, -1);
+		} else {
+			// split to parts by whitespace
+			$parts = \preg_split('/\s+/', $input, -1, PREG_SPLIT_NO_EMPTY);
+			// glue the parts back together with a wildcard charater
+			$pattern = \implode('%', $parts);
+		}
+		return "%$pattern%";
 	}
 
 	/**

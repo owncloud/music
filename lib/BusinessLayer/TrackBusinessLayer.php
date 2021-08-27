@@ -100,17 +100,15 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return \OCA\Music\Db\Track[] Tracks matching the criteria
 	 */
-	public function findAllByNameAndArtistName($name, $artistName, $userId) {
-		$name = \trim($name ?? '');
-		$artistName = \trim($artistName ?? '');
+	public function findAllByNameAndArtistName(?string $name, ?string $artistName, string $userId) : array {
+		if ($name !== null) {
+			$name = \trim($name);
+		}
+		if ($artistName !== null) {
+			$artistName = \trim($artistName);
+		}
 
-		// find exact matches first and then append fuzzy matches which are not exact matches
-		$strictMatches = $this->mapper->findAllByNameAndArtistName($name, $artistName, false, $userId);
-		$fuzzyMatches = $this->mapper->findAllByNameAndArtistName($name, $artistName, true, $userId);
-
-		$matches = \array_merge($strictMatches, $fuzzyMatches);
-		$matches = \array_unique($matches, SORT_REGULAR);
-		return $matches;
+		return $this->mapper->findAllByNameAndArtistName($name, $artistName, /*fuzzy=*/false, $userId);
 	}
 
 	/**

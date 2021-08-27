@@ -107,7 +107,7 @@ abstract class BaseMapper extends Mapper {
 			$condition = "LOWER($nameCol) LIKE LOWER(?)";
 			$params = [$userId, "%$name%"];
 		} else {
-			$condition = "$nameCol = ?";
+			$condition = "LOWER($nameCol) = LOWER(?)";
 			$params = [$userId, $name];
 		}
 

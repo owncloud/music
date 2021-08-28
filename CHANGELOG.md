@@ -1,4 +1,6 @@
-## 1.3.0 - 2021-08-28
+## 1.3.1 - 2021-08-28
+A mistake made when creating the release package 1.3.0 broke the application pretty badly. This version is a new attempt with the same content.
+
 ### Added
 - Scrolling to the album by clicking the album name or image on the album details pane
 - Scrolling to the artist by clicking the artist name or image on the artist details pane
@@ -32,6 +34,9 @@
 - Ampache client [AmpacheAlbumPlayer](https://play.google.com/store/apps/details?id=com.stemaker.ampachealbumplayer) being incompatible
 - Continuing playback from the same offset when moving from Files to Music (broken since 1.0.0)
 - Misleading error message shown when viewing details for an album not found from Last.fm
+
+## 1.3.0 - 2021-08-28
+(broken version)
 
 ## 1.2.1 - 2021-06-27
 ### Added

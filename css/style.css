@@ -198,6 +198,8 @@ div:hover > .play-pause,
 	background-color: transparent;
 	visibility: hidden;
 	opacity: 0.5;
+	padding: 6px 12px;
+	width: auto;
 }
 
 #app-view :hover > button.icon-details,
@@ -213,6 +215,7 @@ div:hover > .play-pause,
 #app-view h2 .icon-loading-small {
 	top: 11px;
 	left: 3px;
+	overflow: visible;
 }
 
 #app-view h2:not(.busy) .icon-loading-small {

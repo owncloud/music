@@ -201,16 +201,31 @@ class LastfmService {
 			// ... and form the final query string
 			$queryString = '?' . \implode('&', $args);
 
-			$info = \file_get_contents(self::LASTFM_URL . $queryString);
+			list($info, $statusCode, $msg) = self::fetchUrl(self::LASTFM_URL . $queryString);
+			$statusCode = (int)$statusCode;
 
 			if ($info === false) {
-				$info = ['connection_ok' => false];
+				// When an album is not found, Last.fm returns 404 but that is not a sign of broken connection.
+				// Interestingly, not finding an artist is still responded with the code 200.
+				$info = ['connection_ok' => ($statusCode === 404)];
 			} else {
 				$info = \json_decode($info, true);
 				$info['connection_ok'] = true;
 			}
+			$info['status_code'] = $statusCode;
+			$info['status_msg'] = $msg;
 			$info['api_key_set'] = true;
 			return $info;
 		}
+	}
+
+	private static function fetchUrl($url) : array {
+		$content = \file_get_contents($url);
+
+		// It's some PHP magic that calling file_get_contents creates and populates
+		// also a local variable array $http_response_header.
+		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);
+
+		return [$content, $status_code, $msg];
 	}
 }

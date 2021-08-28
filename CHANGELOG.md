@@ -31,6 +31,7 @@
 - Last.fm details view not showing the tag correctly if the track/album/artist has only one tag
 - Ampache client [AmpacheAlbumPlayer](https://play.google.com/store/apps/details?id=com.stemaker.ampachealbumplayer) being incompatible
 - Continuing playback from the same offset when moving from Files to Music (broken since 1.0.0)
+- Misleading error message shown when viewing details for an album not found from Last.fm
 
 ## 1.2.1 - 2021-06-27
 ### Added

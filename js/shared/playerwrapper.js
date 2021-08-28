@@ -170,8 +170,11 @@ OCA.Music.PlayerWrapper = function() {
 		// Seeking is not implemented in aurora/flac.js and does not work on all
 		// files with aurora/mp3.js. Hence, we disable seeking with aurora.
 		// Also, seeking requires that we know a valid duration for the file/stream;
-		// this is not always the case with external streams.
-		return (m_underlyingPlayer == 'html5' && $.isNumeric(m_duration) && m_duration > 0);
+		// this is not always the case with external streams. On the other hand, when
+		// playing a normal local file, the seeking may be requested before we have fetched
+		// the duration and that is fine.
+		var validDuration = $.isNumeric(m_duration) && m_duration > 0;
+		return (m_underlyingPlayer == 'html5' && (!m_streamingExtUrl || validDuration));
 	};
 
 	this.seekMsecs = function(msecs) {

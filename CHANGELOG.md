@@ -30,6 +30,7 @@
   [#873](https://github.com/owncloud/music/issues/873)
 - Last.fm details view not showing the tag correctly if the track/album/artist has only one tag
 - Ampache client [AmpacheAlbumPlayer](https://play.google.com/store/apps/details?id=com.stemaker.ampachealbumplayer) being incompatible
+- Continuing playback from the same offset when moving from Files to Music (broken since 1.0.0)
 
 ## 1.2.1 - 2021-06-27
 ### Added

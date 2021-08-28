@@ -290,3 +290,7 @@
 #app-sidebar #podcast-details .tags {
 	margin-top: 24px;
 }
+
+#app-sidebar #podcast-details dd * {
+	display: unset;
+}

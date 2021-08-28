@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.3.0 - 2021-08-28
 ### Added
 - Scrolling to the album by clicking the album name or image on the album details pane
 - Scrolling to the artist by clicking the artist name or image on the artist details pane

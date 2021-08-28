@@ -3,20 +3,22 @@
 	<id>music</id>
 	<name>Music</name>
 	<summary>Music player, library viewer, and server</summary>
-	<description>Plays audio files directly in the Files view or in a stand-alone library view. Depending on the browser, supports playing file types mp3, ogg, m4a, m4b, flac, wav. All browsers should be able to play at least mp3. Also playlist formats m3u, m3u8, and pls are supported.
+	<description><![CDATA[A stand-alone music player app and a "lite" player for the Files app
 
-In the library view, you can play tracks by album, artist, genre, or folder, create custom playlists, search tracks by keywords, or shuffle play over your whole library. In the Files view, an audio file can be played with one click and the playback continues to the next files of the folder or playlist until stopped. The app includes also a server compatible with Ampache and Subsonic clients, allowing playback and browsing of the library on various external applications e.g. on Android or iPhone.
-
-When browser and OS support available, the Music app can be controlled with the media keys (play/pause/stop/next/prev) on the keyboard or the OS notification center even when the browser is not focused.
-
-The admin may set up connection to the Last.fm service, allowing the Music app to show biography and background information of the artists, albums, and tracks.
-
-Limitations: The app can handle libraries of more than 50´000 tracks on modern desktop browsers, but the user experience is optimized for somewhat smaller collections. Libraries significantly larger than this may fail to function altogether. The playback from Files works regardless of the collection size.</description>
+- On modern browsers, supports at least audio types mp3, ogg, m4a, m4b, flac, wav
+- Playlist support with import from m3u, m3u8, and pls files
+- Browse by artists, albums, genres, or folders
+- Filter the shown content with the search function
+- Play internet radio and podcast channels
+- Setup Last.fm connection to see background information on artists, albums, and songs
+- Control with media control keys on the keyboard or OS (supported on all modern desktop browsers)
+- The app can handle libraries consisting of thousands of albums and tens of thousands of songs
+- Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on various external apps e.g. on Android or iPhone]]></description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>1.3.0-alpha4</version>
+	<version>1.3.0</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/107080070-6b523780-67f9-11eb-8adc-314059b04c1d.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/107083303-17961d00-67fe-11eb-8b1c-5ad94b08a7bb.png</screenshot>

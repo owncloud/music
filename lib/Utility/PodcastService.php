@@ -119,7 +119,7 @@ class PodcastService {
 	 * @return array like ['status' => int, 'channel' => ?PodcastChannel]
 	 */
 	public function subscribe(string $url, string $userId) : array {
-		$content = \file_get_contents($url);
+		$content = self::fetchUrl($url);
 		if ($content === false) {
 			return ['status' => self::STATUS_INVALID_URL, 'channel' => null];
 		}
@@ -180,7 +180,7 @@ class PodcastService {
 
 		if ($channel !== null) {
 			$xmlTree = null;
-			$content = \file_get_contents($channel->getRssUrl());
+			$content = self::fetchUrl($channel->getRssUrl());
 			if ($content === null) {
 				$status = self::STATUS_INVALID_URL;
 			} else {
@@ -263,4 +263,18 @@ class PodcastService {
 		return $episodes;
 	}
 
+	/**
+	 * @param string $url
+	 * @return string|false
+	 */
+	private static function fetchUrl(string $url) {
+		// some podcast services require a valid user agent to be set
+		$opts = [
+			"http" => [
+				"header" => "User-Agent: PodcastService"
+			]
+		];
+		$context = stream_context_create($opts);
+		return \file_get_contents($url, false, $context);
+	}
 }

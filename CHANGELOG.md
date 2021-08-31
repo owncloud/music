@@ -2,6 +2,8 @@
 ### Fixed
 - Not being able to subscribe podcasts from some providers
   [#888](https://github.com/owncloud/music/pull/888) @icewind1991
+- Subsonic: Argument `musicFolderId` on `getIndexes` not being optional, breaking compatibility with Soundwaves Player
+  [#885](https://github.com/owncloud/music/issues/885)
 
 ## 1.3.1 - 2021-08-28
 A mistake made when creating the release package 1.3.0 broke the application pretty badly. This version is a new attempt with the same content.

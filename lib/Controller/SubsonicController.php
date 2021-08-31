@@ -222,7 +222,7 @@ class SubsonicController extends Controller {
 	/**
 	 * @SubsonicAPI
 	 */
-	private function getIndexes(string $musicFolderId) {
+	private function getIndexes(?string $musicFolderId) {
 		if ($musicFolderId === 'folders') {
 			return $this->getIndexesForFolders();
 		} else {

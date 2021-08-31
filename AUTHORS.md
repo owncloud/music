@@ -46,6 +46,7 @@
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
 * [Rello](https://github.com/rello)
+* [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
 * [Selpelt](https://github.com/selpelt)
 * [Sicco van Sas](https://github.com/siccovansas)

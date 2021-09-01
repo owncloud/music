@@ -50,6 +50,7 @@
 * [Roland Hager](https://github.com/roha4000)
 * [Selpelt](https://github.com/selpelt)
 * [Sicco van Sas](https://github.com/siccovansas)
+* [Simon Spannagel](https://github.com/simonspa)
 * [Thomas Müller](https://github.com/DeepDiver1975): <github@tmit.eu>
 * [Thomas Pulzer](https://github.com/Faldon)
 * [Victor Dubiniuk](https://github.com/VicDeo): <victor.dubiniuk@gmail.com>

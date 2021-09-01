@@ -1,4 +1,8 @@
 ## [Unreleased]
+### Added
+- Comprehensive German translation for the main app
+  [#890](https://github.com/owncloud/music/pull/890) @simonspa
+
 ### Fixed
 - Not being able to subscribe podcasts from some providers
   [#888](https://github.com/owncloud/music/pull/888) @icewind1991

@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # cmeh <github@christianhoffmann.com>, 2015
 # I Robot, 2013
@@ -8,161 +8,1346 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2017-09-23 19:14+0000\n"
-"Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
-"Language-Team: German (Germany) (http://www.transifex.com/owncloud-org/owncloud/language/de_DE/)\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2021-09-01 21:53+0200\n"
+"Last-Translator: Simon Spannagel <simonspa@kth.se>\n"
+"Language-Team: German (Germany) (http://www.transifex.com/owncloud-org/"
+"owncloud/language/de_DE/)\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 
-#: ../templates/main.php:60
-msgid "+ New Playlist"
-msgstr "+ Neue Wiedergabeliste"
+#: ../templates/partials/albumdetails.php:20
+#: ../templates/partials/artistdetails.php:25
+msgid "(Failed to connect Last.fm)"
+msgstr "(Konnte keine Verbindung zu Last.fm herstellen)"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:55
+#: ../templates/partials/albumdetails.php:17
+#: ../templates/partials/artistdetails.php:22
+msgid "(Last.fm has not been set up)"
+msgstr "(Last.fm wurde nicht konfiguriert)"
+
+#: ../templates/fake-template.php:15
+msgid "(file is not within your music collection folder)"
+msgstr "(Datei befindet sich nicht im Ordner Ihrer Musikkollektion)"
+
+#: ../templates/partials/artistdetails.php:4
+msgid "(no artist image available)"
+msgstr "(kein Künstlerbild verfügbar)"
+
+#: ../js/app/controllers/maincontroller.js:54
+msgid "1 album"
+msgid_plural "{{ count }} albums"
+msgstr[0] "1 Album"
+msgstr[1] "{{ count }} Alben"
+
+#: ../js/app/controllers/maincontroller.js:87
+msgid "1 channel"
+msgid_plural "{{ count }} channels"
+msgstr[0] "1 Kanal"
+msgstr[1] "{{ count }} Kanäle"
+
+#: ../js/app/controllers/maincontroller.js:60
+msgid "1 folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] "1 Ordner"
+msgstr[1] "{{ count }} Ordner"
+
+#: ../js/app/controllers/maincontroller.js:69
+msgid "1 genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] "1 Genre"
+msgstr[1] "{{ count }} Genre"
+
+#: ../js/app/controllers/maincontroller.js:78
+msgid "1 station"
+msgid_plural "{{ count }} stations"
+msgstr[0] "1 Station"
+msgstr[1] "{{ count }} Stationen"
+
+#: ../js/app/controllers/maincontroller.js:49
+msgid "1 track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] "1 Titel"
+msgstr[1] "{{ count }} Titel"
+
+#: ../templates/partials/settingsview.php:30
+msgid ""
+"<strong>**</strong> matches zero or more arbitrary characters including path "
+"segment separators '/'"
+msgstr ""
+"<strong>**</strong> sucht nach null oder mehr beliebigen Zeichen, "
+"einschließlich Pfadtrennzeichen '/'"
+
+#: ../templates/partials/settingsview.php:29
+msgid ""
+"<strong>*</strong> matches zero or more arbitrary characters within a path "
+"segment"
+msgstr ""
+"<strong>*</strong> sucht nach null oder mehr beliebigen Zeichen innerhalb "
+"eines Pfadsegments"
+
+#: ../templates/partials/settingsview.php:28
+msgid "<strong>?</strong> matches any one character within a path segment"
+msgstr ""
+"<strong>?</strong> sucht nach einem einzelnen Zeichen innerhalb eines "
+"Pfadsegments"
+
+#: ../templates/partials/settingsview.php:178
+msgid "About"
+msgstr "Über"
+
+#: ../js/app/services/podcastservice.js:75
+msgid "Add a new podcast channel from an RSS feed"
+msgstr "Einen neuen Podcast von einem RSS-Feed hinzufügen"
+
+#: ../js/app/services/podcastservice.js:76
+msgid "Add channel"
+msgstr "Kanal hinzufügen"
+
+#: ../templates/partials/navigationitem.php:97
+msgid "Add from RSS feed"
+msgstr "Aus RSS-Feed hinzufügen"
+
+#: ../templates/partials/navigationitem.php:85
+msgid "Add manually"
+msgstr "Manuell hinzufügen"
+
+#: ../templates/partials/playlistview.php:35
+msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr ""
+"Hinzufügen von Titeln per Drag & Drop aus Alben oder anderen Wiedergabelisten"
+
+#: ../templates/partials/settingsview.php:133
+msgid "Admin"
+msgstr "Admin"
+
+#: ../templates/partials/albumdetails.php:18
+msgid ""
+"Admin may set up the Last.fm API key to show album background information "
+"here. See the Settings view for details."
+msgstr ""
+"Administratoren können einen Last.fm-API-Schlüssel konfigurieren, um hier "
+"Hintergrundinformationen zum Album anzuzeigen. Weitere Informationen finden "
+"Sie in den Einstellungen."
+
+#: ../templates/partials/artistdetails.php:23
+msgid ""
+"Admin may set up the Last.fm API key to show artist biography here. See the "
+"Settings view for details."
+msgstr ""
+"Administratoren können einen Last.fm-API-Schlüssel konfigurieren, um hier "
+"biografische Details zum Künstler anzuzeigen. Weitere Informationen finden "
+"Sie in den Einstellungen."
+
+#: ../js/app/controllers/playercontroller.js:363
+msgid "Album"
+msgstr "Album"
+
+#: ../js/app/controllers/playercontroller.js:357
+#: ../templates/fake-template.php:9 ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr "Alben"
 
-#: ../templates/main.php:56
+#: ../js/app/services/podcastservice.js:125
+msgid "All channels were already up-to-date"
+msgstr "Alle Kanäle waren bereits aktuell"
+
+#: ../js/app/controllers/playercontroller.js:360
+#: ../templates/partials/alltracksview.php:4
+#: ../templates/partials/navigation.php:14
 msgid "All tracks"
 msgstr "Alle Titel"
 
-#: ../templates/fake-template.php:6
+#: ../templates/partials/settingsview.php:89
+msgid "Ampache and Subsonic"
+msgstr "Ampache und Subsonic"
+
+#: ../js/app/services/playlistfileservice.js:170
+msgid "Append to an existing playlist?"
+msgstr "Zu einer bereits existierenden Wiedergabeliste hinzufügen?"
+
+#: ../js/app/controllers/settingsviewcontroller.js:173
+msgid ""
+"Are you sure to permanently erase all the configured internet radio stations?"
+msgstr ""
+"Sind Sie sich sicher, alle gespeicherten Internetradios dauerhaft löschen zu "
+"wollen?"
+
+#: ../js/app/controllers/settingsviewcontroller.js:203
+msgid "Are you sure to permanently erase all the configured podcast channels?"
+msgstr ""
+"Sind Sie sich sicher, alle gespeicherten Podcast-Kanäle dauerhaft löschen zu "
+"wollen?"
+
+#: ../js/app/controllers/navigationcontroller.js:123
+msgid "Are you sure to remove the playlist \"{{ name }}\"?"
+msgstr ""
+"Sind Sie sich sicher, Wiedergabeliste \"{{ name }}\" löschen zu wollen?"
+
+#: ../js/app/services/podcastservice.js:169
+msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
+msgstr "Sind Sie sich sicher, Podcast-Kanal \"{{ title }}\" löschen zu wollen?"
+
+#: ../js/app/controllers/radioviewcontroller.js:38
+msgid "Are you sure to remove the radio station \"{{ name }}\"?"
+msgstr "Sind Sie sich sicher, Radiostation \"{{ name }}\" löschen zu wollen?"
+
+#: ../js/app/controllers/settingsviewcontroller.js:130
+msgid ""
+"Are you sure to reset the music collection? This removes all scanned tracks "
+"and user-created playlists!"
+msgstr ""
+"Sind Sie sich sicher, Ihre Musiksammlung zurücksetzen zu wollen? Dieser "
+"Vorgang entfernt alle gefundenen Titel sowie erstellte Wiedergabelisten!"
+
+#: ../templates/partials/settingsview.php:162
+msgid ""
+"Array of allowed HLS radio streaming hosts. Default is [], blocking HLS "
+"streams from any remote URL. The given URLs will be added to the Content-"
+"Security-Policy header <a href=\"{{connectSrcUrl}}\" target=\"_blank"
+"\">connect-src</a>. Furthermore, if you specify any allowed sources, then "
+"also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the "
+"CSP <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
+msgstr ""
+"Liste erlaubter HLS-Radio-Streaming-Hosts. Die Voreinstellung ist [] und "
+"blockiert HLS-Streams von allen entfernten URLs. Angegebene URLs werden zum "
+"Content-Security-Policy-Header (CSP) <a href=\"{{connectSrcUrl}}\" target="
+"\"_blank\">connect-src</a> hinzugefügt. Des weiteren werden auch die Quellen "
+"<samp>data:</samp> and <samp>blob:</samp> zum CSP <a href="
+"\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a> hinzugefügt, sofern Sie "
+"alle entfernten Hosts zulassen."
+
+#: ../templates/partials/settingsview.php:156
+msgid ""
+"Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', "
+"'https://*:*'], allowing streaming from any remote URL. The given URLs will "
+"be added to the Content-Security-Policy header <a href=\"{{url}}\" target="
+"\"_blank\">media-src</a>."
+msgstr ""
+"Liste erlaubter nicht-HLS-Radio-Streaming-Hosts. Die Voreinstellung ist "
+"['http://*:*', 'https://*:*'] und erlaubt Streams von allen entfernten URLs. "
+"Angegebene URLs werden zum Content-Security-Policy-Header (CSP) <a href="
+"\"{{url}}\" target=\"_blank\">media-src</a> hinzugefügt."
+
+#: ../js/app/controllers/playercontroller.js:364
+msgid "Artist"
+msgstr "Künstler"
+
+#: ../templates/fake-template.php:8
 msgid "Artists"
 msgstr "Künstler"
 
-#: ../templates/main.php:146
-msgid "Click here to start the scan"
-msgstr "Um das Durchsuchen zu starten, hier klicken"
+#: ../templates/partials/settingsview.php:33
+msgid "Changes to the excluded paths will only take effect upon rescan."
+msgstr ""
+"Änderungen der ausgeschlossenen Dateipfade werden erst mit einem erneuten "
+"Einlesen wirksam."
 
-#: ../templates/fake-template.php:13
+#: ../js/app/services/podcastservice.js:128
+msgid "Changes were loaded for one channel"
+msgid_plural "Changes were loaded for {{ count }} channels"
+msgstr[0] "Änderungen wurden für einen Kanal geladen"
+msgstr[1] "Änderungen wurden für {{ count }} Kanäle geladen"
+
+#: ../js/app/controllers/playercontroller.js:368
+msgid "Channel"
+msgstr "Kanal"
+
+#: ../templates/main.php:52
+msgid "Click here to start the scan"
+msgstr "Um das Einlesen zu starten, hier klicken"
+
+#: ../templates/partials/podcastsview.php:41
+msgid "Click to add your first podcast channel"
+msgstr "Klicken Sie hier, um Ihren ersten Podcast-Kanal hinzuzufügen"
+
+#: ../js/app/directives/collapsiblehtml.js:12
+msgid "Click to expand"
+msgstr "Zum Ausklappen hier klicken"
+
+#: ../templates/partials/genresview.php:33
+msgid "Click to rescan"
+msgstr "Zum erneuten Einlesen hier klicken"
+
+#: ../templates/partials/radioview.php:36
+msgid "Click to show \"Getting started\""
+msgstr "Klicken, um \"Erste Schritte\" anzuzeigen"
+
+#: ../templates/fake-template.php:14 ../templates/partials/sidebar.php:2
+msgid "Close"
+msgstr "Schließen"
+
+#: ../templates/partials/playlistdetails.php:18
+msgid "Comment"
+msgstr "Kommentar"
+
+#: ../templates/partials/navigationitem.php:114
+msgid "Compact layout"
+msgstr "Kompaktes Layout"
+
+#: ../js/app/services/podcastservice.js:152
+#: ../js/app/services/podcastservice.js:162
+msgid "Could not remove the channel \"{{ title }}\""
+msgstr "Der Kanal \"{{ title }}\" konnte nicht entfernt werden"
+
+#: ../js/app/services/podcastservice.js:23
+msgid "Could not update the channel \"{{ title }}\" from the source"
+msgstr "Der Kanal \"{{ title }}\" konnte nicht aktualisiert werden"
+
+#: ../templates/partials/playlistdetails.php:12
+#: ../templates/partials/radiostationdetails.php:25
+msgid "Created"
+msgstr "Erstellt"
+
+#: ../templates/partials/navigationitem.php:64
+#: ../templates/partials/radioview.php:22
+msgid "Delete"
+msgstr "Entfernen"
+
+#: ../templates/partials/settingsview.php:109
 msgid "Description"
 msgstr "Beschreibung"
 
-#: ../templates/fake-template.php:14
+#: ../templates/partials/settingsview.php:119
 msgid "Description (e.g. App name)"
 msgstr "Beschreibung (z.B. Name der Anwendung)"
 
-#: ../templates/fake-template.php:15
+#: ../js/app/directives/listheading.js:25 ../js/app/directives/tracklist.js:36
+#: ../templates/partials/navigationitem.php:36
+#: ../templates/partials/playlistview.php:24
+#: ../templates/partials/radioview.php:20
+msgid "Details"
+msgstr "Details"
+
+#: ../js/app/controllers/playercontroller.js:369
+msgid "Episode"
+msgstr "Episode"
+
+#: ../js/app/controllers/playercontroller.js:71
+msgid "Error playing URL:"
+msgstr "Fehler beim Abspielen der URL:"
+
+#: ../js/app/services/playlistfileservice.js:95
+msgid "Export playlist to a file in the selected folder"
+msgstr "Exportieren der Wiedergabeliste in eine Datei im ausgewählten Ordner"
+
+#: ../js/app/services/playlistfileservice.js:126
+msgid "Export radio stations to a file in the selected folder"
+msgstr "Exportieren der Radiostationen in eine Datei im ausgewählten Ordner"
+
+#: ../templates/partials/navigationitem.php:45
+#: ../templates/partials/navigationitem.php:82
+msgid "Export to file"
+msgstr "Nach Datei exportieren"
+
+#: ../js/app/services/podcastservice.js:66
+msgid "Failed to add the podcast channel"
+msgstr "Podcast-Kanal konnte nicht hinzugefügt werden"
+
+#: ../js/app/controllers/radioviewcontroller.js:73
+msgid "Failed to delete the radio station:"
+msgstr "Radiostation konnte nicht entfernt werden:"
+
+#: ../templates/partials/settingsview.php:121
+msgid "Failed to generate new Ampache/Subsonic password"
+msgstr "Es konnte kein neues Ampache/Subsonic-Passwort erstellt werden"
+
+#: ../js/app/services/playlistfileservice.js:152
+msgid "Failed to import playlist from the file {{ file }}"
+msgstr "Playlist konnte nicht aus Datei {{ file }} importiert werden"
+
+#: ../js/app/services/playlistfileservice.js:206
+msgid "Failed to import radio stations from the file {{ file }}"
+msgstr "Radiostationen konnten nicht aus Datei {{ file }} importiert werden"
+
+#: ../js/app/controllers/maincontroller.js:171
+msgid "Failed to load the collection:"
+msgstr "Musiksammlung konnte nicht geladen werden:"
+
+#: ../js/app/controllers/settingsviewcontroller.js:154
+msgid "Failed to reset the collection:"
+msgstr "Musiksammlung konnte nicht zurückgesetzt werden:"
+
+#: ../js/app/controllers/settingsviewcontroller.js:222
+msgid "Failed to reset the podcast channels:"
+msgstr "Podcast-Kanäle konnten nicht zurückgesetzt werden:"
+
+#: ../js/app/controllers/settingsviewcontroller.js:192
+msgid "Failed to reset the radio stations:"
+msgstr "Radiostationen konnten nicht zurückgesetzt werden:"
+
+#: ../templates/partials/settingsview.php:48
+msgid "Failed to save the ignored paths"
+msgstr "Ausgeschlossene Dateipfade konnten nicht gespeichert werden"
+
+#: ../templates/partials/settingsview.php:12
+msgid "Failed to save the music collection path"
+msgstr "Pfad der Musiksammlung konnte nicht gespeichert werden"
+
+#: ../js/app/controllers/playercontroller.js:365
+msgid "Folder"
+msgstr "Ordner"
+
+#: ../js/app/controllers/playercontroller.js:358
+#: ../templates/partials/navigation.php:10
+msgid "Folders"
+msgstr "Ordner"
+
+#: ../templates/partials/sidebar.php:16
+msgid "Follow playback"
+msgstr "Wiedergabe verfolgen"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:119
+msgid "GUID"
+msgstr "GUID"
+
+#: ../templates/partials/trackdetails.php:8
+msgid "General"
+msgstr "Allgemeines"
+
+#: ../templates/partials/settingsview.php:120
 msgid "Generate API password"
 msgstr "API-Passwort erzeugen"
 
-#: ../templates/fake-template.php:18
+#: ../js/app/controllers/playercontroller.js:366
+msgid "Genre"
+msgstr "Genre"
+
+#: ../js/app/controllers/playercontroller.js:359
+#: ../templates/partials/navigation.php:12
+msgid "Genres"
+msgstr "Genre"
+
+#: ../templates/partials/navigationitem.php:76
+msgid "Getting started"
+msgstr "Erste Schritte"
+
+#: ../templates/partials/settingsview.php:104
 msgid ""
-"Here you can generate passwords to use with the Ampache API, because they "
-"can't be stored in a really secure way due to the design of the Ampache API."
-" You can generate as many passwords as you want and revoke them anytime."
-msgstr "Hier können Sie Passwörter zur Benutzung mit der Ampache-API erzeugen, da diese aufgrund des Designs der Ampache-API auf keine wirklich sichere Art und Weise gespeichert werden können. Sie könenn soviele Passwörter generieren, wie Sie möchten und diese jederzeit verwerfen."
+"Here you can generate passwords to use with the Ampache or Subsonic API. "
+"Separate passwords are used because they can't be stored in a really secure "
+"way due to the design of the APIs. You can generate as many passwords as you "
+"want and revoke them at anytime."
+msgstr ""
+"Hier können Sie Passwörter zur Benutzung mit der Ampache- oder Subsonic-API "
+"erzeugen. Es werden separate Passwörter verwendet, da diese aufgrund des API-"
+"Designs nicht auf sichere Art und Weise gespeichert werden können. Sie "
+"können so viele Passwörter generieren wie Sie möchten und diese jederzeit "
+"verwerfen."
 
-#: ../templates/fake-template.php:10
-msgid "Invalid path"
-msgstr "Ungültiger Pfad"
+#: ../templates/partials/settingsview.php:97
+msgid "If this URL doesn't work try to append '/server/xml.server.php'."
+msgstr ""
+"Sollte diese URL nicht funktionieren, versuchen Sie, '/server/xml.server."
+"php' anzuhängen."
 
-#: ../templates/fake-template.php:19
+#: ../templates/partials/navigationitem.php:42
+#: ../templates/partials/navigationitem.php:79
+msgid "Import from file"
+msgstr "Aus Datei importieren"
+
+#: ../js/app/services/playlistfileservice.js:161
+msgid "Import playlist contents from the selected file"
+msgstr "Wiedergabelisten aus der ausgewählten Datei importieren"
+
+#: ../js/app/services/playlistfileservice.js:214
+msgid "Import radio stations from the selected file"
+msgstr "Radiostationen aus der ausgewählten Datei importieren"
+
+#: ../js/app/services/playlistfileservice.js:194
+msgid "Imported {{ count }} radio stations from the file {{ file }}."
+msgstr "{{ count}} Radiostationen wurden aus der Datei {{ file }} importiert."
+
+#: ../js/app/services/playlistfileservice.js:140
+msgid "Imported {{ count }} tracks from the file {{ file }}."
+msgstr "{{ count}} Titel wurden aus der Datei {{ file }} importiert."
+
+#: ../templates/partials/radiohint.php:9
 msgid ""
-"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
-"free to report your experience with this feature in the corresponding <a "
-"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
-" like to have a list of clients to test with. Thanks"
-msgstr "Bitte bedenken Sie, dass die Ampache-API derzeit eine Vorschau und instabil ist. Sie können gerne Ihre Erfahrungen mit dieser Funktion im entsprechenden <a href=\"https://github.com/owncloud/music/issues/60\">Fehlerbericht</a> melden. Ich würde ebenfalls eine Liste von Anwendung zu Testzwecken sammeln. Dankeschön"
+"In the search results view, press the \"diskette\" icon on an individual "
+"found station to download the station as a PLS file. Alternatively, press "
+"the link \"Save current list as playlist for your media player: PLS\" on top "
+"of the view to get all the matching stations."
+msgstr ""
+"In den Suchergebnissen auf das Diskettensymbol klicken, um die Station als "
+"PLS-Datei herunterzuladen. Alternativ kann auch der Link \"Aktuelle Liste "
+"als Wiedergabeliste für Ihren Medial Player speichern: PLS\" am oberen Rand "
+"genutzt werden, um alle gefunden Stationen herunterzuladen."
 
-#: ../templates/fake-template.php:3
+#: ../js/app/controllers/maincontroller.js:161
+msgid "Internal server error"
+msgstr "Interner Server-Fehler"
+
+#: ../js/app/controllers/playercontroller.js:361
+#: ../js/app/services/playlistfileservice.js:104
+#: ../templates/partials/navigation.php:17
+msgid "Internet radio"
+msgstr "Internetradio"
+
+#: ../templates/partials/radioview.php:4
+msgid "Internet radio stations"
+msgstr "Internetradiostationen"
+
+#: ../js/app/services/podcastservice.js:62
+msgid "Invalid RSS feed URL"
+msgstr "Ungültiger RSS-Feed"
+
+#: ../templates/partials/settingsview.php:150
+msgid ""
+"Large album cover images are down-scaled to this size on the server before "
+"providing them for the web browser or the Subsonic/Ampache client. Smaller "
+"images are not up-scaled. The default size is 380 pixels. The value should "
+"be given as a single integer."
+msgstr ""
+"Große Albencover werden auf diese Größe herunterskaliert bevor sie dem "
+"Webbrowser oder den Subsonic/Ampache-Client zur Verfügung gestellt werden. "
+"Kleine Cover werden nicht hochskaliert. Die voreingestellte Größe beträgt "
+"380 Pixel. Die Größe muss als einzelne Zahl angegeben werden."
+
+#: ../templates/fake-template.php:13
+msgid "Loading…"
+msgstr "Lade…"
+
+#: ../templates/partials/trackdetails.php:11
+msgid "Lyrics"
+msgstr "Songtext"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:115
+msgid "MIME type"
+msgstr "MIME-Typ"
+
+#: ../templates/partials/playlistdetails.php:15
+#: ../templates/partials/radiostationdetails.php:28
+msgid "Modified"
+msgstr "Bearbeitet"
+
+#: ../templates/fake-template.php:5 ../templates/partials/settingsview.php:183
 msgid "Music"
 msgstr "Musik"
 
-#: ../templates/main.php:145
+#: ../templates/partials/radiostationdetails.php:7
+msgid "Name"
+msgstr "Name"
+
+#: ../templates/partials/navigation.php:25
+#: ../templates/partials/navigation.php:28
+msgid "New Playlist"
+msgstr "Neue Wiedergabeliste"
+
+#: ../templates/main.php:51
 msgid "New music available"
 msgstr "Neue Musik verfügbar"
 
-#: ../templates/main.php:140 ../templates/main.php:141
+#: ../templates/main.php:84 ../templates/main.php:85
 msgid "New music available. Click here to reload the music library."
-msgstr "Neue Musik verfügbar. Zum Neuladen der Medienbibliothek, hier klicken."
+msgstr ""
+"Neue Musik verfügbar. Zum erneuten Einlesen der Musiksammlung, hier klicken."
 
-#: ../templates/main.php:91
+#: ../templates/partials/radiostationdetails.php:4
+msgid "New radio station"
+msgstr "Neue Radiostation"
+
+#: ../templates/partials/controls.php:11
 msgid "Next"
 msgstr "Weiter"
 
-#: ../templates/main.php:134
+#: ../templates/partials/podcastsview.php:40
+msgid "No channels"
+msgstr "Keine Kanäle"
+
+#: ../templates/main.php:43
 msgid "No music found"
 msgstr "Keine Musik gefunden"
 
-#: ../templates/fake-template.php:9
+#: ../templates/main.php:75
+msgid "No search results in this view for <strong>{{ queryString }}</strong>"
+msgstr ""
+"Keine Suchergebnisse in dieser Ansicht für <strong>{{ queryString }}</strong>"
+
+#: ../templates/partials/radioview.php:35
+msgid "No stations"
+msgstr "Keine Stationen"
+
+#: ../templates/partials/playlistview.php:34
+msgid "No tracks"
+msgstr "Keine Titel"
+
+#: ../templates/partials/navigationitem.php:111
+msgid "Normal layout"
+msgstr "Normales Layout"
+
+#: ../templates/partials/settingsview.php:91
+msgid ""
+"Note that Music may not be compatible with all Ampache/Subsonic clients. "
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank"
+"\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank"
+"\">Subsonic clients</a>."
+msgstr ""
+"Beachten Sie, dass die Musik-App möglicherweise nicht mit allen Ampache/"
+"Subsonic-Clients kompatibel ist. Konsultieren Sie die Liste der "
+"verifizierten <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache-</"
+"a> und <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic-"
+"Clients</a>."
+
+#: ../templates/partials/settingsview.php:14
+msgid ""
+"Note: When the path is changed, any previously scanned files outside the new "
+"path are removed from the collection and any playlists."
+msgstr ""
+"Hinweis: Wenn der Pfad geändert wird, werden alle zuvor gescannten Dateien "
+"außerhalb des neuen Pfads aus der Sammlung und allen Wiedergabelisten "
+"entfernt."
+
+#: ../templates/partials/settingsview.php:173
+msgid ""
+"Note: the update rate is limited also by the execution rate of your cloud "
+"background task."
+msgstr ""
+"Hinweis: Die Aktualisierungsrate wird auch durch die Ausführungsrate Ihrer "
+"Cloud-Hintergrundaufgaben begrenzt."
+
+#: ../templates/partials/artistdetails.php:11
+msgid "Number of albums"
+msgstr "Zahl der Alben"
+
+#: ../templates/partials/artistdetails.php:17
+msgid "Number of performed tracks"
+msgstr "Zahl der gespielten Titel"
+
+#: ../templates/partials/albumdetails.php:9
+#: ../templates/partials/playlistdetails.php:6
+msgid "Number of tracks"
+msgstr "Zahl der Titel"
+
+#: ../templates/partials/artistdetails.php:14
+msgid "Number of tracks on albums"
+msgstr "Zahl der Titel auf dem Album"
+
+#: ../js/app/controllers/playercontroller.js:384
+#: ../js/app/controllers/playercontroller.js:393
+msgid "Off"
+msgstr "Aus"
+
+#: ../js/app/services/playlistfileservice.js:20
+msgid "Overwrite existing file"
+msgstr "Existierende Datei überschreiben"
+
+#: ../templates/partials/settingsview.php:127
+msgid "Password:"
+msgstr "Passwort:"
+
+#: ../js/app/controllers/settingsviewcontroller.js:79
+msgid "Path to exclude from your music collection"
+msgstr "Von der Musiksammlung auszuschließender Pfad"
+
+#: ../js/app/controllers/settingsviewcontroller.js:38
+#: ../templates/partials/settingsview.php:7
 msgid "Path to your music collection"
-msgstr "Pfad zu Ihrer Musiksammlung"
+msgstr "Pfad zur Musiksammlung"
 
-#: ../templates/main.php:89
+#: ../templates/partials/settingsview.php:4
+msgid "Paths"
+msgstr "Pfade"
+
+#: ../templates/partials/settingsview.php:18
+msgid "Paths to exclude from your music collection"
+msgstr "Von der Musiksammlung auszuschließende Pfade"
+
+#: ../templates/partials/settingsview.php:32
+msgid ""
+"Paths with a leading '/' character are resolved relative to the user home "
+"directory and others relative to the music library base path."
+msgstr ""
+"Pfade mit einem führenden /-Zeichen werden relativ zum Home-Verzeichnis des "
+"Benutzers aufgelöst, andere relativ zum Basispfad der Musikbibliothek."
+
+#: ../templates/partials/controls.php:9
 msgid "Pause"
-msgstr "Anhalten"
+msgstr "Pause"
 
-#: ../templates/main.php:87
+#: ../js/app/directives/listheading.js:23
+#: ../templates/partials/albumsview.php:27
+#: ../templates/partials/alltracksview.php:5
+#: ../templates/partials/controls.php:7
+#: ../templates/partials/playlistview.php:5
+#: ../templates/partials/podcastsview.php:18
+#: ../templates/partials/radioview.php:5
 msgid "Play"
 msgstr "Abspielen"
 
-#: ../templates/main.php:85
+#: ../js/app/controllers/playercontroller.js:367
+msgid "Playlist"
+msgstr "Wiedergabeliste"
+
+#: ../js/app/services/playlistfileservice.js:84
+msgid "Playlist exported to file {{ path }}"
+msgstr "Wiedergabeliste exportiert in Datei {{ path }}"
+
+#: ../js/app/services/playlistfileservice.js:40
+msgid "Playlist or folder not found"
+msgstr "Wiedergabeliste oder Ordner nicht gefunden"
+
+#: ../templates/partials/settingsview.php:186
+msgid ""
+"Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">issue tracker</a>"
+msgstr ""
+"Bitte melden Sie alle Bugs und Probleme im <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">Issue Tracker</a>"
+
+#: ../js/app/services/podcastservice.js:53
+msgid "Podcast channel \"{{ title }}\" added"
+msgstr "Podcast-Kanal \"{{ title }\" hinzugefügt"
+
+#: ../js/app/controllers/playercontroller.js:362
+#: ../templates/partials/navigation.php:19
+msgid "Podcasts"
+msgstr "Podcasts"
+
+#: ../templates/partials/radiohint.php:13
+msgid ""
+"Press the … symbol next to the navigation item \"Internet radio\" and select "
+"\"Import from file\". Find the previously uploaded PLS file and press "
+"\"Choose\". A loading spinner is shown for a while next to the \"Internet "
+"radio\" link. When it disappears, the importing is done and the channels "
+"should become available in the view."
+msgstr ""
+"Drücken Sie das … Symbol neben dem Navigationspunkt \"Internetradio\" und "
+"wählen Sie \"aus Datei importieren\". suchen Sie die zuvor hochgeladene PLS-"
+"Datei und klicken Sie \"wählen\". Neben dem Link \"Internetradio\" wird für "
+"einige Zeit ein Ladekreisel angezeigt. Wenn dieser verschwindet, ist der "
+"Import abgeschlossen und die Kanäle sollten in der Ansicht verfügbar sein."
+
+#: ../templates/partials/controls.php:5
 msgid "Previous"
 msgstr "Zurück"
 
-#: ../templates/main.php:118
+#: ../templates/partials/albumdetails.php:21
+#: ../templates/partials/artistdetails.php:26
+msgid "Problem connecting Last.fm. The API key may be invalid."
+msgstr ""
+"Probleme zu Last.fm zu verbinden. Der API-Schlüssel könnte ungültig sein."
+
+#: ../js/app/controllers/podcastdetailscontroller.js:103
+msgid "RSS URL"
+msgstr "RSS-URL"
+
+#: ../templates/partials/radiostationdetails.php:3
+msgid "Radio station"
+msgstr "Radiostation"
+
+#: ../js/app/services/playlistfileservice.js:112
+msgid "Radio stations exported to file {{ path }}"
+msgstr "Radiostationen exportiert in Datei {{ path }}"
+
+#: ../templates/fake-template.php:18
+msgid "Reload"
+msgstr "Neu laden"
+
+#: ../templates/partials/navigationitem.php:100
+msgid "Reload channels"
+msgstr "Kanäle neu laden"
+
+#: ../templates/partials/playlistview.php:26
+#: ../templates/partials/settingsview.php:40
+msgid "Remove"
+msgstr "Entfernen"
+
+#: ../js/app/services/podcastservice.js:170
+msgid "Remove channel"
+msgstr "Kanal entfernen"
+
+#: ../js/app/controllers/navigationcontroller.js:124
+msgid "Remove playlist"
+msgstr "Wiedergabeliste entfernen"
+
+#: ../js/app/controllers/radioviewcontroller.js:39
+msgid "Remove radio station"
+msgstr "Radiostation entfernen"
+
+#: ../templates/partials/playlistview.php:26
+msgid "Remove track from playlist"
+msgstr "Titel aus Wiedergabeliste entfernen"
+
+#: ../templates/partials/navigationitem.php:39
+msgid "Rename"
+msgstr "Umbenennen"
+
+#: ../js/app/controllers/playercontroller.js:389
+#: ../templates/partials/controls.php:40
 msgid "Repeat"
 msgstr "Wiederholen"
 
-#: ../templates/fake-template.php:16
+#: ../js/app/controllers/albumsviewcontroller.js:294
+#: ../js/app/controllers/playlistviewcontroller.js:196
+msgid "Requested entry was not found"
+msgstr "Angeforderter Eintrag wurde nicht gefunden"
+
+#: ../templates/partials/settingsview.php:51
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: ../js/app/controllers/settingsviewcontroller.js:174
+#: ../templates/partials/settingsview.php:64
+msgid "Reset internet radio stations"
+msgstr "Internetradiostationen zurücksetzen"
+
+#: ../js/app/controllers/settingsviewcontroller.js:131
+#: ../templates/partials/settingsview.php:54
+msgid "Reset music collection"
+msgstr "Musiksammlung zurücksetzen"
+
+#: ../js/app/controllers/settingsviewcontroller.js:204
+#: ../templates/partials/settingsview.php:73
+msgid "Reset podcast channels"
+msgstr "Podcast-Kanäle zurücksetzen"
+
+#: ../templates/partials/settingsview.php:110
 msgid "Revoke API password"
 msgstr "API-Passwort verwerfen"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:59
 msgid "Scanning music …"
-msgstr "Untersuche Musik ..."
+msgstr "Untersuche Musik…"
 
-#: ../templates/main.php:116
+#: ../js/app/controllers/searchcontroller.js:131
+msgid "Search not available in this view"
+msgstr "Suche in dieser Ansicht nicht verfügbar"
+
+#: ../js/app/controllers/albumdetailscontroller.js:63
+msgid "See the album on Last.fm"
+msgstr "Album auf Last.fm ansehen"
+
+#: ../js/app/controllers/trackdetailscontroller.js:87
+msgid "See the track on Last.fm"
+msgstr "Titel auf Last.fm ansehen"
+
+#: ../templates/partials/settingsview.php:39
+msgid "Select folder"
+msgstr "Ordner auswählen"
+
+#: ../templates/partials/radiohint.php:4
+msgid "Setting up radio stations"
+msgstr "Radiostationen einrichten"
+
+#: ../templates/partials/navigation.php:48
+#: ../templates/partials/settingsview.php:2
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: ../js/app/controllers/podcastsviewcontroller.js:113
+msgid "Show all {{ count }} episodes …"
+msgstr "Alle {{ count }} Episoden anzeigen…"
+
+#: ../js/app/directives/tracklist.js:38
+msgid "Show all {{ count }} songs …"
+msgstr "Alle {{ count }} Titel anzeigen…"
+
+#: ../templates/partials/artistdetails.php:38
+msgid "Show all…"
+msgstr "Alle anzeigen…"
+
+#: ../templates/partials/settingsview.php:86
+msgid ""
+"Show desktop notification when the playing song changes. You also need to "
+"have the desktop notifications allowed in your browser for this site."
+msgstr ""
+"Desktop-Benachrichtigungen anzeigen, wenn sich der abgespielte Titel ändert. "
+"Sie müssen auch die Desktop-Benachrichtigungen in Ihrem Browser für diese "
+"Website zugelassen haben."
+
+#: ../templates/partials/trackdetails.php:4
+msgid "Show in Files"
+msgstr "In Dateien anzeigen"
+
+#: ../js/app/directives/tracklist.js:35
+msgid "Show less …"
+msgstr "Weniger anzeigen…"
+
+#: ../templates/partials/settingsview.php:23
+msgid "Show more…"
+msgstr "Mehr anzeigen…"
+
+#: ../templates/partials/settingsview.php:134
+msgid "Show..."
+msgstr "Anzeigen…"
+
+#: ../js/app/controllers/playercontroller.js:383
+#: ../templates/partials/controls.php:38
 msgid "Shuffle"
 msgstr "Zufallswiedergabe"
 
-#: ../js/public/app.js:629
+#: ../templates/partials/artistdetails.php:32
+msgid "Similar to"
+msgstr "Ähnlich wie"
+
+#: ../js/app/controllers/playercontroller.js:258
 msgid "Some not playable tracks were skipped."
 msgstr "Einige nicht abspielbare Titel wurden übersprungen."
 
-#: ../templates/fake-template.php:11
+#: ../templates/main.php:68
+msgid "Some search results are omitted"
+msgstr "Einige Suchresultate wurden ausgelassen"
+
+#: ../templates/partials/genresview.php:34
+msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr ""
+"Einige Titel in der Musiksammlung müssen neu eingelesen werden, um das Genre "
+"anzuzeigen"
+
+#: ../templates/partials/settingsview.php:83
+msgid "Song change notifications"
+msgstr "Benachrichtigung über Songwechsel"
+
+#: ../templates/partials/navigationitem.php:48
+msgid "Sort …"
+msgstr "Sortieren…"
+
+#: ../templates/partials/settingsview.php:22
+msgid ""
+"Specify folders within your music collection path which shall be excluded "
+"from the scanning."
+msgstr ""
+"Geben Sie Order innerhalb Ihrer Musiksammlung an, die vom Scannen "
+"ausgenommen werden sollen."
+
+#: ../templates/partials/radiostationdetails.php:13
+msgid "Stream URL"
+msgstr "Stream-URL"
+
+#: ../templates/partials/albumdetails.php:25
+#: ../templates/partials/artistdetails.php:30
+#: ../templates/partials/trackdetails.php:50
+msgid "Tags"
+msgstr "Tags"
+
+#: ../templates/partials/trackdetails.php:14
+msgid "Technical"
+msgstr "Technisch"
+
+#: ../js/app/controllers/settingsviewcontroller.js:285
+msgid "Text copied to clipboard"
+msgstr "Text auf die Zwischenablage kopiert"
+
+#: ../templates/partials/radiohint.php:15
+msgid ""
+"The PLS file is no longer needed after the import and you may delete it at "
+"will. You might want to keep it, though, because it is also possible to play "
+"the radio stations directly within the Files app by opening the PLS file."
+msgstr ""
+"Die PLS-Datei wird nach dem Import nicht mehr benötigt und Sie können sie "
+"nach Belieben löschen. Sie können sie jedoch aufbewahren, denn es ist auch "
+"möglich, die Radiosender direkt in der Dateien-App abzuspielen, indem Sie "
+"die PLS-Datei öffnen."
+
+#: ../js/app/services/podcastservice.js:98
+msgid "The channel was already up-to-date"
+msgstr "Der Kanal war bereits aktuell"
+
+#: ../js/app/services/podcastservice.js:95
+msgid "The channel was updated from the source"
+msgstr "Der Kanal wurde aktualisiert"
+
+#: ../js/app/services/playlistfileservice.js:17
+msgid ""
+"The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
+"overwrite it. Select \"No\" to export the list with another name. Close the "
+"dialog to cancel."
+msgstr ""
+"Eine Datei mit dem Namen \"{{ filename }}\" existiert bereits im gewählten "
+"Ordner. Wählen Sie \"Ja\", um diese zu überschreiben. Wählen Sie \"Nein\", "
+"um die Liste unter einem anderen Namen zu exportieren. Schließen Sie das "
+"Dialogfeld, um den Vorgang abzubrechen."
+
+#: ../templates/partials/settingsview.php:172
+msgid ""
+"The interval for automatic podcast update checks in hours. Decimal value can "
+"be used for sub-hour resolution. Negative value will disable automatic "
+"updating. The default value is 24 hours."
+msgstr ""
+"Intervall für automatische Podcast-Aktualisierungsprüfungen in Stunden. "
+"Dezimalwerte können für eine Auflösung unter einer Stunde verwendet werden. "
+"Negative Werte deaktivieren die automatische Aktualisierung."
+
+#: ../js/app/services/playlistfileservice.js:168
+msgid ""
+"The playlist already contains some tracks. Imported tracks will be appended "
+"after the existing contents. Proceed?"
+msgstr ""
+"Die Wiedergabeliste enthält bereits einige Titel. Importierte Titel werden "
+"an den vorhandenen Inhalt angehängt. Fortfahren?"
+
+#: ../templates/partials/radiohint.php:27
+msgid ""
+"The stream is genuinely broken or in such a format that either the Music app "
+"or your browser can't handle it. Majority of the radio stations found from "
+"Community Radio Browser should work on the Music app when a mainstream "
+"browser is being used, but still, there are numerous stations which will not "
+"work."
+msgstr ""
+"Der Stream ist wirklich kaputt oder hat ein Format, das weder die Musik-App "
+"noch Ihr Browser verarbeiten können. Die Mehrheit der Radiosender, die über "
+"den Community Radio Browser gefunden werden, sollten in der Musik-App "
+"funktionieren, wenn ein gängiger Browser verwendet wird, aber dennoch gibt "
+"es zahlreiche Sender, die nicht funktionieren."
+
+#: ../templates/partials/radiohint.php:23
+msgid ""
+"The stream is of HLS type, indicated by a URL ending with '.m3u' or '.m3u8'. "
+"For such streams, the source host must be specifically allowed by the cloud "
+"adminstator. See the 'Admin' section within the Music app Settings view for "
+"details."
+msgstr ""
+"Der Stream ist vom Typ HLS, was durch eine URL mit der Endung '.m3u' oder '."
+"m3u8' angezeigt wird. Für solche Streams muss der Quellhost vom Cloud-"
+"Administrator ausdrücklich zugelassen werden. Einzelheiten finden Sie im "
+"Abschnitt \"Admin\" in den Einstellungen der Musik-App."
+
+#: ../templates/partials/radiohint.php:20
+msgid ""
+"There are a couple of typical reasons why a configured radio station might "
+"not play on your browser:"
+msgstr ""
+"Es gibt eine Reihe von häufig auftretenden Gründen, weshalb eine "
+"eingerichtete Radiostation in Ihrem Browser nicht abgespielt werden kann:"
+
+#: ../templates/partials/settingsview.php:136
+msgid ""
+"There is no settings UI for the server-wide settings of the Music app but "
+"some settings are available by adding specific key-value pairs to the file "
+"<samp>{{filename}}</samp>. The available keys are described below."
+msgstr ""
+"Es gibt keine Einstellungsoberfläche für die serverweiten Einstellungen der "
+"Musik-App, aber einige Einstellungen sind durch Hinzufügen bestimmter "
+"Schlüssel-Wert-Paare zur Datei <samp>{{filename}}</samp> verfügbar. Die "
+"verfügbaren Schlüssel werden im Folgenden beschrieben."
+
+#: ../templates/partials/settingsview.php:78
+msgid "This action erases all the channels shown in the \"Podcasts\" view."
+msgstr ""
+"Mit dieser Aktion werden alle Kanäle in der \"Podcasts\"-Ansicht entfernt."
+
+#: ../templates/partials/settingsview.php:69
+msgid ""
+"This action erases all the stations shown in the \"Internet radio\" view."
+msgstr ""
+"Mit dieser Aktion werden alle Stationen in der \"Internetradio\"-Ansicht "
+"entfernt."
+
+#: ../templates/partials/settingsview.php:59
+msgid ""
+"This action resets all the scanned tracks and all the user-created "
+"playlists. After this, the collection can be scanned again from scratch."
+msgstr ""
+"Mit dieser Aktion werden alle gescannten Titel und erstellten "
+"Wiedergabelisten entfernt. Danach kann die Musiksammlung vollständig neu "
+"eingelesen werden."
+
+#: ../js/app/services/podcastservice.js:64
+msgid "This channel is already subscribed"
+msgstr "Dieser Kanal ist bereits abonniert"
+
+#: ../templates/partials/settingsview.php:60
+msgid ""
+"This may be desirable after changing the excluded paths, or if the database "
+"would somehow get corrupted. If the latter happens, please report a bug to "
+"the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
+msgstr ""
+"Dies kann wünschenswert sein, nachdem die ausgeschlossenen Pfade geändert "
+"wurden, oder wenn die Datenbank in irgendeiner Weise beschädigt wurde. "
+"Sollte letzteres der Fall sein, melden Sie bitte einen Fehler im <a href="
+"\"{{issueTrackerUrl}}\" target=\"_blank\">Issue Tracker</a>."
+
+#: ../templates/partials/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "Diese Einstellung spezifiziert den zu durchsuchenden Musikordner."
 
-#: ../templates/fake-template.php:8
+#: ../js/app/controllers/maincontroller.js:164
+msgid "Timeout"
+msgstr "Zeitüberschreitung"
+
+#: ../templates/partials/settingsview.php:141
+msgid ""
+"To see the artist biography and other information from Last.fm in the "
+"details view, you need to create an API account with Last.fm. For this, use "
+"the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only "
+"'Contact email' and 'Application name' need to be filled in the form. You "
+"are then provided with an API key which should be used as a value for this "
+"key. For more details, see the <a href=\"{{guideUrl}}\" target=\"_blank"
+"\">tutorial</a>."
+msgstr ""
+"Um die Künstlerbiografie und andere Informationen von Last.fm in der "
+"Detailansicht zu sehen, müssen Sie ein API-Konto bei Last.fm erstellen. "
+"Verwenden Sie dazu das a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm-"
+"Formular</a>. In dem Formular müssen nur \"Kontakt-E-Mail\" und "
+"\"Anwendungsname\" ausgefüllt werden. Sie erhalten dann einen API-Schlüssel, "
+"der als Wert für diesen Schlüssel verwendet werden sollte. Weitere "
+"Einzelheiten finden Sie in der <a href=\"{{guideUrl}}\" target=\"_blank"
+"\">Anleitung</a>."
+
+#: ../templates/partials/albumdetails.php:12
+#: ../templates/partials/playlistdetails.php:9
+msgid "Total length"
+msgstr "Gesamtlänge"
+
+#: ../js/app/controllers/playercontroller.js:396
+msgid "Track"
+msgstr "Titel"
+
+#: ../templates/fake-template.php:10
 msgid "Tracks"
 msgstr "Titel"
 
-#: ../templates/fake-template.php:4
+#: ../templates/partials/radiohint.php:18
+msgid "Troubleshooting"
+msgstr "Fehlersuche"
+
+#: ../templates/main.php:69
+msgid "Try to refine the search"
+msgstr "Versuchen Sie, die Suche zu verfeinern"
+
+#: ../js/app/services/podcastservice.js:83
+msgid "URL"
+msgstr "URL"
+
+#: ../js/app/services/playlistfileservice.js:48
+msgid "Unexpected error"
+msgstr "Unerwarteter Fehler"
+
+#: ../js/app/services/podcastservice.js:32
+msgid "Unexpected error when updating the channel \"{{ title }}\""
+msgstr "Unerwarteter Fehler beim Aktualisieren des Kanals \"{{ title }}\""
+
+#: ../templates/fake-template.php:6
 msgid "Unknown album"
 msgstr "Unbekanntes Album"
 
-#: ../templates/fake-template.php:5
+#: ../templates/fake-template.php:7
 msgid "Unknown artist"
 msgstr "Unbekannter Künstler"
 
-#: ../templates/main.php:135
+#: ../templates/partials/settingsview.php:87
+msgid ""
+"Unlike the other settings, this switch is stored per browser and not per "
+"user account."
+msgstr ""
+"Im Gegensatz zu anderen Einstellungen wird diese Auswahl per Browser "
+"gespeichert und nicht per Benutzeraccount."
+
+#: ../js/app/controllers/artistdetailscontroller.js:61
+msgid ""
+"Upload image named \"{{name}}\" to anywhere within your library path to see "
+"it here."
+msgstr ""
+"Laden Sie das Bild mit dem Namen \"{{ name }}\" an einen beliebigen Ort in "
+"der Musiksammlung, um es hier zu sehen."
+
+#: ../templates/main.php:44
 msgid "Upload music in the files app to listen to it here"
-msgstr "Laden Sie Musik in der Dateien-App hoch, um diese hier anzuhören."
+msgstr "Laden Sie Musik in der Dateien-App hoch, um sie hier anzuhören"
 
-#: ../templates/fake-template.php:12
+#: ../templates/partials/radiohint.php:11
 msgid ""
-"Use this address to browse your music collection from any Ampache compatible"
-" player."
-msgstr "Nutzen Sie diese Adresse zum Durchsuchen Ihrer Musiksammlung auf einem beliebigen Ampache-kompatiblen Abspieler."
+"Upload the previously obtained PLS file to your cloud using the Files app."
+msgstr ""
+"Laden Sie die zuvor erhaltene PLS-Datei mithilfe der Dateien-App in die "
+"Cloud hoch."
 
-#: ../templates/fake-template.php:17
+#: ../templates/partials/radiohint.php:7
 msgid ""
-"Use your username and following password to connect to this Ampache "
-"instance:"
-msgstr "Benutzen Sie Ihren Benutzernamen und folgendes Passwort, um sich mit dieser Ampache-Instanz zu verbinden:"
+"Use the Community Radio Browser <a href=\"{{url}}\" target=\"_blank"
+"\">search</a> to find the radio stations of interest. Instead of using the "
+"search, you may also browse the channels in Community Radio Browser by "
+"category or popularity."
+msgstr ""
+"Verwenden Sie die <a href=\"{{url}}\" target=\"_blank\">Suche</a> des "
+"Community-Radio-Browsers, um die Radiosender zu finden, die Sie "
+"interessieren. Anstatt die Suche zu verwenden, können Sie auch die Kanäle im "
+"Community-Radio-Browser auch nach Kategorie oder Beliebtheit durchsuchen."
 
-#: ../templates/main.php:121 ../templates/main.php:123
+#: ../templates/partials/settingsview.php:123
+msgid ""
+"Use the following credentials to connect to this Ampache/Subsonic instance."
+msgstr ""
+"Nutzen Sie die folgenden Anmeldeinformationen, um sich mit dieser Ampache/"
+"Subsonic-Instanz zu verbinden."
+
+#: ../templates/partials/settingsview.php:102
+msgid ""
+"Use this address to browse your music collection from a Subsonic compatible "
+"player."
+msgstr ""
+"Nutzen Sie diese Adresse zum Durchsuchen Ihrer Musiksammlung auf einem "
+"Subsonic-kompatiblen Abspieler."
+
+#: ../templates/partials/settingsview.php:97
+msgid ""
+"Use this address to browse your music collection from an Ampache compatible "
+"player."
+msgstr ""
+"Nutzen Sie diese Adresse zum Durchsuchen Ihrer Musiksammlung auf einem "
+"Ampache-kompatiblen Abspieler."
+
+#: ../templates/partials/settingsview.php:81
+msgid "User interface"
+msgstr "Benutzeroberfläche"
+
+#: ../templates/partials/settingsview.php:125
+msgid "Username:"
+msgstr "Benutzername:"
+
+#: ../templates/partials/controls.php:43 ../templates/partials/controls.php:44
+#: ../templates/partials/controls.php:46
 msgid "Volume"
 msgstr "Lautstärke"
 
-#: ../templates/main.php:57 ../templates/main.php:77
-msgid "tracks"
+#: ../js/app/services/playlistfileservice.js:44
+msgid "Writing to the file is not allowed"
+msgstr "Das Schreiben der Datei ist nicht erlaubt"
+
+#: ../templates/partials/settingsview.php:90
+msgid ""
+"You can browse and play your music collection from external applications "
+"which support either Ampache or Subsonic API."
+msgstr ""
+"Sie können Ihre Musiksammlung mit externen Apps durchsuchen und abspielen, "
+"die entweder die Ampache- oder die Subsonic-API unterstützen."
+
+#: ../templates/partials/settingsview.php:26
+msgid "You can use the wild cards '?', '*', and '**':"
+msgstr "Es können die Platzhalter '?', '*', und '**' verwendet werden:"
+
+#: ../templates/partials/radiohint.php:25
+msgid ""
+"Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
+"scheme. By default, your browser might block such accees. To overcome this, "
+"you may be able to set your browser to allow \"Insecure content\" on this "
+"page. On the desktop browsers, such settings can usually be found by "
+"clicking the icon right next to the address bar on its left side."
+msgstr ""
+"Ihre Cloud verwendet eine HTTPS-Verbindung, die Stream-URL jedoch HTTP. "
+"Standardmäßig kann Ihr Browser diesen Zugriff blockieren. Um dies zu "
+"umgehen, können Sie Ihren Browser so einstellen, dass er \"unsichere Inhalte"
+"\" auf dieser Seite zulässt. Bei Desktop-Browsern finden Sie diese "
+"Einstellungen in der Regel, indem Sie auf das Symbol direkt links neben der "
+"Adressleiste klicken."
+
+#: ../js/app/controllers/podcastdetailscontroller.js:106
+msgid "author"
+msgstr "Autor"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:118
+msgid "bit rate"
+msgstr "Bitrate"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:109
+msgid "build date"
+msgstr "Erstellungsdatum"
+
+#: ../templates/partials/navigationitem.php:58
+msgid "by album"
+msgstr "nach Album"
+
+#: ../templates/partials/navigationitem.php:55
+msgid "by artist"
+msgstr "nach Künstler"
+
+#: ../templates/partials/navigationitem.php:52
+msgid "by title"
+msgstr "nach Titel"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:107
+msgid "category"
+msgstr "Kategorie"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:113
+msgid "channel"
+msgstr "Kanal"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:105
+msgid "copyright"
+msgstr "Copyright"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:101
+msgid "description"
+msgstr "Beschreibung"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:116
+msgid "duration"
+msgstr "Dauer"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:111
+msgid "episode"
+msgstr "Episode"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:120
+msgid "keywords"
+msgstr "Schlüsselworte"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:104
+msgid "language"
+msgstr "Sprache"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:108
+msgid "published"
+msgstr "veröffentlicht"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:112
+msgid "season"
+msgstr "Staffel"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:117
+msgid "size"
+msgstr "Größe"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:114
+msgid "stream URL"
+msgstr "Stream-URL"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:100
+msgid "title"
 msgstr "Titel"
 
-#: ../templates/main.php:152
+#: ../js/app/controllers/podcastdetailscontroller.js:110
+msgid "updates checked"
+msgstr "Aktualisierungen geprüft"
+
+#: ../templates/partials/settingsview.php:184
+msgid "version history"
+msgstr "Versionsgeschichte"
+
+#: ../js/app/controllers/podcastdetailscontroller.js:102
+msgid "website"
+msgstr "Website"
+
+#: ../js/app/services/playlistfileservice.js:197
+msgid "{{ count }} entries were skipped."
+msgstr "{{ count }} Einträge wurden übersprungen."
+
+#: ../js/app/services/playlistfileservice.js:143
+msgid "{{ count }} files were skipped."
+msgstr "{{ count }} Dateien wurden übersprungen."
+
+#: ../templates/main.php:60
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"
 msgstr "{{ scanningScanned }} von {{ scanningTotal }}"
+
+#~ msgid "Invalid path"
+#~ msgstr "Ungültiger Pfad"
+
+#~ msgid ""
+#~ "Keep in mind, that the Ampache API is just a preview and is unstable. "
+#~ "Feel free to report your experience with this feature in the "
+#~ "corresponding <a href=\"https://github.com/owncloud/music/"
+#~ "issues/60\">issue</a>. I would also like to have a list of clients to "
+#~ "test with. Thanks"
+#~ msgstr ""
+#~ "Bitte bedenken Sie, dass die Ampache-API derzeit eine Vorschau und "
+#~ "instabil ist. Sie können gerne Ihre Erfahrungen mit dieser Funktion im "
+#~ "entsprechenden <a href=\"https://github.com/owncloud/music/"
+#~ "issues/60\">Fehlerbericht</a> melden. Ich würde ebenfalls eine Liste von "
+#~ "Anwendung zu Testzwecken sammeln. Dankeschön"

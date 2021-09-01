@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-09-01 21:04+0200\n"
+"PO-Revision-Date: 2021-09-01 21:53+0200\n"
 "Last-Translator: Simon Spannagel <simonspa@kth.se>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/de_DE/)\n"
@@ -41,38 +41,38 @@ msgstr "(kein Künstlerbild verfügbar)"
 #: ../js/app/controllers/maincontroller.js:54
 msgid "1 album"
 msgid_plural "{{ count }} albums"
-msgstr[0] "Album"
-msgstr[1] "Alben"
+msgstr[0] "1 Album"
+msgstr[1] "{{ count }} Alben"
 
 #: ../js/app/controllers/maincontroller.js:87
 msgid "1 channel"
 msgid_plural "{{ count }} channels"
-msgstr[0] "Kanal"
-msgstr[1] "Kanäle"
+msgstr[0] "1 Kanal"
+msgstr[1] "{{ count }} Kanäle"
 
 #: ../js/app/controllers/maincontroller.js:60
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
-msgstr[0] "Ordner"
-msgstr[1] "Ordner"
+msgstr[0] "1 Ordner"
+msgstr[1] "{{ count }} Ordner"
 
 #: ../js/app/controllers/maincontroller.js:69
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
-msgstr[0] "Genre"
-msgstr[1] "Genre"
+msgstr[0] "1 Genre"
+msgstr[1] "{{ count }} Genre"
 
 #: ../js/app/controllers/maincontroller.js:78
 msgid "1 station"
 msgid_plural "{{ count }} stations"
-msgstr[0] "Station"
-msgstr[1] "Stationen"
+msgstr[0] "1 Station"
+msgstr[1] "{{ count }} Stationen"
 
 #: ../js/app/controllers/maincontroller.js:49
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
-msgstr[0] "Titel"
-msgstr[1] "Titel"
+msgstr[0] "1 Titel"
+msgstr[1] "{{ count }} Titel"
 
 #: ../templates/partials/settingsview.php:30
 msgid ""

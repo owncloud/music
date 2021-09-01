@@ -8,6 +8,8 @@
   [#888](https://github.com/owncloud/music/pull/888) @icewind1991
 - Subsonic: Argument `musicFolderId` on `getIndexes` not being optional, breaking compatibility with Soundwaves Player
   [#885](https://github.com/owncloud/music/issues/885)
+- Non-latin characters showing as question marks (?) on track/album/artist names of WAV files having both RIFF and ID3v2 tags (fixed by updating getID3 to v1.9.20-202109010614)
+  [#882](https://github.com/owncloud/music/issues/882)
 
 ## 1.3.1 - 2021-08-28
 A mistake made when creating the release package 1.3.0 broke the application pretty badly. This version is a new attempt with the same content.

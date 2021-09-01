@@ -167,6 +167,7 @@ class DetailsHelper {
 	 */
 	private static function sanitizeString(&$item) : void {
 		if (\is_string($item)) {
+			\mb_substitute_character(0xFFFD); // Use the Unicode REPLACEMENT CHARACTER (U+FFFD)
 			$item = \mb_convert_encoding($item, 'UTF-8', 'UTF-8');
 			// The tags could contain line breaks in formats LF, CRLF, or CR, but we want the output
 			// to always use the LF style. Note that the order of the next two lines is important!

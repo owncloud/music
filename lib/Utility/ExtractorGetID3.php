@@ -71,6 +71,7 @@ class ExtractorGetID3 implements Extractor {
 			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
 			$metadata = [];
 		} else {
+			\mb_substitute_character(0x3F);
 			$metadata = $this->getID3->analyze($file->getPath(), $file->getSize(), '', $fp);
 
 			$this->getID3->CopyTagsToComments($metadata);

@@ -10,6 +10,9 @@
   [#885](https://github.com/owncloud/music/issues/885)
 - Non-latin characters showing as question marks (?) on track/album/artist names of WAV files having both RIFF and ID3v2 tags (fixed by updating getID3 to v1.9.20-202109010614)
   [#882](https://github.com/owncloud/music/issues/882)
+- Application update on Nextcloud not working over Music app versions older than v1.0.0 (introduced in v1.2.1)
+  [#889](https://github.com/owncloud/music/issues/889)
+  [#883](https://github.com/owncloud/music/issues/883)
 
 ## 1.3.1 - 2021-08-28
 A mistake made when creating the release package 1.3.0 broke the application pretty badly. This version is a new attempt with the same content.

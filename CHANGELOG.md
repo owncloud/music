@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.3.2 - 2021-09-05
 ### Added
 - Comprehensive German translation for the main app
   [#890](https://github.com/owncloud/music/pull/890) @simonspa

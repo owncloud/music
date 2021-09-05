@@ -20,11 +20,11 @@
 	<author>Jan-Christoph Borchardt (original design)</author>
 	<version>1.3.1</version>
 	<category>multimedia</category>
-	<screenshot>https://user-images.githubusercontent.com/8565946/107080070-6b523780-67f9-11eb-8adc-314059b04c1d.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/107083303-17961d00-67fe-11eb-8b1c-5ad94b08a7bb.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/118117379-39520200-b3f4-11eb-81de-6ec7aee5903a.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43827491-9ae81a8a-9b02-11e8-8b8a-3e8dce76107a.png</screenshot>
-	<screenshot>https://user-images.githubusercontent.com/8565946/43827500-9f45beb6-9b02-11e8-8884-39ed2f0daa54.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/132128608-34dc576b-07b7-424c-ae81-a63b9128f3d7.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/132128615-554d117c-786f-4847-b110-cd4018b65186.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/132128618-3ddf733c-87ea-4900-8913-d4ccd24bf798.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/132128624-bc7697d0-1295-49d4-bc9d-28d8b4ecf14e.png</screenshot>
+	<screenshot>https://user-images.githubusercontent.com/8565946/132128626-712bf745-691e-4f03-83d7-20cbc4dd37d1.png</screenshot>
 	<website>https://github.com/owncloud/music</website>
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>

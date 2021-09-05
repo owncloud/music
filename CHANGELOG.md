@@ -3,6 +3,9 @@
 - Comprehensive German translation for the main app
   [#890](https://github.com/owncloud/music/pull/890) @simonspa
 
+### Changed
+- The second level parent folder name of a track is used as fallback for the artist name, in case the name cannot be extracted from the file tags
+
 ### Fixed
 - Not being able to subscribe podcasts from some providers
   [#888](https://github.com/owncloud/music/pull/888) @icewind1991

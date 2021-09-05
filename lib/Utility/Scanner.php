@@ -163,7 +163,7 @@ class Scanner extends PublicEmitter {
 
 		// invalidate the cache as the music collection was changed
 		$this->cache->remove($userId, 'collection');
-	
+
 		// debug logging
 		$this->logger->log('imported entities - ' .
 				"artist: $artistId, albumArtist: $albumArtistId, album: $albumId, track: {$track->getId()}",
@@ -188,10 +188,18 @@ class Scanner extends PublicEmitter {
 			$meta['artist'] = $meta['albumArtist'];
 		}
 
-		// set 'Unknown Artist' in case neither artist nor albumArtist was found
 		if (!Util::isNonEmptyString($meta['artist'])) {
-			$meta['artist'] = null;
-			$meta['albumArtist'] = null;
+			// neither artist nor albumArtist set in fileinfo, use the second level parent folder name
+			// unless it is the user root folder
+			$dirPath = \dirname(\dirname($filePath));
+			if (Util::startsWith($userHome->getPath(), $dirPath)) {
+				$artistName = null;
+			} else {
+				$artistName = \basename($dirPath);
+			}
+
+			$meta['artist'] = $artistName;
+			$meta['albumArtist'] = $artistName;
 		}
 
 		// title

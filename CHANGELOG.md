@@ -13,6 +13,8 @@
 - Application update on Nextcloud not working over Music app versions older than v1.0.0 (introduced in v1.2.1)
   [#889](https://github.com/owncloud/music/issues/889)
   [#883](https://github.com/owncloud/music/issues/883)
+- Ampache: Action `stream` not supporting the type `podcast` or `podcast_episode`
+  [#891](https://github.com/owncloud/music/issues/891)
 
 ## 1.3.1 - 2021-08-28
 A mistake made when creating the release package 1.3.0 broke the application pretty badly. This version is a new attempt with the same content.

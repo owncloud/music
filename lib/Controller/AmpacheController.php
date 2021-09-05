@@ -830,7 +830,7 @@ class AmpacheController extends Controller {
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND);
 			}
-		} elseif ($type === 'podcast') {
+		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
 			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
 			return new RedirectResponse($episode->getStreamUrl());
 		} else {
@@ -841,7 +841,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function stream(int $id, ?int $offset) {
+	protected function stream(int $id, ?int $offset, string $type='song') {
 		// request params `bitrate`, `format`, and `length` are ignored
 
 		// This is just a dummy implementation. We don't support transcoding or streaming
@@ -855,7 +855,7 @@ class AmpacheController extends Controller {
 			throw new AmpacheException('Streaming with time offset is not supported', 400);
 		}
 
-		return $this->download($id);
+		return $this->download($id, $type);
 	}
 
 	/**

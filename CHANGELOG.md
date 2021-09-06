@@ -1,3 +1,8 @@
+## 1.3.3 - 2021-09-06
+### Fixed
+- Update from v1.3.1 not working properly on Nextcloud
+  [#892](https://github.com/owncloud/music/issues/892)
+
 ## 1.3.2 - 2021-09-05
 ### Added
 - Comprehensive German translation for the main app

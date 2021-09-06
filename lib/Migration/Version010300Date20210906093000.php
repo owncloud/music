@@ -10,9 +10,9 @@ use OCP\Migration\SimpleMigrationStep;
 use OCP\Migration\IOutput;
 
 /**
- * Migrate the DB schema to Music v1.0.0 level from any previous version starting from v0.4.0
+ * Migrate the DB schema to Music v1.3.0 level from any previous version starting from v0.4.0
  */
-class Version010000Date20210903000000 extends SimpleMigrationStep {
+class Version010300Date20210906093000 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -42,6 +42,8 @@ class Version010000Date20210903000000 extends SimpleMigrationStep {
 		$this->migrateAmpacheUsers($schema);
 		$this->migrateMusicCache($schema);
 		$this->migrateMusicBookmarks($schema);
+		$this->migratePodcastChannels($schema);
+		$this->migratePodcastEpisodes($schema);
 
 		return $schema;
 	}
@@ -215,7 +217,8 @@ class Version010000Date20210903000000 extends SimpleMigrationStep {
 		$this->setColumns($table, [
 			[ 'id',			'integer',		['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
 			[ 'user_id',	'string',		['notnull' => true, 'length' => 64] ],
-			[ 'track_id',	'integer',		['notnull' => true] ],
+			[ 'type',		'integer',		['notnull' => true] ],
+			[ 'entry_id',	'integer',		['notnull' => true] ],
 			[ 'position',	'integer',		['notnull' => true] ],
 			[ 'comment',	'string',		['notnull' => false, 'length' => 256] ],
 			[ 'created',	'datetime',		['notnull' => false] ],
@@ -223,7 +226,68 @@ class Version010000Date20210903000000 extends SimpleMigrationStep {
 		]);
 
 		$this->setPrimaryKey($table, ['id']);
-		$this->setUniqueIndex($table, 'music_bookmarks_user_track', ['user_id', 'track_id']);
+		$this->setUniqueIndex($table, 'music_bookmarks_index', ['user_id', 'type', 'entry_id']);
+
+		$this->dropObsoleteIndex($table, 'music_bookmarks_user_track');
+		$this->dropObsoleteColumn($table, 'track_id');
+	}
+
+	private function migratePodcastChannels(ISchemaWrapper $schema) {
+		$table = $this->getOrCreateTable($schema, 'music_podcast_channels');
+		$this->setColumns($table, [
+			[ 'id',					'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
+			[ 'user_id',			'string',	['notnull' => true, 'length' => 64] ],
+			[ 'rss_url',			'string',	['notnull' => true, 'length' => 2048] ],
+			[ 'rss_hash',			'string',	['notnull' => true, 'length' => 64] ],
+			[ 'content_hash',		'string',	['notnull' => true, 'length' => 64] ],
+			[ 'update_checked',		'datetime',	['notnull' => true] ],
+			[ 'published',			'datetime',	['notnull' => false] ],
+			[ 'last_build_date',	'datetime',	['notnull' => false] ],
+			[ 'title',				'string',	['notnull' => false, 'length' => 256] ],
+			[ 'link_url',			'string',	['notnull' => false, 'length' => 2048] ],
+			[ 'language',			'string',	['notnull' => false, 'length' => 32] ],
+			[ 'copyright',			'string',	['notnull' => false, 'length' => 256] ],
+			[ 'author',				'string',	['notnull' => false, 'length' => 256] ],
+			[ 'description',		'text',		['notnull' => false] ],
+			[ 'image_url',			'string',	['notnull' => false, 'length' => 2048] ],
+			[ 'category',			'string',	['notnull' => false, 'length' => 256] ],
+			[ 'starred',			'datetime',	['notnull' => false] ],
+			[ 'created',			'datetime',	['notnull' => false] ],
+			[ 'updated',			'datetime',	['notnull' => false] ]
+		]);
+
+		$this->setPrimaryKey($table, ['id']);
+		$this->setUniqueIndex($table, 'music_podcast_channels_index', ['rss_hash', 'user_id']);
+	}
+
+	private function migratePodcastEpisodes(ISchemaWrapper $schema) {
+		$table = $this->getOrCreateTable($schema, 'music_podcast_episodes');
+		$this->setColumns($table, [
+			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true] ],
+			[ 'user_id',		'string',	['notnull' => true, 'length' => 64] ],
+			[ 'channel_id',		'integer',	['notnull' => true, 'unsigned' => true] ],
+			[ 'stream_url',		'string',	['notnull' => false, 'length' => 2048] ],
+			[ 'mimetype',		'string',	['notnull' => false, 'length' => 256] ],
+			[ 'size',			'integer',	['notnull' => false] ],
+			[ 'duration',		'integer',	['notnull' => false] ],
+			[ 'guid',			'string',	['notnull' => true, 'length' => 2048] ],
+			[ 'guid_hash',		'string',	['notnull' => true, 'length' => 64] ],
+			[ 'title',			'string',	['notnull' => false, 'length' => 256] ],
+			[ 'episode',		'integer',	['notnull' => false] ],
+			[ 'season',			'integer',	['notnull' => false] ],
+			[ 'link_url',		'string',	['notnull' => false, 'length' => 2048] ],
+			[ 'published',		'datetime',	['notnull' => false] ],
+			[ 'keywords',		'string',	['notnull' => false, 'length' => 256] ],
+			[ 'copyright',		'string',	['notnull' => false, 'length' => 256] ],
+			[ 'author',			'string',	['notnull' => false, 'length' => 256] ],
+			[ 'description',	'text',		['notnull' => false] ],
+			[ 'starred',		'datetime',	['notnull' => false] ],
+			[ 'created',		'datetime',	['notnull' => false] ],
+			[ 'updated',		'datetime',	['notnull' => false] ]
+		]);
+
+		$this->setPrimaryKey($table, ['id']);
+		$this->setUniqueIndex($table, 'music_podcast_episodes_index', ['guid_hash', 'channel_id', 'user_id']);
 	}
 
 	private function getOrCreateTable(ISchemaWrapper $schema, string $name) {
@@ -250,6 +314,12 @@ class Version010000Date20210903000000 extends SimpleMigrationStep {
 	private function dropObsoleteColumn($table, string $name) {
 		if ($table->hasColumn($name)) {
 			$table->dropColumn($name);
+		}
+	}
+
+	private function dropObsoleteIndex($table, string $name) {
+		if ($table->hasIndex($name)) {
+			$table->dropIndex($name);
 		}
 	}
 

@@ -308,13 +308,13 @@ class TrackMapper extends BaseMapper {
 	 * @param int[] $nodeIds
 	 * @param string $storageId
 	 * @return array where keys are the node IDs and values are associative arrays
-	 *         like { 'name' => string, 'path' => string };
+	 *         like { 'name' => string, 'path' => string, 'parent' => int };
 	 */
 	public function findNodeNamesAndPaths($nodeIds, $storageId) {
 		$result = [];
 
 		if (!empty($nodeIds)) {
-			$sql = 'SELECT `fileid`, `name`, `path` '.
+			$sql = 'SELECT `fileid`, `name`, `path`, `parent` '.
 					'FROM `*PREFIX*filecache` `filecache` '.
 					'JOIN `*PREFIX*storages` `storages` '.
 					'ON `filecache`.`storage` = `storages`.`numeric_id` '.
@@ -326,7 +326,8 @@ class TrackMapper extends BaseMapper {
 			foreach ($rows as $row) {
 				$result[$row['fileid']] = [
 					'name' => $row['name'],
-					'path' => $row['path']
+					'path' => $row['path'],
+					'parent' => (int)$row['parent']
 				];
 			}
 		}

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -23,6 +23,7 @@ use \OCA\Music\Db\Track;
 use \OCA\Music\Utility\Util;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
+use \OCP\Files\Folder;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
@@ -159,49 +160,80 @@ class TrackBusinessLayer extends BusinessLayer {
 		// local folders and query the data through the Files API for the more special cases.
 		$result = [];
 		foreach ($tracksByFolder as $folderId => $trackIds) {
-			if (isset($folderNamesAndPaths[$folderId])) {
-				// normal folder within the user home storage
-				$entry = $folderNamesAndPaths[$folderId];
-				// remove the "files" from the beginning of the folder path
-				$entry['path'] = \substr($entry['path'], 5);
-				// special handling for the root folder
-				if ($entry['path'] === '') {
-					$entry = null;
-				}
-			} else {
-				// shared folder or parent folder of a shared file or an externally mounted folder
-				$folderNode = $userHome->getById($folderId);
-				if (\count($folderNode) === 0) {
-					// other user's folder with files shared with this user (mapped under root)
-					$entry = null;
-				} else {
-					$entry = [
-						'name' => $folderNode[0]->getName(),
-						'path' => $userHome->getRelativePath($folderNode[0]->getPath())
-					];
-				}
-			}
+			$entry = self::getFolderEntry($folderNamesAndPaths, $folderId, $trackIds, $userHome);
 
 			if ($entry) {
-				$entry['trackIds'] = $trackIds;
-				$entry['id'] = $folderId;
 				$result[] = $entry;
 			} else {
 				$rootFolderTracks = \array_merge($rootFolderTracks, $trackIds);
 			}
 		}
 
-		// add the root folder if it contains any tracks
-		if (!empty($rootFolderTracks)) {
-			$result[] = [
-				'name' => '',
-				'path' => '/',
-				'trackIds' => $rootFolderTracks,
-				'id' => $userHome->getId()
-			];
+		// add the root folder
+		$result[] = [
+			'name' => '',
+			'path' => '/',
+			'parent' => null,
+			'trackIds' => $rootFolderTracks,
+			'id' => $userHome->getId()
+		];
+
+		// add the intermediate folders which do not directly contain any tracks
+		$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $result, $userHome));
+
+		return $result;
+	}
+
+	private function recursivelyGetMissingParentFolders(array $childEntries, array $existingEntries, Folder $userHome) {
+		$result = [];
+
+		$parentIds = \array_unique(\array_column($childEntries, 'parent'));
+		$parentIds = Util::arrayDiff($parentIds, \array_column($existingEntries, 'id'));
+		$parentNamesAndPaths = $this->mapper->findNodeNamesAndPaths($parentIds, $userHome->getStorage()->getId());
+		foreach ($parentIds as $parentId) {
+			if ($parentId !== null) {
+				$result[] =  self::getFolderEntry($parentNamesAndPaths, $parentId, [], $userHome);
+			}
+		}
+
+		if (\count($parentIds)) {
+			$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $existingEntries, $userHome));
 		}
 
 		return $result;
+	}
+
+	private static function getFolderEntry(array $folderNamesAndPaths, int $folderId, array $trackIds, Folder $userHome) {
+		if (isset($folderNamesAndPaths[$folderId])) {
+			// normal folder within the user home storage
+			$entry = $folderNamesAndPaths[$folderId];
+			// remove the "files" from the beginning of the folder path
+			$entry['path'] = \substr($entry['path'], 5);
+			// special handling for the root folder
+			if ($entry['path'] === '') {
+				$entry = null;
+			}
+		} else {
+			// shared folder or parent folder of a shared file or an externally mounted folder
+			$folderNode = $userHome->getById($folderId)[0] ?? null;
+			if ($folderNode === null) {
+				// other user's folder with files shared with this user (mapped under root)
+				$entry = null;
+			} else {
+				$entry = [
+					'name' => $folderNode->getName(),
+					'path' => $userHome->getRelativePath($folderNode->getPath()),
+					'parent' => $folderNode->getParent()->getId()
+				];
+			}
+		}
+
+		if ($entry) {
+			$entry['trackIds'] = $trackIds;
+			$entry['id'] = $folderId;
+		}
+
+		return $entry;
 	}
 
 	/**

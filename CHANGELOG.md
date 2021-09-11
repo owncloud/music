@@ -1,3 +1,8 @@
+## [Unreleased]
+### Fixed
+- Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"
+  [#890](https://github.com/owncloud/music/pull/890)
+
 ## 1.3.3 - 2021-09-06
 ### Fixed
 - Update from v1.3.1 not working properly on Nextcloud

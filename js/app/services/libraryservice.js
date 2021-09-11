@@ -230,12 +230,26 @@ angular.module('Music').service('libraryService', [function() {
 			} else {
 				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
-				// the tracks within each folder are sorted by the file name by the back-end 
+				// the tracks within each folder are sorted by the file name by the back-end
+
 				_.forEach(folders, function(folder) {
+					// substitute parent id with a reference to the parent folder
+					folder.parent = _.find(folders, {id: folder.parent}) ?? null;
+					// set parent folder references for the contained tracks
 					_.forEach(folder.tracks, function(trackEntry) {
 						trackEntry.track.folder = folder;
 					});
+					// init subfolder array
+					folder.subfolders = [];
 				});
+
+				// set the subfolder references
+				_.forEach(folders, function(folder) {
+					if (folder.parent !== null) {
+						folder.parent.subfolders.push(folder);
+					}
+				});
+
 				tracksInFolderOrder = _(folders).map('tracks').flatten().value();
 			}
 		},

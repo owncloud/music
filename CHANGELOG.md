@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Changed
+- Use smaller heading size in the Folders and Genres views
+
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"
   [#890](https://github.com/owncloud/music/pull/890)

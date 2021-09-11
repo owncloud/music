@@ -226,6 +226,11 @@ div:hover > .play-pause,
 	display: none;
 }
 
+#app-view .heading,
+#app-view .heading * {
+	cursor: pointer;
+}
+
 #app-view .heading-actions {
 	display: block;
 	font-size: 13px;

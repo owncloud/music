@@ -3,8 +3,8 @@
 		in-view-observer-margin="1000"
 		ng-repeat="genre in genres | limitTo: incrementalLoadLimit"
 	>
-		<list-heading 
-				level="1"
+		<list-heading
+				level="2"
 				heading="genre.name || '(Unknown genre)' | translate"
 				on-click="onGenreTitleClick"
 				get-draggable="getGenreDraggable"

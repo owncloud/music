@@ -3,8 +3,8 @@
 		in-view-observer-margin="1000"
 		ng-repeat="folder in folders | limitTo: incrementalLoadLimit"
 	>
-		<list-heading 
-				level="1"
+		<list-heading
+				level="2"
 				heading="folder.name || '(root folder)' | translate"
 				on-click="onFolderTitleClick"
 				get-draggable="getFolderDraggable"

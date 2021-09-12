@@ -125,6 +125,7 @@ class Music extends App {
 				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
 				$c->query('Maintenance'),
+				$c->query('UserMusicFolder'),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('UserFolder'),

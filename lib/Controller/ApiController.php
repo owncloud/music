@@ -43,6 +43,7 @@ use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\DetailsHelper;
 use \OCA\Music\Utility\LastfmService;
 use \OCA\Music\Utility\Scanner;
+use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class ApiController extends Controller {
@@ -69,6 +70,8 @@ class ApiController extends Controller {
 	private $lastfmService;
 	/** @var Maintenance */
 	private $maintenance;
+	/** @var UserMusicFolder */
+	private $userMusicFolder;
 	/** @var string */
 	private $userId;
 	/** @var IURLGenerator */
@@ -91,6 +94,7 @@ class ApiController extends Controller {
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
+								UserMusicFolder $userMusicFolder,
 								?string $userId, // null if this gets called after the user has logged out
 								IL10N $l10n,
 								?Folder $userFolder, // null if this gets called after the user has logged out
@@ -107,6 +111,7 @@ class ApiController extends Controller {
 		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
 		$this->maintenance = $maintenance;
+		$this->userMusicFolder = $userMusicFolder;
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
 		$this->userFolder = $userFolder;
@@ -174,7 +179,8 @@ class ApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function folders() {
-		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $this->userFolder);
+		$musicFolder = $this->userMusicFolder->getFolder($this->userId);
+		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $musicFolder, $this->userFolder);
 		return new JSONResponse($folders);
 	}
 
@@ -524,7 +530,7 @@ class ApiController extends Controller {
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
 			$this->logger->log("Failed to get the requested cover: $ex", 'debug');
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
-		} 
+		}
 	}
 
 	/**

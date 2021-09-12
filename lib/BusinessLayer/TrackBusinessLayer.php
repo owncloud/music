@@ -137,11 +137,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all folders of the user containing indexed tracks, along with the contained track IDs
-	 * @param string $userId
-	 * @param \OCP\Files\Folder $userHome
-	 * @return array of entries like {id: int, name: string, path: string, trackIds: int[]}
+	 * @return array of entries like {id: int, name: string, path: string, parent: ?int, trackIds: int[]}
 	 */
-	public function findAllFolders($userId, $userHome) {
+	public function findAllFolders(string $userId, Folder $musicFolder, Folder $userHome) : array {
 		// All tracks of the user, grouped by their parent folders. Some of the parent folders
 		// may be owned by other users and are invisible to this user (in case of shared files).
 		$tracksByFolder = $this->mapper->findTrackAndFolderIds($userId);
@@ -150,7 +148,7 @@ class TrackBusinessLayer extends BusinessLayer {
 		// This is significantly more efficient than using the Files API because we need to
 		// run only single DB query instead of one per folder.
 		$folderNamesAndPaths = $this->mapper->findNodeNamesAndPaths(
-				\array_keys($tracksByFolder), $userHome->getStorage()->getId());
+				\array_keys($tracksByFolder), $musicFolder->getStorage()->getId());
 
 		// root folder has to be handled as a special case because shared files from
 		// many folders may be shown to this user mapped under the root folder
@@ -160,7 +158,7 @@ class TrackBusinessLayer extends BusinessLayer {
 		// local folders and query the data through the Files API for the more special cases.
 		$result = [];
 		foreach ($tracksByFolder as $folderId => $trackIds) {
-			$entry = self::getFolderEntry($folderNamesAndPaths, $folderId, $trackIds, $userHome);
+			$entry = self::getFolderEntry($folderNamesAndPaths, $folderId, $trackIds, $musicFolder);
 
 			if ($entry) {
 				$result[] = $entry;
@@ -169,41 +167,43 @@ class TrackBusinessLayer extends BusinessLayer {
 			}
 		}
 
-		// add the root folder
-		$result[] = [
-			'name' => '',
-			'path' => '/',
-			'parent' => null,
-			'trackIds' => $rootFolderTracks,
-			'id' => $userHome->getId()
-		];
+		// add the root folder if it belongs to the library path
+		if ($musicFolder->getId() === $userHome->getId()) {
+			$result[] = [
+				'name' => '',
+				'path' => '/',
+				'parent' => null,
+				'trackIds' => $rootFolderTracks,
+				'id' => $musicFolder->getId()
+			];
+		}
 
 		// add the intermediate folders which do not directly contain any tracks
-		$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $result, $userHome));
+		$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $result, $musicFolder));
 
 		return $result;
 	}
 
-	private function recursivelyGetMissingParentFolders(array $childEntries, array $existingEntries, Folder $userHome) {
+	private function recursivelyGetMissingParentFolders(array $childEntries, array $existingEntries, Folder $musicFolder) : array {
 		$result = [];
 
 		$parentIds = \array_unique(\array_column($childEntries, 'parent'));
 		$parentIds = Util::arrayDiff($parentIds, \array_column($existingEntries, 'id'));
-		$parentNamesAndPaths = $this->mapper->findNodeNamesAndPaths($parentIds, $userHome->getStorage()->getId());
+		$parentNamesAndPaths = $this->mapper->findNodeNamesAndPaths($parentIds, $musicFolder->getStorage()->getId());
 		foreach ($parentIds as $parentId) {
 			if ($parentId !== null) {
-				$result[] =  self::getFolderEntry($parentNamesAndPaths, $parentId, [], $userHome);
+				$result[] =  self::getFolderEntry($parentNamesAndPaths, $parentId, [], $musicFolder);
 			}
 		}
 
 		if (\count($parentIds)) {
-			$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $existingEntries, $userHome));
+			$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $existingEntries, $musicFolder));
 		}
 
 		return $result;
 	}
 
-	private static function getFolderEntry(array $folderNamesAndPaths, int $folderId, array $trackIds, Folder $userHome) {
+	private static function getFolderEntry(array $folderNamesAndPaths, int $folderId, array $trackIds, Folder $musicFolder) : ?array {
 		if (isset($folderNamesAndPaths[$folderId])) {
 			// normal folder within the user home storage
 			$entry = $folderNamesAndPaths[$folderId];
@@ -215,14 +215,14 @@ class TrackBusinessLayer extends BusinessLayer {
 			}
 		} else {
 			// shared folder or parent folder of a shared file or an externally mounted folder
-			$folderNode = $userHome->getById($folderId)[0] ?? null;
+			$folderNode = $musicFolder->getById($folderId)[0] ?? null;
 			if ($folderNode === null) {
 				// other user's folder with files shared with this user (mapped under root)
 				$entry = null;
 			} else {
 				$entry = [
 					'name' => $folderNode->getName(),
-					'path' => $userHome->getRelativePath($folderNode->getPath()),
+					'path' => $musicFolder->getRelativePath($folderNode->getPath()),
 					'parent' => $folderNode->getParent()->getId()
 				];
 			}
@@ -231,6 +231,11 @@ class TrackBusinessLayer extends BusinessLayer {
 		if ($entry) {
 			$entry['trackIds'] = $trackIds;
 			$entry['id'] = $folderId;
+
+			if ($entry['id'] == $musicFolder->getId()) {
+				// the library root should be reported without a parent folder as that parent does not belong to the library
+				$entry['parent'] = null;
+			}
 		}
 
 		return $entry;

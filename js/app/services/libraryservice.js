@@ -109,7 +109,7 @@ angular.module('Music').service('libraryService', [function() {
 	function wrapFolder(folder) {
 		var wrapped = wrapPlaylist(folder);
 		wrapped.path = folder.path;
-		wrapped.expanded = false;
+		wrapped.expanded = (folder.parent === null); // the root folder is expanded by default
 		return wrapped;
 	}
 

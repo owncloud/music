@@ -1,5 +1,10 @@
 <div class="view-container" id="folders-area" ng-show="!loading && !loadingCollection">
-	<div class="playlist-area folder-area flat-list-view" id="folder-{{ ::folder.id }}" in-view-observer
+
+	<!-- Hierarchical tree layout -->
+	<div ng-if="!foldersFlatLayout && rootFolder" ng-init="folder = rootFolder" ng-include="'foldertreenode.html'"></div>
+
+	<!-- Flat layout -->
+	<div ng-if="foldersFlatLayout" class="playlist-area folder-area flat-list-view" id="folder-{{ ::folder.id }}" in-view-observer
 		in-view-observer-margin="1000"
 		ng-repeat="folder in folders | limitTo: incrementalLoadLimit"
 	>
@@ -22,7 +27,8 @@
 		</track-list>
 	</div>
 
-	<alphabet-navigation ng-if="folders && folders.length" item-count="folders.length"
+	<alphabet-navigation ng-if="folders && folders.length && foldersFlatLayout" item-count="folders.length"
 		get-elem-title="getFolderName" get-elem-id="getFolderElementId" scroll-to-target="scrollToItem">
 	</alphabet-navigation>
+
 </div>

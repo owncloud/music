@@ -300,6 +300,18 @@ div:hover > .play-pause,
 	transform: scaleY(-1);
 }
 
+/* Folders view hierarchical mode */
+.folder-area .subfolders {
+	padding-left: 32px;
+}
+
+.folder-area .subfolders .playlist-area {
+	padding: 0;
+}
+
+.folder-area .subfolders .playlist-area h2 {
+	margin-top: 0;
+}
 
 /* Albums view compact mode */
 .view-container.compact .artist-area h1 {

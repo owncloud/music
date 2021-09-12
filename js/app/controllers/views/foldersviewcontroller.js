@@ -10,10 +10,11 @@
 
 
 angular.module('Music').controller('FoldersViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', '$timeout', '$document', 'playlistService', 'libraryService',
+	function ($rootScope, $scope, $timeout, $document, playlistService, libraryService) {
 
 		$scope.folders = null;
+		$scope.rootFolder = null;
 		$rootScope.currentView = window.location.hash;
 
 		// When making the view visible, the folders are added incrementally step-by-step.
@@ -28,6 +29,17 @@ angular.module('Music').controller('FoldersViewController', [
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
+
+		// View-specific keyboard shortcuts
+		function handleKeyDown(e) {
+			// toggle flat/tree mode with alt+L
+			if (e.target == document.body && e.which == 76 && e.altKey) {
+				$timeout($scope.toggleFoldersFlatLayout);
+				return false;
+			}
+			return true;
+		}
+		$document.bind('keydown', handleKeyDown);
 
 		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
 			var startIndex = null;
@@ -151,7 +163,8 @@ angular.module('Music').controller('FoldersViewController', [
 			$scope.incrementalLoadLimit = 0;
 			if ($scope.$parent) {
 				$scope.$parent.loadFoldersAndThen(function() {
-					$scope.folders = libraryService.getAllFolders();
+					$scope.folders = libraryService.getAllFoldersWithTracks();
+					$scope.rootFolder = libraryService.getRootFolder();
 					$timeout(showMore);
 				});
 			}
@@ -177,9 +190,8 @@ angular.module('Music').controller('FoldersViewController', [
 		}
 
 		subscribe('deactivateView', function() {
-			$timeout(function() {
-				$rootScope.$emit('viewDeactivated');
-			});
+			$document.unbind('keydown', handleKeyDown);
+			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}
 ]);

@@ -413,8 +413,11 @@ angular.module('Music').service('libraryService', [function() {
 		getFolder: function(id) {
 			return _.find(folders, { id: Number(id) });
 		},
-		getAllFolders: function() {
-			return folders;
+		getAllFoldersWithTracks: function() {
+			return _.filter(folders, (folder) => folder.tracks.length > 0);
+		},
+		getRootFolder: function() {
+			return _.find(folders, { parent: null });
 		},
 		getGenre: function(id) {
 			return _.find(genres, { id: Number(id) });

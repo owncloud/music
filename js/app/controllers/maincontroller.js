@@ -56,7 +56,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.folderCountText = function() {
 		if (libraryService.foldersLoaded()) {
-			var folderCount = libraryService.getAllFolders().length;
+			var folderCount = libraryService.getAllFoldersWithTracks().length;
 			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
 		} else {
 			return '';
@@ -384,6 +384,21 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 		// also navigate to the Albums view if not already open
 		$scope.navigateTo('#');
+	};
+
+	// Flat/tree layout of the Folders view
+	$scope.foldersFlatLayout = (Cookies.get('oc_music_folders_flat') === 'true');
+	$scope.toggleFoldersFlatLayout = function(useFlat /*optional, invert current value if omitted */) {
+		if (typeof useFlat === 'undefined') {
+			useFlat = !$scope.foldersFlatLayout;
+		}
+		$scope.foldersFlatLayout = useFlat;
+		$rootScope.$emit('foldersLayoutChanged');
+
+		Cookies.set('oc_music_folders_flat', useFlat.toString(), { expires: 3650 });
+
+		// also navigate to the Folders view if not already open
+		$scope.navigateTo('#/folders');
 	};
 
 	$scope.collapseNavigationPaneOnMobile = function() {

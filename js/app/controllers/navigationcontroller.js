@@ -285,7 +285,8 @@ angular.module('Music').controller('NavigationController', [
 
 		function trackIdsFromFolder(folderId) {
 			var folder = libraryService.getFolder(folderId);
-			return _.map(folder.tracks, 'track.id');
+			var tracks = libraryService.getFolderTracks(folder, !$scope.foldersFlatLayout);
+			return _.map(tracks, 'track.id');
 		}
 
 		function trackIdsFromGenre(genreId) {

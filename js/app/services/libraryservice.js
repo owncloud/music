@@ -113,6 +113,11 @@ angular.module('Music').service('libraryService', [function() {
 		return wrapped;
 	}
 
+	function getFolderTracksRecursively(folder) {
+		var subFolderTracks = _(folder.subfolders).map(getFolderTracksRecursively).flatten().value();
+		return [...subFolderTracks, ...folder.tracks];
+	}
+
 	function initPodcastChannel(channel) {
 		_.forEach(channel.episodes, function(episode) {
 			episode.channel = channel;
@@ -413,6 +418,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		getFolder: function(id) {
 			return _.find(folders, { id: Number(id) });
+		},
+		getFolderTracks: function(folder, recursively) {
+			return recursively ? getFolderTracksRecursively(folder) : folder.tracks;
 		},
 		getAllFoldersWithTracks: function() {
 			return _.filter(folders, (folder) => folder.tracks.length > 0);

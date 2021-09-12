@@ -51,7 +51,7 @@ angular.module('Music').controller('FoldersViewController', [
 		}
 
 		$scope.onFolderTitleClick = function(folder) {
-			playPlaylist('folder-' + folder.id, folder.tracks);
+			playPlaylist('folder-' + folder.id, libraryService.getFolderTracks(folder, !$scope.foldersFlatLayout));
 		};
 
 		$scope.onTrackClick = function(trackId) {

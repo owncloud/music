@@ -301,16 +301,37 @@ div:hover > .play-pause,
 }
 
 /* Folders view hierarchical mode */
-.folder-area .subfolders {
+.folder-tree .subfolders {
 	padding-left: 32px;
 }
 
-.folder-area .subfolders .playlist-area {
+.folder-tree .playlist-area {
 	padding: 0;
 }
 
-.folder-area .subfolders .playlist-area h2 {
-	margin-top: 0;
+.folder-tree .playlist-area h2 {
+	margin-top: 4px;
+}
+
+.folder-tree .icon-folder,
+.folder-tree .overlay {
+	width: 30px;
+	height: 30px;
+	float: left;
+	background-size: contain;
+	margin-right: 8px;
+	cursor: pointer;
+}
+
+.folder-tree .overlay {
+	margin-left: -38px;
+	margin-top: 2px;
+	visibility: hidden;
+}
+
+.folder-tree .icon-folder:hover ~ .overlay,
+.folder-tree .overlay:hover {
+	visibility: visible;
 }
 
 /* Albums view compact mode */

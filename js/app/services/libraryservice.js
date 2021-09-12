@@ -109,6 +109,7 @@ angular.module('Music').service('libraryService', [function() {
 	function wrapFolder(folder) {
 		var wrapped = wrapPlaylist(folder);
 		wrapped.path = folder.path;
+		wrapped.expanded = false;
 		return wrapped;
 	}
 

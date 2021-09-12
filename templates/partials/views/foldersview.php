@@ -1,7 +1,7 @@
 <div class="view-container" id="folders-area" ng-show="!loading && !loadingCollection">
 
 	<!-- Hierarchical tree layout -->
-	<div ng-if="!foldersFlatLayout && rootFolder" ng-init="folder = rootFolder" ng-include="'foldertreenode.html'"></div>
+	<div class="folder-tree" ng-if="!foldersFlatLayout && rootFolder" ng-init="folder = rootFolder" ng-include="'foldertreenode.html'"></div>
 
 	<!-- Flat layout -->
 	<div ng-if="foldersFlatLayout" class="playlist-area folder-area flat-list-view" id="folder-{{ ::folder.id }}" in-view-observer

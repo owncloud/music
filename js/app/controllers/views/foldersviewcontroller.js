@@ -165,8 +165,18 @@ angular.module('Music').controller('FoldersViewController', [
 				$scope.$parent.loadFoldersAndThen(function() {
 					$scope.folders = libraryService.getAllFoldersWithTracks();
 					$scope.rootFolder = libraryService.getRootFolder();
-					$timeout(showMore);
+					makeContentVisible();
 				});
+			}
+		}
+
+		function makeContentVisible() {
+			$rootScope.loading = true;
+			if ($scope.foldersFlatLayout) {
+				$timeout(showMore);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$timeout(onViewReady);
 			}
 		}
 
@@ -182,12 +192,18 @@ angular.module('Music').controller('FoldersViewController', [
 				if ($scope.incrementalLoadLimit < $scope.folders.length) {
 					$timeout(showMore);
 				} else {
-					$rootScope.loading = false;
-					updateHighlight(playlistService.getCurrentPlaylistId());
-					$rootScope.$emit('viewActivated');
+					onViewReady();
 				}
 			}
 		}
+
+		function onViewReady() {
+			$rootScope.loading = false;
+			updateHighlight(playlistService.getCurrentPlaylistId());
+			$rootScope.$emit('viewActivated');
+		}
+
+		subscribe('foldersLayoutChanged', makeContentVisible);
 
 		subscribe('deactivateView', function() {
 			$document.unbind('keydown', handleKeyDown);

@@ -416,6 +416,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// execute the callback after view activation if any
 		if (afterNavigationCallback !== null) {
 			$timeout(afterNavigationCallback);
+			afterNavigationCallback = null;
 		}
 	});
 

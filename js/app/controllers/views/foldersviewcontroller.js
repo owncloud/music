@@ -59,22 +59,31 @@ angular.module('Music').controller('FoldersViewController', [
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
 				playlistService.publish('togglePlayback');
 			}
-			// on any other list item, start playing the folder from this item
+			// on any other list item, start playing from this item
 			else {
-				var currentListId = playlistService.getCurrentPlaylistId();
-				var folder = libraryService.getTrack(trackId).folder;
-
-				// start playing the folder from this track if the clicked track belongs
-				// to folder which is the current play scope
-				if (currentListId === 'folder-' + folder.id) {
-					playPlaylist(currentListId, folder.tracks, trackId);
+				// change the track within the playscope if the clicked track belongs to the current folder scope
+				if (trackBelongsToPlayingFolder(trackId)) {
+					playPlaylist(
+						playlistService.getCurrentPlaylistId(),
+						playlistService.getCurrentPlaylist(),
+						trackId);
 				}
-				// on any other track, start playing the collection from this track
+				// on any other case, start playing the collection from this track
 				else {
-					playPlaylist('folders', libraryService.getTracksInFolderOrder(), trackId);
+					playPlaylist('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout), trackId);
 				}
 			}
 		};
+
+		function trackBelongsToPlayingFolder(trackId) {
+			var currentListId = playlistService.getCurrentPlaylistId();
+			if (currentListId.startsWith('folder-')) {
+				var currentList = playlistService.getCurrentPlaylist();
+				return (0 <= _.findIndex(currentList, ['track.id', trackId]));
+			} else {
+				return false;
+			}
+		}
 
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
@@ -192,7 +201,7 @@ angular.module('Music').controller('FoldersViewController', [
 				if ($scope.incrementalLoadLimit < $scope.folders.length) {
 					$timeout(showMore);
 				} else {
-					onViewReady();
+					$timeout(onViewReady);
 				}
 			}
 		}

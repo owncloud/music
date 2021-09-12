@@ -212,7 +212,7 @@ angular.module('Music').controller('NavigationController', [
 					play('alltracks', libraryService.getTracksInAlphaOrder());
 				} else if (destination == '#/folders') {
 					$scope.$parent.loadFoldersAndThen(function() {
-						play('folders', libraryService.getTracksInFolderOrder());
+						play('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout));
 					});
 				} else if (destination == '#/genres') {
 					play('genres', libraryService.getTracksInGenreOrder());

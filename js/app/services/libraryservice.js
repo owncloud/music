@@ -16,7 +16,6 @@ angular.module('Music').service('libraryService', [function() {
 	var tracksIndex = {};
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
-	var tracksInFolderOrder = null;
 	var tracksInGenreOrder = null;
 	var playlists = null;
 	var folders = null;
@@ -232,7 +231,6 @@ angular.module('Music').service('libraryService', [function() {
 		setFolders: function(folderData) {
 			if (!folderData) {
 				folders = null;
-				tracksInFolderOrder = null;
 			} else {
 				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
@@ -255,8 +253,6 @@ angular.module('Music').service('libraryService', [function() {
 						folder.parent.subfolders.push(folder);
 					}
 				});
-
-				tracksInFolderOrder = _(folders).map('tracks').flatten().value();
 			}
 		},
 		setGenres: function(genreData) {
@@ -401,8 +397,10 @@ angular.module('Music').service('libraryService', [function() {
 		getTracksInAlbumOrder: function() {
 			return tracksInAlbumOrder;
 		},
-		getTracksInFolderOrder: function() {
-			return tracksInFolderOrder;
+		getTracksInFolderOrder: function(treeMode) {
+			return treeMode
+				? getFolderTracksRecursively(this.getRootFolder())
+				: _(folders).map('tracks').flatten().value();
 		},
 		getTracksInGenreOrder: function() {
 			return tracksInGenreOrder;

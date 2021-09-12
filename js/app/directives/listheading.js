@@ -223,7 +223,7 @@ function ($rootScope, gettextCatalog) {
 
 	return {
 		restrict: 'E',
-		require: '^inViewObserver',
+		require: '?^inViewObserver',
 		compile: function(tmplElement, tmplAttrs) {
 			// Replace the <list-heading> element with <h?> element of desired size
 			var hElem = document.createElement('h' + (tmplAttrs.level || '1'));
@@ -250,20 +250,26 @@ function ($rootScope, gettextCatalog) {
 						console.error('Invalid configuration for list heading, a heading cannot have both details button and actions menu');
 					}
 
-					// Populate the heading first with a placeholder.
-					// The placeholder is replaced with the actual content once the element
-					// enters the viewport (with some margins).
-					setupPlaceholder(data);
+					// In case this directive has inViewObserver as ancestor, populate it first
+					// with a placeholder. The placeholder is replaced with the actual content
+					// once the element enters the viewport (with some margins).
+					if (controller) {
+						setupPlaceholder(data);
 
-					controller.registerListener({
-						onEnterView: function() {
-							setup(data);
-						},
-						onLeaveView: function() {
-							tearDown(data);
-							setupPlaceholder(data);
-						}
-					});
+						controller.registerListener({
+							onEnterView: function() {
+								setup(data);
+							},
+							onLeaveView: function() {
+								tearDown(data);
+								setupPlaceholder(data);
+							}
+						});
+					}
+					// Otherwise, populate immediately with the actual content
+					else {
+						setup(data);
+					}
 				}
 			};
 		}

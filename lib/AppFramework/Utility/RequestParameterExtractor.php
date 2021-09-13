@@ -42,9 +42,15 @@ class RequestParameterExtractor {
 	 */
 	private function getParameterValueFromRequest(\ReflectionParameter $parameter) {
 		$paramName = $parameter->getName();
-		$type = (string)$parameter->getType();
+		$type = $parameter->getType();
+		if ($type === null) {
+			$typeName = null;
+		} else {
+			assert($type instanceof \ReflectionNamedType); // we don't use union types introduced in PHP8
+			$typeName = $type->getName();
+		}
 
-		if ($type === 'array') {
+		if ($typeName === 'array') {
 			$parameterValue = $this->getRepeatedParam($paramName);
 		} else {
 			$parameterValue = $this->request->getParam($paramName);
@@ -62,9 +68,9 @@ class RequestParameterExtractor {
 			}
 		} else {
 			// cast non-null values to requested type
-			if ($type === 'int' || $type === 'integer') {
+			if ($typeName === 'int' || $typeName === 'integer') {
 				$parameterValue = (int)$parameterValue;
-			} elseif ($type === 'bool' || $type === 'boolean') {
+			} elseif ($typeName === 'bool' || $typeName === 'boolean') {
 				$parameterValue = \filter_var($parameterValue, FILTER_VALIDATE_BOOLEAN);
 			}
 		}
@@ -81,7 +87,7 @@ class RequestParameterExtractor {
 		// because all of these are based to the idea of unique parameter names.
 		// If the same name is repeated, only the last value is saved. Hence, we
 		// need to parse the raw data manually.
-		
+
 		// query string is always present (although it could be empty)
 		$values = self::parseRepeatedKeyValues($paramName, $_SERVER['QUERY_STRING']);
 
@@ -106,7 +112,7 @@ class RequestParameterExtractor {
 
 		foreach ($keyValuePairs as $pair) {
 			$keyAndValue = \explode('=', $pair);
-			
+
 			if ($keyAndValue[0] == $key) {
 				$result[] = $keyAndValue[1];
 			}

@@ -5,6 +5,8 @@
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"
   [#890](https://github.com/owncloud/music/pull/890)
+- Deprecated use of ReflectionType on Subsonic and Ampache APIs
+  [#896](https://github.com/owncloud/music/issues/896)
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

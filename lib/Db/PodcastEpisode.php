@@ -143,6 +143,7 @@ class PodcastEpisode extends Entity {
 			'streamId' => 'podcast_episode-' . $this->getId(),
 			'channelId' => 'podcast_channel-' . $this->getChannelId(),
 			'title' => $this->getTitle(),
+			'artist' => $this->getAuthor(),
 			'track' => $this->getEpisode(),
 			'description' => $this->getDescription(),
 			'publishDate' => Util::formatZuluDateTime($this->getPublished()),
@@ -157,6 +158,8 @@ class PodcastEpisode extends Entity {
 			'suffix' => $this->getSuffix(),
 			'duration' => $this->getDuration(),
 			'bitRate' => empty($this->getBitrate()) ? 0 : (int)\round($this->getBitrate()/1000), // convert bps to kbps
+			'type' => 'podcast',
+			'created' => Util::formatZuluDateTime($this->getCreated())
 		];
 
 		if (!empty($this->starred)) {

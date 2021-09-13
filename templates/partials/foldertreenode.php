@@ -1,6 +1,7 @@
-<div class="playlist-area folder-area flat-list-view" id="folder-{{ ::folder.id }}">
-	<span class="icon icon-folder" ng-click="folder.expanded = !folder.expanded"></span>
+<div class="playlist-area folder-area flat-list-view" ng-class="{'matched': folder.matched}" id="folder-{{ folder.id }}">
+	<span class="icon icon-folder"></span>
 	<img class="overlay svg"
+		 ng-if="!searchMode"
 		 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('expand') ?>"
 		 ng-class="{ 'flip-vertically': folder.expanded }"
 		 ng-click="folder.expanded = !folder.expanded" />
@@ -13,11 +14,11 @@
 		tooltip="folder.path"
 		show-play-icon="true">
 	</list-heading>
-	<ul class="subfolders" ng-if="folder.expanded">
+	<ul class="subfolders" ng-if="folder.expanded || folder.matched">
 		<li ng-repeat="folder in folder.subfolders" ng-include="'foldertreenode.html'"></li>
 	</ul>
 	<track-list
-		ng-if="folder.expanded"
+		ng-if="folder.expanded || folder.matched"
 		tracks="folder.tracks"
 		get-track-data="getTrackData"
 		play-track="onTrackClick"

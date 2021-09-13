@@ -65,6 +65,17 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			$rootScope.$watch('playing', updateClasses)
 		];
 
+		// non-lazy-loaded directive needs to react to search mode activating on its own;
+		// lazy-loaded directives get this via onEnterView
+		if (!data.useLazyLoading) {
+			data.listeners.push(
+				$rootScope.$on('searchMatchedTracks', function() {
+					tearDown(data);
+					setup(data);
+				})
+			);
+		}
+
 		var htmlElem = data.element[0];
 
 		/**
@@ -330,13 +341,14 @@ function ($rootScope, $interpolate, gettextCatalog) {
 				contentType: scope.$eval(attrs.contentType) ?? 'song',
 				listeners: null,
 				scope: scope,
-				element: element
+				element: element,
+				useLazyLoading: _.isObject(controller)
 			};
 
 			// In case this directive has inViewObserver as ancestor, populate it first
 			// with a placeholder. The placeholder is replaced with the actual content
 			// once the element enters the viewport (with some margins).
-			if (controller) {
+			if (data.useLazyLoading) {
 				setupPlaceholder(data);
 
 				controller.registerListener({

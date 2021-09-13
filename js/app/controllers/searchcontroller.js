@@ -20,11 +20,13 @@ angular.module('Music').controller('SearchController', [
 '$scope', '$rootScope', 'libraryService', '$timeout', '$document', 'gettextCatalog',
 function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalog) {
 
-	var MAX_MATCHES = 5000;
-	var MAX_MATCHES_IN_PLAYLIST = 1000;
+	const MAX_MATCHES = 5000;
+	const MAX_MATCHES_IN_PLAYLIST = 1000;
+	const MAX_FOLDER_MATCHES_IN_TREE_LAYOUT = 50;
 
 	var searchform = $('.searchbox');
 	var searchbox = $('#searchbox');
+	var treeFolderMatches = {};
 
 	if (searchbox.length === 0) { // NC 20+
 		$.initialize('.unified-search__form', function(_index, elem) {
@@ -107,8 +109,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function runSearch(query) {
-		// reset previous matches
-		$('.matched').removeClass('matched');
+		cleanUpPrevMatches();
 
 		var matchingTracks = null;
 		var view = $rootScope.currentView;
@@ -178,13 +179,38 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		var folders = {};
 		_(matches.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
-			folders[track.folder.id] = 1;
+			folders[track.folder.id] = track.folder;
 		});
 
-		// mark parent folders of the matches
-		_(folders).each(function(_value, folderId) {
-			$('#folder-' + folderId).addClass('matched');
-		});
+		// if tree layout is used, then we need to mark the matches in the model and collect all the ancestor folders, too
+		if (!$scope.foldersFlatLayout) {
+			// for performance reasons, allow showing matches only from a limited number of tree folders
+			if (_.size(folders) > MAX_FOLDER_MATCHES_IN_TREE_LAYOUT) {
+				folders = _.pick(folders, _.slice(_.keys(folders), 0, MAX_FOLDER_MATCHES_IN_TREE_LAYOUT));
+				matches.truncated = true;
+			}
+
+			var parents = {};
+			_(folders).each(function(folder) {
+				folder.matched = true;
+			});
+			_(folders).each(function(folder) {
+				var parent = folder.parent;
+				while (parent !== null && !parent.matched) {
+					parent.matched = true;
+					parents[parent.id] = parent;
+					parent = parent.parent;
+				}
+			});
+			_.assign(folders, parents);
+			treeFolderMatches = folders; // store for later clean-up
+		}
+		// in the flat layout, the parent folders are marked using a css class
+		else {
+			_(folders).each(function(_folder, folderId) {
+				$('#folder-' + folderId).addClass('matched');
+			});
+		}
 
 		return matches;
 	}
@@ -264,10 +290,22 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		return matches;
 	}
 
+	function cleanUpPrevMatches() {
+		if ($rootScope.currentView === '#/folders' && !$scope.foldersFlatLayout) {
+			// folder view with tree layout is a special case
+			_(treeFolderMatches).each(folder => {folder.matched = false;});
+			treeFolderMatches = {};
+			$('.track-list .matched').removeClass('matched');
+		} else {
+			// any other view
+			$('.matched').removeClass('matched');
+		}
+	}
+
 	function clearSearch() {
 		$rootScope.$emit('searchOff');
 		$('#app-view').removeClass('searchmode');
-		$('.matched').removeClass('matched');
+		cleanUpPrevMatches();
 		$rootScope.searchMode = false;
 		$rootScope.$emit('inViewObserver_visibilityEvent', false);
 		$scope.searchResultsOmitted = false;

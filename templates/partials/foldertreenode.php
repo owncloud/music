@@ -7,7 +7,7 @@
 		 ng-click="folder.expanded = !folder.expanded" />
 	<list-heading
 		level="2"
-		heading="folder.name || '(root folder)' | translate"
+		heading="folder.name || 'Music library' | translate"
 		on-click="onFolderTitleClick"
 		get-draggable="getFolderDraggable"
 		model="folder"

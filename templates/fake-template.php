@@ -16,3 +16,7 @@
 
 <!-- localizations for the podcasts action menu -->
 <span translate>Reload</span>
+
+<!--  localizations for the Folders view -->
+<span translate>Music library</span>
+<span translate>(library root)</span>

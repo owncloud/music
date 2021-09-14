@@ -10,7 +10,7 @@
 	>
 		<list-heading
 				level="2"
-				heading="folder.name || '(root folder)' | translate"
+				heading="folder.name || '(library root)' | translate"
 				on-click="onFolderTitleClick"
 				get-draggable="getFolderDraggable"
 				model="folder"

@@ -248,9 +248,15 @@ angular.module('Music').service('libraryService', [function() {
 				sortByTextField(folders, 'name');
 				// the tracks within each folder are sorted by the file name by the back-end
 
+				// create temporary look-up-table for the folders to speed up setting up the parent references
+				var foldersLut = {};
+				_.forEach(folders, function(folder) {
+					foldersLut[folder.id] = folder;
+				});
+
 				_.forEach(folders, function(folder) {
 					// substitute parent id with a reference to the parent folder
-					folder.parent = _.find(folders, {id: folder.parent}) ?? null;
+					folder.parent = foldersLut[folder.parent] ?? null;
 					// set parent folder references for the contained tracks
 					_.forEach(folder.tracks, function(trackEntry) {
 						trackEntry.track.folder = folder;

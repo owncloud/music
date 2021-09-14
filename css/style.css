@@ -59,6 +59,11 @@ body#body-user.dark {
 	padding-bottom: 60px;
 }
 
+.view-container h2 {
+	font-size: 21px;
+	line-height: 30px;
+}
+
 .play {
 	display: inline;
 	visibility: hidden;

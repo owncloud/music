@@ -42,8 +42,6 @@
 	display: table-cell;
 	position: relative;
 	max-width: 424px;
-	font-size: 21px;
-	line-height: 30px;
 	padding-bottom: 21px;
 	white-space: nowrap;
 }

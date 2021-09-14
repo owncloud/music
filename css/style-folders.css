@@ -8,6 +8,10 @@
  * @copyright Pauli Järvinen 2021
  */
 
+.folder-tree {
+	margin-top: 16px;
+}
+
 .folder-tree .subfolders {
 	margin-left: 32px;
 }
@@ -36,6 +40,7 @@
 .folder-tree .overlay {
 	margin-left: -38px;
 	margin-top: 2px;
+	margin-bottom: -2px;
 	visibility: hidden;
 	cursor: pointer;
 }

@@ -86,11 +86,11 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function playlistEntry(track) {
-		return { track: track };
+		return (track !== null) ? { track: track } : null;
 	}
 
 	function playlistEntryFromId(trackId) {
-		return playlistEntry(tracksIndex[trackId]);
+		return playlistEntry(tracksIndex[trackId] ?? null);
 	}
 
 	function wrapRadioStation(station) {
@@ -100,7 +100,7 @@ angular.module('Music').service('libraryService', [function() {
 
 	function wrapPlaylist(playlist) {
 		var wrapped = $.extend({}, playlist); // clone the playlist
-		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
+		wrapped.tracks = _(playlist.trackIds).map(playlistEntryFromId).reject(_.isNull).value(); // null-values are possible during scanning
 		delete wrapped.trackIds;
 		return wrapped;
 	}

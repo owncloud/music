@@ -107,18 +107,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$rootScope.loadingCollection = true;
 
 		$scope.artists = null; // the null-value tells the views that data is not yet available
-		$rootScope.$emit('artistsUpdating');
+		libraryService.setFolders(null); // invalidate any out-dated folders
+		$rootScope.$emit('collectionUpdating');
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
-			libraryService.setFolders(null); // invalidate any out-dated folders
 			$scope.artists = libraryService.getAllArtists();
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.
 			$timeout(function() {
-				$rootScope.$emit('artistsLoaded');
+				$rootScope.$emit('collectionLoaded');
 			});
 
 			// Load playlists once the collection has been loaded

@@ -164,7 +164,12 @@ angular.module('Music').controller('FoldersViewController', [
 			$timeout(initView);
 		}
 
-		subscribe('artistsLoaded', function () {
+		subscribe('collectionUpdating', function() {
+			$scope.folders = null;
+			$scope.rootFolder = null;
+		});
+
+		subscribe('collectionLoaded', function () {
 			$timeout(initView);
 		});
 

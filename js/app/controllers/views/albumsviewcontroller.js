@@ -327,12 +327,12 @@ angular.module('Music').controller('AlbumsViewController', [
 		}
 
 		// Start making artists visible immediatedly if the artists are already loaded.
-		// Otherwise it happens on the 'artistsLoaded' event handler.
+		// Otherwise it happens on the 'collectionLoaded' event handler.
 		if ($scope.$parent.artists) {
 			showMore();
 		}
 
-		subscribe('artistsLoaded', function() {
+		subscribe('collectionLoaded', function() {
 			// Start the anynchronus process of making aritsts visible
 			$scope.incrementalLoadLimit = 0;
 			showMore();

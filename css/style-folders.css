@@ -9,7 +9,11 @@
  */
 
 .folder-tree .subfolders {
-	padding-left: 32px;
+	margin-left: 32px;
+}
+
+.folder-tree .track-list {
+	margin-left: 16px;
 }
 
 .folder-tree .playlist-area {

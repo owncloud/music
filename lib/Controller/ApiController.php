@@ -180,7 +180,7 @@ class ApiController extends Controller {
 	 */
 	public function folders() {
 		$musicFolder = $this->userMusicFolder->getFolder($this->userId);
-		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $musicFolder, $this->userFolder);
+		$folders = $this->trackBusinessLayer->findAllFolders($this->userId, $musicFolder);
 		return new JSONResponse($folders);
 	}
 

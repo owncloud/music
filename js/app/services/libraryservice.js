@@ -107,9 +107,21 @@ angular.module('Music').service('libraryService', [function() {
 
 	function wrapFolder(folder) {
 		var wrapped = wrapPlaylist(folder);
-		wrapped.path = folder.path;
+		wrapped.path = null; // set up later
 		wrapped.expanded = (folder.parent === null); // the root folder is expanded by default
 		return wrapped;
+	}
+
+	function setUpFolderPath(folder) {
+		// nothing to do if the path has been already set up
+		if (folder.path === null) {
+			if (folder.parent === null) {
+				folder.path = '';
+			} else {
+				setUpFolderPath(folder.parent);
+				folder.path = folder.parent.path + '/' + folder.name;
+			}
+		}
 	}
 
 	function getFolderTracksRecursively(folder) {
@@ -247,8 +259,10 @@ angular.module('Music').service('libraryService', [function() {
 					folder.subfolders = [];
 				});
 
-				// set the subfolder references
 				_.forEach(folders, function(folder) {
+					// compile the full path for each folder by following the parent references
+					setUpFolderPath(folder);
+					// set the subfolder references
 					if (folder.parent !== null) {
 						folder.parent.subfolders.push(folder);
 					}

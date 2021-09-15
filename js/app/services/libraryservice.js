@@ -16,7 +16,6 @@ angular.module('Music').service('libraryService', [function() {
 	var tracksIndex = {};
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
-	var tracksInFolderOrder = null;
 	var tracksInGenreOrder = null;
 	var playlists = null;
 	var folders = null;
@@ -87,11 +86,11 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function playlistEntry(track) {
-		return { track: track };
+		return (track !== null) ? { track: track } : null;
 	}
 
 	function playlistEntryFromId(trackId) {
-		return playlistEntry(tracksIndex[trackId]);
+		return playlistEntry(tracksIndex[trackId] ?? null);
 	}
 
 	function wrapRadioStation(station) {
@@ -101,15 +100,33 @@ angular.module('Music').service('libraryService', [function() {
 
 	function wrapPlaylist(playlist) {
 		var wrapped = $.extend({}, playlist); // clone the playlist
-		wrapped.tracks = _.map(playlist.trackIds, playlistEntryFromId);
+		wrapped.tracks = _(playlist.trackIds).map(playlistEntryFromId).reject(_.isNull).value(); // null-values are possible during scanning
 		delete wrapped.trackIds;
 		return wrapped;
 	}
 
 	function wrapFolder(folder) {
 		var wrapped = wrapPlaylist(folder);
-		wrapped.path = folder.path;
+		wrapped.path = null; // set up later
+		wrapped.expanded = (folder.parent === null); // the root folder is expanded by default
 		return wrapped;
+	}
+
+	function setUpFolderPath(folder) {
+		// nothing to do if the path has been already set up
+		if (folder.path === null) {
+			if (folder.parent === null) {
+				folder.path = '';
+			} else {
+				setUpFolderPath(folder.parent);
+				folder.path = folder.parent.path + '/' + folder.name;
+			}
+		}
+	}
+
+	function getFolderTracksRecursively(folder) {
+		var subFolderTracks = _(folder.subfolders).map(getFolderTracksRecursively).flatten().value();
+		return [...subFolderTracks, ...folder.tracks];
 	}
 
 	function initPodcastChannel(channel) {
@@ -226,17 +243,36 @@ angular.module('Music').service('libraryService', [function() {
 		setFolders: function(folderData) {
 			if (!folderData) {
 				folders = null;
-				tracksInFolderOrder = null;
 			} else {
 				folders = _.map(folderData, wrapFolder);
 				sortByTextField(folders, 'name');
-				// the tracks within each folder are sorted by the file name by the back-end 
+				// the tracks within each folder are sorted by the file name by the back-end
+
+				// create temporary look-up-table for the folders to speed up setting up the parent references
+				var foldersLut = {};
 				_.forEach(folders, function(folder) {
+					foldersLut[folder.id] = folder;
+				});
+
+				_.forEach(folders, function(folder) {
+					// substitute parent id with a reference to the parent folder
+					folder.parent = foldersLut[folder.parent] ?? null;
+					// set parent folder references for the contained tracks
 					_.forEach(folder.tracks, function(trackEntry) {
 						trackEntry.track.folder = folder;
 					});
+					// init subfolder array
+					folder.subfolders = [];
 				});
-				tracksInFolderOrder = _(folders).map('tracks').flatten().value();
+
+				_.forEach(folders, function(folder) {
+					// compile the full path for each folder by following the parent references
+					setUpFolderPath(folder);
+					// set the subfolder references
+					if (folder.parent !== null) {
+						folder.parent.subfolders.push(folder);
+					}
+				});
 			}
 		},
 		setGenres: function(genreData) {
@@ -381,8 +417,10 @@ angular.module('Music').service('libraryService', [function() {
 		getTracksInAlbumOrder: function() {
 			return tracksInAlbumOrder;
 		},
-		getTracksInFolderOrder: function() {
-			return tracksInFolderOrder;
+		getTracksInFolderOrder: function(treeMode) {
+			return treeMode
+				? getFolderTracksRecursively(this.getRootFolder())
+				: _(folders).map('tracks').flatten().value();
 		},
 		getTracksInGenreOrder: function() {
 			return tracksInGenreOrder;
@@ -399,8 +437,14 @@ angular.module('Music').service('libraryService', [function() {
 		getFolder: function(id) {
 			return _.find(folders, { id: Number(id) });
 		},
-		getAllFolders: function() {
-			return folders;
+		getFolderTracks: function(folder, recursively) {
+			return recursively ? getFolderTracksRecursively(folder) : folder.tracks;
+		},
+		getAllFoldersWithTracks: function() {
+			return _.filter(folders, (folder) => folder.tracks.length > 0);
+		},
+		getRootFolder: function() {
+			return _.find(folders, { parent: null });
 		},
 		getGenre: function(id) {
 			return _.find(genres, { id: Number(id) });

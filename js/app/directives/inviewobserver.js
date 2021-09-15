@@ -25,7 +25,7 @@ function($rootScope, $timeout, inViewService) {
 
 	// Drop all instances when view switching or artists reloading begins
 	$rootScope.$on('deactivateView', eraseInstances);
-	$rootScope.$on('artistsUpdating', eraseInstances);
+	$rootScope.$on('collectionUpdating', eraseInstances);
 
 	function invalidateInViewRange() {
 		_firstIndexInView = 0;
@@ -50,7 +50,7 @@ function($rootScope, $timeout, inViewService) {
 	scrollContainer.addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
-	$rootScope.$on('artistsLoaded', throttledOnScroll);
+	$rootScope.$on('collectionLoaded', throttledOnScroll);
 	$rootScope.$on('albumsLayoutChanged', throttledOnScroll);
 	$rootScope.$on('viewContentChanged', throttledOnScroll);
 	$rootScope.$watch('loading', throttledOnScroll);

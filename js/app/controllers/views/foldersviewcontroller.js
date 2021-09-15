@@ -10,10 +10,11 @@
 
 
 angular.module('Music').controller('FoldersViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
+	'$rootScope', '$scope', '$timeout', '$document', 'playlistService', 'libraryService',
+	function ($rootScope, $scope, $timeout, $document, playlistService, libraryService) {
 
 		$scope.folders = null;
+		$scope.rootFolder = null;
 		$rootScope.currentView = window.location.hash;
 
 		// When making the view visible, the folders are added incrementally step-by-step.
@@ -29,6 +30,17 @@ angular.module('Music').controller('FoldersViewController', [
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
+		// View-specific keyboard shortcuts
+		function handleKeyDown(e) {
+			// toggle flat/tree mode with alt+L
+			if (e.target == document.body && e.which == 76 && e.altKey) {
+				$timeout($scope.toggleFoldersFlatLayout);
+				return false;
+			}
+			return true;
+		}
+		$document.bind('keydown', handleKeyDown);
+
 		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
 			var startIndex = null;
 			if (startFromTrackId !== undefined) {
@@ -39,7 +51,7 @@ angular.module('Music').controller('FoldersViewController', [
 		}
 
 		$scope.onFolderTitleClick = function(folder) {
-			playPlaylist('folder-' + folder.id, folder.tracks);
+			playPlaylist('folder-' + folder.id, libraryService.getFolderTracks(folder, !$scope.foldersFlatLayout));
 		};
 
 		$scope.onTrackClick = function(trackId) {
@@ -47,22 +59,31 @@ angular.module('Music').controller('FoldersViewController', [
 			if ($scope.$parent.currentTrack && $scope.$parent.currentTrack.id === trackId) {
 				playlistService.publish('togglePlayback');
 			}
-			// on any other list item, start playing the folder from this item
+			// on any other list item, start playing from this item
 			else {
-				var currentListId = playlistService.getCurrentPlaylistId();
-				var folder = libraryService.getTrack(trackId).folder;
-
-				// start playing the folder from this track if the clicked track belongs
-				// to folder which is the current play scope
-				if (currentListId === 'folder-' + folder.id) {
-					playPlaylist(currentListId, folder.tracks, trackId);
+				// change the track within the playscope if the clicked track belongs to the current folder scope
+				if (trackBelongsToPlayingFolder(trackId)) {
+					playPlaylist(
+						playlistService.getCurrentPlaylistId(),
+						playlistService.getCurrentPlaylist(),
+						trackId);
 				}
-				// on any other track, start playing the collection from this track
+				// on any other case, start playing the collection from this track
 				else {
-					playPlaylist('folders', libraryService.getTracksInFolderOrder(), trackId);
+					playPlaylist('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout), trackId);
 				}
 			}
 		};
+
+		function trackBelongsToPlayingFolder(trackId) {
+			var currentListId = playlistService.getCurrentPlaylistId();
+			if (currentListId.startsWith('folder-')) {
+				var currentList = playlistService.getCurrentPlaylist();
+				return (0 <= _.findIndex(currentList, ['track.id', trackId]));
+			} else {
+				return false;
+			}
+		}
 
 		function updateHighlight(playlistId) {
 			// remove any previous highlight
@@ -143,7 +164,12 @@ angular.module('Music').controller('FoldersViewController', [
 			$timeout(initView);
 		}
 
-		subscribe('artistsLoaded', function () {
+		subscribe('collectionUpdating', function() {
+			$scope.folders = null;
+			$scope.rootFolder = null;
+		});
+
+		subscribe('collectionLoaded', function () {
 			$timeout(initView);
 		});
 
@@ -151,9 +177,20 @@ angular.module('Music').controller('FoldersViewController', [
 			$scope.incrementalLoadLimit = 0;
 			if ($scope.$parent) {
 				$scope.$parent.loadFoldersAndThen(function() {
-					$scope.folders = libraryService.getAllFolders();
-					$timeout(showMore);
+					$scope.folders = libraryService.getAllFoldersWithTracks();
+					$scope.rootFolder = libraryService.getRootFolder();
+					makeContentVisible();
 				});
+			}
+		}
+
+		function makeContentVisible() {
+			$rootScope.loading = true;
+			if ($scope.foldersFlatLayout) {
+				$timeout(showMore);
+			} else {
+				$scope.incrementalLoadLimit = 0;
+				$timeout(onViewReady);
 			}
 		}
 
@@ -169,17 +206,22 @@ angular.module('Music').controller('FoldersViewController', [
 				if ($scope.incrementalLoadLimit < $scope.folders.length) {
 					$timeout(showMore);
 				} else {
-					$rootScope.loading = false;
-					updateHighlight(playlistService.getCurrentPlaylistId());
-					$rootScope.$emit('viewActivated');
+					$timeout(onViewReady);
 				}
 			}
 		}
 
+		function onViewReady() {
+			$rootScope.loading = false;
+			updateHighlight(playlistService.getCurrentPlaylistId());
+			$rootScope.$emit('viewActivated');
+		}
+
+		subscribe('foldersLayoutChanged', makeContentVisible);
+
 		subscribe('deactivateView', function() {
-			$timeout(function() {
-				$rootScope.$emit('viewDeactivated');
-			});
+			$document.unbind('keydown', handleKeyDown);
+			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}
 ]);

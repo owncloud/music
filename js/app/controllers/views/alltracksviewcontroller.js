@@ -105,7 +105,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		// or once artists have been loaded
 		$timeout(initView);
 
-		subscribe('artistsLoaded', function () {
+		subscribe('collectionLoaded', function () {
 			// Nullify any previous tracks to force tracklist directive recreation
 			_tracks = null;
 			$scope.trackBuckets = null;

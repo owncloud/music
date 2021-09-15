@@ -10,6 +10,10 @@
  * @copyright Pauli Järvinen 2016 - 2021
  */
 
+/**
+ * This style file contains definitions which are common to many views or parts of the Music app.
+ */
+ 
 #notification a {
 	text-decoration: underline;
 }
@@ -55,29 +59,16 @@ body#body-user.dark {
 	padding-bottom: 60px;
 }
 
+.view-container h2 {
+	font-size: 21px;
+	line-height: 30px;
+}
+
 .play {
 	display: inline;
 	visibility: hidden;
 	opacity: .7;
 	height: 10px;
-}
-
-.artist-area {
-	clear: both;
-	padding-top: 15px;
-	display: table;
-	width: 100%;
-}
-
-.artist-area > h1 {
-	margin-left: 14px;
-	font-size: 34px;
-	line-height: 36px;
-}
-
-.artist-area > h1 span:hover,
-.artist-area > h1 span *:hover {
-	cursor: pointer;
 }
 
 h1 .play {
@@ -100,65 +91,10 @@ h2 span:hover .play {
 	visibility: visible
 }
 
-.album-area {
-	padding: 14px;
-	width: 480px;
-	float: left;
-}
-
-.album-area > h2 {
-	display: table-cell;
-	position: relative;
-	max-width: 424px;
-	font-size: 21px;
-	line-height: 30px;
-	padding-bottom: 21px;
-	white-space: nowrap;
-}
-
-.album-area > h2.placeholder {
-	overflow: hidden;
-}
-
-.album-area > h2 > span {
-	float: left;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.album-area > h2.with-actions:not(.busy) > span {
-	max-width: calc(100% - 24px);
-}
-
-.album-area > h2 span,
-.album-area > h2 button {
-	cursor: pointer;
-}
-
 .albumart {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
-}
-
-.album-area > .albumart,
-.album-area > .overlay {
-	float: left;
-	width: 190px;
-	height: 190px;
-	line-height: 190px;
-	font-size: 105px;
-	cursor: pointer;
-}
-
-.album-area > .overlay {
-	margin-left: -190px;
-	visibility: hidden;
-}
-
-.album-area .albumart:hover ~ .overlay,
-.album-area .overlay:hover {
-	visibility: visible;
 }
 
 .play-pause {
@@ -298,63 +234,4 @@ div:hover > .play-pause,
 
 .flip-vertically {
 	transform: scaleY(-1);
-}
-
-
-/* Albums view compact mode */
-.view-container.compact .artist-area h1 {
-	font-size: 24px;
-}
-
-.view-container.compact .album-area h2 {
-	padding-left: 48px;
-	font-size: 16px;
-	padding-bottom: 8px;
-	max-width: 360px;
-}
-
-.view-container.compact h1 .play {
-	margin-bottom: 1px;
-	width: 13px;
-	height: 13px;
-}
-
-.view-container.compact h2 .play {
-	width: 11px;
-	height: 11px;
-}
-
-.view-container.compact .album-area {
-	padding-top: 2px;
-	padding-bottom: 10px;
-	width: 387px;
-}
-
-.view-container.compact .album-area > .albumart,
-.view-container.compact .album-area > .overlay {
-	position: relative;
-	margin-top: -40px;
-	width: 40px;
-	height: 40px;
-	line-height: 40px;
-	font-size: 24px;
-}
-
-.view-container.compact .album-area > .overlay {
-	margin-left: 0;
-}
-
-/* Albums and Podcasts view single column layout when there's no room for two columns or more */
-.single-col .album-area {
-	width: 100%;
-}
-
-.single-col .album-area > h2 {
-	max-width: 80vw;
-}
-
-.single-col .album-area .track-list li > div > span {
-	white-space: normal;
-	vertical-align: top;
-	max-width: unset;
 }

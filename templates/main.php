@@ -21,6 +21,7 @@ HtmlUtil::addWebpackStyle('app');
 	HtmlUtil::printNgTemplate('views/podcastsview');
 	HtmlUtil::printNgTemplate('views/settingsview');
 	HtmlUtil::printNgTemplate('alphabetnavigation');
+	HtmlUtil::printNgTemplate('foldertreenode');
 	?>
 
 	<div ng-controller="MainController">

@@ -56,7 +56,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.folderCountText = function() {
 		if (libraryService.foldersLoaded()) {
-			var folderCount = libraryService.getAllFolders().length;
+			var folderCount = libraryService.getAllFoldersWithTracks().length;
 			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
 		} else {
 			return '';
@@ -107,18 +107,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$rootScope.loadingCollection = true;
 
 		$scope.artists = null; // the null-value tells the views that data is not yet available
-		$rootScope.$emit('artistsUpdating');
+		libraryService.setFolders(null); // invalidate any out-dated folders
+		$rootScope.$emit('collectionUpdating');
 
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
-			libraryService.setFolders(null); // invalidate any out-dated folders
 			$scope.artists = libraryService.getAllArtists();
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.
 			$timeout(function() {
-				$rootScope.$emit('artistsLoaded');
+				$rootScope.$emit('collectionLoaded');
 			});
 
 			// Load playlists once the collection has been loaded
@@ -386,6 +386,21 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.navigateTo('#');
 	};
 
+	// Flat/tree layout of the Folders view
+	$scope.foldersFlatLayout = (Cookies.get('oc_music_folders_flat') === 'true');
+	$scope.toggleFoldersFlatLayout = function(useFlat /*optional, invert current value if omitted */) {
+		if (typeof useFlat === 'undefined') {
+			useFlat = !$scope.foldersFlatLayout;
+		}
+		$scope.foldersFlatLayout = useFlat;
+		$rootScope.$emit('foldersLayoutChanged');
+
+		Cookies.set('oc_music_folders_flat', useFlat.toString(), { expires: 3650 });
+
+		// also navigate to the Folders view if not already open
+		$scope.navigateTo('#/folders');
+	};
+
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
 			$('#app-navigation-toggle').click();
@@ -401,6 +416,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// execute the callback after view activation if any
 		if (afterNavigationCallback !== null) {
 			$timeout(afterNavigationCallback);
+			afterNavigationCallback = null;
 		}
 	});
 

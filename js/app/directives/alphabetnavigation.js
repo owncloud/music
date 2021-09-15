@@ -127,7 +127,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 			var unsubscribeFuncs = [
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden),
-				$rootScope.$on('artistsLoaded', setUpTargets),
+				$rootScope.$on('collectionLoaded', setUpTargets),
 				$rootScope.$on('viewContentChanged', setUpTargets)
 			];
 

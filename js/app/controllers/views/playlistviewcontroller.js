@@ -157,7 +157,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		// Init happens either immediately (after making the loading animation visible)
 		// or once both aritsts and playlists have been loaded
 		$timeout(initViewFromRoute);
-		subscribe('artistsLoaded', initViewFromRoute);
+		subscribe('collectionLoaded', initViewFromRoute);
 		subscribe('playlistsLoaded', initViewFromRoute);
 
 		// Reload the view if the currently viewed playlist got updated (by import from file)

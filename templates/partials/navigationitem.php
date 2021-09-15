@@ -4,7 +4,7 @@
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
 							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
 							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums'),
-				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' }"
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
@@ -112,6 +112,20 @@
 					</li>
 					<li ng-click="$parent.toggleAlbumsCompactLayout(true)">
 						<a ng-class="$parent.albumsCompactLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"><span translate>Compact layout</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#/folders'">
+			<span class="icon-more"
+				ng-click="$parent.onPlaylistMoreButton('folders'); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'folders'">
+				<ul>
+					<li ng-click="$parent.toggleFoldersFlatLayout(false)">
+						<a ng-class="$parent.foldersFlatLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"><span translate>Tree layout</span></a>
+					</li>
+					<li ng-click="$parent.toggleFoldersFlatLayout(true)">
+						<a ng-class="$parent.foldersFlatLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"><span translate>Flat layout</span></a>
 					</li>
 				</ul>
 			</div>

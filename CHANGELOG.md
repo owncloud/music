@@ -5,6 +5,7 @@
 
 ### Changed
 - Use smaller heading size in the Folders and Genres views
+- Show the loading indicator on the web UI while check for new audio files is in progress
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

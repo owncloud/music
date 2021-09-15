@@ -91,7 +91,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.loadIndicatorVisible = function() {
-		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress);
+		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress || $scope.checkingUnscanned);
 		return $rootScope.loading
 			|| (contentNotReady && $scope.viewingLibrary());
 	};
@@ -198,7 +198,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	var previouslyScannedCount = 0;
 
 	$scope.updateFilesToScan = function() {
+		$scope.checkingUnscanned = true;
 		Restangular.one('scanstate').get().then(function(state) {
+			$scope.checkingUnscanned = false;
 			previouslyScannedCount = state.scannedCount;
 			filesToScan = state.unscannedFiles;
 			filesToScanIterator = 0;
@@ -206,6 +208,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			$scope.scanningScanned = previouslyScannedCount;
 			$scope.scanningTotal = previouslyScannedCount + filesToScan.length;
 			$scope.noMusicAvailable = ($scope.scanningTotal === 0);
+		},
+		function(error) {
+			$scope.checkingUnscanned = false;
+			OC.Notification.showTemporary(
+					gettextCatalog.getString('Failed to check for new audio files (error {{ code }}); check the server logs for details', {code: error.status})
+			);
 		});
 	};
 

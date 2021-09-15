@@ -49,4 +49,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 			</a>
 		</li>
 	</ul>
+
+	<!-- a hidden button which may be programmatically clicked to collapse the navigation pane on the mobile layout -->
+	<button id="hidden-close-app-navigation-button" style="display: none"></button>
 </div>

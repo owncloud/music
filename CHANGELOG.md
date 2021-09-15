@@ -11,6 +11,7 @@
   [#890](https://github.com/owncloud/music/pull/890)
 - Deprecated use of ReflectionType on Subsonic and Ampache APIs, breaking some API features on PHP8
   [#896](https://github.com/owncloud/music/issues/896)
+- Navigation pane auto-collapse on mobile layout not working on recent versions of Nextcloud
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

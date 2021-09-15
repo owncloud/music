@@ -313,6 +313,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showRadioHint = function() {
 		$rootScope.$emit('showRadioHint');
+		$scope.collapseNavigationPaneOnMobile();
 	};
 
 	$scope.showPodcastChannelDetails = function(channel) {
@@ -367,7 +368,13 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
 			$rootScope.$emit('deactivateView');
 		}
-		$scope.collapseNavigationPaneOnMobile();
+
+		// Most of our navigation pane items are not <a> or <button> elements, meaning that the core
+		// does not collapse the navigation pane automatically upon navigation. The Settings link is an
+		// exception. Firing the collapsing twice also caused some severe issues.
+		if (destination !== '#/settings') {
+			$scope.collapseNavigationPaneOnMobile();
+		}
 	};
 
 	// Compact/normal layout of the Albums view
@@ -403,7 +410,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
-			$('#app-navigation-toggle').click();
+			// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
+			$('#hidden-close-app-navigation-button').click();
 		}
 	};
 

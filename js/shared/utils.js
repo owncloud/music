@@ -94,6 +94,20 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Given a date-and-time string in UTC, return it in local timezone following the locale settings
+	 * of the user (from Nextcloud/ownCloud personal settings).
+	 */
+	formatDateTime: function(timestamp) {
+		if (!timestamp) {
+			return null;
+		} else {
+			var date = new Date(timestamp + 'Z');
+			var locale = OC.getLocale().replaceAll('_', '-'); // OC returns e.g. 'en_US' but toLocaleString expects 'en-US'
+			return date.toLocaleString(locale);
+		}
+	},
+
+	/**
 	 * Format a file size given as bytes in human-readable format.
 	 * Source: https://stackoverflow.com/a/20732091/4348850
 	 */

@@ -19,15 +19,6 @@ angular.module('Music').controller('PodcastDetailsController', [
 		}
 		resetContents();
 
-		function formatTimestamp(timestamp) {
-			if (!timestamp) {
-				return null;
-			} else {
-				var date = new Date(timestamp + 'Z');
-				return date.toLocaleString();
-			}
-		}
-
 		const patternLooksLikeHtml = /<\/?[a-z][\s\S]*>/i;
 		const patternExtractUrl = /((?:http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/ig; // source: https://stackoverflow.com/a/6041965/4348850
 		const patternLinkStart = /<a href=/ig;
@@ -130,7 +121,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 			case 'bit_rate':		return OCA.Music.Utils.formatBitrate(value);
 			case 'published':		// fall through
 			case 'last_build_date':	// fall through
-			case 'update_checked':	return formatTimestamp(value);
+			case 'update_checked':	return OCA.Music.Utils.formatDateTime(value);
 			case 'link_url':		// fall through
 			case 'rss_url':			// fall through
 			case 'stream_url':		return `<a href="${value}" target="_blank">${value}</a>`;

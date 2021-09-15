@@ -23,15 +23,6 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		}
 		resetContents();
 
-		function formatTimestamp(timestamp) {
-			if (!timestamp) {
-				return null;
-			} else {
-				var date = new Date(timestamp + 'Z');
-				return date.toLocaleString();
-			}
-		}
-
 		$scope.$watch('contentId', function(stationId) {
 			if (!$scope.station || stationId != $scope.station.id) {
 				resetContents();
@@ -51,11 +42,11 @@ angular.module('Music').controller('RadioStationDetailsController', [
 		});
 
 		$scope.$watch('station.created', function(created) {
-			$scope.createdDate = formatTimestamp(created);
+			$scope.createdDate = OCA.Music.Utils.formatDateTime(created);
 		});
 
 		$scope.$watch('station.updated', function(updated) {
-			$scope.updatedDate = formatTimestamp(updated);
+			$scope.updatedDate = OCA.Music.Utils.formatDateTime(updated);
 		});
 
 		// Enter the edit mode

@@ -22,23 +22,18 @@ angular.module('Music').controller('PlaylistDetailsController', [
 		}
 		resetContents();
 
-		function formatTimestamp(timestamp) {
-			var date = new Date(timestamp + 'Z');
-			return date.toLocaleString();
-		}
-
 		$scope.$watch('contentId', function(playlistId) {
 			if (!$scope.playlist || playlistId != $scope.playlist.id) {
 				resetContents();
 				$scope.playlist = libraryService.getPlaylist(playlistId);
 
-				$scope.createdDate = formatTimestamp($scope.playlist.created);
-				$scope.updatedDate = formatTimestamp($scope.playlist.updated);
+				$scope.createdDate = OCA.Music.Utils.formatDateTime($scope.playlist.created);
+				$scope.updatedDate = OCA.Music.Utils.formatDateTime($scope.playlist.updated);
 			}
 		});
 
 		$scope.$watch('playlist.updated', function(updated) {
-			$scope.updatedDate = formatTimestamp(updated);
+			$scope.updatedDate = OCA.Music.Utils.formatDateTime(updated);
 		});
 
 		$scope.$watchCollection('playlist.tracks', function() {

@@ -506,11 +506,9 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Check the availability of all the indexed audio files of the user. Remove
 	 * from the index any which are not available.
-	 * @param string $userId
-	 * @param Folder $userHome
 	 * @return Number of removed files
 	 */
-	public function removeUnavailableFiles(string $userId, Folder $userHome) : int {
+	public function removeUnavailableFiles(string $userId) : int {
 		$indexedFiles = $this->getScannedFileIds($userId);
 		$availableFiles = $this->getAllMusicFileIds($userId);
 		$unavailableFiles = Util::arrayDiff($indexedFiles, $availableFiles);
@@ -522,20 +520,6 @@ class Scanner extends PublicEmitter {
 			$this->deleteAudio($unavailableFiles, [$userId]);
 		}
 		return $count;
-	}
-
-	/**
-	 * Remove all such audio files from the collection which do not reside
-	 * under the configured music path.
-	 * @param string $userId
-	 */
-	private function removeFilesNotUnderMusicFolder(string $userId) : void {
-		$indexedFiles = $this->getScannedFileIds($userId);
-		$validFiles = $this->getAllMusicFileIds($userId);
-		$filesToRemove = Util::arrayDiff($indexedFiles, $validFiles);
-		if (\count($filesToRemove)) {
-			$this->deleteAudio($filesToRemove, [$userId]);
-		}
 	}
 
 	/**
@@ -610,7 +594,7 @@ class Scanner extends PublicEmitter {
 				$this->logger->log('New collection path is (grand) parent of old path, previous content is still valid', 'debug');
 			} elseif ($oldFolder->isSubNode($newFolder)) {
 				$this->logger->log('Old collection path is (grand) parent of new path, checking the validity of previous content', 'debug');
-				$this->removeFilesNotUnderMusicFolder($userId);
+				$this->removeUnavailableFiles($userId);
 			} else {
 				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
 				$this->maintenance->resetDb($userId);

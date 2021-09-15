@@ -13,7 +13,7 @@
  * @copyright Thomas Müller 2013
  * @copyright Bart Visscher 2013
  * @copyright Leizh 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Command;
@@ -97,7 +97,7 @@ class Scan extends BaseCommand {
 
 		if ($cleanObsolete) {
 			$output->writeln("Checking availability of previously scanned files of <info>$user</info>...");
-			$removedCount = $this->scanner->removeUnavailableFiles($user, $userHome);
+			$removedCount = $this->scanner->removeUnavailableFiles($user);
 			if ($removedCount > 0) {
 				$output->writeln("Removed $removedCount tracks which are no longer within the library of <info>$user</info>");
 			}

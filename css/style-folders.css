@@ -10,6 +10,7 @@
 
 .folder-tree {
 	margin-top: 16px;
+	margin-right: -40px; /* utilize the space reserved for the alphabet navigation */
 }
 
 .folder-tree .subfolders {

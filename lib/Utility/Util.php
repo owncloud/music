@@ -148,8 +148,8 @@ class Util {
 	public static function startsWith(string $string, string $potentialStart, bool $ignoreCase=false) : bool {
 		$actualStart = \substr($string, 0, \strlen($potentialStart));
 		if ($ignoreCase) {
-			$actualStart= \mb_strtolower($actualStart);
-			$potentialStart= \mb_strtolower($potentialStart);
+			$actualStart = \mb_strtolower($actualStart);
+			$potentialStart = \mb_strtolower($potentialStart);
 		}
 		return $actualStart === $potentialStart;
 	}

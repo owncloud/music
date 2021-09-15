@@ -314,7 +314,6 @@ class AlbumMapper extends BaseMapper {
 	 */
 	public function findAlbumCover(int $albumId, int $parentFolderId) : bool {
 		$return = false;
-		$coverNames = ['cover', 'albumart', 'front', 'folder'];
 		$imagesSql = 'SELECT `fileid`, `name`
 					FROM `*PREFIX*filecache`
 					JOIN `*PREFIX*mimetypes` ON `*PREFIX*mimetypes`.`id` = `*PREFIX*filecache`.`mimetype`
@@ -322,24 +321,19 @@ class AlbumMapper extends BaseMapper {
 		$params = [$parentFolderId];
 		$result = $this->execute($imagesSql, $params);
 		$images = $result->fetchAll();
-		if (\count($images)) {
-			\usort($images, function ($imageA, $imageB) use ($coverNames) {
-				$nameA = \strtolower($imageA['name']);
-				$nameB = \strtolower($imageB['name']);
-				$indexA = PHP_INT_MAX;
-				$indexB = PHP_INT_MAX;
+		if (\count($images) > 0) {
+			$getImageRank = function($imageName) {
+				$coverNames = ['cover', 'albumart', 'album', 'front', 'folder'];
 				foreach ($coverNames as $i => $coverName) {
-					if ($indexA === PHP_INT_MAX && \strpos($nameA, $coverName) === 0) {
-						$indexA = $i;
-					}
-					if ($indexB === PHP_INT_MAX && \strpos($nameB, $coverName) === 0) {
-						$indexB = $i;
-					}
-					if ($indexA !== PHP_INT_MAX  && $indexB !== PHP_INT_MAX) {
-						break;
+					if (Util::startsWith($imageName, $coverName, /*$ignoreCase=*/true)) {
+						return $i;
 					}
 				}
-				return $indexA > $indexB;
+				return \count($coverNames);
+			};
+
+			\usort($images, function ($imageA, $imageB) use ($getImageRank) {
+				return $getImageRank($imageA['name']) <=> $getImageRank($imageB['name']);
 			});
 			$imageId = (int)$images[0]['fileid'];
 			$this->setCover($imageId, $albumId);

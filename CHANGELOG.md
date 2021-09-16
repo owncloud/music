@@ -7,11 +7,12 @@
 - Use smaller heading size in the Folders and Genres views
 - Show the loading indicator on the web UI while check for new audio files is in progress
 - Format dates and times in the details pane according the locale from the user settings
+- Minor optimizations on the scanning speed 
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"
   [#890](https://github.com/owncloud/music/pull/890)
-- Deprecated use of ReflectionType on Subsonic and Ampache APIs, breaking some API features on PHP8
+- Deprecated use of ReflectionType on Subsonic and Ampache APIs which broke some API features on PHP8
   [#896](https://github.com/owncloud/music/issues/896)
 - Navigation pane auto-collapse on mobile layout not working on recent versions of Nextcloud
 

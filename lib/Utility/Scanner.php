@@ -73,16 +73,8 @@ class Scanner extends PublicEmitter {
 
 	/**
 	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
-	 * @param File $file the file
-	 * @param string $userId
-	 * @param Folder $userHome
-	 * @param string|null $filePath Deduced from $file if not given
 	 */
-	public function update(File $file, string $userId, Folder $userHome, string $filePath = null) : void {
-		if ($filePath === null) {
-			$filePath = $file->getPath();
-		}
-
+	public function update(File $file, string $userId, Folder $userHome, string $filePath) : void {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
@@ -100,7 +92,7 @@ class Scanner extends PublicEmitter {
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
 		} elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
-			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype);
+			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype, /*partOfScan=*/false);
 		}
 	}
 
@@ -121,7 +113,7 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype) : void {
+	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype, bool $partOfScan) : void {
 		$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
 		$meta = $this->extractMetadata($file, $userHome, $filePath);
@@ -136,8 +128,7 @@ class Scanner extends PublicEmitter {
 		$albumArtistId = $albumArtist->getId();
 
 		// add/update album and get album entity
-		$album = $this->albumBusinessLayer->addOrUpdateAlbum(
-				$meta['album'], $albumArtistId, $userId);
+		$album = $this->albumBusinessLayer->addOrUpdateAlbum($meta['album'], $albumArtistId, $userId);
 		$albumId = $album->getId();
 
 		// add/update genre and get genre entity
@@ -150,19 +141,24 @@ class Scanner extends PublicEmitter {
 
 		// if present, use the embedded album art as cover for the respective album
 		if ($meta['picture'] != null) {
-			$this->albumBusinessLayer->setCover($fileId, $albumId);
-			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
+			// during scanning, don't repeatedly change the file providing the art for the album
+			if ($album->getCoverFileId() === null || !$partOfScan) {
+				$this->albumBusinessLayer->setCover($fileId, $albumId);
+				$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
+			}
 		}
 		// if this file is an existing file which previously was used as cover for an album but now
 		// the file no longer contains any embedded album art
-		elseif ($this->albumBusinessLayer->albumCoverIsOneOfFiles($albumId, [$fileId])) {
+		elseif ($album->getCoverFileId() === $fileId) {
 			$this->albumBusinessLayer->removeCovers([$fileId]);
 			$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
 			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 		}
 
-		// invalidate the cache as the music collection was changed
-		$this->cache->remove($userId, 'collection');
+		if (!$partOfScan) {
+			// invalidate the cache as the music collection was changed
+			$this->cache->remove($userId, 'collection');
+		}
 
 		// debug logging
 		$this->logger->log('imported entities - ' .
@@ -482,7 +478,7 @@ class Scanner extends PublicEmitter {
 			if (\count($fileNodes) > 0) {
 				$file = $fileNodes[0];
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
-				$this->update($file, $userId, $userHome);
+				$this->updateAudio($file, $userId, $userHome, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
 				if ($debugOutput) {
 					$memAfter = \memory_get_usage(true);
 					$memDelta = $memAfter - $memBefore;
@@ -499,6 +495,9 @@ class Scanner extends PublicEmitter {
 
 		// reset execution time limit
 		\set_time_limit($executionTime);
+
+		// invalidate the cache as the collection has changed
+		$this->cache->remove($userId, 'collection');
 
 		return $count;
 	}

@@ -90,7 +90,7 @@ class FileHooks {
 			// collection. The last condition is especially to prevent problems when creating new user
 			// and the default file set contains one or more audio files (see the discussion in #638).
 			if (!empty($userId) && !empty($userFolder) && self::userHasMusicLib($userId, $container)) {
-				$scanner->update($node, $userId, $userFolder);
+				$scanner->update($node, $userId, $userFolder, $node->getPath());
 			}
 		}
 	}

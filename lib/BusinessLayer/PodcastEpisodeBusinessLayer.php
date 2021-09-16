@@ -64,7 +64,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 		$episode->setUserId($userId);
 		$episode->setChannelId($channelId);
 
-		return $this->mapper->insertOrUpdate($episode);
+		return $this->mapper->updateOrInsert($episode);
 	}
 
 	private static function parseEpisodeFromXml(\SimpleXMLElement $xmlNode, Logger $logger) : PodcastEpisode {

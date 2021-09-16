@@ -220,7 +220,7 @@ abstract class BaseMapper extends Mapper {
 		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
 			throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 		} catch (\OCP\DB\Exception $e) {
-			// Nextcloud 21
+			// Nextcloud 21+
 			if ($e->getReason() == \OCP\DB\Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
 				throw new UniqueConstraintViolationException($e->getMessage(), $e->getCode(), $e);
 			} else {
@@ -242,6 +242,8 @@ abstract class BaseMapper extends Mapper {
 	/**
 	 * Insert an entity, or if an entity with the same identity already exists,
 	 * update the existing entity.
+	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
 	 * @return Entity The inserted or updated entity, containing also the id field
 	 */
 	public function insertOrUpdate(Entity $entity) : Entity {
@@ -249,10 +251,52 @@ abstract class BaseMapper extends Mapper {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
 			$existingEntity = $this->findUniqueEntity($entity);
-			$entity->setId($existingEntity->getId());
-			$entity->setCreated($existingEntity->getCreated());
-			return $this->update($entity);
+			if (self::entityNeedsUpdate($existingEntity, $entity)) {
+				$entity->setId($existingEntity->getId());
+				$entity->setCreated($existingEntity->getCreated());
+				return $this->update($entity);
+			} else {
+				return $existingEntity;
+			}
 		}
+	}
+
+	/**
+	 * Update an entity whose unique constraint fields match the given entity. If such entity is not found,
+	 * a new entity is inserted.
+	 * Note: The functions insertOrUpate and updateOrInsert get the exactly same thing done. The only difference is
+	 * that the former is optimized for cases where the entity doens't exist and the latter for cases where it does exist.
+	 * @return Entity The inserted or updated entity, containing also the id field
+	 */
+	public function updateOrInsert(Entity $entity) : Entity {
+		try {
+			$existingEntity = $this->findUniqueEntity($entity);
+			if (self::entityNeedsUpdate($existingEntity, $entity)) {
+				$entity->setId($existingEntity->getId());
+				return $this->update($entity);
+			} else {
+				return $existingEntity;
+			}
+		} catch (DoesNotExistException $ex) {
+			try {
+				return $this->insert($entity);
+			} catch (UniqueConstraintViolationException $ex) {
+				// the conflicting entry didn't exist an eyeblink ago but now it does
+				// => this is essentially a concurrent update and it is anyway non-deterministic, which
+				//    update happens last; cancel this update
+				return $this->findUniqueEntity($entity);
+			}
+		}
+	}
+
+	protected static function entityNeedsUpdate(Entity $oldData, Entity $newData) {
+		$fields = $newData->getUpdatedFields();
+		foreach ($fields as $field => $updated) {
+			if ($oldData->$field != $newData->$field) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

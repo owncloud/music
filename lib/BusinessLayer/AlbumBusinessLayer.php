@@ -227,7 +227,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$hash = \hash('md5', "$lowerName|$albumArtistId");
 		$album->setHash($hash);
 
-		return $this->mapper->insertOrUpdate($album);
+		return $this->mapper->updateOrInsert($album);
 	}
 
 	/**

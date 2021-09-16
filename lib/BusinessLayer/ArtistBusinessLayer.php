@@ -72,7 +72,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 		$artist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$artist->setUserId($userId);
 		$artist->setHash(\hash('md5', \mb_strtolower($name ?? '')));
-		return $this->mapper->insertOrUpdate($artist);
+		return $this->mapper->updateOrInsert($artist);
 	}
 
 	/**

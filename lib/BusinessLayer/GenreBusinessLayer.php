@@ -53,7 +53,7 @@ class GenreBusinessLayer extends BusinessLayer {
 		$genre->setName($name);
 		$genre->setLowerName(\mb_strtolower($name ?? ''));
 		$genre->setUserId($userId);
-		return $this->mapper->insertOrUpdate($genre);
+		return $this->mapper->updateOrInsert($genre);
 	}
 
 	/**

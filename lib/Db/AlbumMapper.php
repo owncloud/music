@@ -19,6 +19,10 @@ use \OCA\Music\Utility\Util;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\IDBConnection;
 
+/**
+ * Type hint a base class methdo to help Scrutinizer
+ * @method Album updateOrInsert(Album $album)
+ */
 class AlbumMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_albums', '\OCA\Music\Db\Album', 'name');

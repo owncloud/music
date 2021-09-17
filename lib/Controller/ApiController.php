@@ -282,10 +282,6 @@ class ApiController extends Controller {
 
 	/**
 	 * Return given album in the Shiva API format
-	 * @param Album $album
-	 * @param boolean $includeTracks
-	 * @param boolean $includeAlbums
-	 * @return array
 	 */
 	private function albumToApi(Album $album, bool $includeTracks, bool $includeArtists) : array {
 		$albumInApi = $album->toAPI($this->urlGenerator, $this->l10n);

@@ -154,9 +154,6 @@ class PlaylistApiController extends Controller {
 	/**
 	 * update a playlist
 	 * @param int $id playlist ID
-	 * @param string|null $name
-	 * @param string|null $comment
-	 * @param string|null $tracks
 	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired

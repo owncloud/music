@@ -505,7 +505,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Check the availability of all the indexed audio files of the user. Remove
 	 * from the index any which are not available.
-	 * @return Number of removed files
+	 * @return int Number of removed files
 	 */
 	public function removeUnavailableFiles(string $userId) : int {
 		$indexedFiles = $this->getScannedFileIds($userId);

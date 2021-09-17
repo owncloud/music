@@ -181,7 +181,7 @@ class PodcastService {
 		if ($channel !== null) {
 			$xmlTree = null;
 			$content = self::fetchUrl($channel->getRssUrl());
-			if ($content === null) {
+			if ($content === false) {
 				$status = self::STATUS_INVALID_URL;
 			} else {
 				$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);

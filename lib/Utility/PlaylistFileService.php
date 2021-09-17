@@ -211,7 +211,7 @@ class PlaylistFileService {
 	 * Parse a playlist file and return the contained files
 	 * @param int $fileId playlist file ID
 	 * @param Folder $baseFolder ancestor folder of the playlist and the track files (e.g. user folder)
-	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
+	 * @throws \OCP\Files\NotFoundException if the $fileId is not a valid file under the $baseFolder
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 * @return array
 	 */

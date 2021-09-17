@@ -188,7 +188,7 @@ class PodcastEpisode extends Entity {
 		}
 	}
 
-	/** @return ?int bits per second (bps) */
+	/** @return ?float bits per second (bps) */
 	public function getBitrate() : ?float {
 		if (empty($this->size) || empty($this->duration)) {
 			return null;

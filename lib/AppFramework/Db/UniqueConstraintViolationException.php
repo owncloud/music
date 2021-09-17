@@ -19,10 +19,6 @@ namespace OCA\Music\AppFramework\Db;
  */
 class UniqueConstraintViolationException extends \Exception {
 
-	/**
-	 * Constructor
-	 * @param string $msg the error message
-	 */
 	public function __construct(string $message = "", int $code = 0, \Throwable $previous = null) {
 		parent::__construct($message, $code, $previous);
 	}

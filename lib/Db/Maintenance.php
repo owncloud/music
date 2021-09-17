@@ -69,7 +69,7 @@ class Maintenance {
 	 * @param string $tgtTableKey
 	 * @param string $refTableKey
 	 * @param string|null $extraCond
-	 * @return Number of removed rows
+	 * @return int Number of removed rows
 	 */
 	private function removeUnreferencedDbRows($tgtTable, $refTable, $tgtTableKey, $refTableKey, $extraCond=null) {
 		$tgtTable = '*PREFIX*' . $tgtTable;
@@ -91,7 +91,7 @@ class Maintenance {
 
 	/**
 	 * Remvoe tracks which do not have corresponding file in the file system
-	 * @return Number of removed tracks
+	 * @return int Number of removed tracks
 	 */
 	private function removeObsoleteTracks() {
 		return $this->removeUnreferencedDbRows('music_tracks', 'filecache', 'file_id', 'fileid');
@@ -99,7 +99,7 @@ class Maintenance {
 
 	/**
 	 * Remove tracks which belong to non-existing album
-	 * @return Number of removed tracks
+	 * @return int Number of removed tracks
 	 */
 	private function removeTracksWithNoAlbum() {
 		return $this->removeUnreferencedDbRows('music_tracks', 'music_albums', 'album_id', 'id');
@@ -107,7 +107,7 @@ class Maintenance {
 
 	/**
 	 * Remove tracks which are performed by non-existing artist
-	 * @return Number of removed tracks
+	 * @return int Number of removed tracks
 	 */
 	private function removeTracksWithNoArtist() {
 		return $this->removeUnreferencedDbRows('music_tracks', 'music_artists', 'artist_id', 'id');
@@ -115,7 +115,7 @@ class Maintenance {
 
 	/**
 	 * Remove albums which have no tracks
-	 * @return Number of removed albums
+	 * @return int Number of removed albums
 	 */
 	private function removeObsoleteAlbums() {
 		return $this->removeUnreferencedDbRows('music_albums', 'music_tracks', 'id', 'album_id');
@@ -123,7 +123,7 @@ class Maintenance {
 
 	/**
 	 * Remove albums which have a non-existing album artist
-	 * @return Number of removed albums
+	 * @return int Number of removed albums
 	 */
 	private function removeAlbumsWithNoArtist() {
 		return $this->removeUnreferencedDbRows('music_albums', 'music_artists', 'album_artist_id', 'id');
@@ -131,7 +131,7 @@ class Maintenance {
 
 	/**
 	 * Remove artists which have no albums and no tracks
-	 * @return Number of removed artists
+	 * @return int Number of removed artists
 	 */
 	private function removeObsoleteArtists() {
 		return $this->db->executeUpdate(
@@ -145,7 +145,7 @@ class Maintenance {
 
 	/**
 	 * Remove bookmarks referring tracks which do not exist
-	 * @return Number of removed bookmarks
+	 * @return int Number of removed bookmarks
 	 */
 	private function removeObsoleteBookmarks() {
 		return $this->removeUnreferencedDbRows('music_bookmarks', 'music_tracks', 'entry_id', 'id', '`type` = 1')
@@ -154,7 +154,7 @@ class Maintenance {
 
 	/**
 	 * Remove podcast episodes which have a non-existing podcast channel
-	 * @return Number of removed albums
+	 * @return int Number of removed albums
 	 */
 	private function removeObsoletePodcastEpisodes() {
 		return $this->removeUnreferencedDbRows('music_podcast_episodes', 'music_podcast_channels', 'channel_id', 'id');
@@ -190,10 +190,8 @@ class Maintenance {
 
 	/**
 	 * Wipe clean the music database of the given user, or all users
-	 * @param string $userId
-	 * @param boolean $allUsers
 	 */
-	public function resetDb($userId, $allUsers = false) {
+	public function resetDb(?string $userId, bool $allUsers = false) {
 		if ($userId && $allUsers) {
 			throw new \InvalidArgumentException('userId should be null if allUsers targeted');
 		}

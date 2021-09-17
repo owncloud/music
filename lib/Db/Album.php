@@ -223,7 +223,7 @@ class Album extends Entity {
 			'cover'         => $this->coverToAPI($urlGenerator),
 			'id'            => $this->getId(),
 			'uri'           => $this->getUri($urlGenerator),
-			'slug'          => $this->getid() . '-' .$this->slugify('name'),
+			'slug'          => $this->getId() . '-' .$this->slugify('name'),
 			'albumArtistId' => $this->getAlbumArtistId(),
 			'artists'       => $this->getArtists($urlGenerator)
 		];

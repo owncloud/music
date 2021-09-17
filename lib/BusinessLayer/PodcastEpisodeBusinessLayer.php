@@ -40,7 +40,7 @@ class PodcastEpisodeBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * @param int|int[] $channelId
+	 * @param int|int[] $channelIds
 	 * @return PodcastEpisode[]
 	 */
 	public function findAllByChannel($channelIds, string $userId, ?int $limit=null, ?int $offset=null) : array {

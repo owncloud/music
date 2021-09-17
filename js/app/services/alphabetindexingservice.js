@@ -34,7 +34,7 @@ angular.module('Music').service('alphabetIndexingService', [function() {
 			if (_indexChars[charIdx] === '…') {
 				return _isVariantOfZ(initialChar) || this.titlePrecedesIndexCharAt(title, charIdx-1);
 			} else {
-				return initialChar.localeCompare(_indexChars[charIdx]) < 0;
+				return initialChar.localeCompare(_indexChars[charIdx], OCA.Music.Utils.getLocale()) < 0;
 			}
 		},
 

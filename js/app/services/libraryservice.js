@@ -31,7 +31,7 @@ angular.module('Music').service('libraryService', [function() {
 	function sortByTextField(items, field) {
 		var getSortProperty = _.property(field);
 		items.sort(function(a, b) {
-			return getSortProperty(a).localeCompare(getSortProperty(b));
+			return getSortProperty(a).localeCompare(getSortProperty(b), OCA.Music.Utils.getLocale());
 		});
 	}
 

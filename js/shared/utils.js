@@ -33,6 +33,13 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Get the selected locale of the user from Nextcloud/ownCloud personal settings
+	 */
+	getLocale: function() {
+		return OC.getLocale().replaceAll('_', '-'); // OC returns e.g. 'en_US' but the javascript APIs expect 'en-US'
+	},
+
+	/**
 	 * Capitalizes the firts character of the given string
 	 */
 	capitalize: function(str) {
@@ -102,8 +109,7 @@ OCA.Music.Utils = {
 			return null;
 		} else {
 			var date = new Date(timestamp + 'Z');
-			var locale = OC.getLocale().replaceAll('_', '-'); // OC returns e.g. 'en_US' but toLocaleString expects 'en-US'
-			return date.toLocaleString(locale);
+			return date.toLocaleString(OCA.Music.Utils.getLocale());
 		}
 	},
 

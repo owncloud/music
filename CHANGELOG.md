@@ -7,6 +7,7 @@
 - Use smaller heading size in the Folders and Genres views
 - Show the loading indicator on the web UI while check for new audio files is in progress
 - Format dates and times in the details pane according the locale from the user settings
+- All alphabetical sorting on the web UI now respects the rules of the locale from the user settings
 - Minor optimizations on the scanning speed 
 
 ### Fixed

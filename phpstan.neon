@@ -1,0 +1,8 @@
+parameters:
+    level: 5
+    paths:
+        - lib
+    scanDirectories:
+        - vendor/christophwurst/nextcloud
+        - stubs
+        - 3rdparty

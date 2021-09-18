@@ -408,6 +408,8 @@ class SubsonicController extends Controller {
 			$entity = $this->artistBusinessLayer->find($entityId, $this->userId);
 		} elseif ($type == 'podcast_channel') {
 			$entity = $this->podcastService->getChannel($entityId, $this->userId, /*$includeEpisodes=*/ false);
+		} elseif ($type == 'pl') {
+			$entity = $this->playlistBusinessLayer->find($entityId, $this->userId);
 		}
 
 		if (!empty($entity)) {
@@ -1261,8 +1263,8 @@ class SubsonicController extends Controller {
 			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
 			'comment' => $playlist->getComment() ?: '',
 			'created' => Util::formatZuluDateTime($playlist->getCreated()),
-			'changed' => Util::formatZuluDateTime($playlist->getUpdated())
-			//'coverArt' => '' // added in API 1.11.0 but is optional even there
+			'changed' => Util::formatZuluDateTime($playlist->getUpdated()),
+			'coverArt' => 'pl-' . $playlist->getId() // work around: DSub always fetches the art using ID like "pl-NNN" even if we  use some other format here
 		];
 	}
 

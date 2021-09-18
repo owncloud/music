@@ -14,10 +14,12 @@ namespace OCA\Music\Utility;
 
 use \OCA\Music\AppFramework\Core\Logger;
 use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Cache;
 use \OCA\Music\Db\PodcastChannel;
+use \OCA\Music\Db\Playlist;
 
 use \OCP\Files\Folder;
 use \OCP\Files\File;
@@ -30,6 +32,7 @@ use \OCP\IConfig;
 class CoverHelper {
 	private $extractor;
 	private $cache;
+	private $albumBusinessLayer;
 	private $coverSize;
 	private $logger;
 
@@ -39,10 +42,12 @@ class CoverHelper {
 	public function __construct(
 			Extractor $extractor,
 			Cache $cache,
+			AlbumBusinessLayer $albumBusinessLayer,
 			IConfig $config,
 			Logger $logger) {
 		$this->extractor = $extractor;
 		$this->cache = $cache;
+		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->logger = $logger;
 
 		// Read the cover size to use from config.php or use the default
@@ -52,7 +57,7 @@ class CoverHelper {
 	/**
 	 * Get cover image of an album or and artist
 	 *
-	 * @param Album|Artist|PodcastChannel $entity
+	 * @param Album|Artist|PodcastChannel|Playlist $entity
 	 * @param string $userId
 	 * @param Folder $rootFolder
 	 * @param int|null $size Desired (max) image size, null to use the default.
@@ -61,8 +66,12 @@ class CoverHelper {
 	 * @return array|null Image data in format accepted by \OCA\Music\Http\FileResponse
 	 */
 	public function getCover($entity, string $userId, Folder $rootFolder, int $size=null) : ?array {
-		// Skip using cache in case the cover is requested in specific size
-		if ($size !== null) {
+		if ($entity instanceof Playlist) {
+			$trackIds = $entity->getTrackIdsAsArray();
+			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $userId, 4);
+			return $this->getCoverMosaic($albums, $userId, $rootFolder);
+		} elseif ($size !== null) {
+			// Skip using cache in case the cover is requested in specific size
 			return $this->readCover($entity, $rootFolder, $size);
 		} else {
 			$dataAndHash = $this->getCoverAndHash($entity, $userId, $rootFolder);

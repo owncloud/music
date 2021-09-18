@@ -479,6 +479,7 @@ class Music extends App {
 			return new CoverHelper(
 				$c->query('ExtractorGetID3'),
 				$c->query('DbCache'),
+				$c->query('AlbumBusinessLayer'),
 				$c->query('Config'),
 				$c->query('Logger')
 			);

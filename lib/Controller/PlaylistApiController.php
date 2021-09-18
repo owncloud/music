@@ -159,11 +159,9 @@ class PlaylistApiController extends Controller {
 	public function getCover(int $id) {
 		try {
 			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
-			$trackIds = $playlist->getTrackIdsAsArray();
-			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $this->userId, 4);
+			$cover = $this->coverHelper->getCover($playlist, $this->userId, $this->userFolder);
 
-			if (\count($albums) > 0) {
-				$cover = $this->coverHelper->getCoverMosaic($albums, $this->userId, $this->userFolder);
+			if ($cover !== null) {
 				return new FileResponse($cover);
 			} else {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND, 'The playlist has no cover art');

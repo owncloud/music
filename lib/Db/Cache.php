@@ -129,7 +129,7 @@ class Cache {
 		$result = $this->db->executeQuery($sql, [$key, $data]);
 		$rows = $result->fetchAll();
 		$result->closeCursor();
-		
+
 		return \count($rows) ? $rows[0]['user_id'] : null;
 	}
 

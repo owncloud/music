@@ -11,7 +11,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
  * @copyright Volkan Gezer 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -21,7 +21,7 @@ use \OCP\IDBConnection;
 
 class PlaylistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_playlists', '\OCA\Music\Db\Playlist', 'name');
+		parent::__construct($db, 'music_playlists', Playlist::class, 'name');
 	}
 
 	/**

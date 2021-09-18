@@ -7,32 +7,35 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 namespace OCA\Music\Db;
 
-use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
 /**
  * Note: Despite the name, this mapper and the related database table are
- *       used both for Subsonic and Ampache users.
+ *       used both for Subsonic and Ampache users. Also, this isn't really
+ *       a mapper either, since this does not extend OCP\AppFramework\Db\Mapper.
  */
-class AmpacheUserMapper extends Mapper {
+class AmpacheUserMapper {
+	private $db;
+
 	public function __construct(IDBConnection $db) {
-		// there is no entity for this mapper -> '' as entity class name
-		parent::__construct($db, 'music_ampache_users', '');
+		$this->db = $db;
 	}
 
 	/**
-	 * @param string $userId
+	 * @return string[]
 	 */
-	public function getPasswordHashes($userId) {
+	public function getPasswordHashes(string $userId) : array {
 		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';
 		$params = [$userId];
-		$result = $this->execute($sql, $params);
+		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();
 
 		$hashes = [];
@@ -44,48 +47,39 @@ class AmpacheUserMapper extends Mapper {
 	}
 
 	/**
-	 * @param string $userId
-	 * @param string $hash
-	 * @param string $description
+	 * @return ?int ID of the added key on null on failure (which is highly unexpected)
 	 */
-	public function addUserKey($userId, $hash, $description) {
+	public function addUserKey(string $userId, string $hash, ?string $description) : ?int {
 		$sql = 'INSERT INTO `*PREFIX*music_ampache_users` '.
 			'(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
 		$params = [$userId, $hash, $description];
-		$this->execute($sql, $params);
+		$this->db->executeUpdate($sql, $params);
 
 		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users` '.
 				'WHERE `user_id` = ? AND `hash` = ?';
 		$params = [$userId, $hash];
-		$result = $this->execute($sql, $params, 1);
+		$result = $this->db->executeQuery($sql, $params);
 		$row = $result->fetch();
 
 		if ($row === false) {
 			return null;
 		}
 
-		return $row['id'];
+		return (int)$row['id'];
 	}
 
-	/**
-	 * @param string $userId
-	 * @param integer|string $id
-	 */
-	public function removeUserKey($userId, $id) {
+	public function removeUserKey(string $userId, int $id) : void {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_users` '.
 				'WHERE `user_id` = ? AND `id` = ?';
 		$params = [$userId, $id];
-		$this->execute($sql, $params);
+		$this->db->executeUpdate($sql, $params);
 	}
 
-	/**
-	 * @param string $userId
-	 */
-	public function getAll($userId) {
+	public function getAll(string $userId) : array {
 		$sql = 'SELECT `id`, `hash`, `description` FROM `*PREFIX*music_ampache_users` '.
 			'WHERE `user_id` = ?';
 		$params = [$userId];
-		$result = $this->execute($sql, $params);
+		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();
 
 		return $rows;

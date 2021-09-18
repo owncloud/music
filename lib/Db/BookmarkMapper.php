@@ -23,7 +23,7 @@ use \OCP\IDBConnection;
  */
 class BookmarkMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_bookmarks', '\OCA\Music\Db\Bookmark', 'comment');
+		parent::__construct($db, 'music_bookmarks', Bookmark::class, 'comment');
 	}
 
 	public function findByEntry(int $type, int $entryId, string $userId) : Bookmark {

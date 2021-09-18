@@ -81,7 +81,7 @@ class DiskNumberMigration implements IRepairStep {
 	/**
 	 * Copy disk numbers from the albums table to the tracks table
 	 */
-	private function copyDiskNumberToTracks() {
+	private function copyDiskNumberToTracks() : int {
 		$sql = 'UPDATE `*PREFIX*music_tracks` '.
 				'SET `disk` = (SELECT `disk` '.
 				'              FROM `*PREFIX*music_albums` '.
@@ -95,7 +95,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * album entity matching the first of those disks. The album entities matching
 	 * the rest of the disks become obsolete.
 	 */
-	private function combineMultiDiskAlbums() {
+	private function combineMultiDiskAlbums() : int {
 		$sql = 'SELECT `id`, `user_id`, `album_artist_id`, `name` '.
 				'FROM `*PREFIX*music_albums` '.
 				'ORDER BY `user_id`, `album_artist_id`, LOWER(`name`)';
@@ -133,7 +133,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * @param int $sourceAlbum ID
 	 * @param int $destinationAlbum ID
 	 */
-	private function moveTracksBetweenAlbums($sourceAlbum, $destinationAlbum) {
+	private function moveTracksBetweenAlbums($sourceAlbum, $destinationAlbum) : int {
 		$sql = 'UPDATE `*PREFIX*music_tracks` '.
 				'SET `album_id` = ? '.
 				'WHERE `album_id` = ?';
@@ -143,7 +143,7 @@ class DiskNumberMigration implements IRepairStep {
 	/**
 	 * Delete from the albums table those rows which were made obsolete by the previous steps
 	 */
-	private function removeObsoleteAlbums() {
+	private function removeObsoleteAlbums() : int {
 		$count = \count($this->obsoleteAlbums);
 
 		if ($count > 0) {
@@ -159,7 +159,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * Recalculate the hashes for all albums in the table. The disk number is no longer part
 	 * of the calculation schema.
 	 */
-	private function reEvaluateAlbumHashes() {
+	private function reEvaluateAlbumHashes() : int {
 		$sql = 'SELECT `id`, `name`, `album_artist_id` '.
 				'FROM `*PREFIX*music_albums`';
 		$rows = $this->db->executeQuery($sql)->fetchAll();
@@ -189,7 +189,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * be prompted to rescan these problematic albums/tracks when (s)he opens the Music
 	 * app.
 	 */
-	private function removeAlbumsWhichFailedMerging() {
+	private function removeAlbumsWhichFailedMerging() : int {
 		$count = \count($this->mergeFailureAlbums);
 
 		if ($count > 0) {
@@ -208,7 +208,7 @@ class DiskNumberMigration implements IRepairStep {
 	/**
 	 * Set all disk numbers stored in the albums table as NULL.
 	 */
-	private function removeDiskNumbersFromAlbums() {
+	private function removeDiskNumbersFromAlbums() : int {
 		$sql = 'UPDATE `*PREFIX*music_albums` SET `disk` = NULL';
 		return $this->db->executeUpdate($sql);
 	}
@@ -217,7 +217,7 @@ class DiskNumberMigration implements IRepairStep {
 	 * helper creating a string like '(?,?,?)' with the specified number of elements
 	 * @param int $count
 	 */
-	private function questionMarks($count) {
+	private function questionMarks(int $count) : string {
 		$questionMarks = [];
 		for ($i = 0; $i < $count; $i++) {
 			$questionMarks[] = '?';

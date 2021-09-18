@@ -21,7 +21,7 @@ use \OCP\IDBConnection;
  */
 class PodcastChannelMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_podcast_channels', '\OCA\Music\Db\PodcastChannel', 'title');
+		parent::__construct($db, 'music_podcast_channels', PodcastChannel::class, 'title');
 	}
 
 	/**

@@ -164,7 +164,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function removeUserKey($id) {
-		$this->ampacheUserMapper->removeUserKey($this->userId, $id);
+		$this->ampacheUserMapper->removeUserKey($this->userId, (int)$id);
 		return new JSONResponse(['success' => true]);
 	}
 }

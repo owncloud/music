@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
 
 namespace OCA\Music\Db;
@@ -17,7 +17,7 @@ use \OCP\IDBConnection;
 
 class GenreMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_genres', '\OCA\Music\Db\Genre', 'name');
+		parent::__construct($db, 'music_genres', Genre::class, 'name');
 	}
 
 	/**

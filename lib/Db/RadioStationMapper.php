@@ -20,7 +20,7 @@ use \OCP\IDBConnection;
  */
 class RadioStationMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_radio_stations', '\OCA\Music\Db\RadioStation', 'name');
+		parent::__construct($db, 'music_radio_stations', RadioStation::class, 'name');
 	}
 
 	/**

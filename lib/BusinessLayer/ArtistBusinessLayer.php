@@ -86,7 +86,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function updateCover($imageFile, $userId) {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
-		$matches = $this->findAllByName($name, $userId);
+		$matches = $this->findAllByName(/** @scrutinizer ignore-type */ $name, $userId);
 
 		if (!empty($matches)) {
 			$artist = $matches[0];

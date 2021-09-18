@@ -25,7 +25,7 @@ use \OCP\IDBConnection;
  */
 class AlbumMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_albums', '\OCA\Music\Db\Album', 'name');
+		parent::__construct($db, 'music_albums', Album::class, 'name');
 	}
 
 	/**

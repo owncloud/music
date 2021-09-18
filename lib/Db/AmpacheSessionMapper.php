@@ -19,7 +19,7 @@ use OCP\IDBConnection;
 
 class AmpacheSessionMapper extends Mapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_ampache_sessions', '\OCA\Music\Db\AmpacheSession');
+		parent::__construct($db, 'music_ampache_sessions', AmpacheSession::class);
 	}
 
 	/**

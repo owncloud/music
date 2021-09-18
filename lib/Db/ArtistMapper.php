@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Db;
@@ -21,7 +21,7 @@ use \OCP\IDBConnection;
 
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_artists', '\OCA\Music\Db\Artist', 'name');
+		parent::__construct($db, 'music_artists', Artist::class, 'name');
 	}
 
 	/**

@@ -146,7 +146,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = self::doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
+		$parsed = self::doParseFile(self::getFile($userFolder, $filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -186,7 +186,7 @@ class PlaylistFileService {
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
 	public function importRadioStationsFromFile(string $userId, Folder $userFolder, string $filePath) : array {
-		$parsed = self::doParseFile($userFolder->get($filePath), $userFolder, self::PARSE_URLS_ONLY);
+		$parsed = self::doParseFile(self::getFile($userFolder, $filePath), $userFolder, self::PARSE_URLS_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
 
@@ -216,9 +216,9 @@ class PlaylistFileService {
 	 * @return array
 	 */
 	public function parseFile(int $fileId, Folder $baseFolder) : array {
-		$nodes = $baseFolder->getById($fileId);
-		if (\count($nodes) > 0) {
-			return self::doParseFile($nodes[0], $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
+		$node = $baseFolder->getById($fileId)[0] ?? null;
+		if ($node instanceof File) {
+			return self::doParseFile($node, $baseFolder, self::PARSE_LOCAL_FILES_AND_URLS);
 		} else {
 			throw new \OCP\Files\NotFoundException();
 		}
@@ -430,4 +430,16 @@ class PlaylistFileService {
 			}
 		}
 	}
+
+	/**
+	 * @throws \OCP\Files\NotFoundException if the $path does not point to a file under the $baseFolder
+	 */
+	private static function getFile(Folder $baseFolder, string $path) : File {
+		$node = $baseFolder->get($path);
+		if (!($node instanceof File)) {
+			throw new \OCP\Files\NotFoundException();
+		}
+		return $node;
+	}
+
 }

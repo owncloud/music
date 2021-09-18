@@ -474,9 +474,8 @@ class Scanner extends PublicEmitter {
 
 		$count = 0;
 		foreach ($fileIds as $fileId) {
-			$fileNodes = $userHome->getById($fileId);
-			if (\count($fileNodes) > 0) {
-				$file = $fileNodes[0];
+			$file = $userHome->getById($fileId)[0] ?? null;
+			if ($file instanceof File) {
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
 				$this->updateAudio($file, $userId, $userHome, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
 				if ($debugOutput) {
@@ -554,9 +553,8 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function getUnindexedFileInfo(int $fileId, string $userId, Folder $userFolder) : ?array {
-		$fileNodes = $userFolder->getById($fileId);
-		if (\count($fileNodes) > 0) {
-			$file = $fileNodes[0];
+		$file = $userFolder->getById($fileId)[0] ?? null;
+		if ($file instanceof File) {
 			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath());
 			$cover = $metadata['picture'];
 			if ($cover != null) {

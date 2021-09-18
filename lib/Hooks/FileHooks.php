@@ -80,7 +80,7 @@ class FileHooks {
 			// In that case, fall back to using file owner
 			if (empty($userId)) {
 				$owner = $node->getOwner();
-				$userId = $owner ? $owner->getUID() : null;
+				$userId = $owner ? $owner->getUID() : null; // @phpstan-ignore-line At least some versions of NC may violate their PhpDoc and return null owner
 				if (!empty($userId)) {
 					$userFolder = $scanner->resolveUserFolder($userId);
 				}

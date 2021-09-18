@@ -306,9 +306,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 		}
 		$albumIds = \array_keys($albumIds);
 
-		// get the corresponding entities from the business layer (or all albums if count is very high,
-		// see AlbumBusinessLayer::injectExtraFields for rationale)
-		if (\count($albumIds) <= 998 && \count($albumIds) < $this->count($userId)) {
+		// get the corresponding entities from the business layer
+		if (\count($albumIds) < $this->count($userId)) {
 			$albums = $this->findById($albumIds, $userId);
 		} else {
 			$albums = $this->findAll($userId);

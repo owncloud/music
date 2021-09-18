@@ -31,6 +31,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Utility\ApiSerializer;
 use \OCA\Music\Utility\PlaylistFileService;
+use \OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
 	private $urlGenerator;
@@ -135,18 +136,13 @@ class PlaylistApiController extends Controller {
 	}
 
 	private function toFullTree($playlist) {
-		$songs = [];
-
-		// Get all track information for all the tracks of the playlist
-		foreach ($playlist->getTrackIdsAsArray() as $trackId) {
-			$song = $this->trackBusinessLayer->find($trackId, $this->userId);
-			$song->setAlbum($this->albumBusinessLayer->find($song->getAlbumId(), $this->userId));
-			$songs[] = $song->toAPI($this->urlGenerator);
-		}
+		$trackIds = $playlist->getTrackIdsAsArray();
+		$tracks = $this->trackBusinessLayer->findById($trackIds, $this->userId);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
 
 		$result = $playlist->toAPI();
 		unset($result['trackIds']);
-		$result['tracks'] = $songs;
+		$result['tracks'] = Util::arrayMapMethod($tracks, 'toAPI', [$this->urlGenerator]);
 
 		return $result;
 	}

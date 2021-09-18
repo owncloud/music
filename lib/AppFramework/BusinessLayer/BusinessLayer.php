@@ -107,11 +107,15 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 */
 	public function findById(array $ids, string $userId=null) : array {
+		$result = [];
 		if (\count($ids) > 0) {
-			return $this->mapper->findById($ids, $userId);
-		} else {
-			return [];
+			// don't use more than 999 SQL args in one query since that may be a problem for SQLite
+			$idChunks = \array_chunk($ids, 998);
+			foreach ($idChunks as $idChunk) {
+				$result = \array_merge($result, $this->mapper->findById($idChunk, $userId));
+			}
 		}
+		return $result;
 	}
 
 	/**

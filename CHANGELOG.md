@@ -2,6 +2,7 @@
 ### Added
 - Hierarchical tree layout for the Folders view
   [#742](https://github.com/owncloud/music/issues/742)
+- Cover art to the playlist details pane
 
 ### Changed
 - Use smaller heading size in the Folders and Genres views

@@ -1,5 +1,6 @@
 <div id="playlist-details" class="sidebar-content" ng-controller="PlaylistDetailsController" ng-if="contentType=='playlist'">
 
+	<div class="albumart"></div>
 	<h1>{{playlist.name}}</h1>
 
 	<dl class="tags">
@@ -9,11 +10,11 @@
 		<dt translate>Total length</dt>
 		<dd>{{ totalLength | playTime }}</dd>
 
-		<dt translate>Created</dt>
-		<dd>{{ createdDate }}</dd>
+		<dt ng-if="createdDate" translate>Created</dt>
+		<dd ng-if="createdDate">{{ createdDate }}</dd>
 
-		<dt translate>Modified</dt>
-		<dd>{{ updatedDate }}</dd>
+		<dt ng-if="updatedDate" translate>Modified</dt>
+		<dd ng-if="updatedDate">{{ updatedDate }}</dd>
 
 		<dt translate>Comment</dt>
 		<dd class="clickable" ng-click="startEdit()"

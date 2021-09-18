@@ -38,7 +38,7 @@ use Exception as BaseException;
  * @psalm-immutable
  * @since 21.0.0
  */
-class Exception extends BaseException {
+abstract class Exception extends BaseException {
 
 	/**
 	 * Nextcloud lost connection to the database
@@ -143,7 +143,5 @@ class Exception extends BaseException {
 	 * @psalm-return Exception::REASON_*
 	 * @since 21.0.0
 	 */
-	public function getReason(): ?int {
-		return null;
-	}
+	abstract public function getReason(): ?int;
 }

@@ -98,7 +98,7 @@ class PodcastService {
 	 *									This helps in optimizing the DB query.
 	 */
 	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
-		if ($allChannelsIncluded || \count($channels) > 999) {
+		if ($allChannelsIncluded || \count($channels) > 998) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
 			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);

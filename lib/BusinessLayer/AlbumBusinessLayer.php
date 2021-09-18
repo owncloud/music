@@ -168,7 +168,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// could cause problems with SQLite (see #239) and probably it would be bad for
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
-			$albumIds = ($allAlbums || \count($albums) >= 999)
+			$albumIds = ($allAlbums || \count($albums) >= 998)
 					? null : Util::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
@@ -308,7 +308,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 		// get the corresponding entities from the business layer (or all albums if count is very high,
 		// see AlbumBusinessLayer::injectExtraFields for rationale)
-		if (\count($albumIds) <= 999 && \count($albumIds) < $this->count($userId)) {
+		if (\count($albumIds) <= 998 && \count($albumIds) < $this->count($userId)) {
 			$albums = $this->findById($albumIds, $userId);
 		} else {
 			$albums = $this->findAll($userId);

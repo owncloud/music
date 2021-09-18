@@ -347,6 +347,24 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * Given an array of track IDs, find corresponding uniqu album IDs, including only
+	 * those album which have a cover art set.
+	 * @param int[] $trackIds
+	 * @return Album[]
+	 */
+	public function findAlbumsWithCoversForTracks(array $trackIds, string $userId, int $limit) : array {
+		$sql = 'SELECT DISTINCT `albums`.*
+				FROM `*PREFIX*music_albums` `albums`
+				JOIN `*PREFIX*music_tracks` `tracks` ON `albums`.`id` = `tracks`.`album_id`
+				WHERE `albums`.`cover_file_id` IS NOT NULL
+				AND `albums`.`user_id` = ?
+				AND `tracks`.`id` IN ' . $this->questionMarks(\count($trackIds));
+		$params = \array_merge([$userId], $trackIds);
+
+		return $this->findEntities($sql, $params, $limit);
+	}
+
+	/**
 	 * Returns the count of albums where the given Artist is featured in
 	 * @param integer $artistId
 	 * @return integer

@@ -150,10 +150,10 @@ class Music extends App {
 				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('CoverHelper'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
-				$c->query('L10N'),
 				$c->query('Logger')
 			);
 		});

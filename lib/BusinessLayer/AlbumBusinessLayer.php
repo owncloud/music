@@ -38,6 +38,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 
+	private const MAX_SQL_ALBUM_ARGS = 998; // Some SQLite installations can't handle more than 999 query args. 1 slot reserved for `user_id`.
+
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
 		$this->mapper = $albumMapper;
@@ -168,7 +170,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// could cause problems with SQLite (see #239) and probably it would be bad for
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
-			$albumIds = ($allAlbums || \count($albums) >= 998)
+			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ALBUM_ARGS)
 					? null : Util::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
@@ -291,6 +293,30 @@ class AlbumBusinessLayer extends BusinessLayer {
 			}
 		}
 		return \array_keys($affectedUsers);
+	}
+
+	/**
+	 * Given an array of track IDs, find corresponding uniqu album IDs, including only
+	 * those album which have a cover art set.
+	 * @param int[] $trackIds
+	 * @return Album[] *Partial* albums, without any injected extra fields
+	 */
+	public function findAlbumsWithCoversForTracks(array $trackIds, string $userId, int $limit) : array {
+		if (\count($trackIds) === 0) {
+			return [];
+		} else {
+			$result = [];
+			$idChunks = \array_chunk($trackIds, self::MAX_SQL_ALBUM_ARGS);
+			foreach ($idChunks as $idChunk) {
+				$resultChunk = $this->mapper->findAlbumsWithCoversForTracks($idChunk, $userId, $limit);
+				$result = \array_merge($result, $resultChunk);
+				$limit -= \count($resultChunk);
+				if ($limit <= 0) {
+					break;
+				}
+			}
+			return $result;
+		}
 	}
 
 	/**

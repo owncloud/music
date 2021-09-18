@@ -70,6 +70,20 @@ class CoverHelper {
 		}
 	}
 
+	public function getCoverMosaic(array $entities, string $userId, Folder $rootFolder, int $size=null) : ?array {
+		if (\count($entities) === 0) {
+			return null;
+		} elseif (\count($entities) === 1) {
+			return $this->getCover($entities[0], $userId, $rootFolder, $size);
+		} else {
+			$covers = \array_map(function($entity) use ($userId, $rootFolder) {
+				return $this->getCover($entity, $userId, $rootFolder);
+			}, $entities);
+
+			return $this->createMosaic($covers, $size);
+		}
+	}
+
 	/**
 	 * Get cover image of an album or and artist along with the image's hash
 	 *
@@ -313,6 +327,53 @@ class CoverHelper {
 				}
 			}
 		}
+		return $image;
+	}
+
+	private function createMosaic(array $covers, ?int $size) : array {
+		$size = $size ?: $this->coverSize;
+		$pieceSize = $size/2;
+		$mosaicImg = \imagecreatetruecolor($size, $size);
+		if ($mosaicImg === false) {
+			$this->logger->log("Failed to create mosaic image of size $size x $size", 'warn');
+		}
+		else {
+			$scaleAndCopyPiece = function($pieceData, $dstImage, $dstX, $dstY, $dstSize) {
+				$meta = \getimagesizefromstring($pieceData['content']);
+				$srcWidth = $meta[0];
+				$srcHeight = $meta[1];
+
+				$piece = imagecreatefromstring($pieceData['content']);
+
+				if ($piece === false) {
+					$this->logger->log('Failed to open cover image to create a mosaic', 'warn');
+				} else {
+					\imagecopyresampled($dstImage, $piece, $dstX, $dstY, 0, 0, $dstSize, $dstSize, $srcWidth, $srcHeight);
+					\imagedestroy($piece);
+				}
+			};
+
+			$coordinates = [
+				['x' => 0,			'y' => 0],			// top-left
+				['x' => $pieceSize,	'y' => $pieceSize],	// bottom-right
+				['x' => $pieceSize,	'y' => 0],			// top-right
+				['x' => 0,			'y' => $pieceSize],	// bottom-left
+			];
+
+			$covers = \array_slice($covers, 0, 4);
+			foreach ($covers as $i => $cover) {
+				$scaleAndCopyPiece($cover, $mosaicImg, $coordinates[$i]['x'], $coordinates[$i]['y'], $pieceSize);
+			}
+		}
+
+		$image = ['mimetype' => 'image/png'];
+		\ob_start();
+		\ob_clean();
+		imagepng($mosaicImg, null, 7, PNG_ALL_FILTERS);
+		$image['content'] = \ob_get_contents();
+		\ob_end_clean();
+		\imagedestroy($mosaicImg);
+
 		return $image;
 	}
 

@@ -29,7 +29,9 @@ use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Http\ErrorResponse;
+use \OCA\Music\Http\FileResponse;
 use \OCA\Music\Utility\ApiSerializer;
+use \OCA\Music\Utility\CoverHelper;
 use \OCA\Music\Utility\PlaylistFileService;
 use \OCA\Music\Utility\Util;
 
@@ -39,10 +41,10 @@ class PlaylistApiController extends Controller {
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
+	private $coverHelper;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
-	private $l10n;
 	private $logger;
 
 	public function __construct($appname,
@@ -52,10 +54,10 @@ class PlaylistApiController extends Controller {
 								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
+								CoverHelper $coverHelper,
 								PlaylistFileService $playlistFileService,
-								$userId,
+								string $userId,
 								Folder $userFolder,
-								$l10n,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->urlGenerator = $urlGenerator;
@@ -63,10 +65,10 @@ class PlaylistApiController extends Controller {
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->coverHelper = $coverHelper;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
-		$this->l10n = $l10n;
 		$this->logger = $logger;
 	}
 
@@ -145,6 +147,30 @@ class PlaylistApiController extends Controller {
 		$result['tracks'] = Util::arrayMapMethod($tracks, 'toAPI', [$this->urlGenerator]);
 
 		return $result;
+	}
+
+	/**
+	 * get cover image for a playlist
+	 * @param int $id playlist ID
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getCover(int $id) {
+		try {
+			$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
+			$trackIds = $playlist->getTrackIdsAsArray();
+			$albums = $this->albumBusinessLayer->findAlbumsWithCoversForTracks($trackIds, $this->userId, 4);
+
+			if (\count($albums) > 0) {
+				$cover = $this->coverHelper->getCoverMosaic($albums, $this->userId, $this->userFolder);
+				return new FileResponse($cover);
+			} else {
+				return new ErrorResponse(Http::STATUS_NOT_FOUND, 'The playlist has no cover art');
+			}
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 
 	/**

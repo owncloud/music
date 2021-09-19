@@ -419,7 +419,8 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function playlists(
-			?string $filter, ?string $add, ?string $update, int $limit, int $offset=0, bool $exact=false) {
+			string $auth, ?string $filter, ?string $add, ?string $update,
+			int $limit, int $offset=0, bool $exact=false) {
 
 		$userId = $this->ampacheUser->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
@@ -431,20 +432,20 @@ class AmpacheController extends Controller {
 			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}
 
-		return $this->renderPlaylists($playlists);
+		return $this->renderPlaylists($playlists, $auth);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist(int $filter) {
+	protected function playlist(int $filter, string $auth) {
 		$userId = $this->ampacheUser->getUserId();
 		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlist = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		} else {
 			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
 		}
-		return $this->renderPlaylists([$playlist]);
+		return $this->renderPlaylists([$playlist], $auth);
 	}
 
 	/**
@@ -466,9 +467,9 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_create(string $name) {
+	protected function playlist_create(string $name, string $auth) {
 		$playlist = $this->playlistBusinessLayer->create($name, $this->ampacheUser->getUserId());
-		return $this->renderPlaylists([$playlist]);
+		return $this->renderPlaylists([$playlist], $auth);
 	}
 
 	/**
@@ -862,7 +863,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_art(string $type, int $id) {
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -897,7 +898,7 @@ class AmpacheController extends Controller {
 			case 'song':			return $this->renderSongs($entities, $auth);
 			case 'album':			return $this->renderAlbums($entities, $auth);
 			case 'artist':			return $this->renderArtists($entities, $auth);
-			case 'playlist':		return $this->renderPlaylists($entities);
+			case 'playlist':		return $this->renderPlaylists($entities, $auth);
 			case 'podcast':			return $this->renderPodcastChannels($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodes($entities);
 			case 'tag':				return $this->renderTags($entities);
@@ -1022,11 +1023,13 @@ class AmpacheController extends Controller {
 			$type = 'album';
 		} elseif ($entity instanceof Artist) {
 			$type = 'artist';
+		} elseif ($entity instanceof Playlist) {
+			$type = 'playlist';
 		} else {
 			throw new AmpacheException('unexpeted entity type for cover image', 500);
 		}
 
-		if ($entity->getCoverFileId()) {
+		if ($type === 'playlist' || $entity->getCoverFileId()) {
 			return $this->createAmpacheActionUrl("get_art", $entity->getId(), $auth, $type);
 		} else {
 			return '';
@@ -1115,9 +1118,17 @@ class AmpacheController extends Controller {
 		]);
 	}
 
-	private function renderPlaylists(array $playlists) {
+	private function renderPlaylists(array $playlists, string $auth) {
+		$createImageUrl = function(Playlist $playlist) use ($auth) : string {
+			if ($playlist->getId() === self::ALL_TRACKS_PLAYLIST_ID) {
+				return '';
+			} else {
+				return $this->createCoverUrl($playlist, $auth);
+			}
+		};
+
 		return $this->ampacheResponse([
-			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi')
+			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi', [$createImageUrl])
 		]);
 	}
 

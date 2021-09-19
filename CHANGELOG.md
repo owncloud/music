@@ -3,7 +3,7 @@
 - Hierarchical tree layout for the Folders view
   [#742](https://github.com/owncloud/music/issues/742)
 - Cover art to the playlist details pane
-- Subsonic: Support playlist cover art
+- Subsonic and Ampache: Support playlist cover art
 
 ### Changed
 - Use smaller heading size in the Folders and Genres views

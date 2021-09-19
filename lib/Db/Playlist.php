@@ -77,12 +77,13 @@ class Playlist extends Entity {
 		];
 	}
 
-	public function toAmpacheApi() {
+	public function toAmpacheApi(callable $createImageUrl) {
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
 			'items' => $this->getTrackCount(),
+			'art' => $createImageUrl($this),
 			'type' => 'Private'
 		];
 	}

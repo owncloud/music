@@ -13,7 +13,7 @@ angular.module('Music').controller('SidebarController', [
 	'$rootScope', '$scope', '$timeout',
 	function ($rootScope, $scope, $timeout) {
 
-		$scope.follow = Cookies.get('oc_music_details_follow_playback') == 'true';
+		$scope.follow = (localStorage.getItem('oc_music_details_follow_playback') === 'true');
 
 		$scope.contentType = null;
 		$scope.contentId = null;
@@ -101,7 +101,7 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.toggleFollow = function() {
 			$scope.follow = !$scope.follow;
-			Cookies.set('oc_music_details_follow_playback', $scope.follow.toString(), { expires: 3650 });
+			localStorage.setItem('oc_music_details_follow_playback', $scope.follow.toString());
 
 			// If "follow playback" was enabled and the currently shown track doesn't match currently
 			// playing track, then immediately switch to the details of the playing track.

@@ -23,7 +23,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	var player = new OCA.Music.PlayerWrapper();
 
-	var volume = Cookies.get('oc_music_volume') || 50;
+	var volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
 	player.setVolume(volume);
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
@@ -323,7 +323,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			.on('input change', function() {
 				volume = $(this).val();
 				player.setVolume(volume);
-				Cookies.set('oc_music_volume', volume, { expires: 3650 });
+				localStorage.setItem('oc_music_volume', volume);
 			});
 
 		volumeControl.append(volumeIcon);

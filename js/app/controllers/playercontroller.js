@@ -20,9 +20,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	$scope.player = Audio;
 	$scope.currentTrack = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = parseInt(Cookies.get('oc_music_volume')) || 50;  // volume can be 0~100
-	$scope.repeat = Cookies.get('oc_music_repeat') || 'false';
-	$scope.shuffle = Cookies.get('oc_music_shuffle') == 'true';
+	$scope.volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
+	$scope.repeat = localStorage.getItem('oc_music_repeat') || 'false';
+	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
 	$scope.position = {
 		bufferPercent: '0%',
 		currentPercent: '0%',
@@ -180,13 +180,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 
 	$scope.$watch('volume', function(newValue, _oldValue) {
 		$scope.player.setVolume(newValue);
-		Cookies.set('oc_music_volume', newValue, { expires: 3650 });
+		localStorage.setItem('oc_music_volume', newValue);
 	});
 
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
 		playlistService.setShuffle($scope.shuffle);
-		Cookies.set('oc_music_shuffle', $scope.shuffle.toString(), { expires: 3650 });
+		localStorage.setItem('oc_music_shuffle', $scope.shuffle.toString());
 	};
 
 	$scope.toggleRepeat = function() {
@@ -197,7 +197,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 		};
 		$scope.repeat = nextState[$scope.repeat];
 		playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
-		Cookies.set('oc_music_repeat', $scope.repeat, { expires: 3650 });
+		localStorage.setItem('oc_music_repeat', $scope.repeat);
 	};
 
 	$scope.setTime = function(position, duration) {
@@ -491,7 +491,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 		}, 500);
 
 		$scope.$watch('currentTrack', function(track) {
-			var enabled = (Cookies.get('oc_music_song_notifications') !== 'false');
+			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
 			if (enabled && track) {
 				if (Notification.permission === 'granted') {

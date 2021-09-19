@@ -386,7 +386,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	// Compact/normal layout of the Albums view
-	$scope.albumsCompactLayout = (Cookies.get('oc_music_albums_compact') === 'true');
+	$scope.albumsCompactLayout = (localStorage.getItem('oc_music_albums_compact') === 'true');
 	$scope.toggleAlbumsCompactLayout = function(useCompact /*optional, invert current value if omitted */) {
 		if (typeof useCompact === 'undefined') {
 			useCompact = !$scope.albumsCompactLayout;
@@ -395,14 +395,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$('#albums').toggleClass('compact', useCompact);
 		$rootScope.$emit('albumsLayoutChanged');
 
-		Cookies.set('oc_music_albums_compact', useCompact.toString(), { expires: 3650 });
+		localStorage.setItem('oc_music_albums_compact', useCompact.toString());
 
 		// also navigate to the Albums view if not already open
 		$scope.navigateTo('#');
 	};
 
 	// Flat/tree layout of the Folders view
-	$scope.foldersFlatLayout = (Cookies.get('oc_music_folders_flat') === 'true');
+	$scope.foldersFlatLayout = (localStorage.getItem('oc_music_folders_flat') === 'true');
 	$scope.toggleFoldersFlatLayout = function(useFlat /*optional, invert current value if omitted */) {
 		if (typeof useFlat === 'undefined') {
 			useFlat = !$scope.foldersFlatLayout;
@@ -410,7 +410,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.foldersFlatLayout = useFlat;
 		$rootScope.$emit('foldersLayoutChanged');
 
-		Cookies.set('oc_music_folders_flat', useFlat.toString(), { expires: 3650 });
+		localStorage.setItem('oc_music_folders_flat', useFlat.toString());
 
 		// also navigate to the Folders view if not already open
 		$scope.navigateTo('#/folders');

@@ -11,6 +11,7 @@
 - Format dates and times in the details pane according the locale from the user settings
 - All alphabetical sorting on the web UI now respects the rules of the locale from the user settings
 - Minor optimizations on the scanning speed 
+- Use HTML5 localStorage instead of cookies to store web UI settings like volume and Albums view layout
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

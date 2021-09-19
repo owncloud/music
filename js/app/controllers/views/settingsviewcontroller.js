@@ -239,10 +239,10 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
-		$scope.songNotificationsEnabled = (Cookies.get('oc_music_song_notifications') !== 'false');
+		$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
 		$scope.$watch('songNotificationsEnabled', function(enabled) {
-			Cookies.set('oc_music_song_notifications', enabled.toString());
+			localStorage.setItem('oc_music_song_notifications', enabled.toString());
 
 			if (enabled && Notification.permission !== 'granted') {
 				Notification.requestPermission().then(function(permission) {

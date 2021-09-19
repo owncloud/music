@@ -17,6 +17,25 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 			// disable debug info for performance gains
 			$compileProvider.debugInfoEnabled(false);
 
+			// migrate local data originally stored in cookies to HTML5 localStorage;
+			// this can be eventually removed, along with the js-cookie library
+			const cookieKeys = [
+				'oc_music_albums_compact',
+				'oc_music_folders_flat',
+				'oc_music_volume',
+				'oc_music_repeat',
+				'oc_music_shuffle',
+				'oc_music_details_follow_playback',
+				'oc_music_song_notifications'
+			];
+			for (var key of cookieKeys) {
+				var value = Cookies.get(key);
+				if (value) {
+					localStorage.setItem(key, value);
+					Cookies.remove(key);
+				}
+			}
+
 			// configure RESTAngular path
 			RestangularProvider.setBaseUrl(OC.generateUrl('apps/music/api'));
 

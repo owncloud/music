@@ -87,6 +87,38 @@ class Util {
 	}
 
 	/**
+	 * Like the built-in function \array_filter but this one works recursively on nested arrays.
+	 * Another difference is that this function always requires an explicit callback condition.
+	 * Both inner nodes and leafs nodes are passed to the $condition.
+	 */
+	public static function arrayFilterRecursive(array  $array, callable $condition) : array {
+		$result = [];
+
+		foreach ($array as $key => $value) {
+			if ($condition($value)) {
+				if (\is_array($value)) {
+					$result[$key] = self::arrayFilterRecursive($value, $condition);
+				} else {
+					$result[$key] = $value;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Inverse operation of self::arrayFilterRecursive, keeping only those items where
+	 * the $condition evaluates to *false*.
+	 */
+	public static function arrayRejectRecursive(array $array, callable $condition) : array {
+		$invCond = function($item) use ($condition) {
+			return !$condition($item);
+		};
+		return self::arrayFilterRecursive($array, $invCond);
+	}
+
+	/**
 	 * Convert the given array $arr so that keys of the potentially multi-dimensional array
 	 * are converted using the mapping given in $dictionary. Keys not found from $dictionary
 	 * are not altered.

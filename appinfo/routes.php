@@ -20,7 +20,10 @@ $app = \OC::$server->query(Music::class);
 
 $app->registerRoutes($this, ['routes' => [
 	// page
-	['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
+	['name' => 'page#index', 'url' => '/',			'verb' => 'GET'],
+	// also the Ampache and Subsonic base URLs are directed to the front page, as several clients provide such links
+	['name' => 'page#index', 'url' => '/subsonic',	'verb' => 'GET',	'postfix' => '_subsonic'],
+	['name' => 'page#index', 'url' => '/ampache',	'verb' => 'GET',	'postfix' => '_ampache'],
 
 	// log
 	['name' => 'log#log', 'url' => '/api/log', 'verb' => 'POST'],

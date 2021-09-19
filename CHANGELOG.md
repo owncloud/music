@@ -12,6 +12,8 @@
 - All alphabetical sorting on the web UI now respects the rules of the locale from the user settings
 - Minor optimizations on the scanning speed 
 - Use HTML5 localStorage instead of cookies to store web UI settings like volume and Albums view layout
+- Direct the Subsonic and Ampache base URLs to the Music app front page
+  * With this, the "Open in browser" buttons on some clients open the Music app instead of the default Files app
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

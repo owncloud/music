@@ -1117,15 +1117,12 @@ class SubsonicController extends Controller {
 		$result = [
 			'name' => $artist->getNameString($this->l10n),
 			'id' => $id ? ('artist-' . $id) : '-1', // getArtistInfo may show artists without ID
-			'albumCount' => $id ? $this->albumBusinessLayer->countByArtist($id) : 0
+			'albumCount' => $id ? $this->albumBusinessLayer->countByArtist($id) : 0,
+			'starred' => Util::formatZuluDateTime($artist->getStarred())
 		];
 
 		if (!empty($artist->getCoverFileId())) {
 			$result['coverArt'] = $result['id'];
-		}
-
-		if (!empty($artist->getStarred())) {
-			$result['starred'] = Util::formatZuluDateTime($artist->getStarred());
 		}
 
 		return $result;
@@ -1163,31 +1160,19 @@ class SubsonicController extends Controller {
 	}
 
 	private function albumCommonApiFields($album) {
-		$result = [
+		$genreString = \implode(', ', \array_map(function (Genre $genre) {
+			return $genre->getNameString($this->l10n);
+		}, $album->getGenres() ?? []));
+
+		return [
 			'id' => 'album-' . $album->getId(),
 			'artist' => $album->getAlbumArtistNameString($this->l10n),
-			'created' => Util::formatZuluDateTime($album->getCreated())
+			'created' => Util::formatZuluDateTime($album->getCreated()),
+			'coverArt' => empty($album->getCoverFileId()) ? null : 'album-' . $album->getId(),
+			'starred' => Util::formatZuluDateTime($album->getStarred()),
+			'year' => $album->yearToAPI(),
+			'genre' => $genreString ?: null
 		];
-
-		if (!empty($album->getCoverFileId())) {
-			$result['coverArt'] = 'album-' . $album->getId();
-		}
-
-		if (!empty($album->getStarred())) {
-			$result['starred'] = Util::formatZuluDateTime($album->getStarred());
-		}
-
-		if (!empty($album->getGenres())) {
-			$result['genre'] = \implode(', ', \array_map(function (Genre $genre) {
-				return $genre->getNameString($this->l10n);
-			}, $album->getGenres()));
-		}
-
-		if (!empty($album->getYears())) {
-			$result['year'] = $album->yearToAPI();
-		}
-
-		return $result;
 	}
 
 	/**
@@ -1207,7 +1192,9 @@ class SubsonicController extends Controller {
 			$track->setAlbum($album);
 		}
 
-		$result = [
+		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
+
+		return [
 			'id' => 'track-' . $track->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
@@ -1216,37 +1203,22 @@ class SubsonicController extends Controller {
 			'isDir' => false,
 			'album' => $track->getAlbumNameString($this->l10n),
 			'year' => $track->getYear(),
-			'size' => $track->getSize() ?? 0,
-			'contentType' => $track->getMimetype() ?? '',
+			'size' => $track->getSize(),
+			'contentType' => $track->getMimetype(),
 			'suffix' => $track->getFileExtension(),
-			'duration' => $track->getLength() ?: 0,
-			'bitRate' => empty($track->getBitrate()) ? 0 : (int)\round($track->getBitrate()/1000), // convert bps to kbps
+			'duration' => $track->getLength() ?? 0,
+			'bitRate' => empty($track->getBitrate()) ? null : (int)\round($track->getBitrate()/1000), // convert bps to kbps
 			//'path' => '',
 			'isVideo' => false,
 			'albumId' => 'album-' . $albumId,
 			'artistId' => 'artist-' . $track->getArtistId(),
 			'type' => 'music',
-			'created' => Util::formatZuluDateTime($track->getCreated())
+			'created' => Util::formatZuluDateTime($track->getCreated()),
+			'track' => $track->getAdjustedTrackNumber(),
+			'starred' => Util::formatZuluDateTime($track->getStarred()),
+			'genre' => empty($track->getGenreId()) ? null : $track->getGenreNameString($this->l10n),
+			'coverArt' => !$hasCoverArt ? null : 'album-' . $album->getId()
 		];
-
-		if ($album !== null && !empty($album->getCoverFileId())) {
-			$result['coverArt'] = 'album-' . $album->getId();
-		}
-
-		$trackNumber = $track->getAdjustedTrackNumber();
-		if ($trackNumber !== null) {
-			$result['track'] = $trackNumber;
-		}
-
-		if (!empty($track->getStarred())) {
-			$result['starred'] = Util::formatZuluDateTime($track->getStarred());
-		}
-
-		if (!empty($track->getGenreId())) {
-			$result['genre'] = $track->getGenreNameString($this->l10n);
-		}
-
-		return $result;
 	}
 
 	/**

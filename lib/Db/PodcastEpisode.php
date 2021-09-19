@@ -138,7 +138,7 @@ class PodcastEpisode extends Entity {
 	}
 
 	public function toSubsonicApi() : array {
-		$result = [
+		return [
 			'id' => 'podcast_episode-' . $this->getId(),
 			'streamId' => 'podcast_episode-' . $this->getId(),
 			'channelId' => 'podcast_channel-' . $this->getChannelId(),
@@ -159,14 +159,9 @@ class PodcastEpisode extends Entity {
 			'duration' => $this->getDuration(),
 			'bitRate' => empty($this->getBitrate()) ? 0 : (int)\round($this->getBitrate()/1000), // convert bps to kbps
 			'type' => 'podcast',
-			'created' => Util::formatZuluDateTime($this->getCreated())
+			'created' => Util::formatZuluDateTime($this->getCreated()),
+			'starred' => Util::formatZuluDateTime($this->getStarred())
 		];
-
-		if (!empty($this->starred)) {
-			$result['starred'] = Util::formatZuluDateTime($this->starred);
-		}
-
-		return $result;
 	}
 
 	public function getEpisodeWithSeason() : ?string {

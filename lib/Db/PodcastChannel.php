@@ -142,12 +142,9 @@ class PodcastChannel extends Entity {
 			'description' => $this->getDescription(),
 			'coverArt' => 'podcast_channel-' . $this->getId(),
 			'originalImageUrl' => $this->getImageUrl(),
-			'status' => 'completed'
+			'status' => 'completed',
+			'starred' => Util::formatZuluDateTime($this->getStarred())
 		];
-
-		if (!empty($this->starred)) {
-			$result['starred'] = Util::formatZuluDateTime($this->starred);
-		}
 
 		if ($this->episodes !== null) {
 			$result['episode'] = Util::arrayMapMethod($this->episodes, 'toSubsonicApi');

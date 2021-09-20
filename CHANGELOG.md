@@ -14,6 +14,7 @@
 - Use HTML5 localStorage instead of cookies to store web UI settings like volume and Albums view layout
 - Direct the Subsonic and Ampache base URLs to the Music app front page
   * With this, the "Open in browser" buttons on some clients open the Music app instead of the default Files app
+- Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"
@@ -21,7 +22,7 @@
 - Deprecated use of ReflectionType on Subsonic and Ampache APIs which broke some API features on PHP8
   [#896](https://github.com/owncloud/music/issues/896)
 - Navigation pane auto-collapse on mobile layout not working on recent versions of Nextcloud
-- Tracks and podcasts with missing data causing page load failure on [Ultrasonic](https://f-droid.org/en/packages/org.moire.ultrasonic/)
+- Tracks and podcasts with missing metadata causing page load failure on [Ultrasonic](https://f-droid.org/en/packages/org.moire.ultrasonic/)
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

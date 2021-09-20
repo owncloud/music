@@ -68,26 +68,6 @@ class Artist extends Entity {
 	}
 
 	/**
-	 * Get initial character of the artist name in upper case.
-	 * This is intended to be used as index in a list of artists.
-	 */
-	public function getIndexingChar() {
-		// For unknown artists, use '?'
-		$char = '?';
-		$name = $this->getName();
-
-		if (!empty($name)) {
-			$char = \mb_convert_case(\mb_substr($name, 0, 1), MB_CASE_UPPER);
-		}
-		// Bundle all numeric characters together
-		if (\is_numeric($char)) {
-			$char = '#';
-		}
-
-		return $char;
-	}
-
-	/**
 	 * Return the cover URL to be used in the Shiva API
 	 * @param IURLGenerator $urlGenerator
 	 * @return string|null

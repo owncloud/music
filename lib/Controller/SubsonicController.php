@@ -977,13 +977,55 @@ class SubsonicController extends Controller {
 		return $nodes[0];
 	}
 
+	private static function getIndexingChar(?string $name) {
+		// For unknown artists, use '?'
+		$char = '?';
+
+		if (!empty($name)) {
+			$char = \mb_convert_case(\mb_substr($name, 0, 1), MB_CASE_UPPER);
+		}
+		// Bundle all numeric characters together
+		if (\is_numeric($char)) {
+			$char = '#';
+		}
+
+		return $char;
+	}
+
+	private function getSubfoldersAndTracks(Folder $folder) : array {
+		$nodes = $folder->getDirectoryListing();
+		$subFolders = \array_filter($nodes, function ($n) {
+			return $n instanceof Folder;
+		});
+
+		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->userId);
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
+
+		return [$subFolders, $tracks];
+	}
+
 	private function getIndexesForFolders() {
 		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
 
-		return $this->subsonicResponse(['indexes' => ['index' => [
-			['name' => '*',
-			'artist' => [['id' => 'folder-' . $rootFolder->getId(), 'name' => $rootFolder->getName()]]]
-		]]]);
+		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
+
+		$indexes = [];
+		foreach ($subFolders as $folder) {
+			$indexes[self::getIndexingChar($folder->getName())][] = [
+				'name' => $folder->getName(),
+				'id' => 'folder-' . $folder->getId()
+			];
+		}
+
+		$folders = [];
+		foreach ($indexes as $indexChar => $bucketArtists) {
+			$folders[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+		}
+
+		return $this->subsonicResponse(['indexes' => [
+			'index' => $folders,
+			'child' => \array_map([$this, 'trackToApi'], $tracks)
+		]]);
 	}
 
 	private function getMusicDirectoryForFolder($id) {
@@ -994,16 +1036,7 @@ class SubsonicController extends Controller {
 			throw new SubsonicException("$id is not a valid folder", 70);
 		}
 
-		$nodes = $folder->getDirectoryListing();
-		$subFolders = \array_filter($nodes, function ($n) {
-			return $n instanceof Folder;
-		});
-		$tracks = $this->trackBusinessLayer->findAllByFolder($folderId, $this->userId);
-
-		// A folder may contain thousands of audio files, and getting album data
-		// for each of those individually would take a lot of time and great many DB queries.
-		// To prevent having to do this in `trackToApi`, we fetch all the albums in one go.
-		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
+		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($folder);
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
@@ -1033,7 +1066,7 @@ class SubsonicController extends Controller {
 
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$indexes[$artist->getIndexingChar()][] = $this->artistToApi($artist);
+			$indexes[self::getIndexingChar($artist->getName())][] = $this->artistToApi($artist);
 		}
 
 		$result = [];

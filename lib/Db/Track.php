@@ -108,14 +108,14 @@ class Track extends Entity {
 		$this->addType('size', 'int');
 	}
 
-	public function getUri(IURLGenerator $urlGenerator) {
+	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.api.track',
 			['trackIdOrSlug' => $this->id]
 		);
 	}
 
-	public function getArtistWithUri(IURLGenerator $urlGenerator) {
+	public function getArtistWithUri(IURLGenerator $urlGenerator) : array {
 		return [
 			'id' => $this->artistId,
 			'uri' => $urlGenerator->linkToRoute(
@@ -125,7 +125,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function getAlbumWithUri(IURLGenerator $urlGenerator) {
+	public function getAlbumWithUri(IURLGenerator $urlGenerator) : array {
 		return [
 			'id' => $this->albumId,
 			'uri' => $urlGenerator->linkToRoute(
@@ -135,15 +135,15 @@ class Track extends Entity {
 		];
 	}
 
-	public function getArtistNameString(IL10N $l10n) {
+	public function getArtistNameString(IL10N $l10n) : string {
 		return $this->getArtistName() ?: Artist::unknownNameString($l10n);
 	}
 
-	public function getAlbumNameString(IL10N $l10n) {
+	public function getAlbumNameString(IL10N $l10n) : string {
 		return $this->getAlbumName() ?: Album::unknownNameString($l10n);
 	}
 
-	public function getGenreNameString(IL10N $l10n) {
+	public function getGenreNameString(IL10N $l10n) : string {
 		return $this->getGenreName() ?: Genre::unknownNameString($l10n);
 	}
 
@@ -222,7 +222,7 @@ class Track extends Entity {
 		return $result;
 	}
 
-	public function getAdjustedTrackNumber() {
+	public function getAdjustedTrackNumber() : ?int {
 		// Number on playlist overrides the track number if it is set.
 		if ($this->numberOnPlaylist !== null) {
 			$trackNumber = $this->numberOnPlaylist;
@@ -244,7 +244,7 @@ class Track extends Entity {
 		return $trackNumber;
 	}
 
-	public function getFileExtension() {
+	public function getFileExtension() : string {
 		$parts = \explode('.', $this->getFilename() ?? '');
 		return \end($parts);
 	}

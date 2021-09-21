@@ -13,8 +13,9 @@
 - Minor optimizations on the scanning speed 
 - Use HTML5 localStorage instead of cookies to store web UI settings like volume and Albums view layout
 - Direct the Subsonic and Ampache base URLs to the Music app front page
-  * With this, the "Open in browser" buttons on some clients open the Music app instead of the default Files app
+  * With this, the "Open in browser" buttons on some clients open the Music app instead of the cloud default view
 - Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
+- Subsonic: Optimized loading the tracks of long playlists
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

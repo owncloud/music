@@ -332,7 +332,7 @@ class SubsonicController extends Controller {
 	private function getTopSongs(string $artist, int $count=50) {
 		$tracks = $this->lastfmService->getTopTracks($artist, $this->userId, $count);
 		return $this->subsonicResponse(['topSongs' =>
-			['song' => \array_map([$this, 'trackToApi'], $tracks)]
+			['song' => $this->tracksToApi($tracks)]
 		]);
 	}
 
@@ -359,6 +359,7 @@ class SubsonicController extends Controller {
 	private function getSong(string $id) {
 		$trackId = self::ripIdPrefix($id); // get rid of 'track-' prefix
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 
 		return $this->subsonicResponse(['song' => $this->trackToApi($track)]);
 	}
@@ -390,7 +391,7 @@ class SubsonicController extends Controller {
 		$tracks = Random::pickItems($trackPool, $size);
 
 		return $this->subsonicResponse(['randomSongs' =>
-				['song' => \array_map([$this, 'trackToApi'], $tracks)]
+				['song' => $this->tracksToApi($tracks)]
 		]);
 	}
 
@@ -535,7 +536,7 @@ class SubsonicController extends Controller {
 		$tracks = $this->findTracksByGenre($genre, $count, $offset);
 
 		return $this->subsonicResponse(['songsByGenre' =>
-			['song' => \array_map([$this, 'trackToApi'], $tracks)]
+			['song' => $this->tracksToApi($tracks)]
 		]);
 	}
 
@@ -558,7 +559,7 @@ class SubsonicController extends Controller {
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
 
 		$playlistNode = $this->playlistToApi($playlist);
-		$playlistNode['entry'] = \array_map([$this, 'trackToApi'], $tracks);
+		$playlistNode['entry'] = $this->tracksToApi($tracks);
 
 		return $this->subsonicResponse(['playlist' => $playlistNode]);
 	}
@@ -842,7 +843,9 @@ class SubsonicController extends Controller {
 
 			try {
 				if ($type === Bookmark::TYPE_TRACK) {
-					$node['entry'] = $this->trackToApi($this->trackBusinessLayer->find($entryId, $this->userId));
+					$track = $this->trackBusinessLayer->find($entryId, $this->userId);
+					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
+					$node['entry'] = $this->trackToApi($track);
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
 					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
 				} else {
@@ -999,7 +1002,6 @@ class SubsonicController extends Controller {
 		});
 
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->userId);
-		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
 
 		return [$subFolders, $tracks];
 	}
@@ -1024,7 +1026,7 @@ class SubsonicController extends Controller {
 
 		return $this->subsonicResponse(['indexes' => [
 			'index' => $folders,
-			'child' => \array_map([$this, 'trackToApi'], $tracks)
+			'child' => $this->tracksToApi($tracks)
 		]]);
 	}
 
@@ -1040,7 +1042,7 @@ class SubsonicController extends Controller {
 
 		$children = \array_merge(
 			\array_map([$this, 'folderToApi'], $subFolders),
-			\array_map([$this, 'trackToApi'], $tracks)
+			$this->tracksToApi($tracks)
 		);
 
 		$content = [
@@ -1209,22 +1211,22 @@ class SubsonicController extends Controller {
 	}
 
 	/**
-	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
-	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
-	 * older clients.
-	 * @param Track $track If the track entity has no album references set, then it is automatically
-	 *                     fetched from the AlbumBusinessLayer module.
+	 * @param Track[] $tracks
 	 * @return array
 	 */
-	private function trackToApi($track) {
+	private function tracksToApi(array $tracks) : array {
+		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
+		return \array_map([$this, 'trackToApi'], $tracks);
+	}
+
+	/**
+	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
+	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
+	 * older clients. The $track entity must have the Album reference injected prior to calling this.
+	 */
+	private function trackToApi(Track $track) : array {
 		$albumId = $track->getAlbumId();
-
 		$album = $track->getAlbum();
-		if ($album === null && $albumId !== null) {
-			$album = $this->albumBusinessLayer->findOrDefault($albumId, $this->userId);
-			$track->setAlbum($album);
-		}
-
 		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
 
 		return [
@@ -1250,7 +1252,7 @@ class SubsonicController extends Controller {
 			'track' => $track->getAdjustedTrackNumber(),
 			'starred' => Util::formatZuluDateTime($track->getStarred()),
 			'genre' => empty($track->getGenreId()) ? null : $track->getGenreNameString($this->l10n),
-			'coverArt' => !$hasCoverArt ? null : 'album-' . $album->getId()
+			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
 		];
 	}
 
@@ -1390,7 +1392,7 @@ class SubsonicController extends Controller {
 		$songs = $this->random->pickItems($songs, $count);
 
 		return $this->subsonicResponse([$rootName => [
-				'song' => \array_map([$this, 'trackToApi'], $songs)
+			'song' => $this->tracksToApi($songs)
 		]]);
 	}
 
@@ -1438,7 +1440,7 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse([$title => [
 			'artist' => \array_map([$this, 'artistToApi'], $results['artists']),
 			'album' => \array_map([$this, $albumMapFunc], $results['albums']),
-			'song' => \array_map([$this, 'trackToApi'], $results['tracks'])
+			'song' => $this->tracksToApi($results['tracks'])
 		]]);
 	}
 

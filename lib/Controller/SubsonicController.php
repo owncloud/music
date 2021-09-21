@@ -998,7 +998,7 @@ class SubsonicController extends Controller {
 	private function getSubfoldersAndTracks(Folder $folder) : array {
 		$nodes = $folder->getDirectoryListing();
 		$subFolders = \array_filter($nodes, function ($n) {
-			return $n instanceof Folder;
+			return ($n instanceof Folder) && $this->userMusicFolder->pathBelongsToMusicLibrary($n->getPath(), $this->userId);
 		});
 
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->userId);

@@ -15,6 +15,7 @@
 - Direct the Subsonic and Ampache base URLs to the Music app front page
   * With this, the "Open in browser" buttons on some clients open the Music app instead of the cloud default view
 - Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
+- Subsonic: When browsing by folders, don't show the folders excluded from the library
 - Subsonic: Optimized loading the tracks of long playlists
 
 ### Fixed

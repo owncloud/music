@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Db;
 
+use OCA\Music\Utility\Util;
 use \OCP\IL10N;
 use \OCP\IURLGenerator;
 use \OCP\AppFramework\Db\Entity;
@@ -220,6 +221,43 @@ class Track extends Entity {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
+	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
+	 * older clients. The $track entity must have the Album reference injected prior to calling this.
+	 */
+	public function toSubsonicApi(IL10N $l10n) : array {
+		$albumId = $this->getAlbumId();
+		$album = $this->getAlbum();
+		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
+
+		return [
+			'id' => 'track-' . $this->getId(),
+			'parent' => 'album-' . $albumId,
+			//'discNumber' => $this->getDisk(), // not supported on any of the tested clients => adjust track number instead
+			'title' => $this->getTitle() ?? '',
+			'artist' => $this->getArtistNameString($l10n),
+			'isDir' => false,
+			'album' => $this->getAlbumNameString($l10n),
+			'year' => $this->getYear(),
+			'size' => $this->getSize(),
+			'contentType' => $this->getMimetype(),
+			'suffix' => $this->getFileExtension(),
+			'duration' => $this->getLength() ?? 0,
+			'bitRate' => empty($this->getBitrate()) ? null : (int)\round($this->getBitrate()/1000), // convert bps to kbps
+			//'path' => '',
+			'isVideo' => false,
+			'albumId' => 'album-' . $albumId,
+			'artistId' => 'artist-' . $this->getArtistId(),
+			'type' => 'music',
+			'created' => Util::formatZuluDateTime($this->getCreated()),
+			'track' => $this->getAdjustedTrackNumber(),
+			'starred' => Util::formatZuluDateTime($this->getStarred()),
+			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
+			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
+		];
 	}
 
 	public function getAdjustedTrackNumber() : ?int {

@@ -14,6 +14,7 @@
 
 namespace OCA\Music\Db;
 
+use \OCA\Music\Utility\Util;
 use \OCP\AppFramework\Db\Entity;
 
 /**
@@ -29,6 +30,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method setUpdated(string $timestamp)
  * @method string getComment()
  * @method setComment(string $comment)
+ * @method ?int getDuration()
+ * @method setDuration(?int $duration)
  */
 class Playlist extends Entity {
 	public $name;
@@ -37,6 +40,9 @@ class Playlist extends Entity {
 	public $created;
 	public $updated;
 	public $comment;
+
+	// injected separately when needed
+	public $duration;
 
 	/**
 	 * @return integer
@@ -85,6 +91,21 @@ class Playlist extends Entity {
 			'items' => $this->getTrackCount(),
 			'art' => $createImageUrl($this),
 			'type' => 'Private'
+		];
+	}
+
+	public function toSubsonicApi() {
+		return [
+			'id' => $this->getId(),
+			'name' => $this->getName(),
+			'owner' => $this->userId,
+			'public' => false,
+			'songCount' => $this->getTrackCount(),
+			'duration' => $this->getDuration(),
+			'comment' => $this->getComment() ?: '',
+			'created' => Util::formatZuluDateTime($this->getCreated()),
+			'changed' => Util::formatZuluDateTime($this->getUpdated()),
+			'coverArt' => 'pl-' . $this->getId() // work around: DSub always fetches the art using ID like "pl-NNN" even if we  use some other format here
 		];
 	}
 }

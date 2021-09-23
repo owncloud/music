@@ -31,10 +31,9 @@ abstract class BusinessLayer {
 
 	/**
 	 * Update an entity in the database
-	 * @param Entity $entity
 	 */
-	public function update(Entity $entity) : void {
-		$this->mapper->update($entity);
+	public function update(Entity $entity) : Entity {
+		return $this->mapper->update($entity);
 	}
 
 	/**
@@ -43,9 +42,9 @@ abstract class BusinessLayer {
 	 * @param string $userId the name of the user for security reasons
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
 	 */
-	public function delete(int $id, string $userId) : void {
+	public function delete(int $id, string $userId) : Entity {
 		$entity = $this->find($id, $userId);
-		$this->mapper->delete($entity);
+		return $this->mapper->delete($entity);
 	}
 
 	/**

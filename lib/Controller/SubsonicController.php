@@ -43,7 +43,6 @@ use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Bookmark;
 use \OCA\Music\Db\Genre;
-use \OCA\Music\Db\Playlist;
 use \OCA\Music\Db\PodcastEpisode;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
@@ -348,7 +347,7 @@ class SubsonicController extends Controller {
 		$albumNode = $this->albumToNewApi($album);
 		$albumNode['song'] = \array_map(function ($track) use ($album) {
 			$track->setAlbum($album);
-			return $this->trackToApi($track);
+			return $track->toSubsonicApi($this->l10n);
 		}, $tracks);
 		return $this->subsonicResponse(['album' => $albumNode]);
 	}
@@ -361,7 +360,7 @@ class SubsonicController extends Controller {
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
 
-		return $this->subsonicResponse(['song' => $this->trackToApi($track)]);
+		return $this->subsonicResponse(['song' => $track->toSubsonicApi($this->l10n)]);
 	}
 
 	/**
@@ -546,8 +545,12 @@ class SubsonicController extends Controller {
 	private function getPlaylists() {
 		$playlists = $this->playlistBusinessLayer->findAll($this->userId);
 
+		foreach ($playlists as &$playlist) {
+			$playlist->setDuration($this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId));
+		}
+
 		return $this->subsonicResponse(['playlists' =>
-			['playlist' => \array_map([$this, 'playlistToApi'], $playlists)]
+			['playlist' => Util::arrayMapMethod($playlists, 'toSubsonicApi')]
 		]);
 	}
 
@@ -557,8 +560,11 @@ class SubsonicController extends Controller {
 	private function getPlaylist(int $id) {
 		$playlist = $this->playlistBusinessLayer->find($id, $this->userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $this->userId);
+		$playlist->setDuration(\array_reduce($tracks, function (?int $accuDuration, Track $track) : int {
+			return (int)$accuDuration + (int)$track->getLength();
+		}));
 
-		$playlistNode = $this->playlistToApi($playlist);
+		$playlistNode = $playlist->toSubsonicApi();
 		$playlistNode['entry'] = $this->tracksToApi($tracks);
 
 		return $this->subsonicResponse(['playlist' => $playlistNode]);
@@ -845,7 +851,7 @@ class SubsonicController extends Controller {
 				if ($type === Bookmark::TYPE_TRACK) {
 					$track = $this->trackBusinessLayer->find($entryId, $this->userId);
 					$track->setAlbum($this->albumBusinessLayer->find($track->getAlbumId(), $this->userId));
-					$node['entry'] = $this->trackToApi($track);
+					$node['entry'] = $track->toSubsonicApi($this->l10n);
 				} elseif ($type === Bookmark::TYPE_PODCAST_EPISODE) {
 					$node['entry'] = $this->podcastEpisodeBusinessLayer->find($entryId, $this->userId)->toSubsonicApi();
 				} else {
@@ -1108,7 +1114,7 @@ class SubsonicController extends Controller {
 				'name' => $albumName,
 				'child' => \array_map(function ($track) use ($album) {
 					$track->setAlbum($album);
-					return $this->trackToApi($track);
+					return $track->toSubsonicApi($this->l10n);
 				}, $tracks)
 			]
 		]);
@@ -1165,10 +1171,8 @@ class SubsonicController extends Controller {
 
 	/**
 	 * The "old API" format is used e.g. in getMusicDirectory and getAlbumList
-	 * @param Album $album
-	 * @return array
 	 */
-	private function albumToOldApi($album) {
+	private function albumToOldApi(Album $album) : array {
 		$result = $this->albumCommonApiFields($album);
 
 		$result['parent'] = 'artist-' . $album->getAlbumArtistId();
@@ -1180,10 +1184,8 @@ class SubsonicController extends Controller {
 
 	/**
 	 * The "new API" format is used e.g. in getAlbum and getAlbumList2
-	 * @param Album $album
-	 * @return array
 	 */
-	private function albumToNewApi($album) {
+	private function albumToNewApi(Album $album) : array {
 		$result = $this->albumCommonApiFields($album);
 
 		$result['artistId'] = 'artist-' . $album->getAlbumArtistId();
@@ -1194,7 +1196,7 @@ class SubsonicController extends Controller {
 		return $result;
 	}
 
-	private function albumCommonApiFields($album) {
+	private function albumCommonApiFields(Album $album) : array {
 		$genreString = \implode(', ', \array_map(function (Genre $genre) {
 			return $genre->getNameString($this->l10n);
 		}, $album->getGenres() ?? []));
@@ -1216,63 +1218,7 @@ class SubsonicController extends Controller {
 	 */
 	private function tracksToApi(array $tracks) : array {
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $this->userId);
-		return \array_map([$this, 'trackToApi'], $tracks);
-	}
-
-	/**
-	 * The same API format is used both on "old" and "new" API methods. The "new" API adds some
-	 * new fields for the songs, but providing some extra fields shouldn't be a problem for the
-	 * older clients. The $track entity must have the Album reference injected prior to calling this.
-	 */
-	private function trackToApi(Track $track) : array {
-		$albumId = $track->getAlbumId();
-		$album = $track->getAlbum();
-		$hasCoverArt = ($album !== null && !empty($album->getCoverFileId()));
-
-		return [
-			'id' => 'track-' . $track->getId(),
-			'parent' => 'album-' . $albumId,
-			//'discNumber' => $track->getDisk(), // not supported on any of the tested clients => adjust track number instead
-			'title' => $track->getTitle() ?? '',
-			'artist' => $track->getArtistNameString($this->l10n),
-			'isDir' => false,
-			'album' => $track->getAlbumNameString($this->l10n),
-			'year' => $track->getYear(),
-			'size' => $track->getSize(),
-			'contentType' => $track->getMimetype(),
-			'suffix' => $track->getFileExtension(),
-			'duration' => $track->getLength() ?? 0,
-			'bitRate' => empty($track->getBitrate()) ? null : (int)\round($track->getBitrate()/1000), // convert bps to kbps
-			//'path' => '',
-			'isVideo' => false,
-			'albumId' => 'album-' . $albumId,
-			'artistId' => 'artist-' . $track->getArtistId(),
-			'type' => 'music',
-			'created' => Util::formatZuluDateTime($track->getCreated()),
-			'track' => $track->getAdjustedTrackNumber(),
-			'starred' => Util::formatZuluDateTime($track->getStarred()),
-			'genre' => empty($track->getGenreId()) ? null : $track->getGenreNameString($this->l10n),
-			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
-		];
-	}
-
-	/**
-	 * @param Playlist $playlist
-	 * @return array
-	 */
-	private function playlistToApi($playlist) {
-		return [
-			'id' => $playlist->getId(),
-			'name' => $playlist->getName(),
-			'owner' => $this->userId,
-			'public' => false,
-			'songCount' => $playlist->getTrackCount(),
-			'duration' => $this->playlistBusinessLayer->getDuration($playlist->getId(), $this->userId),
-			'comment' => $playlist->getComment() ?: '',
-			'created' => Util::formatZuluDateTime($playlist->getCreated()),
-			'changed' => Util::formatZuluDateTime($playlist->getUpdated()),
-			'coverArt' => 'pl-' . $playlist->getId() // work around: DSub always fetches the art using ID like "pl-NNN" even if we  use some other format here
-		];
+		return Util::arrayMapMethod($tracks, 'toSubsonicApi', [$this->l10n]);
 	}
 
 	/**

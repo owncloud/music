@@ -42,6 +42,8 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	private static function resultElementForResource($resource) {
 		if ($resource === 'getMusicDirectory') {
 			return 'directory';
+		} elseif ($resource === 'createPlaylist') {
+			return '';
 		} elseif (self::startsWith($resource, 'get')) {
 			return \lcfirst(\substr($resource, 3));
 		} elseif (self::startsWith($resource, 'search')) {

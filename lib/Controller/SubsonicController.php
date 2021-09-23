@@ -62,7 +62,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.13.0';
+	const API_VERSION = '1.14.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -309,6 +309,20 @@ class SubsonicController extends Controller {
 	 */
 	private function getArtistInfo2(string $id, bool $includeNotPresent=false) {
 		return $this->doGetArtistInfo('artistInfo2', $id, $includeNotPresent);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getAlbumInfo(string $id) {
+		return $this->doGetAlbumInfo('albumInfo', $id);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getAlbumInfo2(string $id) {
+		return $this->doGetAlbumInfo('albumInfo2', $id);
 	}
 
 	/**
@@ -589,7 +603,7 @@ class SubsonicController extends Controller {
 		$playlist->setTrackIdsFromArray($songIds);
 		$this->playlistBusinessLayer->update($playlist);
 
-		return $this->subsonicResponse([]);
+		return $this->getPlaylist($playlist->getId());
 	}
 
 	/**
@@ -1307,6 +1321,38 @@ class SubsonicController extends Controller {
 		$attributeKeys = ['name', 'id', 'albumCount', 'coverArt', 'starred'];
 
 		return $this->subsonicResponse([$rootName => $content], $attributeKeys);
+	}
+
+	/**
+	 * Common logic for getAlbumInfo and getAlbumInfo2
+	 */
+	private function doGetAlbumInfo(string $rootName, string $id) {
+		$content = [];
+
+		// This function may be called with a folder ID instead of an album ID in case
+		// the library is being browsed by folders. In that case, return an empty response.
+		if (Util::startsWith($id, 'album')) {
+			$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
+
+			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
+
+			if (isset($info['album'])) {
+				$content = [
+					'notes' => $info['album']['wiki']['summary'] ?? null,
+					'lastFmUrl' => $info['album']['url'],
+					'musicBrainzId' => $info['album']['mbid'] ?? null
+				];
+
+				foreach ($info['album']['image'] ?? [] as $imageInfo) {
+					if (!empty($imageInfo['size'])) {
+						$content[$imageInfo['size'] . 'ImageUrl'] = $imageInfo['#text'];
+					}
+				}
+			}
+		}
+
+		// This method is unusual in how it uses non-attribute elements in the response.
+		return $this->subsonicResponse([$rootName => $content], []);
 	}
 
 	/**

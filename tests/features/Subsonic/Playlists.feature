@@ -6,7 +6,9 @@ Feature: Subsonic API - Playlists
   Scenario: Create empty playlist
     When I specify the parameter "name" with value "My playlist"
     And I request the "createPlaylist" resource
-    Then I should get empty XML response
+    Then I should get XML with "playlist" entries:
+      | name                | songCount | public |
+      | My playlist         | 0         | false  |
 
   Scenario: Create playlist with one entry
     Given I specify the parameter "query" with value "Heroines"
@@ -15,7 +17,9 @@ Feature: Subsonic API - Playlists
     When I specify the parameter "songId" with the stored value of "id"
     And I specify the parameter "name" with value "My another playlist"
     And I request the "createPlaylist" resource
-    Then I should get empty XML response
+    Then I should get XML with "entry" entries:
+      | title    | album                          | artist                 | duration  | year | track |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
 
   Scenario: Get playlists
     When I request the "getPlaylists" resource

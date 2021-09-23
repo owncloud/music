@@ -62,7 +62,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.14.0';
+	const API_VERSION = '1.16.0';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -651,10 +651,39 @@ class SubsonicController extends Controller {
 					return [
 						'id' => $station->getId(),
 						'name' => $station->getName(),
-						'streamUrl' => $station->getStreamUrl()
+						'streamUrl' => $station->getStreamUrl(),
+						'homePageUrl' => $station->getHomeUrl()
 					];
 				}, $stations)]
 		]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function createInternetRadioStation(string $streamUrl, string $name, ?string $homepageUrl) {
+		$this->radioStationBusinessLayer->create($this->userId, $name, $streamUrl, $homepageUrl);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function updateInternetRadioStation(int $id, string $streamUrl, string $name, ?string $homepageUrl) {
+		$station = $this->radioStationBusinessLayer->find($id, $this->userId);
+		$station->setStreamUrl($streamUrl);
+		$station->setName($name);
+		$station->setHomeUrl($homepageUrl);
+		$this->radioStationBusinessLayer->update($station);
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function deleteInternetRadioStation(int $id) {
+		$this->radioStationBusinessLayer->delete($id, $this->userId);
+		return $this->subsonicResponse([]);
 	}
 
 	/**

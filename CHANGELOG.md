@@ -4,7 +4,7 @@
   [#742](https://github.com/owncloud/music/issues/742)
 - Cover art to the playlist details pane
 - Subsonic and Ampache: Support playlist cover art
-- Subsonic: Methods `getAlbumInfo` and `getAlbumInfo2`
+- Subsonic: Methods `getAlbumInfo`, `getAlbumInfo2`, `createInternetRadioStation`, `updateInternetRadioStation`, `deleteInternetRadioStation`
 
 ### Changed
 - Use smaller heading size in the Folders and Genres views
@@ -18,7 +18,7 @@
 - Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
 - Subsonic: When browsing by folders, don't show the folders excluded from the library
 - Subsonic: Optimized loading the tracks of long playlists
-- Subsonic: API version updated to 1.14.0
+- Subsonic: API version updated to 1.16.0
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

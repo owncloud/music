@@ -30,13 +30,15 @@
 			<dt ng-if="artistTags" translate>Tags</dt>
 			<dd ng-if="artistTags" ng-bind-html="artistTags"></dd>
 			<dt ng-if="similarArtistsInLib.length || similarArtistsNotInLib" translate>Similar to</dt>
-			<dd ng-if="similarArtistsInLib.length || similarArtistsNotInLib" class="similar-artists"
-				><span class="clickable" ng-repeat-start="similarArtist in similarArtistsInLib"
-					ng-click="onClickKnownArtist(similarArtist.id)">{{ similarArtist.name }}<button class="icon-info"></button></span
-			><span ng-repeat-end ng-if="!$last || similarArtistsNotInLib">,  </span
-			><span ng-bind-html="similarArtistsNotInLib"></span
-			>  <span class="show-all" ng-if="!allSimilarShown && !allSimilarLoading" ng-click="onShowAllSimilar()" translate>Show all…</span
-			><div class="icon-loading inline" ng-if="allSimilarLoading"></div></dd>
+			<dd ng-if="similarArtistsInLib.length || similarArtistsNotInLib" class="similar-artists">
+				<span class="in-lib-artist clickable" ng-repeat="similarArtist in similarArtistsInLib"
+					ng-click="onClickKnownArtist(similarArtist.id)">{{ similarArtist.name }}<button class="icon-info"></button
+					><span class="separator" ng-if="!$last || similarArtistsNotInLib">,  </span>
+				</span>
+				<span ng-bind-html="similarArtistsNotInLib"></span>
+				<span class="show-all" ng-if="!allSimilarShown && !allSimilarLoading" ng-click="onShowAllSimilar()" translate>Show all…</span>
+				<div class="icon-loading inline" ng-if="allSimilarLoading"></div>
+			</dd>
 		</dl>
 	</div>
 

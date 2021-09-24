@@ -27,6 +27,7 @@
   [#896](https://github.com/owncloud/music/issues/896)
 - Navigation pane auto-collapse on mobile layout not working on recent versions of Nextcloud
 - Tracks and podcasts with missing metadata causing page load failure on [Ultrasonic](https://f-droid.org/en/packages/org.moire.ultrasonic/)
+- Small layout issues in the details pane
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

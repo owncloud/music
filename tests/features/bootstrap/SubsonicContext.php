@@ -97,6 +97,14 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
+	 * @When I request the :resource resource with parameter :option having value :value
+	 */
+	public function iRequestTheResourceWithParameterHavingValue($resource, $option, $value) {
+		$this->iSpecifyTheParameterWithValue($option, $value);
+		$this->iRequestTheResource($resource);
+	}
+
+	/**
 	 * @When I request the :resource resource in JSON
 	 */
 	public function iRequestTheResourceInJson($resource) {

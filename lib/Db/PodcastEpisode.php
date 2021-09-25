@@ -12,12 +12,9 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\Entity;
 use \OCA\Music\Utility\Util;
 
 /**
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method int getChannelId()
  * @method void setChannelId(int $id)
  * @method ?string getStreamUrl()
@@ -52,13 +49,8 @@ use \OCA\Music\Utility\Util;
  * @method void setDescription(?string $description)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?string getCreated()
- * @method void setCreated(?string $timestamp)
- * @method ?string getUpdated()
- * @method void setUpdated(?string $timestamp)
  */
 class PodcastEpisode extends Entity {
-	public $userId;
 	public $channelId;
 	public $streamUrl;
 	public $mimetype;
@@ -76,8 +68,6 @@ class PodcastEpisode extends Entity {
 	public $author;
 	public $description;
 	public $starred;
-	public $created;
-	public $updated;
 
 	public function __construct() {
 		$this->addType('channelId', 'int');

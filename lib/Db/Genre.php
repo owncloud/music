@@ -13,19 +13,12 @@
 namespace OCA\Music\Db;
 
 use \OCP\IL10N;
-use \OCP\AppFramework\Db\Entity;
 
 /**
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method string getName()
  * @method void setName(string $name)
  * @method string getLowerName()
  * @method void setLowerName(string $lowerName)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  * @method int getTrackCount()
  * @method void setTrackCount(int $count)
  * @method int getAlbumCount()
@@ -36,11 +29,8 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setTrackIds(array $trackIds)
  */
 class Genre extends Entity {
-	public $userId;
 	public $name;
 	public $lowerName;
-	public $created;
-	public $updated;
 	// not from the music_genres table but still part of the standard content of this entity
 	public $trackCount;
 	public $albumCount;

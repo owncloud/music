@@ -20,12 +20,11 @@ use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\AlbumMapper;
 use \OCA\Music\Db\Album;
+use \OCA\Music\Db\Entity;
 use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 
 use \OCA\Music\Utility\Util;
-
-use \OCP\AppFramework\Db\Entity;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:

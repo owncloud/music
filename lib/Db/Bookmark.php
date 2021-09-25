@@ -15,11 +15,8 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\Utility\Util;
-use \OCP\AppFramework\Db\Entity;
 
 /**
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method int getType()
  * @method void setType(int $type)
  * @method int getEntryId()
@@ -28,19 +25,12 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setPosition(int $position)
  * @method ?string getComment()
  * @method void setComment(?string $comment)
- * @method ?string getCreated()
- * @method setCreated(?string $timestamp)
- * @method ?string getUpdated()
- * @method setUpdated(?string $timestamp)
  */
 class Bookmark extends Entity {
-	public $userId;
 	public $type;
 	public $entryId;
 	public $position;
 	public $comment;
-	public $created;
-	public $updated;
 
 	public const TYPE_TRACK = 1;
 	public const TYPE_PODCAST_EPISODE = 2;

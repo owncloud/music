@@ -12,29 +12,18 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\Entity;
-
 /**
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method string getName()
  * @method void setName(string $name)
  * @method string getStreamUrl()
  * @method setStreamUrl(string $url)
  * @method string getHomeUrl()
  * @method setHomeUrl(string $url)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  */
 class RadioStation extends Entity {
-	public $userId;
 	public $name;
 	public $streamUrl;
 	public $homeUrl;
-	public $created;
-	public $updated;
 
 	public function toApi() : array {
 		return [

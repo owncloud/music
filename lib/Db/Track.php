@@ -17,7 +17,6 @@ namespace OCA\Music\Db;
 use OCA\Music\Utility\Util;
 use \OCP\IL10N;
 use \OCP\IURLGenerator;
-use \OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getTitle()
@@ -46,18 +45,12 @@ use \OCP\AppFramework\Db\Entity;
  * @method void setBitrate(?int $bitrate)
  * @method string getMimetype()
  * @method void setMimetype(string $mimetype)
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method ?string getMbid()
  * @method void setMbid(?string $mbid)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  * @method ?string getGenreName()
  * @method void setGenreName(?string $genreName)
  * @method string getFilename()
@@ -79,12 +72,9 @@ class Track extends Entity {
 	public $bitrate;
 	public $uri;
 	public $mimetype;
-	public $userId;
 	public $mbid;
 	public $starred;
 	public $genreId;
-	public $created;
-	public $updated;
 	// not from the music_tracks table but still part of the standard content of this entity:
 	public $filename;
 	public $size;

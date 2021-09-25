@@ -12,12 +12,9 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\Entity;
 use \OCA\Music\Utility\Util;
 
 /**
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method string getRssUrl()
  * @method void setRssUrl(string $url)
  * @method string getRssHash()
@@ -48,15 +45,10 @@ use \OCA\Music\Utility\Util;
  * @method void setCategory(string $category)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
- * @method string getCreated()
- * @method void setCreated(string $timestamp)
- * @method string getUpdated()
- * @method void setUpdated(string $timestamp)
  * @method PodcastEpisode[] getEpisodes()
  * @method void setEpisodes(PodcastEpisode[] $episodes)
  */
 class PodcastChannel extends Entity {
-	public $userId;
 	public $rssUrl;
 	public $rssHash;
 	public $contentHash;
@@ -72,8 +64,6 @@ class PodcastChannel extends Entity {
 	public $imageUrl;
 	public $category;
 	public $starred;
-	public $created;
-	public $updated;
 
 	// not part of the default content, may be injected separately
 	public $episodes;

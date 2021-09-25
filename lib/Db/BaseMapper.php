@@ -13,7 +13,6 @@
 namespace OCA\Music\Db;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\Entity;
 use \OCP\AppFramework\Db\Mapper;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use \OCP\IDBConnection;
@@ -31,6 +30,8 @@ abstract class BaseMapper extends Mapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
+	/** @phpstan-var class-string<EntityType> $entityClass */
+	protected $entityClass;
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass
@@ -38,6 +39,8 @@ abstract class BaseMapper extends Mapper {
 	public function __construct(IDBConnection $db, string $tableName, string $entityClass, string $nameColumn) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
+		// eclipse the base class property to help phpstan
+		$this->entityClass = $entityClass;
 	}
 
 	/**
@@ -223,7 +226,7 @@ abstract class BaseMapper extends Mapper {
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function insert(Entity $entity) : Entity {
+	public function insert(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
 		$now = new \DateTime();
 		$nowStr = $now->format(self::SQL_DATE_FORMAT);
 		$entity->setCreated($nowStr);
@@ -249,7 +252,7 @@ abstract class BaseMapper extends Mapper {
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
-	public function update(Entity $entity) : Entity {
+	public function update(\OCP\AppFramework\Db\Entity $entity) : \OCP\AppFramework\Db\Entity {
 		$now = new \DateTime();
 		$entity->setUpdated($now->format(self::SQL_DATE_FORMAT));
 		return parent::update($entity); // @phpstan-ignore-line: no way to tell phpstan that the parent uses the template type

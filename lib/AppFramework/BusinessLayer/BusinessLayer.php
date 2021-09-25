@@ -16,10 +16,10 @@
 namespace OCA\Music\AppFramework\BusinessLayer;
 
 use \OCA\Music\Db\BaseMapper;
+use \OCA\Music\Db\Entity;
 use \OCA\Music\Db\SortBy;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\Entity;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 /**

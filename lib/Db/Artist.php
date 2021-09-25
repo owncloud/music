@@ -17,37 +17,26 @@ namespace OCA\Music\Db;
 use \OCP\IL10N;
 use \OCP\IURLGenerator;
 
-use \OCP\AppFramework\Db\Entity;
-
 /**
  * @method ?string getName()
  * @method void setName(?string $name)
  * @method ?int getCoverFileId()
  * @method void setCoverFileId(?int $coverFileId)
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method ?string getMbid()
  * @method void setMbid(?string $mbid)
  * @method string getHash()
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  * @method ?string getLastfmUrl()
  * @method void setLastfmUrl(?string $lastfmUrl)
  */
 class Artist extends Entity {
 	public $name;
 	public $coverFileId;
-	public $userId;
 	public $mbid;
 	public $hash;
 	public $starred;
-	public $created;
-	public $updated;
 
 	// not part of the standard content, injected separately when needed
 	public $lastfmUrl;

@@ -15,19 +15,12 @@
 namespace OCA\Music\Db;
 
 use \OCA\Music\Utility\Util;
-use \OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getName()
  * @method setName(string $name)
  * @method string getTrackIds()
  * @method setTrackIds(string $trackIds)
- * @method string getUserId()
- * @method setUserId(string $userId)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  * @method string getComment()
  * @method setComment(string $comment)
  * @method ?int getDuration()
@@ -35,10 +28,7 @@ use \OCP\AppFramework\Db\Entity;
  */
 class Playlist extends Entity {
 	public $name;
-	public $userId;
 	public $trackIds;
-	public $created;
-	public $updated;
 	public $comment;
 
 	// injected separately when needed

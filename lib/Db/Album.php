@@ -16,7 +16,6 @@ namespace OCA\Music\Db;
 
 use \OCP\IL10N;
 use \OCP\IURLGenerator;
-use \OCP\AppFramework\Db\Entity;
 
 use \OCA\Music\Utility\Util;
 
@@ -35,8 +34,6 @@ use \OCA\Music\Utility\Util;
  * @method void setCoverFileId(int $coverFileId)
  * @method array getArtistIds()
  * @method void setArtistIds(array $artistIds)
- * @method string getUserId()
- * @method void setUserId(string $userId)
  * @method int getAlbumArtistId()
  * @method void setAlbumArtistId(int $albumArtistId)
  * @method string getAlbumArtistName()
@@ -47,10 +44,6 @@ use \OCA\Music\Utility\Util;
  * @method void setNumberOfDisks(int $count)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
- * @method string getCreated()
- * @method setCreated(string $timestamp)
- * @method string getUpdated()
- * @method setUpdated(string $timestamp)
  * @method ?array getGenres()
  * @method void setGenres(?array $genres)
  */
@@ -60,12 +53,9 @@ class Album extends Entity {
 	public $disk; // deprecated
 	public $mbidGroup;
 	public $coverFileId;
-	public $userId;
 	public $albumArtistId;
 	public $hash;
 	public $starred;
-	public $created;
-	public $updated;
 	public $albumArtistName; // not from music_albums table but still part of the standard content
 
 	// extra fields injected separately by AlbumBusinessLayer

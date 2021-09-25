@@ -14,7 +14,6 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\Entity;
 use \OCP\IDBConnection;
 
 /**

@@ -28,6 +28,7 @@ use \OCA\Music\Utility\Util;
  * @method PodcastEpisode find(int $episodeId, string $userId)
  * @method PodcastEpisode[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
  * @method PodcastEpisode[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null, ?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null)
+ * @phpstan-extends BusinessLayer<PodcastEpisode>
  */
 class PodcastEpisodeBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type

@@ -19,6 +19,9 @@ use \OCA\Music\Utility\Util;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\IDBConnection;
 
+/**
+ * @phpstan-extends BaseMapper<Artist>
+ */
 class ArtistMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_artists', Artist::class, 'name');

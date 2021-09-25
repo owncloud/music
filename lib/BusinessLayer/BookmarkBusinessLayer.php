@@ -29,6 +29,7 @@ use \OCP\AppFramework\Db\DoesNotExistException;
  * @method Bookmark find(int $bookmarkId, string $userId)
  * @method Bookmark[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
  * @method Bookmark[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ * @phpstan-extends BusinessLayer<Bookmark>
  */
 class BookmarkBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type

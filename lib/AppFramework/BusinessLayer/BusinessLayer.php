@@ -22,15 +22,23 @@ use \OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\AppFramework\Db\Entity;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
+/**
+ * @phpstan-template EntityType of Entity
+ */
 abstract class BusinessLayer {
 	protected $mapper;
 
+	/**
+	 * @phpstan-param BaseMapper<EntityType> $mapper
+	 */
 	public function __construct(BaseMapper $mapper) {
 		$this->mapper = $mapper;
 	}
 
 	/**
 	 * Update an entity in the database
+	 * @phpstan-param EntityType $entity
+	 * @phpstan-return EntityType
 	 */
 	public function update(Entity $entity) : Entity {
 		return $this->mapper->update($entity);
@@ -41,6 +49,7 @@ abstract class BusinessLayer {
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
+	 * @phpstan-return EntityType
 	 */
 	public function delete(int $id, string $userId) : Entity {
 		$entity = $this->find($id, $userId);
@@ -71,7 +80,7 @@ abstract class BusinessLayer {
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
 	 * @throws BusinessLayerException if the entity does not exist or more than one entity exists
-	 * @return Entity the entity
+	 * @phpstan-return EntityType
 	 */
 	public function find(int $id, string $userId) : Entity {
 		try {
@@ -87,7 +96,7 @@ abstract class BusinessLayer {
 	 * Finds an entity by id, or returns an empty entity instance if the requested one is not found
 	 * @param int $id the id of the entity
 	 * @param string $userId the name of the user for security reasons
-	 * @return Entity the entity
+	 * @phpstan-return EntityType
 	 */
 	public function findOrDefault(int $id, string $userId) : Entity {
 		try {
@@ -104,6 +113,7 @@ abstract class BusinessLayer {
 	 * @param integer[] $ids  IDs of the entities to be found
 	 * @param string|null $userId
 	 * @return Entity[]
+	 * @phpstan-return EntityType[]
 	 */
 	public function findById(array $ids, string $userId=null) : array {
 		$result = [];
@@ -128,6 +138,7 @@ abstract class BusinessLayer {
 	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
 	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
+	 * @phpstan-return EntityType[]
 	 */
 	public function findAll(
 			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
@@ -147,6 +158,7 @@ abstract class BusinessLayer {
 	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
 	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Entity[]
+	 * @phpstan-return EntityType[]
 	 */
 	public function findAllByName(
 			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
@@ -161,6 +173,7 @@ abstract class BusinessLayer {
 	 * @param integer|null $limit
 	 * @param integer|null $offset
 	 * @return Entity[]
+	 * @phpstan-return EntityType[]
 	 */
 	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
 		return $this->mapper->findAllStarred($userId, $limit, $offset);

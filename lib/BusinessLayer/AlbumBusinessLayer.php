@@ -29,10 +29,7 @@ use \OCP\AppFramework\Db\Entity;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
- * @method Album find(int $trackId, string $userId)
- * @method Album[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
- * @method Album[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
- * @method Album[] findById(int[] $ids, string $userId=null)
+ * @phpstan-extends BusinessLayer<Album>
  */
 class AlbumBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
@@ -54,6 +51,20 @@ class AlbumBusinessLayer extends BusinessLayer {
 	public function find(int $albumId, string $userId) : Entity {
 		$album = parent::find($albumId, $userId);
 		return $this->injectExtraFields([$album], $userId)[0];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findById()
+	 * @return Album[]
+	 */
+	public function findById(array $ids, string $userId=null) : array {
+		$albums = parent::findById($ids, $userId);
+		if ($userId !== null) {
+			return $this->injectExtraFields($albums, $userId);
+		} else {
+			return $albums; // can't inject the extra fields without a user
+		}
 	}
 
 	/**

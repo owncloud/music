@@ -22,6 +22,7 @@ use \OCP\IDBConnection;
 /**
  * Type hint a base class methdo to help Scrutinizer
  * @method Album updateOrInsert(Album $album)
+ * @phpstan-extends BaseMapper<Album>
  */
 class AlbumMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {

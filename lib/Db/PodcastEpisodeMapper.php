@@ -18,6 +18,7 @@ use \OCP\IDBConnection;
 /**
  * Type hint a base class methdo to help Scrutinizer
  * @method PodcastEpisode updateOrInsert(PodcastEpisode $episode)
+ * @phpstan-extends BaseMapper<PodcastEpisode>
  */
 class PodcastEpisodeMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {

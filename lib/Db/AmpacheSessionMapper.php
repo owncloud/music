@@ -17,6 +17,9 @@ namespace OCA\Music\Db;
 use OCP\AppFramework\Db\Mapper;
 use OCP\IDBConnection;
 
+/**
+ * @method AmpacheSession findEntity(string $sql, array $params)
+ */
 class AmpacheSessionMapper extends Mapper {
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'music_ampache_sessions', AmpacheSession::class);

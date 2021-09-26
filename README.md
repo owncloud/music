@@ -1,6 +1,6 @@
 # README
 
-[![Build Status](https://secure.travis-ci.org/owncloud/music.png)](http://travis-ci.org/owncloud/music)
+[![Build Status](https://secure.travis-ci.com/owncloud/music.png)](http://travis-ci.com/owncloud/music)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/music/badges/quality-score.png?s=ddb9090619b6bcf0bf381e87011322dd2514c884)](https://scrutinizer-ci.com/g/owncloud/music/)
 
 <img src="/img/logo/music_logotype_horizontal.svg" alt="logotype" width="60%"/>

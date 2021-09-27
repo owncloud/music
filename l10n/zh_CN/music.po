@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-09-26 21:41+0800\n"
+"PO-Revision-Date: 2021-09-27 12:52+0800\n"
 "Last-Translator: jsgang <jsgang9@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/zh_CN/)\n"
@@ -44,55 +44,50 @@ msgid "(no artist image available)"
 msgstr "没有可用的艺术家图片"
 
 #: ../js/app/controllers/maincontroller.js:54
-#, fuzzy
 msgid "1 album"
 msgid_plural "{{ count }} albums"
-msgstr[0] "专辑页"
+msgstr[0] "专辑"
 
 #: ../js/app/controllers/maincontroller.js:87
-#, fuzzy
 msgid "1 channel"
 msgid_plural "{{ count }} channels"
-msgstr[0] "一首音轨"
+msgstr[0] "频道"
 
 #: ../js/app/controllers/maincontroller.js:60
-#, fuzzy
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] "文件夹"
 
 #: ../js/app/controllers/maincontroller.js:69
-#, fuzzy
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] "类型"
 
 #: ../js/app/controllers/maincontroller.js:78
-#, fuzzy
 msgid "1 station"
 msgid_plural "{{ count }} stations"
-msgstr[0] "一首音轨"
+msgstr[0] "电台"
 
 #: ../js/app/controllers/maincontroller.js:49
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
-msgstr[0] "一首音轨"
+msgstr[0] "音轨"
 
 #: ../templates/partials/views/settingsview.php:30
 msgid ""
 "<strong>**</strong> matches zero or more arbitrary characters including path "
 "segment separators '/'"
-msgstr ""
+msgstr "<strong>**</strong>匹配零个或多个字符，包括路径段分隔符“/”"
 
 #: ../templates/partials/views/settingsview.php:29
 msgid ""
 "<strong>*</strong> matches zero or more arbitrary characters within a path "
 "segment"
-msgstr ""
+msgstr "<strong>*</strong>匹配路径段内的零个或多个字符"
 
 #: ../templates/partials/views/settingsview.php:28
 msgid "<strong>?</strong> matches any one character within a path segment"
-msgstr ""
+msgstr "<strong>?</strong>匹配路径段内的任意一个字符"
 
 #: ../templates/partials/views/settingsview.php:178
 msgid "About"
@@ -103,9 +98,8 @@ msgid "Add a new podcast channel from an RSS feed"
 msgstr "从RSS feed添加一个新的播客"
 
 #: ../js/app/services/podcastservice.js:76
-#, fuzzy
 msgid "Add channel"
-msgstr "添加播客频道失败"
+msgstr "添加播客频道"
 
 #: ../templates/partials/navigationitem.php:97
 msgid "Add from RSS feed"
@@ -117,23 +111,25 @@ msgstr "手动添加"
 
 #: ../templates/partials/views/playlistview.php:35
 msgid "Add tracks with drag and drop from Albums or other playlists"
-msgstr ""
+msgstr "通过从专辑或其他播放列表拖放添加曲目"
 
 #: ../templates/partials/views/settingsview.php:133
 msgid "Admin"
-msgstr ""
+msgstr "管理员"
 
 #: ../templates/partials/sidebar/albumdetails.php:18
 msgid ""
 "Admin may set up the Last.fm API key to show album background information "
 "here. See the Settings view for details."
 msgstr ""
+"管理员可以设置 Last.fm API密钥以显示专辑背景信息。 有关详细信息，请参阅设置。"
 
 #: ../templates/partials/sidebar/artistdetails.php:23
 msgid ""
 "Admin may set up the Last.fm API key to show artist biography here. See the "
 "Settings view for details."
 msgstr ""
+"管理员可以设置 Last.fm API密钥以显示艺术家传记。 有关详细信息，请参阅设置。"
 
 #: ../js/app/controllers/playercontroller.js:363
 msgid "Album"
@@ -181,7 +177,7 @@ msgstr "确定要删除播客频道“{{ title }}”吗？"
 
 #: ../js/app/controllers/views/radioviewcontroller.js:38
 msgid "Are you sure to remove the radio station \"{{ name }}\"?"
-msgstr "确定要删除电台\"\"{{ name }}\"\""
+msgstr "确定要删除电台\"\"{{ name }}\"\"吗？"
 
 #: ../js/app/controllers/views/settingsviewcontroller.js:141
 msgid ""
@@ -198,6 +194,11 @@ msgid ""
 "also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the "
 "CSP <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 msgstr ""
+"允许的HLS电台流媒体主机列表。 默认值为空列表 []，阻止来自任何远程URL的HLS "
+"流。 给定的URL将添加到标头Content-Security-Policy中<a href="
+"\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>。 此外，如果您指定任"
+"何允许的来源，则来源<samp>data:</samp>和<samp>blob:</samp>也将添加到 CSP<a "
+"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>。"
 
 #: ../templates/partials/views/settingsview.php:156
 msgid ""
@@ -206,6 +207,11 @@ msgid ""
 "be added to the Content-Security-Policy header <a href=\"{{url}}\" target="
 "\"_blank\">media-src</a>."
 msgstr ""
+"允许的非HLS电台流媒体主机列表。 默认值为['http://*:*', 'https://*:*']，允许来"
+"自任何远程URL的流。 给定的URL将添加到标头Content-Security-Policy中<a href="
+"\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>。 此外，如果您指定任"
+"何允许的来源，则来源<samp>data:</samp>和<samp>blob:</samp>也将添加到 CSP<a "
+"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>。"
 
 #: ../js/app/controllers/playercontroller.js:364
 msgid "Artist"
@@ -217,12 +223,12 @@ msgstr "艺术家"
 
 #: ../templates/partials/views/settingsview.php:33
 msgid "Changes to the excluded paths will only take effect upon rescan."
-msgstr "对排被除路径的修改将在重新扫描后生效"
+msgstr "对排被除路径的修改将在重新扫描后生效。"
 
 #: ../js/app/services/podcastservice.js:128
 msgid "Changes were loaded for one channel"
 msgid_plural "Changes were loaded for {{ count }} channels"
-msgstr[0] ""
+msgstr[0] "已为频道加载变更"
 
 #: ../js/app/controllers/playercontroller.js:368
 msgid "Channel"
@@ -329,7 +335,7 @@ msgstr ""
 
 #: ../js/app/controllers/views/radioviewcontroller.js:73
 msgid "Failed to delete the radio station:"
-msgstr "删除互联网电台失败"
+msgstr "删除互联网电台失败："
 
 #: ../templates/partials/views/settingsview.php:121
 msgid "Failed to generate new Ampache/Subsonic password"
@@ -361,11 +367,11 @@ msgstr "重置互联网电台失败:"
 
 #: ../templates/partials/views/settingsview.php:48
 msgid "Failed to save the ignored paths"
-msgstr "设置忽略的路径失败:"
+msgstr "设置忽略的路径失败"
 
 #: ../templates/partials/views/settingsview.php:12
 msgid "Failed to save the music collection path"
-msgstr "保存音乐集失败:"
+msgstr "保存音乐集失败"
 
 #: ../templates/partials/navigationitem.php:128
 msgid "Flat layout"
@@ -438,11 +444,11 @@ msgstr "从选中的文件导入互联网电台"
 
 #: ../js/app/services/playlistfileservice.js:194
 msgid "Imported {{ count }} radio stations from the file {{ file }}."
-msgstr "从文件 {{ file }} 导入了 {{ count }} 个互联网电台"
+msgstr "从文件 {{ file }} 导入了 {{ count }} 个互联网电台。"
 
 #: ../js/app/services/playlistfileservice.js:140
 msgid "Imported {{ count }} tracks from the file {{ file }}."
-msgstr "从文件 {{ file }} 导入了 {{ count }} 个音轨"
+msgstr "从文件 {{ file }} 导入了 {{ count }} 个音轨。"
 
 #: ../templates/partials/sidebar/radiohint.php:9
 msgid ""
@@ -451,6 +457,9 @@ msgid ""
 "the link \"Save current list as playlist for your media player: PLS\" on top "
 "of the view to get all the matching stations."
 msgstr ""
+"在搜索结果视图中，点击单个找到的电台上的“磁盘”图标以将电台下载为 PLS 文件。 "
+"或者，您也可以单击视图顶部的“将当前文件保存为流媒体播放器可识别的PLS格式文"
+"件”链接以获取所有匹配的电台。"
 
 #: ../js/app/controllers/maincontroller.js:161
 msgid "Internal server error"
@@ -521,7 +530,7 @@ msgstr "新的音乐可用"
 
 #: ../templates/main.php:85 ../templates/main.php:86
 msgid "New music available. Click here to reload the music library."
-msgstr "新的音乐可用，点击以重载音乐库"
+msgstr "新的音乐可用，点击以重载音乐库。"
 
 #: ../templates/partials/sidebar/radiostationdetails.php:4
 msgid "New radio station"
@@ -633,7 +642,7 @@ msgid ""
 "directory and others relative to the music library base path."
 msgstr ""
 "以“/”符号开头的路径将被识别为用户的根文件夹，其他路径将被视作对于音乐库根路径"
-"的相对路径"
+"的相对路径。"
 
 #: ../templates/partials/controls.php:9
 msgid "Pause"
@@ -685,6 +694,8 @@ msgid ""
 "radio\" link. When it disappears, the importing is done and the channels "
 "should become available in the view."
 msgstr ""
+"点击导航项“互联网电台”旁边的...符号，然后选择“从文件导入”。 找到之前上传的 "
+"PLS 文件，然后按“选择”。 稍等片刻，频道很快就会显示在在视图中。"
 
 #: ../templates/partials/controls.php:5
 msgid "Previous"
@@ -693,7 +704,7 @@ msgstr "前一首"
 #: ../templates/partials/sidebar/albumdetails.php:21
 #: ../templates/partials/sidebar/artistdetails.php:26
 msgid "Problem connecting Last.fm. The API key may be invalid."
-msgstr ""
+msgstr "连接 Last.fm 时出现问题。API 密钥可能无效。"
 
 #: ../js/app/controllers/sidebar/podcastdetailscontroller.js:94
 msgid "RSS URL"
@@ -804,15 +815,15 @@ msgstr "设置"
 
 #: ../js/app/controllers/views/podcastsviewcontroller.js:113
 msgid "Show all {{ count }} episodes …"
-msgstr "显示所有{{ count }}选集"
+msgstr "显示所有{{ count }}个选集"
 
 #: ../js/app/directives/tracklist.js:38
 msgid "Show all {{ count }} songs …"
-msgstr "显示所有{{ count }}歌曲"
+msgstr "显示所有{{ count }}首歌曲"
 
 #: ../templates/partials/sidebar/artistdetails.php:38
 msgid "Show all…"
-msgstr "显示所有..."
+msgstr "显示所有"
 
 #: ../templates/partials/views/settingsview.php:86
 msgid ""
@@ -826,11 +837,11 @@ msgstr "在文件中显示"
 
 #: ../js/app/directives/tracklist.js:35
 msgid "Show less …"
-msgstr "显示更少..."
+msgstr "显示更少"
 
 #: ../templates/partials/views/settingsview.php:23
 msgid "Show more…"
-msgstr "显示更多..."
+msgstr "显示更多"
 
 #: ../templates/partials/views/settingsview.php:134
 msgid "Show..."
@@ -847,7 +858,7 @@ msgstr "类似于"
 
 #: ../js/app/controllers/playercontroller.js:258
 msgid "Some not playable tracks were skipped."
-msgstr "跳过了部分无法播放的音轨"
+msgstr "跳过了部分无法播放的音轨。"
 
 #: ../templates/main.php:69
 msgid "Some search results are omitted"
@@ -863,13 +874,13 @@ msgstr "歌曲变更通知"
 
 #: ../templates/partials/navigationitem.php:48
 msgid "Sort …"
-msgstr "排序..."
+msgstr "排序"
 
 #: ../templates/partials/views/settingsview.php:22
 msgid ""
 "Specify folders within your music collection path which shall be excluded "
 "from the scanning."
-msgstr "指定在扫描时应被排除的文件夹"
+msgstr "指定在扫描时应被排除的文件夹。"
 
 #: ../templates/partials/sidebar/radiostationdetails.php:13
 msgid "Stream URL"
@@ -1241,11 +1252,11 @@ msgstr "网址"
 
 #: ../js/app/services/playlistfileservice.js:197
 msgid "{{ count }} entries were skipped."
-msgstr "跳过了{{ count }}个实体"
+msgstr "跳过了{{ count }}个实体。"
 
 #: ../js/app/services/playlistfileservice.js:143
 msgid "{{ count }} files were skipped."
-msgstr "跳过了{{ count }}个文件"
+msgstr "跳过了{{ count }}个文件。"
 
 #: ../templates/main.php:61
 msgid "{{ scanningScanned }} of {{ scanningTotal }}"

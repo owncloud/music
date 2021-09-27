@@ -46,39 +46,33 @@ msgstr "没有可用的艺术家图片"
 #: ../js/app/controllers/maincontroller.js:54
 msgid "1 album"
 msgid_plural "{{ count }} albums"
-msgstr[0] "1张专辑"
-msgstr[1] "{{ count }}张专辑"
+msgstr[0] "{{ count }}张专辑"
 
 #: ../js/app/controllers/maincontroller.js:87
 msgid "1 channel"
 msgid_plural "{{ count }} channels"
-msgstr[0] "1个频道"
-msgstr[1] "{{ count }}个频道"
+msgstr[0] "{{ count }}个频道"
 
 #: ../js/app/controllers/maincontroller.js:60
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
-msgstr[0] "1个文件夹"
-msgstr[1] "{{ count }}个文件夹"
+msgstr[0] "{{ count }}个文件夹"
 
 #: ../js/app/controllers/maincontroller.js:69
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
-msgstr[0] "1个类型"
-msgstr[1] "{{ count }}个类型"
+msgstr[0] "{{ count }}个类型"
 
 #: ../js/app/controllers/maincontroller.js:78
 msgid "1 station"
 msgid_plural "{{ count }} stations"
-msgstr[0] "1个电台"
-msgstr[1] "{{ count }}个电台"
+msgstr[0] "{{ count }}个电台"
 
 
 #: ../js/app/controllers/maincontroller.js:49
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
-msgstr[0] "1首音轨"
-msgstr[1] "{{ count }}首音轨"
+msgstr[0] "{{ count }}首音轨"
 
 #: ../templates/partials/views/settingsview.php:30
 msgid ""
@@ -215,10 +209,8 @@ msgid ""
 "\"_blank\">media-src</a>."
 msgstr ""
 "允许的非HLS电台流媒体主机列表。 默认值为['http://*:*', 'https://*:*']，允许来"
-"自任何远程URL的流。 给定的URL将添加到标头Content-Security-Policy中<a href="
-"\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>。 此外，如果您指定任"
-"何允许的来源，则来源<samp>data:</samp>和<samp>blob:</samp>也将添加到 CSP<a "
-"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>。"
+"自任何远程URL的流。 给定的URL将添加到标头Content-Security-Policy <a href=\"{{url}}\" target="
+"\"_blank\">media-src</a>中。"
 
 #: ../js/app/controllers/playercontroller.js:364
 msgid "Artist"

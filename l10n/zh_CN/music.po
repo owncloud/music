@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # jsgang <jsgang9@gmail.com>, 2018
 # Kaijia Feng <fengkaijia@gmail.com>, 2014
@@ -9,161 +9,1257 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"PO-Revision-Date: 2018-07-28 02:14+0000\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2021-09-27 12:52+0800\n"
 "Last-Translator: jsgang <jsgang9@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/owncloud-org/owncloud/language/zh_CN/)\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/owncloud-org/"
+"owncloud/language/zh_CN/)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0\n"
 
-#: ../templates/main.php:60
-msgid "+ New Playlist"
-msgstr "+ 新播放列表"
+#: ../templates/partials/sidebar/albumdetails.php:20
+#: ../templates/partials/sidebar/artistdetails.php:25
+msgid "(Failed to connect Last.fm)"
+msgstr "连接到Last.fm失败"
 
-#: ../templates/fake-template.php:7 ../templates/main.php:55
+#: ../templates/partials/sidebar/albumdetails.php:17
+#: ../templates/partials/sidebar/artistdetails.php:22
+msgid "(Last.fm has not been set up)"
+msgstr "没有配置Last.fm"
+
+#: ../templates/fake-template.php:15
+msgid "(file is not within your music collection folder)"
+msgstr "文件并不在你的音乐集文件夹内"
+
+#: ../templates/fake-template.php:22
+msgid "(library root)"
+msgstr "音乐库根路径"
+
+#: ../templates/partials/sidebar/artistdetails.php:4
+msgid "(no artist image available)"
+msgstr "没有可用的艺术家图片"
+
+#: ../js/app/controllers/maincontroller.js:54
+msgid "1 album"
+msgid_plural "{{ count }} albums"
+msgstr[0] "{{ count }}张专辑"
+
+#: ../js/app/controllers/maincontroller.js:87
+msgid "1 channel"
+msgid_plural "{{ count }} channels"
+msgstr[0] "{{ count }}个频道"
+
+#: ../js/app/controllers/maincontroller.js:60
+msgid "1 folder"
+msgid_plural "{{ count }} folders"
+msgstr[0] "{{ count }}个文件夹"
+
+#: ../js/app/controllers/maincontroller.js:69
+msgid "1 genre"
+msgid_plural "{{ count }} genres"
+msgstr[0] "{{ count }}个类型"
+
+#: ../js/app/controllers/maincontroller.js:78
+msgid "1 station"
+msgid_plural "{{ count }} stations"
+msgstr[0] "{{ count }}个电台"
+
+
+#: ../js/app/controllers/maincontroller.js:49
+msgid "1 track"
+msgid_plural "{{ count }} tracks"
+msgstr[0] "{{ count }}首音轨"
+
+#: ../templates/partials/views/settingsview.php:30
+msgid ""
+"<strong>**</strong> matches zero or more arbitrary characters including path "
+"segment separators '/'"
+msgstr "<strong>**</strong>匹配零个或多个字符，包括路径段分隔符“/”"
+
+#: ../templates/partials/views/settingsview.php:29
+msgid ""
+"<strong>*</strong> matches zero or more arbitrary characters within a path "
+"segment"
+msgstr "<strong>*</strong>匹配路径段内的零个或多个字符"
+
+#: ../templates/partials/views/settingsview.php:28
+msgid "<strong>?</strong> matches any one character within a path segment"
+msgstr "<strong>?</strong>匹配路径段内的任意一个字符"
+
+#: ../templates/partials/views/settingsview.php:178
+msgid "About"
+msgstr "关于"
+
+#: ../js/app/services/podcastservice.js:75
+msgid "Add a new podcast channel from an RSS feed"
+msgstr "从RSS feed添加一个新的播客"
+
+#: ../js/app/services/podcastservice.js:76
+msgid "Add channel"
+msgstr "添加播客频道"
+
+#: ../templates/partials/navigationitem.php:97
+msgid "Add from RSS feed"
+msgstr "从RSS feed添加"
+
+#: ../templates/partials/navigationitem.php:85
+msgid "Add manually"
+msgstr "手动添加"
+
+#: ../templates/partials/views/playlistview.php:35
+msgid "Add tracks with drag and drop from Albums or other playlists"
+msgstr "通过从专辑或其他播放列表拖放添加曲目"
+
+#: ../templates/partials/views/settingsview.php:133
+msgid "Admin"
+msgstr "管理员"
+
+#: ../templates/partials/sidebar/albumdetails.php:18
+msgid ""
+"Admin may set up the Last.fm API key to show album background information "
+"here. See the Settings view for details."
+msgstr ""
+"管理员可以设置 Last.fm API密钥以显示专辑背景信息。 有关详细信息，请参阅设置。"
+
+#: ../templates/partials/sidebar/artistdetails.php:23
+msgid ""
+"Admin may set up the Last.fm API key to show artist biography here. See the "
+"Settings view for details."
+msgstr ""
+"管理员可以设置 Last.fm API密钥以显示艺术家传记。 有关详细信息，请参阅设置。"
+
+#: ../js/app/controllers/playercontroller.js:363
+msgid "Album"
+msgstr "专辑页"
+
+#: ../js/app/controllers/playercontroller.js:357
+#: ../templates/fake-template.php:9 ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr "专辑页"
 
-#: ../templates/main.php:56
-msgid "All tracks"
-msgstr "所有日志"
+#: ../js/app/services/podcastservice.js:125
+msgid "All channels were already up-to-date"
+msgstr "所有频道均最新"
 
-#: ../templates/fake-template.php:6
+#: ../js/app/controllers/playercontroller.js:360
+#: ../templates/partials/navigation.php:14
+#: ../templates/partials/views/alltracksview.php:4
+msgid "All tracks"
+msgstr "所有音轨"
+
+#: ../templates/partials/views/settingsview.php:89
+msgid "Ampache and Subsonic"
+msgstr "Ampache 和 Subsonic"
+
+#: ../js/app/services/playlistfileservice.js:170
+msgid "Append to an existing playlist?"
+msgstr "添加到已经存在的播放列表吗？"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:184
+msgid ""
+"Are you sure to permanently erase all the configured internet radio stations?"
+msgstr "确定要永久删除所有已经配置的互联网电台吗？"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:214
+msgid "Are you sure to permanently erase all the configured podcast channels?"
+msgstr "确定要永久删除所有已经配置的播客频道吗？"
+
+#: ../js/app/controllers/navigationcontroller.js:123
+msgid "Are you sure to remove the playlist \"{{ name }}\"?"
+msgstr "确定要删除“{{ name }}”吗？"
+
+#: ../js/app/services/podcastservice.js:169
+msgid "Are you sure to remove the podcast channel \"{{ title }}\"?"
+msgstr "确定要删除播客频道“{{ title }}”吗？"
+
+#: ../js/app/controllers/views/radioviewcontroller.js:38
+msgid "Are you sure to remove the radio station \"{{ name }}\"?"
+msgstr "确定要删除电台\"\"{{ name }}\"\"吗？"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:141
+msgid ""
+"Are you sure to reset the music collection? This removes all scanned tracks "
+"and user-created playlists!"
+msgstr "确定要重置音乐集吗？这会移除所有已经扫描的音轨和用户创建的播放列表！"
+
+#: ../templates/partials/views/settingsview.php:162
+msgid ""
+"Array of allowed HLS radio streaming hosts. Default is [], blocking HLS "
+"streams from any remote URL. The given URLs will be added to the Content-"
+"Security-Policy header <a href=\"{{connectSrcUrl}}\" target=\"_blank"
+"\">connect-src</a>. Furthermore, if you specify any allowed sources, then "
+"also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the "
+"CSP <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
+msgstr ""
+"允许的HLS电台流媒体主机列表。 默认值为空列表 []，阻止来自任何远程URL的HLS "
+"流。 给定的URL将添加到标头Content-Security-Policy中<a href="
+"\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>。 此外，如果您指定任"
+"何允许的来源，则来源<samp>data:</samp>和<samp>blob:</samp>也将添加到 CSP<a "
+"href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>。"
+
+#: ../templates/partials/views/settingsview.php:156
+msgid ""
+"Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', "
+"'https://*:*'], allowing streaming from any remote URL. The given URLs will "
+"be added to the Content-Security-Policy header <a href=\"{{url}}\" target="
+"\"_blank\">media-src</a>."
+msgstr ""
+"允许的非HLS电台流媒体主机列表。 默认值为['http://*:*', 'https://*:*']，允许来"
+"自任何远程URL的流。 给定的URL将添加到标头Content-Security-Policy <a href=\"{{url}}\" target="
+"\"_blank\">media-src</a>中。"
+
+#: ../js/app/controllers/playercontroller.js:364
+msgid "Artist"
+msgstr "艺术家"
+
+#: ../templates/fake-template.php:8
 msgid "Artists"
 msgstr "艺术家"
 
-#: ../templates/main.php:146
+#: ../templates/partials/views/settingsview.php:33
+msgid "Changes to the excluded paths will only take effect upon rescan."
+msgstr "对排被除路径的修改将在重新扫描后生效。"
+
+#: ../js/app/services/podcastservice.js:128
+msgid "Changes were loaded for one channel"
+msgid_plural "Changes were loaded for {{ count }} channels"
+msgstr[0] "已为频道加载变更"
+
+#: ../js/app/controllers/playercontroller.js:368
+msgid "Channel"
+msgstr "频道"
+
+#: ../templates/main.php:53
 msgid "Click here to start the scan"
 msgstr "点击开始扫描"
 
-#: ../templates/fake-template.php:13
+#: ../templates/partials/views/podcastsview.php:41
+msgid "Click to add your first podcast channel"
+msgstr "点击以添加你的第一个播客频道"
+
+#: ../js/app/directives/collapsiblehtml.js:12
+msgid "Click to expand"
+msgstr "点击以展开"
+
+#: ../templates/partials/views/genresview.php:33
+msgid "Click to rescan"
+msgstr "点击以重新扫描"
+
+#: ../templates/partials/views/radioview.php:36
+msgid "Click to show \"Getting started\""
+msgstr "点击显示第一次使用的帮助"
+
+#: ../templates/fake-template.php:14
+#: ../templates/partials/sidebar/sidebar.php:2
+msgid "Close"
+msgstr "关闭"
+
+#: ../templates/partials/sidebar/playlistdetails.php:18
+msgid "Comment"
+msgstr "评论"
+
+#: ../templates/partials/navigationitem.php:114
+msgid "Compact layout"
+msgstr "复合布局"
+
+#: ../js/app/services/podcastservice.js:152
+#: ../js/app/services/podcastservice.js:162
+msgid "Could not remove the channel \"{{ title }}\""
+msgstr "无法移除频道“{{ title }}”"
+
+#: ../js/app/services/podcastservice.js:23
+msgid "Could not update the channel \"{{ title }}\" from the source"
+msgstr "无法从源更新频道“{{ title }}”"
+
+#: ../templates/partials/sidebar/playlistdetails.php:12
+#: ../templates/partials/sidebar/radiostationdetails.php:25
+msgid "Created"
+msgstr "已创建"
+
+#: ../templates/partials/navigationitem.php:64
+#: ../templates/partials/views/radioview.php:22
+msgid "Delete"
+msgstr "删除"
+
+#: ../templates/partials/views/settingsview.php:109
 msgid "Description"
 msgstr "描述"
 
-#: ../templates/fake-template.php:14
+#: ../templates/partials/views/settingsview.php:119
 msgid "Description (e.g. App name)"
 msgstr "描述 (例如 App 名称)"
 
-#: ../templates/fake-template.php:15
+#: ../js/app/directives/listheading.js:25 ../js/app/directives/tracklist.js:36
+#: ../templates/partials/navigationitem.php:36
+#: ../templates/partials/views/playlistview.php:24
+#: ../templates/partials/views/radioview.php:20
+msgid "Details"
+msgstr "细节"
+
+#: ../js/app/controllers/playercontroller.js:369
+msgid "Episode"
+msgstr "选集"
+
+#: ../js/app/controllers/playercontroller.js:71
+msgid "Error playing URL:"
+msgstr "错误的播放URL："
+
+#: ../js/app/services/playlistfileservice.js:95
+msgid "Export playlist to a file in the selected folder"
+msgstr "导出播放列表为文件到选中的文件夹"
+
+#: ../js/app/services/playlistfileservice.js:126
+msgid "Export radio stations to a file in the selected folder"
+msgstr "导出互联网电台为文件到选中的文件夹"
+
+#: ../templates/partials/navigationitem.php:45
+#: ../templates/partials/navigationitem.php:82
+msgid "Export to file"
+msgstr "导出为文件"
+
+#: ../js/app/services/podcastservice.js:66
+msgid "Failed to add the podcast channel"
+msgstr "添加播客频道失败"
+
+#: ../js/app/controllers/maincontroller.js:215
+msgid ""
+"Failed to check for new audio files (error {{ code }}); check the server "
+"logs for details"
+msgstr ""
+"检查新音频文件时失败，错误代码：{{ code }}，请检查服务器日志以获得详细信息"
+
+#: ../js/app/controllers/views/radioviewcontroller.js:73
+msgid "Failed to delete the radio station:"
+msgstr "删除互联网电台失败："
+
+#: ../templates/partials/views/settingsview.php:121
+msgid "Failed to generate new Ampache/Subsonic password"
+msgstr "创建新的Ampache/Subsonic密码失败"
+
+#: ../js/app/services/playlistfileservice.js:152
+msgid "Failed to import playlist from the file {{ file }}"
+msgstr "从文件{{ file }}导入播放列表失败"
+
+#: ../js/app/services/playlistfileservice.js:206
+msgid "Failed to import radio stations from the file {{ file }}"
+msgstr "从文件{{ file }}导入互联网电台失败"
+
+#: ../js/app/controllers/maincontroller.js:171
+msgid "Failed to load the collection:"
+msgstr "加载选集失败:"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:165
+msgid "Failed to reset the collection:"
+msgstr "重置选集失败:"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:233
+msgid "Failed to reset the podcast channels:"
+msgstr "重置播客频道失败:"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:203
+msgid "Failed to reset the radio stations:"
+msgstr "重置互联网电台失败:"
+
+#: ../templates/partials/views/settingsview.php:48
+msgid "Failed to save the ignored paths"
+msgstr "设置忽略的路径失败"
+
+#: ../templates/partials/views/settingsview.php:12
+msgid "Failed to save the music collection path"
+msgstr "保存音乐集失败"
+
+#: ../templates/partials/navigationitem.php:128
+msgid "Flat layout"
+msgstr "平铺布局"
+
+#: ../js/app/controllers/playercontroller.js:365
+msgid "Folder"
+msgstr "文件夹"
+
+#: ../js/app/controllers/playercontroller.js:358
+#: ../templates/partials/navigation.php:10
+msgid "Folders"
+msgstr "文件夹"
+
+#: ../templates/partials/sidebar/sidebar.php:16
+msgid "Follow playback"
+msgstr "跟随回放"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:110
+msgid "GUID"
+msgstr "GUID"
+
+#: ../templates/partials/sidebar/trackdetails.php:8
+msgid "General"
+msgstr "一般"
+
+#: ../templates/partials/views/settingsview.php:120
 msgid "Generate API password"
 msgstr "生成 API 密码"
 
-#: ../templates/fake-template.php:18
+#: ../js/app/controllers/playercontroller.js:366
+msgid "Genre"
+msgstr "类型"
+
+#: ../js/app/controllers/playercontroller.js:359
+#: ../templates/partials/navigation.php:12
+msgid "Genres"
+msgstr "类型"
+
+#: ../templates/partials/navigationitem.php:76
+msgid "Getting started"
+msgstr "开始使用"
+
+#: ../templates/partials/views/settingsview.php:104
 msgid ""
-"Here you can generate passwords to use with the Ampache API, because they "
-"can't be stored in a really secure way due to the design of the Ampache API."
-" You can generate as many passwords as you want and revoke them anytime."
+"Here you can generate passwords to use with the Ampache or Subsonic API. "
+"Separate passwords are used because they can't be stored in a really secure "
+"way due to the design of the APIs. You can generate as many passwords as you "
+"want and revoke them at anytime."
 msgstr ""
+"在这里，您可以生成用于 API 的密码。使用单独的密码，因为它们无法以非常安全的方"
+"式存储，因为 API 的设计。您可以生成任意多的密码，并随时撤销密码。"
 
-#: ../templates/fake-template.php:10
-msgid "Invalid path"
-msgstr "无效路径"
+#: ../templates/partials/views/settingsview.php:97
+msgid "If this URL doesn't work try to append '/server/xml.server.php'."
+msgstr "如果URL无法工作，请尝试在URL结尾添加“/server/xml.server.php”。"
 
-#: ../templates/fake-template.php:19
+#: ../templates/partials/navigationitem.php:42
+#: ../templates/partials/navigationitem.php:79
+msgid "Import from file"
+msgstr "从文件导入"
+
+#: ../js/app/services/playlistfileservice.js:161
+msgid "Import playlist contents from the selected file"
+msgstr "从选中的文件导入播放列表内容"
+
+#: ../js/app/services/playlistfileservice.js:214
+msgid "Import radio stations from the selected file"
+msgstr "从选中的文件导入互联网电台"
+
+#: ../js/app/services/playlistfileservice.js:194
+msgid "Imported {{ count }} radio stations from the file {{ file }}."
+msgstr "从文件 {{ file }} 导入了 {{ count }} 个互联网电台。"
+
+#: ../js/app/services/playlistfileservice.js:140
+msgid "Imported {{ count }} tracks from the file {{ file }}."
+msgstr "从文件 {{ file }} 导入了 {{ count }} 个音轨。"
+
+#: ../templates/partials/sidebar/radiohint.php:9
 msgid ""
-"Keep in mind, that the Ampache API is just a preview and is unstable. Feel "
-"free to report your experience with this feature in the corresponding <a "
-"href=\"https://github.com/owncloud/music/issues/60\">issue</a>. I would also"
-" like to have a list of clients to test with. Thanks"
+"In the search results view, press the \"diskette\" icon on an individual "
+"found station to download the station as a PLS file. Alternatively, press "
+"the link \"Save current list as playlist for your media player: PLS\" on top "
+"of the view to get all the matching stations."
 msgstr ""
+"在搜索结果视图中，点击单个找到的电台上的“磁盘”图标以将电台下载为 PLS 文件。 "
+"或者，您也可以单击视图顶部的“将当前文件保存为流媒体播放器可识别的PLS格式文"
+"件”链接以获取所有匹配的电台。"
 
-#: ../templates/fake-template.php:3
+#: ../js/app/controllers/maincontroller.js:161
+msgid "Internal server error"
+msgstr "内部服务器错误"
+
+#: ../js/app/controllers/playercontroller.js:361
+#: ../js/app/services/playlistfileservice.js:104
+#: ../templates/partials/navigation.php:17
+msgid "Internet radio"
+msgstr "互联网电台"
+
+#: ../templates/partials/views/radioview.php:4
+msgid "Internet radio stations"
+msgstr "互联网电台"
+
+#: ../js/app/services/podcastservice.js:62
+msgid "Invalid RSS feed URL"
+msgstr "无效的RSS feed URL"
+
+#: ../templates/partials/views/settingsview.php:150
+msgid ""
+"Large album cover images are down-scaled to this size on the server before "
+"providing them for the web browser or the Subsonic/Ampache client. Smaller "
+"images are not up-scaled. The default size is 380 pixels. The value should "
+"be given as a single integer."
+msgstr ""
+"大型相册封面图像在提供给Web 浏览器或Subsonic/Ampache客户端之前，会在服务器上"
+"压缩到此大小。更小的图像不会方法。默认大小为 380 像素。设置值应该为一个整数。"
+
+#: ../templates/fake-template.php:13
+msgid "Loading…"
+msgstr "加载中……"
+
+#: ../templates/partials/sidebar/trackdetails.php:11
+msgid "Lyrics"
+msgstr "歌词"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:106
+msgid "MIME type"
+msgstr "MIME类型"
+
+#: ../templates/partials/sidebar/playlistdetails.php:15
+#: ../templates/partials/sidebar/radiostationdetails.php:28
+msgid "Modified"
+msgstr "已修改"
+
+#: ../templates/fake-template.php:5
+#: ../templates/partials/views/settingsview.php:183
 msgid "Music"
 msgstr "音乐"
 
-#: ../templates/main.php:145
+#: ../templates/fake-template.php:21
+msgid "Music library"
+msgstr "音乐库"
+
+#: ../templates/partials/sidebar/radiostationdetails.php:7
+msgid "Name"
+msgstr "名称"
+
+#: ../templates/partials/navigation.php:25
+#: ../templates/partials/navigation.php:28
+msgid "New Playlist"
+msgstr "新建播放列表"
+
+#: ../templates/main.php:52
 msgid "New music available"
-msgstr ""
+msgstr "新的音乐可用"
 
-#: ../templates/main.php:140 ../templates/main.php:141
+#: ../templates/main.php:85 ../templates/main.php:86
 msgid "New music available. Click here to reload the music library."
-msgstr ""
+msgstr "新的音乐可用，点击以重载音乐库。"
 
-#: ../templates/main.php:91
+#: ../templates/partials/sidebar/radiostationdetails.php:4
+msgid "New radio station"
+msgstr "新建互联网电台"
+
+#: ../templates/partials/controls.php:11
 msgid "Next"
 msgstr "下一曲"
 
-#: ../templates/main.php:134
+#: ../templates/partials/views/podcastsview.php:40
+msgid "No channels"
+msgstr "没有频道"
+
+#: ../templates/main.php:44
 msgid "No music found"
+msgstr "没有找到音乐"
+
+#: ../templates/main.php:76
+msgid "No search results in this view for <strong>{{ queryString }}</strong>"
+msgstr "对<strong>{{ queryString }}</strong>的搜索没有结果"
+
+#: ../templates/partials/views/radioview.php:35
+msgid "No stations"
+msgstr "没有互联网电台"
+
+#: ../templates/partials/views/playlistview.php:34
+msgid "No tracks"
+msgstr "没有音轨"
+
+#: ../templates/partials/navigationitem.php:111
+msgid "Normal layout"
+msgstr "一般布局"
+
+#: ../templates/partials/views/settingsview.php:91
+msgid ""
+"Note that Music may not be compatible with all Ampache/Subsonic clients. "
+"Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank"
+"\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank"
+"\">Subsonic clients</a>."
 msgstr ""
+"注意，本站可能不能兼容所有的Ampache/Subsonic客户端。请点击<a href="
+"\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache客户端</a>或<a href="
+"\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic客户端</a>以验证。"
 
-#: ../templates/fake-template.php:9
+#: ../templates/partials/views/settingsview.php:14
+msgid ""
+"Note: When the path is changed, any previously scanned files outside the new "
+"path are removed from the collection and any playlists."
+msgstr ""
+"注意：更改路径时，任何先前扫描过的且不在新的路径中的文件将会被从音乐库和所有"
+"播放列表中删除。"
+
+#: ../templates/partials/views/settingsview.php:173
+msgid ""
+"Note: the update rate is limited also by the execution rate of your cloud "
+"background task."
+msgstr "注意：更新速率也受云服务器的后台任务执行频率的限制。"
+
+#: ../templates/partials/sidebar/artistdetails.php:11
+msgid "Number of albums"
+msgstr "专辑数量"
+
+#: ../templates/partials/sidebar/artistdetails.php:17
+msgid "Number of performed tracks"
+msgstr "播放过的音轨数量"
+
+#: ../templates/partials/sidebar/albumdetails.php:9
+#: ../templates/partials/sidebar/playlistdetails.php:6
+msgid "Number of tracks"
+msgstr "音轨数量"
+
+#: ../templates/partials/sidebar/artistdetails.php:14
+msgid "Number of tracks on albums"
+msgstr "专辑中的音轨数量"
+
+#: ../js/app/controllers/playercontroller.js:384
+#: ../js/app/controllers/playercontroller.js:393
+msgid "Off"
+msgstr "关"
+
+#: ../js/app/services/playlistfileservice.js:20
+msgid "Overwrite existing file"
+msgstr "覆盖已存在的文件"
+
+#: ../templates/partials/views/settingsview.php:127
+msgid "Password:"
+msgstr "密码："
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:95
+msgid "Path to exclude from your music collection"
+msgstr "从你的音乐集中排除的路径"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:60
+#: ../templates/partials/views/settingsview.php:7
 msgid "Path to your music collection"
-msgstr "音乐集路径"
+msgstr "你的音乐集路径"
 
-#: ../templates/main.php:89
+#: ../templates/partials/views/settingsview.php:4
+msgid "Paths"
+msgstr "路径"
+
+#: ../templates/partials/views/settingsview.php:18
+msgid "Paths to exclude from your music collection"
+msgstr "从你的音乐集中排除的路径"
+
+#: ../templates/partials/views/settingsview.php:32
+msgid ""
+"Paths with a leading '/' character are resolved relative to the user home "
+"directory and others relative to the music library base path."
+msgstr ""
+"以“/”符号开头的路径将被识别为用户的根文件夹，其他路径将被视作对于音乐库根路径"
+"的相对路径。"
+
+#: ../templates/partials/controls.php:9
 msgid "Pause"
 msgstr "暂停"
 
-#: ../templates/main.php:87
+#: ../js/app/directives/listheading.js:23 ../templates/partials/controls.php:7
+#: ../templates/partials/views/albumsview.php:27
+#: ../templates/partials/views/alltracksview.php:5
+#: ../templates/partials/views/playlistview.php:5
+#: ../templates/partials/views/podcastsview.php:18
+#: ../templates/partials/views/radioview.php:5
 msgid "Play"
 msgstr "播放"
 
-#: ../templates/main.php:85
+#: ../js/app/controllers/playercontroller.js:367
+msgid "Playlist"
+msgstr "播放列表"
+
+#: ../js/app/services/playlistfileservice.js:84
+msgid "Playlist exported to file {{ path }}"
+msgstr "已将播放列表导出到文件 {{ path }}"
+
+#: ../js/app/services/playlistfileservice.js:40
+msgid "Playlist or folder not found"
+msgstr "没有找到播放列表或文件夹"
+
+#: ../templates/partials/views/settingsview.php:186
+msgid ""
+"Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" "
+"target=\"_blank\">issue tracker</a>"
+msgstr ""
+"如果有任何Bug或问题请将其汇报至<a href=\"{{issueTrackerUrl}}\" target="
+"\"_blank\">问题追踪器</a>"
+
+#: ../js/app/services/podcastservice.js:53
+msgid "Podcast channel \"{{ title }}\" added"
+msgstr "已添加播客频道“{{ title }}”"
+
+#: ../js/app/controllers/playercontroller.js:362
+#: ../templates/partials/navigation.php:19
+msgid "Podcasts"
+msgstr "播客"
+
+#: ../templates/partials/sidebar/radiohint.php:13
+msgid ""
+"Press the … symbol next to the navigation item \"Internet radio\" and select "
+"\"Import from file\". Find the previously uploaded PLS file and press "
+"\"Choose\". A loading spinner is shown for a while next to the \"Internet "
+"radio\" link. When it disappears, the importing is done and the channels "
+"should become available in the view."
+msgstr ""
+"点击导航项“互联网电台”旁边的...符号，然后选择“从文件导入”。 找到之前上传的 "
+"PLS 文件，然后按“选择”。 稍等片刻，频道很快就会显示在在视图中。"
+
+#: ../templates/partials/controls.php:5
 msgid "Previous"
 msgstr "前一首"
 
-#: ../templates/main.php:118
+#: ../templates/partials/sidebar/albumdetails.php:21
+#: ../templates/partials/sidebar/artistdetails.php:26
+msgid "Problem connecting Last.fm. The API key may be invalid."
+msgstr "连接 Last.fm 时出现问题。API 密钥可能无效。"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:94
+msgid "RSS URL"
+msgstr "RSS URL"
+
+#: ../templates/partials/sidebar/radiostationdetails.php:3
+msgid "Radio station"
+msgstr "互联网电台"
+
+#: ../js/app/services/playlistfileservice.js:112
+msgid "Radio stations exported to file {{ path }}"
+msgstr "已将互联网电台导出到文件 {{ path }}"
+
+#: ../templates/fake-template.php:18
+msgid "Reload"
+msgstr "重新载入"
+
+#: ../templates/partials/navigationitem.php:100
+msgid "Reload channels"
+msgstr "重新载入频道"
+
+#: ../templates/partials/views/playlistview.php:26
+#: ../templates/partials/views/settingsview.php:40
+msgid "Remove"
+msgstr "删除"
+
+#: ../js/app/services/podcastservice.js:170
+msgid "Remove channel"
+msgstr "删除频道"
+
+#: ../js/app/controllers/navigationcontroller.js:124
+msgid "Remove playlist"
+msgstr "删除播放列表"
+
+#: ../js/app/controllers/views/radioviewcontroller.js:39
+msgid "Remove radio station"
+msgstr "删除电台"
+
+#: ../templates/partials/views/playlistview.php:26
+msgid "Remove track from playlist"
+msgstr "从播放列表删除音轨"
+
+#: ../templates/partials/navigationitem.php:39
+msgid "Rename"
+msgstr "重命名"
+
+#: ../js/app/controllers/playercontroller.js:389
+#: ../templates/partials/controls.php:40
 msgid "Repeat"
 msgstr "重复"
 
-#: ../templates/fake-template.php:16
+#: ../js/app/controllers/views/albumsviewcontroller.js:293
+#: ../js/app/controllers/views/playlistviewcontroller.js:196
+msgid "Requested entry was not found"
+msgstr "没找到请求的入口"
+
+#: ../templates/partials/views/settingsview.php:51
+msgid "Reset"
+msgstr "重置"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:185
+#: ../templates/partials/views/settingsview.php:64
+msgid "Reset internet radio stations"
+msgstr "重置互联网电台"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:142
+#: ../templates/partials/views/settingsview.php:54
+msgid "Reset music collection"
+msgstr "重置音乐集"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:215
+#: ../templates/partials/views/settingsview.php:73
+msgid "Reset podcast channels"
+msgstr "重置播客频道"
+
+#: ../templates/partials/views/settingsview.php:110
 msgid "Revoke API password"
 msgstr "撤销 API 密码"
 
-#: ../templates/main.php:151
+#: ../templates/main.php:60
 msgid "Scanning music …"
 msgstr "扫描音乐中……"
 
-#: ../templates/main.php:116
+#: ../js/app/controllers/searchcontroller.js:132
+msgid "Search not available in this view"
+msgstr "当前视图无法搜索"
+
+#: ../js/app/controllers/sidebar/albumdetailscontroller.js:63
+msgid "See the album on Last.fm"
+msgstr "在Last.fm上查看专辑"
+
+#: ../js/app/controllers/sidebar/trackdetailscontroller.js:87
+msgid "See the track on Last.fm"
+msgstr "在Last.fm上查看音轨"
+
+#: ../templates/partials/views/settingsview.php:39
+msgid "Select folder"
+msgstr "选择文件夹"
+
+#: ../templates/partials/sidebar/radiohint.php:4
+msgid "Setting up radio stations"
+msgstr "设置互联网电台"
+
+#: ../templates/partials/navigation.php:48
+#: ../templates/partials/views/settingsview.php:2
+msgid "Settings"
+msgstr "设置"
+
+#: ../js/app/controllers/views/podcastsviewcontroller.js:113
+msgid "Show all {{ count }} episodes …"
+msgstr "显示所有{{ count }}个选集"
+
+#: ../js/app/directives/tracklist.js:38
+msgid "Show all {{ count }} songs …"
+msgstr "显示所有{{ count }}首歌曲"
+
+#: ../templates/partials/sidebar/artistdetails.php:38
+msgid "Show all…"
+msgstr "显示所有"
+
+#: ../templates/partials/views/settingsview.php:86
+msgid ""
+"Show desktop notification when the playing song changes. You also need to "
+"have the desktop notifications allowed in your browser for this site."
+msgstr "播放歌曲更改时显示一条桌面通知。需要在浏览器中允许此站点的桌面通知。"
+
+#: ../templates/partials/sidebar/trackdetails.php:4
+msgid "Show in Files"
+msgstr "在文件中显示"
+
+#: ../js/app/directives/tracklist.js:35
+msgid "Show less …"
+msgstr "显示更少"
+
+#: ../templates/partials/views/settingsview.php:23
+msgid "Show more…"
+msgstr "显示更多"
+
+#: ../templates/partials/views/settingsview.php:134
+msgid "Show..."
+msgstr "显示..."
+
+#: ../js/app/controllers/playercontroller.js:383
+#: ../templates/partials/controls.php:38
 msgid "Shuffle"
-msgstr "随机"
+msgstr "随机播放"
 
-#: ../js/public/app.js:629
+#: ../templates/partials/sidebar/artistdetails.php:32
+msgid "Similar to"
+msgstr "类似于"
+
+#: ../js/app/controllers/playercontroller.js:258
 msgid "Some not playable tracks were skipped."
-msgstr "部分无法播放的音轨已被跳过。"
+msgstr "跳过了部分无法播放的音轨。"
 
-#: ../templates/fake-template.php:11
+#: ../templates/main.php:69
+msgid "Some search results are omitted"
+msgstr "省略了一些搜索结果"
+
+#: ../templates/partials/views/genresview.php:34
+msgid "Some tracks in your library have to be rescanned to show the genre"
+msgstr "资料库中的一些音轨需要被重新扫描才能显示类型"
+
+#: ../templates/partials/views/settingsview.php:83
+msgid "Song change notifications"
+msgstr "歌曲变更通知"
+
+#: ../templates/partials/navigationitem.php:48
+msgid "Sort …"
+msgstr "排序"
+
+#: ../templates/partials/views/settingsview.php:22
+msgid ""
+"Specify folders within your music collection path which shall be excluded "
+"from the scanning."
+msgstr "指定在扫描时应被排除的文件夹。"
+
+#: ../templates/partials/sidebar/radiostationdetails.php:13
+msgid "Stream URL"
+msgstr "流媒体URL"
+
+#: ../templates/partials/sidebar/albumdetails.php:25
+#: ../templates/partials/sidebar/artistdetails.php:30
+#: ../templates/partials/sidebar/trackdetails.php:50
+msgid "Tags"
+msgstr "标签"
+
+#: ../templates/partials/sidebar/trackdetails.php:14
+msgid "Technical"
+msgstr "技术"
+
+#: ../js/app/controllers/views/settingsviewcontroller.js:296
+msgid "Text copied to clipboard"
+msgstr "已将文本复制到剪切板"
+
+#: ../templates/partials/sidebar/radiohint.php:15
+msgid ""
+"The PLS file is no longer needed after the import and you may delete it at "
+"will. You might want to keep it, though, because it is also possible to play "
+"the radio stations directly within the Files app by opening the PLS file."
+msgstr ""
+"导入后将不再需要PLS文件，您可以随时删除它。不过也可以通过打开PLS文件直接播放"
+"电台。"
+
+#: ../js/app/services/podcastservice.js:98
+msgid "The channel was already up-to-date"
+msgstr "频道已更新"
+
+#: ../js/app/services/podcastservice.js:95
+msgid "The channel was updated from the source"
+msgstr "频道已更新"
+
+#: ../js/app/services/playlistfileservice.js:17
+msgid ""
+"The folder already has a file named \"{{ filename }}\". Select \"Yes\" to "
+"overwrite it. Select \"No\" to export the list with another name. Close the "
+"dialog to cancel."
+msgstr ""
+"这个文件夹已经有“{{ filename }}”文件，选择“是”将覆盖已有的文件，选择“否”将以"
+"另一个名字导出列表。关闭对话框以取消操作。"
+
+#: ../templates/partials/views/settingsview.php:172
+msgid ""
+"The interval for automatic podcast update checks in hours. Decimal value can "
+"be used for sub-hour resolution. Negative value will disable automatic "
+"updating. The default value is 24 hours."
+msgstr ""
+"播客自动更新的间隔，以小时为单位。输入小数可指定更高的精度。负值将禁用自动更"
+"新。默认值为 24 小时。"
+
+#: ../js/app/services/playlistfileservice.js:168
+msgid ""
+"The playlist already contains some tracks. Imported tracks will be appended "
+"after the existing contents. Proceed?"
+msgstr "播放列表中已经包含一些曲目。导入的曲目将添加至现有内容之后。确定吗？"
+
+#: ../templates/partials/sidebar/radiohint.php:27
+msgid ""
+"The stream is genuinely broken or in such a format that either the Music app "
+"or your browser can't handle it. Majority of the radio stations found from "
+"Community Radio Browser should work on the Music app when a mainstream "
+"browser is being used, but still, there are numerous stations which will not "
+"work."
+msgstr ""
+"流彻底损坏或提供的格式不能被音乐应用或浏览器识别。如果您使用主流浏览器，大多"
+"数电台都应该可以在音乐应用中播放，不过仍然有一部分电台无法播放。"
+
+#: ../templates/partials/sidebar/radiohint.php:23
+msgid ""
+"The stream is of HLS type, indicated by a URL ending with '.m3u' or '.m3u8'. "
+"For such streams, the source host must be specifically allowed by the cloud "
+"adminstator. See the 'Admin' section within the Music app Settings view for "
+"details."
+msgstr ""
+"流为HLS类型，在网址中以\".m3u\"或\".m3u8\"结尾。对于此类流，服务器管理员必须"
+"额外许可这些流。有关详细信息，请参阅音乐应用\"设置\"视图中的\"管理\"部分。"
+
+#: ../templates/partials/sidebar/radiohint.php:20
+msgid ""
+"There are a couple of typical reasons why a configured radio station might "
+"not play on your browser:"
+msgstr "配置的电台可能无法在浏览器上播放，原因可能如下："
+
+#: ../templates/partials/views/settingsview.php:136
+msgid ""
+"There is no settings UI for the server-wide settings of the Music app but "
+"some settings are available by adding specific key-value pairs to the file "
+"<samp>{{filename}}</samp>. The available keys are described below."
+msgstr ""
+"音乐应用没有全局设置UI，但某些设置可以通过在文件<samp>{{filename}} </samp>添"
+"加特定的键值来获得。可用键值如下。"
+
+#: ../templates/partials/views/settingsview.php:78
+msgid "This action erases all the channels shown in the \"Podcasts\" view."
+msgstr "此操作会删除“播客”视图中的所有频道。"
+
+#: ../templates/partials/views/settingsview.php:69
+msgid ""
+"This action erases all the stations shown in the \"Internet radio\" view."
+msgstr "此操作会删除”互联网电台“视图中的所有电台。"
+
+#: ../templates/partials/views/settingsview.php:59
+msgid ""
+"This action resets all the scanned tracks and all the user-created "
+"playlists. After this, the collection can be scanned again from scratch."
+msgstr ""
+"此操作会重置所有扫描的音轨和所有用户创建的播放列表。在此之后，可以重新扫描音"
+"乐集。"
+
+#: ../js/app/services/podcastservice.js:64
+msgid "This channel is already subscribed"
+msgstr "这个频道已经被订阅"
+
+#: ../templates/partials/views/settingsview.php:60
+msgid ""
+"This may be desirable after changing the excluded paths, or if the database "
+"would somehow get corrupted. If the latter happens, please report a bug to "
+"the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
+msgstr ""
+"理论上更改排除路径是可行的，不过数据库也可能意外损坏。 如果后者发生，请在<a "
+"href=\"{{issueTrackerUrl}}\" target=\"_blank\">问题追踪器</a>中汇报Bug。"
+
+#: ../templates/partials/views/settingsview.php:13
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr "将会在此设置指定的文件夹中扫描音乐文件。"
 
-#: ../templates/fake-template.php:8
+#: ../js/app/controllers/maincontroller.js:164
+msgid "Timeout"
+msgstr "超时"
+
+#: ../templates/partials/views/settingsview.php:141
+msgid ""
+"To see the artist biography and other information from Last.fm in the "
+"details view, you need to create an API account with Last.fm. For this, use "
+"the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only "
+"'Contact email' and 'Application name' need to be filled in the form. You "
+"are then provided with an API key which should be used as a value for this "
+"key. For more details, see the <a href=\"{{guideUrl}}\" target=\"_blank"
+"\">tutorial</a>."
+msgstr ""
+"要在Last.fm中查看更多艺术家信息或其他信息，你需要创建一个Last.fm的API账户。为"
+"此，请使用<a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm 表单</a>。只"
+"有“Contact email”和“Application name”需要填写。这之后，您将获得一个API密钥。"
+"有关详细信息，请参阅<a href=\"{{guideUrl}}\" target=\"_blank\">教程</a>。"
+
+#: ../templates/partials/sidebar/albumdetails.php:12
+#: ../templates/partials/sidebar/playlistdetails.php:9
+msgid "Total length"
+msgstr "总长度"
+
+#: ../js/app/controllers/playercontroller.js:396
+msgid "Track"
+msgstr "音轨"
+
+#: ../templates/fake-template.php:10
 msgid "Tracks"
 msgstr "音轨"
 
-#: ../templates/fake-template.php:4
+#: ../templates/partials/navigationitem.php:125
+msgid "Tree layout"
+msgstr "树状布局"
+
+#: ../templates/partials/sidebar/radiohint.php:18
+msgid "Troubleshooting"
+msgstr "排除故障"
+
+#: ../templates/main.php:70
+msgid "Try to refine the search"
+msgstr "尝试改进搜索"
+
+#: ../js/app/services/podcastservice.js:83
+msgid "URL"
+msgstr "URL"
+
+#: ../js/app/services/playlistfileservice.js:48
+msgid "Unexpected error"
+msgstr "意外错误"
+
+#: ../js/app/services/podcastservice.js:32
+msgid "Unexpected error when updating the channel \"{{ title }}\""
+msgstr "更新“{{ title }}”时发生意外错误"
+
+#: ../templates/fake-template.php:6
 msgid "Unknown album"
 msgstr "未知专辑"
 
-#: ../templates/fake-template.php:5
+#: ../templates/fake-template.php:7
 msgid "Unknown artist"
 msgstr "未知艺术家"
 
-#: ../templates/main.php:135
+#: ../templates/partials/views/settingsview.php:87
+msgid ""
+"Unlike the other settings, this switch is stored per browser and not per "
+"user account."
+msgstr "与其他设置不同，这个开关是按浏览器存储的，而不是按用户帐户存储的。"
+
+#: ../js/app/controllers/sidebar/artistdetailscontroller.js:61
+msgid ""
+"Upload image named \"{{name}}\" to anywhere within your library path to see "
+"it here."
+msgstr "将名为“{{name}}”的图像上传到资料库路径内的任何地方，以便在此处查看。"
+
+#: ../templates/main.php:45
 msgid "Upload music in the files app to listen to it here"
+msgstr "在文件应用中上传音乐，以便在此欣赏"
+
+#: ../templates/partials/sidebar/radiohint.php:11
+msgid ""
+"Upload the previously obtained PLS file to your cloud using the Files app."
+msgstr "使用文件应用将已经获得的PLS文件上传到云中。"
+
+#: ../templates/partials/sidebar/radiohint.php:7
+msgid ""
+"Use the Community Radio Browser <a href=\"{{url}}\" target=\"_blank"
+"\">search</a> to find the radio stations of interest. Instead of using the "
+"search, you may also browse the channels in Community Radio Browser by "
+"category or popularity."
 msgstr ""
+"使用社区电台浏览器<a href=\"{{url}}\" target=\"_blank\">搜索</a>找到感兴趣的"
+"电台。您也可以按类别或受欢迎程度浏览社区无线电浏览器中的频道，而不使用搜索。"
 
-#: ../templates/fake-template.php:12
+#: ../templates/partials/views/settingsview.php:123
 msgid ""
-"Use this address to browse your music collection from any Ampache compatible"
-" player."
-msgstr "使用此地址在任何与 Ampache 兼容的音乐播放器中查看您的音乐集。"
+"Use the following credentials to connect to this Ampache/Subsonic instance."
+msgstr "使用以下凭据连接到此Ampache/Subsonic实例。"
 
-#: ../templates/fake-template.php:17
+#: ../templates/partials/views/settingsview.php:102
 msgid ""
-"Use your username and following password to connect to this Ampache "
-"instance:"
-msgstr "使用您的用户名和密码连接到此 Ampache 服务："
+"Use this address to browse your music collection from a Subsonic compatible "
+"player."
+msgstr "使用此地址从Subsonic兼容播放器中浏览您的音乐集合。"
 
-#: ../templates/main.php:121 ../templates/main.php:123
+#: ../templates/partials/views/settingsview.php:97
+msgid ""
+"Use this address to browse your music collection from an Ampache compatible "
+"player."
+msgstr "使用此地址从Ampache兼容播放器中浏览您的音乐集合。"
+
+#: ../templates/partials/views/settingsview.php:81
+msgid "User interface"
+msgstr "用户界面"
+
+#: ../templates/partials/views/settingsview.php:125
+msgid "Username:"
+msgstr "用户名："
+
+#: ../templates/partials/controls.php:43 ../templates/partials/controls.php:44
+#: ../templates/partials/controls.php:46
 msgid "Volume"
 msgstr "音量"
 
-#: ../templates/main.php:57 ../templates/main.php:77
-msgid "tracks"
-msgstr ""
+#: ../js/app/services/playlistfileservice.js:44
+msgid "Writing to the file is not allowed"
+msgstr "不允许写入这个文件"
 
-#: ../templates/main.php:152
-msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+#: ../templates/partials/views/settingsview.php:90
+msgid ""
+"You can browse and play your music collection from external applications "
+"which support either Ampache or Subsonic API."
+msgstr "您可以从支持Ampache/Subsonic API的第三方应用程序浏览和播放您的音乐集。"
+
+#: ../templates/partials/views/settingsview.php:26
+msgid "You can use the wild cards '?', '*', and '**':"
+msgstr "您可以使用通配符“?”、“*”和“**”："
+
+#: ../templates/partials/sidebar/radiohint.php:25
+msgid ""
+"Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP "
+"scheme. By default, your browser might block such accees. To overcome this, "
+"you may be able to set your browser to allow \"Insecure content\" on this "
+"page. On the desktop browsers, such settings can usually be found by "
+"clicking the icon right next to the address bar on its left side."
 msgstr ""
+"您的云正在使用 HTTPS协议，但流媒体使用了不安全的HTTP协议。默认情况下，您的浏"
+"览器可能会阻止此类不安全内容。您可能需要设置浏览器在此页面上启用“不安全内"
+"容”。在桌面浏览器上，通常可以通过单击其左侧地址栏旁边的图标来找到此类设置。"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:97
+msgid "author"
+msgstr "作者"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:109
+msgid "bit rate"
+msgstr "比特率"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:100
+msgid "build date"
+msgstr "构建日期"
+
+#: ../templates/partials/navigationitem.php:58
+msgid "by album"
+msgstr "专辑"
+
+#: ../templates/partials/navigationitem.php:55
+msgid "by artist"
+msgstr "艺术家"
+
+#: ../templates/partials/navigationitem.php:52
+msgid "by title"
+msgstr "标题"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:98
+msgid "category"
+msgstr "类别"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:104
+msgid "channel"
+msgstr "频道"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:96
+msgid "copyright"
+msgstr "版权"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:92
+msgid "description"
+msgstr "描述"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:107
+msgid "duration"
+msgstr "时长"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:102
+msgid "episode"
+msgstr "选集"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:111
+msgid "keywords"
+msgstr "关键词"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:95
+msgid "language"
+msgstr "语言"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:99
+msgid "published"
+msgstr "已公布"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:103
+msgid "season"
+msgstr "季"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:108
+msgid "size"
+msgstr "大小"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:105
+msgid "stream URL"
+msgstr "流媒体URL"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:91
+msgid "title"
+msgstr "标题"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:101
+msgid "updates checked"
+msgstr "已检查更新"
+
+#: ../templates/partials/views/settingsview.php:184
+msgid "version history"
+msgstr "历史版本"
+
+#: ../js/app/controllers/sidebar/podcastdetailscontroller.js:93
+msgid "website"
+msgstr "网址"
+
+#: ../js/app/services/playlistfileservice.js:197
+msgid "{{ count }} entries were skipped."
+msgstr "跳过了{{ count }}个实体。"
+
+#: ../js/app/services/playlistfileservice.js:143
+msgid "{{ count }} files were skipped."
+msgstr "跳过了{{ count }}个文件。"
+
+#: ../templates/main.php:61
+msgid "{{ scanningScanned }} of {{ scanningTotal }}"
+msgstr "{{ scanningScanned }} / {{ scanningTotal }}"
+
+#~ msgid "Invalid path"
+#~ msgstr "无效路径"

@@ -272,13 +272,9 @@ abstract class BaseMapper extends Mapper {
 			return $this->insert($entity);
 		} catch (UniqueConstraintViolationException $ex) {
 			$existingEntity = $this->findUniqueEntity($entity);
-			if (self::entityNeedsUpdate($existingEntity, $entity)) {
-				$entity->setId($existingEntity->getId());
-				$entity->setCreated($existingEntity->getCreated());
-				return $this->update($entity);
-			} else {
-				return $existingEntity;
-			}
+			$entity->setId($existingEntity->getId());
+			$entity->setCreated($existingEntity->getCreated());
+			return $this->update($entity);
 		}
 	}
 
@@ -294,12 +290,8 @@ abstract class BaseMapper extends Mapper {
 	public function updateOrInsert(Entity $entity) : Entity {
 		try {
 			$existingEntity = $this->findUniqueEntity($entity);
-			if (self::entityNeedsUpdate($existingEntity, $entity)) {
-				$entity->setId($existingEntity->getId());
-				return $this->update($entity);
-			} else {
-				return $existingEntity;
-			}
+			$entity->setId($existingEntity->getId());
+			return $this->update($entity);
 		} catch (DoesNotExistException $ex) {
 			try {
 				return $this->insert($entity);
@@ -310,20 +302,6 @@ abstract class BaseMapper extends Mapper {
 				return $this->findUniqueEntity($entity);
 			}
 		}
-	}
-
-	/**
-	 * @phpstan-param EntityType $oldData
-	 * @phpstan-param EntityType $newData
-	 */
-	protected static function entityNeedsUpdate(Entity $oldData, Entity $newData) : bool {
-		$fields = $newData->getUpdatedFields();
-		foreach ($fields as $field => $updated) {
-			if ($oldData->$field != $newData->$field) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

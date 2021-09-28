@@ -29,6 +29,7 @@
 * [Gigen Chang](https://github.com/gigenchang): <th33ts@gmail.com>
 * [Glandos](https://github.com/Glandos)
 * [Gregory Baudet](https://github.com/greku): <gregory.baudet@gmail.com>
+* [Iris](https://github.com/RuofengX)
 * [Jbtbnl](https://github.com/jbtbnl)
 * [Jean-Marie de Boer](https://github.com/jmdeboer-surfsara): <jean-marie.deboer@surfsara.nl>
 * [Jonathan Kawohl](https://github.com/Kawohl)

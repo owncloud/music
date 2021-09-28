@@ -5,6 +5,8 @@
 - Cover art to the playlist details pane
 - Subsonic and Ampache: Support playlist cover art
 - Subsonic: Methods `getAlbumInfo`, `getAlbumInfo2`, `createInternetRadioStation`, `updateInternetRadioStation`, `deleteInternetRadioStation`
+- Comprehensive translations for the main app for Chinese (China)
+  [#899](https://github.com/owncloud/music/pull/899) @RuofengX
 
 ### Changed
 - Use smaller heading size in the Folders and Genres views

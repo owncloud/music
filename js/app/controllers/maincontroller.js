@@ -517,4 +517,6 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.scanning = false;
 	$scope.scanningScanned = 0;
 	$scope.scanningTotal = 0;
+
+	$('#app').addClass('loaded');
 }]);

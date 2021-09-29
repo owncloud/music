@@ -213,6 +213,12 @@ div:hover > .play-pause,
 	opacity: 1;
 }
 
+/* hide popups until the angularjs framework is up and running and can do the dynamic hiding */
+#app:not(.loaded) .emptycontent,
+#app:not(.loaded) #searchContainer {
+	display: none;
+}
+
 #updateData {
 	position: fixed;
 	width: 60px;

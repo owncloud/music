@@ -154,7 +154,9 @@ class Util {
 	 * @return array
 	 */
 	public static function explode(string $delimiter, ?string $string) : array {
-		if ($string === null || $string === '') {
+		if ($delimiter === '') {
+			throw new \UnexpectedValueException();
+		} elseif ($string === null || $string === '') {
 			return [];
 		} else {
 			return \explode($delimiter, $string);

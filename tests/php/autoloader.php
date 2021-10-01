@@ -8,65 +8,28 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020, 2021
  */
-
-require_once __DIR__ . '/../../vendor/autoload.php';
 
 // to execute without owncloud, we need to create our own classloader
 \spl_autoload_register(function ($className) {
-	if (\strpos($className, 'OCA\\Music\\Tests\\Utility') === 0) {
-		$path = \str_replace('\\', '/', \substr($className, 23)) . '.php';
-		$relPath = __DIR__ . '/utility' . $path;
-		if (\file_exists($relPath)) {
-			require_once $relPath;
-		}
-	} elseif (\strpos($className, 'OCA\\Music') === 0) {
-		$path = \str_replace('\\', '/', \substr($className, 9)) . '.php';
-		$relPath = __DIR__ . '/../../lib' . $path;
-		if (\file_exists($relPath)) {
-			require_once $relPath; // don't support lower-case names as the cloud doesn't support them here, either
-		}
-	} elseif (\strpos($className, 'OCP\\') === 0) {
-		$path = \str_replace('\\', '/', \substr($className, 3)) . '.php';
-		$relPath = __DIR__ . '/../../../../lib/public' . $path;
 
-		if (\file_exists($relPath)) {
-			require_once $relPath;
-		} elseif (\file_exists(\strtolower($relPath))) {
-			require_once \strtolower($relPath);
-		}
-	} elseif (\strpos($className, 'OC_') === 0) {
-		$path = \str_replace('_', '/', \substr($className, 3)) . '.php';
-		$relPath = __DIR__ . '/../../../../lib/private/legacy/' . $path;
-		$alterRelPath = __DIR__ . '/../../../../lib/private/' . $path;
+	$classPath = \str_replace('\\', '/', $className) . '.php';
 
-		if (\file_exists($relPath)) {
-			require_once $relPath;
-		} elseif (\file_exists(\strtolower($relPath))) {
-			require_once \strtolower($relPath);
-		} elseif (\file_exists($alterRelPath)) {
-			require_once $alterRelPath;
-		} elseif (\file_exists(\strtolower($alterRelPath))) {
-			require_once \strtolower($alterRelPath);
-		}
-	} elseif (\strpos($className, 'OC\\') === 0) {
-		$path = \str_replace('\\', '/', \substr($className, 2)) . '.php';
-		$relPath = __DIR__ . '/../../../../lib/private' . $path;
+	if (\strpos($classPath, 'OCA/Music/Tests/Utility') === 0) {
+		$path = 'tests/php/utility' . \substr($classPath, 23);
+	} elseif (\strpos($classPath, 'OCA/Music') === 0) {
+		$path = 'lib' . \substr($classPath, 9);
+	} elseif (\strpos($classPath, 'OCP/') === 0) {
+		$path = 'vendor/christophwurst/nextcloud/' . $classPath;
+	} else {
+		$path = 'stubs/' . $classPath;
+	}
 
-		if (\file_exists($relPath)) {
-			require_once $relPath;
-		} elseif (\file_exists(\strtolower($relPath))) {
-			require_once \strtolower($relPath);
-		}
-	} elseif (\strpos($className, 'Test\\') === 0) {
-		$path = \str_replace('\\', '/', \substr($className, 4)) . '.php';
-		echo $path;
-		$relPath = __DIR__ . '/../../../../tests/lib' . $path;
-		if (\file_exists($relPath)) {
-			require_once $relPath;
-		} elseif (\file_exists(\strtolower($relPath))) {
-			require_once \strtolower($relPath);
-		}
+	$musicAppPath = __DIR__ . '/../../';
+	$path = $musicAppPath . $path;
+
+	if (\file_exists($path)) {
+		require_once $path;
 	}
 });

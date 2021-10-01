@@ -35,17 +35,21 @@ class TrackTest extends \PHPUnit\Framework\TestCase {
 		$track->setMimetype('audio/mp3');
 		$track->setBitrate(123);
 
+		$this->urlGenerator->expects($this->exactly(4))
+			->method('linkToRoute')
+			->will($this->returnValue('someUrl'));
+
 		$this->assertEquals([
 			'id' => 1,
 			'title' => 'The title',
 			'ordinal' => 4,
-			'artist' => ['id' => 3, 'uri' => null],
-			'album' => ['id' => 1, 'uri' => null],
+			'artist' => ['id' => 3, 'uri' => 'someUrl'],
+			'album' => ['id' => 1, 'uri' => 'someUrl'],
 			'length' => 123,
-			'files' => ['audio/mp3' => null],
+			'files' => ['audio/mp3' => 'someUrl'],
 			'bitrate' => 123,
 			'slug' => '1-the-title',
-			'uri' => null
+			'uri' => 'someUrl'
 			], $track->toAPI($this->urlGenerator));
 	}
 }

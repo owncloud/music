@@ -12,5 +12,9 @@
         "platform": {
             "php": "7.1.0"
         }
+    },
+    "scripts": {
+        "unit-tests": "phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit",
+        "analyze": "phpstan"
     }
 }

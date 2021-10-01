@@ -1,4 +1,7 @@
 {
+    "name": "owncloud/music",
+    "description": "Music player and server for ownCloud and Nextcloud",
+    "license": "AGPL-3.0-or-later",
     "require-dev": {
         "behat/behat": "~3.0",
         "guzzlehttp/guzzle": "~6.0",

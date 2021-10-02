@@ -161,26 +161,31 @@ To build the release zip package, run the following commands. This requires the 
 
 ### Run tests
 
-PHP unit tests
+#### Static analysis with PHPStan
 
-	vendor/bin/phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit
+	composer run-script analyze
 
-PHP integration tests
+#### PHP unit tests
 
-	cd ../..          # owncloud core
+	composer run-script unit-tests
+
+#### PHP integration tests
+The integration tests require the music app to be installed under the `apps` folder of an ownCloud or Nextcloud installation. The following steps assume that the cloud installation in question has not been taken into use yet, e.g. it's a fresh clone from github.
+
+	cd ../..          # owncloud/nextcloud core
 	./occ maintenance:install --admin-user admin --admin-pass admin --database sqlite
 	./occ app:enable music
 	cd apps/music
-	vendor/bin/phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration
+	composer run-script integration-tests
 
-Behat acceptance tests
+#### Behat acceptance tests
 
 	cd tests
 	cp behat.yml.dist behat.yml
-	# add credentials for Ampache API to behat.yml
+	# add cloud URL and credentials for Ampache and Subsonic APIs to behat.yml
 	../vendor/bin/behat
 
-For the acceptance tests, you need to upload all the tracks from the following zip file: https://github.com/paulijar/music/files/2364060/testcontent.zip
+For the acceptance tests, you need to upload all the tracks from the following zip file to your cloud instance: https://github.com/paulijar/music/files/2364060/testcontent.zip
 
 ## API
 
@@ -211,6 +216,7 @@ However, the front-end of the Music app nowadays doesn't use any part of the Shi
 * `/api/share/{token}/{fileId}/parse`
 * Playlist API at `/api/playlists/*`
 * Radio API at `/api/radio/*`
+* Podcast API at `/api/podcasts/*`
 * Settings API at `/api/settings/*`
 
 To connect external client applications, partial implementations of the following APIs are available:

@@ -188,7 +188,7 @@ class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$disc = 1;
 
 		$this->mapper->expects($this->once())
-			->method('insertOrUpdate')
+			->method('updateOrInsert')
 			->will($this->returnValue($this->albums[0]));
 
 		$album = $this->albumBusinessLayer->addOrUpdateAlbum($name, $disc, $artistId, $this->userId);

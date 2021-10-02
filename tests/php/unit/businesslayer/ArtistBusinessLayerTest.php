@@ -65,7 +65,7 @@ class ArtistBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$artist->setId(1);
 
 		$this->mapper->expects($this->once())
-			->method('insertOrUpdate')
+			->method('updateOrInsert')
 			->will($this->returnValue($artist));
 
 		$result = $this->artistBusinessLayer->addOrUpdateArtist($name, $this->userId);

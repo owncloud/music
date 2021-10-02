@@ -1,16 +1,19 @@
 {
+    "name": "owncloud/music",
+    "description": "Music player and server for ownCloud and Nextcloud",
+    "license": "AGPL-3.0-or-later",
     "require-dev": {
         "behat/behat": "~3.0",
         "guzzlehttp/guzzle": "~6.0",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^8.0",
         "owncloud/coding-standard": "^2.0",
         "phpstan/phpstan": "^0.12.99",
         "christophwurst/nextcloud": "^13.0.0",
         "doctrine/dbal": "*"
     },
-    "config": {
-        "platform": {
-            "php": "7.1.0"
-        }
+    "scripts": {
+        "unit-tests": "phpunit --coverage-html coverage-html-unit --configuration tests/php/unit/phpunit.xml tests/php/unit",
+        "integration-tests": "phpunit --coverage-html coverage-html-integration --configuration tests/php/integration/phpunit.xml tests/php/integration",
+        "analyze": "phpstan"
     }
 }

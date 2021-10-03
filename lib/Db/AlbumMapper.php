@@ -173,7 +173,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns summed track play counts of each album of the user, omittig albums which have never been played
 	 *
-	 * @return array [int => int], keys are albums IDs and values are play count sums; ordered largest counts first
+	 * @return array [int => int], keys are album IDs and values are play count sums; ordered largest counts first
 	 */
 	public function getAlbumTracksPlayCount(string $userId) : array {
 		$sql = 'SELECT `album_id`, SUM(`play_count`) AS `sum_count`
@@ -193,7 +193,7 @@ class AlbumMapper extends BaseMapper {
 	/**
 	 * returns the latest play time of each album of the user, omittig albums which have never been played
 	 *
-	 * @return array [int => string], keys are albums IDs and values are date-times; ordered latest times first
+	 * @return array [int => string], keys are album IDs and values are date-times; ordered latest times first
 	 */
 	public function getLatestAlbumPlayTimes(string $userId) : array {
 		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`

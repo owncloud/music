@@ -307,10 +307,22 @@ class AmpacheController extends Controller {
 				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_stats_'.$type);
 				$entities = Util::arrayMultiGet($entities, $indices);
 				break;
-			case 'highest':		//TODO
-			case 'frequent':	//TODO
-			case 'recent':		//TODO
+			case 'frequent':
+				if (\method_exists($businessLayer, 'findFrequentPlay')) {
+					$entities = $businessLayer->findFrequentPlay($userId, $limit, $offset);
+				} else {
+					throw new AmpacheException("Filter $filter not supported for type $type", 400);
+				}
+				break;
+			case 'recent':
+				if (\method_exists($businessLayer, 'findRecentPlay')) {
+					$entities = $businessLayer->findRecentPlay($userId, $limit, $offset);
+				} else {
+					throw new AmpacheException("Filter $filter not supported for type $type", 400);
+				}
+				break;
 			case 'forgotten':	//TODO
+			case 'highest':		//TODO
 			default:
 				throw new AmpacheException("Unsupported filter $filter", 400);
 		}

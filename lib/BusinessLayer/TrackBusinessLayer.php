@@ -115,6 +115,22 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Find most frequently played tracks
+	 * @return Track[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findFrequentPlay($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find most recently played tracks
+	 * @return Track[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findRecentPlay($userId, $limit, $offset);
+	}
+
+	/**
 	 * Returns the track for a file id
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user

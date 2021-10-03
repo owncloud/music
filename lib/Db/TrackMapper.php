@@ -277,6 +277,25 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find most frequently played tracks
+	 * @return Track[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities('`play_count` > 0', 'ORDER BY `play_count` DESC, LOWER(`title`)');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+
+	/**
+	 * Find most recently played tracks
+	 * @return Track[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities('`last_played` IS NOT NULL', 'ORDER BY `last_played` DESC');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+	}
+
+	/**
 	 * Finds all track IDs of the user along with the parent folder ID of each track
 	 * @param string $userId
 	 * @return array where keys are folder IDs and values are arrays of track IDs

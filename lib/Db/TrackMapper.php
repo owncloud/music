@@ -384,6 +384,18 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Update "last played" timestamp and increment the total play count of the track.
+	 * The DB row is updated *without* updating the `updated` column.
+	 */
+	public function recordTrackPlayed(int $trackId, string $userId, \DateTime $timeOfPlay) : void {
+		$sql = 'UPDATE `*PREFIX*music_tracks`
+				SET `last_played` = ?, `play_count` = `play_count` + 1
+				WHERE `user_id` = ? AND `id` = ?';
+		$params = [$timeOfPlay->format(BaseMapper::SQL_DATE_FORMAT), $userId, $trackId];
+		$result = $this->execute($sql, $params);
+	}
+
+	/**
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param Track $track
 	 * @return Track

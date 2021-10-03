@@ -282,6 +282,19 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Update "last played" timestamp and increment the total play count of the track.
+	 */
+	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null) : void {
+		$timeOfPlay = $timeOfPlay ?? new \DateTime();
+
+		try {
+			$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay);
+		} catch (DoesNotExistException $ex) {
+			throw new BusinessLayerException($ex->getMessage());
+		}
+	}
+
+	/**
 	 * Adds a track if it does not exist already or updates an existing track
 	 * @param string $title the title of the track
 	 * @param int|null $number the number of the track

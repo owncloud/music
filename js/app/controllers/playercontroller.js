@@ -13,8 +13,8 @@
 import radioIcon from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', '$timeout', '$document',
-function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, $document) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document',
+function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document) {
 
 	$scope.loading = false;
 	$scope.player = Audio;
@@ -29,6 +29,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 		current: 0,
 		total: 0
 	};
+	var scrobblePending = false;
 
 	playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
 	playlistService.setShuffle($scope.shuffle);
@@ -53,9 +54,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	onPlayerEvent('progress', function (currentTime) {
 		$scope.setTime(currentTime/1000, $scope.position.total);
 		$rootScope.$emit('playerProgress', currentTime);
+
+		// Scrobble when the track has been listened for 10 seconds
+		if (scrobblePending && currentTime >= 10000) {
+			scrobbleCurrentTrack();
+		}
 	});
 	onPlayerEvent('end', function() {
+		// Srcrobble now if it hasn't happened before reaching the end of the track
+		if (scrobblePending) {
+			scrobbleCurrentTrack();
+		}
+
 		if ($scope.repeat === 'one') {
+			scrobblePending = true;
 			$scope.player.seek(0);
 			$scope.player.play();
 		} else {
@@ -83,6 +95,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 	onPlayerEvent('stop', function() {
 		$rootScope.playing = false;
 	});
+
+	function scrobbleCurrentTrack() {
+		if ($scope.currentTrack?.type === 'song') {
+			Restangular.one('track', $scope.currentTrack.id).all('scrobble').post();
+		}
+		scrobblePending = false;
+	}
 
 	$scope.durationKnown = function() {
 		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
@@ -145,6 +164,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, $timeout, 
 			var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
 			var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
 			$scope.player.fromURL(url, mimeAndId.mime);
+			scrobblePending = true;
 		}
 
 		if (startOffset) {

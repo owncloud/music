@@ -813,6 +813,15 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function record_play(int $id, ?int $date) {
+		$timeOfPlay = ($date === null) ? null : new \DateTime('@' . $date);
+		$this->trackBusinessLayer->recordTrackPlayed($id, $this->ampacheUser->getUserId(), $timeOfPlay);
+		return $this->ampacheResponse(['success' => 'play recorded']);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function download(int $id, string $type='song') {
 		// request param `format` is ignored
 		$userId = $this->ampacheUser->getUserId();

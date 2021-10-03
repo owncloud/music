@@ -199,12 +199,14 @@ class Track extends Entity {
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),
 			'track' => $this->getAdjustedTrackNumber(),
+			'filename' => $this->getFilename(),
 			'bitrate' => $this->getBitrate(),
 			'mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
 			'rating' => 0,
 			'preciserating' => 0,
+			'playcount' => $this->getPlayCount(),
 			'flag' => empty($this->getStarred()) ? 0 : 1,
 		];
 

@@ -1321,9 +1321,14 @@ class SubsonicController extends Controller {
 			case 'newest':
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Newest, $size, $offset);
 				break;
-			case 'highest':
 			case 'frequent':
+				$albums = $this->albumBusinessLayer->findFrequentPlay($this->userId, $size, $offset);
+				break;
 			case 'recent':
+				$albums = $this->albumBusinessLayer->findRecentPlay($this->userId, $size, $offset);
+				break;
+			case 'highest':
+				// TODO
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;

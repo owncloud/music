@@ -57,8 +57,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findById()
 	 * @return Album[]
 	 */
-	public function findById(array $ids, string $userId=null) : array {
-		$albums = parent::findById($ids, $userId);
+	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+		$albums = parent::findById($ids, $userId, $preserveOrder);
 		if ($userId !== null) {
 			return $this->injectExtraFields($albums, $userId);
 		} else {
@@ -162,6 +162,30 @@ class AlbumBusinessLayer extends BusinessLayer {
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * Find most frequently played albums, judged by the total play count of the contained tracks
+	 * @return Album[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, int $offset=0) : array {
+		$countsPerAlbum = $this->mapper->getAlbumTracksPlayCount($userId);
+		$countsPerAlbum = \array_slice($countsPerAlbum, $offset, $limit, /*preserve_keys=*/true);
+
+		$ids = \array_keys($countsPerAlbum);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
+	}
+
+	/**
+	 * Find most recently played albums
+	 * @return Album[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, int $offset=0) : array {
+		$playTimePerAlbum = $this->mapper->getLatestAlbumPlayTimes($userId);
+		$playTimePerAlbum = \array_slice($playTimePerAlbum, $offset, $limit, /*preserve_keys=*/true);
+
+		$ids = \array_keys($playTimePerAlbum);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
 	}
 
 	/**

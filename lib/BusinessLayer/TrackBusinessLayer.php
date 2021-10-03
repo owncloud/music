@@ -15,6 +15,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\TrackMapper;
@@ -287,10 +288,8 @@ class TrackBusinessLayer extends BusinessLayer {
 	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null) : void {
 		$timeOfPlay = $timeOfPlay ?? new \DateTime();
 
-		try {
-			$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay);
-		} catch (DoesNotExistException $ex) {
-			throw new BusinessLayerException($ex->getMessage());
+		if (!$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay)) {
+			throw new BusinessLayerException("Track with ID $trackId was not found");
 		}
 	}
 

@@ -3,8 +3,14 @@
 - Hierarchical tree layout for the Folders view
   [#742](https://github.com/owncloud/music/issues/742)
 - Cover art to the playlist details pane
-- Subsonic and Ampache: Support playlist cover art
-- Subsonic: Methods `getAlbumInfo`, `getAlbumInfo2`, `createInternetRadioStation`, `updateInternetRadioStation`, `deleteInternetRadioStation`
+- Subsonic features: 
+  * Support playlist cover art
+  * Added methods `getAlbumInfo`, `getAlbumInfo2`, `createInternetRadioStation`, `updateInternetRadioStation`, `deleteInternetRadioStation`, `scrobble`
+  * Support types `frequent` and `recent` in methods `getAlbumList` and `getAlbumList2`
+- Ampache features:
+  * Support playlist cover art
+  * Added action `record_play`
+  * Support filters `frequent`, `recent`, and `forgotten` in the action `stats` for tracks, albums, and artists
 - Comprehensive translations for the main app for Chinese (China)
   [#899](https://github.com/owncloud/music/pull/899) @RuofengX
 

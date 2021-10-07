@@ -277,6 +277,33 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Find most frequently played tracks
+	 * @return Track[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities('`play_count` > 0', 'ORDER BY `play_count` DESC, LOWER(`title`)');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+
+	/**
+	 * Find most recently played tracks
+	 * @return Track[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities('`last_played` IS NOT NULL', 'ORDER BY `last_played` DESC');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+
+	/**
+	 * Find least recently played tracks
+	 * @return Track[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities(null, 'ORDER BY `last_played` ASC');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
+	}
+
+	/**
 	 * Finds all track IDs of the user along with the parent folder ID of each track
 	 * @param string $userId
 	 * @return array where keys are folder IDs and values are arrays of track IDs
@@ -381,6 +408,20 @@ class TrackMapper extends BaseMapper {
 				WHERE `genre_id` IS NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId]);
 		return $rows->fetchAll(\PDO::FETCH_COLUMN);
+	}
+
+	/**
+	 * Update "last played" timestamp and increment the total play count of the track.
+	 * The DB row is updated *without* updating the `updated` column.
+	 * @return bool true if the track was found and updated, false otherwise
+	 */
+	public function recordTrackPlayed(int $trackId, string $userId, \DateTime $timeOfPlay) : bool {
+		$sql = 'UPDATE `*PREFIX*music_tracks`
+				SET `last_played` = ?, `play_count` = `play_count` + 1
+				WHERE `user_id` = ? AND `id` = ?';
+		$params = [$timeOfPlay->format(BaseMapper::SQL_DATE_FORMAT), $userId, $trackId];
+		$result = $this->execute($sql, $params);
+		return ($result->rowCount() > 0);
 	}
 
 	/**

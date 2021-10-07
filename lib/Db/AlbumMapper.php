@@ -171,6 +171,67 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns summed track play counts of each album of the user, omittig albums which have never been played
+	 *
+	 * @return array [int => int], keys are album IDs and values are play count sums; ordered largest counts first
+	 */
+	public function getAlbumTracksPlayCount(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `album_id`, SUM(`play_count`) AS `sum_count`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ? AND `play_count` > 0
+				GROUP BY `album_id`
+				ORDER BY `sum_count` DESC, `album_id`'; // the second criterion is just to make the order predictable on even counts
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$playCountByAlbum = [];
+		while ($row = $result->fetch()) {
+			$playCountByAlbum[$row['album_id']] = (int)$row['sum_count'];
+		}
+		return $playCountByAlbum;
+	}
+
+	/**
+	 * returns the latest play time of each album of the user, omittig albums which have never been played
+	 *
+	 * @return array [int => string], keys are album IDs and values are date-times; ordered latest times first
+	 */
+	public function getLatestAlbumPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ? AND `last_played` IS NOT NULL
+				GROUP BY `album_id`
+				ORDER BY `latest_time` DESC';
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$latestTimeByAlbum = [];
+		while ($row = $result->fetch()) {
+			$latestTimeByAlbum[$row['album_id']] = $row['latest_time'];
+		}
+		return $latestTimeByAlbum;
+	}
+
+	/**
+	 * returns the latest play time of each album of the user, including albums which have never been played
+	 *
+	 * @return array [int => ?string], keys are album IDs and values are date-times (or null for never played);
+	 *									ordered furthest times first
+	 */
+	public function getFurthestAlbumPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				GROUP BY `album_id`
+				ORDER BY `latest_time` ASC';
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$latestTimeByAlbum = [];
+		while ($row = $result->fetch()) {
+			$latestTimeByAlbum[$row['album_id']] = $row['latest_time'];
+		}
+		return $latestTimeByAlbum;
+	}
+
+	/**
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *

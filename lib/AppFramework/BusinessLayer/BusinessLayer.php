@@ -18,6 +18,7 @@ namespace OCA\Music\AppFramework\BusinessLayer;
 use \OCA\Music\Db\BaseMapper;
 use \OCA\Music\Db\Entity;
 use \OCA\Music\Db\SortBy;
+use \OCA\Music\Utility\Util;
 
 use \OCP\AppFramework\Db\DoesNotExistException;
 use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
@@ -112,18 +113,30 @@ abstract class BusinessLayer {
 	 * user's data is not leaked to unauthorized users.
 	 * @param integer[] $ids  IDs of the entities to be found
 	 * @param string|null $userId
+	 * @param bool $preserveOrder If true, then the result will be in the same order as @a $ids
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findById(array $ids, string $userId=null) : array {
-		$result = [];
+	public function findById(array $ids, string $userId=null, bool $preserveOrder=false) : array {
+		$entities = [];
 		if (\count($ids) > 0) {
 			// don't use more than 999 SQL args in one query since that may be a problem for SQLite
 			$idChunks = \array_chunk($ids, 998);
 			foreach ($idChunks as $idChunk) {
-				$result = \array_merge($result, $this->mapper->findById($idChunk, $userId));
+				$entities = \array_merge($entities, $this->mapper->findById($idChunk, $userId));
 			}
 		}
+
+		if ($preserveOrder) {
+			$lut = Util::createIdLookupTable($entities);
+			$result = [];
+			foreach ($ids as $id) {
+				$result[] = $lut[$id];
+			}
+		} else {
+			$result = $entities;
+		}
+
 		return $result;
 	}
 

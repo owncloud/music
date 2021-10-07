@@ -698,7 +698,7 @@ class SubsonicController extends Controller {
 			'user' => [
 				'username' => $username,
 				'email' => '',
-				'scrobblingEnabled' => false,
+				'scrobblingEnabled' => true,
 				'adminRole' => false,
 				'settingsRole' => false,
 				'downloadRole' => true,
@@ -738,6 +738,26 @@ class SubsonicController extends Controller {
 		} else {
 			return $this->subsonicErrorResponse(70, 'user has no avatar');
 		}
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	private function scrobble(array $id, array $time) {
+		if (\count($id) === 0) {
+			throw new SubsonicException("Required parameter 'id' missing", 10);
+		}
+
+		foreach ($id as $index => $aId) {
+			list($type, $trackId) = \explode('-', $aId);
+			if ($type === 'track') {
+				$timestamp = $time[$index] ?? null;
+				$timeOfPlay = ($timestamp === null) ? null : new \DateTime('@' . $timestamp);
+				$this->trackBusinessLayer->recordTrackPlayed((int)$trackId, $this->userId, $timeOfPlay);
+			}
+		}
+
+		return $this->subsonicResponse([]);
 	}
 
 	/**
@@ -1301,9 +1321,14 @@ class SubsonicController extends Controller {
 			case 'newest':
 				$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Newest, $size, $offset);
 				break;
-			case 'highest':
 			case 'frequent':
+				$albums = $this->albumBusinessLayer->findFrequentPlay($this->userId, $size, $offset);
+				break;
 			case 'recent':
+				$albums = $this->albumBusinessLayer->findRecentPlay($this->userId, $size, $offset);
+				break;
+			case 'highest':
+				// TODO
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;

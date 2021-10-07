@@ -295,6 +295,16 @@ class AmpacheController extends Controller {
 		}
 		$businessLayer = $this->getBusinessLayer($type);
 
+		$getEntitiesIfSupported = function(
+				BusinessLayer $businessLayer, string $method, string $userId,
+				int $limit, int $offset) use ($type, $filter) {
+			if (\method_exists($businessLayer, $method)) {
+				return $businessLayer->$method($userId, $limit, $offset);
+			} else {
+				throw new AmpacheException("Filter $filter not supported for type $type", 400);
+			}
+		};
+
 		switch ($filter) {
 			case 'newest':
 				$entities = $businessLayer->findAll($userId, SortBy::Newest, $limit, $offset);
@@ -307,10 +317,16 @@ class AmpacheController extends Controller {
 				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_stats_'.$type);
 				$entities = Util::arrayMultiGet($entities, $indices);
 				break;
-			case 'highest':		//TODO
-			case 'frequent':	//TODO
-			case 'recent':		//TODO
-			case 'forgotten':	//TODO
+			case 'frequent':
+				$entities = $getEntitiesIfSupported($businessLayer, 'findFrequentPlay', $userId, $limit, $offset);
+				break;
+			case 'recent':
+				$entities = $getEntitiesIfSupported($businessLayer, 'findRecentPlay', $userId, $limit, $offset);
+				break;
+			case 'forgotten':
+				$entities = $getEntitiesIfSupported($businessLayer, 'findNotRecentPlay', $userId, $limit, $offset);
+				break;
+			case 'highest': //TODO
 			default:
 				throw new AmpacheException("Unsupported filter $filter", 400);
 		}
@@ -808,6 +824,15 @@ class AmpacheController extends Controller {
 		} else {
 			throw new AmpacheException("The $type $id was not found", 404);
 		}
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function record_play(int $id, ?int $date) {
+		$timeOfPlay = ($date === null) ? null : new \DateTime('@' . $date);
+		$this->trackBusinessLayer->recordTrackPlayed($id, $this->ampacheUser->getUserId(), $timeOfPlay);
+		return $this->ampacheResponse(['success' => 'play recorded']);
 	}
 
 	/**

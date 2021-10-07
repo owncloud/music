@@ -15,6 +15,7 @@
 namespace OCA\Music\BusinessLayer;
 
 use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use \OCA\Music\AppFramework\Core\Logger;
 
 use \OCA\Music\Db\TrackMapper;
@@ -111,6 +112,30 @@ class TrackBusinessLayer extends BusinessLayer {
 		}
 
 		return $this->mapper->findAllByNameAndArtistName($name, $artistName, /*fuzzy=*/false, $userId);
+	}
+
+	/**
+	 * Find most frequently played tracks
+	 * @return Track[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findFrequentPlay($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find most recently played tracks
+	 * @return Track[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findRecentPlay($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find least recently played tracks
+	 * @return Track[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findNotRecentPlay($userId, $limit, $offset);
 	}
 
 	/**
@@ -279,6 +304,17 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function totalDurationOfAlbum($albumId) {
 		return $this->mapper->totalDurationOfAlbum($albumId);
+	}
+
+	/**
+	 * Update "last played" timestamp and increment the total play count of the track.
+	 */
+	public function recordTrackPlayed(int $trackId, string $userId, ?\DateTime $timeOfPlay = null) : void {
+		$timeOfPlay = $timeOfPlay ?? new \DateTime();
+
+		if (!$this->mapper->recordTrackPlayed($trackId, $userId, $timeOfPlay)) {
+			throw new BusinessLayerException("Track with ID $trackId was not found");
+		}
 	}
 
 	/**

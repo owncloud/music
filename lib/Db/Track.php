@@ -59,6 +59,10 @@ use \OCP\IURLGenerator;
  * @method void setSize(int $size)
  * @method ?int getNumberOnPlaylist()
  * @method void setNumberOnPlaylist(?int $number)
+ * @method int getPlayCount()
+ * @method void setPlayCount(int $count)
+ * @method ?string getLastPlayed()
+ * @method void setLastPlayed(?string $timestamp)
  */
 class Track extends Entity {
 	public $title;
@@ -81,6 +85,8 @@ class Track extends Entity {
 	public $albumName;
 	public $artistName;
 	public $genreName;
+	public $playCount;
+	public $lastPlayed;
 
 	// the rest of the variables are injected separately when needed
 	public $album;
@@ -97,6 +103,7 @@ class Track extends Entity {
 		$this->addType('fileId', 'int');
 		$this->addType('genreId', 'int');
 		$this->addType('size', 'int');
+		$this->addType('playCount', 'int');
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
@@ -192,12 +199,14 @@ class Track extends Entity {
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),
 			'track' => $this->getAdjustedTrackNumber(),
+			'filename' => $this->getFilename(),
 			'bitrate' => $this->getBitrate(),
 			'mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
 			'rating' => 0,
 			'preciserating' => 0,
+			'playcount' => $this->getPlayCount(),
 			'flag' => empty($this->getStarred()) ? 0 : 1,
 		];
 

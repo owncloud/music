@@ -270,6 +270,17 @@
 				<unsigned>true</unsigned>
 			</field>
 			<field>
+				<name>play_count</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>last_played</name>
+				<type>timestamp</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
 				<name>created</name>
 				<type>timestamp</type>
 				<notnull>false</notnull>

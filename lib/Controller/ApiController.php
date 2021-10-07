@@ -469,6 +469,19 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
+	public function scrobble(int $trackId) {
+		try {
+			$this->trackBusinessLayer->recordTrackPlayed($trackId, $this->userId);
+			return new JSONResponse(['success' => true]);
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
 	public function albumDetails($albumIdOrSlug) {
 		try {
 			$albumId = $this->getIdFromSlug($albumIdOrSlug);

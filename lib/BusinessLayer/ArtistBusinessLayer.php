@@ -28,7 +28,7 @@ use \OCA\Music\Utility\Util;
  * @method Artist find(int $trackId, string $userId)
  * @method Artist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
  * @method Artist[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
- * @method Artist[] findById(int[] $ids, string $userId=null)
+ * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
  * @phpstan-extends BusinessLayer<Artist>
  */
 class ArtistBusinessLayer extends BusinessLayer {
@@ -61,6 +61,26 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
 		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
+	}
+
+	/**
+	 * Find most frequently played artists, judged by the total play count of the contained tracks
+	 * @return Artist[]
+	 */
+	public function findFrequentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$countsPerArtist = $this->mapper->getArtistTracksPlayCount($userId, $limit, $offset);
+		$ids = \array_keys($countsPerArtist);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
+	}
+
+	/**
+	 * Find most recently played artists
+	 * @return Artist[]
+	 */
+	public function findRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$playTimePerArtist = $this->mapper->getLatestArtistPlayTimes($userId, $limit, $offset);
+		$ids = \array_keys($playTimePerArtist);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
 	}
 
 	/**

@@ -59,6 +59,46 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns summed track play counts of each aritst of the user, omittig artists which have never been played
+	 *
+	 * @return array [int => int], keys are artist IDs and values are play count sums; ordered largest counts first
+	 */
+	public function getArtistTracksPlayCount(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `artist_id`, SUM(`play_count`) AS `sum_count`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ? AND `play_count` > 0
+				GROUP BY `artist_id`
+				ORDER BY `sum_count` DESC, `artist_id`'; // the second criterion is just to make the order predictable on even counts
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$playCountByArtist = [];
+		while ($row = $result->fetch()) {
+			$playCountByArtist[$row['artist_id']] = (int)$row['sum_count'];
+		}
+		return $playCountByArtist;
+	}
+
+	/**
+	 * returns the latest play time of each artist of the user, omittig artists which have never been played
+	 *
+	 * @return array [int => string], keys are artist IDs and values are date-times; ordered latest times first
+	 */
+	public function getLatestArtistPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `artist_id`, MAX(`last_played`) AS `latest_time`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ? AND `last_played` IS NOT NULL
+				GROUP BY `artist_id`
+				ORDER BY `latest_time` DESC';
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$latestTimeByArtist = [];
+		while ($row = $result->fetch()) {
+			$latestTimeByArtist[$row['artist_id']] = $row['latest_time'];
+		}
+		return $latestTimeByArtist;
+	}
+
+	/**
 	 * @param integer[] $coverFileIds
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Artist[] artists which got modified (with incomplete data, only id and user are valid),

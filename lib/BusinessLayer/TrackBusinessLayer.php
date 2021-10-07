@@ -131,6 +131,14 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Find least recently played tracks
+	 * @return Track[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findNotRecentPlay($userId, $limit, $offset);
+	}
+
+	/**
 	 * Returns the track for a file id
 	 * @param int $fileId the file id of the track
 	 * @param string $userId the name of the user

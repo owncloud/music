@@ -99,6 +99,27 @@ class ArtistMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns the latest play time of each artist of the user, including artists which have never been played
+	 *
+	 * @return array [int => ?string], keys are artist IDs and values are date-times (or null for never played);
+	 *									ordered furthest times first
+	 */
+	public function getFurthestArtistPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `artist_id`, MAX(`last_played`) AS `latest_time`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				GROUP BY `artist_id`
+				ORDER BY `latest_time` ASC';
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$latestTimeByArtist = [];
+		while ($row = $result->fetch()) {
+			$latestTimeByArtist[$row['artist_id']] = $row['latest_time'];
+		}
+		return $latestTimeByArtist;
+	}
+
+	/**
 	 * @param integer[] $coverFileIds
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Artist[] artists which got modified (with incomplete data, only id and user are valid),

@@ -185,6 +185,16 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Find least recently played albums
+	 * @return Album[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$playTimePerAlbum = $this->mapper->getFurthestAlbumPlayTimes($userId, $limit, $offset);
+		$ids = \array_keys($playTimePerAlbum);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
+	}
+
+	/**
 	 * Add performing artists, release years, genres, and disk counts to the given album objects
 	 * @param Album[] $albums
 	 * @param string $userId

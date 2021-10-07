@@ -211,6 +211,27 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * returns the latest play time of each album of the user, including albums which have never been played
+	 *
+	 * @return array [int => ?string], keys are album IDs and values are date-times (or null for never played);
+	 *									ordered furthest times first
+	 */
+	public function getFurthestAlbumPlayTimes(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = 'SELECT `album_id`, MAX(`last_played`) AS `latest_time`
+				FROM `*PREFIX*music_tracks`
+				WHERE `user_id` = ?
+				GROUP BY `album_id`
+				ORDER BY `latest_time` ASC';
+
+		$result = $this->execute($sql, [$userId], $limit, $offset);
+		$latestTimeByAlbum = [];
+		while ($row = $result->fetch()) {
+			$latestTimeByAlbum[$row['album_id']] = $row['latest_time'];
+		}
+		return $latestTimeByAlbum;
+	}
+
+	/**
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *

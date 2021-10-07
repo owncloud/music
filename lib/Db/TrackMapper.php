@@ -293,6 +293,14 @@ class TrackMapper extends BaseMapper {
 		$sql = $this->selectUserEntities('`last_played` IS NOT NULL', 'ORDER BY `last_played` DESC');
 		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
+
+	/**
+	 * Find least recently played tracks
+	 * @return Track[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities(null, 'ORDER BY `last_played` ASC');
+		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
 	/**

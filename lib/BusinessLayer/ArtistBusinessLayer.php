@@ -84,6 +84,16 @@ class ArtistBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Find least recently played artists
+	 * @return Artist[]
+	 */
+	public function findNotRecentPlay(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$playTimePerArtist = $this->mapper->getFurthestArtistPlayTimes($userId, $limit, $offset);
+		$ids = \array_keys($playTimePerArtist);
+		return $this->findById($ids, $userId, /*preserveOrder=*/true);
+	}
+
+	/**
 	 * Adds an artist if it does not exist already or updates an existing artist
 	 * @param string|null $name the name of the artist
 	 * @param string $userId the name of the user

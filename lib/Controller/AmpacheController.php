@@ -295,6 +295,16 @@ class AmpacheController extends Controller {
 		}
 		$businessLayer = $this->getBusinessLayer($type);
 
+		$getEntitiesIfSupported = function(
+				BusinessLayer $businessLayer, string $method, string $userId,
+				int $limit, int $offset) use ($type, $filter) {
+			if (\method_exists($businessLayer, $method)) {
+				return $businessLayer->$method($userId, $limit, $offset);
+			} else {
+				throw new AmpacheException("Filter $filter not supported for type $type", 400);
+			}
+		};
+
 		switch ($filter) {
 			case 'newest':
 				$entities = $businessLayer->findAll($userId, SortBy::Newest, $limit, $offset);
@@ -308,21 +318,15 @@ class AmpacheController extends Controller {
 				$entities = Util::arrayMultiGet($entities, $indices);
 				break;
 			case 'frequent':
-				if (\method_exists($businessLayer, 'findFrequentPlay')) {
-					$entities = $businessLayer->findFrequentPlay($userId, $limit, $offset);
-				} else {
-					throw new AmpacheException("Filter $filter not supported for type $type", 400);
-				}
+				$entities = $getEntitiesIfSupported($businessLayer, 'findFrequentPlay', $userId, $limit, $offset);
 				break;
 			case 'recent':
-				if (\method_exists($businessLayer, 'findRecentPlay')) {
-					$entities = $businessLayer->findRecentPlay($userId, $limit, $offset);
-				} else {
-					throw new AmpacheException("Filter $filter not supported for type $type", 400);
-				}
+				$entities = $getEntitiesIfSupported($businessLayer, 'findRecentPlay', $userId, $limit, $offset);
 				break;
-			case 'forgotten':	//TODO
-			case 'highest':		//TODO
+			case 'forgotten':
+				$entities = $getEntitiesIfSupported($businessLayer, 'findNotRecentPlay', $userId, $limit, $offset);
+				break;
+			case 'highest': //TODO
 			default:
 				throw new AmpacheException("Unsupported filter $filter", 400);
 		}

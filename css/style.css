@@ -213,9 +213,11 @@ div:hover > .play-pause,
 	opacity: 1;
 }
 
-/* hide popups until the angularjs framework is up and running and can do the dynamic hiding */
+/* hide popups and navigation until the angularjs framework is up and running and can do the dynamic hiding and interpolation */
 #app:not(.loaded) .emptycontent,
-#app:not(.loaded) #searchContainer {
+#app:not(.loaded) #searchContainer,
+#app:not(.loaded) #updateData,
+#app:not(.loaded) #app-navigation {
 	display: none;
 }
 

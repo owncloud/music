@@ -52,7 +52,7 @@
 	width: auto;
 	text-align: center;
 	display: table;
-	margin: 0 auto;
+	margin: 0 auto 16px auto;
 }
 
 #app-sidebar .tabsContainer {

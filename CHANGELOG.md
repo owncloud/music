@@ -27,6 +27,8 @@
 - Subsonic: When browsing by folders, don't show the folders excluded from the library
 - Subsonic: Optimized loading the tracks of long playlists
 - Subsonic: API version updated to 1.16.0
+- Updated getID3 library to version 1.9.21-202109171300 (contains no relevant changes but this is a release version as opposed to the previously used development versions)
+- Updated webpack from v4 to v5 (5.58.1)
 
 ### Fixed
 - Show the German translations added in v1.3.2 also when the selected language variant is "informal: du" or "Austria"

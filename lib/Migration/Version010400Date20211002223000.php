@@ -46,7 +46,7 @@ class Version010400Date20211002223000 extends SimpleMigrationStep {
 	private function migrateMusicTracks(ISchemaWrapper $schema) {
 		$table = $schema->getTable('music_tracks');
 		$this->setColumns($table, [
-			[ 'play_count',		'integer',	['notnull' => true, 'unsigned' => true] ],
+			[ 'play_count',		'integer',	['notnull' => true, 'unsigned' => true, 'default' => 0] ],
 			[ 'last_played',	'datetime', ['notnull' => false] ]
 		]);
 	}

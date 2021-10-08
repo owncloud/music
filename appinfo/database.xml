@@ -274,6 +274,7 @@
 				<type>integer</type>
 				<notnull>true</notnull>
 				<unsigned>true</unsigned>
+				<default>0</default>
 			</field>
 			<field>
 				<name>last_played</name>
@@ -783,7 +784,6 @@
 			<field>
 				<name>id</name>
 				<type>integer</type>
-				<default>0</default>
 				<notnull>true</notnull>
 				<autoincrement>1</autoincrement>
 				<length>4</length>

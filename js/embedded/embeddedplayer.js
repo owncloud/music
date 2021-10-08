@@ -8,13 +8,13 @@
  * @copyright Pauli Järvinen 2017 - 2021
  */
 
-import playIcon from '../../img/play-big.svg';
-import pauseIcon from '../../img/pause-big.svg';
-import skipPreviousIcon from '../../img/skip-previous.svg';
-import skipNextIcon from '../../img/skip-next.svg';
-import soundIcon from '../../img/sound.svg';
-import closeIcon from '../../img/close.svg';
-import radioIcon from '../../img/radio-file.svg';
+import playIconPath from '../../img/play-big.svg';
+import pauseIconPath from '../../img/pause-big.svg';
+import skipPreviousIconPath from '../../img/skip-previous.svg';
+import skipNextIconPath from '../../img/skip-next.svg';
+import soundIconPath from '../../img/sound.svg';
+import closeIconPath from '../../img/close.svg';
+import radioIconPath from '../../img/radio-file.svg';
 
 
 OCA.Music = OCA.Music || {};
@@ -171,7 +171,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'play')
 			.attr('class', 'control svg')
-			.attr('src', OC.filePath('music', 'dist', playIcon))
+			.attr('src', playIconPath)
 			.attr('alt', t('music', 'Play'))
 			.css('display', 'inline-block')
 			.click(play);
@@ -181,7 +181,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'pause')
 			.attr('class', 'control svg')
-			.attr('src', OC.filePath('music', 'dist', pauseIcon))
+			.attr('src', pauseIconPath)
 			.attr('alt', t('music', 'Pause'))
 			.css('display', 'none')
 			.click(pause);
@@ -191,7 +191,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'prev')
 			.attr('class', 'control svg small')
-			.attr('src', OC.filePath('music', 'dist', skipPreviousIcon))
+			.attr('src', skipPreviousIconPath)
 			.attr('alt', t('music', 'Previous'))
 			.click(previous);
 	}
@@ -200,7 +200,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'next')
 			.attr('class', 'control svg small disabled')
-			.attr('src', OC.filePath('music', 'dist', skipNextIcon))
+			.attr('src',  skipNextIconPath)
 			.attr('alt', t('music', 'Next'))
 			.click(next);
 	}
@@ -312,7 +312,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		var volumeIcon = $(document.createElement('img'))
 			.attr('id', 'volume-icon')
 			.attr('class', 'control small svg')
-			.attr('src', OC.filePath('music', 'dist', soundIcon));
+			.attr('src', soundIconPath);
 
 		var volumeSlider = $(document.createElement('input'))
 			.attr('id', 'volume-slider')
@@ -336,7 +336,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		return $(document.createElement('img'))
 			.attr('id', 'close')
 			.attr('class', 'control small svg')
-			.attr('src', OC.filePath('music', 'dist', closeIcon))
+			.attr('src', closeIconPath)
 			.attr('alt', t('music', 'Close'))
 			.click(close);
 	}
@@ -580,7 +580,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		updateMetadata({
 			title: caption,
 			artist: url,
-			cover: OC.filePath('music', 'dist', radioIcon)
+			cover: radioIconPath
 		});
 	};
 

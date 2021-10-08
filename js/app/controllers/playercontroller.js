@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2017 - 2021
  */
 
-import radioIcon from '../../../img/radio-file.svg';
+import radioIconPath from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
 '$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document',
@@ -466,7 +466,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 						artist: track.stream_url,
 						artwork: [{
 							sizes: '190x190',
-							src: OC.filePath('music', 'dist', radioIcon),
+							src: radioIconPath,
 							type: 'image/svg+xml'
 						}]
 					});
@@ -503,7 +503,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				silent: true,
 				body: $scope.secondaryTitle() + '\n' + (track?.album?.name ?? ''),
 				icon: (track?.type === 'radio')
-					? OC.filePath('music', 'dist', radioIcon)
+					? radioIconPath
 					: $scope.coverArt() + (coverArtToken ? ('?coverToken=' + coverArtToken) : '')
 			};
 			notification = new Notification($scope.primaryTitle(), args);

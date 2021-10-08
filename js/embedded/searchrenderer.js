@@ -1,4 +1,4 @@
-import musicIcon from '../../img/music-dark.svg';
+import musicIconPath from '../../img/music-dark.svg';
 
 (function() {
 	/**
@@ -22,7 +22,7 @@ import musicIcon from '../../img/music-dark.svg';
 		},
 		renderResult: function($row, _item) {
 			$row.find('td.icon')
-			.css('background-image', 'url(' + OC.filePath('music', 'dist', musicIcon) + ')')
+			.css('background-image', 'url(' + musicIconPath + ')')
 			.css('opacity', '.4');
 			return $row;
 		}

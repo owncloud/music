@@ -8,7 +8,7 @@
  * @copyright Pauli Järvinen 2017 - 2021
  */
 
-import playIcon from '../../img/play-big.svg';
+import playIconPath from '../../img/play-big.svg';
 
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -245,7 +245,7 @@ function initEmbeddedPlayer() {
 					mime,
 					'music-play',
 					OC.PERMISSION_READ,
-					OC.filePath('music', 'dist', playIcon),
+					playIconPath,
 					onPlay,
 					t('music', 'Play')
 			);

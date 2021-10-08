@@ -15,8 +15,8 @@
 		"angular-route": "^1.8.2",
 		"angular-sanitize": "^1.8.2",
 		"angular-scroll": "^1.0.2",
-		"blueimp-md5": "^2.18.0",
-		"core-js": "^3.17.2",
+		"blueimp-md5": "^2.19.0",
+		"core-js": "^3.18.2",
 		"hls.js": "^0.14.17",
 		"javascript-detect-element-resize": "^0.5.3",
 		"jquery": "^3.6.0",
@@ -25,8 +25,8 @@
 		"restangular": "^1.6.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.15.5",
-		"@babel/preset-env": "^7.15.4",
+		"@babel/core": "^7.15.8",
+		"@babel/preset-env": "^7.15.8",
 		"angular-gettext-cli": "^1.2.0",
 		"babel-loader": "^8.2.2",
 		"clean-webpack-plugin": "^3.0.0",

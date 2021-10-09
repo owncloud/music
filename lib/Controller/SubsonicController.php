@@ -62,7 +62,7 @@ use \OCA\Music\Utility\UserMusicFolder;
 use \OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
-	const API_VERSION = '1.16.0';
+	const API_VERSION = '1.16.1';
 
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
@@ -1227,6 +1227,7 @@ class SubsonicController extends Controller {
 
 		if (!empty($artist->getCoverFileId())) {
 			$result['coverArt'] = $result['id'];
+			$result['artistImageUrl'] = $this->artistImageUrl($result['id']);
 		}
 
 		return $result;
@@ -1363,16 +1364,13 @@ class SubsonicController extends Controller {
 
 			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 			if ($artist->getCoverFileId() !== null) {
-				$par = $this->request->getParams();
-				$url = $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
-						. "?u={$par['u']}&p={$par['p']}&v={$par['v']}&c={$par['c']}&id=$id";
-				$content['largeImageUrl'] = [$url];
+				$content['largeImageUrl'] = [$this->artistImageUrl($id)];
 			}
 		}
 
 		// This method is unusual in how it uses non-attribute elements in the response. On the other hand,
 		// all the details of the <similarArtist> elements are rendered as attributes. List those separately.
-		$attributeKeys = ['name', 'id', 'albumCount', 'coverArt', 'starred'];
+		$attributeKeys = ['name', 'id', 'albumCount', 'coverArt', 'artistImageUrl', 'starred'];
 
 		return $this->subsonicResponse([$rootName => $content], $attributeKeys);
 	}
@@ -1530,6 +1528,13 @@ class SubsonicController extends Controller {
 			$genreArr = $this->genreBusinessLayer->findAllByName('', $this->userId);
 		}
 		return \count($genreArr) ? $genreArr[0] : null;
+	}
+
+	private function artistImageUrl(string $id) : string {
+		$par = $this->request->getParams();
+		return $this->urlGenerator->linkToRouteAbsolute('music.subsonic.handleRequest', ['method' => 'getCoverArt'])
+			. "?u={$par['u']}&p={$par['p']}&v={$par['v']}&c={$par['c']}&id=$id&size=" . CoverHelper::DO_NOT_CROP_OR_SCALE;
+		// Note: Using DO_NOT_CROP_OR_SCALE (-1) as size is our proprietary extension and not part of the Subsonic API
 	}
 
 	/**

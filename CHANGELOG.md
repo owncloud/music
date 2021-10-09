@@ -26,7 +26,7 @@
 - Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
 - Subsonic: When browsing by folders, don't show the folders excluded from the library
 - Subsonic: Optimized loading the tracks of long playlists
-- Subsonic: API version updated to 1.16.0
+- Subsonic: API version updated to 1.16.1
 - Updated getID3 library to version 1.9.21-202109171300 (contains no relevant changes but this is a release version as opposed to the previously used development versions)
 - Updated webpack from v4 to v5 (5.58.1)
 

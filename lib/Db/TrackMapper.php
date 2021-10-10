@@ -98,13 +98,9 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param int $genreId
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
-	 * @return Track[] tracks
+	 * @return Track[]
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('`genre_id` = ?', 'ORDER BY LOWER(`title`)');
 		$params = [$userId, $genreId];
 		return $this->findEntities($sql, $params, $limit, $offset);
@@ -114,7 +110,7 @@ class TrackMapper extends BaseMapper {
 	 * @param string $userId
 	 * @return int[]
 	 */
-	public function findAllFileIds($userId) {
+	public function findAllFileIds(string $userId) : array {
 		$sql = 'SELECT `file_id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ?';
 		$result = $this->execute($sql, [$userId]);
 
@@ -125,12 +121,9 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Find a track of user matching a file ID
-	 * @param integer $fileId
-	 * @param string $userId
-	 * @return Track
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
 	 */
-	public function findByFileId($fileId, $userId) {
+	public function findByFileId(int $fileId, string $userId) : Track {
 		$sql = $this->selectUserEntities('`file_id` = ?');
 		$params = [$userId, $fileId];
 		return $this->findEntity($sql, $params);
@@ -142,7 +135,7 @@ class TrackMapper extends BaseMapper {
 	 * @param string[] $userIds
 	 * @return Track[]
 	 */
-	public function findByFileIds($fileIds, $userIds) {
+	public function findByFileIds(array $fileIds, array $userIds) : array {
 		$sql = $this->selectEntities(
 				'`*PREFIX*music_tracks`.`user_id` IN ' . $this->questionMarks(\count($userIds)) .
 				' AND `file_id` IN '. $this->questionMarks(\count($fileIds)));
@@ -155,28 +148,20 @@ class TrackMapper extends BaseMapper {
 	 * @param integer[] $fileIds
 	 * @return Track[]
 	 */
-	public function findAllByFileIds($fileIds) {
+	public function findAllByFileIds(array $fileIds) : array {
 		$sql = $this->selectEntities('`file_id` IN '.
 				$this->questionMarks(\count($fileIds)));
 		return $this->findEntities($sql, $fileIds);
 	}
 
-	/**
-	 * @param integer $artistId
-	 * @return integer
-	 */
-	public function countByArtist($artistId) {
+	public function countByArtist(int $artistId) : int {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
 		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
 		return (int)$row['count'];
 	}
 
-	/**
-	 * @param integer $albumId
-	 * @return integer
-	 */
-	public function countByAlbum($albumId) {
+	public function countByAlbum(int $albumId) : int {
 		$sql = 'SELECT COUNT(*) AS `count` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
@@ -184,10 +169,9 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param integer $albumId
 	 * @return integer Duration in seconds
 	 */
-	public function totalDurationOfAlbum($albumId) {
+	public function totalDurationOfAlbum(int $albumId) : int {
 		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
 		$row = $result->fetch();
@@ -199,7 +183,7 @@ class TrackMapper extends BaseMapper {
 	 * @param integer[] $trackIds
 	 * @return array {int => int} where keys are track IDs and values are corresponding durations
 	 */
-	public function getDurations($trackIds) {
+	public function getDurations(array $trackIds) : array {
 		$result = [];
 
 		if (!empty($trackIds)) {
@@ -232,9 +216,9 @@ class TrackMapper extends BaseMapper {
 	 * @param string|null $artistName the name of the artist
 	 * @param bool $fuzzy match names using case-insensitive substring search
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] Tracks matching the criteria
+	 * @return Track[] Tracks matching the criteria
 	 */
-	public function findAllByNameAndArtistName($name, $artistName, $fuzzy, $userId) {
+	public function findAllByNameAndArtistName(?string $name, ?string $artistName, bool $fuzzy, string $userId) : array {
 		$sqlConditions = [];
 		$params = [$userId];
 
@@ -296,10 +280,9 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Finds all track IDs of the user along with the parent folder ID of each track
-	 * @param string $userId
 	 * @return array where keys are folder IDs and values are arrays of track IDs
 	 */
-	public function findTrackAndFolderIds($userId) {
+	public function findTrackAndFolderIds(string $userId) : array {
 		$sql = 'SELECT `track`.`id` AS id, `file`.`name` AS `filename`, `file`.`parent` AS parent
 				FROM `*PREFIX*music_tracks` `track`
 				JOIN `*PREFIX*filecache` `file`
@@ -330,7 +313,7 @@ class TrackMapper extends BaseMapper {
 	 * @return array where keys are the node IDs and values are associative arrays
 	 *         like { 'name' => string, 'parent' => int };
 	 */
-	public function findNodeNamesAndParents($nodeIds, $storageId) {
+	public function findNodeNamesAndParents(array $nodeIds, string $storageId) : array {
 		$result = [];
 
 		if (!empty($nodeIds)) {
@@ -356,11 +339,9 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Returns all genre IDs associated with the given artist
-	 * @param int $artistId
-	 * @param string $userId
 	 * @return int[]
 	 */
-	public function getGenresByArtistId($artistId, $userId) {
+	public function getGenresByArtistId(int $artistId, string $userId) : array {
 		$sql = 'SELECT DISTINCT(`genre_id`) FROM `*PREFIX*music_tracks` WHERE
 				`genre_id` IS NOT NULL AND `user_id` = ? AND `artist_id` = ?';
 		$rows = $this->execute($sql, [$userId, $artistId]);
@@ -369,10 +350,9 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Returns all tracks IDs of the user, organized by the genre_id.
-	 * @param string $userId
 	 * @return array where keys are genre IDs and values are arrays of track IDs
 	 */
-	public function mapGenreIdsToTrackIds($userId) {
+	public function mapGenreIdsToTrackIds(string $userId) : array {
 		$sql = 'SELECT `id`, `genre_id` FROM `*PREFIX*music_tracks`
 				WHERE `genre_id` IS NOT NULL and `user_id` = ?';
 		$rows = $this->execute($sql, [$userId])->fetchAll();
@@ -389,10 +369,9 @@ class TrackMapper extends BaseMapper {
 	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
 	 * thing as unknown genre, which means that the genre has been scanned but was not found
 	 * from the track metadata.
-	 * @param string $userId
 	 * @return int[]
 	 */
-	public function findFilesWithoutScannedGenre($userId) {
+	public function findFilesWithoutScannedGenre(string $userId) : array {
 		$sql = 'SELECT `track`.`file_id` FROM `*PREFIX*music_tracks` `track`
 				INNER JOIN `*PREFIX*filecache` `file`
 				ON `track`.`file_id` = `file`.`fileid`

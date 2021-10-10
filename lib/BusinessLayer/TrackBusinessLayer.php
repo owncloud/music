@@ -69,13 +69,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by genre
-	 * @param int $genreId the genre to include
-	 * @param string $userId the name of the user
-	 * @param int|null $limit
-	 * @param int|null $offset
-	 * @return \OCA\Music\Db\Track[] tracks
+	 * @return Track[]
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
 	}
 
@@ -92,10 +88,7 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks specified by name and/or artist name
-	 * @param string|null $name the name of the track
-	 * @param string|null $artistName the name of the artist
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] Tracks matching the criteria
+	 * @return Track[] Tracks matching the criteria
 	 */
 	public function findAllByNameAndArtistName(?string $name, ?string $artistName, string $userId) : array {
 		if ($name !== null) {
@@ -134,11 +127,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns the track for a file id
-	 * @param int $fileId the file id of the track
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track|null track
+	 * @return Track|null
 	 */
-	public function findByFileId($fileId, $userId) {
+	public function findByFileId(int $fileId, string $userId) : ?Track {
 		try {
 			return $this->mapper->findByFileId($fileId, $userId);
 		} catch (DoesNotExistException $e) {
@@ -148,10 +139,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns file IDs of all indexed tracks of the user
-	 * @param string $userId
 	 * @return int[]
 	 */
-	public function findAllFileIds($userId) {
+	public function findAllFileIds(string $userId) : array {
 		return $this->mapper->findAllFileIds($userId);
 	}
 
@@ -257,11 +247,9 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all genre IDs associated with the given artist
-	 * @param int $artistId
-	 * @param string $userId
 	 * @return int[]
 	 */
-	public function getGenresByArtistId($artistId, $userId) {
+	public function getGenresByArtistId(int $artistId, string $userId) : array {
 		return $this->mapper->getGenresByArtistId($artistId, $userId);
 	}
 
@@ -269,34 +257,24 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns file IDs of the tracks which do not have genre scanned. This is not the same
 	 * thing as unknown genre, which is stored as empty string and means that the genre has
 	 * been scanned but was not found from the track metadata.
-	 * @param string $userId
 	 * @return int[]
 	 */
-	public function findFilesWithoutScannedGenre($userId) {
+	public function findFilesWithoutScannedGenre(string $userId) : array {
 		return $this->mapper->findFilesWithoutScannedGenre($userId);
 	}
 
-	/**
-	 * @param integer $artistId
-	 * @return integer
-	 */
-	public function countByArtist($artistId) {
+	public function countByArtist(int $artistId) : int {
 		return $this->mapper->countByArtist($artistId);
 	}
 
-	/**
-	 * @param integer $albumId
-	 * @return integer
-	 */
-	public function countByAlbum($albumId) {
+	public function countByAlbum(int $albumId) : int {
 		return $this->mapper->countByAlbum($albumId);
 	}
 
 	/**
-	 * @param integer $albumId
 	 * @return integer Duration in seconds
 	 */
-	public function totalDurationOfAlbum($albumId) {
+	public function totalDurationOfAlbum(int $albumId) : int {
 		return $this->mapper->totalDurationOfAlbum($albumId);
 	}
 
@@ -325,7 +303,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @param int $length track length in seconds
 	 * @param int $bitrate track bitrate in bits (not kbits)
-	 * @return \OCA\Music\Db\Track The added/updated track
+	 * @return Track The added/updated track
 	 */
 	public function addOrUpdateTrack(
 			$title, $number, $discNumber, $year, $genreId, $artistId, $albumId,
@@ -357,7 +335,7 @@ class TrackBusinessLayer extends BusinessLayer {
 	 *         user IDs of the deleted tracks. The 'obsolete' entities are such which no longer
 	 *         have any tracks while 'remaining' entities have some left.
 	 */
-	public function deleteTracks($fileIds, $userIds = null) {
+	public function deleteTracks(array $fileIds, ?array $userIds=null) {
 		$tracks = ($userIds !== null)
 			? $this->mapper->findByFileIds($fileIds, $userIds)
 			: $this->mapper->findAllByFileIds($fileIds);

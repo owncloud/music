@@ -71,7 +71,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAll()
 	 * @return Album[]
 	 */
-	public function findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+	public function findAll(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
 							?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		$effectivelyLimited = ($limit !== null && $limit < \count($albums));
@@ -107,7 +107,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @param int|null $offset
 	 * @return Album[] albums
 	 */
-	public function findAllByGenre(int $genreId, string $userId, int $limit=null, int $offset=null) : array {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$albums = $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
@@ -122,7 +122,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[] albums
 	 */
 	public function findAllByYearRange(
-			int $fromYear, int $toYear, string $userId, int $limit=null, int $offset=null) : array {
+			int $fromYear, int $toYear, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$reverseOrder = false;
 		if ($fromYear > $toYear) {
 			$reverseOrder = true;
@@ -154,7 +154,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, bool $fuzzy = false, int $limit=null, int $offset=null,
+			string $name, string $userId, bool $fuzzy = false, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId);

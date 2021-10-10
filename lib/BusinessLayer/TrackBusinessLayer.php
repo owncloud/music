@@ -83,11 +83,11 @@ class TrackBusinessLayer extends BusinessLayer {
 	 * Returns all tracks filtered by name (of track/album/artist)
 	 * @param string $name the name of the track/album/artist
 	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] tracks
+	 * @return Track[]
 	 */
-	public function findAllByNameRecursive($name, $userId) {
+	public function findAllByNameRecursive(string $name, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$name = \trim($name);
-		return $this->mapper->findAllByNameRecursive($name, $userId);
+		return $this->mapper->findAllByNameRecursive($name, $userId, $limit, $offset);
 	}
 
 	/**

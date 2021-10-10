@@ -357,27 +357,27 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist_albums(int $filter, string $auth) {
+	protected function artist_albums(int $filter, string $auth, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
-		$albums = $this->albumBusinessLayer->findAllByArtist($filter, $userId);
+		$albums = $this->albumBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
 		return $this->renderAlbums($albums, $auth);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist_songs(int $filter, string $auth) {
+	protected function artist_songs(int $filter, string $auth, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
-		$tracks = $this->trackBusinessLayer->findAllByArtist($filter, $userId);
+		$tracks = $this->trackBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function album_songs(int $filter, string $auth) {
+	protected function album_songs(int $filter, string $auth, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
-		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
 	}
 
@@ -405,9 +405,9 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function search_songs(string $filter, string $auth) {
+	protected function search_songs(string $auth, string $filter, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
-		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId);
+		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
 	}
 

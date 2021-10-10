@@ -1,3 +1,7 @@
+## [Unreleased]
+### Changed
+- Ampache: A few more actions now support pagination with offset and limit: `artist_albums`, `artist_songs`, `album_songs`, `search_songs`
+
 ## 1.4.0 - 2021-10-10
 ### Added
 - Hierarchical tree layout for the Folders view

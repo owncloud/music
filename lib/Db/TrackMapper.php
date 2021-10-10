@@ -214,18 +214,16 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * @param string $name
-	 * @param string $userId
 	 * @return Track[]
 	 */
-	public function findAllByNameRecursive($name, $userId) {
+	public function findAllByNameRecursive(string $name, string $userId, ?int $limit=null, ?int $offset=null) {
 		$condition = '( LOWER(`artist`.`name`) LIKE LOWER(?) OR
 						LOWER(`album`.`name`) LIKE LOWER(?) OR
 						LOWER(`title`) LIKE LOWER(?) )';
 		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`title`)');
 		$name = '%' . $name . '%';
 		$params = [$userId, $name, $name, $name];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

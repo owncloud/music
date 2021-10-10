@@ -61,25 +61,20 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Returns all tracks of the given artist (both album and track artists are considered)
-	 * @param integer $artistId
-	 * @param string $userId
 	 * @return Track[]
 	 */
-	public function findAllByArtist($artistId, $userId) {
+	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities(
 				'`artist_id` = ? OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?) ',
 				'ORDER BY LOWER(`title`)');
 		$params = [$userId, $artistId, $artistId];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
-	 * @param integer $albumId
-	 * @param string $userId
-	 * @param integer|null $artistId
 	 * @return Track[]
 	 */
-	public function findAllByAlbum($albumId, $userId, $artistId = null) {
+	public function findAllByAlbum(int $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
 		$condition = '`album_id` = ?';
 		$params = [$userId, $albumId];
 
@@ -90,18 +85,16 @@ class TrackMapper extends BaseMapper {
 
 		$sql = $this->selectUserEntities($condition,
 				'ORDER BY `*PREFIX*music_tracks`.`disk`, `number`, LOWER(`title`)');
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
-	 * @param integer $folderId
-	 * @param string $userId
 	 * @return Track[]
 	 */
-	public function findAllByFolder($folderId, $userId) {
+	public function findAllByFolder(int $folderId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('`file`.`parent` = ?', 'ORDER BY LOWER(`title`)');
 		$params = [$userId, $folderId];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

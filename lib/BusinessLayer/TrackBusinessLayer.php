@@ -45,32 +45,26 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by artist (both album and track artists are considered)
-	 * @param int $artistId the id of the artist
-	 * @param string $userId the name of the user
-	 * @return array of tracks
+	 * @return Track[]
 	 */
-	public function findAllByArtist($artistId, $userId) {
-		return $this->mapper->findAllByArtist($artistId, $userId);
+	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
 	}
 
 	/**
 	 * Returns all tracks filtered by album. Optionally, filter also by the performing artist.
-	 * @param int $albumId the id of the album
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] tracks
+	 * @return Track[]
 	 */
-	public function findAllByAlbum($albumId, $userId, $artistId = null) {
-		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId);
+	public function findAllByAlbum(int $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId, $limit, $offset);
 	}
 
 	/**
 	 * Returns all tracks filtered by parent folder
-	 * @param integer $folderId the id of the folder
-	 * @param string $userId the name of the user
-	 * @return \OCA\Music\Db\Track[] tracks
+	 * @return Track[]
 	 */
-	public function findAllByFolder($folderId, $userId) {
-		return $this->mapper->findAllByFolder($folderId, $userId);
+	public function findAllByFolder(int $folderId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllByFolder($folderId, $userId, $limit, $offset);
 	}
 
 	/**

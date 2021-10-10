@@ -81,23 +81,19 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all albums filtered by artist (both album and track artists are considered)
-	 * @param integer $artistId the id of the artist
-	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
-	public function findAllByArtist(int $artistId, string $userId) : array {
-		$albums = $this->mapper->findAllByArtist($artistId, $userId);
+	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 
 	/**
 	 * Returns all albums filtered by album artist
-	 * @param integer $artistId the id of the artist
-	 * @param string $userId the name of the user
 	 * @return Album[] albums
 	 */
-	public function findAllByAlbumArtist(int $artistId, string $userId) : array {
-		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId);
+	public function findAllByAlbumArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId, $limit, $offset);
 		$albums = $this->injectExtraFields($albums, $userId);
 		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
 		return $albums;

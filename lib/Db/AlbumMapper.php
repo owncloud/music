@@ -239,7 +239,7 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAllByArtist(int $artistId, string $userId) : array {
+	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectEntities(
 				'`*PREFIX*music_albums`.`id` IN (
 					SELECT DISTINCT `album`.`id`
@@ -252,7 +252,7 @@ class AlbumMapper extends BaseMapper {
 				)',
 				'ORDER BY LOWER(`*PREFIX*music_albums`.`name`)');
 		$params = [$artistId, $userId, $artistId, $userId];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
@@ -263,10 +263,10 @@ class AlbumMapper extends BaseMapper {
 	 * @param string $userId the user ID
 	 * @return Album[]
 	 */
-	public function findAllByAlbumArtist(int $artistId, string $userId) : array {
+	public function findAllByAlbumArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('`album_artist_id` = ?');
 		$params = [$userId, $artistId];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

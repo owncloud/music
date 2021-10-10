@@ -34,6 +34,7 @@ use \OCA\Music\BusinessLayer\TrackBusinessLayer;
 use \OCA\Music\Db\Album;
 use \OCA\Music\Db\Artist;
 use \OCA\Music\Db\Maintenance;
+use \OCA\Music\Db\SortBy;
 use \OCA\Music\Db\Track;
 use \OCA\Music\Http\ErrorResponse;
 use \OCA\Music\Http\FileResponse;
@@ -123,7 +124,7 @@ class ApiController extends Controller {
 	 * @param string|int $slug the slug
 	 * @return int the id
 	 */
-	protected static function getIdFromSlug($slug) : int {
+	private static function getIdFromSlug($slug) : int {
 		if (\is_string($slug)) {
 			$split = \explode('-', $slug, 2);
 			return (int)$split[0];
@@ -132,6 +133,16 @@ class ApiController extends Controller {
 		} else {
 			throw new \InvalidArgumentException();
 		}
+	}
+
+	private static function shivaPageToLimits(?int $pageSize, ?int $page) : array {
+		if (\is_int($page) && \is_int($pageSize) && $page > 0 && $pageSize > 0) {
+			$limit = $pageSize;
+			$offset = ($page - 1) * $pageSize;
+		} else {
+			$limit = $offset = null;
+		}
+		return [$limit, $offset];
 	}
 
 	/**
@@ -203,11 +214,13 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artists($fulltree, $albums) {
+	public function artists($fulltree, $albums, ?int $page_size, ?int $page) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = \filter_var($albums, FILTER_VALIDATE_BOOLEAN);
+		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
+
 		/** @var Artist[] $artists */
-		$artists = $this->artistBusinessLayer->findAll($this->userId);
+		$artists = $this->artistBusinessLayer->findAll($this->userId, SortBy::Name, $limit, $offset);
 
 		$artists = \array_map(function ($a) use ($fulltree, $includeAlbums) {
 			return $this->artistToApi($a, $includeAlbums || $fulltree, $fulltree);
@@ -253,12 +266,14 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums(?int $artist, $fulltree) {
+	public function albums(?int $artist, $fulltree, ?int $page_size, ?int $page) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
+		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
+
 		if ($artist !== null) {
-			$albums = $this->albumBusinessLayer->findAllByArtist($artist, $this->userId);
+			$albums = $this->albumBusinessLayer->findAllByArtist($artist, $this->userId, $limit, $offset);
 		} else {
-			$albums = $this->albumBusinessLayer->findAll($this->userId);
+			$albums = $this->albumBusinessLayer->findAll($this->userId, SortBy::Name, $limit, $offset);
 		}
 
 		$albums = \array_map(function ($a) use ($fulltree) {
@@ -309,21 +324,22 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function tracks($artist, $album, $fulltree) {
+	public function tracks(?int $artist, ?int $album, $fulltree, ?int $page_size, ?int $page) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		if ($artist) {
-			$tracks = $this->trackBusinessLayer->findAllByArtist($artist, $this->userId);
-		} elseif ($album) {
-			$tracks = $this->trackBusinessLayer->findAllByAlbum($album, $this->userId);
+		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
+
+		if ($album !== null) {
+			$tracks = $this->trackBusinessLayer->findAllByAlbum($album, $this->userId, $artist, $limit, $offset);
+		} elseif ($artist !== null) {
+			$tracks = $this->trackBusinessLayer->findAllByArtist($artist, $this->userId, $limit, $offset);
 		} else {
-			$tracks = $this->trackBusinessLayer->findAll($this->userId);
+			$tracks = $this->trackBusinessLayer->findAll($this->userId, $limit, $offset);
 		}
 		foreach ($tracks as &$track) {
 			$artistId = $track->getArtistId();
 			$albumId = $track->getAlbumId();
 			$track = $track->toAPI($this->urlGenerator);
 			if ($fulltree) {
-				/** @var Artist $artist */
 				$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 				$track['artist'] = $artist->toAPI($this->urlGenerator, $this->l10n);
 				$album = $this->albumBusinessLayer->find($albumId, $this->userId);

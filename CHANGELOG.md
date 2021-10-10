@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.4.0 - 2021-10-10
 ### Added
 - Hierarchical tree layout for the Folders view
   [#742](https://github.com/owncloud/music/issues/742)
@@ -20,9 +20,9 @@
 - Format dates and times in the details pane according the locale from the user settings
 - All alphabetical sorting on the web UI now respects the rules of the locale from the user settings
 - Minor optimizations on the scanning speed 
-- Use HTML5 localStorage instead of cookies to store web UI settings like volume and Albums view layout
+- Use HTML5 localStorage instead of cookies to store web UI settings like volume and selected view layouts
 - Direct the Subsonic and Ampache base URLs to the Music app front page
-  * With this, the "Open in browser" buttons on some clients open the Music app instead of the cloud default view
+  * With this, the "Open in browser" buttons found on some clients open the Music app instead of the cloud default view
 - Subsonic: When browsing by folders, the main level is now the contents of the library root (previously, a level above was shown with just the one folder)
 - Subsonic: When browsing by folders, don't show the folders excluded from the library
 - Subsonic: Optimized loading the tracks of long playlists
@@ -38,7 +38,7 @@
 - Navigation pane auto-collapse on mobile layout not working on recent versions of Nextcloud
 - Tracks and podcasts with missing metadata causing page load failure on [Ultrasonic](https://f-droid.org/en/packages/org.moire.ultrasonic/)
 - Small layout issues in the details pane
-- "No search results" briefly showing up during the app web UI loading
+- "No search results" briefly showing up while the web UI was being loaded
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

@@ -364,8 +364,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$remainingArtists = [];
 			$obsoleteArtists = [];
 			foreach ($artists as $artistId) {
-				$result = $this->mapper->countByArtist($artistId);
-				if ($result === '0') {
+				if ($this->mapper->countByArtist($artistId) === 0) {
 					$obsoleteArtists[] = $artistId;
 				} else {
 					$remainingArtists[] = $artistId;
@@ -376,8 +375,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$remainingAlbums = [];
 			$obsoleteAlbums = [];
 			foreach ($albums as $albumId) {
-				$result = $this->mapper->countByAlbum($albumId);
-				if ($result === '0') {
+				if ($this->mapper->countByAlbum($albumId) === 0) {
 					$obsoleteAlbums[] = $albumId;
 				} else {
 					$remainingAlbums[] = $albumId;

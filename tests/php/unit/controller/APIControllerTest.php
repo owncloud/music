@@ -877,7 +877,7 @@ class APIControllerTest extends ControllerTestUtility {
 			]
 		];
 
-		$response = $this->controller->tracks(null /*artist*/, null /*album*/, false /*fulltree*/);
+		$response = $this->controller->tracks();
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);

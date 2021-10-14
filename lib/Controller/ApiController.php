@@ -214,7 +214,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artists($fulltree, $albums, ?int $page_size, ?int $page) {
+	public function artists($fulltree, $albums, ?int $page_size=null, ?int $page=null) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		$includeAlbums = \filter_var($albums, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
@@ -266,7 +266,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albums(?int $artist, $fulltree, ?int $page_size, ?int $page) {
+	public function albums(?int $artist=null, $fulltree=null, ?int $page_size=null, ?int $page=null) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
 
@@ -324,7 +324,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function tracks(?int $artist, ?int $album, $fulltree, ?int $page_size, ?int $page) {
+	public function tracks(?int $artist=null, ?int $album=null, $fulltree=null, ?int $page_size=null, ?int $page=null) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
 		list($limit, $offset) = self::shivaPageToLimits($page_size, $page);
 
@@ -333,7 +333,7 @@ class ApiController extends Controller {
 		} elseif ($artist !== null) {
 			$tracks = $this->trackBusinessLayer->findAllByArtist($artist, $this->userId, $limit, $offset);
 		} else {
-			$tracks = $this->trackBusinessLayer->findAll($this->userId, $limit, $offset);
+			$tracks = $this->trackBusinessLayer->findAll($this->userId, SortBy::Name, $limit, $offset);
 		}
 		foreach ($tracks as &$track) {
 			$artistId = $track->getArtistId();

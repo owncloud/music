@@ -39,7 +39,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testFindAllByArtist() {
-		$response = '';
+		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByArtist')
 			->with($this->equalTo($this->artistId),
@@ -53,7 +53,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testFindAllByAlbum() {
-		$response = '';
+		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByAlbum')
 			->with($this->equalTo($this->albumId),
@@ -67,7 +67,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testFindByFileId() {
-		$response = '';
+		$response = new Track();
 		$this->mapper->expects($this->once())
 			->method('findByFileId')
 			->with($this->equalTo($this->fileId),
@@ -138,12 +138,12 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$this->mapper->expects($this->once())
 			->method('countByArtist')
 			->with($this->equalTo(2))
-			->will($this->returnValue('0'));
+			->will($this->returnValue(0));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3))
-			->will($this->returnValue('1'));
+			->will($this->returnValue(1));
 
 		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
 		$this->assertEquals([], $result['obsoleteAlbums']);
@@ -174,12 +174,12 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$this->mapper->expects($this->once())
 			->method('countByArtist')
 			->with($this->equalTo(2))
-			->will($this->returnValue('1'));
+			->will($this->returnValue(1));
 
 		$this->mapper->expects($this->once())
 			->method('countByAlbum')
 			->with($this->equalTo(3))
-			->will($this->returnValue('0'));
+			->will($this->returnValue(0));
 
 		$result = $this->trackBusinessLayer->deleteTracks([$fileId]);
 		$this->assertEquals([3], $result['obsoleteAlbums']);

@@ -244,14 +244,14 @@ class AlbumMapper extends BaseMapper {
 				'`*PREFIX*music_albums`.`id` IN (
 					SELECT DISTINCT `album`.`id`
 					FROM `*PREFIX*music_albums` `album`
-					WHERE `album`.`album_artist_id` = ? AND `album`.`user_id` = ?
+					WHERE `album`.`album_artist_id` = ?
 						UNION
 					SELECT DISTINCT `track`.`album_id`
 					FROM `*PREFIX*music_tracks` `track`
-					WHERE `track`.`artist_id` = ? AND `track`.`user_id` = ?
-				)',
+					WHERE `track`.`artist_id` = ?
+				) AND `*PREFIX*music_albums`.`user_id` = ?',
 				'ORDER BY LOWER(`*PREFIX*music_albums`.`name`)');
-		$params = [$artistId, $userId, $artistId, $userId];
+		$params = [$artistId, $artistId, $userId];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 

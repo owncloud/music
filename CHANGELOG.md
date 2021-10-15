@@ -2,6 +2,9 @@
 ### Changed
 - Ampache: A few more actions now support pagination with offset and limit: `artist_albums`, `artist_songs`, `album_songs`, `search_songs`
 
+### Fixed
+- A performance problem affecting Subsonic method `getArtist`, Ampache action `artist_albums`, and a few other functions
+
 ## 1.4.0 - 2021-10-10
 ### Added
 - Hierarchical tree layout for the Folders view

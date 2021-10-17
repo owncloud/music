@@ -12,15 +12,15 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Track;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Track;
 
-use \OCP\IConfig;
+use OCP\IConfig;
 
 class LastfmService {
 	private $albumBusinessLayer;

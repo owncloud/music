@@ -14,9 +14,9 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCP\Files\File;
+use OCP\Files\File;
 
 /**
  * an extractor class for getID3

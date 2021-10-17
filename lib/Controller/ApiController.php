@@ -14,38 +14,38 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\DataDisplayResponse;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\RedirectResponse;
-use \OCP\AppFramework\Http\Response;
-use \OCP\Files\Folder;
-use \OCP\IL10N;
-use \OCP\IRequest;
-use \OCP\IURLGenerator;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataDisplayResponse;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
+use OCP\Files\Folder;
+use OCP\IL10N;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\GenreBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Db\Album;
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Maintenance;
-use \OCA\Music\Db\SortBy;
-use \OCA\Music\Db\Track;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Http\FileStreamResponse;
-use \OCA\Music\Utility\CollectionHelper;
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\DetailsHelper;
-use \OCA\Music\Utility\LastfmService;
-use \OCA\Music\Utility\Scanner;
-use \OCA\Music\Utility\UserMusicFolder;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Maintenance;
+use OCA\Music\Db\SortBy;
+use OCA\Music\Db\Track;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Http\FileStreamResponse;
+use OCA\Music\Utility\CollectionHelper;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\Scanner;
+use OCA\Music\Utility\UserMusicFolder;
+use OCA\Music\Utility\Util;
 
 class ApiController extends Controller {
 

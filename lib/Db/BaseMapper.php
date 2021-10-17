@@ -12,13 +12,13 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\Mapper;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
-use \OCP\IDBConnection;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\Mapper;
+use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\IDBConnection;
 
-use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use OCA\Music\Utility\Util;
 
 /**
  * Common base class for data access classes of the Music app

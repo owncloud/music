@@ -12,12 +12,12 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\Util;
 
-use \OCP\IL10N;
-use \OCP\IURLGenerator;
+use OCP\IL10N;
+use OCP\IURLGenerator;
 
 class Library {
 	private $albumBusinessLayer;

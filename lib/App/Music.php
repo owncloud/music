@@ -14,65 +14,65 @@
 
 namespace OCA\Music\App;
 
-use \OCP\AppFramework\App;
-use \OCP\AppFramework\IAppContainer;
+use OCP\AppFramework\App;
+use OCP\AppFramework\IAppContainer;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
-use \OCA\Music\BusinessLayer\GenreBusinessLayer;
-use \OCA\Music\BusinessLayer\Library;
-use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
-use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\Library;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\Music\Controller\AmpacheController;
-use \OCA\Music\Controller\ApiController;
-use \OCA\Music\Controller\LogController;
-use \OCA\Music\Controller\PageController;
-use \OCA\Music\Controller\PlaylistApiController;
-use \OCA\Music\Controller\PodcastApiController;
-use \OCA\Music\Controller\RadioApiController;
-use \OCA\Music\Controller\SettingController;
-use \OCA\Music\Controller\ShareController;
-use \OCA\Music\Controller\SubsonicController;
+use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Controller\ApiController;
+use OCA\Music\Controller\LogController;
+use OCA\Music\Controller\PageController;
+use OCA\Music\Controller\PlaylistApiController;
+use OCA\Music\Controller\PodcastApiController;
+use OCA\Music\Controller\RadioApiController;
+use OCA\Music\Controller\SettingController;
+use OCA\Music\Controller\ShareController;
+use OCA\Music\Controller\SubsonicController;
 
-use \OCA\Music\Db\AlbumMapper;
-use \OCA\Music\Db\AmpacheSessionMapper;
-use \OCA\Music\Db\AmpacheUserMapper;
-use \OCA\Music\Db\ArtistMapper;
-use \OCA\Music\Db\BookmarkMapper;
-use \OCA\Music\Db\Cache;
-use \OCA\Music\Db\GenreMapper;
-use \OCA\Music\Db\Maintenance;
-use \OCA\Music\Db\PlaylistMapper;
-use \OCA\Music\Db\PodcastChannelMapper;
-use \OCA\Music\Db\PodcastEpisodeMapper;
-use \OCA\Music\Db\RadioStationMapper;
-use \OCA\Music\Db\TrackMapper;
+use OCA\Music\Db\AlbumMapper;
+use OCA\Music\Db\AmpacheSessionMapper;
+use OCA\Music\Db\AmpacheUserMapper;
+use OCA\Music\Db\ArtistMapper;
+use OCA\Music\Db\BookmarkMapper;
+use OCA\Music\Db\Cache;
+use OCA\Music\Db\GenreMapper;
+use OCA\Music\Db\Maintenance;
+use OCA\Music\Db\PlaylistMapper;
+use OCA\Music\Db\PodcastChannelMapper;
+use OCA\Music\Db\PodcastEpisodeMapper;
+use OCA\Music\Db\RadioStationMapper;
+use OCA\Music\Db\TrackMapper;
 
-use \OCA\Music\Hooks\FileHooks;
-use \OCA\Music\Hooks\ShareHooks;
-use \OCA\Music\Hooks\UserHooks;
+use OCA\Music\Hooks\FileHooks;
+use OCA\Music\Hooks\ShareHooks;
+use OCA\Music\Hooks\UserHooks;
 
-use \OCA\Music\Middleware\AmpacheMiddleware;
-use \OCA\Music\Middleware\SubsonicMiddleware;
+use OCA\Music\Middleware\AmpacheMiddleware;
+use OCA\Music\Middleware\SubsonicMiddleware;
 
-use \OCA\Music\Utility\AmpacheUser;
-use \OCA\Music\Utility\CollectionHelper;
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\DetailsHelper;
-use \OCA\Music\Utility\ExtractorGetID3;
-use \OCA\Music\Utility\LastfmService;
-use \OCA\Music\Utility\PlaylistFileService;
-use \OCA\Music\Utility\PodcastService;
-use \OCA\Music\Utility\Random;
-use \OCA\Music\Utility\Scanner;
-use \OCA\Music\Utility\UserMusicFolder;
+use OCA\Music\Utility\AmpacheUser;
+use OCA\Music\Utility\CollectionHelper;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Utility\ExtractorGetID3;
+use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Utility\PodcastService;
+use OCA\Music\Utility\Random;
+use OCA\Music\Utility\Scanner;
+use OCA\Music\Utility\UserMusicFolder;
 
 class Music extends App {
 	public function __construct(array $urlParams=[]) {

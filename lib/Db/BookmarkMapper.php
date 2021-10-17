@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\IDBConnection;
+use OCP\IDBConnection;
 
 /**
  * Type hint a base class methdo to help Scrutinizer

@@ -14,7 +14,7 @@ namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
-use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 
 class Cache {
 	private $db;

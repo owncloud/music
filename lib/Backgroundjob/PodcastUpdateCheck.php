@@ -12,8 +12,8 @@
 
 namespace OCA\Music\Backgroundjob;
 
-use \OCA\Music\App\Music;
-use \OCA\Music\Utility\PodcastService;
+use OCA\Music\App\Music;
+use OCA\Music\Utility\PodcastService;
 
 class PodcastUpdateCheck {
 

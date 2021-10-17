@@ -12,14 +12,14 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\BaseMapper;
-use \OCA\Music\Db\PodcastChannelMapper;
-use \OCA\Music\Db\PodcastChannel;
+use OCA\Music\Db\BaseMapper;
+use OCA\Music\Db\PodcastChannelMapper;
+use OCA\Music\Db\PodcastChannel;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
 
 /**

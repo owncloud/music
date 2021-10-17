@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\AppFramework\Db\Entity;
+use OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getUserId()

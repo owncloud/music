@@ -14,15 +14,15 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\BookmarkMapper;
-use \OCA\Music\Db\Bookmark;
+use OCA\Music\Db\BookmarkMapper;
+use OCA\Music\Db\Bookmark;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\DoesNotExistException;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:

@@ -14,10 +14,10 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\IL10N;
-use \OCP\IURLGenerator;
+use OCP\IL10N;
+use OCP\IURLGenerator;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
 /**
  * @method string getName()

@@ -16,18 +16,18 @@ namespace OCA\Music\Utility;
 
 use OC\Hooks\PublicEmitter;
 
-use \OCP\Files\File;
-use \OCP\Files\Folder;
-use \OCP\Files\IRootFolder;
+use OCP\Files\File;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\GenreBusinessLayer;
-use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Db\Cache;
-use \OCA\Music\Db\Maintenance;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Db\Cache;
+use OCA\Music\Db\Maintenance;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

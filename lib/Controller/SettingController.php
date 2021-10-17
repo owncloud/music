@@ -14,19 +14,19 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\IRequest;
-use \OCP\IURLGenerator;
-use \OCP\Security\ISecureRandom;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\IRequest;
+use OCP\IURLGenerator;
+use OCP\Security\ISecureRandom;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Db\AmpacheUserMapper;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Utility\Scanner;
-use \OCA\Music\Utility\Util;
-use \OCA\Music\Utility\UserMusicFolder;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\AmpacheUserMapper;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\Scanner;
+use OCA\Music\Utility\Util;
+use OCA\Music\Utility\UserMusicFolder;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;

@@ -12,11 +12,11 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\IRequest;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\IRequest;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
 class LogController extends Controller {
 	private $logger;

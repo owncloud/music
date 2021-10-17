@@ -13,7 +13,7 @@
 
 namespace OCA\Music\AppFramework\Core;
 
-use \OCP\ILogger;
+use OCP\ILogger;
 
 class Logger {
 	protected $appName;

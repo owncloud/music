@@ -14,15 +14,15 @@
 
 namespace OCA\Music\Middleware;
 
-use \OCP\IRequest;
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Middleware;
+use OCP\IRequest;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Middleware;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Controller\AmpacheController;
-use \OCA\Music\Db\AmpacheSessionMapper;
-use \OCA\Music\Utility\AmpacheUser;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Db\AmpacheSessionMapper;
+use OCA\Music\Utility\AmpacheUser;
 
 /**
  * Checks the authentication on each Ampache API call before the

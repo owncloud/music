@@ -15,13 +15,13 @@
 
 namespace OCA\Music\AppFramework\BusinessLayer;
 
-use \OCA\Music\Db\BaseMapper;
-use \OCA\Music\Db\Entity;
-use \OCA\Music\Db\SortBy;
-use \OCA\Music\Utility\Util;
+use OCA\Music\Db\BaseMapper;
+use OCA\Music\Db\Entity;
+use OCA\Music\Db\SortBy;
+use OCA\Music\Utility\Util;
 
-use \OCP\AppFramework\Db\DoesNotExistException;
-use \OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 /**
  * @phpstan-template EntityType of Entity

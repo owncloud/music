@@ -14,7 +14,7 @@
 
 namespace OCA\Music\Backgroundjob;
 
-use \OCA\Music\App\Music;
+use OCA\Music\App\Music;
 
 class Cleanup {
 

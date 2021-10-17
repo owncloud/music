@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\IL10N;
+use OCP\IL10N;
 
 /**
  * @method string getName()

@@ -12,12 +12,12 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
-use \OCA\Music\BusinessLayer\Library;
-use \OCA\Music\Db\Cache;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use OCA\Music\BusinessLayer\Library;
+use OCA\Music\Db\Cache;
 
-use \OCP\ICache;
+use OCP\ICache;
 
 /**
  * Utility to build and cache the monolithic json data describing the whole music library.

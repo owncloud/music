@@ -12,16 +12,16 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\Files\Folder;
-use \OCP\IRequest;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\Files\Folder;
+use OCP\IRequest;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Utility\PlaylistFileService;
-use \OCA\Music\Utility\Scanner;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Utility\Scanner;
 
 /**
  * End-points for shared audio file handling. Methods of this class may be

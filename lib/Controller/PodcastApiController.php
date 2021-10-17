@@ -12,16 +12,16 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
 
-use \OCP\IRequest;
+use OCP\IRequest;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Utility\PodcastService;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\PodcastService;
+use OCA\Music\Utility\Util;
 
 class PodcastApiController extends Controller {
 	private $podcastService;

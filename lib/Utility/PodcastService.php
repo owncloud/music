@@ -12,13 +12,13 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
-use \OCA\Music\Db\PodcastChannel;
-use \OCA\Music\Db\PodcastEpisode;
-use \OCA\Music\Db\SortBy;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\Db\PodcastChannel;
+use OCA\Music\Db\PodcastEpisode;
+use OCA\Music\Db\SortBy;
 
 
 class PodcastService {

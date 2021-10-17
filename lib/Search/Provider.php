@@ -16,7 +16,7 @@
 
 namespace OCA\Music\Search;
 
-use \OCA\Music\App\Music;
+use OCA\Music\App\Music;
 
 class Provider extends \OCP\Search\Provider {
 

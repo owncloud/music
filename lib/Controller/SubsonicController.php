@@ -12,54 +12,54 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http\DataDisplayResponse;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\RedirectResponse;
-use \OCP\Files\File;
-use \OCP\Files\Folder;
-use \OCP\IRequest;
-use \OCP\IUserManager;
-use \OCP\IURLGenerator;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataDisplayResponse;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\Files\File;
+use OCP\Files\Folder;
+use OCP\IRequest;
+use OCP\IUserManager;
+use OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
-use \OCA\Music\AppFramework\Utility\RequestParameterExtractor;
-use \OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use OCA\Music\AppFramework\Utility\RequestParameterExtractor;
+use OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
 
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\BookmarkBusinessLayer;
-use \OCA\Music\BusinessLayer\GenreBusinessLayer;
-use \OCA\Music\BusinessLayer\Library;
-use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
-use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\Library;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\Music\Db\Album;
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Bookmark;
-use \OCA\Music\Db\Genre;
-use \OCA\Music\Db\PodcastEpisode;
-use \OCA\Music\Db\SortBy;
-use \OCA\Music\Db\Track;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Bookmark;
+use OCA\Music\Db\Genre;
+use OCA\Music\Db\PodcastEpisode;
+use OCA\Music\Db\SortBy;
+use OCA\Music\Db\Track;
 
-use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Http\FileStreamResponse;
-use \OCA\Music\Http\XmlResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Http\FileStreamResponse;
+use OCA\Music\Http\XmlResponse;
 
-use \OCA\Music\Middleware\SubsonicException;
+use OCA\Music\Middleware\SubsonicException;
 
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\DetailsHelper;
-use \OCA\Music\Utility\LastfmService;
-use \OCA\Music\Utility\PodcastService;
-use \OCA\Music\Utility\Random;
-use \OCA\Music\Utility\UserMusicFolder;
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\DetailsHelper;
+use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\PodcastService;
+use OCA\Music\Utility\Random;
+use OCA\Music\Utility\UserMusicFolder;
+use OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.16.1';

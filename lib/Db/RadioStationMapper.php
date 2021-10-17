@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\IDBConnection;
+use OCP\IDBConnection;
 
 /**
  * @method RadioStation findEntity(string $sql, array $params)

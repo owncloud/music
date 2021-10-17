@@ -12,11 +12,11 @@
 
 namespace OCA\Music\Utility;
 
-use \OCP\Files\Folder;
-use \OCP\Files\IRootFolder;
-use \OCP\IConfig;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
+use OCP\IConfig;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
 /**
  * Manage the user-specific music folder setting

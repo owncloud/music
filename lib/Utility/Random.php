@@ -12,8 +12,8 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\Db\Cache;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\Cache;
 
 class Random {
 	private $cache;

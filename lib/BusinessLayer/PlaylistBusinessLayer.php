@@ -12,15 +12,15 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\Playlist;
-use \OCA\Music\Db\PlaylistMapper;
-use \OCA\Music\Db\Track;
-use \OCA\Music\Db\TrackMapper;
+use OCA\Music\Db\Playlist;
+use OCA\Music\Db\PlaylistMapper;
+use OCA\Music\Db\Track;
+use OCA\Music\Db\TrackMapper;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
 /**
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:

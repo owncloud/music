@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Utility;
 
-use \OCP\Files\File;
+use OCP\Files\File;
 
 interface Extractor {
 

@@ -12,15 +12,15 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
 
-use \OCA\Music\Db\BaseMapper;
-use \OCA\Music\Db\PodcastEpisodeMapper;
-use \OCA\Music\Db\PodcastEpisode;
+use OCA\Music\Db\BaseMapper;
+use OCA\Music\Db\PodcastEpisodeMapper;
+use OCA\Music\Db\PodcastEpisode;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
 
 /**

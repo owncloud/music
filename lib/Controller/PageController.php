@@ -14,9 +14,9 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http\TemplateResponse;
-use \OCP\IRequest;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IRequest;
 
 class PageController extends Controller {
 	private $l10n;

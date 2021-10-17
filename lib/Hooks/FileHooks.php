@@ -14,11 +14,11 @@
 
 namespace OCA\Music\Hooks;
 
-use \OCP\AppFramework\IAppContainer;
-use \OCP\Files\FileInfo;
-use \OCP\Files\Node;
+use OCP\AppFramework\IAppContainer;
+use OCP\Files\FileInfo;
+use OCP\Files\Node;
 
-use \OCA\Music\App\Music;
+use OCA\Music\App\Music;
 
 class FileHooks {
 	private $filesystemRoot;

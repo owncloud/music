@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Utility;
 
-use \OCP\Files\Folder;
+use OCP\Files\Folder;
 
 /**
  * Miscellaneous static utility functions

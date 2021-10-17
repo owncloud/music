@@ -14,50 +14,50 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\RedirectResponse;
-use \OCP\IRequest;
-use \OCP\IURLGenerator;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\AppFramework\Utility\MethodAnnotationReader;
-use \OCA\Music\AppFramework\Utility\RequestParameterExtractor;
-use \OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Utility\MethodAnnotationReader;
+use OCA\Music\AppFramework\Utility\RequestParameterExtractor;
+use OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
 
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\GenreBusinessLayer;
-use \OCA\Music\BusinessLayer\Library;
-use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
-use \OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
+use OCA\Music\BusinessLayer\Library;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
+use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
-use \OCA\Music\Db\Album;
-use \OCA\Music\Db\AmpacheUserMapper;
-use \OCA\Music\Db\AmpacheSession;
-use \OCA\Music\Db\AmpacheSessionMapper;
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Playlist;
-use \OCA\Music\Db\SortBy;
-use \OCA\Music\Db\Track;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\AmpacheUserMapper;
+use OCA\Music\Db\AmpacheSession;
+use OCA\Music\Db\AmpacheSessionMapper;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Playlist;
+use OCA\Music\Db\SortBy;
+use OCA\Music\Db\Track;
 
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Http\FileStreamResponse;
-use \OCA\Music\Http\XmlResponse;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Http\FileStreamResponse;
+use OCA\Music\Http\XmlResponse;
 
-use \OCA\Music\Middleware\AmpacheException;
+use OCA\Music\Middleware\AmpacheException;
 
-use \OCA\Music\Utility\AmpacheUser;
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\PodcastService;
-use \OCA\Music\Utility\Random;
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\AmpacheUser;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\PodcastService;
+use OCA\Music\Utility\Random;
+use OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
 	private $ampacheUserMapper;

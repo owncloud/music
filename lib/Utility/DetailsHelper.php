@@ -12,9 +12,9 @@
 
 namespace OCA\Music\Utility;
 
-use \OCP\Files\Folder;
+use OCP\Files\Folder;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
 class DetailsHelper {
 	private $extractor;

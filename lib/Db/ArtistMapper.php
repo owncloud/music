@@ -14,9 +14,9 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
-use \OCP\IDBConnection;
+use OCP\IDBConnection;
 
 /**
  * @phpstan-extends BaseMapper<Artist>

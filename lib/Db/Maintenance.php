@@ -16,7 +16,7 @@ namespace OCA\Music\Db;
 
 use OCP\IDBConnection;
 
-use \OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Core\Logger;
 
 class Maintenance {
 

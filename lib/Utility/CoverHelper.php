@@ -12,19 +12,19 @@
 
 namespace OCA\Music\Utility;
 
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\Db\Album;
-use \OCA\Music\Db\Artist;
-use \OCA\Music\Db\Cache;
-use \OCA\Music\Db\PodcastChannel;
-use \OCA\Music\Db\Playlist;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Cache;
+use OCA\Music\Db\PodcastChannel;
+use OCA\Music\Db\Playlist;
 
-use \OCP\Files\Folder;
-use \OCP\Files\File;
+use OCP\Files\Folder;
+use OCP\Files\File;
 
-use \OCP\IConfig;
+use OCP\IConfig;
 
 /**
  * utility to get cover image for album

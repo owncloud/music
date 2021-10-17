@@ -12,19 +12,19 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
 
-use \OCP\Files\Folder;
-use \OCP\IRequest;
+use OCP\Files\Folder;
+use OCP\IRequest;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\RadioStationBusinessLayer;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Utility\PlaylistFileService;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Utility\Util;
 
 class RadioApiController extends Controller {
 	private $businessLayer;

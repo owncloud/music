@@ -15,8 +15,8 @@
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
-use \OCP\IL10N;
-use \OCP\IURLGenerator;
+use OCP\IL10N;
+use OCP\IURLGenerator;
 
 /**
  * @method string getTitle()

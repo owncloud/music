@@ -12,7 +12,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCA\Music\Utility\Util;
+use OCA\Music\Utility\Util;
 
 /**
  * @method string getRssUrl()

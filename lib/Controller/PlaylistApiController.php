@@ -14,26 +14,26 @@
 
 namespace OCA\Music\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\JSONResponse;
 
-use \OCP\Files\Folder;
-use \OCP\IRequest;
-use \OCP\IURLGenerator;
+use OCP\Files\Folder;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 
-use \OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
-use \OCA\Music\AppFramework\Core\Logger;
-use \OCA\Music\BusinessLayer\AlbumBusinessLayer;
-use \OCA\Music\BusinessLayer\ArtistBusinessLayer;
-use \OCA\Music\BusinessLayer\PlaylistBusinessLayer;
-use \OCA\Music\BusinessLayer\TrackBusinessLayer;
-use \OCA\Music\Http\ErrorResponse;
-use \OCA\Music\Http\FileResponse;
-use \OCA\Music\Utility\ApiSerializer;
-use \OCA\Music\Utility\CoverHelper;
-use \OCA\Music\Utility\PlaylistFileService;
-use \OCA\Music\Utility\Util;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
+use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
+use OCA\Music\BusinessLayer\TrackBusinessLayer;
+use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Utility\ApiSerializer;
+use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\PlaylistFileService;
+use OCA\Music\Utility\Util;
 
 class PlaylistApiController extends Controller {
 	private $urlGenerator;

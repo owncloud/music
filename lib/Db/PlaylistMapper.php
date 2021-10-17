@@ -16,7 +16,7 @@
 
 namespace OCA\Music\Db;
 
-use \OCP\IDBConnection;
+use OCP\IDBConnection;
 
 /**
  * @phpstan-extends BaseMapper<Playlist>

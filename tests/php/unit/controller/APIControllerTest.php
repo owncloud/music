@@ -116,12 +116,12 @@ class APIControllerTest extends ControllerTestUtility {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.api.artist':		return "/link/to/artist/{$args['artistIdOrSlug']}";
-			case 'music.api.album':			return "/link/to/album/{$args['albumIdOrSlug']}";
-			case 'music.api.track':			return "/link/to/track/{$args['trackIdOrSlug']}";
+			case 'music.api.artist':		return "/link/to/artist/{$args['artistId']}";
+			case 'music.api.album':			return "/link/to/album/{$args['albumId']}";
+			case 'music.api.track':			return "/link/to/track/{$args['trackId']}";
 			case 'music.api.download':		return "/link/to/file/{$args['fileId']}";
-			case 'music.api.artistCover':	return "/link/to/artist/cover/{$args['artistIdOrSlug']}";
-			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumIdOrSlug']}";
+			case 'music.api.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
+			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
 			default:						return "(mock missing for route $route)";
 		}
 	}
@@ -163,14 +163,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The artist name',
 				'image' => '/link/to/artist/cover/3',
 				'uri' => '/link/to/artist/3',
-				'slug' => '3-the-artist-name',
+				'slug' => 'the-artist-name',
 				'id' => 3
 			],
 			[
 				'name' => 'The other artist name',
 				'image' => '/link/to/artist/cover/4',
 				'uri' => '/link/to/artist/4',
-				'slug' => '4-the-other-artist-name',
+				'slug' => 'the-other-artist-name',
 				'id' => 4
 			]
 		];
@@ -236,14 +236,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The artist name',
 				'image' => '/link/to/artist/cover/3',
 				'uri' => '/link/to/artist/3',
-				'slug' => '3-the-artist-name',
+				'slug' => 'the-artist-name',
 				'id' => 3,
 				'albums' => [
 					[
 						'name' => 'The name',
 						'cover' => '/link/to/album/cover/4',
 						'uri' => '/link/to/album/4',
-						'slug' => '4-the-name',
+						'slug' => 'the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => [
@@ -254,7 +254,7 @@ class APIControllerTest extends ControllerTestUtility {
 							[
 								'title' => 'The title',
 								'uri' => '/link/to/track/1',
-								'slug' => '1-the-title',
+								'slug' => 'the-title',
 								'id' => 1,
 								'ordinal' => 4,
 								'bitrate' => 123,
@@ -273,14 +273,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The other artist name',
 				'image' => '/link/to/artist/cover/4',
 				'uri' => '/link/to/artist/4',
-				'slug' => '4-the-other-artist-name',
+				'slug' => 'the-other-artist-name',
 				'id' => 4,
 				'albums' => [
 					[
 						'name' => 'The name',
 						'cover' => '/link/to/album/cover/4',
 						'uri' => '/link/to/album/4',
-						'slug' => '4-the-name',
+						'slug' => 'the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => [
@@ -291,7 +291,7 @@ class APIControllerTest extends ControllerTestUtility {
 							[
 								'title' => 'The title',
 								'uri' => '/link/to/track/1',
-								'slug' => '1-the-title',
+								'slug' => 'the-title',
 								'id' => 1,
 								'ordinal' => 4,
 								'bitrate' => 123,
@@ -351,14 +351,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The artist name',
 				'image' => '/link/to/artist/cover/3',
 				'uri' => '/link/to/artist/3',
-				'slug' => '3-the-artist-name',
+				'slug' => 'the-artist-name',
 				'id' => 3,
 				'albums' => [
 					[
 						'name' => 'The name',
 						'cover' => '/link/to/album/cover/4',
 						'uri' => '/link/to/album/4',
-						'slug' => '4-the-name',
+						'slug' => 'the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => [
@@ -372,14 +372,14 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The other artist name',
 				'image' => '/link/to/artist/cover/4',
 				'uri' => '/link/to/artist/4',
-				'slug' => '4-the-other-artist-name',
+				'slug' => 'the-other-artist-name',
 				'id' => 4,
 				'albums' => [
 					[
 						'name' => 'The name',
 						'cover' => '/link/to/album/cover/4',
 						'uri' => '/link/to/album/4',
-						'slug' => '4-the-name',
+						'slug' => 'the-name',
 						'id' => 4,
 						'year' => 2013,
 						'artists' => [
@@ -414,7 +414,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'name' => 'The artist name',
 			'image' => null,
 			'uri' => '/link/to/artist/3',
-			'slug' => '3-the-artist-name',
+			'slug' => 'the-artist-name',
 			'id' => 3
 		];
 
@@ -467,14 +467,14 @@ class APIControllerTest extends ControllerTestUtility {
 			'name' => 'The artist name',
 			'image' => null,
 			'uri' => '/link/to/artist/3',
-			'slug' => '3-the-artist-name',
+			'slug' => 'the-artist-name',
 			'id' => 3,
 			'albums' => [
 				[
 					'name' => 'The name',
 					'cover' => '/link/to/album/cover/3',
 					'uri' => '/link/to/album/3',
-					'slug' => '3-the-name',
+					'slug' => 'the-name',
 					'id' => 3,
 					'year' => 2013,
 					'artists' => [
@@ -485,7 +485,7 @@ class APIControllerTest extends ControllerTestUtility {
 						[
 							'title' => 'The title',
 							'uri' => '/link/to/track/1',
-							'slug' => '1-the-title',
+							'slug' => 'the-title',
 							'id' => 1,
 							'ordinal' => 4,
 							'bitrate' => 123,
@@ -533,7 +533,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The name',
 				'cover' => '/link/to/album/cover/3',
 				'uri' => '/link/to/album/3',
-				'slug' => '3-the-name',
+				'slug' => 'the-name',
 				'id' => 3,
 				'year' => 2013,
 				'artists' => [
@@ -545,7 +545,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The album name',
 				'cover' => '/link/to/album/cover/4',
 				'uri' => '/link/to/album/4',
-				'slug' => '4-the-album-name',
+				'slug' => 'the-album-name',
 				'id' => 4,
 				'year' => null,
 				'artists' => [
@@ -626,7 +626,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The name',
 				'cover' => '/link/to/album/cover/3',
 				'uri' => '/link/to/album/3',
-				'slug' => '3-the-name',
+				'slug' => 'the-name',
 				'id' => 3,
 				'year' => 2013,
 				'artists' => [
@@ -634,7 +634,7 @@ class APIControllerTest extends ControllerTestUtility {
 						'name' => 'The artist name',
 						'image' => null,
 						'uri' => '/link/to/artist/1',
-						'slug' => '1-the-artist-name',
+						'slug' => 'the-artist-name',
 						'id' => 1
 					]
 				],
@@ -643,7 +643,7 @@ class APIControllerTest extends ControllerTestUtility {
 					[
 						'title' => 'The title',
 						'uri' => '/link/to/track/1',
-						'slug' => '1-the-title',
+						'slug' => 'the-title',
 						'id' => 1,
 						'ordinal' => 4,
 						'bitrate' => 123,
@@ -660,7 +660,7 @@ class APIControllerTest extends ControllerTestUtility {
 				'name' => 'The album name',
 				'cover' => '/link/to/album/cover/4',
 				'uri' => '/link/to/album/4',
-				'slug' => '4-the-album-name',
+				'slug' => 'the-album-name',
 				'id' => 4,
 				'year' => 2003,
 				'artists' => [
@@ -668,14 +668,14 @@ class APIControllerTest extends ControllerTestUtility {
 						'name' => 'The artist name3',
 						'image' => null,
 						'uri' => '/link/to/artist/3',
-						'slug' => '3-the-artist-name3',
+						'slug' => 'the-artist-name3',
 						'id' => 3
 					],
 					[
 						'name' => 'The artist name5',
 						'image' => '/link/to/artist/cover/5',
 						'uri' => '/link/to/artist/5',
-						'slug' => '5-the-artist-name5',
+						'slug' => 'the-artist-name5',
 						'id' => 5
 					]
 				],
@@ -684,7 +684,7 @@ class APIControllerTest extends ControllerTestUtility {
 					[
 						'title' => 'The title',
 						'uri' => '/link/to/track/1',
-						'slug' => '1-the-title',
+						'slug' => 'the-title',
 						'id' => 1,
 						'ordinal' => 4,
 						'bitrate' => 123,
@@ -747,7 +747,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'name' => 'The name',
 			'cover' => '/link/to/album/cover/3',
 			'uri' => '/link/to/album/3',
-			'slug' => '3-the-name',
+			'slug' => 'the-name',
 			'id' => 3,
 			'year' => 2013,
 			'artists' => [
@@ -755,7 +755,7 @@ class APIControllerTest extends ControllerTestUtility {
 					'name' => 'The artist name',
 					'image' => '/link/to/artist/cover/1',
 					'uri' => '/link/to/artist/1',
-					'slug' => '1-the-artist-name',
+					'slug' => 'the-artist-name',
 					'id' => 1
 				]
 			],
@@ -764,7 +764,7 @@ class APIControllerTest extends ControllerTestUtility {
 				[
 					'title' => 'The title',
 					'uri' => '/link/to/track/1',
-					'slug' => '1-the-title',
+					'slug' => 'the-title',
 					'id' => 1,
 					'ordinal' => 4,
 					'bitrate' => 123,
@@ -804,7 +804,7 @@ class APIControllerTest extends ControllerTestUtility {
 			'name' => 'The name',
 			'cover' => '/link/to/album/cover/3',
 			'uri' => '/link/to/album/3',
-			'slug' => '3-the-name',
+			'slug' => 'the-name',
 			'id' => 3,
 			'year' => 2013,
 			'artists' => [
@@ -850,7 +850,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The title',
 				'uri' => '/link/to/track/1',
-				'slug' => '1-the-title',
+				'slug' => 'the-title',
 				'id' => 1,
 				'ordinal' => 4,
 				'bitrate' => 123,
@@ -864,7 +864,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The second title',
 				'uri' => '/link/to/track/2',
-				'slug' => '2-the-second-title',
+				'slug' => 'the-second-title',
 				'id' => 2,
 				'ordinal' => 5,
 				'bitrate' => 123,
@@ -927,7 +927,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The title',
 				'uri' => '/link/to/track/1',
-				'slug' => '1-the-title',
+				'slug' => 'the-title',
 				'id' => 1,
 				'ordinal' => 4,
 				'bitrate' => 123,
@@ -936,14 +936,14 @@ class APIControllerTest extends ControllerTestUtility {
 					'name' => 'The artist name',
 					'image' => '/link/to/artist/cover/1',
 					'uri' => '/link/to/artist/1',
-					'slug' => '1-the-artist-name',
+					'slug' => 'the-artist-name',
 					'id' => 1
 				],
 				'album' => [
 					'name' => 'The name',
 					'cover' => '/link/to/album/cover/3',
 					'uri' => '/link/to/album/3',
-					'slug' => '3-the-name',
+					'slug' => 'the-name',
 					'id' => 3,
 					'year' => 2013,
 					'artists' => [
@@ -985,7 +985,7 @@ class APIControllerTest extends ControllerTestUtility {
 		$result = [
 			'title' => 'The title',
 			'uri' => '/link/to/track/1',
-			'slug' => '1-the-title',
+			'slug' => 'the-title',
 			'id' => 1,
 			'ordinal' => 4,
 			'bitrate' => 123,
@@ -1081,7 +1081,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The title',
 				'uri' => '/link/to/track/1',
-				'slug' => '1-the-title',
+				'slug' => 'the-title',
 				'id' => 1,
 				'ordinal' => 4,
 				'bitrate' => 123,
@@ -1095,7 +1095,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The second title',
 				'uri' => '/link/to/track/2',
-				'slug' => '2-the-second-title',
+				'slug' => 'the-second-title',
 				'id' => 2,
 				'ordinal' => 5,
 				'bitrate' => 123,
@@ -1147,7 +1147,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The title',
 				'uri' => '/link/to/track/1',
-				'slug' => '1-the-title',
+				'slug' => 'the-title',
 				'id' => 1,
 				'ordinal' => 4,
 				'bitrate' => 123,
@@ -1161,7 +1161,7 @@ class APIControllerTest extends ControllerTestUtility {
 			[
 				'title' => 'The second title',
 				'uri' => '/link/to/track/2',
-				'slug' => '2-the-second-title',
+				'slug' => 'the-second-title',
 				'id' => 2,
 				'ordinal' => 5,
 				'bitrate' => 123,

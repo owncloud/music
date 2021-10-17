@@ -35,7 +35,7 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 			'id' => 3,
 			'name' => 'The name',
 			'image' => null,
-			'slug' => $artist->getId() . '-the-name',
+			'slug' => 'the-name',
 			'uri' => null
 			], $artist->toAPI($this->urlGenerator, $l10n));
 	}

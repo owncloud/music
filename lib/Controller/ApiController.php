@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\Controller;
@@ -119,22 +119,6 @@ class ApiController extends Controller {
 		$this->logger = $logger;
 	}
 
-	/**
-	 * Extracts the id from an unique slug (id-slug)
-	 * @param string|int $slug the slug
-	 * @return int the id
-	 */
-	private static function getIdFromSlug($slug) : int {
-		if (\is_string($slug)) {
-			$split = \explode('-', $slug, 2);
-			return (int)$split[0];
-		} elseif (\is_int($slug)) {
-			return $slug;
-		} else {
-			throw new \InvalidArgumentException();
-		}
-	}
-
 	private static function shivaPageToLimits(?int $pageSize, ?int $page) : array {
 		if (\is_int($page) && \is_int($pageSize) && $page > 0 && $pageSize > 0) {
 			$limit = $pageSize;
@@ -233,9 +217,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artist($artistIdOrSlug, $fulltree) {
+	public function artist(int $artistId, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		$artistId = $this->getIdFromSlug($artistIdOrSlug);
 		/** @var Artist $artist */
 		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 		$artist = $this->artistToApi($artist, $fulltree, $fulltree);
@@ -287,9 +270,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function album($albumIdOrSlug, $fulltree) {
+	public function album(int $albumId, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		$albumId = $this->getIdFromSlug($albumIdOrSlug);
 		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
 		$album = $this->albumToApi($album, $fulltree, $fulltree);
 		return new JSONResponse($album);
@@ -353,8 +335,7 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function track($trackIdOrSlug) {
-		$trackId = $this->getIdFromSlug($trackIdOrSlug);
+	public function track(int $trackId) {
 		/** @var Track $track */
 		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
 		return new JSONResponse($track->toAPI($this->urlGenerator));
@@ -498,9 +479,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function albumDetails($albumIdOrSlug) {
+	public function albumDetails(int $albumId) {
 		try {
-			$albumId = $this->getIdFromSlug($albumIdOrSlug);
 			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
 			return new JSONResponse($info);
 		} catch (BusinessLayerException $e) {
@@ -512,9 +492,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function artistDetails($artistIdOrSlug) {
+	public function artistDetails(int $artistId) {
 		try {
-			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 			return new JSONResponse($info);
 		} catch (BusinessLayerException $e) {
@@ -526,9 +505,8 @@ class ApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function similarArtists($artistIdOrSlug) {
+	public function similarArtists(int $artistId) {
 		try {
-			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$similar = $this->lastfmService->getSimilarArtists($artistId, $this->userId, /*includeNotPresent=*/true);
 			return new JSONResponse(\array_map(function ($artist) {
 				return [
@@ -546,10 +524,9 @@ class ApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function albumCover($albumIdOrSlug, $originalSize, $coverToken) {
+	public function albumCover(int $albumId, $originalSize, $coverToken) {
 		try {
 			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$albumId = $this->getIdFromSlug($albumIdOrSlug);
 			$album = $this->albumBusinessLayer->find($albumId, $userId);
 			return $this->cover($album, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {
@@ -562,10 +539,9 @@ class ApiController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function artistCover($artistIdOrSlug, $originalSize, $coverToken) {
+	public function artistCover(int $artistId, $originalSize, $coverToken) {
 		try {
 			$userId = $this->userId ?? $this->coverHelper->getUserForAccessToken($coverToken);
-			$artistId = $this->getIdFromSlug($artistIdOrSlug);
 			$artist = $this->artistBusinessLayer->find($artistId, $userId);
 			return $this->cover($artist, $userId, $originalSize);
 		} catch (BusinessLayerException | \OutOfBoundsException $ex) {

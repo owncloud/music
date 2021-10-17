@@ -28,9 +28,9 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.api.artist':		return "/link/to/artist/{$args['artistIdOrSlug']}";
-			case 'music.api.album':			return "/link/to/album/{$args['albumIdOrSlug']}";
-			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumIdOrSlug']}";
+			case 'music.api.artist':		return "/link/to/artist/{$args['artistId']}";
+			case 'music.api.album':			return "/link/to/album/{$args['albumId']}";
+			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
 			default:						return "(mock missing for route $route)";
 		}
 	}
@@ -51,7 +51,7 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 			'name' => 'The name',
 			'year' => 2013,
 			'cover' => '/link/to/album/cover/3',
-			'slug' => '3-the-name',
+			'slug' => 'the-name',
 			'artists' => [
 				['id' => 1, 'uri' => '/link/to/artist/1'],
 				['id' => 2, 'uri' => '/link/to/artist/2']

@@ -78,7 +78,7 @@ class Album extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.api.album',
-			['albumIdOrSlug' => $this->id]
+			['albumId' => $this->id]
 		);
 	}
 
@@ -94,7 +94,7 @@ class Album extends Entity {
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
 					'music.api.artist',
-					['artistIdOrSlug' => $artistId]
+					['artistId' => $artistId]
 				)
 			];
 		}
@@ -158,7 +158,7 @@ class Album extends Entity {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.albumCover',
-					['albumIdOrSlug' => $this->getId()]);
+					['albumId' => $this->getId()]);
 		}
 		return $coverUrl;
 	}
@@ -213,7 +213,7 @@ class Album extends Entity {
 			'cover'         => $this->coverToAPI($urlGenerator),
 			'id'            => $this->getId(),
 			'uri'           => $this->getUri($urlGenerator),
-			'slug'          => $this->getId() . '-' .$this->slugify('name'),
+			'slug'          => $this->slugify('name'),
 			'albumArtistId' => $this->getAlbumArtistId(),
 			'artists'       => $this->getArtists($urlGenerator)
 		];

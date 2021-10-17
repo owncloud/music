@@ -48,7 +48,7 @@ class TrackTest extends \PHPUnit\Framework\TestCase {
 			'length' => 123,
 			'files' => ['audio/mp3' => 'someUrl'],
 			'bitrate' => 123,
-			'slug' => '1-the-title',
+			'slug' => 'the-title',
 			'uri' => 'someUrl'
 			], $track->toAPI($this->urlGenerator));
 	}

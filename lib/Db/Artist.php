@@ -48,7 +48,7 @@ class Artist extends Entity {
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
 			'music.api.artist',
-			['artistIdOrSlug' => $this->id]
+			['artistId' => $this->id]
 		);
 	}
 
@@ -65,7 +65,7 @@ class Artist extends Entity {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.artistCover',
-					['artistIdOrSlug' => $this->getId()]);
+					['artistId' => $this->getId()]);
 		}
 		return $coverUrl;
 	}
@@ -88,7 +88,7 @@ class Artist extends Entity {
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
 			'image' => $this->coverToAPI($urlGenerator),
-			'slug' => $this->getId() . '-' . $this->slugify('name'),
+			'slug' => $this->slugify('name'),
 			'uri' => $this->getUri($urlGenerator)
 		];
 	}

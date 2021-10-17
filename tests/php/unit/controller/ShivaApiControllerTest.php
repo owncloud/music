@@ -21,7 +21,7 @@ use OCA\Music\DB\Artist;
 use OCA\Music\DB\Album;
 use OCA\Music\DB\Track;
 
-class APIControllerTest extends ControllerTestUtility {
+class ShivaApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
@@ -54,9 +54,6 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
-			->disableOriginalConstructor()
-			->getMock();
 		$this->trackBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\TrackBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
@@ -66,59 +63,26 @@ class APIControllerTest extends ControllerTestUtility {
 		$this->albumBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\AlbumBusinessLayer')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->genreBusinessLayer = $this->getMockBuilder('\OCA\Music\BusinessLayer\GenreBusinessLayer')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->scanner = $this->getMockBuilder('\OCA\Music\Utility\Scanner')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->collectionHelper = $this->getMockBuilder('\OCA\Music\Utility\CollectionHelper')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->coverHelper = $this->getMockBuilder('\OCA\Music\Utility\CoverHelper')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->detailsHelper = $this->getMockBuilder('\OCA\Music\Utility\DetailsHelper')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->lastfmService = $this->getMockBuilder('\OCA\Music\Utility\LastfmService')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->maintenance = $this->getMockBuilder('\OCA\Music\Db\Maintenance')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->userMusicFolder = $this->getMockBuilder('\OCA\Music\Utility\UserMusicFolder')
-			->disableOriginalConstructor()
-			->getMock();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->controller = new ApiController(
+		$this->controller = new ShivaApiController(
 			$this->appname,
 			$this->request,
 			$this->urlGenerator,
 			$this->trackBusinessLayer,
 			$this->artistBusinessLayer,
 			$this->albumBusinessLayer,
-			$this->genreBusinessLayer,
-			$this->scanner,
-			$this->collectionHelper,
-			$this->coverHelper,
-			$this->detailsHelper,
-			$this->lastfmService,
-			$this->maintenance,
-			$this->userMusicFolder,
 			$this->userId,
 			$this->l10n,
-			$this->userFolder,
 			$this->logger);
 	}
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.api.artist':		return "/link/to/artist/{$args['artistId']}";
-			case 'music.api.album':			return "/link/to/album/{$args['albumId']}";
-			case 'music.api.track':			return "/link/to/track/{$args['trackId']}";
+			case 'music.shivaApi.artist':	return "/link/to/artist/{$args['artistId']}";
+			case 'music.shivaApi.album':	return "/link/to/album/{$args['albumId']}";
+			case 'music.shivaApi.track':	return "/link/to/track/{$args['trackId']}";
 			case 'music.api.download':		return "/link/to/file/{$args['fileId']}";
 			case 'music.api.artistCover':	return "/link/to/artist/cover/{$args['artistId']}";
 			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
@@ -998,47 +962,6 @@ class APIControllerTest extends ControllerTestUtility {
 		];
 
 		$response = $this->controller->track($trackId);
-
-		$this->assertEquals($result, $response->getData());
-		$this->assertTrue($response instanceof JSONResponse);
-	}
-
-	public function testTrackByFileId() {
-		$trackId = 1;
-		$fileId = 3;
-
-		$track = new Track();
-		$track->setId($trackId);
-		$track->setTitle('The title');
-		$track->setArtistId(3);
-		$track->setArtistName('The track artist');
-		$track->setAlbumId(1);
-		$track->setNumber(4);
-		$track->setDisk(1);
-		$track->setLength(123);
-		$track->setFileId($fileId);
-		$track->setMimetype('audio/mp3');
-		$track->setBitrate(123);
-
-		$this->trackBusinessLayer->expects($this->once())
-			->method('findByFileId')
-			->with($this->equalTo($fileId), $this->equalTo($this->userId))
-			->will($this->returnValue($track));
-
-		$result = [
-			'title' => 'The title',
-			'artistName' => 'The track artist',
-			'id' => 1,
-			'number' => 4,
-			'disk' => 1,
-			'artistId' => 3,
-			'length' => 123,
-			'files' => [
-				'audio/mp3' => $fileId
-			]
-		];
-
-		$response = $this->controller->trackByFileId($fileId);
 
 		$this->assertEquals($result, $response->getData());
 		$this->assertTrue($response instanceof JSONResponse);

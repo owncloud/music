@@ -28,8 +28,8 @@ class AlbumTest extends \PHPUnit\Framework\TestCase {
 
 	public static function linkToRouteMock(string $route, array $args) : string {
 		switch ($route) {
-			case 'music.api.artist':		return "/link/to/artist/{$args['artistId']}";
-			case 'music.api.album':			return "/link/to/album/{$args['albumId']}";
+			case 'music.shivaApi.artist':	return "/link/to/artist/{$args['artistId']}";
+			case 'music.shivaApi.album':	return "/link/to/album/{$args['albumId']}";
 			case 'music.api.albumCover':	return "/link/to/album/cover/{$args['albumId']}";
 			default:						return "(mock missing for route $route)";
 		}

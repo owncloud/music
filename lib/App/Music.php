@@ -39,6 +39,7 @@ use OCA\Music\Controller\PodcastApiController;
 use OCA\Music\Controller\RadioApiController;
 use OCA\Music\Controller\SettingController;
 use OCA\Music\Controller\ShareController;
+use OCA\Music\Controller\ShivaApiController;
 use OCA\Music\Controller\SubsonicController;
 
 use OCA\Music\Db\AlbumMapper;
@@ -210,6 +211,20 @@ class Music extends App {
 				$c->query('PlaylistFileService'),
 				$c->query('Logger'),
 				$c->query('ShareManager')
+			);
+		});
+
+		$container->registerService('ShivaApiController', function (IAppContainer $c) {
+			return new ShivaApiController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('URLGenerator'),
+				$c->query('TrackBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('UserId'),
+				$c->query('L10N'),
+				$c->query('Logger')
 			);
 		});
 

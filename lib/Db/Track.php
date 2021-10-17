@@ -108,7 +108,7 @@ class Track extends Entity {
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
-			'music.api.track',
+			'music.shivaApi.track',
 			['trackId' => $this->id]
 		);
 	}
@@ -117,7 +117,7 @@ class Track extends Entity {
 		return [
 			'id' => $this->artistId,
 			'uri' => $urlGenerator->linkToRoute(
-				'music.api.artist',
+				'music.shivaApi.artist',
 				['artistId' => $this->artistId]
 			)
 		];
@@ -127,7 +127,7 @@ class Track extends Entity {
 		return [
 			'id' => $this->albumId,
 			'uri' => $urlGenerator->linkToRoute(
-				'music.api.album',
+				'music.shivaApi.album',
 				['albumId' => $this->albumId]
 			)
 		];

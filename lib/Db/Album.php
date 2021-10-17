@@ -77,7 +77,7 @@ class Album extends Entity {
 	 */
 	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
-			'music.api.album',
+			'music.shivaApi.album',
 			['albumId' => $this->id]
 		);
 	}
@@ -93,7 +93,7 @@ class Album extends Entity {
 			$artists[] = [
 				'id' => $artistId,
 				'uri' => $urlGenerator->linkToRoute(
-					'music.api.artist',
+					'music.shivaApi.artist',
 					['artistId' => $artistId]
 				)
 			];

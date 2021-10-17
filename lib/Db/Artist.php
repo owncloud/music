@@ -47,7 +47,7 @@ class Artist extends Entity {
 
 	public function getUri(IURLGenerator $urlGenerator) {
 		return $urlGenerator->linkToRoute(
-			'music.api.artist',
+			'music.shivaApi.artist',
 			['artistId' => $this->id]
 		);
 	}

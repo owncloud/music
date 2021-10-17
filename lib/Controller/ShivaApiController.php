@@ -15,11 +15,13 @@
 namespace OCA\Music\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -28,6 +30,7 @@ use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
+use OCA\Music\Http\ErrorResponse;
 
 class ShivaApiController extends Controller {
 
@@ -100,10 +103,14 @@ class ShivaApiController extends Controller {
 	 */
 	public function artist(int $artistId, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		/** @var Artist $artist */
-		$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
-		$artist = $this->artistToApi($artist, $fulltree, $fulltree);
-		return new JSONResponse($artist);
+		try {
+			/** @var Artist $artist */
+			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
+			$artist = $this->artistToApi($artist, $fulltree, $fulltree);
+			return new JSONResponse($artist);
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
 	}
 
 	/**
@@ -153,9 +160,13 @@ class ShivaApiController extends Controller {
 	 */
 	public function album(int $albumId, $fulltree) {
 		$fulltree = \filter_var($fulltree, FILTER_VALIDATE_BOOLEAN);
-		$album = $this->albumBusinessLayer->find($albumId, $this->userId);
-		$album = $this->albumToApi($album, $fulltree, $fulltree);
-		return new JSONResponse($album);
+		try {
+			$album = $this->albumBusinessLayer->find($albumId, $this->userId);
+			$album = $this->albumToApi($album, $fulltree, $fulltree);
+			return new JSONResponse($album);
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
 	}
 
 	/**
@@ -217,9 +228,13 @@ class ShivaApiController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function track(int $trackId) {
-		/** @var Track $track */
-		$track = $this->trackBusinessLayer->find($trackId, $this->userId);
-		return new JSONResponse($track->toAPI($this->urlGenerator));
+		try {
+			/** @var Track $track */
+			$track = $this->trackBusinessLayer->find($trackId, $this->userId);
+			return new JSONResponse($track->toAPI($this->urlGenerator));
+		} catch (BusinessLayerException $e) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND);
+		}
 	}
 
 }

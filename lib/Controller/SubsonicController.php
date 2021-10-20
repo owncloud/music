@@ -1340,7 +1340,8 @@ class SubsonicController extends Controller {
 
 	/**
 	 * Given any entity ID like 'track-123' or 'album-2' or 'artist-3' or 'folder-4', return the matching
-	 * artist identifier if possible (may be e.g. performer of the track or album, artist with a name matching the folder name)
+	 * numeric artist identifier if possible (may be e.g. performer of the track or album, or an artist
+	 * with a name matching the folder name)
 	 */
 	private function getArtistIdFromEntityId(string $entityId) : ?int {
 		list($type, $id) = \explode('-', $entityId);
@@ -1402,16 +1403,40 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Given any entity ID like 'track-123' or 'album-2' or 'folder-4', return the matching numeric
+	 * album identifier if possible (may be e.g. host album of the track or album with a name
+	 * matching the folder name)
+	 */
+	private function getAlbumIdFromEntityId(string $entityId) : ?int {
+		list($type, $id) = \explode('-', $entityId);
+		$id = (int)$id;
+
+		switch ($type) {
+			case 'album':
+				return $id;
+			case 'track':
+				return $this->trackBusinessLayer->find($id, $this->userId)->getAlbumId();
+			case 'folder':
+				$folder = $this->userMusicFolder->getFolder($this->userId)->getById($id)[0] ?? null;
+				if ($folder !== null) {
+					$album = $this->albumBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
+					if ($album !== null) {
+						return $album->getId();
+					}
+				}
+				break;
+		}
+
+		return null;
+	}
+	/**
 	 * Common logic for getAlbumInfo and getAlbumInfo2
 	 */
 	private function doGetAlbumInfo(string $rootName, string $id) {
 		$content = [];
 
-		// This function may be called with a folder ID instead of an album ID in case
-		// the library is being browsed by folders. In that case, return an empty response.
-		if (Util::startsWith($id, 'album')) {
-			$albumId = self::ripIdPrefix($id); // get rid of 'album-' prefix
-
+		$albumId = $this->getAlbumIdFromEntityId($id);
+		if ($albumId !== null) {
 			$info = $this->lastfmService->getAlbumInfo($albumId, $this->userId);
 
 			if (isset($info['album'])) {

@@ -1339,16 +1339,42 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Given any entity ID like 'track-123' or 'album-2' or 'artist-3' or 'folder-4', return the matching
+	 * artist identifier if possible (may be e.g. performer of the track or album, artist with a name matching the folder name)
+	 */
+	private function getArtistIdFromEntityId(string $entityId) : ?int {
+		list($type, $id) = \explode('-', $entityId);
+		$id = (int)$id;
+
+		switch ($type) {
+			case 'artist':
+				return $id;
+			case 'album':
+				return $this->albumBusinessLayer->find($id, $this->userId)->getAlbumArtistId();
+			case 'track':
+				return $this->trackBusinessLayer->find($id, $this->userId)->getArtistId();
+			case 'folder':
+				$folder = $this->userMusicFolder->getFolder($this->userId)->getById($id)[0] ?? null;
+				if ($folder !== null) {
+					$artist = $this->artistBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
+					if ($artist !== null) {
+						return $artist->getId();
+					}
+				}
+				break;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Common logic for getArtistInfo and getArtistInfo2
 	 */
 	private function doGetArtistInfo(string $rootName, string $id, bool $includeNotPresent) {
 		$content = [];
 
-		// This function may be called with a folder ID instead of an artist ID in case
-		// the library is being browsed by folders. In that case, return an empty response.
-		if (Util::startsWith($id, 'artist')) {
-			$artistId = self::ripIdPrefix($id); // get rid of 'artist-' prefix
-
+		$artistId = $this->getArtistIdFromEntityId($id);
+		if ($artistId !== null) {
 			$info = $this->lastfmService->getArtistInfo($artistId, $this->userId);
 
 			if (isset($info['artist'])) {
@@ -1364,7 +1390,7 @@ class SubsonicController extends Controller {
 
 			$artist = $this->artistBusinessLayer->find($artistId, $this->userId);
 			if ($artist->getCoverFileId() !== null) {
-				$content['largeImageUrl'] = [$this->artistImageUrl($id)];
+				$content['largeImageUrl'] = [$this->artistImageUrl('artist-' . $artistId)];
 			}
 		}
 

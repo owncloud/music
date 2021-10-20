@@ -79,14 +79,15 @@ class Track extends Entity {
 	public $mbid;
 	public $starred;
 	public $genreId;
+	public $playCount;
+	public $lastPlayed;
+
 	// not from the music_tracks table but still part of the standard content of this entity:
 	public $filename;
 	public $size;
 	public $albumName;
 	public $artistName;
 	public $genreName;
-	public $playCount;
-	public $lastPlayed;
 
 	// the rest of the variables are injected separately when needed
 	public $album;

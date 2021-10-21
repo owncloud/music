@@ -7,6 +7,8 @@
 
 ### Fixed
 - A performance problem affecting Subsonic method `getArtist`, Ampache action `artist_albums`, and a few other functions
+- Duplicate folders showing up in the tree layout of the Folders view with some tree structures
+  [#905](https://github.com/owncloud/music/issues/905)
 
 ## 1.4.0 - 2021-10-10
 ### Added

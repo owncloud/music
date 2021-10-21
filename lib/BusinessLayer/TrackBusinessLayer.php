@@ -186,28 +186,29 @@ class TrackBusinessLayer extends BusinessLayer {
 		];
 
 		// add the intermediate folders which do not directly contain any tracks
-		$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $result, $musicFolder));
+		$this->recursivelyAddMissingParentFolders($result, $result, $musicFolder);
 
 		return $result;
 	}
 
-	private function recursivelyGetMissingParentFolders(array $childEntries, array $existingEntries, Folder $musicFolder) : array {
-		$result = [];
+	private function recursivelyAddMissingParentFolders(array $foldersToProcess, array &$alreadyFoundFolders, Folder $musicFolder) : void {
 
-		$parentIds = \array_unique(\array_column($childEntries, 'parent'));
-		$parentIds = Util::arrayDiff($parentIds, \array_column($existingEntries, 'id'));
+		$parentIds = \array_unique(\array_column($foldersToProcess, 'parent'));
+		$parentIds = Util::arrayDiff($parentIds, \array_column($alreadyFoundFolders, 'id'));
 		$parentInfo = $this->mapper->findNodeNamesAndParents($parentIds, $musicFolder->getStorage()->getId());
+
+		$newParents = [];
 		foreach ($parentIds as $parentId) {
 			if ($parentId !== null) {
-				$result[] =  self::getFolderEntry($parentInfo, $parentId, [], $musicFolder);
+				$newParents[] =  self::getFolderEntry($parentInfo, $parentId, [], $musicFolder);
 			}
 		}
 
-		if (\count($parentIds)) {
-			$result = \array_merge($result, $this->recursivelyGetMissingParentFolders($result, $existingEntries, $musicFolder));
-		}
+		$alreadyFoundFolders = \array_merge($alreadyFoundFolders, $newParents);
 
-		return $result;
+		if (\count($newParents)) {
+			$this->recursivelyAddMissingParentFolders($newParents, $alreadyFoundFolders, $musicFolder);
+		}
 	}
 
 	private static function getFolderEntry(array $folderNamesAndParents, int $folderId, array $trackIds, Folder $musicFolder) : ?array {

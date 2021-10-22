@@ -1,4 +1,8 @@
 ## [Unreleased]
+### Added
+- `occ` command `playlist-export`
+  [#832](https://github.com/owncloud/music/issues/832)
+
 ### Changed
 - Ampache: A few more actions now support pagination with offset and limit: `artist_albums`, `artist_songs`, `album_songs`, `search_songs`
 - Subsonic: Added support to `getArtistInfo` to identify the artist using a track, an album, or a folder ID

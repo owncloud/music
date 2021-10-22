@@ -53,3 +53,10 @@ $application->add(new OCA\Music\Command\PodcastUpdate(
 		$c->query('GroupManager'),
 		$c->query('PodcastService')
 ));
+$application->add(new OCA\Music\Command\PlaylistExport(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('RootFolder'),
+		$c->query('PlaylistBusinessLayer'),
+		$c->query('PlaylistFileService')
+));

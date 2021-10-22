@@ -104,7 +104,7 @@ abstract class BaseCommand extends Command {
 		return $users;
 	}
 
-	protected static function ensureUsersGiven(InputInterface $input) {
+	protected static function ensureUsersGiven(InputInterface $input) : void {
 		if (!$input->getArgument('user_id')
 			&& !$input->getOption('all')
 			&& !$input->getOption('group')) {
@@ -112,6 +112,6 @@ abstract class BaseCommand extends Command {
 		}
 	}
 
-	abstract protected function doConfigure();
-	abstract protected function doExecute(InputInterface $input, OutputInterface $output, $users);
+	abstract protected function doConfigure() : void;
+	abstract protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void;
 }

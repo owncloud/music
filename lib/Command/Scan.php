@@ -36,7 +36,7 @@ class Scan extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:scan')
 			->setDescription('scan and index any unindexed audio files')
@@ -67,7 +67,7 @@ class Scan extends BaseCommand {
 		;
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if (!$input->getOption('debug')) {
 			$this->scanner->listen('\OCA\Music\Utility\Scanner', 'update', function ($path) use ($output) {
 				$output->writeln("Scanning <info>$path</info>");
@@ -92,7 +92,7 @@ class Scan extends BaseCommand {
 		}
 	}
 
-	protected function scanUser($user, OutputInterface $output, $rescan, $cleanObsolete, $folder, $debug) {
+	protected function scanUser(string $user, OutputInterface $output, bool $rescan, bool $cleanObsolete, ?string $folder, bool $debug) : void {
 		$userHome = $this->scanner->resolveUserFolder($user);
 
 		if ($cleanObsolete) {

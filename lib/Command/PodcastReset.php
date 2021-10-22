@@ -29,14 +29,14 @@ class PodcastReset extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:podcast-reset')
 			->setDescription('remove all podcast channels of one or more users')
 		;
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if ($input->getOption('all')) {
 			$this->userManager->callForAllUsers(function($user) use ($output) {
 				$this->resetPodcasts($user->getUID(), $output);
@@ -48,7 +48,7 @@ class PodcastReset extends BaseCommand {
 		}
 	}
 
-	private function resetPodcasts(string $userId, OutputInterface $output) {
+	private function resetPodcasts(string $userId, OutputInterface $output) : void {
 		$output->writeln("Reset all podcasts of the user <info>$userId</info>");
 		$this->podcastService->resetAll($userId);
 	}

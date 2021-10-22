@@ -30,7 +30,7 @@ class PodcastUpdate extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:podcast-update')
 			->setDescription('update podcast channels of one or more users from their sources')
@@ -49,7 +49,7 @@ class PodcastUpdate extends BaseCommand {
 		;
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		$olderThan = $input->getOption('older-than');
 		if ($olderThan !== null) {
 			$olderThan = (float)$olderThan;

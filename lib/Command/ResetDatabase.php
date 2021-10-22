@@ -29,13 +29,13 @@ class ResetDatabase extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:reset-database')
 			->setDescription('drop metadata indexed by the music app (artists, albums, tracks, playlists)');
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop tables for <info>all users</info>");
 			$this->maintenance->resetDb(null, true);

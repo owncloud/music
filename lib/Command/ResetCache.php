@@ -27,13 +27,13 @@ class ResetCache extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:reset-cache')
 			->setDescription('drop data cached by the music app for performance reasons');
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop cache for <info>all users</info>");
 			$this->cache->remove();

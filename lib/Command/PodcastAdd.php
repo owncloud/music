@@ -36,7 +36,7 @@ class PodcastAdd extends BaseCommand {
 		parent::__construct($userManager, $groupManager);
 	}
 
-	protected function doConfigure() {
+	protected function doConfigure() : void {
 		$this
 			->setName('music:podcast-add')
 			->setDescription('add a podcast channel from an RSS feed')
@@ -49,7 +49,7 @@ class PodcastAdd extends BaseCommand {
 		;
 	}
 
-	protected function doExecute(InputInterface $input, OutputInterface $output, $users) {
+	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		$rssUrls = $input->getOption('rss');
 
 		if (!$rssUrls) {
@@ -62,7 +62,7 @@ class PodcastAdd extends BaseCommand {
 		}
 	}
 
-	private function addPodcast(string $rss, InputInterface $input, OutputInterface $output, $users) : void {
+	private function addPodcast(string $rss, InputInterface $input, OutputInterface $output, array $users) : void {
 		$content = \file_get_contents($rss);
 		if ($content === false) {
 			throw new \InvalidArgumentException("Invalid URL <error>$rss</error>!");

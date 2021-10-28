@@ -66,7 +66,7 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
 	public function exportToFile(
-			int $id, string $userId, Folder $userFolder, string $folderPath, string $collisionMode) : string {
+			int $id, string $userId, Folder $userFolder, string $folderPath, string $collisionMode='abort') : string {
 		$playlist = $this->playlistBusinessLayer->find($id, $userId);
 		$tracks = $this->playlistBusinessLayer->getPlaylistTracks($id, $userId);
 		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
@@ -113,7 +113,7 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotPermittedException if the user is not allowed to write to the given folder
 	 */
 	public function exportRadioStationsToFile(
-			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode) : string {
+			string $userId, Folder $userFolder, string $folderPath, string $filename, string $collisionMode='abort') : string {
 		$targetFolder = Util::getFolderFromRelativePath($userFolder, $folderPath);
 
 		$filename = self::checkFileNameConflict($targetFolder, $filename, $collisionMode);
@@ -137,6 +137,9 @@ class PlaylistFileService {
 	 * @param string $userId owner of the playlist
 	 * @param Folder $userFolder user home dir
 	 * @param string $filePath path of the file to import
+	 * @parma string $mode one of the following:
+	 * 						- 'append' (dafault) Append the imported tracks after the existing tracks on the list
+	 * 						- 'overwrite' Replace any previous tracks on the list with the imported tracks
 	 * @return array with three keys:
 	 * 			- 'playlist': The Playlist entity after the modification
 	 * 			- 'imported_count': An integer showing the number of tracks imported
@@ -145,7 +148,7 @@ class PlaylistFileService {
 	 * @throws \OCP\Files\NotFoundException if the $filePath is not a valid file
 	 * @throws \UnexpectedValueException if the $filePath points to a file of unsupported type
 	 */
-	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath) : array {
+	public function importFromFile(int $id, string $userId, Folder $userFolder, string $filePath, string $mode='append') : array {
 		$parsed = self::doParseFile(self::getFile($userFolder, $filePath), $userFolder, self::PARSE_LOCAL_FILES_ONLY);
 		$trackFilesAndCaptions = $parsed['files'];
 		$invalidPaths = $parsed['invalid_paths'];
@@ -160,6 +163,9 @@ class PlaylistFileService {
 			}
 		}
 
+		if ($mode === 'overwrite') {
+			$this->playlistBusinessLayer->removeAllTracks($id, $userId);
+		}
 		$playlist = $this->playlistBusinessLayer->addTracks($trackIds, $id, $userId);
 
 		if (\count($invalidPaths) > 0) {

@@ -68,6 +68,13 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
+	public function removeAllTracks($playlistId, $userId) {
+		$playlist = $this->find($playlistId, $userId);
+		$playlist->setTrackIdsFromArray([]);
+		$this->mapper->update($playlist);
+		return $playlist;
+	}
+
 	public function moveTrack($fromIndex, $toIndex, $playlistId, $userId) {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();

@@ -60,3 +60,10 @@ $application->add(new OCA\Music\Command\PlaylistExport(
 		$c->query('PlaylistBusinessLayer'),
 		$c->query('PlaylistFileService')
 ));
+$application->add(new OCA\Music\Command\PlaylistImport(
+		$c->query('UserManager'),
+		$c->query('GroupManager'),
+		$c->query('RootFolder'),
+		$c->query('PlaylistBusinessLayer'),
+		$c->query('PlaylistFileService')
+));

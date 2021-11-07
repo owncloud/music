@@ -404,6 +404,22 @@ class Scanner extends PublicEmitter {
 		return $this->trackBusinessLayer->findAllFileIds($userId);
 	}
 
+	private function getMusicFolder(string $userId, ?string $path) {
+		$folder = $this->userMusicFolder->getFolder($userId);
+
+		if (!empty($path)) {
+			$userFolder = $this->resolveUserFolder($userId);
+			$requestedFolder = Util::getFolderFromRelativePath($userFolder, $path);
+			if ($folder->isSubNode($requestedFolder) || $folder->getPath() == $requestedFolder->getPath()) {
+				$folder = $requestedFolder;
+			} else {
+				throw new \OCP\Files\NotFoundException();
+			}
+		}
+
+		return $folder;
+	}
+
 	/**
 	 * Search for music files by mimetype inside user specified library path
 	 * (which defaults to user home dir). Exclude given array of IDs.
@@ -413,19 +429,9 @@ class Scanner extends PublicEmitter {
 	 * @param int[] $excludeIds
 	 * @return int[]
 	 */
-	private function getAllMusicFileIdsExcluding(string $userId, string $path = null, array $excludeIds) : array {
+	private function getAllMusicFileIdsExcluding(string $userId, ?string $path, array $excludeIds) : array {
 		try {
-			$folder = $this->userMusicFolder->getFolder($userId);
-
-			if (!empty($path)) {
-				$userFolder = $this->resolveUserFolder($userId);
-				$requestedFolder = Util::getFolderFromRelativePath($userFolder, $path);
-				if ($folder->isSubNode($requestedFolder) || $folder->getPath() == $requestedFolder->getPath()) {
-					$folder = $requestedFolder;
-				} else {
-					throw new \OCP\Files\NotFoundException();
-				}
-			}
+			$folder = $this->getMusicFolder($userId, $path);
 		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
@@ -445,11 +451,11 @@ class Scanner extends PublicEmitter {
 		return \array_values(Util::extractIds($files)); // the array may be sparse before array_values
 	}
 
-	public function getAllMusicFileIds(string $userId, string $path = null) : array {
+	public function getAllMusicFileIds(string $userId, ?string $path = null) : array {
 		return $this->getAllMusicFileIdsExcluding($userId, $path, []);
 	}
 
-	public function getUnscannedMusicFileIds(string $userId, string $path = null) : array {
+	public function getUnscannedMusicFileIds(string $userId, ?string $path = null) : array {
 		$scannedIds = $this->getScannedFileIds($userId);
 		$unscannedIds = $this->getAllMusicFileIdsExcluding($userId, $path, $scannedIds);
 
@@ -461,6 +467,30 @@ class Scanner extends PublicEmitter {
 		}
 
 		return $unscannedIds;
+	}
+
+	/**
+	 * Find already scanned music files which have been modified since the time they were scanned
+	 *
+	 * @return int[]
+	 */
+	public function getDirtyMusicFileIds(string $userId, ?string $path = null) : array {
+		$tracks = $this->trackBusinessLayer->findAllDirty($userId);
+		$fileIds = Util::arrayMapMethod($tracks, 'getFileId');
+
+		// filter by path if given
+		if (!empty($path)) {
+			try {
+				$folder = $this->getMusicFolder($userId, $path);
+			} catch (\OCP\Files\NotFoundException $e) {
+				return [];
+			}
+			$fileIds = \array_filter($fileIds, function(int $fileId) use ($folder) {
+				return \count($folder->getById($fileId)) > 0;
+			});
+		}
+
+		return \array_values($fileIds); // make the array non-sparse
 	}
 
 	public function scanFiles(string $userId, Folder $userHome, array $fileIds, OutputInterface $debugOutput = null) : int {

@@ -102,6 +102,19 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * Returns all tracks where the 'modified' time in the file system (actually in the cloud's file cache)
+	 * is later than the 'updated' field of the entity in the database.
+	 * @return Track[]
+	 */
+	public function findAllDirty(string $userId) : array {
+		$tracks = $this->findAll($userId);
+		return \array_filter($tracks, function (Track $track) {
+			$dbModTime = new \DateTime($track->getUpdated());
+			return ($dbModTime->getTimestamp() < $track->getFileModTime());
+		});
+	}
+
+	/**
 	 * Find most frequently played tracks
 	 * @return Track[]
 	 */

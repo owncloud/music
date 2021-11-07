@@ -31,7 +31,7 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::selectEntities()
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
-		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`,
+		return "SELECT `*PREFIX*music_tracks`.*, `file`.`name` AS `filename`, `file`.`size`, `file`.`mtime` AS `file_mod_time`,
 						`album`.`name` AS `album_name`, `artist`.`name` AS `artist_name`, `genre`.`name` AS `genre_name`
 				FROM `*PREFIX*music_tracks`
 				INNER JOIN `*PREFIX*filecache` `file`

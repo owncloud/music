@@ -1,3 +1,10 @@
+## [Unreleased]
+### Added
+- Supoprt for Nextcloud 23
+  [#912](https://github.com/owncloud/music/pull/912) @PVince81
+- Option `rescan-modified` to the `occ` command `music:scan`
+  [#843](https://github.com/owncloud/music/issues/843)
+
 ## 1.4.1 - 2021-10-31
 ### Added
 - `occ` commands `playlist-export` and `playlist-import`

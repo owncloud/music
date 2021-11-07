@@ -57,6 +57,8 @@ use OCP\IURLGenerator;
  * @method void setFilename(string $filename)
  * @method int getSize()
  * @method void setSize(int $size)
+ * @method int getFileModTime()
+ * @method void setFileModTime(int $secsFromEpoch)
  * @method ?int getNumberOnPlaylist()
  * @method void setNumberOnPlaylist(?int $number)
  * @method int getPlayCount()
@@ -85,6 +87,7 @@ class Track extends Entity {
 	// not from the music_tracks table but still part of the standard content of this entity:
 	public $filename;
 	public $size;
+	public $fileModTime;
 	public $albumName;
 	public $artistName;
 	public $genreName;
@@ -104,6 +107,7 @@ class Track extends Entity {
 		$this->addType('fileId', 'int');
 		$this->addType('genreId', 'int');
 		$this->addType('size', 'int');
+		$this->addType('fileModTime', 'int');
 		$this->addType('playCount', 'int');
 	}
 

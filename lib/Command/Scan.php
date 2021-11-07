@@ -59,6 +59,12 @@ class Scan extends BaseCommand {
 					'rescan also any previously scanned tracks'
 			)
 			->addOption(
+					'rescan-modified',
+					null,
+					InputOption::VALUE_NONE,
+					'rescan files which have mofication time later than the previous scan time (new files not scanned)'
+			)
+			->addOption(
 					'folder',
 					null,
 					InputOption::VALUE_OPTIONAL,
@@ -74,6 +80,10 @@ class Scan extends BaseCommand {
 			});
 		}
 
+		if ($input->getOption('rescan') && $input->getOption('rescan-modified')) {
+			throw new \InvalidArgumentException('The options <error>rescan</error> and <error>rescan-modified</error> are mutually exclusive');
+		}
+
 		if ($input->getOption('all')) {
 			$users = $this->userManager->search('');
 			$users = \array_map(function ($u) {
@@ -86,13 +96,18 @@ class Scan extends BaseCommand {
 					$user,
 					$output,
 					$input->getOption('rescan'),
+					$input->getOption('rescan-modified'),
 					$input->getOption('clean-obsolete'),
 					$input->getOption('folder'),
-					$input->getOption('debug'));
+					$input->getOption('debug')
+			);
 		}
 	}
 
-	protected function scanUser(string $user, OutputInterface $output, bool $rescan, bool $cleanObsolete, ?string $folder, bool $debug) : void {
+	protected function scanUser(
+			string $user, OutputInterface $output, bool $rescan, bool $rescanModified,
+			bool $cleanObsolete, ?string $folder, bool $debug) : void {
+
 		$userHome = $this->scanner->resolveUserFolder($user);
 
 		if ($cleanObsolete) {
@@ -106,15 +121,15 @@ class Scan extends BaseCommand {
 		$output->writeln("Start scan for <info>$user</info>");
 		if ($rescan) {
 			$filesToScan = $this->scanner->getAllMusicFileIds($user, $folder);
+		} elseif ($rescanModified) {
+			$filesToScan = $this->scanner->getDirtyMusicFileIds($user, $folder);
 		} else {
 			$filesToScan = $this->scanner->getUnscannedMusicFileIds($user, $folder);
 		}
 		$output->writeln('Found ' . \count($filesToScan) . ' music files to scan' . ($folder ? " in '$folder'" : ''));
 
 		if (\count($filesToScan)) {
-			$processedCount = $this->scanner->scanFiles(
-					$user, $userHome, $filesToScan,
-					$debug ? $output : null);
+			$processedCount = $this->scanner->scanFiles($user, $userHome, $filesToScan, $debug ? $output : null);
 			$output->writeln("Added $processedCount files to database of <info>$user</info>");
 		}
 

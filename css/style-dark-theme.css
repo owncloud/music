@@ -45,3 +45,7 @@
 .dark-theme .icon-reload {
 	background-image: url(../img/reload-inverted.svg);
 }
+
+.dark-theme .icon-stop {
+	background-image: url(../img/stop-white.svg);
+}

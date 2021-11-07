@@ -20,3 +20,7 @@
 <!--  localizations for the Folders view -->
 <span translate>Music library</span>
 <span translate>(library root)</span>
+
+<!-- localizations fr the player controls pane -->
+<span translate>Play</span>
+<span translate>Pause</span>

@@ -26,16 +26,17 @@ require('node_modules/angular-gettext');
 require('node_modules/angular-route');
 require('node_modules/angular-sanitize');
 require('node_modules/angular-scroll');
+require('node_modules/javascript-detect-element-resize/jquery.resize.js');
+require('node_modules/long-press-event');
+require('node_modules/restangular');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('vendor/dragdrop/draganddrop.js');
-require('node_modules/javascript-detect-element-resize/jquery.resize.js');
+require('vendor/nextcloud/placeholder.js');
 // jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10
 if (typeof MutationObserver !== 'undefined') {
 	require('vendor/jquery-initialize');
 }
-require('vendor/nextcloud/placeholder.js');
-require('node_modules/restangular');
 
 /* Music app files */
 requireAll(require.context('./app', /*use subdirectories:*/ true));

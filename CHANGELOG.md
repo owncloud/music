@@ -4,8 +4,9 @@
   [#912](https://github.com/owncloud/music/pull/912) @PVince81
 - Option `rescan-modified` to the `occ` command `music:scan`
   [#843](https://github.com/owncloud/music/issues/843)
-- Stop button shown with long press on the play/pause button
+- Menu with stop button shown with long press on the play/pause button
   [#911](https://github.com/owncloud/music/issues/911)
+- Stop button shown instead of the play/pause while shift held down
 
 ## 1.4.1 - 2021-10-31
 ### Added

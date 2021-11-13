@@ -369,6 +369,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				case 39: // arrow right
 					func = $scope.next;
 					break;
+				case 16: // shift
+					func = (() => $scope.shiftHeldDown = true);
+					break;
 			}
 
 			if (func) {
@@ -377,6 +380,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			}
 		}
 
+		return true;
+	});
+
+	$document.bind('keyup', function(e) {
+		if (e.which == 16) { //shift
+			$timeout(() => $scope.shiftHeldDown = false);
+			return false;
+		}
 		return true;
 	});
 

@@ -8,6 +8,9 @@
   [#911](https://github.com/owncloud/music/issues/911)
 - Stop button shown instead of the play/pause while shift held down
 
+### Fixed
+- Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page
+
 ## 1.4.1 - 2021-10-31
 ### Added
 - `occ` commands `playlist-export` and `playlist-import`

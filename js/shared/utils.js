@@ -33,6 +33,25 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Check if the given HTML element is any kind of text input element.
+	 * Refactored version of the original source at https://stackoverflow.com/a/38795917
+	 */
+	isTextEntryElement: function(element) {
+		var tagName = element.tagName.toLowerCase();
+		if (tagName === 'textarea') {
+			return true;
+		} else if (tagName === 'input') {
+			var type = element.getAttribute('type').toLowerCase();
+			// if any of these input types is not supported by a browser, it will behave as input type text.
+			var inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search',
+								'date', 'datetime', 'datetime-local', 'time', 'month', 'week'];
+			return inputTypes.indexOf(type) >= 0;
+		} else {
+			return false;
+		}
+	},
+
+	/**
 	 * Get the selected locale of the user from Nextcloud/ownCloud personal settings
 	 */
 	getLocale: function() {

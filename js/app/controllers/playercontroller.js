@@ -357,7 +357,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$document.bind('keydown', function(e) {
-		if (e.target == document.body) {
+		if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
 			var func = null;
 			switch (e.which) {
 				case 32: //space

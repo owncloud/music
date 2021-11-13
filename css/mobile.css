@@ -149,3 +149,8 @@
 .extra-narrow .view-container:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 18px;
 }
+
+.min-width #controls .song-info,
+.min-width #controls .toggle {
+	display: none;
+}

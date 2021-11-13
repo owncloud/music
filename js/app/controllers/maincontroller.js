@@ -442,7 +442,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	}
 
 	function setMasterLayout(classes) {
-		var missingClasses = _.difference(['tablet', 'mobile', 'portrait', 'extra-narrow'], classes);
+		var missingClasses = _.difference(['tablet', 'mobile', 'portrait', 'extra-narrow', 'min-width'], classes);
 		var appContent = $('#app-content');
 
 		_.each(classes, function(cls) {
@@ -470,7 +470,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See mobile.css and tablet.css.
-		if ($window.innerWidth <= 360) {
+		if ($window.innerWidth <= 220) {
+			setMasterLayout(['mobile', 'portrait', 'extra-narrow', 'min-width']);
+		}
+		else if ($window.innerWidth <= 360) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow']);
 		}
 		else if ($window.innerWidth <= 570 || appViewWidth <= 500) {

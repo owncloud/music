@@ -649,7 +649,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	/**
-	 * Find external cover images for albums which do not yet have one.
+	 * Find external cover images for artists which do not yet have one.
 	 * @param string $userId
 	 * @return bool true if any albums were updated; false otherwise
 	 */

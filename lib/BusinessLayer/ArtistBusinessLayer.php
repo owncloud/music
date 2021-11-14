@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2021
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -22,6 +22,8 @@ use OCA\Music\Db\ArtistMapper;
 use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
+
+use OCP\Files\File;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
@@ -47,7 +49,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[] artists
 	 */
-	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None) : array {
 		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
 	}
 
@@ -59,7 +61,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param int|null $offset
 	 * @return Artist[] artists
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		return $this->mapper->findAllByGenre($genreId, $userId, $limit, $offset);
 	}
 
@@ -99,7 +101,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string $userId the name of the user
 	 * @return Artist The added/updated artist
 	 */
-	public function addOrUpdateArtist($name, $userId) {
+	public function addOrUpdateArtist(?string $name, string $userId) : Artist {
 		$artist = new Artist();
 		$artist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$artist->setUserId($userId);
@@ -110,12 +112,12 @@ class ArtistBusinessLayer extends BusinessLayer {
 	/**
 	 * Use the given file as cover art for an artist if there exists an artist
 	 * with name matching the file name.
-	 * @param \OCP\Files\File $imageFile
+	 * @param File $imageFile
 	 * @param string $userId
 	 * @return int|false artistId of the modified artist if the file was set as cover for an artist;
 	 *                   false if no artist was modified
 	 */
-	public function updateCover($imageFile, $userId) {
+	public function updateCover(File $imageFile, string $userId) {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
 		$matches = $this->findAllByName(/** @scrutinizer ignore-type */ $name, $userId);
 
@@ -133,11 +135,11 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Match the given files by file name to the artist names. If there is a matching
 	 * artist with no cover image already set, the matched file is set to be used as
 	 * cover for this artist.
-	 * @param \OCP\Files\File[] $imageFiles
+	 * @param File[] $imageFiles
 	 * @param string $userId
 	 * @return bool true if any artist covers were updated; false otherwise
 	 */
-	public function updateCovers($imageFiles, $userId) {
+	public function updateCovers(array $imageFiles, string $userId) : bool {
 		$updated = false;
 
 		// construct a lookup table for the images as there may potentially be
@@ -166,7 +168,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string[]|null $userIds the users whose music library is targeted; all users are targeted if omitted
 	 * @return Artist[] artists which got modified, empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null) {
+	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
 	}
 }

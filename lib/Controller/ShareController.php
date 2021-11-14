@@ -38,7 +38,7 @@ class ShareController extends Controller {
 	/** @var Logger */
 	private $logger;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
 								Scanner $scanner,
 								PlaylistFileService $playlistFileService,

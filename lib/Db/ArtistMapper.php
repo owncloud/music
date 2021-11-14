@@ -31,7 +31,7 @@ class ArtistMapper extends BaseMapper {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[]
 	 */
-	public function findAllHavingAlbums($userId, $sortBy=SortBy::None) {
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None) : array {
 		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_albums` `album` '.
 				' WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)',
@@ -48,7 +48,7 @@ class ArtistMapper extends BaseMapper {
 	 * @param int|null $offset
 	 * @return Artist[]
 	 */
-	public function findAllByGenre($genreId, $userId, $limit=null, $offset=null) {
+	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_tracks` `track`
 				  WHERE `*PREFIX*music_artists`.`id` = `track`.`artist_id`
@@ -125,7 +125,7 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist[] artists which got modified (with incomplete data, only id and user are valid),
 	 *         empty array if none
 	 */
-	public function removeCovers($coverFileIds, $userIds=null) {
+	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		// find albums using the given file as cover
 		$sql = 'SELECT `id`, `user_id` FROM `*PREFIX*music_artists` WHERE `cover_file_id` IN ' .
 		$this->questionMarks(\count($coverFileIds));

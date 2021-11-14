@@ -47,7 +47,7 @@ class PlaylistApiController extends Controller {
 	private $userFolder;
 	private $logger;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								PlaylistBusinessLayer $playlistBusinessLayer,

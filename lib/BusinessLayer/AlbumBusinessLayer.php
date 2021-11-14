@@ -332,7 +332,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
-	 * Given an array of track IDs, find corresponding uniqu album IDs, including only
+	 * Given an array of track IDs, find corresponding unique album IDs, including only
 	 * those album which have a cover art set.
 	 * @param int[] $trackIds
 	 * @return Album[] *Partial* albums, without any injected extra fields

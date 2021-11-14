@@ -88,7 +88,7 @@ class SubsonicController extends Controller {
 	private $format;
 	private $callback;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
 								$l10n,
 								IURLGenerator $urlGenerator,

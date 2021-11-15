@@ -43,6 +43,7 @@ use OCA\Music\Db\Album;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\Genre;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
@@ -1503,9 +1504,9 @@ class SubsonicController extends Controller {
 		}
 
 		return [
-			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, true, $artistCount, $artistOffset),
-			'albums' => $this->albumBusinessLayer->findAllByName($query, $this->userId, true, $albumCount, $albumOffset),
-			'tracks' => $this->trackBusinessLayer->findAllByName($query, $this->userId, true, $songCount, $songOffset)
+			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $artistCount, $artistOffset),
+			'albums' => $this->albumBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $albumCount, $albumOffset),
+			'tracks' => $this->trackBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $songCount, $songOffset)
 		];
 	}
 

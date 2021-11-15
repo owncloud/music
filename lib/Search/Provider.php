@@ -17,6 +17,7 @@
 namespace OCA\Music\Search;
 
 use OCA\Music\App\Music;
+use OCA\Music\Db\MatchMode;
 
 class Provider extends \OCP\Search\Provider {
 
@@ -72,17 +73,17 @@ class Provider extends \OCP\Search\Provider {
 	public function search($query) {
 		$results=[];
 
-		$artists = $this->artistMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
+		$artists = $this->artistMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($artists as $artist) {
 			$results[] = $this->createResult($artist, $artist->name, 'music_artist');
 		}
 
-		$albums = $this->albumMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
+		$albums = $this->albumMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($albums as $album) {
 			$results[] = $this->createResult($album, $album->name, 'music_album');
 		}
 
-		$tracks = $this->trackMapper->findAllByName($query, $this->userId, true, self::MAX_RESULTS_PER_TYPE);
+		$tracks = $this->trackMapper->findAllByName($query, $this->userId, MatchMode::Substring, self::MAX_RESULTS_PER_TYPE);
 		foreach ($tracks as $track) {
 			$results[] = $this->createResult($track, $track->title, 'music_track');
 		}

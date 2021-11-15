@@ -26,7 +26,7 @@ use OCA\Music\Utility\Util;
  * Base class functions with actually used inherited types to help IDE and Scrutinizer:
  * @method Playlist find(int $playlistId, string $userId)
  * @method Playlist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
- * @method Playlist[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ * @method Playlist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @phpstan-extends BusinessLayer<Playlist>
  */
 class PlaylistBusinessLayer extends BusinessLayer {

@@ -18,6 +18,7 @@ use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Track;
 
 use OCP\IConfig;
@@ -156,7 +157,7 @@ class LastfmService {
 	public function getTopTracks(string $artistName, string $userId, int $maxCount) : array {
 		$foundTracks = [];
 
-		$artist = $this->artistBusinessLayer->findAllByName($artistName, $userId, /*$fuzzy=*/false, /*$limit=*/1)[0] ?? null;
+		$artist = $this->artistBusinessLayer->findAllByName($artistName, $userId, MatchMode::Exact, /*$limit=*/1)[0] ?? null;
 
 		if ($artist !== null) {
 			$lastfmResult = $this->getInfoFromLastFm([

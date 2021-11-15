@@ -21,6 +21,7 @@ use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AlbumMapper;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\Entity;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 
@@ -154,9 +155,9 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, bool $fuzzy = false, ?int $limit=null, ?int $offset=null,
+			string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
-		$albums = parent::findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
+		$albums = parent::findAllByName($name, $userId, $matchMode, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

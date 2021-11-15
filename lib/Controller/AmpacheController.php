@@ -42,6 +42,7 @@ use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
@@ -1029,8 +1030,8 @@ class AmpacheController extends Controller {
 		$updateMax = $update[1] ?? null;
 
 		if ($filter) {
-			$fuzzy = !((boolean) $exact);
-			return $businessLayer->findAllByName($filter, $userId, $fuzzy, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
+			$matchMode = $exact ? MatchMode::Exact : MatchMode::Substring;
+			return $businessLayer->findAllByName($filter, $userId, $matchMode, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
 		} else {
 			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
 		}

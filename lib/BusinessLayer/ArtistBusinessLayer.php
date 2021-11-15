@@ -29,7 +29,7 @@ use OCP\Files\File;
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Artist find(int $trackId, string $userId)
  * @method Artist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
- * @method Artist[] findAllByName(string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null)
+ * @method Artist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
  * @phpstan-extends BusinessLayer<Artist>
  */

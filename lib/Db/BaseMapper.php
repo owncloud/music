@@ -111,19 +111,24 @@ abstract class BaseMapper extends Mapper {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllByName(
-		?string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
+		?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null,
 		?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 
+		$params = [$userId];
 		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
 		if ($name === null) {
 			$condition = "$nameCol IS NULL";
-			$params = [$userId];
-		} elseif ($fuzzy) {
-			$condition = "LOWER($nameCol) LIKE LOWER(?)";
-			$params = [$userId, self::prepareFuzzySearchString($name)];
 		} else {
-			$condition = "LOWER($nameCol) = LOWER(?)";
-			$params = [$userId, $name];
+			if ($matchMode === MatchMode::Exact) {
+				$condition = "LOWER($nameCol) = LOWER(?)";
+			} else {
+				$condition = "LOWER($nameCol) LIKE LOWER(?)";
+			}
+			if ($matchMode === MatchMode::Substring) {
+				$params[] = self::prepareSubstringSearchPattern($name);
+			} else {
+				$params[] = $name;
+			}
 		}
 
 		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
@@ -424,7 +429,7 @@ abstract class BaseMapper extends Mapper {
 		}
 	}
 
-	protected static function prepareFuzzySearchString(string $input) : string {
+	protected static function prepareSubstringSearchPattern(string $input) : string {
 		// possibly multiparted query enclosed in quotation marks is handled as a single substring,
 		// while the default interpretation of multipart string is that each of the parts can be found
 		// separately as substing in the given order

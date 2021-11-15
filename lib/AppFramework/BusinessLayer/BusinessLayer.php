@@ -17,6 +17,7 @@ namespace OCA\Music\AppFramework\BusinessLayer;
 
 use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\Entity;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Utility\Util;
 
@@ -154,7 +155,7 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAll(
-			string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null,
+			string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		return $this->mapper->findAll($userId, $sortBy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
@@ -163,7 +164,7 @@ abstract class BusinessLayer {
 	 * Return all entities with name matching the search criteria
 	 * @param string $name
 	 * @param string $userId
-	 * @param bool $fuzzy
+	 * @param int $matchMode
 	 * @param integer|null $limit
 	 * @param integer|null $offset
 	 * @param string|null $createdMin Optional minimum `created` timestamp.
@@ -174,10 +175,10 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, bool $fuzzy=false, int $limit=null, int $offset=null,
+			string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$name = \trim($name);
-		return $this->mapper->findAllByName($name, $userId, $fuzzy, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
+		return $this->mapper->findAllByName($name, $userId, $matchMode, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
 	/**
@@ -188,7 +189,7 @@ abstract class BusinessLayer {
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
+	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		return $this->mapper->findAllStarred($userId, $limit, $offset);
 	}
 

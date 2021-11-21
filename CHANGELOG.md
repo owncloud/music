@@ -13,6 +13,9 @@
   [#913](https://github.com/owncloud/music/issues/913)
 - Improved robustness for scanning
   [#600](https://github.com/owncloud/music/issues/600)
+- Updated the getID3 library to development version 1.9.21-202111211051
+  [#600](https://github.com/owncloud/music/issues/600)
+  [#921](https://github.com/owncloud/music/issues/921)
 
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page

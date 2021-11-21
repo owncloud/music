@@ -17,6 +17,7 @@ angular.module('Music').controller('PlayerController', [
 function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document) {
 
 	$scope.loading = false;
+	$scope.shiftHeldDown = false;
 	$scope.player = Audio;
 	$scope.currentTrack = null;
 	$scope.seekCursorType = 'default';
@@ -148,6 +149,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		} else {
 			$scope.stop();
 		}
+
+		// After restoring the previous session upon brwoser restart, at least Firefox sometimes leaves
+		// the shift state as "held". To work around this, reset the state whenever the current track changes.
+		$scope.shiftHeldDown = false;
 	}
 
 	/*
@@ -389,6 +394,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			return false;
 		}
 		return true;
+	});
+
+	$(window).blur(function(){
+		$timeout(() => $scope.shiftHeldDown = false);
 	});
 
 	$scope.primaryTitle = function() {

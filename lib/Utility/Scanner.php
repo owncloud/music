@@ -107,7 +107,9 @@ class Scanner extends PublicEmitter {
 			$this->logger->log('updateImage - the image was set as cover for some album(s)', 'debug');
 			$this->cache->remove($userId, 'collection');
 		}
-		if ($artistId = $this->artistBusinessLayer->updateCover($file, $userId)) {
+
+		$artistIds = $this->artistBusinessLayer->updateCover($file, $userId);
+		foreach ($artistIds as $artistId) {
 			$this->logger->log("updateImage - the image was set as cover for the artist $artistId", 'debug');
 			$this->coverHelper->removeArtistCoverFromCache($artistId, $userId);
 		}

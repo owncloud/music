@@ -60,7 +60,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 							$scope.loading = false;
 							$scope.noImageHint = gettextCatalog.getString(
 								'Upload image named "{{name}}" to anywhere within your library path to see it here.',
-								{ name: $scope.artist.name + '.*' }
+								{ name: $scope.artist.name.replaceAll(/[<>:"/\\|?*]/g, '_') + '.*' }
 							);
 						}
 					}

@@ -19,6 +19,7 @@ use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\ArtistMapper;
+use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
@@ -36,6 +37,8 @@ use OCP\Files\File;
 class ArtistBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
+
+	private const FORBIDDEN_CHARS_IN_FILE_NAME = '<>:"/\|?*'; // chars forbidden in Windows, on Linux only '/' is technically forbidden
 
 	public function __construct(ArtistMapper $artistMapper, Logger $logger) {
 		parent::__construct($artistMapper);
@@ -114,21 +117,28 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * with name matching the file name.
 	 * @param File $imageFile
 	 * @param string $userId
-	 * @return int|false artistId of the modified artist if the file was set as cover for an artist;
-	 *                   false if no artist was modified
+	 * @return int[] IDs of the modified artists; usually there should be 0 or 1 of these but
+	 *					in some special occasions there could be more
 	 */
-	public function updateCover(File $imageFile, string $userId) {
+	public function updateCover(File $imageFile, string $userId) : array {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
-		$matches = $this->findAllByName(/** @scrutinizer ignore-type */ $name, $userId);
+		\assert(\is_string($name)); // for scrutinizer
 
-		if (!empty($matches)) {
-			$artist = $matches[0];
-			$artist->setCoverFileId($imageFile->getId());
-			$this->mapper->update($artist);
-			return $artist->getId();
+		$hasUnderscore = (\strpos($name, '_') !== false);
+		if ($hasUnderscore) {
+			$matches = $this->findAllByNameMatchingFilename($name, $userId);
+		} else {
+			$matches = $this->findAllByName($name, $userId);
 		}
 
-		return false;
+		$artistIds = [];
+		foreach ($matches as $artist) {
+			$artist->setCoverFileId($imageFile->getId());
+			$this->mapper->update($artist);
+			$artistIds[] = $artist->getId();
+		}
+
+		return $artistIds;
 	}
 
 	/**
@@ -142,20 +152,32 @@ class ArtistBusinessLayer extends BusinessLayer {
 	public function updateCovers(array $imageFiles, string $userId) : bool {
 		$updated = false;
 
-		// construct a lookup table for the images as there may potentially be
-		// a huge amount of them
+		// Construct a lookup table for the images as there may potentially be
+		// a huge amount of them. Any of the characters forbidden in Windows file names
+		// may be replaced with an underscore, which is taken into account when building
+		// the LUT.
+		$replacedChars = \str_split(self::FORBIDDEN_CHARS_IN_FILE_NAME);
 		$imageLut = [];
 		foreach ($imageFiles as $imageFile) {
-			$imageLut[\pathinfo($imageFile->getName(), PATHINFO_FILENAME)] = $imageFile;
+			$imageName = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
+			$lookupName = \str_replace($replacedChars, '_', $imageName);
+			$imageLut[$lookupName][] = ['name' => $imageName, 'file' => $imageFile];
 		}
 
 		$artists = $this->findAll($userId);
 
 		foreach ($artists as $artist) {
-			if ($artist->getCoverFileId() === null && isset($imageLut[$artist->getName()])) {
-				$artist->setCoverFileId($imageLut[$artist->getName()]->getId());
-				$this->mapper->update($artist);
-				$updated = true;
+			if ($artist->getCoverFileId() === null) {
+				$artistLookupName = \str_replace($replacedChars, '_', $artist->getName());
+				$lutEntries = $imageLut[$artistLookupName] ?? [];
+				foreach ($lutEntries as $lutEntry) {
+					if (self::filenameMatchesArtist($lutEntry['name'], $artist)) {
+						$artist->setCoverFileId($lutEntry['file']->getId());
+						$this->mapper->update($artist);
+						$updated = true;
+						break;
+					}
+				}
 			}
 		}
 
@@ -170,5 +192,49 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 */
 	public function removeCovers(array $coverFileIds, ?array $userIds=null) : array {
 		return $this->mapper->removeCovers($coverFileIds, $userIds);
+	}
+
+	/**
+	 * Find artists by name so that the characters forbidden on Windows file system are allowed to be
+	 * replaced with underscores. In Linux, '/' would be the only truly forbidden character in paths
+	 * but using characters forbidden in Windows might cause difficulties with interoperability.
+	 */
+	private function findAllByNameMatchingFilename(string $name, string $userId) : array {
+		// we want to make '_' match any forbidden character on Linux or Windows but '%' in the
+		// search pattern should not be handled as a wildcard but as literal
+		$name = \str_replace('%', '\%', $name);
+
+		$potentialMatches = $this->findAllByName($name, $userId, MatchMode::Wildcards);
+
+		return \array_filter($potentialMatches, function(Artist $artist) use ($name) : bool {
+			return self::filenameMatchesArtist($name, $artist);
+		});
+	}
+
+	/**
+	 * Check if the given file name matches the given artist. The file name should be given without the extension.
+	 */
+	private static function filenameMatchesArtist(string $filename, Artist $artist) : bool {
+		$length = \strlen($filename);
+		$artistName = $artist->getName();
+		if ($length !== \strlen($artistName)) {
+			return false;
+		} elseif ($filename == $artistName) {
+			return true; // exact match
+		} else {
+			// iterate over all the bytes and require that all the other bytes are equal but
+			// underscores are allowed to match any forbidden filesystem chracter
+			$matchedChars = self::FORBIDDEN_CHARS_IN_FILE_NAME . '_';
+			for ($i = 0; $i < $length; ++$i) {
+				if ($filename[$i] === '_') {
+					if (\strpos($matchedChars, $artistName[$i]) === false) {
+						return false;
+					}
+				} elseif ($filename[$i] !== $artistName[$i]) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 }

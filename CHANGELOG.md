@@ -8,6 +8,10 @@
   [#911](https://github.com/owncloud/music/issues/911)
 - Stop button shown instead of the play/pause while shift held down
 
+### Changed
+- Allow replacing '/' and characters forbidden on Windows file names with '_' when matching image files to artist names
+  [#913](https://github.com/owncloud/music/issues/913)
+
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page
 

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2019
+ * @copyright Pauli Järvinen 2016 - 2021
  */
 
 namespace OCA\Music\Utility;
@@ -58,16 +58,28 @@ class ExtractorGetID3 implements Extractor {
 	 */
 	public function extract(File $file) : array {
 		$this->initGetID3();
+		$metadata = [];
 
 		try {
-			$fp = $file->fopen('r');
-		} catch (\Exception $e) {
-			// There are probably more than one reason, why openeing a file may fail.
-			// Some of the problems throw exceptions, and others just return null or false.
-			$this->logger->log('Exception ' . \get_class($e) . ' when opening file', 'error');
+			// It would be pointless to try to analzye 0-byte files and it may cause problems when
+			// the file is stored on a SMB share, see https://github.com/owncloud/music/issues/600
+			if ($file->getSize() > 0) {
+				$metadata = $this->doExtract($file);
+			}
+		} catch (\Throwable $e) {
+			$eClass = \get_class($e);
+			$this->logger->log("Exception/Error $eClass when analyzing file {$file->getPath()}\n"
+						. "Message: {$e->getMessage()}, Stack trace: {$e->getTraceAsString()}", 'error');
 		}
 
+		return $metadata;
+	}
+
+	private function doExtract(File $file) : array {
+		$fp = $file->fopen('r');
+
 		if (empty($fp)) {
+			// note: some of the file opening errors throw and others return a null fp
 			$this->logger->log("Failed to open file {$file->getPath()} for metadata extraction", 'error');
 			$metadata = [];
 		} else {

@@ -11,6 +11,8 @@
 ### Changed
 - Allow replacing '/' and characters forbidden on Windows file names with '_' when matching image files to artist names
   [#913](https://github.com/owncloud/music/issues/913)
+- Improved robustness for scanning
+  [#600](https://github.com/owncloud/music/issues/600)
 
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page

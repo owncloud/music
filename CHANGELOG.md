@@ -20,6 +20,7 @@
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page
 - Compatibility with IE10 and IE11
+- Not being able to provide artist image for the "Unknown artist"
 
 ## 1.4.1 - 2021-10-31
 ### Added

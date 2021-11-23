@@ -24,13 +24,14 @@ use OCA\Music\Db\SortBy;
 
 use OCA\Music\Utility\Util;
 
+use OCP\IL10N;
 use OCP\Files\File;
 
 /**
  * Base class functions with the actually used inherited types to help IDE and Scrutinizer:
  * @method Artist find(int $trackId, string $userId)
  * @method Artist[] findAll(string $userId, int $sortBy=SortBy::None, int $limit=null, int $offset=null)
- * @method Artist[] findAllByName(string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
+ * @method Artist[] findAllByName(?string $name, string $userId, int $matchMode=MatchMode::Exact, int $limit=null, int $offset=null)
  * @method Artist[] findById(int[] $ids, string $userId=null, bool $preserveOrder=false)
  * @phpstan-extends BusinessLayer<Artist>
  */
@@ -120,16 +121,11 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @return int[] IDs of the modified artists; usually there should be 0 or 1 of these but
 	 *					in some special occasions there could be more
 	 */
-	public function updateCover(File $imageFile, string $userId) : array {
+	public function updateCover(File $imageFile, string $userId, IL10N $l10n) : array {
 		$name = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
 		\assert(\is_string($name)); // for scrutinizer
 
-		$hasUnderscore = (\strpos($name, '_') !== false);
-		if ($hasUnderscore) {
-			$matches = $this->findAllByNameMatchingFilename($name, $userId);
-		} else {
-			$matches = $this->findAllByName($name, $userId);
-		}
+		$matches = $this->findAllByNameMatchingFilename($name, $userId, $l10n);
 
 		$artistIds = [];
 		foreach ($matches as $artist) {
@@ -149,7 +145,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param string $userId
 	 * @return bool true if any artist covers were updated; false otherwise
 	 */
-	public function updateCovers(array $imageFiles, string $userId) : bool {
+	public function updateCovers(array $imageFiles, string $userId, IL10N $l10n) : bool {
 		$updated = false;
 
 		// Construct a lookup table for the images as there may potentially be
@@ -157,6 +153,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 		// may be replaced with an underscore, which is taken into account when building
 		// the LUT.
 		$replacedChars = \str_split(self::FORBIDDEN_CHARS_IN_FILE_NAME);
+		\assert(\is_array($replacedChars)); // for scrutinizer
 		$imageLut = [];
 		foreach ($imageFiles as $imageFile) {
 			$imageName = \pathinfo($imageFile->getName(), PATHINFO_FILENAME);
@@ -168,10 +165,10 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 		foreach ($artists as $artist) {
 			if ($artist->getCoverFileId() === null) {
-				$artistLookupName = \str_replace($replacedChars, '_', $artist->getName());
+				$artistLookupName = \str_replace($replacedChars, '_', $artist->getNameString($l10n));
 				$lutEntries = $imageLut[$artistLookupName] ?? [];
 				foreach ($lutEntries as $lutEntry) {
-					if (self::filenameMatchesArtist($lutEntry['name'], $artist)) {
+					if (self::filenameMatchesArtist($lutEntry['name'], $artist, $l10n)) {
 						$artist->setCoverFileId($lutEntry['file']->getId());
 						$this->mapper->update($artist);
 						$updated = true;
@@ -198,25 +195,32 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Find artists by name so that the characters forbidden on Windows file system are allowed to be
 	 * replaced with underscores. In Linux, '/' would be the only truly forbidden character in paths
 	 * but using characters forbidden in Windows might cause difficulties with interoperability.
+	 * Support also finding by the localized "Unknown artist" string.
 	 */
-	private function findAllByNameMatchingFilename(string $name, string $userId) : array {
+	private function findAllByNameMatchingFilename(string $name, string $userId, IL10N $l10n) : array {
 		// we want to make '_' match any forbidden character on Linux or Windows but '%' in the
 		// search pattern should not be handled as a wildcard but as literal
 		$name = \str_replace('%', '\%', $name);
 
 		$potentialMatches = $this->findAllByName($name, $userId, MatchMode::Wildcards);
 
-		return \array_filter($potentialMatches, function(Artist $artist) use ($name) : bool {
-			return self::filenameMatchesArtist($name, $artist);
+		$matches = \array_filter($potentialMatches, function(Artist $artist) use ($name, $l10n) : bool {
+			return self::filenameMatchesArtist($name, $artist, $l10n);
 		});
+
+		if ($name == Artist::unknownNameString($l10n)) {
+			$matches = \array_merge($matches, $this->findAllByName(null, $userId));
+		}
+
+		return $matches;
 	}
 
 	/**
 	 * Check if the given file name matches the given artist. The file name should be given without the extension.
 	 */
-	private static function filenameMatchesArtist(string $filename, Artist $artist) : bool {
+	private static function filenameMatchesArtist(string $filename, Artist $artist, IL10N $l10n) : bool {
 		$length = \strlen($filename);
-		$artistName = $artist->getName();
+		$artistName = $artist->getNameString($l10n);
 		if ($length !== \strlen($artistName)) {
 			return false;
 		} elseif ($filename == $artistName) {

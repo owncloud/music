@@ -162,11 +162,6 @@ abstract class BusinessLayer {
 
 	/**
 	 * Return all entities with name matching the search criteria
-	 * @param string $name
-	 * @param string $userId
-	 * @param int $matchMode
-	 * @param integer|null $limit
-	 * @param integer|null $offset
 	 * @param string|null $createdMin Optional minimum `created` timestamp.
 	 * @param string|null $createdMax Optional maximum `created` timestamp.
 	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
@@ -175,9 +170,11 @@ abstract class BusinessLayer {
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
+			?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
-		$name = \trim($name);
+		if ($name !== null) {
+			$name = \trim($name);
+		}
 		return $this->mapper->findAllByName($name, $userId, $matchMode, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 

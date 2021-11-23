@@ -432,6 +432,10 @@ class Music extends App {
 			return $c->getServer()->getL10N($c->query('AppName'));
 		});
 
+		$container->registerService('L10NFactory', function (IAppContainer $c) {
+			return $c->getServer()->getL10NFactory();
+		});
+
 		$container->registerService('Logger', function (IAppContainer $c) {
 			return new Logger(
 				$c->query('AppName'),
@@ -567,7 +571,9 @@ class Music extends App {
 				$c->query('Logger'),
 				$c->query('Maintenance'),
 				$c->query('UserMusicFolder'),
-				$c->query('RootFolder')
+				$c->query('RootFolder'),
+				$c->query('Config'),
+				$c->query('L10NFactory')
 			);
 		});
 

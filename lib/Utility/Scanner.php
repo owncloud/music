@@ -19,6 +19,8 @@ use OC\Hooks\PublicEmitter;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\IConfig;
+use OCP\IL10N;
 
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
@@ -44,6 +46,8 @@ class Scanner extends PublicEmitter {
 	private $maintenance;
 	private $userMusicFolder;
 	private $rootFolder;
+	private $config;
+	private $l10nFactory;
 
 	public function __construct(Extractor $extractor,
 								ArtistBusinessLayer $artistBusinessLayer,
@@ -56,7 +60,9 @@ class Scanner extends PublicEmitter {
 								Logger $logger,
 								Maintenance $maintenance,
 								UserMusicFolder $userMusicFolder,
-								IRootFolder $rootFolder) {
+								IRootFolder $rootFolder,
+								IConfig $config,
+								\OCP\L10N\IFactory $l10nFactory) {
 		$this->extractor = $extractor;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -69,6 +75,8 @@ class Scanner extends PublicEmitter {
 		$this->maintenance = $maintenance;
 		$this->userMusicFolder = $userMusicFolder;
 		$this->rootFolder = $rootFolder;
+		$this->config = $config;
+		$this->l10nFactory = $l10nFactory;
 	}
 
 	/**
@@ -108,7 +116,7 @@ class Scanner extends PublicEmitter {
 			$this->cache->remove($userId, 'collection');
 		}
 
-		$artistIds = $this->artistBusinessLayer->updateCover($file, $userId);
+		$artistIds = $this->artistBusinessLayer->updateCover($file, $userId, $this->userL10N($userId));
 		foreach ($artistIds as $artistId) {
 			$this->logger->log("updateImage - the image was set as cover for the artist $artistId", 'debug');
 			$this->coverHelper->removeArtistCoverFromCache($artistId, $userId);
@@ -657,11 +665,19 @@ class Scanner extends PublicEmitter {
 	 */
 	public function findArtistCovers(string $userId) : bool {
 		$allImages = $this->getImageFiles($userId);
-		return $this->artistBusinessLayer->updateCovers($allImages, $userId);
+		return $this->artistBusinessLayer->updateCovers($allImages, $userId, $this->userL10N($userId));
 	}
 
 	public function resolveUserFolder(string $userId) : Folder {
 		return $this->rootFolder->getUserFolder($userId);
+	}
+
+	/**
+	 * Get the selected localization of the user, even in case there is no logged in user in the context.
+	 */
+	private function userL10N(string $userId) : IL10N {
+		$languageCode = $this->config->getUserValue($userId, 'core', 'lang');
+		return $this->l10nFactory->get('music', $languageCode);
 	}
 
 	private static function normalizeOrdinal($ordinal) : ?int {

@@ -155,7 +155,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @return Album[]
 	 */
 	public function findAllByName(
-			string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
+			?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAllByName($name, $userId, $matchMode, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
 		return $this->injectExtraFields($albums, $userId);

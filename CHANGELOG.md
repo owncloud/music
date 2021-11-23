@@ -19,6 +19,7 @@
 
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page
+- Compatibility with IE10 and IE11
 
 ## 1.4.1 - 2021-10-31
 ### Added
@@ -77,6 +78,9 @@
 - Tracks and podcasts with missing metadata causing page load failure on [Ultrasonic](https://f-droid.org/en/packages/org.moire.ultrasonic/)
 - Small layout issues in the details pane
 - "No search results" briefly showing up while the web UI was being loaded
+
+### Known issues
+- This version broke the compatibility with IE10 and IE11
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

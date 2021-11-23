@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2020 Pauli Järvinen
+ * @copyright 2020, 2021 Pauli Järvinen
  *
  */
 
@@ -88,4 +88,5 @@ module.exports = {
       }
     ],
   },
+  target: ['web', 'es5']
 };

@@ -229,11 +229,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.position.current = position;
 		$scope.position.total = duration;
 		$scope.position.currentPercent = (duration > 0 && position <= duration) ?
-				Math.round(position/duration*100) + '%' : 0;
+				position/duration*100 + '%' : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.min(100, Math.round(percent)) + '%';
+		$scope.position.bufferPercent = Math.min(100, percent) + '%';
 	};
 
 	$scope.play = function() {

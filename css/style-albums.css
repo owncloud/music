@@ -131,15 +131,16 @@
 
 
 /* Albums and Podcasts view single column layout when there's no room for two columns or more */
-.single-col .album-area {
+.view-container.single-col .album-area,
+.view-container.single-col.compact .album-area {
 	width: 100%;
 }
 
-.single-col .album-area > h2 {
+.view-container.single-col .album-area > h2 {
 	max-width: 80vw;
 }
 
-.single-col .album-area .track-list li > div > span {
+.view-container.single-col .album-area .track-list li > div > span {
 	white-space: normal;
 	vertical-align: top;
 	max-width: unset;

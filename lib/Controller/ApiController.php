@@ -215,17 +215,17 @@ class ApiController extends Controller {
 
 		$filesScanned = $this->scanner->scanFiles($this->userId, $this->userFolder, $fileIds);
 
-		$coversUpdated = false;
+		$albumCoversUpdated = false;
 		if ($finalize) {
-			$coversUpdated = $this->scanner->findAlbumCovers($this->userId)
-							|| $this->scanner->findArtistCovers($this->userId);
+			$albumCoversUpdated = $this->scanner->findAlbumCovers($this->userId);
+			$this->scanner->findArtistCovers($this->userId);
 			$totalCount = $this->trackBusinessLayer->count($this->userId);
 			$this->logger->log("Scanning finished, user $this->userId has $totalCount scanned tracks in total", 'info');
 		}
 
 		return new JSONResponse([
 			'filesScanned' => $filesScanned,
-			'coversUpdated' => $coversUpdated
+			'albumCoversUpdated' => $albumCoversUpdated
 		]);
 	}
 

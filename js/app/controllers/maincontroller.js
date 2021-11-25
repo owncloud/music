@@ -239,7 +239,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			if ($scope.scanning) {
 				filesToScanIterator = sliceEnd;
 
-				if (result.filesScanned || result.coversUpdated) {
+				if (result.filesScanned || result.albumCoversUpdated) {
 					$scope.updateAvailable = true;
 				}
 

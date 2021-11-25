@@ -27,6 +27,7 @@
 - Not being able to provide artist image for the "Unknown artist"
 - Albums compact layout not using the whole screen width on narrow window where only one column fits
 - Nextcloud dark theme not always properly applied, especially after page reload
+- Scanning via the web UI often not finding the artist images
 
 ## 1.4.1 - 2021-10-31
 ### Added

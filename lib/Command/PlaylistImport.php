@@ -17,8 +17,11 @@ use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Utility\PlaylistFileService;
 
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
+use OCP\Files\Node;
+use OCP\Files\NotFoundException;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,7 +55,7 @@ class PlaylistImport extends BaseCommand {
 				'file',
 				null,
 				InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-				'path of the playlist file, relative to the user home folder'
+				'path of the playlist file, relative to the user home folder; * and ? are treated as wildcards within the file name but not on the directory name'
 			)
 			->addOption(
 				'overwrite',
@@ -97,6 +100,7 @@ class PlaylistImport extends BaseCommand {
 		$output->writeln("Importing playlist(s) for <info>$userId</info>...");
 
 		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$files = self::resolveWildcards($files, $userFolder, $output);
 
 		foreach ($files as $filePath) {
 			$name = \pathinfo($filePath, PATHINFO_FILENAME);
@@ -128,5 +132,54 @@ class PlaylistImport extends BaseCommand {
 		} catch (\UnexpectedValueException $ex) {
 			$output->writeln("  The file <error>$filePath</error> is not a supported playlist file");
 		}
+	}
+
+	/**
+	 * @param string[] $paths
+	 * @return string[]
+	 */
+	private static function resolveWildcards(array $paths, Folder $userFolder, OutputInterface $output) : array {
+		$result = [];
+
+		foreach ($paths as $path) {
+			list('basename' => $basename, 'dirname' => $dirname) = \pathinfo($path);
+			if (\strpos($basename, '?') === false && \strpos($basename, '*') === false) {
+				// no wildcards, take the path as such
+				$result[] = $path;
+			} else {
+				try {
+					$dir = $userFolder->get($dirname);
+				} catch (NotFoundException $e) {
+					$dir = null;
+				}
+				if (!($dir instanceof Folder)) {
+					$output->writeln("  Invalid directory path <error>$dirname</error>");
+				} else {
+					$matches = [];
+					foreach ($dir->getDirectoryListing() as $node) {
+						if ($node instanceof File && self::fileMatchesPattern($node, $basename)) {
+							$matches[] = $userFolder->getRelativePath($node->getPath());
+						}
+					}
+					if (\count($matches) == 0) {
+						$output->writeln("  The path pattern <error>$path</error> matched no files");
+					} else {
+						$result = \array_merge($result, $matches);
+					}
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	private static function fileMatchesPattern(File $file, string $pattern) : bool {
+		// convert the pattern to regex
+		$pattern = \preg_quote($pattern);				// escape regex meta characters
+		$pattern = \str_replace('\*', '.*', $pattern);	// convert * to its regex equivaleant
+		$pattern = \str_replace('\?', '.', $pattern);	// convert ? to its regex equivaleant
+		$pattern = "/^$pattern$/";						// the pattern should match the name from begin to end
+
+		return (\preg_match($pattern, $file->getName()) === 1);
 	}
 }

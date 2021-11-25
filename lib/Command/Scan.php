@@ -108,8 +108,6 @@ class Scan extends BaseCommand {
 			string $user, OutputInterface $output, bool $rescan, bool $rescanModified,
 			bool $cleanObsolete, ?string $folder, bool $debug) : void {
 
-		$userHome = $this->scanner->resolveUserFolder($user);
-
 		if ($cleanObsolete) {
 			$output->writeln("Checking availability of previously scanned files of <info>$user</info>...");
 			$removedCount = $this->scanner->removeUnavailableFiles($user);
@@ -129,7 +127,7 @@ class Scan extends BaseCommand {
 		$output->writeln('Found ' . \count($filesToScan) . ' music files to scan' . ($folder ? " in '$folder'" : ''));
 
 		if (\count($filesToScan)) {
-			$processedCount = $this->scanner->scanFiles($user, $userHome, $filesToScan, $debug ? $output : null);
+			$processedCount = $this->scanner->scanFiles($user, $filesToScan, $debug ? $output : null);
 			$output->writeln("Added $processedCount files to database of <info>$user</info>");
 		}
 

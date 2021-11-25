@@ -20,6 +20,7 @@
   [#921](https://github.com/owncloud/music/issues/921)
 - Enable using wildcards in file names on `occ music:playlist-import`
   [#832](https://github.com/owncloud/music/issues/832)
+- Never use the library root folder name as an album or an artist name (in case no metadata is available)
 
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page

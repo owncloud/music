@@ -74,23 +74,19 @@ class FileHooks {
 		if ($node->getType() == FileInfo::TYPE_FILE) {
 			$scanner = $container->query('Scanner');
 			$userId = $container->query('UserId');
-			$userFolder = $container->query('UserFolder');
 
 			// When a file is uploaded to a folder shared by link, we end up here without current user.
 			// In that case, fall back to using file owner
 			if (empty($userId)) {
 				$owner = $node->getOwner();
 				$userId = $owner ? $owner->getUID() : null; // @phpstan-ignore-line At least some versions of NC may violate their PhpDoc and return null owner
-				if (!empty($userId)) {
-					$userFolder = $scanner->resolveUserFolder($userId);
-				}
 			}
 
 			// Ignore event if we got no user or folder or the user has not yet scanned the music
 			// collection. The last condition is especially to prevent problems when creating new user
 			// and the default file set contains one or more audio files (see the discussion in #638).
-			if (!empty($userId) && !empty($userFolder) && self::userHasMusicLib($userId, $container)) {
-				$scanner->update($node, $userId, $userFolder, $node->getPath());
+			if (!empty($userId) && self::userHasMusicLib($userId, $container)) {
+				$scanner->update($node, $userId, $node->getPath());
 			}
 		}
 	}

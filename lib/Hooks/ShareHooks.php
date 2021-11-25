@@ -87,7 +87,7 @@ class ShareHooks {
 			$userId = $params['shareWith'];
 			$userFolder = $scanner->resolveUserFolder($userId);
 			$filePath = $userFolder->getPath() . $params['itemTarget']; // file path for sharee
-			$scanner->update($file, $userId, $userFolder, $filePath);
+			$scanner->update($file, $userId, $filePath);
 		}
 	}
 

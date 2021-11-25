@@ -82,7 +82,7 @@ class Scanner extends PublicEmitter {
 	/**
 	 * Gets called by 'post_write' (file creation, file update) and 'post_share' hooks
 	 */
-	public function update(File $file, string $userId, Folder $userHome, string $filePath) : void {
+	public function update(File $file, string $userId, string $filePath) : void {
 		// debug logging
 		$this->logger->log("update - $filePath", 'debug');
 
@@ -100,7 +100,8 @@ class Scanner extends PublicEmitter {
 		if (Util::startsWith($mimetype, 'image')) {
 			$this->updateImage($file, $userId);
 		} elseif (Util::startsWith($mimetype, 'audio') && !self::isPlaylistMime($mimetype)) {
-			$this->updateAudio($file, $userId, $userHome, $filePath, $mimetype, /*partOfScan=*/false);
+			$libraryRoot = $this->librarySettings->getFolder($userId);
+			$this->updateAudio($file, $userId, $libraryRoot, $filePath, $mimetype, /*partOfScan=*/false);
 		}
 	}
 
@@ -123,11 +124,11 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype, bool $partOfScan) : void {
+	private function updateAudio(File $file, string $userId, Folder $libraryRoot, string $filePath, string $mimetype, bool $partOfScan) : void {
 		$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
 		$analysisEnabled = $this->librarySettings->getScanMetadataEnabled($userId);
-		$meta = $this->extractMetadata($file, $userHome, $filePath, $analysisEnabled);
+		$meta = $this->extractMetadata($file, $libraryRoot, $filePath, $analysisEnabled);
 		$fileId = $file->getId();
 
 		// add/update artist and get artist entity
@@ -162,7 +163,7 @@ class Scanner extends PublicEmitter {
 		// the file no longer contains any embedded album art
 		elseif ($album->getCoverFileId() === $fileId) {
 			$this->albumBusinessLayer->removeCovers([$fileId]);
-			$this->findEmbeddedCoverForAlbum($albumId, $userId, $userHome);
+			$this->findEmbeddedCoverForAlbum($albumId, $userId, $libraryRoot);
 			$this->coverHelper->removeAlbumCoverFromCache($albumId, $userId);
 		}
 
@@ -177,7 +178,7 @@ class Scanner extends PublicEmitter {
 				'debug');
 	}
 
-	private function extractMetadata(File $file, Folder $userHome, string $filePath, bool $analyzeFile) : array {
+	private function extractMetadata(File $file, Folder $libraryRoot, string $filePath, bool $analyzeFile) : array {
 		$fieldsFromFileName = self::parseFileName($file->getName());
 		$fileInfo = $analyzeFile ? $this->extractor->extract($file) : [];
 		$meta = [];
@@ -197,9 +198,9 @@ class Scanner extends PublicEmitter {
 
 		if (!Util::isNonEmptyString($meta['artist'])) {
 			// neither artist nor albumArtist set in fileinfo, use the second level parent folder name
-			// unless it is the user root folder
+			// unless it is the user's library root folder
 			$dirPath = \dirname(\dirname($filePath));
-			if (Util::startsWith($userHome->getPath(), $dirPath)) {
+			if (Util::startsWith($libraryRoot->getPath(), $dirPath)) {
 				$artistName = null;
 			} else {
 				$artistName = \basename($dirPath);
@@ -218,9 +219,9 @@ class Scanner extends PublicEmitter {
 		// album
 		$meta['album'] = ExtractorGetID3::getTag($fileInfo, 'album');
 		if (!Util::isNonEmptyString($meta['album'])) {
-			// album name not set in fileinfo, use parent folder name as album name unless it is the root folder
+			// album name not set in fileinfo, use parent folder name as album name unless it is the user's library root folder
 			$dirPath = \dirname($filePath);
-			if ($userHome->getPath() === $dirPath) {
+			if ($libraryRoot->getPath() === $dirPath) {
 				$meta['album'] = null;
 			} else {
 				$meta['album'] = \basename($dirPath);
@@ -504,7 +505,7 @@ class Scanner extends PublicEmitter {
 		return \array_values($fileIds); // make the array non-sparse
 	}
 
-	public function scanFiles(string $userId, Folder $userHome, array $fileIds, OutputInterface $debugOutput = null) : int {
+	public function scanFiles(string $userId, array $fileIds, OutputInterface $debugOutput = null) : int {
 		$count = \count($fileIds);
 		$this->logger->log("Scanning $count files of user $userId", 'debug');
 
@@ -513,12 +514,14 @@ class Scanner extends PublicEmitter {
 		// set execution time limit to unlimited
 		\set_time_limit(0);
 
+		$libraryRoot = $this->librarySettings->getFolder($userId);
+
 		$count = 0;
 		foreach ($fileIds as $fileId) {
-			$file = $userHome->getById($fileId)[0] ?? null;
+			$file = $libraryRoot->getById($fileId)[0] ?? null;
 			if ($file instanceof File) {
 				$memBefore = $debugOutput ? \memory_get_usage(true) : 0;
-				$this->updateAudio($file, $userId, $userHome, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
+				$this->updateAudio($file, $userId, $libraryRoot, $file->getPath(), $file->getMimetype(), /*partOfScan=*/true);
 				if ($debugOutput) {
 					$memAfter = \memory_get_usage(true);
 					$memDelta = $memAfter - $memBefore;
@@ -727,19 +730,19 @@ class Scanner extends PublicEmitter {
 	 * as cover file for the album
 	 * @param int $albumId
 	 * @param string|null $userId name of user, deducted from $albumId if omitted
-	 * @param Folder|null $userFolder home folder of user, deducted from $userId if omitted
+	 * @param Folder|null $baseFolder base folder for the search, library root of $userId is used if omitted
 	 */
-	private function findEmbeddedCoverForAlbum(int $albumId, string $userId=null, Folder $userFolder=null) : void {
+	private function findEmbeddedCoverForAlbum(int $albumId, string $userId=null, Folder $baseFolder=null) : void {
 		if ($userId === null) {
 			$userId = $this->albumBusinessLayer->findAlbumOwner($albumId);
 		}
-		if ($userFolder === null) {
-			$userFolder = $this->resolveUserFolder($userId);
+		if ($baseFolder === null) {
+			$baseFolder = $this->librarySettings->getFolder($userId);
 		}
 
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($albumId, $userId);
 		foreach ($tracks as $track) {
-			$nodes = $userFolder->getById($track->getFileId());
+			$nodes = $baseFolder->getById($track->getFileId());
 			if (\count($nodes) > 0) {
 				// parse the first valid node and check if it contains embedded cover art
 				$image = $this->extractor->parseEmbeddedCoverArt($nodes[0]);

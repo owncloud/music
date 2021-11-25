@@ -25,20 +25,12 @@ class ShivaApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
-	private $collectionHelper;
 	private $request;
 	private $controller;
 	private $userId = 'john';
 	private $appname = 'music';
 	private $urlGenerator;
 	private $l10n;
-	private $scanner;
-	private $coverHelper;
-	private $detailsHelper;
-	private $lastfmService;
-	private $maintenance;
-	private $userMusicFolder;
-	private $userFolder;
 	private $logger;
 
 	protected function setUp() : void {

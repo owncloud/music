@@ -21,9 +21,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Add dark-theme class to the #app element if Nextcloud dark theme detected.
 	// Css can then diffentiate the style of the contained elments where necessary.
-	if (OCA.Music.Utils.darkThemeActive()) {
-		$('#app').addClass('dark-theme');
+	var themeCheckRetries = 10;
+	function updateTheme() {
+		// Workaround: The theme information might not be available yet at the time when this control
+		// is initialized. But it's also possible that the cloud doesn't support the dark theme.
+		// In case the information is not available, recheck up to 10 times, once per second.
+		if (OCA.Music.Utils.themeInfoAvailable()) {
+			$('#app').toggleClass('dark-theme', OCA.Music.Utils.darkThemeActive());
+		} else if (themeCheckRetries-- > 0) {
+			$timeout(updateTheme, 1000);
+		}
 	}
+	updateTheme();
 
 	$rootScope.playing = false;
 	$rootScope.playingView = null;

@@ -25,11 +25,23 @@ OCA.Music.Utils = {
 	/**
 	 * Newer versions of Nextcloud come with a "dark theme" which may be activated
 	 * from the accessibility settings. Test if the theme is active.
+	 * Note: This may not be able to return the correct state during the application initialization,
+	 * in case the OCA.Accessibility has not got initialized yet. The function themeInfoAvailable may
+	 * be used to check if the information is available.
 	 */
 	darkThemeActive: function() {
 		// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
-		return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility')
+		return OCA.Music.Utils.themeInfoAvailable()
 			&& (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
+	},
+
+	/**
+	 * Check if theme info is currently available. It may be unavailable for two reasons:
+	 * 1) it has not been loaded yet
+	 * 2) it is not supported by the cloud
+	 */
+	themeInfoAvailable: function() {
+		return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility');
 	},
 
 	/**

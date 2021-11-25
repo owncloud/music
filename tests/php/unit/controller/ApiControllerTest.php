@@ -85,7 +85,7 @@ class ApiControllerTest extends ControllerTestUtility {
 		$this->maintenance = $this->getMockBuilder('\OCA\Music\Db\Maintenance')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->userMusicFolder = $this->getMockBuilder('\OCA\Music\Utility\UserMusicFolder')
+		$this->librarySettings = $this->getMockBuilder('\OCA\Music\Utility\LibrarySettings')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->logger = $this->getMockBuilder('\OCA\Music\AppFramework\Core\Logger')
@@ -105,7 +105,7 @@ class ApiControllerTest extends ControllerTestUtility {
 			$this->detailsHelper,
 			$this->lastfmService,
 			$this->maintenance,
-			$this->userMusicFolder,
+			$this->librarySettings,
 			$this->userId,
 			$this->l10n,
 			$this->userFolder,

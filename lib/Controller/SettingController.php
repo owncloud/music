@@ -63,7 +63,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
-	public function userPath($value) {
+	public function userPath(string $value) {
 		$prevPath = $this->librarySettings->getPath($this->userId);
 		$success = $this->librarySettings->setPath($this->userId, $value);
 
@@ -77,9 +77,17 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function userExcludedPaths($value) {
+	public function userExcludedPaths(array $value) {
 		$success = $this->librarySettings->setExcludedPaths($this->userId, $value);
 		return new JSONResponse(['success' => $success]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function enableScanMetadata(bool $value) {
+		$this->librarySettings->setScanMetadataEnabled($this->userId, $value);
+		return new JSONResponse(['success' => true]);
 	}
 
 	/**
@@ -89,6 +97,7 @@ class SettingController extends Controller {
 		return [
 			'path' => $this->librarySettings->getPath($this->userId),
 			'excludedPaths' => $this->librarySettings->getExcludedPaths($this->userId),
+			'scanMetadata' => $this->librarySettings->getScanMetadataEnabled($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2021
  */
 
 .invisible {
@@ -66,9 +66,8 @@
 	margin-bottom: 8px;
 }
 
-#music-user #path-change-in-progress,
-#music-user .reset-in-progress,
-#music-user #song-notifications-toggle {
+#music-user .operation-in-progress,
+#music-user input[type=checkbox] {
 	display: inline-block;
 	vertical-align: middle;
 	top: -3px;

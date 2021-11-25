@@ -7,6 +7,8 @@
 - Menu with stop button shown with long press on the play/pause button
   [#911](https://github.com/owncloud/music/issues/911)
 - Stop button shown instead of the play/pause while shift held down
+- User setting to disable metadata extraction and scan only the file and folder names
+  [#914](https://github.com/owncloud/music/issues/914)
 
 ### Changed
 - Allow replacing '/' and characters forbidden on Windows file names with '_' when matching image files to artist names

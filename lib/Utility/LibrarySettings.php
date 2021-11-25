@@ -38,11 +38,15 @@ class LibrarySettings {
 		$this->logger = $logger;
 	}
 
-	/**
-	 * @param string $userId
-	 * @param string $path
-	 * @return bool
-	 */
+	public function setScanMetadataEnabled(string $userId, bool $enabled) : void {
+		$this->configManager->setUserValue($userId, $this->appName, 'scan_metadata', $enabled ? 1 : 0);
+	}
+
+	public function getScanMetadataEnabled(string $userId) : bool {
+		$value = $this->configManager->getUserValue($userId, $this->appName, 'scan_metadata', 1);
+		return ($value > 0);
+	}
+
 	public function setPath(string $userId, string $path) : bool {
 		$success = false;
 
@@ -62,19 +66,13 @@ class LibrarySettings {
 		return $success;
 	}
 
-	/**
-	 * @param string $userId
-	 * @return string
-	 */
 	public function getPath(string $userId) : string {
 		$path = $this->configManager->getUserValue($userId, $this->appName, 'path');
 		return $path ?: '/';
 	}
 
 	/**
-	 * @param string $userId
 	 * @param string[] $paths
-	 * @return bool
 	 */
 	public function setExcludedPaths(string $userId, array $paths) : bool {
 		$this->configManager->setUserValue($userId, $this->appName, 'excluded_paths', \json_encode($paths));
@@ -82,7 +80,6 @@ class LibrarySettings {
 	}
 
 	/**
-	 * @param string $userId
 	 * @return string[]
 	 */
 	public function getExcludedPaths(string $userId) : array {
@@ -94,21 +91,12 @@ class LibrarySettings {
 		}
 	}
 
-	/**
-	 * @param string $userId
-	 * @return Folder
-	 */
 	public function getFolder(string $userId) : Folder {
 		$userHome = $this->rootFolder->getUserFolder($userId);
 		$path = $this->getPath($userId);
 		return Util::getFolderFromRelativePath($userHome, $path);
 	}
 
-	/**
-	 * @param string $filePath
-	 * @param string $userId
-	 * @return boolean
-	 */
 	public function pathBelongsToMusicLibrary(string $filePath, string $userId) : bool {
 		$filePath = self::normalizePath($filePath);
 		$musicPath = self::normalizePath($this->getFolder($userId)->getPath());

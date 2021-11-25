@@ -126,7 +126,8 @@ class Scanner extends PublicEmitter {
 	private function updateAudio(File $file, string $userId, Folder $userHome, string $filePath, string $mimetype, bool $partOfScan) : void {
 		$this->emit('\OCA\Music\Utility\Scanner', 'update', [$filePath]);
 
-		$meta = $this->extractMetadata($file, $userHome, $filePath);
+		$analysisEnabled = $this->librarySettings->getScanMetadataEnabled($userId);
+		$meta = $this->extractMetadata($file, $userHome, $filePath, $analysisEnabled);
 		$fileId = $file->getId();
 
 		// add/update artist and get artist entity
@@ -176,9 +177,9 @@ class Scanner extends PublicEmitter {
 				'debug');
 	}
 
-	private function extractMetadata(File $file, Folder $userHome, string $filePath) : array {
+	private function extractMetadata(File $file, Folder $userHome, string $filePath, bool $analyzeFile) : array {
 		$fieldsFromFileName = self::parseFileName($file->getName());
-		$fileInfo = $this->extractor->extract($file);
+		$fileInfo = $analyzeFile ? $this->extractor->extract($file) : [];
 		$meta = [];
 
 		// Track artist and album artist
@@ -595,7 +596,7 @@ class Scanner extends PublicEmitter {
 	private function getUnindexedFileInfo(int $fileId, string $userId, Folder $userFolder) : ?array {
 		$file = $userFolder->getById($fileId)[0] ?? null;
 		if ($file instanceof File) {
-			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath());
+			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath(), true);
 			$cover = $metadata['picture'];
 			if ($cover != null) {
 				$cover = [

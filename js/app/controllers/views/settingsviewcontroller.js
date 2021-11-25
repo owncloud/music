@@ -11,8 +11,8 @@
  */
 
 angular.module('Music').controller('SettingsViewController', [
-	'$scope', '$rootScope', 'Restangular', '$window', '$timeout', 'gettextCatalog',
-	function ($scope, $rootScope, Restangular, $window, $timeout, gettextCatalog) {
+	'$scope', '$rootScope', 'Restangular', '$q', '$timeout', 'gettextCatalog',
+	function ($scope, $rootScope, Restangular, $q, $timeout, gettextCatalog) {
 
 		$rootScope.currentView = window.location.hash;
 
@@ -135,6 +135,35 @@ angular.module('Music').controller('SettingsViewController', [
 				);
 			}
 		};
+
+		var cancelSaveScanMetada = null;
+		$scope.savingScanMetadata = 0;
+		$scope.$watch('settings.scanMetadata', function(enabled, previouslyEnabled) {
+			// send the new value to the server only when moving between valid states, not on first init
+			if (enabled !== undefined && previouslyEnabled !== undefined) {
+				// if there is already one save operation running, cancel that first
+				if (cancelSaveScanMetada !== null) {
+					cancelSaveScanMetada.resolve();
+				}
+
+				$scope.savingScanMetadata++;
+				cancelSaveScanMetada = $q.defer();
+				Restangular.all('settings/user/enable_scan_metadata').withHttpConfig({timeout: cancelSaveScanMetada.promise}).post({value: enabled}).then(
+					function(_data) {
+						// success
+						$scope.savingScanMetadata--;
+						$scope.errorScanMetadata = false;
+						cancelSaveScanMetada = null;
+					},
+					function(error) {
+						// error handling
+						$scope.savingScanMetadata--;
+						$scope.errorScanMetadata = (error.xhrStatus != 'abort'); // aborting is not an error
+						cancelSaveScanMetada = null;
+					}
+				);
+			}
+		});
 
 		$scope.resetCollection = function() {
 			OC.dialogs.confirm(

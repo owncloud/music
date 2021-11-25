@@ -1,12 +1,12 @@
 <div class="view-container" id="music-user" ng-show="!loading">
 	<h1 translate>Settings</h1>
 
-	<h2 translate>Paths</h2>
+	<h2 translate>Music library</h2>
 	<div>
 		<div class="label-container">
 			<label for="music-path" translate>Path to your music collection</label>:
 		</div>
-		<div class="icon-loading-small" ng-show="pathChangeOngoing" id="path-change-in-progress"></div>
+		<div class="icon-loading-small operation-in-progress" ng-show="pathChangeOngoing"></div>
 		<input type="text" id="music-path" ng-class="{ 'invisible': pathChangeOngoing }"
 			ng-model="settings.path" ng-click="selectPath()"/>
 		<span style="color:red" ng-show="errorPath" translate>Failed to save the music collection path</span>
@@ -47,13 +47,23 @@
 		</table>
 		<span style="color:red" ng-show="errorIgnoredPaths" translate>Failed to save the ignored paths</span>
 	</div>
+	<div>
+		<div class="label-container">
+			<label for="scan-metadata-toggle" translate>Enable metadata scanning</label>
+		</div>
+		<input type="checkbox" id="scan-metadata-toggle" ng-model="settings.scanMetadata"/>
+		<div class="icon-loading-small operation-in-progress" ng-show="savingScanMetadata"></div>
+		<span style="color:red" ng-show="errorScanMetadata" translate>Failed to save the setting</span>
+		<p><em translate>Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only.</em></p>
+		<p><em translate>Changes on this settings take effect only upon rescan of the library.</em></p>
+	</div>
 
 	<h2 translate>Reset</h2>
 	<div>
 		<div class="label-container">
 			<label for="reset-collection" translate>Reset music collection</label>
 		</div>
-		<div class="icon-loading-small reset-in-progress" ng-show="collectionResetOngoing"></div>
+		<div class="icon-loading-small operation-in-progress" ng-show="collectionResetOngoing"></div>
 		<input type="button" ng-class="{ 'invisible': collectionResetOngoing }"
 			class="icon-delete reset-button" id="reset-collection" ng-click="resetCollection()"/>
 		<p><em translate>This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch.</em></p>
@@ -63,7 +73,7 @@
 		<div class="label-container">
 			<label for="reset-radio" translate>Reset internet radio stations</label>
 		</div>
-		<div class="icon-loading-small reset-in-progress" ng-show="radioResetOngoing"></div>
+		<div class="icon-loading-small operation-in-progress" ng-show="radioResetOngoing"></div>
 		<input type="button" ng-class="{ 'invisible': radioResetOngoing }"
 			class="icon-delete reset-button" id="reset-radio" ng-click="resetRadio()"/>
 		<p><em translate>This action erases all the stations shown in the "Internet radio" view.</em></p>
@@ -72,7 +82,7 @@
 		<div class="label-container">
 			<label for="reset-podcasts" translate>Reset podcast channels</label>
 		</div>
-		<div class="icon-loading-small reset-in-progress" ng-show="podcastsResetOngoing"></div>
+		<div class="icon-loading-small operation-in-progress" ng-show="podcastsResetOngoing"></div>
 		<input type="button" ng-class="{ 'invisible': podcastsResetOngoing }"
 			class="icon-delete reset-button" id="reset-podcasts" ng-click="resetPodcasts()"/>
 		<p><em translate>This action erases all the channels shown in the "Podcasts" view.</em></p>

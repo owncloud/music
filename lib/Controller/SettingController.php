@@ -24,9 +24,9 @@ use OCP\Security\ISecureRandom;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
-use OCA\Music\Utility\UserMusicFolder;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
@@ -34,7 +34,7 @@ class SettingController extends Controller {
 	private $ampacheUserMapper;
 	private $scanner;
 	private $userId;
-	private $userMusicFolder;
+	private $librarySettings;
 	private $secureRandom;
 	private $urlGenerator;
 	private $logger;
@@ -44,7 +44,7 @@ class SettingController extends Controller {
 								AmpacheUserMapper $ampacheUserMapper,
 								Scanner $scanner,
 								?string $userId,
-								UserMusicFolder $userMusicFolder,
+								LibrarySettings $librarySettings,
 								ISecureRandom $secureRandom,
 								IURLGenerator $urlGenerator,
 								Logger $logger) {
@@ -53,7 +53,7 @@ class SettingController extends Controller {
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->scanner = $scanner;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
-		$this->userMusicFolder = $userMusicFolder;
+		$this->librarySettings = $librarySettings;
 		$this->secureRandom = $secureRandom;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
@@ -64,8 +64,8 @@ class SettingController extends Controller {
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function userPath($value) {
-		$prevPath = $this->userMusicFolder->getPath($this->userId);
-		$success = $this->userMusicFolder->setPath($this->userId, $value);
+		$prevPath = $this->librarySettings->getPath($this->userId);
+		$success = $this->librarySettings->setPath($this->userId, $value);
 
 		if ($success) {
 			$this->scanner->updatePath($prevPath, $value, $this->userId);
@@ -78,7 +78,7 @@ class SettingController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function userExcludedPaths($value) {
-		$success = $this->userMusicFolder->setExcludedPaths($this->userId, $value);
+		$success = $this->librarySettings->setExcludedPaths($this->userId, $value);
 		return new JSONResponse(['success' => $success]);
 	}
 
@@ -87,8 +87,8 @@ class SettingController extends Controller {
 	 */
 	public function getAll() {
 		return [
-			'path' => $this->userMusicFolder->getPath($this->userId),
-			'excludedPaths' => $this->userMusicFolder->getExcludedPaths($this->userId),
+			'path' => $this->librarySettings->getPath($this->userId),
+			'excludedPaths' => $this->librarySettings->getExcludedPaths($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),

@@ -44,7 +44,7 @@ class Scanner extends PublicEmitter {
 	private $coverHelper;
 	private $logger;
 	private $maintenance;
-	private $userMusicFolder;
+	private $librarySettings;
 	private $rootFolder;
 	private $config;
 	private $l10nFactory;
@@ -59,7 +59,7 @@ class Scanner extends PublicEmitter {
 								CoverHelper $coverHelper,
 								Logger $logger,
 								Maintenance $maintenance,
-								UserMusicFolder $userMusicFolder,
+								LibrarySettings $librarySettings,
 								IRootFolder $rootFolder,
 								IConfig $config,
 								\OCP\L10N\IFactory $l10nFactory) {
@@ -73,7 +73,7 @@ class Scanner extends PublicEmitter {
 		$this->coverHelper = $coverHelper;
 		$this->logger = $logger;
 		$this->maintenance = $maintenance;
-		$this->userMusicFolder = $userMusicFolder;
+		$this->librarySettings = $librarySettings;
 		$this->rootFolder = $rootFolder;
 		$this->config = $config;
 		$this->l10nFactory = $l10nFactory;
@@ -87,7 +87,7 @@ class Scanner extends PublicEmitter {
 		$this->logger->log("update - $filePath", 'debug');
 
 		// skip files that aren't inside the user specified path
-		if (!$this->userMusicFolder->pathBelongsToMusicLibrary($filePath, $userId)) {
+		if (!$this->librarySettings->pathBelongsToMusicLibrary($filePath, $userId)) {
 			$this->logger->log("skipped - file is outside of specified music folder", 'debug');
 			return;
 		}
@@ -397,7 +397,7 @@ class Scanner extends PublicEmitter {
 	 */
 	private function getImageFiles(string $userId) : array {
 		try {
-			$folder = $this->userMusicFolder->getFolder($userId);
+			$folder = $this->librarySettings->getFolder($userId);
 		} catch (\OCP\Files\NotFoundException $e) {
 			return [];
 		}
@@ -406,7 +406,7 @@ class Scanner extends PublicEmitter {
 
 		// filter out any images in the excluded folders
 		return \array_filter($images, function ($image) use ($userId) {
-			return $this->userMusicFolder->pathBelongsToMusicLibrary($image->getPath(), $userId);
+			return $this->librarySettings->pathBelongsToMusicLibrary($image->getPath(), $userId);
 		});
 	}
 
@@ -415,7 +415,7 @@ class Scanner extends PublicEmitter {
 	}
 
 	private function getMusicFolder(string $userId, ?string $path) {
-		$folder = $this->userMusicFolder->getFolder($userId);
+		$folder = $this->librarySettings->getFolder($userId);
 
 		if (!empty($path)) {
 			$userFolder = $this->resolveUserFolder($userId);
@@ -455,7 +455,7 @@ class Scanner extends PublicEmitter {
 		$files = \array_filter($files, function ($f) use ($userId, $excludeIdsLut) {
 			return !isset($excludeIdsLut[$f->getId()])
 					&& !self::isPlaylistMime($f->getMimeType())
-					&& $this->userMusicFolder->pathBelongsToMusicLibrary($f->getPath(), $userId);
+					&& $this->librarySettings->pathBelongsToMusicLibrary($f->getPath(), $userId);
 		});
 
 		return \array_values(Util::extractIds($files)); // the array may be sparse before array_values
@@ -607,7 +607,7 @@ class Scanner extends PublicEmitter {
 				'title'      => $metadata['title'],
 				'artist'     => $metadata['artist'],
 				'cover'      => $cover,
-				'in_library' => $this->userMusicFolder->pathBelongsToMusicLibrary($file->getPath(), $userId)
+				'in_library' => $this->librarySettings->pathBelongsToMusicLibrary($file->getPath(), $userId)
 			];
 		}
 		return null;

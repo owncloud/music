@@ -21,7 +21,7 @@ use OCA\Music\AppFramework\Core\Logger;
 /**
  * Manage the user-specific music folder setting
  */
-class UserMusicFolder {
+class LibrarySettings {
 	private $appName;
 	private $configManager;
 	private $rootFolder;

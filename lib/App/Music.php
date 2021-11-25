@@ -73,7 +73,7 @@ use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
-use OCA\Music\Utility\UserMusicFolder;
+use OCA\Music\Utility\LibrarySettings;
 
 class Music extends App {
 	public function __construct(array $urlParams=[]) {
@@ -126,7 +126,7 @@ class Music extends App {
 				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
 				$c->query('Maintenance'),
-				$c->query('UserMusicFolder'),
+				$c->query('LibrarySettings'),
 				$c->query('UserId'),
 				$c->query('L10N'),
 				$c->query('UserFolder'),
@@ -196,7 +196,7 @@ class Music extends App {
 				$c->query('AmpacheUserMapper'),
 				$c->query('Scanner'),
 				$c->query('UserId'),
-				$c->query('UserMusicFolder'),
+				$c->query('LibrarySettings'),
 				$c->query('SecureRandom'),
 				$c->query('URLGenerator'),
 				$c->query('Logger')
@@ -245,7 +245,7 @@ class Music extends App {
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
-				$c->query('UserMusicFolder'),
+				$c->query('LibrarySettings'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
 				$c->query('LastfmService'),
@@ -570,15 +570,15 @@ class Music extends App {
 				$c->query('CoverHelper'),
 				$c->query('Logger'),
 				$c->query('Maintenance'),
-				$c->query('UserMusicFolder'),
+				$c->query('LibrarySettings'),
 				$c->query('RootFolder'),
 				$c->query('Config'),
 				$c->query('L10NFactory')
 			);
 		});
 
-		$container->registerService('UserMusicFolder', function (IAppContainer $c) {
-			return new UserMusicFolder(
+		$container->registerService('LibrarySettings', function (IAppContainer $c) {
+			return new LibrarySettings(
 				$c->query('AppName'),
 				$c->query('Config'),
 				$c->query('RootFolder'),

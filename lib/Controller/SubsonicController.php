@@ -57,9 +57,9 @@ use OCA\Music\Middleware\SubsonicException;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\LastfmService;
+use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
-use OCA\Music\Utility\UserMusicFolder;
 use OCA\Music\Utility\Util;
 
 class SubsonicController extends Controller {
@@ -77,7 +77,7 @@ class SubsonicController extends Controller {
 	private $library;
 	private $urlGenerator;
 	private $userManager;
-	private $userMusicFolder;
+	private $librarySettings;
 	private $l10n;
 	private $coverHelper;
 	private $detailsHelper;
@@ -104,7 +104,7 @@ class SubsonicController extends Controller {
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
-								UserMusicFolder $userMusicFolder,
+								LibrarySettings $librarySettings,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
 								LastfmService $lastfmService,
@@ -126,7 +126,7 @@ class SubsonicController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;
-		$this->userMusicFolder = $userMusicFolder;
+		$this->librarySettings = $librarySettings;
 		$this->coverHelper = $coverHelper;
 		$this->detailsHelper = $detailsHelper;
 		$this->lastfmService = $lastfmService;
@@ -428,7 +428,7 @@ class SubsonicController extends Controller {
 		}
 
 		if (!empty($entity)) {
-			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+			$rootFolder = $this->librarySettings->getFolder($this->userId);
 			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
 
 			if ($coverData !== null) {
@@ -457,7 +457,7 @@ class SubsonicController extends Controller {
 			$track = $matches[0];
 
 			$artistObj = $this->artistBusinessLayer->find($track->getArtistId(), $this->userId);
-			$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+			$rootFolder = $this->librarySettings->getFolder($this->userId);
 			$lyrics = $this->detailsHelper->getLyrics($track->getFileId(), $rootFolder);
 
 			return $this->subsonicResponse(['lyrics' => [
@@ -1040,7 +1040,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getFilesystemNode($id) {
-		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+		$rootFolder = $this->librarySettings->getFolder($this->userId);
 		$nodes = $rootFolder->getById($id);
 
 		if (\count($nodes) != 1) {
@@ -1068,7 +1068,7 @@ class SubsonicController extends Controller {
 	private function getSubfoldersAndTracks(Folder $folder) : array {
 		$nodes = $folder->getDirectoryListing();
 		$subFolders = \array_filter($nodes, function ($n) {
-			return ($n instanceof Folder) && $this->userMusicFolder->pathBelongsToMusicLibrary($n->getPath(), $this->userId);
+			return ($n instanceof Folder) && $this->librarySettings->pathBelongsToMusicLibrary($n->getPath(), $this->userId);
 		});
 
 		$tracks = $this->trackBusinessLayer->findAllByFolder($folder->getId(), $this->userId);
@@ -1077,7 +1077,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForFolders() {
-		$rootFolder = $this->userMusicFolder->getFolder($this->userId);
+		$rootFolder = $this->librarySettings->getFolder($this->userId);
 
 		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
 
@@ -1124,7 +1124,7 @@ class SubsonicController extends Controller {
 		];
 
 		// Parent folder ID is included if and only if the parent folder is not the top level
-		$rootFolderId = $this->userMusicFolder->getFolder($this->userId)->getId();
+		$rootFolderId = $this->librarySettings->getFolder($this->userId)->getId();
 		$parentFolderId = $folder->getParent()->getId();
 		if ($rootFolderId != $parentFolderId) {
 			$content['parent'] = 'folder-' . $parentFolderId;
@@ -1356,7 +1356,7 @@ class SubsonicController extends Controller {
 			case 'track':
 				return $this->trackBusinessLayer->find($id, $this->userId)->getArtistId();
 			case 'folder':
-				$folder = $this->userMusicFolder->getFolder($this->userId)->getById($id)[0] ?? null;
+				$folder = $this->librarySettings->getFolder($this->userId)->getById($id)[0] ?? null;
 				if ($folder !== null) {
 					$artist = $this->artistBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
 					if ($artist !== null) {
@@ -1418,7 +1418,7 @@ class SubsonicController extends Controller {
 			case 'track':
 				return $this->trackBusinessLayer->find($id, $this->userId)->getAlbumId();
 			case 'folder':
-				$folder = $this->userMusicFolder->getFolder($this->userId)->getById($id)[0] ?? null;
+				$folder = $this->librarySettings->getFolder($this->userId)->getById($id)[0] ?? null;
 				if ($folder !== null) {
 					$album = $this->albumBusinessLayer->findAllByName($folder->getName(), $this->userId)[0] ?? null;
 					if ($album !== null) {

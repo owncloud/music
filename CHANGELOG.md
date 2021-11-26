@@ -24,13 +24,14 @@
 
 ### Fixed
 - Keyboard shortcuts not working after opening the details pane before clicking somewhere else on the page
-- Compatibility with IE10 and IE11
+- Compatibility with IE10 and IE11 (broken since v1.4.0)
 - Not being able to provide artist image for the "Unknown artist"
 - Albums compact layout not using the whole screen width on narrow window where only one column fits
 - Nextcloud dark theme not always properly applied, especially after page reload
 - Scanning via the web UI often not finding the artist images
 - Layout problems, most notable on the Albums view, on Nextcloud 22.2.1 and later
   [#923](https://github.com/owncloud/music/issues/923)
+- Last.fm error notes not centered as intended (since v1.4.0)
 
 ## 1.4.1 - 2021-10-31
 ### Added

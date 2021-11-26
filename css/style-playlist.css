@@ -80,8 +80,7 @@
 	vertical-align: middle;
 	margin: 0;
 	opacity: 0.5;
-	padding-left: 16px;
-	padding-right: 16px;
+	padding: 7px 16px;
 }
 
 .playlist-area .track-list li .action:hover {

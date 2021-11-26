@@ -29,6 +29,8 @@
 - Albums compact layout not using the whole screen width on narrow window where only one column fits
 - Nextcloud dark theme not always properly applied, especially after page reload
 - Scanning via the web UI often not finding the artist images
+- Layout problems, most notable on the Albums view, on Nextcloud 22.2.1 and later
+  [#923](https://github.com/owncloud/music/issues/923)
 
 ## 1.4.1 - 2021-10-31
 ### Added

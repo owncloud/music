@@ -41,6 +41,11 @@ body#body-user.dark {
 	height: 100%;
 }
 
+/* Nextcloud versions 22.2.1+ have a button min-height which messes up our layout */
+#app button {
+	min-height: unset;
+}
+
 #app-view {
 	top: 0;
 	bottom: 0;
@@ -134,7 +139,7 @@ div:hover > .play-pause,
 	background-color: transparent;
 	visibility: hidden;
 	opacity: 0.5;
-	padding: 6px 12px;
+	padding: 7px 12px;
 	width: auto;
 }
 

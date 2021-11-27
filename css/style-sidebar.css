@@ -97,6 +97,8 @@
 	vertical-align: middle;
 	margin-top: -3px;
 	margin-bottom: -3px;
+	height: 16px;
+	width: 16px;
 }
 
 #app-sidebar h2 .icon-info {

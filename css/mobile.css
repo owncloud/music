@@ -62,8 +62,8 @@
 	height: 50px;
 	line-height: 50px;
 }
-.mobile .album-area h2 {
-	max-width: 75%;
+.mobile .view-container.single-col:not(.compact) .album-area h2 {
+	white-space: nowrap; /* override multi-line normally allowed in .single-col */
 }
 .mobile .album-area > h2 > div {
 	line-height: 1.2;
@@ -136,7 +136,7 @@
 	margin-left: -4px;
 }
 
-/* extra narrow screen may result on desktop browser when manually resizing the window; drop non-essential elements and margins */
+/* extra narrow screen matches small smart phones; drop non-essential elements and margins */
 .extra-narrow #controls .albumart {
 	display: none;
 }
@@ -150,6 +150,7 @@
 	padding-left: 18px;
 }
 
+/* min-width screen may result on desktop browser when manually resizing the window; here we need to drop also essential elements */
 .min-width #controls .song-info,
 .min-width #controls .toggle {
 	display: none;

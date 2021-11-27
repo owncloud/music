@@ -136,8 +136,17 @@
 	width: 100%;
 }
 
+.view-container.single-col:not(.compact) .album-area > h2 {
+	white-space: normal;
+}
+
 .view-container.single-col .album-area > h2 {
-	max-width: 80vw;
+	max-width: calc(100% - 90px);
+}
+
+.view-container.single-col.compact .album-area > h2 {
+	/* in the compact mode, specifying width using a percent wouldn't work because the position is not absolute */
+	max-width: calc(100vw - 60px);
 }
 
 .view-container.single-col .album-area .track-list li > div > span {

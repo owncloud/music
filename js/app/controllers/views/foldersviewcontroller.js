@@ -77,7 +77,7 @@ angular.module('Music').controller('FoldersViewController', [
 
 		function trackBelongsToPlayingFolder(trackId) {
 			var currentListId = playlistService.getCurrentPlaylistId();
-			if (currentListId.startsWith('folder-')) {
+			if (currentListId?.startsWith('folder-')) {
 				var currentList = playlistService.getCurrentPlaylist();
 				return (0 <= _.findIndex(currentList, ['track.id', trackId]));
 			} else {

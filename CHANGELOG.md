@@ -33,6 +33,7 @@
   [#923](https://github.com/owncloud/music/issues/923)
 - Last.fm error notes not centered as intended (since v1.4.0)
 - Long album names overlapping the alphabet navigation on the mobile layout
+- Clicking a track in the Folders view not working if there wasn't already something playing (since v1.4.0)
 
 ## 1.4.1 - 2021-10-31
 ### Added

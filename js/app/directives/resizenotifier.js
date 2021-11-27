@@ -5,14 +5,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2018 Pauli Järvinen
+ * @copyright 2018 - 2021 Pauli Järvinen
  *
  */
 
-angular.module('Music').directive('resizeNotifier', ['$rootScope', function($rootScope) {
-	return function(scope, element, _attrs, _ctrl) {
+angular.module('Music').directive('resizeNotifier', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+	return function(_scope, element, _attrs, _ctrl) {
 		element.resize(function() {
-			$rootScope.$emit('resize', element);
+			$timeout(() => $rootScope.$emit('resize', element));
 		});
 	};
 }]);

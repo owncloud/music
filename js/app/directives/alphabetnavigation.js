@@ -85,7 +85,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 			}
 			setUpTargets();
 
-			function onResize(event, appView) {
+			function onResize(_event, appView, secondCheck) {
 				// top and bottom padding of 5px each
 				var height = appView.height() - 10;
 
@@ -112,14 +112,21 @@ function($rootScope, $timeout, alphabetIndexingService) {
 				// anchor the alphabet navigation to the right edge of the app view
 				var appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
 				element.css('right', appViewRight);
+
+				// There's no resize event when the navigation pane collapses on mobile layot but there is one when the
+				// view changes. When these two happen simultaneously, the event may fire while the navigation pane is
+				// still partially visible, causing the appView.offset to be greater than zero. In this case, the alphabet
+				// navigation gets placed partially or completely outside the visible screen area.
+				// Work around: Check the layout again after a short while if there is any offset.
+				if (!secondCheck && appView.offset().left > 0) {
+					$timeout(() => onResize(null, appView, true), 500);
+				}
 			}
 
 			function onPlayerBarShownOrHidden() {
 				// React asynchronously so that angularjs bindings have had chance
 				// to update the properties of the #app-view element.
-				$timeout(function() {
-					onResize(null, $('#app-view'));
-				});
+				$timeout(() => onResize(null, $('#app-view')));
 			}
 
 			// Trigger resize on #app-view resize and player status changes.

@@ -1,6 +1,13 @@
+## [Unreleased]
+### Added
+
+### Changed
+
+### Fixed
+
 ## 1.5.0 - 2021-11-28
 ### Added
-- Supoprt for Nextcloud 23
+- Support for Nextcloud 23
   [#912](https://github.com/owncloud/music/pull/912) @PVince81
 - Option `rescan-modified` to the `occ` command `music:scan`
   [#843](https://github.com/owncloud/music/issues/843)
@@ -101,7 +108,7 @@
 - "No search results" briefly showing up while the web UI was being loaded
 
 ### Known issues
-- This version broke the compatibility with IE10 and IE11
+- This version broke the compatibility with IE10 and IE11 (fixed in v1.5.0)
 
 ## 1.3.3 - 2021-09-06
 ### Fixed

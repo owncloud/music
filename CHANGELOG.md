@@ -6,7 +6,7 @@
   [#843](https://github.com/owncloud/music/issues/843)
 - Menu with stop button shown with long press on the play/pause button
   [#911](https://github.com/owncloud/music/issues/911)
-- Stop button shown instead of the play/pause while shift held down
+- Stop button shown in place of the play/pause button while shift held down
 - User setting to disable metadata extraction and scan only the file and folder names
   [#914](https://github.com/owncloud/music/issues/914)
 - Possibility to start playback and/or set shuffle/repeat with the URL arguments
@@ -39,6 +39,7 @@
 - Clicking a track in the Folders view not working if there wasn't already something playing (since v1.4.0)
 - Long album names overlapping the alphabet navigation on the mobile layout
 - Alphabet navigation being sometimes hidden after changing the view on the mobile layout
+- Metadata not shown in the embedded Files player for files outside the music library (since v1.3.0)
 
 ## 1.4.1 - 2021-10-31
 ### Added

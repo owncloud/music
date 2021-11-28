@@ -602,10 +602,10 @@ class Scanner extends PublicEmitter {
 			$metadata = $this->extractMetadata($file, $userFolder, $file->getPath(), true);
 			$cover = $metadata['picture'];
 			if ($cover != null) {
-				$cover = [
+				$cover = $this->coverHelper->scaleDownAndCrop([
 					'mimetype' => $cover['image_mime'],
-					'content' => $this->coverHelper->scaleDownAndCrop($cover['data'], 200)
-				];
+					'content' => $cover['data']
+				], 200);
 			}
 			return [
 				'title'      => $metadata['title'],

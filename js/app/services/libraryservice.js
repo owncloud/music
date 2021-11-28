@@ -384,6 +384,24 @@ angular.module('Music').service('libraryService', [function() {
 				break;
 			}
 		},
+		removeDuplicatesFromPlaylist: function(playlistId) {
+			var playlist = this.getPlaylist(playlistId);
+			var foundIds = {};
+			var indicesToRemove = [];
+
+			// find the indices containing duplicates
+			for (var i = 0; i < playlist.tracks.length; ++i) {
+				var id = playlist.tracks[i].track.id;
+				if (id in foundIds) {
+					indicesToRemove.push(i);
+				} else {
+					foundIds[id] = 1;
+				}
+			}
+
+			// remove (and return) the duplicates
+			return _.pullAt(playlist.tracks, indicesToRemove);
+		},
 		getArtist: function(id) {
 			var artist = _.find(artists, { id: Number(id) });
 			if (!artist) {

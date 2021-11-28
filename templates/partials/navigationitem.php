@@ -60,6 +60,9 @@
 							</ul>
 						</div>
 					</li>
+					<li ng-click="$parent.$parent.removeDuplicates(playlist)">
+						<a class="icon-close"><span translate>Remove duplicates</span></a>
+					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
 						<a class="icon-delete"><span translate>Delete</span></a>
 					</li>

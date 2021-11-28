@@ -106,17 +106,22 @@ angular.module('Music').controller('NavigationController', [
 		// Sort playlist
 		$scope.sortPlaylist = function(playlist, byProperty) {
 			libraryService.sortPlaylist(playlist.id, byProperty);
+			handlePlaylistContentChange(playlist);
+		};
 
-			// Update the currently playing list if necessary
-			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
-				var playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
-				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
+		// Remove duplicate tracks from a playlist
+		$scope.removeDuplicates = function(playlist) {
+			var removedTracks = libraryService.removeDuplicatesFromPlaylist(playlist.id);
+			var removedCount = removedTracks.length;
+			var message = gettextCatalog.getPlural(removedCount,
+													'{{ count }} duplicate track was removed',
+													'{{ count }} duplicate tracks were removed',
+													{ count: removedCount });
+			OC.Notification.showTemporary(message);
+
+			if (removedCount > 0) {
+				handlePlaylistContentChange(playlist);
 			}
-
-			var trackIds = _.map(playlist.tracks, 'track.id');
-			Restangular.one('playlists', playlist.id).put({ trackIds: trackIds.join(',') }).then(function (result) {
-				playlist.updated = result.updated;
-			});
 		};
 
 		// Remove playlist
@@ -310,6 +315,19 @@ angular.module('Music').controller('NavigationController', [
 			}
 
 			Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
+				playlist.updated = result.updated;
+			});
+		}
+
+		function handlePlaylistContentChange(playlist) {
+			// Update the currently playing list if necessary
+			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
+				var playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
+				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
+			}
+
+			var trackIds = _.map(playlist.tracks, 'track.id');
+			Restangular.one('playlists', playlist.id).put({ trackIds: trackIds.join(',') }).then(function (result) {
 				playlist.updated = result.updated;
 			});
 		}

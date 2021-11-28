@@ -54,7 +54,8 @@
 	padding: 5px;
 }
 
-#app-navigation .icon-checkmark, #app-navigation .icon-close {
+#app-navigation .action.icon-checkmark, 
+#app-navigation .action.icon-close {
 	margin-top: 10px !important;
 }
 

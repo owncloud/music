@@ -40,6 +40,7 @@
 - Long album names overlapping the alphabet navigation on the mobile layout
 - Alphabet navigation being sometimes hidden after changing the view on the mobile layout
 - Metadata not shown in the embedded Files player for files outside the music library (since v1.3.0)
+- The result of the playlist "Sort" operation not saved to the server if the list is very long
 
 ## 1.4.1 - 2021-10-31
 ### Added

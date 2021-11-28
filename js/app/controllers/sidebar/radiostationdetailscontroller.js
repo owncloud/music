@@ -80,7 +80,7 @@ angular.module('Music').controller('RadioStationDetailsController', [
 					if ($scope.stationName !== $scope.station.name || $scope.streamUrl !== $scope.station.stream_url) {
 						$scope.station.name = $scope.stationName;
 						$scope.station.stream_url = $scope.streamUrl;
-						Restangular.one('radio', $scope.station.id).put(newData).then(
+						Restangular.one('radio', $scope.station.id).customPUT(newData).then(
 							function (result) {
 								$scope.station.updated = result.updated;
 							}

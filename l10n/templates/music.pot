@@ -26,37 +26,37 @@ msgstr ""
 msgid "(no artist image available)"
 msgstr ""
 
-#: ../js/app/controllers/maincontroller.js:54
+#: ../js/app/controllers/maincontroller.js:67
 msgid "1 album"
 msgid_plural "{{ count }} albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/maincontroller.js:87
+#: ../js/app/controllers/maincontroller.js:100
 msgid "1 channel"
 msgid_plural "{{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/maincontroller.js:60
+#: ../js/app/controllers/maincontroller.js:73
 msgid "1 folder"
 msgid_plural "{{ count }} folders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/maincontroller.js:69
+#: ../js/app/controllers/maincontroller.js:82
 msgid "1 genre"
 msgid_plural "{{ count }} genres"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/maincontroller.js:78
+#: ../js/app/controllers/maincontroller.js:91
 msgid "1 station"
 msgid_plural "{{ count }} stations"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/maincontroller.js:49
+#: ../js/app/controllers/maincontroller.js:62
 msgid "1 track"
 msgid_plural "{{ count }} tracks"
 msgstr[0] ""
@@ -74,7 +74,7 @@ msgstr ""
 msgid "<strong>?</strong> matches any one character within a path segment"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:178
+#: ../templates/partials/views/settingsview.php:188
 msgid "About"
 msgstr ""
 
@@ -86,11 +86,11 @@ msgstr ""
 msgid "Add channel"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:97
+#: ../templates/partials/navigationitem.php:100
 msgid "Add from RSS feed"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:85
+#: ../templates/partials/navigationitem.php:88
 msgid "Add manually"
 msgstr ""
 
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Add tracks with drag and drop from Albums or other playlists"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:133
+#: ../templates/partials/views/settingsview.php:143
 msgid "Admin"
 msgstr ""
 
@@ -110,11 +110,11 @@ msgstr ""
 msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:363
+#: ../js/app/controllers/playercontroller.js:438
 msgid "Album"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:357
+#: ../js/app/controllers/playercontroller.js:432
 #: ../templates/fake-template.php:9
 #: ../templates/partials/navigation.php:8
 msgid "Albums"
@@ -124,13 +124,13 @@ msgstr ""
 msgid "All channels were already up-to-date"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:360
+#: ../js/app/controllers/playercontroller.js:435
 #: ../templates/partials/navigation.php:14
 #: ../templates/partials/views/alltracksview.php:4
 msgid "All tracks"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:89
+#: ../templates/partials/views/settingsview.php:99
 msgid "Ampache and Subsonic"
 msgstr ""
 
@@ -138,15 +138,15 @@ msgstr ""
 msgid "Append to an existing playlist?"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:184
+#: ../js/app/controllers/views/settingsviewcontroller.js:213
 msgid "Are you sure to permanently erase all the configured internet radio stations?"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:214
+#: ../js/app/controllers/views/settingsviewcontroller.js:243
 msgid "Are you sure to permanently erase all the configured podcast channels?"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:123
+#: ../js/app/controllers/navigationcontroller.js:130
 msgid "Are you sure to remove the playlist \"{{ name }}\"?"
 msgstr ""
 
@@ -158,24 +158,28 @@ msgstr ""
 msgid "Are you sure to remove the radio station \"{{ name }}\"?"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:141
+#: ../js/app/controllers/views/settingsviewcontroller.js:170
 msgid "Are you sure to reset the music collection? This removes all scanned tracks and user-created playlists!"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:162
+#: ../templates/partials/views/settingsview.php:172
 msgid "Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{connectSrcUrl}}\" target=\"_blank\">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href=\"{{mediaSrcUrl}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:156
+#: ../templates/partials/views/settingsview.php:166
 msgid "Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{url}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:364
+#: ../js/app/controllers/playercontroller.js:439
 msgid "Artist"
 msgstr ""
 
 #: ../templates/fake-template.php:8
 msgid "Artists"
+msgstr ""
+
+#: ../templates/partials/views/settingsview.php:58
+msgid "Changes on this setting take effect only upon rescan of the library."
 msgstr ""
 
 #: ../templates/partials/views/settingsview.php:33
@@ -188,7 +192,7 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/playercontroller.js:368
+#: ../js/app/controllers/playercontroller.js:443
 msgid "Channel"
 msgstr ""
 
@@ -217,11 +221,11 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: ../templates/partials/sidebar/playlistdetails.php:18
+#: ../templates/partials/sidebar/playlistdetails.php:19
 msgid "Comment"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:114
+#: ../templates/partials/navigationitem.php:117
 msgid "Compact layout"
 msgstr ""
 
@@ -234,25 +238,25 @@ msgstr ""
 msgid "Could not update the channel \"{{ title }}\" from the source"
 msgstr ""
 
-#: ../templates/partials/sidebar/playlistdetails.php:12
+#: ../templates/partials/sidebar/playlistdetails.php:13
 #: ../templates/partials/sidebar/radiostationdetails.php:25
 msgid "Created"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:64
+#: ../templates/partials/navigationitem.php:67
 #: ../templates/partials/views/radioview.php:22
 msgid "Delete"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:109
+#: ../templates/partials/views/settingsview.php:119
 msgid "Description"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:119
+#: ../templates/partials/views/settingsview.php:129
 msgid "Description (e.g. App name)"
 msgstr ""
 
-#: ../js/app/directives/listheading.js:25
+#: ../js/app/directives/listheading.js:24
 #: ../js/app/directives/tracklist.js:36
 #: ../templates/partials/navigationitem.php:36
 #: ../templates/partials/views/playlistview.php:24
@@ -260,11 +264,15 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:369
+#: ../templates/partials/views/settingsview.php:52
+msgid "Enable metadata scanning"
+msgstr ""
+
+#: ../js/app/controllers/playercontroller.js:444
 msgid "Episode"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:71
+#: ../js/app/controllers/playercontroller.js:96
 msgid "Error playing URL:"
 msgstr ""
 
@@ -277,7 +285,7 @@ msgid "Export radio stations to a file in the selected folder"
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:45
-#: ../templates/partials/navigationitem.php:82
+#: ../templates/partials/navigationitem.php:85
 msgid "Export to file"
 msgstr ""
 
@@ -285,7 +293,7 @@ msgstr ""
 msgid "Failed to add the podcast channel"
 msgstr ""
 
-#: ../js/app/controllers/maincontroller.js:215
+#: ../js/app/controllers/maincontroller.js:228
 msgid "Failed to check for new audio files (error {{ code }}); check the server logs for details"
 msgstr ""
 
@@ -293,7 +301,7 @@ msgstr ""
 msgid "Failed to delete the radio station:"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:121
+#: ../templates/partials/views/settingsview.php:131
 msgid "Failed to generate new Ampache/Subsonic password"
 msgstr ""
 
@@ -305,19 +313,19 @@ msgstr ""
 msgid "Failed to import radio stations from the file {{ file }}"
 msgstr ""
 
-#: ../js/app/controllers/maincontroller.js:171
+#: ../js/app/controllers/maincontroller.js:184
 msgid "Failed to load the collection:"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:165
+#: ../js/app/controllers/views/settingsviewcontroller.js:194
 msgid "Failed to reset the collection:"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:233
+#: ../js/app/controllers/views/settingsviewcontroller.js:262
 msgid "Failed to reset the podcast channels:"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:203
+#: ../js/app/controllers/views/settingsviewcontroller.js:232
 msgid "Failed to reset the radio stations:"
 msgstr ""
 
@@ -329,15 +337,19 @@ msgstr ""
 msgid "Failed to save the music collection path"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:128
+#: ../templates/partials/views/settingsview.php:56
+msgid "Failed to save the setting"
+msgstr ""
+
+#: ../templates/partials/navigationitem.php:131
 msgid "Flat layout"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:365
+#: ../js/app/controllers/playercontroller.js:440
 msgid "Folder"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:358
+#: ../js/app/controllers/playercontroller.js:433
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr ""
@@ -354,33 +366,33 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:120
+#: ../templates/partials/views/settingsview.php:130
 msgid "Generate API password"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:366
+#: ../js/app/controllers/playercontroller.js:441
 msgid "Genre"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:359
+#: ../js/app/controllers/playercontroller.js:434
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:76
+#: ../templates/partials/navigationitem.php:79
 msgid "Getting started"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:104
+#: ../templates/partials/views/settingsview.php:114
 msgid "Here you can generate passwords to use with the Ampache or Subsonic API. Separate passwords are used because they can't be stored in a really secure way due to the design of the APIs. You can generate as many passwords as you want and revoke them at anytime."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:97
+#: ../templates/partials/views/settingsview.php:107
 msgid "If this URL doesn't work try to append '/server/xml.server.php'."
 msgstr ""
 
 #: ../templates/partials/navigationitem.php:42
-#: ../templates/partials/navigationitem.php:79
+#: ../templates/partials/navigationitem.php:82
 msgid "Import from file"
 msgstr ""
 
@@ -404,11 +416,11 @@ msgstr ""
 msgid "In the search results view, press the \"diskette\" icon on an individual found station to download the station as a PLS file. Alternatively, press the link \"Save current list as playlist for your media player: PLS\" on top of the view to get all the matching stations."
 msgstr ""
 
-#: ../js/app/controllers/maincontroller.js:161
+#: ../js/app/controllers/maincontroller.js:174
 msgid "Internal server error"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:361
+#: ../js/app/controllers/playercontroller.js:436
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -422,7 +434,7 @@ msgstr ""
 msgid "Invalid RSS feed URL"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:150
+#: ../templates/partials/views/settingsview.php:160
 msgid "Large album cover images are down-scaled to this size on the server before providing them for the web browser or the Subsonic/Ampache client. Smaller images are not up-scaled. The default size is 380 pixels. The value should be given as a single integer."
 msgstr ""
 
@@ -438,17 +450,22 @@ msgstr ""
 msgid "MIME type"
 msgstr ""
 
-#: ../templates/partials/sidebar/playlistdetails.php:15
+#: ../templates/partials/views/settingsview.php:57
+msgid "Many features of the Music app are based on the metadata stored in the audio files. However, scanning this data may consume a lot of time on some systems using extrenal storage. When disabled, the library structure is built based on the file and folder names only."
+msgstr ""
+
+#: ../templates/partials/sidebar/playlistdetails.php:16
 #: ../templates/partials/sidebar/radiostationdetails.php:28
 msgid "Modified"
 msgstr ""
 
 #: ../templates/fake-template.php:5
-#: ../templates/partials/views/settingsview.php:183
+#: ../templates/partials/views/settingsview.php:193
 msgid "Music"
 msgstr ""
 
 #: ../templates/fake-template.php:21
+#: ../templates/partials/views/settingsview.php:4
 msgid "Music library"
 msgstr ""
 
@@ -474,7 +491,7 @@ msgstr ""
 msgid "New radio station"
 msgstr ""
 
-#: ../templates/partials/controls.php:11
+#: ../templates/partials/controls.php:23
 msgid "Next"
 msgstr ""
 
@@ -498,11 +515,11 @@ msgstr ""
 msgid "No tracks"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:111
+#: ../templates/partials/navigationitem.php:114
 msgid "Normal layout"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:91
+#: ../templates/partials/views/settingsview.php:101
 msgid "Note that Music may not be compatible with all Ampache/Subsonic clients. Check the verified <a href=\"{{ampacheClientsUrl}}\" target=\"_blank\">Ampache clients</a> and <a href=\"{{subsonicClientsUrl}}\" target=\"_blank\">Subsonic clients</a>."
 msgstr ""
 
@@ -510,7 +527,7 @@ msgstr ""
 msgid "Note: When the path is changed, any previously scanned files outside the new path are removed from the collection and any playlists."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:173
+#: ../templates/partials/views/settingsview.php:183
 msgid "Note: the update rate is limited also by the execution rate of your cloud background task."
 msgstr ""
 
@@ -523,7 +540,7 @@ msgid "Number of performed tracks"
 msgstr ""
 
 #: ../templates/partials/sidebar/albumdetails.php:9
-#: ../templates/partials/sidebar/playlistdetails.php:6
+#: ../templates/partials/sidebar/playlistdetails.php:7
 msgid "Number of tracks"
 msgstr ""
 
@@ -531,8 +548,8 @@ msgstr ""
 msgid "Number of tracks on albums"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:384
-#: ../js/app/controllers/playercontroller.js:393
+#: ../js/app/controllers/playercontroller.js:459
+#: ../js/app/controllers/playercontroller.js:468
 msgid "Off"
 msgstr ""
 
@@ -540,7 +557,7 @@ msgstr ""
 msgid "Overwrite existing file"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:127
+#: ../templates/partials/views/settingsview.php:137
 msgid "Password:"
 msgstr ""
 
@@ -553,10 +570,6 @@ msgstr ""
 msgid "Path to your music collection"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:4
-msgid "Paths"
-msgstr ""
-
 #: ../templates/partials/views/settingsview.php:18
 msgid "Paths to exclude from your music collection"
 msgstr ""
@@ -565,12 +578,12 @@ msgstr ""
 msgid "Paths with a leading '/' character are resolved relative to the user home directory and others relative to the music library base path."
 msgstr ""
 
-#: ../templates/partials/controls.php:9
+#: ../templates/fake-template.php:26
 msgid "Pause"
 msgstr ""
 
 #: ../js/app/directives/listheading.js:23
-#: ../templates/partials/controls.php:7
+#: ../templates/fake-template.php:25
 #: ../templates/partials/views/albumsview.php:27
 #: ../templates/partials/views/alltracksview.php:5
 #: ../templates/partials/views/playlistview.php:5
@@ -579,7 +592,7 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:367
+#: ../js/app/controllers/playercontroller.js:442
 msgid "Playlist"
 msgstr ""
 
@@ -591,7 +604,7 @@ msgstr ""
 msgid "Playlist or folder not found"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:186
+#: ../templates/partials/views/settingsview.php:196
 msgid "Please report any bugs and issues to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>"
 msgstr ""
 
@@ -599,7 +612,7 @@ msgstr ""
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:362
+#: ../js/app/controllers/playercontroller.js:437
 #: ../templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr ""
@@ -633,7 +646,7 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:100
+#: ../templates/partials/navigationitem.php:103
 msgid "Reload channels"
 msgstr ""
 
@@ -646,7 +659,11 @@ msgstr ""
 msgid "Remove channel"
 msgstr ""
 
-#: ../js/app/controllers/navigationcontroller.js:124
+#: ../templates/partials/navigationitem.php:64
+msgid "Remove duplicates"
+msgstr ""
+
+#: ../js/app/controllers/navigationcontroller.js:131
 msgid "Remove playlist"
 msgstr ""
 
@@ -662,8 +679,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:389
-#: ../templates/partials/controls.php:40
+#: ../js/app/controllers/playercontroller.js:464
+#: ../templates/partials/controls.php:52
 msgid "Repeat"
 msgstr ""
 
@@ -672,26 +689,26 @@ msgstr ""
 msgid "Requested entry was not found"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:51
+#: ../templates/partials/views/settingsview.php:61
 msgid "Reset"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:185
-#: ../templates/partials/views/settingsview.php:64
+#: ../js/app/controllers/views/settingsviewcontroller.js:214
+#: ../templates/partials/views/settingsview.php:74
 msgid "Reset internet radio stations"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:142
-#: ../templates/partials/views/settingsview.php:54
+#: ../js/app/controllers/views/settingsviewcontroller.js:171
+#: ../templates/partials/views/settingsview.php:64
 msgid "Reset music collection"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:215
-#: ../templates/partials/views/settingsview.php:73
+#: ../js/app/controllers/views/settingsviewcontroller.js:244
+#: ../templates/partials/views/settingsview.php:83
 msgid "Reset podcast channels"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:110
+#: ../templates/partials/views/settingsview.php:120
 msgid "Revoke API password"
 msgstr ""
 
@@ -732,11 +749,11 @@ msgstr ""
 msgid "Show all {{ count }} songs …"
 msgstr ""
 
-#: ../templates/partials/sidebar/artistdetails.php:38
+#: ../templates/partials/sidebar/artistdetails.php:39
 msgid "Show all…"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:86
+#: ../templates/partials/views/settingsview.php:96
 msgid "Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site."
 msgstr ""
 
@@ -752,12 +769,12 @@ msgstr ""
 msgid "Show more…"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:134
+#: ../templates/partials/views/settingsview.php:144
 msgid "Show..."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:383
-#: ../templates/partials/controls.php:38
+#: ../js/app/controllers/playercontroller.js:458
+#: ../templates/partials/controls.php:50
 msgid "Shuffle"
 msgstr ""
 
@@ -765,7 +782,7 @@ msgstr ""
 msgid "Similar to"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:258
+#: ../js/app/controllers/playercontroller.js:318
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -777,7 +794,7 @@ msgstr ""
 msgid "Some tracks in your library have to be rescanned to show the genre"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:83
+#: ../templates/partials/views/settingsview.php:93
 msgid "Song change notifications"
 msgstr ""
 
@@ -787,6 +804,11 @@ msgstr ""
 
 #: ../templates/partials/views/settingsview.php:22
 msgid "Specify folders within your music collection path which shall be excluded from the scanning."
+msgstr ""
+
+#: ../templates/partials/controls.php:15
+#: ../templates/partials/controls.php:21
+msgid "Stop"
 msgstr ""
 
 #: ../templates/partials/sidebar/radiostationdetails.php:13
@@ -803,7 +825,7 @@ msgstr ""
 msgid "Technical"
 msgstr ""
 
-#: ../js/app/controllers/views/settingsviewcontroller.js:296
+#: ../js/app/controllers/views/settingsviewcontroller.js:325
 msgid "Text copied to clipboard"
 msgstr ""
 
@@ -823,7 +845,7 @@ msgstr ""
 msgid "The folder already has a file named \"{{ filename }}\". Select \"Yes\" to overwrite it. Select \"No\" to export the list with another name. Close the dialog to cancel."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:172
+#: ../templates/partials/views/settingsview.php:182
 msgid "The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours."
 msgstr ""
 
@@ -843,19 +865,19 @@ msgstr ""
 msgid "There are a couple of typical reasons why a configured radio station might not play on your browser:"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:136
+#: ../templates/partials/views/settingsview.php:146
 msgid "There is no settings UI for the server-wide settings of the Music app but some settings are available by adding specific key-value pairs to the file <samp>{{filename}}</samp>. The available keys are described below."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:78
+#: ../templates/partials/views/settingsview.php:88
 msgid "This action erases all the channels shown in the \"Podcasts\" view."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:69
+#: ../templates/partials/views/settingsview.php:79
 msgid "This action erases all the stations shown in the \"Internet radio\" view."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:59
+#: ../templates/partials/views/settingsview.php:69
 msgid "This action resets all the scanned tracks and all the user-created playlists. After this, the collection can be scanned again from scratch."
 msgstr ""
 
@@ -863,7 +885,7 @@ msgstr ""
 msgid "This channel is already subscribed"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:60
+#: ../templates/partials/views/settingsview.php:70
 msgid "This may be desirable after changing the excluded paths, or if the database would somehow get corrupted. If the latter happens, please report a bug to the <a href=\"{{issueTrackerUrl}}\" target=\"_blank\">issue tracker</a>."
 msgstr ""
 
@@ -871,20 +893,20 @@ msgstr ""
 msgid "This setting specifies the folder which will be scanned for music."
 msgstr ""
 
-#: ../js/app/controllers/maincontroller.js:164
+#: ../js/app/controllers/maincontroller.js:177
 msgid "Timeout"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:141
+#: ../templates/partials/views/settingsview.php:151
 msgid "To see the artist biography and other information from Last.fm in the details view, you need to create an API account with Last.fm. For this, use the <a href=\"{{lastfmUrl}}\" target=\"_blank\">Last.fm form</a>. Only 'Contact email' and 'Application name' need to be filled in the form. You are then provided with an API key which should be used as a value for this key. For more details, see the <a href=\"{{guideUrl}}\" target=\"_blank\">tutorial</a>."
 msgstr ""
 
 #: ../templates/partials/sidebar/albumdetails.php:12
-#: ../templates/partials/sidebar/playlistdetails.php:9
+#: ../templates/partials/sidebar/playlistdetails.php:10
 msgid "Total length"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:396
+#: ../js/app/controllers/playercontroller.js:471
 msgid "Track"
 msgstr ""
 
@@ -892,7 +914,7 @@ msgstr ""
 msgid "Tracks"
 msgstr ""
 
-#: ../templates/partials/navigationitem.php:125
+#: ../templates/partials/navigationitem.php:128
 msgid "Tree layout"
 msgstr ""
 
@@ -924,7 +946,7 @@ msgstr ""
 msgid "Unknown artist"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:87
+#: ../templates/partials/views/settingsview.php:97
 msgid "Unlike the other settings, this switch is stored per browser and not per user account."
 msgstr ""
 
@@ -944,29 +966,29 @@ msgstr ""
 msgid "Use the Community Radio Browser <a href=\"{{url}}\" target=\"_blank\">search</a> to find the radio stations of interest. Instead of using the search, you may also browse the channels in Community Radio Browser by category or popularity."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:123
+#: ../templates/partials/views/settingsview.php:133
 msgid "Use the following credentials to connect to this Ampache/Subsonic instance."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:102
+#: ../templates/partials/views/settingsview.php:112
 msgid "Use this address to browse your music collection from a Subsonic compatible player."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:97
+#: ../templates/partials/views/settingsview.php:107
 msgid "Use this address to browse your music collection from an Ampache compatible player."
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:81
+#: ../templates/partials/views/settingsview.php:91
 msgid "User interface"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:125
+#: ../templates/partials/views/settingsview.php:135
 msgid "Username:"
 msgstr ""
 
-#: ../templates/partials/controls.php:43
-#: ../templates/partials/controls.php:44
-#: ../templates/partials/controls.php:46
+#: ../templates/partials/controls.php:55
+#: ../templates/partials/controls.php:56
+#: ../templates/partials/controls.php:58
 msgid "Volume"
 msgstr ""
 
@@ -974,7 +996,7 @@ msgstr ""
 msgid "Writing to the file is not allowed"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:90
+#: ../templates/partials/views/settingsview.php:100
 msgid "You can browse and play your music collection from external applications which support either Ampache or Subsonic API."
 msgstr ""
 
@@ -1042,6 +1064,10 @@ msgstr ""
 msgid "language"
 msgstr ""
 
+#: ../templates/partials/controls.php:10
+msgid "press and hold for more"
+msgstr ""
+
 #: ../js/app/controllers/sidebar/podcastdetailscontroller.js:99
 msgid "published"
 msgstr ""
@@ -1066,13 +1092,19 @@ msgstr ""
 msgid "updates checked"
 msgstr ""
 
-#: ../templates/partials/views/settingsview.php:184
+#: ../templates/partials/views/settingsview.php:194
 msgid "version history"
 msgstr ""
 
 #: ../js/app/controllers/sidebar/podcastdetailscontroller.js:93
 msgid "website"
 msgstr ""
+
+#: ../js/app/controllers/navigationcontroller.js:116
+msgid "{{ count }} duplicate track was removed"
+msgid_plural "{{ count }} duplicate tracks were removed"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../js/app/services/playlistfileservice.js:197
 msgid "{{ count }} entries were skipped."

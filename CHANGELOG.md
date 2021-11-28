@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.5.0 - 2021-11-28
 ### Added
 - Supoprt for Nextcloud 23
   [#912](https://github.com/owncloud/music/pull/912) @PVince81

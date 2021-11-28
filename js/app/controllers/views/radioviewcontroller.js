@@ -16,7 +16,7 @@ angular.module('Music').controller('RadioViewController', [
 		var INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.stations = null;
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];

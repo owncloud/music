@@ -13,7 +13,7 @@ angular.module('Music').controller('AllTracksViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
 
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		var _tracks = null;
 		var _indexChars = alphabetIndexingService.indexChars();

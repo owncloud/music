@@ -15,7 +15,7 @@ angular.module('Music').controller('FoldersViewController', [
 
 		$scope.folders = null;
 		$scope.rootFolder = null;
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// When making the view visible, the folders are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains

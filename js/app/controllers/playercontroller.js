@@ -13,8 +13,8 @@
 import radioIconPath from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document',
-function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document', '$location',
+function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document, $location) {
 
 	$scope.loading = false;
 	$scope.shiftHeldDown = false;
@@ -31,6 +31,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
+
+	// shuffle and repeat may be overridden with URL parameters
+	if ($location.search().shuffle !== undefined) {
+		$scope.shuffle = OCA.Music.Utils.parseBoolean($location.search().shuffle);
+	}
+	if ($location.search().repeat !== undefined) {
+		var val = String($location.search().repeat).toLowerCase();
+		if (val !== 'one') {
+			val = OCA.Music.Utils.parseBoolean(val).toString();
+		}
+		$scope.repeat = val;
+	}
 
 	playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
 	playlistService.setShuffle($scope.shuffle);

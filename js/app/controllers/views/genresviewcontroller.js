@@ -14,7 +14,7 @@ angular.module('Music').controller('GenresViewController', [
 	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
 		$scope.genres = null;
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// When making the view visible, the genres are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains

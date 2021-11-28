@@ -12,8 +12,10 @@
 
 
 angular.module('Music').controller('NavigationController', [
-	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', 'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
-	function ($rootScope, $scope, $document, Restangular, $timeout, playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
+	'$rootScope', '$scope', '$document', 'Restangular', '$timeout', '$location',
+	'playlistService', 'playlistFileService', 'podcastService', 'libraryService', 'gettextCatalog',
+	function ($rootScope, $scope, $document, Restangular, $timeout, $location,
+			playlistService, playlistFileService, podcastService, libraryService, gettextCatalog) {
 
 		$rootScope.loading = true;
 
@@ -311,5 +313,19 @@ angular.module('Music').controller('NavigationController', [
 				playlist.updated = result.updated;
 			});
 		}
+
+		$rootScope.$on('viewActivated', function() {
+			// start playing the current view if the 'autoplay' argument is present in the URL and has a truthy value
+			if (OCA.Music.Utils.parseBoolean($location.search().autoplay)) {
+				if (!$rootScope.playing) {
+					var playlist = null;
+					if ($rootScope.currentView.startsWith('#/playlist/')) {
+						var id = _.last($rootScope.currentView.split('/'));
+						playlist = libraryService.getPlaylist(id);
+					}
+					$scope.togglePlay($rootScope.currentView, playlist);
+				}
+			}
+		});
 	}
 ]);

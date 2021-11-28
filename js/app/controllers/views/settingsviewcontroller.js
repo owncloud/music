@@ -14,7 +14,7 @@ angular.module('Music').controller('SettingsViewController', [
 	'$scope', '$rootScope', 'Restangular', '$q', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, Restangular, $q, $timeout, gettextCatalog) {
 
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		$scope.issueTrackerUrl = 'https://github.com/owncloud/music/issues';
 		$scope.ampacheClientsUrl = 'https://github.com/owncloud/music/wiki/Ampache';

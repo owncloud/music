@@ -9,6 +9,8 @@
 - Stop button shown instead of the play/pause while shift held down
 - User setting to disable metadata extraction and scan only the file and folder names
   [#914](https://github.com/owncloud/music/issues/914)
+- Possibility to start playback and/or set shuffle/repeat with the URL arguments
+  [#922](https://github.com/owncloud/music/issues/922)
 
 ### Changed
 - Allow replacing '/' and characters forbidden on Windows file names with '_' when matching image files to artist names

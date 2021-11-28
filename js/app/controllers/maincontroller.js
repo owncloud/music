@@ -53,6 +53,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		$scope.currentTrackIndex = -1;
 	});
 
+	$scope.getViewIdFromUrl = function() {
+		return window.location.hash.split('?')[0];
+	};
+
 	$scope.trackCountText = function(playlist) {
 		var trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
 		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
@@ -377,13 +381,19 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	var navigationDestination = null;
 	var afterNavigationCallback = null;
 	$scope.navigateTo = function(destination, callback /*optional*/) {
-		if ($rootScope.currentView != destination) {
+		var curView = $rootScope.currentView;
+		if (curView != destination) {
 			$rootScope.currentView = null;
 			navigationDestination = destination;
 			afterNavigationCallback = callback || null;
 			$rootScope.loading = true;
 			// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
-			$rootScope.$emit('deactivateView');
+			// In the abnormal special case of no active view, activate the new view immediately.
+			if (_.isString(curView)) {
+				$rootScope.$emit('deactivateView');
+			} else {
+				window.location.hash = navigationDestination;
+			}
 		}
 
 		// Most of our navigation pane items are not <a> or <button> elements, meaning that the core

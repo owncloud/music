@@ -78,6 +78,15 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Convert string to boolean
+	 */
+	parseBoolean: function(value) {
+		value = String(value).toLowerCase();
+		const falsyValues = ['false', 'no', 'off', '0', 'undefined', 'null'];
+		return falsyValues.indexOf(value) < 0;
+	},
+
+	/**
 	 * Creates a track title from the file name, dropping the file extension and any
 	 * track number possibly found from the beginning of the file name.
 	 */

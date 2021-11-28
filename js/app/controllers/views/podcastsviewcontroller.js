@@ -12,7 +12,7 @@ angular.module('Music').controller('PodcastsViewController', [
 	'$scope', '$rootScope', 'playlistService', 'podcastService', 'libraryService', '$timeout', 'gettextCatalog',
 	function ($scope, $rootScope, playlistService, podcastService, libraryService, $timeout, gettextCatalog) {
 
-		$rootScope.currentView = window.location.hash;
+		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
 		var unsubFuncs = [];

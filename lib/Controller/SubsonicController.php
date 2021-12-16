@@ -967,6 +967,13 @@ class SubsonicController extends Controller {
 		return $this->subsonicResponse([]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	private function getScanStatus() {
+		return $this->subsonicResponse(['scanStatus' => ['scanning' => 'false']]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/

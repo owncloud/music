@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Subsonic: Stub implementation for the method `getScanStatus`
+  [#926](https://github.com/owncloud/music/issues/926)
 
 ### Changed
 

@@ -6,6 +6,8 @@
 ### Changed
 
 ### Fixed
+- Ampache: Action `album_songs` always returning an empty result
+  [#934](https://github.com/owncloud/music/issues/934)
 
 ## 1.5.0 - 2021-11-28
 ### Added

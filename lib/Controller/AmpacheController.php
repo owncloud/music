@@ -378,7 +378,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function album_songs(int $filter, string $auth, int $limit, int $offset=0) {
 		$userId = $this->ampacheUser->getUserId();
-		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId, $limit, $offset);
+		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId, null, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
 	}
 

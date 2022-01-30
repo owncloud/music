@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 namespace OCA\Music\Db;
@@ -62,7 +62,7 @@ class PodcastEpisodeMapper extends BaseMapper {
 	 * @return PodcastEpisode
 	 */
 	protected function findUniqueEntity(Entity $episode) : Entity {
-		$sql = $this->selectUserEntities("`guid_hash` = ?");
-		return $this->findEntity($sql, [$episode->getUserId(), $episode->getGuidHash()]);
+		$sql = $this->selectUserEntities("`guid_hash` = ? AND `channel_id` = ?");
+		return $this->findEntity($sql, [$episode->getUserId(), $episode->getGuidHash(), $episode->getChannelId()]);
 	}
 }

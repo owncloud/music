@@ -8,6 +8,8 @@
 ### Fixed
 - Ampache: Action `album_songs` always returning an empty result
   [#934](https://github.com/owncloud/music/issues/934)
+- Podcasts not shown correctly when multiple channels had an episode with identical GUID
+  [#937](https://github.com/owncloud/music/issues/937)
 
 ## 1.5.0 - 2021-11-28
 ### Added

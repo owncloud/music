@@ -16,7 +16,7 @@
 		"angular-sanitize": "^1.8.2",
 		"angular-scroll": "^1.0.2",
 		"blueimp-md5": "^2.19.0",
-		"core-js": "^3.19.1",
+		"core-js": "^3.21.0",
 		"hls.js": "^0.14.17",
 		"javascript-detect-element-resize": "^0.5.3",
 		"jquery": "^3.6.0",
@@ -26,16 +26,16 @@
 		"restangular": "^1.6.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.16.0",
-		"@babel/preset-env": "^7.16.4",
-		"acorn": "^8.6.0",
+		"@babel/core": "^7.16.12",
+		"@babel/preset-env": "^7.16.11",
+		"acorn": "^8.7.0",
 		"angular-gettext-cli": "^1.2.0",
 		"babel-loader": "^8.2.3",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^4.3.0",
 		"eslint": "^7.32.0",
 		"eslint-config-standard": "^14.1.1",
-		"eslint-plugin-import": "^2.25.3",
+		"eslint-plugin-import": "^2.25.4",
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-promise": "^4.3.1",
 		"eslint-plugin-standard": "^4.1.0",
@@ -43,9 +43,9 @@
 		"file-loader": "^6.2.0",
 		"mini-css-extract-plugin": "^1.6.2",
 		"style-loader": "^2.0.0",
-		"webpack": "^5.64.4",
+		"webpack": "^5.68.0",
 		"webpack-assets-manifest": "^3.1.1",
-		"webpack-cli": "^4.9.1"
+		"webpack-cli": "^4.9.2"
 	},
 	"engine": "node >= 0.8",
 	"scripts": {

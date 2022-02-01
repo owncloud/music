@@ -1,9 +1,7 @@
-## [Unreleased]
+## 1.5.1 - 2022-02-01
 ### Added
 - Subsonic: Stub implementation for the method `getScanStatus`
   [#926](https://github.com/owncloud/music/issues/926)
-
-### Changed
 
 ### Fixed
 - Ampache: Action `album_songs` always returning an empty result

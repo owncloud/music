@@ -1,3 +1,12 @@
+## [Unreleased]
+### Added
+
+### Changed
+
+### Fixed
+- Lyrics not detected from the metadata of a FLAC file
+  [#940](https://github.com/owncloud/music/issues/940)
+
 ## 1.5.1 - 2022-02-01
 ### Added
 - Subsonic: Stub implementation for the method `getScanStatus`

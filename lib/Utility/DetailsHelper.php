@@ -71,6 +71,7 @@ class DetailsHelper {
 				$result['lyrics'] = $lyricsNode;
 				unset(
 					$result['tags']['LYRICS'],
+					$result['tags']['lyrics'],
 					$result['tags']['unsynchronised_lyric'],
 					$result['tags']['unsynced lyrics']
 				);
@@ -102,7 +103,7 @@ class DetailsHelper {
 
 			if ($lyrics === null) {
 				// no unsynchronized lyrics, try to get and convert the potentially syncronized lyrics
-				$lyrics = ExtractorGetID3::getTag($data, 'LYRICS');
+				$lyrics = ExtractorGetID3::getFirstOfTags($data, ['LYRICS', 'lyrics']);
 				self::sanitizeString($lyrics);
 				$parsed = LyricsParser::parseSyncedLyrics($lyrics);
 				if ($parsed) {
@@ -127,7 +128,7 @@ class DetailsHelper {
 	 * @return array|null
 	 */
 	private static function transformLyrics(array $tags) : ?array {
-		$lyrics = $tags['LYRICS'] ?? null; // may be synced or unsynced
+		$lyrics = $tags['LYRICS'] ?? $tags['lyrics'] ?? null; // may be synced or unsynced
 		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
 		$unsyncedLyrics = $tags['unsynchronised_lyric']
 						?? $tags['unsynced lyrics']

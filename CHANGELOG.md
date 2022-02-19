@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Allow dragging current song from the player bar to a playlist on the navigation pane
+  [#946](https://github.com/owncloud/music/issues/946)
 
 ### Changed
 

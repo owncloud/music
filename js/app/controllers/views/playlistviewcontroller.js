@@ -118,7 +118,7 @@ angular.module('Music').controller('PlaylistViewController', [
 		};
 
 		$scope.allowDrop = function(draggable, dstIndex) {
-			return draggable.srcIndex != dstIndex;
+			return ('srcIndex' in draggable) && (draggable.srcIndex != dstIndex);
 		};
 
 		$scope.updateHoverStyle = function(dstIndex) {

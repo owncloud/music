@@ -38,7 +38,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 			playlist="playlist" text="playlist.name" destination="'#/playlist/' + playlist.id"
 			ng-repeat="playlist in playlists"
 			ui-on-drop="dropOnPlaylist($data, playlist)"
-			drop-validate="allowDrop(playlist)"
+			drop-validate="allowDrop(playlist, $data)"
 			drag-hover-class="drag-hover"
 			title="{{ trackCountText(playlist) }}"
 			icon="'playlist'"></li>

@@ -30,7 +30,9 @@
 
 	<div ng-show="currentTrack.type == 'radio'" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
 
-	<div class="song-info clickable" ng-click="scrollToCurrentTrack()">
+	<div class="song-info clickable" ng-click="scrollToCurrentTrack()"
+		draggable="{{ currentTrack.type == 'song' }}" ui-draggable="true" drag="getDraggable()"
+	>
 		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />
 		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
 	</div>

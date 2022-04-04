@@ -127,7 +127,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		} else if (view == '#/podcasts') {
 			matchingTracks = searchInPodcastsView(query);
 		} else if (view.startsWith('#/playlist/')) {
-			matchingTracks = searchInPlaylistView(view.substr('#/playlist/'.length), query);
+			matchingTracks = searchInPlaylistView(view.slice('#/playlist/'.length), query);
 		} else {
 			OC.Notification.showTemporary(gettextCatalog.getString('Search not available in this view'));
 			endProgress();

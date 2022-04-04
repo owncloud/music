@@ -27,7 +27,7 @@ angular.module('Music').service('alphabetIndexingService', [function() {
 		},
 
 		titlePrecedesIndexCharAt: function(title, charIdx) {
-			var initialChar = title.substr(0,1).toUpperCase();
+			var initialChar = title.slice(0,1).toUpperCase();
 
 			// Special case: '…' is considered to be larger than Z or any of its variants
 			// but equal to any other character greater than Z

@@ -261,7 +261,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		subscribe('albumsLayoutChanged', updateColumnLayout);
 
 		function initializePlayerStateFromURL() {
-			var hashParts = window.location.hash.substr(1).split('/');
+			var hashParts = window.location.hash.slice(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
 				var type = hashParts[1];
 				var id = hashParts[2].split('?')[0]; // crop any query part

@@ -213,7 +213,10 @@ class TrackBusinessLayer extends BusinessLayer {
 		$newParents = [];
 		foreach ($parentIds as $parentId) {
 			if ($parentId !== null) {
-				$newParents[] =  self::getFolderEntry($parentInfo, $parentId, [], $musicFolder);
+				$parentEntry = self::getFolderEntry($parentInfo, $parentId, [], $musicFolder);
+				if ($parentEntry !== null) {
+					$newParents[] = $parentEntry;
+				}
 			}
 		}
 

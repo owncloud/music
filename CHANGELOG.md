@@ -2,12 +2,16 @@
 ### Added
 - Allow dragging current song from the player bar to a playlist on the navigation pane
   [#946](https://github.com/owncloud/music/issues/946)
+- Support for Nextcloud 24
+  [#957](https://github.com/owncloud/music/pull/957)
 
 ### Changed
 
 ### Fixed
 - Lyrics not detected from the metadata of a FLAC file
   [#940](https://github.com/owncloud/music/issues/940)
+- Folders view not opening if the music folder tree has any invalid parent references in the file index
+  [#955](https://github.com/owncloud/music/issues/955) 
 
 ## 1.5.1 - 2022-02-01
 ### Added

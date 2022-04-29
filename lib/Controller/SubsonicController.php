@@ -1604,6 +1604,7 @@ class SubsonicController extends Controller {
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
+		$content['xmlns'] = 'http://subsonic.org/restapi';
 		$content['status'] = $status;
 		$content['version'] = self::API_VERSION;
 		$responseData = ['subsonic-response' => Util::arrayRejectRecursive($content, 'is_null')];

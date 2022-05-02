@@ -3,9 +3,11 @@
 - Allow dragging current song from the player bar to a playlist on the navigation pane
   [#946](https://github.com/owncloud/music/issues/946)
 - Support for Nextcloud 24
-  [#957](https://github.com/owncloud/music/pull/957)
+  [#957](https://github.com/owncloud/music/pull/957) @PVince81
 
 ### Changed
+- Support more formats when parsing the length of a podcast episode
+  [#971](https://github.com/owncloud/music/pull/971) @ksmolder
 
 ### Fixed
 - Lyrics not detected from the metadata of a FLAC file

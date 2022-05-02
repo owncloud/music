@@ -37,6 +37,7 @@
 * [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>
 * [K Widholm](https://github.com/apotek)
 * [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
+* [Kurt Smolderen](https://github.com/ksmolder)
 * [Leizh](https://github.com/eizh): <leizh@free.fr>
 * [Lukas Reschke](https://github.com/LukasReschke)
 * [Moritz Meißelbach](https://github.com/Biont): <moritz@meisselba.ch>

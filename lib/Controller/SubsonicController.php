@@ -1604,7 +1604,6 @@ class SubsonicController extends Controller {
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
-		$content['xmlns'] = 'http://subsonic.org/restapi';
 		$content['status'] = $status;
 		$content['version'] = self::API_VERSION;
 		$responseData = ['subsonic-response' => Util::arrayRejectRecursive($content, 'is_null')];
@@ -1617,8 +1616,9 @@ class SubsonicController extends Controller {
 			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');
 		} else {
 			if (\is_array($useAttributes)) {
-				$useAttributes = \array_merge($useAttributes, ['status', 'version']);
+				$useAttributes = \array_merge($useAttributes, ['status', 'version', 'xmlns']);
 			}
+			$responseData['subsonic-response']['xmlns'] = 'http://subsonic.org/restapi';
 			$response = new XmlResponse($responseData, $useAttributes);
 		}
 

@@ -1616,8 +1616,9 @@ class SubsonicController extends Controller {
 			$response->addHeader('Content-Type', 'text/javascript; charset=UTF-8');
 		} else {
 			if (\is_array($useAttributes)) {
-				$useAttributes = \array_merge($useAttributes, ['status', 'version']);
+				$useAttributes = \array_merge($useAttributes, ['status', 'version', 'xmlns']);
 			}
+			$responseData['subsonic-response']['xmlns'] = 'http://subsonic.org/restapi';
 			$response = new XmlResponse($responseData, $useAttributes);
 		}
 

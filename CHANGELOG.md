@@ -4,6 +4,8 @@
   [#946](https://github.com/owncloud/music/issues/946)
 - Support for Nextcloud 24
   [#957](https://github.com/owncloud/music/pull/957) @PVince81
+- Support for PHP 8.1
+  [#939](https://github.com/owncloud/music/issues/939)
 
 ### Changed
 - Support more formats when parsing the length of a podcast episode

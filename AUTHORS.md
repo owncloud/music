@@ -20,7 +20,7 @@
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
 * [Cbxk1xg](https://github.com/cbxk1xg)
 * [Chris Allan](https://github.com/ChrisJAllan): <chrisallan@pm.me>
-* [ChristophWurst](https://github.com/ChristophWurst)
+* [Christoph Wurst](https://github.com/ChristophWurst)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)
 * [Felix Böhm](https://github.com/felixboehm)
@@ -50,6 +50,7 @@
 * [Rello](https://github.com/rello)
 * [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
+* [Roman Štefko](https://github.com/rstefko)
 * [Selpelt](https://github.com/selpelt)
 * [Sicco van Sas](https://github.com/siccovansas)
 * [Simon Spannagel](https://github.com/simonspa)

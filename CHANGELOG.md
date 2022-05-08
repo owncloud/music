@@ -13,7 +13,9 @@
 - Lyrics not detected from the metadata of a FLAC file
   [#940](https://github.com/owncloud/music/issues/940)
 - Folders view not opening if the music folder tree has any invalid parent references in the file index
-  [#955](https://github.com/owncloud/music/issues/955) 
+  [#955](https://github.com/owncloud/music/issues/955)
+- Attribute `xmlns` missing from the Subsonic XML responses
+  [#970](https://github.com/owncloud/music/pull/970) @rstefko
 
 ## 1.5.1 - 2022-02-01
 ### Added

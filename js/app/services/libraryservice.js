@@ -30,8 +30,19 @@ angular.module('Music').service('libraryService', [function() {
 	 */
 	function sortByTextField(items, field) {
 		var getSortProperty = _.property(field);
+		var locale = OCA.Music.Utils.getLocale();
+
 		items.sort(function(a, b) {
-			return getSortProperty(a).localeCompare(getSortProperty(b), OCA.Music.Utils.getLocale());
+			var aProp = getSortProperty(a);
+			var bProp = getSortProperty(b);
+
+			if (aProp === null) {
+				return -1;
+			} else if (bProp === null) {
+				return 1;
+			} else {
+				return aProp.localeCompare(bProp, locale);
+			}
 		});
 	}
 

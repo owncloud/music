@@ -18,6 +18,7 @@
   [#955](https://github.com/owncloud/music/issues/955)
 - Attribute `xmlns` missing from the Subsonic XML responses
   [#970](https://github.com/owncloud/music/pull/970) @rstefko
+- Radio view behaving badly if there were any stations with no name (i.e. URL only)
 
 ## 1.5.1 - 2022-02-01
 ### Added

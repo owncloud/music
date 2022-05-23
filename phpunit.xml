@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit bootstrap="../../tests/bootstrap-unit.php"
+		 verbose="true"
+		 failOnRisky="true"
+		 failOnWarning="true"
+		 timeoutForSmallTests="900"
+		 timeoutForMediumTests="900"
+		 timeoutForLargeTests="900">
+  <testsuites>
+    <testsuite name='unit'>
+     <directory suffix='Test.php'>./tests/unit</directory>
+    </testsuite>
+  </testsuites>
+  <coverage>
+    <include>
+        <directory suffix=".php">./lib</directory>
+    </include>
+    <report>
+      <clover outputFile="./tests/output/clover.xml"/>
+    </report>
+  </coverage>
+</phpunit>

@@ -22,6 +22,7 @@ OCA.Music.PlayerWrapper = function() {
 	var m_position = 0;
 	var m_duration = 0;
 	var m_volume = 100;
+	var m_playbackRate = 1.0;
 	var m_playing = false;
 	var m_url = null;
 	var m_streamingExtUrl = false;
@@ -239,6 +240,13 @@ OCA.Music.PlayerWrapper = function() {
 		}
 	};
 
+	this.setPlaybackRate = function(rate) {
+		m_playbackRate = rate;
+
+		// Note: the feature is not supported with the Aurora backend
+		m_html5audio.playbackRate = m_playbackRate;
+	};
+
 	function canPlayWithHtml5(mime) {
 		// The m4b format is almost identical with m4a (but intended for audio books).
 		// Still, browsers actually able to play m4b files seem to return false when
@@ -316,5 +324,6 @@ OCA.Music.PlayerWrapper = function() {
 
 		// Set the current volume to the newly created/selected player instance
 		this.setVolume(m_volume);
+		this.setPlaybackRate(m_playbackRate);
 	};
 };

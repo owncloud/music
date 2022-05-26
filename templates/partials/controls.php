@@ -14,6 +14,10 @@
 					<li ng-click="stop()">
 						<a class="icon-stop"><span translate>Stop</span></a>
 					</li>
+					<li ng-click="$event.stopPropagation()" id="playback-rate-control">
+						<a class="icon-time" ng-click="stepPlaybackRate()"><span translate>Playback rate</span>: {{ playbackRate | number : 1 }}</a>
+						<input type="range" min="0.5" max="3.0" step="0.1" ng-model="playbackRate"/>
+					</li>
 				</ul>
 			</div>
 		</div>

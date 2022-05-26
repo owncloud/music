@@ -122,6 +122,9 @@
 	padding-top: 12px;
 	text-align: right;
 }
+.mobile #controls #play-pause-menu {
+	right: 0;
+}
 
 /* in portrait, there's even less space */
 .mobile.portrait #controls .progress-info {
@@ -134,6 +137,9 @@
 }
 .mobile.portrait #controls .control.small {
 	margin-left: -4px;
+}
+.mobile.portrait #controls #play-pause-menu {
+	right: -20px;
 }
 
 /* extra narrow screen matches small smart phones; drop non-essential elements and margins */

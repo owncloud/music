@@ -24,6 +24,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
 	$scope.repeat = localStorage.getItem('oc_music_repeat') || 'false';
 	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
+	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
 	$scope.position = {
 		bufferPercent: '0%',
 		currentPercent: '0%',
@@ -224,6 +225,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		localStorage.setItem('oc_music_volume', newValue);
 	});
 
+	$scope.$watch('playbackRate', function(newValue, _oldValue) {
+		$scope.player.setPlaybackRate(newValue);
+	});
+
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
 		playlistService.setShuffle($scope.shuffle);
@@ -278,6 +283,16 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$rootScope.playing = false;
 		$rootScope.started = false;
 		playlistService.clearPlaylist();
+	};
+
+	$scope.stepPlaybackRate = function() {
+		const stepRates = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0];
+		var curStep = 0;
+		while (curStep < stepRates.length - 1 && $scope.playbackRate >= stepRates[curStep+1]) {
+			++curStep;
+		}
+		var nextStep = (curStep + 1) % stepRates.length;
+		$scope.playbackRate = stepRates[nextStep];
 	};
 
 	/** Context menu on long press of the play/pause button */

@@ -110,11 +110,11 @@ msgstr ""
 msgid "Admin may set up the Last.fm API key to show artist biography here. See the Settings view for details."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:438
+#: ../js/app/controllers/playercontroller.js:457
 msgid "Album"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:432
+#: ../js/app/controllers/playercontroller.js:451
 #: ../templates/fake-template.php:9
 #: ../templates/partials/navigation.php:8
 msgid "Albums"
@@ -124,7 +124,7 @@ msgstr ""
 msgid "All channels were already up-to-date"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:435
+#: ../js/app/controllers/playercontroller.js:454
 #: ../templates/partials/navigation.php:14
 #: ../templates/partials/views/alltracksview.php:4
 msgid "All tracks"
@@ -170,7 +170,7 @@ msgstr ""
 msgid "Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href=\"{{url}}\" target=\"_blank\">media-src</a>."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:439
+#: ../js/app/controllers/playercontroller.js:458
 msgid "Artist"
 msgstr ""
 
@@ -192,7 +192,7 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../js/app/controllers/playercontroller.js:443
+#: ../js/app/controllers/playercontroller.js:462
 msgid "Channel"
 msgstr ""
 
@@ -268,11 +268,11 @@ msgstr ""
 msgid "Enable metadata scanning"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:444
+#: ../js/app/controllers/playercontroller.js:463
 msgid "Episode"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:96
+#: ../js/app/controllers/playercontroller.js:97
 msgid "Error playing URL:"
 msgstr ""
 
@@ -345,11 +345,11 @@ msgstr ""
 msgid "Flat layout"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:440
+#: ../js/app/controllers/playercontroller.js:459
 msgid "Folder"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:433
+#: ../js/app/controllers/playercontroller.js:452
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr ""
@@ -370,11 +370,11 @@ msgstr ""
 msgid "Generate API password"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:441
+#: ../js/app/controllers/playercontroller.js:460
 msgid "Genre"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:434
+#: ../js/app/controllers/playercontroller.js:453
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr ""
@@ -420,7 +420,7 @@ msgstr ""
 msgid "Internal server error"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:436
+#: ../js/app/controllers/playercontroller.js:455
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -491,7 +491,7 @@ msgstr ""
 msgid "New radio station"
 msgstr ""
 
-#: ../templates/partials/controls.php:23
+#: ../templates/partials/controls.php:27
 msgid "Next"
 msgstr ""
 
@@ -548,8 +548,8 @@ msgstr ""
 msgid "Number of tracks on albums"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:459
-#: ../js/app/controllers/playercontroller.js:468
+#: ../js/app/controllers/playercontroller.js:478
+#: ../js/app/controllers/playercontroller.js:487
 msgid "Off"
 msgstr ""
 
@@ -592,7 +592,11 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:442
+#: ../templates/partials/controls.php:18
+msgid "Playback rate"
+msgstr ""
+
+#: ../js/app/controllers/playercontroller.js:461
 msgid "Playlist"
 msgstr ""
 
@@ -612,7 +616,7 @@ msgstr ""
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:437
+#: ../js/app/controllers/playercontroller.js:456
 #: ../templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr ""
@@ -679,8 +683,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:464
-#: ../templates/partials/controls.php:52
+#: ../js/app/controllers/playercontroller.js:483
+#: ../templates/partials/controls.php:58
 msgid "Repeat"
 msgstr ""
 
@@ -773,8 +777,8 @@ msgstr ""
 msgid "Show..."
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:458
-#: ../templates/partials/controls.php:50
+#: ../js/app/controllers/playercontroller.js:477
+#: ../templates/partials/controls.php:56
 msgid "Shuffle"
 msgstr ""
 
@@ -782,7 +786,7 @@ msgstr ""
 msgid "Similar to"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:318
+#: ../js/app/controllers/playercontroller.js:337
 msgid "Some not playable tracks were skipped."
 msgstr ""
 
@@ -807,7 +811,7 @@ msgid "Specify folders within your music collection path which shall be excluded
 msgstr ""
 
 #: ../templates/partials/controls.php:15
-#: ../templates/partials/controls.php:21
+#: ../templates/partials/controls.php:25
 msgid "Stop"
 msgstr ""
 
@@ -906,7 +910,7 @@ msgstr ""
 msgid "Total length"
 msgstr ""
 
-#: ../js/app/controllers/playercontroller.js:471
+#: ../js/app/controllers/playercontroller.js:490
 msgid "Track"
 msgstr ""
 
@@ -986,9 +990,9 @@ msgstr ""
 msgid "Username:"
 msgstr ""
 
-#: ../templates/partials/controls.php:55
-#: ../templates/partials/controls.php:56
-#: ../templates/partials/controls.php:58
+#: ../templates/partials/controls.php:61
+#: ../templates/partials/controls.php:62
+#: ../templates/partials/controls.php:64
 msgid "Volume"
 msgstr ""
 

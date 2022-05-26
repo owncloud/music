@@ -1,3 +1,12 @@
+## [Unreleased]
+### Added
+- Option to set the playback rate. This can be found by long-pressing the play/pause button on the controls pane.
+  [#972](https://github.com/owncloud/music/issues/972)
+
+### Changed
+
+### Fixed
+
 ## 1.5.2 - 2022-05-08
 ### Added
 - Allow dragging current song from the player bar to a playlist on the navigation pane

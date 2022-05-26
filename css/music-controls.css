@@ -81,6 +81,15 @@ body:not(.snapjs-left) #controls.taller-header {
 	right: 50% ;
 }
 
+#controls #playback-rate-control input {
+	height: 3px;
+	min-height: 3px;
+	margin-bottom: 10px;
+	margin-left: 40px;
+	margin-right: 10px;
+	background-color: silver;
+}
+
 #controls .albumart {
 	position: relative;
 	height: 50px;
@@ -242,4 +251,8 @@ body:not(.snapjs-left) #controls.taller-header {
 
 .icon-stop {
 	background-image: url(../img/stop.svg);
+}
+
+.icon-time {
+	background-image: url(../img/access-time.svg)
 }

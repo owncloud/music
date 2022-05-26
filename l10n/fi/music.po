@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-11-28 19:34+0200\n"
+"PO-Revision-Date: 2022-05-26 20:54+0300\n"
 "Last-Translator: Pauli Järvinen <pauli.jarvinen@gmail.com>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/owncloud-org/"
 "owncloud/language/fi_FI/)\n"
@@ -141,11 +141,11 @@ msgstr ""
 "Ylläpitäjän tulee asettaa Last.fm API-avain, jotta esittäjän taustatietoja "
 "voidaan näyttää täällä. Katso lisätietoja Asetuksista."
 
-#: ../js/app/controllers/playercontroller.js:438
+#: ../js/app/controllers/playercontroller.js:457
 msgid "Album"
 msgstr "Albumi"
 
-#: ../js/app/controllers/playercontroller.js:432
+#: ../js/app/controllers/playercontroller.js:451
 #: ../templates/fake-template.php:9 ../templates/partials/navigation.php:8
 msgid "Albums"
 msgstr "Albumit"
@@ -154,7 +154,7 @@ msgstr "Albumit"
 msgid "All channels were already up-to-date"
 msgstr "Kaikki kanavat olivat jo ajan tasalla"
 
-#: ../js/app/controllers/playercontroller.js:435
+#: ../js/app/controllers/playercontroller.js:454
 #: ../templates/partials/navigation.php:14
 #: ../templates/partials/views/alltracksview.php:4
 msgid "All tracks"
@@ -226,7 +226,7 @@ msgstr ""
 "osoitteet lisätään Content-Security-Policy-otsikkoon <a href=\"{{url}}\" "
 "target=\"_blank\">media-src</a>."
 
-#: ../js/app/controllers/playercontroller.js:439
+#: ../js/app/controllers/playercontroller.js:458
 msgid "Artist"
 msgstr "Esittäjä"
 
@@ -252,7 +252,7 @@ msgid_plural "Changes were loaded for {{ count }} channels"
 msgstr[0] "Yhdelle kanavalle ladattiin muutoksia"
 msgstr[1] "{{ count }} kanavalle ladattiin muutoksia"
 
-#: ../js/app/controllers/playercontroller.js:443
+#: ../js/app/controllers/playercontroller.js:462
 msgid "Channel"
 msgstr "Kanava"
 
@@ -327,11 +327,11 @@ msgstr "Tiedot"
 msgid "Enable metadata scanning"
 msgstr "Skannaa metatiedot"
 
-#: ../js/app/controllers/playercontroller.js:444
+#: ../js/app/controllers/playercontroller.js:463
 msgid "Episode"
 msgstr "Jakso"
 
-#: ../js/app/controllers/playercontroller.js:96
+#: ../js/app/controllers/playercontroller.js:97
 msgid "Error playing URL:"
 msgstr "Virhe toistettaessa:"
 
@@ -408,11 +408,11 @@ msgstr "Asetuksen tallentaminen epäonnistui"
 msgid "Flat layout"
 msgstr "Litteä asettelu"
 
-#: ../js/app/controllers/playercontroller.js:440
+#: ../js/app/controllers/playercontroller.js:459
 msgid "Folder"
 msgstr "Kansio"
 
-#: ../js/app/controllers/playercontroller.js:433
+#: ../js/app/controllers/playercontroller.js:452
 #: ../templates/partials/navigation.php:10
 msgid "Folders"
 msgstr "Kansiot"
@@ -433,11 +433,11 @@ msgstr "Yleinen"
 msgid "Generate API password"
 msgstr "Luo API-salasana"
 
-#: ../js/app/controllers/playercontroller.js:441
+#: ../js/app/controllers/playercontroller.js:460
 msgid "Genre"
 msgstr "Genre"
 
-#: ../js/app/controllers/playercontroller.js:434
+#: ../js/app/controllers/playercontroller.js:453
 #: ../templates/partials/navigation.php:12
 msgid "Genres"
 msgstr "Genret"
@@ -501,7 +501,7 @@ msgstr ""
 msgid "Internal server error"
 msgstr "Sisäinen virhe palvelimella"
 
-#: ../js/app/controllers/playercontroller.js:436
+#: ../js/app/controllers/playercontroller.js:455
 #: ../js/app/services/playlistfileservice.js:104
 #: ../templates/partials/navigation.php:17
 msgid "Internet radio"
@@ -589,7 +589,7 @@ msgstr ""
 msgid "New radio station"
 msgstr "Uusi radioasema"
 
-#: ../templates/partials/controls.php:23
+#: ../templates/partials/controls.php:27
 msgid "Next"
 msgstr "Seuraava"
 
@@ -664,8 +664,8 @@ msgstr "Kappaleiden määrä"
 msgid "Number of tracks on albums"
 msgstr "Kappaleiden määrä albumeilla"
 
-#: ../js/app/controllers/playercontroller.js:459
-#: ../js/app/controllers/playercontroller.js:468
+#: ../js/app/controllers/playercontroller.js:478
+#: ../js/app/controllers/playercontroller.js:487
 msgid "Off"
 msgstr "Pois"
 
@@ -711,7 +711,11 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../js/app/controllers/playercontroller.js:442
+#: ../templates/partials/controls.php:18
+msgid "Playback rate"
+msgstr "Toistonopeus"
+
+#: ../js/app/controllers/playercontroller.js:461
 msgid "Playlist"
 msgstr "Soittolista"
 
@@ -735,7 +739,7 @@ msgstr ""
 msgid "Podcast channel \"{{ title }}\" added"
 msgstr "Podcast-kanava \"{{ title }}\" lisättiin"
 
-#: ../js/app/controllers/playercontroller.js:437
+#: ../js/app/controllers/playercontroller.js:456
 #: ../templates/partials/navigation.php:19
 msgid "Podcasts"
 msgstr "Podcastit"
@@ -812,8 +816,8 @@ msgstr "Poista kappale soittolistalta"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
 
-#: ../js/app/controllers/playercontroller.js:464
-#: ../templates/partials/controls.php:52
+#: ../js/app/controllers/playercontroller.js:483
+#: ../templates/partials/controls.php:58
 msgid "Repeat"
 msgstr "Kertaa"
 
@@ -910,8 +914,8 @@ msgstr "Näytä enemmän…"
 msgid "Show..."
 msgstr "Näytä…"
 
-#: ../js/app/controllers/playercontroller.js:458
-#: ../templates/partials/controls.php:50
+#: ../js/app/controllers/playercontroller.js:477
+#: ../templates/partials/controls.php:56
 msgid "Shuffle"
 msgstr "Sekoita"
 
@@ -919,7 +923,7 @@ msgstr "Sekoita"
 msgid "Similar to"
 msgstr "Samankaltaisia"
 
-#: ../js/app/controllers/playercontroller.js:318
+#: ../js/app/controllers/playercontroller.js:337
 msgid "Some not playable tracks were skipped."
 msgstr "Ohitettiin joitain sellaisia kappaleita, joita ei voi toistaa."
 
@@ -949,7 +953,7 @@ msgstr ""
 "Määritä musiikkikokoelman polkuun kuuluvat kansiot, jotka jätetään "
 "skannauksen ulkopuolelle."
 
-#: ../templates/partials/controls.php:15 ../templates/partials/controls.php:21
+#: ../templates/partials/controls.php:15 ../templates/partials/controls.php:25
 msgid "Stop"
 msgstr "Pysäytä"
 
@@ -1124,7 +1128,7 @@ msgstr ""
 msgid "Total length"
 msgstr "Kokonaiskesto"
 
-#: ../js/app/controllers/playercontroller.js:471
+#: ../js/app/controllers/playercontroller.js:490
 msgid "Track"
 msgstr "Kappale"
 
@@ -1233,8 +1237,8 @@ msgstr "Käyttöliittymä"
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: ../templates/partials/controls.php:55 ../templates/partials/controls.php:56
-#: ../templates/partials/controls.php:58
+#: ../templates/partials/controls.php:61 ../templates/partials/controls.php:62
+#: ../templates/partials/controls.php:64
 msgid "Volume"
 msgstr "Äänenvoimakkuus"
 

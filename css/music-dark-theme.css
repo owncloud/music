@@ -49,3 +49,7 @@
 .dark-theme .icon-stop {
 	background-image: url(../img/stop-white.svg);
 }
+
+.dark-theme .icon-time {
+	background-image: url(../img/access-time-white.svg)
+}

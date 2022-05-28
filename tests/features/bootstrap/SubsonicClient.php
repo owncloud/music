@@ -50,16 +50,17 @@ class SubsonicClient {
 
 		try {
 			$xml = ClientUtil::getXml($response);
+			$xml->registerXPathNamespace('ss', 'http://subsonic.org/restapi');
 		} catch (Exception $e) {
 			throw new SubsonicClientException('Could not parse XML', 0, $e);
 		}
 
-		$rootElem = $xml->xpath('/subsonic-response')[0];
+		$rootElem = $xml->xpath('/ss:subsonic-response')[0];
 
 		if (empty($rootElem)) {
 			throw new SubsonicClientException('Invalid response, no root element found');
 		} elseif ($rootElem['status'] != 'ok') {
-			$error = $rootElem->xpath('error')[0];
+			$error = $rootElem->xpath('ss:error')[0];
 			throw new SubsonicClientException('Subsonic error: ' . $error['code'] . ' - ' . $error['message']);
 		}
 

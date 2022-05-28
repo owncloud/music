@@ -53,8 +53,17 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 		}
 	}
 
+	private function xpath($path) {
+		// drop double slashes (could occur when a path segment is empty)
+		$path = \str_replace('//', '/', $path);
+		// add the namespace prefix to each path segment
+		$path = \str_replace('/', '/ss:', $path);
+
+		return $this->xml->xpath($path);
+	}
+
 	private function storeAttributeFromXmlResult($attr, $entryType, $entryIndex, $storeName = null) {
-		$elements = $this->xml->xpath('/subsonic-response/' .
+		$elements = $this->xpath('/subsonic-response/' .
 				self::resultElementForResource($this->resource) . '/' . $entryType);
 
 		$element = $elements[$entryIndex];
@@ -116,7 +125,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	 * @Then I should get empty XML response
 	 */
 	public function iShouldGetEmptyXmlResponse() {
-		$rootElem = $this->xml->xpath('/subsonic-response')[0];
+		$rootElem = $this->xpath('/subsonic-response')[0];
 		if ($rootElem->count() > 0) {
 			throw new \Exception('<subsonic-response> has ' . $rootElem->count() . ' children while none expected');
 		}
@@ -127,7 +136,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	 * @Then the XML result should contain :entryType entry/entries:
 	 */
 	public function iShouldGetXmlWithEntries($entryType, TableNode $table) {
-		$elements = $this->xml->xpath('/subsonic-response/' .
+		$elements = $this->xpath('/subsonic-response/' .
 			self::resultElementForResource($this->resource) . '/' . $entryType);
 
 		$expectedIterator = $table->getIterator();
@@ -194,7 +203,7 @@ class SubsonicContext implements Context, SnippetAcceptingContext {
 	 * @Then the XML result should contain :expectedCount :entryType entry/entries
 	 */
 	public function iShouldGetXmlContainingEntries($expectedCount, $entryType) {
-		$elements = $this->xml->xpath('/subsonic-response/' .
+		$elements = $this->xpath('/subsonic-response/' .
 			self::resultElementForResource($this->resource) . '/' . $entryType);
 		$actualCount = \count($elements);
 

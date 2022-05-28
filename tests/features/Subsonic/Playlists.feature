@@ -17,7 +17,7 @@ Feature: Subsonic API - Playlists
     When I specify the parameter "songId" with the stored value of "id"
     And I specify the parameter "name" with value "My another playlist"
     And I request the "createPlaylist" resource
-    Then I should get XML with "entry" entries:
+    Then I should get XML with "playlist/entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
       | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
 

@@ -66,12 +66,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.setLoading(false);
 	});
 	onPlayerEvent('progress', function (currentTime) {
-		$scope.setTime(currentTime/1000, $scope.position.total);
-		$rootScope.$emit('playerProgress', currentTime);
+		if (!$scope.loading) {
+			$scope.setTime(currentTime/1000, $scope.position.total);
+			$rootScope.$emit('playerProgress', currentTime);
 
-		// Scrobble when the track has been listened for 10 seconds
-		if (scrobblePending && currentTime >= 10000) {
-			scrobbleCurrentTrack();
+			// Scrobble when the track has been listened for 10 seconds
+			if (scrobblePending && currentTime >= 10000) {
+				scrobbleCurrentTrack();
+			}
 		}
 	});
 	onPlayerEvent('end', function() {

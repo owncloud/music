@@ -152,6 +152,7 @@ OCA.Music.PlayerWrapper = function() {
 	};
 
 	this.stop = function() {
+		var url = m_url;
 		m_url = null;
 
 		switch (m_underlyingPlayer) {
@@ -163,7 +164,11 @@ OCA.Music.PlayerWrapper = function() {
 				// Just be sure to ignore the resulting 'error' events. Unfortunately, this will still print
 				// a warning to the console on Firefox.
 				m_html5audio.pause();
+				if (m_streamingExtUrl && m_hls !== null && url !== null && isHlsUrl(url)) {
+					m_hls.detachMedia();
+				}
 				m_html5audio.src = '';
+				m_html5audio.currentTime = 0;
 				break;
 			case 'aurora':
 				if (m_aurora) {
@@ -280,6 +285,9 @@ OCA.Music.PlayerWrapper = function() {
 	this.fromURL = function(url, mime) {
 		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		m_position = 0;
+
+		this.stop(); // clear any previous state first
+
 		this.trigger('loading');
 
 		m_url = url;
@@ -294,7 +302,6 @@ OCA.Music.PlayerWrapper = function() {
 
 		switch (m_underlyingPlayer) {
 			case 'html5':
-				m_html5audio.pause();
 				if (m_streamingExtUrl && m_hls !== null && isHlsUrl(url)) {
 					m_hls.detachMedia();
 					m_hls.loadSource(url);
@@ -305,10 +312,6 @@ OCA.Music.PlayerWrapper = function() {
 				break;
 
 			case 'aurora':
-				if (m_aurora) {
-					m_aurora.stop();
-				}
-
 				m_aurora = window.AV.Player.fromURL(url);
 				m_aurora.asset.source.chunkSize=524288;
 

@@ -7,6 +7,7 @@
 
 ### Fixed
 - Previous radio station being played without any error messages when failed to start playing an HLS stream
+- Playback of a local track starting from a non-zero offset after playing an HLS stream
 
 ## 1.5.2 - 2022-05-08
 ### Added

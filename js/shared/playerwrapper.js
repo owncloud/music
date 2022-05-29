@@ -34,6 +34,15 @@ OCA.Music.PlayerWrapper = function() {
 		m_html5audio = document.createElement('audio');
 		if (Hls.isSupported()) {
 			m_hls = new Hls({ enableWorker: false });
+
+			m_hls.on(Hls.Events.ERROR, function (_event, data) {
+				console.error('HLS error: ' + JSON.stringify(_.pick(data, ['type', 'details', 'fatal'])));
+				if (data.fatal) {
+					m_self.pause();
+					m_self.trigger('error', m_url);
+					m_url = null;
+				}
+			});
 		}
 
 		var getBufferedEnd = function() {
@@ -113,7 +122,8 @@ OCA.Music.PlayerWrapper = function() {
 	}
 
 	this.play = function() {
-		switch (m_underlyingPlayer) {
+		if (m_url) {
+			switch (m_underlyingPlayer) {
 			case 'html5':
 				m_html5audio.play();
 				break;
@@ -123,6 +133,7 @@ OCA.Music.PlayerWrapper = function() {
 					onPlayStarted(); // Aurora has no callback => fire event synchronously
 				}
 				break;
+			}
 		}
 	};
 

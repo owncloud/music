@@ -40,6 +40,6 @@ if (typeof MutationObserver !== 'undefined') {
 
 /* Music app files */
 requireAll(require.context('./app', /*use subdirectories:*/ true));
-requireAll(require.context('./shared', /*use subdirectories:*/ false));
+requireAll(require.context('./shared', /*use subdirectories:*/ true));
 requireAll(require.context('../img', /*use subdirectories:*/ true));
 requireAll(require.context('../css', /*use subdirectories:*/ false));

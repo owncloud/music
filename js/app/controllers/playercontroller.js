@@ -32,6 +32,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
+	var timeoutId = 0;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -104,6 +105,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
+		if (timeoutId != 0) {
+			clearTimeout(timeoutId);
+			timeoutId = 0;
+		}
+		if (currentTrackIsStream()) {
+			$scope.getStreamTitle();
+		}
 	});
 	onPlayerEvent('pause', function() {
 		$rootScope.playing = false;
@@ -438,7 +446,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.currentTitle ?? $scope.currentTrack?.stream_url ?? null;
 	};
 
 	$scope.coverArt = function() {
@@ -498,6 +506,25 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return command + ' (' + cmdScope + ')';
 	};
 
+	$scope.onMetadata = function(streamStats) {
+		//console.log('MetaData recieved: ' + streamStats.title);
+		if ((streamStats.title) && $scope.currentTrack.currentTitle !== streamStats.title) {
+			$scope.currentTrack.currentTitle = streamStats.title;
+			$scope.$apply();
+		}
+	};
+
+	$scope.getStreamTitle = function() {
+		if ($rootScope.playing) {
+			//console.log('MetaData play');
+			OCA.Music.ReadStreamMetaData($scope.currentTrack.stream_url, $scope.onMetadata, 'STREAM');
+			timeoutId = setTimeout(() => $scope.getStreamTitle(), 32000);
+		} else {
+			//console.log('MetaData pause');
+			timeoutId = 0;
+		}
+	};
+
 	/**
 	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,
 	* the loading happens in a context where the normal session cookies are not available. Hence, for the
@@ -539,7 +566,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.name,
-						artist: track.stream_url,
+						artist: track.currentTitle ?? track.stream_url,
 						artwork: [{
 							sizes: '190x190',
 							src: radioIconPath,

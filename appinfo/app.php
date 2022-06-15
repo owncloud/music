@@ -76,6 +76,7 @@ function adjustCsp(IAppContainer $container) {
 
 		foreach ($radioSources as $source) {
 			$policy->addAllowedMediaDomain($source);
+			$policy->addAllowedConnectDomain($source);
 		}
 
 		foreach ($radioHlsSources as $source) {

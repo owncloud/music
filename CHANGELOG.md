@@ -10,6 +10,7 @@
 - Playback of a local track starting from a non-zero offset after playing an HLS stream
 - Errors being logged because of incomplete exception case handling
   [#989](https://github.com/owncloud/music/issues/989)
+  [#988](https://github.com/owncloud/music/issues/988)
 
 ## 1.5.2 - 2022-05-08
 ### Added

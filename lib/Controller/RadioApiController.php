@@ -25,6 +25,7 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\RadioMetadata;
 
 class RadioApiController extends Controller {
 	private $businessLayer;
@@ -200,5 +201,50 @@ class RadioApiController extends Controller {
 	public function resetAll() {
 		$this->businessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	* get radio metadata from url
+	*
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	*/
+
+	public function getRadioURLData(int $id) {
+		try {
+			$response = "";
+			$station = $this->businessLayer->find($id, $this->userId);
+			$stapi = $station->toAPI();
+			if (isset($stapi['stream_url'])) {
+				$parse_url = parse_url($stapi['stream_url']);
+				$response = RadioMetadata::fetchUrlData($parse_url['scheme'] . '://' . $parse_url['host'] . ':' . $parse_url['port'] . '/7.html');
+			}
+			return new JSONResponse($response);
+
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	* get radio metadata from stream
+	*
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	*/
+
+	public function getRadioStreamData(int $id) {
+		try {
+			$response = "";
+			$station = $this->businessLayer->find($id, $this->userId);
+			$stapi = $station->toAPI();
+			if (isset($stapi['stream_url'])) {
+				$response = RadioMetadata::fetchStreamData($stapi['stream_url'], 1, 1);
+			}
+			return new JSONResponse($response);
+
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 }

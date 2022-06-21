@@ -21,12 +21,15 @@ OCA.Music.ReadStreamMetaData = function(endpoint, onMetaDataCb, method) {
     };
 
     function getShoutcastV1Station(url, callback) {
-        url = url + '/7.html';
-        fetch(url, {
+        var parser = document.createElement('a');
+        parser.href = url;
+        var furl = parser.protocol + '//' + parser.hostname + ':' + parser.port + '/7.html';
+        fetch(furl, {
             method: 'GET'
         })
         .then(response => response.text())
         .then(body => {
+            console.log(body);
             var csvArrayParsing = /<body>(.*)<\/body>/im.exec(body);
 
             if (!csvArrayParsing || typeof csvArrayParsing.length !== 'number') {
@@ -49,14 +52,16 @@ OCA.Music.ReadStreamMetaData = function(endpoint, onMetaDataCb, method) {
                 station.title = title;
                 station.fetchsource = 'SHOUTCAST_V1';
                 callback(station);
+                return true;
             }
         });
+        return false;
     }
 
     function getShoutcastV2Station(url, callback) {
         var parser = document.createElement('a');
         parser.href = url;
-        var furl = parser.protocol + '://' + parser.hostname + ':' + parser.port + '/statistics';
+        var furl = parser.protocol + '//' + parser.hostname + ':' + parser.port + '/statistics';
         fetch(furl, {
             method: 'GET'
         })
@@ -90,7 +95,7 @@ OCA.Music.ReadStreamMetaData = function(endpoint, onMetaDataCb, method) {
     function getIcecastStation(url, callback) {
         var parser = document.createElement('a');
         parser.href = url;
-        var furl = parser.protocol + '://' + parser.hostname + ':' + parser.port + '/status-json.xsl';
+        var furl = parser.protocol + '//' + parser.hostname + ':' + parser.port + '/status-json.xsl';
         fetch(furl, {
             method: 'GET'
         })
@@ -106,7 +111,7 @@ OCA.Music.ReadStreamMetaData = function(endpoint, onMetaDataCb, method) {
             var sources = body.icestats.source;
             for (var i = 0, mountCount = sources.length; i < mountCount; i++) {
                 var source = sources[i];
-                if (source.listenurl === url) {
+                if (source.listenurl === url) { //parser.pathname
                     var station = {};
                     station.listeners = source.listeners;
                     station.bitrate = source.bitrate;
@@ -172,5 +177,10 @@ OCA.Music.ReadStreamMetaData = function(endpoint, onMetaDataCb, method) {
 
     if (methodHandler) {
         methodHandler(endpoint, onMetaDataCb);
+    } else {
+        var result = getShoutcastV1Station(endpoint, onMetaDataCb);
+        if (result == false) {
+            getStreamStation(endpoint, onMetaDataCb);
+        }
     }
 };

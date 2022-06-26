@@ -7,9 +7,9 @@
  * @author Morris Jobke <morris.jobke@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyrigth Pauli Järvinen 2017 - 2020
+ * @copyrigth Pauli Järvinen 2017 - 2022
  */
 
 angular.module('Music').factory('Audio', [function () {
-	return new OCA.Music.PlayerWrapper();
+	return new OCA.Music.GaplessPlayer();
 }]);

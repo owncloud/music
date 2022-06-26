@@ -25,6 +25,7 @@ class RadioMetadata {
 
 	public static function fetchStreamData($url, $maxattempts, $maxredirect) {
 		$parse_url = parse_url($url);
+		$timeout = 10;
 		$port = 80;
 		if (isset($parse_url['port'])) {
 			$port = $parse_url['port'];
@@ -43,7 +44,7 @@ class RadioMetadata {
 		}
 		$streamTitle = "";
 		if (($sockadd)&&($port)) {
-			$fp = fsockopen($sockadd, $port, $errno, $errstr, 15);
+			$fp = fsockopen($sockadd, $port, $errno, $errstr, $timeout);
 			if ($fp != false) {
 				$out = "GET " . $pathname . " HTTP/1.1\r\n";
 				$out .= "Host: ". $hostname . "\r\n";
@@ -52,6 +53,7 @@ class RadioMetadata {
 				$out .= "Icy-MetaData: 1\r\n";
 				$out .= "Connection: Close\r\n\r\n";
 				fwrite($fp, $out);
+				stream_set_timeout($fp, $timeout);
 
 				$header = fread($fp, 1024);
 				$headers = array();
@@ -80,6 +82,9 @@ class RadioMetadata {
                         					foreach ($metadatas as $metadata) {
 			        		                        if (strstr($metadata, "StreamTitle") !== false) {
 										$streamTitle = trim(explode('=', $metadata)[1], "'");
+										if (strlen($streamTitle) > 120) {
+											$streamTitle = "";
+										}
 										break;
                                 					}
 								}

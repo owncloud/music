@@ -510,6 +510,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		console.log('MetaData recieved: ' + streamTitle);
 		if ((streamTitle) && $scope.currentTrack.currentTitle !== streamTitle) {
 			$scope.currentTrack.currentTitle = streamTitle;
+			if (('mediaSession' in navigator)&&(navigator.mediaSession.metadata !== null)) {
+				navigator.mediaSession.metadata.artist = streamTitle;
+			}
 		}
 	};
 
@@ -526,7 +529,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				function(_error) {
 					// error handling
 					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
-						$scope.onMetadata(_error);
+						$scope.onMetadata($scope.currentTrack.stream_url);
 					}
 				}
 			);

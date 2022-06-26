@@ -36,8 +36,8 @@ class DetailsHelper {
 		$file = $userFolder->getById($fileId)[0] ?? null;
 		if ($file !== null) {
 			$data = $this->extractor->extract($file);
-			$audio = $data['audio'] ?: [];
-			$comments = $data['comments'] ?: [];
+			$audio = $data['audio'] ?? [];
+			$comments = $data['comments'] ?? [];
 
 			// remove intermediate arrays
 			$comments = self::flattenComments($comments);

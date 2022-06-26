@@ -413,9 +413,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getCoverArt(string $id, ?int $size) {
-		$idParts = \explode('-', $id);
-		$type = $idParts[0];
-		$entityId = (int)($idParts[1]);
+		list($type, $entityId) = self::parseEntityId($id);
 
 		if ($type == 'album') {
 			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
@@ -480,9 +478,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function download(string $id) {
-		$idParts = \explode('-', $id);
-		$type = $idParts[0];
-		$entityId = (int)($idParts[1]);
+		list($type, $entityId) = self::parseEntityId($id);
 
 		if ($type === 'track') {
 			$track = $this->trackBusinessLayer->find($entityId, $this->userId);
@@ -750,7 +746,7 @@ class SubsonicController extends Controller {
 		}
 
 		foreach ($id as $index => $aId) {
-			list($type, $trackId) = \explode('-', $aId);
+			list($type, $trackId) = self::parseEntityId($aId);
 			if ($type === 'track') {
 				$timestamp = $time[$index] ?? null;
 				$timeOfPlay = ($timestamp === null) ? null : new \DateTime('@' . $timestamp);
@@ -985,7 +981,7 @@ class SubsonicController extends Controller {
 	}
 
 	private static function parseBookamrkIdParam(string $id) : array {
-		list($typeName, $entityId) = \explode('-', $id);
+		list($typeName, $entityId) = self::parseEntityId($id);
 
 		if ($typeName === 'track') {
 			$type = Bookmark::TYPE_TRACK;
@@ -995,7 +991,7 @@ class SubsonicController extends Controller {
 			throw new SubsonicException("Unsupported ID format $id", 0);
 		}
 
-		return [$type, (int)$entityId];
+		return [$type, $entityId];
 	}
 
 	/**
@@ -1016,9 +1012,7 @@ class SubsonicController extends Controller {
 		$episodeIds = [];
 
 		foreach ($ids as $prefixedId) {
-			$parts = \explode('-', $prefixedId);
-			$type = $parts[0];
-			$id = (int)$parts[1];
+			list($type, $id) = self::parseEntityId($prefixedId);
 
 			if ($type == 'track') {
 				$trackIds[] = $id;
@@ -1352,8 +1346,7 @@ class SubsonicController extends Controller {
 	 * with a name matching the folder name)
 	 */
 	private function getArtistIdFromEntityId(string $entityId) : ?int {
-		list($type, $id) = \explode('-', $entityId);
-		$id = (int)$id;
+		list($type, $id) = self::parseEntityId($entityId);
 
 		switch ($type) {
 			case 'artist':
@@ -1416,8 +1409,7 @@ class SubsonicController extends Controller {
 	 * matching the folder name)
 	 */
 	private function getAlbumIdFromEntityId(string $entityId) : ?int {
-		list($type, $id) = \explode('-', $entityId);
-		$id = (int)$id;
+		list($type, $id) = self::parseEntityId($entityId);
 
 		switch ($type) {
 			case 'album':
@@ -1597,10 +1589,23 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Given a prefixed ID like 'artist-123' or 'track-45', return the string part and the numeric part.
+	 * @throws SubsonicException if the \a $id doesn't follow the expected pattern
+	 */
+	private static function parseEntityId(string $id) : array {
+		$parts = \explode('-', $id);
+		if (\count($parts) !== 2) {
+			throw new SubsonicException("Unexpected ID format: $id", 0);
+		}
+		$parts[1] = (int)$parts[1];
+		return $parts;
+	}
+
+	/**
 	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
 	 */
 	private static function ripIdPrefix(string $id) : int {
-		return (int)(\explode('-', $id)[1]);
+		return self::parseEntityId($id)[1];
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

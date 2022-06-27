@@ -31,6 +31,7 @@ class RadioMetadata {
 
 	private static function parseStreamUrl($url) {
 
+		$ret = array();
 		$parse_url = parse_url($url);
 
 		$ret['port'] = 80;

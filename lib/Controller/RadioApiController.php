@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\DataResponse;
 
 use OCP\Files\Folder;
 use OCP\IRequest;
@@ -219,7 +220,7 @@ class RadioApiController extends Controller {
 				$parse_url = parse_url($stapi['stream_url']);
 				$response = RadioMetadata::fetchUrlData($parse_url['scheme'] . '://' . $parse_url['host'] . ':' . $parse_url['port'] . '/7.html');
 			}
-			return new JSONResponse($response);
+			return new DataResponse($response);
 
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
@@ -241,7 +242,7 @@ class RadioApiController extends Controller {
 			if (isset($stapi['stream_url'])) {
 				$response = RadioMetadata::fetchStreamData($stapi['stream_url'], 1, 1);
 			}
-			return new JSONResponse($response);
+			return new DataResponse($response);
 
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());

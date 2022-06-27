@@ -17,6 +17,46 @@ namespace OCA\Music\Utility;
  */
 class RadioMetadata {
 
+	private static function findStr($data, $str) {
+		$ret = "";
+		foreach ($data as $value) {
+			$find = strstr($value, $str);
+			if ($find !== false) {
+				$ret = $find;
+				break;
+			}
+		}
+		return $ret;
+	}
+
+	private static function parseStreamUrl($url) {
+
+		$parse_url = parse_url($url);
+
+		$ret['port'] = 80;
+		if (isset($parse_url['port'])) {
+			$ret['port'] = $parse_url['port'];
+		} else if ($parse_url['scheme'] == "https") {
+			$ret['port'] = 443;
+		}
+
+		$ret['hostname'] = $parse_url['host'];
+		$ret['pathname'] = $parse_url['path'];
+
+		if (isset($parse_url['query'])) {
+			$ret['pathname'] .= "?" . $parse_url['query'];
+		}
+
+		if ($parse_url['scheme'] == "https") {
+			$ret['sockadd'] = "ssl://" . $ret['hostname'];
+		} else {
+			$ret['sockadd'] = $ret['hostname'];
+		}
+
+		return $ret;
+	}
+
+
 	public static function fetchUrlData($url) : array {
 		$content = \file_get_contents($url);
 		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);
@@ -24,30 +64,14 @@ class RadioMetadata {
 	}
 
 	public static function fetchStreamData($url, $maxattempts, $maxredirect) {
-		$parse_url = parse_url($url);
 		$timeout = 10;
-		$port = 80;
-		if (isset($parse_url['port'])) {
-			$port = $parse_url['port'];
-		} else if ($parse_url['scheme'] == "https") {
-			$port = 443;
-		}
-		$hostname = $parse_url['host'];
-		$pathname = $parse_url['path'];
-		if (isset($parse_url['query'])) {
-			$pathname .= "?" . $parse_url['query'];
-		}
-		if ($parse_url['scheme'] == "https") {
-			$sockadd = "ssl://" . $hostname;
-		} else {
-			$sockadd = $hostname;
-		}
 		$streamTitle = "";
-		if (($sockadd)&&($port)) {
-			$fp = fsockopen($sockadd, $port, $errno, $errstr, $timeout);
+		$pUrl = self::parseStreamUrl($url);
+		if (($pUrl['sockadd']) && ($pUrl['port'])) {
+			$fp = fsockopen($pUrl['sockadd'], $pUrl['port'], $errno, $errstr, $timeout);
 			if ($fp != false) {
-				$out = "GET " . $pathname . " HTTP/1.1\r\n";
-				$out .= "Host: ". $hostname . "\r\n";
+				$out = "GET " . $pUrl['pathname'] . " HTTP/1.1\r\n";
+				$out .= "Host: ". $pUrl['hostname'] . "\r\n";
 				$out .= "Accept: */*\r\n"; /* test */
 				$out .= "User-Agent: OCMusic/1.52\r\n";
 				$out .= "Icy-MetaData: 1\r\n";
@@ -56,17 +80,13 @@ class RadioMetadata {
 				stream_set_timeout($fp, $timeout);
 
 				$header = fread($fp, 1024);
-				$headers = array();
 				$headers = explode("\n", $header);
 
 				if (strstr($headers[0], "200 OK") !== false) {
 					$interval = 0;
-					foreach ($headers as $value) {
-						if (strstr($value, "icy-metaint:") !== false) {
-							$val = explode(':', $value);
-							$interval = trim($val[1]);
-							break;
-						}
+					$line = self::findStr($headers, "icy-metaint:");
+					if ($line) {
+						$interval = trim(explode(':', $line)[1]);
 					}
 
 					if (($interval)&&($interval<64001)) {
@@ -79,27 +99,23 @@ class RadioMetadata {
 							$meta_length = ord(fread($fp, 1)) * 16;
 							if ($meta_length) {
 								$metadatas = explode(';', fread($fp, $meta_length));
-                        					foreach ($metadatas as $metadata) {
-			        		                        if (strstr($metadata, "StreamTitle") !== false) {
-										$streamTitle = trim(explode('=', $metadata)[1], "'");
-										if (strlen($streamTitle) > 120) {
-											$streamTitle = "";
-										}
-										break;
-                                					}
+								$metadata = self::findStr($metadatas, "StreamTitle");
+								if ($metadata) {
+									$streamTitle = trim(explode('=', $metadata)[1], "'");
+									if (strlen($streamTitle) > 256) {
+										$streamTitle = "";
+									}
+									break;
 								}
 							}
 							$attempts++;
 						}
 					}
 				} else if (($maxredirect>0)&&(strstr($headers[0], "302 Found") !== false)) {
-					foreach ($headers as $value) {
-						$val = strstr($value, "Location:");
-						if ($val) {
-							$location = trim(substr($val, 10), "\r");
-							$streamTitle = RadioMetadata::fetchStreamData($location, $maxattempts, $maxredirect-1);
-							break;
-						}
+					$value = self::findStr($headers, "Location:");
+					if ($value) {
+						$location = trim(substr($value, 10), "\r");
+						$streamTitle = RadioMetadata::fetchStreamData($location, $maxattempts, $maxredirect-1);
 					}
 				}
 				fclose($fp);

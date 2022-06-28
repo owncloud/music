@@ -12,6 +12,8 @@
 
 namespace OCA\Music\Utility;
 
+use OCA\Music\Utility\Util;
+
 /**
  * MetaData radio utility functions
  */
@@ -41,6 +43,7 @@ class RadioMetadata {
 			$ret['port'] = 443;
 		}
 
+		$ret['scheme'] = $parse_url['scheme'];
 		$ret['hostname'] = $parse_url['host'];
 		$ret['pathname'] = $parse_url['path'];
 
@@ -49,9 +52,9 @@ class RadioMetadata {
 		}
 
 		if ($parse_url['scheme'] == "https") {
-			$ret['sockadd'] = "ssl://" . $ret['hostname'];
+			$ret['sockAddress'] = "ssl://" . $ret['hostname'];
 		} else {
-			$ret['sockadd'] = $ret['hostname'];
+			$ret['sockAddress'] = $ret['hostname'];
 		}
 
 		return $ret;
@@ -59,21 +62,26 @@ class RadioMetadata {
 
 
 	public static function fetchUrlData($url) : array {
+		$title = "";
 		$content = \file_get_contents($url);
 		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);
-		return [$content, $status_code, $msg];
+		if ($status_code == 200) {
+			$data = explode(',', $content);
+			$title = $data[6];
+		}
+		return $title;
 	}
 
 	public static function fetchStreamData($url, $maxattempts, $maxredirect) {
 		$timeout = 10;
 		$streamTitle = "";
 		$pUrl = self::parseStreamUrl($url);
-		if (($pUrl['sockadd']) && ($pUrl['port'])) {
-			$fp = fsockopen($pUrl['sockadd'], $pUrl['port'], $errno, $errstr, $timeout);
+		if (($pUrl['sockAddress']) && ($pUrl['port'])) {
+			$fp = fsockopen($pUrl['sockAddress'], $pUrl['port'], $errno, $errstr, $timeout);
 			if ($fp != false) {
 				$out = "GET " . $pUrl['pathname'] . " HTTP/1.1\r\n";
 				$out .= "Host: ". $pUrl['hostname'] . "\r\n";
-				$out .= "Accept: */*\r\n"; /* test */
+				$out .= "Accept: */*\r\n";
 				$out .= "User-Agent: OCMusic/1.52\r\n";
 				$out .= "Icy-MetaData: 1\r\n";
 				$out .= "Connection: Close\r\n\r\n";
@@ -83,7 +91,7 @@ class RadioMetadata {
 				$header = fread($fp, 1024);
 				$headers = explode("\n", $header);
 
-				if (strstr($headers[0], "200 OK") !== false) {
+				if (strpos($headers[0], "200 OK") !== false) {
 					$interval = 0;
 					$line = self::findStr($headers, "icy-metaint:");
 					if ($line) {
@@ -102,17 +110,16 @@ class RadioMetadata {
 								$metadatas = explode(';', fread($fp, $meta_length));
 								$metadata = self::findStr($metadatas, "StreamTitle");
 								if ($metadata) {
-									$streamTitle = trim(explode('=', $metadata)[1], "'");
-									if (strlen($streamTitle) > 256) {
-										$streamTitle = "";
-									}
+									$streamTitle = Util::truncate(trim(explode('=', $metadata)[1], "'"), 256);
 									break;
 								}
 							}
 							$attempts++;
 						}
+					} else {
+						$streamTitle = RadioMetadata::fetchUrlData($pUrl['scheme'] . '://' . $pUrl['hostname'] . ':' . $pUrl['port'] . '/7.html');
 					}
-				} else if (($maxredirect>0)&&(strstr($headers[0], "302 Found") !== false)) {
+				} else if (($maxredirect>0)&&(strpos($headers[0], "302 Found") !== false)) {
 					$value = self::findStr($headers, "Location:");
 					if ($value) {
 						$location = trim(substr($value, 10), "\r");

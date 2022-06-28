@@ -205,29 +205,6 @@ class RadioApiController extends Controller {
 	}
 
 	/**
-	* get radio metadata from url
-	*
-	* @NoAdminRequired
-	* @NoCSRFRequired
-	*/
-
-	public function getRadioURLData(int $id) {
-		try {
-			$response = "";
-			$station = $this->businessLayer->find($id, $this->userId);
-			$stapi = $station->toAPI();
-			if (isset($stapi['stream_url'])) {
-				$parse_url = parse_url($stapi['stream_url']);
-				$response = RadioMetadata::fetchUrlData($parse_url['scheme'] . '://' . $parse_url['host'] . ':' . $parse_url['port'] . '/7.html');
-			}
-			return new DataResponse($response);
-
-		} catch (BusinessLayerException $ex) {
-			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
-		}
-	}
-
-	/**
 	* get radio metadata from stream
 	*
 	* @NoAdminRequired
@@ -242,7 +219,7 @@ class RadioApiController extends Controller {
 			if (isset($stapi['stream_url'])) {
 				$response = RadioMetadata::fetchStreamData($stapi['stream_url'], 1, 1);
 			}
-			return new DataResponse($response);
+			return new DataResponse([ 'title' => $response ]);
 
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());

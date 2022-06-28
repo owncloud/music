@@ -510,20 +510,16 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		console.log('MetaData recieved: ' + streamTitle);
 		if ((streamTitle) && $scope.currentTrack.currentTitle !== streamTitle) {
 			$scope.currentTrack.currentTitle = streamTitle;
-			if (('mediaSession' in navigator)&&(navigator.mediaSession.metadata !== null)) {
-				navigator.mediaSession.metadata.artist = streamTitle;
-			}
 		}
 	};
 
 	$scope.getStreamTitle = function() {
 		if ($rootScope.playing) {
-			//console.log('MetaData play');
 			var currentTrackId = $scope.currentTrack.id;
-			Restangular.one('radiometadata').one('stream', $scope.currentTrack.id).get().then(
-				function(_result) {
+			Restangular.one('radio', $scope.currentTrack.id).one('info').get().then(
+				function(response) {
 					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
-						$scope.onMetadata(_result);
+						$scope.onMetadata(response.title);
 					}
 				},
 				function(_error) {
@@ -535,7 +531,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			);
 			timeoutId = setTimeout(() => $scope.getStreamTitle(), 32000);
 		} else {
-			//console.log('MetaData pause');
 			timeoutId = 0;
 		}
 	};
@@ -602,7 +597,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					});
 				}
 			}
-		});
+		}, true);
 	}
 
 	/**
@@ -648,6 +643,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					notification = null;
 				}
 			}
-		});
+		}, true);
 	}
 }]);

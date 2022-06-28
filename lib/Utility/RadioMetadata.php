@@ -61,7 +61,7 @@ class RadioMetadata {
 	}
 
 
-	public static function fetchUrlData($url) : array {
+	public static function fetchUrlData($url) {
 		$title = "";
 		$content = \file_get_contents($url);
 		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);

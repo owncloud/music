@@ -215,10 +215,7 @@ class RadioApiController extends Controller {
 		try {
 			$response = "";
 			$station = $this->businessLayer->find($id, $this->userId);
-			$stapi = $station->toAPI();
-			if (isset($stapi['stream_url'])) {
-				$response = RadioMetadata::fetchStreamData($stapi['stream_url'], 1, 1);
-			}
+			$response = RadioMetadata::fetchStreamData($station->getStreamUrl(), 1, 1);
 			return new DataResponse([ 'title' => $response ]);
 
 		} catch (BusinessLayerException $ex) {

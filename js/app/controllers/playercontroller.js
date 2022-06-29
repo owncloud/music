@@ -32,7 +32,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
-	var pendingStreamTitleFetch = null;
+	var pendingRadioTitleFetch = null;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -105,12 +105,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
-		if (pendingStreamTitleFetch != null) {
-			$timeout.cancel(pendingStreamTitleFetch);
-			pendingStreamTitleFetch = null;
+		if (pendingRadioTitleFetch != null) {
+			$timeout.cancel(pendingRadioTitleFetch);
+			pendingRadioTitleFetch = null;
 		}
-		if (currentTrackIsStream()) {
-			getStreamTitle();
+		if ($scope.currentTrack?.type === 'radio') {
+			getRadioTitle();
 		}
 	});
 	onPlayerEvent('pause', function() {
@@ -506,7 +506,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return command + ' (' + cmdScope + ')';
 	};
 
-	function getStreamTitle() {
+	function getRadioTitle() {
 		const onMetadata = function(streamTitle) {
 			//console.log('MetaData recieved: ' + streamTitle);
 			if ($scope.currentTrack.currentTitle !== streamTitle) {
@@ -529,9 +529,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					}
 				}
 			);
-			pendingStreamTitleFetch = $timeout(getStreamTitle, 32000);
+			pendingRadioTitleFetch = $timeout(getRadioTitle, 32000);
 		} else {
-			pendingStreamTitleFetch = null;
+			pendingRadioTitleFetch = null;
 		}
 	}
 

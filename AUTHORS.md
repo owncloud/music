@@ -40,6 +40,7 @@
 * [Kurt Smolderen](https://github.com/ksmolder)
 * [Leizh](https://github.com/eizh): <leizh@free.fr>
 * [Lukas Reschke](https://github.com/LukasReschke)
+* [Moahmed-Ismail Mejri](https://github.com/medismail): <imejri@hotmail.com>
 * [Moritz Meißelbach](https://github.com/Biont): <moritz@meisselba.ch>
 * [Ndurchx](https://github.com/ndurchx)
 * [Nico Boehr](https://github.com/youknow0): <nico@nicoboehr.de>

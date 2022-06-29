@@ -571,7 +571,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		registerMediaControlHandler('previoustrack', $scope.prev);
 		registerMediaControlHandler('nexttrack', $scope.next);
 
-		$scope.$watch('currentTrack', function(track) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.currentTitle'], function(newValues) {
+			const track = newValues[0];
 			if (track) {
 				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
@@ -597,7 +598,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					});
 				}
 			}
-		}, true);
+		});
 	}
 
 	/**
@@ -623,7 +624,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 
-		$scope.$watch('currentTrack', function(track) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.currentTitle'], function(newValues) {
+			const track = newValues[0];
 			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
 			if (enabled && track) {
@@ -643,6 +645,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					notification = null;
 				}
 			}
-		}, true);
+		});
 	}
 }]);

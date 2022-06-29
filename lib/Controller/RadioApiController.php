@@ -15,6 +15,7 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\DataResponse;
 
 use OCP\Files\Folder;
 use OCP\IRequest;
@@ -25,6 +26,7 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\RadioMetadata;
 
 class RadioApiController extends Controller {
 	private $businessLayer;
@@ -200,5 +202,24 @@ class RadioApiController extends Controller {
 	public function resetAll() {
 		$this->businessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	* get radio metadata from stream
+	*
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	*/
+
+	public function getRadioStreamData(int $id) {
+		try {
+			$response = "";
+			$station = $this->businessLayer->find($id, $this->userId);
+			$response = RadioMetadata::fetchStreamData($station->getStreamUrl(), 1, 1);
+			return new DataResponse([ 'title' => $response ]);
+
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
 	}
 }

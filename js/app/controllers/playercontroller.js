@@ -32,6 +32,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
+	var timeoutId = 0;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -104,6 +105,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
+		if (timeoutId != 0) {
+			clearTimeout(timeoutId);
+			timeoutId = 0;
+		}
+		if (currentTrackIsStream()) {
+			$scope.getStreamTitle();
+		}
 	});
 	onPlayerEvent('pause', function() {
 		$rootScope.playing = false;
@@ -438,7 +446,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.currentTitle ?? $scope.currentTrack?.stream_url ?? null;
 	};
 
 	$scope.coverArt = function() {
@@ -498,6 +506,35 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return command + ' (' + cmdScope + ')';
 	};
 
+	$scope.onMetadata = function(streamTitle) {
+		console.log('MetaData recieved: ' + streamTitle);
+		if ((streamTitle) && $scope.currentTrack.currentTitle !== streamTitle) {
+			$scope.currentTrack.currentTitle = streamTitle;
+		}
+	};
+
+	$scope.getStreamTitle = function() {
+		if ($rootScope.playing) {
+			var currentTrackId = $scope.currentTrack.id;
+			Restangular.one('radio', $scope.currentTrack.id).one('info').get().then(
+				function(response) {
+					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
+						$scope.onMetadata(response.title);
+					}
+				},
+				function(_error) {
+					// error handling
+					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
+						$scope.onMetadata($scope.currentTrack.stream_url);
+					}
+				}
+			);
+			timeoutId = setTimeout(() => $scope.getStreamTitle(), 32000);
+		} else {
+			timeoutId = 0;
+		}
+	};
+
 	/**
 	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,
 	* the loading happens in a context where the normal session cookies are not available. Hence, for the
@@ -539,7 +576,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.name,
-						artist: track.stream_url,
+						artist: track.currentTitle ?? track.stream_url,
 						artwork: [{
 							sizes: '190x190',
 							src: radioIconPath,
@@ -560,7 +597,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					});
 				}
 			}
-		});
+		}, true);
 	}
 
 	/**
@@ -606,6 +643,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					notification = null;
 				}
 			}
-		});
+		}, true);
 	}
 }]);

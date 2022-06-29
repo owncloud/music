@@ -15,7 +15,6 @@ namespace OCA\Music\Controller;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\DataResponse;
 
 use OCP\Files\Folder;
 use OCP\IRequest;
@@ -210,14 +209,11 @@ class RadioApiController extends Controller {
 	* @NoAdminRequired
 	* @NoCSRFRequired
 	*/
-
 	public function getRadioStreamData(int $id) {
 		try {
-			$response = "";
 			$station = $this->businessLayer->find($id, $this->userId);
 			$response = RadioMetadata::fetchStreamData($station->getStreamUrl(), 1, 1);
-			return new DataResponse([ 'title' => $response ]);
-
+			return new JSONResponse([ 'title' => $response ]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}

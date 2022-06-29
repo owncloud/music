@@ -32,7 +32,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
-	var timeoutId = 0;
+	var pendingStreamTitleFetch = null;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -105,12 +105,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
-		if (timeoutId != 0) {
-			clearTimeout(timeoutId);
-			timeoutId = 0;
+		if (pendingStreamTitleFetch != null) {
+			$timeout.cancel(pendingStreamTitleFetch);
+			pendingStreamTitleFetch = null;
 		}
 		if (currentTrackIsStream()) {
-			$scope.getStreamTitle();
+			getStreamTitle();
 		}
 	});
 	onPlayerEvent('pause', function() {
@@ -506,34 +506,34 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return command + ' (' + cmdScope + ')';
 	};
 
-	$scope.onMetadata = function(streamTitle) {
-		console.log('MetaData recieved: ' + streamTitle);
-		if ((streamTitle) && $scope.currentTrack.currentTitle !== streamTitle) {
-			$scope.currentTrack.currentTitle = streamTitle;
-		}
-	};
+	function getStreamTitle() {
+		const onMetadata = function(streamTitle) {
+			//console.log('MetaData recieved: ' + streamTitle);
+			if ($scope.currentTrack.currentTitle !== streamTitle) {
+				$scope.currentTrack.currentTitle = streamTitle;
+			}
+		};
 
-	$scope.getStreamTitle = function() {
 		if ($rootScope.playing) {
 			var currentTrackId = $scope.currentTrack.id;
 			Restangular.one('radio', $scope.currentTrack.id).one('info').get().then(
 				function(response) {
-					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
-						$scope.onMetadata(response.title);
+					if ($scope.currentTrack?.id == currentTrackId) {
+						onMetadata(response.title);
 					}
 				},
 				function(_error) {
 					// error handling
-					if ($scope.currentTrack && $scope.currentTrack.id == currentTrackId) {
-						$scope.onMetadata($scope.currentTrack.stream_url);
+					if ($scope.currentTrack?.id == currentTrackId) {
+						onMetadata(null);
 					}
 				}
 			);
-			timeoutId = setTimeout(() => $scope.getStreamTitle(), 32000);
+			pendingStreamTitleFetch = $timeout(getStreamTitle, 32000);
 		} else {
-			timeoutId = 0;
+			pendingStreamTitleFetch = null;
 		}
-	};
+	}
 
 	/**
 	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,

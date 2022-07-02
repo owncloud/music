@@ -29,6 +29,7 @@ use OCA\Music\Utility\RadioMetadata;
 
 class RadioApiController extends Controller {
 	private $businessLayer;
+	private $metadata;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
@@ -37,12 +38,14 @@ class RadioApiController extends Controller {
 	public function __construct(string $appname,
 								IRequest $request,
 								RadioStationBusinessLayer $businessLayer,
+								RadioMetadata $metadata,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
 								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->businessLayer = $businessLayer;
+		$this->metadata = $metadata;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->userFolder = $userFolder;
@@ -212,7 +215,7 @@ class RadioApiController extends Controller {
 	public function getRadioStreamData(int $id) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
-			$response = RadioMetadata::fetchStreamData($station->getStreamUrl(), 1, 1);
+			$response = $this->metadata->fetchStreamData($station->getStreamUrl(), 1, 1);
 			return new JSONResponse([ 'title' => $response ]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());

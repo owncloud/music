@@ -12,10 +12,18 @@
 
 namespace OCA\Music\Utility;
 
+use OCA\Music\AppFramework\Core\Logger;
+
 /**
  * MetaData radio utility functions
  */
 class RadioMetadata {
+
+	private $logger;
+
+	public function __construct(Logger $logger) {
+		$this->logger = $logger;
+	}
 
 	private static function findStr(array $data, string $str) : string {
 		$ret = "";
@@ -58,7 +66,7 @@ class RadioMetadata {
 	}
 
 
-	public static function fetchUrlData(string $url) : ?string {
+	public function fetchUrlData(string $url) : ?string {
 		$title = null;
 		$content = \file_get_contents($url);
 		list($version, $status_code, $msg) = \explode(' ', $http_response_header[0], 3);
@@ -69,7 +77,7 @@ class RadioMetadata {
 		return $title;
 	}
 
-	public static function fetchStreamData(string $url, int $maxattempts, int $maxredirect) : ?string {
+	public function fetchStreamData(string $url, int $maxattempts, int $maxredirect) : ?string {
 		$timeout = 10;
 		$streamTitle = null;
 		$pUrl = self::parseStreamUrl($url);
@@ -114,13 +122,13 @@ class RadioMetadata {
 							$attempts++;
 						}
 					} else {
-						$streamTitle = self::fetchUrlData($pUrl['scheme'] . '://' . $pUrl['hostname'] . ':' . $pUrl['port'] . '/7.html');
+						$streamTitle = $this->fetchUrlData($pUrl['scheme'] . '://' . $pUrl['hostname'] . ':' . $pUrl['port'] . '/7.html');
 					}
 				} else if ($maxredirect > 0 && strpos($headers[0], "302 Found") !== false) {
 					$value = self::findStr($headers, "Location:");
 					if ($value) {
 						$location = \trim(\substr($value, 10), "\r");
-						$streamTitle = self::fetchStreamData($location, $maxattempts, $maxredirect-1);
+						$streamTitle = $this->fetchStreamData($location, $maxattempts, $maxredirect-1);
 					}
 				}
 				\fclose($fp);

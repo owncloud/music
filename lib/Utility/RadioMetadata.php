@@ -68,12 +68,17 @@ class RadioMetadata {
 
 	public function fetchUrlData(string $url) : ?string {
 		$title = null;
-		$content = \file_get_contents($url);
+		$streamContext = \stream_context_create(['http' => ['ignore_errors' => true]]); // handle errornous status codes manually
+		$content = \file_get_contents($url, false, $streamContext);
 		list($version, $status_code, $msg) = \explode(' ', $http_response_header[0], 3);
+		
 		if ($status_code == 200) {
 			$data = \explode(',', $content);
 			$title = $data[6] ?? null; // the title field is optional
+		} else {
+			$this->logger->log("Failed to read $url: {$http_response_header[0]}", 'debug');
 		}
+		
 		return $title;
 	}
 

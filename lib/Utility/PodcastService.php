@@ -268,10 +268,10 @@ class PodcastService {
 	 * @return string|false
 	 */
 	private static function fetchUrl(string $url) {
-		// some podcast services require a valid user agent to be set
 		$opts = [
-			"http" => [
-				"header" => "User-Agent: PodcastService"
+			'http' => [
+				'header' => 'User-Agent: ownCloud Music',	// some podcast services require a valid user agent to be set
+				'ignore_errors' => true 					// don't emit warnings for bad/unavailable URL, we handle errors manually
 			]
 		];
 		$context = stream_context_create($opts);

@@ -225,7 +225,12 @@ class CoverHelper {
 	 */
 	private function readCover($entity, Folder $rootFolder, int $size) : ?array {
 		if ($entity instanceof PodcastChannel) {
-			$response = ['mimetype' => null, 'content' => \file_get_contents($entity->getImageUrl())];
+			$image = HttpUtil::loadFromUrl($entity->getImageUrl())['content'];
+			if ($image !== false) {
+				$response = ['mimetype' => null, 'content' => $image];
+			} else {
+				$response = null;
+			}
 		} else {
 			$response = $this->readCoverFromLocalFile($entity, $rootFolder);
 		}

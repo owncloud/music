@@ -119,7 +119,7 @@ class PodcastService {
 	 * @return array like ['status' => int, 'channel' => ?PodcastChannel]
 	 */
 	public function subscribe(string $url, string $userId) : array {
-		$content = self::fetchUrl($url);
+		$content = HttpUtil::loadFromUrl($url)['content'];
 		if ($content === false) {
 			return ['status' => self::STATUS_INVALID_URL, 'channel' => null];
 		}
@@ -180,7 +180,7 @@ class PodcastService {
 
 		if ($channel !== null) {
 			$xmlTree = null;
-			$content = self::fetchUrl($channel->getRssUrl());
+			$content = HttpUtil::loadFromUrl($channel->getRssUrl())['content'];
 			if ($content === false) {
 				$status = self::STATUS_INVALID_URL;
 			} else {
@@ -262,20 +262,5 @@ class PodcastService {
 		}
 		// return the episodes in inverted chronological order (newest first)
 		return \array_reverse($episodes);
-	}
-
-	/**
-	 * @param string $url
-	 * @return string|false
-	 */
-	private static function fetchUrl(string $url) {
-		$opts = [
-			'http' => [
-				'header' => 'User-Agent: ownCloud Music',	// some podcast services require a valid user agent to be set
-				'ignore_errors' => true 					// don't emit warnings for bad/unavailable URL, we handle errors manually
-			]
-		];
-		$context = stream_context_create($opts);
-		return \file_get_contents($url, false, $context);
 	}
 }

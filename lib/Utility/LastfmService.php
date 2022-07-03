@@ -202,8 +202,7 @@ class LastfmService {
 			// ... and form the final query string
 			$queryString = '?' . \implode('&', $args);
 
-			list($info, $statusCode, $msg) = self::fetchUrl(self::LASTFM_URL . $queryString);
-			$statusCode = (int)$statusCode;
+			list('content' => $info, 'status_code' => $statusCode, 'message' => $msg) = HttpUtil::loadFromUrl(self::LASTFM_URL . $queryString);
 
 			if ($info === false) {
 				// When an album is not found, Last.fm returns 404 but that is not a sign of broken connection.
@@ -218,15 +217,5 @@ class LastfmService {
 			$info['api_key_set'] = true;
 			return $info;
 		}
-	}
-
-	private static function fetchUrl($url) : array {
-		$content = \file_get_contents($url);
-
-		// It's some PHP magic that calling file_get_contents creates and populates
-		// also a local variable array $http_response_header.
-		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);
-
-		return [$content, $status_code, $msg];
 	}
 }

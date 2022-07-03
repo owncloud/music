@@ -14,6 +14,7 @@ namespace OCA\Music\Command;
 
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\Utility\HttpUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,9 +64,10 @@ class PodcastAdd extends BaseCommand {
 	}
 
 	private function addPodcast(string $rss, InputInterface $input, OutputInterface $output, array $users) : void {
-		$content = \file_get_contents($rss);
+		$rssData = HttpUtil::loadFromUrl($rss);
+		$content = $rssData['content'];
 		if ($content === false) {
-			throw new \InvalidArgumentException("Invalid URL <error>$rss</error>!");
+			throw new \InvalidArgumentException("Invalid URL <error>$rss</error>! {$rssData['status_code']} {$rssData['message']}");
 		}
 
 		$xmlTree = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);

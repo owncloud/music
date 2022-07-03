@@ -65,20 +65,17 @@ class RadioMetadata {
 		return $ret;
 	}
 
-
 	public function fetchUrlData(string $url) : ?string {
 		$title = null;
-		$streamContext = \stream_context_create(['http' => ['ignore_errors' => true]]); // handle errornous status codes manually
-		$content = \file_get_contents($url, false, $streamContext);
-		list($version, $status_code, $msg) = \explode(' ', $http_response_header[0], 3);
-		
+		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($url);
+
 		if ($status_code == 200) {
 			$data = \explode(',', $content);
 			$title = $data[6] ?? null; // the title field is optional
 		} else {
-			$this->logger->log("Failed to read $url: {$http_response_header[0]}", 'debug');
+			$this->logger->log("Failed to read $url: $status_code $message", 'debug');
 		}
-		
+
 		return $title;
 	}
 
@@ -92,7 +89,7 @@ class RadioMetadata {
 				$out = "GET " . $pUrl['pathname'] . " HTTP/1.1\r\n";
 				$out .= "Host: ". $pUrl['hostname'] . "\r\n";
 				$out .= "Accept: */*\r\n";
-				$out .= "User-Agent: OCMusic/1.52\r\n";
+				$out .= HttpUtil::userAgentHeader() . "\r\n";
 				$out .= "Icy-MetaData: 1\r\n";
 				$out .= "Connection: Close\r\n\r\n";
 				\fwrite($fp, $out);
@@ -105,7 +102,7 @@ class RadioMetadata {
 					$interval = 0;
 					$line = self::findStr($headers, "icy-metaint:");
 					if ($line) {
-						$interval = \trim(explode(':', $line)[1]);
+						$interval = (int)\trim(explode(':', $line)[1]);
 					}
 
 					if ($interval && $interval < 64001) {

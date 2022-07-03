@@ -13,6 +13,7 @@
 - Errors being logged because of incomplete exception case handling
   [#989](https://github.com/owncloud/music/issues/989)
   [#988](https://github.com/owncloud/music/issues/988)
+- Podcast episodes shown in wrong order after channel updated via the web UI
 
 ## 1.5.2 - 2022-05-08
 ### Added

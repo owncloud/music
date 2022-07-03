@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 namespace OCA\Music\Utility;
@@ -136,7 +136,7 @@ class PodcastService {
 		}
 
 		$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $channel->getId());
-		$channel->setEpisodes(\array_reverse($episodes));
+		$channel->setEpisodes($episodes);
 
 		return ['status' => self::STATUS_OK, 'channel' => $channel];
 	}
@@ -254,13 +254,14 @@ class PodcastService {
 
 	private function updateEpisodesFromXml(\SimpleXMLElement $items, string $userId, int $channelId) : array {
 		$episodes = [];
-		// loop the episodes from XML in reverse order to get chronological order
+		// loop the episodes from XML in reverse order to store them to the DB in chronological order
 		for ($count = \count($items), $i = $count-1; $i >= 0; --$i) {
 			if ($items[$i] !== null) {
 				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($userId, $channelId, $items[$i]);
 			}
 		}
-		return $episodes;
+		// return the episodes in inverted chronological order (newest first)
+		return \array_reverse($episodes);
 	}
 
 	/**

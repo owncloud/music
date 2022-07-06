@@ -98,6 +98,22 @@ class RadioMetadata {
 		}
 	}
 
+	public function readShoutcastV2Metadata(string $streamUrl) : ?string {
+		// cut the URL from the last '/' and append 'stats'
+		$lastSlash = \strrpos($streamUrl, '/');
+		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/stats';
+
+		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
+
+		if ($status_code == 200) {
+			$rootNode = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
+			return (string)$rootNode->SONGTITLE;
+		} else {
+			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
+			return null;
+		}
+	}
+
 	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?string {
 		$timeout = 10;
 		$streamTitle = null;

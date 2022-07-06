@@ -215,8 +215,10 @@ class RadioApiController extends Controller {
 	public function getRadioStreamData(int $id) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
-			$response = $this->metadata->fetchStreamData($station->getStreamUrl(), 1, 1);
-			return new JSONResponse([ 'title' => $response ]);
+			$title = $this->metadata->readIcyMetadata($station->getStreamUrl(), 1, 1)
+					?? $this->metadata->readShoutcastV1Metadata($station->getStreamUrl());
+
+			return new JSONResponse([ 'title' => $title ]);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}

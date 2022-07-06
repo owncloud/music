@@ -7,7 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Moahmed-Ismail MEJRI <imejri@hotmail.com>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Moahmed-Ismail MEJRI 2022
+ * @copyright Pauli Järvinen 2022
  */
 
 namespace OCA\Music\Utility;
@@ -25,16 +27,18 @@ class RadioMetadata {
 		$this->logger = $logger;
 	}
 
-	private static function findStr(array $data, string $str) : ?string {
-		$ret = null;
+	/**
+	 * Loop through the array and try to find the given key. On match,
+	 * return the text in the array cell following the key.
+	 */
+	private static function findStrFollowing(array $data, string $key) : ?string {
 		foreach ($data as $value) {
-			$find = \strstr($value, $str);
+			$find = \strstr($value, $key);
 			if ($find !== false) {
-				$ret = $find;
-				break;
+				return \substr($find, \strlen($key));
 			}
 		}
-		return $ret;
+		return null;
 	}
 
 	private static function parseStreamUrl(string $url) : array {
@@ -65,24 +69,39 @@ class RadioMetadata {
 		return $ret;
 	}
 
-	public function fetchUrlData(string $url) : ?string {
-		$title = null;
-		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($url);
-
-		if ($status_code == 200) {
-			$data = \explode(',', $content);
-			$title = $data[6] ?? null; // the title field is optional
-		} else {
-			$this->logger->log("Failed to read $url: $status_code $message", 'debug');
+	private static function parseTitleFromStreamMetadata($fp) : ?string {
+		$meta_length = \ord(\fread($fp, 1)) * 16;
+		if ($meta_length) {
+			$metadatas = \explode(';', \fread($fp, $meta_length));
+			$title = self::findStrFollowing($metadatas, "StreamTitle=");
+			if ($title) {
+				return Util::truncate(\trim($title, "'"), 256);
+			}
 		}
-
-		return $title;
+		return null;
 	}
 
-	public function fetchStreamData(string $url, int $maxattempts, int $maxredirect) : ?string {
+	public function readShoutcastV1Metadata(string $streamUrl) : ?string {
+		// cut the URL from the last '/' and append 7.html
+		$lastSlash = \strrpos($streamUrl, '/');
+		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/7.html';
+
+		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
+
+		if ($status_code == 200) {
+			$content = \strip_tags($content); // get rid of the <html><body>...</html></body> decorations
+			$data = \explode(',', $content);
+			return \count($data) > 6 ? \trim($data[6]) : null; // the title field is optional
+		} else {
+			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
+			return null;
+		}
+	}
+
+	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?string {
 		$timeout = 10;
 		$streamTitle = null;
-		$pUrl = self::parseStreamUrl($url);
+		$pUrl = self::parseStreamUrl($streamUrl);
 		if ($pUrl['sockAddress'] && $pUrl['port']) {
 			$fp = \fsockopen($pUrl['sockAddress'], $pUrl['port'], $errno, $errstr, $timeout);
 			if ($fp !== false) {
@@ -99,15 +118,12 @@ class RadioMetadata {
 				$headers = \explode("\n", $header);
 
 				if (\strpos($headers[0], "200 OK") !== false) {
-					$interval = 0;
-					$line = self::findStr($headers, "icy-metaint:");
-					if ($line) {
-						$interval = (int)\trim(explode(':', $line)[1]);
-					}
+					$interval = self::findStrFollowing($headers, "icy-metaint:") ?? '0';
+					$interval = (int)\trim($interval);
 
 					if ($interval > 0 && $interval <= 64*1024) {
 						$attempts = 0;
-						while ($attempts < $maxattempts) {
+						while ($attempts < $maxattempts && $streamTitle === null) {
 							$bytesToSkip = $interval;
 							if ($attempts === 0) {
 								// The first chunk containing the header may also already contain the beginning of the body,
@@ -118,25 +134,16 @@ class RadioMetadata {
 
 							\fseek($fp, $bytesToSkip, SEEK_CUR);
 
-							$meta_length = \ord(\fread($fp, 1)) * 16;
-							if ($meta_length) {
-								$metadatas = \explode(';', \fread($fp, $meta_length));
-								$metadata = self::findStr($metadatas, "StreamTitle");
-								if ($metadata) {
-									$streamTitle = Util::truncate(trim(explode('=', $metadata)[1], "'"), 256);
-									break;
-								}
-							}
+							$streamTitle = self::parseTitleFromStreamMetadata($fp);
+
 							$attempts++;
 						}
-					} else {
-						$streamTitle = $this->fetchUrlData($pUrl['scheme'] . '://' . $pUrl['hostname'] . ':' . $pUrl['port'] . '/7.html');
 					}
 				} else if ($maxredirect > 0 && \strpos($headers[0], "302 Found") !== false) {
-					$value = self::findStr($headers, "Location:");
-					if ($value) {
-						$location = \trim(\substr($value, 10), "\r");
-						$streamTitle = $this->fetchStreamData($location, $maxattempts, $maxredirect-1);
+					$location = self::findStrFollowing($headers, "Location: ");
+					if ($location) {
+						$location = \trim($location, "\r");
+						$streamTitle = $this->readIcyMetadata($location, $maxattempts, $maxredirect-1);
 					}
 				}
 				\fclose($fp);

@@ -25,8 +25,8 @@ class RadioMetadata {
 		$this->logger = $logger;
 	}
 
-	private static function findStr(array $data, string $str) : string {
-		$ret = "";
+	private static function findStr(array $data, string $str) : ?string {
+		$ret = null;
 		foreach ($data as $value) {
 			$find = \strstr($value, $str);
 			if ($find !== false) {
@@ -105,12 +105,18 @@ class RadioMetadata {
 						$interval = (int)\trim(explode(':', $line)[1]);
 					}
 
-					if ($interval && $interval < 64001) {
+					if ($interval > 0 && $interval <= 64*1024) {
 						$attempts = 0;
 						while ($attempts < $maxattempts) {
-							for ($j = 0; $j < $interval; $j++) {
-								\fread($fp, 1);
+							$bytesToSkip = $interval;
+							if ($attempts === 0) {
+								// The first chunk containing the header may also already contain the beginning of the body,
+								// but this depends on the case. Subtract the body bytes which we already got.
+								$headerEndPos = \strpos($header, "\r\n\r\n") + 4;
+								$bytesToSkip -= \strlen($header) - $headerEndPos;
 							}
+
+							\fseek($fp, $bytesToSkip, SEEK_CUR);
 
 							$meta_length = \ord(\fread($fp, 1)) * 16;
 							if ($meta_length) {
@@ -126,7 +132,7 @@ class RadioMetadata {
 					} else {
 						$streamTitle = $this->fetchUrlData($pUrl['scheme'] . '://' . $pUrl['hostname'] . ':' . $pUrl['port'] . '/7.html');
 					}
-				} else if ($maxredirect > 0 && strpos($headers[0], "302 Found") !== false) {
+				} else if ($maxredirect > 0 && \strpos($headers[0], "302 Found") !== false) {
 					$value = self::findStr($headers, "Location:");
 					if ($value) {
 						$location = \trim(\substr($value, 10), "\r");

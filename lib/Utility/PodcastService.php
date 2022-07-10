@@ -188,7 +188,7 @@ class PodcastService {
 			}
 
 			if (!$xmlTree || !$xmlTree->channel) {
-				$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
+				$this->logger->log("RSS feed for the channel {$channel->id} was invalid", 'warn');
 				$status = self::STATUS_INVALID_RSS;
 			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
 				// update the episodes too if channel content has actually changed or update is forced

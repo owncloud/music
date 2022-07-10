@@ -115,6 +115,19 @@ class RadioMetadata {
 		});
 	}
 
+	public function readIcacastMetadata(string $streamUrl) : ?string {
+		// cut the URL from the last '/' and append 'status-json.xsl'
+		$lastSlash = \strrpos($streamUrl, '/');
+		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/status-json.xsl';
+
+		return $this->readMetadata($metaUrl, function ($content) {
+			$parsed = \json_decode($content, true);
+			return $parsed['icecasts']['source']['title']
+				?? $parsed['icecasts']['source']['yp_currently_playing']
+				?? null;
+		});
+	}
+
 	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?string {
 		$timeout = 10;
 		$streamTitle = null;

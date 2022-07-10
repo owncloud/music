@@ -81,21 +81,27 @@ class RadioMetadata {
 		return null;
 	}
 
+	private function readMetadata(string $metaUrl, callable $parseResult) : ?string {
+		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
+
+		if ($status_code == 200) {
+			return $parseResult($content);
+		} else {
+			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
+			return null;
+		}
+	}
+
 	public function readShoutcastV1Metadata(string $streamUrl) : ?string {
 		// cut the URL from the last '/' and append 7.html
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/7.html';
 
-		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
-
-		if ($status_code == 200) {
+		return $this->readMetadata($metaUrl, function ($content) {
 			$content = \strip_tags($content); // get rid of the <html><body>...</html></body> decorations
 			$data = \explode(',', $content);
 			return \count($data) > 6 ? \trim($data[6]) : null; // the title field is optional
-		} else {
-			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
-			return null;
-		}
+		});
 	}
 
 	public function readShoutcastV2Metadata(string $streamUrl) : ?string {
@@ -103,15 +109,10 @@ class RadioMetadata {
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/stats';
 
-		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
-
-		if ($status_code == 200) {
+		return $this->readMetadata($metaUrl, function ($content) {
 			$rootNode = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
 			return (string)$rootNode->SONGTITLE;
-		} else {
-			$this->logger->log("Failed to read $metaUrl: $status_code $message", 'debug');
-			return null;
-		}
+		});
 	}
 
 	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?string {

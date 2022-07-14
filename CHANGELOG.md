@@ -6,6 +6,7 @@
   [#992](https://github.com/owncloud/music/pull/992) @medismail
 
 ### Changed
+- Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration
 
 ### Fixed
 - Previous radio station being played without any error messages when failed to start playing an HLS stream

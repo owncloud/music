@@ -30,6 +30,7 @@ function initEmbeddedPlayer() {
 	var mPlaylist = new OCA.Music.Playlist();
 
 	var mAudioMimes = _.filter([
+		'audio/aac',
 		'audio/flac',
 		'audio/mp4',
 		'audio/m4b',

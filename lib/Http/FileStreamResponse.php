@@ -58,14 +58,14 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 						$this->start . '-' .
 						$this->end . '/' . $size
 					);
-					$this->addHeader('Content-Length', $this->end - $this->start + 1);
+					$this->addHeader('Content-Length', (string)($this->end - $this->start + 1));
 					$this->setStatus(Http::STATUS_PARTIAL_CONTENT);
 				}
 			}
 		} else {
 			$this->start = 0;
 			$this->end = $size - 1;
-			$this->addHeader('Content-Length', $size);
+			$this->addHeader('Content-Length', (string)$size);
 			$this->setStatus(Http::STATUS_OK);
 		}
 	}

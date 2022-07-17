@@ -15,9 +15,8 @@
   [#989](https://github.com/owncloud/music/issues/989)
   [#988](https://github.com/owncloud/music/issues/988)
 - Podcast episodes shown in wrong order after channel updated via the web UI
-- Fallback Aurora.js player not working in the main app (i.e. worked only within Files)
-  * broken since Music v1.2.1
-  * note that Aurora.js still doesn't work on most versions of NC because of a CSP issue
+- Fallback Aurora.js player not working in the main app (i.e. worked only within Files; broken since Music v1.2.1)
+- Fallback Aurora.js not working on most versions of Nextcloud (starting from NC15 or NC16)
 
 ## 1.5.2 - 2022-05-08
 ### Added

@@ -33,6 +33,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 	var scrobblePending = false;
 	var pendingRadioTitleFetch = null;
+	const GAPLESS_PLAY_OVERLAP_MS = 500;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -86,22 +87,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if (scrobblePending && currentTime >= 10000) {
 				scrobbleCurrentTrack();
 			}
-		}
-	});
-	onPlayerEvent('end', function() {
-		// Srcrobble now if it hasn't happened before reaching the end of the track
-		if (scrobblePending) {
-			scrobbleCurrentTrack();
-		}
 
-		if ($scope.repeat === 'one') {
-			scrobblePending = true;
-			$scope.player.seek(0);
-			$scope.player.play();
-		} else {
-			$scope.next(0); // the offset 0 bypasses the debouncing
+			// Gapless jump to the next track when the playback is very close to the end of a local track
+			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
+				var timeLeft = $scope.position.total*1000 - currentTime;
+				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
+					var nextTrackId = playlistService.peekNextTrack()?.track?.id;
+					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
+						onEnd();
+					}
+				}
+			}
 		}
 	});
+	onPlayerEvent('end', onEnd);
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
 		// Seeking may be possible once the duration is available
@@ -130,6 +129,27 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	onPlayerEvent('stop', function() {
 		$rootScope.playing = false;
 	});
+
+	var onEndHandledAt = 0;
+	function onEnd() {
+		// Filter out duplicate calls for the same track; sometimes there is one from the 'progress'
+		// event and another from the 'end' event although usually they don't both get through to us.
+		if (Date.now() - onEndHandledAt >= GAPLESS_PLAY_OVERLAP_MS) {
+			onEndHandledAt = Date.now();
+
+			// Srcrobble now if it hasn't happened before reaching the end of the track
+			if (scrobblePending) {
+				scrobbleCurrentTrack();
+			}
+			if ($scope.repeat === 'one') {
+				scrobblePending = true;
+				$scope.player.seek(0);
+				$scope.player.play();
+			} else {
+				$scope.next(0, /*gapless=*/true);
+			}
+		}
+	}
 
 	function scrobbleCurrentTrack() {
 		if ($scope.currentTrack?.type === 'song') {
@@ -172,14 +192,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return null;
 	}
 
-	function setCurrentTrack(playlistEntry, startOffset /*optional*/) {
+	function setCurrentTrack(playlistEntry, startOffset /*optional*/, gapless /*optional*/) {
 		var track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track, startOffset);
+			playTrack(track, startOffset, gapless /*optional*/);
 		} else {
 			$scope.stop();
 		}
@@ -213,20 +233,21 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	 */
 	var debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
 
-	function playTrack(track, startOffset /*optional*/) {
+	function playTrack(track, startOffset /*optional*/, gapless /*optional*/) {
 		$scope.currentTrack = track;
 
-		// Pause any previous playback and don't indicate support for seeking before we actually know it
-		$scope.player.pause();
+		// Don't indicate support for seeking before we actually know its status for the new track.
 		$scope.seekCursorType = 'default';
 
-		// Start the playback with a small delay if the command came from a user action.
-		// The startOffset argument serves a secondary purpose of indicating that the track change
-		// originated from the previous track palying to the end or other "programmatic" source.
-		if (startOffset === undefined) {
-			debouncedPlayCurrentTrack();
-		} else {
+		if (gapless) {
+			// On gapless jump to next track, let the previous track play to the end while we start
+			// playing the new track immediately. The tracks will be interlaced for a few hundred milliseconds.
 			playCurrentTrack(startOffset);
+		} else {
+			// Pause the previous track and start the new playback with a small delay when this is not
+			// an automatic "gapless" jump to next track.
+			$scope.player.pause();
+			debouncedPlayCurrentTrack();
 		}
 	}
 
@@ -350,7 +371,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$timeout(() => $scope.playPauseContextMenuVisible = false);
 	});
 
-	$scope.next = function(startOffset /*optional*/) {
+	$scope.next = function(startOffset /*optional*/, gapless /*optional*/) {
 		var entry = playlistService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
@@ -370,7 +391,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			}
 		}
 
-		setCurrentTrack(entry, startOffset);
+		setCurrentTrack(entry, startOffset, gapless);
 	};
 
 	$scope.prev = function() {

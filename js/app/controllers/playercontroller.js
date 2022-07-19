@@ -244,9 +244,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			// playing the new track immediately. The tracks will be interlaced for a few hundred milliseconds.
 			playCurrentTrack(startOffset);
 		} else {
-			// Pause the previous track and start the new playback with a small delay when this is not
+			// Stop the previous track and start the new playback with a small delay when this is not
 			// an automatic "gapless" jump to next track.
-			$scope.player.pause();
+			$scope.player.stop();
 			debouncedPlayCurrentTrack(startOffset);
 		}
 	}

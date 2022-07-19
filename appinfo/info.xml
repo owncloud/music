@@ -8,6 +8,7 @@
 - On modern browsers, supports at least audio types mp3, ogg, m4a, m4b, flac, wav
 - Playlist support with import from m3u, m3u8, and pls files
 - Browse by artists, albums, genres, or folders
+- Gapless play
 - Filter the shown content with the search function
 - Play internet radio and podcast channels
 - Setup Last.fm connection to see background information on artists, albums, and songs

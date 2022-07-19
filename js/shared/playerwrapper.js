@@ -7,7 +7,7 @@
  * @author Pellaeon Lin <pellaeon@cnmc.tw>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Pellaeon Lin 2015
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 import Hls from 'node_modules/hls.js/dist/hls.light.js';
@@ -21,8 +21,10 @@ OCA.Music.PlayerWrapper = function() {
 	var m_aurora = null;
 	var m_position = 0;
 	var m_duration = 0;
+	var m_buffered = 0; // percent
 	var m_volume = 100;
 	var m_playbackRate = 1.0;
+	var m_ready = false;
 	var m_playing = false;
 	var m_url = null;
 	var m_streamingExtUrl = false;
@@ -32,6 +34,8 @@ OCA.Music.PlayerWrapper = function() {
 
 	function initHtml5() {
 		m_html5audio = document.createElement('audio');
+		m_html5audio.preload = 'auto';
+
 		if (Hls.isSupported()) {
 			m_hls = new Hls({ enableWorker: false });
 
@@ -73,9 +77,12 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.onprogress = function() {
-			var bufEnd = getBufferedEnd();
-			m_self.trigger('buffer', bufEnd / this.duration * 100);
-			latestNotifiedBufferState = bufEnd;
+			if (this.duration > 0) {
+				var bufEnd = getBufferedEnd();
+				m_buffered = bufEnd / this.duration * 100;
+				m_self.trigger('buffer', m_buffered);
+				latestNotifiedBufferState = bufEnd;
+			}
 		};
 
 		m_html5audio.onsuspend = function() {
@@ -87,6 +94,7 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.oncanplay = function() {
+			m_ready = true;
 			m_self.trigger('ready');
 		};
 
@@ -195,31 +203,32 @@ OCA.Music.PlayerWrapper = function() {
 	};
 
 	this.seekMsecs = function(msecs) {
-		if (m_self.seekingSupported()) {
-			switch (m_underlyingPlayer) {
-				case 'html5':
-					m_html5audio.currentTime = msecs / 1000;
-					break;
-				case 'aurora':
-					if (m_aurora) {
-						m_aurora.seek(msecs);
-					}
-					break;
+		if (msecs !== this.playPosition()) {
+			if (m_self.seekingSupported()) {
+				switch (m_underlyingPlayer) {
+					case 'html5':
+						m_html5audio.currentTime = msecs / 1000;
+						break;
+					case 'aurora':
+						if (m_aurora) {
+							m_aurora.seek(msecs);
+						}
+						break;
+				}
 			}
-		}
-		else if (msecs === 0 && m_duration > 0) {
-			// seeking to the beginning can be simulated even when seeking in general is not supported
-			var url = m_url;
-			var playing = m_playing;
-			m_self.stop();
-			m_self.fromURL(url);
-			m_self.trigger('progress', 0);
-			if (playing) {
-				this.play();
+			else if (msecs === 0 && m_duration > 0) {
+				// seeking to the beginning can be simulated even when seeking in general is not supported
+				var url = m_url;
+				var playing = m_playing;
+				m_self.fromURL(url);
+				m_self.trigger('progress', 0);
+				if (playing) {
+					this.play();
+				}
 			}
-		}
-		else {
-			console.log('seeking is not supported for this file');
+			else {
+				console.log('seeking is not supported for this file');
+			}
 		}
 	};
 
@@ -285,6 +294,7 @@ OCA.Music.PlayerWrapper = function() {
 	this.fromURL = function(url, mime) {
 		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		m_position = 0;
+		m_ready = false;
 
 		this.stop(); // clear any previous state first
 
@@ -316,6 +326,7 @@ OCA.Music.PlayerWrapper = function() {
 				m_aurora.asset.source.chunkSize=524288;
 
 				m_aurora.on('buffer', function(percent) {
+					m_buffered = percent;
 					m_self.trigger('buffer', percent);
 				});
 				m_aurora.on('progress', function(currentTime) {
@@ -323,6 +334,7 @@ OCA.Music.PlayerWrapper = function() {
 					m_self.trigger('progress', currentTime);
 				});
 				m_aurora.on('ready', function() {
+					m_ready = true;
 					m_self.trigger('ready');
 				});
 				m_aurora.on('end', function() {
@@ -333,11 +345,28 @@ OCA.Music.PlayerWrapper = function() {
 					m_self.trigger('duration', msecs);
 				});
 
+				m_aurora.preload();
 				break;
 		}
 
 		// Set the current volume to the newly created/selected player instance
 		this.setVolume(m_volume);
 		this.setPlaybackRate(m_playbackRate);
+	};
+
+	this.getUrl = function() {
+		return m_url;
+	};
+
+	this.isReady = function() {
+		return m_ready;
+	};
+
+	this.getDuration = function() {
+		return m_duration;
+	};
+
+	this.getBufferPercent = function() {
+		return m_buffered;
 	};
 };

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2020
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
@@ -129,6 +129,15 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			var track = playlist[this.getCurrentIndex()];
 			this.publish('trackChanged', track);
 			return track;
+		},
+		peekNextTrack: function() {
+			// The next track may be peeked only when there are forthcoming tracks already enqueued, not when jumping
+			// to the next track would start a new round in the Repeat mode
+			if (playlist === null || playOrder === null || playOrderIter < 0 || playOrderIter >= playOrder.length - 1) {
+				return null;
+			} else {
+				return playlist[playOrder[playOrderIter + 1]];
+			}
 		},
 		setPlaylist: function(listId, pl, startIndex /*optional*/) {
 			playlist = pl.slice(); // copy

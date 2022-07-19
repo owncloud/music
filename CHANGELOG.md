@@ -4,6 +4,9 @@
   [#972](https://github.com/owncloud/music/issues/972)
 - Show song title on Icecast/Shoutcast -type radio streams
   [#992](https://github.com/owncloud/music/pull/992) @medismail
+- Gapless play with preloading of the next track in the queue
+  [#685](https://github.com/owncloud/music/issues/685)
+  [#776](https://github.com/owncloud/music/issues/776)
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

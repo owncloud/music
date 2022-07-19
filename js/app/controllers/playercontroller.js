@@ -33,6 +33,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 	var scrobblePending = false;
 	var pendingRadioTitleFetch = null;
+	const GAPLESS_PLAY_OVERLAP_MS = 500;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -62,6 +63,17 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	onPlayerEvent('buffer', function (percent) {
 		$scope.setBufferPercentage(percent);
+
+		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
+		if (percent > 99) {
+			var entry = playlistService.peekNextTrack();
+			if (entry?.track?.id !== null) {
+				const {mime, url} = getPlayableFileUrl(entry.track);
+				if (mime !== null && url !== null) {
+					$scope.player.prepareURL(url, mime);
+				}
+			}
+		}
 	});
 	onPlayerEvent('ready', function () {
 		$scope.setLoading(false);
@@ -75,22 +87,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if (scrobblePending && currentTime >= 10000) {
 				scrobbleCurrentTrack();
 			}
-		}
-	});
-	onPlayerEvent('end', function() {
-		// Srcrobble now if it hasn't happened before reaching the end of the track
-		if (scrobblePending) {
-			scrobbleCurrentTrack();
-		}
 
-		if ($scope.repeat === 'one') {
-			scrobblePending = true;
-			$scope.player.seek(0);
-			$scope.player.play();
-		} else {
-			$scope.next();
+			// Gapless jump to the next track when the playback is very close to the end of a local track
+			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
+				var timeLeft = $scope.position.total*1000 - currentTime;
+				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
+					var nextTrackId = playlistService.peekNextTrack()?.track?.id;
+					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
+						onEnd();
+					}
+				}
+			}
 		}
 	});
+	onPlayerEvent('end', onEnd);
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
 		// Seeking may be possible once the duration is available
@@ -120,6 +130,27 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$rootScope.playing = false;
 	});
 
+	var onEndHandledAt = 0;
+	function onEnd() {
+		// Filter out duplicate calls for the same track; sometimes there is one from the 'progress'
+		// event and another from the 'end' event although usually they don't both get through to us.
+		if (Date.now() - onEndHandledAt >= GAPLESS_PLAY_OVERLAP_MS) {
+			onEndHandledAt = Date.now();
+
+			// Srcrobble now if it hasn't happened before reaching the end of the track
+			if (scrobblePending) {
+				scrobbleCurrentTrack();
+			}
+			if ($scope.repeat === 'one') {
+				scrobblePending = true;
+				$scope.player.seek(0);
+				$scope.player.play();
+			} else {
+				$scope.next(0, /*gapless=*/true);
+			}
+		}
+	}
+
 	function scrobbleCurrentTrack() {
 		if ($scope.currentTrack?.type === 'song') {
 			Restangular.one('track', $scope.currentTrack.id).all('scrobble').post();
@@ -148,27 +179,27 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$('title').html(titleSong + titleApp);
 	});
 
-	$scope.getPlayableFileId = function (track) {
+	function getPlayableFileUrl(track) {
 		for (var mimeType in track.files) {
 			if ($scope.player.canPlayMIME(mimeType)) {
 				return {
 					'mime': mimeType,
-					'id': track.files[mimeType]
+					'url': OC.filePath('music', '', 'index.php') + '/api/file/' + track.files[mimeType] + '/download'
 				};
 			}
 		}
 
 		return null;
-	};
+	}
 
-	function setCurrentTrack(playlistEntry, startOffset /*optional*/) {
+	function setCurrentTrack(playlistEntry, startOffset /*optional*/, gapless /*optional*/) {
 		var track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track, startOffset);
+			playTrack(track, startOffset, gapless /*optional*/);
 		} else {
 			$scope.stop();
 		}
@@ -178,20 +209,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.shiftHeldDown = false;
 	}
 
-	/*
-	 * Create a debounced function which starts playing the currently selected track.
-	 * The debounce is used to limit the number of GET requests when repeatedly changing
-	 * the playing track like when rapidly and repeatedly clicking the 'Skip next' button.
-	 * Too high number of simultaneous GET requests could easily jam a low-power server.
-	 */
-	var debouncedPlayCurrentTrack = _.debounce(function(startOffset /*optional*/) {
+	function playCurrentTrack(startOffset /*optional*/) {
 		if (currentTrackIsStream()) {
 			$scope.player.fromURL($scope.currentTrack.stream_url, null);
 		}
 		else {
-			var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
-			var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
-			$scope.player.fromURL(url, mimeAndId.mime);
+			const {mime, url} = getPlayableFileUrl($scope.currentTrack);
+			$scope.player.fromURL(url, mime);
 			scrobblePending = true;
 		}
 
@@ -199,17 +223,32 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			$scope.player.seekMsecs(startOffset);
 		}
 		$scope.player.play();
-	}, 300);
+	}
 
-	function playTrack(track, startOffset /*optional*/) {
+	/*
+	 * Create a debounced function which starts playing the currently selected track.
+	 * The debounce is used to limit the number of GET requests when repeatedly changing
+	 * the playing track like when rapidly and repeatedly clicking the 'Skip next' button.
+	 * Too high number of simultaneous GET requests could easily jam a low-power server.
+	 */
+	var debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
+
+	function playTrack(track, startOffset /*optional*/, gapless /*optional*/) {
 		$scope.currentTrack = track;
 
-		// Pause any previous playback and don't indicate support for seeking before we actually know it
-		$scope.player.pause();
+		// Don't indicate support for seeking before we actually know its status for the new track.
 		$scope.seekCursorType = 'default';
 
-		// Star the playback with a small delay. 
-		debouncedPlayCurrentTrack(startOffset);
+		if (gapless) {
+			// On gapless jump to next track, let the previous track play to the end while we start
+			// playing the new track immediately. The tracks will be interlaced for a few hundred milliseconds.
+			playCurrentTrack(startOffset);
+		} else {
+			// Pause the previous track and start the new playback with a small delay when this is not
+			// an automatic "gapless" jump to next track.
+			$scope.player.pause();
+			debouncedPlayCurrentTrack();
+		}
 	}
 
 	function currentTrackIsStream() {
@@ -257,10 +296,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.setTime = function(position, duration) {
+		// sometimes the duration is reported slightly incorrectly and position may exceed it by a few seconds
+		if (duration > 0 && duration < position) {
+			duration = position;
+		}
+
 		$scope.position.current = position;
 		$scope.position.total = duration;
-		$scope.position.currentPercent = (duration > 0 && position <= duration) ?
-				position/duration*100 + '%' : 0;
+		$scope.position.currentPercent = (duration > 0) ? position/duration*100 + '%' : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
@@ -328,7 +371,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$timeout(() => $scope.playPauseContextMenuVisible = false);
 	});
 
-	$scope.next = function(startOffset /*optional*/) {
+	$scope.next = function(startOffset /*optional*/, gapless /*optional*/) {
 		var entry = playlistService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
@@ -338,7 +381,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 			// get the next track as long as the current one contains no playable
 			// audio mimetype
-			while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
+			while (entry !== null && !getPlayableFileUrl(entry.track)) {
 				tracksSkipped = true;
 				startOffset = null; // offset is not meaningful if we couldn't play the requested track
 				entry = playlistService.jumpToNextTrack();
@@ -348,7 +391,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			}
 		}
 
-		setCurrentTrack(entry, startOffset);
+		setCurrentTrack(entry, startOffset, gapless);
 	};
 
 	$scope.prev = function() {

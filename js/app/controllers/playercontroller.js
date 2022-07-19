@@ -247,7 +247,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			// Pause the previous track and start the new playback with a small delay when this is not
 			// an automatic "gapless" jump to next track.
 			$scope.player.pause();
-			debouncedPlayCurrentTrack();
+			debouncedPlayCurrentTrack(startOffset);
 		}
 	}
 

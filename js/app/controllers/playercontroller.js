@@ -54,9 +54,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	// to always handle them asynchronously to run the handler within digest loop
 	// but with no nested digests loop (which causes an exception).
 	function onPlayerEvent(event, handler) {
-		$scope.player.on(event, function(arg) {
+		$scope.player.on(event, function(arg, playedUrl) {
 			$timeout(function() {
-				handler(arg);
+				// Discard the event if the current song has already changed by the time we would handle the event
+				if (playedUrl === $scope.player.getUrl()) {
+					handler(arg);
+				}
 			});
 		});
 	}
@@ -79,7 +82,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.setLoading(false);
 	});
 	onPlayerEvent('progress', function (currentTime) {
-		if (!$scope.loading) {
+		if (!$scope.loading && $scope.currentTrack) {
 			$scope.setTime(currentTime/1000, $scope.position.total);
 			$rootScope.$emit('playerProgress', currentTime);
 
@@ -130,24 +133,17 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$rootScope.playing = false;
 	});
 
-	var onEndHandledAt = 0;
 	function onEnd() {
-		// Filter out duplicate calls for the same track; sometimes there is one from the 'progress'
-		// event and another from the 'end' event although usually they don't both get through to us.
-		if (Date.now() - onEndHandledAt >= GAPLESS_PLAY_OVERLAP_MS) {
-			onEndHandledAt = Date.now();
-
-			// Srcrobble now if it hasn't happened before reaching the end of the track
-			if (scrobblePending) {
-				scrobbleCurrentTrack();
-			}
-			if ($scope.repeat === 'one') {
-				scrobblePending = true;
-				$scope.player.seek(0);
-				$scope.player.play();
-			} else {
-				$scope.next(0, /*gapless=*/true);
-			}
+		// Srcrobble now if it hasn't happened before reaching the end of the track
+		if (scrobblePending) {
+			scrobbleCurrentTrack();
+		}
+		if ($scope.repeat === 'one') {
+			scrobblePending = true;
+			$scope.player.seek(0);
+			$scope.player.play();
+		} else {
+			$scope.next(0, /*gapless=*/true);
 		}
 	}
 

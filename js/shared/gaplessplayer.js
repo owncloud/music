@@ -16,6 +16,16 @@ OCA.Music.GaplessPlayer = function() {
 	var m_nextPlayer = new OCA.Music.PlayerWrapper();
 	_.extend(this, OC.Backbone.Events);
 
+	function propagateEvent(eventName, arg) {
+		// propagate events only for the currently active instance
+		if (this === m_currentPlayer) {
+			m_self.trigger(eventName, arg, this.getUrl());
+		}
+	}
+
+	m_currentPlayer.on('all', propagateEvent);
+	m_nextPlayer.on('all', propagateEvent);
+
 	this.play = function() {
 		m_currentPlayer.play();
 	};
@@ -70,6 +80,10 @@ OCA.Music.GaplessPlayer = function() {
 		return m_currentPlayer.canPlayMIME(mime);
 	};
 
+	this.getUrl = function() {
+		return m_currentPlayer.getUrl();
+	};
+
 	this.fromURL = function(url, mime) {
 		swapPlayer();
 
@@ -79,14 +93,14 @@ OCA.Music.GaplessPlayer = function() {
 			// The player already has the correct URL loaded or being loaded. Ensure the playing starts from the
 			// beginning and fire the relevant events.
 			if (m_currentPlayer.isReady()) {
-				m_self.trigger('ready');
+				m_self.trigger('ready', undefined, url);
 			}
 			if (m_currentPlayer.getDuration() > 0) {
-				m_self.trigger('duration', m_currentPlayer.getDuration());
+				m_self.trigger('duration', m_currentPlayer.getDuration(), url);
 			}
 			m_currentPlayer.seek(0);
 			if (m_currentPlayer.getBufferPercent() > 0) {
-				m_self.trigger('buffer', m_currentPlayer.getBufferPercent());
+				m_self.trigger('buffer', m_currentPlayer.getBufferPercent(), url);
 			}
 		}
 	};
@@ -98,12 +112,6 @@ OCA.Music.GaplessPlayer = function() {
 	};
 
 	function swapPlayer() {
-		m_currentPlayer.off();
-
 		[m_currentPlayer, m_nextPlayer] = [m_nextPlayer, m_currentPlayer];
-
-		m_currentPlayer.on('all', function(eventName, arg) {
-			m_self.trigger(eventName, arg);
-		});
 	}
 };

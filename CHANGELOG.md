@@ -7,6 +7,8 @@
 - Gapless play with preloading of the next track in the queue
   [#685](https://github.com/owncloud/music/issues/685)
   [#776](https://github.com/owncloud/music/issues/776)
+- Artist and album names from Last.fm to the Last.fm tab of the track details
+  [#995](https://github.com/owncloud/music/issues/995)
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

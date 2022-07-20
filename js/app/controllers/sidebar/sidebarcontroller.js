@@ -153,7 +153,7 @@ angular.module('Music').controller('SidebarController', [
 			}
 
 			var htmlLinks = _.map(linkArray, function(item) {
-				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+				return '<a href="' + item.url + '" target="_blank">' + (item.name || item.title) + '</a>';
 			});
 			return htmlLinks.join(', ');
 		};

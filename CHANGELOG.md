@@ -9,6 +9,7 @@
   [#776](https://github.com/owncloud/music/issues/776)
 - Artist and album names from Last.fm to the Last.fm tab of the track details
   [#995](https://github.com/owncloud/music/issues/995)
+- Album art from Last.fm on the album details pane when no local art available
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

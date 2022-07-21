@@ -68,7 +68,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.setBufferPercentage(percent);
 
 		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
-		if (percent > 99) {
+		if (percent > 99 && $scope.currentTrack.type === 'song') {
 			var entry = playlistService.peekNextTrack();
 			if (entry?.track?.id !== null) {
 				const {mime, url} = getPlayableFileUrl(entry.track);
@@ -415,7 +415,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(event, playingView /*optional, ignored*/, startOffset /*optional*/) {
+	playlistService.subscribe('play', function(_event, _playingView /*optional, ignored*/, startOffset /*optional*/) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 
@@ -558,7 +558,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			Restangular.one('radio', $scope.currentTrack.id).one('info').get().then(
 				function(response) {
 					if ($scope.currentTrack?.id == currentTrackId) {
-						onMetadata(response.title);
+						onMetadata(response?.title);
 					}
 				},
 				function(_error) {

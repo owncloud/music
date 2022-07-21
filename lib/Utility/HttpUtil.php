@@ -21,7 +21,7 @@ class HttpUtil {
 	 * Use HTTP GET to load the requested URL
 	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string]
 	 */
-	public static function loadFromUrl(string $url) : array {
+	public static function loadFromUrl(string $url, ?int $maxLength=null) : array {
 		if (!Util::startsWith($url, 'http://', /*ignoreCase=*/true)
 				&& !Util::startsWith($url, 'https://', /*ignoreCase=*/true)) {
 			$content = false;
@@ -35,7 +35,12 @@ class HttpUtil {
 				]
 			];
 			$context = \stream_context_create($opts);
-			$content = \file_get_contents($url, false, $context);
+			// The length parameter of file_get_contents isn't nullable prior to PHP8.0
+			if ($maxLength === null) {
+				$content = \file_get_contents($url, false, $context);
+			} else {
+				$content = \file_get_contents($url, false, $context, 0, $maxLength);
+			}
 
 			// It's some PHP magic that calling file_get_contents creates and populates also a local
 			// variable array $http_response_header, provided that the server could be reached.

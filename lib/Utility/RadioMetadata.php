@@ -82,7 +82,8 @@ class RadioMetadata {
 	}
 
 	private function readMetadata(string $metaUrl, callable $parseResult) : ?array {
-		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
+		$maxLength = 32 * 1024;
+		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl, $maxLength);
 
 		if ($status_code == 200) {
 			return $parseResult($content);

@@ -121,7 +121,7 @@ class RadioMetadata {
 		});
 	}
 
-	public function readIcacastMetadata(string $streamUrl) : ?array {
+	public function readIcecastMetadata(string $streamUrl) : ?array {
 		// cut the URL from the last '/' and append 'status-json.xsl'
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/status-json.xsl';

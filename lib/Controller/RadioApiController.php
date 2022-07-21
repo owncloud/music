@@ -212,14 +212,31 @@ class RadioApiController extends Controller {
 	* @NoAdminRequired
 	* @NoCSRFRequired
 	*/
-	public function getChannelInfo(int $id) {
+	public function getChannelInfo(int $id, ?string $type=null) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
-			$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
-					?? $this->metadata->readShoutcastV2Metadata($streamUrl)
-					?? $this->metadata->readShoutcastV1Metadata($streamUrl)
-					?? $this->metadata->readIcacastMetadata($streamUrl);
+
+			switch ($type) {
+				case 'icy':
+					$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1);
+					break;
+				case 'shoutcast-v1':
+					$metadata = $this->metadata->readShoutcastV1Metadata($streamUrl);
+					break;
+				case 'shoutcast-v2':
+					$metadata = $this->metadata->readShoutcastV2Metadata($streamUrl);
+					break;
+				case 'icecast':
+					$metadata = $this->metadata->readIcecastMetadata($streamUrl);
+					break;
+				default:
+					$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
+						?? $this->metadata->readShoutcastV2Metadata($streamUrl)
+						?? $this->metadata->readShoutcastV1Metadata($streamUrl)
+						?? $this->metadata->readIcecastMetadata($streamUrl);
+					break;
+			}
 
 			return new JSONResponse($metadata);
 		} catch (BusinessLayerException $ex) {

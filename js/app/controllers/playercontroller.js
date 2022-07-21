@@ -169,8 +169,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			} else {
 				titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
 			}
-		} else if (newTrack?.name !== undefined) {
-			titleSong = newTrack.name + ' - ';
+		} else {
+			titleSong = $scope.primaryTitle() + ' - ';
 		}
 		$('title').html(titleSong + titleApp);
 	});
@@ -481,11 +481,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	$scope.primaryTitle = function() {
-		return $scope.currentTrack?.title ?? $scope.currentTrack?.name ?? null;
+		return $scope.currentTrack?.title || $scope.currentTrack?.name || gettextCatalog.getString('Internet radio');
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.currentTitle ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName || $scope.currentTrack?.channel?.title 
+			|| $scope.currentTrack?.metadata?.title || $scope.currentTrack?.stream_url;
 	};
 
 	$scope.coverArt = function() {
@@ -546,35 +547,29 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	function getRadioTitle() {
-		const onMetadata = function(streamTitle) {
-			//console.log('MetaData recieved: ' + streamTitle);
-			if (streamTitle == '') {
-				streamTitle = null;
-			}
-			if ($scope.currentTrack.currentTitle !== streamTitle) {
-				$scope.currentTrack.currentTitle = streamTitle;
+		const onMetadata = function(metadata, trackId) {
+			if ($scope.currentTrack?.id == trackId) {
+				$scope.currentTrack.metadata = metadata;
+
+				if ($rootScope.playing) {
+					pendingRadioTitleFetch = $timeout(getRadioTitle, 32000);
+				} else {
+					pendingRadioTitleFetch = null;
+				}
 			}
 		};
 
-		if ($rootScope.playing) {
-			var currentTrackId = $scope.currentTrack.id;
-			Restangular.one('radio', $scope.currentTrack.id).one('info').get().then(
-				function(response) {
-					if ($scope.currentTrack?.id == currentTrackId) {
-						onMetadata(response?.title);
-					}
-				},
-				function(_error) {
-					// error handling
-					if ($scope.currentTrack?.id == currentTrackId) {
-						onMetadata(null);
-					}
-				}
-			);
-			pendingRadioTitleFetch = $timeout(getRadioTitle, 32000);
-		} else {
-			pendingRadioTitleFetch = null;
-		}
+		const currentTrackId = $scope.currentTrack.id;
+		const metaType = $scope.currentTrack.metadata?.type; // request the same metadata type as previously got
+		Restangular.one('radio', currentTrackId).one('info').get({type: metaType}).then(
+			function(response) {
+				onMetadata(response, currentTrackId);
+			},
+			function(_error) {
+				// error handling
+				onMetadata(null, currentTrackId);
+			}
+		);
 	}
 
 	/**
@@ -613,13 +608,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		registerMediaControlHandler('previoustrack', $scope.prev);
 		registerMediaControlHandler('nexttrack', $scope.next);
 
-		$scope.$watchGroup(['currentTrack', 'currentTrack.currentTitle'], function(newValues) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
 			const track = newValues[0];
 			if (track) {
 				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
-						title: track.name,
-						artist: track.currentTitle ?? track.stream_url,
+						title: $scope.primaryTitle(),
+						artist: $scope.secondaryTitle(),
 						artwork: [{
 							sizes: '190x190',
 							src: radioIconPath,
@@ -666,7 +661,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 
-		$scope.$watchGroup(['currentTrack', 'currentTrack.currentTitle'], function(newValues) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
 			const track = newValues[0];
 			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 

@@ -86,6 +86,15 @@ class PodcastChannelBusinessLayer extends BusinessLayer {
 		return $contentChanged;
 	}
 
+	/**
+	 * Indicate that the channel has been checked for updates without updating any content.
+	 * This may be used e.g. in case the channel RSS feed cannot be reached.
+	 */
+	public function markUpdateChecked(PodcastChannel &$channel) : void {
+		$channel->setUpdateChecked( \date(BaseMapper::SQL_DATE_FORMAT) );
+		$this->update($channel);
+	}
+
 	private static function calculateContentHash(string $rssContent) : string {
 		// Exclude the tag <lastBuildDate> from the calculation. This is because many podcast feeds update that
 		// very often, e.g. every 15 minutes, even when nothing else has changed. Including such a volatile field

@@ -13,6 +13,7 @@
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration
+- If updating a podcast channel fails, don't retry it each time the background task runs but only upon the normal podcast update schedule
 
 ### Fixed
 - Previous radio station being played without any error messages when failed to start playing an HLS stream

@@ -81,7 +81,7 @@ class RadioMetadata {
 		return null;
 	}
 
-	private function readMetadata(string $metaUrl, callable $parseResult) : ?string {
+	private function readMetadata(string $metaUrl, callable $parseResult) : ?array {
 		list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($metaUrl);
 
 		if ($status_code == 200) {
@@ -92,7 +92,7 @@ class RadioMetadata {
 		}
 	}
 
-	public function readShoutcastV1Metadata(string $streamUrl) : ?string {
+	public function readShoutcastV1Metadata(string $streamUrl) : ?array {
 		// cut the URL from the last '/' and append 7.html
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/7.html';
@@ -100,35 +100,44 @@ class RadioMetadata {
 		return $this->readMetadata($metaUrl, function ($content) {
 			$content = \strip_tags($content); // get rid of the <html><body>...</html></body> decorations
 			$data = \explode(',', $content);
-			return \count($data) > 6 ? \trim($data[6]) : null; // the title field is optional
+			return [
+				'type' => 'shoutcast-v1',
+				'title' => \count($data) > 6 ? \trim($data[6]) : null // the title field is optional
+			];
 		});
 	}
 
-	public function readShoutcastV2Metadata(string $streamUrl) : ?string {
+	public function readShoutcastV2Metadata(string $streamUrl) : ?array {
 		// cut the URL from the last '/' and append 'stats'
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/stats';
 
 		return $this->readMetadata($metaUrl, function ($content) {
 			$rootNode = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
-			return (string)$rootNode->SONGTITLE;
+			return [
+				'type' => 'shoutcast-v2',
+				'title' => (string)$rootNode->SONGTITLE
+			];
 		});
 	}
 
-	public function readIcacastMetadata(string $streamUrl) : ?string {
+	public function readIcacastMetadata(string $streamUrl) : ?array {
 		// cut the URL from the last '/' and append 'status-json.xsl'
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/status-json.xsl';
 
 		return $this->readMetadata($metaUrl, function ($content) {
 			$parsed = \json_decode($content, true);
-			return $parsed['icecasts']['source']['title']
-				?? $parsed['icecasts']['source']['yp_currently_playing']
-				?? null;
+			return [
+				'type' => 'icecast',
+				'title' => $parsed['icecasts']['source']['title']
+						?? $parsed['icecasts']['source']['yp_currently_playing']
+						?? null
+			];
 		});
 	}
 
-	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?string {
+	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?array {
 		$timeout = 10;
 		$streamTitle = null;
 		$pUrl = self::parseStreamUrl($streamUrl);
@@ -153,7 +162,7 @@ class RadioMetadata {
 
 					if ($interval > 0 && $interval <= 64*1024) {
 						$attempts = 0;
-						while ($attempts < $maxattempts && $streamTitle === null) {
+						while ($attempts < $maxattempts && empty($streamTitle)) {
 							$bytesToSkip = $interval;
 							if ($attempts === 0) {
 								// The first chunk containing the header may also already contain the beginning of the body,
@@ -169,18 +178,21 @@ class RadioMetadata {
 							$attempts++;
 						}
 					}
-				} else if ($maxredirect > 0 && \strpos($headers[0], "302 Found") !== false) {
-					$location = self::findStrFollowing($headers, "Location: ");
-					if ($location) {
-						$location = \trim($location, "\r");
-						$streamTitle = $this->readIcyMetadata($location, $maxattempts, $maxredirect-1);
+					\fclose($fp);
+				} else {
+					\fclose($fp);
+					if ($maxredirect > 0 && \strpos($headers[0], "302 Found") !== false) {
+						$location = self::findStrFollowing($headers, "Location: ");
+						if ($location) {
+							$location = \trim($location, "\r");
+							return $this->readIcyMetadata($location, $maxattempts, $maxredirect-1);
+						}
 					}
 				}
-				\fclose($fp);
 			}
 		}
 
-		return $streamTitle === '' ? null : $streamTitle;
+		return empty($streamTitle) ? null : ['type' => 'icy', 'title' => $streamTitle];
 	}
 
 }

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -212,15 +212,15 @@ class RadioApiController extends Controller {
 	* @NoAdminRequired
 	* @NoCSRFRequired
 	*/
-	public function getRadioStreamData(int $id) {
+	public function getChannelInfo(int $id) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
-			$title = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
+			$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
 					?? $this->metadata->readShoutcastV2Metadata($streamUrl)
 					?? $this->metadata->readShoutcastV1Metadata($streamUrl);
 
-			return new JSONResponse([ 'title' => $title ]);
+			return new JSONResponse($metadata);
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}

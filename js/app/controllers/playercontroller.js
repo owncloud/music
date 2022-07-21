@@ -548,6 +548,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	function getRadioTitle() {
 		const onMetadata = function(streamTitle) {
 			//console.log('MetaData recieved: ' + streamTitle);
+			if (streamTitle == '') {
+				streamTitle = null;
+			}
 			if ($scope.currentTrack.currentTitle !== streamTitle) {
 				$scope.currentTrack.currentTitle = streamTitle;
 			}

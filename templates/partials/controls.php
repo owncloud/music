@@ -4,9 +4,10 @@
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
-		<div id="play-pause-container" ng-click="togglePlayback()" ng-show="!shiftHeldDown">
-			<div ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="control svg"
-				alt="{{ playing ? ('Pause' | translate) : ('Play' | translate) }}" id="play-pause-button"
+		<div id="play-pause-container" ng-show="!shiftHeldDown">
+			<div id="play-pause-button" ng-click="togglePlayback()"
+				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="control svg"
+				alt="{{ playing ? ('Pause' | translate) : ('Play' | translate) }}"
 				title="{{ 'press and hold for more' | translate }}" data-long-press-delay="1000">
 			</div>
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">

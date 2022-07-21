@@ -232,9 +232,9 @@ class RadioApiController extends Controller {
 					break;
 				default:
 					$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
-						?? $this->metadata->readShoutcastV2Metadata($streamUrl)
-						?? $this->metadata->readShoutcastV1Metadata($streamUrl)
-						?? $this->metadata->readIcecastMetadata($streamUrl);
+							?? $this->metadata->readShoutcastV2Metadata($streamUrl)
+							?? $this->metadata->readIcecastMetadata($streamUrl)
+							?? $this->metadata->readShoutcastV1Metadata($streamUrl);
 					break;
 			}
 

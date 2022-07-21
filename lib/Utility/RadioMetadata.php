@@ -127,14 +127,32 @@ class RadioMetadata {
 		$lastSlash = \strrpos($streamUrl, '/');
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/status-json.xsl';
 
-		return $this->readMetadata($metaUrl, function ($content) {
+		return $this->readMetadata($metaUrl, function ($content) use ($streamUrl) {
+			\mb_substitute_character(0xFFFD); // Use the Unicode REPLACEMENT CHARACTER (U+FFFD)
+			$content = \mb_convert_encoding($content, 'UTF-8', 'UTF-8');
 			$parsed = \json_decode($content, true);
-			return [
-				'type' => 'icecast',
-				'title' => $parsed['icestats']['source']['title']
-						?? $parsed['icestats']['source']['yp_currently_playing']
-						?? null
-			];
+			$source = $parsed['icestats']['source'] ?? null;
+
+			if (!\is_array($source)) {
+				return null;
+			} else {
+				// There may be one or multiple sources and the structure is slightly different in these two cases.
+				// In case there are multiple, try to found the source with a matching stream URL.
+				if (\is_int(\key($source))) {
+					// multiple sources
+					foreach ($source as $sourceItem) {
+						if ($sourceItem['listenurl'] == $streamUrl) {
+							$source = $sourceItem;
+							break;
+						}
+					}
+				}
+
+				return [
+					'type' => 'icecast',
+					'title' => $source['title'] ?? $source['yp_currently_playing'] ?? null
+				];
+			}
 		});
 	}
 

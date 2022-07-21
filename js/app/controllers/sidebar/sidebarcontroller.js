@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 
@@ -156,6 +156,10 @@ angular.module('Music').controller('SidebarController', [
 				return '<a href="' + item.url + '" target="_blank">' + (item.name || item.title) + '</a>';
 			});
 			return htmlLinks.join(', ');
+		};
+
+		$scope.urlToLink = function(url) {
+			return `<a href="${url}" target="_blank">${url}</a>`;
 		};
 
 		$scope.scrollToEntity = function(type, entity) {

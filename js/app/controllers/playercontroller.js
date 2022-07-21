@@ -481,7 +481,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	$scope.primaryTitle = function() {
-		return $scope.currentTrack?.title || $scope.currentTrack?.name || gettextCatalog.getString('Internet radio');
+		return $scope.currentTrack?.title || $scope.currentTrack?.name
+			|| $scope.currentTrack?.metadata?.station || gettextCatalog.getString('Internet radio');
 	};
 
 	$scope.secondaryTitle = function() {

@@ -28,14 +28,14 @@ class RadioMetadata {
 	}
 
 	/**
-	 * Loop through the array and try to find the given key. On match,
-	 * return the text in the array cell following the key.
+	 * Loop through the array and try to find the given key. On match, return the
+	 * text in the array cell following the key. Whitespace is trimmed from the result.
 	 */
 	private static function findStrFollowing(array $data, string $key) : ?string {
 		foreach ($data as $value) {
 			$find = \strstr($value, $key);
 			if ($find !== false) {
-				return \substr($find, \strlen($key));
+				return \trim(\substr($find, \strlen($key)));
 			}
 		}
 		return null;
@@ -103,7 +103,8 @@ class RadioMetadata {
 			$data = \explode(',', $content);
 			return [
 				'type' => 'shoutcast-v1',
-				'title' => \count($data) > 6 ? \trim($data[6]) : null // the title field is optional
+				'title' => \count($data) > 6 ? \trim($data[6]) : null, // the title field is optional
+				'bitrate' => $data[5] ?? null
 			];
 		});
 	}
@@ -117,7 +118,11 @@ class RadioMetadata {
 			$rootNode = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
 			return [
 				'type' => 'shoutcast-v2',
-				'title' => (string)$rootNode->SONGTITLE
+				'title' => (string)$rootNode->SONGTITLE,
+				'station' => (string)$rootNode->SERVERTITLE,
+				'homepage' => (string)$rootNode->SERVERURL,
+				'genre' => (string)$rootNode->SERVERGENRE,
+				'bitrate' => (string)$rootNode->BITRATE
 			];
 		});
 	}
@@ -150,7 +155,12 @@ class RadioMetadata {
 
 				return [
 					'type' => 'icecast',
-					'title' => $source['title'] ?? $source['yp_currently_playing'] ?? null
+					'title' => $source['title'] ?? $source['yp_currently_playing'] ?? null,
+					'station' => $source['server_name'] ?? null,
+					'description' => $source['server_description'] ?? null,
+					'homepage' => $source['server_url'] ?? null,
+					'genre' => $source['genre'] ?? null,
+					'bitrate' => $source['bitrate'] ?? null
 				];
 			}
 		});
@@ -158,7 +168,7 @@ class RadioMetadata {
 
 	public function readIcyMetadata(string $streamUrl, int $maxattempts, int $maxredirect) : ?array {
 		$timeout = 10;
-		$streamTitle = null;
+		$result = null;
 		$pUrl = self::parseStreamUrl($streamUrl);
 		if ($pUrl['sockAddress'] && $pUrl['port']) {
 			$fp = \fsockopen($pUrl['sockAddress'], $pUrl['port'], $errno, $errstr, $timeout);
@@ -176,12 +186,22 @@ class RadioMetadata {
 				$headers = \explode("\n", $header);
 
 				if (\strpos($headers[0], "200 OK") !== false) {
+					$result = [
+						'type' => 'icy',
+						'title' => null, // fetched below
+						'station' => self::findStrFollowing($headers, 'icy-name:'),
+						'description' => self::findStrFollowing($headers, 'icy-description:'),
+						'homepage' => self::findStrFollowing($headers, 'icy-url:'),
+						'genre' => self::findStrFollowing($headers, 'icy-genre:'),
+						'bitrate' => self::findStrFollowing($headers, 'icy-br:')
+					];
+
 					$interval = self::findStrFollowing($headers, "icy-metaint:") ?? '0';
-					$interval = (int)\trim($interval);
+					$interval = (int)$interval;
 
 					if ($interval > 0 && $interval <= 64*1024) {
 						$attempts = 0;
-						while ($attempts < $maxattempts && empty($streamTitle)) {
+						while ($attempts < $maxattempts && empty($result['title'])) {
 							$bytesToSkip = $interval;
 							if ($attempts === 0) {
 								// The first chunk containing the header may also already contain the beginning of the body,
@@ -192,7 +212,7 @@ class RadioMetadata {
 
 							\fseek($fp, $bytesToSkip, SEEK_CUR);
 
-							$streamTitle = self::parseTitleFromStreamMetadata($fp);
+							$result['title'] = self::parseTitleFromStreamMetadata($fp);
 
 							$attempts++;
 						}
@@ -201,17 +221,16 @@ class RadioMetadata {
 				} else {
 					\fclose($fp);
 					if ($maxredirect > 0 && \strpos($headers[0], "302 Found") !== false) {
-						$location = self::findStrFollowing($headers, "Location: ");
+						$location = self::findStrFollowing($headers, "Location:");
 						if ($location) {
-							$location = \trim($location, "\r");
-							return $this->readIcyMetadata($location, $maxattempts, $maxredirect-1);
+							$result = $this->readIcyMetadata($location, $maxattempts, $maxredirect-1);
 						}
 					}
 				}
 			}
 		}
 
-		return empty($streamTitle) ? null : ['type' => 'icy', 'title' => $streamTitle];
+		return $result;
 	}
 
 }

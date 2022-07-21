@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 #app-sidebar {
@@ -242,6 +242,7 @@
 #app-sidebar #lastfm-info a,
 #app-sidebar #podcast-details a,
 #app-sidebar #podcast-details a *,
+#app-sidebar #radio-station-details a,
 #app-sidebar .tutorial a {
 	text-decoration: underline;
 	display: inline-block;
@@ -249,6 +250,7 @@
 
 #app-sidebar #lastfm-info a:after,
 #app-sidebar #podcast-details a:after,
+#app-sidebar #radio-station-details a:after,
 #app-sidebar .tutorial a:after {
 	content: " ↗";
 }

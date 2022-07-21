@@ -4,6 +4,7 @@
   [#972](https://github.com/owncloud/music/issues/972)
 - Show song title on Icecast/Shoutcast -type radio streams
   [#992](https://github.com/owncloud/music/pull/992) @medismail
+- Show other metadata broadcasted by the radio station in the details pane
 - Gapless play with preloading of the next track in the queue
   [#685](https://github.com/owncloud/music/issues/685)
   [#776](https://github.com/owncloud/music/issues/776)

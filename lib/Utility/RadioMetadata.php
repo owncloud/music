@@ -130,8 +130,8 @@ class RadioMetadata {
 			$parsed = \json_decode($content, true);
 			return [
 				'type' => 'icecast',
-				'title' => $parsed['icecasts']['source']['title']
-						?? $parsed['icecasts']['source']['yp_currently_playing']
+				'title' => $parsed['icestats']['source']['title']
+						?? $parsed['icestats']['source']['yp_currently_playing']
 						?? null
 			];
 		});

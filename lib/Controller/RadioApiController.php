@@ -218,7 +218,8 @@ class RadioApiController extends Controller {
 			$streamUrl = $station->getStreamUrl();
 			$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
 					?? $this->metadata->readShoutcastV2Metadata($streamUrl)
-					?? $this->metadata->readShoutcastV1Metadata($streamUrl);
+					?? $this->metadata->readShoutcastV1Metadata($streamUrl)
+					?? $this->metadata->readIcacastMetadata($streamUrl);
 
 			return new JSONResponse($metadata);
 		} catch (BusinessLayerException $ex) {

@@ -173,6 +173,7 @@ OCA.Music.PlayerWrapper = function() {
 				// a warning to the console on Firefox.
 				m_html5audio.pause();
 				if (m_streamingExtUrl && m_hls !== null && url !== null && isHlsUrl(url)) {
+					m_hls.stopLoad();
 					m_hls.detachMedia();
 				}
 				m_html5audio.src = '';

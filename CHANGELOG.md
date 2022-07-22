@@ -25,6 +25,7 @@
 - Podcast episodes shown in wrong order after channel updated via the web UI
 - Fallback Aurora.js player not working in the main app (i.e. worked only within Files; broken since Music v1.2.1)
 - Fallback Aurora.js not working on most versions of Nextcloud (starting from NC15 or NC16)
+- The manifest file of the HLS stream was being polled indefinitely after listening to the stream was stopped
 
 ## 1.5.2 - 2022-05-08
 ### Added

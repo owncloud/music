@@ -186,20 +186,20 @@ class RadioMetadata {
 				$headers = \explode("\n", $header);
 
 				if (\strpos($headers[0], "200 OK") !== false) {
-					$result = [
-						'type' => 'icy',
-						'title' => null, // fetched below
-						'station' => self::findStrFollowing($headers, 'icy-name:'),
-						'description' => self::findStrFollowing($headers, 'icy-description:'),
-						'homepage' => self::findStrFollowing($headers, 'icy-url:'),
-						'genre' => self::findStrFollowing($headers, 'icy-genre:'),
-						'bitrate' => self::findStrFollowing($headers, 'icy-br:')
-					];
-
 					$interval = self::findStrFollowing($headers, "icy-metaint:") ?? '0';
 					$interval = (int)$interval;
 
 					if ($interval > 0 && $interval <= 64*1024) {
+						$result = [
+							'type' => 'icy',
+							'title' => null, // fetched below
+							'station' => self::findStrFollowing($headers, 'icy-name:'),
+							'description' => self::findStrFollowing($headers, 'icy-description:'),
+							'homepage' => self::findStrFollowing($headers, 'icy-url:'),
+							'genre' => self::findStrFollowing($headers, 'icy-genre:'),
+							'bitrate' => self::findStrFollowing($headers, 'icy-br:')
+						];
+
 						$attempts = 0;
 						while ($attempts < $maxattempts && empty($result['title'])) {
 							$bytesToSkip = $interval;

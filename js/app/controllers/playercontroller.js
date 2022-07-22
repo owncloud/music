@@ -118,18 +118,17 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
-		if (pendingRadioTitleFetch != null) {
-			$timeout.cancel(pendingRadioTitleFetch);
-			pendingRadioTitleFetch = null;
-		}
+		cancelRadioTitleFetch();
 		if ($scope.currentTrack?.type === 'radio') {
 			getRadioTitle();
 		}
 	});
 	onPlayerEvent('pause', function() {
+		cancelRadioTitleFetch();
 		$rootScope.playing = false;
 	});
 	onPlayerEvent('stop', function() {
+		cancelRadioTitleFetch();
 		$rootScope.playing = false;
 	});
 
@@ -571,6 +570,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				onMetadata(null, currentTrackId);
 			}
 		);
+	}
+
+	function cancelRadioTitleFetch() {
+		if (pendingRadioTitleFetch != null) {
+			$timeout.cancel(pendingRadioTitleFetch);
+			pendingRadioTitleFetch = null;
+		}
 	}
 
 	/**

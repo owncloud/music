@@ -104,8 +104,8 @@ OCA.Music.PlayerWrapper = function() {
 				console.log('HTML5 audio: sound load error');
 				m_self.trigger('error', m_url);
 			} else {
-				// ignore stray errors fired by the HTML audio when the src
-				// has been cleared (set to invalid).
+				// an error is fired by the HTML audio when the src is cleared to stop the playback
+				m_self.trigger('stop', m_url);
 			}
 		};
 

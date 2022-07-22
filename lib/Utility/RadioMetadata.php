@@ -135,7 +135,7 @@ class RadioMetadata {
 		return $this->readMetadata($metaUrl, function ($content) use ($streamUrl) {
 			\mb_substitute_character(0xFFFD); // Use the Unicode REPLACEMENT CHARACTER (U+FFFD)
 			$content = \mb_convert_encoding($content, 'UTF-8', 'UTF-8');
-			$parsed = \json_decode($content, true);
+			$parsed = \json_decode(/** @scrutinizer ignore-type */ $content, true);
 			$source = $parsed['icestats']['source'] ?? null;
 
 			if (!\is_array($source)) {

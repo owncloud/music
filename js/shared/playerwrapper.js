@@ -221,7 +221,7 @@ OCA.Music.PlayerWrapper = function() {
 				// seeking to the beginning can be simulated even when seeking in general is not supported
 				var url = m_url;
 				var playing = m_playing;
-				m_self.fromURL(url);
+				m_self.fromUrl(url);
 				m_self.trigger('progress', 0);
 				if (playing) {
 					this.play();
@@ -282,7 +282,7 @@ OCA.Music.PlayerWrapper = function() {
 			|| (mime == 'audio/m4b' && m_html5audio.canPlayType('audio/mp4'));
 	}
 
-	this.canPlayMIME = function(mime) {
+	this.canPlayMime = function(mime) {
 		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
 		return canPlayWithHtml5(mime) || canPlayWithAurora;
 	};
@@ -292,7 +292,7 @@ OCA.Music.PlayerWrapper = function() {
 		return url.endsWith('.m3u8') || url.endsWith('.m3u');
 	}
 
-	this.fromURL = function(url, mime) {
+	this.fromUrl = function(url, mime) {
 		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		m_position = 0;
 		m_ready = false;

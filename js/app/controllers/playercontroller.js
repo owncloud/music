@@ -73,7 +73,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if (entry?.track?.id !== null) {
 				const {mime, url} = getPlayableFileUrl(entry.track);
 				if (mime !== null && url !== null) {
-					$scope.player.prepareURL(url, mime);
+					$scope.player.prepareUrl(url, mime);
 				}
 			}
 		}
@@ -176,7 +176,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	function getPlayableFileUrl(track) {
 		for (var mimeType in track.files) {
-			if ($scope.player.canPlayMIME(mimeType)) {
+			if ($scope.player.canPlayMime(mimeType)) {
 				return {
 					'mime': mimeType,
 					'url': OC.filePath('music', '', 'index.php') + '/api/file/' + track.files[mimeType] + '/download'
@@ -210,7 +210,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			Restangular.one('radio', currentTrackId).one('streamurl').get().then(
 				function(response) {
 					if ($scope.currentTrack.id === currentTrackId) { // check the currentTack hasn't already changed'
-						$scope.player.fromURL(response.url, null);
+						$scope.player.fromUrl(response.url, null);
 						$scope.player.play();
 					}
 				},
@@ -220,11 +220,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				}
 			);
 		} else if ($scope.currentTrack.type === 'podcast') {
-			$scope.player.fromURL($scope.currentTrack.stream_url, null);
+			$scope.player.fromUrl($scope.currentTrack.stream_url, null);
 			$scope.player.play();
 		} else {
 			const {mime, url} = getPlayableFileUrl($scope.currentTrack);
-			$scope.player.fromURL(url, mime);
+			$scope.player.fromUrl(url, mime);
 			scrobblePending = true;
 
 			if (startOffset) {

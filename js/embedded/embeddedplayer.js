@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -459,7 +459,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		playDelayTimer = setTimeout(function() {
 			playDelayTimer = null;
-			player.fromURL(url, mime);
+			player.fromUrl(url, mime);
 			play();
 			if (nextStep) {
 				nextStep();

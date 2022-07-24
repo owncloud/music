@@ -71,7 +71,7 @@ use OCA\Music\Utility\ExtractorGetID3;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\PodcastService;
-use OCA\Music\Utility\RadioMetadata;
+use OCA\Music\Utility\RadioService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\LibrarySettings;
@@ -183,7 +183,7 @@ class Music extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('RadioStationBusinessLayer'),
-				$c->query('RadioMetadata'),
+				$c->query('RadioService'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
@@ -553,8 +553,8 @@ class Music extends App {
 			);
 		});
 
-		$container->registerService('RadioMetadata', function (IAppContainer $c) {
-			return new RadioMetadata(
+		$container->registerService('RadioService', function (IAppContainer $c) {
+			return new RadioService(
 				$c->query('Logger')
 			);
 		});

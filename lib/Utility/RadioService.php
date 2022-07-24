@@ -19,7 +19,7 @@ use OCA\Music\AppFramework\Core\Logger;
 /**
  * MetaData radio utility functions
  */
-class RadioMetadata {
+class RadioService {
 
 	private $logger;
 

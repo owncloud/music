@@ -25,11 +25,11 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
-use OCA\Music\Utility\RadioMetadata;
+use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
 	private $businessLayer;
-	private $metadata;
+	private $service;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
@@ -38,14 +38,14 @@ class RadioApiController extends Controller {
 	public function __construct(string $appname,
 								IRequest $request,
 								RadioStationBusinessLayer $businessLayer,
-								RadioMetadata $metadata,
+								RadioService $service,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
 								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->businessLayer = $businessLayer;
-		$this->metadata = $metadata;
+		$this->service = $service;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
 		$this->userFolder = $userFolder;
@@ -207,7 +207,7 @@ class RadioApiController extends Controller {
 	}
 
 	/**
-	* get radio metadata from stream
+	* get metadata for a channel
 	*
 	* @NoAdminRequired
 	* @NoCSRFRequired
@@ -219,22 +219,22 @@ class RadioApiController extends Controller {
 
 			switch ($type) {
 				case 'icy':
-					$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1);
+					$metadata = $this->service->readIcyMetadata($streamUrl, 1, 1);
 					break;
 				case 'shoutcast-v1':
-					$metadata = $this->metadata->readShoutcastV1Metadata($streamUrl);
+					$metadata = $this->service->readShoutcastV1Metadata($streamUrl);
 					break;
 				case 'shoutcast-v2':
-					$metadata = $this->metadata->readShoutcastV2Metadata($streamUrl);
+					$metadata = $this->service->readShoutcastV2Metadata($streamUrl);
 					break;
 				case 'icecast':
-					$metadata = $this->metadata->readIcecastMetadata($streamUrl);
+					$metadata = $this->service->readIcecastMetadata($streamUrl);
 					break;
 				default:
-					$metadata = $this->metadata->readIcyMetadata($streamUrl, 1, 1)
-							?? $this->metadata->readShoutcastV2Metadata($streamUrl)
-							?? $this->metadata->readIcecastMetadata($streamUrl)
-							?? $this->metadata->readShoutcastV1Metadata($streamUrl);
+					$metadata = $this->service->readIcyMetadata($streamUrl, 1, 1)
+							?? $this->service->readShoutcastV2Metadata($streamUrl)
+							?? $this->service->readIcecastMetadata($streamUrl)
+							?? $this->service->readShoutcastV1Metadata($streamUrl);
 					break;
 			}
 

@@ -210,7 +210,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			Restangular.one('radio', currentTrackId).one('streamurl').get().then(
 				function(response) {
 					if ($scope.currentTrack.id === currentTrackId) { // check the currentTack hasn't already changed'
-						$scope.player.fromUrl(response.url, null);
+						$scope.player.fromExtUrl(response.url, response.hls);
 						$scope.player.play();
 					}
 				},
@@ -220,7 +220,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				}
 			);
 		} else if ($scope.currentTrack.type === 'podcast') {
-			$scope.player.fromUrl($scope.currentTrack.stream_url, null);
+			$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
 			$scope.player.play();
 		} else {
 			const {mime, url} = getPlayableFileUrl($scope.currentTrack);

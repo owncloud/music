@@ -105,6 +105,10 @@ OCA.Music.GaplessPlayer = function() {
 		}
 	};
 
+	this.fromExtUrl = function(url, isHls) {
+		m_currentPlayer.fromExtUrl(url, isHls);
+	};
+
 	this.prepareUrl = function(url, mime) {
 		if (m_nextPlayer.getUrl() != url) {
 			m_nextPlayer.fromUrl(url, mime);

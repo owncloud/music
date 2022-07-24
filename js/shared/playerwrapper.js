@@ -27,7 +27,7 @@ OCA.Music.PlayerWrapper = function() {
 	var m_ready = false;
 	var m_playing = false;
 	var m_url = null;
-	var m_streamingExtUrl = false;
+	var m_urlType = null; // set later as one of ['lcoal', 'external', 'external-hls']
 	var m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
@@ -115,6 +115,34 @@ OCA.Music.PlayerWrapper = function() {
 	}
 	initHtml5();
 
+	// Aurora differs from HTML5 player so that it has to be initialized again for each URL
+	function initAurora(url) {
+		m_aurora = window.AV.Player.fromURL(url);
+		m_aurora.asset.source.chunkSize=524288;
+
+		m_aurora.on('buffer', function(percent) {
+			m_buffered = percent;
+			m_self.trigger('buffer', percent);
+		});
+		m_aurora.on('progress', function(currentTime) {
+			m_position = currentTime;
+			m_self.trigger('progress', currentTime);
+		});
+		m_aurora.on('ready', function() {
+			m_ready = true;
+			m_self.trigger('ready');
+		});
+		m_aurora.on('end', function() {
+			m_self.trigger('end');
+		});
+		m_aurora.on('duration', function(msecs) {
+			m_duration = msecs;
+			m_self.trigger('duration', msecs);
+		});
+
+		m_aurora.preload();
+	}
+
 	function onPlayStarted() {
 		m_playing = true;
 		m_self.trigger('play');
@@ -160,7 +188,6 @@ OCA.Music.PlayerWrapper = function() {
 	};
 
 	this.stop = function() {
-		var url = m_url;
 		m_url = null;
 
 		switch (m_underlyingPlayer) {
@@ -172,7 +199,7 @@ OCA.Music.PlayerWrapper = function() {
 				// Just be sure to ignore the resulting 'error' events. Unfortunately, this will still print
 				// a warning to the console on Firefox.
 				m_html5audio.pause();
-				if (m_streamingExtUrl && m_hls !== null && url !== null && isHlsUrl(url)) {
+				if (m_urlType == 'external-hls') {
 					m_hls.stopLoad();
 					m_hls.detachMedia();
 				}
@@ -200,7 +227,7 @@ OCA.Music.PlayerWrapper = function() {
 		// playing a normal local file, the seeking may be requested before we have fetched
 		// the duration and that is fine.
 		var validDuration = $.isNumeric(m_duration) && m_duration > 0;
-		return (m_underlyingPlayer == 'html5' && (!m_streamingExtUrl || validDuration));
+		return (m_underlyingPlayer == 'html5' && (m_urlType == 'local' || validDuration));
 	};
 
 	this.seekMsecs = function(msecs) {
@@ -287,72 +314,53 @@ OCA.Music.PlayerWrapper = function() {
 		return canPlayWithHtml5(mime) || canPlayWithAurora;
 	};
 
-	function isHlsUrl(url) {
-		url = url.toLowerCase();
-		return url.endsWith('.m3u8') || url.endsWith('.m3u');
-	}
-
-	this.fromUrl = function(url, mime) {
+	function doFromUrl(setupUnderlyingPlayer) {
 		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		m_position = 0;
 		m_ready = false;
 
-		this.stop(); // clear any previous state first
+		m_self.stop(); // clear any previous state first
+		m_self.trigger('loading');
 
-		this.trigger('loading');
-
-		m_url = url;
-		m_streamingExtUrl = (mime === null); // null-mime is used to mark an external stream URL
-
-		if (m_streamingExtUrl || canPlayWithHtml5(mime)) {
-			m_underlyingPlayer = 'html5';
-		} else {
-			m_underlyingPlayer = 'aurora';
-		}
-		console.log('Using ' + m_underlyingPlayer + ' for type ' + mime + ' URL ' + url);
-
-		switch (m_underlyingPlayer) {
-			case 'html5':
-				if (m_streamingExtUrl && m_hls !== null && isHlsUrl(url)) {
-					m_hls.detachMedia();
-					m_hls.loadSource(url);
-					m_hls.attachMedia(m_html5audio);
-				} else {
-					m_html5audio.src = url;
-				}
-				break;
-
-			case 'aurora':
-				m_aurora = window.AV.Player.fromURL(url);
-				m_aurora.asset.source.chunkSize=524288;
-
-				m_aurora.on('buffer', function(percent) {
-					m_buffered = percent;
-					m_self.trigger('buffer', percent);
-				});
-				m_aurora.on('progress', function(currentTime) {
-					m_position = currentTime;
-					m_self.trigger('progress', currentTime);
-				});
-				m_aurora.on('ready', function() {
-					m_ready = true;
-					m_self.trigger('ready');
-				});
-				m_aurora.on('end', function() {
-					m_self.trigger('end');
-				});
-				m_aurora.on('duration', function(msecs) {
-					m_duration = msecs;
-					m_self.trigger('duration', msecs);
-				});
-
-				m_aurora.preload();
-				break;
-		}
+		setupUnderlyingPlayer();
 
 		// Set the current volume to the newly created/selected player instance
-		this.setVolume(m_volume);
-		this.setPlaybackRate(m_playbackRate);
+		m_self.setVolume(m_volume);
+		m_self.setPlaybackRate(m_playbackRate);
+	}
+
+	this.fromUrl = function(url, mime) {
+		doFromUrl(function() {
+			m_url = url;
+			m_urlType = 'local';
+
+			if (canPlayWithHtml5(mime)) {
+				m_underlyingPlayer = 'html5';
+				m_html5audio.src = url;
+			} else {
+				m_underlyingPlayer = 'aurora';
+				initAurora(url);
+			}
+			console.log('Using ' + m_underlyingPlayer + ' for type ' + mime + ' URL ' + url);
+		});
+	};
+
+	this.fromExtUrl = function(url, isHls) {
+		doFromUrl(function() {
+			m_url = url;
+			m_underlyingPlayer = 'html5';
+
+			if (isHls && m_hls !== null) {
+				m_urlType = 'external-hls';
+				m_hls.detachMedia();
+				m_hls.loadSource(url);
+				m_hls.attachMedia(m_html5audio);
+			} else {
+				m_urlType = 'external';
+				m_html5audio.src = url;
+			}
+			console.log('URL ' + url + ' played as ' + m_urlType);
+		});
 	};
 
 	this.getUrl = function() {

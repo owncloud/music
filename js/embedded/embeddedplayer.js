@@ -459,7 +459,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		playDelayTimer = setTimeout(function() {
 			playDelayTimer = null;
-			player.fromUrl(url, mime);
+			if (mime !== null) {
+				player.fromUrl(url, mime);
+			} else {
+				player.fromExtUrl(url, false); // TODO: HLS-type streams not yet supported here
+			}
 			play();
 			if (nextStep) {
 				nextStep();

@@ -205,19 +205,34 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	}
 
 	function playCurrentTrack(startOffset /*optional*/) {
-		if (currentTrackIsStream()) {
+		if ($scope.currentTrack.type === 'radio') {
+			const currentTrackId = $scope.currentTrack.id;
+			Restangular.one('radio', currentTrackId).one('streamurl').get().then(
+				function(response) {
+					if ($scope.currentTrack.id === currentTrackId) { // check the currentTack hasn't already changed'
+						$scope.player.fromURL(response.url, null);
+						$scope.player.play();
+					}
+				},
+				function(_error) {
+					// error handling
+					OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
+				}
+			);
+		} else if ($scope.currentTrack.type === 'podcast') {
 			$scope.player.fromURL($scope.currentTrack.stream_url, null);
-		}
-		else {
+			$scope.player.play();
+		} else {
 			const {mime, url} = getPlayableFileUrl($scope.currentTrack);
 			$scope.player.fromURL(url, mime);
 			scrobblePending = true;
+
+			if (startOffset) {
+				$scope.player.seekMsecs(startOffset);
+			}
+			$scope.player.play();
 		}
 
-		if (startOffset) {
-			$scope.player.seekMsecs(startOffset);
-		}
-		$scope.player.play();
 	}
 
 	/*

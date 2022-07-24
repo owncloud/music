@@ -233,4 +233,61 @@ class RadioService {
 		return $result;
 	}
 
+	/**
+	 * Sometimes the URL given as stream URL points to a playlist which in turn contains the actual
+	 * URL to be streamed. This function resolves such indirections.
+	 */
+	public function resolveStreamUrl(string $url) : array {
+		// the default output for non-playlist URLs:
+		$resolvedUrl = $url;
+		$isHls = false;
+
+		$urlParts = \parse_url($url);
+		$lcPath = \mb_strtolower($urlParts['path']);
+
+		$isPls = Util::endsWith($lcPath, '.pls');
+		$isM3u = !$isPls && (Util::endsWith($lcPath, '.m3u') || Util::endsWith($lcPath, '.m3u8'));
+
+		if ($isPls || $isM3u) {
+			$maxLength = 8 * 1024;
+			list('content' => $content, 'status_code' => $status_code, 'message' => $message) = HttpUtil::loadFromUrl($url, $maxLength);
+
+			if ($status_code != 200) {
+				$this->logger->log("Could not read radio playlist from $url: $status_code $message", 'debug');
+			} elseif (\strlen($content) >= $maxLength) {
+				$this->logger->log("The URL $url seems to be the stream although the extension suggests it's a playlist", 'debug');
+			} else if ($isPls) {
+				$entries = PlaylistFileService::parsePlsContent($content);
+			} else {
+				$isHls = (\strpos($content, '#EXT-X-MEDIA-SEQUENCE') !== false);
+				if (!$isHls) {
+					$entries = PlaylistFileService::parseM3uContent($content, 'UTF-8');
+				}
+			}
+
+			if (!empty($entries)) {
+				$resolvedUrl = $entries[0]['path'];
+
+				// the path in the playlist may be relative => convert to absolute
+				if (!Util::startsWith($resolvedUrl, 'http://', true) && !Util::startsWith($resolvedUrl, 'https://', true)) {
+					$path = $urlParts['path'];
+					$lastSlash = \strrpos($path, '/');
+					$urlParts['path'] = \substr($path, 0, $lastSlash + 1) . $resolvedUrl;
+					unset($urlParts['query']);
+					unset($urlParts['fragment']);
+					$resolvedUrl = Util::buildUrl($urlParts);
+				}
+			}
+		}
+
+		// make a recursive call if the URL got changed
+		if ($url != $resolvedUrl) {
+			return $this->resolveStreamUrl($resolvedUrl);
+		} else {
+			return [
+				'url' => $resolvedUrl,
+				'hls' => $isHls
+			];
+		}
+	}
 }

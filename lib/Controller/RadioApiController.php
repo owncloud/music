@@ -243,4 +243,20 @@ class RadioApiController extends Controller {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
 	}
+
+	/**
+	 * get stream URL for a radio station
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getStreamUrl(int $id) {
+		try {
+			$station = $this->businessLayer->find($id, $this->userId);
+			$streamUrl = $station->getStreamUrl();
+			return new JSONResponse($this->service->resolveStreamUrl($streamUrl));
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
 }

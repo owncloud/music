@@ -82,10 +82,11 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
 	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
 	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
+	['name' => 'radioApi#getChannelInfo',	'url' => '/api/radio/{id}/info',		'verb' => 'GET'],
+	['name' => 'radioApi#getStreamUrl',		'url' => '/api/radio/{id}/streamurl',	'verb' => 'GET'],
 	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
-	['name' => 'radioApi#getChannelInfo',	'url' => '/api/radio/{id}/info',		'verb' => 'GET'],
 
 	// podcast API
 	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],

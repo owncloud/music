@@ -11,6 +11,8 @@
 - Artist and album names from Last.fm to the Last.fm tab of the track details
   [#995](https://github.com/owncloud/music/issues/995)
 - Album art from Last.fm on the album details pane when no local art available
+- Support for radio stream URLs which point to a playlist file containing the actual audio stream URL
+  [#966](https://github.com/owncloud/music/issues/966)
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

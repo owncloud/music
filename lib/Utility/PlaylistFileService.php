@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 namespace OCA\Music\Utility;
@@ -290,15 +290,22 @@ class PlaylistFileService {
 	}
 
 	private static function parseM3uFile(File $file) : array {
-		$entries = [];
-
 		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
 		// .m3u as ISO-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
 		$encoding = Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'ISO-8859-1';
 
+		$fp = $file->fopen('r');
+		$entries = self::parseM3uFilePointer($fp, $encoding);
+		\fclose($fp);
+
+		return $entries;
+	}
+
+	private static function parseM3uFilePointer($fp, string $encoding) : array {
+		$entries = [];
+
 		$caption = null;
 
-		$fp = $file->fopen('r');
 		while ($line = \fgets($fp)) {
 			$line = \mb_convert_encoding($line, /** @scrutinizer ignore-type */ \mb_internal_encoding(), $encoding);
 			$line = \trim(/** @scrutinizer ignore-type */ $line);
@@ -326,16 +333,31 @@ class PlaylistFileService {
 				$caption = null; // the caption has been used up
 			}
 		}
+
+		return $entries;
+	}
+
+	public static function parseM3uContent(string $content, string $encoding) {
+		$fp = \fopen("php://temp", 'r+');
+		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
+		\fputs($fp, /** @scrutinizer ignore-type */ $content);
+		\rewind($fp);
+
+		$entries = self::parseM3uFilePointer($fp, $encoding);
+
 		\fclose($fp);
 
 		return $entries;
 	}
 
 	private static function parsePlsFile(File $file) : array {
+		return self::parsePlsContent($file->getContent());
+	}
+
+	public static function parsePlsContent(string $content) : array {
 		$files = [];
 		$titles = [];
-
-		$content = $file->getContent();
 
 		// If the file doesn't seem to be UTF-8, then assume it to be ISO-8859-1
 		if (!\mb_check_encoding($content, 'UTF-8')) {
@@ -373,9 +395,9 @@ class PlaylistFileService {
 		\fclose($fp);
 
 		$entries = [];
-		foreach ($files as $idx => $file) {
+		foreach ($files as $idx => $filePath) {
 			$entries[] = [
-				'path' => $file,
+				'path' => $filePath,
 				'caption' => $titles[$idx] ?? null
 			];
 		}

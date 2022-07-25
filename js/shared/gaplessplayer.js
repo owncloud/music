@@ -76,19 +76,19 @@ OCA.Music.GaplessPlayer = function() {
 		m_nextPlayer.setPlaybackRate(rate);
 	};
 
-	this.canPlayMIME = function(mime) {
-		return m_currentPlayer.canPlayMIME(mime);
+	this.canPlayMime = function(mime) {
+		return m_currentPlayer.canPlayMime(mime);
 	};
 
 	this.getUrl = function() {
 		return m_currentPlayer.getUrl();
 	};
 
-	this.fromURL = function(url, mime) {
+	this.fromUrl = function(url, mime) {
 		swapPlayer();
 
 		if (m_currentPlayer.getUrl() != url) {
-			m_currentPlayer.fromURL(url, mime);
+			m_currentPlayer.fromUrl(url, mime);
 		} else {
 			// The player already has the correct URL loaded or being loaded. Ensure the playing starts from the
 			// beginning and fire the relevant events.
@@ -105,9 +105,13 @@ OCA.Music.GaplessPlayer = function() {
 		}
 	};
 
-	this.prepareURL = function(url, mime) {
+	this.fromExtUrl = function(url, isHls) {
+		m_currentPlayer.fromExtUrl(url, isHls);
+	};
+
+	this.prepareUrl = function(url, mime) {
 		if (m_nextPlayer.getUrl() != url) {
-			m_nextPlayer.fromURL(url, mime);
+			m_nextPlayer.fromUrl(url, mime);
 		}
 	};
 

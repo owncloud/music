@@ -73,7 +73,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if (entry?.track?.id !== null) {
 				const {mime, url} = getPlayableFileUrl(entry.track);
 				if (mime !== null && url !== null) {
-					$scope.player.prepareURL(url, mime);
+					$scope.player.prepareUrl(url, mime);
 				}
 			}
 		}
@@ -176,7 +176,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	function getPlayableFileUrl(track) {
 		for (var mimeType in track.files) {
-			if ($scope.player.canPlayMIME(mimeType)) {
+			if ($scope.player.canPlayMime(mimeType)) {
 				return {
 					'mime': mimeType,
 					'url': OC.filePath('music', '', 'index.php') + '/api/file/' + track.files[mimeType] + '/download'
@@ -205,19 +205,34 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	}
 
 	function playCurrentTrack(startOffset /*optional*/) {
-		if (currentTrackIsStream()) {
-			$scope.player.fromURL($scope.currentTrack.stream_url, null);
-		}
-		else {
+		if ($scope.currentTrack.type === 'radio') {
+			const currentTrackId = $scope.currentTrack.id;
+			Restangular.one('radio', currentTrackId).one('streamurl').get().then(
+				function(response) {
+					if ($scope.currentTrack.id === currentTrackId) { // check the currentTack hasn't already changed'
+						$scope.player.fromExtUrl(response.url, response.hls);
+						$scope.player.play();
+					}
+				},
+				function(_error) {
+					// error handling
+					OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
+				}
+			);
+		} else if ($scope.currentTrack.type === 'podcast') {
+			$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
+			$scope.player.play();
+		} else {
 			const {mime, url} = getPlayableFileUrl($scope.currentTrack);
-			$scope.player.fromURL(url, mime);
+			$scope.player.fromUrl(url, mime);
 			scrobblePending = true;
+
+			if (startOffset) {
+				$scope.player.seekMsecs(startOffset);
+			}
+			$scope.player.play();
 		}
 
-		if (startOffset) {
-			$scope.player.seekMsecs(startOffset);
-		}
-		$scope.player.play();
 	}
 
 	/*

@@ -37,7 +37,7 @@ function initEmbeddedPlayer() {
 		'audio/mpeg',
 		'audio/ogg',
 		'audio/wav'
-	], mPlayer.canPlayMIME, mPlayer);
+	], mPlayer.canPlayMime, mPlayer);
 
 	var mPlaylistMimes = [
 		'audio/mpegurl',

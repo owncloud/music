@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music;
@@ -79,13 +79,15 @@ $app->registerRoutes($this, ['routes' => [
 	// radio API
 	['name' => 'radioApi#getAll',			'url' => '/api/radio',					'verb' => 'GET'],
 	['name' => 'radioApi#create',			'url' => '/api/radio',					'verb' => 'POST'],
-	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
-	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
-	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
 	['name' => 'radioApi#exportAllToFile',	'url' => '/api/radio/export',			'verb' => 'POST'],
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
+	['name' => 'radioApi#resolveStreamUrl',	'url' => '/api/radio/streamurl',		'verb' => 'GET'],
+	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
+	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
+	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],
 	['name' => 'radioApi#getChannelInfo',	'url' => '/api/radio/{id}/info',		'verb' => 'GET'],
+	['name' => 'radioApi#stationStreamUrl',	'url' => '/api/radio/{id}/streamurl',	'verb' => 'GET'],
 
 	// podcast API
 	['name' => 'podcastApi#getAll',			'url' => '/api/podcasts',						'verb' => 'GET'],

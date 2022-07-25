@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -440,16 +440,15 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	}
 
-	function playUrl(url, mime, tempTitle, nextStep /*optional*/) {
-		pause();
+	function resolveExtUrl(url, callback) {
+		$.get(OC.generateUrl('apps/music/api/radio/streamurl'), {url: url}, callback);
+	}
 
-		// Set placeholders for track info fields, proper data is filled once received
-		updateMetadata({
-			title: t('music', 'Loading…'),
-			artist: tempTitle,
-			cover: null
-		});
+	function changePlayingUrl(playCallback) {
+		player.stop();
+
 		musicAppLinkElements().css('cursor', 'default').off('click').attr('title', '');
+		player.trigger('loading');
 
 		// Add a small delay before actually starting to load any data. This is
 		// to avoid flooding HTTP requests in case the user rapidly jumps over
@@ -459,11 +458,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		playDelayTimer = setTimeout(function() {
 			playDelayTimer = null;
-			player.fromURL(url, mime);
-			play();
-			if (nextStep) {
-				nextStep();
-			}
+			playCallback();
 		}, 300);
 	}
 
@@ -565,7 +560,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
 		currentFileId = fileId;
 		var fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
-		playUrl(url, mime, fallbackTitle, function() {
+		// Set placeholders for track info fields, proper data is filled once received
+		updateMetadata({
+			title: t('music', 'Loading…'),
+			artist: fallbackTitle,
+			cover: null
+		});
+		changePlayingUrl(function() {
+			player.fromUrl(url, mime);
+			play();
+
 			if (shareToken) {
 				loadSharedFileInfo(shareToken, fileId, fallbackTitle);
 			} else {
@@ -576,11 +580,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	this.playExtUrl = function(url, caption) {
 		currentFileId = null;
-		playUrl(url, null, '');
 		updateMetadata({
 			title: caption,
 			artist: url,
 			cover: radioIconPath
+		});
+		changePlayingUrl(function() {
+			resolveExtUrl(url, function(resolved) {
+				player.fromExtUrl(resolved.url, resolved.hls);
+				play();
+			});
 		});
 	};
 

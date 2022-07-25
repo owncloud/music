@@ -250,7 +250,7 @@ class RadioApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function getStreamUrl(int $id) {
+	public function stationStreamUrl(int $id) {
 		try {
 			$station = $this->businessLayer->find($id, $this->userId);
 			$streamUrl = $station->getStreamUrl();
@@ -258,5 +258,15 @@ class RadioApiController extends Controller {
 		} catch (BusinessLayerException $ex) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
 		}
+	}
+
+	/**
+	 * get the actual stream URL from the given public URL
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function resolveStreamUrl(string $url) {
+		return new JSONResponse($this->service->resolveStreamUrl(\rawurldecode($url)));
 	}
 }

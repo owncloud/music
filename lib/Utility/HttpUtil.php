@@ -22,10 +22,12 @@ class HttpUtil {
 	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string]
 	 */
 	public static function loadFromUrl(string $url, ?int $maxLength=null) : array {
+		$status_code = 0;
+		$content_type = null;
+
 		if (!Util::startsWith($url, 'http://', /*ignoreCase=*/true)
 				&& !Util::startsWith($url, 'https://', /*ignoreCase=*/true)) {
 			$content = false;
-			$status_code = 0;
 			$message = 'URL scheme must be HTTP or HTTPS';
 		} else {
 			$opts = [
@@ -49,13 +51,13 @@ class HttpUtil {
 			if (isset($http_response_header)) {
 				list($version, $status_code, $message) = \explode(' ', $http_response_header[0], 3);
 				$status_code = (int)$status_code;
+				$content_type = self::findHeader($http_response_header, 'Content-Type');
 			} else {
-				$status_code = 0;
 				$message = 'The requested URL did not respond';
 			}
 		}
 
-		return \compact('content', 'status_code', 'message');
+		return \compact('content', 'status_code', 'message', 'content_type');
 	}
 
 	public static function userAgentHeader() : string {
@@ -64,5 +66,15 @@ class HttpUtil {
 		$appVersion = \OCP\App::getAppVersion('music');
 
 		return 'User-Agent: OCMusic/' . $appVersion;
+	}
+
+	private static function findHeader(array $headers, string $headerKey) : ?string {
+		foreach ($headers as $header) {
+			$find = \strstr($header, $headerKey . ':');
+			if ($find !== false) {
+				return \trim(\substr($find, \strlen($headerKey)+1));
+			}
+		}
+		return null;
 	}
 }

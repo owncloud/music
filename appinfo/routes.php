@@ -83,6 +83,8 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'radioApi#importFromFile',	'url' => '/api/radio/import',			'verb' => 'POST'],
 	['name' => 'radioApi#resetAll',			'url' => '/api/radio/reset',			'verb' => 'POST'],
 	['name' => 'radioApi#resolveStreamUrl',	'url' => '/api/radio/streamurl',		'verb' => 'GET'],
+	['name' => 'radioApi#hlsManifest',		'url' => '/api/radio/hls/manifest',		'verb' => 'GET'],
+	['name' => 'radioApi#hlsSegment',		'url' => '/api/radio/hls/segment',		'verb' => 'GET'],
 	['name' => 'radioApi#get',				'url' => '/api/radio/{id}',				'verb' => 'GET'],
 	['name' => 'radioApi#delete',			'url' => '/api/radio/{id}',				'verb' => 'DELETE'],
 	['name' => 'radioApi#update',			'url' => '/api/radio/{id}',				'verb' => 'PUT'],

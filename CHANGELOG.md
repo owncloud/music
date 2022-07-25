@@ -17,6 +17,7 @@
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration
 - If updating a podcast channel fails, don't retry it each time the background task runs but only upon the normal podcast update schedule
+- HLS-type radio streams are now relayed via the cloud server, removing the need to whitelist each allowed source server
 
 ### Fixed
 - Previous radio station being played without any error messages when failed to start playing an HLS stream

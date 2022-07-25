@@ -15,15 +15,18 @@
 namespace OCA\Music\Utility;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCP\IURLGenerator;
 
 /**
  * MetaData radio utility functions
  */
 class RadioService {
 
+	private $urlGenerator;
 	private $logger;
 
-	public function __construct(Logger $logger) {
+	public function __construct(IURLGenerator $urlGenerator, Logger $logger) {
+		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
 	}
 
@@ -233,6 +236,19 @@ class RadioService {
 		return $result;
 	}
 
+	private static function convertUrlOnPlaylistToAbsolute($containedUrl, $playlistUrlParts) {
+		if (!Util::startsWith($containedUrl, 'http://', true) && !Util::startsWith($containedUrl, 'https://', true)) {
+			$urlParts = $playlistUrlParts;
+			$path = $urlParts['path'];
+			$lastSlash = \strrpos($path, '/');
+			$urlParts['path'] = \substr($path, 0, $lastSlash + 1) . $containedUrl;
+			unset($urlParts['query']);
+			unset($urlParts['fragment']);
+			$containedUrl = Util::buildUrl($urlParts);
+		}
+		return $containedUrl;
+	}
+
 	/**
 	 * Sometimes the URL given as stream URL points to a playlist which in turn contains the actual
 	 * URL to be streamed. This function resolves such indirections.
@@ -260,28 +276,22 @@ class RadioService {
 				$entries = PlaylistFileService::parsePlsContent($content);
 			} else {
 				$isHls = (\strpos($content, '#EXT-X-MEDIA-SEQUENCE') !== false);
-				if (!$isHls) {
+				if ($isHls) {
+					$resolvedUrl = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest', ['url' => \rawurlencode($url)]);
+				} else {
 					$entries = PlaylistFileService::parseM3uContent($content, 'UTF-8');
 				}
 			}
 
 			if (!empty($entries)) {
 				$resolvedUrl = $entries[0]['path'];
-
 				// the path in the playlist may be relative => convert to absolute
-				if (!Util::startsWith($resolvedUrl, 'http://', true) && !Util::startsWith($resolvedUrl, 'https://', true)) {
-					$path = $urlParts['path'];
-					$lastSlash = \strrpos($path, '/');
-					$urlParts['path'] = \substr($path, 0, $lastSlash + 1) . $resolvedUrl;
-					unset($urlParts['query']);
-					unset($urlParts['fragment']);
-					$resolvedUrl = Util::buildUrl($urlParts);
-				}
+				$resolvedUrl = self::convertUrlOnPlaylistToAbsolute($resolvedUrl, $urlParts);
 			}
 		}
 
 		// make a recursive call if the URL got changed
-		if ($url != $resolvedUrl) {
+		if (!$isHls && $url != $resolvedUrl) {
 			return $this->resolveStreamUrl($resolvedUrl);
 		} else {
 			return [
@@ -290,4 +300,38 @@ class RadioService {
 			];
 		}
 	}
+
+	public function getHlsManifest(string $url) : array {
+		$maxLength = 8 * 1024;
+		$result = HttpUtil::loadFromUrl($url, $maxLength);
+
+		if ($result['status_code'] == 200) {
+			$manifestUrlParts = \parse_url($url);
+
+			// read the manifest line-by-line, and create a modified copy where each fragment URL is relayed through this server
+			$fp = \fopen("php://temp", 'r+');
+			\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
+			\fputs($fp, /** @scrutinizer ignore-type */ $result['content']);
+			\rewind($fp);
+
+			$content = '';
+			while ($line = \fgets($fp)) {
+				$line = \trim($line);
+				if (!empty($line) && !Util::startsWith($line, '#')) {
+					$segUrl = self::convertUrlOnPlaylistToAbsolute($line, $manifestUrlParts);
+					$line = $this->urlGenerator->linkToRoute('music.radioApi.hlsSegment', ['url' => \rawurlencode($segUrl)]);
+				}
+				$content .= $line . "\n";
+			}
+			$result['content'] = $content;
+
+			\fclose($fp);
+		} else {
+			$this->logger->log("Failed to read manifest from $url: {$result['status_code']} {$result['message']}", 'warn');
+		}
+
+		return $result;
+	}
+
 }

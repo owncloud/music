@@ -168,12 +168,11 @@
 			</em></p>
 		</div>
 		<div>
-			<p>music.allowed_radio_hls_src</p>
+			<p>music.enable_radio_hls</p>
 			<p><em translate
-					translate-params-connect-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/connect-src'"
 					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
 			>
-				Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{connectSrcUrl}}" target="_blank">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
+				Enable streaming HLS radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
 			</em></p>
 		</div>
 		<div>
@@ -182,6 +181,10 @@
 				<em translate>The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours.</em><br/>
 				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
 			</p>
+		</div>
+		<div class="dimmed">
+			<p>music.allowed_radio_hls_src</p>
+			<p><em translate>OBSOLETE. This key is no longer needed or used by the Music application.</em></p>
 		</div>
 	</div>
 

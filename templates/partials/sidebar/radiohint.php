@@ -20,9 +20,11 @@
 		<p translate>There are a couple of typical reasons why a configured radio station might not play on your browser:</p>
 
 		<ol>
-			<li translate>The stream is of HLS type, indicated by a URL ending with '.m3u' or '.m3u8'. For such streams, the source host must be specifically allowed by the cloud adminstator. See the 'Admin' section within the Music app Settings view for details.</li>
-
 			<li translate>Your cloud is using the HTTPS scheme but the streamed URL uses the HTTP scheme. By default, your browser might block such accees. To overcome this, you may be able to set your browser to allow "Insecure content" on this page. On the desktop browsers, such settings can usually be found by clicking the icon right next to the address bar on its left side.</li>
+
+			<li translate>The stream is of HLS type and the administrator of your cloud has disabled support for such streams.</li>
+
+			<li translate>The stream is of non-HLS type and the administrator of your cloud has enabled streaming only from some specific sources.</li>
 
 			<li translate>The stream is genuinely broken or in such a format that either the Music app or your browser can't handle it. Majority of the radio stations found from Community Radio Browser should work on the Music app when a mainstream browser is being used, but still, there are numerous stations which will not work.</li>
 		</ol>

@@ -17,17 +17,21 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 
 use OCP\Files\Folder;
+use OCP\IConfig;
 use OCP\IRequest;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
 use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
+	private $config;
 	private $businessLayer;
 	private $service;
 	private $playlistFileService;
@@ -37,6 +41,7 @@ class RadioApiController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
+								IConfig $config,
 								RadioStationBusinessLayer $businessLayer,
 								RadioService $service,
 								PlaylistFileService $playlistFileService,
@@ -44,6 +49,7 @@ class RadioApiController extends Controller {
 								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
+		$this->config = $config;
 		$this->businessLayer = $businessLayer;
 		$this->service = $service;
 		$this->playlistFileService = $playlistFileService;
@@ -268,5 +274,54 @@ class RadioApiController extends Controller {
 	 */
 	public function resolveStreamUrl(string $url) {
 		return new JSONResponse($this->service->resolveStreamUrl(\rawurldecode($url)));
+	}
+
+	/**
+	 * get manifest of a HLS stream
+	 *
+	 * This fetches the manifest file from the given URL and returns a modified version of it.
+	 * The front-end can't easily stream directly from the original source because of the Content-Security-Policy.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function hlsManifest(string $url) {
+		if ($this->hlsEnabled()) {
+			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
+				= $this->service->getHlsManifest(\rawurldecode($url));
+
+			return new FileResponse([
+				'content' => $content,
+				'mimetype' => $contentType
+			], $status);
+		} else {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		}
+	}
+
+	/**
+	 * get one segment of a HLS stream
+	 *
+	 * The segment is fetched from the given URL and relayed as such to the client.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function hlsSegment(string $url) {
+		if ($this->hlsEnabled()) {
+			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
+				= HttpUtil::loadFromUrl(\rawurldecode($url));
+
+			return new FileResponse([
+				'content' => $content,
+				'mimetype' => $contentType ?? 'application/octet-stream'
+			], $status);
+		} else {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		}
+	}
+
+	private function hlsEnabled() : bool {
+		return (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
 	}
 }

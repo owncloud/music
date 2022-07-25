@@ -62,38 +62,29 @@ function adjustCsp(IAppContainer $container) {
 	/** @var \OCP\IConfig $config */
 	$config = $container->query('Config');
 	$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
-	$radioHlsSources = $config->getSystemValue('music.allowed_radio_hls_src', []);
+	$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
 
 	if (\is_string($radioSources)) {
 		$radioSources = [$radioSources];
 	}
-	if (\is_string($radioHlsSources)) {
-		$radioHlsSources = [$radioHlsSources];
+
+	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+
+	foreach ($radioSources as $source) {
+		$policy->addAllowedMediaDomain($source);
 	}
 
-	if (!empty($radioSources) || !empty($radioHlsSources)) {
-		$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-
-		foreach ($radioSources as $source) {
-			$policy->addAllowedMediaDomain($source);
-		}
-
-		foreach ($radioHlsSources as $source) {
-			$policy->addAllowedConnectDomain($source);
-		}
-
-		// Also the media sources data: and blob: are needed if there are any allowed HLS sources
-		if (!empty($radioHlsSources)) {
-			$policy->addAllowedMediaDomain('data:');
-			$policy->addAllowedMediaDomain('blob:');
-		}
-
-		// Allow loading (podcast cover) images from external sources
-		$policy->addAllowedImageDomain('http://*:*');
-		$policy->addAllowedImageDomain('https://*:*');
-
-		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+	// Also the media sources data: and blob: are needed for HLS streaming
+	if ($enableHls) {
+		$policy->addAllowedMediaDomain('data:');
+		$policy->addAllowedMediaDomain('blob:');
 	}
+
+	// Allow loading (podcast cover) images from external sources
+	$policy->addAllowedImageDomain('http://*:*');
+	$policy->addAllowedImageDomain('https://*:*');
+
+	$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 }
 
 /**

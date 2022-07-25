@@ -182,6 +182,7 @@ class Music extends App {
 			return new RadioApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('RadioService'),
 				$c->query('PlaylistFileService'),
@@ -555,6 +556,7 @@ class Music extends App {
 
 		$container->registerService('RadioService', function (IAppContainer $c) {
 			return new RadioService(
+				$c->query('URLGenerator'),
 				$c->query('Logger')
 			);
 		});

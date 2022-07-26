@@ -104,13 +104,22 @@ class RadioService {
 		$metaUrl = \substr($streamUrl, 0, $lastSlash) . '/7.html';
 
 		return $this->readMetadata($metaUrl, function ($content) {
-			$content = \strip_tags($content); // get rid of the <html><body>...</html></body> decorations
-			$data = \explode(',', $content);
-			return [
-				'type' => 'shoutcast-v1',
-				'title' => \count($data) > 6 ? \trim($data[6]) : null, // the title field is optional
-				'bitrate' => $data[5] ?? null
-			];
+			// parsing logic borrowed from https://github.com/IntellexApps/shoutcast/blob/master/src/Info.php
+
+			// get rid of the <html><body>...</html></body> decorations and extra spacing:
+			$content = \preg_replace("[\n\t]", '', \trim(\strip_tags($content)));
+
+			// parse fields, allowing only the expected format
+			$match = [];
+			if (!\preg_match('~^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,(.*?)$~', $content, $match)) {
+				return null;
+			} else {
+				return [
+					'type' => 'shoutcast-v1',
+					'title' => $match[7],
+					'bitrate' => $match[6]
+				];
+			}
 		});
 	}
 
@@ -121,14 +130,18 @@ class RadioService {
 
 		return $this->readMetadata($metaUrl, function ($content) {
 			$rootNode = \simplexml_load_string($content, \SimpleXMLElement::class, LIBXML_NOCDATA);
-			return [
-				'type' => 'shoutcast-v2',
-				'title' => (string)$rootNode->SONGTITLE,
-				'station' => (string)$rootNode->SERVERTITLE,
-				'homepage' => (string)$rootNode->SERVERURL,
-				'genre' => (string)$rootNode->SERVERGENRE,
-				'bitrate' => (string)$rootNode->BITRATE
-			];
+			if ($rootNode === false || $rootNode->getName() != 'SHOUTCASTSERVER') {
+				return null;
+			} else {
+				return [
+					'type' => 'shoutcast-v2',
+					'title' => (string)$rootNode->SONGTITLE,
+					'station' => (string)$rootNode->SERVERTITLE,
+					'homepage' => (string)$rootNode->SERVERURL,
+					'genre' => (string)$rootNode->SERVERGENRE,
+					'bitrate' => (string)$rootNode->BITRATE
+				];
+			}
 		});
 	}
 

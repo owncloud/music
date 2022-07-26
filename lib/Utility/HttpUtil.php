@@ -21,7 +21,7 @@ class HttpUtil {
 	 * Use HTTP GET to load the requested URL
 	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string]
 	 */
-	public static function loadFromUrl(string $url, ?int $maxLength=null) : array {
+	public static function loadFromUrl(string $url, ?int $maxLength=null, ?int $timeout_s=null) : array {
 		$status_code = 0;
 		$content_type = null;
 
@@ -33,22 +33,25 @@ class HttpUtil {
 			$opts = [
 				'http' => [
 					'header' => self::userAgentHeader(),	// some servers don't allow requests without a user agent header
-					'ignore_errors' => true 				// don't emit warnings for bad/unavailable URL, we handle errors manually
+					'ignore_errors' => true,				// don't emit warnings for bad/unavailable URL, we handle errors manually
+					'max_redirects' => 2
 				]
 			];
+			if ($timeout_s !== null) {
+				$opts['http']['timeout'] = $timeout_s;
+			}
 			$context = \stream_context_create($opts);
+
 			// The length parameter of file_get_contents isn't nullable prior to PHP8.0
 			if ($maxLength === null) {
-				$content = \file_get_contents($url, false, $context);
+				$content = @\file_get_contents($url, false, $context);
 			} else {
-				$content = \file_get_contents($url, false, $context, 0, $maxLength);
+				$content = @\file_get_contents($url, false, $context, 0, $maxLength);
 			}
 
 			// It's some PHP magic that calling file_get_contents creates and populates also a local
 			// variable array $http_response_header, provided that the server could be reached.
-			// PhpStan thinks that this varialbe would always exist, and doesn't like the isset.
-			// @phpstan-ignore-next-line
-			if (isset($http_response_header)) {
+			if (!empty($http_response_header)) {
 				list($version, $status_code, $message) = \explode(' ', $http_response_header[0], 3);
 				$status_code = (int)$status_code;
 				$content_type = self::findHeader($http_response_header, 'Content-Type');

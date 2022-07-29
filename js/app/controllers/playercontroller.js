@@ -13,8 +13,8 @@
 import radioIconPath from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document', '$location',
-function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document, $location) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$q', '$document', '$location',
+function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $q, $document, $location) {
 
 	$scope.loading = false;
 	$scope.shiftHeldDown = false;
@@ -32,8 +32,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		total: 0
 	};
 	var scrobblePending = false;
-	var pendingRadioTitleFetch = null;
+	var scheduledRadioTitleFetch = null;
+	var abortRadioTitleFetch = null;
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
+	const RADIO_INFO_POLL_PERIOD_MS = 30000;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -118,17 +120,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 	onPlayerEvent('play', function() {
 		$rootScope.playing = true;
-		cancelRadioTitleFetch();
-		if ($scope.currentTrack?.type === 'radio') {
-			getRadioTitle();
-		}
 	});
 	onPlayerEvent('pause', function() {
-		cancelRadioTitleFetch();
 		$rootScope.playing = false;
 	});
 	onPlayerEvent('stop', function() {
-		cancelRadioTitleFetch();
 		$rootScope.playing = false;
 	});
 
@@ -157,22 +153,65 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
 	};
 
-	const titleApp = $('title').html().trim();
+	$scope.$watch('currentTrack', function(newTrack) {
+		updateWindowTitle(newTrack);
+		// Cancel any pending or ongoing fetch for radio station metadata. If applicable, 
+		// the fetch for new data is then initiated within the function playCurrentTrack.
+		cancelRadioTitleFetch();
+	});
 
 	// display the song name and artist in the title when there is current track
-	$scope.$watch('currentTrack', function(newTrack) {
+	const titleApp = $('title').html().trim();
+	function updateWindowTitle(track) {
 		var titleSong = '';
-		if (newTrack?.title !== undefined) {
-			if (newTrack?.channel) {
-				titleSong = newTrack.title + ' (' + newTrack.channel.title + ') - ';
+		if (track?.title !== undefined) {
+			if (track?.channel) {
+				titleSong = track.title + ' (' + track.channel.title + ') - ';
 			} else {
-				titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
+				titleSong = track.title + ' (' + track.artistName + ') - ';
 			}
 		} else {
 			titleSong = $scope.primaryTitle() + ' - ';
 		}
 		$('title').html(titleSong + titleApp);
-	});
+	}
+
+	function cancelRadioTitleFetch() {
+		if (scheduledRadioTitleFetch != null) {
+			$timeout.cancel(scheduledRadioTitleFetch);
+			scheduledRadioTitleFetch = null;
+		}
+		if (abortRadioTitleFetch != null) {
+			abortRadioTitleFetch.resolve();
+			abortRadioTitleFetch = null;
+		}
+	}
+
+	function getRadioTitle(radioTrack) {
+		abortRadioTitleFetch = $q.defer();
+		const config = {timeout: abortRadioTitleFetch.promise};
+		const metaType = radioTrack.metadata?.type; // request the same metadata type as previously got (if any)
+		Restangular.one('radio', radioTrack.id).one('info').withHttpConfig(config).get({type: metaType}).then(
+			function(response) {
+				abortRadioTitleFetch = null;
+				radioTrack.metadata = response;
+
+				// schedule next title update if the same station is still playing (or paused)
+				if ($scope.currentTrack?.id == radioTrack.id) {
+					scheduledRadioTitleFetch = $timeout(function() {
+						scheduledRadioTitleFetch = null;
+						getRadioTitle(radioTrack);
+					}, RADIO_INFO_POLL_PERIOD_MS);
+				}
+			},
+			function(_error) {
+				abortRadioTitleFetch = null;
+				// Do nothing on error. The most common reason to end up here is when we have aborted the request.
+				// It's also possible that the server returned an error, and we want to stop the polling in that case too.
+				// Simply not finding any metadata does not lead to error, and the error is unlikely to get solved on its own.
+			}
+		);
+	}
 
 	function getPlayableFileUrl(track) {
 		for (var mimeType in track.files) {
@@ -206,10 +245,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	function playCurrentTrack(startOffset /*optional*/) {
 		if ($scope.currentTrack.type === 'radio') {
-			const currentTrackId = $scope.currentTrack.id;
-			Restangular.one('radio', currentTrackId).one('streamurl').get().then(
+			const currentTrack = $scope.currentTrack;
+			Restangular.one('radio', currentTrack.id).one('streamurl').get().then(
 				function(response) {
-					if ($scope.currentTrack.id === currentTrackId) { // check the currentTack hasn't already changed'
+					if ($scope.currentTrack === currentTrack) { // check the currentTack hasn't already changed'
 						$scope.player.fromExtUrl(response.url, response.hls);
 						$scope.player.play();
 					}
@@ -219,6 +258,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
 				}
 			);
+			getRadioTitle(currentTrack);
 		} else if ($scope.currentTrack.type === 'podcast') {
 			$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
 			$scope.player.play();
@@ -560,39 +600,6 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 		return command + ' (' + cmdScope + ')';
 	};
-
-	function getRadioTitle() {
-		const onMetadata = function(metadata, trackId) {
-			if ($scope.currentTrack?.id == trackId) {
-				$scope.currentTrack.metadata = metadata;
-
-				if ($rootScope.playing) {
-					pendingRadioTitleFetch = $timeout(getRadioTitle, 32000);
-				} else {
-					pendingRadioTitleFetch = null;
-				}
-			}
-		};
-
-		const currentTrackId = $scope.currentTrack.id;
-		const metaType = $scope.currentTrack.metadata?.type; // request the same metadata type as previously got
-		Restangular.one('radio', currentTrackId).one('info').get({type: metaType}).then(
-			function(response) {
-				onMetadata(response, currentTrackId);
-			},
-			function(_error) {
-				// error handling
-				onMetadata(null, currentTrackId);
-			}
-		);
-	}
-
-	function cancelRadioTitleFetch() {
-		if (pendingRadioTitleFetch != null) {
-			$timeout.cancel(pendingRadioTitleFetch);
-			pendingRadioTitleFetch = null;
-		}
-	}
 
 	/**
 	* The coverArtToken is used to enable loading the cover art in the mediaSession of Firefox. There,

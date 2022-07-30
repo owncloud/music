@@ -88,9 +88,9 @@ angular.module('Music').controller('SidebarController', [
 			}
 		}
 
-		function showDetailsForCurrentPlay() {
+		const showDetailsForCurrentPlay = _.debounce(function() {
 			showSidebar(contentTypeForCurrentPlay(), $scope.$parent.currentTrack.id);
-		}
+		}, 500);
 
 		$scope.$parent.$watch('currentTrack', function(track) {
 			// show details for the current track if the feature is enabled

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2021
+ * @copyright Pauli Järvinen 2019 - 2022
  */
 
 namespace OCA\Music\Controller;

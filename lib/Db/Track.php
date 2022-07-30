@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -257,16 +257,16 @@ class Track extends Entity {
 			'artistId' => 'artist-' . $this->getArtistId(),
 			'type' => 'music',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
-			'track' => $this->getAdjustedTrackNumber(),
+			'track' => $this->getAdjustedTrackNumber(false), // DSub would get confused of playlist numbering, https://github.com/owncloud/music/issues/994
 			'starred' => Util::formatZuluDateTime($this->getStarred()),
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
 		];
 	}
 
-	public function getAdjustedTrackNumber() : ?int {
-		// Number on playlist overrides the track number if it is set.
-		if ($this->numberOnPlaylist !== null) {
+	public function getAdjustedTrackNumber(bool $enablePlaylistNumbering=true) : ?int {
+		// Unless disabled, the number on playlist overrides the track number if it is set.
+		if ($enablePlaylistNumbering && $this->numberOnPlaylist !== null) {
 			$trackNumber = $this->numberOnPlaylist;
 		} else {
 			// On single-disk albums, the track number is given as-is.

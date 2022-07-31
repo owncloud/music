@@ -578,7 +578,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	};
 
-	this.playExtUrl = function(url, caption) {
+	this.playExtUrl = function(url, caption, /*optional*/ shareToken) {
 		currentFileId = null;
 		updateMetadata({
 			title: caption,
@@ -587,8 +587,12 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 		changePlayingUrl(function() {
 			resolveExtUrl(url, function(resolved) {
-				player.fromExtUrl(resolved.url, resolved.hls);
-				play();
+				if (shareToken && resolved.hls) {
+					OC.Notification.showTemporary(t('music', 'Stream type not supported on shared file'));
+				} else {
+					player.fromExtUrl(resolved.url, resolved.hls);
+					play();
+				}
 			});
 		});
 	};

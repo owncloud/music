@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\App;
@@ -111,10 +111,8 @@ if (isset($request->server['REQUEST_URI'])) {
 		&& !\preg_match('%.*/authenticate%', $url);
 	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
 
-	if ($isFilesUrl) {
+	if ($isFilesUrl || $isShareUrl) {
 		adjustCsp($c);
-		loadEmbeddedMusicPlayer();
-	} elseif ($isShareUrl) {
 		loadEmbeddedMusicPlayer();
 	} elseif ($isMusicUrl) {
 		adjustCsp($c);

@@ -20,6 +20,8 @@
 - HLS-type radio streams are now relayed via the cloud server, removing the need to whitelist each allowed source server
 - Subsonic: Use album-based track numbering also on playlists, to help DSub in cache management
   [#994](https://github.com/owncloud/music/issues/994)
+- Allow playing external audio streams from playlist file also on link-shared folders
+  * HLS-type streams are not allowed, though
 
 ### Fixed
 - Previous radio station being played without any error messages when failed to start playing an HLS stream

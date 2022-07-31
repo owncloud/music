@@ -53,7 +53,7 @@ class RadioApiController extends Controller {
 		$this->businessLayer = $businessLayer;
 		$this->service = $service;
 		$this->playlistFileService = $playlistFileService;
-		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
+		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; may be null when resolveStreamUrl used on public share
 		$this->userFolder = $userFolder;
 		$this->logger = $logger;
 	}
@@ -269,7 +269,9 @@ class RadioApiController extends Controller {
 	/**
 	 * get the actual stream URL from the given public URL
 	 *
-	 * @NoAdminRequired
+	 * Available without login since no user data is handled and this may be used on link-shared folder.
+	 *
+	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
 	public function resolveStreamUrl(string $url) {

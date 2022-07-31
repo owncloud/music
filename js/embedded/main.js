@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -162,7 +162,7 @@ function initEmbeddedPlayer() {
 				mCurrentFile = file;
 			}
 			if ('url' in file) {
-				mPlayer.playExtUrl(file.url, file.caption);
+				mPlayer.playExtUrl(file.url, file.caption, mShareToken);
 			} else {
 				mPlayer.playFile(
 					urlForFile(file),

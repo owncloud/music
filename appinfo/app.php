@@ -72,17 +72,14 @@ function adjustCsp(IAppContainer $container) {
 
 	foreach ($radioSources as $source) {
 		$policy->addAllowedMediaDomain($source);
+		$policy->addAllowedImageDomain($source); // for podcast images
 	}
 
-	// Also the media sources data: and blob: are needed for HLS streaming
+	// Also the media sources 'data:' and 'blob:' are needed for HLS streaming
 	if ($enableHls) {
 		$policy->addAllowedMediaDomain('data:');
 		$policy->addAllowedMediaDomain('blob:');
 	}
-
-	// Allow loading (podcast cover) images from external sources
-	$policy->addAllowedImageDomain('http://*:*');
-	$policy->addAllowedImageDomain('https://*:*');
 
 	$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 }

@@ -163,8 +163,11 @@
 		</div>
 		<div>
 			<p>music.allowed_radio_src</p>
-			<p><em translate translate-params-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'">
-				Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{url}}" target="_blank">media-src</a>.
+			<p><em translate
+					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
+					translate-params-img-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src'"
+			>
+				Array of allowed radio and podcast streaming hosts. HLS-type streams are not affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy headers <a href="{{mediaSrcUrl}}" target="_blank">media-src</a> and <a href="{{imgSrcUrl}}" target="_blank">img-src</a>.
 			</em></p>
 		</div>
 		<div>
@@ -172,7 +175,7 @@
 			<p><em translate
 					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
 			>
-				Enable streaming HLS radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
+				Enable streaming HLS-type radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
 			</em></p>
 		</div>
 		<div>

@@ -145,6 +145,16 @@ class Util {
 	}
 
 	/**
+	 * Given a two-dimensional array, sort the outer dimension according to values in the
+	 * specified column of the inner dimension.
+	 */
+	public static function arraySortByColumn(array &$arr, string $column) : void {
+		\usort($arr, function ($a, $b) use ($column) {
+			return self::stringCaseCompare($a[$column], $b[$column]);
+		});
+	}
+
+	/**
 	 * Like the built-in \explode(...) function but this one can be safely called with
 	 * null string, and no warning will be emitted. Also, this returns an empty array from
 	 * null and '' inputs while the built-in alternative returns a 1-item array containing

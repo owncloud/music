@@ -89,12 +89,24 @@
 	</div>
 
 	<h2 translate>User interface</h2>
-	<div class="label-container">
-		<label for="song-notifications-toggle" translate>Song change notifications</label>
+	<div>
+		<div class="label-container">
+			<label for="song-notifications-toggle" translate>Song change notifications</label>
+		</div>
+		<input type="checkbox" id="song-notifications-toggle" ng-model="songNotificationsEnabled"/>
+		<p><em translate>Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site.</em></p>
+		<p><em translate>Unlike the other settings, this switch is stored per browser and not per user account.</em></p>
 	</div>
-	<input type="checkbox" id="song-notifications-toggle" ng-model="songNotificationsEnabled"/>
-	<p><em translate>Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site.</em></p>
-	<p><em translate>Unlike the other settings, this switch is stored per browser and not per user account.</em></p>
+	<div>
+		<div class="label-container">
+			<label for="ignored-articles" translate>Articles to ignore on artist names</label>:
+		</div>
+		<input type="text" id="ignored-articles" ng-model="ignoredArticles" ng-enter="$event.target.blur()" ng-blur="commitIgnoredArticles()"/>
+		<div class="icon-loading-small operation-in-progress" ng-show="savingIgnoredArticles"></div>
+		<span style="color:red" ng-show="errorIgnoredArticles" translate>Failed to save the setting</span>
+		<p><em translate>Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive.</em></p>
+		<p><em translate>In addition to the web interface, this setting is respected in the Subsonic interface although not necessarily by all clients.</em></p>
+	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>

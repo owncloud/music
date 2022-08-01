@@ -106,6 +106,7 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#userPath',			'url' => '/api/settings/user/path',					'verb' => 'POST'],
 	['name' => 'setting#userExcludedPaths',	'url' => '/api/settings/user/exclude_paths',		'verb' => 'POST'],
 	['name' => 'setting#enableScanMetadata','url' => '/api/settings/user/enable_scan_metadata',	'verb' => 'POST'],
+	['name' => 'setting#ignoredArticles',	'url' => '/api/settings/user/ignored_articles',		'verb' => 'POST'],
 	['name' => 'setting#addUserKey',		'url' => '/api/settings/userkey/add',				'verb' => 'POST'],
 	['name' => 'setting#generateUserKey',	'url' => '/api/settings/userkey/generate',			'verb' => 'POST'],
 	['name' => 'setting#removeUserKey',		'url' => '/api/settings/userkey/remove',			'verb' => 'POST'],

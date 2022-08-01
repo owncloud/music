@@ -130,7 +130,8 @@ class ApiController extends Controller {
 
 		return new JSONResponse([
 			'hash' => $hash,
-			'cover_token' => $coverToken
+			'cover_token' => $coverToken,
+			'ignored_articles' => $this->librarySettings->getIgnoredArticles($this->userId)
 		]);
 	}
 

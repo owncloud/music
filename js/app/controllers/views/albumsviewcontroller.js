@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -128,8 +128,8 @@ angular.module('Music').controller('AlbumsViewController', [
 		/**
 		 * Two functions for the alphabet-navigation directive integration
 		 */
-		$scope.getArtistName = function(index) {
-			return $scope.artists[index].name;
+		$scope.getArtistSortName = function(index) {
+			return $scope.artists[index].sortName;
 		};
 		$scope.getArtistElementId = function(index) {
 			return 'artist-' + $scope.artists[index].id;

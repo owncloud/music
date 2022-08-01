@@ -1051,6 +1051,15 @@ class SubsonicController extends Controller {
 		return $nodes[0];
 	}
 
+	private static function nameWithoutArticle(?string $name, array $ignoredArticles) : ?string {
+		foreach ($ignoredArticles as $article) {
+			if (!empty($name) && Util::startsWith($name, $article . ' ', /*ignore_case=*/true)) {
+				return \substr($name, \strlen($article) + 1);
+			}
+		}
+		return $name;
+	}
+
 	private static function getIndexingChar(?string $name) {
 		// For unknown artists, use '?'
 		$char = '?';
@@ -1078,24 +1087,32 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForFolders() {
+		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$rootFolder = $this->librarySettings->getFolder($this->userId);
 
 		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
 
 		$indexes = [];
 		foreach ($subFolders as $folder) {
-			$indexes[self::getIndexingChar($folder->getName())][] = [
-				'name' => $folder->getName(),
-				'id' => 'folder-' . $folder->getId()
+			$sortName = self::nameWithoutArticle($folder->getName(), $ignoredArticles);
+			$indexes[self::getIndexingChar($sortName)][] = [
+				'sortName' => $sortName,
+				'artist' => [
+					'name' => $folder->getName(),
+					'id' => 'folder-' . $folder->getId()
+				]
 			];
 		}
+		\ksort($indexes, SORT_LOCALE_STRING);
 
 		$folders = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			$folders[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+			Util::arraySortByColumn($bucketArtists, 'sortName');
+			$folders[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
 		return $this->subsonicResponse(['indexes' => [
+			'ignoredArticles' => \implode(' ', $ignoredArticles),
 			'index' => $folders,
 			'child' => $this->tracksToApi($tracks)
 		]]);
@@ -1135,19 +1152,26 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
+		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
 
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$indexes[self::getIndexingChar($artist->getName())][] = $this->artistToApi($artist);
+			$sortName = self::nameWithoutArticle($artist->getName(), $ignoredArticles);
+			$indexes[self::getIndexingChar($sortName)][] = ['sortName' => $sortName, 'artist' => $this->artistToApi($artist)];
 		}
+		\ksort($indexes, SORT_LOCALE_STRING);
 
 		$result = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+			Util::arraySortByColumn($bucketArtists, 'sortName');
+			$result[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
-		return $this->subsonicResponse([$rootElementName => ['index' => $result]]);
+		return $this->subsonicResponse([$rootElementName => [
+			'ignoredArticles' => \implode(' ', $ignoredArticles),
+			'index' => $result
+		]]);
 	}
 
 	private function getMusicDirectoryForArtist($id) {

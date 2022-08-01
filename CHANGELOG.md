@@ -2,7 +2,7 @@
 ### Added
 - Option to set the playback rate. This can be found by long-pressing the play/pause button on the controls pane.
   [#972](https://github.com/owncloud/music/issues/972)
-- Show song title on Icecast/Shoutcast -type radio streams
+- Show the broadcasted song title on Icecast/Shoutcast -type radio streams
   [#992](https://github.com/owncloud/music/pull/992) @medismail
 - Show other metadata broadcasted by the radio station in the details pane
 - Gapless play with preloading of the next track in the queue
@@ -13,6 +13,8 @@
 - Album art from Last.fm on the album details pane when no local art available
 - Support for radio stream URLs which point to a playlist file containing the actual audio stream URL
   [#966](https://github.com/owncloud/music/issues/966)
+- Configurable option to ignore articles in the alphabetical ordering of the artists (by default, ignore: The, El, La, Los, Las, Le, Les)
+  [#984](https://github.com/owncloud/music/issues/984)
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

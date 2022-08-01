@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -93,11 +93,20 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
+	public function ignoredArticles(array $value) {
+		$this->librarySettings->setIgnoredArticles($this->userId, $value);
+		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
 	public function getAll() {
 		return [
 			'path' => $this->librarySettings->getPath($this->userId),
 			'excludedPaths' => $this->librarySettings->getExcludedPaths($this->userId),
 			'scanMetadata' => $this->librarySettings->getScanMetadataEnabled($this->userId),
+			'ignoredArticles' => $this->librarySettings->getIgnoredArticles($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),

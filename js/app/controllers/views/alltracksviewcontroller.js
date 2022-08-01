@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 
@@ -124,7 +124,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		}
 
 		function trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx) {
-			var name = _tracks[trackIdx].track.artistName;
+			var name = _tracks[trackIdx].track.artistSortName;
 			return (charIdx >= _indexChars.length
 				|| alphabetIndexingService.titlePrecedesIndexCharAt(name, charIdx));
 		}
@@ -149,7 +149,7 @@ angular.module('Music').controller('AllTracksViewController', [
 								id: buckets.length,
 								char: _indexChars[charIdx],
 								firstForChar: !bucket,
-								name: _tracks[trackIdx].track.artistName,
+								name: _tracks[trackIdx].track.artistSortName,
 								tracks: [],
 								baseIndex: trackIdx
 							};

@@ -7,7 +7,7 @@
  * @author Gregory Baudet <gregory.baudet@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 angular.module('Music').controller('SettingsViewController', [
@@ -282,6 +282,30 @@ angular.module('Music').controller('SettingsViewController', [
 			}
 		});
 
+		$scope.commitIgnoredArticles = function() {
+			// Get the entered articles, trimming excess white space and filtering out any empty ones
+			var articles = $scope.ignoredArticles.split(/\s+/);
+
+			// Send the articles to the back-end if there are any changes
+			if (!_.isEqual(articles, $scope.settings.ignoredArticles)) {
+				$scope.savingIgnoredArticles = true;
+				Restangular.all('settings/user/ignored_articles').post({value: articles}).then(
+					function(_data) {
+						// success
+						$scope.savingIgnoredArticles = false;
+						$scope.errorIgnoredArticles = false;
+						$scope.settings.ignoredArticles = articles;
+						$rootScope.$emit('updateIgnoredArticles', articles);
+					},
+					function(_error) {
+						// error handling
+						$scope.savingIgnoredArticles = false;
+						$scope.errorIgnoredArticles = true;
+					}
+				);
+			}
+		};
+
 		$scope.addAPIKey = function() {
 			var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6);
 			Restangular.all('settings/userkey/add').post({ password: password, description: $scope.ampacheDescription }).then(function(data) {
@@ -334,6 +358,7 @@ angular.module('Music').controller('SettingsViewController', [
 				$scope.settings = value;
 				$rootScope.loading = false;
 				savedExcludedPaths = _.clone(value.excludedPaths);
+				$scope.ignoredArticles = value.ignoredArticles.join(' ');
 				$rootScope.$emit('viewActivated');
 			});
 		});

@@ -690,11 +690,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 
-		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues, oldValues) {
 			const track = newValues[0];
+			const trackChanged = (track != oldValues[0]);
 			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
-			if (enabled && track) {
+			// while paused, the changes in radio title are not notified but actual track changes are
+			if (enabled && track && ($rootScope.playing || trackChanged)) {
 				if (Notification.permission === 'granted') {
 					showNotification(track);
 				} else if (Notification.permission !== 'denied') {

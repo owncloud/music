@@ -21,12 +21,12 @@ angular.module('Music').directive('albumart', [function() {
 		element.css('background-image', 'url(' + imageUrl + ')');
 	}
 
-	function setPlaceholder(element, text) {
+	function setPlaceholder(element, text, seed /*optional*/) {
 		if (text) {
 			// remove background image
 			element.css('background-image', '');
 			// add placeholder stuff
-			element.imageplaceholder(text);
+			element.imageplaceholder(seed || text, text);
 			// remove inlined size-related style properties set by imageplaceholder() to allow
 			// dynamic changing between mobile and desktop styles when window size changes
 			element.css('line-height', '');
@@ -62,7 +62,7 @@ angular.module('Music').directive('albumart', [function() {
 					} else if (art.image) {
 						setCoverImage(element, art.image);
 					} else if (art.name) {
-						setPlaceholder(element, art.name);
+						setPlaceholder(element, art.name, art.artist.name + art.name);
 					} else if (art.title) {
 						setPlaceholder(element, art.title);
 					}

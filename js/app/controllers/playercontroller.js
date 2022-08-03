@@ -36,6 +36,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	var abortRadioTitleFetch = null;
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
 	const RADIO_INFO_POLL_PERIOD_MS = 30000;
+	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -187,20 +188,32 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	}
 
-	function getRadioTitle(radioTrack) {
+	function getRadioTitle(radioTrack, failCounter /*optional, internal*/) {
+		failCounter = failCounter || 0;
 		abortRadioTitleFetch = $q.defer();
 		const config = {timeout: abortRadioTitleFetch.promise};
 		const metaType = radioTrack.metadata?.type; // request the same metadata type as previously got (if any)
+
 		Restangular.one('radio', radioTrack.id).one('info').withHttpConfig(config).get({type: metaType}).then(
 			function(response) {
 				abortRadioTitleFetch = null;
 				radioTrack.metadata = response;
 
-				// schedule next title update if the same station is still playing (or paused)
-				if ($scope.currentTrack?.id == radioTrack.id) {
+				if (!response) {
+					failCounter++;
+				} else {
+					failCounter = 0;
+				}
+
+				// Schedule next title update if the same station is still playing (or paused).
+				// The polling is stopped also if there have been many consecutive failures to get any kind of metadata.
+				if (failCounter >= RADIO_INFO_POLL_MAX_ATTEMPTS) {
+					console.log('The radio station doesn\'t seem to broadcast any metadata, stop polling');
+				}
+				else if ($scope.currentTrack?.id == radioTrack.id) {
 					scheduledRadioTitleFetch = $timeout(function() {
 						scheduledRadioTitleFetch = null;
-						getRadioTitle(radioTrack);
+						getRadioTitle(radioTrack, failCounter);
 					}, RADIO_INFO_POLL_PERIOD_MS);
 				}
 			},

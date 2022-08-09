@@ -73,7 +73,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
 			var entry = playlistService.peekNextTrack();
-			if (entry?.track?.id !== null) {
+			if (entry?.track?.id !== undefined) {
 				const {mime, url} = getPlayableFileUrl(entry.track);
 				if (mime !== null && url !== null) {
 					$scope.player.prepareUrl(url, mime);
@@ -246,7 +246,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track, startOffset, gapless /*optional*/);
+			playTrack(track, startOffset, gapless);
 		} else {
 			$scope.stop();
 		}
@@ -257,35 +257,37 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	}
 
 	function playCurrentTrack(startOffset /*optional*/) {
-		if ($scope.currentTrack.type === 'radio') {
-			const currentTrack = $scope.currentTrack;
-			Restangular.one('radio', currentTrack.id).one('streamurl').get().then(
-				function(response) {
-					if ($scope.currentTrack === currentTrack) { // check the currentTack hasn't already changed'
-						$scope.player.fromExtUrl(response.url, response.hls);
-						$scope.player.play();
+		// the playback may have been stopped and currentTrack vanished during the debounce time
+		if ($scope.currentTrack) {
+			if ($scope.currentTrack.type === 'radio') {
+				const currentTrack = $scope.currentTrack;
+				Restangular.one('radio', currentTrack.id).one('streamurl').get().then(
+					function(response) {
+						if ($scope.currentTrack === currentTrack) { // check the currentTack hasn't already changed'
+							$scope.player.fromExtUrl(response.url, response.hls);
+							$scope.player.play();
+						}
+					},
+					function(_error) {
+						// error handling
+						OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
 					}
-				},
-				function(_error) {
-					// error handling
-					OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
+				);
+				getRadioTitle(currentTrack);
+			} else if ($scope.currentTrack.type === 'podcast') {
+				$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
+				$scope.player.play();
+			} else {
+				const {mime, url} = getPlayableFileUrl($scope.currentTrack);
+				$scope.player.fromUrl(url, mime);
+				scrobblePending = true;
+	
+				if (startOffset) {
+					$scope.player.seekMsecs(startOffset);
 				}
-			);
-			getRadioTitle(currentTrack);
-		} else if ($scope.currentTrack.type === 'podcast') {
-			$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
-			$scope.player.play();
-		} else {
-			const {mime, url} = getPlayableFileUrl($scope.currentTrack);
-			$scope.player.fromUrl(url, mime);
-			scrobblePending = true;
-
-			if (startOffset) {
-				$scope.player.seekMsecs(startOffset);
+				$scope.player.play();
 			}
-			$scope.player.play();
 		}
-
 	}
 
 	/*

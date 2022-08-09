@@ -171,7 +171,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			} else {
 				titleSong = track.title + ' (' + track.artistName + ') - ';
 			}
-		} else {
+		} else if (track) {
 			titleSong = $scope.primaryTitle() + ' - ';
 		}
 		$('title').html(titleSong + titleApp);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -134,12 +134,12 @@ class Maintenance {
 	 * @return int Number of removed artists
 	 */
 	private function removeObsoleteArtists() {
+		// Note: This originally used the NOT IN operation but that was terribly inefficient on PostgreSQL,
+		// see https://github.com/owncloud/music/issues/997
 		return $this->db->executeUpdate(
-			'DELETE FROM `*PREFIX*music_artists` WHERE `id` NOT IN (
-				SELECT `album_artist_id` FROM `*PREFIX*music_albums`
-				UNION
-				SELECT `artist_id` FROM `*PREFIX*music_tracks`
-			)'
+			'DELETE FROM `*PREFIX*music_artists`
+				WHERE NOT EXISTS (SELECT 1 FROM `*PREFIX*music_albums` WHERE `*PREFIX*music_artists`.`id` = `album_artist_id` LIMIT 1)
+				AND   NOT EXISTS (SELECT 1 FROM `*PREFIX*music_tracks` WHERE `*PREFIX*music_artists`.`id` = `artist_id` LIMIT 1)'
 		);
 	}
 

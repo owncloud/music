@@ -638,7 +638,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	if ('mediaSession' in navigator) {
 		var registerMediaControlHandler = function(action, handler) {
 			try {
-				navigator.mediaSession.setActionHandler(action, function() { $timeout(handler); });
+				navigator.mediaSession.setActionHandler(action, function() { $scope.$apply((_scope) => handler()); });
 			} catch (error) {
 				console.log('The media control "' + action + '"" is not supported by the browser');
 			}
@@ -678,6 +678,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 						}]
 					});
 				}
+			}
+			else {
+				navigator.mediaSession.metadata = null;
 			}
 		});
 	}

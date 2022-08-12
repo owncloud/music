@@ -15,6 +15,7 @@ import Hls from 'node_modules/hls.js/dist/hls.light.js';
 OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = function() {
+	var m_isIe = $('html').hasClass('ie'); // are we running on Internet Explorer
 	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
 	var m_html5audio = null;
 	var m_hls = null;
@@ -203,7 +204,12 @@ OCA.Music.PlayerWrapper = function() {
 					m_hls.stopLoad();
 					m_hls.detachMedia();
 				}
-				m_html5audio.src = '';
+				// On IE, setting the src to empty string would blow up the whole audio element and it wouldn't
+				// recover without a page reload. On the other hand, IE doesn't support mediaSession API so this
+				// step isn't crucial.
+				if (!m_isIe) {
+					m_html5audio.src = '';
+				}
 				m_html5audio.currentTime = 0;
 				break;
 			case 'aurora':

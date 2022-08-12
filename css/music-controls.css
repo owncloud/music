@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 #controls {
@@ -84,10 +84,16 @@ body:not(.snapjs-left) #controls.taller-header {
 #controls #playback-rate-control input {
 	height: 3px;
 	min-height: 3px;
+	width: 180px;
 	margin-bottom: 10px;
 	margin-left: 40px;
 	margin-right: 10px;
 	background-color: silver;
+}
+
+.ie #controls #playback-rate-control input {
+	height: auto;
+	padding: 0;
 }
 
 #controls .albumart {

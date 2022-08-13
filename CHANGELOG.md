@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.6.0 - 2022-08-13
 ### Added
 - Option to set the playback rate. This can be found by long-pressing the play/pause button on the controls pane.
   [#972](https://github.com/owncloud/music/issues/972)

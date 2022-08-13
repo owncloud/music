@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 angular.module('Music').controller('PodcastsViewController', [
@@ -43,7 +43,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			var currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
-			if (currentTrack && episode.id === currentTrack.id) {
+			if (currentTrack && episode.id === currentTrack.id && currentTrack.type === 'podcast') {
 				playlistService.publish('togglePlayback');
 			}
 			else {

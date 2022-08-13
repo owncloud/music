@@ -39,6 +39,7 @@
 - The manifest file of the HLS stream was being polled indefinitely after listening to the stream was stopped
 - Severe performance problem in the background cleaunup task when PostgreSQL used
   [#997](https://github.com/owncloud/music/issues/997)
+- Not able to start playing a podcast episode which happens to have the same ID as currently playing song or radio station
 
 ## 1.5.2 - 2022-05-08
 ### Added

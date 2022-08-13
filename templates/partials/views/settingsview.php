@@ -89,7 +89,7 @@
 	</div>
 
 	<h2 translate>User interface</h2>
-	<div>
+	<div ng-show="desktopNotificationsSupported">
 		<div class="label-container">
 			<label for="song-notifications-toggle" translate>Song change notifications</label>
 		</div>

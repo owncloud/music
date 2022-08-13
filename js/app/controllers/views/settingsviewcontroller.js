@@ -20,6 +20,8 @@ angular.module('Music').controller('SettingsViewController', [
 		$scope.ampacheClientsUrl = 'https://github.com/owncloud/music/wiki/Ampache';
 		$scope.subsonicClientsUrl = 'https://github.com/owncloud/music/wiki/Subsonic';
 
+		$scope.desktopNotificationsSupported = (typeof Notification !== 'undefined');
+
 		var savedExcludedPaths = [];
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
@@ -268,19 +270,21 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
-		$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
+		if ($scope.desktopNotificationsSupported) {
+			$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
-		$scope.$watch('songNotificationsEnabled', function(enabled) {
-			localStorage.setItem('oc_music_song_notifications', enabled.toString());
-
-			if (enabled && Notification.permission !== 'granted') {
-				Notification.requestPermission().then(function(permission) {
-					if (permission !== 'granted') {
-						$timeout(() => $scope.songNotificationsEnabled = false);
-					}
-				});
-			}
-		});
+			$scope.$watch('songNotificationsEnabled', function(enabled) {
+				localStorage.setItem('oc_music_song_notifications', enabled.toString());
+	
+				if (enabled && Notification.permission !== 'granted') {
+					Notification.requestPermission().then(function(permission) {
+						if (permission !== 'granted') {
+							$timeout(() => $scope.songNotificationsEnabled = false);
+						}
+					});
+				}
+			});
+		}
 
 		$scope.commitIgnoredArticles = function() {
 			// Get the entered articles, trimming excess white space and filtering out any empty ones

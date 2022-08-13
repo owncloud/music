@@ -15,6 +15,7 @@
   [#966](https://github.com/owncloud/music/issues/966)
 - Configurable option to ignore articles in the alphabetical ordering of the artists (by default, ignore: The, El, La, Los, Las, Le, Les)
   [#984](https://github.com/owncloud/music/issues/984)
+- Support for Nextcloud 25 (tested on beta 1)
 
 ### Changed
 - Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration

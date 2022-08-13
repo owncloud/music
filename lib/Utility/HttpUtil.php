@@ -64,11 +64,7 @@ class HttpUtil {
 	}
 
 	public static function userAgentHeader() : string {
-		// Note: the following is deprecated since NC14 but the replacement
-		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
-		$appVersion = \OCP\App::getAppVersion('music');
-
-		return 'User-Agent: OCMusic/' . $appVersion;
+		return 'User-Agent: OCMusic/' . AppInfo::getVersion();
 	}
 
 	private static function findHeader(array $headers, string $headerKey) : ?string {

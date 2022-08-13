@@ -16,6 +16,8 @@
 	top: 45px;
 	position: fixed;
 	overflow: visible;
+	background-color: rgba(255, 255, 255, .93);
+	z-index: 1;
 }
 
 /* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed

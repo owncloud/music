@@ -24,6 +24,7 @@ use OCP\Security\ISecureRandom;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
@@ -110,7 +111,7 @@ class SettingController extends Controller {
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
 			'ampacheKeys' => $this->getAmpacheKeys(),
-			'appVersion' => $this->getAppVersion(),
+			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId
 		];
 	}
@@ -128,12 +129,6 @@ class SettingController extends Controller {
 
 	private function getAmpacheKeys() {
 		return $this->ampacheUserMapper->getAll($this->userId);
-	}
-
-	private function getAppVersion() {
-		// Note: the following in deprecated since NC14 but the replacement
-		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
-		return \OCP\App::getAppVersion($this->appName);
 	}
 
 	private function storeUserKey($description, $password) {

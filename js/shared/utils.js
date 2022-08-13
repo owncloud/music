@@ -5,13 +5,26 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 OCA.Music = OCA.Music || {};
 
 /** @namespace */
 OCA.Music.Utils = {
+
+	internal: {
+		// dark theme information was in the Accessibility app up until NC24 
+		themeInAccessiblity: function() {
+			return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility')
+				&& Object.prototype.hasOwnProperty.call(OCA.Accessibility, 'theme');
+		},
+		// dark theme information was moved to the Theming app in NC25
+		themeInTheming: function() {
+			return Object.prototype.hasOwnProperty.call(OCA, 'Theming')
+				&& Object.prototype.hasOwnProperty.call(OCA.Theming, 'enabledThemes');
+		}
+	},
 
 	/**
 	 * Nextcloud 14 has a new overall layout structure which requires some
@@ -30,9 +43,14 @@ OCA.Music.Utils = {
 	 * be used to check if the information is available.
 	 */
 	darkThemeActive: function() {
-		// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
-		return OCA.Music.Utils.themeInfoAvailable()
-			&& (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
+		if (OCA.Music.Utils.internal.themeInAccessiblity()) {
+			// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
+			return (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
+		} else if (OCA.Music.Utils.internal.themeInTheming()) {
+			return OCA.Theming.enabledThemes.includes('dark') || OCA.Theming.enabledThemes.includes('dark-highcontrast');
+		} else {
+			return false;
+		}
 	},
 
 	/**
@@ -41,7 +59,7 @@ OCA.Music.Utils = {
 	 * 2) it is not supported by the cloud
 	 */
 	themeInfoAvailable: function() {
-		return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility');
+		return OCA.Music.Utils.internal.themeInAccessiblity() || OCA.Music.Utils.internal.themeInTheming();
 	},
 
 	/**

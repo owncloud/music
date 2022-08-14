@@ -9,19 +9,8 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
  * @copyright Jan-Christoph Borchardt 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
-
-/* Adjust to layout with collapsible navigation bar */
-@media only screen and (max-width: 768px) {
-	#app-view {
-		left: 0px;
-	}
-
-	#app-view:not(.started) {
-		padding-top: 66px;
-	}
-}
 
 .mobile #app-view {
 	padding-left: 4px;

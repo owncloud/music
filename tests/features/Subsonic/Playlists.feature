@@ -19,7 +19,7 @@ Feature: Subsonic API - Playlists
     And I request the "createPlaylist" resource
     Then I should get XML with "playlist/entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
 
   Scenario: Get playlists
     When I request the "getPlaylists" resource
@@ -54,7 +54,7 @@ Feature: Subsonic API - Playlists
     And I request the "getPlaylist" resource
     Then I should get XML with "entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
 
   Scenario: Delete the first playlist

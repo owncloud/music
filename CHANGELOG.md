@@ -10,6 +10,7 @@
 
 ### Fixed
 - Small issues in the mobile and tablet layouts
+- Subsonic: API method `getTopSongs` ignoring the argument `count`
 
 ## 1.6.0 - 2022-08-13
 ### Added

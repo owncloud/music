@@ -171,7 +171,7 @@ class LastfmService {
 			$lastfmResult = $this->getInfoFromLastFm([
 				'method' => 'artist.getTopTracks',
 				'artist' => $artistName,
-				'limit' => $maxCount
+				'limit' => (string)$maxCount
 			]);
 			$topTracksOnLastfm = $lastfmResult['toptracks']['track'] ?? null;
 

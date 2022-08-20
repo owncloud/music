@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -78,6 +78,16 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$effectivelyLimited = ($limit !== null && $limit < \count($albums));
 		$everyAlbumIncluded = (!$effectivelyLimited && !$offset && !$createdMin && !$createdMax && !$updatedMin && !$updatedMax);
 		return $this->injectExtraFields($albums, $userId, $everyAlbumIncluded);
+	}
+
+	/**
+	 * Returns all albums filtered by name of album or artist
+	 * @return Album[]
+	 */
+	public function findAllByNameRecursive(string $name, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$name = \trim($name);
+		$albums = $this->mapper->findAllByNameRecursive($name, $userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
 	}
 
 	/**

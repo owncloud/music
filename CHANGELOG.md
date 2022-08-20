@@ -4,6 +4,9 @@
 ### Changed
 - Use background color definitions from the cloud core when available. Fixes a problem on Breeze Dark theme introduced in v1.6.0.
   [#1002](https://github.com/owncloud/music/pull/1002)
+- Subsonic: Search functions now find also songs by artist or album name and albums by artist name
+  * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
+    [#1000](https://github.com/owncloud/music/issues/1000)
 
 ### Fixed
 - Small issues in the mobile and tablet layouts

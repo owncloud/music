@@ -1520,7 +1520,7 @@ class SubsonicController extends Controller {
 	 * @return array with keys 'artists', 'albums', and 'tracks'
 	 */
 	private function doSearch(string $query, int $artistCount, int $artistOffset,
-			int $albumCount, int $albumOffset, int $songCount, int $songOffset) {
+			int $albumCount, int $albumOffset, int $songCount, int $songOffset) : array {
 
 		if (empty($query)) {
 			throw new SubsonicException("The 'query' argument is mandatory", 10);
@@ -1528,8 +1528,8 @@ class SubsonicController extends Controller {
 
 		return [
 			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $artistCount, $artistOffset),
-			'albums' => $this->albumBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $albumCount, $albumOffset),
-			'tracks' => $this->trackBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $songCount, $songOffset)
+			'albums' => $this->albumBusinessLayer->findAllByNameRecursive($query, $this->userId, $albumCount, $albumOffset),
+			'tracks' => $this->trackBusinessLayer->findAllByNameRecursive($query, $this->userId, $songCount, $songOffset)
 		];
 	}
 

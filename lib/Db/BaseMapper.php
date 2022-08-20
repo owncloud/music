@@ -432,7 +432,7 @@ abstract class BaseMapper extends Mapper {
 	protected static function prepareSubstringSearchPattern(string $input) : string {
 		// possibly multiparted query enclosed in quotation marks is handled as a single substring,
 		// while the default interpretation of multipart string is that each of the parts can be found
-		// separately as substing in the given order
+		// separately as substring in the given order
 		if (Util::startsWith($input, '"') && Util::endsWith($input, '"')) {
 			// remove the quotation
 			$pattern = \substr($input, 1, -1);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -205,7 +205,7 @@ class TrackMapper extends BaseMapper {
 						LOWER(`album`.`name`) LIKE LOWER(?) OR
 						LOWER(`title`) LIKE LOWER(?) )';
 		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`title`)');
-		$name = '%' . $name . '%';
+		$name = BaseMapper::prepareSubstringSearchPattern($name);
 		$params = [$userId, $name, $name, $name];
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}

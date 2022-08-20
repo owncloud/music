@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 /**
@@ -191,7 +191,7 @@ div:hover > .play-pause,
 #app-content .emptycontent {
 	position: fixed;
 	top: 0;
-	background-color: rgba(255,255,255,0.95);
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	padding: 20px 50px;
 	z-index: 1;
 }

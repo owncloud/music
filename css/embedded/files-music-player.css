@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 .icon-music-dark {
@@ -22,7 +22,7 @@
 	padding: 0 20px 0 20px;
 	position: fixed;
 	bottom: 0;
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	z-index: 50;
 	text-align: left;
 }
@@ -395,10 +395,6 @@ body.snapjs-left #music-controls {
 }
 
 /* Adjustments for the Nextcloud dark theme */
-#music-controls.dark-theme {
-	background-color: rgba(24, 24, 24, 0.95);
-}
-
 #music-controls.dark-theme #albumart {
 	border-color: rgb(64, 64, 64);
 }

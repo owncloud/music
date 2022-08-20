@@ -17,20 +17,12 @@
 	background-image: url(../img/sort-by-alpha-white.svg);
 }
 
-.dark-theme #controls {
-	background-color: rgba(24, 24, 24, 0.97);
-}
-
 .dark-theme #app-sidebar .close {
 	background-color: #181818cc;
 }
 
 .dark-theme #app-sidebar #follow-playback {
 	background-color: transparent;
-}
-
-.dark-theme #app-content .emptycontent {
-	background-color: rgba(24, 24, 24, 0.97);
 }
 
 .dark-theme #app-content .emptycontent.clickable:hover * {

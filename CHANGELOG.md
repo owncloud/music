@@ -1,3 +1,13 @@
+## [Unreleased]
+### Added
+
+### Changed
+- Use background color definitions from the cloud core when available. Fixes a problem on Breeze Dark theme introduced in v1.6.0.
+  [#1002](https://github.com/owncloud/music/pull/1002)
+
+### Fixed
+- Small issues in the mobile and tablet layouts
+
 ## 1.6.0 - 2022-08-13
 ### Added
 - Option to set the playback rate. This can be found by long-pressing the play/pause button on the controls pane.

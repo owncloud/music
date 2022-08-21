@@ -7,6 +7,8 @@
 - Subsonic: Search functions now find also songs by artist or album name and albums by artist name
   * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
     [#1000](https://github.com/owncloud/music/issues/1000)
+- Subsonic: Method `getCoverArt` returns a placeholder image (instead of an error) if the album/artis in question has no cover art set
+  [#1000](https://github.com/owncloud/music/issues/1000)
 - Context menu on the play/pause button can be opened with right click in addition to the long press
   [#1006](https://github.com/owncloud/music/pull/1006) @Root-Core
 

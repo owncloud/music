@@ -61,6 +61,7 @@ use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\PlaceholderImage;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.16.1';
@@ -429,9 +430,21 @@ class SubsonicController extends Controller {
 			$rootFolder = $this->librarySettings->getFolder($this->userId);
 			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
 
-			if ($coverData !== null) {
-				return new FileResponse($coverData);
+			if ($coverData === null) {
+				$name = $entity->getNameString($this->l10n);
+				if (\method_exists($entity, 'getAlbumArtistNameString')) {
+					$seed = $entity->getAlbumArtistNameString($this->l10n) . $name;
+				} else {
+					$seed = $name;
+				}
+				$size = $size > 0 ? $size : $this->coverHelper->getDefaultSize();
+				$coverData = [
+					'content' => PlaceholderImage::generate($name, $seed, $size),
+					'mimetype' => 'image/png'
+				];
 			}
+
+			return new FileResponse($coverData);
 		}
 
 		return $this->subsonicErrorResponse(70, "entity $id has no cover");

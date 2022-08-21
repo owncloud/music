@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\Utility;
@@ -52,6 +52,10 @@ class CoverHelper {
 
 		// Read the cover size to use from config.php or use the default
 		$this->coverSize = \intval($config->getSystemValue('music.cover_size')) ?: 380;
+	}
+
+	public function getDefaultSize() : int {
+		return $this->coverSize;
 	}
 
 	/**

@@ -701,7 +701,7 @@ msgstr ""
 
 #: ../js/app/services/podcastservice.js:53
 msgid "Podcast channel \"{{ title }}\" added"
-msgstr "Podcast-Kanal \"{{ title }\" hinzugefügt"
+msgstr "Podcast-Kanal \"{{ title }}\" hinzugefügt"
 
 #: ../js/app/controllers/playercontroller.js:362
 #: ../templates/partials/navigation.php:19

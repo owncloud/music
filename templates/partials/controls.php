@@ -5,7 +5,10 @@
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
 		<div id="play-pause-container" ng-show="!shiftHeldDown">
-			<div id="play-pause-button" ng-click="togglePlayback()"
+			<div id="play-pause-button"
+				ng-click="togglePlayback()"
+				ng-on-contextmenu="playbackBtnContextMenu($event)"
+				ng-on-long-press="playbackBtnLongPress($event)"
 				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="control svg"
 				alt="{{ playing ? ('Pause' | translate) : ('Play' | translate) }}"
 				title="{{ 'press and hold for more' | translate }}" data-long-press-delay="1000">

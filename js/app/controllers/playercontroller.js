@@ -413,15 +413,15 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.playbackRate = stepRates[nextStep];
 	};
 
-	/** Context menu on long press of the play/pause button */
-	document.getElementById('play-pause-button').addEventListener('long-press', function(e) {
+	// Show context menu on long press of the play/pause button
+	$scope.playbackBtnLongPress = function($event) {
 		// We don't want the normal click event after the long press has been handled. However, preventing it seems to 
 		// be implicit on touch devices (for reason unknown) and calling preventDefault() there would trigger the bug
 		// https://github.com/john-doherty/long-press-event/issues/27.
 		// The following is a bit hacky work-around for this.
 		const isTouch = (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 		if (!isTouch) {
-			e.preventDefault();
+			$event.preventDefault();
 		}
 
 		// 50 ms haptic feedback for touch devices
@@ -430,7 +430,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
-	});
+	};
+	// Show context menu on right click of play/pause button, surpress the browser context menu
+	$scope.playbackBtnContextMenu = function($event) {
+		$event.preventDefault();
+		$timeout(() => $scope.playPauseContextMenuVisible = true);
+	};
 	// hide the popup menu when the user clicks anywhere on the page
 	$document.click(function(_event) {
 		$timeout(() => $scope.playPauseContextMenuVisible = false);

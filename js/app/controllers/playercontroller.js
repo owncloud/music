@@ -28,6 +28,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.position = {
 		bufferPercent: '0%',
 		currentPercent: '0%',
+		currentPreview: null,
 		current: 0,
 		total: 0
 	};
@@ -519,6 +520,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				setCurrentTrack(track);
 			}
 		}
+	};
+
+	$scope.seekbarPreview = function($event) {
+		if (!$scope.player.seekingSupported()) return;
+
+		var offsetX = $event.offsetX || $event.originalEvent.layerX;
+		var ratio = offsetX / $event.currentTarget.clientWidth;
+		var timestamp = ratio * $scope.position.total;
+		
+		$scope.position.currentPreview = timestamp;
+	};
+
+	$scope.seekbarLeave = function() {
+		$scope.position.currentPreview = null;
 	};
 
 	$scope.seekOffset = function(offset) {

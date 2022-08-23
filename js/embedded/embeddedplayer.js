@@ -319,10 +319,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		function seekSetPreview(value) {
 			playTimePreview_s = value;
 
-			// manually update, if player is not progressing
-			if (!player.isPlaying()) {
-				updateProgress();
-			}
+			// manually update is necessary if player is not progressing
+			// it also feels choppy if we rely on the progress event only
+			updateProgress();
 		}
 		seekBar.click(function (event) {
 			var percentage = seekPositionPercentage(event);

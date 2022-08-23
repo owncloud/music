@@ -7,10 +7,14 @@
 - Subsonic: Search functions now find also songs by artist or album name and albums by artist name
   * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
     [#1000](https://github.com/owncloud/music/issues/1000)
+- Context menu on the play/pause button can be opened with right click in addition to the long press
+  [#1006](https://github.com/owncloud/music/pull/1006) @Root-Core
 
 ### Fixed
 - Small issues in the mobile and tablet layouts
 - Subsonic: API method `getTopSongs` ignoring the argument `count`
+- Podcast title not showing on the German translation of 'Podcast channel "{{ title }}" added'
+  [#1005](https://github.com/owncloud/music/pull/1005) @Root-Core
 
 ## 1.6.0 - 2022-08-13
 ### Added

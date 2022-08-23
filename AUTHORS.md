@@ -52,6 +52,7 @@
 * [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
 * [Roman Štefko](https://github.com/rstefko)
+* [Root-Core](https://github.com/Root-Core)
 * [Selpelt](https://github.com/selpelt)
 * [Sicco van Sas](https://github.com/siccovansas)
 * [Simon Spannagel](https://github.com/simonspa)

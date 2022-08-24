@@ -68,7 +68,10 @@
 			<span ng-show="loading" class="muted">Loading...</span>
 		</div>
 		<div class="progress">
-			<div class="seek-bar" ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseout="seekbarLeave()" ng-style="{'cursor': seekCursorType}">
+			<div class="seek-bar" ng-style="{'cursor': seekCursorType}"
+				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseout="seekbarLeave()"
+				ng-touchmove="seekbarTouchPreview($event)" ng-touchend="seekbarTouchLeave($event)"
+			>
 				<div class="buffer-bar" ng-style="{'width': position.bufferPercent, 'cursor': seekCursorType}"></div>
 				<div class="play-bar" ng-show="position.total"
 					ng-style="{'width': position.currentPercent, 'cursor': seekCursorType}"></div>

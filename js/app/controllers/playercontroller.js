@@ -334,6 +334,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		if (loading) {
 			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
+			$scope.position.currentPreview = null;
 			$scope.position.bufferPercent = 0;
 			$scope.position.total = 0;
 		}
@@ -522,6 +523,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	// Seekbar preview mouse support
 	$scope.seekbarPreview = function($event) {
 		if (!$scope.player.seekingSupported()) return;
 
@@ -534,6 +536,28 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekbarLeave = function() {
 		$scope.position.currentPreview = null;
+	};
+
+	// Seekbar preview touch support
+	$scope.seekbarTouchLeave = function($event) {
+		if (!$scope.player.seekingSupported() || $event?.type !== 'touchend') return;
+		
+		// Reverse calculate on seek position
+		var ratio = $scope.position.currentPreview / $scope.position.total;
+		$scope.player.seek(ratio);
+		$scope.seekbarLeave();
+	};
+
+	$scope.seekbarTouchPreview = function($event) {
+		if (!$scope.player.seekingSupported()) return;
+
+		var rect = $event.target.getBoundingClientRect();
+		var x = $event.targetTouches[0].clientX - rect.x;
+		var offsetX = Math.min(Math.max(0, x), rect.width);
+		var ratio = offsetX / rect.width;
+		var timestamp = ratio * $scope.position.total;
+
+		$scope.position.currentPreview = timestamp;
 	};
 
 	$scope.seekOffset = function(offset) {
@@ -552,10 +576,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	// Seekbar click / tap
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX;
 		var ratio = offsetX / $event.currentTarget.clientWidth;
 		$scope.player.seek(ratio);
+		$scope.seekbarLeave(); // Reset seek preview
 	};
 
 	$scope.seekBackward = $scope.player.seekBackward;

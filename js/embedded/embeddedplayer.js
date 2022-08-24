@@ -326,13 +326,38 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		seekBar.click(function (event) {
 			var percentage = seekPositionPercentage(event);
 			player.seek(percentage);
+			seekSetPreview(null); // Reset seek preview
 		});
+
+		// Seekbar preview mouse support
 		seekBar.mousemove(function(event) {
 			if (player.seekingSupported()) {
 				seekSetPreview(seekPositionTotal(event) / 1000);
 			}
 		});
 		seekBar.mouseout(function() {
+			seekSetPreview(null);
+			text_playTime.css('font-style', 'normal');
+		});
+
+		// Seekbar preview touch support
+		seekBar.bind('touchmove', function($event) {
+			if (!player.seekingSupported()) return;
+
+			var rect = $event.target.getBoundingClientRect();
+			var x = $event.targetTouches[0].clientX - rect.x;
+			var offsetX = Math.min(Math.max(0, x), rect.width);
+			var ratio = offsetX / rect.width;
+
+			seekSetPreview(ratio * songLength_s);
+		});
+
+		seekBar.bind('touchend', function($event) {
+			if (!player.seekingSupported() || $event?.type !== 'touchend') return;
+			
+			// Reverse calculate on seek position
+			player.seek(playTimePreview_s / songLength_s);
+			
 			seekSetPreview(null);
 			text_playTime.css('font-style', 'normal');
 		});

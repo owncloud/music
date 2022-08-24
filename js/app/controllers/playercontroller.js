@@ -29,6 +29,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		bufferPercent: '0%',
 		currentPercent: '0%',
 		currentPreview: null,
+		currentPreview_ts: null,
 		current: 0,
 		total: 0
 	};
@@ -108,6 +109,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 						onEnd();
 					}
 				}
+			}
+		}
+
+		// Show progress again instead of preview after a timeout of 1000ms
+		if ($scope.position.currentPreview_ts) {
+			var timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
+			if (timeSincePreview >= 1000) {
+				$scope.seekbarLeave();
 			}
 		}
 	});
@@ -335,6 +344,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
 			$scope.position.currentPreview = null;
+			$scope.position.currentPreview_ts = null;
 			$scope.position.bufferPercent = 0;
 			$scope.position.total = 0;
 		}
@@ -532,10 +542,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		var timestamp = ratio * $scope.position.total;
 		
 		$scope.position.currentPreview = timestamp;
+		$scope.position.currentPreview_ts = Date.now();
 	};
 
 	$scope.seekbarLeave = function() {
 		$scope.position.currentPreview = null;
+		$scope.position.currentPreview_ts = null;
 	};
 
 	// Seekbar preview touch support

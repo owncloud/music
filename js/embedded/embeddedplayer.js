@@ -30,6 +30,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
+	var playTimePreview_ts = null;
 	var playTimePreview_s = null;
 	var playTime_s = 0;
 
@@ -248,6 +249,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				text_playTime.text(fmt(playTimePreview_s || playTime_s));
 				text_playTime.css('font-style', playTimePreview_s ? 'italic' : 'normal');
 				ratio = playTime_s / songLength_s;
+
+				// Show progress again instead of preview after a timeout of 1000ms
+				if (playTimePreview_ts) {
+					var timeSincePreview = Date.now() - playTimePreview_ts;
+					if (timeSincePreview >= 1000) {
+						seekSetPreview(null);
+					}
+				}
 			} else {
 				text.text(fmt(playTime_s));
 			}
@@ -271,6 +280,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 
 		player.on('loading', function() {
+			playTimePreview_ts = null;
 			playTimePreview_s = null;
 			playTime_s = 0;
 			songLength_s = 0;
@@ -317,6 +327,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			return percentage * player.getDuration();
 		}
 		function seekSetPreview(value) {
+			playTimePreview_ts = value ? Date.now() : null;
 			playTimePreview_s = value;
 
 			// manually update is necessary if player is not progressing

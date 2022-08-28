@@ -158,6 +158,7 @@ class SubsonicController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function handleRequest($method) {
 		$this->logger->log("Subsonic request $method", 'debug');

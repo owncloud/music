@@ -98,7 +98,7 @@ class PlaceholderImage {
 	/**
 	 * Calculate real image ttf center
 	 *
-	 * @param resource $image
+	 * @param mixed $image Prior to PHP 8.0 a resource and from 8.0 onwards a GdImage
 	 * @param string $text text string
 	 * @param string $font font path
 	 * @param int $size font size
@@ -107,8 +107,8 @@ class PlaceholderImage {
 	 */
 	private static function imageTtfCenter($image, string $text, string $font, int $size, int $angle = 0): array {
 		// Image width & height
-		$xi = imagesx($image);
-		$yi = imagesy($image);
+		$xi = \imagesx($image);
+		$yi = \imagesy($image);
 
 		// bounding box
 		$box = \imagettfbbox($size, $angle, $font, $text);

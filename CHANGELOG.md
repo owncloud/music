@@ -15,7 +15,9 @@
 ### Fixed
 - Small issues in the mobile and tablet layouts
 - Subsonic: API method `getTopSongs` ignoring the argument `count`
-- Subsonic: Some clients (at least Substreamer, Jamstash) experiencing perpetual 302 redirect loops
+- Subsonic: Some clients (at least Substreamer, Jamstash, Sonixd) experiencing perpetual 302 redirect loops
+  [#1000](https://github.com/owncloud/music/issues/1000)
+- Subsonic: `getScanState` in json mode returning "false" as string instead of bool caused Substreamer to poll it indefinitely
   [#1000](https://github.com/owncloud/music/issues/1000)
 - Podcast title not showing on the German translation of 'Podcast channel "{{ title }}" added'
   [#1005](https://github.com/owncloud/music/pull/1005) @Root-Core

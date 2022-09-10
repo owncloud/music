@@ -981,7 +981,10 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getScanStatus() {
-		return $this->subsonicResponse(['scanStatus' => ['scanning' => 'false']]);
+		return $this->subsonicResponse(['scanStatus' => [
+				'scanning' => false,
+				'count' => $this->trackBusinessLayer->count($this->userId)
+		]]);
 	}
 
 	/* -------------------------------------------------------------------------

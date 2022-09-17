@@ -30,7 +30,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
-	var playTimePreview_ts = null;
+	var playTimePreview_tf = null; // Transient mouse movement filter (Type: Number/Timer-Handle)
+	var playTimePreview_ts = null; // Activation time stamp (Type: Date)
 	var playTimePreview_s = null;
 	var playTime_s = 0;
 
@@ -246,14 +247,17 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		function updateProgress() {
 			var ratio = 0;
 			if ($.isNumeric(songLength_s)) {
-				text_playTime.text(fmt(playTimePreview_s || playTime_s));
-				text_playTime.css('font-style', playTimePreview_s ? 'italic' : 'normal');
+				// Filter transient mouse movements
+				var preview = playTimePreview_tf ? null : playTimePreview_s;
+
+				text_playTime.text(fmt(preview || playTime_s));
+				text_playTime.css('font-style', preview ? 'italic' : 'normal');
 				ratio = playTime_s / songLength_s;
 
-				// Show progress again instead of preview after a timeout of 1000ms
+				// Show progress again instead of preview after a timeout of 2000ms
 				if (playTimePreview_ts) {
 					var timeSincePreview = Date.now() - playTimePreview_ts;
-					if (timeSincePreview >= 1000) {
+					if (timeSincePreview >= 2000) {
 						seekSetPreview(null);
 					}
 				}
@@ -280,6 +284,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 
 		player.on('loading', function() {
+			playTimePreview_tf = null;
 			playTimePreview_ts = null;
 			playTimePreview_s = null;
 			playTime_s = 0;
@@ -345,6 +350,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			if (player.seekingSupported()) {
 				seekSetPreview(seekPositionTotal(event) / 1000);
 			}
+		});
+		seekBar.mouseenter(function() {
+			// Simple filter for transient mouse movements
+			playTimePreview_tf = setTimeout(function() {
+				playTimePreview_tf = null;
+				updateProgress();
+			}, 100);
 		});
 		seekBar.mouseout(function() {
 			seekSetPreview(null);

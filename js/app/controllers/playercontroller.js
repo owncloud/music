@@ -29,7 +29,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		bufferPercent: '0%',
 		currentPercent: '0%',
 		currentPreview: null,
-		currentPreview_ts: null,
+		currentPreview_ts: null, // Activation time stamp (Type: Date)
+		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
 		current: 0,
 		total: 0
 	};
@@ -112,10 +113,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			}
 		}
 
-		// Show progress again instead of preview after a timeout of 1000ms
+		// Show progress again instead of preview after a timeout of 2000ms
 		if ($scope.position.currentPreview_ts) {
 			var timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
-			if (timeSincePreview >= 1000) {
+			if (timeSincePreview >= 2000) {
 				$scope.seekbarLeave();
 			}
 		}
@@ -345,6 +346,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			$scope.position.currentPercent = 0;
 			$scope.position.currentPreview = null;
 			$scope.position.currentPreview_ts = null;
+			$scope.position.currentPreview_tf = null;
 			$scope.position.bufferPercent = 0;
 			$scope.position.total = 0;
 		}
@@ -543,6 +545,16 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		
 		$scope.position.currentPreview = timestamp;
 		$scope.position.currentPreview_ts = Date.now();
+	};
+
+	$scope.seekbarEnter = function() {
+		// Simple filter for transient mouse movements
+		$scope.position.currentPreview_tf = setTimeout(function() {
+			// Force AngularJS to refresh/render scope
+			$scope.$apply(function() {
+				$scope.position.currentPreview_tf = null;
+			});			
+		}, 100);
 	};
 
 	$scope.seekbarLeave = function() {

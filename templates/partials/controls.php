@@ -61,15 +61,15 @@
 	</div>
 	<div ng-show="currentTrack" class="progress-info">
 		<div class="progress-text">
-			<span ng-show="!loading" class="muted" ng-style="position.currentPreview && {'font-style': 'italic'}">
-				{{ (position.currentPreview || position.current) | playTime }}
+			<span ng-show="!loading" class="muted" ng-style="position.currentPreview && !position.currentPreview_tf && {'font-style': 'italic'}">
+				{{ ((position.currentPreview_tf ? null : position.currentPreview) || position.current) | playTime }}
 			</span>
 			<span ng-show="!loading && durationKnown()" class="muted">/ {{ position.total | playTime }}</span>
 			<span ng-show="loading" class="muted">Loading...</span>
 		</div>
 		<div class="progress">
 			<div class="seek-bar" ng-style="{'cursor': seekCursorType}"
-				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseout="seekbarLeave()"
+				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseenter="seekbarEnter($event)" ng-mouseout="seekbarLeave()"
 				ng-touchmove="seekbarTouchPreview($event)" ng-touchend="seekbarTouchLeave($event)"
 			>
 				<div class="buffer-bar" ng-style="{'width': position.bufferPercent, 'cursor': seekCursorType}"></div>

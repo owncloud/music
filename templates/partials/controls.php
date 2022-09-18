@@ -59,13 +59,11 @@
 	<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ shuffleTooltip() }}"
 		src="<?php HtmlUtil::printSvgPath('shuffle') ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ repeatTooltip() }}"
-		src="{{ repeat=='one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
+		src="{{ repeat == 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
 		ng-class="{active: repeat != 'false' }" ng-click="toggleRepeat()" />
 	<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
-		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume > 0"
-			src="<?php HtmlUtil::printSvgPath('sound') ?>" />
-		<img id="volume-icon" class="control small svg" alt="{{ 'Volume' | translate }}" ng-show="volume == 0"
-			src="<?php HtmlUtil::printSvgPath('sound-off') ?>" />
+		<img id="volume-icon" class="control toggle small svg" alt="{{ 'Volume' | translate }}" ng-click="toggleVolume()"
+			ng-src="{{ volume == 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}" />
 		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 	</div>
 </div>

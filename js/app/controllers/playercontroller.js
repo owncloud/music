@@ -31,6 +31,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		current: 0,
 		total: 0
 	};
+	var lastVolume = null;
 	var scrobblePending = false;
 	var scheduledRadioTitleFetch = null;
 	var abortRadioTitleFetch = null;
@@ -342,6 +343,17 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.$watch('playbackRate', function(newValue, _oldValue) {
 		$scope.player.setPlaybackRate(newValue);
 	});
+
+	$scope.toggleVolume = function() {
+		if (lastVolume) {
+			$scope.volume = lastVolume;
+			lastVolume = null;
+		}
+		else {
+			lastVolume = $scope.volume ;
+			$scope.volume = 0;
+		}
+	};
 
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;

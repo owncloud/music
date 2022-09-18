@@ -12,6 +12,7 @@ import playIconPath from '../../img/play-big.svg';
 import pauseIconPath from '../../img/pause-big.svg';
 import skipPreviousIconPath from '../../img/skip-previous.svg';
 import skipNextIconPath from '../../img/skip-next.svg';
+import soundOffIconPath from '../../img/sound-off.svg';
 import soundIconPath from '../../img/sound.svg';
 import closeIconPath from '../../img/close.svg';
 import radioIconPath from '../../img/radio-file.svg';
@@ -25,6 +26,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	var volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
 	player.setVolume(volume);
+	var lastVolume = null;
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
@@ -312,7 +314,22 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		var volumeIcon = $(document.createElement('img'))
 			.attr('id', 'volume-icon')
 			.attr('class', 'control small svg')
-			.attr('src', soundIconPath);
+			.attr('src', soundIconPath)
+			.on('click', function() {
+				const setVolume = function(value) {
+					volumeSlider.val(value);
+					volumeSlider.trigger('input');
+				};
+
+				if (lastVolume) {
+					setVolume(lastVolume);
+					lastVolume = null;
+				}
+				else {
+					lastVolume = volume;
+					setVolume('0');
+				}
+			});
 
 		var volumeSlider = $(document.createElement('input'))
 			.attr('id', 'volume-slider')
@@ -324,6 +341,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				volume = $(this).val();
 				player.setVolume(volume);
 				localStorage.setItem('oc_music_volume', volume);
+
+				// Show correct icon if muted 
+				volumeIcon.attr('src', volume == 0 ? soundOffIconPath : soundIconPath);
 			});
 
 		volumeControl.append(volumeIcon);

@@ -336,6 +336,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.$watch('volume', function(newValue, _oldValue) {
+		// Reset last known volume, if a new value is selected via the slider
+		if (newValue && lastVolume && lastVolume !== _oldValue) {
+			lastVolume = null;
+		}
+
 		$scope.player.setVolume(newValue);
 		localStorage.setItem('oc_music_volume', newValue);
 	});
@@ -350,7 +355,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			lastVolume = null;
 		}
 		else {
-			lastVolume = $scope.volume ;
+			lastVolume = $scope.volume;
 			$scope.volume = 0;
 		}
 	};

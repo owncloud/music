@@ -338,10 +338,17 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			.attr('type', 'range')
 			.attr('value', volume)
 			.on('input change', function() {
-				volume = $(this).val();
+				const value = $(this).val();
+
+				// Reset last known volume, if a new value is selected via the slider
+				if (value && lastVolume && lastVolume !== volume) {
+					lastVolume = null;
+				}
+
+				volume = value;
 				player.setVolume(volume);
 				localStorage.setItem('oc_music_volume', volume);
-
+				
 				// Show correct icon if muted 
 				volumeIcon.attr('src', volume == 0 ? soundOffIconPath : soundIconPath);
 			});

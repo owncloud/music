@@ -352,6 +352,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.player.setPlaybackRate(newValue);
 	});
 
+	$scope.offsetVolume = function (offset) {
+		const value = $scope.volume + offset;
+		$scope.volume = Math.max(0, Math.min(100, value)); 		// Clamp to 0-100
+		lastVolume = null;
+	};
+
 	$scope.toggleVolume = function() {
 		if (lastVolume) {
 			$scope.volume = lastVolume;
@@ -502,6 +508,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	$scope.seekOffset = function(offset) {
+		// Clamp to the beginning of the track
+		const target = Math.max(0, $scope.position.current + offset);
+		const ratio = target / $scope.position.total;
+		
+		// Check if target is beyond playtime
+		if (ratio > 1) {
+			$scope.next();
+		}
+		else {
+			$scope.player.seek(ratio);
+		}
+	};
+
 	$scope.seek = function($event) {
 		var offsetX = $event.offsetX || $event.originalEvent.layerX;
 		var ratio = offsetX / $event.currentTarget.clientWidth;
@@ -540,24 +560,62 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$document.bind('keydown', function(e) {
 		if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
-			var func = null;
-			switch (e.which) {
-				case 32: //space
+			var func = null, args = [];
+			switch (e.code) {
+				case 'Space':
+				case 'KeyK':
+					// Play / Pause / Stop
 					func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
 					break;
-				case 37: // arrow left
+				case 'KeyJ':
+					// Seek backwards
+					func = $scope.seekOffset;
+					args = [e.shiftKey ? -30 : -5];
+					break;
+				case 'KeyL':
+					// Seek forwards
+					func = $scope.seekOffset;
+					args = [e.shiftKey ? +30 : +5];
+					break;
+				case 'KeyM':
+					// Mute / Unmute
+					func = $scope.toggleVolume;
+					break;
+				case 'ArrowDown':
+					// Decrease volume
+					func = $scope.offsetVolume;
+					args = [e.shiftKey ? -20 : -5];
+					break;
+				case 'ArrowUp':
+					// Increase volume
+					func = $scope.offsetVolume;
+					args = [e.shiftKey ? +20 : +5];
+					break;
+				case 'ArrowLeft':
+					// Previous title
 					func = $scope.prev;
 					break;
-				case 39: // arrow right
+				case 'ArrowRight':
+					// Next title
 					func = $scope.next;
 					break;
-				case 16: // shift
+				case 'Comma': // US: <
+					// Decrease playback speed
+					func = e.shiftKey ? $scope.stepPlaybackRate : null;
+					args = [null, true];
+					break;
+				case 'Period': // US: >
+					// Increase playback speed
+					func = e.shiftKey ? $scope.stepPlaybackRate : null;
+					break;
+				case 'ShiftLeft':
+				case 'ShiftRight':
 					func = (() => $scope.shiftHeldDown = true);
 					break;
 			}
 
 			if (func) {
-				$timeout(func);
+				$timeout(func, 0, true, ...args);
 				return false;
 			}
 		}
@@ -566,7 +624,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	});
 
 	$document.bind('keyup', function(e) {
-		if (e.which == 16) { //shift
+		if (e.key === 'Shift') {
 			$timeout(() => $scope.shiftHeldDown = false);
 			return false;
 		}

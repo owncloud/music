@@ -38,6 +38,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
 	const RADIO_INFO_POLL_PERIOD_MS = 30000;
 	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
+	const PLAYBACK_RATE_STEPPING = 0.25;
+	const PLAYBACK_RATE_MIN = 0.5;
+	const PLAYBACK_RATE_MAX = 3.0;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -420,14 +423,17 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		playlistService.clearPlaylist();
 	};
 
-	$scope.stepPlaybackRate = function() {
-		const stepRates = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0];
-		var curStep = 0;
-		while (curStep < stepRates.length - 1 && $scope.playbackRate >= stepRates[curStep+1]) {
-			++curStep;
-		}
-		var nextStep = (curStep + 1) % stepRates.length;
-		$scope.playbackRate = stepRates[nextStep];
+	$scope.stepPlaybackRate = function($event, decrease) {
+		$event?.preventDefault();
+
+		// Round current value to nearest step and in/decrease it by one step
+		const current = $scope.playbackRate;
+		const steps = 1.0 / PLAYBACK_RATE_STEPPING;
+		const value = Math.round(current * steps) / steps;
+		const newValue = value + (PLAYBACK_RATE_STEPPING * (decrease ? -1 : 1));
+
+		// Clamp and set value
+		$scope.playbackRate = Math.max(PLAYBACK_RATE_MIN, Math.min(PLAYBACK_RATE_MAX, newValue));
 	};
 
 	// Show context menu on long press of the play/pause button

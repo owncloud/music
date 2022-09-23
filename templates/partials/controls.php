@@ -4,29 +4,41 @@
 	<div id="play-controls">
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
-		<div id="play-pause-container" ng-show="!shiftHeldDown">
-			<div id="play-pause-button"
-				ng-click="togglePlayback()"
-				ng-on-contextmenu="playbackBtnContextMenu($event)"
-				ng-on-long-press="playbackBtnLongPress($event)"
-				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="control svg"
-				alt="{{ playing ? ('Pause' | translate) : ('Play' | translate) }}"
-				title="{{ 'press and hold for more' | translate }}" data-long-press-delay="1000">
+		<div id="play-pause-container"
+			title="{{ 'press and hold for more' | translate }}"
+			ng-on-contextmenu="playbackBtnContextMenu($event)"
+			ng-on-long-press="playbackBtnLongPress($event)"
+			data-long-press-delay="500"
+		>
+			<div id="stop-button" ng-click="stop()" class="control icon-stop"
+				ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
+			</div>
+			<div id="play-pause-button" ng-click="togglePlayback()" class="control svg"
+				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" 
+				ng-show="!shiftHeldDown" alt="{{ (playing ? 'Pause' : 'Play') | translate }}">
 			</div>
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">
 				<ul>
-					<li ng-click="stop()">
+					<li ng-show="!shiftHeldDown" ng-click="stop()">
 						<a class="icon-stop"><span translate>Stop</span></a>
 					</li>
+					<li ng-show="shiftHeldDown" ng-click="togglePlayback()">
+						<a ng-class="playing ? 'icon-pause-big' : 'icon-play-big'">
+							<span translate>{{ playing ? 'Pause' : 'Play'}}</span>
+						</a>
+					</li>
 					<li ng-click="$event.stopPropagation()" id="playback-rate-control">
-						<a class="icon-time" ng-click="stepPlaybackRate()"><span translate>Playback rate</span>: {{ playbackRate | number : 1 }}</a>
-						<input type="range" min="0.5" max="3.0" step="0.1" ng-model="playbackRate"/>
+						<a class="icon-time" ng-click="stepPlaybackRate()"
+							ng-on-contextmenu="stepPlaybackRate($event, true)"
+							ng-on-long-press="stepPlaybackRate($event, true)"
+							data-long-press-delay="500"
+						>
+							<span translate>Playback rate</span>: {{ playbackRate | number : 2 }}
+						</a>
+						<input type="range" min="0.5" max="3.0" step="0.05" ng-model="playbackRate"/>
 					</li>
 				</ul>
 			</div>
-		</div>
-		<div id="stop-button" ng-click="stop()" class="control icon-stop"
-			ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
 		</div>
 		<img ng-click="next()" class="control small svg" alt="{{ 'Next' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-next') ?>" />

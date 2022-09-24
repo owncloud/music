@@ -27,6 +27,11 @@
 	text-align: left;
 }
 
+.ie #music-controls {
+	/* IE doesn't support the var() syntax */
+	background-color: rgba(255, 255, 255, .95);
+}
+
 #music-controls.with-playlist {
 	height: 90px;
 }

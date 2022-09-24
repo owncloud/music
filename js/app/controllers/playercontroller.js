@@ -522,7 +522,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.seekOffset = function(offset) {
-		if (!$scope.player.seekingSupported()) {
+		if ($scope.player.seekingSupported()) {
 			// Clamp to the beginning of the track
 			const target = Math.max(0, $scope.position.current + offset);
 			const ratio = target / $scope.position.total;

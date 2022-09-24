@@ -14,7 +14,7 @@
   [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 
 ### Changed
-- Use background color definitions from the cloud core when available. Fixes a problem on Breeze Dark theme introduced in v1.6.0.
+- Use background color definitions from the cloud core when available. Fixes a problem with the Nextcloud Breeze Dark theme introduced in v1.6.0.
   [#1002](https://github.com/owncloud/music/pull/1002)
 - Subsonic: Search functions now find also songs by artist or album name and albums by artist name
   * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)

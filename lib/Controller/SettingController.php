@@ -62,6 +62,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function userPath(string $value) {
@@ -77,6 +78,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function userExcludedPaths(array $value) {
 		$success = $this->librarySettings->setExcludedPaths($this->userId, $value);
@@ -85,6 +87,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function enableScanMetadata(bool $value) {
 		$this->librarySettings->setScanMetadataEnabled($this->userId, $value);
@@ -93,6 +96,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function ignoredArticles(array $value) {
 		$this->librarySettings->setIgnoredArticles($this->userId, $value);
@@ -101,6 +105,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function getAll() {
 		return [
@@ -175,6 +180,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function removeUserKey($id) {
 		$this->ampacheUserMapper->removeUserKey($this->userId, (int)$id);

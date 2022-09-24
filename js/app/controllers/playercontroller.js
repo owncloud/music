@@ -429,7 +429,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		playlistService.clearPlaylist();
 	};
 
-	$scope.stepPlaybackRate = function($event, decrease) {
+	$scope.stepPlaybackRate = function($event, decrease, rollover) {
 		$event?.preventDefault();
 
 		// Round current value to nearest step and in/decrease it by one step
@@ -439,7 +439,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		const newValue = value + (PLAYBACK_RATE_STEPPING * (decrease ? -1 : 1));
 
 		// Clamp and set value
-		$scope.playbackRate = Math.max(PLAYBACK_RATE_MIN, Math.min(PLAYBACK_RATE_MAX, newValue));
+		if (rollover) {
+			if (newValue > PLAYBACK_RATE_MAX) {
+				$scope.playbackRate = PLAYBACK_RATE_MIN;
+			}
+			else if (newValue < PLAYBACK_RATE_MIN) {
+				$scope.playbackRate = PLAYBACK_RATE_MAX;
+			}
+			else {
+				$scope.playbackRate = newValue;
+			}
+		}
+		else {
+			$scope.playbackRate = Math.max(PLAYBACK_RATE_MIN, Math.min(PLAYBACK_RATE_MAX, newValue));
+		}
 	};
 
 	// Show context menu on long press of the play/pause button
@@ -509,16 +522,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.seekOffset = function(offset) {
-		// Clamp to the beginning of the track
-		const target = Math.max(0, $scope.position.current + offset);
-		const ratio = target / $scope.position.total;
-		
-		// Check if target is beyond playtime
-		if (ratio > 1) {
-			$scope.next();
-		}
-		else {
-			$scope.player.seek(ratio);
+		if (!$scope.player.seekingSupported()) {
+			// Clamp to the beginning of the track
+			const target = Math.max(0, $scope.position.current + offset);
+			const ratio = target / $scope.position.total;
+
+			// Check if target is beyond playtime
+			if (ratio > 1) {
+				$scope.next();
+			}
+			else {
+				$scope.player.seek(ratio);
+			}
 		}
 	};
 
@@ -581,23 +596,25 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					// Mute / Unmute
 					func = $scope.toggleVolume;
 					break;
-				case 'ArrowDown':
+				case 'NumpadSubtract':
 					// Decrease volume
 					func = $scope.offsetVolume;
 					args = [e.shiftKey ? -20 : -5];
 					break;
-				case 'ArrowUp':
+				case 'NumpadAdd':
 					// Increase volume
 					func = $scope.offsetVolume;
 					args = [e.shiftKey ? +20 : +5];
 					break;
 				case 'ArrowLeft':
-					// Previous title
-					func = $scope.prev;
+					// Previous title / seek backwards
+					func = e.ctrlKey ? $scope.prev : $scope.seekOffset;
+					args = [e.shiftKey ? -30 : -5];
 					break;
 				case 'ArrowRight':
-					// Next title
-					func = $scope.next;
+					// Next title / seek forwards
+					func = e.ctrlKey ? $scope.next : $scope.seekOffset;
+					args = [e.shiftKey ? +30 : +5];
 					break;
 				case 'Comma': // US: <
 					// Decrease playback speed

@@ -5,10 +5,10 @@
 		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
 		<div id="play-pause-container"
-			title="{{ 'press and hold for more' | translate }}"
+			title="{{ playPauseContextMenuVisible ? null : ('press and hold for more' | translate) }}"
 			ng-on-contextmenu="playbackBtnContextMenu($event)"
 			ng-on-long-press="playbackBtnLongPress($event)"
-			data-long-press-delay="500"
+			data-long-press-delay="500" 
 		>
 			<div id="stop-button" ng-click="stop()" class="control icon-stop"
 				ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
@@ -24,13 +24,13 @@
 					</li>
 					<li ng-show="shiftHeldDown" ng-click="togglePlayback()">
 						<a ng-class="playing ? 'icon-pause-big' : 'icon-play-big'">
-							<span translate>{{ playing ? 'Pause' : 'Play'}}</span>
+							<span>{{ (playing ? 'Pause' : 'Play') | translate }}</span>
 						</a>
 					</li>
 					<li ng-click="$event.stopPropagation()" id="playback-rate-control">
-						<a class="icon-time" ng-click="stepPlaybackRate()"
-							ng-on-contextmenu="stepPlaybackRate($event, true)"
-							ng-on-long-press="stepPlaybackRate($event, true)"
+						<a class="icon-time" ng-click="stepPlaybackRate(null, false, true)"
+							ng-on-contextmenu="stepPlaybackRate($event, true, true)"
+							ng-on-long-press="stepPlaybackRate($event, true, true)"
 							data-long-press-delay="500"
 						>
 							<span translate>Playback rate</span>: {{ playbackRate | number : 2 }}
@@ -47,10 +47,10 @@
 	<div ng-show="currentTrack.type != 'radio'" ng-click="scrollToCurrentTrack()" class="albumart clickable"
 		albumart="currentTrack.album || currentTrack.channel" title="{{ coverArtTitle() }}" ></div>
 
-	<div ng-show="currentTrack.type == 'radio'" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
+	<div ng-show="currentTrack.type === 'radio'" ng-click="scrollToCurrentTrack()" class="icon-radio svg albumart clickable"></div>
 
 	<div class="song-info clickable" ng-click="scrollToCurrentTrack()"
-		draggable="{{ currentTrack.type == 'song' }}" ui-draggable="true" drag="getDraggable()"
+		draggable="{{ currentTrack.type === 'song' }}" ui-draggable="true" drag="getDraggable()"
 	>
 		<span class="title" title="{{ primaryTitle() }}">{{ primaryTitle() }}</span><br />
 		<span class="artist" title="{{ secondaryTitle() }}">{{ secondaryTitle() }}</span>
@@ -71,11 +71,11 @@
 	<img id="shuffle" class="control toggle small svg" alt="{{ 'Shuffle' | translate }}" title="{{ shuffleTooltip() }}"
 		src="<?php HtmlUtil::printSvgPath('shuffle') ?>" ng-class="{active: shuffle}" ng-click="toggleShuffle()" />
 	<img id="repeat" class="control toggle small svg" alt="{{ 'Repeat' | translate }}" title="{{ repeatTooltip() }}"
-		src="{{ repeat == 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
+		src="{{ repeat === 'one' ? '<?php HtmlUtil::printSvgPath('repeat-1') ?>' : '<?php HtmlUtil::printSvgPath('repeat') ?>' }}"
 		ng-class="{active: repeat != 'false' }" ng-click="toggleRepeat()" />
 	<div class="volume-control" title="{{ 'Volume' | translate }} {{volume}} %">
 		<img id="volume-icon" class="control toggle small svg" alt="{{ 'Volume' | translate }}" ng-click="toggleVolume()"
-			ng-src="{{ volume == 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}" />
+			ng-src="{{ volume === 0 ? '<?php HtmlUtil::printSvgPath('sound-off') ?>' : '<?php HtmlUtil::printSvgPath('sound') ?>' }}" />
 		<input type="range" class="volume-slider" min="0" max="100" ng-model="volume"/>
 	</div>
 </div>

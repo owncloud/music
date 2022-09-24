@@ -150,6 +150,7 @@ class AmpacheController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function xmlApi($action) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
@@ -160,6 +161,7 @@ class AmpacheController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function jsonApi($action) {
 		// differentation between xmlApi and jsonApi is made already by the middleware

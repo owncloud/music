@@ -625,6 +625,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					// Increase playback speed
 					func = e.shiftKey ? $scope.stepPlaybackRate : null;
 					break;
+				case 'Shift':
 				case 'ShiftLeft':
 				case 'ShiftRight':
 					func = (() => $scope.shiftHeldDown = true);

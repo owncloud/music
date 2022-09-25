@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Two-line layout for the controls pane on narrow windows
+  [#1004](https://github.com/owncloud/music/issues/1004) [#204](https://github.com/owncloud/music/issues/204)
 - Muting/unmuting by clicking the speaker icon
   [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 - Many new keyboard shortcuts

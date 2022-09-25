@@ -22,7 +22,7 @@
 
 /* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed
  * to right and this has the side-effect of making the "fixed" position to be eveluated in the
- * context of the transformed element instead of the entrie window.
+ * context of the transformed element instead of the entire window.
  */
 .snapjs-left #controls {
 	top: 0;
@@ -108,14 +108,11 @@ body:not(.snapjs-left) #controls.taller-header {
 	vertical-align: top;
 }
 
-.icon-radio {
-	background-image: url(../img/radio.svg);
-}
-
 #controls .song-info {
-	position: relative;
+	position: absolute;
 	height: 58px;
-	max-width: 400px;
+	left: 320px;
+	width: 380px;
 	margin: 0 4px 4px 4px;
 	padding: 8px;
 	vertical-align: top;
@@ -139,8 +136,8 @@ body:not(.snapjs-left) #controls.taller-header {
 	position: absolute;
 	top: 0px;
 	left: 710px;
-	right: 170px;
-	max-width: 350px;
+	right: 165px;
+	max-width: 450px;
 	text-align: center;
 	margin: 7px auto 14px auto;
 }
@@ -190,7 +187,7 @@ body:not(.snapjs-left) #controls.taller-header {
 
 #controls .volume-control {
 	position: absolute;
-	right: 172px;
+	right: 167px;
 }
 
 .ie.lte9 #controls .volume-control {
@@ -247,6 +244,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	cursor: pointer;
 }
 
+.icon-radio {
+	background-image: url(../img/radio.svg);
+}
+
 .icon-play-big {
 	background-image: url(../img/play-big.svg);
 }
@@ -261,4 +262,63 @@ body:not(.snapjs-left) #controls.taller-header {
 
 .icon-time {
 	background-image: url(../img/access-time.svg)
+}
+
+
+/******************************************/
+/* Two-line layout used on narrow windows */
+/******************************************/
+
+#controls.two-line ~ #app-view.started {
+	padding-top: 90px;
+}
+
+#app-navigation + #app-content #controls.two-line {
+	height: 90px;
+}
+
+#controls.two-line #shuffle {
+	right: unset;
+	left: 65px;
+	top: 38px;
+}
+
+#controls.two-line #repeat {
+	right: unset;
+	left: 130px;
+	top: 38px;
+}
+
+#controls.two-line .volume-control {
+	right: 75px;
+}
+
+#controls.two-line .song-info {
+	width: auto;
+	right: 80px;
+}
+
+#controls.two-line .progress-info {
+	left: 270px;
+	right: 20px;
+	top: 60px;
+	max-width: unset;
+}
+
+#controls.two-line .progress-info .progress-text {
+	position: absolute;
+	right: 0px;
+	top: -8px;
+	width: 90px;
+}
+
+#controls.two-line .progress-info .progress {
+	position: absolute;
+	width: auto;
+	left: 0;
+	right: 90px;
+}
+
+#controls.two-line .progress-info {
+	left: 212px;
 }

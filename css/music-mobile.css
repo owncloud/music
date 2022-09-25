@@ -77,76 +77,84 @@
 }
 
 /* layout the play bar elements for less space */
+#app-navigation + #app-content.mobile #controls {
+	padding-left: 20px;
+}
 .mobile #play-controls {
-	margin-left: 0;
+	margin-left: 20px;
 }
-.mobile #play-controls img:first-child {
-	display: none;
-}
+.mobile #controls.two-line .control,
+.mobile #controls.two-line .song-info,
 .mobile #controls .albumart {
 	margin-left: 0;
 	margin-right: 0;
 }
-.mobile #controls .song-info {
-	max-width: 45%;
+.mobile #controls.two-line .song-info {
+	left: 220px;
 }
-.mobile #controls .title {
+.mobile #controls.two-line .title {
 	font-size: 14px;
 }
-.mobile #controls.started .progress {
-	display: none;
+.mobile #controls.two-line #shuffle {
+	left: 55px;
 }
-.mobile #controls #repeat {
-	right: 0;
+.mobile #controls.two-line #repeat {
+	left: 108px;
 }
-.mobile #controls #shuffle {
-	right: 40px;
-}
-.mobile #controls .volume-control {
-	display: none;
-}
-.mobile #controls .progress-info {
-	right: 115px;
-	left: auto;
-	padding-top: 12px;
-	text-align: right;
+.mobile #controls.two-line .progress-info {
+	left: 172px;
 }
 .mobile #controls #play-pause-menu {
 	right: 0;
 }
 
 /* in portrait, there's even less space */
-.mobile.portrait #controls .progress-info {
+.mobile.portrait #play-controls img:first-child {
 	display: none;
 }
-.mobile.portrait #controls .control,
-.mobile.portrait #controls .song-info {
-	margin-left: 0;
-	margin-right: 0;
+.mobile.portrait #controls.two-line #shuffle {
+	left: 35px;
 }
-.mobile.portrait #controls .control.small {
-	margin-left: -4px;
+.mobile.portrait #controls.two-line #repeat {
+	left: 77px;
+}
+.mobile.portrait #controls.two-line .song-info {
+	left: 172px;
+}
+.mobile.portrait #controls.two-line .progress-info {
+	left: 124px;
 }
 .mobile.portrait #controls #play-pause-menu {
 	right: -20px;
 }
 
 /* extra narrow screen matches small smart phones; drop non-essential elements and margins */
-.extra-narrow #controls .albumart {
+.mobile.portrait.extra-narrow #controls .albumart,
+.mobile.portrait.extra-narrow #controls #volume-icon {
 	display: none;
 }
-.extra-narrow .view-container.compact .album-area .track-list {
+.mobile.portrait.extra-narrow #controls.two-line .song-info {
+	left: 120px;
+	right: 25px;
+}
+.mobile.portrait.extra-narrow .view-container.compact .album-area .track-list {
 	margin-left: 0;
 }
-.extra-narrow .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
+.mobile.portrait.extra-narrow .view-container:not(.compact) .album-area .track-list > li:not(.more-less) {
 	padding-left: 0;
 }
-.extra-narrow .view-container:not(.compact) .album-area .track-list > li.more-less {
+.mobile.portrait.extra-narrow .view-container:not(.compact) .album-area .track-list > li.more-less {
 	padding-left: 18px;
 }
 
 /* min-width screen may result on desktop browser when manually resizing the window; here we need to drop also essential elements */
-.min-width #controls .song-info,
-.min-width #controls .toggle {
+.mobile.portrait.min-width #controls .progress,
+.mobile.portrait.min-width #controls .volume-control {
 	display: none;
+}
+.mobile.portrait.min-width #controls.two-line .song-info {
+	right: 10px;
+}
+.mobile.portrait.min-width #controls .progress-text {
+	text-align: right;
 }

@@ -493,26 +493,29 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See mobile.css and tablet.css.
-		if ($window.innerWidth <= 220) {
+		if (appViewWidth <= 280) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow', 'min-width']);
 		}
-		else if ($window.innerWidth <= 360) {
+		else if (appViewWidth <= 360) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow']);
 		}
-		else if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+		else if (appViewWidth <= 400) {
 			setMasterLayout(['mobile', 'portrait']);
 		}
-		else if ($window.innerWidth <= 768) {
+		else if (appViewWidth <= 500 && $window.innerWidth < 1024) {
 			setMasterLayout(['mobile']);
 		}
-		else if (appViewWidth <= 690) {
-			setMasterLayout(['tablet', 'portrait']);
-		}
-		else if (appViewWidth <= 1024) {
+		else if (appViewWidth < 1025) {
 			setMasterLayout(['tablet']);
 		}
 		else {
 			setMasterLayout([]);
+		}
+
+		if (appViewWidth <= 715) {
+			$('#controls').addClass('two-line');
+		} else {
+			$('#controls').removeClass('two-line');
 		}
 	});
 

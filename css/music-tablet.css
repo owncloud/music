@@ -16,18 +16,17 @@
    The rule has to match the one used by the core to make the pane collpsible.
  */
 @media only screen and (max-width: 1024px) {
-
-	#controls {
-		padding-left: 44px;
-	}
-
 	#app-view {
 		padding-top: 66px;
 	}
 }
 
+#app-navigation + #app-content.tablet #controls {
+	padding-left: 20px;
+}
+
 .tablet #play-controls {
-	margin-left: 0;
+	margin-left: 20px;
 }
 
 .tablet #controls .albumart {
@@ -36,23 +35,18 @@
 }
 
 .tablet #controls .song-info {
-	max-width: 240px;
+	left: 260px;
+}
+
+.tablet #controls:not(.two-line) .song-info {
+	width: 200px;
+}
+
+.tablet #controls:not(.two-line) .progress-info {
+	left: 460px;
+	max-width: 350px;
 }
 
 .tablet #controls .title {
 	font-size: 14px;
-}
-
-.tablet #controls #volume-icon {
-	display: none;
-}
-
-.tablet #controls .progress-info {
-	left: 480px;
-	right: 140px;
-	max-width: 250px;
-}
-
-.tablet.portrait #controls .progress-info {
-	display: none;
 }

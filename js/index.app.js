@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 /**
@@ -34,6 +34,7 @@ require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('vendor/dragdrop/draganddrop.js');
 require('vendor/nextcloud/placeholder.js');
+require('vendor/polyfill/keyboard.js');
 // jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10
 if (typeof MutationObserver !== 'undefined') {
 	require('vendor/jquery-initialize');

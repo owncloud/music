@@ -1,16 +1,30 @@
 ## [Unreleased]
 ### Added
+- Muting/unmuting by clicking the speaker icon
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
+- Many new keyboard shortcuts
+  * Numpad +/-: Increase/decrease volume
+  * M: Mute toggle
+  * J/L: Seek backwards/forward
+  * K: Play/Pause toggle
+  * Shift + Comma/Period: Decrease/Increase playback speed
+  * Arrow Left/Right: Seek backwards/forward (was formerly skip previous/next)
+  * Ctrl + Arrow Left/Right: Skip previous/next
+  * Step size of seeking and volume control is increased when shift held down
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 
 ### Changed
 - Use background color definitions from the cloud core when available. Fixes a problem on Breeze Dark theme introduced in v1.6.0.
   [#1002](https://github.com/owncloud/music/pull/1002)
 - Subsonic: Search functions now find also songs by artist or album name and albums by artist name
   * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
-    [#1000](https://github.com/owncloud/music/issues/1000)
+  [#1000](https://github.com/owncloud/music/issues/1000)
 - Subsonic: Method `getCoverArt` returns a placeholder image (instead of an error) if the album/artis in question has no cover art set
   [#1000](https://github.com/owncloud/music/issues/1000)
 - Context menu on the play/pause button can be opened with right click in addition to the long press
   [#1006](https://github.com/owncloud/music/pull/1006) @Root-Core
+- Playback speed change by clicking the menu option now has step size 0.25 instead of 0.5. Right-click or long-press decreases the speed.
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 
 ### Fixed
 - Small issues in the mobile and tablet layouts

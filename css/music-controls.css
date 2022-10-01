@@ -137,7 +137,7 @@ body:not(.snapjs-left) #controls.taller-header {
 	top: 0px;
 	left: 710px;
 	right: 165px;
-	max-width: 450px;
+	max-width: 35%;
 	text-align: center;
 	margin: 7px auto 14px auto;
 }

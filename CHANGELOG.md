@@ -21,12 +21,14 @@
 - Subsonic: Search functions now find also songs by artist or album name and albums by artist name
   * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
   [#1000](https://github.com/owncloud/music/issues/1000)
-- Subsonic: Method `getCoverArt` returns a placeholder image (instead of an error) if the album/artis in question has no cover art set
+- Subsonic: Method `getCoverArt` returns a placeholder image (instead of an error) if the album/artist in question has no cover art set
   [#1000](https://github.com/owncloud/music/issues/1000)
 - Context menu on the play/pause button can be opened with right click in addition to the long press
   [#1006](https://github.com/owncloud/music/pull/1006) @Root-Core
 - Playback speed change by clicking the menu option now has step size 0.25 instead of 0.5. Right-click or long-press decreases the speed.
   [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
+- Wider progress bar on wide high-resolution screens
+  [#1004](https://github.com/owncloud/music/issues/1004)
 
 ### Fixed
 - Small issues in the mobile and tablet layouts

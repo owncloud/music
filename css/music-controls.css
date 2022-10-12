@@ -173,6 +173,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	background-color: #1d2d44;
 }
 
+.translucent {
+	opacity: 0.75;
+}
+
 #controls .buffer-bar {
 	opacity: 0.1;
 }

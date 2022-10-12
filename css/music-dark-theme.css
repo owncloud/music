@@ -34,6 +34,10 @@
 	background-color: rgba(255, 255, 255, 0.1);
 }
 
+.dark-theme .translucent {
+	opacity: 0.9;
+}
+
 .dark-theme .icon-reload {
 	background-image: url(../img/reload-inverted.svg);
 }

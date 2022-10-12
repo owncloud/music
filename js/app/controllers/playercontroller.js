@@ -26,11 +26,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
 	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
 	$scope.position = {
-		bufferPercent: '0%',
-		currentPercent: '0%',
+		bufferPercent: 0,
+		currentPercent: 0,
+		previewPercent: 0,
 		currentPreview: null,
 		currentPreview_ts: null, // Activation time stamp (Type: Date)
 		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
+		previewVisible: () => $scope.position.currentPreview && !$scope.position.currentPreview_tf,
 		current: 0,
 		total: 0
 	};
@@ -44,6 +46,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	const PLAYBACK_RATE_STEPPING = 0.25;
 	const PLAYBACK_RATE_MIN = 0.5;
 	const PLAYBACK_RATE_MAX = 3.0;
+
+	$scope.min = Math.min;
+	$scope.abs = Math.abs;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -408,11 +413,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		$scope.position.current = position;
 		$scope.position.total = duration;
-		$scope.position.currentPercent = (duration > 0) ? position/duration*100 + '%' : 0;
+		$scope.position.currentPercent = (duration > 0) ? position/duration*100 : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.min(100, percent) + '%';
+		$scope.position.bufferPercent = Math.min(100, percent);
 	};
 
 	$scope.play = function() {
@@ -539,22 +544,19 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.seekbarPreview = function($event) {
 		if (!$scope.player.seekingSupported()) return;
 
-		var offsetX = $event.offsetX || $event.originalEvent.layerX;
-		var ratio = offsetX / $event.currentTarget.clientWidth;
+		var seekBar = $('.seek-bar');
+		var offsetX = $event.clientX - seekBar.offset().left;
+		var ratio = offsetX / seekBar.width();
 		var timestamp = ratio * $scope.position.total;
 		
+		$scope.position.previewPercent = ratio * 100;
 		$scope.position.currentPreview = timestamp;
 		$scope.position.currentPreview_ts = Date.now();
 	};
 
 	$scope.seekbarEnter = function() {
 		// Simple filter for transient mouse movements
-		$scope.position.currentPreview_tf = setTimeout(function() {
-			// Force AngularJS to refresh/render scope
-			$scope.$apply(function() {
-				$scope.position.currentPreview_tf = null;
-			});			
-		}, 100);
+		$scope.position.currentPreview_tf = $timeout(() => $scope.position.currentPreview_tf = null, 100);
 	};
 
 	$scope.seekbarLeave = function() {
@@ -602,8 +604,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	// Seekbar click / tap
 	$scope.seek = function($event) {
-		var offsetX = $event.offsetX || $event.originalEvent.layerX;
-		var ratio = offsetX / $event.currentTarget.clientWidth;
+		var seekBar = $('.seek-bar');
+		var offsetX = $event.clientX - seekBar.offset().left;
+		var ratio = offsetX / seekBar.width();
 		$scope.player.seek(ratio);
 		$scope.seekbarLeave(); // Reset seek preview
 	};

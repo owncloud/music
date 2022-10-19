@@ -27,14 +27,12 @@ angular.module('Music').service('alphabetIndexingService', [function() {
 		},
 
 		titlePrecedesIndexCharAt: function(title, charIdx) {
-			var initialChar = title.slice(0,1).toUpperCase();
-
 			// Special case: '…' is considered to be larger than Z or any of its variants
 			// but equal to any other character greater than Z
 			if (_indexChars[charIdx] === '…') {
-				return _isVariantOfZ(initialChar) || this.titlePrecedesIndexCharAt(title, charIdx-1);
+				return _isVariantOfZ(title.slice(0, 1)) || this.titlePrecedesIndexCharAt(title, charIdx-1);
 			} else {
-				return initialChar.localeCompare(_indexChars[charIdx], OCA.Music.Utils.getLocale()) < 0;
+				return title.localeCompare(_indexChars[charIdx], OCA.Music.Utils.getLocale()) < 0;
 			}
 		},
 

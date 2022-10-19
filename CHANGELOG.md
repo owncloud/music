@@ -5,6 +5,7 @@
 - Muting/unmuting by clicking the speaker icon
   [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 - Many new keyboard shortcuts
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
   * Numpad +/-: Increase/decrease volume
   * M: Mute toggle
   * J/L: Seek backwards/forward
@@ -13,7 +14,6 @@
   * Arrow Left/Right: Seek backwards/forward (was formerly skip previous/next)
   * Ctrl + Arrow Left/Right: Skip previous/next
   * Step size of seeking and volume control is increased when shift held down
-  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 
 ### Changed
 - Use background color definitions from the cloud core when available. Fixes a problem with the Nextcloud Breeze Dark theme introduced in v1.6.0.
@@ -39,6 +39,8 @@
   [#1000](https://github.com/owncloud/music/issues/1000)
 - Podcast title not showing on the German translation of 'Podcast channel "{{ title }}" added'
   [#1005](https://github.com/owncloud/music/pull/1005) @Root-Core
+- Alphabet navigation breaking down when the artist name starts with a Unicode character greater than U+FFFF
+  [#1021](https://github.com/owncloud/music/issues/1021)
 
 ## 1.6.0 - 2022-08-13
 ### Added

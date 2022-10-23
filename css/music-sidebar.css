@@ -10,6 +10,19 @@
 
 #app-sidebar {
 	position: fixed;
+	height: unset;
+	right: var(--body-container-margin, 0);
+	bottom: var(--body-container-margin, 0);
+	border-top-right-radius: var(--body-container-radius);
+	border-bottom-right-radius: var(--body-container-radius);
+	overflow-y: hidden;
+}
+
+#app-sidebar #app-sidebar-scroll-container {
+	height: 100%;
+	width: 100%;
+	padding-top: 8px;
+	overflow-y: auto;
 }
 
 #app-sidebar .sidebar-content {
@@ -20,7 +33,8 @@
 #app-sidebar .close {
 	position: fixed;
 	top: 45px;
-	right: 0;
+	right: var(--body-container-margin, 0);
+	border-top-right-radius: var(--body-container-radius);
 	padding: 14px;
 	width: 44px;
 	height: 44px;
@@ -37,7 +51,6 @@
 	width: 100%;
 	height: 35%;
 	background-size: contain;
-	margin-top: 8px;
 	display: table;
 }
 
@@ -161,8 +174,9 @@
 
 #app-sidebar #follow-playback {
 	position: fixed;
-	right: 0;
-	bottom: 0;
+	right: var(--body-container-margin, 0);
+	bottom: var(--body-container-margin, 0);
+	border-bottom-right-radius: var(--body-container-radius);
 	background-color: #ffffffcc;
 	margin: 0;
 	padding: 12px;

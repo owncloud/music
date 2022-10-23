@@ -25,6 +25,10 @@
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	z-index: 50;
 	text-align: left;
+
+	/* For NC25+: */
+	margin-bottom: var(--body-container-margin);
+	border-bottom-right-radius: var(--body-container-radius);
 }
 
 .ie #music-controls {

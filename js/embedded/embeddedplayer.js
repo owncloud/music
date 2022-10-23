@@ -426,6 +426,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			} else {
 				musicControls.addClass('tablet mobile extra-narrow');
 			}
+
+			// On NC25+, the music-controls pane has a rounded bottom-right corner by default, but this makes no sense when the sidebar is open.
+			const sidebarOpen = $('#app-sidebar-vue').length > 0;
+			musicControls.css('border-bottom-right-radius', sidebarOpen ? '0' : '');
 		};
 		parentContainer.resize(resizeControls);
 		resizeControls();

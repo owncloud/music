@@ -355,17 +355,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	function scrollOffset() {
 		var controls = document.getElementById('controls');
-		var header = document.getElementById('header');
-		var offset = controls ? controls.offsetHeight : 0;
-		if (OCA.Music.Utils.newLayoutStructure() && header) {
-			offset += header.offsetHeight;
+		var offset = controls?.offsetHeight ?? 0;
+		if (OCA.Music.Utils.getScrollContainer()[0] !== document.getElementById('app-content')) {
+			var header = document.getElementById('header');
+			offset += header?.offsetHeight;
 		}
 		return offset;
 	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		if (itemId) {
-			var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
+			var container = OCA.Music.Utils.getScrollContainer();
 			var element = $('#' + itemId);
 			if (container && element) {
 				if (animationTime === undefined) {
@@ -377,8 +377,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.scrollToTop = function() {
-		var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
-		container.scrollTo(0, 0);
+		OCA.Music.Utils.getScrollContainer().scrollTo(0, 0);
 	};
 
 	// Navigate to a view selected from the navigation bar
@@ -519,7 +518,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	});
 
-	if (OCA.Music.Utils.newLayoutStructure()) {
+	// Nextcloud 14+ uses taller header than ownCloud
+	if ($('#header').outerHeight() > 45) {
 		$('#controls').addClass('taller-header');
 	}
 

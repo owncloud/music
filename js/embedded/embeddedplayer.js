@@ -400,9 +400,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		var getViewWidth = function() {
 			var width = parentContainer.width();
-			// On the share page and in NC14+, the parent width has the scroll bar width
+			// On the share page and in NC14-24, the parent width has the scroll bar width
 			// already subtracted.
-			if (!isSharePage && !OCA.Music.Utils.newLayoutStructure()) {
+			if (!isSharePage && OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;

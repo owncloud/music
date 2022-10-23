@@ -27,12 +27,13 @@ OCA.Music.Utils = {
 	},
 
 	/**
-	 * Nextcloud 14 has a new overall layout structure which requires some
-	 * changes on the application logic.
+	 * Originally in ownCloud and in Nextcloud up to version 13, the #app-content element acted as the main scroll container.
+	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
+	 * to the Music app. Then, Nextcloud 25 changed this back to the original system.
 	 */
-	newLayoutStructure: function() {
-		// Detect the new structure from the presence of the #content-wrapper element.
-		return $('#content-wrapper').length === 0;
+	getScrollContainer: function() {
+		const appContent = $('#app-content');
+		return (appContent.css('overflow-y') === 'auto') ? appContent : $(window.document);
 	},
 
 	/**

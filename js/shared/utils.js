@@ -37,6 +37,14 @@ OCA.Music.Utils = {
 	},
 
 	/**
+	 * Nextcloud versions up to 13 and all ownCloud versions use the "legacy layout structure" which requires some
+	 * adjustments on our side, too.
+	 */
+	isLegacyLayout: function() {
+		return $('#content-wrapper').length > 0;
+	},
+
+	/**
 	 * Newer versions of Nextcloud come with a "dark theme" which may be activated
 	 * from the accessibility settings. Test if the theme is active.
 	 * Note: This may not be able to return the correct state during the application initialization,

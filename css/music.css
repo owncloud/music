@@ -31,7 +31,7 @@ body#body-user.dark {
 	width: 100%;
 }
 
-.app-music #app-navigation:not(.hidden) + #app-content {
+.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
 	position: absolute;
 	top: 0px;
 	left: 300px;

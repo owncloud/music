@@ -43,6 +43,11 @@
 	background-color: #ffffffcc;
 }
 
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .close {
+	right: 0;
+}
+
 #app-sidebar .close:hover {
 	opacity: 1;
 }
@@ -180,6 +185,12 @@
 	background-color: #ffffffcc;
 	margin: 0;
 	padding: 12px;
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar #follow-playback {
+	right: 0;
+	bottom: 0;
 }
 
 #app-sidebar .icon-loading:not(.inline) {

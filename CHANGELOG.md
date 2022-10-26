@@ -29,6 +29,7 @@
   [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
 - Wider progress bar on wide high-resolution screens
   [#1004](https://github.com/owncloud/music/issues/1004)
+- Removed the undocumented keyboard shortcuts for toggling the layout on Albums and Folders views
 
 ### Fixed
 - Small issues in the mobile and tablet layouts

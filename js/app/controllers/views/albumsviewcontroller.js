@@ -48,17 +48,6 @@ angular.module('Music').controller('AlbumsViewController', [
 			}
 		});
 
-		// View-specific keyboard shortcuts
-		function handleKeyDown(e) {
-			// toggle compact mode with alt+c
-			if (e.target == document.body && e.which == 67 && e.altKey) {
-				$timeout($scope.toggleAlbumsCompactLayout);
-				return false;
-			}
-			return true;
-		}
-		$document.bind('keydown', handleKeyDown);
-
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playTracks(listId, tracks, startIndex /*optional*/) {
 			var playlist = _.map(tracks, function(track) {
@@ -339,7 +328,6 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('deactivateView', function() {
-			$document.unbind('keydown', handleKeyDown);
 			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}

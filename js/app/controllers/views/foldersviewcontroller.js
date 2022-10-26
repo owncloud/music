@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2021
+ * @copyright Pauli Järvinen 2019 - 2022
  */
 
 
@@ -29,17 +29,6 @@ angular.module('Music').controller('FoldersViewController', [
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
-
-		// View-specific keyboard shortcuts
-		function handleKeyDown(e) {
-			// toggle flat/tree mode with alt+L
-			if (e.target == document.body && e.which == 76 && e.altKey) {
-				$timeout($scope.toggleFoldersFlatLayout);
-				return false;
-			}
-			return true;
-		}
-		$document.bind('keydown', handleKeyDown);
 
 		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
 			var startIndex = null;
@@ -220,7 +209,6 @@ angular.module('Music').controller('FoldersViewController', [
 		subscribe('foldersLayoutChanged', makeContentVisible);
 
 		subscribe('deactivateView', function() {
-			$document.unbind('keydown', handleKeyDown);
 			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}

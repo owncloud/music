@@ -400,9 +400,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 		var getViewWidth = function() {
 			var width = parentContainer.width();
-			// On the share page and in NC14+, the parent width has the scroll bar width
+			// On the share page and in NC14-24, the parent width has the scroll bar width
 			// already subtracted.
-			if (!isSharePage && !OCA.Music.Utils.newLayoutStructure()) {
+			if (!isSharePage && OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;
@@ -426,6 +426,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			} else {
 				musicControls.addClass('tablet mobile extra-narrow');
 			}
+
+			// On NC25+, the music-controls pane has a rounded bottom-right corner by default, but this makes no sense when the sidebar is open.
+			const sidebarOpen = $('#app-sidebar-vue').length > 0;
+			musicControls.css('border-bottom-right-radius', sidebarOpen ? '0' : '');
 		};
 		parentContainer.resize(resizeControls);
 		resizeControls();

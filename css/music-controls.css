@@ -18,6 +18,9 @@
 	overflow: visible;
 	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	z-index: 1;
+
+	/* For Nextcloud 25+: */
+	border-top-right-radius: var(--body-container-radius);
 }
 
 /* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed

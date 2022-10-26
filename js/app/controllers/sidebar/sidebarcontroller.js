@@ -20,9 +20,10 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
-				var sidebarWidth = $('#app-sidebar').outerWidth();
-				var contentWidth = $('#app-sidebar .sidebar-content').outerWidth();
-				var offset = sidebarWidth - contentWidth;
+				const sidebarRight = parseInt($('#app-sidebar').css('right'));
+				const sidebarWidth = $('#app-sidebar').outerWidth();
+				const contentWidth = $('#app-sidebar .sidebar-content').outerWidth();
+				const offset = sidebarRight + sidebarWidth - contentWidth;
 				$('#app-sidebar .close').css('right', offset);
 				$('#app-sidebar #follow-playback').css('right', offset);
 

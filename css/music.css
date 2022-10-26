@@ -31,6 +31,14 @@ body#body-user.dark {
 	width: 100%;
 }
 
+.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
+	position: absolute;
+	top: 0px;
+	left: 300px;
+	right: 0px;
+	margin-left: 0;
+}
+
 #app-content.with-app-sidebar {
 	margin-right: 27%;
 }

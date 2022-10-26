@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 - 2021 Pauli Järvinen
+ * @copyright 2019 - 2022 Pauli Järvinen
  *
  */
 
@@ -46,8 +46,7 @@ function($rootScope, $timeout, inViewService) {
 
 	var throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
 
-	var scrollContainer = OCA.Music.Utils.newLayoutStructure() ? document : document.getElementById('app-content');
-	scrollContainer.addEventListener('scroll', throttledOnScroll);
+	OCA.Music.Utils.getScrollContainer()[0].addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
 	$rootScope.$on('trackListCollapsed', throttledOnScroll);
 	$rootScope.$on('collectionLoaded', throttledOnScroll);
@@ -55,7 +54,7 @@ function($rootScope, $timeout, inViewService) {
 	$rootScope.$on('viewContentChanged', throttledOnScroll);
 	$rootScope.$watch('loading', throttledOnScroll);
 
-	$rootScope.$on('inViewObserver_visibilityEvent', function(event, itemsMayBeHidden) {
+	$rootScope.$on('inViewObserver_visibilityEvent', function(_event, itemsMayBeHidden) {
 		_trackVisibleRange = !itemsMayBeHidden;
 
 		resetAll();
@@ -66,7 +65,7 @@ function($rootScope, $timeout, inViewService) {
 		}
 	});
 
-	$rootScope.$on('inViewObserver_revealElement', function(event, element) {
+	$rootScope.$on('inViewObserver_revealElement', function(_event, element) {
 		var inst = _(_instances).find({element: element});
 
 		// cancel any pending "enter view" because it's about to happen immediately

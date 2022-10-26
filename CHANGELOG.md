@@ -41,6 +41,8 @@
   [#1005](https://github.com/owncloud/music/pull/1005) @Root-Core
 - Alphabet navigation breaking down when the artist name starts with a Unicode character greater than U+FFFF
   [#1021](https://github.com/owncloud/music/issues/1021)
+- Nextcloud 25: Web UI not working except for in a narrow window; alphabet navigation not working
+  [#1017](https://github.com/owncloud/music/issues/1017)
 
 ## 1.6.0 - 2022-08-13
 ### Added

@@ -19,6 +19,10 @@
 	#app-view {
 		padding-top: 66px;
 	}
+
+	div.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
+		left: 0;
+	}
 }
 
 #app-navigation + #app-content.tablet #controls {

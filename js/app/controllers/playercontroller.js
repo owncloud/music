@@ -573,85 +573,94 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
-	$document.bind('keydown', function(e) {
-		if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
-			var func = null, args = [];
-			switch (e.code) {
-				case 'Space':
-				case 'KeyK':
-					// Play / Pause / Stop
-					func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
-					break;
-				case 'KeyJ':
-					// Seek backwards
-					func = $scope.seekOffset;
-					args = [e.shiftKey ? -30 : -5];
-					break;
-				case 'KeyL':
-					// Seek forwards
-					func = $scope.seekOffset;
-					args = [e.shiftKey ? +30 : +5];
-					break;
-				case 'KeyM':
-					// Mute / Unmute
-					func = $scope.toggleVolume;
-					break;
-				case 'NumpadSubtract':
-					// Decrease volume
-					func = $scope.offsetVolume;
-					args = [e.shiftKey ? -20 : -5];
-					break;
-				case 'NumpadAdd':
-					// Increase volume
-					func = $scope.offsetVolume;
-					args = [e.shiftKey ? +20 : +5];
-					break;
-				case 'ArrowLeft':
-					// Previous title / seek backwards
-					func = e.ctrlKey ? $scope.prev : $scope.seekOffset;
-					args = [e.shiftKey ? -30 : -5];
-					break;
-				case 'ArrowRight':
-					// Next title / seek forwards
-					func = e.ctrlKey ? $scope.next : $scope.seekOffset;
-					args = [e.shiftKey ? +30 : +5];
-					break;
-				case 'Comma': // US: <
-					// Decrease playback speed
-					func = e.shiftKey ? $scope.stepPlaybackRate : null;
-					args = [null, true];
-					break;
-				case 'Period': // US: >
-					// Increase playback speed
-					func = e.shiftKey ? $scope.stepPlaybackRate : null;
-					break;
-				case 'Shift':
-				case 'ShiftLeft':
-				case 'ShiftRight':
-					func = (() => $scope.shiftHeldDown = true);
-					break;
+	function keyboardShortcutsDisabled() {
+		// The global disable switch for the keyboard shortcuts has been introduced by NC25
+		return (typeof OCP !== 'undefined') 
+				&& (typeof OCP?.Accessibility?.disableKeyboardShortcuts === 'function')
+				&& OCP.Accessibility.disableKeyboardShortcuts();
+	}
+
+	if (!keyboardShortcutsDisabled()) {
+		$document.bind('keydown', function(e) {
+			if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
+				var func = null, args = [];
+				switch (e.code) {
+					case 'Space':
+					case 'KeyK':
+						// Play / Pause / Stop
+						func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
+						break;
+					case 'KeyJ':
+						// Seek backwards
+						func = $scope.seekOffset;
+						args = [e.shiftKey ? -30 : -5];
+						break;
+					case 'KeyL':
+						// Seek forwards
+						func = $scope.seekOffset;
+						args = [e.shiftKey ? +30 : +5];
+						break;
+					case 'KeyM':
+						// Mute / Unmute
+						func = $scope.toggleVolume;
+						break;
+					case 'NumpadSubtract':
+						// Decrease volume
+						func = $scope.offsetVolume;
+						args = [e.shiftKey ? -20 : -5];
+						break;
+					case 'NumpadAdd':
+						// Increase volume
+						func = $scope.offsetVolume;
+						args = [e.shiftKey ? +20 : +5];
+						break;
+					case 'ArrowLeft':
+						// Previous title / seek backwards
+						func = e.ctrlKey ? $scope.prev : $scope.seekOffset;
+						args = [e.shiftKey ? -30 : -5];
+						break;
+					case 'ArrowRight':
+						// Next title / seek forwards
+						func = e.ctrlKey ? $scope.next : $scope.seekOffset;
+						args = [e.shiftKey ? +30 : +5];
+						break;
+					case 'Comma': // US: <
+						// Decrease playback speed
+						func = e.shiftKey ? $scope.stepPlaybackRate : null;
+						args = [null, true];
+						break;
+					case 'Period': // US: >
+						// Increase playback speed
+						func = e.shiftKey ? $scope.stepPlaybackRate : null;
+						break;
+					case 'Shift':
+					case 'ShiftLeft':
+					case 'ShiftRight':
+						func = (() => $scope.shiftHeldDown = true);
+						break;
+				}
+
+				if (func) {
+					$timeout(func, 0, true, ...args);
+					return false;
+				}
 			}
 
-			if (func) {
-				$timeout(func, 0, true, ...args);
+			return true;
+		});
+
+		$document.bind('keyup', function(e) {
+			if (e.key === 'Shift') {
+				$timeout(() => $scope.shiftHeldDown = false);
 				return false;
 			}
-		}
+			return true;
+		});
 
-		return true;
-	});
-
-	$document.bind('keyup', function(e) {
-		if (e.key === 'Shift') {
+		$(window).blur(function() {
 			$timeout(() => $scope.shiftHeldDown = false);
-			return false;
-		}
-		return true;
-	});
-
-	$(window).blur(function() {
-		$timeout(() => $scope.shiftHeldDown = false);
-	});
+		});
+	}
 
 	$scope.primaryTitle = function() {
 		return $scope.currentTrack?.title || $scope.currentTrack?.name

@@ -14,6 +14,7 @@
         "$": "readonly",
         "OC": "readonly",
         "OCA": "writable",
+        "OCP": "readonly",
         "angular": "readonly",
         "Cookies": "readonly",
         "t": "readonly",

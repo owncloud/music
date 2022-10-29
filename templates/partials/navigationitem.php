@@ -39,10 +39,10 @@
 						<a class="icon-rename"><span translate>Rename</span></a>
 					</li>
 					<li ng-click="$parent.$parent.importFromFile(playlist)">
-						<a class="icon-from-file"><span translate>Import from file</span></a>
+						<a class="icon-from-file svg"><span translate>Import from file</span></a>
 					</li>
 					<li ng-click="$parent.$parent.exportToFile(playlist)">
-						<a class="icon-to-file"><span translate>Export to file</span></a>
+						<a class="icon-to-file svg"><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="subMenuShown = !subMenuShown; $event.stopPropagation()">
 						<a class="icon-sort-by-alpha svg"><span translate>Sort …</span></a>
@@ -79,10 +79,10 @@
 						<a class="icon-details"><span translate>Getting started</span></a>
 					</li>
 					<li ng-click="$parent.importFromFileToRadio()">
-						<a class="icon-from-file"><span translate>Import from file</span></a>
+						<a class="icon-from-file svg"><span translate>Import from file</span></a>
 					</li>
 					<li ng-click="$parent.exportRadioToFile()">
-						<a class="icon-to-file"><span translate>Export to file</span></a>
+						<a class="icon-to-file svg"><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="$parent.addRadio()">
 						<a class="icon-add"><span translate>Add manually</span></a>

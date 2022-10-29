@@ -247,26 +247,6 @@ body:not(.snapjs-left) #controls.taller-header {
 	cursor: pointer;
 }
 
-.icon-radio {
-	background-image: url(../img/radio.svg);
-}
-
-.icon-play-big {
-	background-image: url(../img/play-big.svg);
-}
-
-.icon-pause-big {
-	background-image: url(../img/pause-big.svg);
-}
-
-.icon-stop {
-	background-image: url(../img/stop.svg);
-}
-
-.icon-time {
-	background-image: url(../img/access-time.svg)
-}
-
 
 /******************************************/
 /* Two-line layout used on narrow windows */

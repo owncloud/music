@@ -1,0 +1,85 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2022
+ */
+ 
+.icon-audio {
+	background-image: url(../img/audio.svg);
+}
+
+.icon-radio {
+	background-image: url(../img/radio.svg);
+}
+
+.icon-play-big {
+	background-image: url(../img/play-big.svg);
+}
+
+.icon-pause-big {
+	background-image: url(../img/pause-big.svg);
+}
+
+.icon-stop {
+	background-image: url(../img/stop.svg);
+}
+
+.icon-time {
+	background-image: url(../img/access-time.svg);
+}
+
+.icon-to-file {
+	background-image: url(../img/to-file.svg);
+}
+
+.icon-from-file {
+	background-image: url(../img/from-file.svg);
+}
+
+.icon-sort-by-alpha {
+	background-image: url(../img/sort-by-alpha.svg);
+}
+
+.icon-album {
+	background-image: url(../img/album.svg);
+}
+
+.icon-folder-nav {
+	background-image: url(../img/folder.svg);
+}
+
+.icon-audiotrack {
+	background-image: url(../img/audiotrack.svg);
+}
+
+.icon-library-music {
+	background-image: url(../img/library-music.svg);
+}
+
+.icon-radio {
+	background-image: url(../img/radio.svg);
+}
+
+.icon-podcast {
+	background-image: url(../img/podcasts.svg);
+}
+
+.icon-reload {
+	background-image: url(../img/reload.svg);
+}
+
+.icon-radio-button {
+	background-image: url(../img/radio-button.svg);
+}
+
+.icon-radio-button-checked {
+	background-image: url(../img/radio-button-checked.svg);
+}
+
+.icon-playlist {
+	background-image: url(../img/playlist-play.svg);
+}

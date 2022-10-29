@@ -152,6 +152,10 @@
 	height: 100%;
 }
 
+#app-navigation .item-with-actions .actions .popovermenu a {
+	box-shadow: unset; /* older NC versions mistakenly apply also here the blue edge meant for navi pane items */
+}
+
 #app-navigation button.disabled {
 	opacity: .5;
 	pointer-events: none;

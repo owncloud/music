@@ -45,7 +45,7 @@
 						<a class="icon-to-file"><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="subMenuShown = !subMenuShown; $event.stopPropagation()">
-						<a class="icon-sort-by-alpha"><span translate>Sort …</span></a>
+						<a class="icon-sort-by-alpha svg"><span translate>Sort …</span></a>
 						<div class="popovermenu bubble submenu" ng-show="subMenuShown">
 							<ul>
 								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'track')">

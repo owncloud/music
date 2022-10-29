@@ -9,12 +9,9 @@
  */
  
 .dark-theme .svg,
+.dark-theme .svg > span, /* label within the icon item is inverted again, effectively restoring the default color */
 .dark-theme :not(.svg) > .play-pause {
 	filter: invert(100%);
-}
-
-.dark-theme .icon-sort-by-alpha {
-	background-image: url(../img/sort-by-alpha-white.svg);
 }
 
 .dark-theme #app-sidebar .close {
@@ -40,12 +37,4 @@
 
 .dark-theme .icon-reload {
 	background-image: url(../img/reload-inverted.svg);
-}
-
-.dark-theme .icon-stop {
-	background-image: url(../img/stop-white.svg);
-}
-
-.dark-theme .icon-time {
-	background-image: url(../img/access-time-white.svg)
 }

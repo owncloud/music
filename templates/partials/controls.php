@@ -10,7 +10,7 @@
 			ng-on-long-press="playbackBtnLongPress($event)"
 			data-long-press-delay="500" 
 		>
-			<div id="stop-button" ng-click="stop()" class="control icon-stop"
+			<div id="stop-button" ng-click="stop()" class="control icon-stop svg"
 				ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
 			</div>
 			<div id="play-pause-button" ng-click="togglePlayback()" class="control svg"
@@ -20,20 +20,20 @@
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">
 				<ul>
 					<li ng-show="!shiftHeldDown" ng-click="stop()">
-						<a class="icon-stop"><span translate>Stop</span></a>
+						<a class="icon-stop svg"><span translate>Stop</span></a>
 					</li>
 					<li ng-show="shiftHeldDown" ng-click="togglePlayback()">
-						<a ng-class="playing ? 'icon-pause-big' : 'icon-play-big'">
+						<a ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="svg">
 							<span>{{ (playing ? 'Pause' : 'Play') | translate }}</span>
 						</a>
 					</li>
 					<li ng-click="$event.stopPropagation()" id="playback-rate-control">
-						<a class="icon-time" ng-click="stepPlaybackRate(null, false, true)"
+						<a class="icon-time svg" ng-click="stepPlaybackRate(null, false, true)"
 							ng-on-contextmenu="stepPlaybackRate($event, true, true)"
 							ng-on-long-press="stepPlaybackRate($event, true, true)"
 							data-long-press-delay="500"
 						>
-							<span translate>Playback rate</span>: {{ playbackRate | number : 2 }}
+							<span translate>Playback rate</span><span>: {{ playbackRate | number : 2 }}</span>
 						</a>
 						<input type="range" min="0.5" max="3.0" step="0.05" ng-model="playbackRate"/>
 					</li>

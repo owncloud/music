@@ -17,6 +17,7 @@
 
 .app-music #app .popovermenu ul {
 	display: block;
+	margin: var(--default-grid-baseline);
 }
 
 .app-music #app .popovermenu ul li {

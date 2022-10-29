@@ -7,11 +7,11 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 #app-navigation {
-	padding-bottom: 44px !important; /* style bottom-padding to override NC13 app-without-settings class */
+	padding-bottom: calc(44px + var(--body-container-margin, 0px)) !important;
 	z-index: 999;
 	display: block;
 }
@@ -182,14 +182,22 @@
 	float: none;
 }
 
-#app-navigation .music-nav-settings {
-	position: fixed !important;
-	width: inherit !important;
+#app-navigation #music-nav-settings {
+	position: fixed;
+	width: unset;
 	bottom: 0;
+	left: 0;
+	right: 0;
+	max-width: 300px;
+	margin: var(--body-container-margin);
 	z-index: 140;
 }
 
-#app-navigation .music-nav-settings > a:first-child img {
+.legacy-layout #app-navigation #music-nav-settings {
+	max-width: 250px;
+}
+
+#app-navigation #music-nav-settings > a:first-child img {
 	vertical-align: text-top;
 	width: 16px;
 	height: 16px;

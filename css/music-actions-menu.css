@@ -26,12 +26,18 @@
 }
 
 .app-music #app .popovermenu ul li a {
-	padding-left: 32px;
+	padding-left: 0;
 	padding-right: 12px;
 	background-position: 10px center;
 	background-size: 16px;
 	width: 100%;
 	opacity: .7;
+}
+
+.app-music #app .popovermenu ul li a .icon {
+	padding: 22px 0 22px 44px;
+	vertical-align: bottom;
+	background-size: inherit;
 }
 
 .app-music #app .popovermenu ul a:hover {

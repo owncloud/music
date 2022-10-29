@@ -9,7 +9,6 @@
  */
  
 .dark-theme .svg,
-.dark-theme .svg > span, /* label within the icon item is inverted again, effectively restoring the default color */
 .dark-theme :not(.svg) > .play-pause {
 	filter: invert(100%);
 }

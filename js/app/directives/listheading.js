@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 - 2021 Pauli Järvinen
+ * @copyright 2019 - 2022 Pauli Järvinen
  *
  */
 
@@ -106,13 +106,15 @@ function ($rootScope, gettextCatalog) {
 			for (var action of actions) {
 				var listitem = document.createElement('li');
 				var link = document.createElement('a');
-				link.className = 'icon-' + action.icon;
-				var span = document.createElement('span');
-				span.innerText = gettextCatalog.getString(action.text);
+				var icon = document.createElement('span');
+				icon.className = 'icon icon-' + action.icon;
+				var text = document.createElement('span');
+				text.innerText = gettextCatalog.getString(action.text);
 				// Note: l10n-extract cannot find localised string defined like above.
 				// Ensure that the same string can be extracted from somewhere else.
 				$(listitem).data('callback', action.callback);
-				link.appendChild(span);
+				link.appendChild(icon);
+				link.appendChild(text);
 				listitem.appendChild(link);
 				list.appendChild(listitem);
 			}

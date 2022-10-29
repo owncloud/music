@@ -33,19 +33,19 @@
 			<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
 				<ul>
 					<li ng-click="$parent.$parent.showDetails(playlist)">
-						<a class="icon-details"><span translate>Details</span></a>
+						<a><span class="icon-details icon"></span><span translate>Details</span></a>
 					</li>
 					<li ng-click="$parent.$parent.startEdit(playlist)" class="app-navigation-noclose">
-						<a class="icon-rename"><span translate>Rename</span></a>
+						<a><span class="icon-rename icon"></span><span translate>Rename</span></a>
 					</li>
 					<li ng-click="$parent.$parent.importFromFile(playlist)">
-						<a class="icon-from-file svg"><span translate>Import from file</span></a>
+						<a><span class="icon-from-file icon svg"></span><span translate>Import from file</span></a>
 					</li>
 					<li ng-click="$parent.$parent.exportToFile(playlist)">
-						<a class="icon-to-file svg"><span translate>Export to file</span></a>
+						<a><span class="icon-to-file icon svg"></span><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="subMenuShown = !subMenuShown; $event.stopPropagation()">
-						<a class="icon-sort-by-alpha svg"><span translate>Sort …</span></a>
+						<a><span class="icon-sort-by-alpha icon svg"></span><span translate>Sort …</span></a>
 						<div class="popovermenu bubble submenu" ng-show="subMenuShown">
 							<ul>
 								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'track')">
@@ -61,10 +61,10 @@
 						</div>
 					</li>
 					<li ng-click="$parent.$parent.removeDuplicates(playlist)">
-						<a class="icon-close"><span translate>Remove duplicates</span></a>
+						<a><span class="icon-close icon"></span><span translate>Remove duplicates</span></a>
 					</li>
 					<li ng-click="$parent.$parent.remove(playlist)">
-						<a class="icon-delete"><span translate>Delete</span></a>
+						<a><span class="icon-delete icon"></span><span translate>Delete</span></a>
 					</li>
 				</ul>
 			</div>
@@ -76,16 +76,16 @@
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'radio'">
 				<ul>
 					<li ng-click="$parent.showRadioHint()">
-						<a class="icon-details"><span translate>Getting started</span></a>
+						<a><span class="icon-details icon"></span><span translate>Getting started</span></a>
 					</li>
 					<li ng-click="$parent.importFromFileToRadio()">
-						<a class="icon-from-file svg"><span translate>Import from file</span></a>
+						<a><span class="icon-from-file icon svg"></span><span translate>Import from file</span></a>
 					</li>
 					<li ng-click="$parent.exportRadioToFile()">
-						<a class="icon-to-file svg"><span translate>Export to file</span></a>
+						<a><span class="icon-to-file icon svg"></span><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="$parent.addRadio()">
-						<a class="icon-add"><span translate>Add manually</span></a>
+						<a><span class="icon-add icon"></span><span translate>Add manually</span></a>
 					</li>
 				</ul>
 			</div>
@@ -97,10 +97,10 @@
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'podcasts'">
 				<ul>
 					<li ng-click="$parent.addPodcast()">
-						<a class="icon-add"><span translate>Add from RSS feed</span></a>
+						<a><span class="icon-add icon"></span><span translate>Add from RSS feed</span></a>
 					</li>
 					<li ng-click="$parent.reloadPodcasts($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
-						<a class="icon-reload"><span translate>Reload channels</span></a>
+						<a><span class="icon-reload icon"></span><span translate>Reload channels</span></a>
 					</li>
 				</ul>
 			</div>
@@ -111,10 +111,10 @@
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'albums'">
 				<ul>
 					<li ng-click="$parent.toggleAlbumsCompactLayout(false)">
-						<a ng-class="$parent.albumsCompactLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"><span translate>Normal layout</span></a>
+						<a><span class="icon" ng-class="$parent.albumsCompactLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"></span><span translate>Normal layout</span></a>
 					</li>
 					<li ng-click="$parent.toggleAlbumsCompactLayout(true)">
-						<a ng-class="$parent.albumsCompactLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"><span translate>Compact layout</span></a>
+						<a><span class="icon" ng-class="$parent.albumsCompactLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"></span><span translate>Compact layout</span></a>
 					</li>
 				</ul>
 			</div>
@@ -125,10 +125,10 @@
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'folders'">
 				<ul>
 					<li ng-click="$parent.toggleFoldersFlatLayout(false)">
-						<a ng-class="$parent.foldersFlatLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"><span translate>Tree layout</span></a>
+						<a><span class="icon" ng-class="$parent.foldersFlatLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"></span><span translate>Tree layout</span></a>
 					</li>
 					<li ng-click="$parent.toggleFoldersFlatLayout(true)">
-						<a ng-class="$parent.foldersFlatLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"><span translate>Flat layout</span></a>
+						<a><span class="icon" ng-class="$parent.foldersFlatLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"></span><span translate>Flat layout</span></a>
 					</li>
 				</ul>
 			</div>

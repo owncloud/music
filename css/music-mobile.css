@@ -128,7 +128,10 @@
 	left: 124px;
 }
 .mobile.portrait #controls #play-pause-menu {
-	right: -20px;
+	right: -54px;
+}
+.mobile.portrait #controls #play-pause-menu::after /* the carret */ {
+	left: 36px;
 }
 
 /* extra narrow screen matches small smart phones; drop non-essential elements and margins */

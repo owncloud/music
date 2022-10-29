@@ -86,6 +86,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	right: 50% ;
 }
 
+#controls #context-menu-skip-prev {
+	display: none;
+}
+
 #controls #playback-rate-control input {
 	height: 3px;
 	min-height: 3px;

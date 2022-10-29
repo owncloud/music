@@ -109,8 +109,11 @@
 }
 
 /* in portrait, there's even less space */
-.mobile.portrait #play-controls img:first-child {
+.mobile.portrait #controls #skip-prev-button {
 	display: none;
+}
+.mobile.portrait #controls #context-menu-skip-prev {
+	display: block;
 }
 .mobile.portrait #controls.two-line #shuffle {
 	left: 35px;

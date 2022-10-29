@@ -28,6 +28,14 @@
 	background-image: url(../img/stop.svg);
 }
 
+.icon-skip-prev {
+	background-image: url(../img/skip-previous.svg);
+}
+
+.icon-skip-next {
+	background-image: url(../img/skip-next.svg);
+}
+
 .icon-time {
 	background-image: url(../img/access-time.svg);
 }

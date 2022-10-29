@@ -14,6 +14,7 @@
   * Arrow Left/Right: Seek backwards/forward (was formerly skip previous/next)
   * Ctrl + Arrow Left/Right: Skip previous/next
   * Step size of seeking and volume control is increased when shift held down
+- 'Skip previous' shown in the play/pause context menu on narrow screens where it doesn't fit in the controls pane
 
 ### Changed
 - Use background color definitions from the cloud core when available. Fixes a problem with the Nextcloud Breeze Dark theme introduced in v1.6.0.

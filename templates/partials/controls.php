@@ -2,7 +2,7 @@
 
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">
-		<img ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
+		<img id="skip-prev-button" ng-click="prev()" class="control small svg" alt="{{ 'Previous' | translate }}"
 			src="<?php HtmlUtil::printSvgPath('skip-previous') ?>" />
 		<div id="play-pause-container"
 			title="{{ playPauseContextMenuVisible ? null : ('press and hold for more' | translate) }}"
@@ -26,6 +26,9 @@
 						<a ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" class="svg">
 							<span>{{ (playing ? 'Pause' : 'Play') | translate }}</span>
 						</a>
+					</li>
+					<li id="context-menu-skip-prev" ng-click="prev()">
+						<a class="icon-skip-prev svg"><span translate>Previous</span></a>
 					</li>
 					<li ng-click="$event.stopPropagation()" id="playback-rate-control">
 						<a class="icon-time svg" ng-click="stepPlaybackRate(null, false, true)"

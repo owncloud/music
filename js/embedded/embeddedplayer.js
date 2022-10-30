@@ -266,8 +266,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 						previewRatio = preview / songLength_s;
 					}
 				}
+
+				text_seperator.show();
+				text_songLength.show();
 			} else {
-				text.text(fmt(playTime_s));
+				text_playTime.text(fmt(playTime_s));
+				text_seperator.hide();
+				text_songLength.hide();
 			}
 
 			if (previewRatio === null) {

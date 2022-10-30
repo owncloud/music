@@ -48,4 +48,13 @@
 			<step>OCA\Music\Migration\TimestampInit</step>
 		</post-migration>
 	</repair-steps>
+	<navigations>
+		<navigation>
+			<id>music</id>
+			<name>Music</name>
+			<route>music.page.index</route>
+			<icon>music.svg</icon>
+			<order>10</order>
+		</navigation>
+	</navigations>
 </info>

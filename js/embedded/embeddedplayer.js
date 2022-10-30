@@ -230,9 +230,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		var seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
 		var playBar = $(document.createElement('div')).attr('class', 'play-bar');
+		var transBar = $(document.createElement('div')).attr('class', 'play-bar translucent');
 		var bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
 
 		seekBar.append(playBar);
+		seekBar.append(transBar);
 		seekBar.append(bufferBar);
 
 		var loadingText = $(document.createElement('span')).attr('class', 'progress-text').text(t('music', 'Loading…')).hide();
@@ -246,6 +248,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		function updateProgress() {
 			var ratio = 0;
+			var previewRatio = null;
 			if ($.isNumeric(songLength_s)) {
 				// Filter transient mouse movements
 				var preview = playTimePreview_tf ? null : playTimePreview_s;
@@ -259,12 +262,22 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 					var timeSincePreview = Date.now() - playTimePreview_ts;
 					if (timeSincePreview >= 2000) {
 						seekSetPreview(null);
+					} else {
+						previewRatio = preview / songLength_s;
 					}
 				}
 			} else {
 				text.text(fmt(playTime_s));
 			}
-			playBar.css('width', 100 * ratio + '%');
+
+			if (previewRatio === null) {
+				playBar.css('width', 100 * ratio + '%');
+				transBar.css('width', '0');
+			} else {
+				playBar.css('width', Math.min(ratio, previewRatio) * 100 + '%');
+				transBar.css('left', Math.min(ratio, previewRatio) * 100 + '%');
+				transBar.css('width', Math.abs(ratio - previewRatio) * 100 + '%');
+			}
 		}
 
 		function setCursorType(type) {
@@ -358,7 +371,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				updateProgress();
 			}, 100);
 		});
-		seekBar.mouseout(function() {
+		seekBar.mouseleave(function() {
 			seekSetPreview(null);
 			text_playTime.css('font-style', 'normal');
 		});

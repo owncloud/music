@@ -254,6 +254,10 @@
 	background-color: #1d2d44;
 }
 
+#music-controls .translucent {
+	opacity: 0.75;
+}
+
 #music-controls .buffer-bar {
 	opacity: 0.1;
 }
@@ -408,6 +412,10 @@ body.snapjs-left #music-controls {
 
 #music-controls.dark-theme .svg {
 	filter: invert(100%);
+}
+
+#music-controls.dark-theme .translucent {
+	opacity: 0.9;
 }
 
 .musicPlaylistTabView.dark-theme ol li:hover,

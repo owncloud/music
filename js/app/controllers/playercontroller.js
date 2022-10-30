@@ -32,7 +32,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		currentPreview: null,
 		currentPreview_ts: null, // Activation time stamp (Type: Date)
 		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
-		previewVisible: () => $scope.position.currentPreview && !$scope.position.currentPreview_tf,
+		previewVisible: () => ($scope.position.currentPreview !== null) && !$scope.position.currentPreview_tf,
 		current: 0,
 		total: 0
 	};
@@ -541,17 +541,22 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	// Seekbar preview mouse support
-	$scope.seekbarPreview = function($event) {
-		if (!$scope.player.seekingSupported()) return;
-
+	function updateSeekPreview(xCoordinate) {
 		var seekBar = $('.seek-bar');
-		var offsetX = $event.clientX - seekBar.offset().left;
+		var offsetX = xCoordinate - seekBar.offset().left;
+		offsetX = Math.min(Math.max(0, offsetX), seekBar.width());
 		var ratio = offsetX / seekBar.width();
 		var timestamp = ratio * $scope.position.total;
-		
+
 		$scope.position.previewPercent = ratio * 100;
 		$scope.position.currentPreview = timestamp;
-		$scope.position.currentPreview_ts = Date.now();
+	}
+
+	$scope.seekbarPreview = function($event) {
+		if ($scope.player.seekingSupported()) {
+			updateSeekPreview($event.clientX);
+			$scope.position.currentPreview_ts = Date.now();
+		}
 	};
 
 	$scope.seekbarEnter = function() {
@@ -566,24 +571,16 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	// Seekbar preview touch support
 	$scope.seekbarTouchLeave = function($event) {
-		if (!$scope.player.seekingSupported() || $event?.type !== 'touchend') return;
-		
-		// Reverse calculate on seek position
-		var ratio = $scope.position.currentPreview / $scope.position.total;
-		$scope.player.seek(ratio);
-		$scope.seekbarLeave();
+		if ($scope.player.seekingSupported() && $event?.type === 'touchend') {
+			$scope.player.seek($scope.position.previewPercent / 100);
+			$scope.seekbarLeave();
+		}
 	};
 
 	$scope.seekbarTouchPreview = function($event) {
-		if (!$scope.player.seekingSupported()) return;
-
-		var rect = $event.target.getBoundingClientRect();
-		var x = $event.targetTouches[0].clientX - rect.x;
-		var offsetX = Math.min(Math.max(0, x), rect.width);
-		var ratio = offsetX / rect.width;
-		var timestamp = ratio * $scope.position.total;
-
-		$scope.position.currentPreview = timestamp;
+		if ($scope.player.seekingSupported($event.targetTouches[0].clientX)) {
+			updateSeekPreview($event.targetTouches[0].clientX);
+		}
 	};
 
 	$scope.seekOffset = function(offset) {

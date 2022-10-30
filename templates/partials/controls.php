@@ -70,7 +70,7 @@
 		<div class="progress">
 			<div class="seek-bar" ng-style="{'cursor': seekCursorType}"
 				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseenter="seekbarEnter($event)" ng-mouseleave="seekbarLeave($event)"
-				ng-touchmove="seekbarTouchPreview($event)" ng-touchend="seekbarTouchLeave($event)"
+				ng-on-touchmove="seekbarTouchPreview($event)" ng-on-touchend="seekbarTouchLeave($event)"
 			>
 				<div class="buffer-bar" ng-style="{'width': position.bufferPercent + '%', 'cursor': seekCursorType}"></div>
 				<div class="play-bar" ng-show="position.total"

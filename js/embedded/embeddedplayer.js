@@ -253,8 +253,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				// Filter transient mouse movements
 				var preview = playTimePreview_tf ? null : playTimePreview_s;
 
-				text_playTime.text(fmt(preview || playTime_s));
-				text_playTime.css('font-style', preview ? 'italic' : 'normal');
+				text_playTime.text(fmt(preview ?? playTime_s));
+				text_playTime.css('font-style', (preview !== null) ? 'italic' : 'normal');
 				ratio = playTime_s / songLength_s;
 
 				// Show progress again instead of preview after a timeout of 2000ms
@@ -350,7 +350,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			return percentage * player.getDuration();
 		}
 		function seekSetPreview(value) {
-			playTimePreview_ts = value ? Date.now() : null;
+			playTimePreview_ts = (value !== null) ? Date.now() : null;
 			playTimePreview_s = value;
 
 			// manually update is necessary if player is not progressing

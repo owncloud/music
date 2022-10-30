@@ -30,6 +30,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	var nextPrevEnabled = false;
 	var playDelayTimer = null;
 	var currentFileId = null;
+	var playTimePreview_tf = null; // Transient mouse movement filter (Type: Number/Timer-Handle)
+	var playTimePreview_ts = null; // Activation time stamp (Type: Date)
+	var playTimePreview_s = null;
 	var playTime_s = 0;
 
 	// UI elements (jQuery)
@@ -212,17 +215,31 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createProgressInfo() {
+		const fmt = OCA.Music.Utils.formatPlayTime; // give a shorthand name for the utility function
+
 		var container = $(document.createElement('div')).attr('class', 'progress-info');
 
 		var text = $(document.createElement('span')).attr('class', 'progress-text');
+		var text_playTime = $(document.createElement('span'));
+		var text_seperator = $(document.createElement('span')).append('\xa0/\xa0');
+		var text_songLength = $(document.createElement('span'));
+
+		text.append(text_playTime);
+		text.append(text_seperator);
+		text.append(text_songLength);
 
 		var seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
 		var playBar = $(document.createElement('div')).attr('class', 'play-bar');
+		var transBar = $(document.createElement('div')).attr('class', 'play-bar translucent');
 		var bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
 
 		seekBar.append(playBar);
+		seekBar.append(transBar);
 		seekBar.append(bufferBar);
 
+		var loadingText = $(document.createElement('span')).attr('class', 'progress-text').text(t('music', 'Loading…')).hide();
+
+		container.append(loadingText);
 		container.append(text);
 		container.append(seekBar);
 
@@ -230,17 +247,42 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		var songLength_s = 0;
 
 		function updateProgress() {
-			var fmt = OCA.Music.Utils.formatPlayTime; // give a shorthand name for the utility function
 			var ratio = 0;
-			if (songLength_s === 0) {
-				text.text(t('music', 'Loading…'));
-			} else if ($.isNumeric(songLength_s)) {
-				text.text(fmt(playTime_s) + '/' + fmt(songLength_s));
+			var previewRatio = null;
+			if ($.isNumeric(songLength_s)) {
+				// Filter transient mouse movements
+				var preview = playTimePreview_tf ? null : playTimePreview_s;
+
+				text_playTime.text(fmt(preview ?? playTime_s));
+				text_playTime.css('font-style', (preview !== null) ? 'italic' : 'normal');
 				ratio = playTime_s / songLength_s;
+
+				// Show progress again instead of preview after a timeout of 2000ms
+				if (playTimePreview_ts) {
+					var timeSincePreview = Date.now() - playTimePreview_ts;
+					if (timeSincePreview >= 2000) {
+						seekSetPreview(null);
+					} else {
+						previewRatio = preview / songLength_s;
+					}
+				}
+
+				text_seperator.show();
+				text_songLength.show();
 			} else {
-				text.text(fmt(playTime_s));
+				text_playTime.text(fmt(playTime_s));
+				text_seperator.hide();
+				text_songLength.hide();
 			}
-			playBar.css('width', 100 * ratio + '%');
+
+			if (previewRatio === null) {
+				playBar.css('width', 100 * ratio + '%');
+				transBar.css('width', '0');
+			} else {
+				playBar.css('width', Math.min(ratio, previewRatio) * 100 + '%');
+				transBar.css('left', Math.min(ratio, previewRatio) * 100 + '%');
+				transBar.css('width', Math.abs(ratio - previewRatio) * 100 + '%');
+			}
 		}
 
 		function setCursorType(type) {
@@ -249,9 +291,23 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			bufferBar.css('cursor', type);
 		}
 
+		function loadingHide() {
+			loadingText.hide();
+			text.show();
+		}
+
+		function loadingShow() {
+			loadingText.show();
+			text.hide();
+		}
+
 		player.on('loading', function() {
+			playTimePreview_tf = null;
+			playTimePreview_ts = null;
+			playTimePreview_s = null;
 			playTime_s = 0;
 			songLength_s = 0;
+			loadingShow();
 			updateProgress();
 			bufferBar.css('width', '0');
 			setCursorType('default');
@@ -268,6 +324,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 		player.on('duration', function(msecs) {
 			songLength_s = msecs/1000;
+			text_songLength.text(fmt(songLength_s));
+			loadingHide();
 			updateProgress();
 			if (player.seekingSupported()) {
 				setCursorType('pointer');
@@ -283,10 +341,66 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 
 		// Seeking
+		function seekPositionPercentage(event) {
+			var posX = $(seekBar).offset().left;
+			return (event.pageX - posX) / seekBar.width();
+		}
+		function seekPositionTotal(event) {
+			var percentage = seekPositionPercentage(event);
+			return percentage * player.getDuration();
+		}
+		function seekSetPreview(value) {
+			playTimePreview_ts = (value !== null) ? Date.now() : null;
+			playTimePreview_s = value;
+
+			// manually update is necessary if player is not progressing
+			// it also feels choppy if we rely on the progress event only
+			updateProgress();
+		}
 		seekBar.click(function (event) {
-			var posX = $(this).offset().left;
-			var percentage = (event.pageX - posX) / seekBar.width();
+			var percentage = seekPositionPercentage(event);
 			player.seek(percentage);
+			seekSetPreview(null); // Reset seek preview
+		});
+
+		// Seekbar preview mouse support
+		seekBar.mousemove(function(event) {
+			if (player.seekingSupported()) {
+				seekSetPreview(seekPositionTotal(event) / 1000);
+			}
+		});
+		seekBar.mouseenter(function() {
+			// Simple filter for transient mouse movements
+			playTimePreview_tf = setTimeout(function() {
+				playTimePreview_tf = null;
+				updateProgress();
+			}, 100);
+		});
+		seekBar.mouseleave(function() {
+			seekSetPreview(null);
+			text_playTime.css('font-style', 'normal');
+		});
+
+		// Seekbar preview touch support
+		seekBar.bind('touchmove', function($event) {
+			if (!player.seekingSupported()) return;
+
+			var rect = $event.target.getBoundingClientRect();
+			var x = $event.targetTouches[0].clientX - rect.x;
+			var offsetX = Math.min(Math.max(0, x), rect.width);
+			var ratio = offsetX / rect.width;
+
+			seekSetPreview(ratio * songLength_s);
+		});
+
+		seekBar.bind('touchend', function($event) {
+			if (!player.seekingSupported() || $event?.type !== 'touchend') return;
+			
+			// Reverse calculate on seek position
+			player.seek(playTimePreview_s / songLength_s);
+			
+			seekSetPreview(null);
+			text_playTime.css('font-style', 'normal');
 		});
 
 		return container;

@@ -26,8 +26,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
 	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
 	$scope.position = {
-		bufferPercent: '0%',
-		currentPercent: '0%',
+		bufferPercent: 0,
+		currentPercent: 0,
+		previewPercent: 0,
+		currentPreview: null,
+		currentPreview_ts: null, // Activation time stamp (Type: Date)
+		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
+		previewVisible: () => ($scope.position.currentPreview !== null) && !$scope.position.currentPreview_tf,
 		current: 0,
 		total: 0
 	};
@@ -41,6 +46,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	const PLAYBACK_RATE_STEPPING = 0.25;
 	const PLAYBACK_RATE_MIN = 0.5;
 	const PLAYBACK_RATE_MAX = 3.0;
+
+	$scope.min = Math.min;
+	$scope.abs = Math.abs;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -107,6 +115,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 						onEnd();
 					}
 				}
+			}
+		}
+
+		// Show progress again instead of preview after a timeout of 2000ms
+		if ($scope.position.currentPreview_ts) {
+			var timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
+			if (timeSincePreview >= 2000) {
+				$scope.seekbarLeave();
 			}
 		}
 	});
@@ -333,6 +349,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		if (loading) {
 			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
+			$scope.position.currentPreview = null;
+			$scope.position.currentPreview_ts = null;
+			$scope.position.currentPreview_tf = null;
 			$scope.position.bufferPercent = 0;
 			$scope.position.total = 0;
 		}
@@ -394,11 +413,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		$scope.position.current = position;
 		$scope.position.total = duration;
-		$scope.position.currentPercent = (duration > 0) ? position/duration*100 + '%' : 0;
+		$scope.position.currentPercent = (duration > 0) ? position/duration*100 : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.min(100, percent) + '%';
+		$scope.position.bufferPercent = Math.min(100, percent);
 	};
 
 	$scope.play = function() {
@@ -521,6 +540,49 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	// Seekbar preview mouse support
+	function updateSeekPreview(xCoordinate) {
+		var seekBar = $('.seek-bar');
+		var offsetX = xCoordinate - seekBar.offset().left;
+		offsetX = Math.min(Math.max(0, offsetX), seekBar.width());
+		var ratio = offsetX / seekBar.width();
+		var timestamp = ratio * $scope.position.total;
+
+		$scope.position.previewPercent = ratio * 100;
+		$scope.position.currentPreview = timestamp;
+	}
+
+	$scope.seekbarPreview = function($event) {
+		if ($scope.player.seekingSupported()) {
+			updateSeekPreview($event.clientX);
+			$scope.position.currentPreview_ts = Date.now();
+		}
+	};
+
+	$scope.seekbarEnter = function() {
+		// Simple filter for transient mouse movements
+		$scope.position.currentPreview_tf = $timeout(() => $scope.position.currentPreview_tf = null, 100);
+	};
+
+	$scope.seekbarLeave = function() {
+		$scope.position.currentPreview = null;
+		$scope.position.currentPreview_ts = null;
+	};
+
+	// Seekbar preview touch support
+	$scope.seekbarTouchLeave = function($event) {
+		if ($scope.player.seekingSupported() && $event?.type === 'touchend') {
+			$scope.player.seek($scope.position.previewPercent / 100);
+			$scope.seekbarLeave();
+		}
+	};
+
+	$scope.seekbarTouchPreview = function($event) {
+		if ($scope.player.seekingSupported($event.targetTouches[0].clientX)) {
+			updateSeekPreview($event.targetTouches[0].clientX);
+		}
+	};
+
 	$scope.seekOffset = function(offset) {
 		if ($scope.player.seekingSupported()) {
 			// Clamp to the beginning of the track
@@ -537,10 +599,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	// Seekbar click / tap
 	$scope.seek = function($event) {
-		var offsetX = $event.offsetX || $event.originalEvent.layerX;
-		var ratio = offsetX / $event.currentTarget.clientWidth;
+		var seekBar = $('.seek-bar');
+		var offsetX = $event.clientX - seekBar.offset().left;
+		var ratio = offsetX / seekBar.width();
 		$scope.player.seek(ratio);
+		$scope.seekbarLeave(); // Reset seek preview
 	};
 
 	$scope.seekBackward = $scope.player.seekBackward;

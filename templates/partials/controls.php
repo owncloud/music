@@ -8,13 +8,13 @@
 			title="{{ playPauseContextMenuVisible ? null : ('press and hold for more' | translate) }}"
 			ng-on-contextmenu="playbackBtnContextMenu($event)"
 			ng-on-long-press="playbackBtnLongPress($event)"
-			data-long-press-delay="500" 
+			data-long-press-delay="500"
 		>
 			<div id="stop-button" ng-click="stop()" class="control icon-stop svg"
 				ng-show="shiftHeldDown" alt="{{ 'Stop' | translate }}">
 			</div>
 			<div id="play-pause-button" ng-click="togglePlayback()" class="control svg"
-				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'" 
+				ng-class="playing ? 'icon-pause-big' : 'icon-play-big'"
 				ng-show="!shiftHeldDown" alt="{{ (playing ? 'Pause' : 'Play') | translate }}">
 			</div>
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">
@@ -61,15 +61,25 @@
 	</div>
 	<div ng-show="currentTrack" class="progress-info">
 		<div class="progress-text">
-			<span ng-show="!loading" class="muted">{{ position.current | playTime }}</span><span
-				ng-show="!loading && durationKnown()" class="muted">/{{ position.total | playTime }}</span>
+			<span ng-show="!loading" class="muted" ng-style="position.previewVisible() && {'font-style': 'italic'}">
+				{{ (position.previewVisible() ? position.currentPreview : position.current) | playTime }}
+			</span>
+			<span ng-show="!loading && durationKnown()" class="muted">/ {{ position.total | playTime }}</span>
 			<span ng-show="loading" class="muted">Loading...</span>
 		</div>
 		<div class="progress">
-			<div class="seek-bar" ng-click="seek($event)" ng-style="{'cursor': seekCursorType}">
-				<div class="buffer-bar" ng-style="{'width': position.bufferPercent, 'cursor': seekCursorType}"></div>
+			<div class="seek-bar" ng-style="{'cursor': seekCursorType}"
+				ng-click="seek($event)" ng-mousemove="seekbarPreview($event)" ng-mouseenter="seekbarEnter($event)" ng-mouseleave="seekbarLeave($event)"
+				ng-on-touchmove="seekbarTouchPreview($event)" ng-on-touchend="seekbarTouchLeave($event)"
+			>
+				<div class="buffer-bar" ng-style="{'width': position.bufferPercent + '%', 'cursor': seekCursorType}"></div>
 				<div class="play-bar" ng-show="position.total"
-					ng-style="{'width': position.currentPercent, 'cursor': seekCursorType}"></div>
+					ng-style="{'width': (position.previewVisible() ? min(position.currentPercent, position.previewPercent) : position.currentPercent) + '%',
+								'cursor': seekCursorType}"></div>
+				<div class="play-bar translucent" ng-show="position.total && position.previewVisible()"
+					ng-style="{'width': abs(position.currentPercent - position.previewPercent) + '%',
+								'left': min(position.currentPercent, position.previewPercent) + '%',
+								'cursor': seekCursorType}"></div>
 			</div>
 		</div>
 	</div>

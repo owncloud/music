@@ -80,6 +80,18 @@ OCA.Music.GaplessPlayer = function() {
 		return m_currentPlayer.canPlayMime(mime);
 	};
 
+	this.isReady = function() {
+		return m_currentPlayer.isReady();
+	};
+
+	this.getDuration = function() {
+		return m_currentPlayer.getDuration();
+	};
+
+	this.getBufferPercent = function() {
+		return m_currentPlayer.getBufferPercent();
+	};
+
 	this.getUrl = function() {
 		return m_currentPlayer.getUrl();
 	};

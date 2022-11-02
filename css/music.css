@@ -202,8 +202,13 @@ div:hover > .play-pause,
 
 #app-content .emptycontent.collapsed {
 	top: unset;
-	bottom: 0;
+	bottom: var(--body-container-margin, 0);
 	padding: 5px 20px;
+	border-bottom-right-radius: var(--body-container-radius, 0);
+}
+
+.ie #app-content .emptycontent.collapsed {
+	bottom: 0;
 }
 
 #app-content .emptycontent.collapsed > * {
@@ -222,6 +227,10 @@ div:hover > .play-pause,
 	opacity: 1;
 }
 
+#app-view .emptycontent {
+	margin-left: -14px; /* to cancel out the #app-view padding */
+}
+
 /* hide popups and navigation until the angularjs framework is up and running and can do the dynamic hiding and interpolation */
 #app:not(.loaded) .emptycontent,
 #app:not(.loaded) #searchContainer,
@@ -235,10 +244,14 @@ div:hover > .play-pause,
 	width: 60px;
 	height: 60px;
 	padding: 20px;
-	bottom: 0;
+	bottom: var(--body-container-margin, 0);
 	z-index: 101;
 	background-color: rgba(255,255,255,0.5);
 	opacity: .4;
+}
+
+.ie #updateData {
+	bottom: 0;
 }
 
 #updateData:hover, #updateData:focus {

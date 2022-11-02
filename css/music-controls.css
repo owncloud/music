@@ -293,7 +293,7 @@ body:not(.snapjs-left) #controls.taller-header {
 	left: 270px;
 	right: 20px;
 	top: 60px;
-	max-width: unset;
+	max-width: 100%;
 }
 
 #controls.two-line .progress-info .progress-text {

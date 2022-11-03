@@ -1,3 +1,12 @@
+## [Unreleased]
+### Added
+
+### Changed
+
+### Fixed
+- Small layout issues on Nextcloud 25
+- Layout issue in the two-line controls pane on IE
+
 ## 1.7.0 - 2022-10-31
 ### Added
 - Two-line layout for the controls pane on narrow windows

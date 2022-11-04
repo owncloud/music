@@ -4,6 +4,7 @@
   [#999](https://github.com/owncloud/music/issues/999)
 
 ### Changed
+- Updated the getID3 library to the release version 1.9.22-202207161647
 
 ### Fixed
 - Small layout issues on Nextcloud 25

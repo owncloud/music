@@ -273,6 +273,11 @@ angular.module('Music').controller('NavigationController', [
 			} else {
 				console.error('Unknwon entity dropped on playlist');
 			}
+
+			// 50 ms haptic feedback for touch devices
+			if ('vibrate' in navigator) {
+				navigator.vibrate(50);
+			}
 		};
 
 		$scope.allowDrop = function(playlist, draggable) {
@@ -281,6 +286,23 @@ angular.module('Music').controller('NavigationController', [
 			var targetIsCurrentPlaylist = ($rootScope.currentView == '#/playlist/' + playlist.id);
 			return !isFromPlaylist || !targetIsCurrentPlaylist;
 		};
+
+		// Dragging an entity over the navigation toggle pops the navigation pane open.
+		// Subsequently, ending the drag closes the navigation pane.
+		var navOpenedByDrag = false;
+		const navToggle = document.getElementById('app-navigation-toggle');
+		navToggle.addEventListener('dragenter', function() {
+			if (!navOpenedByDrag) {
+				navOpenedByDrag = true;
+				$timeout($(navToggle).click());
+			}
+		});
+		document.addEventListener('dragend', function() {
+			if (navOpenedByDrag) { 
+				navOpenedByDrag = false;
+				$scope.collapseNavigationPaneOnMobile();
+			}
+		});
 
 		function trackIdsFromAlbum(albumId) {
 			var album = libraryService.getAlbum(albumId);

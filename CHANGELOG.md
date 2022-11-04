@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Show the collapsed navigation pane when a track is dragged over the navigation pane toggle
+  [#999](https://github.com/owncloud/music/issues/999)
 
 ### Changed
 

@@ -441,7 +441,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
 			// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
-			$('#hidden-close-app-navigation-button').click();
+			$timeout(() => $('#hidden-close-app-navigation-button').click());
 		}
 	};
 

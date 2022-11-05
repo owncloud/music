@@ -9,8 +9,8 @@ Feature: Subsonic API - Search
     Then the XML result should contain "artist" entries:
       | name            |
       | Simon Bowman    |
-    And the XML result should contain 0 "album" entries
-    And the XML result should contain 0 "song" entries
+    And the XML result should contain 2 "album" entries
+    And the XML result should contain 5 "song" entries
 
   Scenario: Query matches two albums
     When I specify the parameter "query" with value "music vol"
@@ -20,7 +20,7 @@ Feature: Subsonic API - Search
       | Instrumental Film Music Vol. 1  | Simon Bowman  |
       | Orchestral Film Music Vol. 1    | Simon Bowman  |
     And the XML result should contain 0 "artist" entries
-    And the XML result should contain 0 "song" entries
+    And the XML result should contain 5 "song" entries
 
   Scenario: Query finds entries of all types
     When I specify the parameter "query" with value "an"
@@ -29,12 +29,21 @@ Feature: Subsonic API - Search
       | name            |
       | Simon Bowman    |
     And the XML result should contain "album" entries:
-      | title           | artist                    |
-      | Nuance          | Pascal Boiseau (Pascalb)  |
+      | title                           | artist                    |
+      | Instrumental Film Music Vol. 1  | Simon Bowman              |
+      | Nuance                          | Pascal Boiseau (Pascalb)  |
+      | Orchestral Film Music Vol. 1    | Simon Bowman              |
     And the XML result should contain "song" entries:
-      | title           | album                     | artist                    | duration  | year      | track     |
-      | Gunpowder Chant | The Butcher's Ballroom    | Diablo Swing Orchestra    | 1         | 2009      | 7         |
-      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 2         | 2006      | 1         |
+      | title           | album                           | artist                    | duration  | year  | track |
+      | Aç              | Nuance                          | Pascal Boiseau (Pascalb)  | 3         | 2006  | 7     |
+      | Forgotten Days  | Instrumental Film Music Vol. 1  | Simon Bowman              | 2         | 2013  | 1     |
+      | Gunpowder Chant | The Butcher's Ballroom          | Diablo Swing Orchestra    | 1         | 2009  | 7     |
+      | Médiane         | Nuance                          | Pascal Boiseau (Pascalb)  | 2         | 2006  | 1     |
+      | Nocturne        | Instrumental Film Music Vol. 1  | Simon Bowman              | 2         | 2013  | 2     |
+      | Reverie         | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 9     |
+      | Sea of Sorrows  | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 2     |
+      | To The Edge     | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 1     |
+      | Vagues          | Nuance                          | Pascal Boiseau (Pascalb)  | 3         | 2006  | 8     |
 
   Scenario: Query matches entries of all types, but only albums requested
     When I specify the parameter "query" with value "an"
@@ -42,8 +51,10 @@ Feature: Subsonic API - Search
     And I specify the parameter "songCount" with value "0"
     And I request the "search2" resource
     Then the XML result should contain "album" entries:
-      | title           | artist                    |
-      | Nuance          | Pascal Boiseau (Pascalb)  |
+      | title                           | artist                    |
+      | Instrumental Film Music Vol. 1  | Simon Bowman              |
+      | Nuance                          | Pascal Boiseau (Pascalb)  |
+      | Orchestral Film Music Vol. 1    | Simon Bowman              |
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 0 "song" entries
 
@@ -61,9 +72,18 @@ Feature: Subsonic API - Search
       | name            |
       | Simon Bowman    |
     And the XML result should contain "album" entries:
-      | name            | artist                    | songCount |
-      | Nuance          | Pascal Boiseau (Pascalb)  | 3         |
+      | name                            | artist                    |
+      | Instrumental Film Music Vol. 1  | Simon Bowman              |
+      | Nuance                          | Pascal Boiseau (Pascalb)  |
+      | Orchestral Film Music Vol. 1    | Simon Bowman              |
     And the XML result should contain "song" entries:
-      | title           | album                     | artist                    | duration  | year      | track     |
-      | Gunpowder Chant | The Butcher's Ballroom    | Diablo Swing Orchestra    | 1         | 2009      | 7         |
-      | Médiane         | Nuance                    | Pascal Boiseau (Pascalb)  | 2         | 2006      | 1         |
+      | title           | album                           | artist                    | duration  | year  | track |
+      | Aç              | Nuance                          | Pascal Boiseau (Pascalb)  | 3         | 2006  | 7     |
+      | Forgotten Days  | Instrumental Film Music Vol. 1  | Simon Bowman              | 2         | 2013  | 1     |
+      | Gunpowder Chant | The Butcher's Ballroom          | Diablo Swing Orchestra    | 1         | 2009  | 7     |
+      | Médiane         | Nuance                          | Pascal Boiseau (Pascalb)  | 2         | 2006  | 1     |
+      | Nocturne        | Instrumental Film Music Vol. 1  | Simon Bowman              | 2         | 2013  | 2     |
+      | Reverie         | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 9     |
+      | Sea of Sorrows  | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 2     |
+      | To The Edge     | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 1     |
+      | Vagues          | Nuance                          | Pascal Boiseau (Pascalb)  | 3         | 2006  | 8     |

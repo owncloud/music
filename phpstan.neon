@@ -6,3 +6,5 @@ parameters:
         - vendor/christophwurst/nextcloud
         - stubs
         - 3rdparty
+    ignoreErrors:
+        - '#Property [a-zA-Z0-9\\_]+::\$logger is never read, only written.#'

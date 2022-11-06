@@ -69,11 +69,11 @@ class ApiController extends Controller {
 	private $maintenance;
 	/** @var LibrarySettings */
 	private $librarySettings;
-	/** @var string */
+	/** @var ?string */
 	private $userId;
 	/** @var IURLGenerator */
 	private $urlGenerator;
-	/** @var Folder */
+	/** @var ?Folder */
 	private $userFolder;
 	/** @var Logger */
 	private $logger;

@@ -32,7 +32,6 @@ use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
-use OCA\Music\BusinessLayer\Library;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
@@ -75,7 +74,6 @@ class SubsonicController extends Controller {
 	private $podcastEpisodeBusinessLayer;
 	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
-	private $library;
 	private $urlGenerator;
 	private $userManager;
 	private $librarySettings;
@@ -104,7 +102,6 @@ class SubsonicController extends Controller {
 								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
-								Library $library,
 								LibrarySettings $librarySettings,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
@@ -123,7 +120,6 @@ class SubsonicController extends Controller {
 		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
 		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;

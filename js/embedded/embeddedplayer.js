@@ -501,9 +501,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
-		if (OCA.Music.Utils.darkThemeActive()) {
-			musicControls.addClass('dark-theme');
-		}
+		const updateDarkMode = function() {
+			musicControls.toggleClass('dark-theme', OCA.Music.Utils.darkThemeActive());
+		};
+		updateDarkMode();
+
+		// Update the dark theme status if the browser preference changes. This would be strictly necessary only
+		// if NC has been configured to follow the browser preference but doesn't hurt regardless.
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkMode);
 
 		var parentContainer = $('div#app-content');
 		var isSharePage = (parentContainer.length === 0);

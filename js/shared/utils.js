@@ -56,7 +56,9 @@ OCA.Music.Utils = {
 			// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
 			return (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
 		} else if (OCA.Music.Utils.internal.themeInTheming()) {
-			return OCA.Theming.enabledThemes.includes('dark') || OCA.Theming.enabledThemes.includes('dark-highcontrast');
+			return OCA.Theming.enabledThemes.includes('dark') 
+				|| OCA.Theming.enabledThemes.includes('dark-highcontrast')
+				|| (OCA.Theming.enabledThemes.includes('default') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
 		} else {
 			return false;
 		}

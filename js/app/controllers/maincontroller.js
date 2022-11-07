@@ -34,6 +34,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	}
 	updateTheme();
 
+	// Update the dark theme status if the browser preference changes. This would be strictly necessary only
+	// if NC has been configured to follow the browser preference but doesn't hurt regardless.
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;

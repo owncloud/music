@@ -9,6 +9,7 @@
 ### Fixed
 - Small layout issues on Nextcloud 25
 - Layout issue in the two-line controls pane on IE
+- Not adjusting to dark theme when the theme comes from the browser preference (in NC25)
 
 ## 1.7.0 - 2022-10-31
 ### Added

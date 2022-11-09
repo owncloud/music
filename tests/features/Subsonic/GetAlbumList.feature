@@ -3,6 +3,7 @@ Feature: Subsonic API - Get album list
   As a user
   I need to be able to list my music albums
 
+
   Scenario: List all albums
     When I specify the parameter "type" with value "alphabeticalByName"
     And I request the "getAlbumList" resource
@@ -13,6 +14,7 @@ Feature: Subsonic API - Get album list
       | Orchestral Film Music Vol. 1                        | Simon Bowman             |
       | The Butcher's Ballroom                              | Diablo Swing Orchestra   |
 
+
   Scenario: List limited number of albums
     When I specify the parameter "type" with value "alphabeticalByName"
     And I specify the parameter "size" with value "2"
@@ -21,6 +23,7 @@ Feature: Subsonic API - Get album list
       | title                                               | artist                   |
       | Instrumental Film Music Vol. 1                      | Simon Bowman             |
       | Nuance                                              | Pascal Boiseau (Pascalb) |
+
 
   Scenario: List second page of albums
     When I specify the parameter "type" with value "alphabeticalByName"
@@ -32,6 +35,7 @@ Feature: Subsonic API - Get album list
       | Orchestral Film Music Vol. 1                        | Simon Bowman             |
       | The Butcher's Ballroom                              | Diablo Swing Orchestra   |
 
+
   Scenario: List all albums with the new API
     When I specify the parameter "type" with value "alphabeticalByName"
     And I request the "getAlbumList2" resource
@@ -42,6 +46,7 @@ Feature: Subsonic API - Get album list
       | Orchestral Film Music Vol. 1                        | Simon Bowman             | 3          |
       | The Butcher's Ballroom                              | Diablo Swing Orchestra   | 5          |
 
+
   Scenario: List all albums with the new API in JSON format
     When I specify the parameter "type" with value "alphabeticalByName"
     And I request the "getAlbumList2" resource in JSON
@@ -51,6 +56,7 @@ Feature: Subsonic API - Get album list
       | Nuance                                              | Pascal Boiseau (Pascalb) | 3          |
       | Orchestral Film Music Vol. 1                        | Simon Bowman             | 3          |
       | The Butcher's Ballroom                              | Diablo Swing Orchestra   | 5          |
+
 
   Scenario: Get random albums
     When I specify the parameter "type" with value "random"

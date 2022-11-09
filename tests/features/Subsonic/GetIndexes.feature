@@ -3,6 +3,7 @@ Feature: Subsonic API - Get indexes
   As a user
   I need to be able to list all artists in my collection
 
+
   Scenario: Get artists
     When I specify the parameter "musicFolderId" with value "artists"
     And I request the "getIndexes" resource

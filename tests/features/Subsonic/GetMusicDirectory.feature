@@ -3,6 +3,7 @@ Feature: Subsonic API - Get music directory
   As a user
   I need to be able to list albums of an artist and songs of an album
 
+
   Scenario: Get albums of an artist
     Given I specify the parameter "query" with value "Simon Bowman"
     And I request the "search2" resource
@@ -13,6 +14,7 @@ Feature: Subsonic API - Get music directory
       | title                          | artist       |
       | Instrumental Film Music Vol. 1 | Simon Bowman |
       | Orchestral Film Music Vol. 1   | Simon Bowman |
+
 
   Scenario: Get songs of an album
     Given I specify the parameter "query" with value "Nuance"

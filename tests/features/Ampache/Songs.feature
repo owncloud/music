@@ -3,6 +3,7 @@ Feature: Ampache API - Songs
   As a user
   I need to be able to list my songs with or without filter
 
+
   Scenario: List 10 songs
     Given I am logged in with an auth token
     When I specify the parameter "limit" with value "10"
@@ -20,6 +21,7 @@ Feature: Ampache API - Songs
       | Rag Doll Physics               | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 4     |
       | Reverie                        | Simon Bowman             | Orchestral Film Music Vol. 1   | 1    | 9     |
 
+
   Scenario: List 3 songs with offset
     Given I am logged in with an auth token
     When I specify the parameter "limit" with value "3"
@@ -31,6 +33,7 @@ Feature: Ampache API - Songs
       | Poetic Pitbull Revolutions     | Diablo Swing Orchestra   | The Butcher's Ballroom         | 2    | 3     |
       | Rag Doll Physics               | Diablo Swing Orchestra   | The Butcher's Ballroom         | 3    | 4     |
 
+
   Scenario: List songs that contain "an"
     Given I am logged in with an auth token
     When I specify the parameter "filter" with value "an"
@@ -39,6 +42,7 @@ Feature: Ampache API - Songs
       | title                          | artist                   | album                          | time | track |
       | Gunpowder Chant                | Diablo Swing Orchestra   | The Butcher's Ballroom         | 1    | 7     |
       | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
+
 
   Scenario: List songs that contain "an" with offset and limit
     Given I am logged in with an auth token
@@ -49,6 +53,7 @@ Feature: Ampache API - Songs
     Then I should get:
       | title                          | artist                   | album                          | time | track |
       | Médiane                        | Pascal Boiseau (Pascalb) | Nuance                         | 2    | 1     |
+
 
   Scenario: List songs that contain exactly "Médiane"
     Given I am logged in with an auth token

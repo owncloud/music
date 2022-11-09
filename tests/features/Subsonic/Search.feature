@@ -3,6 +3,7 @@ Feature: Subsonic API - Search
   As a user
   I need to be able to search artists, albums, and songs
 
+
   Scenario: Query matches one artist
     When I specify the parameter "query" with value "simon"
     And I request the "search2" resource
@@ -11,6 +12,7 @@ Feature: Subsonic API - Search
       | Simon Bowman    |
     And the XML result should contain 2 "album" entries
     And the XML result should contain 5 "song" entries
+
 
   Scenario: Query matches two albums
     When I specify the parameter "query" with value "music vol"
@@ -21,6 +23,7 @@ Feature: Subsonic API - Search
       | Orchestral Film Music Vol. 1    | Simon Bowman  |
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 5 "song" entries
+
 
   Scenario: Query finds entries of all types
     When I specify the parameter "query" with value "an"
@@ -45,6 +48,7 @@ Feature: Subsonic API - Search
       | To The Edge     | Orchestral Film Music Vol. 1    | Simon Bowman              | 1         | 2013  | 1     |
       | Vagues          | Nuance                          | Pascal Boiseau (Pascalb)  | 3         | 2006  | 8     |
 
+
   Scenario: Query matches entries of all types, but only albums requested
     When I specify the parameter "query" with value "an"
     And I specify the parameter "artistCount" with value "0"
@@ -58,12 +62,14 @@ Feature: Subsonic API - Search
     And the XML result should contain 0 "artist" entries
     And the XML result should contain 0 "song" entries
 
+
   Scenario: Query matches a song and results are requested as JSON
     When I specify the parameter "query" with value "pitbull"
     And I request the "search2" resource in JSON
     Then I should get JSON with "song" entries:
       | title                      | album                  | artist                 | duration | year | track |
       | Poetic Pitbull Revolutions | The Butcher's Ballroom | Diablo Swing Orchestra | 2        | 2009 | 3     |
+
 
   Scenario: Query (search3) finds entries of all types
     When I specify the parameter "query" with value "an"

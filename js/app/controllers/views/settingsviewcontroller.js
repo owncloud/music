@@ -311,20 +311,22 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		$scope.addAPIKey = function() {
-			var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6);
-			Restangular.all('settings/userkey/add').post({ password: password, description: $scope.ampacheDescription }).then(function(data) {
-				if (data.success) {
+			Restangular.all('settings/userkey/generate').post({ description: $scope.ampacheDescription, length: 12 }).then(
+				function(data) {
 					$scope.settings.ampacheKeys.push({
-						description: $scope.ampacheDescription,
+						description: data.description,
 						id: data.id
 					});
 					$scope.ampacheDescription = '';
-					$scope.ampachePassword = password;
-				} else {
+					$scope.ampachePassword = data.password;
+					$scope.errorAmpache = false;
+				},
+				function (error) {
 					$scope.ampachePassword = '';
 					$scope.errorAmpache = true;
+					console.error(error.data.message || error);
 				}
-			});
+			);
 		};
 
 		$scope.removeAPIKey = function(key) {

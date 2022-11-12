@@ -327,7 +327,7 @@ Response:
 
 ### Creating APIKEY for Subsonic/Ampache
 
-The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
+The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
 
 ```

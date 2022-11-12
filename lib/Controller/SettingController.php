@@ -144,23 +144,9 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
-	 */
-	public function addUserKey($description, $password) {
-		$id = $this->storeUserKey($description, $password);
-		$success = ($id !== null);
-		return new JSONResponse(['success' => $success, 'id' => $id]);
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
 	 * @CORS
 	 */
 	public function generateUserKey($length, $description) {
-		if ($description == null) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Please provide a description');
-		}
-
 		if ($length == null || $length < self::DEFAULT_PASSWORD_LENGTH) {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}

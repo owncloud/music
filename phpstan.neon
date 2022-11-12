@@ -6,3 +6,8 @@ parameters:
         - vendor/christophwurst/nextcloud
         - stubs
         - 3rdparty
+    ignoreErrors:
+        - '#Property [a-zA-Z0-9\\_]+::\$logger is never read, only written.#'
+        -
+            message: '#Variable \$fp in empty\(\) always exists and is not falsy.#'
+            path: lib/Utility/ExtractorGetID3.php

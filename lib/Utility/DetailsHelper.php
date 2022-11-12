@@ -43,8 +43,8 @@ class DetailsHelper {
 			$comments = self::flattenComments($comments);
 
 			// cleanup strings from invalid characters
-			\array_walk($audio, ['self', 'sanitizeString']);
-			\array_walk($comments, ['self', 'sanitizeString']);
+			\array_walk($audio, [$this, 'sanitizeString']);
+			\array_walk($comments, [$this, 'sanitizeString']);
 
 			$result = [
 				'fileinfo' => $audio,

@@ -241,7 +241,7 @@ class Track extends Entity {
 			'id' => 'track-' . $this->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $this->getDisk(), // not supported on any of the tested clients => adjust track number instead
-			'title' => $this->getTitle() ?? '',
+			'title' => $this->getTitle(),
 			'artist' => $this->getArtistNameString($l10n),
 			'isDir' => false,
 			'album' => $this->getAlbumNameString($l10n),
@@ -287,7 +287,7 @@ class Track extends Entity {
 	}
 
 	public function getFileExtension() : string {
-		$parts = \explode('.', $this->getFilename() ?? '');
+		$parts = \explode('.', $this->getFilename());
 		return \end($parts);
 	}
 

@@ -311,17 +311,18 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		$scope.addAPIKey = function() {
+			var newRow = {description: $scope.ampacheDescription, loading: true};
+			$scope.settings.ampacheKeys.push(newRow);
 			Restangular.all('settings/userkey/generate').post({ description: $scope.ampacheDescription, length: 12 }).then(
 				function(data) {
-					$scope.settings.ampacheKeys.push({
-						description: data.description,
-						id: data.id
-					});
+					newRow.loading = false;
+					newRow.id = data.id;
 					$scope.ampacheDescription = '';
 					$scope.ampachePassword = data.password;
 					$scope.errorAmpache = false;
 				},
 				function (error) {
+					_.remove($scope.settings.ampacheKeys, newRow);
 					$scope.ampachePassword = '';
 					$scope.errorAmpache = true;
 					console.error(error.data.message || error);

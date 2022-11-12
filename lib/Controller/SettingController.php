@@ -31,6 +31,9 @@ use OCA\Music\Utility\Util;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
+	/* Character set without look-alike characters. Similar but even more stripped set would be found
+	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not availalbe on ownCloud. */
+	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 	private $ampacheUserMapper;
 	private $scanner;
@@ -151,9 +154,7 @@ class SettingController extends Controller {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}
 
-		$password = $this->secureRandom->generate(
-			$length,
-			ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_UPPER . ISecureRandom::CHAR_DIGITS);
+		$password = $this->secureRandom->generate($length, self::API_KEY_CHARSET);
 
 		$id = $this->storeUserKey($description, $password);
 

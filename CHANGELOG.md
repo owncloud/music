@@ -7,6 +7,7 @@
 - Updated the getID3 library to the release version 1.9.22-202207161647
 - More secure generation of the Ampache/Subsonic API keys
   * Removed the REST API endpoint `/api/settings/userkey/add`, leaving only `/api/settings/userkey/generate`
+- Wider progress bar on wide high-resolution screens also for the lite player within the Files app
 
 ### Fixed
 - Small layout issues on Nextcloud 25

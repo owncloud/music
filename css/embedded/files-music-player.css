@@ -202,7 +202,7 @@
 
 #music-controls #song-info {
 	height: 100%;
-	width: 60%;
+	width: 50%;
 	margin-top: 7px;
 	vertical-align: top;
 }
@@ -222,7 +222,7 @@
 }
 
 #music-controls .progress-info {
-	width: 40%;
+	width: 45%;
 	text-align: center;
 	margin: 0 auto 25px auto;
 	overflow: hidden;
@@ -234,7 +234,6 @@
 
 #music-controls .seek-bar {
 	width: 100%;
-	max-width: 350px;
 	height: 15px;
 	margin: 0 auto 0 auto;
 	position: relative;

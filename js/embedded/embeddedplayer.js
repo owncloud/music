@@ -536,7 +536,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			musicControls.css('width', width);
 			if (width > 768) {
 				musicControls.removeClass('tablet mobile extra-narrow');
-			} else if (width > 500) {
+			} else if (width > 600) {
 				musicControls.addClass('tablet');
 				musicControls.removeClass('mobile extra-narrow');
 			} else if (width > 360) {

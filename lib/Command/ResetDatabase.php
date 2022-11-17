@@ -38,11 +38,11 @@ class ResetDatabase extends BaseCommand {
 	protected function doExecute(InputInterface $input, OutputInterface $output, array $users) : void {
 		if ($input->getOption('all')) {
 			$output->writeln("Drop tables for <info>all users</info>");
-			$this->maintenance->resetDb(null, true);
+			$this->maintenance->resetLibrary(null, true);
 		} else {
 			foreach ($users as $user) {
 				$output->writeln("Drop tables for <info>$user</info>");
-				$this->maintenance->resetDb($user);
+				$this->maintenance->resetLibrary($user);
 			}
 		}
 	}

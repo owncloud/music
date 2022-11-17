@@ -164,7 +164,7 @@ class Maintenance {
 	 * Removes orphaned data from the database
 	 * @return array describing the number of removed entries per type
 	 */
-	public function cleanUp() {
+	public function cleanUp() : array {
 		$removedCovers = $this->removeObsoleteAlbumCoverImages();
 		$removedCovers += $this->removeObsoleteArtistCoverImages();
 
@@ -189,36 +189,68 @@ class Maintenance {
 	}
 
 	/**
-	 * Wipe clean the music database of the given user, or all users
+	 * Wipe clean the given table, either targeting a specific user all users
+	 * @param string $table Name of the table, _excluding_ the prefix *PREFIX*music_
+	 * @param ?string $userId
+	 * @param bool $allUsers
+	 * @throws \InvalidArgumentException
 	 */
-	public function resetDb(?string $userId, bool $allUsers = false) {
+	private function resetTable(string $table, ?string $userId, bool $allUsers = false) : void {
 		if ($userId && $allUsers) {
 			throw new \InvalidArgumentException('userId should be null if allUsers targeted');
 		}
 
-		$sqls = [
-				'DELETE FROM `*PREFIX*music_tracks`',
-				'DELETE FROM `*PREFIX*music_albums`',
-				'DELETE FROM `*PREFIX*music_artists`',
-				'DELETE FROM `*PREFIX*music_playlists`',
-				'DELETE FROM `*PREFIX*music_genres`',
-				'DELETE FROM `*PREFIX*music_bookmarks`',
-				'DELETE FROM `*PREFIX*music_cache`'
+		$params = [];
+		$sql = "DELETE FROM `*PREFIX*music_$table`";
+		if (!$allUsers) {
+			$sql .=  ' WHERE `user_id` = ?';
+			$params[] = $userId;
+		}
+		$this->db->executeUpdate($sql, $params);
+
+	}
+
+	/**
+	 * Wipe clean the music library of the given user, or all users
+	 */
+	public function resetLibrary(?string $userId, bool $allUsers = false) : void {
+		$tables = [
+			'tracks',
+			'albums',
+			'artists',
+			'playlists',
+			'genres',
+			'bookmarks',
+			'cache'
 		];
 
-		foreach ($sqls as $sql) {
-			$params = [];
-			if (!$allUsers) {
-				$sql .=  ' WHERE `user_id` = ?';
-				$params[] = $userId;
-			}
-			$this->db->executeUpdate($sql, $params);
+		foreach ($tables as $table) {
+			$this->resetTable($table, $userId, $allUsers);
 		}
 
 		if ($allUsers) {
 			$this->logger->log("Erased music databases of all users", 'info');
 		} else {
 			$this->logger->log("Erased music database of user $userId", 'info');
+		}
+	}
+
+	/**
+	 * Wipe clean all the music of the given user, including the library, podcasts, radio, Ampache/Subsonic keys
+	 */
+	public function resetAllData(string $userId) : void {
+		$this->resetLibrary($userId);
+
+		$tables = [
+			'ampache_sessions',
+			'ampache_users',
+			'podcast_channels',
+			'podcast_episodes',
+			'radio_stations'
+		];
+
+		foreach ($tables as $table) {
+			$this->resetTable($table, $userId);
 		}
 	}
 }

@@ -237,7 +237,7 @@ class ApiController extends Controller {
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function resetScanned() {
-		$this->maintenance->resetDb($this->userId);
+		$this->maintenance->resetLibrary($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
 

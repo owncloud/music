@@ -73,6 +73,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	function close() {
 		player.stop();
 		musicControls.css('display', 'none');
+		$('footer').css('display', ''); // undo hiding the footer in public shares
 		onClose();
 	}
 
@@ -705,6 +706,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		}
 
 		musicControls.css('display', 'inline-block');
+
+		// On NC25, the footer shown on publicly shared folders is laid over the music controls. Get rid of it.
+		$('footer').css('display', 'none');
 	};
 
 	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {

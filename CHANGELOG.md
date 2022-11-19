@@ -14,6 +14,8 @@
 - Layout issue in the two-line controls pane on IE
 - Not adjusting to dark theme when the theme comes from the browser preference (in NC25)
 - User's podcasts, radio stations, and Ampache/Subsonic API keys not erased when an user account deleted
+- Music controls not visible on publicly shared folders on NC25
+  [#1028](https://github.com/owncloud/music/issues/1028)
 
 ## 1.7.0 - 2022-10-31
 ### Added

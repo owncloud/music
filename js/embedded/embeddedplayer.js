@@ -512,17 +512,16 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkMode);
 
 		var parentContainer = $('div#app-content');
-		var isSharePage = (parentContainer.length === 0);
-		if (isSharePage) {
-			// On share page, there's no #app-content. Use #preview element as parent, instead.
+		if (parentContainer.length === 0) {
+			// On share page before NC25, there's no #app-content. Use #preview element as parent, instead.
 			parentContainer = $('div#preview');
 			musicControls.css('left', '0');
 		}
 		var getViewWidth = function() {
 			var width = parentContainer.width();
-			// On the share page and in NC14-24, the parent width has the scroll bar width
+			// On the OC share page and in NC14-24, the parent width has the scroll bar width
 			// already subtracted.
-			if (!isSharePage && OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
+			if (OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
 				width -= OC.Util.getScrollBarWidth();
 			}
 			return width;

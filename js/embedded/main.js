@@ -9,6 +9,7 @@
  */
 
 import playIconPath from '../../img/play-big.svg';
+import playOverlayPath from '../../img/play-overlay.svg';
 
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -334,17 +335,28 @@ function initEmbeddedPlayer() {
 			// The #publicpreview is added dynamically by another script.
 			// Augment it with the click handler once it gets added.
 			$.initialize('img.publicpreview', function() {
-				var previewImg = $(this);
-				previewImg.css('cursor', 'pointer');
-				previewImg.click(onClick);
+				const previewImg = $(this);
+
+				// Add "play overlay" shown on hover
+				const overlay = $('<img class="play-overlay">')
+					.attr('src', playOverlayPath)
+					.click(onClick)
+					.insertAfter(previewImg);
+
+				const adjustOverlay = function() {
+					overlay
+						.width(previewImg.width())
+						.height(previewImg.height())
+						.css('margin-left', `-${previewImg.width()}px`);
+				};
+				adjustOverlay();
 
 				// At least in ownCloud 10 and Nextcloud 11-13, there is such an oversight
 				// that if MP3 file has no embedded cover, then the placeholder is not shown
 				// either. Fix that on our own.
 				previewImg.on('error', function() {
-					previewImg.attr('src', OC.imagePath('core', 'filetypes/audio'));
-					previewImg.css('width', '128px');
-					previewImg.css('height', '128px');
+					previewImg.attr('src', OC.imagePath('core', 'filetypes/audio')).width(128).height(128);
+					adjustOverlay();
 				});
 			});
 		}

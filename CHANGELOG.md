@@ -8,6 +8,7 @@
 - More secure generation of the Ampache/Subsonic API keys
   * Removed the REST API endpoint `/api/settings/userkey/add`, leaving only `/api/settings/userkey/generate`
 - Wider progress bar on wide high-resolution screens also for the lite player within the Files app
+- On individual shared file page (on OC), overlay the play icon on the preview image on hover
 
 ### Fixed
 - Small layout issues on Nextcloud 25

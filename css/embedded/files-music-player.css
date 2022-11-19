@@ -320,6 +320,18 @@
 	cursor: pointer;
 }
 
+/* Play overlay for individual shared file */
+.play-overlay {
+	visibility: hidden;
+	cursor: pointer;
+	position: relative;
+}
+
+.publicpreview:hover ~ .play-overlay,
+.play-overlay:hover {
+	visibility: visible;
+}
+
 /* "Tablet" style */
 #music-controls.tablet {
 	padding: 0;

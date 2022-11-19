@@ -511,6 +511,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		// if NC has been configured to follow the browser preference but doesn't hurt regardless.
 		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkMode);
 
+		// Round also the bottom left corner on NC25 on the share page. The bottom right corner is rounded by default.
+		if ($('body#body-public').length > 0) {
+			musicControls.css('border-bottom-left-radius', 'var(--body-container-radius)');
+		}
+
 		var parentContainer = $('div#app-content');
 		if (parentContainer.length === 0) {
 			// On share page before NC25, there's no #app-content. Use #preview element as parent, instead.

@@ -21,7 +21,7 @@
 	} elseif (\strpos($classPath, 'OCA/Music') === 0) {
 		$path = 'lib' . \substr($classPath, 9);
 	} elseif (\strpos($classPath, 'OCP/') === 0) {
-		$path = 'vendor/christophwurst/nextcloud/' . $classPath;
+		$path = 'vendor/nextcloud/ocp/' . $classPath;
 	} else {
 		$path = 'stubs/' . $classPath;
 	}

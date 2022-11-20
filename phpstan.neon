@@ -3,7 +3,7 @@ parameters:
     paths:
         - lib
     scanDirectories:
-        - vendor/christophwurst/nextcloud
+        - vendor/nextcloud/ocp
         - stubs
         - 3rdparty
     ignoreErrors:

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "caa970d605daeab3293c6193fed4375a",
+    "content-hash": "68b3078aca5f723862573091fe78e325",
     "packages": [],
     "packages-dev": [
         {
@@ -204,39 +204,6 @@
                 "source": "https://github.com/Behat/Transliterator/tree/v1.5.0"
             },
             "time": "2022-03-30T09:27:43+00:00"
-        },
-        {
-            "name": "christophwurst/nextcloud",
-            "version": "13.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ChristophWurst/nextcloud_composer.git",
-                "reference": "dcfe63673eed9a9a7971a96219055080868942fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ChristophWurst/nextcloud_composer/zipball/dcfe63673eed9a9a7971a96219055080868942fb",
-                "reference": "dcfe63673eed9a9a7971a96219055080868942fb",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "AGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Christoph Wurst",
-                    "email": "christoph@winzerhof-wurst.at"
-                }
-            ],
-            "description": "Composer package containing Nextcloud's public API (classes, interfaces)",
-            "support": {
-                "issues": "https://github.com/ChristophWurst/nextcloud_composer/issues",
-                "source": "https://github.com/ChristophWurst/nextcloud_composer/tree/13.0.2"
-            },
-            "abandoned": "nextcloud/ocp",
-            "time": "2018-04-26T12:12:23+00:00"
         },
         {
             "name": "composer/pcre",
@@ -1489,6 +1456,37 @@
                 }
             ],
             "time": "2022-03-03T13:19:32+00:00"
+        },
+        {
+            "name": "nextcloud/ocp",
+            "version": "13.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nextcloud-deps/ocp.git",
+                "reference": "dcfe63673eed9a9a7971a96219055080868942fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nextcloud-deps/ocp/zipball/dcfe63673eed9a9a7971a96219055080868942fb",
+                "reference": "dcfe63673eed9a9a7971a96219055080868942fb",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "AGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Wurst",
+                    "email": "christoph@winzerhof-wurst.at"
+                }
+            ],
+            "description": "Composer package containing Nextcloud's public API (classes, interfaces)",
+            "support": {
+                "source": "https://github.com/nextcloud-deps/ocp/tree/13.0.2"
+            },
+            "time": "2018-04-26T12:12:23+00:00"
         },
         {
             "name": "owncloud/coding-standard",

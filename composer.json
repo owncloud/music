@@ -8,7 +8,7 @@
         "phpunit/phpunit": "^8.0",
         "owncloud/coding-standard": "^2.0",
         "phpstan/phpstan": "^1.8",
-        "christophwurst/nextcloud": "^13.0.0",
+        "nextcloud/ocp": "^13.0.0",
         "doctrine/dbal": "*"
     },
     "scripts": {

@@ -20,7 +20,10 @@
 			<div id="play-pause-menu" class="popovermenu bubble" ng-show="playPauseContextMenuVisible">
 				<ul>
 					<li ng-show="!shiftHeldDown" ng-click="stop()">
-						<a><span class="icon-stop icon svg"></span><span translate>Stop</span></a></a>
+						<a>
+							<span class="icon-stop icon svg"></span>
+							<span translate>Stop</span>
+						</a>
 					</li>
 					<li ng-show="shiftHeldDown" ng-click="togglePlayback()">
 						<a>
@@ -37,7 +40,8 @@
 							ng-on-long-press="stepPlaybackRate($event, true, true)"
 							data-long-press-delay="500"
 						>
-							<span class="icon-time icon svg"></span><span translate>Playback rate</span><span>: {{ playbackRate | number : 2 }}</span>
+							<span class="icon-time icon svg"></span>
+							<span translate>Playback rate</span><span>: {{ playbackRate | number : 2 }}</span>
 						</a>
 						<input type="range" min="0.5" max="3.0" step="0.05" ng-model="playbackRate"/>
 					</li>

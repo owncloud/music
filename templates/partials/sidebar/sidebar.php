@@ -14,8 +14,9 @@
 		?>
 	</div>
 
-	<img id="follow-playback" class="control toggle small svg"
+	<div id="follow-playback" class="control toggle small" ng-class="{active: follow}" ng-click="toggleFollow()"
 		alt="{{ 'Follow playback' | translate }}" title="{{ 'Follow playback' | translate }}"
-		src="<?php HtmlUtil::printSvgPath('follow-playback') ?>" ng-class="{active: follow}"
-		ng-click="toggleFollow()" />
+	>
+		<img class="svg clickable" src="<?php HtmlUtil::printSvgPath('follow-playback') ?>" />
+	</div>
 </div>

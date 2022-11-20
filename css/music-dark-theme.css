@@ -13,14 +13,6 @@
 	filter: invert(100%);
 }
 
-.dark-theme #app-sidebar .close {
-	background-color: #181818cc;
-}
-
-.dark-theme #app-sidebar #follow-playback {
-	background-color: transparent;
-}
-
 .dark-theme #app-content .emptycontent.clickable:hover * {
 	color: #eeeeee;
 }

@@ -38,6 +38,6 @@
 	opacity: 0.9;
 }
 
-.dark-theme .icon-reload {
+.app-music .dark-theme .icon-reload {
 	background-image: url(../img/reload-inverted.svg);
 }

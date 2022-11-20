@@ -17,6 +17,7 @@
 - User's podcasts, radio stations, and Ampache/Subsonic API keys not erased when an user account deleted
 - Music controls not visible on publicly shared folders on NC25
   [#1028](https://github.com/owncloud/music/issues/1028)
+- Wrong icon in the "New files to scan" and "No scanned files" pop-ups on NC25
 
 ## 1.7.0 - 2022-10-31
 ### Added

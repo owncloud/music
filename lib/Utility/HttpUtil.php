@@ -34,7 +34,7 @@ class HttpUtil {
 				'http' => [
 					'header' => self::userAgentHeader(),	// some servers don't allow requests without a user agent header
 					'ignore_errors' => true,				// don't emit warnings for bad/unavailable URL, we handle errors manually
-					'max_redirects' => 2
+					'max_redirects' => 5
 				]
 			];
 			if ($timeout_s !== null) {

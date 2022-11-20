@@ -9,7 +9,7 @@
 				model="channel"
 				actions="[
 					{ icon: 'details', text: 'Details', callback: showPodcastChannelDetails },
-					{ icon: 'reload', text: 'Reload', callback: reloadChannel },
+					{ icon: 'reload svg', text: 'Reload', callback: reloadChannel },
 					{ icon: 'delete', text: 'Remove', callback: removeChannel }
 				]"
 				show-play-icon="true">

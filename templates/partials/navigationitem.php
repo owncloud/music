@@ -100,7 +100,7 @@
 						<a><span class="icon-add icon"></span><span translate>Add from RSS feed</span></a>
 					</li>
 					<li ng-click="$parent.reloadPodcasts($event)" ng-class="{ disabled: !$parent.anyPodcastChannels() }">
-						<a><span class="icon-reload icon"></span><span translate>Reload channels</span></a>
+						<a><span class="icon-reload icon svg"></span><span translate>Reload channels</span></a>
 					</li>
 				</ul>
 			</div>

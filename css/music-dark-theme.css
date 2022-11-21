@@ -13,10 +13,6 @@
 	filter: invert(100%);
 }
 
-.dark-theme #app-content .emptycontent.clickable:hover * {
-	color: #eeeeee;
-}
-
 .dark-theme .highlight {
 	background-color: rgba(255, 255, 255, 0.05);
 }

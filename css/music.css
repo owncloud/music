@@ -222,8 +222,11 @@ div:hover > .play-pause,
 	margin: 0;
 }
 
+#app-content .emptycontent.clickable * {
+	opacity: 0.85;
+}
+
 #app-content .emptycontent.clickable:hover * {
-	color: #000;
 	opacity: 1;
 }
 

@@ -249,7 +249,6 @@ div:hover > .play-pause,
 	padding: 20px;
 	bottom: var(--body-container-margin, 0);
 	z-index: 101;
-	background-color: rgba(255,255,255,0.5);
 	opacity: .4;
 }
 

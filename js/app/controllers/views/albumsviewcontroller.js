@@ -242,7 +242,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		function updateColumnLayout() {
 			// Use the single-column layout if there's not enough room for two columns or more
 			var containerWidth = $('#albums').width();
-			var colWidth = $scope.albumsCompactLayout ? 387 : 480;
+			var colWidth = $scope.albumsCompactLayout ? 383 : 480;
 			$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
 		}
 

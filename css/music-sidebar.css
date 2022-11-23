@@ -177,7 +177,12 @@
 }
 
 #app-sidebar .lyrics.highlight {
-	background-color: rgba(0,0,0,0.04);
+	background-color: var(--color-background-dark, #ededed);
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .lyrics.highlight {
+	background-color: #ededed;
 }
 
 #app-sidebar #follow-playback {

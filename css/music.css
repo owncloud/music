@@ -261,7 +261,11 @@ div:hover > .play-pause,
 }
 
 .highlight {
-	background-color: rgba(0,0,0,0.025);
+	background-color: var(--color-background-hover, #f5f5f5);
+}
+
+.ie .highlight {
+	background-color: #f5f5f5;
 }
 
 .flip-vertically {

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 /**
@@ -20,6 +20,7 @@ require('node_modules/core-js/features/array/includes');
 require('node_modules/core-js/features/string/ends-with');
 
 /* Vendor libraries */
+require('vendor/aurora/alac.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');

@@ -316,7 +316,7 @@ OCA.Music.PlayerWrapper = function() {
 	}
 
 	this.canPlayMime = function(mime) {
-		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
+		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg' || mime == 'audio/mp4');
 		return canPlayWithHtml5(mime) || canPlayWithAurora;
 	};
 

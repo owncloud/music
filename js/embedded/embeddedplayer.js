@@ -502,15 +502,6 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		musicControls.append(createVolumeControl());
 		musicControls.append(createCloseButton());
 
-		const updateDarkMode = function() {
-			musicControls.toggleClass('dark-theme', OCA.Music.Utils.darkThemeActive());
-		};
-		updateDarkMode();
-
-		// Update the dark theme status if the browser preference changes. This would be strictly necessary only
-		// if NC has been configured to follow the browser preference but doesn't hurt regardless.
-		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkMode);
-
 		// Round also the bottom left corner on NC25 on the share page. The bottom right corner is rounded by default.
 		if ($('body#body-public').length > 0) {
 			musicControls.css('border-bottom-left-radius', 'var(--body-container-radius)');

@@ -271,3 +271,8 @@ div:hover > .play-pause,
 .flip-vertically {
 	transform: scaleY(-1);
 }
+ 
+.svg,
+:not(.svg) > .play-pause {
+	filter: var(--background-invert-if-dark);
+}

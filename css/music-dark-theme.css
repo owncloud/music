@@ -12,7 +12,3 @@
 .dark-theme :not(.svg) > .play-pause {
 	filter: invert(100%);
 }
-
-.dark-theme .translucent {
-	opacity: 0.9;
-}

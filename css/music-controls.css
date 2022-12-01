@@ -170,6 +170,10 @@ body:not(.snapjs-left) #controls.taller-header {
 	top: 0;
 	height: 15px;
 	width: 0%;
+	background-color: var(--color-primary, #1d2d44);
+}
+
+.ie #controls .play-bar, #controls .buffer-bar {
 	background-color: #1d2d44;
 }
 

@@ -10,6 +10,7 @@
 - Wider progress bar on wide high-resolution screens also for the lite player within the Files app
 - On individual shared file page (on OC), overlay the play icon on the preview image on hover
 - Allow up to 5 redirects (up from 2) when fetching a podcast channel or internet radio station
+- Color of the progress bar follows the selected color theme on NC
 
 ### Fixed
 - Small layout issues on Nextcloud 25

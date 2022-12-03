@@ -525,6 +525,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		parentContainer.append(musicControls);
 
+		// setup dark theme support for Nextcloud versions older than 25
+		OCA.Music.DarkThemeLegacySupport.applyOnElement(musicControls[0]);
+
 		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
 		// Also the internal layout of the bar is responsive to the available width.
 		var resizeControls = function() {

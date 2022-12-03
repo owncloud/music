@@ -13,19 +13,6 @@ OCA.Music = OCA.Music || {};
 /** @namespace */
 OCA.Music.Utils = {
 
-	internal: {
-		// dark theme information was in the Accessibility app up until NC24 
-		themeInAccessiblity: function() {
-			return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility')
-				&& Object.prototype.hasOwnProperty.call(OCA.Accessibility, 'theme');
-		},
-		// dark theme information was moved to the Theming app in NC25
-		themeInTheming: function() {
-			return Object.prototype.hasOwnProperty.call(OCA, 'Theming')
-				&& Object.prototype.hasOwnProperty.call(OCA.Theming, 'enabledThemes');
-		}
-	},
-
 	/**
 	 * Originally in ownCloud and in Nextcloud up to version 13, the #app-content element acted as the main scroll container.
 	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
@@ -42,35 +29,6 @@ OCA.Music.Utils = {
 	 */
 	isLegacyLayout: function() {
 		return $('#content-wrapper').length > 0;
-	},
-
-	/**
-	 * Newer versions of Nextcloud come with a "dark theme" which may be activated
-	 * from the accessibility settings. Test if the theme is active.
-	 * Note: This may not be able to return the correct state during the application initialization,
-	 * in case the OCA.Accessibility has not got initialized yet. The function themeInfoAvailable may
-	 * be used to check if the information is available.
-	 */
-	darkThemeActive: function() {
-		if (OCA.Music.Utils.internal.themeInAccessiblity()) {
-			// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
-			return (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
-		} else if (OCA.Music.Utils.internal.themeInTheming()) {
-			return OCA.Theming.enabledThemes.includes('dark') 
-				|| OCA.Theming.enabledThemes.includes('dark-highcontrast')
-				|| (OCA.Theming.enabledThemes.includes('default') && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-		} else {
-			return false;
-		}
-	},
-
-	/**
-	 * Check if theme info is currently available. It may be unavailable for two reasons:
-	 * 1) it has not been loaded yet
-	 * 2) it is not supported by the cloud
-	 */
-	themeInfoAvailable: function() {
-		return OCA.Music.Utils.internal.themeInAccessiblity() || OCA.Music.Utils.internal.themeInTheming();
 	},
 
 	/**

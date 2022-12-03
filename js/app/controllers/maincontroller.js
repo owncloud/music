@@ -19,6 +19,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
+	// setup dark theme support for Nextcloud versions older than 25
+	OCA.Music.DarkThemeLegacySupport.applyOnElement(document.getElementById('app'));
+
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
 	$scope.currentTrack = null;

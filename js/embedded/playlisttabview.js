@@ -20,10 +20,6 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 				var container = this.$el;
 				container.empty(); // erase any previous content
 
-				if (OCA.Music.Utils.darkThemeActive()) {
-					container.addClass('dark-theme');
-				}
-
 				var fileInfo = this.getFileInfo();
 
 				if (fileInfo) {

@@ -315,9 +315,12 @@ OCA.Music.PlayerWrapper = function() {
 			|| (mime == 'audio/m4b' && m_html5audio.canPlayType('audio/mp4'));
 	}
 
+	function canPlayWithAurora(mime) {
+		return ['audio/flac', 'audio/mpeg', 'audio/mp4', 'audio/m4b', 'audio/aac'].includes(mime);
+	}
+
 	this.canPlayMime = function(mime) {
-		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg' || mime == 'audio/mp4');
-		return canPlayWithHtml5(mime) || canPlayWithAurora;
+		return canPlayWithHtml5(mime) || canPlayWithAurora(mime);
 	};
 
 	function doFromUrl(setupUnderlyingPlayer) {

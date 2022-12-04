@@ -34,6 +34,7 @@ require('node_modules/restangular');
 require('vendor/aurora/alac.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
+require('vendor/aurora/aac.js'); // this has to come after mp3.js, otherwise MP3 playback breaks
 require('vendor/dragdrop/draganddrop.js');
 require('vendor/nextcloud/placeholder.js');
 // jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10

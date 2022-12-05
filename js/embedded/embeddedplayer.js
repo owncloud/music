@@ -307,14 +307,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			playTimePreview_ts = null;
 			playTimePreview_s = null;
 			playTime_s = 0;
-			songLength_s = 0;
+			songLength_s = null;
 			loadingShow();
 			updateProgress();
 			bufferBar.css('width', '0');
 			setCursorType('default');
 		});
 		player.on('ready', function() {
-			// nothing to do
+			loadingHide();
 		});
 		player.on('buffer', function(percent) {
 			bufferBar.css('width', Math.round(percent) + '%');

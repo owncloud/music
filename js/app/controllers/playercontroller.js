@@ -86,7 +86,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
 			var entry = playlistService.peekNextTrack();
 			if (entry?.track?.id !== undefined) {
-				const {mime, url} = getPlayableFileUrl(entry.track);
+				const {mime, url} = getPlayableFileUrl(entry.track) || [null, null];
 				if (mime !== null && url !== null) {
 					$scope.player.prepareUrl(url, mime);
 				}

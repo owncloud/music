@@ -240,10 +240,17 @@ angular.module('Music').controller('AlbumsViewController', [
 		}
 
 		function updateColumnLayout() {
-			// Use the single-column layout if there's not enough room for two columns or more
 			var containerWidth = $('#albums').width();
-			var colWidth = $scope.albumsCompactLayout ? 383 : 480;
-			$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
+			if (containerWidth === 0) {
+				// During page load, the view container may not yet have a valid width. On Firefox on Ubuntu,
+				// the resize event with the valid width doesn't fire at all after the page load. Retry until
+				// a valid width is present. See https://github.com/owncloud/music/issues/1029.
+				$timeout(updateColumnLayout, 500);
+			} else {
+				// Use the single-column layout if there's not enough room for two columns or more
+				var colWidth = $scope.albumsCompactLayout ? 383 : 480;
+				$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
+			}
 		}
 
 		subscribe('resize', updateColumnLayout);

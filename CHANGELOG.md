@@ -1,9 +1,9 @@
 ## [Unreleased]
 ### Added
-- Show the collapsed navigation pane when a track is dragged over the navigation pane toggle
-  [#999](https://github.com/owncloud/music/issues/999)
 
 ### Changed
+- Show the collapsed navigation pane when a track is dragged over the navigation pane toggle
+  [#999](https://github.com/owncloud/music/issues/999)
 - Updated the getID3 library to the release version 1.9.22-202207161647
 - More secure generation of the Ampache/Subsonic API keys
   * Removed the REST API endpoint `/api/settings/userkey/add`, leaving only `/api/settings/userkey/generate`
@@ -20,6 +20,8 @@
 - Music controls not visible on publicly shared folders on NC25
   [#1028](https://github.com/owncloud/music/issues/1028)
 - Wrong icon in the "New files to scan" and "No scanned files" pop-ups on NC25
+- Firefox on Ubuntu selecting the single-column layout after page load regardless of the window width
+  [#1029](https://github.com/owncloud/music/issues/1029)
 
 ## 1.7.0 - 2022-10-31
 ### Added

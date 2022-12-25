@@ -20,7 +20,7 @@
 		padding-top: 66px;
 	}
 
-	div.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
+	#content.app-music:not(.legacy-layout) #app-navigation:not(.hidden) + #app-content {
 		left: 0;
 	}
 }

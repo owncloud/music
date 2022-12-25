@@ -22,6 +22,8 @@
 - Wrong icon in the "New files to scan" and "No scanned files" pop-ups on NC25
 - Firefox on Ubuntu selecting the single-column layout after page load regardless of the window width
   [#1029](https://github.com/owncloud/music/issues/1029)
+- Tablet and mobile layout not working correctly on NC 25.0.2
+  [#1036](https://github.com/owncloud/music/issues/1036)
 
 ## 1.7.0 - 2022-10-31
 ### Added

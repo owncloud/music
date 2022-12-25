@@ -22,17 +22,20 @@ OCA.Music.DarkThemeLegacySupport = {
 
 			// Workaround: Try to figure out on our own if the background color is indeed dark. This should work
 			// also with any dark third party themes (e.g. Breeze Dark).
-			const rgb = getComputedStyle(document.getElementById('app-content')).backgroundColor;
-			const m = rgb.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
-			if (m) {
-				const [r, g, b] = [m[1], m[2], m[3]];
-				// Analyze perceived brightness, based on https://stackoverflow.com/a/12043228
-				const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
-
-				if (luma < 128) { //dark
-					element.style.setProperty('--background-invert-if-dark', 'invert(100%)');
-				} else { // light
-					element.style.setProperty('--background-invert-if-dark', 'no');
+			const appContent = document.getElementById('app-content');
+			if (appContent) {
+				const rgb = getComputedStyle(appContent)?.backgroundColor;
+				const m = rgb?.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+				if (m) {
+					const [r, g, b] = [m[1], m[2], m[3]];
+					// Analyze perceived brightness, based on https://stackoverflow.com/a/12043228
+					const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+	
+					if (luma < 128) { //dark
+						element.style.setProperty('--background-invert-if-dark', 'invert(100%)');
+					} else { // light
+						element.style.setProperty('--background-invert-if-dark', 'no');
+					}
 				}
 			}
 		}

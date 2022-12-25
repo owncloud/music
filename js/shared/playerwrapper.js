@@ -28,7 +28,8 @@ OCA.Music.PlayerWrapper = function() {
 	var m_ready = false;
 	var m_playing = false;
 	var m_url = null;
-	var m_urlType = null; // set later as one of ['lcoal', 'external', 'external-hls']
+	var m_urlType = null; // set later as one of ['local', 'external', 'external-hls']
+	var m_mime = null;
 	var m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
@@ -100,13 +101,27 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.onerror = function() {
-			m_playing = false;
-			if (m_url) {
-				console.log('HTML5 audio: sound load error');
-				m_self.trigger('error', m_url);
-			} else {
-				// an error is fired by the HTML audio when the src is cleared to stop the playback
-				m_self.trigger('stop', m_url);
+			if (m_underlyingPlayer == 'html5') {
+				if (m_url) {
+					if (!m_ready && canPlayWithAurora(m_mime)) {
+						// Load error encountered before playing could start. The file might be in unsupported format
+						// like is the case with M4A-ALAC on most browsers. Fall back to Aurora.js if possible.
+						console.log('Cannot play with HTML5, falling back to Aurora.js');
+						m_underlyingPlayer = 'aurora';
+						initAurora(m_url);
+						if (m_playing) {
+							m_self.play();
+						}
+					} else {
+						console.log('HTML5 audio: sound load error');
+						m_playing = false;
+						m_self.trigger('error', m_url);
+					}
+				} else {
+					// an error is fired by the HTML audio when the src is cleared to stop the playback
+					m_playing = false;
+					m_self.trigger('stop', m_url);
+				}
 			}
 		};
 
@@ -139,12 +154,15 @@ OCA.Music.PlayerWrapper = function() {
 			m_duration = msecs;
 			m_self.trigger('duration', msecs);
 		});
+		m_aurora.on('error', function(message) {
+			console.error('Aurora error: ' + message);
+			m_self.trigger('error', m_url);
+		});
 
 		m_aurora.preload();
 	}
 
 	function onPlayStarted() {
-		m_playing = true;
 		m_self.trigger('play');
 	}
 
@@ -159,6 +177,7 @@ OCA.Music.PlayerWrapper = function() {
 
 	this.play = function() {
 		if (m_url) {
+			m_playing = true;
 			switch (m_underlyingPlayer) {
 			case 'html5':
 				m_html5audio.play();
@@ -342,6 +361,7 @@ OCA.Music.PlayerWrapper = function() {
 		doFromUrl(function() {
 			m_url = url;
 			m_urlType = 'local';
+			m_mime = mime;
 
 			if (canPlayWithHtml5(mime)) {
 				m_underlyingPlayer = 'html5';
@@ -357,6 +377,7 @@ OCA.Music.PlayerWrapper = function() {
 	this.fromExtUrl = function(url, isHls) {
 		doFromUrl(function() {
 			m_url = url;
+			m_mime = null;
 			m_underlyingPlayer = 'html5';
 
 			if (isHls && m_hls !== null) {

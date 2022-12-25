@@ -119,7 +119,6 @@ OCA.Music.PlayerWrapper = function() {
 	// Aurora differs from HTML5 player so that it has to be initialized again for each URL
 	function initAurora(url) {
 		m_aurora = window.AV.Player.fromURL(url);
-		m_aurora.asset.source.chunkSize=524288;
 
 		m_aurora.on('buffer', function(percent) {
 			m_buffered = percent;

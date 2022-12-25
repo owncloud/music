@@ -336,6 +336,10 @@ function initEmbeddedPlayer() {
 			// Augment it with the click handler once it gets added.
 			$.initialize('img.publicpreview', function() {
 				const previewImg = $(this);
+				// All of the following are needed only for IE. There, the overlay doesn't work without setting
+				// the image position to relative. And still, the overlay is sometimes much smaller than the image,
+				// creating a need to have also the image itself as clickable area.
+				previewImg.css('position', 'relative').css('cursor', 'pointer').click(onClick);
 
 				// Add "play overlay" shown on hover
 				const overlay = $('<img class="play-overlay">')
@@ -344,12 +348,15 @@ function initEmbeddedPlayer() {
 					.insertAfter(previewImg);
 
 				const adjustOverlay = function() {
-					overlay
-						.width(previewImg.width())
-						.height(previewImg.height())
-						.css('margin-left', `-${previewImg.width()}px`);
+					const width = previewImg.width();
+					const height = previewImg.height();
+					overlay.width(width).height(height).css('margin-left', `-${width}px`);
 				};
 				adjustOverlay();
+
+				// In case the image data is not actually loaded yet, the size information 
+				// is not valid above. Recheck once loaded.
+				previewImg.on('load', adjustOverlay);
 
 				// At least in ownCloud 10 and Nextcloud 11-13, there is such an oversight
 				// that if MP3 file has no embedded cover, then the placeholder is not shown

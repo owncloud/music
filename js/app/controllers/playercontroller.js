@@ -367,13 +367,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		localStorage.setItem('oc_music_volume', newValue);
 	});
 
-	$scope.$watch('playbackRate', function(newValue, _oldValue) {
+	const notifyPlaybackRateNotAdjustible = _.debounce(
+		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
+		1000, {leading: true, trailing: false}
+	);
+	$scope.$watch('playbackRate', function(newValue, oldValue) {
 		$scope.player.setPlaybackRate(newValue);
+		if (oldValue && oldValue != newValue && !$scope.player.playbackRateAdjustible()) {
+			notifyPlaybackRateNotAdjustible();
+		}
 	});
 
 	$scope.offsetVolume = function (offset) {
 		const value = $scope.volume + offset;
-		$scope.volume = Math.max(0, Math.min(100, value)); 		// Clamp to 0-100
+		$scope.volume = Math.max(0, Math.min(100, value)); // Clamp to 0-100
 		lastVolume = null;
 	};
 

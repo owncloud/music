@@ -317,6 +317,10 @@ OCA.Music.PlayerWrapper = function() {
 		}
 	};
 
+	this.playbackRateAdjustible = function() {
+		return (m_underlyingPlayer == 'html5');
+	};
+
 	this.setPlaybackRate = function(rate) {
 		m_playbackRate = rate;
 

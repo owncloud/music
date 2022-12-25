@@ -71,6 +71,10 @@ OCA.Music.GaplessPlayer = function() {
 		m_nextPlayer.setVolume(percentage);
 	};
 
+	this.playbackRateAdjustible = function() {
+		return m_currentPlayer.playbackRateAdjustible();
+	};
+
 	this.setPlaybackRate = function(rate) {
 		m_currentPlayer.setPlaybackRate(rate);
 		m_nextPlayer.setPlaybackRate(rate);

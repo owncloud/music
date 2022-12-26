@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\App;
@@ -442,6 +442,10 @@ class Music extends App {
 				$c->query('AppName'),
 				$c->getServer()->getLogger()
 			);
+		});
+
+		$container->registerService('MimeTypeLoader', function (IappContainer $c) {
+			return $c->getServer()->getMimeTypeLoader();
 		});
 
 		$container->registerService('URLGenerator', function (IAppContainer $c) {

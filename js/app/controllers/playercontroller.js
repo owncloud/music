@@ -868,6 +868,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				navigator.mediaSession.metadata = null;
 			}
 		});
+
+		$rootScope.$watch('playing', function(isPlaying) {
+			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+		});
 	}
 
 	/**

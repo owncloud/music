@@ -335,10 +335,12 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		player.on('play', function() {
 			playButton.css('display', 'none');
 			pauseButton.css('display', 'inline-block');
+			setMediaSessionStatePlaying(true);
 		});
 		player.on('pause', function() {
 			playButton.css('display', 'inline-block');
 			pauseButton.css('display', 'none');
+			setMediaSessionStatePlaying(false);
 		});
 
 		// Seeking
@@ -684,6 +686,12 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 					type: ''
 				}]
 			});
+		}
+	}
+
+	function setMediaSessionStatePlaying(isPlaying) {
+		if ('mediaSession' in navigator) {
+			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
 		}
 	}
 

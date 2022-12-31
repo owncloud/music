@@ -44,21 +44,30 @@ class RegisterMimeTypes extends Command {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$output->writeln('Registering MIME types for existing files...');
-		$this->registerForExistingFiles($output);
-		$output->writeln('Registering MIME types for new files...');
-		$this->registerForNewFiles($output);
-		$output->writeln('Done');
+		try {
+			$output->writeln('Registering MIME types for existing files...');
+			$this->registerForExistingFiles($output);
+			$output->writeln('Registering MIME types for new files...');
+			$this->registerForNewFiles($output);
+			$output->writeln('Done');
+		} catch (\Exception $e) {
+			$output->writeln($e->getMessage());
+		}
 		return 0;
 	}
 
 	private function registerForExistingFiles(OutputInterface $output) {
-		foreach ($this->mimeMappings as $ext => $mimetypes) {
-			foreach ($mimetypes as $mimetype) {
-				$mimeId = $this->mimeTypeLoader->getId($mimetype);
-				$updatedCount = $this->mimeTypeLoader->updateFilecache($ext, $mimeId);
-				$output->writeln("  Updated MIME type $mimetype for $updatedCount files with the extension .$ext");
+		// The needed function is not part of the public API but we know it should exist
+		if (\method_exists($this->mimeTypeLoader, 'updateFilecache')) {
+			foreach ($this->mimeMappings as $ext => $mimetypes) {
+				foreach ($mimetypes as $mimetype) {
+					$mimeId = $this->mimeTypeLoader->getId($mimetype);
+					$updatedCount = $this->mimeTypeLoader->updateFilecache($ext, $mimeId);
+					$output->writeln("  Updated MIME type $mimetype for $updatedCount files with the extension .$ext");
+				}
 			}
+		} else {
+			$output->writeln("  Could not update the filecache");
 		}
 	}
 
@@ -70,8 +79,7 @@ class RegisterMimeTypes extends Command {
 		if (\file_exists($mappingFile)) {
 			$existingMappings = \json_decode(\file_get_contents($mappingFile), true);
 			if ($existingMappings === null) {
-				$output->writeln("  Could not read or parse the file <error>$mappingFile</error>. Fix or delete the file and then rerun the command.");
-				exit();
+				throw new \Exception("  Could not read or parse the file <error>$mappingFile</error>. Fix or delete the file and then rerun the command.");
 			}
 
 			$mappings = \array_merge($existingMappings, $mappings);
@@ -81,8 +89,7 @@ class RegisterMimeTypes extends Command {
 		if ($newMappingCount > 0) {
 			$result = \file_put_contents($mappingFile, \json_encode($mappings, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 			if ($result === false) {
-				$output->writeln("  Failed to write to the file <error>$mappingFile</error>. Check file permissions and then rerun the command.");
-				exit();
+				throw new \Exception("  Failed to write to the file <error>$mappingFile</error>. Check file permissions and then rerun the command.");
 			}
 		}
 		$output->writeln("  MIME mappings added for $newMappingCount new file extensions");

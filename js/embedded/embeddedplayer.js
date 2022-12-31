@@ -307,14 +307,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			playTimePreview_ts = null;
 			playTimePreview_s = null;
 			playTime_s = 0;
-			songLength_s = 0;
+			songLength_s = null;
 			loadingShow();
 			updateProgress();
 			bufferBar.css('width', '0');
 			setCursorType('default');
 		});
 		player.on('ready', function() {
-			// nothing to do
+			loadingHide();
 		});
 		player.on('buffer', function(percent) {
 			bufferBar.css('width', Math.round(percent) + '%');
@@ -335,10 +335,12 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		player.on('play', function() {
 			playButton.css('display', 'none');
 			pauseButton.css('display', 'inline-block');
+			setMediaSessionStatePlaying(true);
 		});
 		player.on('pause', function() {
 			playButton.css('display', 'inline-block');
 			pauseButton.css('display', 'none');
+			setMediaSessionStatePlaying(false);
 		});
 
 		// Seeking
@@ -684,6 +686,12 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 					type: ''
 				}]
 			});
+		}
+	}
+
+	function setMediaSessionStatePlaying(isPlaying) {
+		if ('mediaSession' in navigator) {
+			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
 		}
 	}
 

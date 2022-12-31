@@ -86,7 +86,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
 			var entry = playlistService.peekNextTrack();
 			if (entry?.track?.id !== undefined) {
-				const {mime, url} = getPlayableFileUrl(entry.track);
+				const {mime, url} = getPlayableFileUrl(entry.track) || [null, null];
 				if (mime !== null && url !== null) {
 					$scope.player.prepareUrl(url, mime);
 				}
@@ -367,13 +367,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		localStorage.setItem('oc_music_volume', newValue);
 	});
 
-	$scope.$watch('playbackRate', function(newValue, _oldValue) {
+	const notifyPlaybackRateNotAdjustible = _.debounce(
+		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
+		1000, {leading: true, trailing: false}
+	);
+	$scope.$watch('playbackRate', function(newValue, oldValue) {
 		$scope.player.setPlaybackRate(newValue);
+		if (oldValue && oldValue != newValue && !$scope.player.playbackRateAdjustible()) {
+			notifyPlaybackRateNotAdjustible();
+		}
 	});
 
 	$scope.offsetVolume = function (offset) {
 		const value = $scope.volume + offset;
-		$scope.volume = Math.max(0, Math.min(100, value)); 		// Clamp to 0-100
+		$scope.volume = Math.max(0, Math.min(100, value)); // Clamp to 0-100
 		lastVolume = null;
 	};
 
@@ -860,6 +867,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			else {
 				navigator.mediaSession.metadata = null;
 			}
+		});
+
+		$rootScope.$watch('playing', function(isPlaying) {
+			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
 		});
 	}
 

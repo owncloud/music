@@ -32,12 +32,16 @@ function initEmbeddedPlayer() {
 
 	var mAudioMimes = _.filter([
 		'audio/aac',
+		'audio/aiff',
+		'audio/basic',
 		'audio/flac',
 		'audio/mp4',
 		'audio/m4b',
 		'audio/mpeg',
 		'audio/ogg',
-		'audio/wav'
+		'audio/wav',
+		'audio/x-aiff',
+		'audio/x-caf',
 	], mPlayer.canPlayMime, mPlayer);
 
 	var mPlaylistMimes = [

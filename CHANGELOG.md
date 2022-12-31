@@ -1,5 +1,16 @@
 ## [Unreleased]
 ### Added
+- Basic support to play M4A files with ALAC encoding also on non-Apple browsers
+  [#1030](https://github.com/owncloud/music/issues/1030)
+  * Based on the [Aurora.js](https://github.com/audiocogs/aurora.js/) plugin [ALAC.js](https://github.com/audiocogs/alac.js) v0.1.0
+  * Limitations: no seeking, no adjusting of playback speed, possible glitches, may not work with all files
+- Basic support to play AIFF, AU, and CAF files
+  [#767](https://github.com/owncloud/music/issues/767)
+  * Based on the [Aurora.js](https://github.com/audiocogs/aurora.js/) (no plugins required)
+  * Limitations: no seeking, no adjusting of playback speed, possible glitches, may not work with all files
+  * Corresponging file extensions must be mapped to MIME types audio/*, see below
+- Command `occ music:register-mime-types` to add MIME type mappings for those supported audio file types which
+  are not mapped by default on OC and NC: .aac, .au, .aif, .aiff, .aifc, .caf
 
 ### Changed
 - Show the collapsed navigation pane when a track is dragged over the navigation pane toggle

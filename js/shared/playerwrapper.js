@@ -15,11 +15,12 @@ import Hls from 'node_modules/hls.js/dist/hls.light.js';
 OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = function() {
-	var m_isIe = $('html').hasClass('ie'); // are we running on Internet Explorer
+	const m_isIe = $('html').hasClass('ie'); // are we running on Internet Explorer
 	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
 	var m_html5audio = null;
 	var m_hls = null;
 	var m_aurora = null;
+	var m_auroraWorkaroundAudio = null;
 	var m_position = 0;
 	var m_duration = 0;
 	var m_buffered = 0; // percent
@@ -30,12 +31,12 @@ OCA.Music.PlayerWrapper = function() {
 	var m_url = null;
 	var m_urlType = null; // set later as one of ['local', 'external', 'external-hls']
 	var m_mime = null;
-	var m_self = this;
+	const m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
 
 	function initHtml5() {
-		m_html5audio = document.createElement('audio');
+		m_html5audio = new Audio();
 		m_html5audio.preload = 'auto';
 
 		if (Hls.isSupported()) {
@@ -156,10 +157,21 @@ OCA.Music.PlayerWrapper = function() {
 		});
 		m_aurora.on('error', function(message) {
 			console.error('Aurora error: ' + message);
-			m_self.trigger('error', m_url);
+			m_self.trigger('error', url);
 		});
 
 		m_aurora.preload();
+
+		/**
+		 * The mediaSession API doesn't work fully or at all without an Audio element with a valid source. As a workaround, create one which mirrors the
+		 * state of the Aurora backend but cannot be heard by the user.
+		 */
+		if (m_auroraWorkaroundAudio === null) {
+			m_auroraWorkaroundAudio = new Audio();
+			m_auroraWorkaroundAudio.loop = true;
+			m_auroraWorkaroundAudio.volume = 0.000001; // The volume must be > 0 for this to work on Firefox but we don't want the user to actually hear this
+		}
+		m_auroraWorkaroundAudio.src = OCA.Music.DummyAudio.getData();
 	}
 
 	function onPlayStarted() {
@@ -185,6 +197,7 @@ OCA.Music.PlayerWrapper = function() {
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.play();
+					m_auroraWorkaroundAudio.play();
 					onPlayStarted(); // Aurora has no callback => fire event synchronously
 				}
 				break;
@@ -200,6 +213,7 @@ OCA.Music.PlayerWrapper = function() {
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.pause();
+					m_auroraWorkaroundAudio.pause();
 				}
 				onPaused(); // Aurora has no callback => fire event synchronously
 				break;
@@ -233,6 +247,11 @@ OCA.Music.PlayerWrapper = function() {
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.stop();
+					m_aurora = null;
+					m_auroraWorkaroundAudio.pause();
+					if (!m_isIe) {
+						m_auroraWorkaroundAudio.src = '';
+					}
 				}
 				onPaused(); // Aurora has no callback => fire event synchronously
 				break;

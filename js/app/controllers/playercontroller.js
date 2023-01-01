@@ -585,24 +585,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.seekbarTouchPreview = function($event) {
-		if ($scope.player.seekingSupported($event.targetTouches[0].clientX)) {
+		if ($scope.player.seekingSupported()) {
 			updateSeekPreview($event.targetTouches[0].clientX);
 		}
 	};
 
 	$scope.seekOffset = function(offset) {
 		if ($scope.player.seekingSupported()) {
-			// Clamp to the beginning of the track
-			const target = Math.max(0, $scope.position.current + offset);
-			const ratio = target / $scope.position.total;
-
-			// Check if target is beyond playtime
-			if (ratio > 1) {
-				$scope.next();
-			}
-			else {
-				$scope.player.seek(ratio);
-			}
+			const target = $scope.position.current + offset;
+			var ratio = target / $scope.position.total;
+			// Clamp between the begin and end of the track
+			ratio = Math.min(Math.max(0, ratio), 1);
+			$scope.player.seek(ratio);
 		}
 	};
 

@@ -8,7 +8,7 @@
   [#767](https://github.com/owncloud/music/issues/767)
   * Based on the [Aurora.js](https://github.com/audiocogs/aurora.js/) (no plugins required)
   * Limitations: no seeking, no adjusting of playback speed, possible glitches, may not work with all files
-  * Corresponging file extensions must be mapped to MIME types audio/*, see below
+  * Corresponding file extensions must be mapped to MIME types `audio/*`, see below
 - Command `occ music:register-mime-types` to add MIME type mappings for those supported audio file types which
   are not mapped by default on OC and NC: .aac, .au, .aif, .aiff, .aifc, .caf
 
@@ -35,6 +35,7 @@
   [#1029](https://github.com/owncloud/music/issues/1029)
 - Tablet and mobile layout not working correctly on NC 25.0.2
   [#1036](https://github.com/owncloud/music/issues/1036)
+- Playback jumping to the next radio station when seeking beyond the end of the already buffered content
 
 ## 1.7.0 - 2022-10-31
 ### Added

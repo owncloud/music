@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.8.0 - 2023-01-01
 ### Added
 - Basic support to play M4A files with ALAC encoding also on non-Apple browsers
   [#1030](https://github.com/owncloud/music/issues/1030)

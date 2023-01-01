@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\App;
@@ -98,20 +98,28 @@ function loadEmbeddedMusicPlayer() {
 	\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
 }
 
+function isFilesUrl($url) {
+	return \preg_match('%/apps/files/?$%', $url);
+}
+
+function isShareUrl($url) {
+	return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
+}
+
+function isMusicUrl($url) {
+	return \preg_match('%/apps/music/?$%', $url);
+}
+
 $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
 	$url = \explode('?', $url)[0]; // get rid of any query args
-	$isFilesUrl = \preg_match('%/apps/files(/.*)?%', $url);
-	$isShareUrl = \preg_match('%/s/.+%', $url)
-		&& !\preg_match('%/apps/.*%', $url)
-		&& !\preg_match('%.*/authenticate%', $url);
-	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
+	$url = \explode('#', $url)[0]; // get rid of any hash part
 
-	if ($isFilesUrl || $isShareUrl) {
+	if (isFilesUrl($url) || isShareUrl($url)) {
 		adjustCsp($c);
 		loadEmbeddedMusicPlayer();
-	} elseif ($isMusicUrl) {
+	} elseif (isMusicUrl($url)) {
 		adjustCsp($c);
 	}
 }

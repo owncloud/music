@@ -1,3 +1,11 @@
+## [Unreleased]
+### Changed
+- The REST API for Ampache/Subsonic key managemnt made more consistent with the other REST APIs
+
+### Fixed
+- Ampache/Subsonic key creation not working from the web UI on Nextcloud versions < 25 and on ownCloud 10.0 (regression in v1.8.0)
+  [#1038](https://github.com/owncloud/music/issues/1038)
+
 ## 1.8.0 - 2023-01-01
 ### Added
 - Basic support to play M4A files with ALAC encoding also on non-Apple browsers

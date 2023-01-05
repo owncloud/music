@@ -7,7 +7,7 @@
  * @author Gregory Baudet <gregory.baudet@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
- * @copyright Pauli Järvinen 2018 - 2022
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 angular.module('Music').controller('SettingsViewController', [
@@ -313,7 +313,7 @@ angular.module('Music').controller('SettingsViewController', [
 		$scope.addAPIKey = function() {
 			var newRow = {description: $scope.ampacheDescription, loading: true};
 			$scope.settings.ampacheKeys.push(newRow);
-			Restangular.all('settings/userkey/generate').post({ description: $scope.ampacheDescription, length: 12 }).then(
+			Restangular.all('settings/user/keys').post({ description: $scope.ampacheDescription, length: 12 }).then(
 				function(data) {
 					newRow.loading = false;
 					newRow.id = data.id;
@@ -332,11 +332,11 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.removeAPIKey = function(key) {
 			key.loading=true;
-			Restangular.all('settings/userkey/remove').post({ id: key.id }).then(function(data) {
+			Restangular.one('settings/user/keys', key.id).remove().then(function(data) {
 				if (data.success) {
 					// refresh remaining ampacheKeys
-					Restangular.one('settings').get().then(function (value) {
-						$scope.settings.ampacheKeys = value.ampacheKeys;
+					Restangular.one('settings/user/keys').get().then(function (keys) {
+						$scope.settings.ampacheKeys = keys;
 					});
 				} else {
 					key.loading=false;

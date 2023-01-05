@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -118,10 +118,18 @@ class SettingController extends Controller {
 			'ignoredArticles' => $this->librarySettings->getIgnoredArticles($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
-			'ampacheKeys' => $this->getAmpacheKeys(),
+			'ampacheKeys' => $this->getUserKeys(),
 			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId
 		];
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getUserKeys() {
+		return $this->ampacheUserMapper->getAll($this->userId);
 	}
 
 	private function getAmpacheUrl() {
@@ -135,10 +143,6 @@ class SettingController extends Controller {
 						'music.subsonic.handleRequest', ['method' => 'dummy'])));
 	}
 
-	private function getAmpacheKeys() {
-		return $this->ampacheUserMapper->getAll($this->userId);
-	}
-
 	private function storeUserKey($description, $password) {
 		$hash = \hash('sha256', $password);
 		$description = Util::truncate($description, 64); // some DB setups can't truncate automatically to column max size
@@ -147,9 +151,8 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
-	 * @CORS
 	 */
-	public function generateUserKey($length, $description) {
+	public function createUserKey($length, $description) {
 		if ($length == null || $length < self::DEFAULT_PASSWORD_LENGTH) {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}
@@ -163,6 +166,18 @@ class SettingController extends Controller {
 		}
 
 		return new JSONResponse(['id' => $id, 'password' => $password, 'description' => $description], Http::STATUS_CREATED);
+	}
+
+	/**
+	 * The CORS-version of the key creation function is targeted for external clients. We need separate function
+	 * because the CORS middleware blocks the normal internal access on Nextcloud versions older than 25 as well
+	 * as on ownCloud 10.0, at least (but not on OC 10.4+).
+	 *
+	 * @NoAdminRequired
+	 * @CORS
+	 */
+	public function createUserKeyCors($length, $description) {
+		return $this->createUserKey($length, $description);
 	}
 
 	/**

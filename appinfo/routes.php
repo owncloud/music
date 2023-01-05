@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music;
@@ -107,8 +107,10 @@ $app->registerRoutes($this, ['routes' => [
 	['name' => 'setting#userExcludedPaths',	'url' => '/api/settings/user/exclude_paths',		'verb' => 'POST'],
 	['name' => 'setting#enableScanMetadata','url' => '/api/settings/user/enable_scan_metadata',	'verb' => 'POST'],
 	['name' => 'setting#ignoredArticles',	'url' => '/api/settings/user/ignored_articles',		'verb' => 'POST'],
-	['name' => 'setting#generateUserKey',	'url' => '/api/settings/userkey/generate',			'verb' => 'POST'],
-	['name' => 'setting#removeUserKey',		'url' => '/api/settings/userkey/remove',			'verb' => 'POST'],
+	['name' => 'setting#getUserKeys',		'url' => '/api/settings/user/keys',					'verb' => 'GET'],
+	['name' => 'setting#createUserKey',		'url' => '/api/settings/user/keys',					'verb' => 'POST'],
+	['name' => 'setting#removeUserKey',		'url' => '/api/settings/user/keys/{id}',			'verb' => 'DELETE'],
+	['name' => 'setting#createUserKeyCors',	'url' => '/api/settings/userkey/generate',			'verb' => 'POST'], # external API, keep inconsistent url to maintain compatibility
 
 	// Ampache API https://github.com/ampache/ampache/wiki/Ampache-API
 	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php',	'verb' => 'GET'],

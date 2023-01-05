@@ -659,12 +659,12 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					case 'KeyJ':
 						// Seek backwards
 						func = $scope.seekOffset;
-						args = [e.shiftKey ? -30 : -5];
+						args = [e.shiftKey ? -30 : e.altKey ? -1 : -5];
 						break;
 					case 'KeyL':
 						// Seek forwards
 						func = $scope.seekOffset;
-						args = [e.shiftKey ? +30 : +5];
+						args = [e.shiftKey ? +30 : e.altKey ? +1 : +5];
 						break;
 					case 'KeyM':
 						// Mute / Unmute
@@ -673,22 +673,22 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					case 'NumpadSubtract':
 						// Decrease volume
 						func = $scope.offsetVolume;
-						args = [e.shiftKey ? -20 : -5];
+						args = [e.shiftKey ? -20 : e.altKey ? -1 : -5];
 						break;
 					case 'NumpadAdd':
 						// Increase volume
 						func = $scope.offsetVolume;
-						args = [e.shiftKey ? +20 : +5];
+						args = [e.shiftKey ? +20 : e.altKey ? +1 : +5];
 						break;
 					case 'ArrowLeft':
 						// Previous title / seek backwards
 						func = e.ctrlKey ? $scope.prev : $scope.seekOffset;
-						args = [e.shiftKey ? -30 : -5];
+						args = [e.shiftKey ? -30 : e.altKey ? -1 : -5];
 						break;
 					case 'ArrowRight':
 						// Next title / seek forwards
 						func = e.ctrlKey ? $scope.next : $scope.seekOffset;
-						args = [e.shiftKey ? +30 : +5];
+						args = [e.shiftKey ? +30 : e.altKey ? +1 : +5];
 						break;
 					case 'Comma': // US: <
 						// Decrease playback speed

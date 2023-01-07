@@ -19,7 +19,7 @@ angular.module('Music').controller('GenresViewController', [
 		// When making the view visible, the genres are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of genres (like several thousands).
-		let INCREMENTAL_LOAD_STEP = 100;
+		const INCREMENTAL_LOAD_STEP = 100;
 		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed

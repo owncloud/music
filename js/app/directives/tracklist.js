@@ -26,15 +26,15 @@
 angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog',
 function ($rootScope, $interpolate, gettextCatalog) {
 
-	let trackTemplate = '<div class="play-pause"></div>' +
+	const trackTemplate = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
 		'<span title="{{ tooltip }}">{{ title }}</span>';
-	let trackRenderer = $interpolate(trackTemplate);
+	const trackRenderer = $interpolate(trackTemplate);
 
 	// Localized strings
-	let lessText = gettextCatalog.getString('Show less …');
-	let detailsText = gettextCatalog.getString('Details');
-	let moreText = function(count) { // this is the default implementation, may be overridden with attributes
+	const lessText = gettextCatalog.getString('Show less …');
+	const detailsText = gettextCatalog.getString('Details');
+	const moreText = function(count) { // this is the default implementation, may be overridden with attributes
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 

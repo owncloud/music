@@ -13,7 +13,7 @@ angular.module('Music').controller('RadioViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, gettextCatalog, Restangular, $timeout) {
 
-		let INCREMENTAL_LOAD_STEP = 1000;
+		const INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.stations = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();

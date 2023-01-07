@@ -21,7 +21,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		// Tracks are split into "buckets" to facilitate lazy loading. One track-list directive
 		// is created for each bucket. All tracks in a single bucket have the same indexing char
 		// but a single indexing char may have several buckets.
-		let BUCKET_MAX_SIZE = 100;
+		const BUCKET_MAX_SIZE = 100;
 		$scope.trackBuckets = null;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed

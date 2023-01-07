@@ -25,12 +25,12 @@ function($rootScope, $timeout, alphabetIndexingService) {
 		replace: true,
 		link: function(scope, element, _attrs, _ctrl) {
 
-			let links = alphabetIndexingService.indexChars();
-			let linksShort = [
+			const links = alphabetIndexingService.indexChars();
+			const linksShort = [
 				'#', 'A-B', 'C-D', 'E-F', 'G-H', 'I-J', 'K-L', 'M-N',
 				'O-P', 'Q-R', 'S-T', 'U-V', 'W-X', 'Y-Z', '…'
 			];
-			let linksExtraShort = [
+			const linksExtraShort = [
 				'A-C', 'D-F', 'G-I', 'J-L', 'M-O', 'P-R', 'S-U', 'V-X', 'Y-Z'
 			];
 			scope.links = links;

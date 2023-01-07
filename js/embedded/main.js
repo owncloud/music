@@ -30,7 +30,7 @@ function initEmbeddedPlayer() {
 	let mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
 	let mPlaylist = new OCA.Music.Playlist();
 
-	let mAudioMimes = _.filter([
+	const mAudioMimes = _.filter([
 		'audio/aac',
 		'audio/aiff',
 		'audio/basic',
@@ -44,7 +44,7 @@ function initEmbeddedPlayer() {
 		'audio/x-caf',
 	], mPlayer.canPlayMime, mPlayer);
 
-	let mPlaylistMimes = [
+	const mPlaylistMimes = [
 		'audio/mpegurl',
 		'audio/x-scpls'
 	];

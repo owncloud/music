@@ -17,7 +17,7 @@ angular.module('Music').controller('PlaylistViewController', [
 	function ($rootScope, $scope, $routeParams, playlistService, libraryService,
 			gettextCatalog, Restangular, $timeout) {
 
-		let INCREMENTAL_LOAD_STEP = 1000;
+		const INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.tracks = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();

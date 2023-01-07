@@ -20,8 +20,8 @@ import playIconPath from '../../../img/play-big.svg';
 angular.module('Music').directive('listHeading', ['$rootScope', 'gettextCatalog',
 function ($rootScope, gettextCatalog) {
 
-	let playText = gettextCatalog.getString('Play');
-	let detailsText = gettextCatalog.getString('Details');
+	const playText = gettextCatalog.getString('Play');
+	const detailsText = gettextCatalog.getString('Details');
 	let actionsMenu = null;
 	let actionsMenuOwner = null;
 

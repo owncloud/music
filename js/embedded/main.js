@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -28,7 +28,7 @@ function initEmbeddedPlayer() {
 	let mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
 	let mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
-	let mPlaylist = new OCA.Music.Playlist();
+	let mPlaylist = null;
 
 	const mAudioMimes = _.filter([
 		'audio/aac',
@@ -137,11 +137,11 @@ function initEmbeddedPlayer() {
 	}
 
 	function onImportList() {
-		doImportFromFile(OCA.Music.playlistFileService.importPlaylist);
+		doImportFromFile(OCA.Music.PlaylistFileService.importPlaylist);
 	}
 
 	function onImportRadio() {
-		doImportFromFile(OCA.Music.playlistFileService.importRadio);
+		doImportFromFile(OCA.Music.PlaylistFileService.importRadio);
 	}
 
 	function doImportFromFile(serviceImportFunc) {
@@ -270,7 +270,7 @@ function initEmbeddedPlayer() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
-		mPlaylist.init(mFileList.files, mAudioMimes, mCurrentFile.id);
+		mPlaylist = new OCA.Music.Playlist(mFileList.files, mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}
@@ -283,7 +283,7 @@ function initEmbeddedPlayer() {
 		let onPlaylistLoaded = function(data) {
 			if (data.files.length > 0) {
 				mPlayer.show(mCurrentFile.name);
-				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
+				mPlaylist = new OCA.Music.Playlist(data.files, mAudioMimes, data.files[0].id);
 				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 				jumpToPlaylistFile(mPlaylist.currentFile());
 			}
@@ -313,7 +313,7 @@ function initEmbeddedPlayer() {
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
 			mFileList.showFileBusyState($file, false);
 		};
-		OCA.Music.playlistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
+		OCA.Music.PlaylistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
 	}
 
 	/**

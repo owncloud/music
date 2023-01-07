@@ -5,20 +5,21 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.PlaylistFileService = function() {
+/** @namespace */
+OCA.Music.PlaylistFileService = class {
 
-	let mFileId = null;
-	let mData = null;
+	static #fileId = null;
+	static #data = null;
 
-	this.readFile = function(fileId, onSuccess, onFail, shareToken /*optional*/) {
+	static readFile(fileId, onSuccess, onFail, shareToken /*optional*/) {
 
-		if (fileId == mFileId && mData !== null) {
-			onSuccess(mData);
+		if (fileId == this.#fileId && this.#data !== null) {
+			onSuccess(this.#data);
 		}
 		else {
 			let url = null;
@@ -30,15 +31,15 @@ OCA.Music.PlaylistFileService = function() {
 				url = OC.generateUrl('apps/music/api/playlists/file/{fileId}', {'fileId': fileId});
 			}
 
-			$.get(url, function(data) {
-				mFileId = fileId;
-				mData = data;
+			$.get(url, (data) => {
+				this.#fileId = fileId;
+				this.#data = data;
 				onSuccess(data);
 			}).fail(onFail);
 		}
-	};
+	}
 
-	this.importPlaylist = function(file, onDone) {
+	static importPlaylist(file, onDone) {
 		let name = OCA.Music.Utils.dropFileExtension(file.name);
 		let path = OCA.Music.Utils.joinPath(file.path, file.name);
 
@@ -66,9 +67,9 @@ OCA.Music.PlaylistFileService = function() {
 			OC.Notification.showTemporary(t('music', 'Failed to create a new playlist'));
 			onDone(false);
 		});
-	};
+	}
 
-	this.importRadio = function(file, onDone) {
+	static importRadio(file, onDone) {
 		let path = OCA.Music.Utils.joinPath(file.path, file.name);
 
 		let url = OC.generateUrl('apps/music/api/radio/import');
@@ -85,8 +86,6 @@ OCA.Music.PlaylistFileService = function() {
 					t('music', 'Failed to import the playlist file {file}', { file: file.name }));
 			onDone(false);
 		});
-	};
+	}
 
 };
-
-OCA.Music.playlistFileService = new OCA.Music.PlaylistFileService();

@@ -68,7 +68,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
 					};
 
-					OCA.Music.playlistFileService.readFile(fileInfo.id, onPlaylistLoaded, onError);
+					OCA.Music.PlaylistFileService.readFile(fileInfo.id, onPlaylistLoaded, onError);
 				}
 			},
 

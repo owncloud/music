@@ -5,69 +5,69 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.Playlist = function() {
+OCA.Music.Playlist = class {
 
-	let mFiles = null;
-	let mCurrentIndex = null;
+	#files = null;
+	#currentIndex = null;
 
-	function jumpToOffset(offset) {
-		if (!mFiles || mFiles.length <= 1) {
+	#jumpToOffset(offset) {
+		if (!this.#files || this.#files.length <= 1) {
 			return null;
 		} else {
-			mCurrentIndex = (mCurrentIndex + mFiles.length + offset) % mFiles.length;
-			return mFiles[mCurrentIndex];
+			this.#currentIndex = (this.#currentIndex + this.#files.length + offset) % this.#files.length;
+			return this.#files[this.#currentIndex];
 		}
 	}
 
-	this.init = function(folderFiles, supportedMimes, firstFileId) {
-		mFiles = _.filter(folderFiles, function(file) {
+	constructor(folderFiles, supportedMimes, firstFileId) {
+		this.#files = _.filter(folderFiles, function(file) {
 			// external URLs do not have a valid MIME type set, attempt to play them regardless
 			return file.mimetype === null || _.includes(supportedMimes, file.mimetype);
 		});
-		mCurrentIndex = _.findIndex(mFiles, function(file) {
+		this.#currentIndex = _.findIndex(this.#files, function(file) {
 			// types int/string depend on the cloud version, don't use ===
 			return file.id == firstFileId; 
 		});
-	};
+	}
 
-	this.next = function() {
-		return jumpToOffset(+1);
-	};
+	next() {
+		return this.#jumpToOffset(+1);
+	}
 
-	this.prev = function() {
-		return jumpToOffset(-1);
-	};
+	prev() {
+		return this.#jumpToOffset(-1);
+	}
 
-	this.jumpToIndex = function(index) {
-		if (index < mFiles.length) {
-			mCurrentIndex = index;
+	jumpToIndex(index) {
+		if (index < this.#files.length) {
+			this.#currentIndex = index;
 		}
 		return this.currentFile();
-	};
+	}
 
-	this.reset = function() {
-		mFiles = null;
-		mCurrentIndex = null;
-	};
+	reset() {
+		this.#files = null;
+		this.#currentIndex = null;
+	}
 
-	this.length = function() {
-		return mFiles ? mFiles.length : 0;
-	};
+	length() {
+		return this.#files ? this.#files.length : 0;
+	}
 
-	this.currentFile = function() {
-		return mFiles ? mFiles[mCurrentIndex] : null;
-	};
+	currentFile() {
+		return this.#files ? this.#files[this.#currentIndex] : null;
+	}
 
-	this.currentIndex = function() {
-		return mCurrentIndex;
-	};
+	currentIndex() {
+		return this.#currentIndex;
+	}
 
-	this.files = function() {
-		return mFiles;
-	};
+	files() {
+		return this.#files;
+	}
 };

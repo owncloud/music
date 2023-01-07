@@ -153,7 +153,7 @@ angular.module('Music').controller('SidebarController', [
 				linkArray = [linkArray];
 			}
 
-			var htmlLinks = _.map(linkArray, function(item) {
+			let htmlLinks = _.map(linkArray, function(item) {
 				return '<a href="' + item.url + '" target="_blank">' + (item.name || item.title) + '</a>';
 			});
 			return htmlLinks.join(', ');
@@ -168,7 +168,7 @@ angular.module('Music').controller('SidebarController', [
 				$rootScope.$emit('scrollTo' + OCA.Music.Utils.capitalize(type), entity.id);
 			};
 
-			var destinationView = '#';
+			let destinationView = '#';
 			if (type.startsWith('radio')) {
 				destinationView = '#/radio';
 			} else if (type.startsWith('podcast')) {

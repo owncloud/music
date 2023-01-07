@@ -31,8 +31,8 @@ angular.module('Music').controller('PlaylistDetailsController', [
 				$scope.createdDate = OCA.Music.Utils.formatDateTime($scope.playlist.created);
 				$scope.updatedDate = OCA.Music.Utils.formatDateTime($scope.playlist.updated);
 
-				var art = $('#app-sidebar .albumart');
-				var url = OC.generateUrl('apps/music/api/playlists/') + playlistId + '/cover';
+				let art = $('#app-sidebar .albumart');
+				let url = OC.generateUrl('apps/music/api/playlists/') + playlistId + '/cover';
 				art.css('background-image', 'url("' + url + '")');
 			}
 		});
@@ -47,7 +47,7 @@ angular.module('Music').controller('PlaylistDetailsController', [
 			}, 0);
 		});
 
-		var initialComment = null;
+		let initialComment = null;
 
 		// Start editing the comment
 		$scope.startEdit = function() {

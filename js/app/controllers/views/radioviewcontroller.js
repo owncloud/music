@@ -13,13 +13,13 @@ angular.module('Music').controller('RadioViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', 'gettextCatalog', 'Restangular', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, gettextCatalog, Restangular, $timeout) {
 
-		var INCREMENTAL_LOAD_STEP = 1000;
+		let INCREMENTAL_LOAD_STEP = 1000;
 		$scope.incrementalLoadLimit = INCREMENTAL_LOAD_STEP;
 		$scope.stations = null;
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
@@ -52,10 +52,10 @@ angular.module('Music').controller('RadioViewController', [
 			Restangular.one('radio', station.id).remove().then(
 				function() {
 					station.busy = false;
-					var removedIndex = libraryService.removeRadioStation(station.id);
+					let removedIndex = libraryService.removeRadioStation(station.id);
 					// Remove also from the play queue if the radio is currently playing
 					if (listIsPlaying()) {
-						var playingIndex = $scope.getCurrentStationIndex();
+						let playingIndex = $scope.getCurrentStationIndex();
 						if (removedIndex <= playingIndex) {
 							--playingIndex;
 						}
@@ -111,7 +111,7 @@ angular.module('Music').controller('RadioViewController', [
 				}
 
 				if (listIsPlaying()) {
-					var playingIndex = _.findIndex($scope.stations, { track: $scope.$parent.currentTrack });
+					let playingIndex = _.findIndex($scope.stations, { track: $scope.$parent.currentTrack });
 					playlistService.onPlaylistModified($scope.stations, playingIndex);
 				}
 
@@ -131,7 +131,7 @@ angular.module('Music').controller('RadioViewController', [
 		 * Two functions for the alphabet-navigation directive integration
 		 */
 		$scope.getStationTitle = function(index) {
-			var station = $scope.stations[index].track;
+			let station = $scope.stations[index].track;
 			return station.name || station.stream_url;
 		};
 		$scope.getStationElementId = function(index) {

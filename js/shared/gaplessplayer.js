@@ -11,9 +11,9 @@
 OCA.Music = OCA.Music || {};
 
 OCA.Music.GaplessPlayer = function() {
-	var m_self = this;
-	var m_currentPlayer = new OCA.Music.PlayerWrapper();
-	var m_nextPlayer = new OCA.Music.PlayerWrapper();
+	let m_self = this;
+	let m_currentPlayer = new OCA.Music.PlayerWrapper();
+	let m_nextPlayer = new OCA.Music.PlayerWrapper();
 	_.extend(this, OC.Backbone.Events);
 
 	function propagateEvent(eventName, arg) {

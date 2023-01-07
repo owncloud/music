@@ -24,9 +24,9 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	const MAX_MATCHES_IN_PLAYLIST = 1000;
 	const MAX_FOLDER_MATCHES_IN_TREE_LAYOUT = 50;
 
-	var searchform = $('.searchbox');
-	var searchbox = $('#searchbox');
-	var treeFolderMatches = {};
+	let searchform = $('.searchbox');
+	let searchbox = $('#searchbox');
+	let treeFolderMatches = {};
 
 	if (searchbox.length === 0) { // NC 20+
 		$.initialize('.unified-search__form', function(_index, elem) {
@@ -45,7 +45,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 		$scope.queryString = searchbox.val().trim();
 
 		/** Conduct the search when there is a pause in typing in text */
-		var checkQueryChange = _.debounce(function() {
+		let checkQueryChange = _.debounce(function() {
 			if ($scope.queryString != searchbox.val().trim()) {
 				onEnterSearchString();
 			}
@@ -111,8 +111,8 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	function runSearch(query) {
 		cleanUpPrevMatches();
 
-		var matchingTracks = null;
-		var view = $rootScope.currentView;
+		let matchingTracks = null;
+		let view = $rootScope.currentView;
 
 		if (view == '#') {
 			matchingTracks = searchInAlbumsView(query);
@@ -148,11 +148,11 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInAlbumsView(query) {
-		var matches = libraryService.searchTracksInAlbums(query, MAX_MATCHES);
+		let matches = libraryService.searchTracksInAlbums(query, MAX_MATCHES);
 
 		// mark track matches and collet the unique parent albums and artists
-		var artists = {};
-		var albums = {};
+		let artists = {};
+		let albums = {};
 		_(matches.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 			albums[track.album.id] = 1;
@@ -173,10 +173,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInFoldersView(query) {
-		var matches = libraryService.searchTracksInFolders(query, MAX_MATCHES);
+		let matches = libraryService.searchTracksInFolders(query, MAX_MATCHES);
 
 		// mark track matches and collect the unique parent folders
-		var folders = {};
+		let folders = {};
 		_(matches.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 			folders[track.folder.id] = track.folder;
@@ -190,12 +190,12 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 				matches.truncated = true;
 			}
 
-			var parents = {};
+			let parents = {};
 			_(folders).each(function(folder) {
 				folder.matched = true;
 			});
 			_(folders).each(function(folder) {
-				var parent = folder.parent;
+				let parent = folder.parent;
 				while (parent !== null && !parent.matched) {
 					parent.matched = true;
 					parents[parent.id] = parent;
@@ -216,10 +216,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInGenresView(query) {
-		var matches = libraryService.searchTracksInGenres(query, MAX_MATCHES);
+		let matches = libraryService.searchTracksInGenres(query, MAX_MATCHES);
 
 		// mark track matches and collect the unique parent genres
-		var genres = {};
+		let genres = {};
 		_(matches.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 			genres[track.genre.id] = 1;
@@ -234,10 +234,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInAllTracksView(query) {
-		var matches = libraryService.searchTracks(query, MAX_MATCHES);
+		let matches = libraryService.searchTracks(query, MAX_MATCHES);
 
 		// mark matching tracks and collect unique parent buckets
-		var buckets = {};
+		let buckets = {};
 		_(matches.result).each(function(track) {
 			$('#track-' + track.id).addClass('matched');
 			buckets[track.bucket.id] = 1;
@@ -252,7 +252,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInRadioView(query) {
-		var matches = libraryService.searchRadioStations(query, MAX_MATCHES_IN_PLAYLIST);
+		let matches = libraryService.searchRadioStations(query, MAX_MATCHES_IN_PLAYLIST);
 		_(matches.result).each(function(station) {
 			$('#radio-station-' + station.id).addClass('matched');
 		});
@@ -261,10 +261,10 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInPodcastsView(query) {
-		var matches = libraryService.searchPodcasts(query, MAX_MATCHES);
+		let matches = libraryService.searchPodcasts(query, MAX_MATCHES);
 
 		// mark episode matches and collect the unique parent channels
-		var channels = {};
+		let channels = {};
 		_(matches.result).each(function(episode) {
 			$('#podcast-episode-' + episode.id).addClass('matched');
 			channels[episode.channel.id] = 1;
@@ -282,7 +282,7 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 	}
 
 	function searchInPlaylistView(playlistId, query) {
-		var matches = libraryService.searchTracksInPlaylist(playlistId, query, MAX_MATCHES_IN_PLAYLIST);
+		let matches = libraryService.searchTracksInPlaylist(playlistId, query, MAX_MATCHES_IN_PLAYLIST);
 		_(matches.result).each(function(track) {
 			$('li[data-track-id=' + track.id + ']').addClass('matched');
 		});

@@ -16,12 +16,12 @@
 angular.module('Music').directive('inViewObserver', ['$rootScope', '$timeout', 'inViewService',
 function($rootScope, $timeout, inViewService) {
 
-	var _instances = []; // in creation order i.e. top-most first
-	var _firstIndexInView = 0;
-	var _lastIndexInView = -1;
+	let _instances = []; // in creation order i.e. top-most first
+	let _firstIndexInView = 0;
+	let _lastIndexInView = -1;
 	// tracking the range of visible items reduces the workload when there are a huge number of instances,
 	// but it cannot be used while some of the instances may be hidden (e.g. with "display: none")
-	var _trackVisibleRange = true;
+	let _trackVisibleRange = true;
 
 	// Drop all instances when view switching or artists reloading begins
 	$rootScope.$on('deactivateView', eraseInstances);
@@ -44,7 +44,7 @@ function($rootScope, $timeout, inViewService) {
 		invalidateInViewRange();
 	}
 
-	var throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
+	let throttledOnScroll = _.throttle(onScroll, 50, {leading: false});
 
 	OCA.Music.Utils.getScrollContainer()[0].addEventListener('scroll', throttledOnScroll);
 	$rootScope.$on('resize', throttledOnScroll);
@@ -66,7 +66,7 @@ function($rootScope, $timeout, inViewService) {
 	});
 
 	$rootScope.$on('inViewObserver_revealElement', function(_event, element) {
-		var inst = _(_instances).find({element: element});
+		let inst = _(_instances).find({element: element});
 
 		// cancel any pending "enter view" because it's about to happen immediately
 		if (inst.pendingEnterView) {
@@ -82,7 +82,7 @@ function($rootScope, $timeout, inViewService) {
 		}
 	});
 
-	var debouncedNotifyLeave = _.debounce(function() {
+	let debouncedNotifyLeave = _.debounce(function() {
 		_(_instances).each(function(inst) {
 			if (inst.leaveViewPending) {
 				onLeaveView(inst);
@@ -118,8 +118,8 @@ function($rootScope, $timeout, inViewService) {
 	 * Initial setup of the in-view-port statuses of the available instances
 	 */
 	function initInViewRange(skipDelays/*optional*/) {
-		var length = _instances.length;
-		var i;
+		let length = _instances.length;
+		let i;
 
 		// loop from the begining until we find the first instance in viewport
 		for (i = 0; i < length; ++i) {
@@ -145,10 +145,10 @@ function($rootScope, $timeout, inViewService) {
 	 * Update in-view-port status when we have a valid previous in-view-range
 	 */
 	function updateInViewRange() {
-		var prevFirst = _firstIndexInView;
-		var prevLast = _lastIndexInView;
-		var i;
-		var length = _instances.length;
+		let prevFirst = _firstIndexInView;
+		let prevLast = _lastIndexInView;
+		let i;
+		let length = _instances.length;
 
 		// Check if instances in the beginning of the range have slided off
 		for (i = _firstIndexInView; i <= _lastIndexInView; ++i) {
@@ -207,7 +207,7 @@ function($rootScope, $timeout, inViewService) {
 	function updateInViewStatus(inst, skipDelays/*optional*/) {
 		skipDelays = skipDelays || false;
 
-		var wasInViewPort = inst.inViewPort;
+		let wasInViewPort = inst.inViewPort;
 		inst.inViewPort = instanceInViewPort(inst) && !instanceIsInvisible(inst);
 
 		if (!wasInViewPort && inst.inViewPort) {
@@ -242,12 +242,12 @@ function($rootScope, $timeout, inViewService) {
 	}
 
 	function instanceInViewPort(inst) {
-		var margin = inst.viewPortMargin;
+		let margin = inst.viewPortMargin;
 		return inViewService.isElementInViewPort(inst.element, margin, margin);
 	}
 
 	function instanceIsInvisible(inst) {
-		var el = inst.element;
+		let el = inst.element;
 		// IE uses currentStyle, all the other browsers the getComputedStyle
 		return el.currentStyle
 			? (el.currentStyle.display == 'none')
@@ -310,12 +310,12 @@ function($rootScope, $timeout, inViewService) {
 			// The proper operation of the module depends on instances being in the proper vertical order in the _instances array.
 			// This should be trivially true for static sets of instances. However, if new instances may be added dynamically, then
 			// we often need to insert the new instance in the middle of the array.
-			var nextSibling = this.element.nextElementSibling;
+			let nextSibling = this.element.nextElementSibling;
 			if (nextSibling === null || this.element.className !== nextSibling.className || this.element.tagName !== nextSibling.tagName) {
 				// this is the last (repeated) element of its kind
 				_instances.push(this);
 			} else {
-				var idx = _.findIndex(_instances, { element: this.element.nextElementSibling });
+				let idx = _.findIndex(_instances, { element: this.element.nextElementSibling });
 				if (idx === -1) {
 					console.error('failed to find place for the new inViewObserver');
 				} else {
@@ -331,7 +331,7 @@ function($rootScope, $timeout, inViewService) {
 			// This happens when removing individual channels from the podcasts view but also  seems to 
 			// happen when the album library view contents are updated during/after scanning.
 			scope.$on('$destroy', function() {
-				var index = _instances.indexOf(controller);
+				let index = _instances.indexOf(controller);
 				if (index !== -1) {
 					_instances.splice(index, 1);
 					invalidateInViewRange();

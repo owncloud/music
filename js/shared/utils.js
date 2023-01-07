@@ -36,13 +36,13 @@ OCA.Music.Utils = {
 	 * Refactored version of the original source at https://stackoverflow.com/a/38795917
 	 */
 	isTextEntryElement: function(element) {
-		var tagName = element.tagName.toLowerCase();
+		let tagName = element.tagName.toLowerCase();
 		if (tagName === 'textarea') {
 			return true;
 		} else if (tagName === 'input') {
-			var type = element.getAttribute('type').toLowerCase();
+			let type = element.getAttribute('type').toLowerCase();
 			// if any of these input types is not supported by a browser, it will behave as input type text.
-			var inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search',
+			let inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search',
 								'date', 'datetime', 'datetime-local', 'time', 'month', 'week'];
 			return inputTypes.indexOf(type) >= 0;
 		} else {
@@ -79,7 +79,7 @@ OCA.Music.Utils = {
 	 */
 	titleFromFilename: function(filename) {
 		// parsing logic is ported form parseFileName in utility/scanner.php
-		var match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
+		let match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
 		return match ? match[3] : filename;
 	},
 
@@ -112,13 +112,13 @@ OCA.Music.Utils = {
 	 */
 	formatPlayTime: function(input_s) {
 		// Format the given integer with two digits, prepending with a leading zero if necessary
-		var fmtTwoDigits = function(integer) {
+		let fmtTwoDigits = function(integer) {
 			return (integer < 10 ? '0' : '') + integer;
 		};
 
-		var hours = Math.floor(input_s / 3600);
-		var minutes = Math.floor((input_s - hours*3600) / 60);
-		var seconds = Math.floor(input_s % 60);
+		let hours = Math.floor(input_s / 3600);
+		let minutes = Math.floor((input_s - hours*3600) / 60);
+		let seconds = Math.floor(input_s % 60);
 
 		if (hours > 0) {
 			return hours + ':' + fmtTwoDigits(minutes) + ':' + fmtTwoDigits(seconds);
@@ -135,7 +135,7 @@ OCA.Music.Utils = {
 		if (!timestamp) {
 			return null;
 		} else {
-			var date = new Date(timestamp + 'Z');
+			let date = new Date(timestamp + 'Z');
 			return date.toLocaleString(OCA.Music.Utils.getLocale());
 		}
 	},
@@ -145,7 +145,7 @@ OCA.Music.Utils = {
 	 * Source: https://stackoverflow.com/a/20732091/4348850
 	 */
 	formatFileSize: function(size) {
-		var i = (size == 0) ? 0 : Math.floor( Math.log(size) / Math.log(1024) );
+		let i = (size == 0) ? 0 : Math.floor( Math.log(size) / Math.log(1024) );
 		return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'KiB', 'MiB', 'GiB', 'TiB'][i];
 	},
 

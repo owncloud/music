@@ -14,7 +14,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 
 	// Private functions
 	function reloadChannel(channel) {
-		var deferred = $q.defer();
+		let deferred = $q.defer();
 
 		Restangular.one('podcasts', channel.id).all('update').post({prevHash: channel.hash}).then(
 			function (result) {
@@ -57,7 +57,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 						deferred.resolve();
 					},
 					function (error) {
-						var errMsg;
+						let errMsg;
 						if (error.status === 400) {
 							errMsg = gettextCatalog.getString('Invalid RSS feed URL');
 						} else if (error.status === 409) {
@@ -106,8 +106,8 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 		reloadAllPodcasts: function() {
 			const deferred = $q.defer();
 			const channels = libraryService.getAllPodcastChannels();
-			var index = 0;
-			var changeCount = 0;
+			let index = 0;
+			let changeCount = 0;
 
 			const processNextChannel = function() {
 				if (index < channels.length) {

@@ -29,7 +29,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				'oc_music_song_notifications'
 			];
 			for (var key of cookieKeys) {
-				var value = Cookies.get(key);
+				let value = Cookies.get(key);
 				if (value) {
 					localStorage.setItem(key, value);
 					Cookies.remove(key);
@@ -39,42 +39,42 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 			// configure RESTAngular path
 			RestangularProvider.setBaseUrl(OC.generateUrl('apps/music/api'));
 
-			var albumsControllerConfig = {
+			let albumsControllerConfig = {
 				controller:'AlbumsViewController',
 				templateUrl:'albumsview.html'
 			};
 
-			var playlistControllerConfig = {
+			let playlistControllerConfig = {
 				controller:'PlaylistViewController',
 				templateUrl:'playlistview.html'
 			};
 
-			var allTracksControllerConfig = {
+			let allTracksControllerConfig = {
 				controller:'AllTracksViewController',
 				templateUrl:'alltracksview.html'
 			};
 
-			var foldersControllerConfig = {
+			let foldersControllerConfig = {
 				controller:'FoldersViewController',
 				templateUrl:'foldersview.html'
 			};
 
-			var genresControllerConfig = {
+			let genresControllerConfig = {
 				controller:'GenresViewController',
 				templateUrl:'genresview.html'
 			};
 
-			var radioControllerConfig = {
+			let radioControllerConfig = {
 				controller:'RadioViewController',
 				templateUrl:'radioview.html'
 			};
 
-			var podcastsControllerConfig = {
+			let podcastsControllerConfig = {
 				controller:'PodcastsViewController',
 				templateUrl:'podcastsview.html'
 			};
 
-			var settingsControllerConfig = {
+			let settingsControllerConfig = {
 				controller:'SettingsViewController',
 				templateUrl:'settingsview.html'
 			};

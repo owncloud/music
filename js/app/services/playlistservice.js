@@ -11,22 +11,22 @@
  */
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
-	var playlist = null;
-	var playlistId = null;
-	var playOrder = [];
-	var playOrderIter = -1;
-	var startFromIndex = null;
-	var shuffle = false;
-	var repeat = false;
-	var prevShuffleState = false;
+	let playlist = null;
+	let playlistId = null;
+	let playOrder = [];
+	let playOrderIter = -1;
+	let startFromIndex = null;
+	let shuffle = false;
+	let repeat = false;
+	let prevShuffleState = false;
 
 	function shuffledIndices() {
-		var indices = _.range(playlist.length);
+		let indices = _.range(playlist.length);
 		return _.shuffle(indices);
 	}
 
 	function shuffledIndicesExcluding(toExclude) {
-		var indices = _.range(playlist.length);
+		let indices = _.range(playlist.length);
 		indices.splice(toExclude, 1);
 		return _.shuffle(indices);
 	}
@@ -34,15 +34,15 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	function wrapIndexToStart(list, index) {
 		if (index > 0) {
 			// slice array in two parts and interchange them
-			var begin = list.slice(0, index);
-			var end = list.slice(index);
+			let begin = list.slice(0, index);
+			let end = list.slice(index);
 			list = end.concat(begin);
 		}
 		return list;
 	}
 
 	function enqueueIndices() {
-		var nextIndices = null;
+		let nextIndices = null;
 
 		if (shuffle) {
 			if (startFromIndex !== null) {
@@ -95,7 +95,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		jumpToPrevTrack: function() {
 			if (playlist && playOrderIter > 0) {
 				--playOrderIter;
-				var track = playlist[this.getCurrentIndex()];
+				let track = playlist[this.getCurrentIndex()];
 				this.publish('trackChanged', track);
 				return track;
 			}
@@ -126,7 +126,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				}
 			}
 
-			var track = playlist[this.getCurrentIndex()];
+			let track = playlist[this.getCurrentIndex()];
 			this.publish('trackChanged', track);
 			return track;
 		},
@@ -161,7 +161,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			this.publish('playlistEnded');
 		},
 		onPlaylistModified: function(pl, currentIndex) {
-			var currentTrack = playlist[this.getCurrentIndex()];
+			let currentTrack = playlist[this.getCurrentIndex()];
 			// check if the track being played is still available in the list
 			if (pl[currentIndex] === currentTrack) {
 				// re-init the play-order, erasing any history data
@@ -181,12 +181,12 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			this.publish('trackChanged', currentTrack);
 		},
 		onTracksAdded: function(newTracks) {
-			var prevListSize = playlist.length;
+			let prevListSize = playlist.length;
 			playlist = playlist.concat(newTracks);
-			var newIndices = _.range(prevListSize, playlist.length);
+			let newIndices = _.range(prevListSize, playlist.length);
 			if (prevShuffleState) {
 				// Shuffle the new tracks with the remaining tracks on the list
-				var remaining = _.drop(playOrder, playOrderIter+1);
+				let remaining = _.drop(playOrder, playOrderIter+1);
 				remaining = _.shuffle(remaining.concat(newIndices));
 				playOrder = _.take(playOrder, playOrderIter+1).concat(remaining);
 			}
@@ -195,7 +195,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				// and insert the new tracks in play order after that. If the index is not
 				// found, then we have already wrapped over the last track and the new tracks
 				// do not need to be added.
-				var insertPos = _.indexOf(playOrder, prevListSize-1, playOrderIter);
+				let insertPos = _.indexOf(playOrder, prevListSize-1, playOrderIter);
 				if (insertPos >= 0) {
 					++insertPos;
 					insertMany(playOrder, insertPos, newIndices);
@@ -204,7 +204,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		},
 		publish: function(_name /*, ...*/) {
 			// pass all arguments straight through to $rootScope.$emit
-			var args = Array.prototype.slice.call(arguments);
+			let args = Array.prototype.slice.call(arguments);
 			$rootScope.$emit.apply($rootScope, args);
 		},
 		subscribe: function(name, listener) {

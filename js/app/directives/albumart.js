@@ -53,7 +53,7 @@ angular.module('Music').directive('albumart', [function() {
 			 *    related attributes of the element.
 			 */
 
-			var loadAlbumart = function() {
+			let loadAlbumart = function() {
 				const art = scope.albumart;
 				if (art) {
 					// the "albumart" may actually be an album or podcast channel object

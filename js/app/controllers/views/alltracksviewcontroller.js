@@ -15,17 +15,17 @@ angular.module('Music').controller('AllTracksViewController', [
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
-		var _tracks = null;
-		var _indexChars = alphabetIndexingService.indexChars();
+		let _tracks = null;
+		let _indexChars = alphabetIndexingService.indexChars();
 
 		// Tracks are split into "buckets" to facilitate lazy loading. One track-list directive
 		// is created for each bucket. All tracks in a single bucket have the same indexing char
 		// but a single indexing char may have several buckets.
-		var BUCKET_MAX_SIZE = 100;
+		let BUCKET_MAX_SIZE = 100;
 		$scope.trackBuckets = null;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var _unsubFuncs = [];
+		let _unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			_unsubFuncs.push( $rootScope.$on(event, handler) );
@@ -53,7 +53,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			}
 			// on any other list item, start playing the list from this item
 			else {
-				var index = _.findIndex(_tracks, function(i) {return i.track.id == trackId;});
+				let index = _.findIndex(_tracks, function(i) {return i.track.id == trackId;});
 				play(index);
 			}
 		};
@@ -62,7 +62,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		 * Gets track data to be dislayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(listItem, index, scope) {
-			var track = listItem.track;
+			let track = listItem.track;
 			return {
 				title: track.artistName + ' - ' + track.title,
 				tooltip: '',
@@ -86,7 +86,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		};
 
 		function bucketElementForTrack(trackId) {
-			var track = libraryService.getTrack(trackId);
+			let track = libraryService.getTrack(trackId);
 			if (track) {
 				return document.getElementById('track-bucket-' + track.bucket.id);
 			} else {
@@ -124,13 +124,13 @@ angular.module('Music').controller('AllTracksViewController', [
 		}
 
 		function trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx) {
-			var name = _tracks[trackIdx].track.artistSortName;
+			let name = _tracks[trackIdx].track.artistSortName;
 			return (charIdx >= _indexChars.length
 				|| alphabetIndexingService.titlePrecedesIndexCharAt(name, charIdx));
 		}
 
 		function createTrackBuckets() {
-			var buckets = [];
+			let buckets = [];
 
 			for (var charIdx = 0, trackIdx = 0;
 				charIdx < _indexChars.length && trackIdx < _tracks.length;
@@ -139,7 +139,7 @@ angular.module('Music').controller('AllTracksViewController', [
 				if (trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx + 1)) {
 					// Track at trackIdx belongs to bucket of the char _indexChars[charIdx]
 
-					var bucket = null;
+					let bucket = null;
 	
 					// Add all the items belonging to the same alphabet to the same bucket
 					do {

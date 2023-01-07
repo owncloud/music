@@ -111,9 +111,9 @@ angular.module('Music').controller('NavigationController', [
 
 		// Remove duplicate tracks from a playlist
 		$scope.removeDuplicates = function(playlist) {
-			var removedTracks = libraryService.removeDuplicatesFromPlaylist(playlist.id);
-			var removedCount = removedTracks.length;
-			var message = gettextCatalog.getPlural(removedCount,
+			let removedTracks = libraryService.removeDuplicatesFromPlaylist(playlist.id);
+			let removedCount = removedTracks.length;
+			let message = gettextCatalog.getPlural(removedCount,
 													'{{ count }} duplicate track was removed',
 													'{{ count }} duplicate tracks were removed',
 													{ count: removedCount });
@@ -206,7 +206,7 @@ angular.module('Music').controller('NavigationController', [
 				playlistService.publish('togglePlayback');
 			}
 			else {
-				var play = function(id, tracks) {
+				let play = function(id, tracks) {
 					if (tracks && tracks.length) {
 						playlistService.setPlaylist(id, tracks);
 						playlistService.publish('play', destination);
@@ -282,14 +282,14 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.allowDrop = function(playlist, draggable) {
 			// Don't allow dragging a track from a playlist back to the same playlist
-			var isFromPlaylist = ('srcIndex' in draggable);
-			var targetIsCurrentPlaylist = ($rootScope.currentView == '#/playlist/' + playlist.id);
+			let isFromPlaylist = ('srcIndex' in draggable);
+			let targetIsCurrentPlaylist = ($rootScope.currentView == '#/playlist/' + playlist.id);
 			return !isFromPlaylist || !targetIsCurrentPlaylist;
 		};
 
 		// Dragging an entity over the navigation toggle pops the navigation pane open.
 		// Subsequently, ending the drag closes the navigation pane.
-		var navOpenedByDrag = false;
+		let navOpenedByDrag = false;
 		const navToggle = document.getElementById('app-navigation-toggle');
 		navToggle.addEventListener('dragenter', function() {
 			if (!navOpenedByDrag) {
@@ -305,23 +305,23 @@ angular.module('Music').controller('NavigationController', [
 		});
 
 		function trackIdsFromAlbum(albumId) {
-			var album = libraryService.getAlbum(albumId);
+			let album = libraryService.getAlbum(albumId);
 			return _.map(album.tracks, 'id');
 		}
 
 		function trackIdsFromArtist(artistId) {
-			var artist = libraryService.getArtist(artistId);
+			let artist = libraryService.getArtist(artistId);
 			return _(artist.albums).map('id').map(trackIdsFromAlbum).flatten().value();
 		}
 
 		function trackIdsFromFolder(folderId) {
-			var folder = libraryService.getFolder(folderId);
-			var tracks = libraryService.getFolderTracks(folder, !$scope.foldersFlatLayout);
+			let folder = libraryService.getFolder(folderId);
+			let tracks = libraryService.getFolderTracks(folder, !$scope.foldersFlatLayout);
 			return _.map(tracks, 'track.id');
 		}
 
 		function trackIdsFromGenre(genreId) {
-			var genre = libraryService.getGenre(genreId);
+			let genre = libraryService.getGenre(genreId);
 			return _.map(genre.tracks, 'track.id');
 		}
 
@@ -332,7 +332,7 @@ angular.module('Music').controller('NavigationController', [
 
 			// Update the currently playing list if necessary
 			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
-				var newTracks = _.map(trackIds, function(trackId) {
+				let newTracks = _.map(trackIds, function(trackId) {
 					return { track: libraryService.getTrack(trackId) };
 				});
 				playlistService.onTracksAdded(newTracks);
@@ -346,11 +346,11 @@ angular.module('Music').controller('NavigationController', [
 		function handlePlaylistContentChange(playlist) {
 			// Update the currently playing list if necessary
 			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
-				var playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
+				let playingIndex = _.findIndex(playlist.tracks, { track: $scope.currentTrack });
 				playlistService.onPlaylistModified(playlist.tracks, playingIndex);
 			}
 
-			var trackIds = _.map(playlist.tracks, 'track.id');
+			let trackIds = _.map(playlist.tracks, 'track.id');
 			Restangular.one('playlists', playlist.id).customPUT({ trackIds: trackIds.join(',') }).then(function (result) {
 				playlist.updated = result.updated;
 			});
@@ -360,9 +360,9 @@ angular.module('Music').controller('NavigationController', [
 			// start playing the current view if the 'autoplay' argument is present in the URL and has a truthy value
 			if (OCA.Music.Utils.parseBoolean($location.search().autoplay)) {
 				if (!$rootScope.playing) {
-					var playlist = null;
+					let playlist = null;
 					if ($rootScope.currentView.startsWith('#/playlist/')) {
-						var id = _.last($rootScope.currentView.split('/'));
+						let id = _.last($rootScope.currentView.split('/'));
 						playlist = libraryService.getPlaylist(id);
 					}
 					$scope.togglePlay($rootScope.currentView, playlist);

@@ -22,31 +22,31 @@ OCA.Music = OCA.Music || {};
 
 OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio) {
 
-	var player = new OCA.Music.PlayerWrapper();
+	let player = new OCA.Music.PlayerWrapper();
 
-	var volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
+	let volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
 	player.setVolume(volume);
-	var lastVolume = null;
-	var nextPrevEnabled = false;
-	var playDelayTimer = null;
-	var currentFileId = null;
-	var playTimePreview_tf = null; // Transient mouse movement filter (Type: Number/Timer-Handle)
-	var playTimePreview_ts = null; // Activation time stamp (Type: Date)
-	var playTimePreview_s = null;
-	var playTime_s = 0;
+	let lastVolume = null;
+	let nextPrevEnabled = false;
+	let playDelayTimer = null;
+	let currentFileId = null;
+	let playTimePreview_tf = null; // Transient mouse movement filter (Type: Number/Timer-Handle)
+	let playTimePreview_ts = null; // Activation time stamp (Type: Date)
+	let playTimePreview_s = null;
+	let playTime_s = 0;
 
 	// UI elements (jQuery)
-	var musicControls = null;
-	var playButton = null;
-	var pauseButton = null;
-	var prevButton = null;
-	var nextButton = null;
-	var coverImage = null;
-	var titleText = null;
-	var artistText = null;
-	var playlistText = null;
-	var playlistNumberText = null;
-	var playlistMenu = null;
+	let musicControls = null;
+	let playButton = null;
+	let pauseButton = null;
+	let prevButton = null;
+	let nextButton = null;
+	let coverImage = null;
+	let titleText = null;
+	let artistText = null;
+	let playlistText = null;
+	let playlistNumberText = null;
+	let playlistMenu = null;
 
 	function play() {
 		// discard command while switching to new track is ongoing
@@ -112,7 +112,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createPlaylistArea() {
-		var area = $(document.createElement('div')).attr('id', 'playlist-area');
+		let area = $(document.createElement('div')).attr('id', 'playlist-area');
 
 		playlistText = $(document.createElement('span')).attr('id', 'playlist-name');
 		area.append(playlistText);
@@ -121,7 +121,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		area.append(playlistNumberText);
 
 		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
-			var menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
+			let menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
 			// "more" button which toggles the popup menu open/closed
 			menuContainer.append($(document.createElement('button'))
 								.attr('class', 'icon-more')
@@ -145,10 +145,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createPopupMenu() {
-		var menu = $(document.createElement('div'))
+		let menu = $(document.createElement('div'))
 					.attr('id', 'playlist-menu')
 					.attr('class', 'popovermenu bubble');
-		var ul = $(document.createElement('ul'));
+		let ul = $(document.createElement('ul'));
 		menu.append(ul);
 
 		ul.append(createMenuItem('playlist-menu-import-radio', 'icon-radio-nav svg', t('music', 'Import radio to Music'), onImportRadio));
@@ -159,8 +159,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function createMenuItem(id, iconClasses, text, onClick) {
-		var li = $(document.createElement('li')).attr('id', id);
-		var a = $(document.createElement('a')).click(function(event) {
+		let li = $(document.createElement('li')).attr('id', id);
+		let a = $(document.createElement('a')).click(function(event) {
 			if (!li.hasClass('disabled')) {
 				onClick();
 			} else {
@@ -218,41 +218,41 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	function createProgressInfo() {
 		const fmt = OCA.Music.Utils.formatPlayTime; // give a shorthand name for the utility function
 
-		var container = $(document.createElement('div')).attr('class', 'progress-info');
+		let container = $(document.createElement('div')).attr('class', 'progress-info');
 
-		var text = $(document.createElement('span')).attr('class', 'progress-text');
-		var text_playTime = $(document.createElement('span'));
-		var text_seperator = $(document.createElement('span')).append('\xa0/\xa0');
-		var text_songLength = $(document.createElement('span'));
+		let text = $(document.createElement('span')).attr('class', 'progress-text');
+		let text_playTime = $(document.createElement('span'));
+		let text_seperator = $(document.createElement('span')).append('\xa0/\xa0');
+		let text_songLength = $(document.createElement('span'));
 
 		text.append(text_playTime);
 		text.append(text_seperator);
 		text.append(text_songLength);
 
-		var seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
-		var playBar = $(document.createElement('div')).attr('class', 'play-bar');
-		var transBar = $(document.createElement('div')).attr('class', 'play-bar translucent');
-		var bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
+		let seekBar = $(document.createElement('div')).attr('class', 'seek-bar');
+		let playBar = $(document.createElement('div')).attr('class', 'play-bar');
+		let transBar = $(document.createElement('div')).attr('class', 'play-bar translucent');
+		let bufferBar = $(document.createElement('div')).attr('class', 'buffer-bar');
 
 		seekBar.append(playBar);
 		seekBar.append(transBar);
 		seekBar.append(bufferBar);
 
-		var loadingText = $(document.createElement('span')).attr('class', 'progress-text').text(t('music', 'Loading…')).hide();
+		let loadingText = $(document.createElement('span')).attr('class', 'progress-text').text(t('music', 'Loading…')).hide();
 
 		container.append(loadingText);
 		container.append(text);
 		container.append(seekBar);
 
 		// Progress updating
-		var songLength_s = 0;
+		let songLength_s = 0;
 
 		function updateProgress() {
-			var ratio = 0;
-			var previewRatio = null;
+			let ratio = 0;
+			let previewRatio = null;
 			if ($.isNumeric(songLength_s)) {
 				// Filter transient mouse movements
-				var preview = playTimePreview_tf ? null : playTimePreview_s;
+				let preview = playTimePreview_tf ? null : playTimePreview_s;
 
 				text_playTime.text(fmt(preview ?? playTime_s));
 				text_playTime.css('font-style', (preview !== null) ? 'italic' : 'normal');
@@ -260,7 +260,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 				// Show progress again instead of preview after a timeout of 2000ms
 				if (playTimePreview_ts) {
-					var timeSincePreview = Date.now() - playTimePreview_ts;
+					let timeSincePreview = Date.now() - playTimePreview_ts;
 					if (timeSincePreview >= 2000) {
 						seekSetPreview(null);
 					} else {
@@ -345,11 +345,11 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		// Seeking
 		function seekPositionPercentage(event) {
-			var posX = $(seekBar).offset().left;
+			let posX = $(seekBar).offset().left;
 			return (event.pageX - posX) / seekBar.width();
 		}
 		function seekPositionTotal(event) {
-			var percentage = seekPositionPercentage(event);
+			let percentage = seekPositionPercentage(event);
 			return percentage * player.getDuration();
 		}
 		function seekSetPreview(value) {
@@ -361,7 +361,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			updateProgress();
 		}
 		seekBar.click(function (event) {
-			var percentage = seekPositionPercentage(event);
+			let percentage = seekPositionPercentage(event);
 			player.seek(percentage);
 			seekSetPreview(null); // Reset seek preview
 		});
@@ -388,10 +388,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		seekBar.bind('touchmove', function($event) {
 			if (!player.seekingSupported()) return;
 
-			var rect = $event.target.getBoundingClientRect();
-			var x = $event.targetTouches[0].clientX - rect.x;
-			var offsetX = Math.min(Math.max(0, x), rect.width);
-			var ratio = offsetX / rect.width;
+			let rect = $event.target.getBoundingClientRect();
+			let x = $event.targetTouches[0].clientX - rect.x;
+			let offsetX = Math.min(Math.max(0, x), rect.width);
+			let ratio = offsetX / rect.width;
 
 			seekSetPreview(ratio * songLength_s);
 		});
@@ -413,22 +413,22 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		titleText = $(document.createElement('span')).attr('id', 'title');
 		artistText = $(document.createElement('span')).attr('id', 'artist');
 
-		var songInfo = $(document.createElement('div')).attr('id', 'song-info');
+		let songInfo = $(document.createElement('div')).attr('id', 'song-info');
 		songInfo.append(titleText);
 		songInfo.append($(document.createElement('br')));
 		songInfo.append(artistText);
 
-		var infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
+		let infoProgressContainer = $(document.createElement('div')).attr('id', 'info-and-progress');
 		infoProgressContainer.append(songInfo);
 		infoProgressContainer.append(createProgressInfo());
 		return infoProgressContainer;
 	}
 
 	function createVolumeControl() {
-		var volumeControl = $(document.createElement('div'))
+		let volumeControl = $(document.createElement('div'))
 			.attr('class', 'volume-control');
 
-		var volumeIcon = $(document.createElement('img'))
+		let volumeIcon = $(document.createElement('img'))
 			.attr('id', 'volume-icon')
 			.attr('class', 'control small svg')
 			.attr('src', soundIconPath)
@@ -448,7 +448,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 				}
 			});
 
-		var volumeSlider = $(document.createElement('input'))
+		let volumeSlider = $(document.createElement('input'))
 			.attr('id', 'volume-slider')
 			.attr('min', '0')
 			.attr('max', '100')
@@ -509,14 +509,14 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 			musicControls.css('border-bottom-left-radius', 'var(--body-container-radius)');
 		}
 
-		var parentContainer = $('div#app-content');
+		let parentContainer = $('div#app-content');
 		if (parentContainer.length === 0) {
 			// On share page before NC25, there's no #app-content. Use #preview element as parent, instead.
 			parentContainer = $('div#preview');
 			musicControls.css('left', '0');
 		}
-		var getViewWidth = function() {
-			var width = parentContainer.width();
+		let getViewWidth = function() {
+			let width = parentContainer.width();
 			// On the OC share page and in NC14-24, the parent width has the scroll bar width
 			// already subtracted.
 			if (OCA.Music.Utils.getScrollContainer()[0] === parentContainer[0]) {
@@ -532,8 +532,8 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		// Resize music controls bar to fit the scroll bar when window size changes or details pane opens/closes.
 		// Also the internal layout of the bar is responsive to the available width.
-		var resizeControls = function() {
-			var width = getViewWidth();
+		let resizeControls = function() {
+			let width = getViewWidth();
 			musicControls.css('width', width);
 			if (width > 768) {
 				musicControls.removeClass('tablet mobile extra-narrow');
@@ -565,7 +565,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		titleText.text(data.title);
 		artistText.text(data.artist);
 
-		var cover = data.cover || OC.imagePath('core', 'filetypes/audio');
+		let cover = data.cover || OC.imagePath('core', 'filetypes/audio');
 		coverImage.css('background-image', 'url("' + cover + '")');
 
 		updateMediaSession(data);
@@ -614,13 +614,13 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function loadFileInfo(fileId, fallbackTitle) {
-		var url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
+		let url  = OC.generateUrl('apps/music/api/file/{fileId}/info', {'fileId':fileId});
 		loadFileInfoFromUrl(url, fallbackTitle, fileId, updateMusicAppLink);
 	}
 
 	function updateMusicAppLink(data, fileId) {
 		if (data.in_library) {
-			var navigateToMusicApp = function() {
+			let navigateToMusicApp = function() {
 				window.location = OC.generateUrl('apps/music/#/file/{fileId}?offset={offset}',
 						{'fileId':fileId, 'offset': player.playPosition()});
 			};
@@ -635,7 +635,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	}
 
 	function loadSharedFileInfo(shareToken, fileId, fallbackTitle) {
-		var url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
+		let url  = OC.generateUrl('apps/music/api/share/{token}/{fileId}/info',
 				{'token':shareToken, 'fileId':fileId});
 		loadFileInfoFromUrl(url, fallbackTitle, fileId);
 	}
@@ -657,7 +657,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
 	 */
 	if ('mediaSession' in navigator) {
-		var registerMediaControlHandler = function(action, handler) {
+		let registerMediaControlHandler = function(action, handler) {
 			try {
 				navigator.mediaSession.setActionHandler(action, handler);
 			} catch (error) {
@@ -719,7 +719,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
 		currentFileId = fileId;
-		var fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
+		let fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
 		// Set placeholders for track info fields, proper data is filled once received
 		updateMetadata({
 			title: t('music', 'Loading…'),

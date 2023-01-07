@@ -11,18 +11,18 @@
 
 angular.module('Music').service('libraryService', [function() {
 
-	var ignoredArticles = [];
-	var artists = null;
-	var albums = null;
-	var tracksIndex = {};
-	var tracksInAlbumOrder = null;
-	var tracksInAlphaOrder = null;
-	var tracksInGenreOrder = null;
-	var playlists = null;
-	var folders = null;
-	var genres = null;
-	var radioStations = null;
-	var podcastChannels = null;
+	let ignoredArticles = [];
+	let artists = null;
+	let albums = null;
+	let tracksIndex = {};
+	let tracksInAlbumOrder = null;
+	let tracksInAlphaOrder = null;
+	let tracksInGenreOrder = null;
+	let playlists = null;
+	let folders = null;
+	let genres = null;
+	let radioStations = null;
+	let podcastChannels = null;
 
 	/** 
 	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
@@ -30,12 +30,12 @@ angular.module('Music').service('libraryService', [function() {
 	 * Note2: The array is sorted in-place instead of returning a new array.
 	 */
 	function sortByTextField(items, field) {
-		var getSortProperty = _.property(field);
-		var locale = OCA.Music.Utils.getLocale();
+		let getSortProperty = _.property(field);
+		let locale = OCA.Music.Utils.getLocale();
 
 		items.sort(function(a, b) {
-			var aProp = getSortProperty(a);
-			var bProp = getSortProperty(b);
+			let aProp = getSortProperty(a);
+			let bProp = getSortProperty(b);
 
 			if (aProp === null) {
 				return -1;
@@ -56,7 +56,7 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function sortByNumericField(items, field) {
-		var getSortProperty = _.property(field);
+		let getSortProperty = _.property(field);
 		items.sort(function(a, b) {
 			return Number(getSortProperty(a)) - Number(getSortProperty(b));
 		});
@@ -122,14 +122,14 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function wrapPlaylist(playlist) {
-		var wrapped = $.extend({}, playlist); // clone the playlist
+		let wrapped = $.extend({}, playlist); // clone the playlist
 		wrapped.tracks = _(playlist.trackIds).map(playlistEntryFromId).reject(_.isNull).value(); // null-values are possible during scanning
 		delete wrapped.trackIds;
 		return wrapped;
 	}
 
 	function wrapFolder(folder) {
-		var wrapped = wrapPlaylist(folder);
+		let wrapped = wrapPlaylist(folder);
 		wrapped.path = null; // set up later
 		wrapped.expanded = (folder.parent === null); // the root folder is expanded by default
 		return wrapped;
@@ -148,7 +148,7 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function getFolderTracksRecursively(folder) {
-		var subFolderTracks = _(folder.subfolders).map(getFolderTracksRecursively).flatten().value();
+		let subFolderTracks = _(folder.subfolders).map(getFolderTracksRecursively).flatten().value();
 		return [...subFolderTracks, ...folder.tracks];
 	}
 
@@ -161,7 +161,7 @@ angular.module('Music').service('libraryService', [function() {
 
 	function createTrackContainers() {
 		// album order "playlist"
-		var tracks = _.flatten(_.map(albums, 'tracks'));
+		let tracks = _.flatten(_.map(albums, 'tracks'));
 		tracksInAlbumOrder = _.map(tracks, playlistEntry);
 
 		// alphabetic order "playlist"
@@ -176,7 +176,7 @@ angular.module('Music').service('libraryService', [function() {
 		});
 	}
 
-	var diacriticRegExp = /[\u0300-\u036f]/g;
+	let diacriticRegExp = /[\u0300-\u036f]/g;
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	function foldString(str) {
 		if (str) {
@@ -195,10 +195,10 @@ angular.module('Music').service('libraryService', [function() {
 	 *  As an exception, quoted substrings are kept as one entity. The quotation marks are removed.
 	 */
 	function splitSearchQuery(query) {
-		var regExQuoted = /".*?"/g;
+		let regExQuoted = /".*?"/g;
 
 		// Get any quoted substring. Also the quotation marks get extracted, and they are sliced off separately.
-		var quoted = query.match(regExQuoted) || [];
+		let quoted = query.match(regExQuoted) || [];
 		quoted = _.map(quoted, function(str) {
 			return str.slice(1, -1);
 		});
@@ -206,7 +206,7 @@ angular.module('Music').service('libraryService', [function() {
 		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
 		query = query.replace(regExQuoted, ' ');
 		query = query.replace('"', ' ');
-		var unquoted = query.match(/\S+/g) || [];
+		let unquoted = query.match(/\S+/g) || [];
 
 		return quoted.concat(unquoted);
 	}
@@ -214,7 +214,7 @@ angular.module('Music').service('libraryService', [function() {
 	function objectFieldsContainAll(object, getFieldValueFuncs, subStrings) {
 		return _.every(subStrings, function(subStr) {
 			return _.some(getFieldValueFuncs, function(getter) {
-				var value = getter(object);
+				let value = getter(object);
 				return (value !== null && foldString(value).indexOf(subStr) !== -1);
 			});
 		});
@@ -226,7 +226,7 @@ angular.module('Music').service('libraryService', [function() {
 		query = foldString(query);
 		// In case the query contains many words separated with whitespace, each part
 		// has to be found but the whitespace is disregarded.
-		var queryParts = splitSearchQuery(query);
+		let queryParts = splitSearchQuery(query);
 
 		// @a fields may be an array or an idividual string
 		if (!Array.isArray(fields)) {
@@ -235,12 +235,12 @@ angular.module('Music').service('libraryService', [function() {
 
 		// Field may be given as a '.'-separated path;
 		// convert the fields to corresponding getter functions.
-		var fieldGetterFuncs = _.map(fields, _.property);
+		let fieldGetterFuncs = _.map(fields, _.property);
 
-		var matchCount = 0;
-		var maxLimitReached = false;
-		var matches = _.filter(container, function(item) {
-			var matched = !maxLimitReached && objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
+		let matchCount = 0;
+		let maxLimitReached = false;
+		let matches = _.filter(container, function(item) {
+			let matched = !maxLimitReached && objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
 			if (matched && matchCount++ == maxResults) {
 				maxLimitReached = true;
 				matched = false;
@@ -292,7 +292,7 @@ angular.module('Music').service('libraryService', [function() {
 				// the tracks within each folder are sorted by the file name by the back-end
 
 				// create temporary look-up-table for the folders to speed up setting up the parent references
-				var foldersLut = {};
+				let foldersLut = {};
 				_.forEach(folders, function(folder) {
 					foldersLut[folder.id] = folder;
 				});
@@ -360,7 +360,7 @@ angular.module('Music').service('libraryService', [function() {
 			sortByPlaylistEntryTextField(radioStations, 'name');
 		},
 		removeRadioStation: function(stationId) {
-			var idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
+			let idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
 			radioStations.splice(idx, 1);
 			return idx;
 		},
@@ -377,11 +377,11 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		replacePodcastChannel: function(channel) {
 			initPodcastChannel(channel);
-			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			let idx = _.findIndex(podcastChannels, { id: channel.id });
 			podcastChannels[idx] = channel;
 		},
 		removePodcastChannel: function(channel) {
-			var idx = _.findIndex(podcastChannels, { id: channel.id });
+			let idx = _.findIndex(podcastChannels, { id: channel.id });
 			podcastChannels.splice(idx, 1);
 		},
 		addPlaylist: function(playlist) {
@@ -391,23 +391,23 @@ angular.module('Music').service('libraryService', [function() {
 			playlists.splice(playlists.indexOf(playlist), 1);
 		},
 		replacePlaylist: function(playlist) {
-			var idx = _.findIndex(playlists, { id: playlist.id });
+			let idx = _.findIndex(playlists, { id: playlist.id });
 			playlists[idx] = wrapPlaylist(playlist);
 		},
 		addToPlaylist: function(playlistId, trackId) {
-			var playlist = this.getPlaylist(playlistId);
+			let playlist = this.getPlaylist(playlistId);
 			playlist.tracks.push(playlistEntryFromId(trackId));
 		},
 		removeFromPlaylist: function(playlistId, indexToRemove) {
-			var playlist = this.getPlaylist(playlistId);
+			let playlist = this.getPlaylist(playlistId);
 			playlist.tracks.splice(indexToRemove, 1);
 		},
 		reorderPlaylist: function(playlistId, srcIndex, dstIndex) {
-			var playlist = this.getPlaylist(playlistId);
+			let playlist = this.getPlaylist(playlistId);
 			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
 		},
 		sortPlaylist: function(playlistId, byProperty) {
-			var playlist = this.getPlaylist(playlistId);
+			let playlist = this.getPlaylist(playlistId);
 			switch (byProperty) {
 			case 'track':
 				sortByTextField(playlist.tracks, 'track.title');
@@ -428,13 +428,13 @@ angular.module('Music').service('libraryService', [function() {
 			}
 		},
 		removeDuplicatesFromPlaylist: function(playlistId) {
-			var playlist = this.getPlaylist(playlistId);
-			var foundIds = {};
-			var indicesToRemove = [];
+			let playlist = this.getPlaylist(playlistId);
+			let foundIds = {};
+			let indicesToRemove = [];
 
 			// find the indices containing duplicates
 			for (var i = 0; i < playlist.tracks.length; ++i) {
-				var id = playlist.tracks[i].track.id;
+				let id = playlist.tracks[i].track.id;
 				if (id in foundIds) {
 					indicesToRemove.push(i);
 				} else {
@@ -446,10 +446,10 @@ angular.module('Music').service('libraryService', [function() {
 			return _.pullAt(playlist.tracks, indicesToRemove);
 		},
 		getArtist: function(id) {
-			var artist = _.find(artists, { id: Number(id) });
+			let artist = _.find(artists, { id: Number(id) });
 			if (!artist) {
 				// there's no such album artist, try to find a matching track artist (who has no albums)
-				var track = _.find(tracksIndex, { artistId: Number(id)} );
+				let track = _.find(tracksIndex, { artistId: Number(id)} );
 				if (track) {
 					artist = {
 							id: track.artistId,
@@ -580,17 +580,17 @@ angular.module('Music').service('libraryService', [function() {
 					maxResults);
 		},
 		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
-			var list = this.getPlaylist(playlistId) || [];
+			let list = this.getPlaylist(playlistId) || [];
 			list = _.map(list.tracks, 'track');
 			list = _.uniq(list);
 			return search(list, ['title', 'artistName'], query, maxResults);
 		},
 		searchRadioStations: function(query, maxResults/*optional*/) {
-			var stations = _.map(radioStations, 'track');
+			let stations = _.map(radioStations, 'track');
 			return search(stations, ['name', 'stream_url'], query, maxResults);
 		},
 		searchPodcasts: function(query, maxResults/*optional*/) {
-			var episodes = _(podcastChannels).map('episodes').flatten().value();
+			let episodes = _(podcastChannels).map('episodes').flatten().value();
 			return search(episodes, ['title', 'channel.title'], query, maxResults);
 		},
 	};

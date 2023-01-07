@@ -15,25 +15,25 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 			},
 
 			render: function() {
-				var self = this;
+				let self = this;
 
-				var container = this.$el;
+				let container = this.$el;
 				container.empty(); // erase any previous content
 
-				var fileInfo = this.getFileInfo();
+				let fileInfo = this.getFileInfo();
 
 				if (fileInfo) {
 
-					var loadIndicator = $(document.createElement('div')).attr('class', 'loading');
+					let loadIndicator = $(document.createElement('div')).attr('class', 'loading');
 					container.append(loadIndicator);
 
-					var onPlaylistLoaded = function(data) {
+					let onPlaylistLoaded = function(data) {
 						loadIndicator.hide();
 
-						var list = $(document.createElement('ol'));
+						let list = $(document.createElement('ol'));
 						container.append(list);
 
-						var titleForFile = function(file) {
+						let titleForFile = function(file) {
 							return file.caption || OCA.Music.Utils.titleFromFilename(file.name);
 						};
 
@@ -45,14 +45,14 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 
 						// click handler
 						list.on('click', 'li', function(event) {
-							var id = event.target.id;
-							var idx = parseInt(id.split('-').pop());
+							let id = event.target.id;
+							let idx = parseInt(id.split('-').pop());
 							self.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes.name, idx);
 						});
 
 						if (data.invalid_paths.length > 0) {
 							container.append($(document.createElement('p')).text(t('music', 'Some files on the playlist were not found') + ':'));
-							var failList = $(document.createElement('ul'));
+							let failList = $(document.createElement('ul'));
 							container.append(failList);
 
 							for (i = 0; i < data.invalid_paths.length; ++i) {
@@ -63,7 +63,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 						self.trigger('rendered');
 					};
 
-					var onError = function(_error) {
+					let onError = function(_error) {
 						loadIndicator.hide();
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
 					};
@@ -76,14 +76,14 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 				if (!fileInfo || fileInfo.isDirectory()) {
 					return false;
 				}
-				var mimetype = fileInfo.get('mimetype');
+				let mimetype = fileInfo.get('mimetype');
 
 				return (mimetype && playlistMimes.indexOf(mimetype) > -1);
 			},
 
 			setCurrentTrack: function(playlistId, trackIndex) {
 				this.$el.find('ol li.current').removeClass('current');
-				var fileInfo = this.getFileInfo();
+				let fileInfo = this.getFileInfo();
 				if (fileInfo && fileInfo.id == playlistId) {
 					this.$el.find('ol li#music-playlist-item-' + trackIndex).addClass('current');
 				}

@@ -11,17 +11,17 @@
 
 angular.module('Music').service('inViewService', ['$rootScope', function($rootScope) {
 
-	var dirty = true;
-	var headerHeight = null;
-	var appViewHeight = null;
+	let dirty = true;
+	let headerHeight = null;
+	let appViewHeight = null;
 
 	$rootScope.$on('resize', function() {
 		dirty = true;
 	});
 
 	function updateHeights() {
-		var appView = document.getElementById('app-view');
-		var header = document.getElementById('header');
+		let appView = document.getElementById('app-view');
+		let header = document.getElementById('header');
 
 		headerHeight = header.offsetHeight;
 		appViewHeight = appView.offsetHeight;
@@ -47,10 +47,10 @@ angular.module('Music').service('inViewService', ['$rootScope', function($rootSc
 					updateHeights();
 				}
 
-				var viewPortTop = headerHeight - topMargin;
-				var viewPortBottom = headerHeight + appViewHeight + bottomMargin;
+				let viewPortTop = headerHeight - topMargin;
+				let viewPortBottom = headerHeight + appViewHeight + bottomMargin;
 
-				var rect = el.getBoundingClientRect();
+				let rect = el.getBoundingClientRect();
 				return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
 			}
 			else {

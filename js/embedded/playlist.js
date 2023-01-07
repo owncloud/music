@@ -12,8 +12,8 @@ OCA.Music = OCA.Music || {};
 
 OCA.Music.Playlist = function() {
 
-	var mFiles = null;
-	var mCurrentIndex = null;
+	let mFiles = null;
+	let mCurrentIndex = null;
 
 	function jumpToOffset(offset) {
 		if (!mFiles || mFiles.length <= 1) {

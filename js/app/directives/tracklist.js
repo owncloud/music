@@ -26,20 +26,20 @@
 angular.module('Music').directive('trackList', ['$rootScope', '$interpolate', 'gettextCatalog',
 function ($rootScope, $interpolate, gettextCatalog) {
 
-	var trackTemplate = '<div class="play-pause"></div>' +
+	let trackTemplate = '<div class="play-pause"></div>' +
 		'<span class="muted">{{ number ? number + ".&nbsp;" : "" }}</span>' +
 		'<span title="{{ tooltip }}">{{ title }}</span>';
-	var trackRenderer = $interpolate(trackTemplate);
+	let trackRenderer = $interpolate(trackTemplate);
 
 	// Localized strings
-	var lessText = gettextCatalog.getString('Show less …');
-	var detailsText = gettextCatalog.getString('Details');
-	var moreText = function(count) { // this is the default implementation, may be overridden with attributes
+	let lessText = gettextCatalog.getString('Show less …');
+	let detailsText = gettextCatalog.getString('Details');
+	let moreText = function(count) { // this is the default implementation, may be overridden with attributes
 		return gettextCatalog.getString('Show all {{ count }} songs …', { count: count });
 	};
 
 	// Search support
-	var searchModeTrackMatches = null;
+	let searchModeTrackMatches = null;
 	$rootScope.$on('searchMatchedTracks', function(_event, matchingTracks) {
 		// store only the IDs of the matching tracks; store them in sorted array
 		// to enable binary search
@@ -76,7 +76,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			);
 		}
 
-		var htmlElem = data.element[0];
+		let htmlElem = data.element[0];
 
 		/**
 		 * Remove any placeholder and add the nested <li> elements for each shown track.
@@ -92,14 +92,14 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * Set classes of the track items according to current scope
 		 */
 		function updateClasses() {
-			var elems = htmlElem.querySelectorAll('.playing, .current');
+			let elems = htmlElem.querySelectorAll('.playing, .current');
 			_(elems).each(function (el) {
 				el.classList.remove('current');
 				el.classList.remove('playing');
 			});
 
 			if (data.scope.currentTrack?.type === data.contentType) {
-				var currentTrack = htmlElem.querySelector('#' + data.trackIdPrefix + data.scope.currentTrack.id);
+				let currentTrack = htmlElem.querySelector('#' + data.trackIdPrefix + data.scope.currentTrack.id);
 				if (currentTrack) {
 					currentTrack.classList.add('current');
 					if ($rootScope.playing) {
@@ -118,9 +118,9 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * @returns {DocumentFragment}
 		 */
 		function renderTrackList() {
-			var trackListFragment = document.createDocumentFragment();
+			let trackListFragment = document.createDocumentFragment();
 
-			var tracksToShow = data.tracks.length;
+			let tracksToShow = data.tracks.length;
 			if (tracksToShow > data.collapseLimit) {
 				tracksToShow = data.collapseLimit - 1;
 			}
@@ -130,8 +130,8 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			}
 
 			if (data.tracks.length > data.collapseLimit) {
-				var lessEl = document.createElement('li');
-				var moreEl = document.createElement('li');
+				let lessEl = document.createElement('li');
+				let moreEl = document.createElement('li');
 
 				lessEl.innerHTML = lessText;
 				lessEl.className = 'muted more-less collapsible';
@@ -152,16 +152,16 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * @returns {HTMLLIElement}
 		 */
 		function getTrackNode(track, index, className) {
-			var listItem = document.createElement('li');
+			let listItem = document.createElement('li');
 
-			var listItemContent = document.createElement('div');
-			var trackData = data.getTrackData(track, index, data.scope);
+			let listItemContent = document.createElement('div');
+			let trackData = data.getTrackData(track, index, data.scope);
 			listItemContent.innerHTML = trackRenderer(trackData);
 			listItemContent.setAttribute('draggable', data.getDraggable !== undefined);
 			listItem.appendChild(listItemContent);
 
 			if (data.showTrackDetails) {
-				var detailsButton = document.createElement('button');
+				let detailsButton = document.createElement('button');
 				detailsButton.className = 'icon-details';
 				detailsButton.title = detailsText;
 				listItem.appendChild(detailsButton);
@@ -194,12 +194,12 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 */
 		function renderHiddenTracks() {
 			if (data.collapseLimit < data.tracks.length) {
-				var trackListFragment = document.createDocumentFragment();
+				let trackListFragment = document.createDocumentFragment();
 
 				for (var i = data.collapseLimit - 1; i < data.tracks.length; i++) {
 					trackListFragment.appendChild(getTrackNode(data.tracks[i], i, 'collapsible'));
 				}
-				var toggle = htmlElem.getElementsByClassName('muted more-less collapsible');
+				let toggle = htmlElem.getElementsByClassName('muted more-less collapsible');
 				htmlElem.insertBefore(trackListFragment, toggle[0]);
 
 				updateClasses();
@@ -212,7 +212,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * Click handler for list items
 		 */
 		data.element.on('click', 'li', function(event) {
-			var trackId = trackIdFromElementId(this.id);
+			let trackId = trackIdFromElementId(this.id);
 			if (trackId) {
 				if (event.target.className == 'icon-details') {
 					data.showTrackDetails(trackId);
@@ -237,14 +237,14 @@ function ($rootScope, $interpolate, gettextCatalog) {
 			if (e.originalEvent) {
 				e.dataTransfer = e.originalEvent.dataTransfer;
 			}
-			var trackId = trackIdFromElementId(this.id);
-			var offset = {x: e.offsetX, y: e.offsetY};
-			var transferDataObject = {
+			let trackId = trackIdFromElementId(this.id);
+			let offset = {x: e.offsetX, y: e.offsetY};
+			let transferDataObject = {
 				data: data.getDraggable(trackId),
 				channel: 'defaultchannel',
 				offset: offset
 			};
-			var transferDataText = angular.toJson(transferDataObject);
+			let transferDataText = angular.toJson(transferDataObject);
 			e.dataTransfer.setData('text', transferDataText);
 			e.dataTransfer.effectAllowed = 'copyMove';
 			$rootScope.$broadcast('ANGULAR_DRAG_START', e, 'defaultchannel', transferDataObject);
@@ -279,8 +279,8 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		data.hiddenTracksRendered = false;
 		removeChildNodes(data.element[0]);
 
-		var height = estimateContentsHeight(data);
-		var placeholder = document.createElement('li');
+		let height = estimateContentsHeight(data);
+		let placeholder = document.createElement('li');
 		placeholder.style.height = height + 'px';
 		placeholder.className = 'placeholder';
 		data.element[0].appendChild(placeholder);
@@ -290,12 +290,12 @@ function ($rootScope, $interpolate, gettextCatalog) {
 	 * Estimate the total height needed for the <li> entries of the track list element
 	 */
 	function estimateContentsHeight(data) {
-		var rowCount = 0;
+		let rowCount = 0;
 
 		// During search, all matched tracks are shown
 		if (inSearchMode()) {
 			for (var i = 0; i < data.tracks.length; ++i) {
-				var trackData = data.getTrackData(data.tracks[i], i, data.scope);
+				let trackData = data.getTrackData(data.tracks[i], i, data.scope);
 				if (trackMatchedInSearch(trackData.id)) {
 					rowCount++;
 				}
@@ -327,7 +327,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		replace: true,
 		require: '?^inViewObserver',
 		link: function(scope, element, attrs, controller) {
-			var data = {
+			let data = {
 				expanded: false,
 				hiddenTracksRendered: false,
 				tracks: scope.$eval(attrs.tracks),

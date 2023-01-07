@@ -24,7 +24,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 		const patternLinkStart = /<a href=/ig;
 		const patternNewline = /(?:\r\n|\r|\n)/g;
 		function formatDescription(rawValue) {
-			var desc = rawValue;
+			let desc = rawValue;
 
 			// Descriptions from the feeds are sometimes HTML-formatted and sometimes they are not. Our template 
 			// always renders them as HTML but this has the side-effect of removing any newline characters.
@@ -46,10 +46,10 @@ angular.module('Music').controller('PodcastDetailsController', [
 			if ($scope.contentType && $scope.contentId) {
 				resetContents();
 
-				var albumart = $('#app-sidebar .albumart');
+				let albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
 
-				var restPath = 'podcasts';
+				let restPath = 'podcasts';
 				if ($scope.contentType == 'podcastChannel') {
 					$scope.entity = libraryService.getPodcastChannel($scope.contentId);
 				} else {

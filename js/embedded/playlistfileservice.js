@@ -12,8 +12,8 @@ OCA.Music = OCA.Music || {};
 
 OCA.Music.PlaylistFileService = function() {
 
-	var mFileId = null;
-	var mData = null;
+	let mFileId = null;
+	let mData = null;
 
 	this.readFile = function(fileId, onSuccess, onFail, shareToken /*optional*/) {
 
@@ -21,7 +21,7 @@ OCA.Music.PlaylistFileService = function() {
 			onSuccess(mData);
 		}
 		else {
-			var url = null;
+			let url = null;
 			// valid shareToken means that we are operating on a public share page, and a different URL is needed
 			if (shareToken) {
 				url = OC.generateUrl('apps/music/api/share/{token}/{fileId}/parse',
@@ -39,17 +39,17 @@ OCA.Music.PlaylistFileService = function() {
 	};
 
 	this.importPlaylist = function(file, onDone) {
-		var name = OCA.Music.Utils.dropFileExtension(file.name);
-		var path = OCA.Music.Utils.joinPath(file.path, file.name);
+		let name = OCA.Music.Utils.dropFileExtension(file.name);
+		let path = OCA.Music.Utils.joinPath(file.path, file.name);
 
 		// first, create a new playlist
-		var url = OC.generateUrl('apps/music/api/playlists');
+		let url = OC.generateUrl('apps/music/api/playlists');
 		$.post(url, {name: name}, function(newList) {
 			// then, import the playlist file contents to the newly created list
 			url = OC.generateUrl('apps/music/api/playlists/{listId}/import', {listId: newList.id});
 
 			$.post(url, {filePath: path}, function(result) {
-				var message = t('music', 'Imported {count} tracks to a new playlist \'{name}\'.',
+				let message = t('music', 'Imported {count} tracks to a new playlist \'{name}\'.',
 								{ count: result.imported_count, name: name });
 				if (result.failed_count > 0) {
 					message += ' ' + t('music', '{count} files were skipped.', { count: result.failed_count });
@@ -69,12 +69,12 @@ OCA.Music.PlaylistFileService = function() {
 	};
 
 	this.importRadio = function(file, onDone) {
-		var path = OCA.Music.Utils.joinPath(file.path, file.name);
+		let path = OCA.Music.Utils.joinPath(file.path, file.name);
 
-		var url = OC.generateUrl('apps/music/api/radio/import');
+		let url = OC.generateUrl('apps/music/api/radio/import');
 
 		$.post(url, {filePath: path}, function(result) {
-			var message = t('music', 'Imported {count} radio stations.', { count: result.stations.length });
+			let message = t('music', 'Imported {count} radio stations.', { count: result.stations.length });
 			if (result.failed_count > 0) {
 				message += ' ' + t('music', '{count} entries were skipped.', { count: result.failed_count });
 			}

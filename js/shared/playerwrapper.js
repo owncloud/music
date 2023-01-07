@@ -16,21 +16,21 @@ OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = function() {
 	const m_isIe = $('html').hasClass('ie'); // are we running on Internet Explorer
-	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
-	var m_html5audio = null;
-	var m_hls = null;
-	var m_aurora = null;
-	var m_auroraWorkaroundAudio = null;
-	var m_position = 0;
-	var m_duration = 0;
-	var m_buffered = 0; // percent
-	var m_volume = 100;
-	var m_playbackRate = 1.0;
-	var m_ready = false;
-	var m_playing = false;
-	var m_url = null;
-	var m_urlType = null; // set later as one of ['local', 'external', 'external-hls']
-	var m_mime = null;
+	let m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
+	let m_html5audio = null;
+	let m_hls = null;
+	let m_aurora = null;
+	let m_auroraWorkaroundAudio = null;
+	let m_position = 0;
+	let m_duration = 0;
+	let m_buffered = 0; // percent
+	let m_volume = 100;
+	let m_playbackRate = 1.0;
+	let m_ready = false;
+	let m_playing = false;
+	let m_url = null;
+	let m_urlType = null; // set later as one of ['local', 'external', 'external-hls']
+	let m_mime = null;
 	const m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
@@ -52,13 +52,13 @@ OCA.Music.PlayerWrapper = function() {
 			});
 		}
 
-		var getBufferedEnd = function() {
+		let getBufferedEnd = function() {
 			// The buffer may contain holes after seeking but just ignore those.
 			// Show the buffering status according the last buffered position.
-			var bufCount = m_html5audio.buffered.length;
+			let bufCount = m_html5audio.buffered.length;
 			return (bufCount > 0) ? m_html5audio.buffered.end(bufCount-1) : 0;
 		};
-		var latestNotifiedBufferState = null;
+		let latestNotifiedBufferState = null;
 
 		// Bind the various callbacks
 		m_html5audio.ontimeupdate = function() {
@@ -81,7 +81,7 @@ OCA.Music.PlayerWrapper = function() {
 
 		m_html5audio.onprogress = function() {
 			if (this.duration > 0) {
-				var bufEnd = getBufferedEnd();
+				let bufEnd = getBufferedEnd();
 				m_buffered = bufEnd / this.duration * 100;
 				m_self.trigger('buffer', m_buffered);
 				latestNotifiedBufferState = bufEnd;
@@ -272,7 +272,7 @@ OCA.Music.PlayerWrapper = function() {
 		// this is not always the case with external streams. On the other hand, when
 		// playing a normal local file, the seeking may be requested before we have fetched
 		// the duration and that is fine.
-		var validDuration = $.isNumeric(m_duration) && m_duration > 0;
+		let validDuration = $.isNumeric(m_duration) && m_duration > 0;
 		return (m_underlyingPlayer == 'html5' && (m_urlType == 'local' || validDuration));
 	};
 
@@ -292,8 +292,8 @@ OCA.Music.PlayerWrapper = function() {
 			}
 			else if (msecs === 0 && m_duration > 0) {
 				// seeking to the beginning can be simulated even when seeking in general is not supported
-				var url = m_url;
-				var playing = m_playing;
+				let url = m_url;
+				let playing = m_playing;
 				m_self.fromUrl(url);
 				m_self.trigger('progress', 0);
 				if (playing) {

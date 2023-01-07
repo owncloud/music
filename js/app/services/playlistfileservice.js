@@ -77,7 +77,7 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
 			function onFolderSelected(path, onCollision /*optional*/) {
 				playlist.busy = true;
-				var args = { path: path, oncollision: onCollision || 'abort' };
+				let args = { path: path, oncollision: onCollision || 'abort' };
 				Restangular.one('playlists', playlist.id).all('export').post(args).then(
 					function (result) {
 						OC.Notification.showTemporary(
@@ -100,12 +100,12 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
 		// Export radio stations to file
 		exportRadio: function() {
-			var deferred = $q.defer();
-			var name = gettextCatalog.getString('Internet radio');
+			let deferred = $q.defer();
+			let name = gettextCatalog.getString('Internet radio');
 
 			function onFolderSelected(path, onCollision /*optional*/) {
 				deferred.notify('started');
-				var args = { path: path, name: name, oncollision: onCollision || 'abort' };
+				let args = { path: path, name: name, oncollision: onCollision || 'abort' };
 				Restangular.all('radio/export').post(args).then(
 					function (result) {
 						OC.Notification.showTemporary(
@@ -114,7 +114,7 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 					},
 					function (error) {
 						deferred.notify('stopped');
-						var retry = handleExportError(error.status, path, name, onFolderSelected);
+						let retry = handleExportError(error.status, path, name, onFolderSelected);
 						if (!retry) {
 							deferred.reject();
 						}
@@ -132,12 +132,12 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
 		// Import playlist contents from a file
 		importPlaylist: function(playlist) {
-			var onFileSelected = function(file) {
+			let onFileSelected = function(file) {
 				playlist.busy = true;
 				Restangular.one('playlists', playlist.id).all('import').post({filePath: file}).then(
 					function(result) {
 						libraryService.replacePlaylist(result.playlist);
-						var message = gettextCatalog.getString('Imported {{ count }} tracks from the file {{ file }}.',
+						let message = gettextCatalog.getString('Imported {{ count }} tracks from the file {{ file }}.',
 																{ count: result.imported_count, file: file });
 						if (result.failed_count > 0) {
 							message += ' ' + gettextCatalog.getString('{{ count }} files were skipped.',
@@ -156,7 +156,7 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 				);
 			};
 
-			var selectFile = function() {
+			let selectFile = function() {
 				showPlaylistFilePicker(
 						gettextCatalog.getString('Import playlist contents from the selected file'),
 						onFileSelected
@@ -183,15 +183,15 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
 		// Import radio stations from a playlist file
 		importRadio: function() {
-			var deferred = $q.defer();
+			let deferred = $q.defer();
 
-			var onFileSelected = function(file) {
+			let onFileSelected = function(file) {
 				deferred.notify('started');
 
 				return Restangular.all('radio/import').post({filePath: file}).then(
 					function(result) {
 						libraryService.addRadioStations(result.stations);
-						var message = gettextCatalog.getString('Imported {{ count }} radio stations from the file {{ file }}.',
+						let message = gettextCatalog.getString('Imported {{ count }} radio stations from the file {{ file }}.',
 																{ count: result.stations.length, file: file });
 						if (result.failed_count > 0) {
 							message += ' ' + gettextCatalog.getString('{{ count }} entries were skipped.',

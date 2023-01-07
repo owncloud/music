@@ -1,3 +1,13 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2020 - 2023
+ */
+
 OCA.Music = OCA.Music || {};
 
 OCA.Music.initPlaylistTabView = function(playlistMimes) {
@@ -15,8 +25,6 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 			},
 
 			render: function() {
-				let self = this;
-
 				let container = this.$el;
 				container.empty(); // erase any previous content
 
@@ -27,7 +35,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 					let loadIndicator = $(document.createElement('div')).attr('class', 'loading');
 					container.append(loadIndicator);
 
-					let onPlaylistLoaded = function(data) {
+					let onPlaylistLoaded = (data) => {
 						loadIndicator.hide();
 
 						let list = $(document.createElement('ol'));
@@ -37,17 +45,17 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 							return file.caption || OCA.Music.Utils.titleFromFilename(file.name);
 						};
 
-						for (var i = 0; i < data.files.length; ++i) {
+						for (let i = 0; i < data.files.length; ++i) {
 							list.append($(document.createElement('li'))
 										.attr('id', 'music-playlist-item-' + i)
 										.text(titleForFile(data.files[i])));
 						}
 
 						// click handler
-						list.on('click', 'li', function(event) {
+						list.on('click', 'li', (event) => {
 							let id = event.target.id;
 							let idx = parseInt(id.split('-').pop());
-							self.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes.name, idx);
+							this.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes.name, idx);
 						});
 
 						if (data.invalid_paths.length > 0) {
@@ -55,12 +63,12 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 							let failList = $(document.createElement('ul'));
 							container.append(failList);
 
-							for (i = 0; i < data.invalid_paths.length; ++i) {
+							for (let i = 0; i < data.invalid_paths.length; ++i) {
 								failList.append($(document.createElement('li')).text(data.invalid_paths[i]));
 							}
 						}
 
-						self.trigger('rendered');
+						this.trigger('rendered');
 					};
 
 					let onError = function(_error) {

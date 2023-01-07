@@ -21,11 +21,10 @@ OCA.Music.GaplessPlayer = class {
 	}
 
 	#setupEventPropagation(player) {
-		let self = this;
-		player.on('all', function(eventName, arg) {
+		player.on('all', (eventName, arg) => {
 			// propagate events only for the currently active instance
-			if (player === self.#currentPlayer) {
-				self.trigger(eventName, arg, player.getUrl());
+			if (player === this.#currentPlayer) {
+				this.trigger(eventName, arg, player.getUrl());
 			}
 		});
 	}

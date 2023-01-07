@@ -37,133 +37,125 @@ OCA.Music.PlayerWrapper = class {
 	}
 
 	#initHtml5() {
-		let self = this;
-
 		this.#html5audio = new Audio();
 		this.#html5audio.preload = 'auto';
 
 		if (Hls.isSupported()) {
 			this.#hls = new Hls({ enableWorker: false });
 
-			this.#hls.on(Hls.Events.ERROR, function (_event, data) {
+			this.#hls.on(Hls.Events.ERROR, (_event, data) => {
 				console.error('HLS error: ' + JSON.stringify(_.pick(data, ['type', 'details', 'fatal'])));
 				if (data.fatal) {
-					self.pause();
-					self.trigger('error', self.#url);
-					self.#url = null;
+					this.pause();
+					this.trigger('error', this.#url);
+					this.#url = null;
 				}
 			});
 		}
 
-		let getBufferedEnd = function() {
+		const getBufferedEnd = () => {
 			// The buffer may contain holes after seeking but just ignore those.
 			// Show the buffering status according the last buffered position.
-			let bufCount = self.#html5audio.buffered.length;
-			return (bufCount > 0) ? self.#html5audio.buffered.end(bufCount-1) : 0;
+			const bufCount = this.#html5audio.buffered.length;
+			return (bufCount > 0) ? this.#html5audio.buffered.end(bufCount-1) : 0;
 		};
 		let latestNotifiedBufferState = null;
 
 		// Bind the various callbacks
-		this.#html5audio.ontimeupdate = function() {
+		this.#html5audio.ontimeupdate = () => {
 			// On Firefox, both the last 'progress' event and the 'suspend' event
 			// often fire a tad too early, before the 'buffered' state has been
 			// updated to its final value. Hence, check here during playback if the
 			// buffering state has changed, and fire an extra event if it has.
 			if (latestNotifiedBufferState != getBufferedEnd()) {
-				this.onprogress();
+				this.#html5audio.onprogress();
 			}
 
-			self.#position = this.currentTime * 1000;
-			self.trigger('progress', self.#position);
+			this.#position = this.#html5audio.currentTime * 1000;
+			this.trigger('progress', this.#position);
 		};
 
-		this.#html5audio.ondurationchange = function() {
-			self.#duration = this.duration * 1000;
-			self.trigger('duration', self.#duration);
+		this.#html5audio.ondurationchange = () => {
+			this.#duration = this.#html5audio.duration * 1000;
+			this.trigger('duration', this.#duration);
 		};
 
-		this.#html5audio.onprogress = function() {
-			if (this.duration > 0) {
+		this.#html5audio.onprogress = () => {
+			if (this.#html5audio.duration > 0) {
 				let bufEnd = getBufferedEnd();
-				self.#buffered = bufEnd / this.duration * 100;
-				self.trigger('buffer', self.#buffered);
+				this.#buffered = bufEnd / this.#html5audio.duration * 100;
+				this.trigger('buffer', this.#buffered);
 				latestNotifiedBufferState = bufEnd;
 			}
 		};
 
-		this.#html5audio.onsuspend = function() {
-			this.onprogress();
-		};
+		this.#html5audio.onsuspend = this.#html5audio.onprogress;
 
-		this.#html5audio.onended = function() {
+		this.#html5audio.onended = () => this.trigger('end');
 			this.#playing = false;
-			self.trigger('end');
+
+		this.#html5audio.oncanplay = () => {
+			this.#ready = true;
+			this.trigger('ready');
 		};
 
-		this.#html5audio.oncanplay = function() {
-			self.#ready = true;
-			self.trigger('ready');
-		};
-
-		this.#html5audio.onerror = function() {
-			if (self.#underlyingPlayer == 'html5') {
-				if (self.#url) {
-					if (!self.#ready && self.#canPlayWithAurora(self.#mime)) {
+		this.#html5audio.onerror = () => {
+			if (this.#underlyingPlayer == 'html5') {
+				if (this.#url) {
+					if (!this.#ready && this.#canPlayWithAurora(this.#mime)) {
 						// Load error encountered before playing could start. The file might be in unsupported format
 						// like is the case with M4A-ALAC on most browsers. Fall back to Aurora.js if possible.
 						console.log('Cannot play with HTML5, falling back to Aurora.js');
-						self.#underlyingPlayer = 'aurora';
-						self.#initAurora(self.#url);
-						if (self.#playing) {
-							self.play();
+						this.#underlyingPlayer = 'aurora';
+						this.#initAurora(this.#url);
+						if (this.#playing) {
+							this.play();
 						}
 					} else {
 						console.log('HTML5 audio: sound load error');
-						self.#playing = false;
-						self.trigger('error', self.#url);
+						this.#playing = false;
+						this.trigger('error', this.#url);
 					}
 				} else {
 					// an error is fired by the HTML audio when the src is cleared to stop the playback
-					self.#playing = false;
-					self.trigger('stop', self.#url);
+					this.#playing = false;
+					this.trigger('stop', this.#url);
 				}
 			}
 		};
 
-		this.#html5audio.onplaying = () => self.#onPlayStarted();
+		this.#html5audio.onplaying = () => this.#onPlayStarted();
 
-		this.#html5audio.onpause = () => self.#onPaused();
+		this.#html5audio.onpause = () => this.#onPaused();
 	}
 
 	// Aurora differs from HTML5 player so that it has to be initialized again for each URL
 	#initAurora(url) {
-		let self = this;
-
 		this.#aurora = window.AV.Player.fromURL(url);
 
-		this.#aurora.on('buffer', function(percent) {
-			self.#buffered = percent;
-			self.trigger('buffer', percent);
+		this.#aurora.on('buffer', (percent) => {
+			this.#buffered = percent;
+			this.trigger('buffer', percent);
 		});
-		this.#aurora.on('progress', function(currentTime) {
-			self.#position = currentTime;
-			self.trigger('progress', currentTime);
+		this.#aurora.on('progress', (currentTime) => {
+			this.#position = currentTime;
+			this.trigger('progress', currentTime);
 		});
-		this.#aurora.on('ready', function() {
-			self.#ready = true;
-			self.trigger('ready');
+		this.#aurora.on('ready', () => {
+			this.#ready = true;
+			this.trigger('ready');
 		});
-		this.#aurora.on('end', function() {
+		this.#aurora.on('end', () => {
 			this.#playing = false;
-			self.trigger('end');
+			this.trigger('end');
 		});
-		this.#aurora.on('duration', function(msecs) {
-			self.#duration = msecs;
-			self.trigger('duration', msecs);
+		this.#aurora.on('duration', (msecs) => {
+			this.#duration = msecs;
+			this.trigger('duration', msecs);
 		});
-		this.#aurora.on('error', function(message) {
+		this.#aurora.on('error', (message) => {
 			console.error('Aurora error: ' + message);
-			self.trigger('error', url);
+			this.trigger('error', url);
 		});
 
 		this.#aurora.preload();
@@ -392,40 +384,38 @@ OCA.Music.PlayerWrapper = class {
 	}
 
 	fromUrl(url, mime) {
-		let self = this;
-		this.#doFromUrl(function() {
-			self.#url = url;
-			self.#urlType = 'local';
-			self.#mime = mime;
+		this.#doFromUrl(() => {
+			this.#url = url;
+			this.#urlType = 'local';
+			this.#mime = mime;
 
-			if (self.#canPlayWithHtml5(mime)) {
-				self.#underlyingPlayer = 'html5';
-				self.#html5audio.src = url;
+			if (this.#canPlayWithHtml5(mime)) {
+				this.#underlyingPlayer = 'html5';
+				this.#html5audio.src = url;
 			} else {
-				self.#underlyingPlayer = 'aurora';
-				self.#initAurora(url);
+				this.#underlyingPlayer = 'aurora';
+				this.#initAurora(url);
 			}
-			console.log('Using ' + self.#underlyingPlayer + ' for type ' + mime + ' URL ' + url);
+			console.log('Using ' + this.#underlyingPlayer + ' for type ' + mime + ' URL ' + url);
 		});
 	}
 
 	fromExtUrl(url, isHls) {
-		let self = this;
-		this.#doFromUrl(function() {
-			self.#url = url;
-			self.#mime = null;
-			self.#underlyingPlayer = 'html5';
+		this.#doFromUrl(() => {
+			this.#url = url;
+			this.#mime = null;
+			this.#underlyingPlayer = 'html5';
 
-			if (isHls && self.#hls !== null) {
-				self.#urlType = 'external-hls';
-				self.#hls.detachMedia();
-				self.#hls.loadSource(url);
-				self.#hls.attachMedia(self.#html5audio);
+			if (isHls && this.#hls !== null) {
+				this.#urlType = 'external-hls';
+				this.#hls.detachMedia();
+				this.#hls.loadSource(url);
+				this.#hls.attachMedia(this.#html5audio);
 			} else {
-				self.#urlType = 'external';
-				self.#html5audio.src = url;
+				this.#urlType = 'external';
+				this.#html5audio.src = url;
 			}
-			console.log('URL ' + url + ' played as ' + self.#urlType);
+			console.log('URL ' + url + ' played as ' + this.#urlType);
 		});
 	}
 

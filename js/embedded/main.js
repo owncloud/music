@@ -146,9 +146,10 @@ function initEmbeddedPlayer() {
 
 	function doImportFromFile(serviceImportFunc) {
 		// The busy animation is shown on the file item if we are still viewing the folder
-		// where the file resides. The importing itself is possible regardless. 
+		// where the file resides. The importing itself is possible regardless.
+		let $file = null;
 		if (viewingCurrentFileFolder()) {
-			let $file = mFileList.findFileEl(mCurrentFile.name);
+			$file = mFileList.findFileEl(mCurrentFile.name);
 			mFileList.showFileBusyState($file, true);
 		}
 

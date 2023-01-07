@@ -5,14 +5,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 OCA.Music = OCA.Music || {};
 
 /** @namespace */
-OCA.Music.DarkThemeLegacySupport = {
-	applyOnElement: function(element) {
+OCA.Music.DarkThemeLegacySupport = class {
+	static applyOnElement(element) {
 		if (getComputedStyle(element).getPropertyValue('--background-invert-if-dark') == '') {
 			// The property is not available => Nextcloud < 25 or ownCloud.
 			

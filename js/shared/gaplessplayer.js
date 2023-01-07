@@ -5,133 +5,137 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 OCA.Music = OCA.Music || {};
 
-OCA.Music.GaplessPlayer = function() {
-	let m_self = this;
-	let m_currentPlayer = new OCA.Music.PlayerWrapper();
-	let m_nextPlayer = new OCA.Music.PlayerWrapper();
-	_.extend(this, OC.Backbone.Events);
+OCA.Music.GaplessPlayer = class {
+	#currentPlayer = new OCA.Music.PlayerWrapper();
+	#nextPlayer = new OCA.Music.PlayerWrapper();
 
-	function propagateEvent(eventName, arg) {
-		// propagate events only for the currently active instance
-		if (this === m_currentPlayer) {
-			m_self.trigger(eventName, arg, this.getUrl());
-		}
+	constructor() {
+		_.extend(this, OC.Backbone.Events);
+		this.#setupEventPropagation(this.#currentPlayer);
+		this.#setupEventPropagation(this.#nextPlayer);
 	}
 
-	m_currentPlayer.on('all', propagateEvent);
-	m_nextPlayer.on('all', propagateEvent);
+	#setupEventPropagation(player) {
+		let self = this;
+		player.on('all', function(eventName, arg) {
+			// propagate events only for the currently active instance
+			if (player === self.#currentPlayer) {
+				self.trigger(eventName, arg, player.getUrl());
+			}
+		});
+	}
 
-	this.play = function() {
-		m_currentPlayer.play();
-	};
+	play() {
+		this.#currentPlayer.play();
+	}
 
-	this.pause = function() {
-		m_currentPlayer.pause();
-	};
+	pause() {
+		this.#currentPlayer.pause();
+	}
 
-	this.stop = function() {
-		m_currentPlayer.stop();
-	};
+	stop() {
+		this.#currentPlayer.stop();
+	}
 
-	this.isPlaying = function() {
-		return m_currentPlayer.isPlaying();
-	};
+	isPlaying() {
+		return this.#currentPlayer.isPlaying();
+	}
 
-	this.seekingSupported = function() {
-		return m_currentPlayer.seekingSupported();
-	};
+	seekingSupported() {
+		return this.#currentPlayer.seekingSupported();
+	}
 
-	this.seekMsecs = function(msecs) {
-		m_currentPlayer.seekMsecs(msecs);
-	};
+	seekMsecs(msecs) {
+		this.#currentPlayer.seekMsecs(msecs);
+	}
 
-	this.seek = function(ratio) {
-		m_currentPlayer.seek(ratio);
-	};
+	seek(ratio) {
+		this.#currentPlayer.seek(ratio);
+	}
 
-	this.seekForward = function(msecs /*optional*/) {
-		m_currentPlayer.seekForward(msecs);
-	};
+	seekForward(msecs /*optional*/) {
+		this.#currentPlayer.seekForward(msecs);
+	}
 
-	this.seekBackward = function(msecs /*optional*/) {
-		m_currentPlayer.seekForward(msecs);
-	};
+	seekBackward(msecs /*optional*/) {
+		this.#currentPlayer.seekForward(msecs);
+	}
 
-	this.playPosition = function() {
-		return m_currentPlayer.playPosition();
-	};
+	playPosition() {
+		return this.#currentPlayer.playPosition();
+	}
 
-	this.setVolume = function(percentage) {
-		m_currentPlayer.setVolume(percentage);
-		m_nextPlayer.setVolume(percentage);
-	};
+	setVolume(percentage) {
+		this.#currentPlayer.setVolume(percentage);
+		this.#nextPlayer.setVolume(percentage);
+	}
 
-	this.playbackRateAdjustible = function() {
-		return m_currentPlayer.playbackRateAdjustible();
-	};
+	playbackRateAdjustible() {
+		return this.#currentPlayer.playbackRateAdjustible();
+	}
 
-	this.setPlaybackRate = function(rate) {
-		m_currentPlayer.setPlaybackRate(rate);
-		m_nextPlayer.setPlaybackRate(rate);
-	};
+	setPlaybackRate(rate) {
+		this.#currentPlayer.setPlaybackRate(rate);
+		this.#nextPlayer.setPlaybackRate(rate);
+	}
 
-	this.canPlayMime = function(mime) {
-		return m_currentPlayer.canPlayMime(mime);
-	};
+	canPlayMime(mime) {
+		return this.#currentPlayer.canPlayMime(mime);
+	}
 
-	this.isReady = function() {
-		return m_currentPlayer.isReady();
-	};
+	isReady() {
+		return this.#currentPlayer.isReady();
+	}
 
-	this.getDuration = function() {
-		return m_currentPlayer.getDuration();
-	};
+	getDuration() {
+		return this.#currentPlayer.getDuration();
+	}
 
-	this.getBufferPercent = function() {
-		return m_currentPlayer.getBufferPercent();
-	};
+	getBufferPercent() {
+		return this.#currentPlayer.getBufferPercent();
+	}
 
-	this.getUrl = function() {
-		return m_currentPlayer.getUrl();
-	};
+	getUrl() {
+		return this.#currentPlayer.getUrl();
+	}
 
-	this.fromUrl = function(url, mime) {
-		swapPlayer();
+	fromUrl(url, mime) {
+		this.#swapPlayer();
 
-		if (m_currentPlayer.getUrl() != url) {
-			m_currentPlayer.fromUrl(url, mime);
+		if (this.#currentPlayer.getUrl() != url) {
+			this.#currentPlayer.fromUrl(url, mime);
 		} else {
 			// The player already has the correct URL loaded or being loaded. Ensure the playing starts from the
 			// beginning and fire the relevant events.
-			if (m_currentPlayer.isReady()) {
-				m_self.trigger('ready', undefined, url);
+			if (this.#currentPlayer.isReady()) {
+				this.trigger('ready', undefined, url);
 			}
-			if (m_currentPlayer.getDuration() > 0) {
-				m_self.trigger('duration', m_currentPlayer.getDuration(), url);
+			if (this.#currentPlayer.getDuration() > 0) {
+				this.trigger('duration', this.#currentPlayer.getDuration(), url);
 			}
-			m_currentPlayer.seek(0);
-			if (m_currentPlayer.getBufferPercent() > 0) {
-				m_self.trigger('buffer', m_currentPlayer.getBufferPercent(), url);
+			this.#currentPlayer.seek(0);
+			if (this.#currentPlayer.getBufferPercent() > 0) {
+				this.trigger('buffer', this.#currentPlayer.getBufferPercent(), url);
 			}
 		}
-	};
+	}
 
-	this.fromExtUrl = function(url, isHls) {
-		m_currentPlayer.fromExtUrl(url, isHls);
-	};
+	fromExtUrl(url, isHls) {
+		this.#currentPlayer.fromExtUrl(url, isHls);
+	}
 
-	this.prepareUrl = function(url, mime) {
-		if (m_nextPlayer.getUrl() != url) {
-			m_nextPlayer.fromUrl(url, mime);
+	prepareUrl(url, mime) {
+		if (this.#nextPlayer.getUrl() != url) {
+			this.#nextPlayer.fromUrl(url, mime);
 		}
-	};
+	}
 
-	function swapPlayer() {
-		[m_currentPlayer, m_nextPlayer] = [m_nextPlayer, m_currentPlayer];
+	#swapPlayer() {
+		[this.#currentPlayer, this.#nextPlayer] = [this.#nextPlayer, this.#currentPlayer];
 	}
 };

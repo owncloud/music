@@ -275,7 +275,7 @@ function initEmbeddedPlayer() {
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}
 
-	function openPlaylistFile(onReadyCallback /*optional*/) {
+	function openPlaylistFile(onReadyCallback = null) {
 		mPlayingListFile = true;
 		let $file = mFileList.findFileEl(mCurrentFile.name);
 

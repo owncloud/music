@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
@@ -139,9 +139,9 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				return playlist[playOrder[playOrderIter + 1]];
 			}
 		},
-		setPlaylist: function(listId, pl, startIndex /*optional*/) {
+		setPlaylist: function(listId, pl, startIndex = null) {
 			playlist = pl.slice(); // copy
-			startFromIndex = (startIndex === undefined) ? null : startIndex;
+			startFromIndex = startIndex;
 			if (listId === playlistId) {
 				// preserve the history if list wasn't actually changed
 				dropFuturePlayOrder();

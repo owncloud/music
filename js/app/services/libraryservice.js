@@ -220,9 +220,7 @@ angular.module('Music').service('libraryService', [function() {
 		});
 	}
 
-	function search(container, fields, query, maxResults/*optional*/) {
-		maxResults = maxResults || Infinity;
-
+	function search(container, fields, query, maxResults) {
 		query = foldString(query);
 		// In case the query contains many words separated with whitespace, each part
 		// has to be found but the whitespace is disregarded.
@@ -555,41 +553,41 @@ angular.module('Music').service('libraryService', [function() {
 		podcastsLoaded: function() {
 			return podcastChannels !== null;
 		},
-		searchTracks: function(query, maxResults/*optional*/) {
+		searchTracks: function(query, maxResults = Infinity) {
 			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
 		},
-		searchTracksInAlbums: function(query, maxResults/*optional*/) {
+		searchTracksInAlbums: function(query, maxResults = Infinity) {
 			return search(
 					tracksIndex,
 					['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
 					query,
 					maxResults);
 		},
-		searchTracksInFolders: function(query, maxResults/*optional*/) {
+		searchTracksInFolders: function(query, maxResults = Infinity) {
 			return search(
 					tracksIndex,
 					['title', 'artistName', 'folder.path'],
 					query,
 					maxResults);
 		},
-		searchTracksInGenres: function(query, maxResults/*optional*/) {
+		searchTracksInGenres: function(query, maxResults = Infinity) {
 			return search(
 					tracksIndex,
 					['title', 'artistName', 'genre.name'],
 					query,
 					maxResults);
 		},
-		searchTracksInPlaylist: function(playlistId, query, maxResults/*optional*/) {
+		searchTracksInPlaylist: function(playlistId, query, maxResults = Infinity) {
 			let list = this.getPlaylist(playlistId) || [];
 			list = _.map(list.tracks, 'track');
 			list = _.uniq(list);
 			return search(list, ['title', 'artistName'], query, maxResults);
 		},
-		searchRadioStations: function(query, maxResults/*optional*/) {
+		searchRadioStations: function(query, maxResults = Infinity) {
 			let stations = _.map(radioStations, 'track');
 			return search(stations, ['name', 'stream_url'], query, maxResults);
 		},
-		searchPodcasts: function(query, maxResults/*optional*/) {
+		searchPodcasts: function(query, maxResults = Infinity) {
 			let episodes = _(podcastChannels).map('episodes').flatten().value();
 			return search(episodes, ['title', 'channel.title'], query, maxResults);
 		},

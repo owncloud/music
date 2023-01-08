@@ -16,7 +16,7 @@ OCA.Music.PlaylistFileService = class {
 	static #fileId = null;
 	static #data = null;
 
-	static readFile(fileId, onSuccess, onFail, shareToken /*optional*/) {
+	static readFile(fileId, onSuccess, onFail, shareToken = null) {
 
 		if (fileId == this.#fileId && this.#data !== null) {
 			onSuccess(this.#data);

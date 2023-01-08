@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 
@@ -75,7 +75,7 @@ angular.module('Music').controller('RadioViewController', [
 			);
 		}
 
-		function play(startIndex /*optional*/) {
+		function play(startIndex = 0) {
 			playlistService.setPlaylist('radio', $scope.stations, startIndex);
 			playlistService.publish('play');
 		}

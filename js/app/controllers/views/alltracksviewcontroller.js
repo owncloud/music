@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2022
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 
@@ -35,7 +35,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			_.each(_unsubFuncs, function(func) { func(); });
 		});
 
-		function play(startIndex /*optional*/) {
+		function play(startIndex = 0) {
 			playlistService.setPlaylist('alltracks', _tracks, startIndex);
 			playlistService.publish('play');
 		}

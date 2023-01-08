@@ -7,7 +7,7 @@
  * @author Moritz Meißelbach <moritz@meisselba.ch>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2017 Moritz Meißelbach
- * @copyright 2018 - 2021 Pauli Järvinen
+ * @copyright 2018 - 2023 Pauli Järvinen
  *
  */
 
@@ -151,7 +151,7 @@ function ($rootScope, $interpolate, gettextCatalog) {
 		 * @param string className (optional)
 		 * @returns {HTMLLIElement}
 		 */
-		function getTrackNode(track, index, className) {
+		function getTrackNode(track, index, className = null) {
 			let listItem = document.createElement('li');
 
 			let listItemContent = document.createElement('div');

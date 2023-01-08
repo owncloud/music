@@ -263,7 +263,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function(fileIds /*optional*/) {
+	$scope.startScanning = function(fileIds = null) {
 		if (fileIds) {
 			filesToScan = fileIds;
 			previouslyScannedCount = 0;
@@ -356,14 +356,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return offset;
 	}
 
-	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
+	$scope.scrollToItem = function(itemId, animationTime = 500) {
 		if (itemId) {
 			let container = OCA.Music.Utils.getScrollContainer();
 			let element = $('#' + itemId);
 			if (container && element) {
-				if (animationTime === undefined) {
-					animationTime = 500;
-				}
 				container.scrollToElement(element, scrollOffset(), animationTime);
 			}
 		}
@@ -376,12 +373,12 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	// Navigate to a view selected from the navigation bar
 	let navigationDestination = null;
 	let afterNavigationCallback = null;
-	$scope.navigateTo = function(destination, callback /*optional*/) {
+	$scope.navigateTo = function(destination, callback = null) {
 		let curView = $rootScope.currentView;
 		if (curView != destination) {
 			$rootScope.currentView = null;
 			navigationDestination = destination;
-			afterNavigationCallback = callback || null;
+			afterNavigationCallback = callback;
 			$rootScope.loading = true;
 			// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
 			// In the abnormal special case of no active view, activate the new view immediately.
@@ -402,10 +399,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Compact/normal layout of the Albums view
 	$scope.albumsCompactLayout = (localStorage.getItem('oc_music_albums_compact') === 'true');
-	$scope.toggleAlbumsCompactLayout = function(useCompact /*optional, invert current value if omitted */) {
-		if (typeof useCompact === 'undefined') {
-			useCompact = !$scope.albumsCompactLayout;
-		}
+	$scope.toggleAlbumsCompactLayout = function(useCompact = !$scope.albumsCompactLayout) {
 		$scope.albumsCompactLayout = useCompact;
 		$('#albums').toggleClass('compact', useCompact);
 		$rootScope.$emit('albumsLayoutChanged');
@@ -418,10 +412,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Flat/tree layout of the Folders view
 	$scope.foldersFlatLayout = (localStorage.getItem('oc_music_folders_flat') === 'true');
-	$scope.toggleFoldersFlatLayout = function(useFlat /*optional, invert current value if omitted */) {
-		if (typeof useFlat === 'undefined') {
-			useFlat = !$scope.foldersFlatLayout;
-		}
+	$scope.toggleFoldersFlatLayout = function(useFlat = !$scope.foldersFlatLayout) {
 		$scope.foldersFlatLayout = useFlat;
 		$rootScope.$emit('foldersLayoutChanged');
 

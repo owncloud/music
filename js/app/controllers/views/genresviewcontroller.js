@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 
@@ -34,10 +34,10 @@ angular.module('Music').controller('GenresViewController', [
 			$scope.$parent.filesWithUnscannedGenre = null;
 		};
 
-		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
+		function playPlaylist(listId, tracks, startFromTrackId = undefined) {
 			let startIndex = null;
 			if (startFromTrackId !== undefined) {
-				startIndex = _.findIndex(tracks, function(i) {return i.track.id == startFromTrackId;});
+				startIndex = _.findIndex(tracks, (i) => i.track.id == startFromTrackId);
 			}
 			playlistService.setPlaylist(listId, tracks, startIndex);
 			playlistService.publish('play');

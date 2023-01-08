@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 Pauli Järvinen
+ * @copyright 2019 - 2023 Pauli Järvinen
  *
  */
 
@@ -38,11 +38,8 @@ angular.module('Music').service('inViewService', ['$rootScope', function($rootSc
 		 * @param int topMargin Optional top extension in pixels (use negative value for reduction)
 		 * @param int bottomMargin Optional bottom extension in pixels (use negative value for reduction)
 		 */
-		isElementInViewPort: function(el, topMargin/*optional*/, bottomMargin/*optional*/) {
+		isElementInViewPort: function(el, topMargin = 0, bottomMargin = 0) {
 			if (el) {
-				topMargin = topMargin || 0;
-				bottomMargin = bottomMargin || 0;
-
 				if (dirty) {
 					updateHeights();
 				}

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
@@ -208,8 +208,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	}
 
-	function getRadioTitle(radioTrack, failCounter /*optional, internal*/) {
-		failCounter = failCounter || 0;
+	function getRadioTitle(radioTrack, failCounter = 0 /*internal*/) {
 		abortRadioTitleFetch = $q.defer();
 		const config = {timeout: abortRadioTitleFetch.promise};
 		const metaType = radioTrack.metadata?.type; // request the same metadata type as previously got (if any)
@@ -259,7 +258,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return null;
 	}
 
-	function setCurrentTrack(playlistEntry, startOffset /*optional*/, gapless /*optional*/) {
+	function setCurrentTrack(playlistEntry, startOffset = 0, gapless = false) {
 		let track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
@@ -276,7 +275,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.shiftHeldDown = false;
 	}
 
-	function playCurrentTrack(startOffset /*optional*/) {
+	function playCurrentTrack(startOffset = 0) {
 		// the playback may have been stopped and currentTrack vanished during the debounce time
 		if ($scope.currentTrack) {
 			if ($scope.currentTrack.type === 'radio') {
@@ -318,7 +317,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	 */
 	let debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
 
-	function playTrack(track, startOffset /*optional*/, gapless /*optional*/) {
+	function playTrack(track, startOffset = 0, gapless = false) {
 		$scope.currentTrack = track;
 
 		// Don't indicate support for seeking before we actually know its status for the new track.
@@ -509,7 +508,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$timeout(() => $scope.playPauseContextMenuVisible = false);
 	});
 
-	$scope.next = function(startOffset /*optional*/, gapless /*optional*/) {
+	$scope.next = function(startOffset = 0, gapless = false) {
 		let entry = playlistService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
@@ -613,7 +612,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(_event, _playingView /*optional, ignored*/, startOffset /*optional*/) {
+	playlistService.subscribe('play', function(_event, _playingView = null, startOffset = 0) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 

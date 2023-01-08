@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 angular.module('Music').controller('PodcastsViewController', [
@@ -122,14 +122,14 @@ angular.module('Music').controller('PodcastsViewController', [
 			updateHighlight(playlistId);
 		});
 
-		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime /* optional */) {
+		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime = 500) {
 			let episode = libraryService.getPodcastEpisode(episodeId);
 			if (episode) {
 				$scope.$parent.scrollToItem('podcast-channel-' + episode.channel.id, animationTime);
 			}
 		});
 
-		subscribe('scrollToPodcastChannel', function(_event, channelId, animationTime /* optional */) {
+		subscribe('scrollToPodcastChannel', function(_event, channelId, animationTime = 500) {
 			$scope.$parent.scrollToItem('podcast-channel-' + channelId, animationTime);
 		});
 

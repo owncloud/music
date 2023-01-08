@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 angular.module('Music').service('playlistFileService', [
@@ -75,9 +75,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		// Export playlist to file
 		exportPlaylist: function(playlist) {
 
-			function onFolderSelected(path, onCollision /*optional*/) {
+			function onFolderSelected(path, onCollision = 'abort') {
 				playlist.busy = true;
-				let args = { path: path, oncollision: onCollision || 'abort' };
+				let args = { path: path, oncollision: onCollision };
 				Restangular.one('playlists', playlist.id).all('export').post(args).then(
 					function (result) {
 						OC.Notification.showTemporary(
@@ -103,9 +103,9 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 			let deferred = $q.defer();
 			let name = gettextCatalog.getString('Internet radio');
 
-			function onFolderSelected(path, onCollision /*optional*/) {
+			function onFolderSelected(path, onCollision = 'abort') {
 				deferred.notify('started');
-				let args = { path: path, name: name, oncollision: onCollision || 'abort' };
+				let args = { path: path, name: name, oncollision: onCollision };
 				Restangular.all('radio/export').post(args).then(
 					function (result) {
 						OC.Notification.showTemporary(

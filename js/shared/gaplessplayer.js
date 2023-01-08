@@ -57,12 +57,12 @@ OCA.Music.GaplessPlayer = class {
 		this.#currentPlayer.seek(ratio);
 	}
 
-	seekForward(msecs /*optional*/) {
+	seekForward(msecs = 10000) {
 		this.#currentPlayer.seekForward(msecs);
 	}
 
-	seekBackward(msecs /*optional*/) {
-		this.#currentPlayer.seekForward(msecs);
+	seekBackward(msecs = 10000) {
+		this.#currentPlayer.seekBackward(msecs);
 	}
 
 	playPosition() {

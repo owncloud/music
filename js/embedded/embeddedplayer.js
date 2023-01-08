@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -571,7 +571,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		updateMediaSession(data);
 	}
 
-	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback /*optional*/) {
+	function loadFileInfoFromUrl(url, fallbackTitle, fileId, callback = null) {
 		$.get(url, function(data) {
 			// discard results if the file has already changed by the time the
 			// result arrives
@@ -699,7 +699,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	 * PUBLIC INTEFACE
 	 */
 
-	this.show = function(playlistName /*optional*/) {
+	this.show = function(playlistName = null) {
 		if (!musicControls) {
 			createUi();
 		}
@@ -717,7 +717,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		$('footer').css('display', 'none');
 	};
 
-	this.playFile = function(url, mime, fileId, fileName, /*optional*/ shareToken) {
+	this.playFile = function(url, mime, fileId, fileName, shareToken = null) {
 		currentFileId = fileId;
 		let fallbackTitle = OCA.Music.Utils.titleFromFilename(fileName);
 		// Set placeholders for track info fields, proper data is filled once received
@@ -738,7 +738,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		});
 	};
 
-	this.playExtUrl = function(url, caption, /*optional*/ shareToken) {
+	this.playExtUrl = function(url, caption, shareToken = null) {
 		currentFileId = null;
 		updateMetadata({
 			title: caption,

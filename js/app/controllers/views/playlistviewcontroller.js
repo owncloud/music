@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 
@@ -58,7 +58,7 @@ angular.module('Music').controller('PlaylistViewController', [
 			});
 		};
 
-		function play(startIndex /*optional*/) {
+		function play(startIndex = 0) {
 			let id = 'playlist-' + $scope.playlist.id;
 			playlistService.setPlaylist(id, $scope.tracks, startIndex);
 			playlistService.publish('play');

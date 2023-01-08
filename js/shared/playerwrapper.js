@@ -292,9 +292,8 @@ OCA.Music.PlayerWrapper = class {
 			}
 			else if (msecs === 0 && this.#duration > 0) {
 				// seeking to the beginning can be simulated even when seeking in general is not supported
-				let url = this.#url;
 				let playing = this.#playing;
-				this.fromUrl(url);
+				this.fromUrl(this.#url);
 				this.trigger('progress', 0);
 				if (playing) {
 					this.play();
@@ -310,13 +309,11 @@ OCA.Music.PlayerWrapper = class {
 		this.seekMsecs(ratio * this.#duration);
 	}
 
-	seekForward(msecs /*optional*/) {
-		msecs = msecs || 10000;
+	seekForward(msecs = 10000) {
 		this.seekMsecs(this.#position + msecs);
 	}
 
-	seekBackward(msecs /*optional*/) {
-		msecs = msecs || 10000;
+	seekBackward(msecs = 10000) {
 		this.seekMsecs(this.#position - msecs);
 	}
 

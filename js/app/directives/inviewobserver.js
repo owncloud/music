@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 - 2022 Pauli Järvinen
+ * @copyright 2019 - 2023 Pauli Järvinen
  *
  */
 
@@ -117,7 +117,7 @@ function($rootScope, $timeout, inViewService) {
 	/**
 	 * Initial setup of the in-view-port statuses of the available instances
 	 */
-	function initInViewRange(skipDelays/*optional*/) {
+	function initInViewRange(skipDelays = false) {
 		let length = _instances.length;
 		let i;
 
@@ -204,7 +204,7 @@ function($rootScope, $timeout, inViewService) {
 	/**
 	 * Update in-view-port status of the given instance
 	 */
-	function updateInViewStatus(inst, skipDelays/*optional*/) {
+	function updateInViewStatus(inst, skipDelays = false) {
 		skipDelays = skipDelays || false;
 
 		let wasInViewPort = inst.inViewPort;
@@ -285,7 +285,7 @@ function($rootScope, $timeout, inViewService) {
 		invalidateInViewRange();
 	}
 
-	function updateStatusForAll(skipDelays/*optional*/) {
+	function updateStatusForAll(skipDelays = false) {
 		_(_instances).each(function(inst) {
 			updateInViewStatus(inst, skipDelays);
 		});

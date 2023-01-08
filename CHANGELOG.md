@@ -1,6 +1,6 @@
-## [Unreleased]
+## 1.8.1 - 2023-01-08
 ### Changed
-- Keyboard shortcuts for seeking and volume step in smaller increments when ALT key is held down
+- Keyboard shortcuts for seeking and volume adjustment step in smaller increments when ALT key is held down
   [#1039](https://github.com/owncloud/music/issues/1039)
 - The REST API for Ampache/Subsonic key managemnt made more consistent with the other REST APIs
 

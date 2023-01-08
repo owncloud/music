@@ -1,8 +1,15 @@
+## [Unreleased]
+### Added
+
+### Changed
+
+### Fixed
+
 ## 1.8.1 - 2023-01-08
 ### Changed
 - Keyboard shortcuts for seeking and volume adjustment step in smaller increments when ALT key is held down
   [#1039](https://github.com/owncloud/music/issues/1039)
-- The REST API for Ampache/Subsonic key managemnt made more consistent with the other REST APIs
+- The REST API for Ampache/Subsonic key management made more consistent with the other REST APIs
 
 ### Fixed
 - Ampache/Subsonic key creation not working from the web UI on Nextcloud versions < 25 and on ownCloud 10.0 (regression in v1.8.0)

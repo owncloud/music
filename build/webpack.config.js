@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2020, 2021 Pauli Järvinen
+ * @copyright 2020 - 2023 Pauli Järvinen
  *
  */
 
@@ -28,6 +28,7 @@ module.exports = {
     path: path.resolve(__dirname, '../dist'),
   },
   resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'node_modules': path.resolve(__dirname, 'node_modules'),
       'vendor': path.resolve(__dirname, '../js/vendor'),
@@ -75,6 +76,11 @@ module.exports = {
       {
         include: path.resolve('node_modules', 'lodash'),
         parser: { amd: false }
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.m?js$/,

@@ -8,6 +8,10 @@
  * @copyright Pauli Järvinen 2018 - 2023
  */
 
+declare var OCA : any;
+declare const OC : any;
+declare const $ : any;
+
 OCA.Music = OCA.Music || {};
 
 /** @namespace */
@@ -27,7 +31,7 @@ OCA.Music.Utils = class {
 	 * Nextcloud versions up to 13 and all ownCloud versions use the "legacy layout structure" which requires some
 	 * adjustments on our side, too.
 	 */
-	static isLegacyLayout() {
+	static isLegacyLayout() : boolean {
 		return $('#content-wrapper').length > 0;
 	}
 
@@ -35,7 +39,7 @@ OCA.Music.Utils = class {
 	 * Check if the given HTML element is any kind of text input element.
 	 * Refactored version of the original source at https://stackoverflow.com/a/38795917
 	 */
-	static isTextEntryElement(element) {
+	static isTextEntryElement(element : any) : boolean {
 		let tagName = element.tagName.toLowerCase();
 		if (tagName === 'textarea') {
 			return true;
@@ -53,21 +57,21 @@ OCA.Music.Utils = class {
 	/**
 	 * Get the selected locale of the user from Nextcloud/ownCloud personal settings
 	 */
-	static getLocale() {
+	static getLocale() : string {
 		return OC.getLocale().replaceAll('_', '-'); // OC returns e.g. 'en_US' but the javascript APIs expect 'en-US'
 	}
 
 	/**
 	 * Capitalizes the firts character of the given string
 	 */
-	static capitalize(str) {
+	static capitalize(str : string) : string {
 		return str && str[0].toUpperCase() + str.slice(1); 
 	}
 
 	/**
 	 * Convert string to boolean
 	 */
-	static parseBoolean(value) {
+	static parseBoolean(value : any) : boolean {
 		value = String(value).toLowerCase();
 		const falsyValues = ['false', 'no', 'off', '0', 'undefined', 'null'];
 		return falsyValues.indexOf(value) < 0;
@@ -77,7 +81,7 @@ OCA.Music.Utils = class {
 	 * Creates a track title from the file name, dropping the file extension and any
 	 * track number possibly found from the beginning of the file name.
 	 */
-	static titleFromFilename(filename) {
+	static titleFromFilename(filename : string) : string {
 		// parsing logic is ported form parseFileName in utility/scanner.php
 		let match = filename.match(/^((\d+)\s*[.-]\s+)?(.+)\.(\w{1,4})$/);
 		return match ? match[3] : filename;
@@ -86,7 +90,7 @@ OCA.Music.Utils = class {
 	/**
 	 * Given a file base name, returns the "stem" i.e. the name without extension
 	 */
-	static dropFileExtension(filename) {
+	static dropFileExtension(filename : string) : string {
 		return filename.replace(/\.[^/.]+$/, '');
 	}
 
@@ -95,7 +99,7 @@ OCA.Music.Utils = class {
 	 * The first fragment may or may not end with '/' and the second fragment may or may
 	 * not start with '/'.
 	 */
-	static joinPath(first, second) {
+	static joinPath(first : string, second : string) : string {
 		if (first.endsWith('/')) {
 			first = first.slice(0, -1);
 		}
@@ -110,9 +114,9 @@ OCA.Music.Utils = class {
 	 * given input time is more than one hour. The output format looks like 1:01 or 1:01:01.
 	 * That is, unlike the rest of the parts, the part before the first ':' does not have a leading zero.
 	 */
-	static formatPlayTime(input_s) {
+	static formatPlayTime(input_s : number) : string {
 		// Format the given integer with two digits, prepending with a leading zero if necessary
-		let fmtTwoDigits = function(integer) {
+		let fmtTwoDigits = function(integer : number) {
 			return (integer < 10 ? '0' : '') + integer;
 		};
 
@@ -131,7 +135,7 @@ OCA.Music.Utils = class {
 	 * Given a date-and-time string in UTC, return it in local timezone following the locale settings
 	 * of the user (from Nextcloud/ownCloud personal settings).
 	 */
-	static formatDateTime(timestamp) {
+	static formatDateTime(timestamp : string) : string {
 		if (!timestamp) {
 			return null;
 		} else {
@@ -144,15 +148,15 @@ OCA.Music.Utils = class {
 	 * Format a file size given as bytes in human-readable format.
 	 * Source: https://stackoverflow.com/a/20732091/4348850
 	 */
-	static formatFileSize(size) {
+	static formatFileSize(size : number) : string {
 		let i = (size == 0) ? 0 : Math.floor( Math.log(size) / Math.log(1024) );
-		return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'KiB', 'MiB', 'GiB', 'TiB'][i];
+		return ( size / Math.pow(1024, i) ).toFixed(2) + ' ' + ['B', 'KiB', 'MiB', 'GiB', 'TiB'][i];
 	}
 
 	/**
 	 * Format baud rate given as bit per second to kilobits per second with integer precission
 	 */
-	static formatBitrate(bitsPerSecond) {
+	static formatBitrate(bitsPerSecond : number) : string {
 		return (bitsPerSecond / 1000).toFixed() + ' kbps';
 	}
 };

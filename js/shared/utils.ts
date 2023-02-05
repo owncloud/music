@@ -10,7 +10,6 @@
 
 declare var OCA : any;
 declare const OC : any;
-declare const $ : any;
 
 OCA.Music = OCA.Music || {};
 
@@ -22,7 +21,7 @@ OCA.Music.Utils = class {
 	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
 	 * to the Music app. Then, Nextcloud 25 changed this back to the original system.
 	 */
-	static getScrollContainer() {
+	static getScrollContainer() : JQuery<any> {
 		const appContent = $('#app-content');
 		return (appContent.css('overflow-y') === 'auto') ? appContent : $(window.document);
 	}
@@ -39,7 +38,7 @@ OCA.Music.Utils = class {
 	 * Check if the given HTML element is any kind of text input element.
 	 * Refactored version of the original source at https://stackoverflow.com/a/38795917
 	 */
-	static isTextEntryElement(element : any) : boolean {
+	static isTextEntryElement(element : HTMLElement) : boolean {
 		let tagName = element.tagName.toLowerCase();
 		if (tagName === 'textarea') {
 			return true;

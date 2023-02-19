@@ -50,7 +50,8 @@ class AlbumMapper extends BaseMapper {
 	 */
 	protected function formatSortingClause(int $sortBy) : ?string {
 		if ($sortBy === SortBy::Parent) {
-			return 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
+			// Note: the alternative form "LOWER(`album_artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046
+			return 'ORDER BY LOWER(`artist`.`name`), LOWER(`*PREFIX*music_albums`.`name`)';
 		} else {
 			return parent::formatSortingClause($sortBy);
 		}

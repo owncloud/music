@@ -53,7 +53,8 @@ class TrackMapper extends BaseMapper {
 	 */
 	protected function formatSortingClause(int $sortBy) : ?string {
 		if ($sortBy === SortBy::Parent) {
-			return 'ORDER BY LOWER(`artist_name`), LOWER(`title`)';
+			// Note: the alternative form "LOWER(`artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046 for a similar case
+			return 'ORDER BY LOWER(`artist`.`name`), LOWER(`title`)';
 		} else {
 			return parent::formatSortingClause($sortBy);
 		}

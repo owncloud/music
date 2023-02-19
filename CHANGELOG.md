@@ -4,6 +4,8 @@
 ### Changed
 
 ### Fixed
+- Subsonic: `getAlbumList` with `type=alphabeticalByArtist` not working on PostgreSQL
+  [#1046](https://github.com/owncloud/music/issues/1046)
 
 ## 1.8.1 - 2023-01-08
 ### Changed

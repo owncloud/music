@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2022 Pauli Järvinen
+ * @copyright 2017 - 2023 Pauli Järvinen
  *
  */
 
@@ -420,7 +420,7 @@ angular.module('Music').service('libraryService', [function() {
 				break;
 			case 'artist':
 				sortByTextField(playlist.tracks, 'track.title');
-				sortByTextField(playlist.tracks, 'track.artistName');
+				sortByTextField(playlist.tracks, 'track.artistSortName');
 				break;
 			default:
 				console.error('Unexpected playlist sort property ' + byProperty);

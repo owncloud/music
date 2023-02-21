@@ -2,6 +2,8 @@
 ### Added
 
 ### Changed
+- Respect the "Ignored articles" setting also when sorting a playlist by artist
+  [#1048](https://github.com/owncloud/music/issues/1048)
 
 ### Fixed
 - Subsonic: `getAlbumList` with `type=alphabeticalByArtist` not working on PostgreSQL

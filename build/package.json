@@ -43,7 +43,7 @@
 		"file-loader": "^6.2.0",
 		"mini-css-extract-plugin": "^1.6.2",
 		"style-loader": "^2.0.0",
-		"webpack": "^5.68.0",
+		"webpack": "^5.76.0",
 		"webpack-assets-manifest": "^3.1.1",
 		"webpack-cli": "^4.9.2"
 	},

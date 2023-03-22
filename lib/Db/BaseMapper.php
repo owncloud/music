@@ -13,7 +13,6 @@
 namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\DoesNotExistException;
-use OCP\AppFramework\Db\Mapper;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IDBConnection;
 
@@ -26,7 +25,7 @@ use OCA\Music\Utility\Util;
  * @phpstan-method EntityType findEntity(string $sql, array $params)
  * @phpstan-method EntityType[] findEntities(string $sql, array $params, ?int $limit=null, ?int $offset=null)
  */
-abstract class BaseMapper extends Mapper {
+abstract class BaseMapper extends CompatibleMapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
@@ -227,7 +226,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \OCP\AppFramework\Db\Mapper::insert()
+	 * @see CompatibleMapper::insert()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */
@@ -253,7 +252,7 @@ abstract class BaseMapper extends Mapper {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \OCP\AppFramework\Db\Mapper::update()
+	 * @see CompatibleMapper::update()
 	 * @phpstan-param EntityType $entity
 	 * @phpstan-return EntityType
 	 */

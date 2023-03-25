@@ -2,6 +2,8 @@
 ### Added
 - Support for Nextcloud 26
   [#1055](https://github.com/owncloud/music/pull/1055) @blizzz
+- Support for PHP 8.2
+  [#1056](https://github.com/owncloud/music/issues/1056)
 
 ### Changed
 - Respect the "Ignored articles" setting also when sorting a playlist by artist

@@ -16,6 +16,7 @@
 * [7ebra](https://github.com/7ebra)
 * [Arboss](https://github.com/arboss)
 * Armin
+* [Arthur Schiwon](https://github.com/blizzz)
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
 * [Cbxk1xg](https://github.com/cbxk1xg)

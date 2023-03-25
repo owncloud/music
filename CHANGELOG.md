@@ -1,5 +1,7 @@
 ## [Unreleased]
 ### Added
+- Support for Nextcloud 26
+  [#1055](https://github.com/owncloud/music/pull/1055) @blizzz
 
 ### Changed
 - Respect the "Ignored articles" setting also when sorting a playlist by artist

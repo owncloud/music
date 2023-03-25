@@ -82,6 +82,12 @@ class Music extends App {
 
 		\mb_internal_encoding('UTF-8');
 
+		if (\class_exists(\OCP\AppFramework\Db\Mapper::class)) {
+			\class_alias(\OCP\AppFramework\Db\Mapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+		} else {
+			\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+		}
+
 		$container = $this->getContainer();
 
 		/**

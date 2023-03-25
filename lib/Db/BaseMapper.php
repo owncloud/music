@@ -16,6 +16,7 @@ use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\IDBConnection;
 
+use OCA\Music\AppFramework\Db\CompatibleMapper;
 use OCA\Music\AppFramework\Db\UniqueConstraintViolationException;
 use OCA\Music\Utility\Util;
 

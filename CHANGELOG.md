@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.8.2 - 2023-04-01
 ### Added
 - Support for Nextcloud 26
   [#1055](https://github.com/owncloud/music/pull/1055) @blizzz

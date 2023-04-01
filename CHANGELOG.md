@@ -8,6 +8,8 @@
 ### Changed
 - Respect the "Ignored articles" setting also when sorting a playlist by artist
   [#1048](https://github.com/owncloud/music/issues/1048)
+- In addition to 'http' and 'https', allow podcast streams from the URL schemes 'feed', 'podcast', 'pcast', 'podcasts', 'itms-pcast', 'itms-pcasts', 'itms-podcast', and 'itms-podcasts'
+  [153901](https://help.nextcloud.com/t/private-rss-link-support-for-podcast/153901)
 
 ### Fixed
 - Subsonic: `getAlbumList` with `type=alphabeticalByArtist` not working on PostgreSQL

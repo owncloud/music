@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 namespace OCA\Music\Utility;
@@ -17,6 +17,8 @@ namespace OCA\Music\Utility;
  */
 class HttpUtil {
 
+	private const ALLOWED_SCHEMES = ['http', 'https', 'feed', 'podcast', 'pcast', 'podcasts', 'itms-pcast', 'itms-pcasts', 'itms-podcast', 'itms-podcasts'];
+
 	/**
 	 * Use HTTP GET to load the requested URL
 	 * @return array with three keys: ['content' => string|false, 'status_code' => int, 'message' => string]
@@ -25,10 +27,9 @@ class HttpUtil {
 		$status_code = 0;
 		$content_type = null;
 
-		if (!Util::startsWith($url, 'http://', /*ignoreCase=*/true)
-				&& !Util::startsWith($url, 'https://', /*ignoreCase=*/true)) {
+		if (!self::isUrlSchemeOneOf($url, self::ALLOWED_SCHEMES)) {
 			$content = false;
-			$message = 'URL scheme must be HTTP or HTTPS';
+			$message = 'URL scheme must be one of ' . \json_encode(self::ALLOWED_SCHEMES);
 		} else {
 			$opts = [
 				'http' => [
@@ -75,5 +76,17 @@ class HttpUtil {
 			}
 		}
 		return null;
+	}
+
+	private static function isUrlSchemeOneOf(string $url, array $schemes) : bool {
+		$url = \mb_strtolower($url);
+
+		foreach ($schemes as $scheme) {
+			if (Util::startsWith($url, $scheme . '://')) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

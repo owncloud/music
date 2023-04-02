@@ -217,6 +217,8 @@ angular.module('Music').controller('NavigationController', [
 					play('albums', libraryService.getTracksInAlbumOrder());
 				} else if (destination == '#/alltracks') {
 					play('alltracks', libraryService.getTracksInAlphaOrder());
+				} else if (destination == '#/random') {
+					play('random', libraryService.getRandomTracks());
 				} else if (destination == '#/folders') {
 					$scope.$parent.loadFoldersAndThen(function() {
 						play('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout));

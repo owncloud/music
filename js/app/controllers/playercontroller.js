@@ -751,6 +751,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		'folders'			: gettextCatalog.getString('Folders'),
 		'genres'			: gettextCatalog.getString('Genres'),
 		'alltracks'			: gettextCatalog.getString('All tracks'),
+		'random'			: gettextCatalog.getString('Random'),
 		'radio'				: gettextCatalog.getString('Internet radio'),
 		'podcasts'			: gettextCatalog.getString('Podcasts'),
 		'album'				: gettextCatalog.getString('Album'),

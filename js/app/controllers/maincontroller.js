@@ -50,6 +50,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
 	};
 
+	$scope.randomTrackCountText = function() {
+		var trackCount = libraryService.getRandomTrackCount();
+		return gettextCatalog.getPlural(trackCount, '1 random track', '{{ count }} random tracks', { count: trackCount });
+	};
+
 	$scope.albumCountText = function() {
 		var albumCount = libraryService.getAlbumCount();
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });

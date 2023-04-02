@@ -24,6 +24,8 @@ angular.module('Music').service('libraryService', [function() {
 	var radioStations = null;
 	var podcastChannels = null;
 
+	var MAX_RANDOM_SONGS_COUNT = 300;
+
 	/** 
 	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
 	 * Note:  The exact ordering is browser-dependant and usually affected by the browser language.
@@ -475,6 +477,9 @@ angular.module('Music').service('libraryService', [function() {
 		getTracksInAlphaOrder: function() {
 			return tracksInAlphaOrder;
 		},
+		getRandomTracks: function() {
+			return _.sampleSize(tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+		},
 		getTracksInAlbumOrder: function() {
 			return tracksInAlbumOrder;
 		},
@@ -488,6 +493,9 @@ angular.module('Music').service('libraryService', [function() {
 		},
 		getTrackCount: function() {
 			return tracksInAlphaOrder?.length ?? 0;
+		},
+		getRandomTrackCount: function() {
+			return Math.min(tracksInAlphaOrder?.length ?? 0, MAX_RANDOM_SONGS_COUNT);
 		},
 		getPlaylist: function(id) {
 			return _.find(playlists, { id: Number(id) });

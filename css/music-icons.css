@@ -68,6 +68,10 @@
 	background-image: url(../img/library-music.svg);
 }
 
+.app-music .icon-random-music {
+	background-image: url(../img/shuffle.svg);
+}
+
 .app-music .icon-radio {
 	background-image: url(../img/radio.svg);
 }

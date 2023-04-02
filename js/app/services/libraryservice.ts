@@ -82,6 +82,9 @@ export interface SearchResult<T> {
 
 const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 
+const MAX_RANDOM_SONGS_COUNT = 300;
+
+
 export class LibraryService {
 	#ignoredArticles : string[] = [];
 	#artists : Artist[] = null;
@@ -559,6 +562,12 @@ export class LibraryService {
 	}
 	getTrackCount() : number {
 		return this.#tracksInAlphaOrder?.length ?? 0;
+	}
+	getRandomTrackCount() : number {
+		return Math.min(this.#tracksInAlphaOrder?.length ?? 0, MAX_RANDOM_SONGS_COUNT);
+	}
+	getRandomTracks() : PlaylistEntry[] {
+		return _.sampleSize(this.#tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
 	}
 	getPlaylist(id : number) : Playlist {
 		return _.find(this.#playlists, { id: Number(id) });

@@ -13,6 +13,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 			title="{{ genresCountText() }}" icon="'audiotrack'"></li>
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}" icon="'library-music'"></li>
+		<li navigation-item text="'Random' | translate" destination="'#/random'"
+			title="{{ randomTrackCountText() }}" icon="'random-music'"></li>
 		<li class="app-navigation-separator"></li>
 		<li navigation-item text="'Internet radio' | translate" destination="'#/radio'"
 			title="{{ radioCountText() }}" icon="'radio'"></li>

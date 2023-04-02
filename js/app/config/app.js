@@ -35,6 +35,11 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				templateUrl:'alltracksview.html'
 			};
 
+			let randomControllerConfig = {
+				controller:'RandomViewController',
+				templateUrl:'randomview.html'
+			};
+
 			let foldersControllerConfig = {
 				controller:'FoldersViewController',
 				templateUrl:'foldersview.html'
@@ -73,6 +78,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				.when('/file/:id',             albumsControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
+				.when('/random',               randomControllerConfig)
 				.when('/folders',              foldersControllerConfig)
 				.when('/genres',               genresControllerConfig)
 				.when('/radio',                radioControllerConfig)

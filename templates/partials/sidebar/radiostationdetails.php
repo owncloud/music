@@ -27,6 +27,21 @@
 
 		<dt ng-show="updatedDate" translate>Modified</dt>
 		<dd ng-show="updatedDate">{{ updatedDate }}</dd>
+
+		<dt ng-show="station.metadata.station" translate>Broadcasted name</dt>
+		<dd ng-show="station.metadata.station">{{ station.metadata.station }}</dd>
+
+		<dt ng-show="station.metadata.description" translate>Description</dt>
+		<dd ng-show="station.metadata.description">{{ station.metadata.description }}</dd>
+
+		<dt ng-show="station.metadata.homepage" translate>Website</dt>
+		<dd ng-show="station.metadata.homepage" ng-bind-html="urlToLink(station.metadata.homepage)"></dd>
+
+		<dt ng-show="station.metadata.genre" translate>Genre</dt>
+		<dd ng-show="station.metadata.genre">{{ station.metadata.genre }}</dd>
+
+		<dt ng-show="station.metadata.bitrate" translate>Bit rate</dt>
+		<dd ng-show="station.metadata.bitrate">{{ station.metadata.bitrate + ' kbps' }}</dd>
 	</dl>
 
 </div>

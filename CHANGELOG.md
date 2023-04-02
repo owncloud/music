@@ -1,17 +1,184 @@
-## [Unreleased]
+## 1.8.2 - 2023-04-01
+### Added
+- Support for Nextcloud 26
+  [#1055](https://github.com/owncloud/music/pull/1055) @blizzz
+- Support for PHP 8.2
+  [#1056](https://github.com/owncloud/music/issues/1056)
+
+### Changed
+- Respect the "Ignored articles" setting also when sorting a playlist by artist
+  [#1048](https://github.com/owncloud/music/issues/1048)
+- In addition to 'http' and 'https', allow podcast streams from the URL schemes 'feed', 'podcast', 'pcast', 'podcasts', 'itms-pcast', 'itms-pcasts', 'itms-podcast', and 'itms-podcasts'
+  [153901](https://help.nextcloud.com/t/private-rss-link-support-for-podcast/153901)
+
+### Fixed
+- Subsonic: `getAlbumList` with `type=alphabeticalByArtist` not working on PostgreSQL
+  [#1046](https://github.com/owncloud/music/issues/1046)
+
+## 1.8.1 - 2023-01-08
+### Changed
+- Keyboard shortcuts for seeking and volume adjustment step in smaller increments when ALT key is held down
+  [#1039](https://github.com/owncloud/music/issues/1039)
+- The REST API for Ampache/Subsonic key management made more consistent with the other REST APIs
+
+### Fixed
+- Ampache/Subsonic key creation not working from the web UI on Nextcloud versions < 25 and on ownCloud 10.0 (regression in v1.8.0)
+  [#1038](https://github.com/owncloud/music/issues/1038)
+
+## 1.8.0 - 2023-01-01
+### Added
+- Basic support to play M4A files with ALAC encoding also on non-Apple browsers
+  [#1030](https://github.com/owncloud/music/issues/1030)
+  * Based on the [Aurora.js](https://github.com/audiocogs/aurora.js/) plugin [ALAC.js](https://github.com/audiocogs/alac.js) v0.1.0
+  * Limitations: no seeking, no adjusting of playback speed, possible glitches, may not work with all files
+- Basic support to play AIFF, AU, and CAF files
+  [#767](https://github.com/owncloud/music/issues/767)
+  * Based on the [Aurora.js](https://github.com/audiocogs/aurora.js/) (no plugins required)
+  * Limitations: no seeking, no adjusting of playback speed, possible glitches, may not work with all files
+  * Corresponding file extensions must be mapped to MIME types `audio/*`, see below
+- Command `occ music:register-mime-types` to add MIME type mappings for those supported audio file types which
+  are not mapped by default on OC and NC: .aac, .au, .aif, .aiff, .aifc, .caf
+
+### Changed
+- Show the collapsed navigation pane when a track is dragged over the navigation pane toggle
+  [#999](https://github.com/owncloud/music/issues/999)
+- Updated the getID3 library to the release version 1.9.22-202207161647
+- More secure generation of the Ampache/Subsonic API keys
+  * Removed the REST API endpoint `/api/settings/userkey/add`, leaving only `/api/settings/userkey/generate`
+- Wider progress bar on wide high-resolution screens also for the lite player within the Files app
+- On individual shared file page (on OC), overlay the play icon on the preview image on hover
+- Allow up to 5 redirects (up from 2) when fetching a podcast channel or internet radio station
+- Color of the progress bar follows the selected color theme on NC
+
+### Fixed
+- Small layout issues on Nextcloud 25
+- Layout issue in the two-line controls pane on IE
+- Not adjusting to dark theme when the theme comes from the browser preference (in NC25)
+- User's podcasts, radio stations, and Ampache/Subsonic API keys not erased when an user account deleted
+- Music controls not visible on publicly shared folders on NC25
+  [#1028](https://github.com/owncloud/music/issues/1028)
+- Wrong icon in the "New files to scan" and "No scanned files" pop-ups on NC25
+- Firefox on Ubuntu selecting the single-column layout after page load regardless of the window width
+  [#1029](https://github.com/owncloud/music/issues/1029)
+- Tablet and mobile layout not working correctly on NC 25.0.2
+  [#1036](https://github.com/owncloud/music/issues/1036)
+- Playback jumping to the next radio station when seeking beyond the end of the already buffered content
+
+## 1.7.0 - 2022-10-31
+### Added
+- Two-line layout for the controls pane on narrow windows
+  [#1004](https://github.com/owncloud/music/issues/1004) [#204](https://github.com/owncloud/music/issues/204)
+- Muting/unmuting by clicking the speaker icon
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
+- Many new keyboard shortcuts
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
+  * Numpad +/-: Increase/decrease volume
+  * M: Mute toggle
+  * J/L: Seek backwards/forward
+  * K: Play/Pause toggle
+  * Shift + Comma/Period: Decrease/Increase playback speed
+  * Arrow Left/Right: Seek backwards/forward (was formerly skip previous/next)
+  * Ctrl + Arrow Left/Right: Skip previous/next
+  * Step size of seeking and volume control is increased when shift held down
+- 'Skip previous' shown in the play/pause context menu on narrow screens where it doesn't fit in the controls pane
+- Preview of the seek position shown while hovering over the seek bar
+  [#1007](https://github.com/owncloud/music/pull/1007) @Root-Core
+
+### Changed
+- Use background color definitions from the cloud core when available. Fixes a problem with the Nextcloud Breeze Dark theme introduced in v1.6.0.
+  [#1002](https://github.com/owncloud/music/pull/1002)
+- Subsonic: Search functions now find also songs by artist or album name and albums by artist name
+  * This prevents the Substreamer client from going haywire when shuffle play for an artist requested (!)
+  [#1000](https://github.com/owncloud/music/issues/1000)
+- Subsonic: Method `getCoverArt` returns a placeholder image (instead of an error) if the album/artist in question has no cover art set
+  [#1000](https://github.com/owncloud/music/issues/1000)
+- Context menu on the play/pause button can be opened with right click in addition to the long press
+  [#1006](https://github.com/owncloud/music/pull/1006) @Root-Core
+- Playback speed change by clicking the menu option now has step size 0.25 instead of 0.5. Right-click or long-press decreases the speed.
+  [#1013](https://github.com/owncloud/music/pull/1013) @Root-Core
+- Wider progress bar on wide high-resolution screens
+  [#1004](https://github.com/owncloud/music/issues/1004)
+- Removed the undocumented keyboard shortcuts for toggling the layout on Albums and Folders views
+- Respect the global keyboard shortcut disable switch introduced by Nextcloud 25
+
+### Fixed
+- Small issues in the mobile and tablet layouts
+- Subsonic: API method `getTopSongs` ignoring the argument `count`
+- Subsonic: Some clients (at least Substreamer, Jamstash, Sonixd) experiencing perpetual 302 redirect loops
+  [#1000](https://github.com/owncloud/music/issues/1000)
+- Subsonic: `getScanState` in json mode returning "false" as string instead of bool caused Substreamer to poll it indefinitely
+  [#1000](https://github.com/owncloud/music/issues/1000)
+- Podcast title not showing on the German translation of 'Podcast channel "{{ title }}" added'
+  [#1005](https://github.com/owncloud/music/pull/1005) @Root-Core
+- Alphabet navigation breaking down when the artist name starts with a Unicode character greater than U+FFFF
+  [#1021](https://github.com/owncloud/music/issues/1021)
+- Nextcloud 25: Web UI not working except for in a narrow window; alphabet navigation not working; layout issues
+  [#1017](https://github.com/owncloud/music/issues/1017)
+
+## 1.6.0 - 2022-08-13
+### Added
+- Option to set the playback rate. This can be found by long-pressing the play/pause button on the controls pane.
+  [#972](https://github.com/owncloud/music/issues/972)
+- Show the broadcasted song title on Icecast/Shoutcast -type radio streams
+  [#992](https://github.com/owncloud/music/pull/992) @medismail
+- Show other metadata broadcasted by the radio station in the details pane
+- Gapless play with preloading of the next track in the queue
+  [#685](https://github.com/owncloud/music/issues/685)
+  [#776](https://github.com/owncloud/music/issues/776)
+- Artist and album names from Last.fm to the Last.fm tab of the track details
+  [#995](https://github.com/owncloud/music/issues/995)
+- Album art from Last.fm on the album details pane when no local art available
+- Support for radio stream URLs which point to a playlist file containing the actual audio stream URL
+  [#966](https://github.com/owncloud/music/issues/966)
+- Configurable option to ignore articles in the alphabetical ordering of the artists (by default, ignore: The, El, La, Los, Las, Le, Les)
+  [#984](https://github.com/owncloud/music/issues/984)
+- Support for Nextcloud 25 (tested on beta 1)
+
+### Changed
+- Allow playing `audio/aac` files within Files if the MIME type is mapped in the cloud configuration
+- If updating a podcast channel fails, don't retry it each time the background task runs but only upon the normal podcast update schedule
+- HLS-type radio streams are now relayed via the cloud server, removing the need to whitelist each allowed source server
+- Subsonic: Use album-based track numbering also on playlists, to help DSub in cache management
+  [#994](https://github.com/owncloud/music/issues/994)
+- Allow playing external audio streams from playlist file also on link-shared folders
+  * HLS-type streams are not allowed, though
+- Albums with the same name but different artist now each have their own color on placeholder album art
+
+### Fixed
+- Previous radio station being played without any error messages when failed to start playing an HLS stream
+- Playback of a local track starting from a non-zero offset after playing an HLS stream
+- Errors being logged because of incomplete exception case handling
+  [#989](https://github.com/owncloud/music/issues/989)
+  [#988](https://github.com/owncloud/music/issues/988)
+- Podcast episodes shown in wrong order after channel updated via the web UI
+- Fallback Aurora.js player not working in the main app (i.e. worked only within Files; broken since Music v1.2.1)
+- Fallback Aurora.js not working on most versions of Nextcloud (starting from NC15 or NC16)
+- The manifest file of the HLS stream was being polled indefinitely after listening to the stream was stopped
+- Severe performance problem in the background cleaunup task when PostgreSQL used
+  [#997](https://github.com/owncloud/music/issues/997)
+- Not able to start playing a podcast episode which happens to have the same ID as currently playing song or radio station
+
+## 1.5.2 - 2022-05-08
 ### Added
 - Allow dragging current song from the player bar to a playlist on the navigation pane
   [#946](https://github.com/owncloud/music/issues/946)
 - Support for Nextcloud 24
-  [#957](https://github.com/owncloud/music/pull/957)
+  [#957](https://github.com/owncloud/music/pull/957) @PVince81
+- Support for PHP 8.1
+  [#939](https://github.com/owncloud/music/issues/939)
 
 ### Changed
+- Support more formats when parsing the length of a podcast episode
+  [#971](https://github.com/owncloud/music/pull/971) @ksmolder
 
 ### Fixed
 - Lyrics not detected from the metadata of a FLAC file
   [#940](https://github.com/owncloud/music/issues/940)
 - Folders view not opening if the music folder tree has any invalid parent references in the file index
-  [#955](https://github.com/owncloud/music/issues/955) 
+  [#955](https://github.com/owncloud/music/issues/955)
+- Attribute `xmlns` missing from the Subsonic XML responses
+  [#970](https://github.com/owncloud/music/pull/970) @rstefko
+- Radio view behaving badly if there were any stations with no name (i.e. URL only)
 
 ## 1.5.1 - 2022-02-01
 ### Added

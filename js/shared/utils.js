@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 OCA.Music = OCA.Music || {};
@@ -14,34 +14,21 @@ OCA.Music = OCA.Music || {};
 OCA.Music.Utils = {
 
 	/**
-	 * Nextcloud 14 has a new overall layout structure which requires some
-	 * changes on the application logic.
+	 * Originally in ownCloud and in Nextcloud up to version 13, the #app-content element acted as the main scroll container.
+	 * Nextcloud 14 changed this so that the document became the main scrollable container, and this needed some adjustments
+	 * to the Music app. Then, Nextcloud 25 changed this back to the original system.
 	 */
-	newLayoutStructure: function() {
-		// Detect the new structure from the presence of the #content-wrapper element.
-		return $('#content-wrapper').length === 0;
+	getScrollContainer: function() {
+		const appContent = $('#app-content');
+		return (appContent.css('overflow-y') === 'auto') ? appContent : $(window.document);
 	},
 
 	/**
-	 * Newer versions of Nextcloud come with a "dark theme" which may be activated
-	 * from the accessibility settings. Test if the theme is active.
-	 * Note: This may not be able to return the correct state during the application initialization,
-	 * in case the OCA.Accessibility has not got initialized yet. The function themeInfoAvailable may
-	 * be used to check if the information is available.
+	 * Nextcloud versions up to 13 and all ownCloud versions use the "legacy layout structure" which requires some
+	 * adjustments on our side, too.
 	 */
-	darkThemeActive: function() {
-		// The name of the theme was originally 'themedark' but changed to simply 'dark' in NC18.
-		return OCA.Music.Utils.themeInfoAvailable()
-			&& (OCA.Accessibility.theme == 'themedark' || OCA.Accessibility.theme == 'dark');
-	},
-
-	/**
-	 * Check if theme info is currently available. It may be unavailable for two reasons:
-	 * 1) it has not been loaded yet
-	 * 2) it is not supported by the cloud
-	 */
-	themeInfoAvailable: function() {
-		return Object.prototype.hasOwnProperty.call(OCA, 'Accessibility');
+	isLegacyLayout: function() {
+		return $('#content-wrapper').length > 0;
 	},
 
 	/**

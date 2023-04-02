@@ -16,11 +16,12 @@
 * [7ebra](https://github.com/7ebra)
 * [Arboss](https://github.com/arboss)
 * Armin
+* [Arthur Schiwon](https://github.com/blizzz)
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
 * [Cbxk1xg](https://github.com/cbxk1xg)
 * [Chris Allan](https://github.com/ChrisJAllan): <chrisallan@pm.me>
-* [ChristophWurst](https://github.com/ChristophWurst)
+* [Christoph Wurst](https://github.com/ChristophWurst)
 * [Christopher Schäpers](https://github.com/Kondou-ger): <christopher@schaepers.it>
 * [David Prevot](https://github.com/DavidPrevot)
 * [Felix Böhm](https://github.com/felixboehm)
@@ -37,8 +38,10 @@
 * [Jörn Friedrich Dreyer](https://github.com/butonic): <d@butonic.de>
 * [K Widholm](https://github.com/apotek)
 * [Konrad Mosoń](https://github.com/morsik): <morsik@darkserver.it>
+* [Kurt Smolderen](https://github.com/ksmolder)
 * [Leizh](https://github.com/eizh): <leizh@free.fr>
 * [Lukas Reschke](https://github.com/LukasReschke)
+* [Moahmed-Ismail Mejri](https://github.com/medismail): <imejri@hotmail.com>
 * [Moritz Meißelbach](https://github.com/Biont): <moritz@meisselba.ch>
 * [Ndurchx](https://github.com/ndurchx)
 * [Nico Boehr](https://github.com/youknow0): <nico@nicoboehr.de>
@@ -49,6 +52,8 @@
 * [Rello](https://github.com/rello)
 * [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
+* [Roman Štefko](https://github.com/rstefko)
+* [Root-Core](https://github.com/Root-Core)
 * [Selpelt](https://github.com/selpelt)
 * [Sicco van Sas](https://github.com/siccovansas)
 * [Simon Spannagel](https://github.com/simonspa)

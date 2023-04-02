@@ -7,8 +7,8 @@
         "guzzlehttp/guzzle": "~6.0",
         "phpunit/phpunit": "^8.0",
         "owncloud/coding-standard": "^2.0",
-        "phpstan/phpstan": "^0.12.99",
-        "christophwurst/nextcloud": "^13.0.0",
+        "phpstan/phpstan": "^1.8",
+        "nextcloud/ocp": "^13.0.0",
         "doctrine/dbal": "*"
     },
     "scripts": {

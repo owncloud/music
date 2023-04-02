@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -50,7 +50,8 @@ class AlbumMapper extends BaseMapper {
 	 */
 	protected function formatSortingClause(int $sortBy) : ?string {
 		if ($sortBy === SortBy::Parent) {
-			return 'ORDER BY LOWER(`album_artist_name`), LOWER(`*PREFIX*music_albums`.`name`)';
+			// Note: the alternative form "LOWER(`album_artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046
+			return 'ORDER BY LOWER(`artist`.`name`), LOWER(`*PREFIX*music_albums`.`name`)';
 		} else {
 			return parent::formatSortingClause($sortBy);
 		}
@@ -229,6 +230,18 @@ class AlbumMapper extends BaseMapper {
 			$latestTimeByAlbum[$row['album_id']] = $row['latest_time'];
 		}
 		return $latestTimeByAlbum;
+	}
+
+	/**
+	 * @return Album[]
+	 */
+	public function findAllByNameRecursive(string $name, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$condition = '( LOWER(`artist`.`name`) LIKE LOWER(?) OR
+						LOWER(`*PREFIX*music_albums`.`name`) LIKE LOWER(?) )';
+		$sql = $this->selectUserEntities($condition, 'ORDER BY LOWER(`*PREFIX*music_albums`.`name`)');
+		$name = BaseMapper::prepareSubstringSearchPattern($name);
+		$params = [$userId, $name, $name];
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

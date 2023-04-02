@@ -638,11 +638,11 @@ class Scanner extends PublicEmitter {
 				$this->removeUnavailableFiles($userId);
 			} else {
 				$this->logger->log('Old and new collection paths are unrelated, erasing the previous collection content', 'debug');
-				$this->maintenance->resetDb($userId);
+				$this->maintenance->resetLibrary($userId);
 			}
 		} catch (\OCP\Files\NotFoundException $e) {
 			$this->logger->log('One of the paths was invalid, erasing the previous collection content', 'warn');
-			$this->maintenance->resetDb($userId);
+			$this->maintenance->resetLibrary($userId);
 		}
 	}
 

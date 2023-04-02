@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\App;
@@ -62,38 +62,26 @@ function adjustCsp(IAppContainer $container) {
 	/** @var \OCP\IConfig $config */
 	$config = $container->query('Config');
 	$radioSources = $config->getSystemValue('music.allowed_radio_src', ['http://*:*', 'https://*:*']);
-	$radioHlsSources = $config->getSystemValue('music.allowed_radio_hls_src', []);
+	$enableHls = $config->getSystemValue('music.enable_radio_hls', true);
 
 	if (\is_string($radioSources)) {
 		$radioSources = [$radioSources];
 	}
-	if (\is_string($radioHlsSources)) {
-		$radioHlsSources = [$radioHlsSources];
+
+	$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
+
+	foreach ($radioSources as $source) {
+		$policy->addAllowedMediaDomain($source);
+		$policy->addAllowedImageDomain($source); // for podcast images
 	}
 
-	if (!empty($radioSources) || !empty($radioHlsSources)) {
-		$policy = new \OCP\AppFramework\Http\ContentSecurityPolicy();
-
-		foreach ($radioSources as $source) {
-			$policy->addAllowedMediaDomain($source);
-		}
-
-		foreach ($radioHlsSources as $source) {
-			$policy->addAllowedConnectDomain($source);
-		}
-
-		// Also the media sources data: and blob: are needed if there are any allowed HLS sources
-		if (!empty($radioHlsSources)) {
-			$policy->addAllowedMediaDomain('data:');
-			$policy->addAllowedMediaDomain('blob:');
-		}
-
-		// Allow loading (podcast cover) images from external sources
-		$policy->addAllowedImageDomain('http://*:*');
-		$policy->addAllowedImageDomain('https://*:*');
-
-		$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
+	// Also the media sources 'data:' and 'blob:' are needed for HLS streaming
+	if ($enableHls) {
+		$policy->addAllowedMediaDomain('data:');
+		$policy->addAllowedMediaDomain('blob:');
 	}
+
+	$container->getServer()->getContentSecurityPolicyManager()->addDefaultPolicy($policy);
 }
 
 /**
@@ -110,22 +98,28 @@ function loadEmbeddedMusicPlayer() {
 	\OCA\Music\Utility\HtmlUtil::addWebpackStyle('files_music_player');
 }
 
+function isFilesUrl($url) {
+	return \preg_match('%/apps/files/?$%', $url);
+}
+
+function isShareUrl($url) {
+	return \preg_match('%/s/[^/]+$%', $url) && !\preg_match('%/apps/.*%', $url);
+}
+
+function isMusicUrl($url) {
+	return \preg_match('%/apps/music/?$%', $url);
+}
+
 $request = \OC::$server->getRequest();
 if (isset($request->server['REQUEST_URI'])) {
 	$url = $request->server['REQUEST_URI'];
 	$url = \explode('?', $url)[0]; // get rid of any query args
-	$isFilesUrl = \preg_match('%/apps/files(/.*)?%', $url);
-	$isShareUrl = \preg_match('%/s/.+%', $url)
-		&& !\preg_match('%/apps/.*%', $url)
-		&& !\preg_match('%.*/authenticate%', $url);
-	$isMusicUrl = \preg_match('%/apps/music(/.*)?%', $url);
+	$url = \explode('#', $url)[0]; // get rid of any hash part
 
-	if ($isFilesUrl) {
+	if (isFilesUrl($url) || isShareUrl($url)) {
 		adjustCsp($c);
 		loadEmbeddedMusicPlayer();
-	} elseif ($isShareUrl) {
-		loadEmbeddedMusicPlayer();
-	} elseif ($isMusicUrl) {
+	} elseif (isMusicUrl($url)) {
 		adjustCsp($c);
 	}
 }

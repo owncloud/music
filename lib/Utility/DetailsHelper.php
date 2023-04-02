@@ -36,15 +36,15 @@ class DetailsHelper {
 		$file = $userFolder->getById($fileId)[0] ?? null;
 		if ($file !== null) {
 			$data = $this->extractor->extract($file);
-			$audio = $data['audio'] ?: [];
-			$comments = $data['comments'] ?: [];
+			$audio = $data['audio'] ?? [];
+			$comments = $data['comments'] ?? [];
 
 			// remove intermediate arrays
 			$comments = self::flattenComments($comments);
 
 			// cleanup strings from invalid characters
-			\array_walk($audio, ['self', 'sanitizeString']);
-			\array_walk($comments, ['self', 'sanitizeString']);
+			\array_walk($audio, [$this, 'sanitizeString']);
+			\array_walk($comments, [$this, 'sanitizeString']);
 
 			$result = [
 				'fileinfo' => $audio,

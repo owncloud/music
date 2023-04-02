@@ -145,6 +145,16 @@ class Util {
 	}
 
 	/**
+	 * Given a two-dimensional array, sort the outer dimension according to values in the
+	 * specified column of the inner dimension.
+	 */
+	public static function arraySortByColumn(array &$arr, string $column) : void {
+		\usort($arr, function ($a, $b) use ($column) {
+			return self::stringCaseCompare($a[$column], $b[$column]);
+		});
+	}
+
+	/**
 	 * Like the built-in \explode(...) function but this one can be safely called with
 	 * null string, and no warning will be emitted. Also, this returns an empty array from
 	 * null and '' inputs while the built-in alternative returns a 1-item array containing
@@ -332,6 +342,23 @@ class Util {
 	public static function urlEncodePath(string $path) : string {
 		// URL encode each part of the file path
 		return \join('/', \array_map('rawurlencode', \explode('/', $path)));
+	}
+
+	/**
+	 * Compose URL from parts as returned by the system function parse_url.
+	 * From https://stackoverflow.com/a/35207936
+	 */
+	public static function buildUrl(array $parts) : string {
+		return (isset($parts['scheme']) ? "{$parts['scheme']}:" : '') .
+				((isset($parts['user']) || isset($parts['host'])) ? '//' : '') .
+				(isset($parts['user']) ? "{$parts['user']}" : '') .
+				(isset($parts['pass']) ? ":{$parts['pass']}" : '') .
+				(isset($parts['user']) ? '@' : '') .
+				(isset($parts['host']) ? "{$parts['host']}" : '') .
+				(isset($parts['port']) ? ":{$parts['port']}" : '') .
+				(isset($parts['path']) ? "{$parts['path']}" : '') .
+				(isset($parts['query']) ? "?{$parts['query']}" : '') .
+				(isset($parts['fragment']) ? "#{$parts['fragment']}" : '');
 	}
 
 	/**

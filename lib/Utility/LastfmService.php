@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 namespace OCA\Music\Utility;
@@ -54,24 +54,28 @@ class LastfmService {
 	public function getArtistInfo(int $artistId, string $userId) : array {
 		$artist = $this->artistBusinessLayer->find($artistId, $userId);
 
-		$result = $this->getInfoFromLastFm([
+		if ($artist->getName() === null) {
+			return $this->errorResponse("Can't get details for an unknown artist");
+		} else {
+			$result = $this->getInfoFromLastFm([
 				'method' => 'artist.getInfo',
 				'artist' => $artist->getName()
-		]);
+			]);
 
-		// add ID to those similar artists which can be found from the library
-		$similar = $result['artist']['similar']['artist'] ?? null;
-		if ($similar !== null) {
-			$result['artist']['similar']['artist'] = \array_map(function ($lastfmArtist) use ($userId) {
-				$matching = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
-				if (!empty($matching)) {
-					$lastfmArtist['id'] = $matching[0]->getId();
-				}
-				return $lastfmArtist;
-			}, $similar);
+			// add ID to those similar artists which can be found from the library
+			$similar = $result['artist']['similar']['artist'] ?? null;
+			if ($similar !== null) {
+				$result['artist']['similar']['artist'] = \array_map(function ($lastfmArtist) use ($userId) {
+					$matching = $this->artistBusinessLayer->findAllByName($lastfmArtist['name'], $userId);
+					if (!empty($matching)) {
+						$lastfmArtist['id'] = $matching[0]->getId();
+					}
+					return $lastfmArtist;
+				}, $similar);
+			}
+
+			return $result;
 		}
-
-		return $result;
 	}
 
 	/**
@@ -83,11 +87,15 @@ class LastfmService {
 	public function getAlbumInfo(int $albumId, string $userId) : array {
 		$album = $this->albumBusinessLayer->find($albumId, $userId);
 
-		return $this->getInfoFromLastFm([
+		if ($album->getName() === null) {
+			return $this->errorResponse("Can't get details for an unknown album");
+		} else {
+			return $this->getInfoFromLastFm([
 				'method' => 'album.getInfo',
 				'artist' => $album->getAlbumArtistName(),
 				'album' => $album->getName()
-		]);
+			]);
+		}
 	}
 
 	/**
@@ -163,7 +171,7 @@ class LastfmService {
 			$lastfmResult = $this->getInfoFromLastFm([
 				'method' => 'artist.getTopTracks',
 				'artist' => $artistName,
-				'limit' => $maxCount
+				'limit' => (string)$maxCount
 			]);
 			$topTracksOnLastfm = $lastfmResult['toptracks']['track'] ?? null;
 
@@ -184,7 +192,7 @@ class LastfmService {
 		return $foundTracks;
 	}
 
-	private function getInfoFromLastFm($args) {
+	private function getInfoFromLastFm(array $args) : array {
 		if (empty($this->apiKey)) {
 			return ['api_key_set' => false];
 		} else {
@@ -202,8 +210,7 @@ class LastfmService {
 			// ... and form the final query string
 			$queryString = '?' . \implode('&', $args);
 
-			list($info, $statusCode, $msg) = self::fetchUrl(self::LASTFM_URL . $queryString);
-			$statusCode = (int)$statusCode;
+			list('content' => $info, 'status_code' => $statusCode, 'message' => $msg) = HttpUtil::loadFromUrl(self::LASTFM_URL . $queryString);
 
 			if ($info === false) {
 				// When an album is not found, Last.fm returns 404 but that is not a sign of broken connection.
@@ -220,13 +227,12 @@ class LastfmService {
 		}
 	}
 
-	private static function fetchUrl($url) : array {
-		$content = \file_get_contents($url);
-
-		// It's some PHP magic that calling file_get_contents creates and populates
-		// also a local variable array $http_response_header.
-		list($version, $status_code, $msg) = explode(' ', $http_response_header[0], 3);
-
-		return [$content, $status_code, $msg];
+	private function errorResponse(string $message) : array {
+		return [
+			'api_key_set' => !empty($this->apiKey),
+			'connection_ok' => 'unknown',
+			'status_code' => -1,
+			'status_msg' => $message
+		];
 	}
 }

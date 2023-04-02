@@ -3,12 +3,14 @@ Feature: Subsonic API - Playlists
   As a user
   I need to be able to create, get, update, and delete playlists
 
+
   Scenario: Create empty playlist
     When I specify the parameter "name" with value "My playlist"
     And I request the "createPlaylist" resource
     Then I should get XML with "playlist" entries:
       | name                | songCount | public |
       | My playlist         | 0         | false  |
+
 
   Scenario: Create playlist with one entry
     Given I specify the parameter "query" with value "Heroines"
@@ -17,9 +19,10 @@ Feature: Subsonic API - Playlists
     When I specify the parameter "songId" with the stored value of "id"
     And I specify the parameter "name" with value "My another playlist"
     And I request the "createPlaylist" resource
-    Then I should get XML with "entry" entries:
+    Then I should get XML with "playlist/entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
+
 
   Scenario: Get playlists
     When I request the "getPlaylists" resource
@@ -27,6 +30,7 @@ Feature: Subsonic API - Playlists
       | name                | songCount | public |
       | My playlist         | 0         | false  |
       | My another playlist | 1         | false  |
+
 
   Scenario: Update playlist
     Given I specify the parameter "query" with value "Nocturne"
@@ -40,12 +44,14 @@ Feature: Subsonic API - Playlists
     And I request the "updatePlaylist" resource
     Then I should get empty XML response
 
+
   Scenario: Get playlists after the update
     When I request the "getPlaylists" resource
     Then I should get XML with "playlist" entries:
       | name                | songCount | public |
       | My playlist         | 0         | false  |
       | My renamed playlist | 2         | false  |
+
 
   Scenario: Get playlist along with its songs
     Given I request the "getPlaylists" resource
@@ -54,8 +60,9 @@ Feature: Subsonic API - Playlists
     And I request the "getPlaylist" resource
     Then I should get XML with "entry" entries:
       | title    | album                          | artist                 | duration  | year | track |
-      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 1     |
+      | Heroines | The Butcher's Ballroom         | Diablo Swing Orchestra | 2         | 2009 | 2     |
       | Nocturne | Instrumental Film Music Vol. 1 | Simon Bowman           | 2         | 2013 | 2     |
+
 
   Scenario: Delete the first playlist
     Given I request the "getPlaylists" resource
@@ -64,11 +71,13 @@ Feature: Subsonic API - Playlists
     And I request the "deletePlaylist" resource
     Then I should get empty XML response
 
+
   Scenario: Get remaining playlist after deleting one
     When I request the "getPlaylists" resource
     Then I should get XML with "playlist" entry:
       | name                | songCount | public |
       | My renamed playlist | 2         | false  |
+
 
   Scenario: Delete the last playlist
     Given I request the "getPlaylists" resource

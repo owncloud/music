@@ -3,6 +3,7 @@ Feature: Ampache API - Artists
   As a user
   I need to be able to list my artists with or without filter
 
+
   Scenario: List all artists
     Given I am logged in with an auth token
     When I request the "artists" resource
@@ -11,6 +12,7 @@ Feature: Ampache API - Artists
       | Diablo Swing Orchestra   | 1      | 5     |
       | Pascal Boiseau (Pascalb) | 1      | 3     |
       | Simon Bowman             | 2      | 5     |
+
 
   Scenario: List 2 artists with offset and large limit
     Given I am logged in with an auth token
@@ -22,6 +24,7 @@ Feature: Ampache API - Artists
       | Pascal Boiseau (Pascalb) | 1      | 3     |
       | Simon Bowman             | 2      | 5     |
 
+
   Scenario: List filtered artists
     Given I am logged in with an auth token
     When I specify the parameter "filter" with value "Simon Bowman"
@@ -29,6 +32,7 @@ Feature: Ampache API - Artists
     Then I should get:
       | name                     | albums | songs |
       | Simon Bowman             | 2      | 5     |
+
 
   Scenario: List exact filtered artists
     Given I am logged in with an auth token

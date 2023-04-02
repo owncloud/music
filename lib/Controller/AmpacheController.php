@@ -55,6 +55,7 @@ use OCA\Music\Http\XmlResponse;
 use OCA\Music\Middleware\AmpacheException;
 
 use OCA\Music\Utility\AmpacheUser;
+use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
@@ -149,6 +150,7 @@ class AmpacheController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function xmlApi($action) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
@@ -159,6 +161,7 @@ class AmpacheController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function jsonApi($action) {
 		// differentation between xmlApi and jsonApi is made already by the middleware
@@ -948,9 +951,7 @@ class AmpacheController extends Controller {
 		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
 		include \OC::$SERVERROOT . '/version.php';
 
-		// Note: the following is deprecated since NC14 but the replacement
-		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
-		$appVersion = \OCP\App::getAppVersion($this->appName);
+		$appVersion = AppInfo::getVersion();
 
 		return "$vendor {$this->appName} $appVersion";
 	}

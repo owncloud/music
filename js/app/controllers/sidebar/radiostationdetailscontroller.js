@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 
@@ -33,10 +33,23 @@ angular.module('Music').controller('RadioStationDetailsController', [
 						$('#radio-name-editor').focus();
 					});
 				} else {
-					$scope.station = libraryService.getRadioStation(stationId);
+					const station = libraryService.getRadioStation(stationId);
+					$scope.station = station;
 
 					$scope.stationName = $scope.station.name;
 					$scope.streamUrl = $scope.station.stream_url;
+
+					// fetch the metadata if not already cached
+					if (!station.metadata) {
+						Restangular.one('radio', stationId).one('info').get().then(
+							function(response) {
+								station.metadata = response;
+							},
+							function(_error) {
+								// ignore errors
+							}
+						);
+					}
 				}
 			}
 		});

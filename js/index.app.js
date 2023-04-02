@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 /**
@@ -16,9 +16,11 @@ function requireAll(context) {
 }
 
 /* Polyfills for IE compatibility */
+require('node_modules/core-js/features/array/includes');
 require('node_modules/core-js/features/string/replace-all');
 require('node_modules/core-js/features/string/starts-with');
 require('node_modules/core-js/features/string/ends-with');
+require('vendor/polyfill/keyboard.js');
 
 /* Vendor libraries */
 window.angular = require('angular');
@@ -29,8 +31,10 @@ require('node_modules/angular-scroll');
 require('node_modules/javascript-detect-element-resize/jquery.resize.js');
 require('node_modules/long-press-event');
 require('node_modules/restangular');
+require('vendor/aurora/alac.js');
 require('vendor/aurora/flac.js');
 require('vendor/aurora/mp3.js');
+require('vendor/aurora/aac.js'); // this has to come after mp3.js, otherwise MP3 playback breaks
 require('vendor/dragdrop/draganddrop.js');
 require('vendor/nextcloud/placeholder.js');
 // jquery.initialize can't be initialized on a browser lacking the MutationObserver like IE10

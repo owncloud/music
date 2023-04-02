@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2021
+ * @copyright Pauli Järvinen 2019 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -32,7 +32,6 @@ use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
 use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
-use OCA\Music\BusinessLayer\Library;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
@@ -61,6 +60,7 @@ use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\PlaceholderImage;
 
 class SubsonicController extends Controller {
 	const API_VERSION = '1.16.1';
@@ -74,7 +74,6 @@ class SubsonicController extends Controller {
 	private $podcastEpisodeBusinessLayer;
 	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
-	private $library;
 	private $urlGenerator;
 	private $userManager;
 	private $librarySettings;
@@ -103,7 +102,6 @@ class SubsonicController extends Controller {
 								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
 								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
-								Library $library,
 								LibrarySettings $librarySettings,
 								CoverHelper $coverHelper,
 								DetailsHelper $detailsHelper,
@@ -122,7 +120,6 @@ class SubsonicController extends Controller {
 		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
 		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
-		$this->library = $library;
 		$this->urlGenerator = $urlGenerator;
 		$this->userManager = $userManager;
 		$this->l10n = $l10n;
@@ -157,6 +154,7 @@ class SubsonicController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 */
 	public function handleRequest($method) {
 		$this->logger->log("Subsonic request $method", 'debug');
@@ -413,9 +411,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getCoverArt(string $id, ?int $size) {
-		$idParts = \explode('-', $id);
-		$type = $idParts[0];
-		$entityId = (int)($idParts[1]);
+		list($type, $entityId) = self::parseEntityId($id);
 
 		if ($type == 'album') {
 			$entity = $this->albumBusinessLayer->find($entityId, $this->userId);
@@ -431,9 +427,21 @@ class SubsonicController extends Controller {
 			$rootFolder = $this->librarySettings->getFolder($this->userId);
 			$coverData = $this->coverHelper->getCover($entity, $this->userId, $rootFolder, $size);
 
-			if ($coverData !== null) {
-				return new FileResponse($coverData);
+			if ($coverData === null) {
+				$name = $entity->getNameString($this->l10n);
+				if (\method_exists($entity, 'getAlbumArtistNameString')) {
+					$seed = $entity->getAlbumArtistNameString($this->l10n) . $name;
+				} else {
+					$seed = $name;
+				}
+				$size = $size > 0 ? $size : $this->coverHelper->getDefaultSize();
+				$coverData = [
+					'content' => PlaceholderImage::generate($name, $seed, $size),
+					'mimetype' => 'image/png'
+				];
 			}
+
+			return new FileResponse($coverData);
 		}
 
 		return $this->subsonicErrorResponse(70, "entity $id has no cover");
@@ -480,9 +488,7 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function download(string $id) {
-		$idParts = \explode('-', $id);
-		$type = $idParts[0];
-		$entityId = (int)($idParts[1]);
+		list($type, $entityId) = self::parseEntityId($id);
 
 		if ($type === 'track') {
 			$track = $this->trackBusinessLayer->find($entityId, $this->userId);
@@ -750,7 +756,7 @@ class SubsonicController extends Controller {
 		}
 
 		foreach ($id as $index => $aId) {
-			list($type, $trackId) = \explode('-', $aId);
+			list($type, $trackId) = self::parseEntityId($aId);
 			if ($type === 'track') {
 				$timestamp = $time[$index] ?? null;
 				$timeOfPlay = ($timestamp === null) ? null : new \DateTime('@' . $timestamp);
@@ -971,7 +977,10 @@ class SubsonicController extends Controller {
 	 * @SubsonicAPI
 	 */
 	private function getScanStatus() {
-		return $this->subsonicResponse(['scanStatus' => ['scanning' => 'false']]);
+		return $this->subsonicResponse(['scanStatus' => [
+				'scanning' => false,
+				'count' => $this->trackBusinessLayer->count($this->userId)
+		]]);
 	}
 
 	/* -------------------------------------------------------------------------
@@ -985,7 +994,7 @@ class SubsonicController extends Controller {
 	}
 
 	private static function parseBookamrkIdParam(string $id) : array {
-		list($typeName, $entityId) = \explode('-', $id);
+		list($typeName, $entityId) = self::parseEntityId($id);
 
 		if ($typeName === 'track') {
 			$type = Bookmark::TYPE_TRACK;
@@ -995,7 +1004,7 @@ class SubsonicController extends Controller {
 			throw new SubsonicException("Unsupported ID format $id", 0);
 		}
 
-		return [$type, (int)$entityId];
+		return [$type, $entityId];
 	}
 
 	/**
@@ -1016,9 +1025,7 @@ class SubsonicController extends Controller {
 		$episodeIds = [];
 
 		foreach ($ids as $prefixedId) {
-			$parts = \explode('-', $prefixedId);
-			$type = $parts[0];
-			$id = (int)$parts[1];
+			list($type, $id) = self::parseEntityId($prefixedId);
 
 			if ($type == 'track') {
 				$trackIds[] = $id;
@@ -1057,6 +1064,15 @@ class SubsonicController extends Controller {
 		return $nodes[0];
 	}
 
+	private static function nameWithoutArticle(?string $name, array $ignoredArticles) : ?string {
+		foreach ($ignoredArticles as $article) {
+			if (!empty($name) && Util::startsWith($name, $article . ' ', /*ignore_case=*/true)) {
+				return \substr($name, \strlen($article) + 1);
+			}
+		}
+		return $name;
+	}
+
 	private static function getIndexingChar(?string $name) {
 		// For unknown artists, use '?'
 		$char = '?';
@@ -1084,24 +1100,32 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForFolders() {
+		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$rootFolder = $this->librarySettings->getFolder($this->userId);
 
 		list($subFolders, $tracks) = $this->getSubfoldersAndTracks($rootFolder);
 
 		$indexes = [];
 		foreach ($subFolders as $folder) {
-			$indexes[self::getIndexingChar($folder->getName())][] = [
-				'name' => $folder->getName(),
-				'id' => 'folder-' . $folder->getId()
+			$sortName = self::nameWithoutArticle($folder->getName(), $ignoredArticles);
+			$indexes[self::getIndexingChar($sortName)][] = [
+				'sortName' => $sortName,
+				'artist' => [
+					'name' => $folder->getName(),
+					'id' => 'folder-' . $folder->getId()
+				]
 			];
 		}
+		\ksort($indexes, SORT_LOCALE_STRING);
 
 		$folders = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			$folders[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+			Util::arraySortByColumn($bucketArtists, 'sortName');
+			$folders[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
 		return $this->subsonicResponse(['indexes' => [
+			'ignoredArticles' => \implode(' ', $ignoredArticles),
 			'index' => $folders,
 			'child' => $this->tracksToApi($tracks)
 		]]);
@@ -1141,19 +1165,26 @@ class SubsonicController extends Controller {
 	}
 
 	private function getIndexesForArtists($rootElementName = 'indexes') {
+		$ignoredArticles = $this->librarySettings->getIgnoredArticles($this->userId);
 		$artists = $this->artistBusinessLayer->findAllHavingAlbums($this->userId, SortBy::Name);
 
 		$indexes = [];
 		foreach ($artists as $artist) {
-			$indexes[self::getIndexingChar($artist->getName())][] = $this->artistToApi($artist);
+			$sortName = self::nameWithoutArticle($artist->getName(), $ignoredArticles);
+			$indexes[self::getIndexingChar($sortName)][] = ['sortName' => $sortName, 'artist' => $this->artistToApi($artist)];
 		}
+		\ksort($indexes, SORT_LOCALE_STRING);
 
 		$result = [];
 		foreach ($indexes as $indexChar => $bucketArtists) {
-			$result[] = ['name' => $indexChar, 'artist' => $bucketArtists];
+			Util::arraySortByColumn($bucketArtists, 'sortName');
+			$result[] = ['name' => $indexChar, 'artist' => \array_column($bucketArtists, 'artist')];
 		}
 
-		return $this->subsonicResponse([$rootElementName => ['index' => $result]]);
+		return $this->subsonicResponse([$rootElementName => [
+			'ignoredArticles' => \implode(' ', $ignoredArticles),
+			'index' => $result
+		]]);
 	}
 
 	private function getMusicDirectoryForArtist($id) {
@@ -1352,8 +1383,7 @@ class SubsonicController extends Controller {
 	 * with a name matching the folder name)
 	 */
 	private function getArtistIdFromEntityId(string $entityId) : ?int {
-		list($type, $id) = \explode('-', $entityId);
-		$id = (int)$id;
+		list($type, $id) = self::parseEntityId($entityId);
 
 		switch ($type) {
 			case 'artist':
@@ -1416,8 +1446,7 @@ class SubsonicController extends Controller {
 	 * matching the folder name)
 	 */
 	private function getAlbumIdFromEntityId(string $entityId) : ?int {
-		list($type, $id) = \explode('-', $entityId);
-		$id = (int)$id;
+		list($type, $id) = self::parseEntityId($entityId);
 
 		switch ($type) {
 			case 'album':
@@ -1504,7 +1533,7 @@ class SubsonicController extends Controller {
 	 * @return array with keys 'artists', 'albums', and 'tracks'
 	 */
 	private function doSearch(string $query, int $artistCount, int $artistOffset,
-			int $albumCount, int $albumOffset, int $songCount, int $songOffset) {
+			int $albumCount, int $albumOffset, int $songCount, int $songOffset) : array {
 
 		if (empty($query)) {
 			throw new SubsonicException("The 'query' argument is mandatory", 10);
@@ -1512,8 +1541,8 @@ class SubsonicController extends Controller {
 
 		return [
 			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $artistCount, $artistOffset),
-			'albums' => $this->albumBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $albumCount, $albumOffset),
-			'tracks' => $this->trackBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $songCount, $songOffset)
+			'albums' => $this->albumBusinessLayer->findAllByNameRecursive($query, $this->userId, $albumCount, $albumOffset),
+			'tracks' => $this->trackBusinessLayer->findAllByNameRecursive($query, $this->userId, $songCount, $songOffset)
 		];
 	}
 
@@ -1597,10 +1626,23 @@ class SubsonicController extends Controller {
 	}
 
 	/**
+	 * Given a prefixed ID like 'artist-123' or 'track-45', return the string part and the numeric part.
+	 * @throws SubsonicException if the \a $id doesn't follow the expected pattern
+	 */
+	private static function parseEntityId(string $id) : array {
+		$parts = \explode('-', $id);
+		if (\count($parts) !== 2) {
+			throw new SubsonicException("Unexpected ID format: $id", 0);
+		}
+		$parts[1] = (int)$parts[1];
+		return $parts;
+	}
+
+	/**
 	 * Given a prefixed ID like 'artist-123' or 'track-45', return just the numeric part.
 	 */
 	private static function ripIdPrefix(string $id) : int {
-		return (int)(\explode('-', $id)[1]);
+		return self::parseEntityId($id)[1];
 	}
 
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {

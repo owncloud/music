@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -101,15 +101,24 @@ class ShareController extends Controller {
 			}
 			$result = $this->playlistFileService->parseFile($fileId, $sharedFolder);
 
+			$bogusUrlId = -1;
+
 			// compose the final result
-			$result['files'] = \array_map(function ($fileAndCaption) use ($sharedFolder) {
-				$file = $fileAndCaption['file'];
-				return [
-					'id' => $file->getId(),
-					'name' => $file->getName(),
-					'path' => $sharedFolder->getRelativePath($file->getParent()->getPath()),
-					'mimetype' => $file->getMimeType()
-				];
+			$result['files'] = \array_map(function ($fileInfo) use ($sharedFolder, &$bogusUrlId) {
+				if (isset($fileInfo['url'])) {
+					$fileInfo['id'] = $bogusUrlId--;
+					$fileInfo['mimetype'] = null;
+					return $fileInfo;
+				} else {
+					$file = $fileInfo['file'];
+					return [
+						'id' => $file->getId(),
+						'name' => $file->getName(),
+						'path' => $sharedFolder->getRelativePath($file->getParent()->getPath()),
+						'mimetype' => $file->getMimeType(),
+						'caption' => $fileInfo['caption']
+					];
+				}
 			}, $result['files']);
 			return new JSONResponse($result);
 		} catch (\OCP\Files\NotFoundException $ex) {

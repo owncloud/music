@@ -13,8 +13,8 @@
 import radioIconPath from '../../../img/radio-file.svg';
 
 angular.module('Music').controller('PlayerController', [
-'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$document', '$location',
-function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $document, $location) {
+'$scope', '$rootScope', 'playlistService', 'Audio', 'gettextCatalog', 'Restangular', '$timeout', '$q', '$document', '$location',
+function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangular, $timeout, $q, $document, $location) {
 
 	$scope.loading = false;
 	$scope.shiftHeldDown = false;
@@ -24,13 +24,31 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
 	$scope.repeat = localStorage.getItem('oc_music_repeat') || 'false';
 	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
+	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
 	$scope.position = {
-		bufferPercent: '0%',
-		currentPercent: '0%',
+		bufferPercent: 0,
+		currentPercent: 0,
+		previewPercent: 0,
+		currentPreview: null,
+		currentPreview_ts: null, // Activation time stamp (Type: Date)
+		currentPreview_tf: null, // Transient mouse movement filter (Type: Number/Timer-Handle)
+		previewVisible: () => ($scope.position.currentPreview !== null) && !$scope.position.currentPreview_tf,
 		current: 0,
 		total: 0
 	};
+	var lastVolume = null;
 	var scrobblePending = false;
+	var scheduledRadioTitleFetch = null;
+	var abortRadioTitleFetch = null;
+	const GAPLESS_PLAY_OVERLAP_MS = 500;
+	const RADIO_INFO_POLL_PERIOD_MS = 30000;
+	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
+	const PLAYBACK_RATE_STEPPING = 0.25;
+	const PLAYBACK_RATE_MIN = 0.5;
+	const PLAYBACK_RATE_MAX = 3.0;
+
+	$scope.min = Math.min;
+	$scope.abs = Math.abs;
 
 	// shuffle and repeat may be overridden with URL parameters
 	if ($location.search().shuffle !== undefined) {
@@ -51,42 +69,64 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	// to always handle them asynchronously to run the handler within digest loop
 	// but with no nested digests loop (which causes an exception).
 	function onPlayerEvent(event, handler) {
-		$scope.player.on(event, function(arg) {
+		$scope.player.on(event, function(arg, playedUrl) {
 			$timeout(function() {
-				handler(arg);
+				// Discard the event if the current song has already changed by the time we would handle the event
+				if (playedUrl === $scope.player.getUrl()) {
+					handler(arg);
+				}
 			});
 		});
 	}
 
 	onPlayerEvent('buffer', function (percent) {
 		$scope.setBufferPercentage(percent);
+
+		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
+		if (percent > 99 && $scope.currentTrack.type === 'song') {
+			var entry = playlistService.peekNextTrack();
+			if (entry?.track?.id !== undefined) {
+				const {mime, url} = getPlayableFileUrl(entry.track) || [null, null];
+				if (mime !== null && url !== null) {
+					$scope.player.prepareUrl(url, mime);
+				}
+			}
+		}
 	});
 	onPlayerEvent('ready', function () {
 		$scope.setLoading(false);
 	});
 	onPlayerEvent('progress', function (currentTime) {
-		$scope.setTime(currentTime/1000, $scope.position.total);
-		$rootScope.$emit('playerProgress', currentTime);
+		if (!$scope.loading && $scope.currentTrack) {
+			$scope.setTime(currentTime/1000, $scope.position.total);
+			$rootScope.$emit('playerProgress', currentTime);
 
-		// Scrobble when the track has been listened for 10 seconds
-		if (scrobblePending && currentTime >= 10000) {
-			scrobbleCurrentTrack();
+			// Scrobble when the track has been listened for 10 seconds
+			if (scrobblePending && currentTime >= 10000) {
+				scrobbleCurrentTrack();
+			}
+
+			// Gapless jump to the next track when the playback is very close to the end of a local track
+			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
+				var timeLeft = $scope.position.total*1000 - currentTime;
+				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
+					var nextTrackId = playlistService.peekNextTrack()?.track?.id;
+					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
+						onEnd();
+					}
+				}
+			}
+		}
+
+		// Show progress again instead of preview after a timeout of 2000ms
+		if ($scope.position.currentPreview_ts) {
+			var timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
+			if (timeSincePreview >= 2000) {
+				$scope.seekbarLeave();
+			}
 		}
 	});
-	onPlayerEvent('end', function() {
-		// Srcrobble now if it hasn't happened before reaching the end of the track
-		if (scrobblePending) {
-			scrobbleCurrentTrack();
-		}
-
-		if ($scope.repeat === 'one') {
-			scrobblePending = true;
-			$scope.player.seek(0);
-			$scope.player.play();
-		} else {
-			$scope.next();
-		}
-	});
+	onPlayerEvent('end', onEnd);
 	onPlayerEvent('duration', function(msecs) {
 		$scope.setTime($scope.position.current, msecs/1000);
 		// Seeking may be possible once the duration is available
@@ -109,6 +149,20 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$rootScope.playing = false;
 	});
 
+	function onEnd() {
+		// Srcrobble now if it hasn't happened before reaching the end of the track
+		if (scrobblePending) {
+			scrobbleCurrentTrack();
+		}
+		if ($scope.repeat === 'one') {
+			scrobblePending = true;
+			$scope.player.seek(0);
+			$scope.player.play();
+		} else {
+			$scope.next(0, /*gapless=*/true);
+		}
+	}
+
 	function scrobbleCurrentTrack() {
 		if ($scope.currentTrack?.type === 'song') {
 			Restangular.one('track', $scope.currentTrack.id).all('scrobble').post();
@@ -120,44 +174,99 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return $.isNumeric($scope.position.total) && $scope.position.total !== 0;
 	};
 
-	const titleApp = $('title').html().trim();
-
-	// display the song name and artist in the title when there is current track
 	$scope.$watch('currentTrack', function(newTrack) {
-		var titleSong = '';
-		if (newTrack?.title !== undefined) {
-			if (newTrack?.channel) {
-				titleSong = newTrack.title + ' (' + newTrack.channel.title + ') - ';
-			} else {
-				titleSong = newTrack.title + ' (' + newTrack.artistName + ') - ';
-			}
-		} else if (newTrack?.name !== undefined) {
-			titleSong = newTrack.name + ' - ';
-		}
-		$('title').html(titleSong + titleApp);
+		updateWindowTitle(newTrack);
+		// Cancel any pending or ongoing fetch for radio station metadata. If applicable, 
+		// the fetch for new data is then initiated within the function playCurrentTrack.
+		cancelRadioTitleFetch();
 	});
 
-	$scope.getPlayableFileId = function (track) {
+	// display the song name and artist in the title when there is current track
+	const titleApp = $('title').html().trim();
+	function updateWindowTitle(track) {
+		var titleSong = '';
+		if (track?.title !== undefined) {
+			if (track?.channel) {
+				titleSong = track.title + ' (' + track.channel.title + ') - ';
+			} else {
+				titleSong = track.title + ' (' + track.artistName + ') - ';
+			}
+		} else if (track) {
+			titleSong = $scope.primaryTitle() + ' - ';
+		}
+		$('title').html(titleSong + titleApp);
+	}
+
+	function cancelRadioTitleFetch() {
+		if (scheduledRadioTitleFetch != null) {
+			$timeout.cancel(scheduledRadioTitleFetch);
+			scheduledRadioTitleFetch = null;
+		}
+		if (abortRadioTitleFetch != null) {
+			abortRadioTitleFetch.resolve();
+			abortRadioTitleFetch = null;
+		}
+	}
+
+	function getRadioTitle(radioTrack, failCounter /*optional, internal*/) {
+		failCounter = failCounter || 0;
+		abortRadioTitleFetch = $q.defer();
+		const config = {timeout: abortRadioTitleFetch.promise};
+		const metaType = radioTrack.metadata?.type; // request the same metadata type as previously got (if any)
+
+		Restangular.one('radio', radioTrack.id).one('info').withHttpConfig(config).get({type: metaType}).then(
+			function(response) {
+				abortRadioTitleFetch = null;
+				radioTrack.metadata = response;
+
+				if (!response) {
+					failCounter++;
+				} else {
+					failCounter = 0;
+				}
+
+				// Schedule next title update if the same station is still playing (or paused).
+				// The polling is stopped also if there have been many consecutive failures to get any kind of metadata.
+				if (failCounter >= RADIO_INFO_POLL_MAX_ATTEMPTS) {
+					console.log('The radio station doesn\'t seem to broadcast any metadata, stop polling');
+				}
+				else if ($scope.currentTrack?.id == radioTrack.id) {
+					scheduledRadioTitleFetch = $timeout(function() {
+						scheduledRadioTitleFetch = null;
+						getRadioTitle(radioTrack, failCounter);
+					}, RADIO_INFO_POLL_PERIOD_MS);
+				}
+			},
+			function(_error) {
+				abortRadioTitleFetch = null;
+				// Do nothing on error. The most common reason to end up here is when we have aborted the request.
+				// It's also possible that the server returned an error, and we want to stop the polling in that case too.
+				// Simply not finding any metadata does not lead to error, and the error is unlikely to get solved on its own.
+			}
+		);
+	}
+
+	function getPlayableFileUrl(track) {
 		for (var mimeType in track.files) {
-			if ($scope.player.canPlayMIME(mimeType)) {
+			if ($scope.player.canPlayMime(mimeType)) {
 				return {
 					'mime': mimeType,
-					'id': track.files[mimeType]
+					'url': OC.filePath('music', '', 'index.php') + '/api/file/' + track.files[mimeType] + '/download'
 				};
 			}
 		}
 
 		return null;
-	};
+	}
 
-	function setCurrentTrack(playlistEntry, startOffset /*optional*/) {
+	function setCurrentTrack(playlistEntry, startOffset /*optional*/, gapless /*optional*/) {
 		var track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
 			$rootScope.started = true;
 			$scope.setLoading(true);
-			playTrack(track, startOffset);
+			playTrack(track, startOffset, gapless);
 		} else {
 			$scope.stop();
 		}
@@ -167,38 +276,64 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.shiftHeldDown = false;
 	}
 
+	function playCurrentTrack(startOffset /*optional*/) {
+		// the playback may have been stopped and currentTrack vanished during the debounce time
+		if ($scope.currentTrack) {
+			if ($scope.currentTrack.type === 'radio') {
+				const currentTrack = $scope.currentTrack;
+				Restangular.one('radio', currentTrack.id).one('streamurl').get().then(
+					function(response) {
+						if ($scope.currentTrack === currentTrack) { // check the currentTack hasn't already changed'
+							$scope.player.fromExtUrl(response.url, response.hls);
+							$scope.player.play();
+						}
+					},
+					function(_error) {
+						// error handling
+						OC.Notification.showTemporary(gettextCatalog.getString('Radio station not found'));
+					}
+				);
+				getRadioTitle(currentTrack);
+			} else if ($scope.currentTrack.type === 'podcast') {
+				$scope.player.fromExtUrl($scope.currentTrack.stream_url, false);
+				$scope.player.play();
+			} else {
+				const {mime, url} = getPlayableFileUrl($scope.currentTrack);
+				$scope.player.fromUrl(url, mime);
+				scrobblePending = true;
+	
+				if (startOffset) {
+					$scope.player.seekMsecs(startOffset);
+				}
+				$scope.player.play();
+			}
+		}
+	}
+
 	/*
 	 * Create a debounced function which starts playing the currently selected track.
 	 * The debounce is used to limit the number of GET requests when repeatedly changing
 	 * the playing track like when rapidly and repeatedly clicking the 'Skip next' button.
 	 * Too high number of simultaneous GET requests could easily jam a low-power server.
 	 */
-	var debouncedPlayCurrentTrack = _.debounce(function(startOffset /*optional*/) {
-		if (currentTrackIsStream()) {
-			$scope.player.fromURL($scope.currentTrack.stream_url, null);
-		}
-		else {
-			var mimeAndId = $scope.getPlayableFileId($scope.currentTrack);
-			var url = OC.filePath('music', '', 'index.php') + '/api/file/' + mimeAndId.id + '/download';
-			$scope.player.fromURL(url, mimeAndId.mime);
-			scrobblePending = true;
-		}
+	var debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
 
-		if (startOffset) {
-			$scope.player.seekMsecs(startOffset);
-		}
-		$scope.player.play();
-	}, 300);
-
-	function playTrack(track, startOffset /*optional*/) {
+	function playTrack(track, startOffset /*optional*/, gapless /*optional*/) {
 		$scope.currentTrack = track;
 
-		// Pause any previous playback and don't indicate support for seeking before we actually know it
-		$scope.player.pause();
+		// Don't indicate support for seeking before we actually know its status for the new track.
 		$scope.seekCursorType = 'default';
 
-		// Star the playback with a small delay. 
-		debouncedPlayCurrentTrack(startOffset);
+		if (gapless) {
+			// On gapless jump to next track, let the previous track play to the end while we start
+			// playing the new track immediately. The tracks will be interlaced for a few hundred milliseconds.
+			playCurrentTrack(startOffset);
+		} else {
+			// Stop the previous track and start the new playback with a small delay when this is not
+			// an automatic "gapless" jump to next track.
+			$scope.player.stop();
+			debouncedPlayCurrentTrack(startOffset);
+		}
 	}
 
 	function currentTrackIsStream() {
@@ -214,15 +349,51 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		if (loading) {
 			$scope.position.current = 0;
 			$scope.position.currentPercent = 0;
+			$scope.position.currentPreview = null;
+			$scope.position.currentPreview_ts = null;
+			$scope.position.currentPreview_tf = null;
 			$scope.position.bufferPercent = 0;
 			$scope.position.total = 0;
 		}
 	};
 
 	$scope.$watch('volume', function(newValue, _oldValue) {
+		// Reset last known volume, if a new value is selected via the slider
+		if (newValue && lastVolume && lastVolume !== _oldValue) {
+			lastVolume = null;
+		}
+
 		$scope.player.setVolume(newValue);
 		localStorage.setItem('oc_music_volume', newValue);
 	});
+
+	const notifyPlaybackRateNotAdjustible = _.debounce(
+		() => OC.Notification.showTemporary(gettextCatalog.getString('Playback speed not adjustible for the current song')),
+		1000, {leading: true, trailing: false}
+	);
+	$scope.$watch('playbackRate', function(newValue, oldValue) {
+		$scope.player.setPlaybackRate(newValue);
+		if (oldValue && oldValue != newValue && !$scope.player.playbackRateAdjustible()) {
+			notifyPlaybackRateNotAdjustible();
+		}
+	});
+
+	$scope.offsetVolume = function (offset) {
+		const value = $scope.volume + offset;
+		$scope.volume = Math.max(0, Math.min(100, value)); // Clamp to 0-100
+		lastVolume = null;
+	};
+
+	$scope.toggleVolume = function() {
+		if (lastVolume) {
+			$scope.volume = lastVolume;
+			lastVolume = null;
+		}
+		else {
+			lastVolume = $scope.volume;
+			$scope.volume = 0;
+		}
+	};
 
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
@@ -242,14 +413,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.setTime = function(position, duration) {
+		// sometimes the duration is reported slightly incorrectly and position may exceed it by a few seconds
+		if (duration > 0 && duration < position) {
+			duration = position;
+		}
+
 		$scope.position.current = position;
 		$scope.position.total = duration;
-		$scope.position.currentPercent = (duration > 0 && position <= duration) ?
-				position/duration*100 + '%' : 0;
+		$scope.position.currentPercent = (duration > 0) ? position/duration*100 : 0;
 	};
 
 	$scope.setBufferPercentage = function(percent) {
-		$scope.position.bufferPercent = Math.min(100, percent) + '%';
+		$scope.position.bufferPercent = Math.min(100, percent);
 	};
 
 	$scope.play = function() {
@@ -280,15 +455,41 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		playlistService.clearPlaylist();
 	};
 
-	/** Context menu on long press of the play/pause button */
-	document.getElementById('play-pause-button').addEventListener('long-press', function(e) {
+	$scope.stepPlaybackRate = function($event, decrease, rollover) {
+		$event?.preventDefault();
+
+		// Round current value to nearest step and in/decrease it by one step
+		const current = $scope.playbackRate;
+		const steps = 1.0 / PLAYBACK_RATE_STEPPING;
+		const value = Math.round(current * steps) / steps;
+		const newValue = value + (PLAYBACK_RATE_STEPPING * (decrease ? -1 : 1));
+
+		// Clamp and set value
+		if (rollover) {
+			if (newValue > PLAYBACK_RATE_MAX) {
+				$scope.playbackRate = PLAYBACK_RATE_MIN;
+			}
+			else if (newValue < PLAYBACK_RATE_MIN) {
+				$scope.playbackRate = PLAYBACK_RATE_MAX;
+			}
+			else {
+				$scope.playbackRate = newValue;
+			}
+		}
+		else {
+			$scope.playbackRate = Math.max(PLAYBACK_RATE_MIN, Math.min(PLAYBACK_RATE_MAX, newValue));
+		}
+	};
+
+	// Show context menu on long press of the play/pause button
+	$scope.playbackBtnLongPress = function($event) {
 		// We don't want the normal click event after the long press has been handled. However, preventing it seems to 
 		// be implicit on touch devices (for reason unknown) and calling preventDefault() there would trigger the bug
 		// https://github.com/john-doherty/long-press-event/issues/27.
 		// The following is a bit hacky work-around for this.
 		const isTouch = (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 		if (!isTouch) {
-			e.preventDefault();
+			$event.preventDefault();
 		}
 
 		// 50 ms haptic feedback for touch devices
@@ -297,13 +498,18 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 
 		$timeout(() => $scope.playPauseContextMenuVisible = true);
-	});
+	};
+	// Show context menu on right click of play/pause button, surpress the browser context menu
+	$scope.playbackBtnContextMenu = function($event) {
+		$event.preventDefault();
+		$timeout(() => $scope.playPauseContextMenuVisible = true);
+	};
 	// hide the popup menu when the user clicks anywhere on the page
 	$document.click(function(_event) {
 		$timeout(() => $scope.playPauseContextMenuVisible = false);
 	});
 
-	$scope.next = function(startOffset /*optional*/) {
+	$scope.next = function(startOffset /*optional*/, gapless /*optional*/) {
 		var entry = playlistService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
@@ -313,7 +519,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 			// get the next track as long as the current one contains no playable
 			// audio mimetype
-			while (entry !== null && !$scope.getPlayableFileId(entry.track)) {
+			while (entry !== null && !getPlayableFileUrl(entry.track)) {
 				tracksSkipped = true;
 				startOffset = null; // offset is not meaningful if we couldn't play the requested track
 				entry = playlistService.jumpToNextTrack();
@@ -323,7 +529,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			}
 		}
 
-		setCurrentTrack(entry, startOffset);
+		setCurrentTrack(entry, startOffset, gapless);
 	};
 
 	$scope.prev = function() {
@@ -341,17 +547,73 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
+	// Seekbar preview mouse support
+	function updateSeekPreview(xCoordinate) {
+		var seekBar = $('.seek-bar');
+		var offsetX = xCoordinate - seekBar.offset().left;
+		offsetX = Math.min(Math.max(0, offsetX), seekBar.width());
+		var ratio = offsetX / seekBar.width();
+		var timestamp = ratio * $scope.position.total;
+
+		$scope.position.previewPercent = ratio * 100;
+		$scope.position.currentPreview = timestamp;
+	}
+
+	$scope.seekbarPreview = function($event) {
+		if ($scope.player.seekingSupported()) {
+			updateSeekPreview($event.clientX);
+			$scope.position.currentPreview_ts = Date.now();
+		}
+	};
+
+	$scope.seekbarEnter = function() {
+		// Simple filter for transient mouse movements
+		$scope.position.currentPreview_tf = $timeout(() => $scope.position.currentPreview_tf = null, 100);
+	};
+
+	$scope.seekbarLeave = function() {
+		$scope.position.currentPreview = null;
+		$scope.position.currentPreview_ts = null;
+	};
+
+	// Seekbar preview touch support
+	$scope.seekbarTouchLeave = function($event) {
+		if ($scope.player.seekingSupported() && $event?.type === 'touchend') {
+			$scope.player.seek($scope.position.previewPercent / 100);
+			$scope.seekbarLeave();
+		}
+	};
+
+	$scope.seekbarTouchPreview = function($event) {
+		if ($scope.player.seekingSupported()) {
+			updateSeekPreview($event.targetTouches[0].clientX);
+		}
+	};
+
+	$scope.seekOffset = function(offset) {
+		if ($scope.player.seekingSupported()) {
+			const target = $scope.position.current + offset;
+			var ratio = target / $scope.position.total;
+			// Clamp between the begin and end of the track
+			ratio = Math.min(Math.max(0, ratio), 1);
+			$scope.player.seek(ratio);
+		}
+	};
+
+	// Seekbar click / tap
 	$scope.seek = function($event) {
-		var offsetX = $event.offsetX || $event.originalEvent.layerX;
-		var ratio = offsetX / $event.currentTarget.clientWidth;
+		var seekBar = $('.seek-bar');
+		var offsetX = $event.clientX - seekBar.offset().left;
+		var ratio = offsetX / seekBar.width();
 		$scope.player.seek(ratio);
+		$scope.seekbarLeave(); // Reset seek preview
 	};
 
 	$scope.seekBackward = $scope.player.seekBackward;
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(event, playingView /*optional, ignored*/, startOffset /*optional*/) {
+	playlistService.subscribe('play', function(_event, _playingView /*optional, ignored*/, startOffset /*optional*/) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 
@@ -377,51 +639,103 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
-	$document.bind('keydown', function(e) {
-		if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
-			var func = null;
-			switch (e.which) {
-				case 32: //space
-					func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
-					break;
-				case 37: // arrow left
-					func = $scope.prev;
-					break;
-				case 39: // arrow right
-					func = $scope.next;
-					break;
-				case 16: // shift
-					func = (() => $scope.shiftHeldDown = true);
-					break;
+	function keyboardShortcutsDisabled() {
+		// The global disable switch for the keyboard shortcuts has been introduced by NC25
+		return (typeof OCP !== 'undefined') 
+				&& (typeof OCP?.Accessibility?.disableKeyboardShortcuts === 'function')
+				&& OCP.Accessibility.disableKeyboardShortcuts();
+	}
+
+	if (!keyboardShortcutsDisabled()) {
+		$document.bind('keydown', function(e) {
+			if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
+				var func = null, args = [];
+				switch (e.code) {
+					case 'Space':
+					case 'KeyK':
+						// Play / Pause / Stop
+						func = e.shiftKey ? $scope.stop : $scope.togglePlayback;
+						break;
+					case 'KeyJ':
+						// Seek backwards
+						func = $scope.seekOffset;
+						args = [e.shiftKey ? -30 : e.altKey ? -1 : -5];
+						break;
+					case 'KeyL':
+						// Seek forwards
+						func = $scope.seekOffset;
+						args = [e.shiftKey ? +30 : e.altKey ? +1 : +5];
+						break;
+					case 'KeyM':
+						// Mute / Unmute
+						func = $scope.toggleVolume;
+						break;
+					case 'NumpadSubtract':
+						// Decrease volume
+						func = $scope.offsetVolume;
+						args = [e.shiftKey ? -20 : e.altKey ? -1 : -5];
+						break;
+					case 'NumpadAdd':
+						// Increase volume
+						func = $scope.offsetVolume;
+						args = [e.shiftKey ? +20 : e.altKey ? +1 : +5];
+						break;
+					case 'ArrowLeft':
+						// Previous title / seek backwards
+						func = e.ctrlKey ? $scope.prev : $scope.seekOffset;
+						args = [e.shiftKey ? -30 : e.altKey ? -1 : -5];
+						break;
+					case 'ArrowRight':
+						// Next title / seek forwards
+						func = e.ctrlKey ? $scope.next : $scope.seekOffset;
+						args = [e.shiftKey ? +30 : e.altKey ? +1 : +5];
+						break;
+					case 'Comma': // US: <
+						// Decrease playback speed
+						func = e.shiftKey ? $scope.stepPlaybackRate : null;
+						args = [null, true];
+						break;
+					case 'Period': // US: >
+						// Increase playback speed
+						func = e.shiftKey ? $scope.stepPlaybackRate : null;
+						break;
+					case 'Shift':
+					case 'ShiftLeft':
+					case 'ShiftRight':
+						func = (() => $scope.shiftHeldDown = true);
+						break;
+				}
+
+				if (func) {
+					$timeout(func, 0, true, ...args);
+					return false;
+				}
 			}
 
-			if (func) {
-				$timeout(func);
+			return true;
+		});
+
+		$document.bind('keyup', function(e) {
+			if (e.key === 'Shift') {
+				$timeout(() => $scope.shiftHeldDown = false);
 				return false;
 			}
-		}
+			return true;
+		});
 
-		return true;
-	});
-
-	$document.bind('keyup', function(e) {
-		if (e.which == 16) { //shift
+		$(window).blur(function() {
 			$timeout(() => $scope.shiftHeldDown = false);
-			return false;
-		}
-		return true;
-	});
-
-	$(window).blur(function() {
-		$timeout(() => $scope.shiftHeldDown = false);
-	});
+		});
+	}
 
 	$scope.primaryTitle = function() {
-		return $scope.currentTrack?.title ?? $scope.currentTrack?.name ?? null;
+		return $scope.currentTrack?.title || $scope.currentTrack?.name
+			|| $scope.currentTrack?.metadata?.station || gettextCatalog.getString('Internet radio');
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName ?? $scope.currentTrack?.channel?.title ?? $scope.currentTrack?.stream_url ?? null;
+		return $scope.currentTrack?.artistName || $scope.currentTrack?.channel?.title 
+			|| $scope.currentTrack?.metadata?.title || $scope.currentTrack?.stream_url;
 	};
 
 	$scope.coverArt = function() {
@@ -503,7 +817,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	if ('mediaSession' in navigator) {
 		var registerMediaControlHandler = function(action, handler) {
 			try {
-				navigator.mediaSession.setActionHandler(action, function() { $timeout(handler); });
+				navigator.mediaSession.setActionHandler(action, function() { $scope.$apply((_scope) => handler()); });
 			} catch (error) {
 				console.log('The media control "' + action + '"" is not supported by the browser');
 			}
@@ -517,12 +831,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		registerMediaControlHandler('previoustrack', $scope.prev);
 		registerMediaControlHandler('nexttrack', $scope.next);
 
-		$scope.$watch('currentTrack', function(track) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues) {
+			const track = newValues[0];
 			if (track) {
 				if (track.type === 'radio') {
 					navigator.mediaSession.metadata = new MediaMetadata({
-						title: track.name,
-						artist: track.stream_url,
+						title: $scope.primaryTitle(),
+						artist: $scope.secondaryTitle(),
 						artwork: [{
 							sizes: '190x190',
 							src: radioIconPath,
@@ -543,6 +858,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 					});
 				}
 			}
+			else {
+				navigator.mediaSession.metadata = null;
+			}
+		});
+
+		$rootScope.$watch('playing', function(isPlaying) {
+			navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
 		});
 	}
 
@@ -569,10 +891,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			notification.onclick = $scope.scrollToCurrentTrack;
 		}, 500);
 
-		$scope.$watch('currentTrack', function(track) {
+		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues, oldValues) {
+			const track = newValues[0];
+			const trackChanged = (track != oldValues[0]);
 			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
-			if (enabled && track) {
+			// while paused, the changes in radio title are not notified but actual track changes are
+			if (enabled && track && ($rootScope.playing || trackChanged)) {
 				if (Notification.permission === 'granted') {
 					showNotification(track);
 				} else if (Notification.permission !== 'denied') {

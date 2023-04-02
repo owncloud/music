@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 angular.module('Music').controller('PodcastsViewController', [
@@ -43,7 +43,7 @@ angular.module('Music').controller('PodcastsViewController', [
 			var currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
-			if (currentTrack && episode.id === currentTrack.id) {
+			if (currentTrack && episode.id === currentTrack.id && currentTrack.type === 'podcast') {
 				playlistService.publish('togglePlayback');
 			}
 			else {
@@ -146,8 +146,15 @@ angular.module('Music').controller('PodcastsViewController', [
 		function updateColumnLayout() {
 			// Use the single-column layout if there's not enough room for two columns or more
 			var containerWidth = $('#podcasts').width();
-			var colWidth = 480;
-			$('#podcasts').toggleClass('single-col', containerWidth < 2 * colWidth);
+			if (containerWidth === 0) {
+				// During page load, the view container may not yet have a valid width. On Firefox on Ubuntu,
+				// the resize event with the valid width doesn't fire at all after the page load. Retry until
+				// a valid width is present. See https://github.com/owncloud/music/issues/1029.
+				$timeout(updateColumnLayout, 500);
+			} else {
+				var colWidth = 480;
+				$('#podcasts').toggleClass('single-col', containerWidth < 2 * colWidth);
+			}
 		}
 
 		subscribe('resize', updateColumnLayout);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -24,12 +24,16 @@ use OCP\Security\ISecureRandom;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\Util;
 
 class SettingController extends Controller {
 	const DEFAULT_PASSWORD_LENGTH = 10;
+	/* Character set without look-alike characters. Similar but even more stripped set would be found
+	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not availalbe on ownCloud. */
+	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 	private $ampacheUserMapper;
 	private $scanner;
@@ -61,6 +65,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function userPath(string $value) {
@@ -76,6 +81,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function userExcludedPaths(array $value) {
 		$success = $this->librarySettings->setExcludedPaths($this->userId, $value);
@@ -84,6 +90,7 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function enableScanMetadata(bool $value) {
 		$this->librarySettings->setScanMetadataEnabled($this->userId, $value);
@@ -92,18 +99,37 @@ class SettingController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function ignoredArticles(array $value) {
+		$this->librarySettings->setIgnoredArticles($this->userId, $value);
+		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function getAll() {
 		return [
 			'path' => $this->librarySettings->getPath($this->userId),
 			'excludedPaths' => $this->librarySettings->getExcludedPaths($this->userId),
 			'scanMetadata' => $this->librarySettings->getScanMetadataEnabled($this->userId),
+			'ignoredArticles' => $this->librarySettings->getIgnoredArticles($this->userId),
 			'ampacheUrl' => $this->getAmpacheUrl(),
 			'subsonicUrl' => $this->getSubsonicUrl(),
-			'ampacheKeys' => $this->getAmpacheKeys(),
-			'appVersion' => $this->getAppVersion(),
+			'ampacheKeys' => $this->getUserKeys(),
+			'appVersion' => AppInfo::getVersion(),
 			'user' => $this->userId
 		];
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function getUserKeys() {
+		return $this->ampacheUserMapper->getAll($this->userId);
 	}
 
 	private function getAmpacheUrl() {
@@ -117,16 +143,6 @@ class SettingController extends Controller {
 						'music.subsonic.handleRequest', ['method' => 'dummy'])));
 	}
 
-	private function getAmpacheKeys() {
-		return $this->ampacheUserMapper->getAll($this->userId);
-	}
-
-	private function getAppVersion() {
-		// Note: the following in deprecated since NC14 but the replacement
-		// \OCP\App\IAppManager::getAppVersion is not available before NC14.
-		return \OCP\App::getAppVersion($this->appName);
-	}
-
 	private function storeUserKey($description, $password) {
 		$hash = \hash('sha256', $password);
 		$description = Util::truncate($description, 64); // some DB setups can't truncate automatically to column max size
@@ -136,29 +152,12 @@ class SettingController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function addUserKey($description, $password) {
-		$id = $this->storeUserKey($description, $password);
-		$success = ($id !== null);
-		return new JSONResponse(['success' => $success, 'id' => $id]);
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * @CORS
-	 */
-	public function generateUserKey($length, $description) {
-		if ($description == null) {
-			return new ErrorResponse(Http::STATUS_BAD_REQUEST, 'Please provide a description');
-		}
-
+	public function createUserKey($length, $description) {
 		if ($length == null || $length < self::DEFAULT_PASSWORD_LENGTH) {
 			$length = self::DEFAULT_PASSWORD_LENGTH;
 		}
 
-		$password = $this->secureRandom->generate(
-			$length,
-			ISecureRandom::CHAR_LOWER . ISecureRandom::CHAR_UPPER . ISecureRandom::CHAR_DIGITS);
+		$password = $this->secureRandom->generate($length, self::API_KEY_CHARSET);
 
 		$id = $this->storeUserKey($description, $password);
 
@@ -170,7 +169,20 @@ class SettingController extends Controller {
 	}
 
 	/**
+	 * The CORS-version of the key creation function is targeted for external clients. We need separate function
+	 * because the CORS middleware blocks the normal internal access on Nextcloud versions older than 25 as well
+	 * as on ownCloud 10.0, at least (but not on OC 10.4+).
+	 *
 	 * @NoAdminRequired
+	 * @CORS
+	 */
+	public function createUserKeyCors($length, $description) {
+		return $this->createUserKey($length, $description);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
 	public function removeUserKey($id) {
 		$this->ampacheUserMapper->removeUserKey($this->userId, (int)$id);

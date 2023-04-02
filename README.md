@@ -22,19 +22,28 @@ Mobile layout and media control integration to the lock screen and notification 
 
 ## Supported formats
 
-* FLAC (`audio/flac`)
 * MP3 (`audio/mpeg`)
+* FLAC (`audio/flac`)
 * Vorbis in OGG container (`audio/ogg`)
 * Opus in OGG container (`audio/ogg` or `audio/opus`)
 * WAV (`audio/wav`)
-* M4A (`audio/mp4`)
+* AAC in M4A container (`audio/mp4`)
+* ALAC in M4A container (`audio/mp4`)
 * M4B (`audio/m4b`)
+* AAC (`audio/aac`)
+* AIFF (`audio/aiff`)
+* AU (`audio/basic`)
+* CAF (`audio/x-caf`)
 
 _Note: The audio formats supported vary depending on the browser. Most recents versions of Chrome, Firefox and Edge should be able to play all the formats listed above. All browsers should be able to play at least the MP3 files._
 
 ### Detail
 
-The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. This is the default playback methdod used by the Music app. In case the browser at hand doesn't have a codec for the file format in question, the app attempts to play the file using the Aurora.js library, instead. This library uses javascript to decode the supported file formats which are MP3 and FLAC.
+The modern web browsers ship with a wide variety of built-in audio codecs which can be used directly via the standard HTML5 audio API. Still, there is no browser which could natively play all the formats listed above. For those formats not supported natively, the Music app utilizes the Aurora.js javascript library which is able to play most of the formats listed above, excluding only the OGG containers. On the other hand, Aurora.js may not be able to play all the individual files of the supported formats and is very limited in features (no seeking, no adjusting of playback speed).
+
+_Note: In order to be playable in the Music app, the file type has to be mapped to a MIME type `audio/*` on your cloud instance. Neither ownCloud nor Nextcloud has these mappings by default for the file types AAC, AIFF, AU, or CAF. To add these mappings, run:_
+
+	./occ music:register-mime-types
 
 ## Usage hints
 
@@ -327,7 +336,7 @@ Response:
 
 ### Creating APIKEY for Subsonic/Ampache
 
-The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` (optional) and `description` (mandatory) and returns a JSON response.
+The endpoint `/api/settings/userkey/generate` may be used to programatically generate a random password to be used with an Ampache or a Subsonic client. The endpoint expects two parameters, `length` and `description` (both optional) and returns a JSON response.
 Please note that the minimum password length is 10 characters. The HTTP return codes represent also the status of the request.
 
 ```

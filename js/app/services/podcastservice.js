@@ -93,7 +93,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 				if (result?.updated) {
 					OC.Notification.showTemporary(
 							gettextCatalog.getString('The channel was updated from the source'));
-				} else if (result?.updated === false) {
+				} else if (result?.success) {
 					OC.Notification.showTemporary(
 							gettextCatalog.getString('The channel was already up-to-date'));
 				} else {

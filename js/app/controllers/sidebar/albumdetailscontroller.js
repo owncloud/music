@@ -67,6 +67,11 @@ angular.module('Music').controller('AlbumDetailsController', [
 								if ('tags' in result.album) {
 									$scope.albumTags = $scope.formatLastfmTags(result.album.tags.tag);
 								}
+
+								if (!$scope.album.cover && 'image' in result.album) {
+									// there are usually many image sizes provided but the last one should be the largest
+									setImageUrl(result.album.image.at(-1)['#text']);
+								}
 							}
 
 							$scope.$parent.adjustFixedPositions();

@@ -5,20 +5,21 @@
 	<summary>Music player, library viewer, and server</summary>
 	<description><![CDATA[A stand-alone music player app and a "lite" player for the Files app
 
-- On modern browsers, supports at least audio types mp3, ogg, m4a, m4b, flac, wav
+- On modern browsers, supports audio types .mp3, .ogg, .m4a, .m4b, .flac, .wav, and more
 - Playlist support with import from m3u, m3u8, and pls files
 - Browse by artists, albums, genres, or folders
+- Gapless play
 - Filter the shown content with the search function
 - Play internet radio and podcast channels
 - Setup Last.fm connection to see background information on artists, albums, and songs
-- Control with media control keys on the keyboard or OS (supported on all modern desktop browsers)
+- Control with media control keys on the keyboard or OS
 - The app can handle libraries consisting of thousands of albums and tens of thousands of songs
 - Includes a server backend compatible with the Subsonic and Ampache protocols, allowing playback and browsing of your library on various external apps e.g. on Android or iPhone]]></description>
 	<licence>AGPL</licence>
 	<author>Pauli Järvinen (current author)</author>
 	<author>Morris Jobke (original author)</author>
 	<author>Jan-Christoph Borchardt (original design)</author>
-	<version>1.5.1</version>
+	<version>1.8.2</version>
 	<category>multimedia</category>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128608-34dc576b-07b7-424c-ae81-a63b9128f3d7.png</screenshot>
 	<screenshot>https://user-images.githubusercontent.com/8565946/132128615-554d117c-786f-4847-b110-cd4018b65186.png</screenshot>
@@ -29,9 +30,9 @@
 	<bugs>https://github.com/owncloud/music/issues</bugs>
 	<repository type="git">https://github.com/owncloud/music.git</repository>
 	<dependencies>
-		<php min-version="7.1" max-version="8.0"/>
+		<php min-version="7.1" max-version="8.2"/>
 		<owncloud min-version="10" max-version="10" />
-		<nextcloud min-version="13" max-version="24" />
+		<nextcloud min-version="13" max-version="26" />
 	</dependencies>
 	<types>
 		<!-- update metadata cache when create/update/delete a file -->
@@ -47,4 +48,13 @@
 			<step>OCA\Music\Migration\TimestampInit</step>
 		</post-migration>
 	</repair-steps>
+	<navigations>
+		<navigation>
+			<id>music</id>
+			<name>Music</name>
+			<route>music.page.index</route>
+			<icon>music.svg</icon>
+			<order>10</order>
+		</navigation>
+	</navigations>
 </info>

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -20,30 +20,30 @@ use OCP\IURLGenerator;
 use OCA\Music\Utility\Util;
 
 /**
- * @method string getName()
- * @method void setName(string $name)
- * @method string getMbid()
- * @method void setMbid(string $mbid)
+ * @method ?string getName()
+ * @method void setName(?string $name)
+ * @method ?string getMbid()
+ * @method void setMbid(?string $mbid)
  * @method ?array getYears()
  * @method void setYears(?array $years)
- * @method int getDisk()
- * @method void setDisk(int $discnumber)
- * @method string getMbidGroup()
- * @method void setMbidGroup(string $mbidGroup)
- * @method int getCoverFileId()
- * @method void setCoverFileId(int $coverFileId)
- * @method array getArtistIds()
- * @method void setArtistIds(array $artistIds)
+ * @method ?int getDisk()
+ * @method void setDisk(?int $discnumber)
+ * @method ?string getMbidGroup()
+ * @method void setMbidGroup(?string $mbidGroup)
+ * @method ?int getCoverFileId()
+ * @method void setCoverFileId(?int $coverFileId)
+ * @method ?array getArtistIds()
+ * @method void setArtistIds(?array $artistIds)
  * @method int getAlbumArtistId()
  * @method void setAlbumArtistId(int $albumArtistId)
- * @method string getAlbumArtistName()
- * @method void setAlbumArtistName(string $name)
+ * @method ?string getAlbumArtistName()
+ * @method void setAlbumArtistName(?string $name)
  * @method string getHash()
  * @method void setHash(string $hash)
- * @method int getNumberOfDisks()
- * @method void setNumberOfDisks(int $count)
- * @method string getStarred()
- * @method void setStarred(string $timestamp)
+ * @method ?int getNumberOfDisks()
+ * @method void setNumberOfDisks(?int $count)
+ * @method ?string getStarred()
+ * @method void setStarred(?string $timestamp)
  * @method ?array getGenres()
  * @method void setGenres(?array $genres)
  */

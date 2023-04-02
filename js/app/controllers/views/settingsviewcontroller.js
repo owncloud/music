@@ -7,7 +7,7 @@
  * @author Gregory Baudet <gregory.baudet@gmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gregory Baudet 2018
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 angular.module('Music').controller('SettingsViewController', [
@@ -19,6 +19,8 @@ angular.module('Music').controller('SettingsViewController', [
 		$scope.issueTrackerUrl = 'https://github.com/owncloud/music/issues';
 		$scope.ampacheClientsUrl = 'https://github.com/owncloud/music/wiki/Ampache';
 		$scope.subsonicClientsUrl = 'https://github.com/owncloud/music/wiki/Subsonic';
+
+		$scope.desktopNotificationsSupported = (typeof Notification !== 'undefined');
 
 		var savedExcludedPaths = [];
 
@@ -268,44 +270,73 @@ angular.module('Music').controller('SettingsViewController', [
 			);
 		};
 
-		$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
+		if ($scope.desktopNotificationsSupported) {
+			$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
-		$scope.$watch('songNotificationsEnabled', function(enabled) {
-			localStorage.setItem('oc_music_song_notifications', enabled.toString());
-
-			if (enabled && Notification.permission !== 'granted') {
-				Notification.requestPermission().then(function(permission) {
-					if (permission !== 'granted') {
-						$timeout(() => $scope.songNotificationsEnabled = false);
-					}
-				});
-			}
-		});
-
-		$scope.addAPIKey = function() {
-			var password = Math.random().toString(36).slice(-6) + Math.random().toString(36).slice(-6);
-			Restangular.all('settings/userkey/add').post({ password: password, description: $scope.ampacheDescription }).then(function(data) {
-				if (data.success) {
-					$scope.settings.ampacheKeys.push({
-						description: $scope.ampacheDescription,
-						id: data.id
+			$scope.$watch('songNotificationsEnabled', function(enabled) {
+				localStorage.setItem('oc_music_song_notifications', enabled.toString());
+	
+				if (enabled && Notification.permission !== 'granted') {
+					Notification.requestPermission().then(function(permission) {
+						if (permission !== 'granted') {
+							$timeout(() => $scope.songNotificationsEnabled = false);
+						}
 					});
-					$scope.ampacheDescription = '';
-					$scope.ampachePassword = password;
-				} else {
-					$scope.ampachePassword = '';
-					$scope.errorAmpache = true;
 				}
 			});
+		}
+
+		$scope.commitIgnoredArticles = function() {
+			// Get the entered articles, trimming excess white space and filtering out any empty ones
+			var articles = $scope.ignoredArticles.split(/\s+/);
+
+			// Send the articles to the back-end if there are any changes
+			if (!_.isEqual(articles, $scope.settings.ignoredArticles)) {
+				$scope.savingIgnoredArticles = true;
+				Restangular.all('settings/user/ignored_articles').post({value: articles}).then(
+					function(_data) {
+						// success
+						$scope.savingIgnoredArticles = false;
+						$scope.errorIgnoredArticles = false;
+						$scope.settings.ignoredArticles = articles;
+						$rootScope.$emit('updateIgnoredArticles', articles);
+					},
+					function(_error) {
+						// error handling
+						$scope.savingIgnoredArticles = false;
+						$scope.errorIgnoredArticles = true;
+					}
+				);
+			}
+		};
+
+		$scope.addAPIKey = function() {
+			var newRow = {description: $scope.ampacheDescription, loading: true};
+			$scope.settings.ampacheKeys.push(newRow);
+			Restangular.all('settings/user/keys').post({ description: $scope.ampacheDescription, length: 12 }).then(
+				function(data) {
+					newRow.loading = false;
+					newRow.id = data.id;
+					$scope.ampacheDescription = '';
+					$scope.ampachePassword = data.password;
+					$scope.errorAmpache = false;
+				},
+				function (error) {
+					_.remove($scope.settings.ampacheKeys, newRow);
+					$scope.ampachePassword = '';
+					$scope.errorAmpache = true;
+					console.error(error.data.message || error);
+				}
+			);
 		};
 
 		$scope.removeAPIKey = function(key) {
 			key.loading=true;
-			Restangular.all('settings/userkey/remove').post({ id: key.id }).then(function(data) {
+			Restangular.one('settings/user/keys', key.id).remove().then(function(data) {
 				if (data.success) {
 					// refresh remaining ampacheKeys
-					Restangular.one('settings').get().then(function (value) {
-						$scope.settings.ampacheKeys = value.ampacheKeys;
+					Restangular.one('settings/user/keys').get().then(function (keys) {
+						$scope.settings.ampacheKeys = keys;
 					});
 				} else {
 					key.loading=false;
@@ -334,6 +365,7 @@ angular.module('Music').controller('SettingsViewController', [
 				$scope.settings = value;
 				$rootScope.loading = false;
 				savedExcludedPaths = _.clone(value.excludedPaths);
+				$scope.ignoredArticles = value.ignoredArticles.join(' ');
 				$rootScope.$emit('viewActivated');
 			});
 		});

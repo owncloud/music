@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -69,11 +69,11 @@ class ApiController extends Controller {
 	private $maintenance;
 	/** @var LibrarySettings */
 	private $librarySettings;
-	/** @var string */
+	/** @var ?string */
 	private $userId;
 	/** @var IURLGenerator */
 	private $urlGenerator;
-	/** @var Folder */
+	/** @var ?Folder */
 	private $userFolder;
 	/** @var Logger */
 	private $logger;
@@ -92,9 +92,9 @@ class ApiController extends Controller {
 								LastfmService $lastfmService,
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
-								?string $userId, // null if this gets called after the user has logged out
+								?string $userId, // null if this gets called after the user has logged out or on a public page
 								IL10N $l10n,
-								?Folder $userFolder, // null if this gets called after the user has logged out
+								?Folder $userFolder, // null if this gets called after the user has logged out or on a public page
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;
@@ -130,7 +130,8 @@ class ApiController extends Controller {
 
 		return new JSONResponse([
 			'hash' => $hash,
-			'cover_token' => $coverToken
+			'cover_token' => $coverToken,
+			'ignored_articles' => $this->librarySettings->getIgnoredArticles($this->userId)
 		]);
 	}
 
@@ -206,6 +207,7 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function scan(string $files, $finalize) {
@@ -231,10 +233,11 @@ class ApiController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 * @UseSession to keep the session reserved while execution in progress
 	 */
 	public function resetScanned() {
-		$this->maintenance->resetDb($this->userId);
+		$this->maintenance->resetLibrary($this->userId);
 		return new JSONResponse(['success' => true]);
 	}
 

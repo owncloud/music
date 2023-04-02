@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 namespace OCA\Music\Db;
@@ -241,7 +241,7 @@ class Track extends Entity {
 			'id' => 'track-' . $this->getId(),
 			'parent' => 'album-' . $albumId,
 			//'discNumber' => $this->getDisk(), // not supported on any of the tested clients => adjust track number instead
-			'title' => $this->getTitle() ?? '',
+			'title' => $this->getTitle(),
 			'artist' => $this->getArtistNameString($l10n),
 			'isDir' => false,
 			'album' => $this->getAlbumNameString($l10n),
@@ -257,16 +257,16 @@ class Track extends Entity {
 			'artistId' => 'artist-' . $this->getArtistId(),
 			'type' => 'music',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
-			'track' => $this->getAdjustedTrackNumber(),
+			'track' => $this->getAdjustedTrackNumber(false), // DSub would get confused of playlist numbering, https://github.com/owncloud/music/issues/994
 			'starred' => Util::formatZuluDateTime($this->getStarred()),
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
 		];
 	}
 
-	public function getAdjustedTrackNumber() : ?int {
-		// Number on playlist overrides the track number if it is set.
-		if ($this->numberOnPlaylist !== null) {
+	public function getAdjustedTrackNumber(bool $enablePlaylistNumbering=true) : ?int {
+		// Unless disabled, the number on playlist overrides the track number if it is set.
+		if ($enablePlaylistNumbering && $this->numberOnPlaylist !== null) {
 			$trackNumber = $this->numberOnPlaylist;
 		} else {
 			// On single-disk albums, the track number is given as-is.
@@ -287,7 +287,7 @@ class Track extends Entity {
 	}
 
 	public function getFileExtension() : string {
-		$parts = \explode('.', $this->getFilename() ?? '');
+		$parts = \explode('.', $this->getFilename());
 		return \end($parts);
 	}
 

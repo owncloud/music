@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 .icon-music-dark {
@@ -22,9 +22,18 @@
 	padding: 0 20px 0 20px;
 	position: fixed;
 	bottom: 0;
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
 	z-index: 50;
 	text-align: left;
+
+	/* For NC25+: */
+	margin-bottom: var(--body-container-margin);
+	border-bottom-right-radius: var(--body-container-radius);
+}
+
+.ie #music-controls {
+	/* IE doesn't support the var() syntax */
+	background-color: rgba(255, 255, 255, .95);
 }
 
 #music-controls.with-playlist {
@@ -170,6 +179,10 @@
 	opacity: 1;
 }
 
+#music-controls .svg {
+	filter: var(--background-invert-if-dark);
+}
+
 #music-controls #albumart {
 	height: 50px;
 	width: 50px;
@@ -179,7 +192,12 @@
 	background-size: cover;
 	background-position: center;
 	display: inline-block;
-	border: solid #eee 1px;
+	border: solid 1px;
+	border-color: var(--color-border, #ededed);
+}
+
+.ie #music-controls #albumart {
+	border-color: #ededed;
 }
 
 #music-controls #info-and-progress {
@@ -193,7 +211,7 @@
 
 #music-controls #song-info {
 	height: 100%;
-	width: 60%;
+	width: 50%;
 	margin-top: 7px;
 	vertical-align: top;
 }
@@ -213,7 +231,7 @@
 }
 
 #music-controls .progress-info {
-	width: 40%;
+	width: 45%;
 	text-align: center;
 	margin: 0 auto 25px auto;
 	overflow: hidden;
@@ -225,7 +243,6 @@
 
 #music-controls .seek-bar {
 	width: 100%;
-	max-width: 350px;
 	height: 15px;
 	margin: 0 auto 0 auto;
 	position: relative;
@@ -242,7 +259,15 @@
 	top: 0;
 	height: 15px;
 	width: 0%;
+	background-color: var(--color-primary, #1d2d44);
+}
+
+.ie #music-controls .play-bar, #music-controls .buffer-bar {
 	background-color: #1d2d44;
+}
+
+#music-controls .translucent {
+	opacity: 0.75;
 }
 
 #music-controls .buffer-bar {
@@ -259,8 +284,6 @@
 }
 
 #music-controls #volume-icon {
-	cursor: default;
-	opacity: .4;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -308,6 +331,19 @@
 
 :hover::-moz-range-thumb {
 	cursor: pointer;
+}
+
+/* Play overlay for individual shared file */
+.play-overlay {
+	visibility: hidden;
+	cursor: pointer;
+	position: relative;
+	opacity: .7;
+}
+
+.publicpreview:hover ~ .play-overlay,
+.play-overlay:hover {
+	visibility: visible;
 }
 
 /* "Tablet" style */
@@ -391,23 +427,10 @@ body.snapjs-left #music-controls {
 .musicPlaylistTabView ol li:hover,
 .musicPlaylistTabView ol li.current {
 	transition: background-color 0.3s ease;
+	background-color: var(--color-background-dark, #f7f7f7);
+}
+
+.ie .musicPlaylistTabView ol li:hover,
+.ie .musicPlaylistTabView ol li.current {
 	background-color: #f7f7f7;
-}
-
-/* Adjustments for the Nextcloud dark theme */
-#music-controls.dark-theme {
-	background-color: rgba(24, 24, 24, 0.95);
-}
-
-#music-controls.dark-theme #albumart {
-	border-color: rgb(64, 64, 64);
-}
-
-#music-controls.dark-theme .svg {
-	filter: invert(100%);
-}
-
-.musicPlaylistTabView.dark-theme ol li:hover,
-.musicPlaylistTabView.dark-theme ol li.current {
-	background-color: var(--color-background-dark);
 }

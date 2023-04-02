@@ -89,12 +89,24 @@
 	</div>
 
 	<h2 translate>User interface</h2>
-	<div class="label-container">
-		<label for="song-notifications-toggle" translate>Song change notifications</label>
+	<div ng-show="desktopNotificationsSupported">
+		<div class="label-container">
+			<label for="song-notifications-toggle" translate>Song change notifications</label>
+		</div>
+		<input type="checkbox" id="song-notifications-toggle" ng-model="songNotificationsEnabled"/>
+		<p><em translate>Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site.</em></p>
+		<p><em translate>Unlike the other settings, this switch is stored per browser and not per user account.</em></p>
 	</div>
-	<input type="checkbox" id="song-notifications-toggle" ng-model="songNotificationsEnabled"/>
-	<p><em translate>Show desktop notification when the playing song changes. You also need to have the desktop notifications allowed in your browser for this site.</em></p>
-	<p><em translate>Unlike the other settings, this switch is stored per browser and not per user account.</em></p>
+	<div>
+		<div class="label-container">
+			<label for="ignored-articles" translate>Articles to ignore on artist names</label>:
+		</div>
+		<input type="text" id="ignored-articles" ng-model="ignoredArticles" ng-enter="$event.target.blur()" ng-blur="commitIgnoredArticles()"/>
+		<div class="icon-loading-small operation-in-progress" ng-show="savingIgnoredArticles"></div>
+		<span style="color:red" ng-show="errorIgnoredArticles" translate>Failed to save the setting</span>
+		<p><em translate>Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive.</em></p>
+		<p><em translate>In addition to the web interface, this setting is respected in the Subsonic interface although not necessarily by all clients.</em></p>
+	</div>
 
 	<h2 translate>Ampache and Subsonic</h2>
 	<div translate>You can browse and play your music collection from external applications which support either Ampache or Subsonic API.</div>
@@ -163,17 +175,19 @@
 		</div>
 		<div>
 			<p>music.allowed_radio_src</p>
-			<p><em translate translate-params-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'">
-				Array of allowed non-HLS radio streaming hosts. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{url}}" target="_blank">media-src</a>.
+			<p><em translate
+					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
+					translate-params-img-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/img-src'"
+			>
+				Array of allowed radio and podcast streaming hosts. HLS-type streams are not affected. Default is ['http://*:*', 'https://*:*'], allowing streaming from any remote URL. The given URLs will be added to the Content-Security-Policy headers <a href="{{mediaSrcUrl}}" target="_blank">media-src</a> and <a href="{{imgSrcUrl}}" target="_blank">img-src</a>.
 			</em></p>
 		</div>
 		<div>
-			<p>music.allowed_radio_hls_src</p>
+			<p>music.enable_radio_hls</p>
 			<p><em translate
-					translate-params-connect-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/connect-src'"
 					translate-params-media-src-url="'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/media-src'"
 			>
-				Array of allowed HLS radio streaming hosts. Default is [], blocking HLS streams from any remote URL. The given URLs will be added to the Content-Security-Policy header <a href="{{connectSrcUrl}}" target="_blank">connect-src</a>. Furthermore, if you specify any allowed sources, then also sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
+				Enable streaming HLS-type radio stations, relaying them via the cloud server. Default is <samp>true</samp>. When enabled, the sources <samp>data:</samp> and <samp>blob:</samp> will be added to the CSP header <a href="{{mediaSrcUrl}}" target="_blank">media-src</a>.
 			</em></p>
 		</div>
 		<div>
@@ -182,6 +196,10 @@
 				<em translate>The interval for automatic podcast update checks in hours. Decimal value can be used for sub-hour resolution. Negative value will disable automatic updating. The default value is 24 hours.</em><br/>
 				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
 			</p>
+		</div>
+		<div class="dimmed">
+			<p>music.allowed_radio_hls_src</p>
+			<p><em translate>OBSOLETE. This key is no longer needed or used by the Music application.</em></p>
 		</div>
 	</div>
 

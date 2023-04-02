@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 
@@ -20,9 +20,10 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.adjustFixedPositions = function() {
 			$timeout(function() {
-				var sidebarWidth = $('#app-sidebar').outerWidth();
-				var contentWidth = $('#app-sidebar .sidebar-content').outerWidth();
-				var offset = sidebarWidth - contentWidth;
+				const sidebarRight = parseInt($('#app-sidebar').css('right'));
+				const sidebarWidth = $('#app-sidebar').outerWidth();
+				const contentWidth = $('#app-sidebar .sidebar-content').outerWidth();
+				const offset = sidebarRight + sidebarWidth - contentWidth;
 				$('#app-sidebar .close').css('right', offset);
 				$('#app-sidebar #follow-playback').css('right', offset);
 
@@ -88,9 +89,9 @@ angular.module('Music').controller('SidebarController', [
 			}
 		}
 
-		function showDetailsForCurrentPlay() {
+		const showDetailsForCurrentPlay = _.debounce(function() {
 			showSidebar(contentTypeForCurrentPlay(), $scope.$parent.currentTrack.id);
-		}
+		}, 500);
 
 		$scope.$parent.$watch('currentTrack', function(track) {
 			// show details for the current track if the feature is enabled
@@ -153,9 +154,13 @@ angular.module('Music').controller('SidebarController', [
 			}
 
 			var htmlLinks = _.map(linkArray, function(item) {
-				return '<a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+				return '<a href="' + item.url + '" target="_blank">' + (item.name || item.title) + '</a>';
 			});
 			return htmlLinks.join(', ');
+		};
+
+		$scope.urlToLink = function(url) {
+			return `<a href="${url}" target="_blank">${url}</a>`;
 		};
 
 		$scope.scrollToEntity = function(type, entity) {

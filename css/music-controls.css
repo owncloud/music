@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 #controls {
@@ -16,11 +16,16 @@
 	top: 45px;
 	position: fixed;
 	overflow: visible;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+	z-index: 1;
+
+	/* For Nextcloud 25+: */
+	border-top-right-radius: var(--body-container-radius);
 }
 
 /* Rule used when collapsible navigation pane is open. In that case, #app-content is transformed
  * to right and this has the side-effect of making the "fixed" position to be eveluated in the
- * context of the transformed element instead of the entrie window.
+ * context of the transformed element instead of the entire window.
  */
 .snapjs-left #controls {
 	top: 0;
@@ -81,6 +86,25 @@ body:not(.snapjs-left) #controls.taller-header {
 	right: 50% ;
 }
 
+#controls #context-menu-skip-prev {
+	display: none;
+}
+
+#controls #playback-rate-control input {
+	height: 3px;
+	min-height: 3px;
+	width: 180px;
+	margin-bottom: 10px;
+	margin-left: 40px;
+	margin-right: 10px;
+	background-color: silver;
+}
+
+.ie #controls #playback-rate-control input {
+	height: auto;
+	padding: 0;
+}
+
 #controls .albumart {
 	position: relative;
 	height: 50px;
@@ -91,14 +115,11 @@ body:not(.snapjs-left) #controls.taller-header {
 	vertical-align: top;
 }
 
-.icon-radio {
-	background-image: url(../img/radio.svg);
-}
-
 #controls .song-info {
-	position: relative;
+	position: absolute;
 	height: 58px;
-	max-width: 400px;
+	left: 320px;
+	width: 380px;
 	margin: 0 4px 4px 4px;
 	padding: 8px;
 	vertical-align: top;
@@ -122,8 +143,8 @@ body:not(.snapjs-left) #controls.taller-header {
 	position: absolute;
 	top: 0px;
 	left: 710px;
-	right: 170px;
-	max-width: 350px;
+	right: 165px;
+	max-width: 35%;
 	text-align: center;
 	margin: 7px auto 14px auto;
 }
@@ -149,7 +170,15 @@ body:not(.snapjs-left) #controls.taller-header {
 	top: 0;
 	height: 15px;
 	width: 0%;
+	background-color: var(--color-primary, #1d2d44);
+}
+
+.ie #controls .play-bar, #controls .buffer-bar {
 	background-color: #1d2d44;
+}
+
+.translucent {
+	opacity: 0.75;
 }
 
 #controls .buffer-bar {
@@ -173,7 +202,7 @@ body:not(.snapjs-left) #controls.taller-header {
 
 #controls .volume-control {
 	position: absolute;
-	right: 172px;
+	right: 167px;
 }
 
 .ie.lte9 #controls .volume-control {
@@ -181,8 +210,6 @@ body:not(.snapjs-left) #controls.taller-header {
 }
 
 #controls #volume-icon {
-	cursor: default;
-	opacity: .4;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -232,14 +259,61 @@ body:not(.snapjs-left) #controls.taller-header {
 	cursor: pointer;
 }
 
-.icon-play-big {
-	background-image: url(../img/play-big.svg);
+
+/******************************************/
+/* Two-line layout used on narrow windows */
+/******************************************/
+
+#controls.two-line ~ #app-view.started {
+	padding-top: 90px;
 }
 
-.icon-pause-big {
-	background-image: url(../img/pause-big.svg);
+#app-navigation + #app-content #controls.two-line {
+	height: 90px;
 }
 
-.icon-stop {
-	background-image: url(../img/stop.svg);
+#controls.two-line #shuffle {
+	right: unset;
+	left: 65px;
+	top: 38px;
+}
+
+#controls.two-line #repeat {
+	right: unset;
+	left: 130px;
+	top: 38px;
+}
+
+#controls.two-line .volume-control {
+	right: 75px;
+}
+
+#controls.two-line .song-info {
+	width: auto;
+	right: 80px;
+}
+
+#controls.two-line .progress-info {
+	left: 270px;
+	right: 20px;
+	top: 60px;
+	max-width: 100%;
+}
+
+#controls.two-line .progress-info .progress-text {
+	position: absolute;
+	right: 0px;
+	top: -8px;
+	width: 90px;
+}
+
+#controls.two-line .progress-info .progress {
+	position: absolute;
+	width: auto;
+	left: 0;
+	right: 90px;
+}
+
+#controls.two-line .progress-info {
+	left: 212px;
 }

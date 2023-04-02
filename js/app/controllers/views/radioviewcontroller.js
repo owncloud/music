@@ -35,7 +35,7 @@ angular.module('Music').controller('RadioViewController', [
 
 		$scope.deleteStation = function(station) {
 			OC.dialogs.confirm(
-				gettextCatalog.getString('Are you sure to remove the radio station "{{ name }}"?', { name: station.name }),
+				gettextCatalog.getString('Are you sure to remove the radio station "{{ name }}"?', { name: station.name || station.stream_url }),
 				gettextCatalog.getString('Remove radio station'),
 				function(confirmed) {
 					if (confirmed) {

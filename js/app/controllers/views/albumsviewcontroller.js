@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -47,17 +47,6 @@ angular.module('Music').controller('AlbumsViewController', [
 				$route.current = lastRoute;
 			}
 		});
-
-		// View-specific keyboard shortcuts
-		function handleKeyDown(e) {
-			// toggle compact mode with alt+c
-			if (e.target == document.body && e.which == 67 && e.altKey) {
-				$timeout($scope.toggleAlbumsCompactLayout);
-				return false;
-			}
-			return true;
-		}
-		$document.bind('keydown', handleKeyDown);
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playTracks(listId, tracks, startIndex /*optional*/) {
@@ -128,8 +117,8 @@ angular.module('Music').controller('AlbumsViewController', [
 		/**
 		 * Two functions for the alphabet-navigation directive integration
 		 */
-		$scope.getArtistName = function(index) {
-			return $scope.artists[index].name;
+		$scope.getArtistSortName = function(index) {
+			return $scope.artists[index].sortName;
 		};
 		$scope.getArtistElementId = function(index) {
 			return 'artist-' + $scope.artists[index].id;
@@ -251,10 +240,17 @@ angular.module('Music').controller('AlbumsViewController', [
 		}
 
 		function updateColumnLayout() {
-			// Use the single-column layout if there's not enough room for two columns or more
 			var containerWidth = $('#albums').width();
-			var colWidth = $scope.albumsCompactLayout ? 387 : 480;
-			$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
+			if (containerWidth === 0) {
+				// During page load, the view container may not yet have a valid width. On Firefox on Ubuntu,
+				// the resize event with the valid width doesn't fire at all after the page load. Retry until
+				// a valid width is present. See https://github.com/owncloud/music/issues/1029.
+				$timeout(updateColumnLayout, 500);
+			} else {
+				// Use the single-column layout if there's not enough room for two columns or more
+				var colWidth = $scope.albumsCompactLayout ? 383 : 480;
+				$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
+			}
 		}
 
 		subscribe('resize', updateColumnLayout);
@@ -339,7 +335,6 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		subscribe('deactivateView', function() {
-			$document.unbind('keydown', handleKeyDown);
 			$timeout(() => $rootScope.$emit('viewDeactivated'));
 		});
 	}

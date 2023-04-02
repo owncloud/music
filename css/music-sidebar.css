@@ -5,11 +5,24 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2022
  */
 
 #app-sidebar {
 	position: fixed;
+	height: unset;
+	right: var(--body-container-margin, 0);
+	bottom: var(--body-container-margin, 0);
+	border-top-right-radius: var(--body-container-radius);
+	border-bottom-right-radius: var(--body-container-radius);
+	overflow-y: hidden;
+}
+
+#app-sidebar #app-sidebar-scroll-container {
+	height: 100%;
+	width: 100%;
+	padding-top: 8px;
+	overflow-y: auto;
 }
 
 #app-sidebar .sidebar-content {
@@ -19,14 +32,23 @@
 
 #app-sidebar .close {
 	position: fixed;
-	top: 45px;
-	right: 0;
+	top: var(--header-height, 45px);
+	right: var(--body-container-margin, 0);
+	border-radius: 50%;
+	margin: 6px;
 	padding: 14px;
 	width: 44px;
 	height: 44px;
 	opacity: 0.5;
 	z-index: 1;
-	background-color: #ffffffcc;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .close {
+	top: 45px;
+	right: 0;
+	background-color: rgba(255, 255, 255, .95);
 }
 
 #app-sidebar .close:hover {
@@ -37,7 +59,6 @@
 	width: 100%;
 	height: 35%;
 	background-size: contain;
-	margin-top: 8px;
 	display: table;
 }
 
@@ -156,16 +177,29 @@
 }
 
 #app-sidebar .lyrics.highlight {
-	background-color: rgba(0,0,0,0.04);
+	background-color: var(--color-background-dark, #ededed);
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar .lyrics.highlight {
+	background-color: #ededed;
 }
 
 #app-sidebar #follow-playback {
 	position: fixed;
+	right: var(--body-container-margin, 0);
+	bottom: var(--body-container-margin, 0);
+	border-radius: 50%;
+	background-color: var(--color-main-background-translucent, rgba(255, 255, 255, .95));
+	margin: 6px;
+	padding: 12px;
+}
+
+/* IE doesn't support the var() syntax */
+.ie #app-sidebar #follow-playback {
 	right: 0;
 	bottom: 0;
-	background-color: #ffffffcc;
-	margin: 0;
-	padding: 12px;
+	background-color: rgba(255, 255, 255, .95);
 }
 
 #app-sidebar .icon-loading:not(.inline) {
@@ -242,6 +276,7 @@
 #app-sidebar #lastfm-info a,
 #app-sidebar #podcast-details a,
 #app-sidebar #podcast-details a *,
+#app-sidebar #radio-station-details a,
 #app-sidebar .tutorial a {
 	text-decoration: underline;
 	display: inline-block;
@@ -249,6 +284,7 @@
 
 #app-sidebar #lastfm-info a:after,
 #app-sidebar #podcast-details a:after,
+#app-sidebar #radio-station-details a:after,
 #app-sidebar .tutorial a:after {
 	content: " ↗";
 }

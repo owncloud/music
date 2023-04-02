@@ -3,7 +3,7 @@
 # ownCloud Music
 #
 # @author Pauli Järvinen
-# @copyright 2021 Pauli Järvinen <pauli.jarvinen@gmail.com>
+# @copyright 2021, 2022 Pauli Järvinen <pauli.jarvinen@gmail.com>
 #
 
 # Create the base package from the files stored in git
@@ -26,6 +26,9 @@ zip -d music/music.zip "music/img/*/*"
 zip -d music/music.zip "music/js/*.js*"
 zip -d music/music.zip "music/js/*/*"
 zip -d music/music.zip "music/l10n/*/*"
+
+# Add the application icon back to the zip as that is still needed by the cloud core
+zip -g music/music.zip music/img/music.svg
 
 # Remove also files related to testing and code analysis
 zip -d music/music.zip "music/tests/*"

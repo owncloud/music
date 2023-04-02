@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 
@@ -124,7 +124,7 @@ angular.module('Music').controller('PodcastDetailsController', [
 			case 'update_checked':	return OCA.Music.Utils.formatDateTime(value);
 			case 'link_url':		// fall through
 			case 'rss_url':			// fall through
-			case 'stream_url':		return `<a href="${value}" target="_blank">${value}</a>`;
+			case 'stream_url':		return $scope.urlToLink(value);
 			case 'description':		return formatDescription(value);
 			default:				return value;
 			}

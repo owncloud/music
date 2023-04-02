@@ -7,7 +7,7 @@
  * @author Pellaeon Lin <pellaeon@cnmc.tw>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Pellaeon Lin 2015
- * @copyright Pauli Järvinen 2016 - 2020
+ * @copyright Pauli Järvinen 2016 - 2022
  */
 
 import Hls from 'node_modules/hls.js/dist/hls.light.js';
@@ -15,24 +15,41 @@ import Hls from 'node_modules/hls.js/dist/hls.light.js';
 OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = function() {
+	const m_isIe = $('html').hasClass('ie'); // are we running on Internet Explorer
 	var m_underlyingPlayer = null; // set later as 'aurora' or 'html5'
 	var m_html5audio = null;
 	var m_hls = null;
 	var m_aurora = null;
+	var m_auroraWorkaroundAudio = null;
 	var m_position = 0;
 	var m_duration = 0;
+	var m_buffered = 0; // percent
 	var m_volume = 100;
+	var m_playbackRate = 1.0;
+	var m_ready = false;
 	var m_playing = false;
 	var m_url = null;
-	var m_streamingExtUrl = false;
-	var m_self = this;
+	var m_urlType = null; // set later as one of ['local', 'external', 'external-hls']
+	var m_mime = null;
+	const m_self = this;
 
 	_.extend(this, OC.Backbone.Events);
 
 	function initHtml5() {
-		m_html5audio = document.createElement('audio');
+		m_html5audio = new Audio();
+		m_html5audio.preload = 'auto';
+
 		if (Hls.isSupported()) {
 			m_hls = new Hls({ enableWorker: false });
+
+			m_hls.on(Hls.Events.ERROR, function (_event, data) {
+				console.error('HLS error: ' + JSON.stringify(_.pick(data, ['type', 'details', 'fatal'])));
+				if (data.fatal) {
+					m_self.pause();
+					m_self.trigger('error', m_url);
+					m_url = null;
+				}
+			});
 		}
 
 		var getBufferedEnd = function() {
@@ -63,9 +80,12 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.onprogress = function() {
-			var bufEnd = getBufferedEnd();
-			m_self.trigger('buffer', bufEnd / this.duration * 100);
-			latestNotifiedBufferState = bufEnd;
+			if (this.duration > 0) {
+				var bufEnd = getBufferedEnd();
+				m_buffered = bufEnd / this.duration * 100;
+				m_self.trigger('buffer', m_buffered);
+				latestNotifiedBufferState = bufEnd;
+			}
 		};
 
 		m_html5audio.onsuspend = function() {
@@ -77,17 +97,32 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.oncanplay = function() {
+			m_ready = true;
 			m_self.trigger('ready');
 		};
 
 		m_html5audio.onerror = function() {
-			m_playing = false;
-			if (m_url) {
-				console.log('HTML5 audio: sound load error');
-				m_self.trigger('error', m_url);
-			} else {
-				// ignore stray errors fired by the HTML audio when the src
-				// has been cleared (set to invalid).
+			if (m_underlyingPlayer == 'html5') {
+				if (m_url) {
+					if (!m_ready && canPlayWithAurora(m_mime)) {
+						// Load error encountered before playing could start. The file might be in unsupported format
+						// like is the case with M4A-ALAC on most browsers. Fall back to Aurora.js if possible.
+						console.log('Cannot play with HTML5, falling back to Aurora.js');
+						m_underlyingPlayer = 'aurora';
+						initAurora(m_url);
+						if (m_playing) {
+							m_self.play();
+						}
+					} else {
+						console.log('HTML5 audio: sound load error');
+						m_playing = false;
+						m_self.trigger('error', m_url);
+					}
+				} else {
+					// an error is fired by the HTML audio when the src is cleared to stop the playback
+					m_playing = false;
+					m_self.trigger('stop', m_url);
+				}
 			}
 		};
 
@@ -97,8 +132,49 @@ OCA.Music.PlayerWrapper = function() {
 	}
 	initHtml5();
 
+	// Aurora differs from HTML5 player so that it has to be initialized again for each URL
+	function initAurora(url) {
+		m_aurora = window.AV.Player.fromURL(url);
+
+		m_aurora.on('buffer', function(percent) {
+			m_buffered = percent;
+			m_self.trigger('buffer', percent);
+		});
+		m_aurora.on('progress', function(currentTime) {
+			m_position = currentTime;
+			m_self.trigger('progress', currentTime);
+		});
+		m_aurora.on('ready', function() {
+			m_ready = true;
+			m_self.trigger('ready');
+		});
+		m_aurora.on('end', function() {
+			m_self.trigger('end');
+		});
+		m_aurora.on('duration', function(msecs) {
+			m_duration = msecs;
+			m_self.trigger('duration', msecs);
+		});
+		m_aurora.on('error', function(message) {
+			console.error('Aurora error: ' + message);
+			m_self.trigger('error', url);
+		});
+
+		m_aurora.preload();
+
+		/**
+		 * The mediaSession API doesn't work fully or at all without an Audio element with a valid source. As a workaround, create one which mirrors the
+		 * state of the Aurora backend but cannot be heard by the user.
+		 */
+		if (m_auroraWorkaroundAudio === null) {
+			m_auroraWorkaroundAudio = new Audio();
+			m_auroraWorkaroundAudio.loop = true;
+			m_auroraWorkaroundAudio.volume = 0.000001; // The volume must be > 0 for this to work on Firefox but we don't want the user to actually hear this
+		}
+		m_auroraWorkaroundAudio.src = OCA.Music.DummyAudio.getData();
+	}
+
 	function onPlayStarted() {
-		m_playing = true;
 		m_self.trigger('play');
 	}
 
@@ -112,16 +188,20 @@ OCA.Music.PlayerWrapper = function() {
 	}
 
 	this.play = function() {
-		switch (m_underlyingPlayer) {
+		if (m_url) {
+			m_playing = true;
+			switch (m_underlyingPlayer) {
 			case 'html5':
 				m_html5audio.play();
 				break;
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.play();
+					m_auroraWorkaroundAudio.play();
 					onPlayStarted(); // Aurora has no callback => fire event synchronously
 				}
 				break;
+			}
 		}
 	};
 
@@ -133,6 +213,7 @@ OCA.Music.PlayerWrapper = function() {
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.pause();
+					m_auroraWorkaroundAudio.pause();
 				}
 				onPaused(); // Aurora has no callback => fire event synchronously
 				break;
@@ -151,11 +232,26 @@ OCA.Music.PlayerWrapper = function() {
 				// Just be sure to ignore the resulting 'error' events. Unfortunately, this will still print
 				// a warning to the console on Firefox.
 				m_html5audio.pause();
-				m_html5audio.src = '';
+				if (m_urlType == 'external-hls') {
+					m_hls.stopLoad();
+					m_hls.detachMedia();
+				}
+				// On IE, setting the src to empty string would blow up the whole audio element and it wouldn't
+				// recover without a page reload. On the other hand, IE doesn't support mediaSession API so this
+				// step isn't crucial.
+				if (!m_isIe) {
+					m_html5audio.src = '';
+				}
+				m_html5audio.currentTime = 0;
 				break;
 			case 'aurora':
 				if (m_aurora) {
 					m_aurora.stop();
+					m_aurora = null;
+					m_auroraWorkaroundAudio.pause();
+					if (!m_isIe) {
+						m_auroraWorkaroundAudio.src = '';
+					}
 				}
 				onPaused(); // Aurora has no callback => fire event synchronously
 				break;
@@ -174,35 +270,36 @@ OCA.Music.PlayerWrapper = function() {
 		// playing a normal local file, the seeking may be requested before we have fetched
 		// the duration and that is fine.
 		var validDuration = $.isNumeric(m_duration) && m_duration > 0;
-		return (m_underlyingPlayer == 'html5' && (!m_streamingExtUrl || validDuration));
+		return (m_underlyingPlayer == 'html5' && (m_urlType == 'local' || validDuration));
 	};
 
 	this.seekMsecs = function(msecs) {
-		if (m_self.seekingSupported()) {
-			switch (m_underlyingPlayer) {
-				case 'html5':
-					m_html5audio.currentTime = msecs / 1000;
-					break;
-				case 'aurora':
-					if (m_aurora) {
-						m_aurora.seek(msecs);
-					}
-					break;
+		if (msecs !== this.playPosition()) {
+			if (m_self.seekingSupported()) {
+				switch (m_underlyingPlayer) {
+					case 'html5':
+						m_html5audio.currentTime = msecs / 1000;
+						break;
+					case 'aurora':
+						if (m_aurora) {
+							m_aurora.seek(msecs);
+						}
+						break;
+				}
 			}
-		}
-		else if (msecs === 0 && m_duration > 0) {
-			// seeking to the beginning can be simulated even when seeking in general is not supported
-			var url = m_url;
-			var playing = m_playing;
-			m_self.stop();
-			m_self.fromURL(url);
-			m_self.trigger('progress', 0);
-			if (playing) {
-				this.play();
+			else if (msecs === 0 && m_duration > 0) {
+				// seeking to the beginning can be simulated even when seeking in general is not supported
+				var url = m_url;
+				var playing = m_playing;
+				m_self.fromUrl(url);
+				m_self.trigger('progress', 0);
+				if (playing) {
+					this.play();
+				}
 			}
-		}
-		else {
-			console.log('seeking is not supported for this file');
+			else {
+				console.log('seeking is not supported for this file');
+			}
 		}
 	};
 
@@ -239,6 +336,17 @@ OCA.Music.PlayerWrapper = function() {
 		}
 	};
 
+	this.playbackRateAdjustible = function() {
+		return (m_underlyingPlayer == 'html5');
+	};
+
+	this.setPlaybackRate = function(rate) {
+		m_playbackRate = rate;
+
+		// Note: the feature is not supported with the Aurora backend
+		m_html5audio.playbackRate = m_playbackRate;
+	};
+
 	function canPlayWithHtml5(mime) {
 		// The m4b format is almost identical with m4a (but intended for audio books).
 		// Still, browsers actually able to play m4b files seem to return false when
@@ -248,73 +356,79 @@ OCA.Music.PlayerWrapper = function() {
 			|| (mime == 'audio/m4b' && m_html5audio.canPlayType('audio/mp4'));
 	}
 
-	this.canPlayMIME = function(mime) {
-		var canPlayWithAurora = (mime == 'audio/flac' || mime == 'audio/mpeg');
-		return canPlayWithHtml5(mime) || canPlayWithAurora;
-	};
-
-	function isHlsUrl(url) {
-		url = url.toLowerCase();
-		return url.endsWith('.m3u8') || url.endsWith('.m3u');
+	function canPlayWithAurora(mime) {
+		return ['audio/flac', 'audio/mpeg', 'audio/mp4', 'audio/m4b', 'audio/aac', 'audio/wav',
+				'audio/aiff', 'audio/basic', 'audio/x-aiff', 'audio/x-caf'].includes(mime);
 	}
 
-	this.fromURL = function(url, mime) {
+	this.canPlayMime = function(mime) {
+		return canPlayWithHtml5(mime) || canPlayWithAurora(mime);
+	};
+
+	function doFromUrl(setupUnderlyingPlayer) {
 		m_duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		m_position = 0;
-		this.trigger('loading');
+		m_ready = false;
 
-		m_url = url;
-		m_streamingExtUrl = (mime === null); // null-mime is used to mark an external stream URL
+		m_self.stop(); // clear any previous state first
+		m_self.trigger('loading');
 
-		if (m_streamingExtUrl || canPlayWithHtml5(mime)) {
-			m_underlyingPlayer = 'html5';
-		} else {
-			m_underlyingPlayer = 'aurora';
-		}
-		console.log('Using ' + m_underlyingPlayer + ' for type ' + mime + ' URL ' + url);
-
-		switch (m_underlyingPlayer) {
-			case 'html5':
-				m_html5audio.pause();
-				if (m_streamingExtUrl && m_hls !== null && isHlsUrl(url)) {
-					m_hls.detachMedia();
-					m_hls.loadSource(url);
-					m_hls.attachMedia(m_html5audio);
-				} else {
-					m_html5audio.src = url;
-				}
-				break;
-
-			case 'aurora':
-				if (m_aurora) {
-					m_aurora.stop();
-				}
-
-				m_aurora = window.AV.Player.fromURL(url);
-				m_aurora.asset.source.chunkSize=524288;
-
-				m_aurora.on('buffer', function(percent) {
-					m_self.trigger('buffer', percent);
-				});
-				m_aurora.on('progress', function(currentTime) {
-					m_position = currentTime;
-					m_self.trigger('progress', currentTime);
-				});
-				m_aurora.on('ready', function() {
-					m_self.trigger('ready');
-				});
-				m_aurora.on('end', function() {
-					m_self.trigger('end');
-				});
-				m_aurora.on('duration', function(msecs) {
-					m_duration = msecs;
-					m_self.trigger('duration', msecs);
-				});
-
-				break;
-		}
+		setupUnderlyingPlayer();
 
 		// Set the current volume to the newly created/selected player instance
-		this.setVolume(m_volume);
+		m_self.setVolume(m_volume);
+		m_self.setPlaybackRate(m_playbackRate);
+	}
+
+	this.fromUrl = function(url, mime) {
+		doFromUrl(function() {
+			m_url = url;
+			m_urlType = 'local';
+			m_mime = mime;
+
+			if (canPlayWithHtml5(mime)) {
+				m_underlyingPlayer = 'html5';
+				m_html5audio.src = url;
+			} else {
+				m_underlyingPlayer = 'aurora';
+				initAurora(url);
+			}
+			console.log('Using ' + m_underlyingPlayer + ' for type ' + mime + ' URL ' + url);
+		});
+	};
+
+	this.fromExtUrl = function(url, isHls) {
+		doFromUrl(function() {
+			m_url = url;
+			m_mime = null;
+			m_underlyingPlayer = 'html5';
+
+			if (isHls && m_hls !== null) {
+				m_urlType = 'external-hls';
+				m_hls.detachMedia();
+				m_hls.loadSource(url);
+				m_hls.attachMedia(m_html5audio);
+			} else {
+				m_urlType = 'external';
+				m_html5audio.src = url;
+			}
+			console.log('URL ' + url + ' played as ' + m_urlType);
+		});
+	};
+
+	this.getUrl = function() {
+		return m_url;
+	};
+
+	this.isReady = function() {
+		return m_ready;
+	};
+
+	this.getDuration = function() {
+		return m_duration;
+	};
+
+	this.getBufferPercent = function() {
+		return m_buffered;
 	};
 };

@@ -3,6 +3,16 @@ parameters:
     paths:
         - lib
     scanDirectories:
-        - vendor/christophwurst/nextcloud
+        - vendor/nextcloud/ocp
         - stubs
         - 3rdparty
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        - '#Property [a-zA-Z0-9\\_]+::\$logger is never read, only written.#'
+        -
+            message: '#Variable \$fp in empty\(\) always exists and is not falsy.#'
+            path: lib/Utility/ExtractorGetID3.php
+        -
+            message: '#Strict comparison using === between int and null will always evaluate to false.#'
+            path: lib/AppFramework/Db/OldNextcloudMapper.php

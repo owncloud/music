@@ -18,6 +18,7 @@ filter:
 #        runs: 2         # Scrutinizer waits for the first 2 coverage submissions (unit & integration)
 
 build:
+    image: default-bionic
     nodes:
         analysis:
             tests:

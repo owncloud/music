@@ -21,6 +21,8 @@ angular.module('Music').controller('TrackDetailsController', [
 			currentTrack = null;
 			$scope.details = null;
 			$scope.lastfmInfo = null;
+			$scope.lastfmArtist = null;
+			$scope.lastfmAlbum = null;
 			$scope.lastfmTags = null;
 		}
 
@@ -86,6 +88,14 @@ angular.module('Music').controller('TrackDetailsController', [
 				else {
 					var linkText = gettextCatalog.getString('See the track on Last.fm');
 					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
+				}
+
+				if ('artist' in data.track) {
+					$scope.lastfmArtist = $scope.formatLinkList(data.track.artist);
+				}
+
+				if ('album' in data.track) {
+					$scope.lastfmAlbum = $scope.formatLinkList(data.track.album);
 				}
 
 				if ('toptags' in data.track) {

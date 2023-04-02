@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2022
  */
 
 namespace OCA\Music\Controller;
@@ -17,17 +17,23 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 
 use OCP\Files\Folder;
+use OCP\IConfig;
 use OCP\IRequest;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
+use OCA\Music\Http\FileResponse;
+use OCA\Music\Utility\HttpUtil;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\Util;
+use OCA\Music\Utility\RadioService;
 
 class RadioApiController extends Controller {
+	private $config;
 	private $businessLayer;
+	private $service;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
@@ -35,15 +41,19 @@ class RadioApiController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
+								IConfig $config,
 								RadioStationBusinessLayer $businessLayer,
+								RadioService $service,
 								PlaylistFileService $playlistFileService,
 								?string $userId,
 								?Folder $userFolder,
 								Logger $logger) {
 		parent::__construct($appname, $request);
+		$this->config = $config;
 		$this->businessLayer = $businessLayer;
+		$this->service = $service;
 		$this->playlistFileService = $playlistFileService;
-		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
+		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; may be null when resolveStreamUrl used on public share
 		$this->userFolder = $userFolder;
 		$this->logger = $logger;
 	}
@@ -200,5 +210,120 @@ class RadioApiController extends Controller {
 	public function resetAll() {
 		$this->businessLayer->deleteAll($this->userId);
 		return new JSONResponse(['success' => true]);
+	}
+
+	/**
+	* get metadata for a channel
+	*
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	*/
+	public function getChannelInfo(int $id, ?string $type=null) {
+		try {
+			$station = $this->businessLayer->find($id, $this->userId);
+			$streamUrl = $station->getStreamUrl();
+
+			switch ($type) {
+				case 'icy':
+					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 1);
+					break;
+				case 'shoutcast-v1':
+					$metadata = $this->service->readShoutcastV1Metadata($streamUrl);
+					break;
+				case 'shoutcast-v2':
+					$metadata = $this->service->readShoutcastV2Metadata($streamUrl);
+					break;
+				case 'icecast':
+					$metadata = $this->service->readIcecastMetadata($streamUrl);
+					break;
+				default:
+					$metadata = $this->service->readIcyMetadata($streamUrl, 3, 1)
+							?? $this->service->readShoutcastV2Metadata($streamUrl)
+							?? $this->service->readIcecastMetadata($streamUrl)
+							?? $this->service->readShoutcastV1Metadata($streamUrl);
+					break;
+			}
+
+			return new JSONResponse($metadata);
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * get stream URL for a radio station
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function stationStreamUrl(int $id) {
+		try {
+			$station = $this->businessLayer->find($id, $this->userId);
+			$streamUrl = $station->getStreamUrl();
+			return new JSONResponse($this->service->resolveStreamUrl($streamUrl));
+		} catch (BusinessLayerException $ex) {
+			return new ErrorResponse(Http::STATUS_NOT_FOUND, $ex->getMessage());
+		}
+	}
+
+	/**
+	 * get the actual stream URL from the given public URL
+	 *
+	 * Available without login since no user data is handled and this may be used on link-shared folder.
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function resolveStreamUrl(string $url) {
+		return new JSONResponse($this->service->resolveStreamUrl(\rawurldecode($url)));
+	}
+
+	/**
+	 * get manifest of a HLS stream
+	 *
+	 * This fetches the manifest file from the given URL and returns a modified version of it.
+	 * The front-end can't easily stream directly from the original source because of the Content-Security-Policy.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function hlsManifest(string $url) {
+		if ($this->hlsEnabled()) {
+			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
+				= $this->service->getHlsManifest(\rawurldecode($url));
+
+			return new FileResponse([
+				'content' => $content,
+				'mimetype' => $contentType
+			], $status);
+		} else {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		}
+	}
+
+	/**
+	 * get one segment of a HLS stream
+	 *
+	 * The segment is fetched from the given URL and relayed as such to the client.
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function hlsSegment(string $url) {
+		if ($this->hlsEnabled()) {
+			list('content' => $content, 'status_code' => $status, 'content_type' => $contentType)
+				= HttpUtil::loadFromUrl(\rawurldecode($url));
+
+			return new FileResponse([
+				'content' => $content,
+				'mimetype' => $contentType ?? 'application/octet-stream'
+			], $status);
+		} else {
+			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'the cloud admin has disabled HLS streaming');
+		}
+	}
+
+	private function hlsEnabled() : bool {
+		return (bool)$this->config->getSystemValue('music.enable_radio_hls', true);
 	}
 }

@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 angular.module('Music').controller('MainController', [
@@ -19,20 +19,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	// retrieve language from backend - is set in ng-app HTML element
 	gettextCatalog.currentLanguage = $rootScope.lang;
 
-	// Add dark-theme class to the #app element if Nextcloud dark theme detected.
-	// Css can then diffentiate the style of the contained elments where necessary.
-	var themeCheckRetries = 10;
-	function updateTheme() {
-		// Workaround: The theme information might not be available yet at the time when this control
-		// is initialized. But it's also possible that the cloud doesn't support the dark theme.
-		// In case the information is not available, recheck up to 10 times, once per second.
-		if (OCA.Music.Utils.themeInfoAvailable()) {
-			$('#app').toggleClass('dark-theme', OCA.Music.Utils.darkThemeActive());
-		} else if (themeCheckRetries-- > 0) {
-			$timeout(updateTheme, 1000);
-		}
-	}
-	updateTheme();
+	// setup dark theme support for Nextcloud versions older than 25
+	OCA.Music.DarkThemeLegacySupport.applyOnElement(document.getElementById('app'));
 
 	$rootScope.playing = false;
 	$rootScope.playingView = null;
@@ -114,6 +102,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 			&& $rootScope.currentView != '#/radio'
 			&& $rootScope.currentView != '#/podcasts';
 	};
+
+	$rootScope.$on('updateIgnoredArticles', function(_event, ignoredArticles) {
+		libraryService.setIgnoredArticles(ignoredArticles);
+	});
 
 	$scope.update = function() {
 		$scope.updateAvailable = false;
@@ -351,17 +343,17 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	function scrollOffset() {
 		var controls = document.getElementById('controls');
-		var header = document.getElementById('header');
-		var offset = controls ? controls.offsetHeight : 0;
-		if (OCA.Music.Utils.newLayoutStructure() && header) {
-			offset += header.offsetHeight;
+		var offset = controls?.offsetHeight ?? 0;
+		if (OCA.Music.Utils.getScrollContainer()[0] !== document.getElementById('app-content')) {
+			var header = document.getElementById('header');
+			offset += header?.offsetHeight;
 		}
 		return offset;
 	}
 
 	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
 		if (itemId) {
-			var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
+			var container = OCA.Music.Utils.getScrollContainer();
 			var element = $('#' + itemId);
 			if (container && element) {
 				if (animationTime === undefined) {
@@ -373,8 +365,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.scrollToTop = function() {
-		var container = OCA.Music.Utils.newLayoutStructure() ? $document : $('#app-content');
-		container.scrollTo(0, 0);
+		OCA.Music.Utils.getScrollContainer().scrollTo(0, 0);
 	};
 
 	// Navigate to a view selected from the navigation bar
@@ -438,7 +429,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.collapseNavigationPaneOnMobile = function() {
 		if ($('body').hasClass('snapjs-left')) {
 			// There is a fake button within the navigation pane which can be "clicked" to make the core collapse the pane
-			$('#hidden-close-app-navigation-button').click();
+			$timeout(() => $('#hidden-close-app-navigation-button').click());
 		}
 	};
 
@@ -489,31 +480,47 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 		// Set the app-content class according to window and view width. This has
 		// impact on the overall layout of the app. See mobile.css and tablet.css.
-		if ($window.innerWidth <= 220) {
+		if (appViewWidth <= 280) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow', 'min-width']);
 		}
-		else if ($window.innerWidth <= 360) {
+		else if (appViewWidth <= 360) {
 			setMasterLayout(['mobile', 'portrait', 'extra-narrow']);
 		}
-		else if ($window.innerWidth <= 570 || appViewWidth <= 500) {
+		else if (appViewWidth <= 400) {
 			setMasterLayout(['mobile', 'portrait']);
 		}
-		else if ($window.innerWidth <= 768) {
+		else if (appViewWidth <= 500 && $window.innerWidth < 1024) {
 			setMasterLayout(['mobile']);
 		}
-		else if (appViewWidth <= 690) {
-			setMasterLayout(['tablet', 'portrait']);
-		}
-		else if (appViewWidth <= 1024) {
+		else if (appViewWidth < 1025) {
 			setMasterLayout(['tablet']);
 		}
 		else {
 			setMasterLayout([]);
 		}
+
+		if (appViewWidth <= 715) {
+			$('#controls').addClass('two-line');
+		} else {
+			$('#controls').removeClass('two-line');
+		}
 	});
 
-	if (OCA.Music.Utils.newLayoutStructure()) {
+	// Nextcloud 14+ uses taller header than ownCloud
+	const headerHeight = $('#header').outerHeight();
+	if (headerHeight > 45) {
 		$('#controls').addClass('taller-header');
+	}
+
+	if (OCA.Music.Utils.isLegacyLayout()) {
+		$('.app-music').addClass('legacy-layout');
+	} else {
+		// To be compatible with NC25, we have set the #app-content position as absolute. To fix problems
+		// this causes on older platforms, we need to set the #content to use top-margin instead of top-padding,
+		// just as it has been declared by the core on NC25.
+		$('#content').css('padding-top', 0);
+		$('#content').css('margin-top', headerHeight);
+		$('#content').css('min-height', `var(--body-height, calc(100% - ${headerHeight}px))`);
 	}
 
 	// Work-around for NC14+: The sidebar width has been limited to 500px (normally 27%),

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2022
  */
 
 namespace OCA\Music\App;
@@ -71,6 +71,7 @@ use OCA\Music\Utility\ExtractorGetID3;
 use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\PlaylistFileService;
 use OCA\Music\Utility\PodcastService;
+use OCA\Music\Utility\RadioService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Scanner;
 use OCA\Music\Utility\LibrarySettings;
@@ -80,6 +81,12 @@ class Music extends App {
 		parent::__construct('music', $urlParams);
 
 		\mb_internal_encoding('UTF-8');
+
+		if (\class_exists(\OCP\AppFramework\Db\Mapper::class)) {
+			\class_alias(\OCP\AppFramework\Db\Mapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+		} else {
+			\class_alias(\OCA\Music\AppFramework\Db\OldNextcloudMapper::class, 'OCA\Music\AppFramework\Db\CompatibleMapper');
+		}
 
 		$container = $this->getContainer();
 
@@ -148,7 +155,6 @@ class Music extends App {
 				$c->query('Request'),
 				$c->query('URLGenerator'),
 				$c->query('PlaylistBusinessLayer'),
-				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('CoverHelper'),
@@ -181,7 +187,9 @@ class Music extends App {
 			return new RadioApiController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('RadioStationBusinessLayer'),
+				$c->query('RadioService'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
@@ -244,7 +252,6 @@ class Music extends App {
 				$c->query('PodcastEpisodeBusinessLayer'),
 				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
-				$c->query('Library'),
 				$c->query('LibrarySettings'),
 				$c->query('CoverHelper'),
 				$c->query('DetailsHelper'),
@@ -443,6 +450,10 @@ class Music extends App {
 			);
 		});
 
+		$container->registerService('MimeTypeLoader', function (IappContainer $c) {
+			return $c->getServer()->getMimeTypeLoader();
+		});
+
 		$container->registerService('URLGenerator', function (IAppContainer $c) {
 			return $c->getServer()->getURLGenerator();
 		});
@@ -547,6 +558,13 @@ class Music extends App {
 			return new PodcastService(
 				$c->query('PodcastChannelBusinessLayer'),
 				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('RadioService', function (IAppContainer $c) {
+			return new RadioService(
+				$c->query('URLGenerator'),
 				$c->query('Logger')
 			);
 		});

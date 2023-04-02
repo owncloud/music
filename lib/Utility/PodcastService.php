@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 namespace OCA\Music\Utility;
@@ -119,7 +119,7 @@ class PodcastService {
 	 * @return array like ['status' => int, 'channel' => ?PodcastChannel]
 	 */
 	public function subscribe(string $url, string $userId) : array {
-		$content = self::fetchUrl($url);
+		$content = HttpUtil::loadFromUrl($url)['content'];
 		if ($content === false) {
 			return ['status' => self::STATUS_INVALID_URL, 'channel' => null];
 		}
@@ -136,7 +136,7 @@ class PodcastService {
 		}
 
 		$episodes = $this->updateEpisodesFromXml($xmlTree->channel->item, $userId, $channel->getId());
-		$channel->setEpisodes(\array_reverse($episodes));
+		$channel->setEpisodes($episodes);
 
 		return ['status' => self::STATUS_OK, 'channel' => $channel];
 	}
@@ -180,7 +180,7 @@ class PodcastService {
 
 		if ($channel !== null) {
 			$xmlTree = null;
-			$content = self::fetchUrl($channel->getRssUrl());
+			$content = HttpUtil::loadFromUrl($channel->getRssUrl())['content'];
 			if ($content === false) {
 				$status = self::STATUS_INVALID_URL;
 			} else {
@@ -188,7 +188,8 @@ class PodcastService {
 			}
 
 			if (!$xmlTree || !$xmlTree->channel) {
-				$this->logger->log("RSS feed for the chanenl {$channel->id} was invalid", 'warn');
+				$this->logger->log("RSS feed for the channel {$channel->id} was invalid", 'warn');
+				$this->channelBusinessLayer->markUpdateChecked($channel);
 				$status = self::STATUS_INVALID_RSS;
 			} else if ($this->channelBusinessLayer->updateChannel($channel, $content, $xmlTree->channel, $force)) {
 				// update the episodes too if channel content has actually changed or update is forced
@@ -254,27 +255,13 @@ class PodcastService {
 
 	private function updateEpisodesFromXml(\SimpleXMLElement $items, string $userId, int $channelId) : array {
 		$episodes = [];
-		// loop the episodes from XML in reverse order to get chronological order
+		// loop the episodes from XML in reverse order to store them to the DB in chronological order
 		for ($count = \count($items), $i = $count-1; $i >= 0; --$i) {
 			if ($items[$i] !== null) {
 				$episodes[] = $this->episodeBusinessLayer->addOrUpdate($userId, $channelId, $items[$i]);
 			}
 		}
-		return $episodes;
-	}
-
-	/**
-	 * @param string $url
-	 * @return string|false
-	 */
-	private static function fetchUrl(string $url) {
-		// some podcast services require a valid user agent to be set
-		$opts = [
-			"http" => [
-				"header" => "User-Agent: PodcastService"
-			]
-		];
-		$context = stream_context_create($opts);
-		return \file_get_contents($url, false, $context);
+		// return the episodes in inverted chronological order (newest first)
+		return \array_reverse($episodes);
 	}
 }

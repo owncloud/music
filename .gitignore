@@ -19,6 +19,9 @@ CVS/*
 .svn/*
 RCS/*
 
+# VSCode
+.vscode/
+
 # kdevelop
 .kdev
 *.kdev4

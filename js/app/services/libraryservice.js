@@ -5,12 +5,13 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2017 - 2021 Pauli Järvinen
+ * @copyright 2017 - 2023 Pauli Järvinen
  *
  */
 
 angular.module('Music').service('libraryService', [function() {
 
+	var ignoredArticles = [];
 	var artists = null;
 	var albums = null;
 	var tracksIndex = {};
@@ -30,8 +31,19 @@ angular.module('Music').service('libraryService', [function() {
 	 */
 	function sortByTextField(items, field) {
 		var getSortProperty = _.property(field);
+		var locale = OCA.Music.Utils.getLocale();
+
 		items.sort(function(a, b) {
-			return getSortProperty(a).localeCompare(getSortProperty(b), OCA.Music.Utils.getLocale());
+			var aProp = getSortProperty(a);
+			var bProp = getSortProperty(b);
+
+			if (aProp === null) {
+				return -1;
+			} else if (bProp === null) {
+				return 1;
+			} else {
+				return aProp.localeCompare(bProp, locale);
+			}
 		});
 	}
 
@@ -63,21 +75,32 @@ angular.module('Music').service('libraryService', [function() {
 		return tracks;
 	}
 
+	function createArtistSortName(name) {
+		for (var article of ignoredArticles) {
+			if (name.toLowerCase().startsWith(article.toLowerCase() + ' ')) {
+				return name.substring(article.length + 1).trim();
+			}
+		}
+		return name;
+	}
+
 	/**
 	 * Sort the passed in collection alphabetically, and set up parent references
 	 */
 	function transformCollection(collection) {
-		sortByTextField(collection, 'name');
 		_.forEach(collection, function(artist) {
+			artist.sortName = createArtistSortName(artist.name);
 			artist.albums = sortByYearAndName(artist.albums);
 			_.forEach(artist.albums, function(album) {
 				album.artist = artist;
 				album.tracks = sortByDiskNumberAndTitle(album.tracks);
 				_.forEach(album.tracks, function(track) {
+					track.artistSortName = createArtistSortName(track.artistName);
 					track.album = album;
 				});
 			});
 		});
+		sortByTextField(collection, 'sortName');
 		return collection;
 	}
 
@@ -143,7 +166,7 @@ angular.module('Music').service('libraryService', [function() {
 
 		// alphabetic order "playlist"
 		sortByTextField(tracks, 'title');
-		sortByTextField(tracks, 'artistName');
+		sortByTextField(tracks, 'artistSortName');
 		tracksInAlphaOrder = _.map(tracks, playlistEntry);
 
 		// tracks index
@@ -232,6 +255,26 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	return {
+		setIgnoredArticles: function(articles) {
+			ignoredArticles = articles;
+			if (artists) {
+				// reorder the existing library if there is one
+				_.forEach(artists, function(artist) {
+					artist.sortName = createArtistSortName(artist.name);
+				});
+				sortByTextField(artists, 'sortName');
+
+				_.forEach(tracksInAlphaOrder, function(entry) {
+					entry.track.artistSortName = createArtistSortName(entry.track.artistName);
+				});
+				sortByPlaylistEntryTextField(tracksInAlphaOrder, 'artistSortName');
+
+				_.forEach(genres, function(genre) {
+					sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+				});
+				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
+			}
+		},
 		setCollection: function(collection) {
 			artists = transformCollection(collection);
 			albums = _(artists).map('albums').flatten().value();
@@ -290,7 +333,7 @@ angular.module('Music').service('libraryService', [function() {
 
 				_.forEach(genres, function(genre) {
 					sortByPlaylistEntryTextField(genre.tracks, 'title');
-					sortByPlaylistEntryTextField(genre.tracks, 'artistName');
+					sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
 
 					_.forEach(genre.tracks, function(trackEntry) {
 						trackEntry.track.genre = genre;
@@ -377,7 +420,7 @@ angular.module('Music').service('libraryService', [function() {
 				break;
 			case 'artist':
 				sortByTextField(playlist.tracks, 'track.title');
-				sortByTextField(playlist.tracks, 'track.artistName');
+				sortByTextField(playlist.tracks, 'track.artistSortName');
 				break;
 			default:
 				console.error('Unexpected playlist sort property ' + byProperty);

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021, 2022
  */
 
 namespace OCA\Music\Http;
@@ -33,7 +33,7 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 		$this->file = $file;
 		$mime = $file->getMimetype();
 		$size = $file->getSize();
-		
+
 		$this->addHeader('Content-type', "$mime; charset=utf-8");
 
 		if (isset($_SERVER['HTTP_RANGE'])) {
@@ -58,12 +58,14 @@ class FileStreamResponse extends Response implements ICallbackResponse {
 						$this->start . '-' .
 						$this->end . '/' . $size
 					);
+					$this->addHeader('Content-Length', (string)($this->end - $this->start + 1));
 					$this->setStatus(Http::STATUS_PARTIAL_CONTENT);
 				}
 			}
 		} else {
 			$this->start = 0;
 			$this->end = $size - 1;
+			$this->addHeader('Content-Length', (string)$size);
 			$this->setStatus(Http::STATUS_OK);
 		}
 	}

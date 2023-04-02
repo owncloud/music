@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019, 2020
+ * @copyright Pauli Järvinen 2019 - 2022
  */
 
 namespace OCA\Music\Utility;
@@ -45,6 +45,16 @@ class LibrarySettings {
 	public function getScanMetadataEnabled(string $userId) : bool {
 		$value = $this->configManager->getUserValue($userId, $this->appName, 'scan_metadata', 1);
 		return ($value > 0);
+	}
+
+	public function setIgnoredArticles(string $userId, array $articles) : void {
+		$this->configManager->setUserValue($userId, $this->appName, 'ignored_articles', \json_encode($articles));
+	}
+
+	public function getIgnoredArticles(string $userId) : array {
+		$default = '["The", "El", "La", "Los", "Las", "Le", "Les"]';
+		$value = $this->configManager->getUserValue($userId, $this->appName, 'ignored_articles', $default);
+		return \json_decode($value);
 	}
 
 	public function setPath(string $userId, string $path) : bool {

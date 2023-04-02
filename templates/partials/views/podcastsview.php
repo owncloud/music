@@ -9,12 +9,12 @@
 				model="channel"
 				actions="[
 					{ icon: 'details', text: 'Details', callback: showPodcastChannelDetails },
-					{ icon: 'reload', text: 'Reload', callback: reloadChannel },
+					{ icon: 'reload svg', text: 'Reload', callback: reloadChannel },
 					{ icon: 'delete', text: 'Remove', callback: removeChannel }
 				]"
 				show-play-icon="true">
 			</list-heading>
-			<div class="albumart" cover="{{ channel.image }}" albumart="{{ channel.title }}"></div>
+			<div class="albumart" albumart="::channel"></div>
 			<img class="play overlay svg" alt="{{ 'Play' | translate }}"
 				 src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-overlay') ?>" ng-click="playChannel(channel)" />
 			<track-list

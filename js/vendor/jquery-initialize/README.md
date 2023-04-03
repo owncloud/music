@@ -18,8 +18,6 @@ This allows developers to define an initialization callback that is applied when
 element matching the selector is inserted into the DOM. It works for elements loaded via
 AJAX also.
 
-Simple demo - [click here](http://adampietrasiak.github.io/jQuery.initialize/test.html)
-
 ## Example of use
   
 	$.initialize(".some-element", function() {

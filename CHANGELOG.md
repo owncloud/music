@@ -1,3 +1,8 @@
+## [Unreleased]
+### Fixed
+- On onwCloud, flooding the log with errors "Cannot declare class because the name is already in use" (since v1.8.2)
+  [#1060](https://github.com/owncloud/music/pull/1060) @prsnbrg
+
 ## 1.8.2 - 2023-04-01
 ### Added
 - Support for Nextcloud 26

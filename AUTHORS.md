@@ -47,6 +47,7 @@
 * [Nico Boehr](https://github.com/youknow0): <nico@nicoboehr.de>
 * [Nuno Jesus](https://github.com/nunojesus)
 * [Pellaeon Lin](https://github.com/pellaeon): <nfsmwlin@gmail.com>
+* [Paul](https://github.com/prsnbrg)
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
 * [Rello](https://github.com/rello)

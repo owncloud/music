@@ -45,6 +45,7 @@
 		<post-migration>
 			<step>OCA\Music\Migration\BogusTrackRemoval</step>
 			<step>OCA\Music\Migration\DiskNumberMigration</step>
+			<step>OCA\Music\Migration\RegisterBackgroundJobs</step>
 			<step>OCA\Music\Migration\TimestampInit</step>
 		</post-migration>
 	</repair-steps>

@@ -4,6 +4,7 @@
   [#1060](https://github.com/owncloud/music/pull/1060) @prsnbrg
 - Nextcloud 25 and later not running the Music background tasks: podcast channel updates, database cleanup
   [#1044](https://github.com/owncloud/music/issues/1044)
+- M4A-ALAC files sometimes starting to play simultaneously while the previous file is still playing
 
 ## 1.8.2 - 2023-04-01
 ### Added

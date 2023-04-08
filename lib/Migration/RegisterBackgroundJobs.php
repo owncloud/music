@@ -15,15 +15,10 @@ namespace OCA\Music\Migration;
 use OCA\Music\BackgroundJob\Cleanup;
 use OCA\Music\BackgroundJob\PodcastUpdateCheck;
 
-use OCP\IConfig;
-use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 
 class RegisterBackgroundJobs implements IRepairStep {
-
-	public function __construct(IDBConnection $connection, IConfig $config) {
-	}
 
 	public function getName() {
 		return 'Register Music background jobs and remove legacy registrations';

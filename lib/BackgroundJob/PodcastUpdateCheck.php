@@ -10,7 +10,7 @@
  * @copyright Pauli Järvinen 2021 - 2023
  */
 
-namespace OCA\Music\Backgroundjob;
+namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\App\Music;
 use OCA\Music\Utility\PodcastService;

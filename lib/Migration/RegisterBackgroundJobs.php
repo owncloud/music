@@ -12,8 +12,8 @@
 
 namespace OCA\Music\Migration;
 
-use OCA\Music\Backgroundjob\Cleanup;
-use OCA\Music\Backgroundjob\PodcastUpdateCheck;
+use OCA\Music\BackgroundJob\Cleanup;
+use OCA\Music\BackgroundJob\PodcastUpdateCheck;
 
 use OCP\IConfig;
 use OCP\IDBConnection;

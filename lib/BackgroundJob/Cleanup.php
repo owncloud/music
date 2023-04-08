@@ -12,7 +12,7 @@
  * @copyright Pauli Järvinen 2017 - 2023
  */
 
-namespace OCA\Music\Backgroundjob;
+namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\App\Music;
 

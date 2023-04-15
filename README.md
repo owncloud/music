@@ -116,7 +116,7 @@ When you create the APIKEY, the application shows also the username you should u
 
 ### Installation
 
-The Music app can be installed using the App Management in ownCloud. Instructions can be found [here](https://doc.owncloud.org/server/8.1/admin_manual/installation/apps_management_installation.html).
+The Music app can be installed using the App Management available on the web UI of ownCloud or Nextcloud for the admin user.
 
 After installation, you may want to select a specific sub-folder containing your music files through the settings of the application. This can be useful to prevent unwanted audio files to be included in the music library.
 
@@ -124,22 +124,17 @@ After installation, you may want to select a specific sub-folder containing your
 
 #### Huge music collections
 
-The application's scalability for large music collections has gradually improved as new versions have been released. Still, if the collection is large enough, the application may fail to load. The maximum number of tracks supported depends on your server but should be more than 50'000. Also, when there are tens of thousands of tracks, switching the application views may take pretty long time. For the best performance on huge music collections, Firefox 57.0+ (aka "Quantum") is recommended. On the most recent Music app version, also up-to-date Chrome or Edge browser should perform sufficiently well.
+The application's scalability for large music collections has gradually improved as new versions have been released. Still, if the collection is large enough, the application may fail to load. The maximum number of tracks supported depends on your server but should be more than 50'000. Also, when there are tens of thousands of tracks, you may notice slow down of the web UI.
 
 #### Translations
 
-There exist partial translations for the Music app for many languages, but all of them are very much incomplete. The application is translated at https://www.transifex.com/owncloud-org/owncloud/ but most of the strings used in the app are not currently visible on Transifex. This is because of disparity in the localization mechanisms used in the Music app and on ownCloud in general. This issue is followed at https://central.owncloud.org/t/owncloud-music-app-translations/14881 .
+There exist partial translations for the Music app for many languages, but most of them are very much incomplete. In the past, the application was translated at https://www.transifex.com/owncloud-org/owncloud/ and the resource still exists there. However, large majoriry of the strings used in the app have not been picked by Transifex for many years now, and hence the translations from Transifex cannot be actually used. The root cause is disparity in the localization mechanisms used in the Music app and on ownCloud in general, and bridging the gap would require some support from ownCloud core team. This is probably never going to happen, see https://central.owncloud.org/t/owncloud-music-app-translations/14881. For now, you may contribute translations as normal pull requests, by following the instructions from https://github.com/owncloud/music/issues/671#issuecomment-782746463.
 
 #### SMB shares
 
 The Music app may be unable to extract metadata of the files residing on a SMB share. This is because, on some system configurations, it is not possible to use `fseek()` function to seek within the remote files on the SMB share. The `getID3` library used for metadata extraction depends on `fseek()` and will fail on such systems. If the metadata extraction fails, the Music app falls back to deducing the track names from the file names and the album names from the folder names. Whether or not the probelm exists on a system, may depend on the details of the SMB support library on the host computer and the remote computer providing the share.
 
 ## Development
-
-### L10n hints
-
-Sometimes translatable strings aren't detected. Try to move the `translate` attribute
-more to the beginning of the HTML element.
 
 ### Build frontend bundle
 
@@ -165,6 +160,8 @@ To build the release zip package, run the following commands. This requires the 
 	make release
 
 ### Install test dependencies
+
+To install test dependencies, run the following command on the root level of the project:
 
 	composer install
 

@@ -93,6 +93,7 @@ OCA.Music.PlayerWrapper = function() {
 		};
 
 		m_html5audio.onended = function() {
+			m_playing = false;
 			m_self.trigger('end');
 		};
 
@@ -149,6 +150,7 @@ OCA.Music.PlayerWrapper = function() {
 			m_self.trigger('ready');
 		});
 		m_aurora.on('end', function() {
+			m_playing = false;
 			m_self.trigger('end');
 		});
 		m_aurora.on('duration', function(msecs) {
@@ -222,6 +224,7 @@ OCA.Music.PlayerWrapper = function() {
 
 	this.stop = function() {
 		m_url = null;
+		m_playing = false;
 
 		switch (m_underlyingPlayer) {
 			case 'html5':

@@ -7,20 +7,25 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
-namespace OCA\Music\Backgroundjob;
+namespace OCA\Music\BackgroundJob;
 
 use OCA\Music\App\Music;
 use OCA\Music\Utility\PodcastService;
 
-class PodcastUpdateCheck {
+use OC\BackgroundJob\TimedJob;
+// NC15+ would have TimedJob also as a public class and has deprecated the private class used above.
+// However, we can't use this new alternative as it's not available on ownCloud.
+// use OCP\BackgroundJob\TimedJob;
+
+class PodcastUpdateCheck extends TimedJob {
 
 	/**
 	 * Check podcast updates on the background
 	 */
-	public static function run() {
+	public function run($arguments) {
 		$app = \OC::$server->query(Music::class);
 
 		$container = $app->getContainer();

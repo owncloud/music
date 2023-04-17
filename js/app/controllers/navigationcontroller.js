@@ -200,6 +200,13 @@ angular.module('Music').controller('NavigationController', [
 			return libraryService.getPodcastChannelsCount() > 0;
 		};
 
+		$scope.reloadRandom = function () {
+			libraryService.reloadRandom();
+
+			// also navigate to the Random view if not already open
+			$scope.navigateTo('#random');
+		};
+
 		// Play/pause playlist
 		$scope.togglePlay = function(destination, playlist) {
 			if ($rootScope.playingView == destination) {

@@ -3,8 +3,9 @@
 				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
 							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
-							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums'),
-				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' }"
+							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums')
+							|| (destination == '#/random' && $parent.popupShownForPlaylist == 'random'),
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' || destination=='#/random' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
@@ -129,6 +130,17 @@
 					</li>
 					<li ng-click="$parent.toggleFoldersFlatLayout(true)">
 						<a><span class="icon" ng-class="$parent.foldersFlatLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"></span><span translate>Flat layout</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#/random'">
+			<span class="icon-more"
+				ng-click="$parent.onPlaylistMoreButton('random'); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'random'">
+				<ul>
+					<li ng-click="$parent.reloadRandom()">
+						<a><span class="icon-reload icon"></span><span translate>Reload</span></a>
 					</li>
 				</ul>
 			</div>

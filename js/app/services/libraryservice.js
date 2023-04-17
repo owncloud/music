@@ -18,6 +18,7 @@ angular.module('Music').service('libraryService', [function() {
 	var tracksInAlbumOrder = null;
 	var tracksInAlphaOrder = null;
 	var tracksInGenreOrder = null;
+	var randomTracks = null;
 	var playlists = null;
 	var folders = null;
 	var genres = null;
@@ -178,6 +179,10 @@ angular.module('Music').service('libraryService', [function() {
 		});
 	}
 
+	function generateNewRandomSample() {
+		randomTracks = _.sampleSize(tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+	}
+
 	var diacriticRegExp = /[\u0300-\u036f]/g;
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	function foldString(str) {
@@ -281,6 +286,7 @@ angular.module('Music').service('libraryService', [function() {
 			artists = transformCollection(collection);
 			albums = _(artists).map('albums').flatten().value();
 			createTrackContainers();
+			generateNewRandomSample();
 		},
 		setPlaylists: function(lists) {
 			playlists = _.map(lists, wrapPlaylist);
@@ -478,7 +484,10 @@ angular.module('Music').service('libraryService', [function() {
 			return tracksInAlphaOrder;
 		},
 		getRandomTracks: function() {
-			return _.sampleSize(tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+			return randomTracks;
+		},
+		reloadRandom: function() {
+			generateNewRandomSample();
 		},
 		getTracksInAlbumOrder: function() {
 			return tracksInAlbumOrder;

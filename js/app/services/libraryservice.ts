@@ -93,6 +93,7 @@ export class LibraryService {
 	#tracksInAlbumOrder : PlaylistEntry[] = null;
 	#tracksInAlphaOrder : PlaylistEntry[] = null;
 	#tracksInGenreOrder : PlaylistEntry[] = null;
+	#randomTracks : PlaylistEntry[] = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
@@ -252,6 +253,10 @@ export class LibraryService {
 		});
 	}
 
+	#generateNewRandomSample() {
+		this.#randomTracks = _.sampleSize(this.#tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+	}
+
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	#foldString(str : string) : string {
 		if (str) {
@@ -350,6 +355,7 @@ export class LibraryService {
 		this.#artists = this.#transformCollection(collection);
 		this.#albums = _(this.#artists).map('albums').flatten().value();
 		this.#createTrackContainers();
+		this.#generateNewRandomSample();
 	}
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
@@ -567,7 +573,10 @@ export class LibraryService {
 		return Math.min(this.#tracksInAlphaOrder?.length ?? 0, MAX_RANDOM_SONGS_COUNT);
 	}
 	getRandomTracks() : PlaylistEntry[] {
-		return _.sampleSize(this.#tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+		return this.#randomTracks;
+	}
+	reloadRandom() {
+		this.#generateNewRandomSample();
 	}
 	getPlaylist(id : number) : Playlist {
 		return _.find(this.#playlists, { id: Number(id) });

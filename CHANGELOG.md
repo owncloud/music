@@ -5,6 +5,7 @@
 
 ### Fixed
 - Folder icons not being theme-colored on Nextcloud 25+
+- Navigation pane divider lines being invisible with some themes on Nextcloud 25+
 
 ## 1.8.3 - 2023-04-08
 ### Fixed

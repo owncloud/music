@@ -17,7 +17,14 @@
 }
 
 #app-navigation .app-navigation-separator {
-	border-bottom: 1px solid #dbdbdb;
+	border-bottom: 1px solid;
+	border-color: var(--color-main-text, #222);
+	opacity: 0.15;
+}
+
+.ie #app-navigation .app-navigation-separator {
+	/* IE doesn't support the var() syntax */
+	border-color: #222;
 }
 
 #app-navigation .music-navigation-item {

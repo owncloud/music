@@ -1,3 +1,11 @@
+## [Unreleased]
+### Added
+
+### Chnaged
+
+### Fixed
+- Folder icons not being theme-colored on Nextcloud 25+
+
 ## 1.8.3 - 2023-04-08
 ### Fixed
 - On ownCloud, flooding the log with errors "Cannot declare class because the name is already in use" (since v1.8.2)

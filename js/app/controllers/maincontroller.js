@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 angular.module('Music').controller('MainController', [
@@ -21,6 +21,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// setup dark theme support for Nextcloud versions older than 25
 	OCA.Music.DarkThemeLegacySupport.applyOnElement(document.getElementById('app'));
+
+	// create a global rule to use themed icons for folders everywhere, the default icon-folder is not themed on NC 25 and later
+	const folderStyle = document.createElement('style');
+	folderStyle.innerHTML = `#app-view .icon-folder { background-image: url(${OC.MimeType.getIconUrl('dir')}) }`;
+	document.head.appendChild(folderStyle);
 
 	$rootScope.playing = false;
 	$rootScope.playingView = null;

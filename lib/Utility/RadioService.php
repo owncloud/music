@@ -9,7 +9,7 @@
  * @author Moahmed-Ismail MEJRI <imejri@hotmail.com>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Moahmed-Ismail MEJRI 2022
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 namespace OCA\Music\Utility;
@@ -294,7 +294,7 @@ class RadioService {
 				if ($isHls) {
 					$resolvedUrl = $this->urlGenerator->linkToRoute('music.radioApi.hlsManifest', ['url' => \rawurlencode($url)]);
 				} else {
-					$entries = PlaylistFileService::parseM3uContent($content, 'UTF-8');
+					$entries = PlaylistFileService::parseM3uContent($content);
 				}
 			}
 

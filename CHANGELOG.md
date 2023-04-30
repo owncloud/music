@@ -2,6 +2,9 @@
 ### Added
 
 ### Chnaged
+- Allow UTF-8 encoding also on playlists with the extension .m3u (in addition to .m3u8)
+  * The file is interpreted as ISO-8859-1 only if not valid UTF-8 or if so specified by the #EXTENC tag
+  [#1047](https://github.com/owncloud/music/issues/1047)
 
 ### Fixed
 - Folder icons not being theme-colored on Nextcloud 25+

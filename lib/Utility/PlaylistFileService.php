@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -290,12 +290,33 @@ class PlaylistFileService {
 	}
 
 	private static function parseM3uFile(File $file) : array {
-		// By default, files with extension .m3u8 are interpreted as UTF-8 and files with extension
-		// .m3u as ISO-8859-1. These can be overridden with the tag '#EXTENC' in the file contents.
-		$encoding = Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true) ? 'UTF-8' : 'ISO-8859-1';
+		/* Files with extension .m3u8 are always treated as UTF-8.
+		 * Files with extension .m3u are analyzed and treated as UTF-8 if they seem to be valid UTF-8;
+		 * otherwise they are treated as ISO-8859-1 which was the original encoding used when that file
+		 * type was introduced. There's no any kind of official standard to follow here.
+		 */
+		if (Util::endsWith($file->getPath(), '.m3u8', /*ignoreCase=*/true)) {
+			$fp = $file->fopen('r');
+			$entries = self::parseM3uFilePointer($fp, 'UTF-8');
+			\fclose($fp);
+		} else {
+			$entries = self::parseM3uContent($file->getContent());
+		}
 
-		$fp = $file->fopen('r');
+		return $entries;
+	}
+
+	public static function parseM3uContent(string $content) {
+		$fp = \fopen("php://temp", 'r+');
+		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
+
+		\fputs($fp, /** @scrutinizer ignore-type */ $content);
+		\rewind($fp);
+
+		$encoding = \mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1']);
+		\assert(\is_string($encoding), 'Unexpected error: can\'t detect encoding'); // shouldn't fail since any byte stream is valid ISO-8859-1
 		$entries = self::parseM3uFilePointer($fp, $encoding);
+
 		\fclose($fp);
 
 		return $entries;
@@ -333,20 +354,6 @@ class PlaylistFileService {
 				$caption = null; // the caption has been used up
 			}
 		}
-
-		return $entries;
-	}
-
-	public static function parseM3uContent(string $content, string $encoding) {
-		$fp = \fopen("php://temp", 'r+');
-		\assert($fp !== false, 'Unexpected error: opening temporary stream failed');
-
-		\fputs($fp, /** @scrutinizer ignore-type */ $content);
-		\rewind($fp);
-
-		$entries = self::parseM3uFilePointer($fp, $encoding);
-
-		\fclose($fp);
 
 		return $entries;
 	}

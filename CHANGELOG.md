@@ -1,5 +1,6 @@
 ## [Unreleased]
 ### Added
+- Support for Nextcloud 27 (tested on RC1)
 
 ### Chnaged
 - Allow UTF-8 encoding also on playlists with the extension .m3u (in addition to .m3u8)

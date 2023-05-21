@@ -32,8 +32,9 @@ angular.module('Music').controller('SidebarController', [
 		};
 
 		function showSidebar(type, id) {
-			OC.Apps.showAppSidebar();
-			$('#app-content').addClass('with-app-sidebar');
+			$('#app-sidebar').removeClass('disappear').show();
+			$('#app-content').addClass('with-app-sidebar').trigger(new $.Event('appresized'));
+
 			$scope.contentType = type;
 			$scope.contentId = id;
 			$scope.adjustFixedPositions();
@@ -72,9 +73,8 @@ angular.module('Music').controller('SidebarController', [
 		});
 
 		$rootScope.$on('hideDetails', function() {
-			OC.Apps.hideAppSidebar();
-			$('#app-content').removeClass('with-app-sidebar');
-			$('#app-content').css('margin-right', '');
+			$('#app-sidebar').hide().addClass('disappear');
+			$('#app-content').css('margin-right', '').removeClass('with-app-sidebar').trigger(new $.Event('appresized'));
 			$scope.contentId = null;
 			$scope.contentType = null;
 		});

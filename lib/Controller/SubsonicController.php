@@ -758,8 +758,12 @@ class SubsonicController extends Controller {
 		foreach ($id as $index => $aId) {
 			list($type, $trackId) = self::parseEntityId($aId);
 			if ($type === 'track') {
-				$timestamp = $time[$index] ?? null;
-				$timeOfPlay = ($timestamp === null) ? null : new \DateTime('@' . $timestamp);
+				if (isset($time[$index])) {
+					$timestamp = \substr($time[$index], 0, -3); // cut down from milliseconds to seconds
+					$timeOfPlay = new \DateTime('@' . $timestamp);
+				} else {
+					$timeOfPlay = null;
+				}
 				$this->trackBusinessLayer->recordTrackPlayed((int)$trackId, $this->userId, $timeOfPlay);
 			}
 		}

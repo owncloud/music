@@ -10,6 +10,8 @@
 ### Fixed
 - Folder icons not being theme-colored on Nextcloud 25+
 - Navigation pane divider lines being invisible with some themes on Nextcloud 25+
+- Subsonic: Incorrect interpretation of the optional `time` argument on the `scrobble` method
+  [#1066](https://github.com/owncloud/music/issues/1066)
 
 ## 1.8.3 - 2023-04-08
 ### Fixed

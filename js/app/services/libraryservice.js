@@ -180,7 +180,14 @@ angular.module('Music').service('libraryService', [function() {
 	}
 
 	function generateNewRandomSample() {
-		randomTracks = _.sampleSize(tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
+		var tracks = _.flatten(_.map(albums, 'tracks'));
+
+		// Sort songs by play count so that the same songs does not get played
+		// between samples.
+		sortByNumericField(tracks, 'playCount');
+
+		tracks = _.shuffle(tracks.slice(0, MAX_RANDOM_SONGS_COUNT));
+		randomTracks = _.map(tracks, playlistEntry);
 	}
 
 	var diacriticRegExp = /[\u0300-\u036f]/g;

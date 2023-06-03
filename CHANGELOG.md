@@ -1,6 +1,6 @@
 ## [Unreleased]
 ### Added
-- Support for Nextcloud 27 (tested on RC1)
+- Support for Nextcloud 27 (tested on RC3)
 
 ### Chnaged
 - Allow UTF-8 encoding also on playlists with the extension .m3u (in addition to .m3u8)
@@ -12,6 +12,7 @@
 - Navigation pane divider lines being invisible with some themes on Nextcloud 25+
 - Subsonic: Incorrect interpretation of the optional `time` argument on the `scrobble` method
   [#1066](https://github.com/owncloud/music/issues/1066)
+- "Show in Files" link in the track details popping up an empty player bar on Nextcloud (at least on NC23-27)
 
 ## 1.8.3 - 2023-04-08
 ### Fixed

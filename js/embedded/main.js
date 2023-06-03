@@ -236,13 +236,18 @@ function initEmbeddedPlayer() {
 			mFileList = context.fileList;
 			var file = mFileList.findFile(fileName);
 
-			// Check if playing file changes
-			if (mCurrentFile === null || mCurrentFile.id != file.id) {
-				mCurrentFile = file;
-				openFileCallback();
-			}
-			else {
-				mPlayer.togglePlayback();
+			// Recent versions of Nextcloud (at least 23-27, possibly some others too) fire this handler when
+			// the user navigates to an audio file with a direct link. In that case, the callback happens before
+			// the context.filList is populated and we can't operate normally. Just ignore these cases.
+			if (file !== null) {
+				// Check if playing file changes
+				if (mCurrentFile === null || mCurrentFile.id != file.id) {
+					mCurrentFile = file;
+					openFileCallback();
+				}
+				else {
+					mPlayer.togglePlayback();
+				}
 			}
 		};
 

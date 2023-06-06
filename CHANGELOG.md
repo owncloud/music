@@ -1,8 +1,8 @@
-## [Unreleased]
+## 1.8.4 - 2023-06-06
 ### Added
 - Support for Nextcloud 27 (tested on RC3)
 
-### Chnaged
+### Changed
 - Allow UTF-8 encoding also on playlists with the extension .m3u (in addition to .m3u8)
   * The file is interpreted as ISO-8859-1 only if not valid UTF-8 or if so specified by the #EXTENC tag
   [#1047](https://github.com/owncloud/music/issues/1047)

@@ -20,18 +20,18 @@ module.exports = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    app: '../js/index.app.js',
-    files_music_player: '../js/index.embedded.js'
+    app: './js/index.app.js',
+    files_music_player: './js/index.embedded.js'
   },
   output: {
     filename: 'webpack.[name].[contenthash].js',
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'node_modules': path.resolve(__dirname, 'node_modules'),
-      'vendor': path.resolve(__dirname, '../js/vendor'),
+      'vendor': path.resolve(__dirname, 'js/vendor'),
       'angular': path.resolve('node_modules', 'angular'),
       'lodash': path.resolve('node_modules', 'lodash'),
       'jquery': path.resolve('node_modules', 'jquery/src/jquery'),
@@ -41,7 +41,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({filename: 'webpack.[name].[contenthash].css'}),
-    new ESLintPlugin({files: '../js'}),
+    new ESLintPlugin({files: './js'}),
     new webpack.ProvidePlugin({
       '$': 'jquery',
       'window.$': 'jquery',

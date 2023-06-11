@@ -58,7 +58,7 @@
 		"build": "webpack",
 		"build-dev": "webpack --mode=\"development\"",
 		"watch": "webpack --mode=\"development\" --watch",
-		"l10n-extract": "angular-gettext-cli --files {../templates/**/*.php,../js/app/**/*.js} --dest ../l10n/templates/music.pot",
-		"l10n-compile": "angular-gettext-cli --compile --files ../l10n/**/music.po --dest ../js/app/l10n/translations.js --module Music"
+		"l10n-extract": "angular-gettext-cli --files {./templates/**/*.php,./js/app/**/*.js} --dest ./l10n/templates/music.pot",
+		"l10n-compile": "angular-gettext-cli --compile --files ./l10n/**/music.po --dest ./js/app/l10n/translations.js --module Music"
 	}
 }

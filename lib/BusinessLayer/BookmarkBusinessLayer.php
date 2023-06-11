@@ -9,12 +9,13 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayer;
+use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\BookmarkMapper;
@@ -57,9 +58,13 @@ class BookmarkBusinessLayer extends BusinessLayer {
 
 	/**
 	 * @param int $type One of [Bookmark::TYPE_TRACK, Bookmark::TYPE_PODCAST_EPISODE]
-	 * @throws DoesNotExistException if such bookmark does not exist
+	 * @throws BusinessLayerException if such bookmark does not exist
 	 */
 	public function findByEntry(int $type, int $entryId, string $userId) : Bookmark {
-		return $this->mapper->findByEntry($type, $entryId, $userId);
+		try {
+			return $this->mapper->findByEntry($type, $entryId, $userId);
+		} catch (DoesNotExistException $ex) {
+			throw new BusinessLayerException($ex->getMessage());
+		}
 	}
 }

@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+- Subsonic: Unhandled exception when attempting to delete a non-existent bookmark
+  [#1071](https://github.com/owncloud/music/issues/1071)
+
 ## 1.8.4 - 2023-06-06
 ### Added
 - Support for Nextcloud 27 (tested on RC3)

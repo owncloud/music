@@ -15,9 +15,7 @@ import * as _ from 'lodash';
 
 declare const OC : any;
 
-OCA.Music = OCA.Music || {};
-
-OCA.Music.PlayerWrapper = class {
+export class PlayerWrapper {
 	#eventDispatcher : typeof OC.Backbone.Events;
 	#underlyingPlayer : string = ''; // set later as 'aurora' or 'html5'
 	#html5audio : HTMLAudioElement = new Audio();
@@ -444,4 +442,6 @@ OCA.Music.PlayerWrapper = class {
 	getBufferPercent() : number {
 		return this.#buffered;
 	}
-};
+}
+
+OCA.Music.PlayerWrapper = PlayerWrapper;

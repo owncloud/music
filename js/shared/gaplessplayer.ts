@@ -8,20 +8,32 @@
  * @copyright Pauli Järvinen 2022, 2023
  */
 
-OCA.Music = OCA.Music || {};
+import * as _ from 'lodash';
+import { PlayerWrapper } from './playerwrapper';
 
-OCA.Music.GaplessPlayer = class {
-	#currentPlayer = new OCA.Music.PlayerWrapper();
-	#nextPlayer = new OCA.Music.PlayerWrapper();
+declare const OC : any;
+
+class GaplessPlayer {
+	#eventDispatcher : typeof OC.Backbone.Events;
+	#currentPlayer = new PlayerWrapper();
+	#nextPlayer = new PlayerWrapper();
 
 	constructor() {
-		_.extend(this, OC.Backbone.Events);
+		this.#eventDispatcher = _.clone(OC.Backbone.Events);
 		this.#setupEventPropagation(this.#currentPlayer);
 		this.#setupEventPropagation(this.#nextPlayer);
 	}
 
-	#setupEventPropagation(player) {
-		player.on('all', (eventName, arg) => {
+	on(...args : any[]) : void {
+		this.#eventDispatcher.on(...args);
+	}
+
+	trigger(...args : any[]) : void {
+		this.#eventDispatcher.trigger(...args);
+	}
+
+	#setupEventPropagation(player : PlayerWrapper) : void {
+		player.on('all', (eventName : string, arg : any) => {
 			// propagate events only for the currently active instance
 			if (player === this.#currentPlayer) {
 				this.trigger(eventName, arg, player.getUrl());
@@ -29,81 +41,81 @@ OCA.Music.GaplessPlayer = class {
 		});
 	}
 
-	play() {
+	play() : void {
 		this.#currentPlayer.play();
 	}
 
-	pause() {
+	pause() : void {
 		this.#currentPlayer.pause();
 	}
 
-	stop() {
+	stop() : void {
 		this.#currentPlayer.stop();
 	}
 
-	isPlaying() {
+	isPlaying() : boolean {
 		return this.#currentPlayer.isPlaying();
 	}
 
-	seekingSupported() {
+	seekingSupported() : boolean {
 		return this.#currentPlayer.seekingSupported();
 	}
 
-	seekMsecs(msecs) {
+	seekMsecs(msecs : number) : void {
 		this.#currentPlayer.seekMsecs(msecs);
 	}
 
-	seek(ratio) {
+	seek(ratio : number) : void {
 		this.#currentPlayer.seek(ratio);
 	}
 
-	seekForward(msecs = 10000) {
+	seekForward(msecs : number = 10000) : void {
 		this.#currentPlayer.seekForward(msecs);
 	}
 
-	seekBackward(msecs = 10000) {
+	seekBackward(msecs : number = 10000) : void {
 		this.#currentPlayer.seekBackward(msecs);
 	}
 
-	playPosition() {
+	playPosition() : number {
 		return this.#currentPlayer.playPosition();
 	}
 
-	setVolume(percentage) {
+	setVolume(percentage : number) : void {
 		this.#currentPlayer.setVolume(percentage);
 		this.#nextPlayer.setVolume(percentage);
 	}
 
-	playbackRateAdjustible() {
+	playbackRateAdjustible() : boolean {
 		return this.#currentPlayer.playbackRateAdjustible();
 	}
 
-	setPlaybackRate(rate) {
+	setPlaybackRate(rate : number) : void {
 		this.#currentPlayer.setPlaybackRate(rate);
 		this.#nextPlayer.setPlaybackRate(rate);
 	}
 
-	canPlayMime(mime) {
+	canPlayMime(mime : string) : boolean {
 		return this.#currentPlayer.canPlayMime(mime);
 	}
 
-	isReady() {
+	isReady() : boolean {
 		return this.#currentPlayer.isReady();
 	}
 
-	getDuration() {
+	getDuration() : number {
 		return this.#currentPlayer.getDuration();
 	}
 
-	getBufferPercent() {
+	getBufferPercent() : number {
 		return this.#currentPlayer.getBufferPercent();
 	}
 
-	getUrl() {
+	getUrl() : string|null {
 		return this.#currentPlayer.getUrl();
 	}
 
-	fromUrl(url, mime) {
+	fromUrl(url : string, mime : string) : void {
 		this.#swapPlayer();
 
 		if (this.#currentPlayer.getUrl() != url) {
@@ -124,17 +136,19 @@ OCA.Music.GaplessPlayer = class {
 		}
 	}
 
-	fromExtUrl(url, isHls) {
+	fromExtUrl(url : string, isHls : boolean) : void {
 		this.#currentPlayer.fromExtUrl(url, isHls);
 	}
 
-	prepareUrl(url, mime) {
+	prepareUrl(url : string, mime : string) : void {
 		if (this.#nextPlayer.getUrl() != url) {
 			this.#nextPlayer.fromUrl(url, mime);
 		}
 	}
 
-	#swapPlayer() {
+	#swapPlayer() : void {
 		[this.#currentPlayer, this.#nextPlayer] = [this.#nextPlayer, this.#currentPlayer];
 	}
 };
+
+OCA.Music.GaplessPlayer = GaplessPlayer;

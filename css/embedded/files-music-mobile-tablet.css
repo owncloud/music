@@ -1,0 +1,57 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2023
+ */
+
+ /* "Tablet" style */
+#music-controls.tablet {
+	padding: 0;
+}
+#music-controls.tablet #albumart {
+	margin-left: 10px;
+}
+#music-controls.tablet #info-and-progress {
+	left: 230px;
+	right: 140px;
+}
+#music-controls.tablet #title {
+	font-size: 14px;
+}
+
+/* "Mobile" style */
+#music-controls.mobile #prev {
+	display: none;
+}
+#music-controls.mobile .control {
+	margin-right: 0;
+}
+#music-controls.mobile #albumart {
+	margin-left: 0;
+	margin-right: 0;
+}
+#music-controls.mobile #info-and-progress {
+	left: 160px;
+	right: 50px;
+}
+#music-controls.mobile .volume-control {
+	display: none;
+}
+
+/* "Extra narrow" style */
+#music-controls.extra-narrow #song-info {
+	width: 100%;
+}
+#music-controls.extra-narrow .progress-info {
+	display: none;
+}
+
+/* Hide the music controls when menu on left is in collapsible mode (on portrait phone)
+ * and the menu is open */
+body.snapjs-left #music-controls {
+	visibility: hidden;
+}

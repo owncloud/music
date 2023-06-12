@@ -1,0 +1,50 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2023
+ */
+ 
+ /* Playlist tab view shown in the Files sidebar */
+
+.musicPlaylistTabView p {
+	margin-top: 24px;
+	font-weight: bold;
+}
+
+.musicPlaylistTabView .loading {
+	height: 50px;
+}
+
+.musicPlaylistTabView li {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 8px;
+}
+
+.musicPlaylistTabView ol {
+	list-style: decimal inside;
+}
+
+.musicPlaylistTabView ol li {
+	cursor: pointer;
+	list-style-type: decimal;
+}
+
+.musicPlaylistTabView ol li::marker {
+	color: #767676;
+}
+
+.musicPlaylistTabView ol li:hover,
+.musicPlaylistTabView ol li.current {
+	transition: background-color 0.3s ease;
+	background-color: var(--color-background-dark, #f7f7f7);
+}
+
+.ie .musicPlaylistTabView ol li:hover,
+.ie .musicPlaylistTabView ol li.current {
+	background-color: #f7f7f7;
+}

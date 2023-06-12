@@ -10,40 +10,51 @@
  * @copyright Pauli Järvinen 2016 - 2023
  */
 
-import Hls from 'node_modules/hls.js/dist/hls.light.js';
+const Hls = require('node_modules/hls.js/dist/hls.light.js');
+import * as _ from 'lodash';
+
+declare const OC : any;
 
 OCA.Music = OCA.Music || {};
 
 OCA.Music.PlayerWrapper = class {
-	#underlyingPlayer = null; // set later as 'aurora' or 'html5'
-	#html5audio = null;
-	#hls = null;
-	#aurora = null;
-	#auroraWorkaroundAudio = null;
-	#position = 0;
-	#duration = 0;
-	#buffered = 0; // percent
-	#volume = 100;
-	#playbackRate = 1.0;
-	#ready = false;
-	#playing = false;
-	#url = null;
-	#urlType = null; // set later as one of ['local', 'external', 'external-hls']
-	#mime = null;
+	#eventDispatcher : typeof OC.Backbone.Events;
+	#underlyingPlayer : string = ''; // set later as 'aurora' or 'html5'
+	#html5audio : HTMLAudioElement = new Audio();
+	#hls : typeof Hls = null;
+	#aurora : any = null;
+	#auroraWorkaroundAudio : HTMLAudioElement|null = null;
+	#position : number = 0;
+	#duration : number = 0;
+	#buffered : number = 0; // percent
+	#volume : number = 100;
+	#playbackRate : number = 1.0;
+	#ready : boolean = false;
+	#playing : boolean = false;
+	#url : string|null = null;
+	#urlType : string = ''; // set later as one of ['local', 'external', 'external-hls']
+	#mime : string = '';
 
 	constructor() {
-		_.extend(this, OC.Backbone.Events);
+		this.#eventDispatcher = _.clone(OC.Backbone.Events);
 		this.#initHtml5();
 	}
 
-	#initHtml5() {
-		this.#html5audio = new Audio();
+	on(...args : any[]) : void {
+		this.#eventDispatcher.on(...args);
+	}
+
+	trigger(...args : any[]) : void {
+		this.#eventDispatcher.trigger(...args);
+	}
+
+	#initHtml5() : void {
 		this.#html5audio.preload = 'auto';
 
 		if (Hls.isSupported()) {
 			this.#hls = new Hls({ enableWorker: false });
 
-			this.#hls.on(Hls.Events.ERROR, (_event, data) => {
+			this.#hls.on(Hls.Events.ERROR, (_event : any, data : any) => {
 				console.error('HLS error: ' + JSON.stringify(_.pick(data, ['type', 'details', 'fatal'])));
 				if (data.fatal) {
 					this.pause();
@@ -53,13 +64,22 @@ OCA.Music.PlayerWrapper = class {
 			});
 		}
 
-		const getBufferedEnd = () => {
+		const getBufferedEnd = () : number => {
 			// The buffer may contain holes after seeking but just ignore those.
 			// Show the buffering status according the last buffered position.
 			const bufCount = this.#html5audio.buffered.length;
 			return (bufCount > 0) ? this.#html5audio.buffered.end(bufCount-1) : 0;
 		};
-		let latestNotifiedBufferState = null;
+		let latestNotifiedBufferState : number = -1;
+
+		const handleProgress = () : void => {
+			if (this.#html5audio.duration > 0) {
+				let bufEnd = getBufferedEnd();
+				this.#buffered = bufEnd / this.#html5audio.duration * 100;
+				this.trigger('buffer', this.#buffered);
+				latestNotifiedBufferState = bufEnd;
+			}
+		};
 
 		// Bind the various callbacks
 		this.#html5audio.ontimeupdate = () => {
@@ -68,7 +88,7 @@ OCA.Music.PlayerWrapper = class {
 			// updated to its final value. Hence, check here during playback if the
 			// buffering state has changed, and fire an extra event if it has.
 			if (latestNotifiedBufferState != getBufferedEnd()) {
-				this.#html5audio.onprogress();
+				handleProgress();
 			}
 
 			this.#position = this.#html5audio.currentTime * 1000;
@@ -80,16 +100,9 @@ OCA.Music.PlayerWrapper = class {
 			this.trigger('duration', this.#duration);
 		};
 
-		this.#html5audio.onprogress = () => {
-			if (this.#html5audio.duration > 0) {
-				let bufEnd = getBufferedEnd();
-				this.#buffered = bufEnd / this.#html5audio.duration * 100;
-				this.trigger('buffer', this.#buffered);
-				latestNotifiedBufferState = bufEnd;
-			}
-		};
+		this.#html5audio.onprogress = handleProgress;
 
-		this.#html5audio.onsuspend = this.#html5audio.onprogress;
+		this.#html5audio.onsuspend = handleProgress;
 
 		this.#html5audio.onended = () => this.trigger('end');
 			this.#playing = false;
@@ -130,14 +143,14 @@ OCA.Music.PlayerWrapper = class {
 	}
 
 	// Aurora differs from HTML5 player so that it has to be initialized again for each URL
-	#initAurora(url) {
-		this.#aurora = window.AV.Player.fromURL(url);
+	#initAurora(url : string) : void {
+		this.#aurora = (<any>window).AV.Player.fromURL(url);
 
-		this.#aurora.on('buffer', (percent) => {
+		this.#aurora.on('buffer', (percent : number) => {
 			this.#buffered = percent;
 			this.trigger('buffer', percent);
 		});
-		this.#aurora.on('progress', (currentTime) => {
+		this.#aurora.on('progress', (currentTime : number) => {
 			this.#position = currentTime;
 			this.trigger('progress', currentTime);
 		});
@@ -149,11 +162,11 @@ OCA.Music.PlayerWrapper = class {
 			this.#playing = false;
 			this.trigger('end');
 		});
-		this.#aurora.on('duration', (msecs) => {
+		this.#aurora.on('duration', (msecs : number) => {
 			this.#duration = msecs;
 			this.trigger('duration', msecs);
 		});
-		this.#aurora.on('error', (message) => {
+		this.#aurora.on('error', (message : string) => {
 			console.error('Aurora error: ' + message);
 			this.trigger('error', url);
 		});
@@ -172,15 +185,15 @@ OCA.Music.PlayerWrapper = class {
 		this.#auroraWorkaroundAudio.src = OCA.Music.DummyAudio.getData();
 	}
 
-	#isIe() {
+	#isIe() : boolean {
 		return $('html').hasClass('ie'); // are we running on Internet Explorer
 	}
 
-	#onPlayStarted() {
+	#onPlayStarted() : void {
 		this.trigger('play');
 	}
 
-	#onPaused() {
+	#onPaused() : void {
 		this.#playing = false;
 		if (this.#url !== null) {
 			this.trigger('pause');
@@ -189,7 +202,7 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	play() {
+	play() : void {
 		if (this.#url) {
 			this.#playing = true;
 			switch (this.#underlyingPlayer) {
@@ -207,7 +220,7 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	pause() {
+	pause() : void {
 		switch (this.#underlyingPlayer) {
 			case 'html5':
 				this.#html5audio.pause();
@@ -222,7 +235,7 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	stop() {
+	stop() : void {
 		this.#url = null;
 		this.#playing = false;
 
@@ -261,11 +274,11 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	isPlaying() {
+	isPlaying() : boolean {
 		return this.#playing;
 	}
 
-	seekingSupported() {
+	seekingSupported() : boolean {
 		// Seeking is not implemented in aurora/flac.js and does not work on all
 		// files with aurora/mp3.js. Hence, we disable seeking with aurora.
 		// Also, seeking requires that we know a valid duration for the file/stream;
@@ -276,7 +289,7 @@ OCA.Music.PlayerWrapper = class {
 		return (this.#underlyingPlayer == 'html5' && (this.#urlType == 'local' || validDuration));
 	}
 
-	seekMsecs(msecs) {
+	seekMsecs(msecs : number) : void {
 		if (msecs !== this.playPosition()) {
 			if (this.seekingSupported()) {
 				switch (this.#underlyingPlayer) {
@@ -293,7 +306,7 @@ OCA.Music.PlayerWrapper = class {
 			else if (msecs === 0 && this.#duration > 0) {
 				// seeking to the beginning can be simulated even when seeking in general is not supported
 				let playing = this.#playing;
-				this.fromUrl(this.#url);
+				this.fromUrl(this.#url, this.#mime);
 				this.trigger('progress', 0);
 				if (playing) {
 					this.play();
@@ -305,23 +318,23 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	seek(ratio) {
+	seek(ratio : number) : void {
 		this.seekMsecs(ratio * this.#duration);
 	}
 
-	seekForward(msecs = 10000) {
+	seekForward(msecs = 10000) : void {
 		this.seekMsecs(this.#position + msecs);
 	}
 
-	seekBackward(msecs = 10000) {
+	seekBackward(msecs = 10000) : void {
 		this.seekMsecs(this.#position - msecs);
 	}
 
-	playPosition() {
+	playPosition() : number {
 		return this.#position;
 	}
 
-	setVolume(percentage) {
+	setVolume(percentage : number) : void {
 		this.#volume = percentage;
 
 		switch (this.#underlyingPlayer) {
@@ -336,36 +349,36 @@ OCA.Music.PlayerWrapper = class {
 		}
 	}
 
-	playbackRateAdjustible() {
+	playbackRateAdjustible() : boolean {
 		return (this.#underlyingPlayer == 'html5');
 	}
 
-	setPlaybackRate(rate) {
+	setPlaybackRate(rate : number) : void {
 		this.#playbackRate = rate;
 
 		// Note: the feature is not supported with the Aurora backend
 		this.#html5audio.playbackRate = this.#playbackRate;
 	}
 
-	#canPlayWithHtml5(mime) {
+	#canPlayWithHtml5(mime : string) : boolean {
 		// The m4b format is almost identical with m4a (but intended for audio books).
 		// Still, browsers actually able to play m4b files seem to return false when
 		// queuring the support for the mime. Hence, a little hack.
 		// The m4a files use MIME type 'audio/mp4' while the m4b use 'audio/m4b'.
-		return this.#html5audio.canPlayType(mime)
-			|| (mime == 'audio/m4b' && this.#html5audio.canPlayType('audio/mp4'));
+		return (this.#html5audio.canPlayType(mime) !== '')
+			|| (mime == 'audio/m4b' && this.#canPlayWithHtml5('audio/mp4'));
 	}
 
-	#canPlayWithAurora(mime) {
+	#canPlayWithAurora(mime : string) : boolean {
 		return ['audio/flac', 'audio/mpeg', 'audio/mp4', 'audio/m4b', 'audio/aac', 'audio/wav',
 				'audio/aiff', 'audio/basic', 'audio/x-aiff', 'audio/x-caf'].includes(mime);
 	}
 
-	canPlayMime(mime) {
+	canPlayMime(mime : string) : boolean {
 		return this.#canPlayWithHtml5(mime) || this.#canPlayWithAurora(mime);
 	}
 
-	#doFromUrl(setupUnderlyingPlayer) {
+	#doFromUrl(setupUnderlyingPlayer : CallableFunction) : void {
 		this.#duration = 0; // shall be set to a proper value in a callback from the underlying engine
 		this.#position = 0;
 		this.#ready = false;
@@ -380,7 +393,7 @@ OCA.Music.PlayerWrapper = class {
 		this.setPlaybackRate(this.#playbackRate);
 	}
 
-	fromUrl(url, mime) {
+	fromUrl(url : string, mime : string) : void {
 		this.#doFromUrl(() => {
 			this.#url = url;
 			this.#urlType = 'local';
@@ -397,7 +410,7 @@ OCA.Music.PlayerWrapper = class {
 		});
 	}
 
-	fromExtUrl(url, isHls) {
+	fromExtUrl(url : string, isHls : boolean) : void {
 		this.#doFromUrl(() => {
 			this.#url = url;
 			this.#mime = null;
@@ -416,19 +429,19 @@ OCA.Music.PlayerWrapper = class {
 		});
 	}
 
-	getUrl() {
+	getUrl() : string|null {
 		return this.#url;
 	}
 
-	isReady() {
+	isReady() : boolean {
 		return this.#ready;
 	}
 
-	getDuration() {
+	getDuration() : number {
 		return this.#duration;
 	}
 
-	getBufferPercent() {
+	getBufferPercent() : number {
 		return this.#buffered;
 	}
 };

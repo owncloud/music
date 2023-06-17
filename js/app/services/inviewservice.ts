@@ -9,19 +9,19 @@
  *
  */
 
-angular.module('Music').service('inViewService', ['$rootScope', function($rootScope) {
+import * as ng from "angular";
+
+ng.module('Music').service('inViewService', ['$rootScope', function($rootScope : ng.IRootScopeService) {
 
 	let dirty = true;
-	let headerHeight = null;
-	let appViewHeight = null;
+	let headerHeight = 0;
+	let appViewHeight = 0;
 
-	$rootScope.$on('resize', function() {
-		dirty = true;
-	});
+	$rootScope.$on('resize', () => dirty = true);
 
-	function updateHeights() {
-		let appView = document.getElementById('app-view');
-		let header = document.getElementById('header');
+	function updateHeights() : void {
+		const appView = document.getElementById('app-view');
+		const header = document.getElementById('header');
 
 		headerHeight = header.offsetHeight;
 		appViewHeight = appView.offsetHeight;
@@ -38,7 +38,7 @@ angular.module('Music').service('inViewService', ['$rootScope', function($rootSc
 		 * @param int topMargin Optional top extension in pixels (use negative value for reduction)
 		 * @param int bottomMargin Optional bottom extension in pixels (use negative value for reduction)
 		 */
-		isElementInViewPort: function(el, topMargin = 0, bottomMargin = 0) {
+		isElementInViewPort: function(el : HTMLElement, topMargin = 0, bottomMargin = 0) : boolean {
 			if (el) {
 				if (dirty) {
 					updateHeights();

@@ -10,28 +10,35 @@
  * @copyright Pauli Järvinen 2017 - 2023
  */
 
-angular.module('Music').service('playlistService', ['$rootScope', function($rootScope) {
-	let playlist = null;
-	let playlistId = null;
-	let playOrder = [];
+import * as ng from "angular";
+import * as _ from "lodash";
+import { MusicRootScope } from "app/config/musicrootscope";
+
+interface PlaylistEntry {
+};
+
+ng.module('Music').service('playlistService', ['$rootScope', function($rootScope : MusicRootScope) {
+	let playlist : PlaylistEntry[]|null = null;
+	let playlistId : string|null = null;
+	let playOrder : number[] = [];
 	let playOrderIter = -1;
-	let startFromIndex = null;
+	let startFromIndex : number|null = null;
 	let shuffle = false;
 	let repeat = false;
 	let prevShuffleState = false;
 
-	function shuffledIndices() {
+	function shuffledIndices() : number[] {
 		let indices = _.range(playlist.length);
 		return _.shuffle(indices);
 	}
 
-	function shuffledIndicesExcluding(toExclude) {
+	function shuffledIndicesExcluding(toExclude : number) : number[] {
 		let indices = _.range(playlist.length);
 		indices.splice(toExclude, 1);
 		return _.shuffle(indices);
 	}
 
-	function wrapIndexToStart(list, index) {
+	function wrapIndexToStart<Type>(list : Type[], index : number) : Type[] {
 		if (index > 0) {
 			// slice array in two parts and interchange them
 			let begin = list.slice(0, index);
@@ -41,8 +48,8 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 		return list;
 	}
 
-	function enqueueIndices() {
-		let nextIndices = null;
+	function enqueueIndices() : void {
+		let nextIndices : number[] = null;
 
 		if (shuffle) {
 			if (startFromIndex !== null) {
@@ -68,31 +75,31 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 	}
 
 	// drop the planned play order but preserve the history
-	function dropFuturePlayOrder() {
+	function dropFuturePlayOrder() : void {
 		playOrder = _.take(playOrder, playOrderIter + 1);
 	}
 
-	function insertMany(hostArray, targetIndex, insertedItems) {
+	function insertMany(hostArray : number[], targetIndex : number, insertedItems : number[]) : void {
 		hostArray.splice.apply(hostArray, [targetIndex, 0].concat(insertedItems));
 	}
 
 	return {
-		setShuffle: function(state) {
+		setShuffle(state : boolean) : void {
 			shuffle = state;
 		},
-		setRepeat: function(state) {
+		setRepeat(state : boolean) : void {
 			repeat = state;
 		},
-		getCurrentIndex: function() {
+		getCurrentIndex() : number|null {
 			return (playOrderIter >= 0) ? playOrder[playOrderIter] : null;
 		},
-		getCurrentPlaylistId: function() {
+		getCurrentPlaylistId() : string|null {
 			return playlistId;
 		},
-		getCurrentPlaylist: function() {
+		getCurrentPlaylist() : PlaylistEntry[]|null {
 			return playlist;
 		},
-		jumpToPrevTrack: function() {
+		jumpToPrevTrack() : PlaylistEntry|null {
 			if (playlist && playOrderIter > 0) {
 				--playOrderIter;
 				let track = playlist[this.getCurrentIndex()];
@@ -101,7 +108,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			return null;
 		},
-		jumpToNextTrack: function() {
+		jumpToNextTrack() : PlaylistEntry|null {
 			if (playlist === null || playOrder === null) {
 				return null;
 			}
@@ -130,7 +137,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			this.publish('trackChanged', track);
 			return track;
 		},
-		peekNextTrack: function() {
+		peekNextTrack() : PlaylistEntry|null {
 			// The next track may be peeked only when there are forthcoming tracks already enqueued, not when jumping
 			// to the next track would start a new round in the Repeat mode
 			if (playlist === null || playOrder === null || playOrderIter < 0 || playOrderIter >= playOrder.length - 1) {
@@ -139,7 +146,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				return playlist[playOrder[playOrderIter + 1]];
 			}
 		},
-		setPlaylist: function(listId, pl, startIndex = null) {
+		setPlaylist(listId : string, pl : PlaylistEntry[], startIndex : number|null = null) : void {
 			playlist = pl.slice(); // copy
 			startFromIndex = startIndex;
 			if (listId === playlistId) {
@@ -154,13 +161,13 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			enqueueIndices();
 		},
-		clearPlaylist: function() {
+		clearPlaylist() : void {
 			playOrderIter = -1;
 			playlist = null;
 			playlistId = null;
 			this.publish('playlistEnded');
 		},
-		onPlaylistModified: function(pl, currentIndex) {
+		onPlaylistModified(pl : PlaylistEntry[], currentIndex : number) : void {
 			let currentTrack = playlist[this.getCurrentIndex()];
 			// check if the track being played is still available in the list
 			if (pl[currentIndex] === currentTrack) {
@@ -180,7 +187,7 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 			}
 			this.publish('trackChanged', currentTrack);
 		},
-		onTracksAdded: function(newTracks) {
+		onTracksAdded(newTracks : PlaylistEntry[]) : void {
 			let prevListSize = playlist.length;
 			playlist = playlist.concat(newTracks);
 			let newIndices = _.range(prevListSize, playlist.length);
@@ -202,12 +209,10 @@ angular.module('Music').service('playlistService', ['$rootScope', function($root
 				}
 			}
 		},
-		publish: function(_name /*, ...*/) {
-			// pass all arguments straight through to $rootScope.$emit
-			let args = Array.prototype.slice.call(arguments);
-			$rootScope.$emit.apply($rootScope, args);
+		publish(name : string, ...args : any[]) : void {
+			$rootScope.$emit(name, ...args);
 		},
-		subscribe: function(name, listener) {
+		subscribe(name : string, listener : (event: ng.IAngularEvent, ...args: any[]) => any) : () => void {
 			return $rootScope.$on(name, listener);
 		}
 	};

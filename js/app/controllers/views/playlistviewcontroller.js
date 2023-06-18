@@ -58,7 +58,7 @@ angular.module('Music').controller('PlaylistViewController', [
 			});
 		};
 
-		function play(startIndex = 0) {
+		function play(startIndex = null) {
 			let id = 'playlist-' + $scope.playlist.id;
 			playlistService.setPlaylist(id, $scope.tracks, startIndex);
 			playlistService.publish('play');

@@ -35,7 +35,7 @@ angular.module('Music').controller('AllTracksViewController', [
 			_.each(_unsubFuncs, function(func) { func(); });
 		});
 
-		function play(startIndex = 0) {
+		function play(startIndex = null) {
 			playlistService.setPlaylist('alltracks', _tracks, startIndex);
 			playlistService.publish('play');
 		}

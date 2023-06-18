@@ -75,7 +75,7 @@ angular.module('Music').controller('RadioViewController', [
 			);
 		}
 
-		function play(startIndex = 0) {
+		function play(startIndex = null) {
 			playlistService.setPlaylist('radio', $scope.stations, startIndex);
 			playlistService.publish('play');
 		}

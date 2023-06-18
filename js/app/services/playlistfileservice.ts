@@ -12,6 +12,7 @@ import * as ng from 'angular';
 import { gettextCatalog } from 'angular-gettext';
 import { MusicRootScope } from 'app/config/musicrootscope';
 import { IService } from 'restangular';
+import { LibraryService } from './libraryservice';
 
 interface Playlist {
 	id : number;
@@ -22,7 +23,7 @@ interface Playlist {
 
 ng.module('Music').service('playlistFileService', [
 '$rootScope', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
-function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : any, gettextCatalog : gettextCatalog, Restangular : IService) {
+function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : LibraryService, gettextCatalog : gettextCatalog, Restangular : IService) {
 
 	function onExportConflict(path : string, name : string, retryFunc : CallableFunction) : void {
 		OC.dialogs.confirm(

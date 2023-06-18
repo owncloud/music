@@ -12,21 +12,21 @@
 import * as ng from 'angular';
 import * as _ from 'lodash';
 
-interface Artist {
+export interface Artist {
 	id : number;
 	name : string;
 	sortName : string;
 	albums : Album[];
 }
 
-interface Album {
+export interface Album {
 	id : number;
 	name : string;
 	artist : Artist;
 	tracks : Track[];
 }
 
-interface Track {
+export interface Track {
 	id : number;
 	title : string;
 	album : Album;
@@ -38,17 +38,17 @@ interface Track {
 	genre : Genre;
 }
 
-interface PlaylistEntry {
+export interface PlaylistEntry {
 	track : Track;
 }
 
-interface Playlist {
+export interface Playlist {
 	id : number;
 	name : string;
 	tracks : PlaylistEntry[];
 }
 
-interface Folder {
+export interface Folder {
 	id : number;
 	name : string;
 	path : string;
@@ -57,49 +57,51 @@ interface Folder {
 	tracks : PlaylistEntry[]
 }
 
-interface Genre extends Playlist {}
+export interface Genre extends Playlist {}
 
-interface RadioStation extends PlaylistEntry {}
+export interface RadioStation extends PlaylistEntry {}
 
-interface PodcastChannel {
+export interface PodcastChannel {
 	id : number;
 	title : string;
+	hash : string;
 	episodes : PodcastEpisode[];
 }
 
-interface PodcastEpisode {
+export interface PodcastEpisode {
 	id : number;
 	title : string;
 	channel : PodcastChannel;
 	type : string;
 }
 
-interface SearchResult<T> {
+export interface SearchResult<T> {
 	result: T[];
 	truncated : boolean;
 }
 
-ng.module('Music').service('libraryService', [function() {
+const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 
-	let ignoredArticles : string[] = [];
-	let artists : Artist[] = null;
-	let albums : Album[] = null;
-	let tracksIndex : { [id: number] : Track } = {};
-	let tracksInAlbumOrder : PlaylistEntry[] = null;
-	let tracksInAlphaOrder : PlaylistEntry[] = null;
-	let tracksInGenreOrder : PlaylistEntry[] = null;
-	let playlists : Playlist[] = null;
-	let folders : Folder[] = null;
-	let genres : Genre[] = null;
-	let radioStations : RadioStation[] = null;
-	let podcastChannels : PodcastChannel[] = null;
+export class LibraryService {
+	#ignoredArticles : string[] = [];
+	#artists : Artist[] = null;
+	#albums : Album[] = null;
+	#tracksIndex : { [id: number] : Track } = {};
+	#tracksInAlbumOrder : PlaylistEntry[] = null;
+	#tracksInAlphaOrder : PlaylistEntry[] = null;
+	#tracksInGenreOrder : PlaylistEntry[] = null;
+	#playlists : Playlist[] = null;
+	#folders : Folder[] = null;
+	#genres : Genre[] = null;
+	#radioStations : RadioStation[] = null;
+	#podcastChannels : PodcastChannel[] = null;
 
 	/** 
 	 * Sort array according to a specified text field. The field may be specified as a dot-separated path.
 	 * Note:  The exact ordering is browser-dependant and usually affected by the browser language.
 	 * Note2: The array is sorted in-place instead of returning a new array.
 	 */
-	function sortByTextField<T>(items : T[], field : string) : void {
+	#sortByTextField<T>(items : T[], field : string) : void {
 		let getSortProperty = _.property(field);
 		let locale = OCA.Music.Utils.getLocale();
 
@@ -121,32 +123,32 @@ ng.module('Music').service('libraryService', [function() {
 	 * Like sortByTextField but to be used with arrays of playlist entries where
 	 * field is within outer field "track".
 	 */
-	function sortByPlaylistEntryTextField(items : PlaylistEntry[], field : string) : void {
-		sortByTextField(items, 'track.' + field);
+	#sortByPlaylistEntryTextField(items : PlaylistEntry[], field : string) : void {
+		this.#sortByTextField(items, 'track.' + field);
 	}
 
-	function sortByNumericField<T>(items : T[], field : string) : void {
+	#sortByNumericField<T>(items : T[], field : string) : void {
 		let getSortProperty = _.property(field);
 		items.sort((a : T, b : T) => {
 			return Number(getSortProperty(a)) - Number(getSortProperty(b));
 		});
 	}
 
-	function sortByYearAndName(aAlbums : Album[]) : Album[] {
-		sortByTextField(aAlbums, 'name');
+	#sortByYearAndName(aAlbums : Album[]) : Album[] {
+		this.#sortByTextField(aAlbums, 'name');
 		aAlbums = _.sortBy(aAlbums, 'year');
 		return aAlbums;
 	}
 
-	function sortByDiskNumberAndTitle(tracks : Track[]) : Track[] {
-		sortByTextField(tracks, 'title');
+	#sortByDiskNumberAndTitle(tracks : Track[]) : Track[] {
+		this.#sortByTextField(tracks, 'title');
 		tracks = _.sortBy(tracks, 'number');
 		tracks = _.sortBy(tracks, 'disk');
 		return tracks;
 	}
 
-	function createArtistSortName(name : string) : string {
-		for (let article of ignoredArticles) {
+	#createArtistSortName(name : string) : string {
+		for (let article of this.#ignoredArticles) {
 			if (name.toLowerCase().startsWith(article.toLowerCase() + ' ')) {
 				return name.substring(article.length + 1).trim();
 			}
@@ -157,105 +159,104 @@ ng.module('Music').service('libraryService', [function() {
 	/**
 	 * Sort the passed in collection alphabetically, and set up parent references
 	 */
-	function transformCollection(collection : any[]) : Artist[] {
-		_.forEach(collection, function(artist) {
-			artist.sortName = createArtistSortName(artist.name);
-			artist.albums = sortByYearAndName(artist.albums);
-			_.forEach(artist.albums, function(album) {
+	#transformCollection(collection : any[]) : Artist[] {
+		_.forEach(collection, (artist) => {
+			artist.sortName = this.#createArtistSortName(artist.name);
+			artist.albums = this.#sortByYearAndName(artist.albums);
+			_.forEach(artist.albums, (album) => {
 				album.artist = artist;
-				album.tracks = sortByDiskNumberAndTitle(album.tracks);
-				_.forEach(album.tracks, function(track) {
-					track.artistSortName = createArtistSortName(track.artistName);
+				album.tracks = this.#sortByDiskNumberAndTitle(album.tracks);
+				_.forEach(album.tracks, (track) => {
+					track.artistSortName = this.#createArtistSortName(track.artistName);
 					track.album = album;
 				});
 			});
 		});
-		sortByTextField(collection, 'sortName');
+		this.#sortByTextField(collection, 'sortName');
 		return collection;
 	}
 
-	function moveArrayElement(array : any[], from : number, to : number) : void {
+	#moveArrayElement(array : any[], from : number, to : number) : void {
 		array.splice(to, 0, array.splice(from, 1)[0]);
 	}
 
-	function playlistEntry(track : Track) : PlaylistEntry {
+	#playlistEntry(track : Track) : PlaylistEntry {
 		return (track !== null) ? { track: track } : null;
 	}
 
-	function playlistEntryFromId(trackId : number) : PlaylistEntry {
-		return playlistEntry(tracksIndex[trackId] ?? null);
+	#playlistEntryFromId(trackId : number) : PlaylistEntry {
+		return this.#playlistEntry(this.#tracksIndex[trackId] ?? null);
 	}
 
-	function wrapRadioStation(station : any) : RadioStation {
+	#wrapRadioStation(station : any) : RadioStation {
 		station.type = 'radio';
-		return playlistEntry(station);
+		return this.#playlistEntry(station);
 	}
 
-	function wrapPlaylist(playlist : any) : Playlist {
+	#wrapPlaylist(playlist : any) : Playlist {
 		let wrapped = $.extend({}, playlist); // clone the playlist
-		wrapped.tracks = _(playlist.trackIds).map(playlistEntryFromId).reject(_.isNull).value(); // null-values are possible during scanning
+		wrapped.tracks = _(playlist.trackIds).map((id) => this.#playlistEntryFromId(id)).reject(_.isNull).value(); // null-values are possible during scanning
 		delete wrapped.trackIds;
 		return wrapped;
 	}
 
 	// Return values is a kind of "proto folder" as it still has the `parent` field as ID instead of a reference
-	function wrapFolder(folder : any) : any {
-		let wrapped = <any>wrapPlaylist(folder);
+	#wrapFolder(folder : any) : any {
+		let wrapped = <any>this.#wrapPlaylist(folder);
 		wrapped.path = null; // set up later
 		wrapped.expanded = (folder.parent === null); // the root folder is expanded by default
 		return wrapped;
 	}
 
-	function setUpFolderPath(folder : Folder) : void {
+	#setUpFolderPath(folder : Folder) : void {
 		// nothing to do if the path has been already set up
 		if (folder.path === null) {
 			if (folder.parent === null) {
 				folder.path = '';
 			} else {
-				setUpFolderPath(folder.parent);
+				this.#setUpFolderPath(folder.parent);
 				folder.path = folder.parent.path + '/' + folder.name;
 			}
 		}
 	}
 
-	function getFolderTracksRecursively(folder : Folder) : PlaylistEntry[] {
-		let subFolderTracks = _(folder.subfolders).map(getFolderTracksRecursively).flatten().value();
+	#getFolderTracksRecursively(folder : Folder) : PlaylistEntry[] {
+		let subFolderTracks = _(folder.subfolders).map((folder) => this.#getFolderTracksRecursively(folder)).flatten().value();
 		return [...subFolderTracks, ...folder.tracks];
 	}
 
-	function initPodcastChannel(channel : PodcastChannel) : void {
-		_.forEach(channel.episodes, function(episode) {
+	#initPodcastChannel(channel : PodcastChannel) : void {
+		_.forEach(channel.episodes, (episode) => {
 			episode.channel = channel;
 			episode.type = 'podcast';
 		});
 	}
 
-	function createTrackContainers() : void {
+	#createTrackContainers() : void {
 		// album order "playlist"
-		let tracks = _.flatten(_.map(albums, 'tracks'));
-		tracksInAlbumOrder = _.map(tracks, playlistEntry);
+		let tracks = _.flatten(_.map(this.#albums, 'tracks'));
+		this.#tracksInAlbumOrder = _.map(tracks, this.#playlistEntry);
 
 		// alphabetic order "playlist"
-		sortByTextField(tracks, 'title');
-		sortByTextField(tracks, 'artistSortName');
-		tracksInAlphaOrder = _.map(tracks, playlistEntry);
+		this.#sortByTextField(tracks, 'title');
+		this.#sortByTextField(tracks, 'artistSortName');
+		this.#tracksInAlphaOrder = _.map(tracks, this.#playlistEntry);
 
 		// tracks index
-		_.forEach(tracks, function(track) {
+		_.forEach(tracks, (track) => {
 			track.type = 'song';
-			tracksIndex[track.id] = track;
+			this.#tracksIndex[track.id] = track;
 		});
 	}
 
-	const diacriticRegExp = /[\u0300-\u036f]/g;
 	/** Convert string to "folded" form suitable for fuzzy matching */
-	function foldString(str : string) : string {
+	#foldString(str : string) : string {
 		if (str) {
 			str = str.toLocaleLowerCase();
 
 			// Skip the normalization if the browser is ancient and doesn't support it
 			if ('normalize' in String.prototype) {
-				str = str.normalize('NFD').replace(diacriticRegExp, '');
+				str = str.normalize('NFD').replace(DIACRITIC_REG_EXP, '');
 			}
 		}
 
@@ -265,14 +266,12 @@ ng.module('Music').service('libraryService', [function() {
 	/** Split search query to array by whitespace.
 	 *  As an exception, quoted substrings are kept as one entity. The quotation marks are removed.
 	 */
-	function splitSearchQuery(query : string) : string[] {
+	#splitSearchQuery(query : string) : string[] {
 		const regExQuoted = /".*?"/g;
 
 		// Get any quoted substring. Also the quotation marks get extracted, and they are sliced off separately.
 		let quoted = query.match(regExQuoted) || <string[]>[];
-		quoted = _.map(quoted, function(str) {
-			return str.slice(1, -1);
-		});
+		quoted = _.map(quoted, (str) => str.slice(1, -1));
 
 		// remove the quoted substrings and stray quotation marks, and extact the rest of the parts
 		query = query.replace(regExQuoted, ' ');
@@ -282,20 +281,20 @@ ng.module('Music').service('libraryService', [function() {
 		return quoted.concat(unquoted);
 	}
 
-	function objectFieldsContainAll(object : any, getFieldValueFuncs : CallableFunction[], subStrings : string[]) : boolean {
-		return _.every(subStrings, function(subStr) {
-			return _.some(getFieldValueFuncs, function(getter) {
+	#objectFieldsContainAll(object : any, getFieldValueFuncs : CallableFunction[], subStrings : string[]) : boolean {
+		return _.every(subStrings, (subStr) => {
+			return _.some(getFieldValueFuncs, (getter) => {
 				let value = getter(object);
-				return (value !== null && foldString(value).indexOf(subStr) !== -1);
+				return (value !== null && this.#foldString(value).indexOf(subStr) !== -1);
 			});
 		});
 	}
 
-	function search<T>(container : T[]|{[id: number] : T}, fields : string[]|string, query : string, maxResults : number) : SearchResult<T> {
-		query = foldString(query);
+	#search<T>(container : T[]|{[id: number] : T}, fields : string[]|string, query : string, maxResults : number) : SearchResult<T> {
+		query = this.#foldString(query);
 		// In case the query contains many words separated with whitespace, each part
 		// has to be found but the whitespace is disregarded.
-		let queryParts = splitSearchQuery(query);
+		let queryParts = this.#splitSearchQuery(query);
 
 		// @a fields may be an array or an idividual string
 		if (!Array.isArray(fields)) {
@@ -308,8 +307,8 @@ ng.module('Music').service('libraryService', [function() {
 
 		let matchCount = 0;
 		let maxLimitReached = false;
-		let matches = _.filter(container, function(item) {
-			let matched = !maxLimitReached && objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
+		let matches = _.filter(container, (item) => {
+			let matched = !maxLimitReached && this.#objectFieldsContainAll(item, fieldGetterFuncs, queryParts);
 			if (matched && matchCount++ == maxResults) {
 				maxLimitReached = true;
 				matched = false;
@@ -323,347 +322,348 @@ ng.module('Music').service('libraryService', [function() {
 		};
 	}
 
-	return {
-		setIgnoredArticles(articles : string[]) : void {
-			ignoredArticles = articles;
-			if (artists) {
-				// reorder the existing library if there is one
-				_.forEach(artists, function(artist) {
-					artist.sortName = createArtistSortName(artist.name);
-				});
-				sortByTextField(artists, 'sortName');
+	// PUBLIC INTERFACE
+	setIgnoredArticles(articles : string[]) : void {
+		this.#ignoredArticles = articles;
+		if (this.#artists) {
+			// reorder the existing library if there is one
+			_.forEach(this.#artists, (artist) => {
+				artist.sortName = this.#createArtistSortName(artist.name);
+			});
+			this.#sortByTextField(this.#artists, 'sortName');
 
-				_.forEach(tracksInAlphaOrder, function(entry) {
-					entry.track.artistSortName = createArtistSortName(entry.track.artistName);
-				});
-				sortByPlaylistEntryTextField(tracksInAlphaOrder, 'artistSortName');
+			_.forEach(this.#tracksInAlphaOrder, (entry) => {
+				entry.track.artistSortName = this.#createArtistSortName(entry.track.artistName);
+			});
+			this.#sortByPlaylistEntryTextField(this.#tracksInAlphaOrder, 'artistSortName');
 
-				_.forEach(genres, function(genre) {
-					sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+			_.forEach(this.#genres, (genre) => {
+				this.#sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+			});
+			this.#tracksInGenreOrder = _(this.#genres).map('tracks').flatten().value();
+		}
+	}
+	setCollection(collection : any[]) : void {
+		this.#artists = this.#transformCollection(collection);
+		this.#albums = _(this.#artists).map('albums').flatten().value();
+		this.#createTrackContainers();
+	}
+	setPlaylists(lists : any[]) : void {
+		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
+	}
+	setFolders(folderData : any[]|null) : void {
+		if (!folderData) {
+			this.#folders = null;
+		} else {
+			let protoFolders = _.map(folderData, (folder) => this.#wrapFolder(folder));
+			this.#sortByTextField(protoFolders, 'name');
+			// the tracks within each folder are sorted by the file name by the back-end
+
+			// create temporary look-up-table for the folders to speed up setting up the parent references
+			let foldersLut : {[id: number] : any} = {};
+			_.forEach(protoFolders, (folder) => {
+				foldersLut[folder.id] = folder;
+			});
+
+			_.forEach(protoFolders, (folder) => {
+				// substitute parent id with a reference to the parent folder
+				folder.parent = foldersLut[folder.parent] ?? null;
+				// set parent folder references for the contained tracks
+				_.forEach(folder.tracks, (trackEntry) => {
+					trackEntry.track.folder = folder;
 				});
-				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
+				// init subfolder array
+				folder.subfolders = [];
+			});
+
+			_.forEach(protoFolders, (folder) => {
+				// compile the full path for each folder by following the parent references
+				this.#setUpFolderPath(folder);
+				// set the subfolder references
+				if (folder.parent !== null) {
+					folder.parent.subfolders.push(folder);
+				}
+			});
+
+			this.#folders = protoFolders;
+		}
+	}
+	setGenres(genreData : any[]|null) : void {
+		if (!genreData) {
+			this.#genres = null;
+			this.#tracksInGenreOrder = null;
+		} else {
+			this.#genres = _.map(genreData, (genre) => this.#wrapPlaylist(genre));
+			this.#sortByTextField(this.#genres, 'name');
+			// if the first item after sorting is the unknown genre (empty string),
+			// then move it to the end of the list
+			if (this.#genres.length > 0 && this.#genres[0].name === '') {
+				this.#genres.push(this.#genres.shift());
 			}
-		},
-		setCollection(collection : any[]) : void {
-			artists = transformCollection(collection);
-			albums = _(artists).map('albums').flatten().value();
-			createTrackContainers();
-		},
-		setPlaylists(lists : any[]) : void {
-			playlists = _.map(lists, wrapPlaylist);
-		},
-		setFolders(folderData : any[]|null) : void {
-			if (!folderData) {
-				folders = null;
+
+			_.forEach(this.#genres, (genre) => {
+				this.#sortByPlaylistEntryTextField(genre.tracks, 'title');
+				this.#sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+
+				_.forEach(genre.tracks, (trackEntry) => {
+					trackEntry.track.genre = genre;
+				});
+			});
+
+			this.#tracksInGenreOrder = _(this.#genres).map('tracks').flatten().value();
+		}
+	}
+	setRadioStations(radioStationsData : any[]) : void {
+		this.#radioStations = _.map(radioStationsData, (station) => this.#wrapRadioStation(station));
+		this.sortRadioStations();
+	}
+	sortRadioStations() : void {
+		this.#sortByPlaylistEntryTextField(this.#radioStations, 'stream_url');
+		this.#sortByPlaylistEntryTextField(this.#radioStations, 'name');
+	}
+	addRadioStation(radioStationData : any) : void {
+		this.addRadioStations([radioStationData]);
+	}
+	addRadioStations(radioStationsData : any) : void {
+		let newStations = _.map(radioStationsData, (station) => this.#wrapRadioStation(station))
+		this.#radioStations = this.#radioStations.concat(newStations);
+		this.sortRadioStations();
+	}
+	removeRadioStation(stationId : number) : number {
+		let idx = _.findIndex(this.#radioStations, entry => entry.track.id == stationId);
+		this.#radioStations.splice(idx, 1);
+		return idx;
+	}
+	setPodcasts(podcastsData : any[]) : void {
+		this.#sortByTextField(podcastsData, 'title');
+		// set the parent references for each episode 
+		_.forEach(podcastsData, this.#initPodcastChannel);
+		this.#podcastChannels = podcastsData;
+	}
+	addPodcastChannel(channel : PodcastChannel) : void {
+		this.#initPodcastChannel(channel);
+		this.#podcastChannels.push(channel);
+		this.#sortByTextField(this.#podcastChannels, 'title');
+	}
+	replacePodcastChannel(channel : PodcastChannel) {
+		this.#initPodcastChannel(channel);
+		let idx = _.findIndex(this.#podcastChannels, { id: channel.id });
+		this.#podcastChannels[idx] = channel;
+	}
+	removePodcastChannel(channel : PodcastChannel) {
+		let idx = _.findIndex(this.#podcastChannels, { id: channel.id });
+		this.#podcastChannels.splice(idx, 1);
+	}
+	addPlaylist(playlist : any) : void {
+		this.#playlists.push(this.#wrapPlaylist(playlist));
+	}
+	removePlaylist(playlist : any) : void {
+		this.#playlists.splice(this.#playlists.indexOf(playlist), 1);
+	}
+	replacePlaylist(playlist : any) : void {
+		let idx = _.findIndex(this.#playlists, { id: playlist.id });
+		this.#playlists[idx] = this.#wrapPlaylist(playlist);
+	}
+	addToPlaylist(playlistId : number, trackId : number) : void {
+		let playlist = this.getPlaylist(playlistId);
+		playlist.tracks.push(this.#playlistEntryFromId(trackId));
+	}
+	removeFromPlaylist(playlistId : number, indexToRemove : number) : void {
+		let playlist = this.getPlaylist(playlistId);
+		playlist.tracks.splice(indexToRemove, 1);
+	}
+	reorderPlaylist(playlistId : number, srcIndex : number, dstIndex : number) : void {
+		let playlist = this.getPlaylist(playlistId);
+		this.#moveArrayElement(playlist.tracks, srcIndex, dstIndex);
+	}
+	sortPlaylist(playlistId : number, byProperty : string) : void {
+		let playlist = this.getPlaylist(playlistId);
+		switch (byProperty) {
+		case 'track':
+			this.#sortByTextField(playlist.tracks, 'track.title');
+			break;
+		case 'album':
+			this.#sortByTextField(playlist.tracks, 'track.title');
+			this.#sortByNumericField(playlist.tracks, 'track.number');
+			this.#sortByNumericField(playlist.tracks, 'track.disk');
+			this.#sortByTextField(playlist.tracks, 'track.album.name');
+			break;
+		case 'artist':
+			this.#sortByTextField(playlist.tracks, 'track.title');
+			this.#sortByTextField(playlist.tracks, 'track.artistSortName');
+			break;
+		default:
+			console.error('Unexpected playlist sort property ' + byProperty);
+			break;
+		}
+	}
+	removeDuplicatesFromPlaylist(playlistId : number) : PlaylistEntry[] {
+		let playlist = this.getPlaylist(playlistId);
+		let foundIds : {[id: number] : boolean} = {};
+		let indicesToRemove = [];
+
+		// find the indices containing duplicates
+		for (let i = 0; i < playlist.tracks.length; ++i) {
+			let id = playlist.tracks[i].track.id;
+			if (id in foundIds) {
+				indicesToRemove.push(i);
 			} else {
-				let protoFolders = _.map(folderData, wrapFolder);
-				sortByTextField(protoFolders, 'name');
-				// the tracks within each folder are sorted by the file name by the back-end
-
-				// create temporary look-up-table for the folders to speed up setting up the parent references
-				let foldersLut : {[id: number] : any} = {};
-				_.forEach(protoFolders, function(folder) {
-					foldersLut[folder.id] = folder;
-				});
-
-				_.forEach(protoFolders, function(folder) {
-					// substitute parent id with a reference to the parent folder
-					folder.parent = foldersLut[folder.parent] ?? null;
-					// set parent folder references for the contained tracks
-					_.forEach(folder.tracks, function(trackEntry) {
-						trackEntry.track.folder = folder;
-					});
-					// init subfolder array
-					folder.subfolders = [];
-				});
-
-				_.forEach(protoFolders, function(folder) {
-					// compile the full path for each folder by following the parent references
-					setUpFolderPath(folder);
-					// set the subfolder references
-					if (folder.parent !== null) {
-						folder.parent.subfolders.push(folder);
-					}
-				});
-
-				folders = protoFolders;
+				foundIds[id] = true;
 			}
-		},
-		setGenres(genreData : any[]|null) : void {
-			if (!genreData) {
-				genres = null;
-				tracksInGenreOrder = null;
-			} else {
-				genres = _.map(genreData, wrapPlaylist);
-				sortByTextField(genres, 'name');
-				// if the first item after sorting is the unknown genre (empty string),
-				// then move it to the end of the list
-				if (genres.length > 0 && genres[0].name === '') {
-					genres.push(genres.shift());
-				}
+		}
 
-				_.forEach(genres, function(genre) {
-					sortByPlaylistEntryTextField(genre.tracks, 'title');
-					sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
-
-					_.forEach(genre.tracks, function(trackEntry) {
-						trackEntry.track.genre = genre;
-					});
-				});
-
-				tracksInGenreOrder = _(genres).map('tracks').flatten().value();
+		// remove (and return) the duplicates
+		return _.pullAt(playlist.tracks, indicesToRemove);
+	}
+	getArtist(id : number) : Artist {
+		let artist = _.find(this.#artists, { id: Number(id) });
+		if (!artist) {
+			// there's no such album artist, try to find a matching track artist (who has no albums)
+			let track = _.find(this.#tracksIndex, { artistId: Number(id)} );
+			if (track) {
+				artist = {
+						id: track.artistId,
+						name: track.artistName,
+						sortName: track.artistSortName,
+						albums: []
+				};
 			}
-		},
-		setRadioStations(radioStationsData : any[]) : void {
-			radioStations = _.map(radioStationsData, wrapRadioStation);
-			this.sortRadioStations();
-		},
-		sortRadioStations() : void {
-			sortByPlaylistEntryTextField(radioStations, 'stream_url');
-			sortByPlaylistEntryTextField(radioStations, 'name');
-		},
-		addRadioStation(radioStationData : any) : void {
-			this.addRadioStations([radioStationData]);
-		},
-		addRadioStations(radioStationsData : any) : void {
-			radioStations = radioStations.concat(_.map(radioStationsData, wrapRadioStation));
-			sortByPlaylistEntryTextField(radioStations, 'stream_url');
-			sortByPlaylistEntryTextField(radioStations, 'name');
-		},
-		removeRadioStation(stationId : number) : number {
-			let idx = _.findIndex(radioStations, entry => entry.track.id == stationId);
-			radioStations.splice(idx, 1);
-			return idx;
-		},
-		setPodcasts(podcastsData : any[]) : void {
-			sortByTextField(podcastsData, 'title');
-			// set the parent references for each episode 
-			_.forEach(podcastsData, initPodcastChannel);
-			podcastChannels = podcastsData;
-		},
-		addPodcastChannel(channel : PodcastChannel) : void {
-			initPodcastChannel(channel);
-			podcastChannels.push(channel);
-			sortByTextField(podcastChannels, 'title');
-		},
-		replacePodcastChannel(channel : PodcastChannel) {
-			initPodcastChannel(channel);
-			let idx = _.findIndex(podcastChannels, { id: channel.id });
-			podcastChannels[idx] = channel;
-		},
-		removePodcastChannel(channel : PodcastChannel) {
-			let idx = _.findIndex(podcastChannels, { id: channel.id });
-			podcastChannels.splice(idx, 1);
-		},
-		addPlaylist(playlist : any) : void {
-			playlists.push(wrapPlaylist(playlist));
-		},
-		removePlaylist(playlist : any) : void {
-			playlists.splice(playlists.indexOf(playlist), 1);
-		},
-		replacePlaylist(playlist : any) : void {
-			let idx = _.findIndex(playlists, { id: playlist.id });
-			playlists[idx] = wrapPlaylist(playlist);
-		},
-		addToPlaylist(playlistId : number, trackId : number) : void {
-			let playlist = this.getPlaylist(playlistId);
-			playlist.tracks.push(playlistEntryFromId(trackId));
-		},
-		removeFromPlaylist(playlistId : number, indexToRemove : number) : void {
-			let playlist = this.getPlaylist(playlistId);
-			playlist.tracks.splice(indexToRemove, 1);
-		},
-		reorderPlaylist(playlistId : number, srcIndex : number, dstIndex : number) : void {
-			let playlist = this.getPlaylist(playlistId);
-			moveArrayElement(playlist.tracks, srcIndex, dstIndex);
-		},
-		sortPlaylist(playlistId : number, byProperty : string) : void {
-			let playlist = this.getPlaylist(playlistId);
-			switch (byProperty) {
-			case 'track':
-				sortByTextField(playlist.tracks, 'track.title');
-				break;
-			case 'album':
-				sortByTextField(playlist.tracks, 'track.title');
-				sortByNumericField(playlist.tracks, 'track.number');
-				sortByNumericField(playlist.tracks, 'track.disk');
-				sortByTextField(playlist.tracks, 'track.album.name');
-				break;
-			case 'artist':
-				sortByTextField(playlist.tracks, 'track.title');
-				sortByTextField(playlist.tracks, 'track.artistSortName');
-				break;
-			default:
-				console.error('Unexpected playlist sort property ' + byProperty);
-				break;
-			}
-		},
-		removeDuplicatesFromPlaylist(playlistId : number) : PlaylistEntry[] {
-			let playlist = this.getPlaylist(playlistId);
-			let foundIds : {[id: number] : boolean} = {};
-			let indicesToRemove = [];
+		}
+		return artist;
+	}
+	getAllArtists() : Artist[] {
+		return this.#artists;
+	}
+	getAlbum(id : number) : Album {
+		return _.find(this.#albums, { id: Number(id) });
+	}
+	getAlbumCount() : number {
+		return this.#albums?.length ?? 0;
+	}
+	getTrack(id : number) : Track {
+		return this.#tracksIndex[id];
+	}
+	getTracksInAlphaOrder() : PlaylistEntry[] {
+		return this.#tracksInAlphaOrder;
+	}
+	getTracksInAlbumOrder() : PlaylistEntry[] {
+		return this.#tracksInAlbumOrder;
+	}
+	getTracksInFolderOrder(treeMode : boolean) : PlaylistEntry[] {
+		return treeMode
+			? this.#getFolderTracksRecursively(this.getRootFolder())
+			: _(this.#folders).map('tracks').flatten().value();
+	}
+	getTracksInGenreOrder() : PlaylistEntry[] {
+		return this.#tracksInGenreOrder;
+	}
+	getTrackCount() : number {
+		return this.#tracksInAlphaOrder?.length ?? 0;
+	}
+	getPlaylist(id : number) : Playlist {
+		return _.find(this.#playlists, { id: Number(id) });
+	}
+	getAllPlaylists() : Playlist[] {
+		return this.#playlists;
+	}
+	getFolder(id : number) : Folder {
+		return _.find(this.#folders, { id: Number(id) });
+	}
+	getFolderTracks(folder : Folder, recursively : boolean) : PlaylistEntry[] {
+		return recursively ? this.#getFolderTracksRecursively(folder) : folder.tracks;
+	}
+	getAllFoldersWithTracks() : Folder[] {
+		return _.filter(this.#folders, (folder) => folder.tracks.length > 0);
+	}
+	getRootFolder() : Folder {
+		return _.find(this.#folders, { parent: null });
+	}
+	getGenre(id : number) : Genre {
+		return _.find(this.#genres, { id: Number(id) });
+	}
+	getAllGenres() : Genre[] {
+		return this.#genres;
+	}
+	getRadioStation(id : number) : Track {
+		return _.find(this.#radioStations, ['track.id', Number(id)])?.track;
+	}
+	getAllRadioStations() : RadioStation[] {
+		return this.#radioStations;
+	}
+	getPodcastEpisode(id : number) : PodcastEpisode {
+		return _(this.#podcastChannels).map('episodes').flatten().find({ id: Number(id) });
+	}
+	getAllPodcastEpisodes() : PodcastEpisode[] {
+		return _(this.#podcastChannels).map('episodes').flatten().value();
+	}
+	getPodcastChannel(id : number) : PodcastChannel {
+		return _.find(this.#podcastChannels, { id: Number(id) });
+	}
+	getAllPodcastChannels() : PodcastChannel[] {
+		return this.#podcastChannels;
+	}
+	getPodcastChannelsCount() : number {
+		return this.#podcastChannels?.length ?? 0;
+	}
+	findTracksByArtist(artistId : number) : {[id: number] : Track} {
+		return _.filter(this.#tracksIndex, {artistId: Number(artistId)});
+	}
+	collectionLoaded() : boolean {
+		return this.#artists !== null;
+	}
+	playlistsLoaded() : boolean {
+		return this.#playlists !== null;
+	}
+	foldersLoaded() : boolean {
+		return this.#folders !== null;
+	}
+	genresLoaded() : boolean {
+		return this.#genres !== null;
+	}
+	radioStationsLoaded() : boolean {
+		return this.#radioStations !== null;
+	}
+	podcastsLoaded() : boolean {
+		return this.#podcastChannels !== null;
+	}
+	searchTracks(query : string, maxResults = Infinity) : SearchResult<Track> {
+		return this.#search(this.#tracksIndex, ['title', 'artistName'], query, maxResults);
+	}
+	searchTracksInAlbums(query : string, maxResults = Infinity) : SearchResult<Track> {
+		return this.#search(
+				this.#tracksIndex,
+				['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
+				query,
+				maxResults);
+	}
+	searchTracksInFolders(query : string, maxResults = Infinity) : SearchResult<Track> {
+		return this.#search(
+				this.#tracksIndex,
+				['title', 'artistName', 'folder.path'],
+				query,
+				maxResults);
+	}
+	searchTracksInGenres(query : string, maxResults = Infinity) : SearchResult<Track> {
+		return this.#search(
+				this.#tracksIndex,
+				['title', 'artistName', 'genre.name'],
+				query,
+				maxResults);
+	}
+	searchTracksInPlaylist(playlistId : number, query : string, maxResults = Infinity) : SearchResult<Track> {
+		let entries = this.getPlaylist(playlistId)?.tracks || [];
+		let tracks = _.map(entries, 'track');
+		tracks = _.uniq(tracks);
+		return this.#search(tracks, ['title', 'artistName'], query, maxResults);
+	}
+	searchRadioStations(query : string, maxResults = Infinity) : SearchResult<Track> {
+		let stations = _.map(this.#radioStations, 'track');
+		return this.#search(stations, ['name', 'stream_url'], query, maxResults);
+	}
+	searchPodcasts(query : string, maxResults = Infinity) : SearchResult<PodcastEpisode> {
+		let episodes = _(this.#podcastChannels).map('episodes').flatten().value();
+		return this.#search(episodes, ['title', 'channel.title'], query, maxResults);
+	}
+}
 
-			// find the indices containing duplicates
-			for (let i = 0; i < playlist.tracks.length; ++i) {
-				let id = playlist.tracks[i].track.id;
-				if (id in foundIds) {
-					indicesToRemove.push(i);
-				} else {
-					foundIds[id] = true;
-				}
-			}
-
-			// remove (and return) the duplicates
-			return _.pullAt(playlist.tracks, indicesToRemove);
-		},
-		getArtist(id : number) : Artist {
-			let artist = _.find(artists, { id: Number(id) });
-			if (!artist) {
-				// there's no such album artist, try to find a matching track artist (who has no albums)
-				let track = _.find(tracksIndex, { artistId: Number(id)} );
-				if (track) {
-					artist = {
-							id: track.artistId,
-							name: track.artistName,
-							sortName: track.artistSortName,
-							albums: []
-					};
-				}
-			}
-			return artist;
-		},
-		getAllArtists() : Artist[] {
-			return artists;
-		},
-		getAlbum(id : number) : Album {
-			return _.find(albums, { id: Number(id) });
-		},
-		getAlbumCount() : number {
-			return albums?.length ?? 0;
-		},
-		getTrack(id : number) : Track {
-			return tracksIndex[id];
-		},
-		getTracksInAlphaOrder() : PlaylistEntry[] {
-			return tracksInAlphaOrder;
-		},
-		getTracksInAlbumOrder() : PlaylistEntry[] {
-			return tracksInAlbumOrder;
-		},
-		getTracksInFolderOrder(treeMode : boolean) : PlaylistEntry[] {
-			return treeMode
-				? getFolderTracksRecursively(this.getRootFolder())
-				: _(folders).map('tracks').flatten().value();
-		},
-		getTracksInGenreOrder() : PlaylistEntry[] {
-			return tracksInGenreOrder;
-		},
-		getTrackCount() : number {
-			return tracksInAlphaOrder?.length ?? 0;
-		},
-		getPlaylist(id : number) : Playlist {
-			return _.find(playlists, { id: Number(id) });
-		},
-		getAllPlaylists() : Playlist[] {
-			return playlists;
-		},
-		getFolder(id : number) : Folder {
-			return _.find(folders, { id: Number(id) });
-		},
-		getFolderTracks(folder : Folder, recursively : boolean) : PlaylistEntry[] {
-			return recursively ? getFolderTracksRecursively(folder) : folder.tracks;
-		},
-		getAllFoldersWithTracks() : Folder[] {
-			return _.filter(folders, (folder) => folder.tracks.length > 0);
-		},
-		getRootFolder() : Folder {
-			return _.find(folders, { parent: null });
-		},
-		getGenre(id : number) : Genre {
-			return _.find(genres, { id: Number(id) });
-		},
-		getAllGenres() : Genre[] {
-			return genres;
-		},
-		getRadioStation(id : number) : Track {
-			return _.find(radioStations, ['track.id', Number(id)])?.track;
-		},
-		getAllRadioStations() : RadioStation[] {
-			return radioStations;
-		},
-		getPodcastEpisode(id : number) : PodcastEpisode {
-			return _(podcastChannels).map('episodes').flatten().find({ id: Number(id) });
-		},
-		getAllPodcastEpisodes() : PodcastEpisode[] {
-			return _(podcastChannels).map('episodes').flatten().value();
-		},
-		getPodcastChannel(id : number) : PodcastChannel {
-			return _.find(podcastChannels, { id: Number(id) });
-		},
-		getAllPodcastChannels() : PodcastChannel[] {
-			return podcastChannels;
-		},
-		getPodcastChannelsCount() : number {
-			return podcastChannels?.length ?? 0;
-		},
-		findTracksByArtist(artistId : number) : {[id: number] : Track} {
-			return _.filter(tracksIndex, {artistId: Number(artistId)});
-		},
-		collectionLoaded() : boolean {
-			return artists !== null;
-		},
-		playlistsLoaded() : boolean {
-			return playlists !== null;
-		},
-		foldersLoaded() : boolean {
-			return folders !== null;
-		},
-		genresLoaded() : boolean {
-			return genres !== null;
-		},
-		radioStationsLoaded() : boolean {
-			return radioStations !== null;
-		},
-		podcastsLoaded() : boolean {
-			return podcastChannels !== null;
-		},
-		searchTracks(query : string, maxResults = Infinity) : SearchResult<Track> {
-			return search(tracksIndex, ['title', 'artistName'], query, maxResults);
-		},
-		searchTracksInAlbums(query : string, maxResults = Infinity) : SearchResult<Track> {
-			return search(
-					tracksIndex,
-					['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
-					query,
-					maxResults);
-		},
-		searchTracksInFolders(query : string, maxResults = Infinity) : SearchResult<Track> {
-			return search(
-					tracksIndex,
-					['title', 'artistName', 'folder.path'],
-					query,
-					maxResults);
-		},
-		searchTracksInGenres(query : string, maxResults = Infinity) : SearchResult<Track> {
-			return search(
-					tracksIndex,
-					['title', 'artistName', 'genre.name'],
-					query,
-					maxResults);
-		},
-		searchTracksInPlaylist(playlistId : number, query : string, maxResults = Infinity) : SearchResult<PlaylistEntry> {
-			let list = this.getPlaylist(playlistId) || [];
-			list = _.map(list.tracks, 'track');
-			list = _.uniq(list);
-			return search(list, ['title', 'artistName'], query, maxResults);
-		},
-		searchRadioStations(query : string, maxResults = Infinity) : SearchResult<Track> {
-			let stations = _.map(radioStations, 'track');
-			return search(stations, ['name', 'stream_url'], query, maxResults);
-		},
-		searchPodcasts(query : string, maxResults = Infinity) : SearchResult<PodcastEpisode> {
-			let episodes = _(podcastChannels).map('episodes').flatten().value();
-			return search(episodes, ['title', 'channel.title'], query, maxResults);
-		},
-	};
-}]);
+ng.module('Music').service('libraryService', [LibraryService]);

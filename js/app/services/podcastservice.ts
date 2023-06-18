@@ -12,19 +12,14 @@ import * as ng from 'angular';
 import { IService } from 'restangular';
 import { gettextCatalog } from 'angular-gettext';
 import { MusicRootScope } from 'app/config/musicrootscope'
-
-type Channel = {
-	id : number,
-	title : string,
-	hash : string
-};
+import { LibraryService, PodcastChannel } from './libraryservice';
 
 ng.module('Music').service('podcastService', [
 '$rootScope', '$timeout', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
-function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQService, libraryService : any, gettextCatalog : gettextCatalog, Restangular : IService) {
+function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQService, libraryService : LibraryService, gettextCatalog : gettextCatalog, Restangular : IService) {
 
 	// Private functions
-	function reloadChannel(channel : Channel) : ng.IPromise<any> {
+	function reloadChannel(channel : PodcastChannel) : ng.IPromise<any> {
 		let deferred = $q.defer();
 
 		Restangular.one('podcasts', channel.id).all('update').post({prevHash: channel.hash}).then(
@@ -99,7 +94,7 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		},
 
 		// Refresh the contents of the given podcast channel
-		reloadPodcastChannel(channel : Channel) : ng.IPromise<any> {
+		reloadPodcastChannel(channel : PodcastChannel) : ng.IPromise<any> {
 			return reloadChannel(channel).then((result) => {
 				if (result?.updated) {
 					OC.Notification.showTemporary(
@@ -151,7 +146,7 @@ function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQS
 		},
 
 		// Remove a single previously subscribed podcast channel
-		removePodcastChannel(channel : Channel) : ng.IPromise<any> {
+		removePodcastChannel(channel : PodcastChannel) : ng.IPromise<any> {
 			const deferred = $q.defer();
 
 			const doDelete = function() {

@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 .icon-music-dark {
@@ -82,54 +82,6 @@
 	opacity: 1.0;
 }
 
-#music-controls #playlist-area .popovermenu {
-	box-sizing: content-box;
-	padding: 0;
-	bottom: 24px;
-	transform: translateX(50%);
-	right: 50% ;
-	margin-right: 0;
-	display: none;
-}
-
-#music-controls #playlist-area .popovermenu.open {
-	display: block;
-}
-
-#music-controls #playlist-area .popovermenu ul {
-	display: block;
-}
-
-#music-controls #playlist-area .popovermenu ul li {
-	padding: 0 10px 0 0;
-	white-space: nowrap;
-}
-
-#music-controls #playlist-area .popovermenu ul a {
-	opacity: .7;
-	line-height: 36px;
-}
-
-#music-controls #playlist-area .popovermenu ul a:hover {
-	opacity: 1.0;
-}
-
-#music-controls #playlist-area .popovermenu ul a span {
-	display: inline;
-}
-
-#music-controls #playlist-area .popovermenu ul a [class^='icon-'] {
-	padding: 18px 0 18px 36px;
-	background-size: 16px;
-}
-
-/* Place the carret under the popup */
-#music-controls #playlist-area .popovermenu::after {
-	right: 50%;
-	transform: translateX(50%) translateY(100%) rotate(180deg);
-	bottom: 0;
-}
-
 #music-controls, #music-controls * {
 	display: inline-block;
 	box-sizing: border-box;
@@ -144,18 +96,9 @@
 	opacity: .4;
 }
 
-#music-controls .control.disabled,
-#music-controls #playlist-area .popovermenu ul li.disabled a {
+#music-controls .control.disabled {
 	cursor: default !important;
 	opacity: .15 !important;
-}
-
-#music-controls #playlist-area .popovermenu ul li.disabled * {
-	cursor: default !important;
-}
-
-#music-controls #playlist-area .popovermenu .hidden {
-	display: none;
 }
 
 #music-controls .control.small {
@@ -272,165 +215,4 @@
 
 #music-controls .buffer-bar {
 	opacity: 0.1;
-}
-
-#music-controls .volume-control {
-	position: absolute;
-	right: 120px;
-}
-
-.ie.lte9 #music-controls .volume-control {
-	display: none;
-}
-
-#music-controls #volume-icon {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-#music-controls .volume-control input[type=range] {
-	position: absolute;
-	width: 58px;
-	height: 3px;
-	min-height: 3px;
-	top: 31px;
-	left: 21px;
-	margin: 0;
-	-webkit-appearance: none;
-	background-color: silver;
-	transform: rotate(270deg);
-}
-
-.ie #music-controls .volume-control input[type=range] {
-	height:auto;
-	top: 3px;
-	left: 26px;
-	background-color: transparent;
-}
-
-::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	background-color: #666;
-	border-radius: 100%;
-	width: 10px;
-	height: 10px;
-}
-
-:hover::-webkit-slider-thumb {
-	cursor: pointer;
-}
-
-::-moz-range-thumb {
-	-moz-appearance: none;
-	background-color: #666;
-	border-radius: 100%;
-	width: 10px;
-	height: 10px;
-}
-
-:hover::-moz-range-thumb {
-	cursor: pointer;
-}
-
-/* Play overlay for individual shared file */
-.play-overlay {
-	visibility: hidden;
-	cursor: pointer;
-	position: relative;
-	opacity: .7;
-}
-
-.publicpreview:hover ~ .play-overlay,
-.play-overlay:hover {
-	visibility: visible;
-}
-
-/* "Tablet" style */
-#music-controls.tablet {
-	padding: 0;
-}
-#music-controls.tablet #albumart {
-	margin-left: 10px;
-}
-#music-controls.tablet #info-and-progress {
-	left: 230px;
-	right: 140px;
-}
-#music-controls.tablet #title {
-	font-size: 14px;
-}
-
-/* "Mobile" style */
-#music-controls.mobile #prev {
-	display: none;
-}
-#music-controls.mobile .control {
-	margin-right: 0;
-}
-#music-controls.mobile #albumart {
-	margin-left: 0;
-	margin-right: 0;
-}
-#music-controls.mobile #info-and-progress {
-	left: 160px;
-	right: 50px;
-}
-#music-controls.mobile .volume-control {
-	display: none;
-}
-
-/* "Extra narrow" style */
-#music-controls.extra-narrow #song-info {
-	width: 100%;
-}
-#music-controls.extra-narrow .progress-info {
-	display: none;
-}
-
-/* Hide the music controls when menu on left is in collapsible mode (on portrait phone)
- * and the menu is open */
-body.snapjs-left #music-controls {
-	visibility: hidden;
-}
-
-/* Playlist tab view shown in the Files sidebar */
-
-.musicPlaylistTabView p {
-	margin-top: 24px;
-	font-weight: bold;
-}
-
-.musicPlaylistTabView .loading {
-	height: 50px;
-}
-
-.musicPlaylistTabView li {
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 8px;
-}
-
-.musicPlaylistTabView ol {
-	list-style: decimal inside;
-}
-
-.musicPlaylistTabView ol li {
-	cursor: pointer;
-	list-style-type: decimal;
-}
-
-.musicPlaylistTabView ol li::marker {
-	color: #767676;
-}
-
-.musicPlaylistTabView ol li:hover,
-.musicPlaylistTabView ol li.current {
-	transition: background-color 0.3s ease;
-	background-color: var(--color-background-dark, #f7f7f7);
-}
-
-.ie .musicPlaylistTabView ol li:hover,
-.ie .musicPlaylistTabView ol li.current {
-	background-color: #f7f7f7;
 }

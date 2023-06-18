@@ -39,7 +39,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 				}, 0);
 
 				if ($scope.album.cover) {
-					var url = OC.generateUrl('apps/music/api/album/') + albumId + '/cover?originalSize=true';
+					let url = OC.generateUrl('apps/music/api/album/') + albumId + '/cover?originalSize=true';
 					setImageUrl(url);
 				} else {
 					setImageUrl('');
@@ -60,7 +60,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 									$scope.albumInfo = $scope.albumInfo.replace(/<a href=/g, '<a target="_blank" href=');
 								}
 								else {
-									var linkText = gettextCatalog.getString('See the album on Last.fm');
+									let linkText = gettextCatalog.getString('See the album on Last.fm');
 									$scope.albumInfo = '<a target="_blank" href="' + result.album.url + '">' + linkText +'</a>';
 								}
 

@@ -15,7 +15,7 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.selectedTab = 'general';
 
-		var currentTrack = null;
+		let currentTrack = null;
 
 		function resetContents() {
 			currentTrack = null;
@@ -27,7 +27,7 @@ angular.module('Music').controller('TrackDetailsController', [
 		}
 
 		function getFileId() {
-			var files = currentTrack.files;
+			let files = currentTrack.files;
 			return files[Object.keys(files)[0]];
 		}
 
@@ -46,10 +46,10 @@ angular.module('Music').controller('TrackDetailsController', [
 				resetContents();
 				currentTrack = libraryService.getTrack(trackId);
 
-				var albumart = $('#app-sidebar .albumart');
+				let albumart = $('#app-sidebar .albumart');
 				albumart.css('background-image', '').css('height', '0');
 
-				var fileId = getFileId();
+				let fileId = getFileId();
 				$('#path').attr('href', OC.generateUrl('/f/' + fileId));
 
 				Restangular.one('file', fileId).one('details').get().then(function(result) {
@@ -86,7 +86,7 @@ angular.module('Music').controller('TrackDetailsController', [
 					$scope.lastfmInfo = $scope.lastfmInfo.replace(/<a href=/g, '<a target="_blank" href=');
 				}
 				else {
-					var linkText = gettextCatalog.getString('See the track on Last.fm');
+					let linkText = gettextCatalog.getString('See the track on Last.fm');
 					$scope.lastfmInfo = '<a target="_blank" href="' + data.track.url + '">' + linkText +'</a>';
 				}
 
@@ -118,9 +118,9 @@ angular.module('Music').controller('TrackDetailsController', [
 					&& $scope.$parent.currentTrack.id == currentTrack.id) {
 				// Check if the highlighted row needs to change. First find the last row
 				// which has been already reached by the playback.
-				var allRows = $('#app-sidebar .lyrics');
+				let allRows = $('#app-sidebar .lyrics');
 				for (var i = allRows.length - 1; i >= 0; --i) {
-					var curRow = $(allRows[i]);
+					let curRow = $(allRows[i]);
 					if (Number(curRow.attr('data-timestamp')) <= time) {
 						if (!curRow.hasClass('highlight')) {
 							// highlight actually needs to move

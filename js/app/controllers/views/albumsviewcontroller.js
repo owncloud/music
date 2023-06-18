@@ -24,11 +24,11 @@ angular.module('Music').controller('AlbumsViewController', [
 		// When making the view visible, the artists are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of albums (like several thousands).
-		var INCREMENTAL_LOAD_STEP = 20;
+		const INCREMENTAL_LOAD_STEP = 20;
 		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
@@ -41,7 +41,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		// Prevent controller reload when the URL is updated with window.location.hash,
 		// unless the new location actually requires another controller.
 		// See http://stackoverflow.com/a/12429133/2104976
-		var lastRoute = $route.current;
+		let lastRoute = $route.current;
 		$scope.$on('$locationChangeSuccess', function(_event) {
 			if (lastRoute.$$route.controller === $route.current.$$route.controller) {
 				$route.current = lastRoute;
@@ -50,7 +50,7 @@ angular.module('Music').controller('AlbumsViewController', [
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playTracks(listId, tracks, startIndex /*optional*/) {
-			var playlist = _.map(tracks, function(track) {
+			let playlist = _.map(tracks, function(track) {
 				return { track: track };
 			});
 			playlistService.setPlaylist(listId, playlist, startIndex);
@@ -61,24 +61,24 @@ angular.module('Music').controller('AlbumsViewController', [
 			// update URL hash
 			window.location.hash = '#/track/' + track.id;
 
-			var index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
+			let index = _.findIndex(playlist, function(i) {return i.track.id == track.id;});
 			playlistService.setPlaylist(listId, playlist, index);
 
-			var startOffset = $location.search().offset || null;
+			let startOffset = $location.search().offset || null;
 			playlistService.publish('play', null, startOffset);
 			$location.search('offset', null); // the offset parameter has been used up
 		}
 
 		$scope.playTrack = function(trackId) {
-			var track = libraryService.getTrack(trackId);
-			var currentTrack = $scope.$parent.currentTrack;
+			let track = libraryService.getTrack(trackId);
+			let currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && track.id === currentTrack.id) {
 				playlistService.publish('togglePlayback');
 			}
 			else {
-				var currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playlistService.getCurrentPlaylistId();
 
 				// start playing the album/artist from this track if the clicked track belongs
 				// to album/artist which is the current play scope
@@ -101,7 +101,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		$scope.playArtist = function(artist) {
 			// update URL hash
 			window.location.hash = '#/artist/' + artist.id;
-			var tracks = _.flatten(_.map(artist.albums, 'tracks'));
+			let tracks = _.flatten(_.map(artist.albums, 'tracks'));
 			playTracks('artist-' + artist.id, tracks);
 		};
 
@@ -125,7 +125,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		};
 
 		function getDraggable(type, draggedElement) {
-			var draggable = {};
+			let draggable = {};
 			draggable[type] = draggedElement.id;
 			return draggable;
 		}
@@ -162,9 +162,9 @@ angular.module('Music').controller('AlbumsViewController', [
 		 * Formats a track title string for displaying in tracklist directive
 		 */
 		function getTitleString(track, artist, plaintext) {
-			var att = track.title;
+			let att = track.title;
 			if (track.artistId !== artist.id) {
-				var artistName = ' (' + track.artistName + ') ';
+				let artistName = ' (' + track.artistName + ') ';
 				if (!plaintext) {
 					artistName = ' <span class="muted">' + artistName + '</span>';
 				}
@@ -181,7 +181,7 @@ angular.module('Music').controller('AlbumsViewController', [
 				return track.number;
 			} else {
 				// multidisk album
-				var number = track.disk + '-';
+				let number = track.disk + '-';
 				number += track.number ?? '?';
 				return number;
 			}
@@ -219,7 +219,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		});
 
 		function scrollToAlbumOfTrack(trackId, animationTime /* optional */) {
-			var track = libraryService.getTrack(trackId);
+			let track = libraryService.getTrack(trackId);
 			if (track) {
 				$scope.$parent.scrollToItem('album-' + track.album.id, animationTime);
 			}
@@ -240,7 +240,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		}
 
 		function updateColumnLayout() {
-			var containerWidth = $('#albums').width();
+			let containerWidth = $('#albums').width();
 			if (containerWidth === 0) {
 				// During page load, the view container may not yet have a valid width. On Firefox on Ubuntu,
 				// the resize event with the valid width doesn't fire at all after the page load. Retry until
@@ -248,7 +248,7 @@ angular.module('Music').controller('AlbumsViewController', [
 				$timeout(updateColumnLayout, 500);
 			} else {
 				// Use the single-column layout if there's not enough room for two columns or more
-				var colWidth = $scope.albumsCompactLayout ? 383 : 480;
+				let colWidth = $scope.albumsCompactLayout ? 383 : 480;
 				$('#albums').toggleClass('single-col', containerWidth < 2 * colWidth);
 			}
 		}
@@ -257,23 +257,23 @@ angular.module('Music').controller('AlbumsViewController', [
 		subscribe('albumsLayoutChanged', updateColumnLayout);
 
 		function initializePlayerStateFromURL() {
-			var hashParts = window.location.hash.slice(1).split('/');
+			let hashParts = window.location.hash.slice(1).split('/');
 			if (!hashParts[0] && hashParts[1] && hashParts[2]) {
-				var type = hashParts[1];
-				var id = hashParts[2].split('?')[0]; // crop any query part
+				let type = hashParts[1];
+				let id = hashParts[2].split('?')[0]; // crop any query part
 
 				try {
 					if (type == 'file') {
 						$scope.playFile(id);
 					} else if (type == 'artist') {
-						var artist = libraryService.getArtist(id);
+						let artist = libraryService.getArtist(id);
 						if (artist.albums.length > 0) {
 							$scope.playArtist(artist);
 							$scope.$parent.scrollToItem('artist-' + id);
 						} else {
 							// If the artist has no albums, then it can't be used as a play scope.
 							// Find the first track performed by this artist.
-							var tracks = libraryService.findTracksByArtist(id);
+							let tracks = libraryService.findTracksByArtist(id);
 							$scope.playTrack(tracks[0].id);
 							scrollToAlbumOfTrack(tracks[0].id);
 						}

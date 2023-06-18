@@ -51,18 +51,18 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.trackCountText = function(playlist) {
-		var trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
+		let trackCount = playlist ? playlist.tracks.length : libraryService.getTrackCount();
 		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.albumCountText = function() {
-		var albumCount = libraryService.getAlbumCount();
+		let albumCount = libraryService.getAlbumCount();
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
 	};
 
 	$scope.folderCountText = function() {
 		if (libraryService.foldersLoaded()) {
-			var folderCount = libraryService.getAllFoldersWithTracks().length;
+			let folderCount = libraryService.getAllFoldersWithTracks().length;
 			return gettextCatalog.getPlural(folderCount, '1 folder', '{{ count }} folders', { count: folderCount });
 		} else {
 			return '';
@@ -71,7 +71,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.genresCountText = function() {
 		if (libraryService.genresLoaded()) {
-			var genreCount = libraryService.getAllGenres().length;
+			let genreCount = libraryService.getAllGenres().length;
 			return gettextCatalog.getPlural(genreCount, '1 genre', '{{ count }} genres', { count: genreCount });
 		} else {
 			return '';
@@ -80,7 +80,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.radioCountText = function() {
 		if (libraryService.radioStationsLoaded()) {
-			var stationCount = libraryService.getAllRadioStations().length;
+			let stationCount = libraryService.getAllRadioStations().length;
 			return gettextCatalog.getPlural(stationCount, '1 station', '{{ count }} stations', { count: stationCount });
 		} else {
 			return '';
@@ -89,7 +89,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.podcastsCountText = function() {
 		if (libraryService.podcastsLoaded()) {
-			var channelsCount = libraryService.getPodcastChannelsCount();
+			let channelsCount = libraryService.getPodcastChannelsCount();
 			return gettextCatalog.getPlural(channelsCount, '1 channel', '{{ count }} channels', { count: channelsCount });
 		} else {
 			return '';
@@ -97,7 +97,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	$scope.loadIndicatorVisible = function() {
-		var contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress || $scope.checkingUnscanned);
+		let contentNotReady = ($rootScope.loadingCollection || $rootScope.searchInProgress || $scope.checkingUnscanned);
 		return $rootScope.loading
 			|| (contentNotReady && $scope.viewingLibrary());
 	};
@@ -147,7 +147,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 			// The "no content"/"click to scan"/"scanning" banner uses "collapsed" layout
 			// if there are any tracks already visible
-			var collapsiblePopups = $('#app-content .emptycontent:not(.no-collapse)');
+			let collapsiblePopups = $('#app-content .emptycontent:not(.no-collapse)');
 			if (libraryService.getTrackCount() > 0) {
 				collapsiblePopups.addClass('collapsed');
 			} else {
@@ -165,7 +165,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		function(response) { // error handling
 			$rootScope.loadingCollection = false;
 
-			var reason = null;
+			let reason = null;
 			switch (response.status) {
 			case 500:
 				reason = gettextCatalog.getString('Internal server error');
@@ -202,10 +202,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	$scope.updateRadio();
 	$scope.updatePodcasts();
 
-	var FILES_TO_SCAN_PER_STEP = 10;
-	var filesToScan = null;
-	var filesToScanIterator = 0;
-	var previouslyScannedCount = 0;
+	let FILES_TO_SCAN_PER_STEP = 10;
+	let filesToScan = null;
+	let filesToScanIterator = 0;
+	let previouslyScannedCount = 0;
 
 	$scope.updateFilesToScan = function() {
 		$scope.checkingUnscanned = true;
@@ -228,9 +228,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	function processNextScanStep() {
-		var sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
-		var filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
-		var params = {
+		let sliceEnd = filesToScanIterator + FILES_TO_SCAN_PER_STEP;
+		let filesForStep = filesToScan.slice(filesToScanIterator, sliceEnd);
+		let params = {
 				files: filesForStep.join(','),
 				finalize: sliceEnd >= filesToScan.length
 		};
@@ -263,7 +263,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		});
 	}
 
-	$scope.startScanning = function(fileIds /*optional*/) {
+	$scope.startScanning = function(fileIds = null) {
 		if (fileIds) {
 			filesToScan = fileIds;
 			previouslyScannedCount = 0;
@@ -299,14 +299,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	function showDetails(entityType, id) {
-		var capType = OCA.Music.Utils.capitalize(entityType);
-		var showDetailsEvent = 'show' + capType + 'Details';
-		var scrollEvent = 'scrollTo' + capType;
-		var elemId = _.kebabCase(entityType) + '-' + id;
+		let capType = OCA.Music.Utils.capitalize(entityType);
+		let showDetailsEvent = 'show' + capType + 'Details';
+		let scrollEvent = 'scrollTo' + capType;
+		let elemId = _.kebabCase(entityType) + '-' + id;
 
 		$rootScope.$emit(showDetailsEvent, id);
 		$timeout(function() {
-			var elem = document.getElementById(elemId);
+			let elem = document.getElementById(elemId);
 			if (elem !== null && !isElementInViewPort(elem)) {
 				$rootScope.$emit(scrollEvent, id, 0);
 			}
@@ -347,23 +347,20 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	function scrollOffset() {
-		var controls = document.getElementById('controls');
-		var offset = controls?.offsetHeight ?? 0;
+		let controls = document.getElementById('controls');
+		let offset = controls?.offsetHeight ?? 0;
 		if (OCA.Music.Utils.getScrollContainer()[0] !== document.getElementById('app-content')) {
-			var header = document.getElementById('header');
+			let header = document.getElementById('header');
 			offset += header?.offsetHeight;
 		}
 		return offset;
 	}
 
-	$scope.scrollToItem = function(itemId, animationTime /* optional */) {
+	$scope.scrollToItem = function(itemId, animationTime = 500) {
 		if (itemId) {
-			var container = OCA.Music.Utils.getScrollContainer();
-			var element = $('#' + itemId);
+			let container = OCA.Music.Utils.getScrollContainer();
+			let element = $('#' + itemId);
 			if (container && element) {
-				if (animationTime === undefined) {
-					animationTime = 500;
-				}
 				container.scrollToElement(element, scrollOffset(), animationTime);
 			}
 		}
@@ -374,14 +371,14 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	// Navigate to a view selected from the navigation bar
-	var navigationDestination = null;
-	var afterNavigationCallback = null;
-	$scope.navigateTo = function(destination, callback /*optional*/) {
-		var curView = $rootScope.currentView;
+	let navigationDestination = null;
+	let afterNavigationCallback = null;
+	$scope.navigateTo = function(destination, callback = null) {
+		let curView = $rootScope.currentView;
 		if (curView != destination) {
 			$rootScope.currentView = null;
 			navigationDestination = destination;
-			afterNavigationCallback = callback || null;
+			afterNavigationCallback = callback;
 			$rootScope.loading = true;
 			// Deactivate the current view. The view emits 'viewDeactivated' once that is done.
 			// In the abnormal special case of no active view, activate the new view immediately.
@@ -402,10 +399,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Compact/normal layout of the Albums view
 	$scope.albumsCompactLayout = (localStorage.getItem('oc_music_albums_compact') === 'true');
-	$scope.toggleAlbumsCompactLayout = function(useCompact /*optional, invert current value if omitted */) {
-		if (typeof useCompact === 'undefined') {
-			useCompact = !$scope.albumsCompactLayout;
-		}
+	$scope.toggleAlbumsCompactLayout = function(useCompact = !$scope.albumsCompactLayout) {
 		$scope.albumsCompactLayout = useCompact;
 		$('#albums').toggleClass('compact', useCompact);
 		$rootScope.$emit('albumsLayoutChanged');
@@ -418,10 +412,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	// Flat/tree layout of the Folders view
 	$scope.foldersFlatLayout = (localStorage.getItem('oc_music_folders_flat') === 'true');
-	$scope.toggleFoldersFlatLayout = function(useFlat /*optional, invert current value if omitted */) {
-		if (typeof useFlat === 'undefined') {
-			useFlat = !$scope.foldersFlatLayout;
-		}
+	$scope.toggleFoldersFlatLayout = function(useFlat = !$scope.foldersFlatLayout) {
 		$scope.foldersFlatLayout = useFlat;
 		$rootScope.$emit('foldersLayoutChanged');
 
@@ -457,8 +448,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	}
 
 	function setMasterLayout(classes) {
-		var missingClasses = _.difference(['tablet', 'mobile', 'portrait', 'extra-narrow', 'min-width'], classes);
-		var appContent = $('#app-content');
+		let missingClasses = _.difference(['tablet', 'mobile', 'portrait', 'extra-narrow', 'min-width'], classes);
+		let appContent = $('#app-content');
 
 		_.each(classes, function(cls) {
 			appContent.addClass(cls);
@@ -469,13 +460,13 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	}
 
 	$rootScope.$on('resize', function(event, appView) {
-		var appViewWidth = appView.outerWidth();
+		let appViewWidth = appView.outerWidth();
 
 		// Adjust controls bar width to not overlap with the scroll bar.
 		// Subtrack one pixel from the width because outerWidth() seems to
 		// return rounded integer value which may sometimes be slightly larger
 		// than the actual width of the #app-view.
-		var controlsWidth = appViewWidth - 1;
+		let controlsWidth = appViewWidth - 1;
 		$('#controls').css('width', controlsWidth);
 		$('#controls').css('min-width', controlsWidth);
 
@@ -531,11 +522,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	// Work-around for NC14+: The sidebar width has been limited to 500px (normally 27%),
 	// but it's not possible to make corresponding "max margin" definition for #app-content
 	// in css. Hence, the margin width is limited here.
-	var appContent = $('#app-content');
+	let appContent = $('#app-content');
 	appContent.resize(function() {
 		if (appContent.hasClass('with-app-sidebar')) {
-			var sidebarWidth = $('#app-sidebar').outerWidth();
-			var viewWidth = $('#header').outerWidth();
+			let sidebarWidth = $('#app-sidebar').outerWidth();
+			let viewWidth = $('#header').outerWidth();
 
 			if (sidebarWidth < 0.27 * viewWidth) {
 				appContent.css('margin-right', sidebarWidth);

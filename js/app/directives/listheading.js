@@ -20,10 +20,10 @@ import playIconPath from '../../../img/play-big.svg';
 angular.module('Music').directive('listHeading', ['$rootScope', 'gettextCatalog',
 function ($rootScope, gettextCatalog) {
 
-	var playText = gettextCatalog.getString('Play');
-	var detailsText = gettextCatalog.getString('Details');
-	var actionsMenu = null;
-	var actionsMenuOwner = null;
+	const playText = gettextCatalog.getString('Play');
+	const detailsText = gettextCatalog.getString('Details');
+	let actionsMenu = null;
+	let actionsMenuOwner = null;
 
 	/**
 	 * Set up the contents for a given heading element
@@ -42,28 +42,28 @@ function ($rootScope, gettextCatalog) {
 		 * Create the contained HTML elements
 		 */
 		function render() {
-			var fragment = document.createDocumentFragment();
+			let fragment = document.createDocumentFragment();
 
-			var outerSpan = document.createElement('span');
+			let outerSpan = document.createElement('span');
 			outerSpan.setAttribute('draggable', data.getDraggable !== undefined);
 			if (data.tooltip) {
 				outerSpan.setAttribute('title', data.tooltip);
 			}
 			outerSpan.className = 'heading';
 
-			var innerSpan = document.createElement('span');
+			let innerSpan = document.createElement('span');
 			innerSpan.innerHTML = data.heading;
 			outerSpan.appendChild(innerSpan);
 
 			if (data.headingExt) {
-				var extSpan = document.createElement('span');
+				let extSpan = document.createElement('span');
 				extSpan.className = 'muted';
 				extSpan.innerHTML = data.headingExt;
 				outerSpan.appendChild(extSpan);
 			}
 
 			if (data.showPlayIcon) {
-				var playIcon = document.createElement('img');
+				let playIcon = document.createElement('img');
 				playIcon.className = 'play svg';
 				playIcon.setAttribute('alt', playText);
 				playIcon.setAttribute('src', playIconPath);
@@ -73,18 +73,18 @@ function ($rootScope, gettextCatalog) {
 			fragment.appendChild(outerSpan);
 
 			if (data.onDetailsClick) {
-				var detailsButton = document.createElement('button');
+				let detailsButton = document.createElement('button');
 				detailsButton.className = 'icon-details';
 				detailsButton.setAttribute('title', detailsText);
 				fragment.appendChild(detailsButton);
 				data.element.className = 'with-actions';
 			}
 			else if (data.actions) {
-				var moreButton = document.createElement('button');
+				let moreButton = document.createElement('button');
 				moreButton.className = 'icon-more';
 				fragment.appendChild(moreButton);
 
-				var loadSpinner = document.createElement('span');
+				let loadSpinner = document.createElement('span');
 				loadSpinner.className = 'icon-loading-small';
 				fragment.appendChild(loadSpinner);
 
@@ -98,17 +98,17 @@ function ($rootScope, gettextCatalog) {
 		}
 
 		function createActionsMenu(actions) {
-			var container = document.createElement('div');
+			let container = document.createElement('div');
 			container.className = 'popovermenu bubble heading-actions';
-			var list = document.createElement('ul');
+			let list = document.createElement('ul');
 			container.appendChild(list);
 
 			for (var action of actions) {
-				var listitem = document.createElement('li');
-				var link = document.createElement('a');
-				var icon = document.createElement('span');
+				let listitem = document.createElement('li');
+				let link = document.createElement('a');
+				let icon = document.createElement('span');
 				icon.className = 'icon icon-' + action.icon;
-				var text = document.createElement('span');
+				let text = document.createElement('span');
 				text.innerText = gettextCatalog.getString(action.text);
 				// Note: l10n-extract cannot find localised string defined like above.
 				// Ensure that the same string can be extracted from somewhere else.
@@ -181,13 +181,13 @@ function ($rootScope, gettextCatalog) {
 			if (e.originalEvent) {
 				e.dataTransfer = e.originalEvent.dataTransfer;
 			}
-			var offset = {x: e.offsetX, y: e.offsetY};
-			var transferDataObject = {
+			let offset = {x: e.offsetX, y: e.offsetY};
+			let transferDataObject = {
 				data: data.getDraggable(data.model),
 				channel: 'defaultchannel',
 				offset: offset
 			};
-			var transferDataText = angular.toJson(transferDataObject);
+			let transferDataText = angular.toJson(transferDataObject);
 			e.dataTransfer.setData('text', transferDataText);
 			e.dataTransfer.effectAllowed = 'copyMove';
 			$rootScope.$broadcast('ANGULAR_DRAG_START', e, 'defaultchannel', transferDataObject);
@@ -227,12 +227,12 @@ function ($rootScope, gettextCatalog) {
 		require: '?^inViewObserver',
 		compile: function(tmplElement, tmplAttrs) {
 			// Replace the <list-heading> element with <h?> element of desired size
-			var hElem = document.createElement('h' + (tmplAttrs.level || '1'));
+			let hElem = document.createElement('h' + (tmplAttrs.level || '1'));
 			tmplElement.replaceWith(hElem);
 
 			return {
 				post: function(scope, element, attrs, controller) {
-					var data = {
+					let data = {
 						heading: scope.$eval(attrs.heading),
 						headingExt: scope.$eval(attrs.headingExt),
 						tooltip: scope.$eval(attrs.tooltip),

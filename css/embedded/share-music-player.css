@@ -1,0 +1,22 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2023
+ */
+
+/* Play overlay for individual shared file */
+.play-overlay {
+	visibility: hidden;
+	cursor: pointer;
+	position: relative;
+	opacity: .7;
+}
+
+.publicpreview:hover ~ .play-overlay,
+.play-overlay:hover {
+	visibility: visible;
+}

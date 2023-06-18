@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -22,15 +22,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
 function initEmbeddedPlayer() {
 
-	var mCurrentFile = null; // may be an audio file or a playlist file
-	var mPlayingListFile = false;
-	var mFileList = null; // FileList from Files or Sharing app
-	var mShareToken = $('#sharingToken').val(); // undefined when not on share page
+	let mCurrentFile = null; // may be an audio file or a playlist file
+	let mPlayingListFile = false;
+	let mFileList = null; // FileList from Files or Sharing app
+	let mShareToken = $('#sharingToken').val(); // undefined when not on share page
 
-	var mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
-	var mPlaylist = new OCA.Music.Playlist();
+	let mPlayer = new OCA.Music.EmbeddedPlayer(onClose, onNext, onPrev, onMenuOpen, onShowList, onImportList, onImportRadio);
+	let mPlaylist = null;
 
-	var mAudioMimes = _.filter([
+	const mAudioMimes = _.filter([
 		'audio/aac',
 		'audio/aiff',
 		'audio/basic',
@@ -44,7 +44,7 @@ function initEmbeddedPlayer() {
 		'audio/x-caf',
 	], mPlayer.canPlayMime, mPlayer);
 
-	var mPlaylistMimes = [
+	const mPlaylistMimes = [
 		'audio/mpegurl',
 		'audio/x-scpls'
 	];
@@ -52,11 +52,11 @@ function initEmbeddedPlayer() {
 	register();
 
 	function urlForFile(file) {
-		var url = mFileList.getDownloadUrl(file.name, file.path);
+		let url = mFileList.getDownloadUrl(file.name, file.path);
 
 		// append request token unless this is a public share
 		if (!mShareToken) {
-			var delimiter = _.includes(url, '?') ? '&' : '?';
+			let delimiter = _.includes(url, '?') ? '&' : '?';
 			url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
 		}
 		return url;
@@ -85,7 +85,7 @@ function initEmbeddedPlayer() {
 
 	function onMenuOpen($menu) {
 		// disable/enable the "Show list" item
-		var $showItem = $menu.find('#playlist-menu-show');
+		let $showItem = $menu.find('#playlist-menu-show');
 		if (viewingCurrentFileFolder()) {
 			$showItem.removeClass('disabled');
 			$showItem.removeAttr('title');
@@ -95,12 +95,12 @@ function initEmbeddedPlayer() {
 		}
 
 		// disable/enable the "Import list to Music" item
-		var inLibraryFilesCount = _(mPlaylist.files()).filter('in_library').size();
-		var extStreamsCount = _(mPlaylist.files()).filter('url').size();
-		var outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
+		let inLibraryFilesCount = _(mPlaylist.files()).filter('in_library').size();
+		let extStreamsCount = _(mPlaylist.files()).filter('url').size();
+		let outLibraryFilesCount = mPlaylist.length() - inLibraryFilesCount;
 
-		var $importListItem = $menu.find('#playlist-menu-import');
-		var $importRadioItem = $menu.find('#playlist-menu-import-radio');
+		let $importListItem = $menu.find('#playlist-menu-import');
+		let $importRadioItem = $menu.find('#playlist-menu-import-radio');
 
 		if (inLibraryFilesCount === 0) {
 			$importListItem.addClass('disabled');
@@ -137,18 +137,19 @@ function initEmbeddedPlayer() {
 	}
 
 	function onImportList() {
-		doImportFromFile(OCA.Music.playlistFileService.importPlaylist);
+		doImportFromFile(OCA.Music.PlaylistFileService.importPlaylist);
 	}
 
 	function onImportRadio() {
-		doImportFromFile(OCA.Music.playlistFileService.importRadio);
+		doImportFromFile(OCA.Music.PlaylistFileService.importRadio);
 	}
 
 	function doImportFromFile(serviceImportFunc) {
 		// The busy animation is shown on the file item if we are still viewing the folder
-		// where the file resides. The importing itself is possible regardless. 
+		// where the file resides. The importing itself is possible regardless.
+		let $file = null;
 		if (viewingCurrentFileFolder()) {
-			var $file = mFileList.findFileEl(mCurrentFile.name);
+			$file = mFileList.findFileEl(mCurrentFile.name);
 			mFileList.showFileBusyState($file, true);
 		}
 
@@ -232,9 +233,9 @@ function initEmbeddedPlayer() {
 	 */
 	function registerFolderPlayer(mimes, openFileCallback) {
 		// Handle 'play' action on file row
-		var onPlay = function(fileName, context) {
+		let onPlay = function(fileName, context) {
 			mFileList = context.fileList;
-			var file = mFileList.findFile(fileName);
+			let file = mFileList.findFile(fileName);
 
 			// Recent versions of Nextcloud (at least 23-27, possibly some others too) fire this handler when
 			// the user navigates to an audio file with a direct link. In that case, the callback happens before
@@ -251,7 +252,7 @@ function initEmbeddedPlayer() {
 			}
 		};
 
-		var registerPlayerForMime = function(mime) {
+		let registerPlayerForMime = function(mime) {
 			OCA.Files.fileActions.register(
 					mime,
 					'music-play',
@@ -269,20 +270,20 @@ function initEmbeddedPlayer() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
-		mPlaylist.init(mFileList.files, mAudioMimes, mCurrentFile.id);
+		mPlaylist = new OCA.Music.Playlist(mFileList.files, mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}
 
-	function openPlaylistFile(onReadyCallback /*optional*/) {
+	function openPlaylistFile(onReadyCallback = null) {
 		mPlayingListFile = true;
-		var $file = mFileList.findFileEl(mCurrentFile.name);
+		let $file = mFileList.findFileEl(mCurrentFile.name);
 
 		mFileList.showFileBusyState($file, true);
-		var onPlaylistLoaded = function(data) {
+		let onPlaylistLoaded = function(data) {
 			if (data.files.length > 0) {
 				mPlayer.show(mCurrentFile.name);
-				mPlaylist.init(data.files, mAudioMimes, data.files[0].id);
+				mPlaylist = new OCA.Music.Playlist(data.files, mAudioMimes, data.files[0].id);
 				mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 				jumpToPlaylistFile(mPlaylist.currentFile());
 			}
@@ -291,7 +292,7 @@ function initEmbeddedPlayer() {
 				OC.Notification.showTemporary(t('music', 'No files from the playlist could be found'));
 			}
 			if (data.invalid_paths.length > 0) {
-				var note = t('music', 'The playlist contained {count} invalid path(s).',
+				let note = t('music', 'The playlist contained {count} invalid path(s).',
 						{count: data.invalid_paths.length});
 				if (!mShareToken) {
 					// Guide the user to look for details, unless this is a public share where the
@@ -307,19 +308,19 @@ function initEmbeddedPlayer() {
 				onReadyCallback();
 			}
 		};
-		var onError = function() {
+		let onError = function() {
 			mCurrentFile = null;
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
 			mFileList.showFileBusyState($file, false);
 		};
-		OCA.Music.playlistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
+		OCA.Music.PlaylistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
 	}
 
 	/**
 	 * "File share player" is used on individually shared files
 	 */
 	function registerFileSharePlayer(supportedMimes) {
-		var onClick = function() {
+		let onClick = function() {
 			if (!mPlayer.isVisible()) {
 				mPlayer.show();
 				mPlayer.playFile(

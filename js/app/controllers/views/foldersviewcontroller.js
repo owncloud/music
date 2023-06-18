@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2022
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 
@@ -20,20 +20,20 @@ angular.module('Music').controller('FoldersViewController', [
 		// When making the view visible, the folders are added incrementally step-by-step.
 		// The purpose of this is to keep the browser responsive even in case the view contains
 		// an enormous amount of folders (like several thousands).
-		var INCREMENTAL_LOAD_STEP = 100;
+		const INCREMENTAL_LOAD_STEP = 100;
 		$scope.incrementalLoadLimit = 0;
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
 		}
 
-		function playPlaylist(listId, tracks, startFromTrackId /*optional*/) {
-			var startIndex = null;
+		function playPlaylist(listId, tracks, startFromTrackId = undefined) {
+			let startIndex = null;
 			if (startFromTrackId !== undefined) {
-				startIndex = _.findIndex(tracks, function(i) {return i.track.id == startFromTrackId;});
+				startIndex = _.findIndex(tracks, (i) => i.track.id == startFromTrackId);
 			}
 			playlistService.setPlaylist(listId, tracks, startIndex);
 			playlistService.publish('play');
@@ -65,9 +65,9 @@ angular.module('Music').controller('FoldersViewController', [
 		};
 
 		function trackBelongsToPlayingFolder(trackId) {
-			var currentListId = playlistService.getCurrentPlaylistId();
+			let currentListId = playlistService.getCurrentPlaylistId();
 			if (currentListId?.startsWith('folder-')) {
-				var currentList = playlistService.getCurrentPlaylist();
+				let currentList = playlistService.getCurrentPlaylist();
 				return (0 <= _.findIndex(currentList, ['track.id', trackId]));
 			} else {
 				return false;
@@ -88,7 +88,7 @@ angular.module('Music').controller('FoldersViewController', [
 		 * Gets track data to be dislayed in the tracklist directive
 		 */
 		$scope.getTrackData = function(listItem, index, _scope) {
-			var track = listItem.track;
+			let track = listItem.track;
 			return {
 				title: track.artistName + ' - ' + track.title,
 				tooltip: '',
@@ -98,7 +98,7 @@ angular.module('Music').controller('FoldersViewController', [
 		};
 
 		function getDraggable(type, draggedElementId) {
-			var draggable = {};
+			let draggable = {};
 			draggable[type] = draggedElementId;
 			return draggable;
 		}
@@ -131,12 +131,12 @@ angular.module('Music').controller('FoldersViewController', [
 
 		subscribe('scrollToTrack', function(event, trackId) {
 			if ($scope.$parent) {
-				var elementId = 'track-' + trackId;
+				let elementId = 'track-' + trackId;
 				// If the track element is hidden (collapsed), scroll to the folder
 				// element instead
-				var trackElem = $('#' + elementId);
+				let trackElem = $('#' + elementId);
 				if (trackElem.length === 0 || !trackElem.is(':visible')) {
-					var folder = libraryService.getTrack(trackId).folder; 
+					let folder = libraryService.getTrack(trackId).folder; 
 					elementId = 'folder-' + folder.id;
 				}
 				$scope.$parent.scrollToItem(elementId);

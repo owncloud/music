@@ -4,7 +4,7 @@ import musicIconPath from '../../img/music-dark.svg';
 	/**
 	 * This custom renderer handles rendering Music app search results shown within the Files app
 	 */
-	var Music = function() {
+	let Music = function() {
 		this.initialize();
 	};
 	/**

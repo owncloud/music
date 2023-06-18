@@ -5,19 +5,25 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
-angular.module('Music').service('podcastService', [
+import * as ng from 'angular';
+import { IService } from 'restangular';
+import { gettextCatalog } from 'angular-gettext';
+import { MusicRootScope } from 'app/config/musicrootscope'
+import { LibraryService, PodcastChannel } from './libraryservice';
+
+ng.module('Music').service('podcastService', [
 '$rootScope', '$timeout', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
-function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) {
+function($rootScope : MusicRootScope, $timeout : ng.ITimeoutService, $q : ng.IQService, libraryService : LibraryService, gettextCatalog : gettextCatalog, Restangular : IService) {
 
 	// Private functions
-	function reloadChannel(channel) {
-		var deferred = $q.defer();
+	function reloadChannel(channel : PodcastChannel) : ng.IPromise<any> {
+		let deferred = $q.defer();
 
 		Restangular.one('podcasts', channel.id).all('update').post({prevHash: channel.hash}).then(
-			function (result) {
+			(result) => {
 				if (!result.success) {
 					OC.Notification.showTemporary(
 							gettextCatalog.getString('Could not update the channel "{{ title }}" from the source', { title: channel.title }));
@@ -27,7 +33,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 				}
 				deferred.resolve(result);
 			},
-			function (_error) {
+			(_error) => {
 				OC.Notification.showTemporary(
 						gettextCatalog.getString('Unexpected error when updating the channel "{{ title }}"', { title: channel.title }));
 				deferred.resolve(); // resolve even on failure so that callers need to define only one callback
@@ -41,13 +47,13 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 	return {
 
 		// Show a popup dialog to add a new podcast channel from an RSS feed
-		showAddPodcastDialog: function() {
+		showAddPodcastDialog() : ng.IPromise<any> {
 			const deferred = $q.defer();
 
-			const subscribePodcastChannel = function(url) {
+			const subscribePodcastChannel = function(url : string) {
 				deferred.notify('started');
 				Restangular.all('podcasts').post({url: url}).then(
-					function (result) {
+					(result) => {
 						libraryService.addPodcastChannel(result);
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('Podcast channel "{{ title }}" added', { title: result.title }));
@@ -56,8 +62,8 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 						}
 						deferred.resolve();
 					},
-					function (error) {
-						var errMsg;
+					(error) => {
+						let errMsg;
 						if (error.status === 400) {
 							errMsg = gettextCatalog.getString('Invalid RSS feed URL');
 						} else if (error.status === 409) {
@@ -74,7 +80,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 			OC.dialogs.prompt(
 					gettextCatalog.getString('Add a new podcast channel from an RSS feed'),
 					gettextCatalog.getString('Add channel'),
-					function (confirmed, url) {
+					(confirmed : boolean, url : string) => {
 						if (confirmed) {
 							subscribePodcastChannel(url);
 						}
@@ -88,8 +94,8 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 		},
 
 		// Refresh the contents of the given podcast channel
-		reloadPodcastChannel: function(channel) {
-			return reloadChannel(channel).then(function(result) {
+		reloadPodcastChannel(channel : PodcastChannel) : ng.IPromise<any> {
+			return reloadChannel(channel).then((result) => {
 				if (result?.updated) {
 					OC.Notification.showTemporary(
 							gettextCatalog.getString('The channel was updated from the source'));
@@ -103,15 +109,15 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 		},
 
 		// Refresh the contents of all the subscribed podcast channels
-		reloadAllPodcasts: function() {
+		reloadAllPodcasts() : ng.IPromise<any> {
 			const deferred = $q.defer();
 			const channels = libraryService.getAllPodcastChannels();
-			var index = 0;
-			var changeCount = 0;
+			let index = 0;
+			let changeCount = 0;
 
 			const processNextChannel = function() {
 				if (index < channels.length) {
-					reloadChannel(channels[index]).then(function(result) {
+					reloadChannel(channels[index]).then((result) => {
 						if (result?.updated) {
 							changeCount++;
 						}
@@ -140,13 +146,13 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 		},
 
 		// Remove a single previously subscribed podcast channel
-		removePodcastChannel: function(channel) {
+		removePodcastChannel(channel : PodcastChannel) : ng.IPromise<any> {
 			const deferred = $q.defer();
 
 			const doDelete = function() {
 				deferred.notify('started');
 				Restangular.one('podcasts', channel.id).remove().then(
-					function (result) {
+					(result) => {
 						if (!result.success) {
 							OC.Notification.showTemporary(
 									gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
@@ -157,7 +163,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 							deferred.resolve();
 						}
 					},
-					function (_error) {
+					(_error) => {
 						OC.Notification.showTemporary(
 								gettextCatalog.getString('Could not remove the channel "{{ title }}"', { title: channel.title }));
 						deferred.reject();
@@ -168,7 +174,7 @@ function($rootScope, $timeout, $q, libraryService, gettextCatalog, Restangular) 
 			OC.dialogs.confirm(
 					gettextCatalog.getString('Are you sure to remove the podcast channel "{{ title }}"?', { title: channel.title }),
 					gettextCatalog.getString('Remove channel'),
-					function(confirmed) {
+					(confirmed : boolean) => {
 						if (confirmed) {
 							doDelete();
 						}

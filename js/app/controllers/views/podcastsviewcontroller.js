@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 angular.module('Music').controller('PodcastsViewController', [
@@ -15,7 +15,7 @@ angular.module('Music').controller('PodcastsViewController', [
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
@@ -27,27 +27,27 @@ angular.module('Music').controller('PodcastsViewController', [
 
 		// Wrap the supplied tracks as a playlist and pass it to the service for playing
 		function playEpisodes(listId, episodes) {
-			var playlist = _.map(episodes, (episode) => ({track: episode}));
+			let playlist = _.map(episodes, (episode) => ({track: episode}));
 			playlistService.setPlaylist(listId, playlist);
 			playlistService.publish('play');
 		}
 
 		function playPlaylistFromEpisode(listId, playlist, episode) {
-			var index = _.findIndex(playlist, function(i) {return i.track.id == episode.id;});
+			let index = _.findIndex(playlist, function(i) {return i.track.id == episode.id;});
 			playlistService.setPlaylist(listId, playlist, index);
 			playlistService.publish('play');
 		}
 
 		$scope.playEpisode = function(episodeId) {
-			var episode = libraryService.getPodcastEpisode(episodeId);
-			var currentTrack = $scope.$parent.currentTrack;
+			let episode = libraryService.getPodcastEpisode(episodeId);
+			let currentTrack = $scope.$parent.currentTrack;
 
 			// play/pause if currently playing track clicked
 			if (currentTrack && episode.id === currentTrack.id && currentTrack.type === 'podcast') {
 				playlistService.publish('togglePlayback');
 			}
 			else {
-				var currentListId = playlistService.getCurrentPlaylistId();
+				let currentListId = playlistService.getCurrentPlaylistId();
 
 				// start playing the channel from this episode if the clicked track belongs
 				// to a channel which is the current play scope
@@ -122,14 +122,14 @@ angular.module('Music').controller('PodcastsViewController', [
 			updateHighlight(playlistId);
 		});
 
-		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime /* optional */) {
-			var episode = libraryService.getPodcastEpisode(episodeId);
+		subscribe('scrollToPodcastEpisode', function(_event, episodeId, animationTime = 500) {
+			let episode = libraryService.getPodcastEpisode(episodeId);
 			if (episode) {
 				$scope.$parent.scrollToItem('podcast-channel-' + episode.channel.id, animationTime);
 			}
 		});
 
-		subscribe('scrollToPodcastChannel', function(_event, channelId, animationTime /* optional */) {
+		subscribe('scrollToPodcastChannel', function(_event, channelId, animationTime = 500) {
 			$scope.$parent.scrollToItem('podcast-channel-' + channelId, animationTime);
 		});
 
@@ -145,14 +145,14 @@ angular.module('Music').controller('PodcastsViewController', [
 
 		function updateColumnLayout() {
 			// Use the single-column layout if there's not enough room for two columns or more
-			var containerWidth = $('#podcasts').width();
+			let containerWidth = $('#podcasts').width();
 			if (containerWidth === 0) {
 				// During page load, the view container may not yet have a valid width. On Firefox on Ubuntu,
 				// the resize event with the valid width doesn't fire at all after the page load. Retry until
 				// a valid width is present. See https://github.com/owncloud/music/issues/1029.
 				$timeout(updateColumnLayout, 500);
 			} else {
-				var colWidth = 480;
+				let colWidth = 480;
 				$('#podcasts').toggleClass('single-col', containerWidth < 2 * colWidth);
 			}
 		}

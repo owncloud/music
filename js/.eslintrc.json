@@ -5,7 +5,9 @@
         "es2021": true
     },
     "extends": "eslint:recommended",
+	"parser": "../node_modules/@babel/eslint-parser",
     "parserOptions": {
+		"requireConfigFile": false,
         "sourceType": "module"
     },
     "ignorePatterns": ["/vendor/**", "app/l10n/*"],

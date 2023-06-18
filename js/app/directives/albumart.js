@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright 2013 Morris Jobke
- * @copyright 2016 - 2022 Pauli Järvinen
+ * @copyright 2016 - 2023 Pauli Järvinen
  *
  */
 
@@ -21,12 +21,12 @@ angular.module('Music').directive('albumart', [function() {
 		element.css('background-image', 'url(' + imageUrl + ')');
 	}
 
-	function setPlaceholder(element, text, seed /*optional*/) {
+	function setPlaceholder(element, text, seed = null) {
 		if (text) {
 			// remove background image
 			element.css('background-image', '');
 			// add placeholder stuff
-			element.imageplaceholder(seed || text, text);
+			element.imageplaceholder(seed ?? text, text);
 			// remove inlined size-related style properties set by imageplaceholder() to allow
 			// dynamic changing between mobile and desktop styles when window size changes
 			element.css('line-height', '');
@@ -53,7 +53,7 @@ angular.module('Music').directive('albumart', [function() {
 			 *    related attributes of the element.
 			 */
 
-			var loadAlbumart = function() {
+			let loadAlbumart = function() {
 				const art = scope.albumart;
 				if (art) {
 					// the "albumart" may actually be an album or podcast channel object

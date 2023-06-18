@@ -30,6 +30,7 @@ watch: deps
 
 # general
 deps:
+	cd ..
 	npm install --deps
 
 # localization
@@ -41,7 +42,7 @@ l10n-extract: deps
 
 l10n-compile: deps
 	npm run l10n-compile
-	cd ../l10n; ./l10n.pl music write
+	cd l10n; ./l10n.pl music write
 
 # releasing
 release:

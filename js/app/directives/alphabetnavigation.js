@@ -25,19 +25,19 @@ function($rootScope, $timeout, alphabetIndexingService) {
 		replace: true,
 		link: function(scope, element, _attrs, _ctrl) {
 
-			var links = alphabetIndexingService.indexChars();
-			var linksShort = [
+			const links = alphabetIndexingService.indexChars();
+			const linksShort = [
 				'#', 'A-B', 'C-D', 'E-F', 'G-H', 'I-J', 'K-L', 'M-N',
 				'O-P', 'Q-R', 'S-T', 'U-V', 'W-X', 'Y-Z', '…'
 			];
-			var linksExtraShort = [
+			const linksExtraShort = [
 				'A-C', 'D-F', 'G-I', 'J-L', 'M-O', 'P-R', 'S-U', 'V-X', 'Y-Z'
 			];
 			scope.links = links;
 			scope.targets = {};
 
 			function itemPrecedesLetter(itemIdx, linkIdx) {
-				var title = scope.getElemTitle(itemIdx);
+				let title = scope.getElemTitle(itemIdx);
 				return (linkIdx >= links.length
 						|| alphabetIndexingService.titlePrecedesIndexCharAt(title, linkIdx));
 			}
@@ -52,7 +52,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 					if (itemPrecedesLetter(itemIdx, linkIdx + 1)) {
 						// Item is smaller than the next alphabet, i.e.
 						// alphabet <= item < nextAlphabet, link the item to this alphabet
-						var alphabet = links[linkIdx];
+						let alphabet = links[linkIdx];
 						scope.targets[alphabet] = scope.getElemId(itemIdx);
 	
 						// Skip the rest of the items belonging to the same alphabet
@@ -66,10 +66,10 @@ function($rootScope, $timeout, alphabetIndexingService) {
 
 			function setUpGroupedLinks(groupSize) {
 				for (var i = 1; i < links.length - groupSize; i += groupSize) {
-					var group = links[i] + '-' + links[i+groupSize-1];
+					let group = links[i] + '-' + links[i+groupSize-1];
 
 					for (var j = 0; j < groupSize; ++j) {
-						var alphabet = links[i+j];
+						let alphabet = links[i+j];
 						if (alphabet in scope.targets) {
 							scope.targets[group] = scope.targets[alphabet];
 							break;
@@ -87,7 +87,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 
 			function onResize(_event, appView, secondCheck) {
 				// top and bottom padding of 5px each
-				var height = appView.height() - 10;
+				let height = appView.height() - 10;
 
 				element.css('height', height);
 
@@ -110,7 +110,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 				element.css('line-height', Math.floor(height/scope.links.length) + 'px');
 
 				// anchor the alphabet navigation to the right edge of the app view
-				var appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
+				let appViewRight = document.body.clientWidth - appView.offset().left - appView.innerWidth();
 				element.css('right', appViewRight);
 
 				// There's no resize event when the navigation pane collapses on mobile layot but there is one when the
@@ -131,7 +131,7 @@ function($rootScope, $timeout, alphabetIndexingService) {
 
 			// Trigger resize on #app-view resize and player status changes.
 			// Trigger re-evaluation of available scroll targets when collection reloaded.
-			var unsubscribeFuncs = [
+			let unsubscribeFuncs = [
 				$rootScope.$on('resize', onResize),
 				$rootScope.$watch('started', onPlayerBarShownOrHidden),
 				$rootScope.$on('collectionLoaded', setUpTargets),

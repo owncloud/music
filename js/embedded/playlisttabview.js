@@ -1,3 +1,13 @@
+/**
+ * ownCloud - Music app
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
+ * @copyright Pauli Järvinen 2020 - 2023
+ */
+
 OCA.Music = OCA.Music || {};
 
 OCA.Music.initPlaylistTabView = function(playlistMimes) {
@@ -15,60 +25,58 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 			},
 
 			render: function() {
-				var self = this;
-
-				var container = this.$el;
+				let container = this.$el;
 				container.empty(); // erase any previous content
 
-				var fileInfo = this.getFileInfo();
+				let fileInfo = this.getFileInfo();
 
 				if (fileInfo) {
 
-					var loadIndicator = $(document.createElement('div')).attr('class', 'loading');
+					let loadIndicator = $(document.createElement('div')).attr('class', 'loading');
 					container.append(loadIndicator);
 
-					var onPlaylistLoaded = function(data) {
+					let onPlaylistLoaded = (data) => {
 						loadIndicator.hide();
 
-						var list = $(document.createElement('ol'));
+						let list = $(document.createElement('ol'));
 						container.append(list);
 
-						var titleForFile = function(file) {
+						let titleForFile = function(file) {
 							return file.caption || OCA.Music.Utils.titleFromFilename(file.name);
 						};
 
-						for (var i = 0; i < data.files.length; ++i) {
+						for (let i = 0; i < data.files.length; ++i) {
 							list.append($(document.createElement('li'))
 										.attr('id', 'music-playlist-item-' + i)
 										.text(titleForFile(data.files[i])));
 						}
 
 						// click handler
-						list.on('click', 'li', function(event) {
-							var id = event.target.id;
-							var idx = parseInt(id.split('-').pop());
-							self.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes.name, idx);
+						list.on('click', 'li', (event) => {
+							let id = event.target.id;
+							let idx = parseInt(id.split('-').pop());
+							this.trigger('playlistItemClick', fileInfo.id, fileInfo.attributes.name, idx);
 						});
 
 						if (data.invalid_paths.length > 0) {
 							container.append($(document.createElement('p')).text(t('music', 'Some files on the playlist were not found') + ':'));
-							var failList = $(document.createElement('ul'));
+							let failList = $(document.createElement('ul'));
 							container.append(failList);
 
-							for (i = 0; i < data.invalid_paths.length; ++i) {
+							for (let i = 0; i < data.invalid_paths.length; ++i) {
 								failList.append($(document.createElement('li')).text(data.invalid_paths[i]));
 							}
 						}
 
-						self.trigger('rendered');
+						this.trigger('rendered');
 					};
 
-					var onError = function(_error) {
+					let onError = function(_error) {
 						loadIndicator.hide();
 						container.append($(document.createElement('p')).text(t('music', 'Error reading playlist file')));
 					};
 
-					OCA.Music.playlistFileService.readFile(fileInfo.id, onPlaylistLoaded, onError);
+					OCA.Music.PlaylistFileService.readFile(fileInfo.id, onPlaylistLoaded, onError);
 				}
 			},
 
@@ -76,14 +84,14 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 				if (!fileInfo || fileInfo.isDirectory()) {
 					return false;
 				}
-				var mimetype = fileInfo.get('mimetype');
+				let mimetype = fileInfo.get('mimetype');
 
 				return (mimetype && playlistMimes.indexOf(mimetype) > -1);
 			},
 
 			setCurrentTrack: function(playlistId, trackIndex) {
 				this.$el.find('ol li.current').removeClass('current');
-				var fileInfo = this.getFileInfo();
+				let fileInfo = this.getFileInfo();
 				if (fileInfo && fileInfo.id == playlistId) {
 					this.$el.find('ol li#music-playlist-item-' + trackIndex).addClass('current');
 				}

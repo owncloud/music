@@ -5,23 +5,23 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright 2019 Pauli Järvinen
+ * @copyright 2019 - 2023 Pauli Järvinen
  *
  */
 
-angular.module('Music').service('inViewService', ['$rootScope', function($rootScope) {
+import * as ng from "angular";
 
-	var dirty = true;
-	var headerHeight = null;
-	var appViewHeight = null;
+ng.module('Music').service('inViewService', ['$rootScope', function($rootScope : ng.IRootScopeService) {
 
-	$rootScope.$on('resize', function() {
-		dirty = true;
-	});
+	let dirty = true;
+	let headerHeight = 0;
+	let appViewHeight = 0;
 
-	function updateHeights() {
-		var appView = document.getElementById('app-view');
-		var header = document.getElementById('header');
+	$rootScope.$on('resize', () => dirty = true);
+
+	function updateHeights() : void {
+		const appView = document.getElementById('app-view');
+		const header = document.getElementById('header');
 
 		headerHeight = header.offsetHeight;
 		appViewHeight = appView.offsetHeight;
@@ -38,19 +38,16 @@ angular.module('Music').service('inViewService', ['$rootScope', function($rootSc
 		 * @param int topMargin Optional top extension in pixels (use negative value for reduction)
 		 * @param int bottomMargin Optional bottom extension in pixels (use negative value for reduction)
 		 */
-		isElementInViewPort: function(el, topMargin/*optional*/, bottomMargin/*optional*/) {
+		isElementInViewPort: function(el : HTMLElement, topMargin = 0, bottomMargin = 0) : boolean {
 			if (el) {
-				topMargin = topMargin || 0;
-				bottomMargin = bottomMargin || 0;
-
 				if (dirty) {
 					updateHeights();
 				}
 
-				var viewPortTop = headerHeight - topMargin;
-				var viewPortBottom = headerHeight + appViewHeight + bottomMargin;
+				let viewPortTop = headerHeight - topMargin;
+				let viewPortBottom = headerHeight + appViewHeight + bottomMargin;
 
-				var rect = el.getBoundingClientRect();
+				let rect = el.getBoundingClientRect();
 				return rect.bottom >= viewPortTop && rect.top <= viewPortBottom;
 			}
 			else {

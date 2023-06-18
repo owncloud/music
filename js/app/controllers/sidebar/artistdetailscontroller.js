@@ -37,7 +37,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 				$scope.artistAlbumTrackCount = _($scope.artist.albums).map('tracks').flatten().size();
 				$scope.artistTrackCount = libraryService.findTracksByArtist(artistId).length;
 
-				var art = $('#app-sidebar .albumart');
+				let art = $('#app-sidebar .albumart');
 				art.css('background-image', '');
 
 				// Because of the asynchronous nature of teh REST queries, it is possible that the
@@ -49,7 +49,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 							$scope.artAvailable = true;
 							$scope.loading = false;
 
-							var url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
+							let url = OC.generateUrl('apps/music/api/artist/') + artistId + '/cover?originalSize=true';
 							art.css('background-image', 'url("' + url + '")');
 						}
 					},
@@ -101,7 +101,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 
 		function setSimilarArtists(artists) {
 			// siliar artists are divided to those within the library and the rest
-			var artistIsInLib = function(artist) {
+			let artistIsInLib = function(artist) {
 				return 'id' in artist && artist.id !== null;
 			};
 			$scope.similarArtistsInLib = _.filter(artists, artistIsInLib);

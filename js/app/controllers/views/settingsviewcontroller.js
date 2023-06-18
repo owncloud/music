@@ -22,10 +22,10 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.desktopNotificationsSupported = (typeof Notification !== 'undefined');
 
-		var savedExcludedPaths = [];
+		let savedExcludedPaths = [];
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
-		var unsubFuncs = [];
+		let unsubFuncs = [];
 
 		function subscribe(event, handler) {
 			unsubFuncs.push( $rootScope.$on(event, handler) );
@@ -70,7 +70,7 @@ angular.module('Music').controller('SettingsViewController', [
 						// Store the parent reference before posting the changed value to backend;
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime.
-						var parent = $scope.$parent;
+						let parent = $scope.$parent;
 						Restangular.all('settings/user/path').post({value: path}).then(
 							function (data) {
 								if (data.success) {
@@ -115,7 +115,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.commitExcludedPaths = function() {
 			// Get the entered paths, trimming excess white space and filtering out any empty paths
-			var paths = $scope.settings.excludedPaths;
+			let paths = $scope.settings.excludedPaths;
 			paths = _.map(paths, function(path) { return path.trim(); });
 			paths = _.filter(paths, function(path) { return path !== ''; });
 
@@ -138,7 +138,7 @@ angular.module('Music').controller('SettingsViewController', [
 			}
 		};
 
-		var cancelSaveScanMetada = null;
+		let cancelSaveScanMetada = null;
 		$scope.savingScanMetadata = 0;
 		$scope.$watch('settings.scanMetadata', function(enabled, previouslyEnabled) {
 			// send the new value to the server only when moving between valid states, not on first init
@@ -180,8 +180,8 @@ angular.module('Music').controller('SettingsViewController', [
 
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime
-						var parent = $scope.$parent;
-						var executeReset = function() {
+						let parent = $scope.$parent;
+						let executeReset = function() {
 							Restangular.all('resetscanned').post().then(
 									function(data) {
 										if (data.success) {
@@ -220,7 +220,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime
-						var parent = $scope.$parent;
+						let parent = $scope.$parent;
 						Restangular.all('radio/reset').post().then(
 								function(data) {
 									if (data.success) {
@@ -250,7 +250,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 						// $scope.$parent may not be available any more in the callback in case
 						// the user has navigated to another view in the meantime
-						var parent = $scope.$parent;
+						let parent = $scope.$parent;
 						Restangular.all('podcasts/reset').post().then(
 								function(data) {
 									if (data.success) {
@@ -288,7 +288,7 @@ angular.module('Music').controller('SettingsViewController', [
 
 		$scope.commitIgnoredArticles = function() {
 			// Get the entered articles, trimming excess white space and filtering out any empty ones
-			var articles = $scope.ignoredArticles.split(/\s+/);
+			let articles = $scope.ignoredArticles.split(/\s+/);
 
 			// Send the articles to the back-end if there are any changes
 			if (!_.isEqual(articles, $scope.settings.ignoredArticles)) {
@@ -311,7 +311,7 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		$scope.addAPIKey = function() {
-			var newRow = {description: $scope.ampacheDescription, loading: true};
+			let newRow = {description: $scope.ampacheDescription, loading: true};
 			$scope.settings.ampacheKeys.push(newRow);
 			Restangular.all('settings/user/keys').post({ description: $scope.ampacheDescription, length: 12 }).then(
 				function(data) {
@@ -345,11 +345,11 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		$scope.copyToClipboard = function(elementId) {
-			var range = document.createRange();
+			let range = document.createRange();
 			range.selectNode(document.getElementById(elementId));
 			window.getSelection().removeAllRanges(); // clear current selection
 			window.getSelection().addRange(range); // to select text
-			var success = document.execCommand('copy');
+			let success = document.execCommand('copy');
 
 			if (success) {
 				OC.Notification.showTemporary(

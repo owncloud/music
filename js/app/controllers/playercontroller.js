@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 import radioIconPath from '../../../img/radio-file.svg';
@@ -36,10 +36,10 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		current: 0,
 		total: 0
 	};
-	var lastVolume = null;
-	var scrobblePending = false;
-	var scheduledRadioTitleFetch = null;
-	var abortRadioTitleFetch = null;
+	let lastVolume = null;
+	let scrobblePending = false;
+	let scheduledRadioTitleFetch = null;
+	let abortRadioTitleFetch = null;
 	const GAPLESS_PLAY_OVERLAP_MS = 500;
 	const RADIO_INFO_POLL_PERIOD_MS = 30000;
 	const RADIO_INFO_POLL_MAX_ATTEMPTS = 3;
@@ -55,7 +55,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.shuffle = OCA.Music.Utils.parseBoolean($location.search().shuffle);
 	}
 	if ($location.search().repeat !== undefined) {
-		var val = String($location.search().repeat).toLowerCase();
+		let val = String($location.search().repeat).toLowerCase();
 		if (val !== 'one') {
 			val = OCA.Music.Utils.parseBoolean(val).toString();
 		}
@@ -84,7 +84,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		// prepare the next song once buffering this one is done (sometimes the percent never goes above something like 99.996%)
 		if (percent > 99 && $scope.currentTrack.type === 'song') {
-			var entry = playlistService.peekNextTrack();
+			let entry = playlistService.peekNextTrack();
 			if (entry?.track?.id !== undefined) {
 				const {mime, url} = getPlayableFileUrl(entry.track) || [null, null];
 				if (mime !== null && url !== null) {
@@ -108,9 +108,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 			// Gapless jump to the next track when the playback is very close to the end of a local track
 			if ($scope.position.total > 0 && $scope.currentTrack.type === 'song' && $scope.repeat !== 'one') {
-				var timeLeft = $scope.position.total*1000 - currentTime;
+				let timeLeft = $scope.position.total*1000 - currentTime;
 				if (timeLeft < GAPLESS_PLAY_OVERLAP_MS) {
-					var nextTrackId = playlistService.peekNextTrack()?.track?.id;
+					let nextTrackId = playlistService.peekNextTrack()?.track?.id;
 					if (nextTrackId !== null && nextTrackId !== $scope.currentTrack.id) {
 						onEnd();
 					}
@@ -120,7 +120,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 		// Show progress again instead of preview after a timeout of 2000ms
 		if ($scope.position.currentPreview_ts) {
-			var timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
+			let timeSincePreview = Date.now() - $scope.position.currentPreview_ts;
 			if (timeSincePreview >= 2000) {
 				$scope.seekbarLeave();
 			}
@@ -184,7 +184,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	// display the song name and artist in the title when there is current track
 	const titleApp = $('title').html().trim();
 	function updateWindowTitle(track) {
-		var titleSong = '';
+		let titleSong = '';
 		if (track?.title !== undefined) {
 			if (track?.channel) {
 				titleSong = track.title + ' (' + track.channel.title + ') - ';
@@ -208,8 +208,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	}
 
-	function getRadioTitle(radioTrack, failCounter /*optional, internal*/) {
-		failCounter = failCounter || 0;
+	function getRadioTitle(radioTrack, failCounter = 0 /*internal*/) {
 		abortRadioTitleFetch = $q.defer();
 		const config = {timeout: abortRadioTitleFetch.promise};
 		const metaType = radioTrack.metadata?.type; // request the same metadata type as previously got (if any)
@@ -259,8 +258,8 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		return null;
 	}
 
-	function setCurrentTrack(playlistEntry, startOffset /*optional*/, gapless /*optional*/) {
-		var track = playlistEntry ? playlistEntry.track : null;
+	function setCurrentTrack(playlistEntry, startOffset = 0, gapless = false) {
+		let track = playlistEntry ? playlistEntry.track : null;
 
 		if (track !== null) {
 			// switch initial state
@@ -276,7 +275,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.shiftHeldDown = false;
 	}
 
-	function playCurrentTrack(startOffset /*optional*/) {
+	function playCurrentTrack(startOffset = 0) {
 		// the playback may have been stopped and currentTrack vanished during the debounce time
 		if ($scope.currentTrack) {
 			if ($scope.currentTrack.type === 'radio') {
@@ -316,9 +315,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	 * the playing track like when rapidly and repeatedly clicking the 'Skip next' button.
 	 * Too high number of simultaneous GET requests could easily jam a low-power server.
 	 */
-	var debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
+	let debouncedPlayCurrentTrack = _.debounce(playCurrentTrack, 300);
 
-	function playTrack(track, startOffset /*optional*/, gapless /*optional*/) {
+	function playTrack(track, startOffset = 0, gapless = false) {
 		$scope.currentTrack = track;
 
 		// Don't indicate support for seeking before we actually know its status for the new track.
@@ -402,7 +401,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.toggleRepeat = function() {
-		var nextState = {
+		let nextState = {
 			'false'	: 'true',
 			'true'	: 'one',
 			'one'	: 'false'
@@ -509,13 +508,13 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$timeout(() => $scope.playPauseContextMenuVisible = false);
 	});
 
-	$scope.next = function(startOffset /*optional*/, gapless /*optional*/) {
-		var entry = playlistService.jumpToNextTrack();
+	$scope.next = function(startOffset = 0, gapless = false) {
+		let entry = playlistService.jumpToNextTrack();
 
 		// For ordinary tracks, skip the tracks with unsupported MIME types.
 		// For external streams, we don't know the MIME type, and we just assume that they can be played.
 		if (entry?.track?.files !== undefined) {
-			var tracksSkipped = false;
+			let tracksSkipped = false;
 
 			// get the next track as long as the current one contains no playable
 			// audio mimetype
@@ -540,7 +539,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 		// Jump to the previous track if the current track has played only 2 secs or less
 		else {
-			var track = playlistService.jumpToPrevTrack();
+			let track = playlistService.jumpToPrevTrack();
 			if (track !== null) {
 				setCurrentTrack(track);
 			}
@@ -549,11 +548,11 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	// Seekbar preview mouse support
 	function updateSeekPreview(xCoordinate) {
-		var seekBar = $('.seek-bar');
-		var offsetX = xCoordinate - seekBar.offset().left;
+		let seekBar = $('.seek-bar');
+		let offsetX = xCoordinate - seekBar.offset().left;
 		offsetX = Math.min(Math.max(0, offsetX), seekBar.width());
-		var ratio = offsetX / seekBar.width();
-		var timestamp = ratio * $scope.position.total;
+		let ratio = offsetX / seekBar.width();
+		let timestamp = ratio * $scope.position.total;
 
 		$scope.position.previewPercent = ratio * 100;
 		$scope.position.currentPreview = timestamp;
@@ -593,7 +592,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.seekOffset = function(offset) {
 		if ($scope.player.seekingSupported()) {
 			const target = $scope.position.current + offset;
-			var ratio = target / $scope.position.total;
+			let ratio = target / $scope.position.total;
 			// Clamp between the begin and end of the track
 			ratio = Math.min(Math.max(0, ratio), 1);
 			$scope.player.seek(ratio);
@@ -602,9 +601,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	// Seekbar click / tap
 	$scope.seek = function($event) {
-		var seekBar = $('.seek-bar');
-		var offsetX = $event.clientX - seekBar.offset().left;
-		var ratio = offsetX / seekBar.width();
+		let seekBar = $('.seek-bar');
+		let offsetX = $event.clientX - seekBar.offset().left;
+		let ratio = offsetX / seekBar.width();
 		$scope.player.seek(ratio);
 		$scope.seekbarLeave(); // Reset seek preview
 	};
@@ -613,7 +612,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 
 	$scope.seekForward = $scope.player.seekForward;
 
-	playlistService.subscribe('play', function(_event, _playingView /*optional, ignored*/, startOffset /*optional*/) {
+	playlistService.subscribe('play', function(_event, _playingView = null, startOffset = 0) {
 		$scope.next(startOffset); /* fetch track and start playing*/
 	});
 
@@ -649,7 +648,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	if (!keyboardShortcutsDisabled()) {
 		$document.bind('keydown', function(e) {
 			if (!OCA.Music.Utils.isTextEntryElement(e.target)) {
-				var func = null, args = [];
+				let func = null, args = [];
 				switch (e.code) {
 					case 'Space':
 					case 'KeyK':
@@ -763,9 +762,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	function playScopeName() {
-		var listId = playlistService.getCurrentPlaylistId();
+		let listId = playlistService.getCurrentPlaylistId();
 		if (listId !== null) {
-			var key = listId.split('-').slice(0, -1).join('-') || listId;
+			let key = listId.split('-').slice(0, -1).join('-') || listId;
 			return playScopeNames[key];
 		} else {
 			return '';
@@ -773,14 +772,14 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	}
 
 	$scope.shuffleTooltip = function() {
-		var command = gettextCatalog.getString('Shuffle');
-		var cmdScope = $scope.shuffle ? playScopeName() : gettextCatalog.getString('Off');
+		let command = gettextCatalog.getString('Shuffle');
+		let cmdScope = $scope.shuffle ? playScopeName() : gettextCatalog.getString('Off');
 		return command + ' (' + cmdScope + ')';
 	};
 
 	$scope.repeatTooltip = function() {
-		var command = gettextCatalog.getString('Repeat');
-		var cmdScope = '';
+		let command = gettextCatalog.getString('Repeat');
+		let cmdScope = '';
 		switch ($scope.repeat) {
 			case 'false':
 				cmdScope = gettextCatalog.getString('Off');
@@ -801,7 +800,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	* server, this looks like there's no logged in user. The token is used as an alternative means of
 	* authentication, which will provide access only to the cover art images.
 	*/
-	var coverArtToken = null;
+	let coverArtToken = null;
 	$rootScope.$on('newCoverArtToken', function(_event, token) {
 		coverArtToken = token;
 	});
@@ -815,7 +814,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	 * as well as any OS multimedia controls available e.g. in status pane and/or lock screen.
 	 */
 	if ('mediaSession' in navigator) {
-		var registerMediaControlHandler = function(action, handler) {
+		let registerMediaControlHandler = function(action, handler) {
 			try {
 				navigator.mediaSession.setActionHandler(action, function() { $scope.$apply((_scope) => handler()); });
 			} catch (error) {
@@ -872,7 +871,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	 * Desktop notifications
 	 */
 	if (typeof Notification !== 'undefined') {
-		var notification = null;
+		let notification = null;
 		const showNotification = _.debounce(function(track) {
 			// close any previous notification first
 			if (notification !== null) {
@@ -894,7 +893,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues, oldValues) {
 			const track = newValues[0];
 			const trackChanged = (track != oldValues[0]);
-			var enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
+			let enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
 
 			// while paused, the changes in radio title are not notified but actual track changes are
 			if (enabled && track && ($rootScope.playing || trackChanged)) {

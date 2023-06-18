@@ -5,14 +5,14 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 OCA.Music = OCA.Music || {};
 
 /** @namespace */
-OCA.Music.DarkThemeLegacySupport = {
-	applyOnElement: function(element) {
+OCA.Music.DarkThemeLegacySupport = class {
+	static applyOnElement(element : HTMLElement) : void {
 		if (getComputedStyle(element).getPropertyValue('--background-invert-if-dark') == '') {
 			// The property is not available => Nextcloud < 25 or ownCloud.
 			
@@ -27,7 +27,7 @@ OCA.Music.DarkThemeLegacySupport = {
 				const rgb = getComputedStyle(appContent)?.backgroundColor;
 				const m = rgb?.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
 				if (m) {
-					const [r, g, b] = [m[1], m[2], m[3]];
+					const [r, g, b] = [+m[1], +m[2], +m[3]];
 					// Analyze perceived brightness, based on https://stackoverflow.com/a/12043228
 					const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 	

@@ -5,20 +5,33 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
-angular.module('Music').service('playlistFileService', [
-'$rootScope', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
-function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
+import * as ng from 'angular';
+import { gettextCatalog } from 'angular-gettext';
+import { MusicRootScope } from 'app/config/musicrootscope';
+import { IService } from 'restangular';
+import { LibraryService } from './libraryservice';
 
-	function onExportConflict(path, name, retryFunc) {
+interface Playlist {
+	id : number;
+	name : string;
+	tracks : any[];
+	busy : boolean;
+}
+
+ng.module('Music').service('playlistFileService', [
+'$rootScope', '$q', 'libraryService', 'gettextCatalog', 'Restangular',
+function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : LibraryService, gettextCatalog : gettextCatalog, Restangular : IService) {
+
+	function onExportConflict(path : string, name : string, retryFunc : CallableFunction) : void {
 		OC.dialogs.confirm(
 			gettextCatalog.getString('The folder already has a file named "{{ filename }}". Select "Yes" to overwrite it.'+
 									' Select "No" to export the list with another name. Close the dialog to cancel.',
 									{ filename: name + '.m3u8' }),
 			gettextCatalog.getString('Overwrite existing file'),
-			function (overwrite) {
+			(overwrite : boolean) => {
 				if (overwrite) {
 					retryFunc(path, 'overwrite');
 				} else {
@@ -30,7 +43,7 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 	}
 
 	/** return true if a retry attempt was fired and false if the operation was aborted */
-	function handleExportError(httpError, path, playlistName, retryFunc) {
+	function handleExportError(httpError : number, path : string, playlistName : string, retryFunc : CallableFunction) : boolean {
 		switch (httpError) {
 		case 409: // conflict
 			onExportConflict(path, playlistName, retryFunc);
@@ -50,20 +63,20 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		}
 	}
 
-	function showFolderPicker(caption, onSelectedCallback) {
+	function showFolderPicker(caption : string, onSelectedCallback : CallableFunction) : void {
 		OC.dialogs.filepicker(
 				caption,
-				(datapath, _returnType) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
+				(datapath : string, _returnType : any) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
 				false, // <! multiselect
 				'httpd/unix-directory',
 				true // <! modal
 		);
 	}
 
-	function showPlaylistFilePicker(caption, onSelectedCallback) {
+	function showPlaylistFilePicker(caption : string, onSelectedCallback : CallableFunction) : void {
 		OC.dialogs.filepicker(
 				caption,
-				(datapath, _returnType) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
+				(datapath : string, _returnType : any) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
 				false, // <! multiselect
 				['audio/mpegurl', 'audio/x-scpls'],
 				true // <! modal
@@ -73,18 +86,18 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 	return {
 
 		// Export playlist to file
-		exportPlaylist: function(playlist) {
+		exportPlaylist(playlist : Playlist) : void {
 
-			function onFolderSelected(path, onCollision /*optional*/) {
+			function onFolderSelected(path : string, onCollision = 'abort') {
 				playlist.busy = true;
-				var args = { path: path, oncollision: onCollision || 'abort' };
+				let args = { path: path, oncollision: onCollision };
 				Restangular.one('playlists', playlist.id).all('export').post(args).then(
-					function (result) {
+					(result) => {
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('Playlist exported to file {{ path }}', { path: result.wrote_to_file }));
 						playlist.busy = false;
 					},
-					function (error) {
+					(error) => {
 						handleExportError(error.status, path, playlist.name, onFolderSelected);
 						playlist.busy = false;
 					}
@@ -99,22 +112,22 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 
 
 		// Export radio stations to file
-		exportRadio: function() {
-			var deferred = $q.defer();
-			var name = gettextCatalog.getString('Internet radio');
+		exportRadio() : ng.IPromise<any> {
+			let deferred = $q.defer();
+			let name = gettextCatalog.getString('Internet radio');
 
-			function onFolderSelected(path, onCollision /*optional*/) {
+			function onFolderSelected(path : string, onCollision = 'abort') {
 				deferred.notify('started');
-				var args = { path: path, name: name, oncollision: onCollision || 'abort' };
+				let args = { path: path, name: name, oncollision: onCollision };
 				Restangular.all('radio/export').post(args).then(
-					function (result) {
+					(result) => {
 						OC.Notification.showTemporary(
 							gettextCatalog.getString('Radio stations exported to file {{ path }}', { path: result.wrote_to_file }));
 						deferred.resolve();
 					},
-					function (error) {
+					(error) => {
 						deferred.notify('stopped');
-						var retry = handleExportError(error.status, path, name, onFolderSelected);
+						let retry = handleExportError(error.status, path, name, onFolderSelected);
 						if (!retry) {
 							deferred.reject();
 						}
@@ -131,13 +144,13 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		},
 
 		// Import playlist contents from a file
-		importPlaylist: function(playlist) {
-			var onFileSelected = function(file) {
+		importPlaylist: function(playlist : Playlist) : void {
+			function onFileSelected(file : string) {
 				playlist.busy = true;
 				Restangular.one('playlists', playlist.id).all('import').post({filePath: file}).then(
-					function(result) {
+					(result) => {
 						libraryService.replacePlaylist(result.playlist);
-						var message = gettextCatalog.getString('Imported {{ count }} tracks from the file {{ file }}.',
+						let message = gettextCatalog.getString('Imported {{ count }} tracks from the file {{ file }}.',
 																{ count: result.imported_count, file: file });
 						if (result.failed_count > 0) {
 							message += ' ' + gettextCatalog.getString('{{ count }} files were skipped.',
@@ -147,28 +160,28 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 						$rootScope.$emit('playlistUpdated', playlist.id);
 						playlist.busy = false;
 					},
-					function(_error) {
+					(_error) => {
 						OC.Notification.showTemporary(
 								gettextCatalog.getString('Failed to import playlist from the file {{ file }}',
 														{ file: file }));
 						playlist.busy = false;
 					}
 				);
-			};
+			}
 
-			var selectFile = function() {
+			function selectFile() {
 				showPlaylistFilePicker(
 						gettextCatalog.getString('Import playlist contents from the selected file'),
 						onFileSelected
 				);
-			};
+			}
 
 			if (playlist.tracks.length > 0) {
 				OC.dialogs.confirm(
 						gettextCatalog.getString('The playlist already contains some tracks. Imported tracks' +
 												' will be appended after the existing contents. Proceed?'),
 						gettextCatalog.getString('Append to an existing playlist?'),
-						function (overwrite) {
+						(overwrite : boolean) => {
 							if (overwrite) {
 								selectFile();
 							}
@@ -182,16 +195,16 @@ function($rootScope, $q, libraryService, gettextCatalog, Restangular) {
 		},
 
 		// Import radio stations from a playlist file
-		importRadio: function() {
-			var deferred = $q.defer();
+		importRadio: function() : ng.IPromise<any> {
+			let deferred = $q.defer();
 
-			var onFileSelected = function(file) {
+			function onFileSelected(file : string) : ng.IPromise<any> {
 				deferred.notify('started');
 
 				return Restangular.all('radio/import').post({filePath: file}).then(
 					function(result) {
 						libraryService.addRadioStations(result.stations);
-						var message = gettextCatalog.getString('Imported {{ count }} radio stations from the file {{ file }}.',
+						let message = gettextCatalog.getString('Imported {{ count }} radio stations from the file {{ file }}.',
 																{ count: result.stations.length, file: file });
 						if (result.failed_count > 0) {
 							message += ' ' + gettextCatalog.getString('{{ count }} entries were skipped.',

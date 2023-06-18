@@ -6,22 +6,14 @@
 		</span>
 	</h1>
 
-	<div class="track-bucket"
-		ng-if="trackBuckets"
-		ng-repeat="bucket in trackBuckets"
-		ng-class="::('track-bucket-' + bucket.char)"
-		in-view-observer
-		in-view-observer-margin="3000"
-		id="{{ ::('track-bucket-' + bucket.id) }}"
+	<track-list
+		ng-if="tracks"
+		tracks="tracks"
+		get-track-data="getTrackData"
+		play-track="onTrackClick"
+		show-track-details="showTrackDetails"
+		get-draggable="getDraggable"
 	>
-		<track-list
-			tracks="bucket.tracks"
-			get-track-data="getTrackData"
-			play-track="onTrackClick"
-			show-track-details="showTrackDetails"
-			get-draggable="getDraggable"
-		>
-		</track-list>
-	</div>
+	</track-list>
 
 </div>

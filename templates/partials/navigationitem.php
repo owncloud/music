@@ -140,7 +140,7 @@
 			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'random'">
 				<ul>
 					<li ng-click="$parent.reloadRandom()">
-						<a><span class="icon-reload icon"></span><span translate>Reload</span></a>
+						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>
 					</li>
 				</ul>
 			</div>

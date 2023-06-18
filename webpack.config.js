@@ -48,8 +48,7 @@ module.exports = {
       'jQuery': 'jquery',
       'window.jQuery': 'jquery',
       '_': 'lodash',
-      'window.AV': 'vendor/aurora/aurora.js',
-      'Cookies': 'node_modules/js-cookie'
+      'window.AV': 'vendor/aurora/aurora.js'
     }),
     new WebpackAssetsManifest(),
   ],

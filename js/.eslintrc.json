@@ -18,7 +18,6 @@
         "OCA": "writable",
         "OCP": "readonly",
         "angular": "readonly",
-        "Cookies": "readonly",
         "t": "readonly",
         "AV": "readonly",
         "MediaMetadata": "readonly"

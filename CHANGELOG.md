@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### Added
+- Files playlist tab: Tooltip showing the file path or stream URL
 
 ### Changed
 - Drop the logic migrating user settings from cookies to localStorage

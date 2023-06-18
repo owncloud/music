@@ -45,10 +45,15 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 							return file.caption || OCA.Music.Utils.titleFromFilename(file.name);
 						};
 
+						let tooltipForFile = function(file) {
+							return file.url || `${file.path}/${file.name}`;
+						};
+
 						for (let i = 0; i < data.files.length; ++i) {
 							list.append($(document.createElement('li'))
 										.attr('id', 'music-playlist-item-' + i)
-										.text(titleForFile(data.files[i])));
+										.text(titleForFile(data.files[i]))
+										.prop('title', tooltipForFile(data.files[i])));
 						}
 
 						// click handler

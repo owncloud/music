@@ -132,7 +132,9 @@ angular.module('Music').controller('SidebarController', [
 		});
 
 		$scope.formatLastfmTags = function(tags) {
-			// Last.fm returns individual JSON object in place of array in case there is just one item
+			// Last.fm returns individual JSON object in place of array in case there is just one item.
+			// In case there are none, the `tags` is undefined.
+			tags = tags || [];
 			if (!Array.isArray(tags)) {
 				tags = [tags];
 			}
@@ -149,6 +151,8 @@ angular.module('Music').controller('SidebarController', [
 
 		$scope.formatLinkList = function(linkArray) {
 			// Last.fm returns individual JSON object in place of array in case there is just one item
+			// In case there are none, the `linkArray` is undefined.
+			linkArray = linkArray || [];
 			if (!Array.isArray(linkArray)) {
 				linkArray = [linkArray];
 			}

@@ -160,7 +160,8 @@ class Track extends Entity {
 			'length' => $this->getLength(),
 			'files' => [$this->getMimetype() => $this->getFileId()],
 			'id' => $this->getId(),
-			'playCount' => $this->getPlayCount()
+			'playCount' => $this->getPlayCount(),
+			'lastPlayed' => $this->getLastPlayed()
 		];
 	}
 

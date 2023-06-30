@@ -182,9 +182,9 @@ angular.module('Music').service('libraryService', [function() {
 	function generateNewRandomSample() {
 		var tracks = _.flatten(_.map(albums, 'tracks'));
 
-		// Sort songs by play count so that the same songs does not get played
+		// Sort songs by last played so that the same songs does not get played
 		// between samples.
-		sortByNumericField(tracks, 'playCount');
+		sortByTextField(tracks, 'lastPlayed');
 
 		tracks = _.shuffle(tracks.slice(0, MAX_RANDOM_SONGS_COUNT));
 		randomTracks = _.map(tracks, playlistEntry);

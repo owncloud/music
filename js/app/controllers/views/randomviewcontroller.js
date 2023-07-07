@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('RandomViewController', [
-	'$rootScope', '$scope', 'playlistService', 'libraryService', 'alphabetIndexingService', '$timeout',
-	function ($rootScope, $scope, playlistService, libraryService, alphabetIndexingService, $timeout) {
+	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
+	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
 		$rootScope.currentView = $scope.getViewIdFromUrl();
 

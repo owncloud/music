@@ -142,6 +142,9 @@
 					<li ng-click="$parent.reloadRandom()">
 						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>
 					</li>
+					<li ng-click="$parent.showRandomFilters()">
+						<a><span class="icon-filter icon"></span><span translate>Filters</span></a>
+					</li>
 				</ul>
 			</div>
 		</div>

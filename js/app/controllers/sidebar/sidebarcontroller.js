@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2022
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 
@@ -50,6 +50,10 @@ angular.module('Music').controller('SidebarController', [
 
 		$rootScope.$on('showArtistDetails', function(_event, artistId) {
 			showSidebar('artist', artistId);
+		});
+
+		$rootScope.$on('showRandomFilters', function() {
+			showSidebar('random', null);
 		});
 
 		$rootScope.$on('showPlaylistDetails', function(_event, playlistId) {

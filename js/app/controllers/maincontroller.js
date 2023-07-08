@@ -330,6 +330,10 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		showDetails('album', album.id);
 	};
 
+	$scope.showRandomFilters = function() {
+		$rootScope.$emit('showRandomFilters');
+	};
+
 	$scope.showRadioStationDetails = function(station) {
 		showDetails('radioStation', station.id);
 	};

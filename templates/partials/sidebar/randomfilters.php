@@ -1,4 +1,4 @@
-<div id="random-filters" class="sidebar-content" ng-controller="RandomFiltersController" ng-if="contentType=='random'">
+<div id="random-filters" class="sidebar-content" ng-controller="RandomFiltersController" ng-if="contentType=='random'" on-enter="onUpdateButton()">
 
 	<h1 translate>Filters</h1>
 

@@ -52,8 +52,8 @@ angular.module('Music').controller('SidebarController', [
 			showSidebar('artist', artistId);
 		});
 
-		$rootScope.$on('showRandomFilters', function() {
-			showSidebar('random', null);
+		$rootScope.$on('showSmartListFilters', function() {
+			showSidebar('smartlist', null);
 		});
 
 		$rootScope.$on('showPlaylistDetails', function(_event, playlistId) {

@@ -200,11 +200,11 @@ angular.module('Music').controller('NavigationController', [
 			return libraryService.getPodcastChannelsCount() > 0;
 		};
 
-		$scope.reloadRandom = function () {
-			$scope.reloadRandomList();
+		$scope.reloadSmartListView = function () {
+			$scope.reloadSmartList();
 
-			// also navigate to the Random view if not already open
-			$scope.navigateTo('#random');
+			// also navigate to the Smart Playlist view if not already open
+			$scope.navigateTo('#smartlist');
 		};
 
 		// Play/pause playlist
@@ -224,8 +224,8 @@ angular.module('Music').controller('NavigationController', [
 					play('albums', libraryService.getTracksInAlbumOrder());
 				} else if (destination == '#/alltracks') {
 					play('alltracks', libraryService.getTracksInAlphaOrder());
-				} else if (destination == '#/random') {
-					play('random', libraryService.getRandomList().tracks);
+				} else if (destination == '#/smartlist') {
+					play('smartlist', libraryService.getSmartList().tracks);
 				} else if (destination == '#/folders') {
 					$scope.$parent.loadFoldersAndThen(function() {
 						play('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout));

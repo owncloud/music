@@ -9,7 +9,7 @@
  */
 
 
-angular.module('Music').controller('RandomViewController', [
+angular.module('Music').controller('SmartListViewController', [
 	'$rootScope', '$scope', 'playlistService', 'libraryService', '$timeout',
 	function ($rootScope, $scope, playlistService, libraryService, $timeout) {
 
@@ -29,7 +29,7 @@ angular.module('Music').controller('RandomViewController', [
 		});
 
 		function play(startIndex = null) {
-			playlistService.setPlaylist('random', $scope.tracks, startIndex);
+			playlistService.setPlaylist('smartlist', $scope.tracks, startIndex);
 			playlistService.publish('play');
 		}
 
@@ -76,14 +76,14 @@ angular.module('Music').controller('RandomViewController', [
 		// or once artists have been loaded
 		$timeout(initView);
 
-		subscribe('randomListLoaded', function () {
+		subscribe('smartListLoaded', function () {
 			// Nullify any previous tracks to force tracklist directive recreation
 			$scope.tracks = null;
 			$timeout(initView);
 		});
 
 		function initView() {
-			const list = libraryService.getRandomList();
+			const list = libraryService.getSmartList();
 			if (list !== null) {
 				$scope.tracks = list.tracks;
 				$timeout(() => {

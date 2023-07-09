@@ -55,9 +55,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
 	};
 
-	$scope.randomTrackCountText = function() {
-		var trackCount = libraryService.getRandomTrackCount();
-		return gettextCatalog.getPlural(trackCount, '1 random track', '{{ count }} random tracks', { count: trackCount });
+	$scope.smartListTrackCountText = function() {
+		var trackCount = libraryService.getSmartListTrackCount();
+		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
 	};
 
 	$scope.albumCountText = function() {
@@ -143,8 +143,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$rootScope.$emit('playlistsLoaded');
 			});
 
-			// Load also the random list once the collection is ready
-			$scope.reloadRandomList();
+			// Load also the smart playlist once the collection is ready
+			$scope.reloadSmartList();
 
 			// Load also genres once the collection has been loaded
 			Restangular.one('genres').get().then(function(genres) {
@@ -306,20 +306,20 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		}
 	};
 
-	$scope.reloadRandomList = function() {
-		libraryService.setRandomList(null);
+	$scope.reloadSmartList = function() {
+		libraryService.setSmartList(null);
 
 		const genArgs = {
-			playRate:	localStorage.getItem('oc_music_random_filter_play_rate'),
-			genres:		localStorage.getItem('oc_music_random_filter_genres'),
-			fromYear:	localStorage.getItem('oc_music_random_filter_from_year'),
-			toYear:		localStorage.getItem('oc_music_random_filter_to_year'),
-			size:		localStorage.getItem('oc_music_random_filter_size')
+			playRate:	localStorage.getItem('oc_music_smartlist_play_rate'),
+			genres:		localStorage.getItem('oc_music_smartlist_genres'),
+			fromYear:	localStorage.getItem('oc_music_smartlist_from_year'),
+			toYear:		localStorage.getItem('oc_music_smartlist_to_year'),
+			size:		localStorage.getItem('oc_music_smartlist_size')
 		};
 
 		Restangular.one('playlists/generate').get(genArgs).then((list) => {
-			libraryService.setRandomList(list);
-			$rootScope.$emit('randomListLoaded');
+			libraryService.setSmartList(list);
+			$rootScope.$emit('smartListLoaded');
 		});
 	};
 
@@ -350,8 +350,8 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		showDetails('album', album.id);
 	};
 
-	$scope.showRandomFilters = function() {
-		$rootScope.$emit('showRandomFilters');
+	$scope.showSmartListFilters = function() {
+		$rootScope.$emit('showSmartListFilters');
 	};
 
 	$scope.showRadioStationDetails = function(station) {

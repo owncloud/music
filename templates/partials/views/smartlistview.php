@@ -1,7 +1,7 @@
-<div class="view-container playlist-area flat-list-view" id="random-area" ng-show="!loading && !loadingCollection">
+<div class="view-container playlist-area flat-list-view" id="smartlist-area" ng-show="!loading && !loadingCollection">
 	<h1>
 		<span ng-click="onHeaderClick()">
-			<span translate>Random</span>
+			<span translate>Smart playlist</span>
 			<img class="play svg" alt="{{ 'Play' | translate }}" src="<?php \OCA\Music\Utility\HtmlUtil::printSvgPath('play-big') ?>"/>
 		</span>
 	</h1>

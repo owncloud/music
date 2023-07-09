@@ -7,7 +7,7 @@
 		HtmlUtil::printPartial('sidebar/trackdetails');
 		HtmlUtil::printPartial('sidebar/albumdetails');
 		HtmlUtil::printPartial('sidebar/artistdetails');
-		HtmlUtil::printPartial('sidebar/randomfilters');
+		HtmlUtil::printPartial('sidebar/smartlistfilters');
 		HtmlUtil::printPartial('sidebar/playlistdetails');
 		HtmlUtil::printPartial('sidebar/radiostationdetails');
 		HtmlUtil::printPartial('sidebar/radiohint');

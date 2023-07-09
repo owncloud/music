@@ -91,7 +91,7 @@ export class LibraryService {
 	#tracksInAlbumOrder : PlaylistEntry[] = null;
 	#tracksInAlphaOrder : PlaylistEntry[] = null;
 	#tracksInGenreOrder : PlaylistEntry[] = null;
-	#randomList : Playlist = null;
+	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
@@ -353,11 +353,11 @@ export class LibraryService {
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
 	}
-	setRandomList(list : any) : void {
+	setSmartList(list : any) : void {
 		if (!list) {
-			this.#randomList = null;
+			this.#smartList = null;
 		} else {
-			this.#randomList = this.#wrapPlaylist(list);
+			this.#smartList = this.#wrapPlaylist(list);
 		}
 	}
 	setFolders(folderData : any[]|null) : void {
@@ -569,11 +569,11 @@ export class LibraryService {
 	getTrackCount() : number {
 		return this.#tracksInAlphaOrder?.length ?? 0;
 	}
-	getRandomTrackCount() : number {
-		return this.#randomList?.tracks?.length ?? 0;
+	getSmartListTrackCount() : number {
+		return this.#smartList?.tracks?.length ?? 0;
 	}
-	getRandomList() : Playlist {
-		return this.#randomList;
+	getSmartList() : Playlist {
+		return this.#smartList;
 	}
 	getPlaylist(id : number) : Playlist {
 		return _.find(this.#playlists, { id: Number(id) });

@@ -4,8 +4,8 @@
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
 							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
 							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums')
-							|| (destination == '#/random' && $parent.popupShownForPlaylist == 'random'),
-				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' || destination=='#/random' }"
+							|| (destination == '#/smartlist' && $parent.popupShownForPlaylist == 'smartlist'),
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' || destination=='#/smartlist' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
@@ -134,15 +134,15 @@
 				</ul>
 			</div>
 		</div>
-		<div class="actions" title="" ng-show="destination == '#/random'">
+		<div class="actions" title="" ng-show="destination == '#/smartlist'">
 			<span class="icon-more"
-				ng-click="$parent.onPlaylistMoreButton('random'); $event.stopPropagation()"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'random'">
+				ng-click="$parent.onPlaylistMoreButton('smartlist'); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'smartlist'">
 				<ul>
-					<li ng-click="$parent.reloadRandom()">
+					<li ng-click="$parent.reloadSmartListView()">
 						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>
 					</li>
-					<li ng-click="$parent.showRandomFilters()">
+					<li ng-click="$parent.showSmartListFilters()">
 						<a><span class="icon-filter icon"></span><span translate>Filters</span></a>
 					</li>
 				</ul>

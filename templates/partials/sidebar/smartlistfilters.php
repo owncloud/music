@@ -1,6 +1,6 @@
-<div id="random-filters" class="sidebar-content" ng-controller="RandomFiltersController" ng-if="contentType=='random'" on-enter="onUpdateButton()">
+<div id="smartlist-filters" class="sidebar-content" ng-controller="SmartListFiltersController" ng-if="contentType=='smartlist'" on-enter="onUpdateButton()">
 
-	<h1 translate>Filters</h1>
+	<h1 translate>Smart playlist filters</h1>
 
 	<div>
 		<label for="genres">Genres</label>

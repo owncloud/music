@@ -335,40 +335,40 @@
 	margin-top: 24px;
 }
 
-#app-sidebar #random-filters > div {
+#app-sidebar #smartlist-filters > div {
 	margin: 12px;
 }
 
-#app-sidebar #random-filters label {
+#app-sidebar #smartlist-filters label {
 	display: inline-block;
 	width: 80px;
 }
 
-#app-sidebar #random-filters select,
-#app-sidebar #random-filters .chosen-container {
+#app-sidebar #smartlist-filters select,
+#app-sidebar #smartlist-filters .chosen-container {
 	width: calc(100% - 88px);
 }
 
-#app-sidebar #random-filters .chosen-choices {
+#app-sidebar #smartlist-filters .chosen-choices {
 	border: 2px solid var(--color-border-dark);
 	border-radius: var(--border-radius-large);
 	text-overflow: ellipsis;
 	cursor: pointer;
 }
 
-#app-sidebar #random-filters .chosen-choices:hover {
+#app-sidebar #smartlist-filters .chosen-choices:hover {
 	border-color: var(--color-primary-element);
 }
 
-#app-sidebar #random-filters .chosen-choices input {
+#app-sidebar #smartlist-filters .chosen-choices input {
 	margin-top: -1px;
 	margin-bottom: -1px;
 }
 
-#app-sidebar #random-filters .chosen-choices .search-choice {
+#app-sidebar #smartlist-filters .chosen-choices .search-choice {
 	margin-top: 6px;
 }
 
-#app-sidebar #random-filters #update-button {
+#app-sidebar #smartlist-filters #update-button {
 	width: 100%;
 }

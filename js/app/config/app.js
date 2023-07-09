@@ -35,9 +35,9 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				templateUrl:'alltracksview.html'
 			};
 
-			let randomControllerConfig = {
-				controller:'RandomViewController',
-				templateUrl:'randomview.html'
+			let smartListControllerConfig = {
+				controller:'SmartListViewController',
+				templateUrl:'smartlistview.html'
 			};
 
 			let foldersControllerConfig = {
@@ -78,7 +78,7 @@ angular.module('Music', ['restangular', 'duScroll', 'gettext', 'ngRoute', 'ngSan
 				.when('/file/:id',             albumsControllerConfig)
 				.when('/playlist/:playlistId', playlistControllerConfig)
 				.when('/alltracks',            allTracksControllerConfig)
-				.when('/random',               randomControllerConfig)
+				.when('/smartlist',            smartListControllerConfig)
 				.when('/folders',              foldersControllerConfig)
 				.when('/genres',               genresControllerConfig)
 				.when('/radio',                radioControllerConfig)

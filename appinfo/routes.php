@@ -65,6 +65,7 @@ $app->registerRoutes($this, ['routes' => [
 	// playlist API
 	['name' => 'playlistApi#getAll',		'url' => '/api/playlists',				'verb' => 'GET'],
 	['name' => 'playlistApi#create',		'url' => '/api/playlists',				'verb' => 'POST'],
+	['name' => 'playlistApi#generate',		'url' => '/api/playlists/generate',		'verb' => 'GET'],
 	['name' => 'playlistApi#get',			'url' => '/api/playlists/{id}',			'verb' => 'GET'],
 	['name' => 'playlistApi#delete',		'url' => '/api/playlists/{id}',			'verb' => 'DELETE'],
 	['name' => 'playlistApi#update',		'url' => '/api/playlists/{id}',			'verb' => 'PUT'],

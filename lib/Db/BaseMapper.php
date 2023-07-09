@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -419,11 +419,13 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * Convert given sorting condition to an SQL clause. Derived class may overide this if necessary.
 	 * @param int $sortBy One of the constants defined in the class SortBy
 	 */
-	protected function formatSortingClause(int $sortBy) : ?string {
+	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
 		if ($sortBy == SortBy::Name) {
-			return "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)";
+			$dir = $invertSort ? 'DESC' : 'ASC';
+			return "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`) $dir";
 		} elseif ($sortBy == SortBy::Newest) {
-			return "ORDER BY `{$this->getTableName()}`.`id` DESC"; // abuse the fact that IDs are ever-incrementing values
+			$dir = $invertSort ? 'ASC' : 'DESC';
+			return "ORDER BY `{$this->getTableName()}`.`id` $dir"; // abuse the fact that IDs are ever-incrementing values
 		} else {
 			return null;
 		}

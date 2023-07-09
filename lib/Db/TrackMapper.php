@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -46,17 +46,23 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
-	 * Overridden from the base implementation to add support for sorting by artist.
+	 * Overridden from the base implementation to add support for sorting by artist, play_count, and last_played.
 	 *
 	 * {@inheritdoc}
 	 * @see BaseMapper::formatSortingClause()
 	 */
-	protected function formatSortingClause(int $sortBy) : ?string {
-		if ($sortBy === SortBy::Parent) {
-			// Note: the alternative form "LOWER(`artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046 for a similar case
-			return 'ORDER BY LOWER(`artist`.`name`), LOWER(`title`)';
-		} else {
-			return parent::formatSortingClause($sortBy);
+	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
+		$dir = $invertSort ? 'DESC' : 'ASC';
+		switch ($sortBy) {
+			case SortBy::Parent:
+				// Note: the alternative form "LOWER(`artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046 for a similar case
+				return "ORDER BY LOWER(`artist`.`name`) $dir, LOWER(`title`) $dir";
+			case SortBy::PlayCount:
+				return "ORDER BY LOWER(`play_count`) $dir";
+			case SortBy::LastPlayed:
+				return "ORDER BY LOWER(`last_played`) $dir";
+			default:
+				return parent::formatSortingClause($sortBy, $invertSort);
 		}
 	}
 
@@ -239,6 +245,38 @@ class TrackMapper extends BaseMapper {
 		} else {
 			return [];
 		}
+	}
+
+	/**
+	 * Returns all tracks specified by various criteria, all of which are optional
+	 * @param int[]|null $genres Array of genre IDs
+	 * @param int|null $fromYear Earliest release year to include
+	 * @param int|null $toYear Latest release year to include
+	 * @param int $sortBy Sorting rule as defined in the class SortBy
+	 * @param string $userId the name of the user
+	 * @return Track[] Tracks matching the criteria
+	 */
+	public function findAllByCriteria(array $genres, ?int $fromYear, ?int $toYear, int $sortBy, bool $invertSort, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sqlConditions = [];
+		$params = [$userId];
+
+		if (!empty($genres)) {
+			$sqlConditions[] = '`genre_id` IN ' . $this->questionMarks(\count($genres));
+			$params = \array_merge($params, $genres);
+		}
+
+		if (!empty($fromYear)) {
+			$sqlConditions[] = '`year` >= ?';
+			$params[] = $fromYear;
+		}
+
+		if (!empty($toYear)) {
+			$sqlConditions[] = '`year` <= ?';
+			$params[] = $toYear;
+		}
+
+		$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions), self::formatSortingClause($sortBy, $invertSort));
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

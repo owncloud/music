@@ -225,9 +225,9 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	private static function sortRulesForPlayRate(?string $playRate) : array {
 		switch ($playRate) {
-			case 'recent':
+			case 'recently':
 				return ['sortBy' => SortBy::LastPlayed, 'invert' => true];
-			case 'not-recent':
+			case 'not-recently':
 				return ['sortBy' => SortBy::LastPlayed, 'invert' => false];
 			case 'often':
 				return ['sortBy' => SortBy::PlayCount, 'invert' => true];

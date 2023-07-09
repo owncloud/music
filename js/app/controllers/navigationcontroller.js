@@ -201,7 +201,7 @@ angular.module('Music').controller('NavigationController', [
 		};
 
 		$scope.reloadRandom = function () {
-			libraryService.reloadRandom();
+			$scope.reloadRandomList();
 
 			// also navigate to the Random view if not already open
 			$scope.navigateTo('#random');
@@ -225,7 +225,7 @@ angular.module('Music').controller('NavigationController', [
 				} else if (destination == '#/alltracks') {
 					play('alltracks', libraryService.getTracksInAlphaOrder());
 				} else if (destination == '#/random') {
-					play('random', libraryService.getRandomTracks());
+					play('random', libraryService.getRandomList().tracks);
 				} else if (destination == '#/folders') {
 					$scope.$parent.loadFoldersAndThen(function() {
 						play('folders', libraryService.getTracksInFolderOrder(!$scope.foldersFlatLayout));

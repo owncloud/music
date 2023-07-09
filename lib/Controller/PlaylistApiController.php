@@ -353,7 +353,7 @@ class PlaylistApiController extends Controller {
 	 * @return int[]
 	 */
 	private static function toIntArray(/*mixed*/ $listAsString) : array {
-		if ($listAsString === null) {
+		if ($listAsString === null || $listAsString === '') {
 			return [];
 		} else {
 			return \array_map('intval', \explode(',', (string)$listAsString));

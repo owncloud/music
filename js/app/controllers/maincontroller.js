@@ -143,6 +143,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$rootScope.$emit('playlistsLoaded');
 			});
 
+			// Load also the random list once the collection is ready
+			$scope.reloadRandomList();
+
 			// Load also genres once the collection has been loaded
 			Restangular.one('genres').get().then(function(genres) {
 				libraryService.setGenres(genres.genres);
@@ -301,6 +304,23 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				callback();
 			});
 		}
+	};
+
+	$scope.reloadRandomList = function() {
+		libraryService.setRandomList(null);
+
+		const genArgs = {
+			playRate:	localStorage.getItem('oc_music_random_filter_play_rate'),
+			genres:		localStorage.getItem('oc_music_random_filter_genres'),
+			fromYear:	localStorage.getItem('oc_music_random_filter_from_year'),
+			toYear:		localStorage.getItem('oc_music_random_filter_to_year'),
+			size:		localStorage.getItem('oc_music_random_filter_size')
+		};
+
+		Restangular.one('playlists/generate').get(genArgs).then((list) => {
+			libraryService.setRandomList(list);
+			$rootScope.$emit('randomListLoaded');
+		});
 	};
 
 	function showDetails(entityType, id) {

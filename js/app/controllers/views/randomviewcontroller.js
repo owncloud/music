@@ -76,15 +76,16 @@ angular.module('Music').controller('RandomViewController', [
 		// or once artists have been loaded
 		$timeout(initView);
 
-		subscribe('collectionLoaded', function () {
+		subscribe('randomListLoaded', function () {
 			// Nullify any previous tracks to force tracklist directive recreation
 			$scope.tracks = null;
 			$timeout(initView);
 		});
 
 		function initView() {
-			if (libraryService.collectionLoaded()) {
-				$scope.tracks = libraryService.getRandomTracks();
+			const list = libraryService.getRandomList();
+			if (list !== null) {
+				$scope.tracks = list.tracks;
 				$timeout(() => {
 					$rootScope.loading = false;
 					$rootScope.$emit('viewActivated');

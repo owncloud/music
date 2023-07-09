@@ -82,8 +82,6 @@ export interface SearchResult<T> {
 
 const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 
-const MAX_RANDOM_SONGS_COUNT = 300;
-
 
 export class LibraryService {
 	#ignoredArticles : string[] = [];
@@ -93,7 +91,7 @@ export class LibraryService {
 	#tracksInAlbumOrder : PlaylistEntry[] = null;
 	#tracksInAlphaOrder : PlaylistEntry[] = null;
 	#tracksInGenreOrder : PlaylistEntry[] = null;
-	#randomTracks : PlaylistEntry[] = null;
+	#randomList : Playlist = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
@@ -253,10 +251,6 @@ export class LibraryService {
 		});
 	}
 
-	#generateNewRandomSample() {
-		this.#randomTracks = _.sampleSize(this.#tracksInAlphaOrder, MAX_RANDOM_SONGS_COUNT);
-	}
-
 	/** Convert string to "folded" form suitable for fuzzy matching */
 	#foldString(str : string) : string {
 		if (str) {
@@ -355,10 +349,16 @@ export class LibraryService {
 		this.#artists = this.#transformCollection(collection);
 		this.#albums = _(this.#artists).map('albums').flatten().value();
 		this.#createTrackContainers();
-		this.#generateNewRandomSample();
 	}
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
+	}
+	setRandomList(list : any) : void {
+		if (!list) {
+			this.#randomList = null;
+		} else {
+			this.#randomList = this.#wrapPlaylist(list);
+		}
 	}
 	setFolders(folderData : any[]|null) : void {
 		if (!folderData) {
@@ -570,13 +570,10 @@ export class LibraryService {
 		return this.#tracksInAlphaOrder?.length ?? 0;
 	}
 	getRandomTrackCount() : number {
-		return Math.min(this.#tracksInAlphaOrder?.length ?? 0, MAX_RANDOM_SONGS_COUNT);
+		return this.#randomList?.tracks?.length ?? 0;
 	}
-	getRandomTracks() : PlaylistEntry[] {
-		return this.#randomTracks;
-	}
-	reloadRandom() {
-		this.#generateNewRandomSample();
+	getRandomList() : Playlist {
+		return this.#randomList;
 	}
 	getPlaylist(id : number) : Playlist {
 		return _.find(this.#playlists, { id: Number(id) });

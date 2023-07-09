@@ -20,7 +20,7 @@
 		<div ng-show="playlist && $parent.showEditForm == playlist.id">
 			<div class="input-container">
 				<input type="text" class="edit-list" maxlength="256"
-					ng-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
+					on-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
 			<button class="action icon-checkmark app-navigation-noclose"
 				ng-class="{ disabled: playlist.name.length == 0 }"

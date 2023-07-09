@@ -35,7 +35,7 @@
 		</em>
 		<table id="excluded-paths" class="grid">
 			<tr class="excluded-path-row" ng-repeat="path in settings.excludedPaths track by $index">
-				<td><input type="text" ng-model="settings.excludedPaths[$index]" ng-enter="$event.target.blur()" ng-blur="commitExcludedPaths()"/></td>
+				<td><input type="text" ng-model="settings.excludedPaths[$index]" on-enter="$event.target.blur()" ng-blur="commitExcludedPaths()"/></td>
 				<td class="key-action"><a class="icon icon-folder" ng-click="selectExcludedPath($index)" title="{{ 'Select folder' | translate }}"></a></td>
 				<td class="key-action"><a class="icon icon-delete" ng-click="removeExcludedPath($index)" title="{{ 'Remove' | translate }}"></a></td>
 			</tr>
@@ -101,7 +101,7 @@
 		<div class="label-container">
 			<label for="ignored-articles" translate>Articles to ignore on artist names</label>:
 		</div>
-		<input type="text" id="ignored-articles" ng-model="ignoredArticles" ng-enter="$event.target.blur()" ng-blur="commitIgnoredArticles()"/>
+		<input type="text" id="ignored-articles" ng-model="ignoredArticles" on-enter="$event.target.blur()" ng-blur="commitIgnoredArticles()"/>
 		<div class="icon-loading-small operation-in-progress" ng-show="savingIgnoredArticles"></div>
 		<span style="color:red" ng-show="errorIgnoredArticles" translate>Failed to save the setting</span>
 		<p><em translate>Specify space-delimited list of articles which should be ignored when ordering the artists alphabetically. The articles are case-insensitive.</em></p>
@@ -138,7 +138,7 @@
 	</table>
 	<div id="music-ampache-form">
 		<input type="text" id="music-ampache-description" ng-model="ampacheDescription"
-			placeholder="{{ 'Description (e.g. App name)' | translate }}" ng-enter="addAPIKey()"/>
+			placeholder="{{ 'Description (e.g. App name)' | translate }}" on-enter="addAPIKey()"/>
 		<button translate ng-click="addAPIKey()">Generate API password</button>
 		<span style="color:red" ng-show="errorAmpache" translate>Failed to generate new Ampache/Subsonic password</span>
 		<div id="music-password-info" class="info" ng-show="ampachePassword">

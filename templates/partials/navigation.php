@@ -25,7 +25,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 				<div id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
 				<div class="input-container" ng-show="showCreateForm">
 					<input type="text" class="new-list" maxlength="256"
-						placeholder="{{ 'New Playlist' | translate }}" ng-enter="commitCreate()" ng-model="newPlaylistName" />
+						placeholder="{{ 'New Playlist' | translate }}" on-enter="commitCreate()" ng-model="newPlaylistName" />
 				</div>
 				<div class="actions" ng-show="showCreateForm">
 					<button class="action icon-checkmark app-navigation-noclose"

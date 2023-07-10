@@ -102,6 +102,13 @@ class Library {
 			$collection[] = $entities['artists'][$artistId]->toCollection($this->l10n, $artistAlbums);
 		}
 
+		// Add the artists with no own albums to the collection
+		foreach ($entities['artists'] as $artist) {
+			if (!isset($trackDict[$artist->getId()])) {
+				$collection[] = $artist->toCollection($this->l10n, []);
+			}
+		}
+
 		return $collection;
 	}
 

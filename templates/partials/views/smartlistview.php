@@ -16,4 +16,14 @@
 	>
 	</track-list>
 
+	<div class="emptycontent clickable no-collapse" ng-click="showSmartListFilters()"
+		ng-show="tracks.length == 0 && !scanning && !toScan && !noMusicAvailable"
+	>
+		<div class="icon-smart-playlist svg"></div>
+		<div>
+			<h2 translate>No tracks matching the filters</h2>
+			<p translate>Refine the filters defined for the smart playlist</p>
+		</div>
+	</div>
+
 </div>

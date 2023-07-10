@@ -14,7 +14,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 		<li navigation-item text="'All tracks' | translate" destination="'#/alltracks'"
 			title="{{ trackCountText() }}" icon="'library-music'"></li>
 		<li navigation-item text="'Smart playlist' | translate" destination="'#/smartlist'"
-			title="{{ smartListTrackCountText() }}" icon="'random-music'"></li>
+			title="{{ smartListTrackCountText() }}" icon="'smart-playlist'"></li>
 		<li class="app-navigation-separator"></li>
 		<li navigation-item text="'Internet radio' | translate" destination="'#/radio'"
 			title="{{ radioCountText() }}" icon="'radio'"></li>

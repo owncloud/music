@@ -249,20 +249,29 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Returns all tracks specified by various criteria, all of which are optional
-	 * @param int[]|null $genres Array of genre IDs
+	 * @param int[] $genres Array of genre IDs
+	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
 	 * @param int|null $toYear Latest release year to include
 	 * @param int $sortBy Sorting rule as defined in the class SortBy
 	 * @param string $userId the name of the user
 	 * @return Track[] Tracks matching the criteria
 	 */
-	public function findAllByCriteria(array $genres, ?int $fromYear, ?int $toYear, int $sortBy, bool $invertSort, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllByCriteria(
+			array $genres, array $artists, ?int $fromYear, ?int $toYear,
+			int $sortBy, bool $invertSort, string $userId, ?int $limit=null, ?int $offset=null) : array {
+
 		$sqlConditions = [];
 		$params = [$userId];
 
 		if (!empty($genres)) {
 			$sqlConditions[] = '`genre_id` IN ' . $this->questionMarks(\count($genres));
 			$params = \array_merge($params, $genres);
+		}
+
+		if (!empty($artists)) {
+			$sqlConditions[] = '`artist_id` IN ' . $this->questionMarks(\count($artists));
+			$params = \array_merge($params, $artists);
 		}
 
 		if (!empty($fromYear)) {

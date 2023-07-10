@@ -10,6 +10,13 @@
 	</div>
 
 	<div>
+		<label for="artists">Artists</label>
+		<select name="artists" id="filter-artists" multiple data-placeholder="{{ '(not defined)' | translate }}" ng-model="artists">
+			<option ng-repeat="artist in allArtists" value="{{ artist.id }}">{{ artist.name }}</option>
+		</select>
+	</div>
+
+	<div>
 		<label for="from-year">From year</label>
 		<input type="text" name="from-year" ng-model="fromYear"/>
 	</div>

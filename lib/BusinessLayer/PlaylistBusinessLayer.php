@@ -187,13 +187,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * Generate and return a playlist matching the given criteria. The playlist is not persisted.
 	 *
 	 * @param string|null $playRate One of: 'recent', 'not-recent', 'often', 'rarely'
-	 * @param int[]|null $genres Array of genre IDs
+	 * @param int[] $genres Array of genre IDs
+	 * @param int[] $artists Array of artist IDs
 	 * @param int|null $fromYear Earliest release year to include
 	 * @param int|null $toYear Latest release year to include
 	 * @param int $size Size of the playlist to generate, provided that there are enough matching tracks
 	 * @param string $userId the name of the user
 	 */
-	public function generate(?string $playRate, array $genres, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+	public function generate(?string $playRate, array $genres, array $artists, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
 		$now = new \DateTime();
 		$nowStr = $now->format(PlaylistMapper::SQL_DATE_FORMAT);
 
@@ -206,7 +207,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForPlayRate($playRate);
 		$limit = ($sortBy === SortBy::None) ? null : $size * 4;
 
-		$tracks = $this->trackMapper->findAllByCriteria($genres, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
+		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
 
 		if ($sortBy !== SortBy::None) {
 			// When generating by play-rate, use a pool of tracks at maximum twice the size of final list. However, don't use

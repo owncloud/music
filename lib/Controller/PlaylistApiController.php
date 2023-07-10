@@ -151,8 +151,9 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function generate(?string $playRate, ?string $genres, ?int $fromYear, ?int $toYear, int $size=300) {
-		$playlist = $this->playlistBusinessLayer->generate($playRate, self::toIntArray($genres), $fromYear, $toYear, $size, $this->userId);
+	public function generate(?string $playRate, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=300) {
+		$playlist = $this->playlistBusinessLayer->generate(
+				$playRate, self::toIntArray($genres), self::toIntArray($artists), $fromYear, $toYear, $size, $this->userId);
 		return $playlist->toAPI();
 	}
 

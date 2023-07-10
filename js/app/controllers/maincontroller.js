@@ -312,6 +312,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		const genArgs = {
 			playRate:	localStorage.getItem('oc_music_smartlist_play_rate'),
 			genres:		localStorage.getItem('oc_music_smartlist_genres'),
+			artists:	localStorage.getItem('oc_music_smartlist_artists'),
 			fromYear:	localStorage.getItem('oc_music_smartlist_from_year'),
 			toYear:		localStorage.getItem('oc_music_smartlist_to_year'),
 			size:		localStorage.getItem('oc_music_smartlist_size')

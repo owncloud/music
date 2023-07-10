@@ -10,18 +10,17 @@
 
 
 angular.module('Music').controller('SmartListFiltersController', [
-	'$scope', '$timeout', 'libraryService',
-	function ($scope, $timeout, libraryService) {
+	'$scope', '$rootScope', '$timeout', 'libraryService',
+	function ($scope, $rootScope, $timeout, libraryService) {
 
 		$scope.allGenres = libraryService.getAllGenres();
 		$scope.allArtists = libraryService.getAllArtists();
-		// TODO: be prepared for genres and artists to be loaded later
 
-		$scope.playRate = localStorage.getItem('oc_music_smartlist_play_rate');
+		$scope.playRate = localStorage.getItem('oc_music_smartlist_play_rate') || '';
 		$scope.genres = localStorage.getItem('oc_music_smartlist_genres')?.split(',') || [];
 		$scope.artists = localStorage.getItem('oc_music_smartlist_artists')?.split(',') || [];
-		$scope.fromYear = localStorage.getItem('oc_music_smartlist_from_year');
-		$scope.toYear = localStorage.getItem('oc_music_smartlist_to_year');
+		$scope.fromYear = localStorage.getItem('oc_music_smartlist_from_year') || '';
+		$scope.toYear = localStorage.getItem('oc_music_smartlist_to_year') || '';
 		$scope.listSize = localStorage.getItem('oc_music_smartlist_size') || 300;
 
 		$timeout(() => {
@@ -42,5 +41,24 @@ angular.module('Music').controller('SmartListFiltersController', [
 			// also navigate to the Smart Playlist view if not already open
 			$scope.navigateTo('#smartlist');
 		};
+
+		// $rootScope listeneres must be unsubscribed manually when the control is destroyed
+		let unsubFuncs = [];
+		function subscribe(event, handler) {
+			unsubFuncs.push( $rootScope.$on(event, handler) );
+		}
+		$scope.$on('$destroy', () => {
+			_.each(unsubFuncs, (func) => func());
+		});
+
+		// the artists and genres may be (re)loaded after this controller has been initialized
+		subscribe('collectionLoaded', () => {
+			$scope.allArtists = libraryService.getAllArtists();
+			$timeout(() => $('#filter-artists').trigger('chosen:updated'));
+		});
+		subscribe('genresLoaded', () => {
+			$scope.allGenres = libraryService.getAllGenres();
+			$timeout(() => $('#filter-genres').trigger('chosen:updated'));
+		});
 	}
 ]);

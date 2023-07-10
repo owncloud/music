@@ -293,6 +293,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		filesToScan = null;
 		filesToScanIterator = 0;
 		previouslyScannedCount = 0;
+		// Genre and artist IDs have got invalidated while resetting the libarary, drop any related filters
+		localStorage.setItem('oc_music_smartlist_genres', []);
+		localStorage.setItem('oc_music_smartlist_artists', []);
 	};
 
 	$scope.loadFoldersAndThen = function(callback) {

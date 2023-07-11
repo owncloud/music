@@ -349,8 +349,13 @@
 	width: calc(100% - 88px);
 }
 
+#app-sidebar #smartlist-filters select {
+	background: var(--color-main-background, #fff);
+}
+
 #app-sidebar #smartlist-filters .chosen-choices {
-	border: 2px solid var(--color-border-dark);
+	background: var(--color-main-background, #fff);
+	border: 2px solid var(--color-border-dark, #ddd);
 	border-radius: var(--border-radius-large);
 	text-overflow: ellipsis;
 	cursor: pointer;
@@ -363,10 +368,34 @@
 #app-sidebar #smartlist-filters .chosen-choices input {
 	margin-top: -1px;
 	margin-bottom: -1px;
+	color: var(--color-main-text, #222) !important;
+	height: 36px;
 }
 
 #app-sidebar #smartlist-filters .chosen-choices .search-choice {
 	margin-top: 6px;
+	background-color: var(--color-background-dark, #eee);
+    color: var(--color-main-text, #333);
+    background-image: unset;
+}
+
+#app-sidebar #smartlist-filters .chosen-drop {
+	background-color: var(--color-main-background, #fff);
+}
+
+#app-sidebar #smartlist-filters .chosen-container .chosen-results {
+    color: var(--color-main-text, #444);
+}
+
+#app-sidebar #smartlist-filters .chosen-container .chosen-results li.no-results {
+    color: var(--color-main-text, #333);
+    background: var(--color-background-dark, #eee);
+	opacity: .5;
+}
+
+#app-sidebar #smartlist-filters .chosen-container-multi .chosen-drop .result-selected {
+	color: unset;
+	opacity: .5;
 }
 
 #app-sidebar #smartlist-filters #update-button {

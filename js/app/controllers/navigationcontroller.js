@@ -187,7 +187,7 @@ angular.module('Music').controller('NavigationController', [
 			);
 		};
 
-		$scope.reloadPodcasts = function (event) {
+		$scope.reloadPodcasts = function(event) {
 			if ($scope.anyPodcastChannels()) {
 				$scope.podcastsBusy = true;
 				podcastService.reloadAllPodcasts().then(() => $scope.podcastsBusy = false);
@@ -200,11 +200,22 @@ angular.module('Music').controller('NavigationController', [
 			return libraryService.getPodcastChannelsCount() > 0;
 		};
 
-		$scope.reloadSmartListView = function () {
+		$scope.reloadSmartListView = function() {
 			$scope.reloadSmartList();
 
 			// also navigate to the Smart Playlist view if not already open
 			$scope.navigateTo('#smartlist');
+		};
+
+		$scope.saveSmartList = function() {
+			const smartlist = libraryService.getSmartList();
+			const args = {
+				name: gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
+				trackIds: _.map(smartlist.tracks, 'track.id').join(',')
+			};
+			Restangular.all('playlists').post(args).then(function(playlist) {
+				libraryService.addPlaylist(playlist);
+			});
 		};
 
 		// Play/pause playlist

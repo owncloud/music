@@ -145,6 +145,9 @@
 					<li ng-click="$parent.showSmartListFilters()">
 						<a><span class="icon-filter icon svg"></span><span translate>Filters</span></a>
 					</li>
+					<li ng-click="$parent.saveSmartList()">
+						<a><span class="icon-playlist icon svg"></span><span translate>Save playlist</span></a>
+					</li>
 				</ul>
 			</div>
 		</div>

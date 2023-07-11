@@ -143,7 +143,7 @@
 						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>
 					</li>
 					<li ng-click="$parent.showSmartListFilters()">
-						<a><span class="icon-filter icon"></span><span translate>Filters</span></a>
+						<a><span class="icon-filter icon svg"></span><span translate>Filters</span></a>
 					</li>
 				</ul>
 			</div>

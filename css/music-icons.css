@@ -99,3 +99,7 @@
 .app-music .icon-smart-playlist {
 	background-image: url(../img/playlist-cogwheel.svg);
 }
+
+.app-music .icon-filter {
+	background-image: url(../img/filter.svg);
+}

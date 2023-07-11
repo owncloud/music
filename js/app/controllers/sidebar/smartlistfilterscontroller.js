@@ -16,12 +16,12 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$scope.allGenres = libraryService.getAllGenres();
 		$scope.allArtists = libraryService.getAllArtists();
 
-		$scope.playRate = localStorage.getItem('oc_music_smartlist_play_rate') || '';
-		$scope.genres = localStorage.getItem('oc_music_smartlist_genres')?.split(',') || [];
-		$scope.artists = localStorage.getItem('oc_music_smartlist_artists')?.split(',') || [];
-		$scope.fromYear = localStorage.getItem('oc_music_smartlist_from_year') || '';
-		$scope.toYear = localStorage.getItem('oc_music_smartlist_to_year') || '';
-		$scope.listSize = parseInt(localStorage.getItem('oc_music_smartlist_size') || 300);
+		$scope.playRate = OCA.Music.Storage.get('smartlist_play_rate') || '';
+		$scope.genres = OCA.Music.Storage.get('smartlist_genres')?.split(',') || [];
+		$scope.artists = OCA.Music.Storage.get('smartlist_artists')?.split(',') || [];
+		$scope.fromYear = OCA.Music.Storage.get('smartlist_from_year') || '';
+		$scope.toYear = OCA.Music.Storage.get('smartlist_to_year') || '';
+		$scope.listSize = parseInt(OCA.Music.Storage.get('smartlist_size') || 300);
 
 		$scope.fieldsValid = allFieldsValid();
 
@@ -46,12 +46,12 @@ angular.module('Music').controller('SmartListFiltersController', [
 
 		$scope.onUpdateButton = function() {
 			if ($scope.fieldsValid) {
-				localStorage.setItem('oc_music_smartlist_play_rate', $scope.playRate);
-				localStorage.setItem('oc_music_smartlist_genres', $scope.genres);
-				localStorage.setItem('oc_music_smartlist_artists', $scope.artists);
-				localStorage.setItem('oc_music_smartlist_from_year', $scope.fromYear || '');
-				localStorage.setItem('oc_music_smartlist_to_year', $scope.toYear || '');
-				localStorage.setItem('oc_music_smartlist_size', $scope.listSize || '');
+				OCA.Music.Storage.set('smartlist_play_rate', $scope.playRate);
+				OCA.Music.Storage.set('smartlist_genres', $scope.genres);
+				OCA.Music.Storage.set('smartlist_artists', $scope.artists);
+				OCA.Music.Storage.set('smartlist_from_year', $scope.fromYear || '');
+				OCA.Music.Storage.set('smartlist_to_year', $scope.toYear || '');
+				OCA.Music.Storage.set('smartlist_size', $scope.listSize || '');
 
 				$scope.reloadSmartList();
 				// also navigate to the Smart Playlist view if not already open

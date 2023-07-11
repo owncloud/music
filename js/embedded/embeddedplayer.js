@@ -24,7 +24,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 	let player = new OCA.Music.PlayerWrapper();
 
-	let volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
+	let volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
 	player.setVolume(volume);
 	let lastVolume = null;
 	let nextPrevEnabled = false;
@@ -464,7 +464,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 				volume = value;
 				player.setVolume(volume);
-				localStorage.setItem('oc_music_volume', volume);
+				OCA.Music.Storage.set('volume', volume);
 				
 				// Show correct icon if muted 
 				volumeIcon.attr('src', volume == 0 ? soundOffIconPath : soundIconPath);

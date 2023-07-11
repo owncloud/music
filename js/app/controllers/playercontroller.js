@@ -21,9 +21,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.player = Audio;
 	$scope.currentTrack = null;
 	$scope.seekCursorType = 'default';
-	$scope.volume = parseInt(localStorage.getItem('oc_music_volume')) || 50;  // volume can be 0~100
-	$scope.repeat = localStorage.getItem('oc_music_repeat') || 'false';
-	$scope.shuffle = (localStorage.getItem('oc_music_shuffle') === 'true');
+	$scope.volume = parseInt(OCA.Music.Storage.get('volume')) || 50;  // volume can be 0~100
+	$scope.repeat = OCA.Music.Storage.get('repeat') || 'false';
+	$scope.shuffle = (OCA.Music.Storage.get('shuffle') === 'true');
 	$scope.playbackRate = 1.0;  // rate can be 0.5~3.0
 	$scope.position = {
 		bufferPercent: 0,
@@ -363,7 +363,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 
 		$scope.player.setVolume(newValue);
-		localStorage.setItem('oc_music_volume', newValue);
+		OCA.Music.Storage.set('volume', newValue);
 	});
 
 	const notifyPlaybackRateNotAdjustible = _.debounce(
@@ -397,7 +397,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	$scope.toggleShuffle = function() {
 		$scope.shuffle = !$scope.shuffle;
 		playlistService.setShuffle($scope.shuffle);
-		localStorage.setItem('oc_music_shuffle', $scope.shuffle.toString());
+		OCA.Music.Storage.set('shuffle', $scope.shuffle.toString());
 	};
 
 	$scope.toggleRepeat = function() {
@@ -408,7 +408,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		};
 		$scope.repeat = nextState[$scope.repeat];
 		playlistService.setRepeat($scope.repeat !== 'false'); // the "repeat-one" is handled internally by the PlayerController
-		localStorage.setItem('oc_music_repeat', $scope.repeat);
+		OCA.Music.Storage.set('repeat', $scope.repeat);
 	};
 
 	$scope.setTime = function(position, duration) {
@@ -894,7 +894,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.$watchGroup(['currentTrack', 'currentTrack.metadata.title'], function(newValues, oldValues) {
 			const track = newValues[0];
 			const trackChanged = (track != oldValues[0]);
-			let enabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
+			let enabled = (OCA.Music.Storage.get('song_notifications') !== 'false');
 
 			// while paused, the changes in radio title are not notified but actual track changes are
 			if (enabled && track && ($rootScope.playing || trackChanged)) {

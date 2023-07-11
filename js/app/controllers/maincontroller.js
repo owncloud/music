@@ -356,6 +356,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showSmartListFilters = function() {
 		$rootScope.$emit('showSmartListFilters');
+		$scope.collapseNavigationPaneOnMobile();
 	};
 
 	$scope.showRadioStationDetails = function(station) {

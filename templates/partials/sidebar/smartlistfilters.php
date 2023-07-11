@@ -18,17 +18,17 @@
 
 	<div>
 		<label for="from-year">From year</label>
-		<input type="text" name="from-year" ng-model="fromYear"/>
+		<input type="number" name="from-year" ng-model="fromYear"/>
 	</div>
 
 	<div>
 		<label for="to-year">To year</label>
-		<input type="text" name="to-year" ng-model="toYear"/>
+		<input type="number" name="to-year" ng-model="toYear"/>
 	</div>
 
 	<div>
 		<label for="size">List size</label>
-		<input type="text" name="size" id="" ng-model="listSize"/>
+		<input type="number" name="size" id="filters-size" ng-model="listSize"/>
 	</div>
 
 	<div title="{{ 'Note that this selection makes any difference only when the library has more than requested number of matches' | translate }}">
@@ -42,5 +42,5 @@
 		</select>
 	</div>
 
-	<div><button id="update-button" ng-click="onUpdateButton()" translate>Update</button></div>
+	<div><button id="update-button" ng-click="onUpdateButton()" ng-disabled="!fieldsValid" translate>Update</button></div>
 </div>

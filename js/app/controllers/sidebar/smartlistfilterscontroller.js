@@ -10,8 +10,8 @@
 
 
 angular.module('Music').controller('SmartListFiltersController', [
-	'$scope', '$rootScope', '$timeout', 'libraryService',
-	function ($scope, $rootScope, $timeout, libraryService) {
+	'$scope', '$rootScope', '$timeout', 'libraryService', 'gettextCatalog',
+	function ($scope, $rootScope, $timeout, libraryService, gettextCatalog) {
 
 		$scope.allGenres = libraryService.getAllGenres();
 		$scope.allArtists = libraryService.getAllArtists();
@@ -21,7 +21,9 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$scope.artists = localStorage.getItem('oc_music_smartlist_artists')?.split(',') || [];
 		$scope.fromYear = localStorage.getItem('oc_music_smartlist_from_year') || '';
 		$scope.toYear = localStorage.getItem('oc_music_smartlist_to_year') || '';
-		$scope.listSize = localStorage.getItem('oc_music_smartlist_size') || 300;
+		$scope.listSize = parseInt(localStorage.getItem('oc_music_smartlist_size') || 300);
+
+		$scope.fieldsValid = allFieldsValid();
 
 		$timeout(() => {
 			$('#filter-genres').chosen();
@@ -29,17 +31,34 @@ angular.module('Music').controller('SmartListFiltersController', [
 			$('#app-sidebar #smartlist-filters .chosen-container').css('width', ''); // purge the inline rule to let the CSS define the width
 		});
 
-		$scope.onUpdateButton = function() {
-			localStorage.setItem('oc_music_smartlist_play_rate', $scope.playRate);
-			localStorage.setItem('oc_music_smartlist_genres', $scope.genres);
-			localStorage.setItem('oc_music_smartlist_artists', $scope.artists);
-			localStorage.setItem('oc_music_smartlist_from_year', $scope.fromYear);
-			localStorage.setItem('oc_music_smartlist_to_year', $scope.toYear);
-			localStorage.setItem('oc_music_smartlist_size', $scope.listSize);
+		function allFieldsValid() {
+			let valid = true;
+			$('#smartlist-filters input[type=number]').each((_index, elem) =>
+				valid &&= elem.checkValidity()
+			);
+			// the size field must not be empty
+			valid &&= ($('#filters-size').val().length > 0);
 
-			$scope.reloadSmartList();
-			// also navigate to the Smart Playlist view if not already open
-			$scope.navigateTo('#smartlist');
+			return valid;
+		}
+
+		$scope.$watchGroup(['fromYear', 'toYear', 'listSize'], () => $scope.fieldsValid = allFieldsValid());
+
+		$scope.onUpdateButton = function() {
+			if ($scope.fieldsValid) {
+				localStorage.setItem('oc_music_smartlist_play_rate', $scope.playRate);
+				localStorage.setItem('oc_music_smartlist_genres', $scope.genres);
+				localStorage.setItem('oc_music_smartlist_artists', $scope.artists);
+				localStorage.setItem('oc_music_smartlist_from_year', $scope.fromYear || '');
+				localStorage.setItem('oc_music_smartlist_to_year', $scope.toYear || '');
+				localStorage.setItem('oc_music_smartlist_size', $scope.listSize || '');
+
+				$scope.reloadSmartList();
+				// also navigate to the Smart Playlist view if not already open
+				$scope.navigateTo('#smartlist');
+			} else {
+				OC.Notification.showTemporary(gettextCatalog.getString('Check the filter values'));
+			}
 		};
 
 		// $rootScope listeneres must be unsubscribed manually when the control is destroyed

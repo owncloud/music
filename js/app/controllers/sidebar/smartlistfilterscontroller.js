@@ -19,8 +19,8 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$scope.playRate = OCA.Music.Storage.get('smartlist_play_rate') || '';
 		$scope.genres = OCA.Music.Storage.get('smartlist_genres')?.split(',') || [];
 		$scope.artists = OCA.Music.Storage.get('smartlist_artists')?.split(',') || [];
-		$scope.fromYear = OCA.Music.Storage.get('smartlist_from_year') || '';
-		$scope.toYear = OCA.Music.Storage.get('smartlist_to_year') || '';
+		$scope.fromYear = parseInt(OCA.Music.Storage.get('smartlist_from_year')) || '';
+		$scope.toYear = parseInt(OCA.Music.Storage.get('smartlist_to_year')) || '';
 		$scope.listSize = parseInt(OCA.Music.Storage.get('smartlist_size') || 300);
 
 		$scope.fieldsValid = allFieldsValid();

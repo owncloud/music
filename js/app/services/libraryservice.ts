@@ -665,6 +665,10 @@ export class LibraryService {
 				query,
 				maxResults);
 	}
+	searchTracksInSmartlist(query : string, maxResults = Infinity) : SearchResult<Track> {
+		let tracks = _.map(this.#smartList.tracks, 'track');
+		return this.#search(tracks, ['title', 'artistName'], query, maxResults);
+	}
 	searchTracksInPlaylist(playlistId : number, query : string, maxResults = Infinity) : SearchResult<Track> {
 		let entries = this.getPlaylist(playlistId)?.tracks || [];
 		let tracks = _.map(entries, 'track');

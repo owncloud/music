@@ -133,7 +133,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		$scope.seekCursorType = $scope.player.seekingSupported() ? 'pointer' : 'default';
 	});
 	onPlayerEvent('error', function(url) {
-		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL: ' + url));
+		OC.Notification.showTemporary(gettextCatalog.getString('Error playing URL:') + ' ' + url);
 		// Jump automatically to the next track unless we were playing an external stream
 		if (!currentTrackIsStream()) {
 			$scope.next();
@@ -356,9 +356,9 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 		}
 	};
 
-	$scope.$watch('volume', function(newValue, _oldValue) {
+	$scope.$watch('volume', function(newValue, oldValue) {
 		// Reset last known volume, if a new value is selected via the slider
-		if (newValue && lastVolume && lastVolume !== _oldValue) {
+		if (newValue && lastVolume && lastVolume !== oldValue) {
 			lastVolume = null;
 		}
 

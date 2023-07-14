@@ -1,6 +1,9 @@
 ## [Unreleased]
 
 ### Added
+- Smart playlist feature, allowing list creation by user-supplied criteria
+  [#619](https://github.com/owncloud/music/issues/619)
+  [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Files playlist tab: Tooltip showing the file path or stream URL
 
 ### Changed

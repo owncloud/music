@@ -284,7 +284,7 @@ class TrackMapper extends BaseMapper {
 			$params[] = $toYear;
 		}
 
-		$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions), self::formatSortingClause($sortBy, $invertSort));
+		$sql = $this->selectUserEntities(\implode(' AND ', $sqlConditions), $this->formatSortingClause($sortBy, $invertSort));
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 

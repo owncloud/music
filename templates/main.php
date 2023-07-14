@@ -14,6 +14,7 @@ HtmlUtil::addWebpackStyle('app');
 	<?php
 	HtmlUtil::printNgTemplate('views/albumsview');
 	HtmlUtil::printNgTemplate('views/alltracksview');
+	HtmlUtil::printNgTemplate('views/smartlistview');
 	HtmlUtil::printNgTemplate('views/foldersview');
 	HtmlUtil::printNgTemplate('views/genresview');
 	HtmlUtil::printNgTemplate('views/playlistview');

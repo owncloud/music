@@ -82,6 +82,7 @@ export interface SearchResult<T> {
 
 const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 
+
 export class LibraryService {
 	#ignoredArticles : string[] = [];
 	#artists : Artist[] = null;
@@ -90,6 +91,7 @@ export class LibraryService {
 	#tracksInAlbumOrder : PlaylistEntry[] = null;
 	#tracksInAlphaOrder : PlaylistEntry[] = null;
 	#tracksInGenreOrder : PlaylistEntry[] = null;
+	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
@@ -351,6 +353,13 @@ export class LibraryService {
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
 	}
+	setSmartList(list : any) : void {
+		if (!list) {
+			this.#smartList = null;
+		} else {
+			this.#smartList = this.#wrapPlaylist(list);
+		}
+	}
 	setFolders(folderData : any[]|null) : void {
 		if (!folderData) {
 			this.#folders = null;
@@ -560,6 +569,12 @@ export class LibraryService {
 	getTrackCount() : number {
 		return this.#tracksInAlphaOrder?.length ?? 0;
 	}
+	getSmartListTrackCount() : number {
+		return this.#smartList?.tracks?.length ?? 0;
+	}
+	getSmartList() : Playlist {
+		return this.#smartList;
+	}
 	getPlaylist(id : number) : Playlist {
 		return _.find(this.#playlists, { id: Number(id) });
 	}
@@ -649,6 +664,10 @@ export class LibraryService {
 				['title', 'artistName', 'genre.name'],
 				query,
 				maxResults);
+	}
+	searchTracksInSmartlist(query : string, maxResults = Infinity) : SearchResult<Track> {
+		let tracks = _.map(this.#smartList.tracks, 'track');
+		return this.#search(tracks, ['title', 'artistName'], query, maxResults);
 	}
 	searchTracksInPlaylist(playlistId : number, query : string, maxResults = Infinity) : SearchResult<Track> {
 		let entries = this.getPlaylist(playlistId)?.tracks || [];

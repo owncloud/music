@@ -19,6 +19,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 		<li navigation-item text="'Podcasts' | translate" destination="'#/podcasts'"
 			title="{{ podcastsCountText() }}" icon="'podcast'"></li>
 		<li class="app-navigation-separator"></li>
+		<li navigation-item text="'Smart playlist' | translate" destination="'#/smartlist'"
+			title="{{ smartListTrackCountText() }}" icon="'smart-playlist'"></li>
 		<li class="music-navigation-item">
 			<div id="new-playlist" class="music-navigation-item-content">
 				<div class="icon-add" ng-click="startCreate()"></div>

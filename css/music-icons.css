@@ -68,6 +68,10 @@
 	background-image: url(../img/library-music.svg);
 }
 
+.app-music .icon-random-music {
+	background-image: url(../img/shuffle.svg);
+}
+
 .app-music .icon-radio {
 	background-image: url(../img/radio.svg);
 }
@@ -90,4 +94,12 @@
 
 .app-music .icon-playlist {
 	background-image: url(../img/playlist-play.svg);
+}
+
+.app-music .icon-smart-playlist {
+	background-image: url(../img/playlist-cogwheel.svg);
+}
+
+.app-music .icon-filter {
+	background-image: url(../img/filter.svg);
 }

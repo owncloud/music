@@ -271,10 +271,10 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		if ($scope.desktopNotificationsSupported) {
-			$scope.songNotificationsEnabled = (localStorage.getItem('oc_music_song_notifications') !== 'false');
+			$scope.songNotificationsEnabled = (OCA.Music.Storage.get('song_notifications') !== 'false');
 
 			$scope.$watch('songNotificationsEnabled', function(enabled) {
-				localStorage.setItem('oc_music_song_notifications', enabled.toString());
+				OCA.Music.Storage.set('song_notifications', enabled.toString());
 	
 				if (enabled && Notification.permission !== 'granted') {
 					Notification.requestPermission().then(function(permission) {

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -143,6 +143,18 @@ class PlaylistApiController extends Controller {
 		$result['tracks'] = Util::arrayMapMethod($tracks, 'toAPI', [$this->urlGenerator]);
 
 		return $result;
+	}
+
+	/**
+	 * generate a smart playlist according to the given rules
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function generate(?string $playRate, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=300) {
+		$playlist = $this->playlistBusinessLayer->generate(
+				$playRate, self::toIntArray($genres), self::toIntArray($artists), $fromYear, $toYear, $size, $this->userId);
+		return $playlist->toAPI();
 	}
 
 	/**
@@ -338,10 +350,14 @@ class PlaylistApiController extends Controller {
 
 	/**
 	 * Get integer array passed as parameter to the Playlist API
-	 * @param string|int $listAsString Comma-separated integer values in string, or a single integer
+	 * @param string|int|null $listAsString Comma-separated integer values in string, or a single integer
 	 * @return int[]
 	 */
 	private static function toIntArray(/*mixed*/ $listAsString) : array {
-		return \array_map('intval', \explode(',', (string)$listAsString));
+		if ($listAsString === null || $listAsString === '') {
+			return [];
+		} else {
+			return \array_map('intval', \explode(',', (string)$listAsString));
+		}
 	}
 }

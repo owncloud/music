@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -48,12 +48,13 @@ class AlbumMapper extends BaseMapper {
 	 * {@inheritdoc}
 	 * @see BaseMapper::formatSortingClause()
 	 */
-	protected function formatSortingClause(int $sortBy) : ?string {
+	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
 		if ($sortBy === SortBy::Parent) {
 			// Note: the alternative form "LOWER(`album_artist_name`) wouldn't work on PostgreSQL, see https://github.com/owncloud/music/issues/1046
-			return 'ORDER BY LOWER(`artist`.`name`), LOWER(`*PREFIX*music_albums`.`name`)';
+			$dir = $invertSort ? 'DESC' : 'ASC';
+			return "ORDER BY LOWER(`artist`.`name`) $dir, LOWER(`*PREFIX*music_albums`.`name`) $dir";
 		} else {
-			return parent::formatSortingClause($sortBy);
+			return parent::formatSortingClause($sortBy, $invertSort);
 		}
 	}
 

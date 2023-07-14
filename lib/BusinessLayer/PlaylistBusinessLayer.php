@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -17,9 +17,11 @@ use OCA\Music\AppFramework\Core\Logger;
 
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\PlaylistMapper;
+use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 use OCA\Music\Db\TrackMapper;
 
+use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
 /**
@@ -44,14 +46,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		$this->logger = $logger;
 	}
 
-	public function setTracks($trackIds, $playlistId, $userId) {
+	public function setTracks(array $trackIds, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
-	public function addTracks($trackIds, $playlistId, $userId) {
+	public function addTracks(array $trackIds, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$prevTrackIds = $playlist->getTrackIdsAsArray();
 		$playlist->setTrackIdsFromArray(\array_merge($prevTrackIds, $trackIds));
@@ -59,7 +61,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	public function removeTracks($trackIndices, $playlistId, $userId) {
+	public function removeTracks(array $trackIndices, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$trackIds = \array_diff_key($trackIds, \array_flip($trackIndices));
@@ -68,14 +70,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	public function removeAllTracks($playlistId, $userId) {
+	public function removeAllTracks(int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$playlist->setTrackIdsFromArray([]);
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
-	public function moveTrack($fromIndex, $toIndex, $playlistId, $userId) {
+	public function moveTrack(int $fromIndex, int $toIndex, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$movedTrack = \array_splice($trackIds, $fromIndex, 1);
@@ -85,7 +87,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $playlist;
 	}
 
-	public function create($name, $userId) {
+	public function create(string $name, string $userId) : Playlist {
 		$playlist = new Playlist();
 		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$playlist->setUserId($userId);
@@ -93,14 +95,14 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		return $this->mapper->insert($playlist);
 	}
 
-	public function rename($name, $playlistId, $userId) {
+	public function rename(string $name, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$playlist->setName(Util::truncate($name, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
 		return $playlist;
 	}
 
-	public function setComment($comment, $playlistId, $userId) {
+	public function setComment(string $comment, int $playlistId, string $userId) : Playlist {
 		$playlist = $this->find($playlistId, $userId);
 		$playlist->setComment(Util::truncate($comment, 256)); // some DB setups can't truncate automatically to column max size
 		$this->mapper->update($playlist);
@@ -111,7 +113,7 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	 * removes tracks from all available playlists
 	 * @param int[] $trackIds array of all track IDs to remove
 	 */
-	public function removeTracksFromAllLists($trackIds) {
+	public function removeTracksFromAllLists(array $trackIds) : void {
 		foreach ($trackIds as $trackId) {
 			$affectedLists = $this->mapper->findListsContainingTrack($trackId);
 
@@ -125,13 +127,9 @@ class PlaylistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * get list of Track objects belonging to a given playlist
-	 * @param int $playlistId
-	 * @param string $userId
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Track[]
 	 */
-	public function getPlaylistTracks($playlistId, $userId, $limit=null, $offset=null) {
+	public function getPlaylistTracks(int $playlistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 
@@ -167,11 +165,9 @@ class PlaylistBusinessLayer extends BusinessLayer {
 	/**
 	 * get the total duration of all the tracks on a playlist
 	 *
-	 * @param int $playlistId
-	 * @param string $userId
 	 * @return int duration in seconds
 	 */
-	public function getDuration($playlistId, $userId) {
+	public function getDuration(int $playlistId, string $userId) : int {
 		$playlist = $this->find($playlistId, $userId);
 		$trackIds = $playlist->getTrackIdsAsArray();
 		$durations = $this->trackMapper->getDurations($trackIds);
@@ -185,5 +181,61 @@ class PlaylistBusinessLayer extends BusinessLayer {
 		}
 
 		return $sum;
+	}
+
+	/**
+	 * Generate and return a playlist matching the given criteria. The playlist is not persisted.
+	 *
+	 * @param string|null $playRate One of: 'recent', 'not-recent', 'often', 'rarely'
+	 * @param int[] $genres Array of genre IDs
+	 * @param int[] $artists Array of artist IDs
+	 * @param int|null $fromYear Earliest release year to include
+	 * @param int|null $toYear Latest release year to include
+	 * @param int $size Size of the playlist to generate, provided that there are enough matching tracks
+	 * @param string $userId the name of the user
+	 */
+	public function generate(?string $playRate, array $genres, array $artists, ?int $fromYear, ?int $toYear, int $size, string $userId) : Playlist {
+		$now = new \DateTime();
+		$nowStr = $now->format(PlaylistMapper::SQL_DATE_FORMAT);
+
+		$playlist = new Playlist();
+		$playlist->setCreated($nowStr);
+		$playlist->setUpdated($nowStr);
+		$playlist->setName('Generated ' . $nowStr);
+		$playlist->setUserId($userId);
+
+		list('sortBy' => $sortBy, 'invert' => $invertSort) = self::sortRulesForPlayRate($playRate);
+		$limit = ($sortBy === SortBy::None) ? null : $size * 4;
+
+		$tracks = $this->trackMapper->findAllByCriteria($genres, $artists, $fromYear, $toYear, $sortBy, $invertSort, $userId, $limit);
+
+		if ($sortBy !== SortBy::None) {
+			// When generating by play-rate, use a pool of tracks at maximum twice the size of final list. However, don't use
+			// more than half of the matching tracks unless that is required to satisfy the required list size.
+			$poolSize = max($size, \count($tracks) / 2);
+			$tracks = \array_slice($tracks, 0, $poolSize);
+		}
+
+		// Pick the final random set of tracks
+		$tracks = Random::pickItems($tracks, $size);
+
+		$playlist->setTrackIdsFromArray(Util::extractIds($tracks));
+
+		return $playlist;
+	}
+
+	private static function sortRulesForPlayRate(?string $playRate) : array {
+		switch ($playRate) {
+			case 'recently':
+				return ['sortBy' => SortBy::LastPlayed, 'invert' => true];
+			case 'not-recently':
+				return ['sortBy' => SortBy::LastPlayed, 'invert' => false];
+			case 'often':
+				return ['sortBy' => SortBy::PlayCount, 'invert' => true];
+			case 'rarely':
+				return ['sortBy' => SortBy::PlayCount, 'invert' => false];
+			default:
+				return ['sortBy' => SortBy::None, 'invert' => false];
+		}
 	}
 }

@@ -1,11 +1,15 @@
 ## [Unreleased]
 
 ### Added
+- Smart playlist feature, allowing list creation by user-supplied criteria
+  [#619](https://github.com/owncloud/music/issues/619)
+  [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Files playlist tab: Tooltip showing the file path or stream URL
 
 ### Changed
-- Drop the logic migrating user settings from cookies to localStorage
-  * The localStorage has been used for the UI settings since Music v1.4.0. Updating from a Music version <1.4.0 now discards any previous UI settings.
+- Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
+  * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
+  * Also, volume settings in the Share and Files embedded players are now distint from the volume in the main app
 
 ### Fixed
 - Subsonic: Unhandled exception when attempting to delete a non-existent bookmark

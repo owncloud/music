@@ -3,8 +3,9 @@
 				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
 							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
 							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
-							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums'),
-				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' }"
+							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums')
+							|| (destination == '#/smartlist' && $parent.popupShownForPlaylist == 'smartlist'),
+				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' || destination=='#/smartlist' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
 		ng-class="{current: $parent.playingView == destination, playing: $parent.playing}"
@@ -129,6 +130,23 @@
 					</li>
 					<li ng-click="$parent.toggleFoldersFlatLayout(true)">
 						<a><span class="icon" ng-class="$parent.foldersFlatLayout ? 'icon-radio-button-checked' : 'icon-radio-button'"></span><span translate>Flat layout</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="actions" title="" ng-show="destination == '#/smartlist'">
+			<span class="icon-more"
+				ng-click="$parent.onPlaylistMoreButton('smartlist'); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'smartlist'">
+				<ul>
+					<li ng-click="$parent.reloadSmartListView()">
+						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>
+					</li>
+					<li ng-click="$parent.showSmartListFilters()">
+						<a><span class="icon-filter icon svg"></span><span translate>Filters</span></a>
+					</li>
+					<li ng-click="$parent.saveSmartList()">
+						<a><span class="icon-playlist icon svg"></span><span translate>Save playlist</span></a>
 					</li>
 				</ul>
 			</div>

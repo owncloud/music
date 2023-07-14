@@ -126,6 +126,8 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 			matchingTracks = searchInRadioView(query);
 		} else if (view == '#/podcasts') {
 			matchingTracks = searchInPodcastsView(query);
+		} else if (view == '#/smartlist') {
+			matchingTracks = searchInSmartistView(query);
 		} else if (view.startsWith('#/playlist/')) {
 			matchingTracks = searchInPlaylistView(view.slice('#/playlist/'.length), query);
 		} else {
@@ -277,6 +279,15 @@ function ($scope, $rootScope, libraryService, $timeout, $document, gettextCatalo
 
 		// podcasts view has a single ".artist-area" which should be always "matched" i.e. not hidden
 		$('.artist-area').addClass('matched');
+
+		return matches;
+	}
+
+	function searchInSmartistView(query) {
+		let matches = libraryService.searchTracksInSmartlist(query, MAX_MATCHES);
+		_(matches.result).each(function(track) {
+			$('li[data-track-id=' + track.id + ']').addClass('matched');
+		});
 
 		return matches;
 	}

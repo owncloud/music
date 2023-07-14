@@ -55,6 +55,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
 	};
 
+	$scope.smartListTrackCountText = function() {
+		var trackCount = libraryService.getSmartListTrackCount();
+		return gettextCatalog.getPlural(trackCount, '1 track', '{{ count }} tracks', { count: trackCount });
+	};
+
 	$scope.albumCountText = function() {
 		let albumCount = libraryService.getAlbumCount();
 		return gettextCatalog.getPlural(albumCount, '1 album', '{{ count }} albums', { count: albumCount });
@@ -137,6 +142,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				$scope.playlists = libraryService.getAllPlaylists();
 				$rootScope.$emit('playlistsLoaded');
 			});
+
+			// Load also the smart playlist once the collection is ready
+			$scope.reloadSmartList();
 
 			// Load also genres once the collection has been loaded
 			Restangular.one('genres').get().then(function(genres) {
@@ -285,6 +293,9 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		filesToScan = null;
 		filesToScanIterator = 0;
 		previouslyScannedCount = 0;
+		// Genre and artist IDs have got invalidated while resetting the libarary, drop any related filters
+		OCA.Music.Storage.set('smartlist_genres', []);
+		OCA.Music.Storage.set('smartlist_artists', []);
 	};
 
 	$scope.loadFoldersAndThen = function(callback) {
@@ -296,6 +307,24 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 				callback();
 			});
 		}
+	};
+
+	$scope.reloadSmartList = function() {
+		libraryService.setSmartList(null);
+
+		const genArgs = {
+			playRate:	OCA.Music.Storage.get('smartlist_play_rate'),
+			genres:		OCA.Music.Storage.get('smartlist_genres'),
+			artists:	OCA.Music.Storage.get('smartlist_artists'),
+			fromYear:	OCA.Music.Storage.get('smartlist_from_year'),
+			toYear:		OCA.Music.Storage.get('smartlist_to_year'),
+			size:		OCA.Music.Storage.get('smartlist_size')
+		};
+
+		Restangular.one('playlists/generate').get(genArgs).then((list) => {
+			libraryService.setSmartList(list);
+			$rootScope.$emit('smartListLoaded');
+		});
 	};
 
 	function showDetails(entityType, id) {
@@ -323,6 +352,11 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 
 	$scope.showAlbumDetails = function(album) {
 		showDetails('album', album.id);
+	};
+
+	$scope.showSmartListFilters = function() {
+		$rootScope.$emit('showSmartListFilters');
+		$scope.collapseNavigationPaneOnMobile();
 	};
 
 	$scope.showRadioStationDetails = function(station) {
@@ -398,25 +432,25 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 	};
 
 	// Compact/normal layout of the Albums view
-	$scope.albumsCompactLayout = (localStorage.getItem('oc_music_albums_compact') === 'true');
+	$scope.albumsCompactLayout = (OCA.Music.Storage.get('albums_compact') === 'true');
 	$scope.toggleAlbumsCompactLayout = function(useCompact = !$scope.albumsCompactLayout) {
 		$scope.albumsCompactLayout = useCompact;
 		$('#albums').toggleClass('compact', useCompact);
 		$rootScope.$emit('albumsLayoutChanged');
 
-		localStorage.setItem('oc_music_albums_compact', useCompact.toString());
+		OCA.Music.Storage.set('albums_compact', useCompact.toString());
 
 		// also navigate to the Albums view if not already open
 		$scope.navigateTo('#');
 	};
 
 	// Flat/tree layout of the Folders view
-	$scope.foldersFlatLayout = (localStorage.getItem('oc_music_folders_flat') === 'true');
+	$scope.foldersFlatLayout = (OCA.Music.Storage.get('folders_flat') === 'true');
 	$scope.toggleFoldersFlatLayout = function(useFlat = !$scope.foldersFlatLayout) {
 		$scope.foldersFlatLayout = useFlat;
 		$rootScope.$emit('foldersLayoutChanged');
 
-		localStorage.setItem('oc_music_folders_flat', useFlat.toString());
+		OCA.Music.Storage.set('folders_flat', useFlat.toString());
 
 		// also navigate to the Folders view if not already open
 		$scope.navigateTo('#/folders');

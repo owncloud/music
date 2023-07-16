@@ -92,11 +92,12 @@ export class LibraryService {
 	#ignoredArticles : string[] = [];
 	#artists : Artist[] = null;
 	#artistsIndex : { [id: number] : Artist } = {};
-	#albums : Album[] = null;
+	#albumsIndex : { [id: number] : Album } = {};
 	#tracksIndex : { [id: number] : Track } = {};
 	#tracksInAlbumOrder : PlaylistEntry<Track>[] = null;
 	#tracksInAlphaOrder : PlaylistEntry<Track>[] = null;
 	#tracksInGenreOrder : PlaylistEntry<Track>[] = null;
+	#albumsCount : number = 0;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
@@ -177,6 +178,7 @@ export class LibraryService {
 				_.forEach(album.tracks, (track) => {
 					track.artist = this.getArtist(track.artistId);
 					track.album = album;
+					track.type = 'song';
 				});
 			});
 		});
@@ -237,23 +239,6 @@ export class LibraryService {
 		_.forEach(channel.episodes, (episode) => {
 			episode.channel = channel;
 			episode.type = 'podcast';
-		});
-	}
-
-	#createTrackContainers() : void {
-		// album order "playlist"
-		let tracks = _.flatten(_.map(this.#albums, 'tracks'));
-		this.#tracksInAlbumOrder = _.map(tracks, this.#playlistEntry);
-
-		// alphabetic order "playlist"
-		this.#sortByTextField(tracks, 'title');
-		this.#sortByTextField(tracks, 'artist.sortName');
-		this.#tracksInAlphaOrder = _.map(tracks, this.#playlistEntry);
-
-		// tracks index
-		_.forEach(tracks, (track) => {
-			track.type = 'song';
-			this.#tracksIndex[track.id] = track;
 		});
 	}
 
@@ -348,10 +333,28 @@ export class LibraryService {
 		}
 	}
 	setCollection(collection : any[]) : void {
+		// The artists index is needed to transform the collection
 		this.#artistsIndex = _.keyBy(collection, 'id');
 		this.#artists = this.#transformCollection(collection);
-		this.#albums = _(this.#artists).map('albums').flatten().value();
-		this.#createTrackContainers();
+
+		// Temporary flat arrays from the transformed (and *sorted*) collection
+		const albums = _(this.#artists).map('albums').flatten().value();
+		const tracks = _(albums).map('tracks').flatten().value();
+
+		// Indexes also for albums and tracks
+		this.#albumsIndex = _.keyBy(albums, 'id');
+		this.#tracksIndex = _.keyBy(tracks, 'id');
+
+		// Album order "playlist"
+		this.#tracksInAlbumOrder = _.map(tracks, this.#playlistEntry);
+
+		// Alphabetic order "playlist"
+		this.#sortByTextField(tracks, 'title');
+		this.#sortByTextField(tracks, 'artist.sortName');
+		this.#tracksInAlphaOrder = _.map(tracks, this.#playlistEntry);
+
+		// Cache the albums count separately as it's an O(n) operation to get it from the #albumsIndex
+		this.#albumsCount = albums.length;
 	}
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
@@ -381,9 +384,7 @@ export class LibraryService {
 				// substitute parent id with a reference to the parent folder
 				folder.parent = foldersLut[folder.parent] ?? null;
 				// set parent folder references for the contained tracks
-				_.forEach(folder.tracks, (trackEntry) => {
-					trackEntry.track.folder = folder;
-				});
+				_.forEach(folder.tracks, (entry) => entry.track.folder = folder);
 				// init subfolder array
 				folder.subfolders = [];
 			});
@@ -534,10 +535,10 @@ export class LibraryService {
 		return this.#artists;
 	}
 	getAlbum(id : number) : Album {
-		return _.find(this.#albums, { id: Number(id) });
+		return this.#albumsIndex[id] ?? null;
 	}
 	getAlbumCount() : number {
-		return this.#albums?.length ?? 0;
+		return this.#albumsCount;
 	}
 	getTrack(id : number) : Track {
 		return this.#tracksIndex[id];

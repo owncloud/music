@@ -26,25 +26,33 @@ export interface Album {
 	tracks : Track[];
 }
 
-export interface Track {
+export interface BaseTrack {
 	id : number;
+	type : string;
+}
+
+export interface Track extends BaseTrack {
 	title : string;
 	album : Album;
 	artistId : number;
 	artist : Artist;
-	type : string;
 	folder : Folder;
 	genre : Genre;
 }
 
-export interface PlaylistEntry {
-	track : Track;
+export interface RadioStation extends BaseTrack {
+	name : string;
+	stream_url : string;
+}
+
+export interface PlaylistEntry<T extends BaseTrack> {
+	track : T;
 }
 
 export interface Playlist {
 	id : number;
 	name : string;
-	tracks : PlaylistEntry[];
+	tracks : PlaylistEntry<Track>[];
 }
 
 export interface Folder {
@@ -53,12 +61,10 @@ export interface Folder {
 	path : string;
 	parent : Folder|null;
 	subfolders : Folder[];
-	tracks : PlaylistEntry[]
+	tracks : PlaylistEntry<Track>[]
 }
 
 export interface Genre extends Playlist {}
-
-export interface RadioStation extends PlaylistEntry {}
 
 export interface PodcastChannel {
 	id : number;
@@ -88,14 +94,14 @@ export class LibraryService {
 	#artistsIndex : { [id: number] : Artist } = {};
 	#albums : Album[] = null;
 	#tracksIndex : { [id: number] : Track } = {};
-	#tracksInAlbumOrder : PlaylistEntry[] = null;
-	#tracksInAlphaOrder : PlaylistEntry[] = null;
-	#tracksInGenreOrder : PlaylistEntry[] = null;
+	#tracksInAlbumOrder : PlaylistEntry<Track>[] = null;
+	#tracksInAlphaOrder : PlaylistEntry<Track>[] = null;
+	#tracksInGenreOrder : PlaylistEntry<Track>[] = null;
 	#smartList : Playlist = null;
 	#playlists : Playlist[] = null;
 	#folders : Folder[] = null;
 	#genres : Genre[] = null;
-	#radioStations : RadioStation[] = null;
+	#radioStations : PlaylistEntry<RadioStation>[] = null;
 	#podcastChannels : PodcastChannel[] = null;
 
 	/** 
@@ -125,7 +131,7 @@ export class LibraryService {
 	 * Like sortByTextField but to be used with arrays of playlist entries where
 	 * field is within outer field "track".
 	 */
-	#sortByPlaylistEntryTextField(items : PlaylistEntry[], field : string) : void {
+	#sortByPlaylistEntryTextField(items : PlaylistEntry<any>[], field : string) : void {
 		this.#sortByTextField(items, 'track.' + field);
 	}
 
@@ -182,15 +188,15 @@ export class LibraryService {
 		array.splice(to, 0, array.splice(from, 1)[0]);
 	}
 
-	#playlistEntry(track : Track) : PlaylistEntry {
+	#playlistEntry<T extends BaseTrack>(track : T) : PlaylistEntry<T> {
 		return (track !== null) ? { track: track } : null;
 	}
 
-	#playlistEntryFromId(trackId : number) : PlaylistEntry {
+	#playlistEntryFromId(trackId : number) : PlaylistEntry<Track> {
 		return this.#playlistEntry(this.#tracksIndex[trackId] ?? null);
 	}
 
-	#wrapRadioStation(station : any) : RadioStation {
+	#wrapRadioStation(station : any) : PlaylistEntry<RadioStation> {
 		station.type = 'radio';
 		return this.#playlistEntry(station);
 	}
@@ -222,7 +228,7 @@ export class LibraryService {
 		}
 	}
 
-	#getFolderTracksRecursively(folder : Folder) : PlaylistEntry[] {
+	#getFolderTracksRecursively(folder : Folder) : PlaylistEntry<Track>[] {
 		let subFolderTracks = _(folder.subfolders).map((folder) => this.#getFolderTracksRecursively(folder)).flatten().value();
 		return [...subFolderTracks, ...folder.tracks];
 	}
@@ -503,7 +509,7 @@ export class LibraryService {
 			break;
 		}
 	}
-	removeDuplicatesFromPlaylist(playlistId : number) : PlaylistEntry[] {
+	removeDuplicatesFromPlaylist(playlistId : number) : PlaylistEntry<Track>[] {
 		let playlist = this.getPlaylist(playlistId);
 		let foundIds : {[id: number] : boolean} = {};
 		let indicesToRemove = [];
@@ -536,18 +542,18 @@ export class LibraryService {
 	getTrack(id : number) : Track {
 		return this.#tracksIndex[id];
 	}
-	getTracksInAlphaOrder() : PlaylistEntry[] {
+	getTracksInAlphaOrder() : PlaylistEntry<Track>[] {
 		return this.#tracksInAlphaOrder;
 	}
-	getTracksInAlbumOrder() : PlaylistEntry[] {
+	getTracksInAlbumOrder() : PlaylistEntry<Track>[] {
 		return this.#tracksInAlbumOrder;
 	}
-	getTracksInFolderOrder(treeMode : boolean) : PlaylistEntry[] {
+	getTracksInFolderOrder(treeMode : boolean) : PlaylistEntry<Track>[] {
 		return treeMode
 			? this.#getFolderTracksRecursively(this.getRootFolder())
 			: _(this.#folders).map('tracks').flatten().value();
 	}
-	getTracksInGenreOrder() : PlaylistEntry[] {
+	getTracksInGenreOrder() : PlaylistEntry<Track>[] {
 		return this.#tracksInGenreOrder;
 	}
 	getTrackCount() : number {
@@ -568,7 +574,7 @@ export class LibraryService {
 	getFolder(id : number) : Folder {
 		return _.find(this.#folders, { id: Number(id) });
 	}
-	getFolderTracks(folder : Folder, recursively : boolean) : PlaylistEntry[] {
+	getFolderTracks(folder : Folder, recursively : boolean) : PlaylistEntry<Track>[] {
 		return recursively ? this.#getFolderTracksRecursively(folder) : folder.tracks;
 	}
 	getAllFoldersWithTracks() : Folder[] {
@@ -583,10 +589,10 @@ export class LibraryService {
 	getAllGenres() : Genre[] {
 		return this.#genres;
 	}
-	getRadioStation(id : number) : Track {
+	getRadioStation(id : number) : RadioStation {
 		return _.find(this.#radioStations, ['track.id', Number(id)])?.track;
 	}
-	getAllRadioStations() : RadioStation[] {
+	getAllRadioStations() : PlaylistEntry<RadioStation>[] {
 		return this.#radioStations;
 	}
 	getPodcastEpisode(id : number) : PodcastEpisode {
@@ -659,7 +665,7 @@ export class LibraryService {
 		tracks = _.uniq(tracks);
 		return this.#search(tracks, ['title', 'artist.name'], query, maxResults);
 	}
-	searchRadioStations(query : string, maxResults = Infinity) : SearchResult<Track> {
+	searchRadioStations(query : string, maxResults = Infinity) : SearchResult<RadioStation> {
 		let stations = _.map(this.#radioStations, 'track');
 		return this.#search(stations, ['name', 'stream_url'], query, maxResults);
 	}

@@ -189,7 +189,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 			if (track?.channel) {
 				titleSong = track.title + ' (' + track.channel.title + ') - ';
 			} else {
-				titleSong = track.title + ' (' + track.artistName + ') - ';
+				titleSong = track.title + ' (' + track.artist.name + ') - ';
 			}
 		} else if (track) {
 			titleSong = $scope.primaryTitle() + ' - ';
@@ -733,7 +733,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 	};
 
 	$scope.secondaryTitle = function() {
-		return $scope.currentTrack?.artistName || $scope.currentTrack?.channel?.title 
+		return $scope.currentTrack?.artist?.name || $scope.currentTrack?.channel?.title 
 			|| $scope.currentTrack?.metadata?.title || $scope.currentTrack?.stream_url;
 	};
 
@@ -848,7 +848,7 @@ function ($scope, $rootScope, playlistService, Audio, gettextCatalog, Restangula
 				else {
 					navigator.mediaSession.metadata = new MediaMetadata({
 						title: track.title,
-						artist: track?.artistName,
+						artist: track?.artist?.name,
 						album: track?.album?.name ?? track?.channel?.title,
 						artwork: [{
 							sizes: '190x190',

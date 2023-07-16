@@ -18,7 +18,7 @@
 				<div ng-click="onTrackClick($index)" ui-draggable="true" drag="getDraggable($index)">
 					<div class="play-pause"></div>
 					<span class="muted">{{ $index + 1 }}.</span>
-					<div>{{ ::song.artistName }} - {{ ::song.title }}</div>
+					<div>{{ ::song.artist.name }} - {{ ::song.title }}</div>
 				</div>
 				<button class="action icon-details" ng-click="showTrackDetails(song.id)"
 					alt="{{ 'Details' | translate }}" title="{{ 'Details' | translate }}"></button>

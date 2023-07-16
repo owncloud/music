@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\App;
@@ -137,7 +137,6 @@ class Music extends App {
 				$c->query('Maintenance'),
 				$c->query('LibrarySettings'),
 				$c->query('UserId'),
-				$c->query('L10N'),
 				$c->query('UserFolder'),
 				$c->query('Logger')
 			);

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -29,13 +29,11 @@ class ApiControllerTest extends ControllerTestUtility {
 	private $userId = 'john';
 	private $appname = 'music';
 	private $urlGenerator;
-	private $l10n;
 	private $scanner;
 	private $coverHelper;
 	private $detailsHelper;
 	private $lastfmService;
 	private $maintenance;
-	private $userMusicFolder;
 	private $userFolder;
 	private $logger;
 
@@ -49,9 +47,6 @@ class ApiControllerTest extends ControllerTestUtility {
 		$this->urlGenerator
 			->method('linkToRoute')
 			->will($this->returnCallback([$this, 'linkToRouteMock']));
-		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
-			->disableOriginalConstructor()
-			->getMock();
 		$this->userFolder = $this->getMockBuilder('\OCP\Files\Folder')
 			->disableOriginalConstructor()
 			->getMock();
@@ -107,7 +102,6 @@ class ApiControllerTest extends ControllerTestUtility {
 			$this->maintenance,
 			$this->librarySettings,
 			$this->userId,
-			$this->l10n,
 			$this->userFolder,
 			$this->logger);
 	}
@@ -136,7 +130,6 @@ class ApiControllerTest extends ControllerTestUtility {
 
 		$result = [
 			'title' => 'The title',
-			'artistName' => 'The track artist',
 			'id' => 1,
 			'number' => 4,
 			'disk' => 1,

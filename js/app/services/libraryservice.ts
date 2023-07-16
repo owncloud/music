@@ -31,8 +31,7 @@ export interface Track {
 	title : string;
 	album : Album;
 	artistId : number;
-	artistName : string;
-	artistSortName : string;
+	artist : Artist;
 	type : string;
 	folder : Folder;
 	genre : Genre;
@@ -86,6 +85,7 @@ const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 export class LibraryService {
 	#ignoredArticles : string[] = [];
 	#artists : Artist[] = null;
+	#artistsIndex : { [id: number] : Artist } = {};
 	#albums : Album[] = null;
 	#tracksIndex : { [id: number] : Track } = {};
 	#tracksInAlbumOrder : PlaylistEntry[] = null;
@@ -169,7 +169,7 @@ export class LibraryService {
 				album.artist = artist;
 				album.tracks = this.#sortByDiskNumberAndTitle(album.tracks);
 				_.forEach(album.tracks, (track) => {
-					track.artistSortName = this.#createArtistSortName(track.artistName);
+					track.artist = this.getArtist(track.artistId);
 					track.album = album;
 				});
 			});
@@ -241,7 +241,7 @@ export class LibraryService {
 
 		// alphabetic order "playlist"
 		this.#sortByTextField(tracks, 'title');
-		this.#sortByTextField(tracks, 'artistSortName');
+		this.#sortByTextField(tracks, 'artist.sortName');
 		this.#tracksInAlphaOrder = _.map(tracks, this.#playlistEntry);
 
 		// tracks index
@@ -333,19 +333,16 @@ export class LibraryService {
 				artist.sortName = this.#createArtistSortName(artist.name);
 			});
 			this.#sortByTextField(this.#artists, 'sortName');
-
-			_.forEach(this.#tracksInAlphaOrder, (entry) => {
-				entry.track.artistSortName = this.#createArtistSortName(entry.track.artistName);
-			});
-			this.#sortByPlaylistEntryTextField(this.#tracksInAlphaOrder, 'artistSortName');
+			this.#sortByPlaylistEntryTextField(this.#tracksInAlphaOrder, 'artist.sortName');
 
 			_.forEach(this.#genres, (genre) => {
-				this.#sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+				this.#sortByPlaylistEntryTextField(genre.tracks, 'artist.sortName');
 			});
 			this.#tracksInGenreOrder = _(this.#genres).map('tracks').flatten().value();
 		}
 	}
 	setCollection(collection : any[]) : void {
+		this.#artistsIndex = _.keyBy(collection, 'id');
 		this.#artists = this.#transformCollection(collection);
 		this.#albums = _(this.#artists).map('albums').flatten().value();
 		this.#createTrackContainers();
@@ -412,7 +409,7 @@ export class LibraryService {
 
 			_.forEach(this.#genres, (genre) => {
 				this.#sortByPlaylistEntryTextField(genre.tracks, 'title');
-				this.#sortByPlaylistEntryTextField(genre.tracks, 'artistSortName');
+				this.#sortByPlaylistEntryTextField(genre.tracks, 'artist.sortName');
 
 				_.forEach(genre.tracks, (trackEntry) => {
 					trackEntry.track.genre = genre;
@@ -499,7 +496,7 @@ export class LibraryService {
 			break;
 		case 'artist':
 			this.#sortByTextField(playlist.tracks, 'track.title');
-			this.#sortByTextField(playlist.tracks, 'track.artistSortName');
+			this.#sortByTextField(playlist.tracks, 'track.artist.sortName');
 			break;
 		default:
 			console.error('Unexpected playlist sort property ' + byProperty);
@@ -525,20 +522,7 @@ export class LibraryService {
 		return _.pullAt(playlist.tracks, indicesToRemove);
 	}
 	getArtist(id : number) : Artist {
-		let artist = _.find(this.#artists, { id: Number(id) });
-		if (!artist) {
-			// there's no such album artist, try to find a matching track artist (who has no albums)
-			let track = _.find(this.#tracksIndex, { artistId: Number(id)} );
-			if (track) {
-				artist = {
-						id: track.artistId,
-						name: track.artistName,
-						sortName: track.artistSortName,
-						albums: []
-				};
-			}
-		}
-		return artist;
+		return this.#artistsIndex[id] ?? null;
 	}
 	getAllArtists() : Artist[] {
 		return this.#artists;
@@ -642,38 +626,38 @@ export class LibraryService {
 		return this.#podcastChannels !== null;
 	}
 	searchTracks(query : string, maxResults = Infinity) : SearchResult<Track> {
-		return this.#search(this.#tracksIndex, ['title', 'artistName'], query, maxResults);
+		return this.#search(this.#tracksIndex, ['title', 'artist.name'], query, maxResults);
 	}
 	searchTracksInAlbums(query : string, maxResults = Infinity) : SearchResult<Track> {
 		return this.#search(
 				this.#tracksIndex,
-				['title', 'artistName', 'album.name', 'album.year', 'album.artist.name'],
+				['title', 'artist.name', 'album.name', 'album.year', 'album.artist.name'],
 				query,
 				maxResults);
 	}
 	searchTracksInFolders(query : string, maxResults = Infinity) : SearchResult<Track> {
 		return this.#search(
 				this.#tracksIndex,
-				['title', 'artistName', 'folder.path'],
+				['title', 'artist.name', 'folder.path'],
 				query,
 				maxResults);
 	}
 	searchTracksInGenres(query : string, maxResults = Infinity) : SearchResult<Track> {
 		return this.#search(
 				this.#tracksIndex,
-				['title', 'artistName', 'genre.name'],
+				['title', 'artist.name', 'genre.name'],
 				query,
 				maxResults);
 	}
 	searchTracksInSmartlist(query : string, maxResults = Infinity) : SearchResult<Track> {
 		let tracks = _.map(this.#smartList.tracks, 'track');
-		return this.#search(tracks, ['title', 'artistName'], query, maxResults);
+		return this.#search(tracks, ['title', 'artist.name'], query, maxResults);
 	}
 	searchTracksInPlaylist(playlistId : number, query : string, maxResults = Infinity) : SearchResult<Track> {
 		let entries = this.getPlaylist(playlistId)?.tracks || [];
 		let tracks = _.map(entries, 'track');
 		tracks = _.uniq(tracks);
-		return this.#search(tracks, ['title', 'artistName'], query, maxResults);
+		return this.#search(tracks, ['title', 'artist.name'], query, maxResults);
 	}
 	searchRadioStations(query : string, maxResults = Infinity) : SearchResult<Track> {
 		let stations = _.map(this.#radioStations, 'track');

@@ -10,6 +10,7 @@
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
   * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
   * Also, volume settings in the Share and Files embedded players are now distint from the volume in the main app
+- Small optimization on the size of the `collection.json` loaded by the web front-end
 
 ### Fixed
 - Subsonic: Unhandled exception when attempting to delete a non-existent bookmark

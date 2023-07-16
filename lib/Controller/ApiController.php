@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -21,7 +21,6 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\Files\Folder;
-use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -45,8 +44,6 @@ use OCA\Music\Utility\Util;
 
 class ApiController extends Controller {
 
-	/** @var IL10N */
-	private $l10n;
 	/** @var TrackBusinessLayer */
 	private $trackBusinessLayer;
 	/** @var ArtistBusinessLayer */
@@ -93,11 +90,9 @@ class ApiController extends Controller {
 								Maintenance $maintenance,
 								LibrarySettings $librarySettings,
 								?string $userId, // null if this gets called after the user has logged out or on a public page
-								IL10N $l10n,
 								?Folder $userFolder, // null if this gets called after the user has logged out or on a public page
 								Logger $logger) {
 		parent::__construct($appname, $request);
-		$this->l10n = $l10n;
 		$this->trackBusinessLayer = $trackbusinesslayer;
 		$this->artistBusinessLayer = $artistbusinesslayer;
 		$this->albumBusinessLayer = $albumbusinesslayer;
@@ -188,7 +183,7 @@ class ApiController extends Controller {
 	public function trackByFileId(int $fileId) {
 		$track = $this->trackBusinessLayer->findByFileId($fileId, $this->userId);
 		if ($track !== null) {
-			return new JSONResponse($track->toCollection($this->l10n));
+			return new JSONResponse($track->toCollection());
 		} else {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND);
 		}

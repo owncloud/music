@@ -90,7 +90,7 @@ angular.module('Music').controller('FoldersViewController', [
 		$scope.getTrackData = function(listItem, index, _scope) {
 			let track = listItem.track;
 			return {
-				title: track.artistName + ' - ' + track.title,
+				title: track.artist.name + ' - ' + track.title,
 				tooltip: '',
 				number: index + 1,
 				id: track.id

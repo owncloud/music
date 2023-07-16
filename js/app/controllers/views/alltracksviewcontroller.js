@@ -64,7 +64,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		$scope.getTrackData = function(listItem, index, scope) {
 			let track = listItem.track;
 			return {
-				title: track.artistName + ' - ' + track.title,
+				title: track.artist.name + ' - ' + track.title,
 				tooltip: '',
 				number: scope.$parent.bucket.baseIndex + index + 1,
 				id: track.id
@@ -124,7 +124,7 @@ angular.module('Music').controller('AllTracksViewController', [
 		}
 
 		function trackAtIndexPreceedsIndexCharAt(trackIdx, charIdx) {
-			let name = _tracks[trackIdx].track.artistSortName;
+			let name = _tracks[trackIdx].track.artist.sortName;
 			return (charIdx >= _indexChars.length
 				|| alphabetIndexingService.titlePrecedesIndexCharAt(name, charIdx));
 		}
@@ -149,7 +149,7 @@ angular.module('Music').controller('AllTracksViewController', [
 								id: buckets.length,
 								char: _indexChars[charIdx],
 								firstForChar: !bucket,
-								name: _tracks[trackIdx].track.artistSortName,
+								name: _tracks[trackIdx].track.artist.sortName,
 								tracks: [],
 								baseIndex: trackIdx
 							};

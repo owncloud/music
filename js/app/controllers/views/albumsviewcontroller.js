@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 angular.module('Music').controller('AlbumsViewController', [
@@ -164,7 +164,7 @@ angular.module('Music').controller('AlbumsViewController', [
 		function getTitleString(track, artist, plaintext) {
 			let att = track.title;
 			if (track.artistId !== artist.id) {
-				let artistName = ' (' + track.artistName + ') ';
+				let artistName = ' (' + track.artist.name + ') ';
 				if (!plaintext) {
 					artistName = ' <span class="muted">' + artistName + '</span>';
 				}

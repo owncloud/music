@@ -273,7 +273,6 @@ Response:
 						{
 							"title": "A Dark Passage",
 							"number": 21,
-							"artistName": "Blind Guardian",
 							"artistId": 2,
 							"files": {
 								"audio/mpeg": 1001
@@ -283,7 +282,6 @@ Response:
 						{
 							"title": "Battle of Sudden Flame",
 							"number": 12,
-							"artistName": "Blind Guardian",
 							"artistId": 2,
 							"files": {
 								"audio/mpeg": 1002
@@ -308,7 +306,6 @@ Response:
 						{
 							"title": "Stay Together for the Kids",
 							"number": 1,
-							"artistName": "blink-182",
 							"artistId": 3,
 							"files": {
 								"audio/ogg": 1051
@@ -318,7 +315,6 @@ Response:
 						{
 							"title": "The Rock Show (live)",
 							"number": 2,
-							"artistName": "blink-182",
 							"artistId": 3,
 							"files": {
 								"audio/ogg": 1052

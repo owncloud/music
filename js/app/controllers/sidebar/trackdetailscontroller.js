@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 
@@ -182,7 +182,7 @@ angular.module('Music').controller('TrackDetailsController', [
 
 		$scope.tagHasDetails = function(tag) {
 			switch (tag.key) {
-			case 'artist':			return currentTrack.artistName == tag.value;
+			case 'artist':			return currentTrack.artist.name == tag.value;
 			case 'album':			return currentTrack.album.name == tag.value;
 			case 'albumartist':		// fall through
 			case 'album_artist':	// fall through

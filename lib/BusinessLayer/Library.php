@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -85,7 +85,7 @@ class Library {
 		$trackDict = [];
 		foreach ($entities['tracks'] as $track) {
 			$trackDict[$track->getAlbum()->getAlbumArtistId()][$track->getAlbumId()][]
-				= $track->toCollection($this->l10n);
+				= $track->toCollection();
 		}
 
 		// Then create the actual collection by iterating over the previusly created

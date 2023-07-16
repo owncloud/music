@@ -150,12 +150,11 @@ class Track extends Entity {
 		return $this->getGenreName() ?: Genre::unknownNameString($l10n);
 	}
 
-	public function toCollection(IL10N $l10n) : array {
+	public function toCollection() : array {
 		return [
 			'title' => $this->getTitle(),
 			'number' => $this->getNumber(),
 			'disk' => $this->getDisk(),
-			'artistName' => $this->getArtistNameString($l10n),
 			'artistId' => $this->getArtistId(),
 			'length' => $this->getLength(),
 			'files' => [$this->getMimetype() => $this->getFileId()],

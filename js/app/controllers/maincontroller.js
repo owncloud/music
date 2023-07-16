@@ -11,9 +11,9 @@
  */
 
 angular.module('Music').controller('MainController', [
-'$rootScope', '$scope', '$timeout', '$window', '$document', 'ArtistFactory', 
+'$rootScope', '$scope', '$timeout', '$window', 'ArtistFactory', 
 'playlistService', 'libraryService', 'inViewService', 'gettextCatalog', 'Restangular',
-function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory, 
+function ($rootScope, $scope, $timeout, $window, ArtistFactory, 
 		playlistService, libraryService, inViewService, gettextCatalog, Restangular) {
 
 	// retrieve language from backend - is set in ng-app HTML element
@@ -128,7 +128,7 @@ function ($rootScope, $scope, $timeout, $window, $document, ArtistFactory,
 		// load the music collection
 		ArtistFactory.getArtists().then(function(artists) {
 			libraryService.setCollection(artists);
-			$scope.artists = libraryService.getAllArtists();
+			$scope.artists = libraryService.getCollection();
 
 			// Emit the event asynchronously so that the DOM tree has already been
 			// manipulated and rendered by the browser when obeservers get the event.

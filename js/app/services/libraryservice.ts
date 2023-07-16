@@ -90,7 +90,7 @@ const DIACRITIC_REG_EXP = /[\u0300-\u036f]/g;
 
 export class LibraryService {
 	#ignoredArticles : string[] = [];
-	#artists : Artist[] = null;
+	#collection : Artist[] = null;
 	#artistsIndex : { [id: number] : Artist } = {};
 	#albumsIndex : { [id: number] : Album } = {};
 	#tracksIndex : { [id: number] : Track } = {};
@@ -169,6 +169,7 @@ export class LibraryService {
 	 * Sort the passed in collection alphabetically, and set up parent references
 	 */
 	#transformCollection(collection : any[]) : Artist[] {
+		// setup all the parent references and sort on each level
 		_.forEach(collection, (artist) => {
 			artist.sortName = this.#createArtistSortName(artist.name);
 			artist.albums = this.#sortByYearAndName(artist.albums);
@@ -183,6 +184,10 @@ export class LibraryService {
 			});
 		});
 		this.#sortByTextField(collection, 'sortName');
+
+		// filter out any artists with no own albums, after also those have got their `sortName` initialized
+		_.remove(collection, (artist) => artist.albums.length === 0);
+
 		return collection;
 	}
 
@@ -318,12 +323,12 @@ export class LibraryService {
 	// PUBLIC INTERFACE
 	setIgnoredArticles(articles : string[]) : void {
 		this.#ignoredArticles = articles;
-		if (this.#artists) {
+		if (this.#collection) {
 			// reorder the existing library if there is one
-			_.forEach(this.#artists, (artist) => {
+			_.forEach(this.#artistsIndex, (artist) => {
 				artist.sortName = this.#createArtistSortName(artist.name);
 			});
-			this.#sortByTextField(this.#artists, 'sortName');
+			this.#sortByTextField(this.#collection, 'sortName');
 			this.#sortByPlaylistEntryTextField(this.#tracksInAlphaOrder, 'artist.sortName');
 
 			_.forEach(this.#genres, (genre) => {
@@ -335,10 +340,10 @@ export class LibraryService {
 	setCollection(collection : any[]) : void {
 		// The artists index is needed to transform the collection
 		this.#artistsIndex = _.keyBy(collection, 'id');
-		this.#artists = this.#transformCollection(collection);
+		this.#collection = this.#transformCollection(collection);
 
 		// Temporary flat arrays from the transformed (and *sorted*) collection
-		const albums = _(this.#artists).map('albums').flatten().value();
+		const albums = _(this.#collection).map('albums').flatten().value();
 		const tracks = _(albums).map('tracks').flatten().value();
 
 		// Indexes also for albums and tracks
@@ -528,11 +533,19 @@ export class LibraryService {
 		// remove (and return) the duplicates
 		return _.pullAt(playlist.tracks, indicesToRemove);
 	}
+	getCollection() : Artist[] {
+		return this.#collection;
+	}
 	getArtist(id : number) : Artist {
 		return this.#artistsIndex[id] ?? null;
 	}
+	/**
+	 * Get all the artists, including the ones with no own albums
+	 */
 	getAllArtists() : Artist[] {
-		return this.#artists;
+		const artists = _.toArray(this.#artistsIndex);
+		this.#sortByTextField(artists, 'sortName');
+		return artists;
 	}
 	getAlbum(id : number) : Album {
 		return this.#albumsIndex[id] ?? null;
@@ -615,7 +628,7 @@ export class LibraryService {
 		return _.filter(this.#tracksIndex, {artistId: Number(artistId)});
 	}
 	collectionLoaded() : boolean {
-		return this.#artists !== null;
+		return this.#collection !== null;
 	}
 	playlistsLoaded() : boolean {
 		return this.#playlists !== null;

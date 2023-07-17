@@ -21,7 +21,7 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.newPlaylistName = '';
 		$scope.newPlaylistTrackIds = [];
-		$scope.popupShownForPlaylist = null;
+		$scope.popupShownForNaviItem = null;
 		$scope.radioBusy = false;
 		$scope.podcastsBusy = false;
 
@@ -32,7 +32,7 @@ angular.module('Music').controller('NavigationController', [
 
 		// hide 'more' popup menu of a playlist when user clicks anywhere on the page
 		$document.click(function(_event) {
-			$timeout(() => $scope.popupShownForPlaylist = null);
+			$timeout(() => $scope.popupShownForNaviItem = null);
 		});
 
 		// Start creating playlist
@@ -58,17 +58,17 @@ angular.module('Music').controller('NavigationController', [
 			$scope.showCreateForm = false;
 		};
 
-		// Show/hide the more actions menu on a playlist
-		$scope.onPlaylistMoreButton = function(playlist) {
-			if ($scope.popupShownForPlaylist == playlist) {
-				$scope.popupShownForPlaylist = null;
+		// Show/hide the more actions menu on a navigation item
+		$scope.onNaviItemMoreButton = function(naviDestination) {
+			if ($scope.popupShownForNaviItem == naviDestination) {
+				$scope.popupShownForNaviItem = null;
 			} else {
-				$scope.popupShownForPlaylist = playlist;
+				$scope.popupShownForNaviItem = naviDestination;
 
 				// clicking on any action in the popup closes the popup menu and stops the propagation (to avoid the unwanted view switches)
 				$('.popovermenu').off('click');
 				$('.popovermenu').on('click', 'li', function(event) {
-					$timeout(() => $scope.popupShownForPlaylist = null);
+					$timeout(() => $scope.popupShownForNaviItem = null);
 					event.stopPropagation();
 				});
 			}

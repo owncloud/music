@@ -45,7 +45,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 			drag-hover-class="drag-hover"
 			title="{{ trackCountText(playlist) }}"
 			icon="'playlist'"></li>
-		<li id="music-nav-settings" ng-class="{active: $parent.currentView=='#/settings'}">
+		<li id="music-nav-settings" ng-class="{active: currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
 				<img class="svg" src="<?php HtmlUtil::printSvgPath('settings') ?>">
 				{{ 'Settings' | translate }}

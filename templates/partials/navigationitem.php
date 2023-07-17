@@ -1,10 +1,6 @@
 <li class="music-navigation-item"
 	ng-class="{	'active': $parent.currentView == destination,
-				'menu-open': (playlist && playlist == $parent.popupShownForPlaylist)
-							|| (destination == '#/radio' && $parent.popupShownForPlaylist == 'radio')
-							|| (destination == '#/podcasts' && $parent.popupShownForPlaylist == 'podcasts')
-							|| (destination == '#' && $parent.popupShownForPlaylist == 'albums')
-							|| (destination == '#/smartlist' && $parent.popupShownForPlaylist == 'smartlist'),
+				'menu-open': $parent.popupShownForNaviItem == destination,
 				'item-with-actions': playlist || destination=='#/radio' || destination=='#/podcasts' || destination=='#' || destination=='#/folders' || destination=='#/smartlist' }"
 >
 	<div class="music-navigation-item-content" ng-click="$parent.navigateTo(destination)"
@@ -21,50 +17,50 @@
 		<div ng-show="playlist && $parent.showEditForm == playlist.id">
 			<div class="input-container">
 				<input type="text" class="edit-list" maxlength="256"
-					on-enter="$parent.$parent.commitEdit(playlist)" ng-model="playlist.name"/>
+					on-enter="$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>
 			<button class="action icon-checkmark app-navigation-noclose"
 				ng-class="{ disabled: playlist.name.length == 0 }"
-				ng-click="$parent.$parent.commitEdit(playlist); $event.stopPropagation()"></button>
+				ng-click="$parent.commitEdit(playlist); $event.stopPropagation()"></button>
 		</div>
 		<div class="actions" ng-init="subMenuShown = false" title="" ng-show="playlist && $parent.showEditForm == null">
 			<span class="icon-more" ng-show="!playlist.busy"
-				ng-click="$parent.$parent.onPlaylistMoreButton(playlist); subMenuShown = false; $event.stopPropagation()"></span>
+				ng-click="$parent.onNaviItemMoreButton(destination); subMenuShown = false; $event.stopPropagation()"></span>
 			<span class="icon-loading-small" ng-show="playlist.busy"></span>
-			<div class="popovermenu bubble" ng-show="$parent.$parent.popupShownForPlaylist == playlist">
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
-					<li ng-click="$parent.$parent.showDetails(playlist)">
+					<li ng-click="$parent.showDetails(playlist)">
 						<a><span class="icon-details icon"></span><span translate>Details</span></a>
 					</li>
-					<li ng-click="$parent.$parent.startEdit(playlist)" class="app-navigation-noclose">
+					<li ng-click="$parent.startEdit(playlist)" class="app-navigation-noclose">
 						<a><span class="icon-rename icon"></span><span translate>Rename</span></a>
 					</li>
-					<li ng-click="$parent.$parent.importFromFile(playlist)">
+					<li ng-click="$parent.importFromFile(playlist)">
 						<a><span class="icon-from-file icon svg"></span><span translate>Import from file</span></a>
 					</li>
-					<li ng-click="$parent.$parent.exportToFile(playlist)">
+					<li ng-click="$parent.exportToFile(playlist)">
 						<a><span class="icon-to-file icon svg"></span><span translate>Export to file</span></a>
 					</li>
 					<li ng-click="subMenuShown = !subMenuShown; $event.stopPropagation()">
 						<a><span class="icon-sort-by-alpha icon svg"></span><span translate>Sort …</span></a>
 						<div class="popovermenu bubble submenu" ng-show="subMenuShown">
 							<ul>
-								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'track')">
+								<li ng-click="$parent.sortPlaylist(playlist, 'track')">
 									<a><span translate>by title</span></a>
 								</li>
-								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'artist')">
+								<li ng-click="$parent.sortPlaylist(playlist, 'artist')">
 									<a><span translate>by artist</span></a>
 								</li>
-								<li ng-click="$parent.$parent.sortPlaylist(playlist, 'album')">
+								<li ng-click="$parent.sortPlaylist(playlist, 'album')">
 									<a><span translate>by album</span></a>
 								</li>
 							</ul>
 						</div>
 					</li>
-					<li ng-click="$parent.$parent.removeDuplicates(playlist)">
+					<li ng-click="$parent.removeDuplicates(playlist)">
 						<a><span class="icon-close icon"></span><span translate>Remove duplicates</span></a>
 					</li>
-					<li ng-click="$parent.$parent.remove(playlist)">
+					<li ng-click="$parent.remove(playlist)">
 						<a><span class="icon-delete icon"></span><span translate>Delete</span></a>
 					</li>
 				</ul>
@@ -72,9 +68,9 @@
 		</div>
 		<div class="actions" title="" ng-show="destination == '#/radio'">
 			<span class="icon-more" ng-show="!$parent.radioBusy"
-				ng-click="$parent.onPlaylistMoreButton('radio'); $event.stopPropagation()"></span>
+				ng-click="$parent.onNaviItemMoreButton(destination); $event.stopPropagation()"></span>
 			<span class="icon-loading-small" ng-show="$parent.radioBusy"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'radio'">
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
 					<li ng-click="$parent.showRadioHint()">
 						<a><span class="icon-details icon"></span><span translate>Getting started</span></a>
@@ -93,9 +89,9 @@
 		</div>
 		<div class="actions" title="" ng-show="destination == '#/podcasts'">
 			<span class="icon-more" ng-show="!$parent.podcastsBusy"
-				ng-click="$parent.onPlaylistMoreButton('podcasts'); $event.stopPropagation()"></span>
+				ng-click="$parent.onNaviItemMoreButton(destination); $event.stopPropagation()"></span>
 			<span class="icon-loading-small" ng-show="$parent.podcastsBusy"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'podcasts'">
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
 					<li ng-click="$parent.addPodcast()">
 						<a><span class="icon-add icon"></span><span translate>Add from RSS feed</span></a>
@@ -108,8 +104,8 @@
 		</div>
 		<div class="actions" title="" ng-show="destination == '#'">
 			<span class="icon-more"
-				ng-click="$parent.onPlaylistMoreButton('albums'); $event.stopPropagation()"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'albums'">
+				ng-click="$parent.onNaviItemMoreButton(destination); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
 					<li ng-click="$parent.toggleAlbumsCompactLayout(false)">
 						<a><span class="icon" ng-class="$parent.albumsCompactLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"></span><span translate>Normal layout</span></a>
@@ -122,8 +118,8 @@
 		</div>
 		<div class="actions" title="" ng-show="destination == '#/folders'">
 			<span class="icon-more"
-				ng-click="$parent.onPlaylistMoreButton('folders'); $event.stopPropagation()"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'folders'">
+				ng-click="$parent.onNaviItemMoreButton(destination); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
 					<li ng-click="$parent.toggleFoldersFlatLayout(false)">
 						<a><span class="icon" ng-class="$parent.foldersFlatLayout ? 'icon-radio-button' : 'icon-radio-button-checked'"></span><span translate>Tree layout</span></a>
@@ -136,8 +132,8 @@
 		</div>
 		<div class="actions" title="" ng-show="destination == '#/smartlist'">
 			<span class="icon-more"
-				ng-click="$parent.onPlaylistMoreButton('smartlist'); $event.stopPropagation()"></span>
-			<div class="popovermenu bubble" ng-show="$parent.popupShownForPlaylist == 'smartlist'">
+				ng-click="$parent.onNaviItemMoreButton(destination); $event.stopPropagation()"></span>
+			<div class="popovermenu bubble" ng-show="$parent.popupShownForNaviItem == destination">
 				<ul>
 					<li ng-click="$parent.reloadSmartListView()">
 						<a><span class="icon-reload icon svg"></span><span translate>Reload</span></a>

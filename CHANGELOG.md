@@ -4,6 +4,7 @@
 - Smart playlist feature, allowing list creation by user-supplied criteria
   [#619](https://github.com/owncloud/music/issues/619)
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
+- Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Files playlist tab: Tooltip showing the file path or stream URL
 
 ### Changed

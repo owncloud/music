@@ -20,6 +20,7 @@ angular.module('Music').controller('NavigationController', [
 		$rootScope.loading = true;
 
 		$scope.newPlaylistName = '';
+		$scope.newPlaylistTrackIds = [];
 		$scope.popupShownForPlaylist = null;
 		$scope.radioBusy = false;
 		$scope.podcastsBusy = false;
@@ -31,9 +32,7 @@ angular.module('Music').controller('NavigationController', [
 
 		// hide 'more' popup menu of a playlist when user clicks anywhere on the page
 		$document.click(function(_event) {
-			$timeout(function() {
-				$scope.popupShownForPlaylist = null;
-			});
+			$timeout(() => $scope.popupShownForPlaylist = null);
 		});
 
 		// Start creating playlist
@@ -42,21 +41,21 @@ angular.module('Music').controller('NavigationController', [
 			// Move the focus to the input field. This has to be made asynchronously
 			// because the field is not visible yet, it is shown by ng-show binding
 			// later during this digest loop.
-			$timeout(function() {
-				$('.new-list').focus();
-			});
+			$timeout(() => $('.new-list').focus());
 		};
 
 		// Commit creating playlist
 		$scope.commitCreate = function() {
 			if ($scope.newPlaylistName.length > 0) {
-				Restangular.all('playlists').post({name: $scope.newPlaylistName}).then(function(playlist){
-					libraryService.addPlaylist(playlist);
-					$scope.newPlaylistName = '';
-				});
-
-				$scope.showCreateForm = false;
+				createPlaylist($scope.newPlaylistName, $scope.newPlaylistTrackIds);
+				$scope.closeCreate();
 			}
+		};
+
+		$scope.closeCreate = function() {
+			$scope.newPlaylistName = '';
+			$scope.newPlaylistTrackIds = [];
+			$scope.showCreateForm = false;
 		};
 
 		// Show/hide the more actions menu on a playlist
@@ -69,9 +68,7 @@ angular.module('Music').controller('NavigationController', [
 				// clicking on any action in the popup closes the popup menu and stops the propagation (to avoid the unwanted view switches)
 				$('.popovermenu').off('click');
 				$('.popovermenu').on('click', 'li', function(event) {
-					$timeout(function() {
-						$scope.popupShownForPlaylist = null;
-					});
+					$timeout(() => $scope.popupShownForPlaylist = null);
 					event.stopPropagation();
 				});
 			}
@@ -88,9 +85,7 @@ angular.module('Music').controller('NavigationController', [
 			// Move the focus to the input field. This has to be made asynchronously
 			// because the field does not exist yet, it is added by ng-if binding
 			// later during this digest loop.
-			$timeout(function() {
-				$('.edit-list').focus();
-			});
+			$timeout(() => $('.edit-list').focus());
 		};
 
 		// Commit renaming of playlist
@@ -209,13 +204,10 @@ angular.module('Music').controller('NavigationController', [
 
 		$scope.saveSmartList = function() {
 			const smartlist = libraryService.getSmartList();
-			const args = {
-				name: gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
-				trackIds: _.map(smartlist.tracks, 'track.id').join(',')
-			};
-			Restangular.all('playlists').post(args).then(function(playlist) {
-				libraryService.addPlaylist(playlist);
-			});
+			createPlaylist(
+				gettextCatalog.getString('Generated {{ datetime }}', { datetime: OCA.Music.Utils.formatDateTime(smartlist.created) }),
+				_.map(smartlist.tracks, 'track.id')
+			);
 		};
 
 		// Play/pause playlist
@@ -314,7 +306,7 @@ angular.module('Music').controller('NavigationController', [
 		navToggle.addEventListener('dragenter', function() {
 			if (!navOpenedByDrag) {
 				navOpenedByDrag = true;
-				$timeout($(navToggle).click());
+				$timeout(() => $(navToggle).click());
 			}
 		});
 		document.addEventListener('dragend', function() {
@@ -323,6 +315,16 @@ angular.module('Music').controller('NavigationController', [
 				$scope.collapseNavigationPaneOnMobile();
 			}
 		});
+
+		function createPlaylist(name, trackIds) {
+			const args = {
+				name: name,
+				trackIds: trackIds.join(',')
+			};
+			Restangular.all('playlists').post(args).then(function(playlist) {
+				libraryService.addPlaylist(playlist);
+			});
+		}
 
 		function trackIdsFromAlbum(albumId) {
 			let album = libraryService.getAlbum(albumId);
@@ -346,21 +348,28 @@ angular.module('Music').controller('NavigationController', [
 		}
 
 		function addTracks(playlist, trackIds) {
-			_.forEach(trackIds, function(trackId) {
-				libraryService.addToPlaylist(playlist.id, trackId);
-			});
-
-			// Update the currently playing list if necessary
-			if ($rootScope.playingView == '#/playlist/' + playlist.id) {
-				let newTracks = _.map(trackIds, function(trackId) {
-					return { track: libraryService.getTrack(trackId) };
-				});
-				playlistService.onTracksAdded(newTracks);
+			if (playlist === null) {
+				// tracks dropped on the "+ New Playlist" item, start creating a new list
+				$scope.newPlaylistTrackIds = $scope.newPlaylistTrackIds.concat(trackIds);
+				$scope.startCreate();
 			}
+			else {
+				_.forEach(trackIds, function(trackId) {
+					libraryService.addToPlaylist(playlist.id, trackId);
+				});
 
-			Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
-				playlist.updated = result.updated;
-			});
+				// Update the currently playing list if necessary
+				if ($rootScope.playingView == '#/playlist/' + playlist.id) {
+					let newTracks = _.map(trackIds, function(trackId) {
+						return { track: libraryService.getTrack(trackId) };
+					});
+					playlistService.onTracksAdded(newTracks);
+				}
+
+				Restangular.one('playlists', playlist.id).all('add').post({trackIds: trackIds.join(',')}).then(function (result) {
+					playlist.updated = result.updated;
+				});
+			}
 		}
 
 		function handlePlaylistContentChange(playlist) {

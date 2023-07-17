@@ -21,9 +21,10 @@ HtmlUtil::printNgTemplate('navigationitem');
 		<li class="app-navigation-separator"></li>
 		<li navigation-item text="'Smart playlist' | translate" destination="'#/smartlist'"
 			title="{{ smartListTrackCountText() }}" icon="'smart-playlist'"></li>
-		<li class="music-navigation-item">
+		<li class="music-navigation-item" ui-on-drop="dropOnPlaylist($data, null)" drag-hover-class="drag-hover">
 			<div id="new-playlist" class="music-navigation-item-content">
-				<div class="icon-add" ng-click="startCreate()"></div>
+				<div class="icon-add" ng-click="startCreate()" ng-if="!newPlaylistTrackIds.length"></div>
+				<div class="track-count-badge" ng-if="newPlaylistTrackIds.length">{{ newPlaylistTrackIds.length }}</div>
 				<div id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
 				<div class="input-container" ng-show="showCreateForm">
 					<input type="text" class="new-list" maxlength="256"
@@ -32,7 +33,7 @@ HtmlUtil::printNgTemplate('navigationitem');
 				<div class="actions" ng-show="showCreateForm">
 					<button class="action icon-checkmark app-navigation-noclose"
 						ng-class="{ disabled: newPlaylistName.length == 0}" ng-click="commitCreate()"></button>
-					<button class="action icon-close app-navigation-noclose" ng-click="showCreateForm=false"></button>
+					<button class="action icon-close app-navigation-noclose" ng-click="closeCreate()"></button>
 				</div>
 			</div>
 		</li>

@@ -37,7 +37,7 @@ angular.module('Music').controller('SmartListFiltersController', [
 				valid &&= elem.checkValidity()
 			);
 			// the size field must not be empty
-			valid &&= ($('#filters-size').val().length > 0);
+			valid &&= ($scope.listSize > 0);
 
 			return valid;
 		}

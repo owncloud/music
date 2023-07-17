@@ -3,37 +3,37 @@
 	<h1 translate>Smart playlist filters</h1>
 
 	<div>
-		<label for="size" translate>List size</label>
-		<input type="number" name="size" id="filters-size" ng-model="listSize"/>
+		<label for="filter-size" translate>List size</label>
+		<input id="filter-size" type="number" ng-model="listSize"/>
 	</div>
 
 	<div>
-		<label for="from-year" translate>From year</label>
-		<input type="number" name="from-year" ng-model="fromYear"/>
+		<label for="filter-from-year" translate>From year</label>
+		<input id="filter-from-year" type="number" ng-model="fromYear"/>
 	</div>
 
 	<div>
-		<label for="to-year" translate>To year</label>
-		<input type="number" name="to-year" ng-model="toYear"/>
+		<label for="filter-to-year" translate>To year</label>
+		<input id="filter-to-year" type="number" ng-model="toYear"/>
 	</div>
 
 	<div>
-		<label for="genres" translate>Genres</label>
-		<select name="genres" id="filter-genres" multiple data-placeholder=" " ng-model="genres">
+		<label for="filter-genres" translate>Genres</label>
+		<select id="filter-genres" multiple data-placeholder=" " ng-model="genres">
 			<option ng-repeat="genre in allGenres" value="{{ genre.id }}">{{ genre.name }}</option>
 		</select>
 	</div>
 
 	<div>
-		<label for="artists" translate>Artists</label>
-		<select name="artists" id="filter-artists" multiple data-placeholder=" " ng-model="artists">
+		<label for="filter-artists" translate>Artists</label>
+		<select id="filter-artists" multiple data-placeholder=" " ng-model="artists">
 			<option ng-repeat="artist in allArtists" value="{{ artist.id }}">{{ artist.name }}</option>
 		</select>
 	</div>
 
 	<div title="{{ 'Note that this selection makes any difference only when the library has more than requested number of matches' | translate }}">
-		<label for="play-rate" translate>Play history</label>
-		<select name="play-rate" id="filter-play-rate" ng-model="playRate">
+		<label for="filter-play-rate" translate>Play history</label>
+		<select id="filter-play-rate" ng-model="playRate">
 			<option value=""></option>
 			<option value="recently" translate>Recently played</option>
 			<option value="not-recently" translate>Not recently played</option>

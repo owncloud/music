@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -18,6 +18,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -43,8 +44,12 @@ use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\Entity;
+use OCA\Music\Db\Genre;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Playlist;
+use OCA\Music\Db\PodcastChannel;
+use OCA\Music\Db\PodcastEpisode;
 use OCA\Music\Db\SortBy;
 use OCA\Music\Db\Track;
 
@@ -138,11 +143,11 @@ class AmpacheController extends Controller {
 		$this->logger = $logger;
 	}
 
-	public function setJsonMode($useJsonMode) {
+	public function setJsonMode(bool $useJsonMode) : void {
 		$this->jsonMode = $useJsonMode;
 	}
 
-	public function ampacheResponse($content) {
+	public function ampacheResponse(array $content) : Response {
 		if ($this->jsonMode) {
 			return new JSONResponse(self::prepareResultForJsonApi($content));
 		} else {
@@ -156,7 +161,7 @@ class AmpacheController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function xmlApi($action) {
+	public function xmlApi(string $action) : Response {
 		// differentation between xmlApi and jsonApi is made already by the middleware
 		return $this->dispatch($action);
 	}
@@ -167,12 +172,12 @@ class AmpacheController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function jsonApi($action) {
+	public function jsonApi(string $action) : Response {
 		// differentation between xmlApi and jsonApi is made already by the middleware
 		return $this->dispatch($action);
 	}
 
-	protected function dispatch($action) {
+	protected function dispatch(string $action) : Response {
 		$this->logger->log("Ampache action '$action' requested", 'debug');
 
 		// Allow calling any functions annotated to be part of the API
@@ -197,7 +202,12 @@ class AmpacheController extends Controller {
 				} catch (RequestParameterExtractorException $ex) {
 					throw new AmpacheException($ex->getMessage(), 400);
 				}
-				return \call_user_func_array([$this, $action], $parameterValues);
+				$response = \call_user_func_array([$this, $action], $parameterValues);
+				// The API methods may return either a Response object or an array, which should be converted to Response
+				if (!($response instanceof Response)) {
+					$response = $this->ampacheResponse($response);
+				}
+				return $response;
 			}
 		}
 
@@ -213,7 +223,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	 protected function handshake(string $user, int $timestamp, string $auth) {
+	 protected function handshake(string $user, int $timestamp, string $auth) : array {
 		$currentTime = \time();
 		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
@@ -224,7 +234,7 @@ class AmpacheController extends Controller {
 		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
 		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 
-		return $this->ampacheResponse([
+		return [
 			'auth' => $token,
 			'api' => self::API_VERSION,
 			'update' => $updateTime->format('c'),
@@ -244,24 +254,24 @@ class AmpacheController extends Controller {
 			'licenses' => 0,
 			'live_streams' => 0,
 			'labels' => 0
-		]);
+		];
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function goodbye(string $auth) {
+	protected function goodbye(string $auth) : array {
 		// getting the session should not throw as the middleware has already checked that the token is valid
 		$session = $this->ampacheSessionMapper->findByToken($auth);
 		$this->ampacheSessionMapper->delete($session);
 
-		return $this->ampacheResponse(['success' => "goodbye: $auth"]);
+		return ['success' => "goodbye: $auth"];
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function ping(?string $auth) {
+	protected function ping(?string $auth) : array {
 		$response = [
 			'server' => $this->getAppNameAndVersion(),
 			'version' => self::API_VERSION,
@@ -274,13 +284,13 @@ class AmpacheController extends Controller {
 			$response['session_expire'] = \date('c', $session->getExpiry());
 		}
 
-		return $this->ampacheResponse($response);
+		return $response;
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) {
+	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
 		$businessLayer = $this->getBusinessLayer($type);
 		$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
 		return $this->renderEntitiesIndex($entities, $type);
@@ -289,7 +299,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function stats(string $auth, string $type, ?string $filter, int $limit, int $offset=0) {
+	protected function stats(string $auth, string $type, ?string $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 
 		// Support for API v3.x: Originally, there was no 'filter' argument and the 'type'
@@ -351,7 +361,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function artists(
 			string $auth, ?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) {
+			int $limit, int $offset=0, bool $exact=false) : array {
 
 		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderArtists($artists, $auth);
@@ -360,7 +370,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist(int $filter, string $auth) {
+	protected function artist(int $filter, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$artist = $this->artistBusinessLayer->find($filter, $userId);
 		return $this->renderArtists([$artist], $auth);
@@ -369,7 +379,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist_albums(int $filter, string $auth, int $limit, int $offset=0) {
+	protected function artist_albums(int $filter, string $auth, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$albums = $this->albumBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
 		return $this->renderAlbums($albums, $auth);
@@ -378,7 +388,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist_songs(int $filter, string $auth, int $limit, int $offset=0) {
+	protected function artist_songs(int $filter, string $auth, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
@@ -387,7 +397,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function album_songs(int $filter, string $auth, int $limit, int $offset=0) {
+	protected function album_songs(int $filter, string $auth, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByAlbum($filter, $userId, null, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
@@ -396,7 +406,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function song(int $filter, string $auth) {
+	protected function song(int $filter, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$track = $this->trackBusinessLayer->find($filter, $userId);
 		$trackInArray = [$track];
@@ -408,7 +418,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function songs(
 			string $auth, ?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) {
+			int $limit, int $offset=0, bool $exact=false) : array {
 
 		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderSongs($tracks, $auth);
@@ -417,7 +427,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function search_songs(string $auth, string $filter, int $limit, int $offset=0) {
+	protected function search_songs(string $auth, string $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByNameRecursive($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
@@ -428,7 +438,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function albums(
 			string $auth, ?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) {
+			int $limit, int $offset=0, bool $exact=false) : array {
 
 		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		return $this->renderAlbums($albums, $auth);
@@ -437,7 +447,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function album(int $filter, string $auth) {
+	protected function album(int $filter, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$album = $this->albumBusinessLayer->find($filter, $userId);
 		return $this->renderAlbums([$album], $auth);
@@ -446,7 +456,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_similar(string $type, int $filter, int $limit, int $offset=0) {
+	protected function get_similar(string $type, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		if ($type == 'artist') {
 			$entities = $this->lastfmService->getSimilarArtists($filter, $userId);
@@ -464,7 +474,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function playlists(
 			string $auth, ?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) {
+			int $limit, int $offset=0, bool $exact=false) : array {
 
 		$userId = $this->ampacheUser->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
@@ -482,7 +492,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist(int $filter, string $auth) {
+	protected function playlist(int $filter, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlist = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
@@ -495,7 +505,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_songs(string $auth, int $filter, int $limit, int $offset=0) {
+	protected function playlist_songs(string $auth, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
 			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Parent, $limit, $offset);
@@ -511,7 +521,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_create(string $name, string $auth) {
+	protected function playlist_create(string $name, string $auth) : array {
 		$playlist = $this->playlistBusinessLayer->create($name, $this->ampacheUser->getUserId());
 		return $this->renderPlaylists([$playlist], $auth);
 	}
@@ -524,7 +534,7 @@ class AmpacheController extends Controller {
 	 * @param ?string $items Track IDs
 	 * @param ?string $tracks 1-based indices of the tracks
 	 */
-	protected function playlist_edit(int $filter, ?string $name, ?string $items, ?string $tracks) {
+	protected function playlist_edit(int $filter, ?string $name, ?string $items, ?string $tracks) : array {
 		$edited = false;
 		$userId = $this->ampacheUser->getUserId();
 		$playlist = $this->playlistBusinessLayer->find($filter, $userId);
@@ -556,7 +566,7 @@ class AmpacheController extends Controller {
 
 		if ($edited) {
 			$this->playlistBusinessLayer->update($playlist);
-			return $this->ampacheResponse(['success' => 'playlist changes saved']);
+			return ['success' => 'playlist changes saved'];
 		} else {
 			throw new AmpacheException('Nothing was changed', 400);
 		}
@@ -565,15 +575,15 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_delete(int $filter) {
+	protected function playlist_delete(int $filter) : array {
 		$this->playlistBusinessLayer->delete($filter, $this->ampacheUser->getUserId());
-		return $this->ampacheResponse(['success' => 'playlist deleted']);
+		return ['success' => 'playlist deleted'];
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_add_song(int $filter, int $song, bool $check=false) {
+	protected function playlist_add_song(int $filter, int $song, bool $check=false) : array {
 		$userId = $this->ampacheUser->getUserId();
 		if (!$this->trackBusinessLayer->exists($song, $userId)) {
 			throw new AmpacheException("Invalid song ID $song", 404);
@@ -589,7 +599,7 @@ class AmpacheController extends Controller {
 		$trackIds[] = $song;
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->playlistBusinessLayer->update($playlist);
-		return $this->ampacheResponse(['success' => 'song added to playlist']);
+		return ['success' => 'song added to playlist'];
 	}
 
 	/**
@@ -600,7 +610,7 @@ class AmpacheController extends Controller {
 	 * @param ?int $track 1-based index of the track
 	 * @param ?int $clear Value 1 erases all the songs from the playlist
 	 */
-	protected function playlist_remove_song(int $filter, ?int $song, ?int $track, ?int $clear) {
+	protected function playlist_remove_song(int $filter, ?int $song, ?int $track, ?int $clear) : array {
 		$playlist = $this->playlistBusinessLayer->find($filter, $this->ampacheUser->getUserId());
 
 		if ($clear === 1) {
@@ -626,7 +636,7 @@ class AmpacheController extends Controller {
 
 		$playlist->setTrackIdsFromArray($trackIds);
 		$this->playlistBusinessLayer->update($playlist);
-		return $this->ampacheResponse(['success' => $message]);
+		return ['success' => $message];
 	}
 
 	/**
@@ -634,7 +644,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function playlist_generate(
 			string $auth, ?string $filter, ?int $album, ?int $artist, ?int $flag,
-			int $limit, int $offset=0, string $mode='random', string $format='song') {
+			int $limit, int $offset=0, string $mode='random', string $format='song') : array {
 
 		$tracks = $this->findEntities($this->trackBusinessLayer, $filter, false); // $limit and $offset are applied later
 
@@ -680,7 +690,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcasts(?string $filter, ?string $include, int $limit, int $offset=0, bool $exact=false) {
+	protected function podcasts(?string $filter, ?string $include, int $limit, int $offset=0, bool $exact=false) : array {
 		$channels = $this->findEntities($this->podcastChannelBusinessLayer, $filter, $exact, $limit, $offset);
 
 		if ($include === 'episodes') {
@@ -696,7 +706,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcast(int $filter, ?string $include) {
+	protected function podcast(int $filter, ?string $include) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$channel = $this->podcastChannelBusinessLayer->find($filter, $userId);
 
@@ -710,7 +720,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcast_create(string $url) {
+	protected function podcast_create(string $url) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$result = $this->podcastService->subscribe($url, $userId);
 
@@ -731,13 +741,13 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcast_delete(int $filter) {
+	protected function podcast_delete(int $filter) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$status = $this->podcastService->unsubscribe($filter, $userId);
 
 		switch ($status) {
 			case PodcastService::STATUS_OK:
-				return $this->ampacheResponse(['success' => 'podcast deleted']);
+				return ['success' => 'podcast deleted'];
 			case PodcastService::STATUS_NOT_FOUND:
 				throw new AmpacheException('Channel to be deleted not found', 404);
 			default:
@@ -748,7 +758,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcast_episodes(int $filter, int $limit, int $offset=0) {
+	protected function podcast_episodes(int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$episodes = $this->podcastEpisodeBusinessLayer->findAllByChannel($filter, $userId, $limit, $offset);
 		return $this->renderPodcastEpisodes($episodes);
@@ -757,7 +767,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function podcast_episode(int $filter) {
+	protected function podcast_episode(int $filter) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$episode = $this->podcastEpisodeBusinessLayer->find($filter, $userId);
 		return $this->renderPodcastEpisodes([$episode]);
@@ -766,14 +776,14 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function update_podcast(int $id) {
+	protected function update_podcast(int $id) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$result = $this->podcastService->updateChannel($id, $userId);
 
 		switch ($result['status']) {
 			case PodcastService::STATUS_OK:
 				$message = $result['updated'] ? 'channel was updated from the source' : 'no changes found';
-				return $this->ampacheResponse(['success' => $message]);
+				return ['success' => $message];
 			case PodcastService::STATUS_NOT_FOUND:
 				throw new AmpacheException('Channel to be updated not found', 404);
 			case PodcastService::STATUS_INVALID_URL:
@@ -788,7 +798,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function tags(?string $filter, int $limit, int $offset=0, bool $exact=false) {
+	protected function tags(?string $filter, int $limit, int $offset=0, bool $exact=false) : array {
 		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);
 	}
@@ -796,7 +806,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function tag(int $filter) {
+	protected function tag(int $filter) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$genre = $this->genreBusinessLayer->find($filter, $userId);
 		return $this->renderTags([$genre]);
@@ -805,7 +815,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function tag_artists(string $auth, int $filter, int $limit, int $offset=0) {
+	protected function tag_artists(string $auth, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$artists = $this->artistBusinessLayer->findAllByGenre($filter, $userId, $limit, $offset);
 		return $this->renderArtists($artists, $auth);
@@ -814,7 +824,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function tag_albums(string $auth, int $filter, int $limit, int $offset=0) {
+	protected function tag_albums(string $auth, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$albums = $this->albumBusinessLayer->findAllByGenre($filter, $userId, $limit, $offset);
 		return $this->renderAlbums($albums, $auth);
@@ -823,7 +833,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function tag_songs(string $auth, int $filter, int $limit, int $offset=0) {
+	protected function tag_songs(string $auth, int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$tracks = $this->trackBusinessLayer->findAllByGenre($filter, $userId, $limit, $offset);
 		return $this->renderSongs($tracks, $auth);
@@ -832,7 +842,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function flag(string $type, int $id, bool $flag) {
+	protected function flag(string $type, int $id, bool $flag) : array {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
@@ -848,7 +858,7 @@ class AmpacheController extends Controller {
 		}
 
 		if ($modifiedCount > 0) {
-			return $this->ampacheResponse(['success' => $message]);
+			return ['success' => $message];
 		} else {
 			throw new AmpacheException("The $type $id was not found", 404);
 		}
@@ -857,16 +867,16 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function record_play(int $id, ?int $date) {
+	protected function record_play(int $id, ?int $date) : array {
 		$timeOfPlay = ($date === null) ? null : new \DateTime('@' . $date);
 		$this->trackBusinessLayer->recordTrackPlayed($id, $this->ampacheUser->getUserId(), $timeOfPlay);
-		return $this->ampacheResponse(['success' => 'play recorded']);
+		return ['success' => 'play recorded'];
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function download(int $id, string $type='song') {
+	protected function download(int $id, string $type='song') : Response {
 		// request param `format` is ignored
 		$userId = $this->ampacheUser->getUserId();
 
@@ -895,7 +905,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function stream(int $id, ?int $offset, string $type='song') {
+	protected function stream(int $id, ?int $offset, string $type='song') : Response {
 		// request params `bitrate`, `format`, and `length` are ignored
 
 		// This is just a dummy implementation. We don't support transcoding or streaming
@@ -915,7 +925,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_art(string $type, int $id) {
+	protected function get_art(string $type, int $id) : Response {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'playlist'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
@@ -933,7 +943,7 @@ class AmpacheController extends Controller {
 	 * Helper functions *
 	 ********************/
 
-	private function getBusinessLayer($type) {
+	private function getBusinessLayer(string $type) : BusinessLayer {
 		switch ($type) {
 			case 'song':			return $this->trackBusinessLayer;
 			case 'album':			return $this->albumBusinessLayer;
@@ -946,7 +956,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function renderEntities($entities, $type, $auth) {
+	private function renderEntities(array $entities, string $type, string $auth) : array {
 		switch ($type) {
 			case 'song':			return $this->renderSongs($entities, $auth);
 			case 'album':			return $this->renderAlbums($entities, $auth);
@@ -959,7 +969,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function renderEntitiesIndex($entities, $type) {
+	private function renderEntitiesIndex($entities, $type) : array {
 		switch ($type) {
 			case 'song':			return $this->renderSongsIndex($entities);
 			case 'album':			return $this->renderAlbumsIndex($entities);
@@ -971,7 +981,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function getAppNameAndVersion() {
+	private function getAppNameAndVersion() : string {
 		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
 		include \OC::$SERVERROOT . '/version.php';
 
@@ -980,7 +990,7 @@ class AmpacheController extends Controller {
 		return "$vendor {$this->appName} $appVersion";
 	}
 
-	private function getCover(int $entityId, BusinessLayer $businessLayer) {
+	private function getCover(int $entityId, BusinessLayer $businessLayer) : Response {
 		$userId = $this->ampacheUser->getUserId();
 		$userFolder = $this->librarySettings->getFolder($userId);
 
@@ -997,7 +1007,7 @@ class AmpacheController extends Controller {
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'entity has no cover');
 	}
 
-	private function checkHandshakeTimestamp(int $timestamp, int $currentTime) {
+	private function checkHandshakeTimestamp(int $timestamp, int $currentTime) : void {
 		if ($timestamp === 0) {
 			throw new AmpacheException('Invalid Login - cannot parse time', 401);
 		}
@@ -1011,7 +1021,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function checkHandshakeAuthentication($user, $timestamp, $auth) {
+	private function checkHandshakeAuthentication(string $user, int $timestamp, string $auth) : void {
 		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
 
 		foreach ($hashes as $hash) {
@@ -1025,7 +1035,7 @@ class AmpacheController extends Controller {
 		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
 	}
 
-	private function startNewSession($user, $expiryDate) {
+	private function startNewSession(string $user, int $expiryDate) : string {
 		$token = Random::secure(16);
 
 		// create new session
@@ -1041,7 +1051,7 @@ class AmpacheController extends Controller {
 	}
 
 	private function findEntities(
-			BusinessLayer $businessLayer, $filter, $exact, $limit=null, $offset=null, $add=null, $update=null) : array {
+			BusinessLayer $businessLayer, ?string $filter, bool $exact, ?int $limit=null, ?int $offset=null, ?string $add=null, ?string $update=null) : array {
 
 		$userId = $this->ampacheUser->getUserId();
 
@@ -1062,14 +1072,14 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private function createAmpacheActionUrl($action, $id, $auth, $type=null) {
+	private function createAmpacheActionUrl(string $action, int $id, string $auth, ?string $type=null) : string {
 		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute($api))
 				. "?action=$action&id=$id&auth=$auth"
 				. (!empty($type) ? "&type=$type" : '');
 	}
 
-	private function createCoverUrl($entity, $auth) {
+	private function createCoverUrl(Entity $entity, string $auth) : string {
 		if ($entity instanceof Album) {
 			$type = 'album';
 		} elseif ($entity instanceof Artist) {
@@ -1087,22 +1097,19 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	/**
-	 * @param int $index
-	 * @param int|null $offset
-	 * @param int|null $limit
-	 * @return boolean
-	 */
-	private static function indexIsWithinOffsetAndLimit($index, $offset, $limit) {
+	private static function indexIsWithinOffsetAndLimit(int $index, ?int $offset, ?int $limit) : bool {
 		$offset = \intval($offset); // missing offset is interpreted as 0-offset
 		return ($limit === null) || ($index >= $offset && $index < $offset + $limit);
 	}
 
-	private function renderArtists($artists, $auth) {
+	/**
+	 * @param Artist[] $artists
+	 */
+	private function renderArtists(array $artists, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 
-		return $this->ampacheResponse([
+		return [
 			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $auth) {
 				return [
 					'id' => (string)$artist->getId(),
@@ -1122,11 +1129,14 @@ class AmpacheController extends Controller {
 					}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
 				];
 			}, $artists)
-		]);
+		];
 	}
 
-	private function renderAlbums($albums, $auth) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Album[] $albums
+	 */
+	private function renderAlbums(array $albums, string $auth) : array {
+		return [
 			'album' => \array_map(function (Album $album) use ($auth) {
 				return [
 					'id' => (string)$album->getId(),
@@ -1150,10 +1160,13 @@ class AmpacheController extends Controller {
 					}, $album->getGenres() ?? [])
 				];
 			}, $albums)
-		]);
+		];
 	}
 
-	private function renderSongs(array $tracks, string $auth) {
+	/**
+	 * @param Track[] $tracks
+	 */
+	private function renderSongs(array $tracks, string $auth) : array {
 		$userId = $this->ampacheUser->getUserId();
 		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
 
@@ -1164,12 +1177,15 @@ class AmpacheController extends Controller {
 			return $this->createCoverUrl($track->getAlbum(), $auth);
 		};
 
-		return $this->ampacheResponse([
+		return [
 			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl])
-		]);
+		];
 	}
 
-	private function renderPlaylists(array $playlists, string $auth) {
+	/**
+	 * @param Playlist[] $playlists
+	 */
+	private function renderPlaylists(array $playlists, string $auth) : array {
 		$createImageUrl = function(Playlist $playlist) use ($auth) : string {
 			if ($playlist->getId() === self::ALL_TRACKS_PLAYLIST_ID) {
 				return '';
@@ -1178,31 +1194,43 @@ class AmpacheController extends Controller {
 			}
 		};
 
-		return $this->ampacheResponse([
+		return [
 			'playlist' => Util::arrayMapMethod($playlists, 'toAmpacheApi', [$createImageUrl])
-		]);
+		];
 	}
 
-	private function renderPodcastChannels(array $channels) {
-		return $this->ampacheResponse([
+	/**
+	 * @param PodcastChannel[] $channels
+	 */
+	private function renderPodcastChannels(array $channels) : array {
+		return [
 			'podcast' => Util::arrayMapMethod($channels, 'toAmpacheApi')
-		]);
+		];
 	}
 
-	private function renderPodcastEpisodes(array $episodes) {
-		return $this->ampacheResponse([
+	/**
+	 * @param PodcastEpisode[] $episodes
+	 */
+	private function renderPodcastEpisodes(array $episodes) : array {
+		return [
 			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi')
-		]);
+		];
 	}
 
-	private function renderTags($genres) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Genre[] $genres
+	 */
+	private function renderTags(array $genres) : array {
+		return [
 			'tag' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
-		]);
+		];
 	}
 
-	private function renderSongsIndex($tracks) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Track[] $tracks
+	 */
+	private function renderSongsIndex(array $tracks) : array {
+		return [
 			'song' => \array_map(function ($track) {
 				return [
 					'id' => (string)$track->getId(),
@@ -1218,11 +1246,14 @@ class AmpacheController extends Controller {
 					]
 				];
 			}, $tracks)
-		]);
+		];
 	}
 
-	private function renderAlbumsIndex($albums) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Album[] $albums
+	 */
+	private function renderAlbumsIndex(array $albums) : array {
+		return [
 			'album' => \array_map(function ($album) {
 				return [
 					'id' => (string)$album->getId(),
@@ -1233,11 +1264,14 @@ class AmpacheController extends Controller {
 					]
 				];
 			}, $albums)
-		]);
+		];
 	}
 
-	private function renderArtistsIndex($artists) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Artist[] $artists
+	 */
+	private function renderArtistsIndex(array $artists) : array {
+		return [
 			'artist' => \array_map(function ($artist) {
 				$userId = $this->ampacheUser->getUserId();
 				$albums = $this->albumBusinessLayer->findAllByArtist($artist->getId(), $userId);
@@ -1253,11 +1287,14 @@ class AmpacheController extends Controller {
 					}, $albums)
 				];
 			}, $artists)
-		]);
+		];
 	}
 
-	private function renderPlaylistsIndex($playlists) {
-		return $this->ampacheResponse([
+	/**
+	 * @param Playlist[] $playlists
+	 */
+	private function renderPlaylistsIndex(array $playlists) : array {
+		return [
 			'playlist' => \array_map(function ($playlist) {
 				return [
 					'id' => (string)$playlist->getId(),
@@ -1265,29 +1302,37 @@ class AmpacheController extends Controller {
 					'playlisttrack' => $playlist->getTrackIdsAsArray()
 				];
 			}, $playlists)
-		]);
+		];
 	}
 
-	private function renderPodcastChannelsIndex(array $channels) {
+	/**
+	 * @param PodcastChannel[] $channels
+	 */
+	private function renderPodcastChannelsIndex(array $channels) : array {
 		// The v4 API spec does not give any examples of this, and the v5 example is almost identical to the v4 "normal" result
 		return $this->renderPodcastChannels($channels);
 	}
 
-	private function renderPodcastEpisodesIndex(array $episodes) {
+	/**
+	 * @param PodcastEpisode[] $episodes
+	 */
+	private function renderPodcastEpisodesIndex(array $episodes) : array {
 		// The v4 API spec does not give any examples of this, and the v5 example is almost identical to the v4 "normal" result
 		return $this->renderPodcastEpisodes($episodes);
 	}
 
-	private function renderEntityIds($entities) {
-		return $this->ampacheResponse(['id' => Util::extractIds($entities)]);
+	/**
+	 * @param Entity[] $entities
+	 */
+	private function renderEntityIds(array $entities) : array {
+		return ['id' => Util::extractIds($entities)];
 	}
 
 	/**
 	 * Array is considered to be "indexed" if its first element has numerical key.
 	 * Empty array is considered to be "indexed".
-	 * @param array $array
 	 */
-	private static function arrayIsIndexed(array $array) {
+	private static function arrayIsIndexed(array $array) : bool {
 		\reset($array);
 		return empty($array) || \is_int(\key($array));
 	}
@@ -1295,10 +1340,8 @@ class AmpacheController extends Controller {
 	/**
 	 * The JSON API has some asymmetries with the XML API. This function makes the needed
 	 * translations for the result content before it is converted into JSON.
-	 * @param array $content
-	 * @return array
 	 */
-	private static function prepareResultForJsonApi($content) {
+	private static function prepareResultForJsonApi(array $content) : array {
 		// In all responses returning an array of library entities, the root node is anonymous.
 		// Unwrap the outermost array if it is an associative array with a single array-type value.
 		if (\count($content) === 1 && !self::arrayIsIndexed($content)
@@ -1320,10 +1363,8 @@ class AmpacheController extends Controller {
 	/**
 	 * The XML API has some asymmetries with the JSON API. This function makes the needed
 	 * translations for the result content before it is converted into XML.
-	 * @param array $content
-	 * @return array
 	 */
-	private static function prepareResultForXmlApi($content) {
+	private static function prepareResultForXmlApi(array $content) : array {
 		\reset($content);
 		$firstKey = \key($content);
 
@@ -1353,21 +1394,21 @@ class AmpacheController_AllTracksPlaylist extends Playlist {
 	private $trackBusinessLayer;
 	private $l10n;
 
-	public function __construct($userId, $trackBusinessLayer, $l10n) {
+	public function __construct(string $userId, TrackBusinessLayer $trackBusinessLayer, IL10N $l10n) {
 		$this->userId = $userId;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->l10n = $l10n;
 	}
 
-	public function getId() {
+	public function getId() : int {
 		return AmpacheController::ALL_TRACKS_PLAYLIST_ID;
 	}
 
-	public function getName() {
+	public function getName() : string {
 		return $this->l10n->t('All tracks');
 	}
 
-	public function getTrackCount() {
+	public function getTrackCount() : int {
 		return $this->trackBusinessLayer->count($this->userId);
 	}
 }

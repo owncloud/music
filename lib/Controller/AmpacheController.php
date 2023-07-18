@@ -58,6 +58,7 @@ use OCA\Music\Middleware\AmpacheException;
 use OCA\Music\Utility\AmpacheUser;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\LastfmService;
 use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
@@ -79,6 +80,7 @@ class AmpacheController extends Controller {
 	private $urlGenerator;
 	private $l10n;
 	private $coverHelper;
+	private $lastfmService;
 	private $librarySettings;
 	private $random;
 	private $logger;
@@ -106,6 +108,7 @@ class AmpacheController extends Controller {
 								PodcastService $podcastService,
 								AmpacheUser $ampacheUser,
 								CoverHelper $coverHelper,
+								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
 								Random $random,
 								Logger $logger) {
@@ -129,6 +132,7 @@ class AmpacheController extends Controller {
 		$this->ampacheUser = $ampacheUser;
 
 		$this->coverHelper = $coverHelper;
+		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
 		$this->random = $random;
 		$this->logger = $logger;
@@ -437,6 +441,22 @@ class AmpacheController extends Controller {
 		$userId = $this->ampacheUser->getUserId();
 		$album = $this->albumBusinessLayer->find($filter, $userId);
 		return $this->renderAlbums([$album], $auth);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function get_similar(string $type, int $filter, int $limit, int $offset=0) {
+		$userId = $this->ampacheUser->getUserId();
+		if ($type == 'artist') {
+			$entities = $this->lastfmService->getSimilarArtists($filter, $userId);
+		} elseif ($type == 'song') {
+			$entities = $this->lastfmService->getSimilarTracks($filter, $userId);
+		} else {
+			throw new AmpacheException("Type '$type' is not supported", 400);
+		}
+		$entities = \array_slice($entities, $offset, $limit);
+		return $this->renderEntitiesIndex($entities, $type);
 	}
 
 	/**

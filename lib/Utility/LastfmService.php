@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -118,7 +118,7 @@ class LastfmService {
 	 * Get artists from the user's library similar to the given artist
 	 * @param integer $artistId
 	 * @param string $userId
-	 * @parma bool $includeNotPresent When true, the result may include also artists which
+	 * @param bool $includeNotPresent When true, the result may include also artists which
 	 *                                are not found from the user's music library. Such
 	 *                                artists have many fields including `id` set as null.
 	 * @return Artist[]
@@ -150,6 +150,32 @@ class LastfmService {
 					$unfoundArtist->setLastfmUrl($lastfmArtist['url'] ?? null);
 					$result[] = $unfoundArtist;
 				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get artists from the user's library similar to the given artist
+	 * @return Track[]
+	 * @throws BusinessLayerException if track with the given ID is not found
+	 */
+	public function getSimilarTracks(int $trackId, string $userId) : array {
+		$track = $this->trackBusinessLayer->find($trackId, $userId);
+
+		$similarOnLastfm = $this->getInfoFromLastFm([
+			'method' => 'track.getSimilar',
+			'track' => $track->getTitle(),
+			'artist' => $track->getArtistName()
+		]);
+
+		$result = [];
+		$similarArr = $similarOnLastfm['similartracks']['track'] ?? null;
+		if ($similarArr !== null) {
+			foreach ($similarArr as $lastfmTrack) {
+				$matchingLibTracks = $this->trackBusinessLayer->findAllByNameAndArtistName($lastfmTrack['name'], $lastfmTrack['artist']['name'], $userId);
+				$result = \array_merge($result, $matchingLibTracks);
 			}
 		}
 

@@ -114,6 +114,7 @@ class Music extends App {
 				$c->query('PodcastService'),
 				$c->query('AmpacheUser'),
 				$c->query('CoverHelper'),
+				$c->query('LastfmService'),
 				$c->query('LibrarySettings'),
 				$c->query('Random'),
 				$c->query('Logger')

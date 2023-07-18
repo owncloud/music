@@ -113,8 +113,8 @@ class Music extends App {
 				$c->query('Library'),
 				$c->query('PodcastService'),
 				$c->query('AmpacheUser'),
-				$c->query('RootFolder'),
 				$c->query('CoverHelper'),
+				$c->query('LibrarySettings'),
 				$c->query('Random'),
 				$c->query('Logger')
 			);

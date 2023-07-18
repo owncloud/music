@@ -18,6 +18,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -57,6 +58,7 @@ use OCA\Music\Middleware\AmpacheException;
 use OCA\Music\Utility\AmpacheUser;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
+use OCA\Music\Utility\LibrarySettings;
 use OCA\Music\Utility\PodcastService;
 use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
@@ -75,9 +77,9 @@ class AmpacheController extends Controller {
 	private $podcastService;
 	private $ampacheUser;
 	private $urlGenerator;
-	private $rootFolder;
 	private $l10n;
 	private $coverHelper;
+	private $librarySettings;
 	private $random;
 	private $logger;
 	private $jsonMode;
@@ -89,7 +91,7 @@ class AmpacheController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
-								$l10n,
+								IL10N $l10n,
 								IURLGenerator $urlGenerator,
 								AmpacheUserMapper $ampacheUserMapper,
 								AmpacheSessionMapper $ampacheSessionMapper,
@@ -103,8 +105,8 @@ class AmpacheController extends Controller {
 								Library $library,
 								PodcastService $podcastService,
 								AmpacheUser $ampacheUser,
-								$rootFolder,
 								CoverHelper $coverHelper,
+								LibrarySettings $librarySettings,
 								Random $random,
 								Logger $logger) {
 		parent::__construct($appname, $request);
@@ -126,10 +128,8 @@ class AmpacheController extends Controller {
 		// used to share user info with middleware
 		$this->ampacheUser = $ampacheUser;
 
-		// used to deliver actual media file
-		$this->rootFolder = $rootFolder;
-
 		$this->coverHelper = $coverHelper;
+		$this->librarySettings = $librarySettings;
 		$this->random = $random;
 		$this->logger = $logger;
 	}
@@ -235,7 +235,11 @@ class AmpacheController extends Controller {
 			'session_expire' => \date('c', $expiryDate),
 			'tags' => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
-			'catalogs' => 0
+			'catalogs' => 0,
+			'shares' => 0,
+			'licenses' => 0,
+			'live_streams' => 0,
+			'labels' => 0
 		]);
 	}
 
@@ -748,7 +752,7 @@ class AmpacheController extends Controller {
 
 		switch ($result['status']) {
 			case PodcastService::STATUS_OK:
-				$message = $result['updated'] ? 'channel was updated from the souce' : 'no changes found';
+				$message = $result['updated'] ? 'channel was updated from the source' : 'no changes found';
 				return $this->ampacheResponse(['success' => $message]);
 			case PodcastService::STATUS_NOT_FOUND:
 				throw new AmpacheException('Channel to be updated not found', 404);
@@ -853,7 +857,7 @@ class AmpacheController extends Controller {
 				return new ErrorResponse(Http::STATUS_NOT_FOUND, $e->getMessage());
 			}
 
-			$file = $this->rootFolder->getUserFolder($userId)->getById($track->getFileId())[0] ?? null;
+			$file = $this->librarySettings->getFolder($userId)->getById($track->getFileId())[0] ?? null;
 
 			if ($file instanceof \OCP\Files\File) {
 				return new FileStreamResponse($file);
@@ -958,7 +962,7 @@ class AmpacheController extends Controller {
 
 	private function getCover(int $entityId, BusinessLayer $businessLayer) {
 		$userId = $this->ampacheUser->getUserId();
-		$userFolder = $this->rootFolder->getUserFolder($userId);
+		$userFolder = $this->librarySettings->getFolder($userId);
 
 		try {
 			$entity = $businessLayer->find($entityId, $userId);

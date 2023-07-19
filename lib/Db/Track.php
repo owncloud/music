@@ -202,7 +202,8 @@ class Track extends Entity {
 			'url' => $createPlayUrl($this),
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),
-			'track' => $this->getAdjustedTrackNumber(),
+			'track' => $this->getAdjustedTrackNumber(), // TODO: maybe there should be a user setting to select plain or adjusted number
+			'disk' => $this->getDisk(),
 			'filename' => $this->getFilename(),
 			'bitrate' => $this->getBitrate(),
 			'mime' => $this->getMimetype(),
@@ -239,7 +240,7 @@ class Track extends Entity {
 		return [
 			'id' => 'track-' . $this->getId(),
 			'parent' => 'album-' . $albumId,
-			//'discNumber' => $this->getDisk(), // not supported on any of the tested clients => adjust track number instead
+			'discNumber' => $this->getDisk(),
 			'title' => $this->getTitle(),
 			'artist' => $this->getArtistNameString($l10n),
 			'isDir' => false,

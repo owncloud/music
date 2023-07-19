@@ -186,6 +186,16 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationByArtist(int $artistId) : int {
+		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
+		$result = $this->execute($sql, [$artistId]);
+		$row = $result->fetch();
+		return (int)$row['duration'];
+	}
+
+	/**
 	 * Get durations of the given tracks.
 	 * @param integer[] $trackIds
 	 * @return array {int => int} where keys are track IDs and values are corresponding durations

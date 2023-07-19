@@ -1119,11 +1119,16 @@ class AmpacheController extends Controller {
 
 		return [
 			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $auth) {
+				$albumCount = $this->albumBusinessLayer->countByArtist($artist->getId());
+				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
 				return [
 					'id' => (string)$artist->getId(),
 					'name' => $artist->getNameString($this->l10n),
-					'albums' => $this->albumBusinessLayer->countByArtist($artist->getId()),
-					'songs' => $this->trackBusinessLayer->countByArtist($artist->getId()),
+					'albums' => $albumCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'albumcount' => $albumCount,
+					'songs' => $songCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'songcount' => $songCount,
+					'time' => $this->trackBusinessLayer->totalDurationByArtist($artist->getId()),
 					'art' => $this->createCoverUrl($artist, $auth),
 					'rating' => 0,
 					'preciserating' => 0,
@@ -1146,6 +1151,7 @@ class AmpacheController extends Controller {
 	private function renderAlbums(array $albums, string $auth) : array {
 		return [
 			'album' => \array_map(function (Album $album) use ($auth) {
+				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
 				return [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
@@ -1153,7 +1159,9 @@ class AmpacheController extends Controller {
 						'id' => (string)$album->getAlbumArtistId(),
 						'value' => $album->getAlbumArtistNameString($this->l10n)
 					],
-					'tracks' => $this->trackBusinessLayer->countByAlbum($album->getId()),
+					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'songcount' => $songCount,
+					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
 					'rating' => 0,
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album, $auth),

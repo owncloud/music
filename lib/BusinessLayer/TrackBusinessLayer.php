@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -293,6 +293,13 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function totalDurationOfAlbum(int $albumId) : int {
 		return $this->mapper->totalDurationOfAlbum($albumId);
+	}
+
+	/**
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationByArtist(int $artistId) : int {
+		return $this->mapper->totalDurationByArtist($artistId);
 	}
 
 	/**

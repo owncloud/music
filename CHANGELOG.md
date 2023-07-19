@@ -10,6 +10,7 @@
   * Type `album_artist` to the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
   * Field `disk` on `song` type results
+  * All the fields of `handshake` response on the response of `ping` within a valid session
 - Files playlist tab: Tooltip showing the file path or stream URL
 - Subsonic: Empty implementation for the method `getNowPlaying`
   [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal

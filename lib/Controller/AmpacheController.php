@@ -231,30 +231,7 @@ class AmpacheController extends Controller {
 		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
 		$token = $this->startNewSession($user, $expiryDate);
 
-		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
-		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
-
-		return [
-			'auth' => $token,
-			'api' => self::API_VERSION,
-			'update' => $updateTime->format('c'),
-			'add' => $addTime->format('c'),
-			'clean' => \date('c', $currentTime), // TODO: actual time of the latest item removal
-			'songs' => $this->trackBusinessLayer->count($user),
-			'artists' => $this->artistBusinessLayer->count($user),
-			'albums' => $this->albumBusinessLayer->count($user),
-			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
-			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
-			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
-			'session_expire' => \date('c', $expiryDate),
-			'tags' => $this->genreBusinessLayer->count($user),
-			'videos' => 0,
-			'catalogs' => 0,
-			'shares' => 0,
-			'licenses' => 0,
-			'live_streams' => 0,
-			'labels' => 0
-		];
+		return $this->getHandshakeResponse($token);
 	}
 
 	/**
@@ -279,9 +256,8 @@ class AmpacheController extends Controller {
 		];
 
 		if (!empty($auth)) {
-			// getting the session should not throw as the middleware has already checked that the token is valid
-			$session = $this->ampacheSessionMapper->findByToken($auth);
-			$response['session_expire'] = \date('c', $session->getExpiry());
+			// in case ping is called within a valid session, the response will contain also the "handshake fields"
+			$response += $this->getHandshakeResponse($auth);
 		}
 
 		return $response;
@@ -1056,6 +1032,35 @@ class AmpacheController extends Controller {
 		$this->ampacheSessionMapper->insert($session);
 
 		return $token;
+	}
+
+	private function getHandshakeResponse(string $token) : array {
+		$session = $this->ampacheSessionMapper->findByToken($token);
+		$user = $session->getUserId();
+		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
+		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
+
+		return [
+			'auth' => $token,
+			'api' => self::API_VERSION,
+			'update' => $updateTime->format('c'),
+			'add' => $addTime->format('c'),
+			'clean' => \date('c', \time()), // TODO: actual time of the latest item removal
+			'songs' => $this->trackBusinessLayer->count($user),
+			'artists' => $this->artistBusinessLayer->count($user),
+			'albums' => $this->albumBusinessLayer->count($user),
+			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
+			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
+			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
+			'session_expire' => \date('c', $session->getExpiry()),
+			'tags' => $this->genreBusinessLayer->count($user),
+			'videos' => 0,
+			'catalogs' => 0,
+			'shares' => 0,
+			'licenses' => 0,
+			'live_streams' => 0,
+			'labels' => 0
+		];
 	}
 
 	private function findEntities(

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -31,14 +31,14 @@ class ArtistMapper extends BaseMapper {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[]
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None) : array {
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
 		$sql = $this->selectUserEntities('EXISTS '.
 				'(SELECT 1 FROM `*PREFIX*music_albums` `album` '.
 				' WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)',
 				($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`name`)' : null);
 
 		$params = [$userId];
-		return $this->findEntities($sql, $params);
+		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**

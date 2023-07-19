@@ -291,8 +291,16 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
-		$businessLayer = $this->getBusinessLayer($type);
-		$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+		if ($type === 'album_artist') {
+			if (!empty($filter) || !empty($add) || !empty($update)) {
+				throw new AmpacheException("Arguments 'filter', 'add', and 'update' are not supported for the type 'album_artist'", 400);
+			}
+			$entities = $this->artistBusinessLayer->findAllHavingAlbums($this->ampacheUser->getUserId(), SortBy::Name, $limit, $offset);
+			$type = 'artist';
+		} else {
+			$businessLayer = $this->getBusinessLayer($type);
+			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+		}
 		return $this->renderEntitiesIndex($entities, $type);
 	}
 

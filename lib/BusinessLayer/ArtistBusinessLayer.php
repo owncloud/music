@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -53,8 +53,8 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[] artists
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None) : array {
-		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllHavingAlbums($userId, $sortBy, $limit, $offset);
 	}
 
 	/**

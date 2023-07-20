@@ -140,10 +140,6 @@ class AmpacheMiddleware extends Middleware {
 	}
 
 	private function handleNonHandshakeAction(AmpacheController $controller, ?string $action) : void {
-		if ($action === null) {
-			throw new AmpacheException("Required argument 'action' missing", 400);
-		}
-
 		$token = $this->request->getParam('auth') ?: $this->request->getParam('ssid');
 
 		// 'ping' is allowed without a session (but if session token is passed, then it has to be valid)
@@ -154,6 +150,10 @@ class AmpacheMiddleware extends Middleware {
 
 		if ($action === 'goodbye') {
 			$this->ampacheSessionMapper->delete($session);
+		}
+
+		if ($action === null) {
+			throw new AmpacheException("Required argument 'action' missing", 400);
 		}
 	}
 
@@ -188,22 +188,12 @@ class AmpacheMiddleware extends Middleware {
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
-				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());
+				return $controller->ampacheErrorResponse($exception->getCode(), $exception->getMessage());
 			} elseif ($exception instanceof BusinessLayerException) {
-				return $this->errorResponse($controller, 404, 'Entity not found');
+				return $controller->ampacheErrorResponse(404, 'Entity not found');
 			}
 		}
 		throw $exception;
 	}
 
-	private function errorResponse(AmpacheController $controller, int $code, string $message) {
-		$this->logger->log($message, 'debug');
-
-		return $controller->ampacheResponse([
-			'error' => [
-				'code' => $code,
-				'value' => $message
-			]
-		]);
-	}
 }

@@ -142,8 +142,32 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse($this->prepareResultForJsonApi($content));
 		} else {
-			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
+			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode']);
 		}
+	}
+
+	public function ampacheErrorResponse(int $code, string $message) : Response {
+		$this->logger->log($message, 'debug');
+
+		if ($this->apiMajorVersion() > 4) {
+			$code = $this->mapApiV4ErrorToV5($code);
+			$content = [
+				'error' => [
+					'errorCode' => (string)$code,
+					'errorAction' => $this->request->getParam('action'),
+					'errorType' => 'system',
+					'errorMessage' => $message
+				]
+			];
+		} else {
+			$content = [
+				'error' => [
+					'code' => (string)$code,
+					'value' => $message
+				]
+			];
+		}
+		return $this->ampacheResponse($content);
 	}
 
 	/**
@@ -1402,17 +1426,33 @@ class AmpacheController extends Controller {
 	}
 
 	private function apiMajorVersion() : int {
-		$ver = 4; // default
-		if ($this->session !== null) {
-			$verString = $this->session->getApiVersion();
-			if (\is_string($verString) && \strlen($verString)) {
-				$ver = (int)$verString[0];
-			}
+		// During the handshake, we don't yet have a session but the requeted version may be in the request args
+		$verString = ($this->session !== null) 
+			? $this->session->getApiVersion()
+			: $this->request->getParam('version');
+		
+		if (\is_string($verString) && \strlen($verString)) {
+			$ver = (int)$verString[0];
+		} else {
+			$ver = 4; // default
 		}
 
 		// For now, we have two supported major versions. Major version 3 can be sufficiently supported
 		// with our "version 4" implementation.
 		return Util::limit($ver, 4, 5);
+	}
+
+	private function mapApiV4ErrorToV5(int $code) : int {
+		switch ($code) {
+			case 400:	return 4710;	// bad request
+			case 401:	return 4701;	// invalid handshake
+			case 403:	return 4703;	// access denied
+			case 404:	return 4704;	// not found
+			case 405:	return 4705;	// missing
+			case 412:	return 4742;	// failed access check
+			case 501:	return 4700;	// access control not enabled
+			default:	return 5000;	// unexcpected (not part of the API spec)
+		}
 	}
 }
 

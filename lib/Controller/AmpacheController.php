@@ -89,7 +89,7 @@ class AmpacheController extends Controller {
 
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
 	const API4_VERSION = '440000';
-	const API5_VERSION = '5.0.0';
+	const API5_VERSION = '500000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,

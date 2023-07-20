@@ -221,7 +221,8 @@ class AmpacheController extends Controller {
 		$user = $this->session->getUserId();
 		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
 		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
-
+		$genresKey = $this->genreKey() . 's';
+		
 		return [
 			'auth' => $this->session->getToken(),
 			'api' => ($this->apiMajorVersion() == 5) ? self::API5_VERSION : self::API4_VERSION,
@@ -235,7 +236,7 @@ class AmpacheController extends Controller {
 			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
 			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
 			'session_expire' => \date('c', $this->session->getExpiry()),
-			'tags' => $this->genreBusinessLayer->count($user),
+			$genresKey => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
 			'catalogs' => 0,
 			'shares' => 0,
@@ -835,6 +836,44 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function genres(?string $filter, int $limit, int $offset=0, bool $exact=false) : array {
+		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
+		return $this->renderGenres($genres);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function genre(int $filter) : array {
+		$userId = $this->session->getUserId();
+		$genre = $this->genreBusinessLayer->find($filter, $userId);
+		return $this->renderGenres([$genre]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function genre_artists(int $filter, int $limit, int $offset=0) : array {
+		return $this->tag_artists($filter, $limit, $offset);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function genre_albums(int $filter, int $limit, int $offset=0) : array {
+		return $this->tag_albums($filter, $limit, $offset);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function genre_songs(int $filter, int $limit, int $offset=0) : array {
+		return $this->tag_songs($filter, $limit, $offset);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function flag(string $type, int $id, bool $flag) : array {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
@@ -945,6 +984,7 @@ class AmpacheController extends Controller {
 			case 'podcast':			return $this->podcastChannelBusinessLayer;
 			case 'podcast_episode':	return $this->podcastEpisodeBusinessLayer;
 			case 'tag':				return $this->genreBusinessLayer;
+			case 'genre':			return $this->genreBusinessLayer;
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -958,6 +998,7 @@ class AmpacheController extends Controller {
 			case 'podcast':			return $this->renderPodcastChannels($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodes($entities);
 			case 'tag':				return $this->renderTags($entities);
+			case 'genre':			return $this->renderTags($entities);
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -1059,9 +1100,10 @@ class AmpacheController extends Controller {
 	private function renderArtists(array $artists) : array {
 		$userId = $this->session->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
+		$genreKey = $this->genreKey();
 
 		return [
-			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap) {
+			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $genreKey) {
 				$albumCount = $this->albumBusinessLayer->countByArtist($artist->getId());
 				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
 				return [
@@ -1076,7 +1118,7 @@ class AmpacheController extends Controller {
 					'rating' => 0,
 					'preciserating' => 0,
 					'flag' => empty($artist->getStarred()) ? 0 : 1,
-					'tag' => \array_map(function ($genreId) use ($genreMap) {
+					$genreKey => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
 							'value' => $genreMap[$genreId]->getNameString($this->l10n),
@@ -1092,8 +1134,9 @@ class AmpacheController extends Controller {
 	 * @param Album[] $albums
 	 */
 	private function renderAlbums(array $albums) : array {
+		$genreKey = $this->genreKey();
 		return [
-			'album' => \array_map(function (Album $album) {
+			'album' => \array_map(function (Album $album) use ($genreKey) {
 				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
 				return [
 					'id' => (string)$album->getId(),
@@ -1110,7 +1153,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($album),
 					'preciserating' => 0,
 					'flag' => empty($album->getStarred()) ? 0 : 1,
-					'tag' => \array_map(function ($genre) {
+					$genreKey => \array_map(function ($genre) {
 						return [
 							'id' => (string)$genre->getId(),
 							'value' => $genre->getNameString($this->l10n),
@@ -1135,9 +1178,10 @@ class AmpacheController extends Controller {
 		$createImageUrl = function(Track $track) : string {
 			return $this->createCoverUrl($track->getAlbum());
 		};
+		$genreKey = $this->genreKey();
 
 		return [
-			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl])
+			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl, $genreKey])
 		];
 	}
 
@@ -1182,6 +1226,15 @@ class AmpacheController extends Controller {
 	private function renderTags(array $genres) : array {
 		return [
 			'tag' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
+		];
+	}
+
+	/**
+	 * @param Genre[] $genres
+	 */
+	private function renderGenres(array $genres) : array {
+		return [
+			'genre' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
 		];
 	}
 
@@ -1330,7 +1383,7 @@ class AmpacheController extends Controller {
 
 		// all 'entity list' kind of responses shall have the (deprecated) total_count element
 		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist' || $firstKey == 'playlist'
-				|| $firstKey == 'tag' || $firstKey == 'podcast' || $firstKey == 'podcast_episode') {
+				|| $firstKey == 'tag' || $firstKey == 'genre' || $firstKey == 'podcast' || $firstKey == 'podcast_episode') {
 			$content = ['total_count' => \count($content[$firstKey])] + $content;
 		}
 
@@ -1342,6 +1395,10 @@ class AmpacheController extends Controller {
 		}
 
 		return ['root' => $content];
+	}
+
+	private function genreKey() : string {
+		return ($this->apiMajorVersion() > 4) ? 'genre' : 'tag';
 	}
 
 	private function apiMajorVersion() : int {

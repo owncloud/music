@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -180,7 +180,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl) : array {
+	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl, string $genreKey) : array {
 		$album = $this->getAlbum();
 
 		$result = [
@@ -217,7 +217,7 @@ class Track extends Entity {
 
 		$genreId = $this->getGenreId();
 		if ($genreId !== null) {
-			$result['tag'] = [[
+			$result[$genreKey] = [[
 				'id' => (string)$genreId,
 				'value' => $this->getGenreNameString($l10n),
 				'count' => 1

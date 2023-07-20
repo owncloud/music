@@ -40,9 +40,7 @@ use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use OCA\Music\Db\Album;
-use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Db\AmpacheSession;
-use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\Artist;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\Genre;
@@ -69,8 +67,8 @@ use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
-	private $ampacheUserMapper;
-	private $ampacheSessionMapper;
+	private $l10n;
+	private $urlGenerator;
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
 	private $genreBusinessLayer;
@@ -80,17 +78,15 @@ class AmpacheController extends Controller {
 	private $trackBusinessLayer;
 	private $library;
 	private $podcastService;
-	private $urlGenerator;
-	private $l10n;
 	private $coverHelper;
 	private $lastfmService;
 	private $librarySettings;
 	private $random;
 	private $logger;
+
 	private $jsonMode;
 	private $session;
 
-	const SESSION_EXPIRY_TIME = 6000;
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
 	const API_VERSION = 440000;
 	const API_MIN_COMPATIBLE_VERSION = 350001;
@@ -99,8 +95,6 @@ class AmpacheController extends Controller {
 								IRequest $request,
 								IL10N $l10n,
 								IURLGenerator $urlGenerator,
-								AmpacheUserMapper $ampacheUserMapper,
-								AmpacheSessionMapper $ampacheSessionMapper,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
@@ -117,8 +111,8 @@ class AmpacheController extends Controller {
 								Logger $logger) {
 		parent::__construct($appname, $request);
 
-		$this->ampacheUserMapper = $ampacheUserMapper;
-		$this->ampacheSessionMapper = $ampacheSessionMapper;
+		$this->l10n = $l10n;
+		$this->urlGenerator = $urlGenerator;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
@@ -128,8 +122,6 @@ class AmpacheController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
 		$this->podcastService = $podcastService;
-		$this->urlGenerator = $urlGenerator;
-		$this->l10n = $l10n;
 		$this->coverHelper = $coverHelper;
 		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
@@ -219,25 +211,45 @@ class AmpacheController extends Controller {
 	 ***********************/
 
 	/**
+	 * Get the handshake result. The actual user authentication and session creation logic has happened prior to calling
+	 * this in the class AmpacheMiddleware.
+	 * 
 	 * @AmpacheAPI
 	 */
-	 protected function handshake(string $user, int $timestamp, string $auth, ?string $version) : array {
-		$currentTime = \time();
-		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
+	 protected function handshake() : array {
+		$user = $this->session->getUserId();
+		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
+		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 
-		$this->checkHandshakeTimestamp($timestamp, $currentTime);
-		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
-		$this->startNewSession($user, $expiryDate, $version);
-
-		return $this->getHandshakeResponse();
+		return [
+			'auth' => $this->session->getToken(),
+			'api' => self::API_VERSION,
+			'update' => $updateTime->format('c'),
+			'add' => $addTime->format('c'),
+			'clean' => \date('c', \time()), // TODO: actual time of the latest item removal
+			'songs' => $this->trackBusinessLayer->count($user),
+			'artists' => $this->artistBusinessLayer->count($user),
+			'albums' => $this->albumBusinessLayer->count($user),
+			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
+			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
+			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
+			'session_expire' => \date('c', $this->session->getExpiry()),
+			'tags' => $this->genreBusinessLayer->count($user),
+			'videos' => 0,
+			'catalogs' => 0,
+			'shares' => 0,
+			'licenses' => 0,
+			'live_streams' => 0,
+			'labels' => 0
+		];
 	}
 
 	/**
+	 * Get the result for the 'goodbye' command. The actual logout is handled by AmpacheMiddleware.
+	 * 
 	 * @AmpacheAPI
 	 */
 	protected function goodbye() : array {
-		$this->ampacheSessionMapper->delete($this->session);
-
 		return ['success' => "goodbye: {$this->session->getToken()}"];
 	}
 
@@ -253,7 +265,7 @@ class AmpacheController extends Controller {
 
 		if ($this->session) {
 			// in case ping is called within a valid session, the response will contain also the "handshake fields"
-			$response += $this->getHandshakeResponse();
+			$response += $this->handshake();
 		}
 
 		return $response;
@@ -985,77 +997,6 @@ class AmpacheController extends Controller {
 		}
 
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'entity has no cover');
-	}
-
-	private function checkHandshakeTimestamp(int $timestamp, int $currentTime) : void {
-		if ($timestamp === 0) {
-			throw new AmpacheException('Invalid Login - cannot parse time', 401);
-		}
-		if ($timestamp < ($currentTime - self::SESSION_EXPIRY_TIME)) {
-			throw new AmpacheException('Invalid Login - session is outdated', 401);
-		}
-		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
-		// own system clock to generate the timestamp and that may differ from the server's time.
-		if ($timestamp > $currentTime + 600) {
-			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
-		}
-	}
-
-	private function checkHandshakeAuthentication(string $user, int $timestamp, string $auth) : void {
-		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
-
-		foreach ($hashes as $hash) {
-			$expectedHash = \hash('sha256', $timestamp . $hash);
-
-			if ($expectedHash === $auth) {
-				return;
-			}
-		}
-
-		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
-	}
-
-	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion) : void {
-		// create new session
-		$session = new AmpacheSession();
-		$session->setUserId($user);
-		$session->setToken(Random::secure(16));
-		$session->setExpiry($expiryDate);
-		$session->setApiVersion(Util::truncate($apiVersion, 16));
-
-		// save session to the database
-		$this->ampacheSessionMapper->insert($session);
-
-		// we now have a valid session for the remainder of this API call
-		$this->setSession($session);
-	}
-
-	private function getHandshakeResponse() : array {
-		$user = $this->session->getUserId();
-		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
-		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
-
-		return [
-			'auth' => $this->session->getToken(),
-			'api' => self::API_VERSION,
-			'update' => $updateTime->format('c'),
-			'add' => $addTime->format('c'),
-			'clean' => \date('c', \time()), // TODO: actual time of the latest item removal
-			'songs' => $this->trackBusinessLayer->count($user),
-			'artists' => $this->artistBusinessLayer->count($user),
-			'albums' => $this->albumBusinessLayer->count($user),
-			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
-			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
-			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
-			'session_expire' => \date('c', $this->session->getExpiry()),
-			'tags' => $this->genreBusinessLayer->count($user),
-			'videos' => 0,
-			'catalogs' => 0,
-			'shares' => 0,
-			'licenses' => 0,
-			'live_streams' => 0,
-			'labels' => 0
-		];
 	}
 
 	private function findEntities(

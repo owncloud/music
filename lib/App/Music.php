@@ -100,8 +100,6 @@ class Music extends App {
 				$c->query('Request'),
 				$c->query('L10N'),
 				$c->query('URLGenerator'),
-				$c->query('AmpacheUserMapper'),
-				$c->query('AmpacheSessionMapper'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
@@ -611,6 +609,7 @@ class Music extends App {
 			return new AmpacheMiddleware(
 				$c->query('Request'),
 				$c->query('AmpacheSessionMapper'),
+				$c->query('AmpacheUserMapper'),
 				$c->query('Logger')
 			);
 		});

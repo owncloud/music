@@ -33,6 +33,7 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 		$schema = $schemaClosure();
 		$this->fixInconsistentIdTypes($schema);
 		$this->allowNegativeYear($schema);
+		$this->ampacheApiVersion($schema);
 		return $schema;
 	}
 
@@ -64,4 +65,13 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 		$schema->getTable('music_tracks')->changeColumn('year', ['unsigned' => false]);
 	}
 
+	/**
+	 * Add the new field `api_version` to the `music_ampache_sessions` table
+	 */
+	private function ampacheApiVersion(ISchemaWrapper $schema) {
+		$table = $schema->getTable('music_ampache_sessions');
+		if (!$table->hasColumn('api_version')) {
+			$table->addColumn('api_version', 'string', ['notnull' => false, 'length' => 16]);
+		}
+	}
 }

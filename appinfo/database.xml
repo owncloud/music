@@ -703,8 +703,8 @@
 				<type>text</type>
 				<notnull>false</notnull>
 				<length>256</length>
-			</field
->			<field>
+			</field>
+			<field>
 				<name>description</name>
 				<type>clob</type>
 				<notnull>false</notnull>
@@ -769,6 +769,12 @@
 				<type>integer</type>
 				<notnull>true</notnull>
 				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>api_version</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>16</length>
 			</field>
 
 			<index>

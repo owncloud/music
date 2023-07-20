@@ -21,11 +21,14 @@ use OCP\AppFramework\Db\Entity;
  * @method setToken(string $token)
  * @method int getExpiry()
  * @method setExpiry(int $expiry)
+ * @method ?string getApiVersion()
+ * @method setApiVersion(?string $version)
  */
 class AmpacheSession extends Entity {
 	public $userId;
 	public $token;
 	public $expiry;
+	public $apiVersion;
 
 	public function __construct() {
 		$this->addType('expiry', 'int');

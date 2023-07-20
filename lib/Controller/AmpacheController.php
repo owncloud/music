@@ -223,13 +223,13 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	 protected function handshake(string $user, int $timestamp, string $auth) : array {
+	 protected function handshake(string $user, int $timestamp, string $auth, ?string $version) : array {
 		$currentTime = \time();
 		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
 		$this->checkHandshakeTimestamp($timestamp, $currentTime);
 		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
-		$token = $this->startNewSession($user, $expiryDate);
+		$token = $this->startNewSession($user, $expiryDate, $version);
 
 		return $this->getHandshakeResponse($token);
 	}
@@ -1019,7 +1019,7 @@ class AmpacheController extends Controller {
 		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
 	}
 
-	private function startNewSession(string $user, int $expiryDate) : string {
+	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion) : string {
 		$token = Random::secure(16);
 
 		// create new session
@@ -1027,6 +1027,7 @@ class AmpacheController extends Controller {
 		$session->setUserId($user);
 		$session->setToken($token);
 		$session->setExpiry($expiryDate);
+		$session->setApiVersion(Util::truncate($apiVersion, 16));
 
 		// save session
 		$this->ampacheSessionMapper->insert($session);

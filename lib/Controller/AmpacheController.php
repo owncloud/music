@@ -88,8 +88,9 @@ class AmpacheController extends Controller {
 	private $session;
 
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
-	const API_VERSION = 440000;
-	const API_MIN_COMPATIBLE_VERSION = 350001;
+	const API4_VERSION = '440000';
+	const API5_VERSION = '5.0.0';
+	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
 								IRequest $request,
@@ -139,9 +140,9 @@ class AmpacheController extends Controller {
 
 	public function ampacheResponse(array $content) : Response {
 		if ($this->jsonMode) {
-			return new JSONResponse(self::prepareResultForJsonApi($content));
+			return new JSONResponse($this->prepareResultForJsonApi($content));
 		} else {
-			return new XmlResponse(self::prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
+			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code']);
 		}
 	}
 
@@ -223,7 +224,7 @@ class AmpacheController extends Controller {
 
 		return [
 			'auth' => $this->session->getToken(),
-			'api' => self::API_VERSION,
+			'api' => ($this->apiMajorVersion() == 5) ? self::API5_VERSION : self::API4_VERSION,
 			'update' => $updateTime->format('c'),
 			'add' => $addTime->format('c'),
 			'clean' => \date('c', \time()), // TODO: actual time of the latest item removal
@@ -259,7 +260,7 @@ class AmpacheController extends Controller {
 	protected function ping() : array {
 		$response = [
 			'server' => $this->getAppNameAndVersion(),
-			'version' => self::API_VERSION,
+			'version' => self::API5_VERSION,
 			'compatible' => self::API_MIN_COMPATIBLE_VERSION
 		];
 
@@ -1299,10 +1300,11 @@ class AmpacheController extends Controller {
 	 * The JSON API has some asymmetries with the XML API. This function makes the needed
 	 * translations for the result content before it is converted into JSON.
 	 */
-	private static function prepareResultForJsonApi(array $content) : array {
-		// In all responses returning an array of library entities, the root node is anonymous.
+	private function prepareResultForJsonApi(array $content) : array {
+		// In API versions before 4, in all responses returning an array of library entities, the root node is anonymous.
 		// Unwrap the outermost array if it is an associative array with a single array-type value.
-		if (\count($content) === 1 && !self::arrayIsIndexed($content)
+		if ($this->apiMajorVersion() < 5
+				&& \count($content) === 1 && !self::arrayIsIndexed($content)
 				&& \is_array(\current($content)) && self::arrayIsIndexed(\current($content))) {
 			$content = \array_pop($content);
 		}
@@ -1322,7 +1324,7 @@ class AmpacheController extends Controller {
 	 * The XML API has some asymmetries with the JSON API. This function makes the needed
 	 * translations for the result content before it is converted into XML.
 	 */
-	private static function prepareResultForXmlApi(array $content) : array {
+	private function prepareResultForXmlApi(array $content) : array {
 		\reset($content);
 		$firstKey = \key($content);
 
@@ -1342,6 +1344,19 @@ class AmpacheController extends Controller {
 		return ['root' => $content];
 	}
 
+	private function apiMajorVersion() : int {
+		$ver = 4; // default
+		if ($this->session !== null) {
+			$verString = $this->session->getApiVersion();
+			if (\is_string($verString) && \strlen($verString)) {
+				$ver = (int)$verString[0];
+			}
+		}
+
+		// For now, we have two supported major versions. Major version 3 can be sufficiently supported
+		// with our "version 4" implementation.
+		return Util::limit($ver, 4, 5);
+	}
 }
 
 /**

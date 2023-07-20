@@ -128,6 +128,7 @@
 				<name>album_artist_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>
+				<unsigned>true</unsigned>
 			</field>
 			<field>
 				<name>hash</name>
@@ -222,11 +223,13 @@
 				<name>artist_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>
+				<unsigned>true</unsigned>
 			</field>
 			<field>
 				<name>album_id</name>
 				<type>integer</type>
 				<notnull>false</notnull>
+				<unsigned>true</unsigned>
 			</field>
 			<field>
 				<name>length</name>
@@ -785,8 +788,9 @@
 				<name>id</name>
 				<type>integer</type>
 				<notnull>true</notnull>
-				<autoincrement>1</autoincrement>
-				<length>4</length>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
 			</field>
 			<field>
 				<name>user_id</name>
@@ -887,6 +891,7 @@
 				<name>entry_id</name>
 				<type>integer</type>
 				<notnull>true</notnull>
+				<unsigned>true</unsigned>
 				<comments>ID of a track or a podcast episode, depending on the column 'type'</comments>
 			</field>
 			<field>

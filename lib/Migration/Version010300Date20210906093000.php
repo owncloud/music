@@ -189,7 +189,7 @@ class Version010300Date20210906093000 extends SimpleMigrationStep {
 	private function migrateAmpacheUsers(ISchemaWrapper $schema) {
 		$table = $this->getOrCreateTable($schema, 'music_ampache_users');
 		$this->setColumns($table, [
-			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true, 'length' => 4] ],
+			[ 'id',				'integer',	['autoincrement' => true, 'notnull' => true] ],
 			[ 'user_id',		'string',	['notnull' => true, 'length' => 64] ],
 			[ 'description',	'string',	['notnull' => false, 'length' => 64] ],
 			[ 'hash',			'string',	['notnull' => true, 'length' => 64] ]

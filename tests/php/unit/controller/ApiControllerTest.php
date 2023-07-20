@@ -23,6 +23,7 @@ class ApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;
 	private $artistBusinessLayer;
 	private $albumBusinessLayer;
+	private $genreBusinessLayer;
 	private $collectionHelper;
 	private $request;
 	private $controller;
@@ -34,6 +35,7 @@ class ApiControllerTest extends ControllerTestUtility {
 	private $detailsHelper;
 	private $lastfmService;
 	private $maintenance;
+	private $librarySettings;
 	private $userFolder;
 	private $logger;
 

@@ -63,7 +63,6 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
-use OCA\Music\Utility\AmpacheUser;
 use OCA\Music\Utility\CollectionHelper;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
@@ -112,7 +111,6 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
 				$c->query('PodcastService'),
-				$c->query('AmpacheUser'),
 				$c->query('CoverHelper'),
 				$c->query('LastfmService'),
 				$c->query('LibrarySettings'),
@@ -496,10 +494,6 @@ class Music extends App {
 		 * Utility
 		 */
 
-		$container->registerService('AmpacheUser', function () {
-			return new AmpacheUser();
-		});
-
 		$container->registerService('CollectionHelper', function (IAppContainer $c) {
 			return new CollectionHelper(
 				$c->query('Library'),
@@ -617,7 +611,6 @@ class Music extends App {
 			return new AmpacheMiddleware(
 				$c->query('Request'),
 				$c->query('AmpacheSessionMapper'),
-				$c->query('AmpacheUser'),
 				$c->query('Logger')
 			);
 		});

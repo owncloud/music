@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Middleware;
@@ -21,8 +21,8 @@ use OCP\AppFramework\Middleware;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\AmpacheSessionMapper;
-use OCA\Music\Utility\AmpacheUser;
 
 /**
  * Checks the authentication on each Ampache API call before the
@@ -32,15 +32,12 @@ use OCA\Music\Utility\AmpacheUser;
 class AmpacheMiddleware extends Middleware {
 	private $request;
 	private $ampacheSessionMapper;
-	private $ampacheUser;
 	private $logger;
 
 	public function __construct(
-			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper,
-			AmpacheUser $ampacheUser, Logger $logger) {
+			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, Logger $logger) {
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
-		$this->ampacheUser = $ampacheUser; // used to share user info with controller
 		$this->logger = $logger;
 	}
 
@@ -64,12 +61,13 @@ class AmpacheMiddleware extends Middleware {
 
 			// don't try to authenticate for the handshake request
 			if ($this->request['action'] !== 'handshake') {
-				$this->checkAuthentication();
+				$session = $this->checkAuthentication();
+				$controller->setSession($session);
 			}
 		}
 	}
 
-	private function checkAuthentication() {
+	private function checkAuthentication() : AmpacheSession {
 		$token = $this->request['auth'] ?: $this->request['ssid'] ?: null;
 
 		if (empty($token)) {
@@ -79,10 +77,9 @@ class AmpacheMiddleware extends Middleware {
 			}
 		} else {
 			try {
-				$session = $this->ampacheSessionMapper->findByToken($token);
-				$this->ampacheUser->setUserId($session->getUserId());
-				// also extend the session deadline on any authorized API call
+				// extend the session deadline on any authorized API call
 				$this->ampacheSessionMapper->extend($token, \time() + AmpacheController::SESSION_EXPIRY_TIME);
+				return $this->ampacheSessionMapper->findByToken($token);
 			} catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
 				throw new AmpacheException('Invalid Login - invalid session token', 401);
 			}

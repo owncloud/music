@@ -32,6 +32,7 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 		$this->fixInconsistentIdTypes($schema);
+		$this->allowNegativeYear($schema);
 		return $schema;
 	}
 
@@ -53,6 +54,14 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 										->changeColumn('album_id', ['unsigned' => true]);
 		$schema->getTable('music_bookmarks')->changeColumn('entry_id', ['unsigned' => true]);
 		$schema->getTable('music_ampache_users')->changeColumn('id', ['unsigned' => true]);
+	}
+
+	/**
+	 * Although untypical, it's not totally impossible that some historical piece of music would
+	 * be tagged with a negative year indicating a year BCE.
+	 */
+	private function allowNegativeYear(ISchemaWrapper $schema) {
+		$schema->getTable('music_tracks')->changeColumn('year', ['unsigned' => false]);
 	}
 
 }

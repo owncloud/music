@@ -217,7 +217,7 @@
 				<name>year</name>
 				<type>integer</type>
 				<notnull>false</notnull>
-				<unsigned>true</unsigned>
+				<unsigned>false</unsigned>
 			</field>
 			<field>
 				<name>artist_id</name>

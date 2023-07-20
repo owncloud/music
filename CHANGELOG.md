@@ -16,6 +16,8 @@
 ### Fixed
 - Subsonic: Unhandled exception when attempting to delete a non-existent bookmark
   [#1071](https://github.com/owncloud/music/issues/1071)
+- Scanning breaking if any out-of-bounds numeric value gets scanned from any audio file
+  [#1073](https://github.com/owncloud/music/issues/1073)
 
 ## 1.8.4 - 2023-06-06
 ### Added

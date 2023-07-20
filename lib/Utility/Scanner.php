@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -245,12 +245,9 @@ class Scanner extends PublicEmitter {
 
 		$meta['picture'] = ExtractorGetID3::getTag($fileInfo, 'picture', true);
 
-		$meta['length'] = $fileInfo['playtime_seconds'] ?? null;
-		if ($meta['length'] !== null) {
-			$meta['length'] = \round($meta['length']);
-		}
+		$meta['length'] = self::normalizeUnsigned($fileInfo['playtime_seconds'] ?? null);
 
-		$meta['bitrate'] = $fileInfo['audio']['bitrate'] ?? null;
+		$meta['bitrate'] = self::normalizeUnsigned($fileInfo['audio']['bitrate'] ?? null);
 
 		return $meta;
 	}
@@ -684,7 +681,7 @@ class Scanner extends PublicEmitter {
 		return $this->l10nFactory->get('music', $languageCode);
 	}
 
-	private static function normalizeOrdinal($ordinal) : ?int {
+	private static function normalizeOrdinal(/*mixed*/ $ordinal) : ?int {
 		if (\is_string($ordinal)) {
 			// convert format '1/10' to '1'
 			$ordinal = \explode('/', $ordinal)[0];
@@ -697,7 +694,7 @@ class Scanner extends PublicEmitter {
 			$ordinal = null;
 		}
 
-		return $ordinal;
+		return Util::limit($ordinal, 0, Util::UINT32_MAX);
 	}
 
 	private static function parseFileName(string $fileName) : array {
@@ -713,16 +710,28 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private static function normalizeYear($date) : ?int {
+	private static function normalizeYear(/*mixed*/ $date) : ?int {
+		$year = null;
 		$matches = null;
 
 		if (\ctype_digit($date)) {
-			return (int)$date; // the date is a valid year as-is
+			$year = (int)$date; // the date is a valid year as-is
 		} elseif (\is_string($date) && \preg_match('/^(\d\d\d\d)-\d\d-\d\d.*/', $date, $matches) === 1) {
-			return (int)$matches[1]; // year from ISO-formatted date yyyy-mm-dd
+			$year = (int)$matches[1]; // year from ISO-formatted date yyyy-mm-dd
 		} else {
-			return null;
+			$year = null;
 		}
+
+		return Util::limit($year, Util::SINT32_MIN, Util::SINT32_MAX);
+	}
+
+	private static function normalizeUnsigned(/*mixed*/ $value) : ?int {
+		if (\is_numeric($value)) {
+			$value = (int)\round((float)$value);
+		} else {
+			$value = null;
+		}
+		return Util::limit($value, 0, Util::UINT32_MAX);
 	}
 
 	/**

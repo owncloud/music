@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -18,6 +18,10 @@ use OCP\Files\Folder;
  * Miscellaneous static utility functions
  */
 class Util {
+
+	const UINT32_MAX = 0xFFFFFFFF;
+	const SINT32_MAX = 0x7FFFFFFF;
+	const SINT32_MIN = -self::SINT32_MAX - 1;
 
 	/**
 	 * Map the given array by calling a named member function for each of the array elements
@@ -370,5 +374,17 @@ class Util {
 		$temp = $a;
 		$a = $b;
 		$b = $temp;
+	}
+
+	/**
+	 * Limit an integer value between the specified minimum and maximum.
+	 * A null value is a valid input and will produce a null output.
+	 */
+	public static function limit(?int $input, int $min, int $max) : ?int {
+		if ($input === null) {
+			return null;
+		} else {
+			return \max($min, \min($input, $max));
+		}
 	}
 }

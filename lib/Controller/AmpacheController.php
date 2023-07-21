@@ -38,6 +38,7 @@ use OCA\Music\BusinessLayer\Library;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastChannelBusinessLayer;
 use OCA\Music\BusinessLayer\PodcastEpisodeBusinessLayer;
+use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use OCA\Music\Db\Album;
@@ -78,6 +79,7 @@ class AmpacheController extends Controller {
 	private $playlistBusinessLayer;
 	private $podcastChannelBusinessLayer;
 	private $podcastEpisodeBusinessLayer;
+	private $radioStationBusinessLayer;
 	private $trackBusinessLayer;
 	private $library;
 	private $podcastService;
@@ -92,7 +94,7 @@ class AmpacheController extends Controller {
 
 	const ALL_TRACKS_PLAYLIST_ID = 10000000;
 	const API4_VERSION = '440000';
-	const API5_VERSION = '500000';
+	const API5_VERSION = '520000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -106,6 +108,7 @@ class AmpacheController extends Controller {
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
 								PodcastEpisodeBusinessLayer $podcastEpisodeBusinessLayer,
+								RadioStationBusinessLayer $radioStationBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
 								PodcastService $podcastService,
@@ -125,6 +128,7 @@ class AmpacheController extends Controller {
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
 		$this->podcastEpisodeBusinessLayer = $podcastEpisodeBusinessLayer;
+		$this->radioStationBusinessLayer = $radioStationBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
 		$this->podcastService = $podcastService;
@@ -253,6 +257,7 @@ class AmpacheController extends Controller {
 		$genresKey = $this->genreKey() . 's';
 		
 		return [
+			'session_expire' => \date('c', $this->session->getExpiry()),
 			'auth' => $this->session->getToken(),
 			'api' => ($this->apiMajorVersion() == 5) ? self::API5_VERSION : self::API4_VERSION,
 			'update' => $updateTime->format('c'),
@@ -264,13 +269,12 @@ class AmpacheController extends Controller {
 			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
 			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
 			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
-			'session_expire' => \date('c', $this->session->getExpiry()),
+			'live_streams' => $this->radioStationBusinessLayer->count($user),
 			$genresKey => $this->genreBusinessLayer->count($user),
 			'videos' => 0,
 			'catalogs' => 0,
 			'shares' => 0,
 			'licenses' => 0,
-			'live_streams' => 0,
 			'labels' => 0
 		];
 	}
@@ -821,6 +825,22 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function live_streams(?string $filter, int $limit, int $offset=0, bool $exact=false) : array {
+		$stations = $this->findEntities($this->radioStationBusinessLayer, $filter, $exact, $limit, $offset);
+		return $this->renderLiveStreams($stations);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function live_stream(int $filter) : array {
+		$station = $this->radioStationBusinessLayer->find($filter, $this->session->getUserId());
+		return $this->renderLiveStreams([$station]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function tags(?string $filter, int $limit, int $offset=0, bool $exact=false) : array {
 		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);
@@ -1319,6 +1339,15 @@ class AmpacheController extends Controller {
 	private function renderPodcastEpisodes(array $episodes) : array {
 		return [
 			'podcast_episode' => Util::arrayMapMethod($episodes, 'toAmpacheApi')
+		];
+	}
+
+	/**
+	 * @param RadioStation[] $stations
+	 */
+	private function renderLiveStreams(array $stations) : array {
+		return [
+			'live_stream' => Util::arrayMapMethod($stations, 'toAmpacheApi')
 		];
 	}
 

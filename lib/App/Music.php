@@ -107,6 +107,7 @@ class Music extends App {
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('PodcastChannelBusinessLayer'),
 				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
 				$c->query('PodcastService'),

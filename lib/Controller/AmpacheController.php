@@ -32,6 +32,7 @@ use OCA\Music\AppFramework\Utility\RequestParameterExtractorException;
 
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
 use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\BookmarkBusinessLayer;
 use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\Library;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
@@ -42,6 +43,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\Genre;
 use OCA\Music\Db\MatchMode;
@@ -71,6 +73,7 @@ class AmpacheController extends Controller {
 	private $urlGenerator;
 	private $albumBusinessLayer;
 	private $artistBusinessLayer;
+	private $bookmarkBusinessLayer;
 	private $genreBusinessLayer;
 	private $playlistBusinessLayer;
 	private $podcastChannelBusinessLayer;
@@ -98,6 +101,7 @@ class AmpacheController extends Controller {
 								IURLGenerator $urlGenerator,
 								AlbumBusinessLayer $albumBusinessLayer,
 								ArtistBusinessLayer $artistBusinessLayer,
+								BookmarkBusinessLayer $bookmarkBusinessLayer,
 								GenreBusinessLayer $genreBusinessLayer,
 								PlaylistBusinessLayer $playlistBusinessLayer,
 								PodcastChannelBusinessLayer $podcastChannelBusinessLayer,
@@ -116,6 +120,7 @@ class AmpacheController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->artistBusinessLayer = $artistBusinessLayer;
+		$this->bookmarkBusinessLayer = $bookmarkBusinessLayer;
 		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
 		$this->podcastChannelBusinessLayer = $podcastChannelBusinessLayer;
@@ -910,6 +915,59 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function bookmarks() : array {
+		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->session->getUserId());
+		return $this->renderBookmarks($bookmarks);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function get_bookmark(int $filter, string $type) : array {
+		$entryType = self::mapBookmarkType($type);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->session->getUserId());
+		return $this->renderBookmarks([$bookmark]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function bookmark_create(int $filter, string $type, int $position, string $client='AmpacheAPI') : array {
+		// Note: the optional argument 'date' is not supported and is disregarded
+		$entryType = self::mapBookmarkType($type);
+		$position *= 1000; // seconds to milliseconds
+		$bookmark = $this->bookmarkBusinessLayer->addOrUpdate($this->session->getUserId(), $entryType, $filter, $position, $client);
+		return $this->renderBookmarks([$bookmark]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function bookmark_edit(int $filter, string $type, int $position, ?string $client) : array {
+		// Note: the optional argument 'date' is not supported and is disregarded
+		$entryType = self::mapBookmarkType($type);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->session->getUserId());
+		$bookmark->setPosition($position * 1000); // seconds to milliseconds
+		if ($client !== null) {
+			$bookmark->setComment($client);
+		}
+		$bookmark = $this->bookmarkBusinessLayer->update($bookmark);
+		return $this->renderBookmarks([$bookmark]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function bookmark_delete(int $filter, string $type) : array {
+		$entryType = self::mapBookmarkType($type);
+		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->session->getUserId());
+		$this->bookmarkBusinessLayer->delete($bookmark->getId(), $bookmark->getUserId());
+		return ['success' => "Deleted Bookmark: $type $filter"];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function flag(string $type, int $id, bool $flag) : array {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
@@ -1048,6 +1106,14 @@ class AmpacheController extends Controller {
 			case 'podcast':			return $this->renderPodcastChannelsIndex($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodesIndex($entities);
 			default:				throw new AmpacheException("Unsupported type $type", 400);
+		}
+	}
+
+	private static function mapBookmarkType(string $ampacheType) : int {
+		switch ($ampacheType) {
+			case 'song':			return Bookmark::TYPE_TRACK;
+			case 'podcast_episode':	return Bookmark::TYPE_PODCAST_EPISODE;
+			default:				throw new AmpacheException("Unsupported type $ampacheType", 400);
 		}
 	}
 
@@ -1271,6 +1337,15 @@ class AmpacheController extends Controller {
 	private function renderGenres(array $genres) : array {
 		return [
 			'genre' => Util::arrayMapMethod($genres, 'toAmpacheApi', [$this->l10n])
+		];
+	}
+
+	/**
+	 * @param Bookmark[] $bookmarks
+	 */
+	private function renderBookmarks(array $bookmarks) : array {
+		return [
+			'bookmark' => Util::arrayMapMethod($bookmarks, 'toAmpacheApi')
 		];
 	}
 

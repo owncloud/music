@@ -6,7 +6,11 @@
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Ampache API:
-  * Methods: `get_similar`, `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
+  * Follow the APIv5 conventions if version 5+ requeted by the client on `handshake`
+  * New methods:
+    - `get_similar`
+    - `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
+    - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
   * Type `album_artist` to the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
   * Field `disk` on `song` type results

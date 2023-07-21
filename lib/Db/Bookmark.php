@@ -9,7 +9,7 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -44,10 +44,23 @@ class Bookmark extends Entity {
 	public function toSubsonicApi() : array {
 		return [
 			'position' => $this->getPosition(),
-			'username' => $this->userId,
+			'username' => $this->getUserId(),
 			'comment' => $this->getComment() ?: '',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
 			'changed' => Util::formatZuluDateTime($this->getUpdated())
+		];
+	}
+
+	public function toAmpacheApi() : array {
+		return [
+			'id' => (string)$this->getId(),
+			'owner' => $this->getUserId(),
+			'object_type' => ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode',
+			'object_id' => (string)$this->getEntryId(),
+			'position' => (int)($this->getPosition() / 1000), // millisecods to seconds
+			'client' => $this->getComment(),
+			'creation_date' => Util::formatDateTimeUtcOffset($this->getCreated()),
+			'update_date' => Util::formatDateTimeUtcOffset($this->getUpdated())
 		];
 	}
 }

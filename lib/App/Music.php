@@ -102,6 +102,7 @@ class Music extends App {
 				$c->query('URLGenerator'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('PodcastChannelBusinessLayer'),

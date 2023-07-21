@@ -143,15 +143,20 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Find all user's starred entities
+	 * Find all user's starred entities. It is safe to call this also on entity types
+	 * not supporting starring in which case an empty array will be returned.
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
-		$sql = $this->selectUserEntities(
+		if (\property_exists($this->entityClass, 'starred')) {
+			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
 				"ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
-		return $this->findEntities($sql, [$userId], $limit, $offset);
+			return $this->findEntities($sql, [$userId], $limit, $offset);
+		} else {
+			return [];
+		}
 	}
 
 	/**

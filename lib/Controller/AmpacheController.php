@@ -337,11 +337,8 @@ class AmpacheController extends Controller {
 			$type = 'album';
 		}
 
-		// Note: according to the API documentation, types 'podcast' and 'podcast_episode' should not
-		// be supported. However, we can make this extension with no extra effort.
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
-			throw new AmpacheException("Unsupported type $type", 400);
-		}
+		// Note: In addition to types specified in APIv6, we support also types 'genre' and 'live_stream'
+		// as that's possible without extra effort. All types don't support all possible filters.
 		$businessLayer = $this->getBusinessLayer($type);
 
 		$getEntitiesIfSupported = function(
@@ -1097,6 +1094,7 @@ class AmpacheController extends Controller {
 			case 'playlist':		return $this->playlistBusinessLayer;
 			case 'podcast':			return $this->podcastChannelBusinessLayer;
 			case 'podcast_episode':	return $this->podcastEpisodeBusinessLayer;
+			case 'live_stream':		return $this->radioStationBusinessLayer;
 			case 'tag':				return $this->genreBusinessLayer;
 			case 'genre':			return $this->genreBusinessLayer;
 			default:				throw new AmpacheException("Unsupported type $type", 400);
@@ -1111,6 +1109,7 @@ class AmpacheController extends Controller {
 			case 'playlist':		return $this->renderPlaylists($entities);
 			case 'podcast':			return $this->renderPodcastChannels($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodes($entities);
+			case 'live_stream':		return $this->renderLiveStreams($entities);
 			case 'tag':				return $this->renderTags($entities);
 			case 'genre':			return $this->renderTags($entities);
 			default:				throw new AmpacheException("Unsupported type $type", 400);

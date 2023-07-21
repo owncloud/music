@@ -877,22 +877,34 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function genre_artists(int $filter, int $limit, int $offset=0) : array {
-		return $this->tag_artists($filter, $limit, $offset);
+	protected function genre_artists(?int $filter, int $limit, int $offset=0) : array {
+		if ($filter === null) {
+			return $this->artists(null, null, null, $limit, $offset);
+		} else {
+			return $this->tag_artists($filter, $limit, $offset);
+		}
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function genre_albums(int $filter, int $limit, int $offset=0) : array {
-		return $this->tag_albums($filter, $limit, $offset);
+	protected function genre_albums(?int $filter, int $limit, int $offset=0) : array {
+		if ($filter === null) {
+			return $this->albums(null, null, null, $limit, $offset);
+		} else {
+			return $this->tag_albums($filter, $limit, $offset);
+		}
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function genre_songs(int $filter, int $limit, int $offset=0) : array {
-		return $this->tag_songs($filter, $limit, $offset);
+	protected function genre_songs(?int $filter, int $limit, int $offset=0) : array {
+		if ($filter === null) {
+			return $this->songs(null, null, null, $limit, $offset);
+		} else {
+			return $this->tag_songs($filter, $limit, $offset);
+		}
 	}
 
 	/**

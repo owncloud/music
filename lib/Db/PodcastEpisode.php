@@ -121,6 +121,8 @@ class PodcastEpisode extends Entity {
 			'state' => 'Completed',
 			'filelength' => Util::formatTime($this->getDuration()),
 			'filesize' => Util::formatFileSize($this->getSize(), 2) . 'B',
+			'time' => $this->getDuration(),
+			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
 			'url' => $this->getStreamUrl(),
 			'flag' => empty($this->getStarred()) ? 0 : 1,

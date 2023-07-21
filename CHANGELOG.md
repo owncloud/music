@@ -13,7 +13,8 @@
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
   * Type `album_artist` to the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
-  * Field `disk` on `song` type results
+  * Field `disk` to `song` type results
+  * Fields `time` and `size` to `podcast_episode` type results
   * All the fields of `handshake` response on the response of `ping` within a valid session
 - Files playlist tab: Tooltip showing the file path or stream URL
 - Subsonic: Empty implementation for the method `getNowPlaying`

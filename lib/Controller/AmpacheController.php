@@ -1124,6 +1124,7 @@ class AmpacheController extends Controller {
 			case 'playlist':		return $this->renderPlaylistsIndex($entities);
 			case 'podcast':			return $this->renderPodcastChannelsIndex($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodesIndex($entities);
+			case 'live_stream':		return $this->renderLiveStreamsIndex($entities);
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -1470,6 +1471,14 @@ class AmpacheController extends Controller {
 	private function renderPodcastEpisodesIndex(array $episodes) : array {
 		// The v4 API spec does not give any examples of this, and the v5 example is almost identical to the v4 "normal" result
 		return $this->renderPodcastEpisodes($episodes);
+	}
+
+	/**
+	 * @param RadioStation[] $stations
+	 */
+	private function renderLiveStreamsIndex(array $stations) : array {
+		// The API spec gives no examples of this, but testing with Ampache demo server revealed that the format is indentical to the "full" format
+		return $this->renderLiveStreams($stations);
 	}
 
 	/**

@@ -1505,12 +1505,25 @@ class AmpacheController extends Controller {
 	 * translations for the result content before it is converted into JSON.
 	 */
 	private function prepareResultForJsonApi(array $content) : array {
-		// In API versions before 4, in all responses returning an array of library entities, the root node is anonymous.
-		// Unwrap the outermost array if it is an associative array with a single array-type value.
-		if ($this->apiMajorVersion() < 5
-				&& \count($content) === 1 && !self::arrayIsIndexed($content)
+		// Special handling is needed for responses returning an array of library entities,
+		// depending on the API version. In these cases, the outermost array is of associative
+		// type with a single value which is a non-associative array.
+		if (\count($content) === 1 && !self::arrayIsIndexed($content)
 				&& \is_array(\current($content)) && self::arrayIsIndexed(\current($content))) {
-			$content = \array_pop($content);
+			$apiVer = $this->apiMajorVersion();
+			// In API versions < 5, the root node is an anonymous array. Unwrap the outermost array.
+			if ($apiVer < 5) {
+				$content = \array_pop($content);
+			}
+			// In later versions, the root object has a named array for plural actions (like "songs", "artists").
+			// For singular actions (like "song", "artist"), the root object contains directly the entity properties.
+			else {
+				$action = $this->request->getParam('action');
+				$plural = (\substr($action, -1) === 's');
+				if (!$plural) {
+					$content = \array_pop(\array_pop($content));
+				}
+			}
 		}
 
 		// The key 'value' has a special meaning on XML responses, as it makes the corresponding value
@@ -1534,7 +1547,8 @@ class AmpacheController extends Controller {
 
 		// all 'entity list' kind of responses shall have the (deprecated) total_count element
 		if ($firstKey == 'song' || $firstKey == 'album' || $firstKey == 'artist' || $firstKey == 'playlist'
-				|| $firstKey == 'tag' || $firstKey == 'genre' || $firstKey == 'podcast' || $firstKey == 'podcast_episode') {
+				|| $firstKey == 'tag' || $firstKey == 'genre' || $firstKey == 'podcast' || $firstKey == 'podcast_episode'
+				|| $firstKey == 'live_stream') {
 			$content = ['total_count' => \count($content[$firstKey])] + $content;
 		}
 

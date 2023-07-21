@@ -255,6 +255,7 @@ class AmpacheController extends Controller {
 		$updateTime = \max($this->library->latestUpdateTime($user), $this->playlistBusinessLayer->latestUpdateTime($user));
 		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 		$genresKey = $this->genreKey() . 's';
+		$playlistCount = $this->playlistBusinessLayer->count($user);
 		
 		return [
 			'session_expire' => \date('c', $this->session->getExpiry()),
@@ -266,7 +267,9 @@ class AmpacheController extends Controller {
 			'songs' => $this->trackBusinessLayer->count($user),
 			'artists' => $this->artistBusinessLayer->count($user),
 			'albums' => $this->albumBusinessLayer->count($user),
-			'playlists' => $this->playlistBusinessLayer->count($user) + 1, // +1 for "All tracks"
+			'playlists' => $playlistCount,
+			'searches' => 1, // "All tracks"
+			'playlists_searches' => $playlistCount + 1,
 			'podcasts' => $this->podcastChannelBusinessLayer->count($user),
 			'podcast_episodes' => $this->podcastEpisodeBusinessLayer->count($user),
 			'live_streams' => $this->radioStationBusinessLayer->count($user),
@@ -498,14 +501,14 @@ class AmpacheController extends Controller {
 	 */
 	protected function playlists(
 			?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) : array {
+			int $limit, int $offset=0, bool $exact=false, int $hide_search=0) : array {
 
 		$userId = $this->session->getUserId();
 		$playlists = $this->findEntities($this->playlistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 
-		// append "All tracks" if not searching by name, and it is not off-limit
+		// append "All tracks" if "seaches" are not forbidden, and not filtering by any criteria, and it is not off-limits
 		$allTracksIndex = $this->playlistBusinessLayer->count($userId);
-		if (empty($filter) && empty($add) && empty($update)
+		if (!$hide_search && empty($filter) && empty($add) && empty($update)
 				&& self::indexIsWithinOffsetAndLimit($allTracksIndex, $offset, $limit)) {
 			$playlists[] = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		}

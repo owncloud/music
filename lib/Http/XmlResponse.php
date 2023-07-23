@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019, 2020
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 namespace OCA\Music\Http;
@@ -29,14 +29,17 @@ class XmlResponse extends Response {
 	private $content;
 	private $doc;
 	private $attributeKeys;
+	private $boolAsInt;
 
 	/**
 	 * @param array $content
 	 * @param bool|string[] $attributes If true, then key-value pair is made into attribute if possible.
 	 *                                  If false, then key-value pairs are never made into attributes.
 	 *                                  If an array, then keys found from the array are made into attributes if possible.
+	 * @param bool $boolAsInt If true, any boolean values are yielded as int 0/1.
+	 *                        If false, any boolean values are yielded as string "false"/"true"
 	 */
-	public function __construct(array $content, $attributes=true) {
+	public function __construct(array $content, /*mixed*/ $attributes=true, bool $boolAsInt=false) {
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary
@@ -47,6 +50,7 @@ class XmlResponse extends Response {
 		$this->doc = new \DOMDocument('1.0', 'UTF-8');
 		$this->doc->formatOutput = true;
 		$this->attributeKeys = $attributes;
+		$this->boolAsInt = $boolAsInt;
 	}
 
 	public function render() {
@@ -57,7 +61,11 @@ class XmlResponse extends Response {
 
 	private function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
 		if (\is_bool($value)) {
-			$value = $value ? 'true' : 'false';
+			if ($this->boolAsInt) {
+				$value = $value ? '1' : '0';
+			} else {
+				$value = $value ? 'true' : 'false';
+			}
 		} elseif (\is_numeric($value)) {
 			$value = (string)$value;
 		}

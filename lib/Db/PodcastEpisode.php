@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -125,7 +125,7 @@ class PodcastEpisode extends Entity {
 			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
 			'url' => $this->getStreamUrl(),
-			'flag' => empty($this->getStarred()) ? 0 : 1,
+			'flag' => !empty($this->getStarred()),
 		];
 	}
 

@@ -212,7 +212,7 @@ class Track extends Entity {
 			'rating' => 0,
 			'preciserating' => 0,
 			'playcount' => $this->getPlayCount(),
-			'flag' => empty($this->getStarred()) ? 0 : 1,
+			'flag' => !empty($this->getStarred()),
 		];
 
 		$genreId = $this->getGenreId();

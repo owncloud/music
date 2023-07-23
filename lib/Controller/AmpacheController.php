@@ -95,6 +95,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
+	const API6_VERSION = '600000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -151,7 +152,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse($this->prepareResultForJsonApi($content));
 		} else {
-			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode']);
+			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode'], true);
 		}
 	}
 
@@ -260,7 +261,7 @@ class AmpacheController extends Controller {
 		return [
 			'session_expire' => \date('c', $this->session->getExpiry()),
 			'auth' => $this->session->getToken(),
-			'api' => ($this->apiMajorVersion() == 5) ? self::API5_VERSION : self::API4_VERSION,
+			'api' => $this->apiVersionString(),
 			'update' => $updateTime->format('c'),
 			'add' => $addTime->format('c'),
 			'clean' => \date('c', \time()), // TODO: actual time of the latest item removal
@@ -297,7 +298,7 @@ class AmpacheController extends Controller {
 	protected function ping() : array {
 		$response = [
 			'server' => $this->getAppNameAndVersion(),
-			'version' => self::API5_VERSION,
+			'version' => self::API6_VERSION,
 			'compatible' => self::API_MIN_COMPATIBLE_VERSION
 		];
 
@@ -1287,7 +1288,7 @@ class AmpacheController extends Controller {
 					'art' => $this->createCoverUrl($artist),
 					'rating' => 0,
 					'preciserating' => 0,
-					'flag' => empty($artist->getStarred()) ? 0 : 1,
+					'flag' => !empty($artist->getStarred()),
 					$genreKey => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
@@ -1322,7 +1323,7 @@ class AmpacheController extends Controller {
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album),
 					'preciserating' => 0,
-					'flag' => empty($album->getStarred()) ? 0 : 1,
+					'flag' => !empty($album->getStarred()),
 					$genreKey => \array_map(function ($genre) {
 						return [
 							'id' => (string)$genre->getId(),
@@ -1550,12 +1551,13 @@ class AmpacheController extends Controller {
 	 * translations for the result content before it is converted into JSON.
 	 */
 	private function prepareResultForJsonApi(array $content) : array {
+		$apiVer = $this->apiMajorVersion();
+
 		// Special handling is needed for responses returning an array of library entities,
 		// depending on the API version. In these cases, the outermost array is of associative
 		// type with a single value which is a non-associative array.
 		if (\count($content) === 1 && !self::arrayIsIndexed($content)
 				&& \is_array(\current($content)) && self::arrayIsIndexed(\current($content))) {
-			$apiVer = $this->apiMajorVersion();
 			// In API versions < 5, the root node is an anonymous array. Unwrap the outermost array.
 			if ($apiVer < 5) {
 				$content = \array_pop($content);
@@ -1567,13 +1569,18 @@ class AmpacheController extends Controller {
 				$plural = (\substr($action, -1) === 's');
 
 				// In APIv5, the action "album" is an excption, it is formatted as if it was a plural action.
-				// This outlier has been fixed in APIv6 (which we don't support at the moment).
+				// This outlier has been fixed in APIv6.
 				$api5albumOddity = ($apiVer === 5 && $action === 'album');
 
 				if (!($plural  || $api5albumOddity)) {
 					$content = \array_pop(\array_pop($content));
 				}
 			}
+		}
+
+		// In API versions < 6, all boolean valued properties should be converted to 0/1.
+		if ($apiVer < 6) {
+			Util::intCastArrayValues($content, 'is_bool');
 		}
 
 		// The key 'value' has a special meaning on XML responses, as it makes the corresponding value
@@ -1628,9 +1635,18 @@ class AmpacheController extends Controller {
 			$ver = 4; // default
 		}
 
-		// For now, we have two supported major versions. Major version 3 can be sufficiently supported
+		// For now, we have three supported major versions. Major version 3 can be sufficiently supported
 		// with our "version 4" implementation.
-		return Util::limit($ver, 4, 5);
+		return Util::limit($ver, 4, 6);
+	}
+
+	private function apiVersionString() : string {
+		switch ($this->apiMajorVersion()) {
+			case 4:		return self::API4_VERSION;
+			case 5:		return self::API5_VERSION;
+			case 6:		return self::API6_VERSION;
+			default:	throw new AmpacheException('Unexpected api major version', 500);
+		}
 	}
 
 	private function mapApiV4ErrorToV5(int $code) : int {

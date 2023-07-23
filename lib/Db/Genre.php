@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -66,7 +66,7 @@ class Genre extends Entity {
 			'songs' => $this->getTrackCount(),
 			'videos' => 0,
 			'playlists' => 0,
-			'stream' => 0
+			'live_streams' => 0
 		];
 	}
 

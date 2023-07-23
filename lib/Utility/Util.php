@@ -140,11 +140,14 @@ class Util {
 
 	/**
 	 * Walk through the given, potentially multi-dimensional, array and cast all leaf nodes
-	 * to integer type. The array is modified in-place.
+	 * to integer type. The array is modified in-place. Optionally, apply the conversion only
+	 * on the leaf nodes matching the given predicate.
 	 */
-	public static function intCastArrayValues(array $arr) : void {
-		\array_walk_recursive($arr, function(&$value) {
-			$value = \intval($value);
+	public static function intCastArrayValues(array &$arr, ?callable $predicate=null) : void {
+		\array_walk_recursive($arr, function(&$value) use($predicate) {
+			if ($predicate === null || $predicate($value)) {
+				$value = (int)$value;
+			}
 		});
 	}
 

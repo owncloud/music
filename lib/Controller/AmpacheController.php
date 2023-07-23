@@ -1520,7 +1520,12 @@ class AmpacheController extends Controller {
 			else {
 				$action = $this->request->getParam('action');
 				$plural = (\substr($action, -1) === 's');
-				if (!$plural) {
+
+				// In APIv5, the action "album" is an excption, it is formatted as if it was a plural action.
+				// This outlier has been fixed in APIv6 (which we don't support at the moment).
+				$api5albumOddity = ($apiVer === 5 && $action === 'album');
+
+				if (!($plural  || $api5albumOddity)) {
 					$content = \array_pop(\array_pop($content));
 				}
 			}

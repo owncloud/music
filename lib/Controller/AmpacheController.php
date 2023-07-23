@@ -92,9 +92,9 @@ class AmpacheController extends Controller {
 	private $jsonMode;
 	private $session;
 
-	const ALL_TRACKS_PLAYLIST_ID = 10000000;
+	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
-	const API5_VERSION = '520000';
+	const API5_VERSION = '560000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -521,7 +521,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function playlist(int $filter) : array {
 		$userId = $this->session->getUserId();
-		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
+		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
 			$playlist = new AmpacheController_AllTracksPlaylist($userId, $this->trackBusinessLayer, $this->l10n);
 		} else {
 			$playlist = $this->playlistBusinessLayer->find($filter, $userId);
@@ -534,7 +534,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function playlist_songs(int $filter, int $limit, int $offset=0) : array {
 		$userId = $this->session->getUserId();
-		if ($filter== self::ALL_TRACKS_PLAYLIST_ID) {
+		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
 			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Parent, $limit, $offset);
 			foreach ($tracks as $index => &$track) {
 				$track->setNumberOnPlaylist($index + 1);
@@ -1043,6 +1043,15 @@ class AmpacheController extends Controller {
 		} elseif ($type === 'podcast' || $type === 'podcast_episode') { // there's a difference between APIv4 and APIv5
 			$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
 			return new RedirectResponse($episode->getStreamUrl());
+		} elseif ($type === 'playlist') {
+			$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)
+				? $this->trackBusinessLayer->findAllIds($userId)
+				: $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
+			if (empty($songIds)) {
+				throw new AmpacheException("The playlist $id is empty", 404);
+			} else {
+				return $this->download(Random::pickItem($songIds));
+			}
 		} else {
 			throw new AmpacheException("Unsupported type '$type'", 400);
 		}

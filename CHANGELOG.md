@@ -12,8 +12,9 @@
     - `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
     - `live_streams`, `live_stream`
-  * Support type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
-  * Support type `playlist` in the method `stats`
+  * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
+  * Support for the type `playlist` in the method `stats`
+  * Support for the type `playlist` in the methods `downlaod` and `stream`
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
   * Field `disk` to `song` type results
   * Fields `time` and `size` to `podcast_episode` type results

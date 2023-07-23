@@ -841,6 +841,42 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function live_stream_create(string $name, string $url, ?string $site_url) : array {
+		$station = $this->radioStationBusinessLayer->create($this->session->getUserId(), $name, $url, $site_url);
+		return $this->renderLiveStreams([$station]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function live_stream_delete(int $filter) : array {
+		$this->radioStationBusinessLayer->delete($filter, $this->session->getUserId());
+		return ['success' => "Deleted live stream: $filter"];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function live_stream_edit(int $filter, ?string $name, ?string $url, ?string $site_url) : array {
+		$station = $this->radioStationBusinessLayer->find($filter, $this->session->getUserId());
+
+		if ($name !== null) {
+			$station->setName($name);
+		}
+		if ($url !== null) {
+			$station->setStreamUrl($url);
+		}
+		if ($site_url !== null) {
+			$station->setHomeUrl($site_url);
+		}
+		$station = $this->radioStationBusinessLayer->update($station);
+
+		return $this->renderLiveStreams([$station]);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function tags(?string $filter, int $limit, int $offset=0, bool $exact=false) : array {
 		$genres = $this->findEntities($this->genreBusinessLayer, $filter, $exact, $limit, $offset);
 		return $this->renderTags($genres);

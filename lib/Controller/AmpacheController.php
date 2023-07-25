@@ -19,6 +19,7 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -70,6 +71,7 @@ use OCA\Music\Utility\Random;
 use OCA\Music\Utility\Util;
 
 class AmpacheController extends Controller {
+	private $config;
 	private $l10n;
 	private $urlGenerator;
 	private $albumBusinessLayer;
@@ -100,6 +102,7 @@ class AmpacheController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
+								IConfig $config,
 								IL10N $l10n,
 								IURLGenerator $urlGenerator,
 								AlbumBusinessLayer $albumBusinessLayer,
@@ -120,6 +123,7 @@ class AmpacheController extends Controller {
 								Logger $logger) {
 		parent::__construct($appname, $request);
 
+		$this->config = $config;
 		$this->l10n = $l10n;
 		$this->urlGenerator = $urlGenerator;
 		$this->albumBusinessLayer = $albumBusinessLayer;
@@ -1632,7 +1636,8 @@ class AmpacheController extends Controller {
 		if (\is_string($verString) && \strlen($verString)) {
 			$ver = (int)$verString[0];
 		} else {
-			$ver = 4; // default
+			// Default version is 6 unless otherwise defined in config.php
+			$ver = (int)$this->config->getSystemValue('music.ampache_api_default_ver', 6);
 		}
 
 		// For now, we have three supported major versions. Major version 3 can be sufficiently supported

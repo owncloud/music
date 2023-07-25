@@ -98,6 +98,7 @@ class Music extends App {
 			return new AmpacheController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('L10N'),
 				$c->query('URLGenerator'),
 				$c->query('AlbumBusinessLayer'),

@@ -15,8 +15,8 @@
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
-  * Field `disk` to `song` type results
-  * Fields `time` and `size` to `podcast_episode` type results
+  * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, and `stream_mime` to `song` type results
+  * Fields `time`, `size`, `bitrate`, and `stream_bitrate` to `podcast_episode` type results
   * All the fields of `handshake` response on the response of `ping` within a valid session
 - Files playlist tab: Tooltip showing the file path or stream URL
 - Subsonic: Empty implementation for the method `getNowPlaying`

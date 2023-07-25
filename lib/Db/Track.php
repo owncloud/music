@@ -205,8 +205,12 @@ class Track extends Entity {
 			'track' => $this->getAdjustedTrackNumber(), // TODO: maybe there should be a user setting to select plain or adjusted number
 			'disk' => $this->getDisk(),
 			'filename' => $this->getFilename(),
+			'format' => $this->getFileExtension(),
+			'stream_format' => $this->getFileExtension(),
 			'bitrate' => $this->getBitrate(),
+			'stream_bitrate' => $this->getBitrate(),
 			'mime' => $this->getMimetype(),
+			'stream_mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
 			'rating' => 0,

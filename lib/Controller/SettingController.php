@@ -22,6 +22,7 @@ use OCP\IURLGenerator;
 use OCP\Security\ISecureRandom;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\AmpacheSessionMapper;
 use OCA\Music\Db\AmpacheUserMapper;
 use OCA\Music\Http\ErrorResponse;
 use OCA\Music\Utility\AppInfo;
@@ -35,6 +36,7 @@ class SettingController extends Controller {
 	 * on Nextcloud as ISecureRandom::CHAR_HUMAN_READABLE but that's not availalbe on ownCloud. */
 	const API_KEY_CHARSET = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
+	private $ampacheSessionMapper;
 	private $ampacheUserMapper;
 	private $scanner;
 	private $userId;
@@ -45,6 +47,7 @@ class SettingController extends Controller {
 
 	public function __construct(string $appName,
 								IRequest $request,
+								AmpacheSessionMapper $ampacheSessionMapper,
 								AmpacheUserMapper $ampacheUserMapper,
 								Scanner $scanner,
 								?string $userId,
@@ -54,6 +57,7 @@ class SettingController extends Controller {
 								Logger $logger) {
 		parent::__construct($appName, $request);
 
+		$this->ampacheSessionMapper = $ampacheSessionMapper;
 		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->scanner = $scanner;
 		$this->userId = $userId ?? ''; // ensure non-null to satisfy Scrutinizer; the null case should happen only when the user has already logged out
@@ -185,6 +189,7 @@ class SettingController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function removeUserKey($id) {
+		$this->ampacheSessionMapper->revokeSessions((int)$id);
 		$this->ampacheUserMapper->removeUserKey($this->userId, (int)$id);
 		return new JSONResponse(['success' => true]);
 	}

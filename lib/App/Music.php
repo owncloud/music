@@ -222,6 +222,7 @@ class Music extends App {
 			return new SettingController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('AmpacheSessionMapper'),
 				$c->query('AmpacheUserMapper'),
 				$c->query('Scanner'),
 				$c->query('UserId'),

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -29,9 +29,8 @@ class AmpacheSessionMapper extends CompatibleMapper {
 	/**
 	 * @param string $token
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException if not found
-	 * @return AmpacheSession
 	 */
-	public function findByToken($token) {
+	public function findByToken($token) : AmpacheSession {
 		$sql = 'SELECT *
 				FROM `*PREFIX*music_ampache_sessions`
 				WHERE `token` = ? AND `expiry` > ?';
@@ -40,11 +39,7 @@ class AmpacheSessionMapper extends CompatibleMapper {
 		return $this->findEntity($sql, $params);
 	}
 
-	/**
-	 * @param string $token
-	 * @param integer $expiry
-	 */
-	public function extend($token, $expiry) {
+	public function extend(string $token, int $expiry) : void {
 		$sql = 'UPDATE `*PREFIX*music_ampache_sessions`
 				SET `expiry` = ?
 				WHERE `token` = ?';
@@ -53,10 +48,17 @@ class AmpacheSessionMapper extends CompatibleMapper {
 		$this->execute($sql, $params);
 	}
 
-	public function cleanUp() {
+	public function cleanUp() : void {
 		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`
 				WHERE `expiry` < ?';
 		$params = [\time()];
+		$this->execute($sql, $params);
+	}
+
+	public function revokeSessions(int $ampacheUserId) : void {
+		$sql = 'DELETE FROM `*PREFIX*music_ampache_sessions`
+				WHERE `ampache_user_id` = ?';
+		$params = [$ampacheUserId];
 		$this->execute($sql, $params);
 	}
 }

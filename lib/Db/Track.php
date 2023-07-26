@@ -180,25 +180,22 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl, string $genreKey, bool $includeArtists) : array {
+	public function toAmpacheApi(
+			IL10N $l10n,
+			callable $createPlayUrl,
+			callable $createImageUrl,
+			callable $renderAlbumOrArtistRef,
+			string $genreKey,
+			bool $includeArtists) : array {
 		$album = $this->getAlbum();
 
 		$result = [
 			'id' => (string)$this->getId(),
 			'title' => $this->getTitle() ?: '',
 			'name' => $this->getTitle() ?: '',
-			'artist' => [
-				'id' => (string)$this->getArtistId() ?: '0',
-				'value' => $this->getArtistNameString($l10n)
-			],
-			'albumartist' => [
-				'id' => (string)$album->getAlbumArtistId() ?: '0',
-				'value' => $album->getAlbumArtistNameString($l10n)
-			],
-			'album' => [
-				'id' => (string)$album->getId() ?: '0',
-				'value' => $album->getNameString($l10n)
-			],
+			'artist' => $renderAlbumOrArtistRef($this->getArtistId() ?: '0', $this->getArtistNameString($l10n)),
+			'albumartist' => $renderAlbumOrArtistRef($album->getAlbumArtistId(), $album->getAlbumArtistNameString($l10n)),
+			'album' => $renderAlbumOrArtistRef($album->getId() ?: '0', $album->getNameString($l10n)),
 			'url' => $createPlayUrl($this),
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),

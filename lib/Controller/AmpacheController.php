@@ -1295,6 +1295,20 @@ class AmpacheController extends Controller {
 		return $parts;
 	}
 
+	private function renderAlbumOrArtistRef(int $id, string $name) : array {
+		if ($this->apiMajorVersion() > 5) {
+			return [
+				'id' => (string)$id,
+				'name' => $name,
+			] + $this->prefixAndBaseName($name);
+		} else {
+			return [
+				'id' => (string)$id,
+				'value' => $name
+			];
+		}
+	}
+
 	/**
 	 * @param Artist[] $artists
 	 */
@@ -1353,10 +1367,10 @@ class AmpacheController extends Controller {
 					'name' => $name,
 					'prefix' => $nameParts['prefix'],
 					'basename' => $nameParts['basename'],
-					'artist' => [
-						'id' => (string)$album->getAlbumArtistId(),
-						'value' => $album->getAlbumArtistNameString($this->l10n)
-					],
+					'artist' => $this->renderAlbumOrArtistRef(
+						$album->getAlbumArtistId(),
+						$album->getAlbumArtistNameString($this->l10n)
+					),
 					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
@@ -1395,12 +1409,16 @@ class AmpacheController extends Controller {
 		$createImageUrl = function(Track $track) : string {
 			return $this->createCoverUrl($track->getAlbum());
 		};
+		$renderRef = function(int $id, string $name) : array {
+			return $this->renderAlbumOrArtistRef($id, $name);
+		};
 		$genreKey = $this->genreKey();
 		// In APIv6 JSON format, there is a new property `artists` with an array value
 		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
 
 		return [
-			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl, $genreKey, $includeArtists])
+			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', 
+				[$this->l10n, $createPlayUrl, $createImageUrl, $renderRef, $genreKey, $includeArtists])
 		];
 	}
 
@@ -1485,14 +1503,8 @@ class AmpacheController extends Controller {
 					'id' => (string)$track->getId(),
 					'title' => $track->getTitle(),
 					'name' => $track->getTitle(),
-					'artist' => [
-						'id' => (string)$track->getArtistId(),
-						'value' => $track->getArtistNameString($this->l10n)
-					],
-					'album' => [
-						'id' => (string)$track->getAlbumId(),
-						'value' => $track->getAlbumNameString($this->l10n)
-					]
+					'artist' => $this->renderAlbumOrArtistRef($track->getArtistId(), $track->getArtistNameString($this->l10n)),
+					'album' => $this->renderAlbumOrArtistRef($track->getAlbumId(), $track->getAlbumNameString($this->l10n))
 				];
 			}, $tracks)
 		];
@@ -1512,10 +1524,7 @@ class AmpacheController extends Controller {
 					'name' => $name,
 					'prefix' => $nameParts['prefix'],
 					'basename' => $nameParts['basename'],
-					'artist' => [
-						'id' => (string)$album->getAlbumArtistId(),
-						'value' => $album->getAlbumArtistNameString($this->l10n)
-					]
+					'artist' => $this->renderAlbumOrArtistRef($album->getAlbumArtistId(), $album->getAlbumArtistNameString($this->l10n))
 				];
 			}, $albums)
 		];
@@ -1538,10 +1547,7 @@ class AmpacheController extends Controller {
 					'prefix' => $nameParts['prefix'],
 					'basename' => $nameParts['basename'],
 					'album' => \array_map(function ($album) {
-						return [
-							'id' => (string)$album->getId(),
-							'value' => $album->getNameString($this->l10n)
-						];
+						return $this->renderAlbumOrArtistRef($album->getId(), $album->getNameString($this->l10n));
 					}, $albums)
 				];
 			}, $artists)

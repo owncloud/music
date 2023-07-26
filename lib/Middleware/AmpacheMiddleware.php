@@ -88,8 +88,8 @@ class AmpacheMiddleware extends Middleware {
 		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
 		$this->checkHandshakeTimestamp($timestamp, $currentTime);
-		$this->checkHandshakeAuthentication($user, $timestamp, $auth);
-		$session = $this->startNewSession($user, $expiryDate, $version);
+		$apiKeyId = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
+		$session = $this->startNewSession($user, $expiryDate, $version, $apiKeyId);
 		$controller->setSession($session);
 	}
 
@@ -107,31 +107,32 @@ class AmpacheMiddleware extends Middleware {
 		}
 	}
 
-	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : void {
+	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : int {
 		if ($user === null || $auth === null) {
 			throw new AmpacheException('Invalid Login - required credentials missing', 401);
 		}
 
 		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
 
-		foreach ($hashes as $hash) {
+		foreach ($hashes as $keyId => $hash) {
 			$expectedHash = \hash('sha256', $timestamp . $hash);
 
 			if ($expectedHash === $auth) {
-				return;
+				return (int)$keyId;
 			}
 		}
 
 		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
 	}
 
-	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion) : AmpacheSession {
+	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion, int $apiKeyId) : AmpacheSession {
 		// create new session
 		$session = new AmpacheSession();
 		$session->setUserId($user);
 		$session->setToken(Random::secure(16));
 		$session->setExpiry($expiryDate);
 		$session->setApiVersion(Util::truncate($apiVersion, 16));
+		$session->setAmpacheUserId($apiKeyId);
 
 		// save session to the database
 		$this->ampacheSessionMapper->insert($session);

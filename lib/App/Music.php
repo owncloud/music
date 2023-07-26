@@ -31,6 +31,7 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Controller\AmpacheImageController;
 use OCA\Music\Controller\ApiController;
 use OCA\Music\Controller\LogController;
 use OCA\Music\Controller\PageController;
@@ -63,6 +64,7 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
+use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\CollectionHelper;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
@@ -112,10 +114,25 @@ class Music extends App {
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
 				$c->query('PodcastService'),
+				$c->query('AmpacheImageService'),
 				$c->query('CoverHelper'),
 				$c->query('LastfmService'),
 				$c->query('LibrarySettings'),
 				$c->query('Random'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('AmpacheImageController', function (IAppContainer $c) {
+			return new AmpacheImageController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('AmpacheImageService'),
+				$c->query('CoverHelper'),
+				$c->query('LibrarySettings'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
 				$c->query('Logger')
 			);
 		});
@@ -494,6 +511,13 @@ class Music extends App {
 		/**
 		 * Utility
 		 */
+
+		$container->registerService('AmpacheImageService', function (IAppContainer $c) {
+			return new AmpacheImageService(
+				$c->query('AmpacheUserMapper'),
+				$c->query('Logger')
+			);
+		});
 
 		$container->registerService('CollectionHelper', function (IAppContainer $c) {
 			return new CollectionHelper(

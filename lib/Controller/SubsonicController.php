@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2022
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -435,10 +435,7 @@ class SubsonicController extends Controller {
 					$seed = $name;
 				}
 				$size = $size > 0 ? $size : $this->coverHelper->getDefaultSize();
-				$coverData = [
-					'content' => PlaceholderImage::generate($name, $seed, $size),
-					'mimetype' => 'image/png'
-				];
+				$coverData = PlaceholderImage::generateForResponse($name, $seed, $size);
 			}
 
 			return new FileResponse($coverData);

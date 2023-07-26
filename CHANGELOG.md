@@ -24,11 +24,12 @@
 
 ### Changed
 - Ampache API:
-  * Follow the APIv5 conventions if version 5.x.x requeted by the client on `handshake`
-  * Follow the APIv6 conventions if version 6.0.0 or higher requeted by the client on `handshake`
+  * Follow the APIv5 conventions if version 5.x.x requested by the client on `handshake`
+  * Follow the APIv6 conventions if version 6.0.0 or higher requested by the client on `handshake`
     - most new functions from the APIv6 are not yet supported, though
   * Follow the APIv6 conventions if the client doesn't specify any version
     - this may be overridden using the config.php key `music.ampache_api_default_ver`
+  * The URLs returned in the `art` tag of the entities are now cache-friendly, i.e. don't depend on the session
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
   * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
   * Also, volume settings in the Share and Files embedded players are now distinct from the volume in the main app

@@ -776,6 +776,12 @@
 				<notnull>false</notnull>
 				<length>16</length>
 			</field>
+			<field>
+				<name>ampache_user_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+			</field>
 
 			<index>
 				<name>music_ampache_sessions_index</name>

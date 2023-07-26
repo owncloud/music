@@ -62,6 +62,7 @@ use OCA\Music\Http\XmlResponse;
 
 use OCA\Music\Middleware\AmpacheException;
 
+use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\LastfmService;
@@ -85,6 +86,7 @@ class AmpacheController extends Controller {
 	private $trackBusinessLayer;
 	private $library;
 	private $podcastService;
+	private $imageService;
 	private $coverHelper;
 	private $lastfmService;
 	private $librarySettings;
@@ -116,6 +118,7 @@ class AmpacheController extends Controller {
 								TrackBusinessLayer $trackBusinessLayer,
 								Library $library,
 								PodcastService $podcastService,
+								AmpacheImageService $imageService,
 								CoverHelper $coverHelper,
 								LastfmService $lastfmService,
 								LibrarySettings $librarySettings,
@@ -137,6 +140,7 @@ class AmpacheController extends Controller {
 		$this->trackBusinessLayer = $trackBusinessLayer;
 		$this->library = $library;
 		$this->podcastService = $podcastService;
+		$this->imageService = $imageService;
 		$this->coverHelper = $coverHelper;
 		$this->lastfmService = $lastfmService;
 		$this->librarySettings = $librarySettings;
@@ -1258,7 +1262,11 @@ class AmpacheController extends Controller {
 		}
 
 		if ($type === 'playlist' || $entity->getCoverFileId()) {
-			return $this->createAmpacheActionUrl("get_art", $entity->getId(), $type);
+			$id = $entity->getId();
+			$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
+			return $this->urlGenerator->getAbsoluteURL(
+				$this->urlGenerator->linkToRoute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token"
+			);
 		} else {
 			return '';
 		}

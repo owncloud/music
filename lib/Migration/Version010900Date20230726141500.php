@@ -12,7 +12,7 @@ use OCP\Migration\IOutput;
 /**
  * Migrate the DB schema to Music v1.9.0 level from the v1.4.0 level
  */
-class Version010900Date20230720133000 extends SimpleMigrationStep {
+class Version010900Date20230726141500 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -33,7 +33,7 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 		$schema = $schemaClosure();
 		$this->fixInconsistentIdTypes($schema);
 		$this->allowNegativeYear($schema);
-		$this->ampacheApiVersion($schema);
+		$this->ampacheSessionChanges($schema);
 		return $schema;
 	}
 
@@ -66,12 +66,17 @@ class Version010900Date20230720133000 extends SimpleMigrationStep {
 	}
 
 	/**
-	 * Add the new field `api_version` to the `music_ampache_sessions` table
+	 * Add the new fields to the `music_ampache_sessions` table
 	 */
-	private function ampacheApiVersion(ISchemaWrapper $schema) {
+	private function ampacheSessionChanges(ISchemaWrapper $schema) {
 		$table = $schema->getTable('music_ampache_sessions');
+
 		if (!$table->hasColumn('api_version')) {
 			$table->addColumn('api_version', 'string', ['notnull' => false, 'length' => 16]);
+		}
+
+		if (!$table->hasColumn('ampache_user_id')) {
+			$table->addColumn('ampache_user_id', 'int', ['notnull' => true, 'unsigned' => true]);
 		}
 	}
 }

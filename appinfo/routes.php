@@ -122,6 +122,9 @@ $app->registerRoutes($this, ['routes' => [
 	// Ampache API - Workaround for AmpacheAlbumPlayer
 	['name' => 'ampache#xmlApi',	'url' => '/ampache/server/xml.server.php/',	'verb' => 'GET',	'postfix' => '_aap'],
 
+	// Ampache image API
+	['name' => 'ampacheImage#image',	'url' => '/ampache/image.php',	'verb' => 'GET'],
+
 	// Subsonic API http://www.subsonic.org/pages/api.jsp
 	// Some clients use POST while others use GET. Defining 'postfix' allows binding two routes to the same handler.
 	['name' => 'subsonic#handleRequest',	'url' => '/subsonic/rest/{method}',	'verb' => 'GET',	'requirements' => ['method' => '[a-zA-Z0-9\.]+']],

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -29,34 +29,59 @@ class AmpacheUserMapper {
 	}
 
 	/**
-	 * @return string[]
+	 * @return string[] Array keys are row IDs and values are hashes
 	 */
 	public function getPasswordHashes(string $userId) : array {
-		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` '.
-			'WHERE `user_id` = ?';
+		$sql = 'SELECT `id`, `hash` FROM `*PREFIX*music_ampache_users` WHERE `user_id` = ?';
 		$params = [$userId];
 		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();
 
 		$hashes = [];
 		foreach ($rows as $value) {
-			$hashes[] = $value['hash'];
+			$hashes[$value['id']] = $value['hash'];
 		}
 
 		return $hashes;
+	}
+
+	public function getPasswordHash(int $id) : ?string {
+		$sql = 'SELECT `hash` FROM `*PREFIX*music_ampache_users` WHERE `id` = ?';
+		$params = [$id];
+		$result = $this->db->executeQuery($sql, $params);
+		$row = $result->fetch();
+
+		if ($row === false) {
+			return null;
+		}
+
+		return $row['hash'];
+	}
+
+	public function getUserId(int $id) : ?string {
+		$sql = 'SELECT `user_id` FROM `*PREFIX*music_ampache_users` WHERE `id` = ?';
+		$params = [$id];
+		$result = $this->db->executeQuery($sql, $params);
+		$row = $result->fetch();
+
+		if ($row === false) {
+			return null;
+		}
+
+		return $row['user_id'];
 	}
 
 	/**
 	 * @return ?int ID of the added key on null on failure (which is highly unexpected)
 	 */
 	public function addUserKey(string $userId, string $hash, ?string $description) : ?int {
-		$sql = 'INSERT INTO `*PREFIX*music_ampache_users` '.
-			'(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
+		$sql = 'INSERT INTO `*PREFIX*music_ampache_users`
+				(`user_id`, `hash`, `description`) VALUES (?, ?, ?)';
 		$params = [$userId, $hash, $description];
 		$this->db->executeUpdate($sql, $params);
 
-		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users` '.
-				'WHERE `user_id` = ? AND `hash` = ?';
+		$sql = 'SELECT `id` FROM `*PREFIX*music_ampache_users`
+				WHERE `user_id` = ? AND `hash` = ?';
 		$params = [$userId, $hash];
 		$result = $this->db->executeQuery($sql, $params);
 		$row = $result->fetch();
@@ -69,15 +94,15 @@ class AmpacheUserMapper {
 	}
 
 	public function removeUserKey(string $userId, int $id) : void {
-		$sql = 'DELETE FROM `*PREFIX*music_ampache_users` '.
-				'WHERE `user_id` = ? AND `id` = ?';
+		$sql = 'DELETE FROM `*PREFIX*music_ampache_users`
+				WHERE `user_id` = ? AND `id` = ?';
 		$params = [$userId, $id];
 		$this->db->executeUpdate($sql, $params);
 	}
 
 	public function getAll(string $userId) : array {
-		$sql = 'SELECT `id`, `hash`, `description` FROM `*PREFIX*music_ampache_users` '.
-			'WHERE `user_id` = ?';
+		$sql = 'SELECT `id`, `hash`, `description` FROM `*PREFIX*music_ampache_users`
+				WHERE `user_id` = ?';
 		$params = [$userId];
 		$result = $this->db->executeQuery($sql, $params);
 		$rows = $result->fetchAll();

@@ -1156,6 +1156,7 @@ class AmpacheController extends Controller {
 			case 'live_stream':		return $this->radioStationBusinessLayer;
 			case 'tag':				return $this->genreBusinessLayer;
 			case 'genre':			return $this->genreBusinessLayer;
+			case 'bookmark':		return $this->bookmarkBusinessLayer;
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -1170,7 +1171,8 @@ class AmpacheController extends Controller {
 			case 'podcast_episode':	return $this->renderPodcastEpisodes($entities);
 			case 'live_stream':		return $this->renderLiveStreams($entities);
 			case 'tag':				return $this->renderTags($entities);
-			case 'genre':			return $this->renderTags($entities);
+			case 'genre':			return $this->renderGenres($entities);
+			case 'bookmark':		return $this->renderBookmarks($entities);
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}
@@ -1184,6 +1186,9 @@ class AmpacheController extends Controller {
 			case 'podcast':			return $this->renderPodcastChannelsIndex($entities);
 			case 'podcast_episode':	return $this->renderPodcastEpisodesIndex($entities);
 			case 'live_stream':		return $this->renderLiveStreamsIndex($entities);
+			case 'tag':				return $this->renderTags($entities); // not part of the API spec
+			case 'genre':			return $this->renderGenres($entities); // not part of the API spec
+			case 'bookmark':		return $this->renderBookmarks($entities); // not part of the API spec
 			default:				throw new AmpacheException("Unsupported type $type", 400);
 		}
 	}

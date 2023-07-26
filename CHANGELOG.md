@@ -15,7 +15,7 @@
   * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`
-  * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
+  * Fields `time`, `albumcount`, `songcount`, `prefix`, and `basename` to the `artist` and `album` type results
   * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, `stream_mime`, and `playlisttrack` to `song` type results
   * Fields `time`, `size`, `bitrate`, and `stream_bitrate` to `podcast_episode` type results
   * Null-valued fields `language`, `lyrics`, `mode`, `rate`, `replaygain_album_gain`, `replaygain_album_peak`, `replaygain_track_gain`, `replaygain_track_peak`, `r128_album_gain`, and `r128_track_gain` to `song` type results

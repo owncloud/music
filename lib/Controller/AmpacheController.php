@@ -95,6 +95,7 @@ class AmpacheController extends Controller {
 
 	private $jsonMode;
 	private $session;
+	private $namePrefixes;
 
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
@@ -154,6 +155,7 @@ class AmpacheController extends Controller {
 
 	public function setSession(AmpacheSession $session) : void {
 		$this->session = $session;
+		$this->namePrefixes = $this->librarySettings->getIgnoredArticles($session->getUserId());
 	}
 
 	public function ampacheResponse(array $content) : Response {
@@ -1277,6 +1279,22 @@ class AmpacheController extends Controller {
 		return ($limit === null) || ($index >= $offset && $index < $offset + $limit);
 	}
 
+	private function prefixAndBaseName(?string $name) : array {
+		$parts = ['prefix' => null, 'basename' => $name];
+
+		if ($name !== null) {
+			foreach ($this->namePrefixes as $prefix) {
+				if (Util::startsWith($name, $prefix . ' ', /*ignoreCase=*/true)) {
+					$parts['prefix'] = $prefix;
+					$parts['basename'] = \substr($name, \strlen($prefix) + 1);
+					break;
+				}
+			}
+		}
+
+		return $parts;
+	}
+
 	/**
 	 * @param Artist[] $artists
 	 */
@@ -1289,12 +1307,16 @@ class AmpacheController extends Controller {
 			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $genreKey) {
 				$albumCount = $this->albumBusinessLayer->countByArtist($artist->getId());
 				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
+				$name = $artist->getNameString($this->l10n);
+				$nameParts = $this->prefixAndBaseName($name);
 				return [
 					'id' => (string)$artist->getId(),
-					'name' => $artist->getNameString($this->l10n),
-					'albums' => $albumCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'name' => $name,
+					'prefix' => $nameParts['prefix'],
+					'basename' => $nameParts['basename'],
+					'albums' => $albumCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'albumcount' => $albumCount,
-					'songs' => $songCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'songs' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationByArtist($artist->getId()),
 					'art' => $this->createCoverUrl($artist),
@@ -1324,14 +1346,18 @@ class AmpacheController extends Controller {
 		return [
 			'album' => \array_map(function (Album $album) use ($genreKey, $includeArtists) {
 				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
+				$name = $album->getNameString($this->l10n);
+				$nameParts = $this->prefixAndBaseName($name);
 				$apiAlbum = [
 					'id' => (string)$album->getId(),
-					'name' => $album->getNameString($this->l10n),
+					'name' => $name,
+					'prefix' => $nameParts['prefix'],
+					'basename' => $nameParts['basename'],
 					'artist' => [
 						'id' => (string)$album->getAlbumArtistId(),
 						'value' => $album->getAlbumArtistNameString($this->l10n)
 					],
-					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5, this never contains the count
+					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
 					'rating' => 0,
@@ -1478,9 +1504,14 @@ class AmpacheController extends Controller {
 	private function renderAlbumsIndex(array $albums) : array {
 		return [
 			'album' => \array_map(function ($album) {
+				$name = $album->getNameString($this->l10n);
+				$nameParts = $this->prefixAndBaseName($name);
+
 				return [
 					'id' => (string)$album->getId(),
-					'name' => $album->getNameString($this->l10n),
+					'name' => $name,
+					'prefix' => $nameParts['prefix'],
+					'basename' => $nameParts['basename'],
 					'artist' => [
 						'id' => (string)$album->getAlbumArtistId(),
 						'value' => $album->getAlbumArtistNameString($this->l10n)
@@ -1498,10 +1529,14 @@ class AmpacheController extends Controller {
 			'artist' => \array_map(function ($artist) {
 				$userId = $this->session->getUserId();
 				$albums = $this->albumBusinessLayer->findAllByArtist($artist->getId(), $userId);
+				$name = $artist->getNameString($this->l10n);
+				$nameParts = $this->prefixAndBaseName($name);
 
 				return [
 					'id' => (string)$artist->getId(),
-					'name' => $artist->getNameString($this->l10n),
+					'name' => $name,
+					'prefix' => $nameParts['prefix'],
+					'basename' => $nameParts['basename'],
 					'album' => \array_map(function ($album) {
 						return [
 							'id' => (string)$album->getId(),

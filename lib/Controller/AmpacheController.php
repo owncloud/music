@@ -160,7 +160,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse($this->prepareResultForJsonApi($content));
 		} else {
-			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode'], true);
+			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode'], true, true);
 		}
 	}
 
@@ -1318,10 +1318,13 @@ class AmpacheController extends Controller {
 	 */
 	private function renderAlbums(array $albums) : array {
 		$genreKey = $this->genreKey();
+		// In APIv6 JSON format, there is a new property `artists` with an array value
+		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
+
 		return [
-			'album' => \array_map(function (Album $album) use ($genreKey) {
+			'album' => \array_map(function (Album $album) use ($genreKey, $includeArtists) {
 				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
-				return [
+				$apiAlbum = [
 					'id' => (string)$album->getId(),
 					'name' => $album->getNameString($this->l10n),
 					'artist' => [
@@ -1344,6 +1347,11 @@ class AmpacheController extends Controller {
 						];
 					}, $album->getGenres() ?? [])
 				];
+				if ($includeArtists) {
+					$apiAlbum['artists'] = [$apiAlbum['artist']];
+				}
+
+				return $apiAlbum;
 			}, $albums)
 		];
 	}
@@ -1362,9 +1370,11 @@ class AmpacheController extends Controller {
 			return $this->createCoverUrl($track->getAlbum());
 		};
 		$genreKey = $this->genreKey();
+		// In APIv6 JSON format, there is a new property `artists` with an array value
+		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
 
 		return [
-			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl, $genreKey])
+			'song' => Util::arrayMapMethod($tracks, 'toAmpacheApi', [$this->l10n, $createPlayUrl, $createImageUrl, $genreKey, $includeArtists])
 		];
 	}
 

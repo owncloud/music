@@ -180,7 +180,7 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl, string $genreKey) : array {
+	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl, string $genreKey, bool $includeArtists) : array {
 		$album = $this->getAlbum();
 
 		$result = [
@@ -203,6 +203,7 @@ class Track extends Entity {
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),
 			'track' => $this->getAdjustedTrackNumber(), // TODO: maybe there should be a user setting to select plain or adjusted number
+			'playlisttrack' => $this->getAdjustedTrackNumber(),
 			'disk' => $this->getDisk(),
 			'filename' => $this->getFilename(),
 			'format' => $this->getFileExtension(),
@@ -217,6 +218,16 @@ class Track extends Entity {
 			'preciserating' => 0,
 			'playcount' => $this->getPlayCount(),
 			'flag' => !empty($this->getStarred()),
+			'language' => null,
+			'lyrics' => null,
+			'mode' => null, // cbr/vbr
+			'rate' => null, // sample rate [Hz]
+			'replaygain_album_gain' => null,
+			'replaygain_album_peak' => null,
+			'replaygain_track_gain' => null,
+			'replaygain_track_peak' => null,
+			'r128_album_gain' => null,
+			'r128_track_gain' => null,
 		];
 
 		$genreId = $this->getGenreId();
@@ -228,6 +239,12 @@ class Track extends Entity {
 			]];
 		}
 
+		if ($includeArtists) {
+			// Add another property `artists`. Apparently, it exists to support mulitple artists per song
+			// but we don't have such possibility and this is always just a 1-item array.
+			$result['artists'] = [$result['artist']];
+		}
+	
 		return $result;
 	}
 

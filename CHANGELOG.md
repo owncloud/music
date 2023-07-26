@@ -5,6 +5,7 @@
   [#619](https://github.com/owncloud/music/issues/619)
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
+- Files playlist tab: Tooltip showing the file path or stream URL
 - Ampache API:
   * New methods:
     - `get_similar`
@@ -15,10 +16,11 @@
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`
   * Fields `time`, `albumcount`, and `songcount` to the `artist` and `album` type results
-  * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, and `stream_mime` to `song` type results
+  * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, `stream_mime`, and `playlisttrack` to `song` type results
   * Fields `time`, `size`, `bitrate`, and `stream_bitrate` to `podcast_episode` type results
+  * Null-valued fields `language`, `lyrics`, `mode`, `rate`, `replaygain_album_gain`, `replaygain_album_peak`, `replaygain_track_gain`, `replaygain_track_peak`, `r128_album_gain`, and `r128_track_gain` to `song` type results
+  * In JSON-mode only, field `artists` to `song` and `album` type results
   * All the fields of `handshake` response on the response of `ping` within a valid session
-- Files playlist tab: Tooltip showing the file path or stream URL
 - Subsonic: Empty implementation for the method `getNowPlaying`
   [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 

@@ -23,13 +23,15 @@ use OCP\AppFramework\Http\Response;
  * an array with string keys.
  *
  * Note that this response type has been created to fulfill the needs of the
- * SubsonicController and may not be suitable for all other purposes.
+ * SubsonicController and AmpacheController and may not be suitable for all other
+ * purposes.
  */
 class XmlResponse extends Response {
 	private $content;
 	private $doc;
 	private $attributeKeys;
 	private $boolAsInt;
+	private $nullAsEmpty;
 
 	/**
 	 * @param array $content
@@ -37,9 +39,11 @@ class XmlResponse extends Response {
 	 *                                  If false, then key-value pairs are never made into attributes.
 	 *                                  If an array, then keys found from the array are made into attributes if possible.
 	 * @param bool $boolAsInt If true, any boolean values are yielded as int 0/1.
-	 *                        If false, any boolean values are yielded as string "false"/"true"
+	 *                        If false, any boolean values are yielded as string "false"/"true".
+	 * @param bool $nullAsEmpty If true, any null values are converted to empty strings, and the result has an empty element or attribute.
+	 *                          If false, any null-valued keys are are left out from the result.
 	 */
-	public function __construct(array $content, /*mixed*/ $attributes=true, bool $boolAsInt=false) {
+	public function __construct(array $content, /*mixed*/ $attributes=true, bool $boolAsInt=false, bool $nullAsEmpty=false) {
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary
@@ -51,6 +55,7 @@ class XmlResponse extends Response {
 		$this->doc->formatOutput = true;
 		$this->attributeKeys = $attributes;
 		$this->boolAsInt = $boolAsInt;
+		$this->nullAsEmpty = $nullAsEmpty;
 	}
 
 	public function render() {
@@ -68,6 +73,8 @@ class XmlResponse extends Response {
 			}
 		} elseif (\is_numeric($value)) {
 			$value = (string)$value;
+		} elseif ($value === null && $this->nullAsEmpty) {
+			$value = '';
 		}
 
 		if (\is_string($value)) {

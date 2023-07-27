@@ -48,6 +48,7 @@ use OCA\Music\Db\Artist;
 use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\Genre;
+use OCA\Music\Db\RadioStation;
 use OCA\Music\Db\MatchMode;
 use OCA\Music\Db\Playlist;
 use OCA\Music\Db\PodcastChannel;
@@ -1641,7 +1642,8 @@ class AmpacheController extends Controller {
 				$api5albumOddity = ($apiVer === 5 && $action === 'album');
 
 				if (!($plural  || $api5albumOddity)) {
-					$content = \array_pop(\array_pop($content));
+					$content = \array_pop($content);
+					$content = \array_pop($content);
 				}
 			}
 		}

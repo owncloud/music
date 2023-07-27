@@ -144,10 +144,12 @@ class AmpacheMiddleware extends Middleware {
 		$token = $this->request->getParam('auth') ?: $this->request->getParam('ssid');
 
 		// 'ping' is allowed without a session (but if session token is passed, then it has to be valid)
-		if (!($action === 'ping' && empty($token))) {
-			$session = $this->getExistingSession($token);
-			$controller->setSession($session);
+		if ($action === 'ping' && empty($token)) {
+			return;
 		}
+
+		$session = $this->getExistingSession($token);
+		$controller->setSession($session);
 
 		if ($action === 'goodbye') {
 			$this->ampacheSessionMapper->delete($session);

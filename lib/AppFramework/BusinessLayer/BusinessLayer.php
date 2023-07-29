@@ -191,6 +191,31 @@ abstract class BusinessLayer {
 	}
 
 	/**
+	 * Find all entities matching multiple criteria, as needed for the Ampache API method `advanced_search`
+	 * @param string $conjunction Operator to use between the rules, either 'and' or 'or'
+	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
+	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question,
+	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
+	 * 				'operator' is one of ['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false'],
+	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @param bool $random Select entities in random order
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, bool $random, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if ($conjunction !== 'and' && $conjunction !== 'or') {
+			throw new BusinessLayerException("Bad conjunction '$conjunction'");
+		}
+		try {
+			// TODO: handle $random here
+			return $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+		} catch (\Exception $e) {
+			// catch everything as many kinds of DB exceptions are possible on various cloud versions
+			throw new BusinessLayerException($e->getMessage());
+		}
+	}
+
+	/**
 	 * Find IDs of all user's entities of this kind.
 	 * Optionally, limit to given IDs which may be used to check the validity of those IDs.
 	 * @return int[]

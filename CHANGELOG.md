@@ -12,6 +12,7 @@
     - `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
     - `live_streams`, `live_stream`, `live_stream_create`, `live_stream_edit`, `live_stream_delete`
+    - `advanced_search` with partial support, many/most search rules not supported
   * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`

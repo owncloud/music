@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -168,6 +168,26 @@ class AlbumBusinessLayer extends BusinessLayer {
 			?string $name, string $userId, int $matchMode=MatchMode::Exact, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$albums = parent::findAllByName($name, $userId, $matchMode, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllByName()
+	 * @return Album[]
+	 */
+	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllStarred($userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllByName()
+	 * @return Album[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, bool $random, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllAdvanced($conjunction, $rules, $random, $userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

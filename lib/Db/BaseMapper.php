@@ -160,7 +160,34 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Find IDs of all user's entities of this kind.
+	 * Find all entities matching multiple criteria, as needed for the Ampache API method `advanced_search`
+	 * @param string $conjunction Operator to use between the rules, either 'and' or 'or'
+	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
+	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question
+	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
+	 * 				'operator' is one of ['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false'],
+	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sqlConditions = [];
+		$sqlParams = [$userId];
+
+		foreach ($rules as $rule) {
+			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input']);
+			$sqlConditions[] = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
+			if ($param !== null) {
+				$sqlParams[] = $param;
+			}
+		}
+		$sqlConditions = \implode(" $conjunction ", $sqlConditions);
+
+		$sql = $this->selectUserEntities($sqlConditions, "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
+		return $this->findEntities($sql, $sqlParams, $limit, $offset);
+	}
+
+	/**
 	 * Optionally, limit to given IDs which may be used to check the validity of those IDs.
 	 * @return int[]
 	 */
@@ -458,6 +485,47 @@ abstract class BaseMapper extends CompatibleMapper {
 			$pattern = \implode('%', $parts);
 		}
 		return "%$pattern%";
+	}
+
+	/**
+	 * Format SQL operator and parameter matching the given advanced search operator.
+	 * @return array like ['op' => string, 'param' => string]
+	 */
+	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput) {
+		switch ($ruleOperator) {
+			case 'contain':		return ['op' => 'LIKE',				'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',			'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',				'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',				'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',				'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',				'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => 'SOUNDS LIKE',		'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',	'param' => $ruleInput]; // MySQL-specific syntax
+			case 'regexp':		return ['op' => 'REGEXP',			'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notregexp':	return ['op' => 'NOT REGEXP',		'param' => $ruleInput]; // MySQL-specific syntax
+			case 'true':		return ['op' => 'IS NOT NULL',		'param' => null];
+			case 'false':		return ['op' => 'IS NULL',			'param' => null];
+			default:			return ['op' => $ruleOperator,		'param' => $ruleInput]; // all numerical operators fall here
+		}
+	}
+
+	/**
+	 * Format SQL condition matching the given advanced search rule and SQL operator.
+	 * Derived classes should override this to provide support for table-specific rules.
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		$table = $this->getTableName();
+		$nameCol = $this->nameColumn;
+
+		switch ($rule) {
+			case 'title':		return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
+			case 'my_flagged':	return "`$table`.`starred` $sqlOp";
+			case 'favorite':	return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'added':		return "`$table`.`created` $sqlOp ?";
+			case 'updated':		return "`$table`.`updated` $sqlOp ?";
+			case 'mbid':		return "`$table`.`mbid` $sqlOp ?";
+			default:			throw new \DomainException("Rule '$rule' not supported on this entity type");
+		}
 	}
 
 	/**

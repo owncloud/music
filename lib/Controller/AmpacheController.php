@@ -45,6 +45,7 @@ use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Db\Album;
 use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\Artist;
+use OCA\Music\Db\BaseMapper;
 use OCA\Music\Db\Bookmark;
 use OCA\Music\Db\Entity;
 use OCA\Music\Db\Genre;
@@ -1036,6 +1037,30 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function advanced_search(
+			string $type, string $operator, 
+			string $rule_1, int $rule_1_operator, string $rule_1_input,
+			int $limit, int $offset=0, bool $random=false) : array {
+		$businessLayer = $this->getBusinessLayer($type);
+		$rule_1 = self::advSearchResolveRuleAlias($rule_1);
+		$rules = [[
+			'rule' => $rule_1,
+			'operator' => self::advSearchInterpretOperator($rule_1_operator, $rule_1),
+			'input' => self::advSearchConvertInput($rule_1_input, $rule_1)
+		]]; // TODO: support multiple rules
+
+		try {
+			$entities = $businessLayer->findAllAdvanced($operator, $rules, $random, $this->session->getUserId(), $limit, $offset);
+		} catch (BusinessLayerException $e) {
+			throw new AmpacheException($e->getMessage(), 400);
+		}
+		
+		return $this->renderEntities($entities, $type);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function flag(string $type, int $id, bool $flag) : array {
 		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
@@ -1199,6 +1224,105 @@ class AmpacheController extends Controller {
 			case 'song':			return Bookmark::TYPE_TRACK;
 			case 'podcast_episode':	return Bookmark::TYPE_PODCAST_EPISODE;
 			default:				throw new AmpacheException("Unsupported type $ampacheType", 400);
+		}
+	}
+
+	private static function advSearchResolveRuleAlias(string $rule) : string {
+		switch ($rule) {
+			case 'name':					return 'title';
+			case 'song_title':				return 'song';
+			case 'album_title':				return 'album';
+			case 'artist_title':			return 'artist';
+			case 'podcast_title':			return 'podcast';
+			case 'podcast_episode_title':	return 'podcast_episode';
+			case 'album_artist_title':		return 'album_artist';
+			case 'song_artist_title':		return 'song_artist';
+			case 'tag':						return 'genre';
+			case 'song_tag':				return 'song_genre';
+			case 'album_tag':				return 'album_genre';
+			case 'artist_tag':				return 'artist_genre';
+			case 'no_tag':					return 'no_genre';
+			default:						return $rule;
+		}
+	}
+
+	// NOTE: alias rule names should be resolved to their base form before calling this
+	private static function advSearchInterpretOperator(int $rule_operator, string $rule) : string {
+		// Operator mapping is different for text, numeric, date, boolean, and day rules
+
+		$textRules = [
+			'anywhere', 'title', 'song', 'album', 'artist', 'podcast', 'podcast_episode', 'album_artist', 'song_artist',
+			'favorite', 'favorite_album', 'favorite_artist', 'genre', 'song_genre', 'album_genre', 'artist_genre',
+			'playlist_name', 'type', 'file', 'mbid', 'mbid_album', 'mbid_artist', 'mbid_song'
+		];
+		// text but no support planned: 'composer', 'summary', 'placeformed', 'release_type', 'release_status', 'barcode',
+		// 'catalog_number', 'label', 'comment', 'lyrics', 'username', 'category'
+
+		$numericRules = [
+			'track', 'year', 'original_year', 'myrating', 'rating', 'songrating', 'albumrating', 'artistrating',
+			'played_times', 'album_count', 'song_count', 'time', 'recent_played', 'recent_added', 'recent_updated'];
+		// numeric but no support planned: 'yearformed', 'skipped_times', 'play_skip_ratio', 'image_height', 'image_width'
+
+		$dateOrDayRules = ['added', 'updated', 'pubdate', 'last_play'];
+
+		$booleanRules = [
+			'played', 'myplayed', 'myplayedalbum', 'myplayedartist', 'playlist', 'has_image', 'no_genre',
+			'my_flagged', 'my_flagged_album', 'my_flagged_artist'
+		];
+		// boolean but no support planned: 'license', 'smartplaylist', 'state', 'catalog', 'possible_duplicate', 'possible_duplicate_album'
+
+		if (\in_array($rule, $textRules)) {
+			switch ($rule_operator) {
+				case 0: return 'contain';		// contains
+				case 1: return 'notcontain';	// does not contain;
+				case 2: return 'start';			// starts with
+				case 3: return 'end';			// ends with;
+				case 4: return 'is';			// is
+				case 5: return 'isnot';			// is not
+				case 6: return 'sounds';		// sounds like
+				case 7: return 'notsounds';		// does not sound like
+				case 8: return 'regexp';		// matches regex
+				case 9: return 'notregexp';		// does not match regex
+				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'text' type rules", 400);
+			}
+		} elseif (\in_array($rule, $numericRules)) {
+			switch ($rule_operator) {
+				case 0: return '>=';
+				case 1: return '<=';
+				case 2: return '=';
+				case 3: return '!=';
+				case 4: return '>';
+				case 5: return '<';
+				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'numeric' type rules", 400);
+			}
+		} elseif (\in_array($rule, $dateOrDayRules)) {
+			switch ($rule_operator) {
+				case 0: return '<';
+				case 1: return '>';
+				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'date' or 'day' type rules", 400);
+			}
+		} elseif (\in_array($rule, $booleanRules)) {
+			switch ($rule_operator) {
+				case 0: return 'true';
+				case 1: return 'false';
+				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'boolean' type rules", 400);
+			}
+		} else {
+			throw new AmpacheException("Search rule '$rule' not supported", 400);
+		}
+	}
+
+	private static function advSearchConvertInput(string $input, string $rule) : string {
+		switch ($rule) {
+			case 'last_play':
+				// days diff to ISO date
+				$date = new \DateTime("$input days ago");
+				return $date->format(BaseMapper::SQL_DATE_FORMAT);
+			case 'time':
+				// minutes to seconds
+				return (string)(int)((float)$input * 60);
+			default:
+				return $input;
 		}
 	}
 

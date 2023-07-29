@@ -67,6 +67,43 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		switch ($rule) {
+			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
+			case 'artist':			return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'track':			return "`number` $sqlOp ?";
+			case 'year':			return "`year` $sqlOp ?";
+			case 'favorite_album':	return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?) AND `al`.`starred` IS NOT NULL)";
+			case 'favorite_artist':	return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?) AND `ar`.`starred` IS NOT NULL)";
+			case 'played_times':	return "`play_count` $sqlOp ?";
+			case 'last_play':		return "`last_played` $sqlOp ?";
+			case 'played':			// fall through, we give no access to other people's data
+			case 'myplayed':		return "`last_played` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
+			//case 'myplayedalbum':
+			//case 'myplayedartist':
+			case 'time':			return "`length` $sqlOp ?";
+			case 'genre':			// fall through
+			case 'song_genre':		return "`genre_id` IN (SELECT `id` from `*PREFIX*music_genres` `ge` WHERE LOWER(`ge`.`name`) $sqlOp LOWER(?))";
+			//case 'albumgenre':
+			//case 'artistgenre':
+			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
+			//case 'playlist':
+			//case 'playlist_name':	TODO: pattern to match against playlist track_ids somethign like: ('%|' || CONVERT(varchar(10), `*PREFIX*music_tracks`.`id`) || '|%')
+			//case 'recent_played':
+			//case 'recent_added':
+			//case 'recent_updated':
+			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+		}
+	}
+
+	/**
 	 * Returns all tracks of the given artist (both album and track artists are considered)
 	 * @return Track[]
 	 */

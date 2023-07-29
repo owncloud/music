@@ -74,8 +74,8 @@ class AmpacheImageController extends Controller {
 		if ($userId === null) {
 			return new ErrorResponse(Http::STATUS_FORBIDDEN, 'invalid token');
 		}
-		$businessLayer = $this->getBusinessLayer($object_type);
 
+		$businessLayer = $this->getBusinessLayer($object_type);
 		if ($businessLayer === null) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, "invalid object_type $object_type");	
 		}
@@ -87,7 +87,6 @@ class AmpacheImageController extends Controller {
 		}
 
 		$coverImage = $this->coverHelper->getCover($entity, $userId, $this->librarySettings->getFolder($userId));
-
 		if ($coverImage === null) {
 			return new ErrorResponse(Http::STATUS_NOT_FOUND, "$object_type $object_id has no cover image");		
 		}

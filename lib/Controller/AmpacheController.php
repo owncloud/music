@@ -1377,7 +1377,7 @@ class AmpacheController extends Controller {
 	private function createAmpacheActionUrl(string $action, int $id, ?string $type=null) : string {
 		$api = $this->jsonMode ? 'music.ampache.jsonApi' : 'music.ampache.xmlApi';
 		$auth = $this->session->getToken();
-		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute($api))
+		return $this->urlGenerator->linkToRouteAbsolute($api)
 				. "?action=$action&id=$id&auth=$auth"
 				. (!empty($type) ? "&type=$type" : '');
 	}
@@ -1396,9 +1396,7 @@ class AmpacheController extends Controller {
 		if ($type === 'playlist' || $entity->getCoverFileId()) {
 			$id = $entity->getId();
 			$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
-			return $this->urlGenerator->getAbsoluteURL(
-				$this->urlGenerator->linkToRoute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token"
-			);
+			return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
 		} else {
 			return '';
 		}

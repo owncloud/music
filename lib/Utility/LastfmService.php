@@ -157,7 +157,7 @@ class LastfmService {
 	}
 
 	/**
-	 * Get artists from the user's library similar to the given artist
+	 * Get tracks from the user's library similar to the given track
 	 * @return Track[]
 	 * @throws BusinessLayerException if track with the given ID is not found
 	 */
@@ -184,19 +184,26 @@ class LastfmService {
 
 	/**
 	 * Get artist tracks from the user's library, sorted by their popularity on Last.fm
+	 * @param int|string $artistIdOrName Either the ID of the artist or the artist's name written exectly
+	 * 									like in the DB. Any integer-typed value is treated as an ID and 
+	 * 									string-typed value as a name.
 	 * @param int $maxCount Number of tracks to request from Last.fm. Note that the function may return much
 	 *						less tracks if the top tracks from Last.fm are not present in the user's library.
 	 * @return Track[]
 	 */
-	public function getTopTracks(string $artistName, string $userId, int $maxCount) : array {
+	public function getTopTracks(/*mixed*/ $artistIdOrName, string $userId, int $maxCount) : array {
 		$foundTracks = [];
 
-		$artist = $this->artistBusinessLayer->findAllByName($artistName, $userId, MatchMode::Exact, /*$limit=*/1)[0] ?? null;
+		if (\is_integer($artistIdOrName)) {
+			$artist = $this->artistBusinessLayer->find($artistIdOrName, $userId);
+		} else {
+			$artist = $this->artistBusinessLayer->findAllByName($artistIdOrName, $userId, MatchMode::Exact, /*$limit=*/1)[0] ?? null;
+		}
 
 		if ($artist !== null) {
 			$lastfmResult = $this->getInfoFromLastFm([
 				'method' => 'artist.getTopTracks',
-				'artist' => $artistName,
+				'artist' => $artist->getName(),
 				'limit' => (string)$maxCount
 			]);
 			$topTracksOnLastfm = $lastfmResult['toptracks']['track'] ?? null;

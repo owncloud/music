@@ -428,9 +428,14 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist_songs(int $filter, int $limit, int $offset=0) : array {
+	protected function artist_songs(int $filter, int $limit, int $offset=0, bool $top50=false) : array {
 		$userId = $this->session->getUserId();
-		$tracks = $this->trackBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
+		if ($top50) {
+			$tracks = $this->lastfmService->getTopTracks($filter, $userId, 50);
+			$tracks = \array_slice($tracks, $offset, $limit);
+		} else {
+			$tracks = $this->trackBusinessLayer->findAllByArtist($filter, $userId, $limit, $offset);
+		}
 		return $this->renderSongs($tracks);
 	}
 

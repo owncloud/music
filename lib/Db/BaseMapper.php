@@ -408,7 +408,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$allConditions = "`{$this->getTableName()}`.`user_id` = ?";
 
 		if (!empty($condition)) {
-			$allConditions .= " AND $condition";
+			$allConditions .= " AND ($condition)";
 		}
 
 		return $this->selectEntities($allConditions, $extension);

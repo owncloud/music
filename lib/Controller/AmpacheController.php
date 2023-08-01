@@ -1037,20 +1037,21 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function advanced_search(
-			string $type, string $operator, 
-			string $rule_1, int $rule_1_operator, string $rule_1_input,
-			int $limit, int $offset=0, bool $random=false) : array {
-		$businessLayer = $this->getBusinessLayer($type);
-		$rule_1 = self::advSearchResolveRuleAlias($rule_1);
-		$rules = [[
-			'rule' => $rule_1,
-			'operator' => self::advSearchInterpretOperator($rule_1_operator, $rule_1),
-			'input' => self::advSearchConvertInput($rule_1_input, $rule_1)
-		]]; // TODO: support multiple rules
+	protected function advanced_search(string $type, string $operator, int $limit, int $offset=0, bool $random=false) : array {
+		// get all the rule parameters as passed on the HTTP call
+		$rules = self::advSearchGetRuleParams($this->request->getParams());
+
+		// apply some conversions on the rules
+		foreach ($rules as &$rule) {
+			$rule['rule'] = self::advSearchResolveRuleAlias($rule['rule']);
+			$rule['operator'] = self::advSearchInterpretOperator($rule['operator'], $rule['rule']);
+			$rule['input'] = self::advSearchConvertInput($rule['input'], $rule['rule']);
+		}
 
 		try {
-			$entities = $businessLayer->findAllAdvanced($operator, $rules, $random, $this->session->getUserId(), $limit, $offset);
+			$businessLayer = $this->getBusinessLayer($type);
+			$userId = $this->session->getUserId();
+			$entities = $businessLayer->findAllAdvanced($operator, $rules, $random, $userId, $limit, $offset);
 		} catch (BusinessLayerException $e) {
 			throw new AmpacheException($e->getMessage(), 400);
 		}
@@ -1244,6 +1245,36 @@ class AmpacheController extends Controller {
 			case 'no_tag':					return 'no_genre';
 			default:						return $rule;
 		}
+	}
+
+	private static function advSearchGetRuleParams(array $urlParams) : array {
+		$rules = [];
+
+		// read and organize the rule parameters
+		foreach ($urlParams as $key => $value) {
+			$parts = \explode('_', $key, 3);
+			if ($parts[0] == 'rule' && \count($parts) > 1) {
+				if (\count($parts) == 2) {
+					$rules[$parts[1]]['rule'] = $value;
+				} elseif ($parts[2] == 'operator') {
+					$rules[$parts[1]]['operator'] = (int)$value;
+				} elseif ($parts[2] == 'input') {
+					$rules[$parts[1]]['input'] = $value;
+				}
+			}
+		}
+
+		// validate the rule parameters
+		if (\count($rules) === 0) {
+			throw new AmpacheException('At least one rule must be given', 400);
+		}
+		foreach ($rules as $rule) {
+			if (\count($rule) != 3) {
+				throw new AmpacheException('All rules must be given as triplet "rule_N", "rule_N_operator", "rule_N_input"', 400);
+			}
+		}
+
+		return $rules;
 	}
 
 	// NOTE: alias rule names should be resolved to their base form before calling this

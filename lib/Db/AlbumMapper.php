@@ -59,6 +59,43 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
+		switch ($rule) {
+			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
+			case 'song_artist':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_artists` `ar` ON `t`.`artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'song':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE LOWER(`t`.`title`) $sqlOp LOWER(?))";
+			//case 'year':
+			//case 'original_year':
+			//case 'played_times':
+			//case 'last_play':
+			//case 'myplayed':
+			//case 'myplayedartist':
+			case 'song_count':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)";
+			case 'time':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`length`) $sqlOp ?) mysqlhack)";
+			//case 'genre':
+			//case 'album_genre':
+			//case 'song_genre':
+			//case 'no_genre':
+			//case 'playlist':
+			//case 'playlist_name':
+			case 'file':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*filecache` `f` ON `t`.`file_id` = `f`.`fileid` WHERE LOWER(`f`.`name`) $sqlOp LOWER(?))";
+			//case 'recent_played':
+			//case 'recent_added':
+			case 'mbid_album':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
+			case 'mbid_song':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`mbid` $sqlOp ?)";
+			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
+			case 'has_image':		return "`*PREFIX*music_albums`.`cover_file_id` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+		}
+	}
+
+	/**
 	 * returns artist IDs mapped to album IDs
 	 * does not include album_artist_id
 	 *

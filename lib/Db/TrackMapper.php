@@ -99,6 +99,9 @@ class TrackMapper extends BaseMapper {
 			//case 'recent_added':
 			//case 'recent_updated':
 			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
+			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
+			case 'mbid_album':		return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE `al`.`mbid` $sqlOp ?)";
+			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
 			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
 		}
 	}

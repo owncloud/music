@@ -75,7 +75,7 @@ class TrackMapper extends BaseMapper {
 	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
 		switch ($rule) {
 			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
-			case 'artist':			return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
 			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
 			case 'track':			return "`number` $sqlOp ?";
 			case 'year':			return "`year` $sqlOp ?";
@@ -89,7 +89,7 @@ class TrackMapper extends BaseMapper {
 			//case 'myplayedartist':
 			case 'time':			return "`length` $sqlOp ?";
 			case 'genre':			// fall through
-			case 'song_genre':		return "`genre_id` IN (SELECT `id` from `*PREFIX*music_genres` `ge` WHERE LOWER(`ge`.`name`) $sqlOp LOWER(?))";
+			case 'song_genre':		return "LOWER(`genre`.`name`) $sqlOp LOWER(?)";
 			//case 'albumgenre':
 			//case 'artistgenre':
 			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';

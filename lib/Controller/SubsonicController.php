@@ -987,6 +987,14 @@ class SubsonicController extends Controller {
 		]]);
 	}
 
+	/**
+	 * @SubsonicAPI
+	 */
+	protected function getNowPlaying() {
+		// TODO: not supported yet
+		return $this->subsonicResponse(['nowPlaying' => ['entry' => []]]);
+	}
+
 	/* -------------------------------------------------------------------------
 	 * Helper methods
 	 *------------------------------------------------------------------------*/

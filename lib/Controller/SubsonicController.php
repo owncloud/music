@@ -992,7 +992,7 @@ class SubsonicController extends Controller {
 	 */
 	protected function getNowPlaying() {
 		// TODO: not supported yet
-		return $this->subsonicResponse(['nowPlaying' => []]);
+		return $this->subsonicResponse(['nowPlaying' => ['entry' => []]]);
 	}
 
 	/* -------------------------------------------------------------------------

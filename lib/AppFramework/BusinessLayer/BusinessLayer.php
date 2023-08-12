@@ -198,16 +198,14 @@ abstract class BusinessLayer {
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
 	 * 				'operator' is one of ['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
-	 * @param bool $random Select entities in random order
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, bool $random, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
 		if ($conjunction !== 'and' && $conjunction !== 'or') {
 			throw new BusinessLayerException("Bad conjunction '$conjunction'");
 		}
 		try {
-			// TODO: handle $random here
 			return $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
 		} catch (\Exception $e) {
 			// catch everything as many kinds of DB exceptions are possible on various cloud versions

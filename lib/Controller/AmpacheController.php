@@ -1056,7 +1056,14 @@ class AmpacheController extends Controller {
 		try {
 			$businessLayer = $this->getBusinessLayer($type);
 			$userId = $this->session->getUserId();
-			$entities = $businessLayer->findAllAdvanced($operator, $rules, $random, $userId, $limit, $offset);
+			if ($random) {
+				// in case the random order is requested, the limit/offset handling happens after the DB query
+				$entities = $businessLayer->findAllAdvanced($operator, $rules, $userId);
+				$indices = $this->random->getIndices(\count($entities), $offset, $limit, $userId, 'ampache_adv_search_'.$type);
+				$entities = Util::arrayMultiGet($entities, $indices);
+			} else {
+				$entities = $businessLayer->findAllAdvanced($operator, $rules, $userId, $limit, $offset);
+			}
 		} catch (BusinessLayerException $e) {
 			throw new AmpacheException($e->getMessage(), 400);
 		}

@@ -186,8 +186,8 @@ class AlbumBusinessLayer extends BusinessLayer {
 	 * @see BusinessLayer::findAllByName()
 	 * @return Album[]
 	 */
-	public function findAllAdvanced(string $conjunction, array $rules, bool $random, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$albums = parent::findAllAdvanced($conjunction, $rules, $random, $userId, $limit, $offset);
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

@@ -175,7 +175,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$sqlParams = [$userId];
 
 		foreach ($rules as $rule) {
-			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input']);
+			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input'], $userId);
 			$sqlConditions[] = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
 			if ($param !== null) {
 				$sqlParams[] = $param;
@@ -491,21 +491,22 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * Format SQL operator and parameter matching the given advanced search operator.
 	 * @return array like ['op' => string, 'param' => string]
 	 */
-	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput) {
+	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
 		switch ($ruleOperator) {
-			case 'contain':		return ['op' => 'LIKE',				'param' => "%$ruleInput%"];
-			case 'notcontain':	return ['op' => 'NOT LIKE',			'param' => "%$ruleInput%"];
-			case 'start':		return ['op' => 'LIKE',				'param' => "$ruleInput%"];
-			case 'end':			return ['op' => 'LIKE',				'param' => "%$ruleInput"];
-			case 'is':			return ['op' => '=',				'param' => "$ruleInput"];
-			case 'isnot':		return ['op' => '!=',				'param' => "$ruleInput"];
-			case 'sounds':		return ['op' => 'SOUNDS LIKE',		'param' => $ruleInput]; // MySQL-specific syntax
-			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',	'param' => $ruleInput]; // MySQL-specific syntax
-			case 'regexp':		return ['op' => 'REGEXP',			'param' => $ruleInput]; // MySQL-specific syntax
-			case 'notregexp':	return ['op' => 'NOT REGEXP',		'param' => $ruleInput]; // MySQL-specific syntax
-			case 'true':		return ['op' => 'IS NOT NULL',		'param' => null];
-			case 'false':		return ['op' => 'IS NULL',			'param' => null];
-			default:			return ['op' => $ruleOperator,		'param' => $ruleInput]; // all numerical operators fall here
+			case 'contain':		return ['op' => 'LIKE',						'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',					'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',						'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',						'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',						'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',						'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => 'SOUNDS LIKE',				'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',			'param' => $ruleInput]; // MySQL-specific syntax
+			case 'regexp':		return ['op' => 'REGEXP',					'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notregexp':	return ['op' => 'NOT REGEXP',				'param' => $ruleInput]; // MySQL-specific syntax
+			case 'true':		return ['op' => 'IS NOT NULL',				'param' => null];
+			case 'false':		return ['op' => 'IS NULL',					'param' => null];
+			case 'limit':		return ['op' => (string)(int)$ruleInput,	'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			default:			return ['op' => $ruleOperator,				'param' => $ruleInput]; // all numerical operators fall here
 		}
 	}
 
@@ -518,13 +519,15 @@ abstract class BaseMapper extends CompatibleMapper {
 		$nameCol = $this->nameColumn;
 
 		switch ($rule) {
-			case 'title':		return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
-			case 'my_flagged':	return "`$table`.`starred` $sqlOp";
-			case 'favorite':	return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
-			case 'added':		return "`$table`.`created` $sqlOp ?";
-			case 'updated':		return "`$table`.`updated` $sqlOp ?";
-			case 'mbid':		return "`$table`.`mbid` $sqlOp ?";
-			default:			throw new \DomainException("Rule '$rule' not supported on this entity type");
+			case 'title':			return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
+			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
+			case 'favorite':		return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'added':			return "`$table`.`created` $sqlOp ?";
+			case 'updated':			return "`$table`.`updated` $sqlOp ?";
+			case 'mbid':			return "`$table`.`mbid` $sqlOp ?";
+			case 'recent_added':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `created` DESC LIMIT $sqlOp) mysqlhack)";
+			case 'recent_updated':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `updated` DESC LIMIT $sqlOp) mysqlhack)";
+			default:				throw new \DomainException("Rule '$rule' not supported on this entity type");
 		}
 	}
 

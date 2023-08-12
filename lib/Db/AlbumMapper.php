@@ -66,6 +66,7 @@ class AlbumMapper extends BaseMapper {
 	 */
 	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
+		// In case of 'recent_played', the MySQL 5.5.62 errored with "1235 This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'" without the extra subquery.
 		switch ($rule) {
 			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
 			case 'song_artist':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_artists` `ar` ON `t`.`artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
@@ -85,8 +86,7 @@ class AlbumMapper extends BaseMapper {
 			//case 'playlist':
 			//case 'playlist_name':
 			case 'file':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*filecache` `f` ON `t`.`file_id` = `f`.`fileid` WHERE LOWER(`f`.`name`) $sqlOp LOWER(?))";
-			//case 'recent_played':
-			//case 'recent_added':
+			case 'recent_played':	return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM (SELECT `album_id`, MAX(`last_played`) FROM `*PREFIX*music_tracks` WHERE `user_id` = ? GROUP BY `album_id` ORDER BY MAX(`last_played`) DESC LIMIT $sqlOp) mysqlhack)";
 			case 'mbid_album':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
 			case 'mbid_song':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`mbid` $sqlOp ?)";
 			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";

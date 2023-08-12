@@ -95,9 +95,7 @@ class TrackMapper extends BaseMapper {
 			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
 			//case 'playlist':
 			//case 'playlist_name':	TODO: pattern to match against playlist track_ids somethign like: ('%|' || CONVERT(varchar(10), `*PREFIX*music_tracks`.`id`) || '|%')
-			//case 'recent_played':
-			//case 'recent_added':
-			//case 'recent_updated':
+			case 'recent_played':	return "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)";
 			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
 			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
 			case 'mbid_album':		return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE `al`.`mbid` $sqlOp ?)";

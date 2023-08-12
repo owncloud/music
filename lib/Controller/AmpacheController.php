@@ -1296,8 +1296,11 @@ class AmpacheController extends Controller {
 
 		$numericRules = [
 			'track', 'year', 'original_year', 'myrating', 'rating', 'songrating', 'albumrating', 'artistrating',
-			'played_times', 'album_count', 'song_count', 'time', 'recent_played', 'recent_added', 'recent_updated'];
+			'played_times', 'album_count', 'song_count', 'time'
+		];
 		// numeric but no support planned: 'yearformed', 'skipped_times', 'play_skip_ratio', 'image_height', 'image_width'
+
+		$numericLimitRules = ['recent_played', 'recent_added', 'recent_updated'];
 
 		$dateOrDayRules = ['added', 'updated', 'pubdate', 'last_play'];
 
@@ -1331,6 +1334,8 @@ class AmpacheController extends Controller {
 				case 5: return '<';
 				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'numeric' type rules", 400);
 			}
+		} elseif (\in_array($rule, $numericLimitRules)) {
+			return 'limit';
 		} elseif (\in_array($rule, $dateOrDayRules)) {
 			switch ($rule_operator) {
 				case 0: return '<';
@@ -1348,7 +1353,7 @@ class AmpacheController extends Controller {
 		}
 	}
 
-	private static function advSearchConvertInput(string $input, string $rule) : string {
+	private static function advSearchConvertInput(string $input, string $rule) {
 		switch ($rule) {
 			case 'last_play':
 				// days diff to ISO date

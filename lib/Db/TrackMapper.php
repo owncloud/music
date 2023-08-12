@@ -73,6 +73,7 @@ class TrackMapper extends BaseMapper {
 	 * @see BaseMapper::advFormatSqlCondition()
 	 */
 	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
 		switch ($rule) {
 			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
 			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
@@ -85,13 +86,13 @@ class TrackMapper extends BaseMapper {
 			case 'last_play':		return "`last_played` $sqlOp ?";
 			case 'played':			// fall through, we give no access to other people's data
 			case 'myplayed':		return "`last_played` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
-			//case 'myplayedalbum':
-			//case 'myplayedartist':
+			case 'myplayedalbum':	return "`album_id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
+			case 'myplayedartist':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
 			case 'time':			return "`length` $sqlOp ?";
 			case 'genre':			// fall through
 			case 'song_genre':		return "LOWER(`genre`.`name`) $sqlOp LOWER(?)";
-			//case 'albumgenre':
-			//case 'artistgenre':
+			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
+			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
 			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
 			//case 'playlist':
 			//case 'playlist_name':	TODO: pattern to match against playlist track_ids somethign like: ('%|' || CONVERT(varchar(10), `*PREFIX*music_tracks`.`id`) || '|%')

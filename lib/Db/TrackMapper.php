@@ -75,6 +75,7 @@ class TrackMapper extends BaseMapper {
 	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
 		switch ($rule) {
+			//case 'anywhere':		TODO 
 			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
 			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
 			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
@@ -94,8 +95,8 @@ class TrackMapper extends BaseMapper {
 			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
 			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
 			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
-			//case 'playlist':
-			//case 'playlist_name':	TODO: pattern to match against playlist track_ids somethign like: ('%|' || CONVERT(varchar(10), `*PREFIX*music_tracks`.`id`) || '|%')
+			case 'playlist':		return "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
+			case 'playlist_name':	return "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`name` $sqlOp ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
 			case 'recent_played':	return "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)";
 			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
 			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias

@@ -1312,10 +1312,13 @@ class AmpacheController extends Controller {
 		$dateOrDayRules = ['added', 'updated', 'pubdate', 'last_play'];
 
 		$booleanRules = [
-			'played', 'myplayed', 'myplayedalbum', 'myplayedartist', 'playlist', 'has_image', 'no_genre',
+			'played', 'myplayed', 'myplayedalbum', 'myplayedartist', 'has_image', 'no_genre',
 			'my_flagged', 'my_flagged_album', 'my_flagged_artist'
 		];
-		// boolean but no support planned: 'license', 'smartplaylist', 'state', 'catalog', 'possible_duplicate', 'possible_duplicate_album'
+		// boolean but no support planned: 'smartplaylist', 'possible_duplicate', 'possible_duplicate_album'
+
+		$booleanNumericRules = ['playlist'];
+		// boolean numeric but no support planned: 'license', 'state', 'catalog'
 
 		if (\in_array($rule, $textRules)) {
 			switch ($rule_operator) {
@@ -1354,6 +1357,12 @@ class AmpacheController extends Controller {
 				case 0: return 'true';
 				case 1: return 'false';
 				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'boolean' type rules", 400);
+			}
+		} elseif (\in_array($rule, $booleanNumericRules)) {
+			switch ($rule_operator) {
+				case 0: return 'equal';
+				case 1: return 'ne';
+				default: throw new AmpacheException("Search operator '$rule_operator' not supported for 'boolean numeric' type rules", 400);
 			}
 		} else {
 			throw new AmpacheException("Search rule '$rule' not supported", 400);

@@ -505,6 +505,8 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'notregexp':	return ['op' => 'NOT REGEXP',				'param' => $ruleInput]; // MySQL-specific syntax
 			case 'true':		return ['op' => 'IS NOT NULL',				'param' => null];
 			case 'false':		return ['op' => 'IS NULL',					'param' => null];
+			case 'equal':		return ['op' => '',							'param' => $ruleInput];
+			case 'ne':			return ['op' => 'NOT',						'param' => $ruleInput];
 			case 'limit':		return ['op' => (string)(int)$ruleInput,	'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
 			default:			return ['op' => $ruleOperator,				'param' => $ruleInput]; // all numerical operators fall here
 		}

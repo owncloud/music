@@ -196,7 +196,8 @@ abstract class BusinessLayer {
 	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
 	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question,
 	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
-	 * 				'operator' is one of ['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false'],
+	 * 				'operator' is one of 
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
 	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]

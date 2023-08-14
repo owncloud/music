@@ -177,8 +177,11 @@ abstract class BaseMapper extends CompatibleMapper {
 
 		foreach ($rules as $rule) {
 			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input'], $userId);
-			$sqlConditions[] = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
-			if ($param !== null) {
+			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
+			$sqlConditions[] = $cond;
+			// On some conditions, the parameter may need to be repeated several times
+			$paramCount = \substr_count($cond, '?');
+			for ($i = 0; $i < $paramCount; ++$i) {
 				$sqlParams[] = $param;
 			}
 		}

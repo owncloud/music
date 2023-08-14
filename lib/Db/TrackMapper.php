@@ -450,7 +450,7 @@ class TrackMapper extends BaseMapper {
 	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
 		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
 		switch ($rule) {
-			//case 'anywhere':		TODO 
+			case 'anywhere':		return self::formatAdvSearchAnywhereCond($sqlOp); 
 			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
 			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
 			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
@@ -479,6 +479,24 @@ class TrackMapper extends BaseMapper {
 			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
 			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
 		}
+	}
+
+	private static function formatAdvSearchAnywhereCond(string $sqlOp) : string {
+		$fields = [
+			"`*PREFIX*music_tracks`.`title`",
+			"`file`.`name`",
+			"`artist`.`name`",
+			"`album`.`name`",
+			"`genre`.`name`"
+		];
+		$parts = \array_map(function(string $field) use ($sqlOp) {
+			return "LOWER($field) $sqlOp LOWER(?)";
+		}, $fields);
+
+		$negativeOp = \in_array($sqlOp, ['NOT LIKE', '!=', 'NOT SOUNDS LIKE', 'NOT REGEXP']);
+		$cond = \implode($negativeOp ? ' AND ' : ' OR ', $parts);
+
+		return "($cond)";
 	}
 
 	/**

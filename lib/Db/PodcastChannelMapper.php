@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -32,6 +32,21 @@ class PodcastChannelMapper extends BaseMapper {
 		$result = $this->execute($sql, [$userId, $timeLimit->format(BaseMapper::SQL_DATE_FORMAT)]);
 
 		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		switch ($rule) {
+			case 'podcast_episode':	return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` `e` WHERE LOWER(`e`.`title`) $sqlOp LOWER(?))";
+			case 'time':			return "`*PREFIX*music_podcast_channels`.`id` IN (SELECT * FROM (SELECT `channel_id` FROM `*PREFIX*music_podcast_episodes` GROUP BY `channel_id` HAVING SUM(`duration`) $sqlOp ?) mysqlhack)";
+			case 'pubdate':			return "`published` $sqlOp ?";
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+		}
 	}
 
 	/**

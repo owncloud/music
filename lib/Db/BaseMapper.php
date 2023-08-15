@@ -552,6 +552,8 @@ abstract class BaseMapper extends CompatibleMapper {
 			case 'title':			return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
 			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
 			case 'favorite':		return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'myrating':		// fall throuhg, we provide no access to other people's data
+			case 'rating':			return "`$table`.`rating` $sqlOp ?";
 			case 'added':			return "`$table`.`created` $sqlOp ?";
 			case 'updated':			return "`$table`.`updated` $sqlOp ?";
 			case 'mbid':			return "`$table`.`mbid` $sqlOp ?";

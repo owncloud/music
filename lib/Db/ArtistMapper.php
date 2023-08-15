@@ -162,6 +162,8 @@ class ArtistMapper extends BaseMapper {
 			case 'album':			return "`*PREFIX*music_artists`.`id` IN (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_albums` `a` ON `t`.`album_id` = `a`.`id` WHERE LOWER(`a`.`name`) $sqlOp LOWER(?))";
 			case 'artist':			return parent::advFormatSqlCondition('name', $sqlOp); // alias
 			case 'song':			return "`*PREFIX*music_artists`.`id` IN (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` WHERE LOWER(`t`.`title`) $sqlOp LOWER(?))";
+			case 'songrating':		return "`*PREFIX*music_artists`.`id` IN (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`rating` $sqlOp ?)";
+			case 'albumrating':		return "`*PREFIX*music_artists`.`id` IN (SELECT `album_artist_id` from `*PREFIX*music_albums` `al` WHERE `al`.`rating` $sqlOp ?)";
 			case 'played_times':	return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING SUM(`play_count`) $sqlOp ?) mysqlhack)";
 			case 'last_play':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp ?) mysqlhack)";
 			case 'played':			// fall through, we give no access to other people's data; not part of the API spec but Ample uses this

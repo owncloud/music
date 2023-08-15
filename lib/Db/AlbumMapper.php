@@ -490,6 +490,8 @@ class AlbumMapper extends BaseMapper {
 			case 'song':			return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE LOWER(`t`.`title`) $sqlOp LOWER(?))";
 			case 'year':			// fall through, we only have one kind of year
 			case 'original_year':	return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MIN(`year`) $sqlOp ?) mysqlhack)";
+			case 'songrating':		return "`*PREFIX*music_albums`.`id` IN (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` WHERE `t`.`rating` $sqlOp ?)";
+			case 'artistrating':	return "`artist`.rating $sqlOp ?";
 			case 'played_times':	return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING SUM(`play_count`) $sqlOp ?) mysqlhack)";
 			case 'last_play':		return "`*PREFIX*music_albums`.`id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp ?) mysqlhack)";
 			case 'played':			// fall through, we give no access to other people's data; not part of the API spec but Ample uses this

@@ -456,6 +456,8 @@ class TrackMapper extends BaseMapper {
 			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
 			case 'track':			return "`number` $sqlOp ?";
 			case 'year':			return "`year` $sqlOp ?";
+			case 'albumrating':		return "`album`.`rating` $sqlOp ?";
+			case 'artistrating':	return "`artist`.`rating` $sqlOp ?";
 			case 'favorite_album':	return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?) AND `al`.`starred` IS NOT NULL)";
 			case 'favorite_artist':	return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?) AND `ar`.`starred` IS NOT NULL)";
 			case 'played_times':	return "`play_count` $sqlOp ?";

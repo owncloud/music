@@ -180,14 +180,20 @@ abstract class BusinessLayer {
 
 	/**
 	 * Find all starred entities
-	 * @param string $userId
-	 * @param integer|null $limit
-	 * @param integer|null $offset
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		return $this->mapper->findAllStarred($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find all entities with user-given rating 1-5
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllRated(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllRated($userId, $limit, $offset);
 	}
 
 	/**

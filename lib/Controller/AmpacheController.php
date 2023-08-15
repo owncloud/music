@@ -388,7 +388,9 @@ class AmpacheController extends Controller {
 			case 'forgotten':
 				$entities = $getEntitiesIfSupported($businessLayer, 'findNotRecentPlay', $userId, $limit, $offset);
 				break;
-			case 'highest': //TODO
+			case 'highest':
+				$entities = $businessLayer->findAllRated($userId, $limit, $offset);
+				break;
 			default:
 				throw new AmpacheException("Unsupported filter $filter", 400);
 		}

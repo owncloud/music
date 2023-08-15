@@ -137,7 +137,7 @@ abstract class BaseMapper extends CompatibleMapper {
 			$params = \array_merge($params, $timestampParams);
 		}
 
-		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER($nameCol)");
+		$sql = $this->selectUserEntities($condition, $this->formatSortingClause(SortBy::Name));
 
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
@@ -152,7 +152,23 @@ abstract class BaseMapper extends CompatibleMapper {
 		if (\property_exists($this->entityClass, 'starred')) {
 			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
-				"ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
+				$this->formatSortingClause(SortBy::Name));
+			return $this->findEntities($sql, [$userId], $limit, $offset);
+		} else {
+			return [];
+		}
+	}
+
+	/**
+	 * Find all entities with user-given rating 1-5
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllRated(string $userId, int $limit=null, int $offset=null) : array {
+		if (\property_exists($this->entityClass, 'rating')) {
+			$sql = $this->selectUserEntities(
+				"`{$this->getTableName()}`.`rating` > 0",
+				$this->formatSortingClause(SortBy::Rating));
 			return $this->findEntities($sql, [$userId], $limit, $offset);
 		} else {
 			return [];
@@ -187,7 +203,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		}
 		$sqlConditions = \implode(" $conjunction ", $sqlConditions);
 
-		$sql = $this->selectUserEntities($sqlConditions, "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
+		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause(SortBy::Name));
 		return $this->findEntities($sql, $sqlParams, $limit, $offset);
 	}
 
@@ -464,12 +480,20 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @param int $sortBy One of the constants defined in the class SortBy
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
+		$table = $this->getTableName();
 		if ($sortBy == SortBy::Name) {
 			$dir = $invertSort ? 'DESC' : 'ASC';
-			return "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`) $dir";
+			return "ORDER BY LOWER(`$table`.`{$this->nameColumn}`) $dir";
 		} elseif ($sortBy == SortBy::Newest) {
 			$dir = $invertSort ? 'ASC' : 'DESC';
-			return "ORDER BY `{$this->getTableName()}`.`id` $dir"; // abuse the fact that IDs are ever-incrementing values
+			return "ORDER BY `$table`.`id` $dir"; // abuse the fact that IDs are ever-incrementing values
+		} elseif ($sortBy == SortBy::Rating) {
+			if (\property_exists($this->entityClass, 'rating')) {
+				$dir = $invertSort ? 'ASC' : 'DESC';
+				return "ORDER BY `$table`.`rating` $dir";
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

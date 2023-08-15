@@ -35,8 +35,6 @@ use OCP\IURLGenerator;
  * @method void setAlbumId(int $albumId)
  * @method ?string getAlbumName()
  * @method void setAlbumName(?string $albumName)
- * @method ?Album getAlbum()
- * @method void setAlbum(?Album $album)
  * @method ?int getLength()
  * @method void setLength(?int $length)
  * @method int getFileId()
@@ -49,18 +47,10 @@ use OCP\IURLGenerator;
  * @method void setMbid(?string $mbid)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
- * @method ?string getGenreName()
- * @method void setGenreName(?string $genreName)
- * @method string getFilename()
- * @method void setFilename(string $filename)
- * @method int getSize()
- * @method void setSize(int $size)
- * @method int getFileModTime()
- * @method void setFileModTime(int $secsFromEpoch)
- * @method ?int getNumberOnPlaylist()
- * @method void setNumberOnPlaylist(?int $number)
  * @method int getPlayCount()
  * @method void setPlayCount(int $count)
  * @method ?string getLastPlayed()
@@ -80,6 +70,7 @@ class Track extends Entity {
 	public $mimetype;
 	public $mbid;
 	public $starred;
+	public $rating;
 	public $genreId;
 	public $playCount;
 	public $lastPlayed;
@@ -93,8 +84,8 @@ class Track extends Entity {
 	public $genreName;
 
 	// the rest of the variables are injected separately when needed
-	public $album;
-	public $numberOnPlaylist;
+	private $album;
+	private $numberOnPlaylist;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -106,9 +97,26 @@ class Track extends Entity {
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');
 		$this->addType('genreId', 'int');
+		$this->addType('playCount', 'int');
+		$this->addType('rating', 'int');
 		$this->addType('size', 'int');
 		$this->addType('fileModTime', 'int');
-		$this->addType('playCount', 'int');
+	}
+
+	public function getAlbum() : ?Album {
+		return $this->album;
+	}
+
+	public function setAlbum(?Album $album) : void {
+		$this->album = $album;
+	}
+
+	public function getNumberOnPlaylist() : ?int {
+		return $this->numberOnPlaylist;
+	}
+
+	public function setNumberOnPlaylist(int $number) {
+		$this->numberOnPlaylist = $number;
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
@@ -211,8 +219,8 @@ class Track extends Entity {
 			'stream_mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
-			'rating' => 0,
-			'preciserating' => 0,
+			'rating' => $this->getRating() ?? 0,
+			'preciserating' => $this->getRating() ?? 0,
 			'playcount' => $this->getPlayCount(),
 			'flag' => !empty($this->getStarred()),
 			'language' => null,

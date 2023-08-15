@@ -8,6 +8,7 @@
 - Files playlist tab: Tooltip showing the file path or stream URL
 - Ampache API:
   * New methods:
+    - `rate`
     - `get_similar`
     - `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
@@ -16,10 +17,13 @@
   * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`
+  * Support for the type `playlist` in the method `flag`
   * Support for the parameter `top50` in the method `artist_songs`
   * Fields `time`, `albumcount`, `songcount`, `prefix`, and `basename` to the `artist` and `album` type results
   * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, `stream_mime`, and `playlisttrack` to `song` type results
-  * Fields `time`, `size`, `bitrate`, and `stream_bitrate` to `podcast_episode` type results
+  * Fields `time`, `size`, `bitrate`, `stream_bitrate`, `rating`, and `preciserating` to `podcast_episode` type results
+  * Fields `rating` and `preciserating` to `podcast` type results
+  * Fields `flag`, `rating` and `preciserating` to `playlist` type results
   * Null-valued fields `language`, `lyrics`, `mode`, `rate`, `replaygain_album_gain`, `replaygain_album_peak`, `replaygain_track_gain`, `replaygain_track_peak`, `r128_album_gain`, and `r128_track_gain` to `song` type results
   * In JSON-mode only, field `artists` to `song` and `album` type results
   * All the fields of `handshake` response on the response of `ping` within a valid session
@@ -34,6 +38,7 @@
     - this may be overridden using the config.php key `music.ampache_api_default_ver`
   * The URLs returned in the `art` tag of the entities are now cache-friendly, i.e. don't depend on the session
   * Terminate all related sessions immediately when API key deleted; previously, this happened upon session timeout
+  * Fields `rating` and `preciserating` now show the user-given rating instead of constant 0 on all applicabale result objects
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
   * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
   * Also, volume settings in the Share and Files embedded players are now distinct from the volume in the main app

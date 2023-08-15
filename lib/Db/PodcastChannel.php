@@ -45,8 +45,8 @@ use OCA\Music\Utility\Util;
  * @method void setCategory(string $category)
  * @method string getStarred()
  * @method void setStarred(string $timestamp)
- * @method PodcastEpisode[] getEpisodes()
- * @method void setEpisodes(PodcastEpisode[] $episodes)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  */
 class PodcastChannel extends Entity {
 	public $rssUrl;
@@ -64,9 +64,28 @@ class PodcastChannel extends Entity {
 	public $imageUrl;
 	public $category;
 	public $starred;
+	public $rating;
 
 	// not part of the default content, may be injected separately
-	public $episodes;
+	private $episodes;
+
+	public function __construct() {
+		$this->addType('rating', 'int');
+	}
+
+	/**
+	 * @return ?PodcastEpisode[]
+	 */
+	public function getEpisodes() : array {
+		return $this->episodes;
+	}
+
+	/**
+	 * @param PodcastEpisode[] $episodes
+	 */
+	public function setEpisodes(array $episodes) : void {
+		$this->episodes = $episodes;
+	}
 
 	public function toApi() : array {
 		$result = [
@@ -115,6 +134,8 @@ class PodcastChannel extends Entity {
 			'website' => $this->getLinkUrl(),
 			'art' => $this->getImageUrl(),
 			'flag' => !empty($this->getStarred()),
+			'rating' => $this->getRating() ?? 0,
+			'preciserating' => $this->getRating() ?? 0,
 		];
 
 		if ($this->episodes !== null) {

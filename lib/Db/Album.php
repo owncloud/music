@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2022
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -24,28 +24,22 @@ use OCA\Music\Utility\Util;
  * @method void setName(?string $name)
  * @method ?string getMbid()
  * @method void setMbid(?string $mbid)
- * @method ?array getYears()
- * @method void setYears(?array $years)
  * @method ?int getDisk()
  * @method void setDisk(?int $discnumber)
  * @method ?string getMbidGroup()
  * @method void setMbidGroup(?string $mbidGroup)
  * @method ?int getCoverFileId()
  * @method void setCoverFileId(?int $coverFileId)
- * @method ?array getArtistIds()
- * @method void setArtistIds(?array $artistIds)
  * @method int getAlbumArtistId()
  * @method void setAlbumArtistId(int $albumArtistId)
  * @method ?string getAlbumArtistName()
  * @method void setAlbumArtistName(?string $name)
  * @method string getHash()
  * @method void setHash(string $hash)
- * @method ?int getNumberOfDisks()
- * @method void setNumberOfDisks(?int $count)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
- * @method ?array getGenres()
- * @method void setGenres(?array $genres)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  */
 class Album extends Entity {
 	public $name;
@@ -56,18 +50,52 @@ class Album extends Entity {
 	public $albumArtistId;
 	public $hash;
 	public $starred;
+	public $rating;
 	public $albumArtistName; // not from music_albums table but still part of the standard content
 
 	// extra fields injected separately by AlbumBusinessLayer
-	public $years;
-	public $genres; // *partial* Genre objects, not all properties are set
-	public $artistIds;
-	public $numberOfDisks;
+	private $years;
+	private $genres; // *partial* Genre objects, not all properties are set
+	private $artistIds;
+	private $numberOfDisks;
 
 	public function __construct() {
 		$this->addType('disk', 'int');
 		$this->addType('coverFileId', 'int');
 		$this->addType('albumArtistId', 'int');
+		$this->addType('rating', 'int');
+	}
+
+	public function getYears() : ?array {
+		return $this->years;
+	}
+
+	public function setYears(?array $years) : void {
+		$this->years = $years;
+	}
+
+	public function getGenres() : ?array {
+		return $this->genres;
+	}
+
+	public function setGenres(?array $genres) : void {
+		$this->genres = $genres;
+	}
+
+	public function getArtistIds() : ?array {
+		return $this->artistIds;
+	}
+
+	public function setArtistIds(?array $artistIds) : void {
+		$this->artistIds = $artistIds;
+	}
+
+	public function getNumberOfDisks() : ?int {
+		return $this->numberOfDisks;
+	}
+
+	public function setNumberOfDisks(?int $count) : void {
+		$this->numberOfDisks = $count;
 	}
 
 	/**

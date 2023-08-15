@@ -1075,7 +1075,7 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function flag(string $type, int $id, bool $flag) : array {
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode'])) {
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode', 'playlist'])) {
 			throw new AmpacheException("Unsupported type $type", 400);
 		}
 
@@ -1094,6 +1094,25 @@ class AmpacheController extends Controller {
 		} else {
 			throw new AmpacheException("The $type $id was not found", 404);
 		}
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function rate(string $type, int $id, int $rating) : array {
+		$rating = Util::limit($rating, 0, 5);
+
+		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode', 'playlist'])) {
+			throw new AmpacheException("Unsupported type $type", 400);
+		}
+
+		$userId = $this->session->getUserId();
+		$businessLayer = $this->getBusinessLayer($type);
+		$entity = $businessLayer->find($id, $userId);
+		$entity->setRating($rating);
+		$businessLayer->update($entity);
+
+		return ['success' => "rating set to $rating for $type $id"];
 	}
 
 	/**
@@ -1519,8 +1538,8 @@ class AmpacheController extends Controller {
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationByArtist($artist->getId()),
 					'art' => $this->createCoverUrl($artist),
-					'rating' => 0,
-					'preciserating' => 0,
+					'rating' => $artist->getRating() ?? 0,
+					'preciserating' => $artist->getRating() ?? 0,
 					'flag' => !empty($artist->getStarred()),
 					$genreKey => \array_map(function ($genreId) use ($genreMap) {
 						return [
@@ -1559,10 +1578,10 @@ class AmpacheController extends Controller {
 					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
-					'rating' => 0,
+					'rating' => $album->getRating() ?? 0,
+					'preciserating' => $album->getRating() ?? 0,
 					'year' => $album->yearToAPI(),
 					'art' => $this->createCoverUrl($album),
-					'preciserating' => 0,
 					'flag' => !empty($album->getStarred()),
 					$genreKey => \array_map(function ($genre) {
 						return [

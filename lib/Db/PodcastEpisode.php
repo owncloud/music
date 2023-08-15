@@ -49,6 +49,8 @@ use OCA\Music\Utility\Util;
  * @method void setDescription(?string $description)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  */
 class PodcastEpisode extends Entity {
 	public $channelId;
@@ -68,12 +70,14 @@ class PodcastEpisode extends Entity {
 	public $author;
 	public $description;
 	public $starred;
+	public $rating;
 
 	public function __construct() {
 		$this->addType('channelId', 'int');
 		$this->addType('size', 'int');
 		$this->addType('duration', 'int');
 		$this->addType('episode', 'int');
+		$this->addType('rating', 'int');
 	}
 
 	public function toApi() : array {
@@ -128,6 +132,8 @@ class PodcastEpisode extends Entity {
 			'mime' => $this->getMimetype(),
 			'url' => $this->getStreamUrl(),
 			'flag' => !empty($this->getStarred()),
+			'rating' => $this->getRating() ?? 0,
+			'preciserating' => $this->getRating() ?? 0,
 		];
 	}
 

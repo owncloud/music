@@ -12,7 +12,7 @@ use OCP\Migration\IOutput;
 /**
  * Migrate the DB schema to Music v1.9.0 level from the v1.4.0 level
  */
-class Version010900Date20230726141500 extends SimpleMigrationStep {
+class Version010900Date20230815223500 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -34,6 +34,7 @@ class Version010900Date20230726141500 extends SimpleMigrationStep {
 		$this->fixInconsistentIdTypes($schema);
 		$this->allowNegativeYear($schema);
 		$this->ampacheSessionChanges($schema);
+		$this->addRatingFields($schema);
 		return $schema;
 	}
 
@@ -71,12 +72,35 @@ class Version010900Date20230726141500 extends SimpleMigrationStep {
 	private function ampacheSessionChanges(ISchemaWrapper $schema) {
 		$table = $schema->getTable('music_ampache_sessions');
 
-		if (!$table->hasColumn('api_version')) {
-			$table->addColumn('api_version', 'string', ['notnull' => false, 'length' => 16]);
+		$this->setColumn($table, 'api_version', 'string', ['notnull' => false, 'length' => 16]);
+		$this->setColumn($table, 'ampache_user_id', 'int', ['notnull' => true, 'unsigned' => true]);
+	}
+
+	/**
+	 * Add the new field 'rating' to applicable tables
+	 */
+	private function addRatingFields(ISchemaWrapper $schema) {
+		$tableNames = [
+			'oc_music_artists',
+			'oc_music_albums',
+			'oc_music_tracks',
+			'oc_music_playlists',
+			'oc_music_podcast_channels',
+			'oc_music_podcast_episodes'
+		];
+
+		foreach ($tableNames as $tableName) {
+			$table = $schema->getTable($tableName);
+			$this->setColumn($table, 'rating', 'int', ['notnull' => true, 'default' => 0]);
 		}
 
-		if (!$table->hasColumn('ampache_user_id')) {
-			$table->addColumn('ampache_user_id', 'int', ['notnull' => true, 'unsigned' => true]);
+		// Also, add 'starred' field for playlists
+		$this->setColumn($schema->getTable('oc_music_playlists'), 'starred', 'datetime', ['notnull' => false]);
+	}
+
+	private function setColumn($table, string $name, string $type, array $args) {
+		if (!$table->hasColumn($name)) {
+			$table->addColumn($name, $type, $args);
 		}
 	}
 }

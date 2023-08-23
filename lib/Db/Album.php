@@ -24,27 +24,23 @@ use OCA\Music\Utility\Util;
  * @method void setName(?string $name)
  * @method ?string getMbid()
  * @method void setMbid(?string $mbid)
- * @method ?int getDisk()
- * @method void setDisk(?int $discnumber)
  * @method ?string getMbidGroup()
  * @method void setMbidGroup(?string $mbidGroup)
  * @method ?int getCoverFileId()
  * @method void setCoverFileId(?int $coverFileId)
  * @method int getAlbumArtistId()
  * @method void setAlbumArtistId(int $albumArtistId)
- * @method ?string getAlbumArtistName()
- * @method void setAlbumArtistName(?string $name)
  * @method string getHash()
  * @method void setHash(string $hash)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
  * @method ?int getRating()
  * @method setRating(?int $rating)
+ * @method ?string getAlbumArtistName()
  */
 class Album extends Entity {
 	public $name;
 	public $mbid;
-	public $disk; // deprecated
 	public $mbidGroup;
 	public $coverFileId;
 	public $albumArtistId;
@@ -52,6 +48,7 @@ class Album extends Entity {
 	public $starred;
 	public $rating;
 	public $albumArtistName; // not from music_albums table but still part of the standard content
+	public $disk; // deprecated
 
 	// extra fields injected separately by AlbumBusinessLayer
 	private $years;

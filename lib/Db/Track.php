@@ -29,12 +29,8 @@ use OCP\IURLGenerator;
  * @method void setYear(?int $year)
  * @method int getArtistId()
  * @method void setArtistId(int $artistId)
- * @method ?string getArtistName()
- * @method void setArtistName(?string $artistName)
  * @method int getAlbumId()
  * @method void setAlbumId(int $albumId)
- * @method ?string getAlbumName()
- * @method void setAlbumName(?string $albumName)
  * @method ?int getLength()
  * @method void setLength(?int $length)
  * @method int getFileId()
@@ -55,6 +51,13 @@ use OCP\IURLGenerator;
  * @method void setPlayCount(int $count)
  * @method ?string getLastPlayed()
  * @method void setLastPlayed(?string $timestamp)
+ *
+ * @method string getFilename()
+ * @method int getSize()
+ * @method int getFileModTime()
+ * @method ?string getAlbumName()
+ * @method ?string getArtistName()
+ * @method ?string getGenreName()
  */
 class Track extends Entity {
 	public $title;

@@ -19,14 +19,10 @@ use OCP\IL10N;
  * @method void setName(string $name)
  * @method string getLowerName()
  * @method void setLowerName(string $lowerName)
+ *
  * @method int getTrackCount()
- * @method void setTrackCount(int $count)
  * @method int getAlbumCount()
- * @method void setAlbumCount(int $count)
  * @method int getArtistCount()
- * @method void setArtistCount(int $count)
- * @method array getTrackIds()
- * @method void setTrackIds(array $trackIds)
  */
 class Genre extends Entity {
 	public $name;
@@ -43,6 +39,20 @@ class Genre extends Entity {
 		$this->addType('trackCount', 'int');
 		$this->addType('albumCount', 'int');
 		$this->addType('artistCount', 'int');
+	}
+
+	/**
+	 * @return ?int[]
+	 */
+	public function getTrackIds() : array {
+		return $this->trackIds;
+	}
+
+	/**
+	 * @param int[] $trackIds
+	 */
+	public function setTrackIds(array $trackIds) : void {
+		$this->trackIds = $trackIds;
 	}
 
 	public function getNameString(IL10N $l10n) {

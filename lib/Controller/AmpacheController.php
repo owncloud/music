@@ -1103,16 +1103,15 @@ class AmpacheController extends Controller {
 	 */
 	protected function rate(string $type, int $id, int $rating) : array {
 		$rating = Util::limit($rating, 0, 5);
-
-		if (!\in_array($type, ['song', 'album', 'artist', 'podcast', 'podcast_episode', 'playlist'])) {
-			throw new AmpacheException("Unsupported type $type", 400);
-		}
-
 		$userId = $this->session->getUserId();
 		$businessLayer = $this->getBusinessLayer($type);
 		$entity = $businessLayer->find($id, $userId);
-		$entity->setRating($rating);
-		$businessLayer->update($entity);
+		if (\property_exists($entity, 'rating')) {
+			$entity->setRating($rating);
+			$businessLayer->update($entity);
+		} else {
+			throw new AmpacheException("Unsupported type $type", 400);
+		}
 
 		return ['success' => "rating set to $rating for $type $id"];
 	}

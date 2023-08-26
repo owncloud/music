@@ -95,6 +95,8 @@ angular.module('Music').controller('NavigationController', [
 					playlist.updated = result.updated;
 				});
 				$scope.showEditForm = null;
+				libraryService.sortPlaylists();
+				$timeout(() => $scope.navigateTo(`#playlist/${playlist.id}`));
 			}
 		};
 
@@ -323,6 +325,7 @@ angular.module('Music').controller('NavigationController', [
 			};
 			Restangular.all('playlists').post(args).then(function(playlist) {
 				libraryService.addPlaylist(playlist);
+				$timeout(() => $scope.navigateTo(`#playlist/${playlist.id}`));
 			});
 		}
 

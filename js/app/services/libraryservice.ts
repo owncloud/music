@@ -363,6 +363,7 @@ export class LibraryService {
 	}
 	setPlaylists(lists : any[]) : void {
 		this.#playlists = _.map(lists, (list) => this.#wrapPlaylist(list));
+		this.sortPlaylists();
 	}
 	setSmartList(list : any) : void {
 		if (!list) {
@@ -472,8 +473,12 @@ export class LibraryService {
 		let idx = _.findIndex(this.#podcastChannels, { id: channel.id });
 		this.#podcastChannels.splice(idx, 1);
 	}
+	sortPlaylists() : void {
+		this.#sortByTextField(this.#playlists, 'name');
+	}
 	addPlaylist(playlist : any) : void {
 		this.#playlists.push(this.#wrapPlaylist(playlist));
+		this.sortPlaylists();
 	}
 	removePlaylist(playlist : any) : void {
 		this.#playlists.splice(this.#playlists.indexOf(playlist), 1);

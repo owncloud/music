@@ -6,6 +6,8 @@
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Files playlist tab: Tooltip showing the file path or stream URL
+- Subsonic: Empty implementation for the method `getNowPlaying`
+  [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 
 ### Changed
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.

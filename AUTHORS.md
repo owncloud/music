@@ -19,6 +19,7 @@
 * [Arthur Schiwon](https://github.com/blizzz)
 * [Ashot Nazaryan](https://github.com/AshotN)
 * [Bernhard Posselt](https://github.com/BernhardPosselt)
+* [Calvin Buckley](https://github.com/NattyNarwhal)
 * [Cbxk1xg](https://github.com/cbxk1xg)
 * [Chris Allan](https://github.com/ChrisJAllan): <chrisallan@pm.me>
 * [Christoph Wurst](https://github.com/ChristophWurst)

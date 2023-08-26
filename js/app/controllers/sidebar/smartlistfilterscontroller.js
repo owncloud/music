@@ -21,7 +21,7 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$scope.artists = OCA.Music.Storage.get('smartlist_artists')?.split(',') || [];
 		$scope.fromYear = parseInt(OCA.Music.Storage.get('smartlist_from_year')) || '';
 		$scope.toYear = parseInt(OCA.Music.Storage.get('smartlist_to_year')) || '';
-		$scope.listSize = parseInt(OCA.Music.Storage.get('smartlist_size') || 300);
+		$scope.listSize = parseInt(OCA.Music.Storage.get('smartlist_size') || 100);
 
 		$scope.fieldsValid = allFieldsValid();
 

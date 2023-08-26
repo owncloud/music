@@ -12,7 +12,7 @@
 ### Changed
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
   * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
-  * Also, volume settings in the Share and Files embedded players are now distint from the volume in the main app
+  * Also, volume settings in the Share and Files embedded players are now distinct from the volume in the main app
 - Small optimization on the size of the `collection.json` loaded by the web front-end
 - Order the playlists by name in the navigation pane, navigate automatically to the created or renamed playlist
   [#1083](https://github.com/owncloud/music/issues/1083)

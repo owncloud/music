@@ -400,6 +400,17 @@ angular.module('Music').controller('NavigationController', [
 					$scope.togglePlay($rootScope.currentView, playlist);
 				}
 			}
+			// ensure that the link to the current view is visible in the navigation pane, 
+			// in case there are so many playlists that the navigation pane is scrollable
+			$timeout(() => {
+				const navPaneContent = $('#app-navigation ul');
+				const navItem = navPaneContent.find('.music-navigation-item.active');
+				const navItemTop = navItem.offset().top - $('#header').height();
+				const navItemBottom = navItemTop + navItem.height();
+				if (navItemTop < 0 || navItemBottom > navPaneContent.innerHeight()) {
+					navPaneContent.scrollToElement(navItem, 0, 300);
+				}
+			});
 		});
 	}
 ]);

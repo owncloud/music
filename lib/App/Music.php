@@ -156,12 +156,15 @@ class Music extends App {
 				$c->query('Request'),
 				$c->query('URLGenerator'),
 				$c->query('PlaylistBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
+				$c->query('GenreBusinessLayer'),
 				$c->query('CoverHelper'),
 				$c->query('PlaylistFileService'),
 				$c->query('UserId'),
 				$c->query('UserFolder'),
+				$c->query('Config'),
 				$c->query('Logger')
 			);
 		});

@@ -294,8 +294,10 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		filesToScanIterator = 0;
 		previouslyScannedCount = 0;
 		// Genre and artist IDs have got invalidated while resetting the libarary, drop any related filters
-		OCA.Music.Storage.set('smartlist_genres', []);
-		OCA.Music.Storage.set('smartlist_artists', []);
+		if ($scope.smartListParams !== null) {
+			$scope.smartListParams.genres = [];
+			$scope.smartListParams.artists = [];
+		}
 	};
 
 	$scope.loadFoldersAndThen = function(callback) {
@@ -309,20 +311,15 @@ function ($rootScope, $scope, $timeout, $window, ArtistFactory,
 		}
 	};
 
+	$scope.smartListParams = null; // fetched from the server on the first list load
 	$scope.reloadSmartList = function() {
 		libraryService.setSmartList(null);
 
-		const genArgs = {
-			playRate:	OCA.Music.Storage.get('smartlist_play_rate'),
-			genres:		OCA.Music.Storage.get('smartlist_genres'),
-			artists:	OCA.Music.Storage.get('smartlist_artists'),
-			fromYear:	OCA.Music.Storage.get('smartlist_from_year'),
-			toYear:		OCA.Music.Storage.get('smartlist_to_year'),
-			size:		OCA.Music.Storage.get('smartlist_size')
-		};
+		const genArgs = $scope.smartListParams ?? { useLatestParams: true };
 
 		Restangular.one('playlists/generate').get(genArgs).then((list) => {
 			libraryService.setSmartList(list);
+			$scope.smartListParams = list.params;
 			$rootScope.$emit('smartListLoaded');
 		});
 	};

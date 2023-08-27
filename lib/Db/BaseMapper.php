@@ -155,12 +155,20 @@ abstract class BaseMapper extends CompatibleMapper {
 	}
 
 	/**
-	 * Find IDs of all user's entities of this kind
+	 * Find IDs of all user's entities of this kind.
+	 * Optionally, limit to given IDs which may be used to check the validity of those IDs.
 	 * @return int[]
 	 */
-	public function findAllIds(string $userId) : array {
+	public function findAllIds(string $userId, ?array $ids = null) : array {
 		$sql = "SELECT `id` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
-		$result = $this->execute($sql, [$userId]);
+		$params = [$userId];
+
+		if ($ids !== null) {
+			$sql .= ' AND `id` IN ' . $this->questionMarks(\count($ids));
+			$params = \array_merge($params, $ids);
+		}
+
+		$result = $this->execute($sql, $params);
 
 		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
 	}

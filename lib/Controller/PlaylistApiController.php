@@ -19,12 +19,15 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\JSONResponse;
 
 use OCP\Files\Folder;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\BusinessLayer\AlbumBusinessLayer;
+use OCA\Music\BusinessLayer\ArtistBusinessLayer;
+use OCA\Music\BusinessLayer\GenreBusinessLayer;
 use OCA\Music\BusinessLayer\PlaylistBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 use OCA\Music\Http\ErrorResponse;
@@ -37,34 +40,43 @@ use OCA\Music\Utility\Util;
 class PlaylistApiController extends Controller {
 	private $urlGenerator;
 	private $playlistBusinessLayer;
+	private $artistBusinessLayer;
 	private $albumBusinessLayer;
 	private $trackBusinessLayer;
+	private $genreBusinessLayer;
 	private $coverHelper;
 	private $playlistFileService;
 	private $userId;
 	private $userFolder;
+	private $configManager;
 	private $logger;
 
 	public function __construct(string $appname,
 								IRequest $request,
 								IURLGenerator $urlGenerator,
 								PlaylistBusinessLayer $playlistBusinessLayer,
+								ArtistBusinessLayer $artistBusinessLayer,
 								AlbumBusinessLayer $albumBusinessLayer,
 								TrackBusinessLayer $trackBusinessLayer,
+								GenreBusinessLayer $genreBusinessLayer,
 								CoverHelper $coverHelper,
 								PlaylistFileService $playlistFileService,
 								string $userId,
 								Folder $userFolder,
+								IConfig $configManager,
 								Logger $logger) {
 		parent::__construct($appname, $request);
 		$this->urlGenerator = $urlGenerator;
 		$this->playlistBusinessLayer = $playlistBusinessLayer;
+		$this->artistBusinessLayer = $artistBusinessLayer;
 		$this->albumBusinessLayer = $albumBusinessLayer;
 		$this->trackBusinessLayer = $trackBusinessLayer;
+		$this->genreBusinessLayer = $genreBusinessLayer;
 		$this->coverHelper = $coverHelper;
 		$this->playlistFileService = $playlistFileService;
 		$this->userId = $userId;
 		$this->userFolder = $userFolder;
+		$this->configManager = $configManager;
 		$this->logger = $logger;
 	}
 
@@ -151,10 +163,41 @@ class PlaylistApiController extends Controller {
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
-	public function generate(?string $playRate, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=100) {
+	public function generate(?bool $useLatestParams, ?string $playRate, ?string $genres, ?string $artists, ?int $fromYear, ?int $toYear, int $size=100) {
+		if ($useLatestParams) {
+			$playRate = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_play_rate') ?: null;
+			$genres = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_genres') ?: null;
+			$artists = $this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_artists') ?: null;
+			$fromYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_from_year') ?: null;
+			$toYear = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_to_year') ?: null;
+			$size = (int)$this->configManager->getUserValue($this->userId, $this->appName, 'smartlist_size', 100);
+		} else {
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_play_rate', $playRate ?? '');
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_genres', $genres ?? '');
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_artists', $artists ?? '');
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_from_year', (string)$fromYear);
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_to_year', (string)$toYear);
+			$this->configManager->setUserValue($this->userId, $this->appName, 'smartlist_size', (string)$size);
+		}
+
+		// ensure the artists and genres contain only valid IDs
+		$genres = $this->genreBusinessLayer->findAllIds($this->userId, self::toIntArray($genres));
+		$artists = $this->artistBusinessLayer->findAllIds($this->userId, self::toIntArray($artists));
+
 		$playlist = $this->playlistBusinessLayer->generate(
-				$playRate, self::toIntArray($genres), self::toIntArray($artists), $fromYear, $toYear, $size, $this->userId);
-		return $playlist->toAPI();
+				$playRate, $genres, $artists, $fromYear, $toYear, $size, $this->userId);
+		$result = $playlist->toAPI();
+
+		$result['params'] = [
+			'playRate' => $playRate ?: null,
+			'genres' => \implode(',', $genres) ?: null,
+			'artists' => \implode(',', $artists) ?: null,
+			'fromYear' => $fromYear ?: null,
+			'toYear' => $toYear ?: null,
+			'size' => $size
+		];
+
+		return $result;
 	}
 
 	/**

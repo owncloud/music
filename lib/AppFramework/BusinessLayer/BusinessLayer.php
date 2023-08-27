@@ -10,7 +10,7 @@
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Alessandro Cosentino 2012
  * @copyright Bernhard Posselt 2012, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\AppFramework\BusinessLayer;
@@ -191,11 +191,16 @@ abstract class BusinessLayer {
 	}
 
 	/**
-	 * Find IDs of all user's entities of this kind
+	 * Find IDs of all user's entities of this kind.
+	 * Optionally, limit to given IDs which may be used to check the validity of those IDs.
 	 * @return int[]
 	 */
-	public function findAllIds(string $userId) : array {
-		return $this->mapper->findAllIds($userId);
+	public function findAllIds(string $userId, ?array $ids = null) : array {
+		if ($ids === null || \count($ids) > 0) {
+			return $this->mapper->findAllIds($userId, $ids);
+		} else {
+			return [];
+		}
 	}
 
 	/**

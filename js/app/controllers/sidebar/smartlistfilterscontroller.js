@@ -16,12 +16,17 @@ angular.module('Music').controller('SmartListFiltersController', [
 		$scope.allGenres = libraryService.getAllGenres();
 		$scope.allArtists = libraryService.getAllArtists();
 
-		$scope.playRate = OCA.Music.Storage.get('smartlist_play_rate') || '';
-		$scope.genres = OCA.Music.Storage.get('smartlist_genres')?.split(',') || [];
-		$scope.artists = OCA.Music.Storage.get('smartlist_artists')?.split(',') || [];
-		$scope.fromYear = parseInt(OCA.Music.Storage.get('smartlist_from_year')) || '';
-		$scope.toYear = parseInt(OCA.Music.Storage.get('smartlist_to_year')) || '';
-		$scope.listSize = parseInt(OCA.Music.Storage.get('smartlist_size') || 100);
+		// for artists and genres, the selection box can't use the smartListParams
+		// directly as model as we need conversions between string and array formats
+		$scope.genres = [];
+		$scope.artists = [];
+
+		$scope.$watch('smartListParams', () => {
+			if ($scope.smartListParams !== null) {
+				$scope.genres = $scope.smartListParams.genres?.split(',') ?? [];
+				$scope.artists = $scope.smartListParams.artists?.split(',') ?? [];
+			}
+		});
 
 		$scope.fieldsValid = allFieldsValid();
 
@@ -37,7 +42,7 @@ angular.module('Music').controller('SmartListFiltersController', [
 				valid &&= elem.checkValidity()
 			);
 			// the size field must not be empty
-			valid &&= ($scope.listSize > 0);
+			valid &&= ($scope.smartListParams.size > 0);
 
 			return valid;
 		}
@@ -46,13 +51,8 @@ angular.module('Music').controller('SmartListFiltersController', [
 
 		$scope.onUpdateButton = function() {
 			if ($scope.fieldsValid) {
-				OCA.Music.Storage.set('smartlist_play_rate', $scope.playRate);
-				OCA.Music.Storage.set('smartlist_genres', $scope.genres);
-				OCA.Music.Storage.set('smartlist_artists', $scope.artists);
-				OCA.Music.Storage.set('smartlist_from_year', $scope.fromYear || '');
-				OCA.Music.Storage.set('smartlist_to_year', $scope.toYear || '');
-				OCA.Music.Storage.set('smartlist_size', $scope.listSize || '');
-
+				$scope.smartListParams.genres = $scope.genres.join(',');
+				$scope.smartListParams.artists = $scope.artists.join(',');
 				$scope.reloadSmartList();
 				// also navigate to the Smart Playlist view if not already open
 				$scope.navigateTo('#smartlist');

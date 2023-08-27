@@ -1055,6 +1055,15 @@ class AmpacheController extends Controller {
 			$rule['input'] = self::advSearchConvertInput($rule['input'], $rule['rule']);
 		}
 
+		// types 'album_artist' and 'song_artist' are just 'artist' searches with some extra conditions
+		if ($type == 'album_artist') {
+			$rules[] = ['rule' => 'album_count', 'operator' => '>', 'input' => '0'];
+			$type = 'artist';
+		} elseif ($type == 'song_artist') {
+			$rules[] = ['rule' => 'song_count', 'operator' => '>', 'input' => '0'];
+			$type = 'artist';
+		}
+
 		try {
 			$businessLayer = $this->getBusinessLayer($type);
 			$userId = $this->session->getUserId();

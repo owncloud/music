@@ -49,20 +49,17 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Finds all artists who have at least one album
-	 * @param string $userId the name of the user
-	 * @param integer $sortBy sort order of the result set
+	 * @param ?string $name Optionally filter by artist name
+	 * @param ?int $matchMode Name match mode, disregarded if @a $name is null
 	 * @return Artist[] artists
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
-		return $this->mapper->findAllHavingAlbums($userId, $sortBy, $limit, $offset);
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact) : array {
+		return $this->mapper->findAllHavingAlbums($userId, $sortBy, $limit, $offset, $name, $matchMode);
 	}
 
 	/**
 	 * Returns all artists filtered by genre
-	 * @param int $genreId the genre to include
-	 * @param string $userId the name of the user
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Artist[] artists
 	 */
 	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {

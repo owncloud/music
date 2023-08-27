@@ -31,13 +31,19 @@ class ArtistMapper extends BaseMapper {
 	 * @param integer $sortBy sort order of the result set
 	 * @return Artist[]
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None, ?int $limit=null, ?int $offset=null) : array {
-		$sql = $this->selectUserEntities('EXISTS '.
-				'(SELECT 1 FROM `*PREFIX*music_albums` `album` '.
-				' WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)',
-				($sortBy == SortBy::Name) ? 'ORDER BY LOWER(`name`)' : null);
-
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact) : array {
 		$params = [$userId];
+		$condition = 'EXISTS (SELECT 1 FROM `*PREFIX*music_albums` `album` WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)';
+
+		if ($name !== null) {
+			[$nameCond, $nameParams] = $this->formatNameConditions($name, $matchMode);
+			$condition .= " AND $nameCond";
+			$params = \array_merge($params, $nameParams);
+		}
+
+		$sql = $this->selectUserEntities($condition, $this->formatSortingClause($sortBy));
+
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 

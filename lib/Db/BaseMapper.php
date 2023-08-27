@@ -115,21 +115,9 @@ abstract class BaseMapper extends CompatibleMapper {
 		?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 
 		$params = [$userId];
-		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
-		if ($name === null) {
-			$condition = "$nameCol IS NULL";
-		} else {
-			if ($matchMode === MatchMode::Exact) {
-				$condition = "LOWER($nameCol) = LOWER(?)";
-			} else {
-				$condition = "LOWER($nameCol) LIKE LOWER(?)";
-			}
-			if ($matchMode === MatchMode::Substring) {
-				$params[] = self::prepareSubstringSearchPattern($name);
-			} else {
-				$params[] = $name;
-			}
-		}
+
+		[$condition, $nameParams] = $this->formatNameConditions($name, $matchMode);
+		$params = \array_merge($params, $nameParams);
 
 		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
 		if (!empty($timestampConds)) {
@@ -443,6 +431,29 @@ abstract class BaseMapper extends CompatibleMapper {
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
+	}
+
+	/**
+	 * @return array with two values: The SQL condition as string and the SQL parameters as string[]
+	 */
+	protected function formatNameConditions(?string $name, int $matchMode) : array {
+		$params = [];
+		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
+		if ($name === null) {
+			$condition = "$nameCol IS NULL";
+		} else {
+			if ($matchMode === MatchMode::Exact) {
+				$condition = "LOWER($nameCol) = LOWER(?)";
+			} else {
+				$condition = "LOWER($nameCol) LIKE LOWER(?)";
+			}
+			if ($matchMode === MatchMode::Substring) {
+				$params[] = self::prepareSubstringSearchPattern($name);
+			} else {
+				$params[] = $name;
+			}
+		}
+		return [$condition, $params];
 	}
 
 	/**

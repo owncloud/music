@@ -327,10 +327,11 @@ class AmpacheController extends Controller {
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
 		if ($type === 'album_artist') {
-			if (!empty($filter) || !empty($add) || !empty($update)) {
-				throw new AmpacheException("Arguments 'filter', 'add', and 'update' are not supported for the type 'album_artist'", 400);
+			if (!empty($add) || !empty($update)) {
+				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
 			}
-			$entities = $this->artistBusinessLayer->findAllHavingAlbums($this->session->getUserId(), SortBy::Name, $limit, $offset);
+			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
+				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
 			$type = 'artist';
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);

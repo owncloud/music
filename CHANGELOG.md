@@ -6,6 +6,8 @@
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Files playlist tab: Tooltip showing the file path or stream URL
+- Subsonic API: Empty implementation for the method `getNowPlaying`
+  [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 - Ampache API:
   * New methods:
     - `rate`
@@ -14,7 +16,7 @@
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
     - `live_streams`, `live_stream`, `live_stream_create`, `live_stream_edit`, `live_stream_delete`
     - `advanced_search` with partial support, not all search rules supported and some operators work only with MySQL/MariaDB
-  * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `filter`, `add`, `update`)
+  * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `add` and `update`)
   * Support for the type `playlist` in the method `stats`
   * Support for the type `playlist` in the methods `downlaod` and `stream`
   * Support for the type `playlist` in the method `flag`
@@ -28,8 +30,6 @@
   * Null-valued fields `language`, `lyrics`, `mode`, `rate`, `replaygain_album_gain`, `replaygain_album_peak`, `replaygain_track_gain`, `replaygain_track_peak`, `r128_album_gain`, and `r128_track_gain` to `song` type results
   * In JSON-mode only, field `artists` to `song` and `album` type results
   * All the fields of `handshake` response on the response of `ping` within a valid session
-- Subsonic: Empty implementation for the method `getNowPlaying`
-  [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 
 ### Changed
 - Ampache API:

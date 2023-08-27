@@ -1524,7 +1524,7 @@ class AmpacheController extends Controller {
 
 		return [
 			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $genreKey) {
-				$albumCount = $this->albumBusinessLayer->countByArtist($artist->getId());
+				$albumCount = $this->albumBusinessLayer->countByAlbumArtist($artist->getId());
 				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
 				$name = $artist->getNameString($this->l10n);
 				$nameParts = $this->prefixAndBaseName($name);

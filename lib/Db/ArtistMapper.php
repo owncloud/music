@@ -168,7 +168,7 @@ class ArtistMapper extends BaseMapper {
 			case 'last_play':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp ?) mysqlhack)";
 			case 'played':			// fall through, we give no access to other people's data; not part of the API spec but Ample uses this
 			case 'myplayed':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
-			case 'album_count':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_albums` `a` ON `t`.`album_id` = `a`.`id` GROUP BY `artist_id` HAVING COUNT(DISTINCT `a`.`id`) $sqlOp ?) mysqlhack)";
+			case 'album_count':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `album_artist_id` FROM `*PREFIX*music_albums` GROUP BY `album_artist_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)";
 			case 'song_count':		return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING COUNT(`id`) $sqlOp ?) mysqlhack)";
 			case 'time':			return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING SUM(`length`) $sqlOp ?) mysqlhack)";
 			case 'genre':			return "`*PREFIX*music_artists`.`id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL

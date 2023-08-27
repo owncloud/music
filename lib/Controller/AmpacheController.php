@@ -404,9 +404,16 @@ class AmpacheController extends Controller {
 	 */
 	protected function artists(
 			?string $filter, ?string $add, ?string $update,
-			int $limit, int $offset=0, bool $exact=false) : array {
-
-		$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
+			int $limit, int $offset=0, bool $exact=false, bool $album_artist=false) : array {
+		if ($album_artist) {
+			if (!empty($add) || !empty($update)) {
+				throw new AmpacheException("Arguments 'add' and 'update' are not supported when 'album_artist' = true", 400);
+			}
+			$artists = $this->artistBusinessLayer->findAllHavingAlbums(
+				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $exact ? MatchMode::Exact : MatchMode::Substring);
+		} else {
+			$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
+		}
 		return $this->renderArtists($artists);
 	}
 

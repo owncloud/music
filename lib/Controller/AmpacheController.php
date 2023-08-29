@@ -102,7 +102,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
-	const API6_VERSION = '600000';
+	const API6_VERSION = '600001';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -521,7 +521,7 @@ class AmpacheController extends Controller {
 			throw new AmpacheException("Type '$type' is not supported", 400);
 		}
 		$entities = \array_slice($entities, $offset, $limit);
-		return $this->renderEntitiesIndex($entities, $type);
+		return $this->renderEntities($entities, $type);
 	}
 
 	/**

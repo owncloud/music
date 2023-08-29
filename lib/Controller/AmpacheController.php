@@ -65,6 +65,7 @@ use OCA\Music\Http\XmlResponse;
 use OCA\Music\Middleware\AmpacheException;
 
 use OCA\Music\Utility\AmpacheImageService;
+use OCA\Music\Utility\AmpachePreferences;
 use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\LastfmService;
@@ -164,7 +165,7 @@ class AmpacheController extends Controller {
 		if ($this->jsonMode) {
 			return new JSONResponse($this->prepareResultForJsonApi($content));
 		} else {
-			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode'], true, true);
+			return new XmlResponse($this->prepareResultForXmlApi($content), ['id', 'index', 'count', 'code', 'errorCode'], true, true, 'text');
 		}
 	}
 
@@ -185,7 +186,7 @@ class AmpacheController extends Controller {
 			$content = [
 				'error' => [
 					'code' => (string)$code,
-					'value' => $message
+					'text' => $message
 				]
 			];
 		}
@@ -1145,6 +1146,25 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function user_preferences() : array {
+		return ['user_preference' => AmpachePreferences::getAll()];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function user_preference(string $filter) : array {
+		$pref = AmpachePreferences::get($filter);
+		if ($pref === null) {
+			throw new AmpacheException("Not Found: $filter", 400);
+		} else {
+			return ['user_preference' => [$pref]];
+		}
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function download(int $id, string $type='song') : Response {
 		// request param `format` is ignored
 		$userId = $this->session->getUserId();
@@ -1526,7 +1546,7 @@ class AmpacheController extends Controller {
 		} else {
 			return [
 				'id' => (string)$id,
-				'value' => $name
+				'text' => $name
 			];
 		}
 	}
@@ -1562,7 +1582,7 @@ class AmpacheController extends Controller {
 					$genreKey => \array_map(function ($genreId) use ($genreMap) {
 						return [
 							'id' => (string)$genreId,
-							'value' => $genreMap[$genreId]->getNameString($this->l10n),
+							'text' => $genreMap[$genreId]->getNameString($this->l10n),
 							'count' => 1
 						];
 					}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
@@ -1604,7 +1624,7 @@ class AmpacheController extends Controller {
 					$genreKey => \array_map(function ($genre) {
 						return [
 							'id' => (string)$genre->getId(),
-							'value' => $genre->getNameString($this->l10n),
+							'text' => $genre->getNameString($this->l10n),
 							'count' => 1
 						];
 					}, $album->getGenres() ?? [])
@@ -1857,7 +1877,13 @@ class AmpacheController extends Controller {
 				// This outlier has been fixed in APIv6.
 				$api5albumOddity = ($apiVer === 5 && $action === 'album');
 
-				if (!($plural  || $api5albumOddity)) {
+				// The actions "user_preference" and "system_preference" are another kind of outliers in APIv5,
+				// their reponses are anonymou 1-item arrays. This got fixed in the APIv6.0.1
+				$api5preferenceOddity = ($apiVer === 5 && Util::endsWith($action, 'preference'));
+
+				if ($api5preferenceOddity) {
+					$content = \array_pop($content);
+				} elseif (!($plural  || $api5albumOddity)) {
 					$content = \array_pop($content);
 					$content = \array_pop($content);
 				}
@@ -1869,13 +1895,13 @@ class AmpacheController extends Controller {
 			Util::intCastArrayValues($content, 'is_bool');
 		}
 
-		// The key 'value' has a special meaning on XML responses, as it makes the corresponding value
+		// The key 'text' has a special meaning on XML responses, as it makes the corresponding value
 		// to be treated as text content of the parent element. In the JSON API, these are mostly
 		// substituted with property 'name', but error responses use the property 'message', instead.
 		if (\array_key_exists('error', $content)) {
-			$content = Util::convertArrayKeys($content, ['value' => 'message']);
+			$content = Util::convertArrayKeys($content, ['text' => 'message']);
 		} else {
-			$content = Util::convertArrayKeys($content, ['value' => 'name']);
+			$content = Util::convertArrayKeys($content, ['text' => 'name']);
 		}
 		return $content;
 	}
@@ -1898,7 +1924,7 @@ class AmpacheController extends Controller {
 		// for some bizarre reason, the 'id' arrays have 'index' attributes in the XML format
 		if ($firstKey == 'id') {
 			$content['id'] = \array_map(function ($id, $index) {
-				return ['index' => $index, 'value' => $id];
+				return ['index' => $index, 'text' => $id];
 			}, $content['id'], \array_keys($content['id']));
 		}
 

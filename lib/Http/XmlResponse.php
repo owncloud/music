@@ -32,6 +32,7 @@ class XmlResponse extends Response {
 	private $attributeKeys;
 	private $boolAsInt;
 	private $nullAsEmpty;
+	private $textNodeKey;
 
 	/**
 	 * @param array $content
@@ -42,8 +43,12 @@ class XmlResponse extends Response {
 	 *                        If false, any boolean values are yielded as string "false"/"true".
 	 * @param bool $nullAsEmpty If true, any null values are converted to empty strings, and the result has an empty element or attribute.
 	 *                          If false, any null-valued keys are are left out from the result.
+	 * @param ?string $textNodeKey When a key within @a $content mathes this, the corresponding value is converted to a text node,
+	 *                             instead of creating an element or attribute named by the key.
 	 */
-	public function __construct(array $content, /*mixed*/ $attributes=true, bool $boolAsInt=false, bool $nullAsEmpty=false) {
+	public function __construct(array $content, /*mixed*/ $attributes=true,
+								bool $boolAsInt=false, bool $nullAsEmpty=false,
+								?string $textNodeKey='value') {
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary
@@ -56,6 +61,7 @@ class XmlResponse extends Response {
 		$this->attributeKeys = $attributes;
 		$this->boolAsInt = $boolAsInt;
 		$this->nullAsEmpty = $nullAsEmpty;
+		$this->textNodeKey = $textNodeKey;
 	}
 
 	public function render() {
@@ -78,8 +84,7 @@ class XmlResponse extends Response {
 		}
 
 		if (\is_string($value)) {
-			// key 'value' has a special meaning
-			if ($key == 'value') {
+			if ($key == $this->textNodeKey) {
 				$parentNode->appendChild($this->doc->createTextNode($value));
 			} elseif ($allowAttribute && $this->keyMayDefineAttribute($key)) {
 				$parentNode->setAttribute($key, $value);

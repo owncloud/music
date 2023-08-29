@@ -242,7 +242,7 @@ class Track extends Entity {
 		if ($genreId !== null) {
 			$result[$genreKey] = [[
 				'id' => (string)$genreId,
-				'value' => $this->getGenreNameString($l10n),
+				'text' => $this->getGenreNameString($l10n),
 				'count' => 1
 			]];
 		}

@@ -15,6 +15,7 @@
     - `genres`, `genre`, `genre_artists`, `genre_albums`, `genre_songs`
     - `bookmarks`, `get_bookmark`, `bookmark_create`, `bookmark_edit`, `bookmark_delete`
     - `live_streams`, `live_stream`, `live_stream_create`, `live_stream_edit`, `live_stream_delete`
+    - `user_preference` and `user_preferences` with mock-up content
     - `advanced_search` with partial support, not all search rules supported and some operators work only with MySQL/MariaDB
   * Support for the type `album_artist` in the method `get_indexes` (but without support for the args `add` and `update`)
   * Support for the parameter `album_artist` in the method `artists` (but without support for the args `add` and `update`)

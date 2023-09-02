@@ -56,6 +56,9 @@ class Album extends Entity {
 	private $artistIds;
 	private $numberOfDisks;
 
+	// injected separately when needed
+	private $tracks;
+
 	public function __construct() {
 		$this->addType('disk', 'int');
 		$this->addType('coverFileId', 'int');
@@ -93,6 +96,20 @@ class Album extends Entity {
 
 	public function setNumberOfDisks(?int $count) : void {
 		$this->numberOfDisks = $count;
+	}
+
+	/**
+	 * @return ?Track[]
+	 */
+	public function getTracks() : ?array {
+		return $this->tracks;
+	}
+
+	/**
+	 * @param Track[] $tracks
+	 */
+	public function setTracks(array $tracks) : void {
+		$this->tracks = $tracks;
 	}
 
 	/**

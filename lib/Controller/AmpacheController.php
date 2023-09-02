@@ -499,20 +499,30 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function albums(
-			?string $filter, ?string $add, ?string $update,
+			?string $filter, ?string $add, ?string $update, ?string $include,
 			int $limit, int $offset=0, bool $exact=false) : array {
 
 		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
+
+		if ($include == 'songs') {
+			$this->library->injectTracksToAlbums($albums, $this->session->getUserId());
+		}
+
 		return $this->renderAlbums($albums);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function album(int $filter) : array {
+	protected function album(int $filter, ?string $include) : array {
 		$userId = $this->session->getUserId();
-		$album = $this->albumBusinessLayer->find($filter, $userId);
-		return $this->renderAlbums([$album]);
+		$albums = [$this->albumBusinessLayer->find($filter, $userId)];
+
+		if ($include == 'songs') {
+			$this->library->injectTracksToAlbums($albums, $this->session->getUserId());
+		}
+
+		return $this->renderAlbums($albums);
 	}
 
 	/**
@@ -1626,14 +1636,20 @@ class AmpacheController extends Controller {
 	 */
 	private function renderAlbums(array $albums) : array {
 		$genreKey = $this->genreKey();
+		$apiMajor = $this->apiMajorVersion();
 		// In APIv6 JSON format, there is a new property `artists` with an array value
-		$includeArtists = ($this->jsonMode && $this->apiMajorVersion() > 5);
+		$includeArtists = ($this->jsonMode && $apiMajor > 5);
+		// In APIv3-4, the property 'tracks' was used for the song count in case the inclusion of songs wasn't requested.
+		// APIv5+ has the property 'songcount' for this and 'tracks' may only contain objects.
+		$tracksMayDenoteCount = ($apiMajor < 5); 
 
 		return [
-			'album' => \array_map(function (Album $album) use ($genreKey, $includeArtists) {
-				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
+			'album' => \array_map(function (Album $album) use ($genreKey, $includeArtists, $tracksMayDenoteCount) {
 				$name = $album->getNameString($this->l10n);
 				$nameParts = $this->prefixAndBaseName($name);
+				$songCount = $this->trackBusinessLayer->countByAlbum($album->getId());
+				$songs = $album->getTracks();
+
 				$apiAlbum = [
 					'id' => (string)$album->getId(),
 					'name' => $name,
@@ -1643,7 +1659,7 @@ class AmpacheController extends Controller {
 						$album->getAlbumArtistId(),
 						$album->getAlbumArtistNameString($this->l10n)
 					),
-					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
+					'tracks' => ($songs !== null) ? $this->renderSongs($songs, false) : ($tracksMayDenoteCount ? $songCount : null),
 					'songcount' => $songCount,
 					'diskcount' => $album->getNumberOfDisks(),
 					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
@@ -1663,6 +1679,10 @@ class AmpacheController extends Controller {
 				if ($includeArtists) {
 					$apiAlbum['artists'] = [$apiAlbum['artist']];
 				}
+				if ($this->jsonMode && $songs !== null) {
+					// Remove an unnecessary level on the JSON API
+					$apiAlbum['tracks'] = $apiAlbum['tracks']['song'];
+				}
 
 				return $apiAlbum;
 			}, $albums)
@@ -1672,9 +1692,11 @@ class AmpacheController extends Controller {
 	/**
 	 * @param Track[] $tracks
 	 */
-	private function renderSongs(array $tracks) : array {
-		$userId = $this->session->getUserId();
-		$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
+	private function renderSongs(array $tracks, bool $injectAlbums=true) : array {
+		if ($injectAlbums) {
+			$userId = $this->session->getUserId();
+			$this->albumBusinessLayer->injectAlbumsToTracks($tracks, $userId);
+		}
 
 		$createPlayUrl = function(Track $track) : string {
 			return $this->createAmpacheActionUrl('download', $track->getId());

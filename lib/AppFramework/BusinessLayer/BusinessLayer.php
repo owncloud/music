@@ -30,6 +30,9 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 abstract class BusinessLayer {
 	protected $mapper;
 
+	// Some SQLite installations can't handle more than 999 query args. Remember that `user_id` takes one slot in most queries.
+	public const MAX_SQL_ARGS = 999;
+
 	/**
 	 * @phpstan-param BaseMapper<EntityType> $mapper
 	 */

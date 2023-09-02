@@ -45,6 +45,6 @@ class AmpachePreferences {
 	}
 
 	public static function get(string $name) : ?array {
-        return \array_column(self::SETTINGS, null, 'name')[$name] ?? null;
+		return \array_column(self::SETTINGS, null, 'name')[$name] ?? null;
 	}
 }

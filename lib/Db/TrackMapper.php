@@ -79,11 +79,12 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * @param int[] $albumIds
 	 * @return Track[]
 	 */
-	public function findAllByAlbum(int $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
-		$condition = '`album_id` = ?';
-		$params = [$userId, $albumId];
+	public function findAllByAlbum(array $albumIds, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
+		$condition = '`album_id` IN ' . $this->questionMarks(\count($albumIds));
+		$params = \array_merge([$userId], $albumIds);
 
 		if ($artistId !== null) {
 			$condition .= ' AND `artist_id` = ? ';

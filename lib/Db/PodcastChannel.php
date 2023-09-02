@@ -76,7 +76,7 @@ class PodcastChannel extends Entity {
 	/**
 	 * @return ?PodcastEpisode[]
 	 */
-	public function getEpisodes() : array {
+	public function getEpisodes() : ?array {
 		return $this->episodes;
 	}
 

@@ -25,6 +25,7 @@
   * Support for the type `playlist` in the method `flag`
   * Support for the parameter `top50` in the method `artist_songs`
   * Supoort for the filter `highest` in the method `stats`
+  * Support for the parameter `include` in the methods `album` and `albums`
   * Fields `time`, `albumcount`, `songcount`, `prefix`, and `basename` to the `artist` type results
   * Fields `time`, `diskcount`, `songcount`, `prefix`, and `basename` to the `album` type results
   * Fields `disk`, `format`, `stream_format`, `stream_bitrate`, `stream_mime`, and `playlisttrack` to `song` type results

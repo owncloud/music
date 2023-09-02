@@ -133,4 +133,32 @@ class Library {
 			$this->trackBusinessLayer->latestUpdateTime($userId)
 		);
 	}
+
+	/**
+	 * Inject tracks to the given albums. Sets also the album refence of each injected track.
+	 * @param Album[] $albums input/output
+	 */
+	public function injectTracksToAlbums(array &$albums, string $userId) : void {
+		$alBussLayer = $this->albumBusinessLayer;
+		$trBussLayer = $this->trackBusinessLayer;
+
+		if (\count($albums) < $alBussLayer::MAX_SQL_ARGS && \count($albums) < $alBussLayer->count($userId)) {
+			$tracks = $trBussLayer->findAllByAlbum(Util::extractIds($albums), $userId);
+		} else {
+			$tracks = $trBussLayer->findAll($userId);
+		}
+
+		$tracksPerAlbum = [];
+		foreach ($tracks as $track) {
+			$tracksPerAlbum[$track->getAlbumId()][] = $track;
+		}
+
+		foreach ($albums as &$album) {
+			$albumTracks = $tracksPerAlbum[$album->getId()] ?? [];
+			$album->setTracks($albumTracks);
+			foreach ($albumTracks as &$track) {
+				$track->setAlbum($album);
+			}
+		}
+	}
 }

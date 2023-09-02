@@ -35,8 +35,6 @@ class AlbumBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
 
-	private const MAX_SQL_ALBUM_ARGS = 998; // Some SQLite installations can't handle more than 999 query args. 1 slot reserved for `user_id`.
-
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
 		$this->mapper = $albumMapper;
@@ -237,7 +235,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// could cause problems with SQLite (see #239) and probably it would be bad for
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
-			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ALBUM_ARGS)
+			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
 					? null : Util::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
@@ -373,7 +371,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			return [];
 		} else {
 			$result = [];
-			$idChunks = \array_chunk($trackIds, self::MAX_SQL_ALBUM_ARGS);
+			$idChunks = \array_chunk($trackIds, self::MAX_SQL_ARGS - 1);
 			foreach ($idChunks as $idChunk) {
 				$resultChunk = $this->mapper->findAlbumsWithCoversForTracks($idChunk, $userId, $limit);
 				$result = \array_merge($result, $resultChunk);
@@ -400,7 +398,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$albumIds = \array_keys($albumIds);
 
 		// get the corresponding entities from the business layer
-		if (\count($albumIds) < $this->count($userId)) {
+		if (\count($albumIds) < self::MAX_SQL_ARGS && \count($albumIds) < $this->count($userId)) {
 			$albums = $this->findById($albumIds, $userId);
 		} else {
 			$albums = $this->findAll($userId);

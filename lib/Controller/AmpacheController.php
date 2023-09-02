@@ -326,7 +326,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
+	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
 		if ($type === 'album_artist') {
 			if (!empty($add) || !empty($update)) {
 				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
@@ -337,6 +337,13 @@ class AmpacheController extends Controller {
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+
+			// We support the 'include' argument only for podcasts. On the original Ampache server, also other types have support but
+			// only 'podcast' and 'playlist' are documented to be supported and the implementation is really messy for the 'playlist'
+			// type, with inconsistencies between XML and JSON formats and XML-structures unlike any other actions.
+			if ($type == 'podcast' && $include) {
+				$this->injectEpisodesToChannels($entities);
+			}
 		}
 		return $this->renderEntitiesIndex($entities, $type);
 	}
@@ -750,10 +757,7 @@ class AmpacheController extends Controller {
 		$channels = $this->findEntities($this->podcastChannelBusinessLayer, $filter, $exact, $limit, $offset);
 
 		if ($include === 'episodes') {
-			$userId = $this->session->getUserId();
-			$actuallyLimited = ($limit < $this->podcastChannelBusinessLayer->count($userId));
-			$allChannelsIncluded = (!$filter && !$actuallyLimited && !$offset);
-			$this->podcastService->injectEpisodes($channels, $userId, $allChannelsIncluded);
+			$this->injectEpisodesToChannels($channels);
 		}
 
 		return $this->renderPodcastChannels($channels);
@@ -1486,6 +1490,15 @@ class AmpacheController extends Controller {
 		} else {
 			return $businessLayer->findAll($userId, SortBy::Name, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
 		}
+	}
+
+	/**
+	 * @param PodcastChannel[] &$channels
+	 */
+	private function injectEpisodesToChannels(array &$channels) : void {
+		$userId = $this->session->getUserId();
+		$allChannelsIncluded = (\count($channels) === $this->podcastChannelBusinessLayer->count($userId));
+		$this->podcastService->injectEpisodes($channels, $userId, $allChannelsIncluded);
 	}
 
 	private function createAmpacheActionUrl(string $action, int $id, ?string $type=null) : string {

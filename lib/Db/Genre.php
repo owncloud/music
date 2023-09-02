@@ -55,11 +55,11 @@ class Genre extends Entity {
 		$this->trackIds = $trackIds;
 	}
 
-	public function getNameString(IL10N $l10n) {
+	public function getNameString(IL10N $l10n) : string {
 		return $this->getName() ?: self::unknownNameString($l10n);
 	}
 
-	public function toApi() {
+	public function toApi() : array {
 		return  [
 			'id' => $this->getId(),
 			'name' => $this->getName(),
@@ -67,7 +67,7 @@ class Genre extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n) {
+	public function toAmpacheApi(IL10N $l10n) : array {
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getNameString($l10n),
@@ -80,7 +80,7 @@ class Genre extends Entity {
 		];
 	}
 
-	public static function unknownNameString(IL10N $l10n) {
+	public static function unknownNameString(IL10N $l10n) : string {
 		return (string) $l10n->t('(Unknown genre)');
 	}
 }

@@ -16,6 +16,8 @@ namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
 
+use OCP\IL10N;
+
 /**
  * @method int getType()
  * @method void setType(int $type)
@@ -39,6 +41,10 @@ class Bookmark extends Entity {
 		$this->addType('type', 'int');
 		$this->addType('entryId', 'int');
 		$this->addType('position', 'int');
+	}
+
+	public function getNameString(IL10N $l10n) : string {
+		return $this->getComment() ?: (string)$l10n->t('(no comment)');
 	}
 
 	public function toSubsonicApi() : array {

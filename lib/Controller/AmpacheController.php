@@ -327,25 +327,24 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
-		if ($type === 'album_artist') {
-			if (!empty($add) || !empty($update)) {
-				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
-			}
-			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
-				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
-			$type = 'artist';
-		} else {
-			$businessLayer = $this->getBusinessLayer($type);
-			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+		$entities = $this->listEntities($type, $filter, $add, $update, $limit, $offset);
 
-			// We support the 'include' argument only for podcasts. On the original Ampache server, also other types have support but
-			// only 'podcast' and 'playlist' are documented to be supported and the implementation is really messy for the 'playlist'
-			// type, with inconsistencies between XML and JSON formats and XML-structures unlike any other actions.
-			if ($type == 'podcast' && $include) {
-				$this->injectEpisodesToChannels($entities);
-			}
+		// We support the 'include' argument only for podcasts. On the original Ampache server, also other types have support but
+		// only 'podcast' and 'playlist' are documented to be supported and the implementation is really messy for the 'playlist'
+		// type, with inconsistencies between XML and JSON formats and XML-structures unlike any other actions.
+		if ($type == 'podcast' && $include) {
+			$this->injectEpisodesToChannels($entities);
 		}
+
 		return $this->renderEntitiesIndex($entities, $type);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function list(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
+		$entities = $this->listEntities($type, $filter, $add, $update, $limit, $offset);
+		return $this->renderEntitiesList($entities);
 	}
 
 	/**
@@ -1493,6 +1492,24 @@ class AmpacheController extends Controller {
 	}
 
 	/**
+	 * Common logic for the API methods `get_indexes` (deprecated in API6) and `list` (new in API6)
+	 */
+	private function listEntities(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset) : array {
+		if ($type === 'album_artist') {
+			if (!empty($add) || !empty($update)) {
+				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
+			}
+			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
+				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
+			$type = 'artist';
+		} else {
+			$businessLayer = $this->getBusinessLayer($type);
+			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+		}
+		return $entities;
+	}
+
+	/**
 	 * @param PodcastChannel[] &$channels
 	 */
 	private function injectEpisodesToChannels(array &$channels) : void {
@@ -1851,6 +1868,21 @@ class AmpacheController extends Controller {
 	/**
 	 * @param Entity[] $entities
 	 */
+	private function renderEntitiesList($entities) : array {
+		return [
+			'list' => \array_map(function ($entity) {
+				$name = $entity->getNameString($this->l10n);
+				return [
+					'id' => (string)$entity->getId(),
+					'name' => $name
+				] + $this->prefixAndBaseName($name);
+			}, $entities)
+		];
+	}
+
+	/**
+	 * @param Entity[] $entities
+	 */
 	private function renderEntityIds(array $entities) : array {
 		return ['id' => Util::extractIds($entities)];
 	}
@@ -1884,7 +1916,7 @@ class AmpacheController extends Controller {
 			// For singular actions (like "song", "artist"), the root object contains directly the entity properties.
 			else {
 				$action = $this->request->getParam('action');
-				$plural = (\substr($action, -1) === 's' || $action === 'get_similar' || $action === 'advanced_search');
+				$plural = (\substr($action, -1) === 's' || \in_array($action, ['get_similar', 'advanced_search', 'list']));
 
 				// In APIv5, the action "album" is an excption, it is formatted as if it was a plural action.
 				// This outlier has been fixed in APIv6.

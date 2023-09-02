@@ -54,24 +54,22 @@ class Artist extends Entity {
 	public function setLastfmUrl(?string $lastfmUrl) : void {
 		$this->lastfmUrl = $lastfmUrl;
 	}
-   
-	public function getUri(IURLGenerator $urlGenerator) {
+
+	public function getUri(IURLGenerator $urlGenerator) : string {
 		return $urlGenerator->linkToRoute(
 			'music.shivaApi.artist',
 			['artistId' => $this->id]
 		);
 	}
 
-	public function getNameString(IL10N $l10n) {
+	public function getNameString(IL10N $l10n) : string {
 		return $this->getName() ?: self::unknownNameString($l10n);
 	}
 
 	/**
 	 * Return the cover URL to be used in the Shiva API
-	 * @param IURLGenerator $urlGenerator
-	 * @return string|null
 	 */
-	public function coverToAPI(IURLGenerator $urlGenerator) {
+	public function coverToAPI(IURLGenerator $urlGenerator) : ?string {
 		$coverUrl = null;
 		if ($this->getCoverFileId() > 0) {
 			$coverUrl = $urlGenerator->linkToRoute('music.api.artistCover',
@@ -81,11 +79,9 @@ class Artist extends Entity {
 	}
 
 	/**
-	 * @param IL10N $l10n
 	 * @param array $albums in the "toCollection" format
-	 * @return array
 	 */
-	public function toCollection(IL10N $l10n, $albums) {
+	public function toCollection(IL10N $l10n, array $albums) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
@@ -93,7 +89,7 @@ class Artist extends Entity {
 		];
 	}
 
-	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) {
+	public function toAPI(IURLGenerator $urlGenerator, IL10N $l10n) : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getNameString($l10n),
@@ -103,7 +99,7 @@ class Artist extends Entity {
 		];
 	}
 
-	public static function unknownNameString(IL10N $l10n) {
+	public static function unknownNameString(IL10N $l10n) : string {
 		return (string) $l10n->t('Unknown artist');
 	}
 }

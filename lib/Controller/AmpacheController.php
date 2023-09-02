@@ -270,7 +270,7 @@ class AmpacheController extends Controller {
 		$addTime = \max($this->library->latestInsertTime($user), $this->playlistBusinessLayer->latestInsertTime($user));
 		$genresKey = $this->genreKey() . 's';
 		$playlistCount = $this->playlistBusinessLayer->count($user);
-		
+
 		return [
 			'session_expire' => \date('c', $this->session->getExpiry()),
 			'auth' => $this->session->getToken(),
@@ -1645,6 +1645,7 @@ class AmpacheController extends Controller {
 					),
 					'tracks' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
 					'songcount' => $songCount,
+					'diskcount' => $album->getNumberOfDisks(),
 					'time' => $this->trackBusinessLayer->totalDurationOfAlbum($album->getId()),
 					'rating' => $album->getRating() ?? 0,
 					'preciserating' => $album->getRating() ?? 0,

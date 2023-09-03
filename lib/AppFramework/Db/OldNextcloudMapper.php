@@ -36,7 +36,6 @@ use OCP\IDBConnection;
  * Simple parent class for inheriting your data access layer from. This class
  * may be subject to change in the future
  * @since 7.0.0
- * @deprecated 14.0.0 Move over to QBMapper
  */
 abstract class OldNextcloudMapper {
 	protected $tableName;
@@ -49,7 +48,6 @@ abstract class OldNextcloudMapper {
 	 * @param string $entityClass the name of the entity that the sql should be
 	 * mapped to queries without using sql
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	public function __construct(IDBConnection $db, $tableName, $entityClass = null) {
 		$this->db = $db;
@@ -68,7 +66,6 @@ abstract class OldNextcloudMapper {
 	/**
 	 * @return string the table name
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	public function getTableName() {
 		return $this->tableName;
@@ -80,7 +77,6 @@ abstract class OldNextcloudMapper {
 	 * @param Entity $entity the entity that should be deleted
 	 * @return Entity the deleted entity
 	 * @since 7.0.0 - return value added in 8.1.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	public function delete(Entity $entity) {
 		$sql = 'DELETE FROM `' . $this->tableName . '` WHERE `id` = ?';
@@ -95,7 +91,6 @@ abstract class OldNextcloudMapper {
 	 * @param Entity $entity the entity that should be created
 	 * @return Entity the saved entity with the set id
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	public function insert(Entity $entity) {
 		// get updated fields to save, fields have to be set using a setter to
@@ -144,7 +139,6 @@ abstract class OldNextcloudMapper {
 	 * @param Entity $entity the entity that should be created
 	 * @return Entity the saved entity with the set id
 	 * @since 7.0.0 - return value was added in 8.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	public function update(Entity $entity) {
 		// if entity wasn't changed it makes no sense to run a db query
@@ -200,7 +194,6 @@ abstract class OldNextcloudMapper {
 	 * @param array $array
 	 * @return bool true if associative
 	 * @since 8.1.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	private function isAssocArray(array $array) {
 		return array_values($array) !== $array;
@@ -211,7 +204,6 @@ abstract class OldNextcloudMapper {
 	 * @param $value
 	 * @return int PDO constant
 	 * @since 8.1.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	private function getPDOType($value) {
 		switch (gettype($value)) {
@@ -233,7 +225,6 @@ abstract class OldNextcloudMapper {
 	 * @param int $offset from which row we want to start
 	 * @return \PDOStatement the database query result
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	protected function execute($sql, array $params = [], $limit = null, $offset = null) {
 		$query = $this->db->prepare($sql, $limit, $offset);
@@ -269,7 +260,6 @@ abstract class OldNextcloudMapper {
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return array the result as row
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	protected function findOneQuery($sql, array $params = [], $limit = null, $offset = null) {
 		$stmt = $this->execute($sql, $params, $limit, $offset);
@@ -305,7 +295,6 @@ abstract class OldNextcloudMapper {
 	 * @param int $offset from which row we want to start
 	 * @return string formatted error message string
 	 * @since 9.1.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	private function buildDebugMessage($msg, $sql, array $params = [], $limit = null, $offset = null) {
 		return $msg .
@@ -322,7 +311,6 @@ abstract class OldNextcloudMapper {
 	 * @param array $row the row which should be converted to an entity
 	 * @return Entity the entity
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	protected function mapRowToEntity($row) {
 		return call_user_func($this->entityClass .'::fromRow', $row);
@@ -337,7 +325,6 @@ abstract class OldNextcloudMapper {
 	 * @param int $offset from which row we want to start
 	 * @return array all fetched entities
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	protected function findEntities($sql, array $params = [], $limit = null, $offset = null) {
 		$stmt = $this->execute($sql, $params, $limit, $offset);
@@ -365,7 +352,6 @@ abstract class OldNextcloudMapper {
 	 * @throws MultipleObjectsReturnedException if more than one item exist
 	 * @return Entity the entity
 	 * @since 7.0.0
-	 * @deprecated 14.0.0 Move over to QBMapper
 	 */
 	protected function findEntity($sql, array $params = [], $limit = null, $offset = null) {
 		return $this->mapRowToEntity($this->findOneQuery($sql, $params, $limit, $offset));

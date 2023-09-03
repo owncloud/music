@@ -249,8 +249,7 @@ class AlbumMapper extends BaseMapper {
 	 * returns albums of a specified artist
 	 * The artist may be an album_artist or the artist of a track
 	 *
-	 * @param integer $artistId ID of the artist
-	 * @param string $userId the user ID
+	 * @param integer $artistId
 	 * @return Album[]
 	 */
 	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
@@ -270,16 +269,15 @@ class AlbumMapper extends BaseMapper {
 	}
 
 	/**
-	 * returns albums of a specified artist
-	 * The artist must album_artist on the album, artists of individual tracks are not considered
+	 * returns albums of a specified artists
+	 * The artist must be album_artist on the album, artists of individual tracks are not considered
 	 *
-	 * @param integer $artistId ID of the artist
-	 * @param string $userId the user ID
+	 * @param int[] $artistIds
 	 * @return Album[]
 	 */
-	public function findAllByAlbumArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$sql = $this->selectUserEntities('`album_artist_id` = ?');
-		$params = [$userId, $artistId];
+	public function findAllByAlbumArtist(array $artistIds, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sql = $this->selectUserEntities('`album_artist_id` IN ' . $this->questionMarks(\count($artistIds)));
+		$params = \array_merge([$userId], $artistIds);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 

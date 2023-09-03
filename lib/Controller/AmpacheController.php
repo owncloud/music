@@ -410,27 +410,47 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function artists(
-			?string $filter, ?string $add, ?string $update,
+			?string $filter, ?string $add, ?string $update, ?string $include,
 			int $limit, int $offset=0, bool $exact=false, bool $album_artist=false) : array {
+		$userId = $this->session->getUserId();
+
 		if ($album_artist) {
 			if (!empty($add) || !empty($update)) {
 				throw new AmpacheException("Arguments 'add' and 'update' are not supported when 'album_artist' = true", 400);
 			}
 			$artists = $this->artistBusinessLayer->findAllHavingAlbums(
-				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, $exact ? MatchMode::Exact : MatchMode::Substring);
+				$userId, SortBy::Name, $limit, $offset, $filter, $exact ? MatchMode::Exact : MatchMode::Substring);
 		} else {
 			$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		}
+
+		$include = Util::explode(',', $include);
+		if (\in_array('songs', $include)) {
+			$this->library->injectTracksToArtists($artists, $userId);
+		}
+		if (\in_array('albums', $include)) {
+			$this->library->injectAlbumsToArtists($artists, $userId);
+		}
+
 		return $this->renderArtists($artists);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function artist(int $filter) : array {
+	protected function artist(int $filter, ?string $include) : array {
 		$userId = $this->session->getUserId();
-		$artist = $this->artistBusinessLayer->find($filter, $userId);
-		return $this->renderArtists([$artist]);
+		$artists = [$this->artistBusinessLayer->find($filter, $userId)];
+
+		$include = Util::explode(',', $include);
+		if (\in_array('songs', $include)) {
+			$this->library->injectTracksToArtists($artists, $userId);
+		}
+		if (\in_array('albums', $include)) {
+			$this->library->injectAlbumsToArtists($artists, $userId);
+		}
+
+		return $this->renderArtists($artists);
 	}
 
 	/**
@@ -1598,21 +1618,27 @@ class AmpacheController extends Controller {
 		$userId = $this->session->getUserId();
 		$genreMap = Util::createIdLookupTable($this->genreBusinessLayer->findAll($userId));
 		$genreKey = $this->genreKey();
+		// In APIv3-4, the properties 'albums' and 'songs' were used for the album/song count in case the inclusion of the relevan
+		// child objects wasn't requested. APIv5+ has the dedoicated properties 'albumcount' and 'songcount' for this purpose.
+		$oldCountApi = ($this->apiMajorVersion() < 5);
 
 		return [
-			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $genreKey) {
-				$albumCount = $this->albumBusinessLayer->countByAlbumArtist($artist->getId());
-				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
+			'artist' => \array_map(function (Artist $artist) use ($userId, $genreMap, $genreKey, $oldCountApi) {
 				$name = $artist->getNameString($this->l10n);
 				$nameParts = $this->prefixAndBaseName($name);
-				return [
+				$albumCount = $this->albumBusinessLayer->countByAlbumArtist($artist->getId());
+				$songCount = $this->trackBusinessLayer->countByArtist($artist->getId());
+				$albums = $artist->getAlbums();
+				$songs = $artist->getTracks();
+
+				$apiArtist = [
 					'id' => (string)$artist->getId(),
 					'name' => $name,
 					'prefix' => $nameParts['prefix'],
 					'basename' => $nameParts['basename'],
-					'albums' => $albumCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
+					'albums' => ($albums !== null) ? $this->renderAlbums($albums) : ($oldCountApi ? $albumCount : null),
 					'albumcount' => $albumCount,
-					'songs' => $songCount, // TODO: this should contain objects if requested; in API5+, this never contains the count
+					'songs' => ($songs !== null) ? $this->renderSongs($songs) : ($oldCountApi ? $songCount : null),
 					'songcount' => $songCount,
 					'time' => $this->trackBusinessLayer->totalDurationByArtist($artist->getId()),
 					'art' => $this->createCoverUrl($artist),
@@ -1627,6 +1653,18 @@ class AmpacheController extends Controller {
 						];
 					}, $this->trackBusinessLayer->getGenresByArtistId($artist->getId(), $userId))
 				];
+
+				if ($this->jsonMode) {
+					// Remove an unnecessary level on the JSON API
+					if ($albums !== null) {
+						$apiArtist['albums'] = $apiArtist['albums']['album'];
+					}
+					if ($songs !== null) {
+						$apiArtist['songs'] = $apiArtist['songs']['song'];
+					}
+				}
+
+				return $apiArtist;
 			}, $artists)
 		];
 	}
@@ -1641,7 +1679,7 @@ class AmpacheController extends Controller {
 		$includeArtists = ($this->jsonMode && $apiMajor > 5);
 		// In APIv3-4, the property 'tracks' was used for the song count in case the inclusion of songs wasn't requested.
 		// APIv5+ has the property 'songcount' for this and 'tracks' may only contain objects.
-		$tracksMayDenoteCount = ($apiMajor < 5); 
+		$tracksMayDenoteCount = ($apiMajor < 5);
 
 		return [
 			'album' => \array_map(function (Album $album) use ($genreKey, $includeArtists, $tracksMayDenoteCount) {

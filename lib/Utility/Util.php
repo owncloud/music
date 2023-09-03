@@ -50,13 +50,28 @@ class Util {
 	}
 
 	/**
-	 * Create look-up table from given array of items which have a `getId` function.
+	 * Create a look-up table from given array of items which have a `getId` function.
 	 * @return array where keys are the values returned by `getId` of each item
 	 */
 	public static function createIdLookupTable(array $array) : array {
 		$lut = [];
 		foreach ($array as $item) {
 			$lut[$item->getId()] = $item;
+		}
+		return $lut;
+	}
+
+	/**
+	 * Create a look-up table from given array so that keys of the table are obtained by calling
+	 * the given method on each array entry and the values are arrays of entries having the same
+	 * value returned by that method.
+	 * @param string $getKeyMethod Name of a method found on $array entries which returns a string or an int
+	 * @return array [int|string => array]
+	 */
+	public static function arrayGroupBy(array $array, string $getKeyMethod) : array {
+		$lut = [];
+		foreach ($array as $item) {
+			$lut[$item->$getKeyMethod()][] = $item;
 		}
 		return $lut;
 	}
@@ -95,7 +110,7 @@ class Util {
 	 * Another difference is that this function always requires an explicit callback condition.
 	 * Both inner nodes and leafs nodes are passed to the $condition.
 	 */
-	public static function arrayFilterRecursive(array  $array, callable $condition) : array {
+	public static function arrayFilterRecursive(array $array, callable $condition) : array {
 		$result = [];
 
 		foreach ($array as $key => $value) {

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -98,16 +98,13 @@ class PodcastService {
 	 *									This helps in optimizing the DB query.
 	 */
 	public function injectEpisodes(array &$channels, string $userId, bool $allChannelsIncluded) : void {
-		if ($allChannelsIncluded || \count($channels) > 998) {
+		if ($allChannelsIncluded || \count($channels) >= $this->channelBusinessLayer::MAX_SQL_ARGS) {
 			$episodes = $this->episodeBusinessLayer->findAll($userId, SortBy::Newest);
 		} else {
 			$episodes = $this->episodeBusinessLayer->findAllByChannel(Util::extractIds($channels), $userId);
 		}
 
-		$episodesPerChannel = [];
-		foreach ($episodes as $episode) {
-			$episodesPerChannel[$episode->getChannelId()][] = $episode;
-		}
+		$episodesPerChannel = Util::arrayGroupBy($episodes, 'getChannelId');
 
 		foreach ($channels as &$channel) {
 			$channel->setEpisodes($episodesPerChannel[$channel->getId()] ?? []);

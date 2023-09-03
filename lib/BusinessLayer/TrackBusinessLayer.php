@@ -45,10 +45,18 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by artist (both album and track artists are considered)
+	 * @param int|int[] $artistId
 	 * @return Track[]
 	 */
-	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		return $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
+	public function findAllByArtist(/*mixed*/ $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if (empty($artistId)) {
+			return [];
+		} else {
+			if (!\is_array($artistId)) {
+				$artistId = [$artistId];
+			}
+			return $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
+		}
 	}
 
 	/**

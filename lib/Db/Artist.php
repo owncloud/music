@@ -41,6 +41,8 @@ class Artist extends Entity {
 
 	// not part of the standard content, injected separately when needed
 	private $lastfmUrl;
+	private $albums;
+	private $tracks;
 
 	public function __construct() {
 		$this->addType('coverFileId', 'int');
@@ -53,6 +55,34 @@ class Artist extends Entity {
 
 	public function setLastfmUrl(?string $lastfmUrl) : void {
 		$this->lastfmUrl = $lastfmUrl;
+	}
+
+	/**
+	 * @return ?Album[]
+	 */
+	public function getAlbums() : ?array {
+		return $this->albums;
+	}
+
+	/**
+	 * @param Album[] $albums
+	 */
+	public function setAlbums(array $albums) : void {
+		$this->albums = $albums;
+	}
+
+	/**
+	 * @return ?Track[]
+	 */
+	public function getTracks() : ?array {
+		return $this->tracks;
+	}
+
+	/**
+	 * @param Track[] $tracks
+	 */
+	public function setTracks(array $tracks) : void {
+		$this->tracks = $tracks;
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {

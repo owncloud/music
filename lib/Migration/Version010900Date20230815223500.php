@@ -73,7 +73,7 @@ class Version010900Date20230815223500 extends SimpleMigrationStep {
 		$table = $schema->getTable('music_ampache_sessions');
 
 		$this->setColumn($table, 'api_version', 'string', ['notnull' => false, 'length' => 16]);
-		$this->setColumn($table, 'ampache_user_id', 'int', ['notnull' => true, 'unsigned' => true]);
+		$this->setColumn($table, 'ampache_user_id', 'integer', ['notnull' => true, 'unsigned' => true]);
 	}
 
 	/**
@@ -81,21 +81,21 @@ class Version010900Date20230815223500 extends SimpleMigrationStep {
 	 */
 	private function addRatingFields(ISchemaWrapper $schema) {
 		$tableNames = [
-			'oc_music_artists',
-			'oc_music_albums',
-			'oc_music_tracks',
-			'oc_music_playlists',
-			'oc_music_podcast_channels',
-			'oc_music_podcast_episodes'
+			'music_artists',
+			'music_albums',
+			'music_tracks',
+			'music_playlists',
+			'music_podcast_channels',
+			'music_podcast_episodes'
 		];
 
 		foreach ($tableNames as $tableName) {
 			$table = $schema->getTable($tableName);
-			$this->setColumn($table, 'rating', 'int', ['notnull' => true, 'default' => 0]);
+			$this->setColumn($table, 'rating', 'integer', ['notnull' => true, 'default' => 0]);
 		}
 
 		// Also, add 'starred' field for playlists
-		$this->setColumn($schema->getTable('oc_music_playlists'), 'starred', 'datetime', ['notnull' => false]);
+		$this->setColumn($schema->getTable('music_playlists'), 'starred', 'datetime', ['notnull' => false]);
 	}
 
 	private function setColumn($table, string $name, string $type, array $args) {

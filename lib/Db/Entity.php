@@ -39,9 +39,9 @@ class Entity extends \OCP\AppFramework\Db\Entity {
 	public function getNameString(IL10N $l10n) : string {
 		($l10n); // unused in this base implementation
 		if (\property_exists($this, 'name')) {
-			return $this->getName();
+			return $this->/** @scrutinizer ignore-call */getName() ?? '';
 		} elseif (\property_exists($this, 'title')) {
-			return $this->getTitle();
+			return $this->/** @scrutinizer ignore-call */getTitle() ?? '';
 		} else {
 			return 'UNIMPLEMENTED';
 		}

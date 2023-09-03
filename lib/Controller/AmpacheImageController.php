@@ -64,7 +64,7 @@ class AmpacheImageController extends Controller {
 	 * @NoCSRFRequired
 	 * @NoSameSiteCookieRequired
 	 */
-	public function image(?string $object_type, ?string $object_id, ?string $token) : Response {
+	public function image(?string $token, ?string $object_id, string $object_type='album') : Response {
 		if ($token === null) {
 			// Workaround for Ample client which uses this kind of call to get the placeholder graphips
 			return new FileResponse(PlaceholderImage::generateForResponse('?', $object_type, 200));

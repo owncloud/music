@@ -434,6 +434,7 @@ class SubsonicController extends Controller {
 				} else {
 					$seed = $name;
 				}
+				$size = (int)$size;
 				$size = $size > 0 ? $size : $this->coverHelper->getDefaultSize();
 				$coverData = PlaceholderImage::generateForResponse($name, $seed, $size);
 			}
@@ -1243,7 +1244,7 @@ class SubsonicController extends Controller {
 			'directory' => [
 				'id' => $id,
 				'name' => $channel->getTitle(),
-				'child' => Util::arrayMapMethod($channel->getEpisodes(), 'toSubsonicApi')
+				'child' => Util::arrayMapMethod($channel->getEpisodes() ?? [], 'toSubsonicApi')
 			]
 		]);
 	}

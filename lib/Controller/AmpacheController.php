@@ -336,6 +336,10 @@ class AmpacheController extends Controller {
 			$this->injectEpisodesToChannels($entities);
 		}
 
+		if ($type == 'album_artist') {
+			$type = 'artist';
+		}
+
 		return $this->renderEntitiesIndex($entities, $type);
 	}
 
@@ -1158,7 +1162,8 @@ class AmpacheController extends Controller {
 		$businessLayer = $this->getBusinessLayer($type);
 		$entity = $businessLayer->find($id, $userId);
 		if (\property_exists($entity, 'rating')) {
-			$entity->setRating($rating);
+			// Scrutinizer doesn't understand the connection between the property 'rating' and method 'setRating'
+			$entity->/** @scrutinizer ignore-call */setRating($rating);
 			$businessLayer->update($entity);
 		} else {
 			throw new AmpacheException("Unsupported type $type", 400);
@@ -1223,10 +1228,11 @@ class AmpacheController extends Controller {
 			$songIds = ($id === self::ALL_TRACKS_PLAYLIST_ID)
 				? $this->trackBusinessLayer->findAllIds($userId)
 				: $this->playlistBusinessLayer->find($id, $userId)->getTrackIdsAsArray();
-			if (empty($songIds)) {
+			$randomId = Random::pickItem($songIds);
+			if ($randomId === null) {
 				throw new AmpacheException("The playlist $id is empty", 404);
 			} else {
-				return $this->download(Random::pickItem($songIds));
+				return $this->download((int)$randomId);
 			}
 		} else {
 			throw new AmpacheException("Unsupported type '$type'", 400);
@@ -1531,7 +1537,6 @@ class AmpacheController extends Controller {
 			}
 			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
 				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
-			$type = 'artist';
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
@@ -1567,7 +1572,8 @@ class AmpacheController extends Controller {
 			throw new AmpacheException('unexpeted entity type for cover image', 500);
 		}
 
-		if ($type === 'playlist' || $entity->getCoverFileId()) {
+		// Scrutinizer doesn't understand that the if-else above guarantees that getCoverFileId() may be called only on Album or Artist
+		if ($type === 'playlist' || $entity->/** @scrutinizer ignore-call */getCoverFileId()) {
 			$id = $entity->getId();
 			$token = $this->imageService->getToken($type, $id, $this->session->getAmpacheUserId());
 			return $this->urlGenerator->linkToRouteAbsolute('music.ampacheImage.image') . "?object_type=$type&object_id=$id&token=$token";
@@ -1740,7 +1746,8 @@ class AmpacheController extends Controller {
 			return $this->createAmpacheActionUrl('download', $track->getId());
 		};
 		$createImageUrl = function(Track $track) : string {
-			return $this->createCoverUrl($track->getAlbum());
+			$album = $track->getAlbum();
+			return ($album !== null) ? $this->createCoverUrl($album) : '';
 		};
 		$renderRef = function(int $id, string $name) : array {
 			return $this->renderAlbumOrArtistRef($id, $name);
@@ -2056,7 +2063,7 @@ class AmpacheController extends Controller {
 
 		// For now, we have three supported major versions. Major version 3 can be sufficiently supported
 		// with our "version 4" implementation.
-		return Util::limit($ver, 4, 6);
+		return (int)Util::limit($ver, 4, 6);
 	}
 
 	private function apiVersionString() : string {

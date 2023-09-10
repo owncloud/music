@@ -218,10 +218,11 @@ abstract class BaseMapper extends CompatibleMapper {
 	/**
 	 * Find all IDs and names of user's entities of this kind.
 	 * Optionally, limit results based on a parent entity (not applicable for all entity types) and/or update/insert times.
-	 * @return arrray of arrays like ['id' => string, 'name' => ?string]
+	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)
+	 * @return array of arrays like ['id' => string, 'name' => ?string]
 	 */
 	public function findAllIdsAndNames(string $userId, ?int $parentId, ?int $limit=null, ?int $offset=null,
-			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null, bool $excludeChidless=false) : array {
 		$sql = "SELECT `id`, `{$this->nameColumn}` AS `name` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$params = [$userId];
 		if ($parentId !== null) {
@@ -237,6 +238,10 @@ abstract class BaseMapper extends CompatibleMapper {
 		if (!empty($timestampConds)) {
 			$sql .= " AND $timestampConds";
 			$params = \array_merge($params, $timestampParams);
+		}
+
+		if ($excludeChidless) {
+			$sql .= ' AND ' . $this->formatExcludeChildlessCondition();
 		}
 
 		$sql .= ' ' . $this->formatSortingClause(SortBy::Name);
@@ -550,6 +555,14 @@ abstract class BaseMapper extends CompatibleMapper {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Return an SQL condition to exclude entities having no children. The default implementation is empty
+	 * and derived classes may override this if applicable.
+	 */
+	protected function formatExcludeChildlessCondition() : string {
+		return 'true';
 	}
 
 	protected static function prepareSubstringSearchPattern(string $input) : string {

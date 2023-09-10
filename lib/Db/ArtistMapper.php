@@ -34,7 +34,7 @@ class ArtistMapper extends BaseMapper {
 	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
 			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact) : array {
 		$params = [$userId];
-		$condition = 'EXISTS (SELECT 1 FROM `*PREFIX*music_albums` `album` WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)';
+		$condition = $this->formatExcludeChildlessCondition();
 
 		if ($name !== null) {
 			[$nameCond, $nameParams] = $this->formatNameConditions($name, $matchMode);
@@ -153,6 +153,15 @@ class ArtistMapper extends BaseMapper {
 		}
 
 		return $artists;
+	}
+
+	/**
+	 * Overridden from the base implementation
+	 *
+	 * @see BaseMapper::formatExcludeChildlessCondition()
+	 */
+	protected function formatExcludeChildlessCondition() : string {
+		return 'EXISTS (SELECT 1 FROM `*PREFIX*music_albums` `album` WHERE `*PREFIX*music_artists`.`id` = `album`.`album_artist_id`)';
 	}
 
 	/**

@@ -396,7 +396,7 @@ class AmpacheController extends Controller {
 			$businessLayer = $this->getBusinessLayer($childType);
 			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			$children = $businessLayer->findAllIdsAndNames(
-				$this->session->getUserId(), $this->l10n, $parentId, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
+				$this->session->getUserId(), $this->l10n, $parentId, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax, true);
 		}
 
 		return [

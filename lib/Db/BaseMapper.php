@@ -217,12 +217,13 @@ abstract class BaseMapper extends CompatibleMapper {
 
 	/**
 	 * Find all IDs and names of user's entities of this kind.
-	 * Optionally, limit results based on a parent entity (not applicable for all entity types) and/or update/insert times.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) or update/insert times or name
 	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)
 	 * @return array of arrays like ['id' => string, 'name' => ?string]
 	 */
 	public function findAllIdsAndNames(string $userId, ?int $parentId, ?int $limit=null, ?int $offset=null,
-			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null, bool $excludeChidless=false) : array {
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
+			bool $excludeChidless=false, ?string $name) : array {
 		$sql = "SELECT `id`, `{$this->nameColumn}` AS `name` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$params = [$userId];
 		if ($parentId !== null) {
@@ -242,6 +243,12 @@ abstract class BaseMapper extends CompatibleMapper {
 
 		if ($excludeChidless) {
 			$sql .= ' AND ' . $this->formatExcludeChildlessCondition();
+		}
+
+		if (!empty($name)) {
+			[$nameCond, $nameParams] = $this->formatNameConditions($name, MatchMode::Substring);
+			$sql .= " AND $nameCond";
+			$params = \array_merge($params, $nameParams);
 		}
 
 		$sql .= ' ' . $this->formatSortingClause(SortBy::Name);

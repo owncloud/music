@@ -239,15 +239,16 @@ abstract class BusinessLayer {
 
 	/**
 	 * Find all IDs and names of user's entities of this kind.
-	 * Optionally, limit results based on a parent entity (not applicable for all entity types) and/or update/insert times.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) or update/insert times or name
 	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)
 	 * @return array of arrays like ['id' => string, 'name' => string]
 	 */
 	public function findAllIdsAndNames(string $userId, IL10N $l10n, ?int $parentId=null, ?int $limit=null, ?int $offset=null,
-			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null, bool $excludeChidless=false) : array {
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
+			bool $excludeChidless=false, ?string $name=null) : array {
 		try {
 			$idsAndNames = $this->mapper->findAllIdsAndNames(
-				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax, $excludeChidless);
+				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax, $excludeChidless, $name);
 		} catch (\DomainException $ex) {
 			throw new BusinessLayerException($ex->getMessage());
 		}

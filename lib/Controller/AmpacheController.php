@@ -327,17 +327,23 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
-		$entities = $this->listEntities($type, $filter, $add, $update, $limit, $offset);
+		if ($type === 'album_artist') {
+			$type = 'artist';
+			if (!empty($add) || !empty($update)) {
+				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
+			}
+			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
+				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
+		} else {
+			$businessLayer = $this->getBusinessLayer($type);
+			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
+		}
 
 		// We support the 'include' argument only for podcasts. On the original Ampache server, also other types have support but
 		// only 'podcast' and 'playlist' are documented to be supported and the implementation is really messy for the 'playlist'
 		// type, with inconsistencies between XML and JSON formats and XML-structures unlike any other actions.
 		if ($type == 'podcast' && $include) {
 			$this->injectEpisodesToChannels($entities);
-		}
-
-		if ($type == 'album_artist') {
-			$type = 'artist';
 		}
 
 		return $this->renderEntitiesIndex($entities, $type);
@@ -347,8 +353,22 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function list(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
-		$entities = $this->listEntities($type, $filter, $add, $update, $limit, $offset);
-		return $this->renderEntitiesList($entities);
+		$isAlbumArtist = ($type == 'album_artist');
+		if ($isAlbumArtist) {
+			$type = 'artist';
+		}
+
+		list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
+
+		$businessLayer = $this->getBusinessLayer($type);
+		$entities = $businessLayer->findAllIdsAndNames(
+			$this->session->getUserId(), $this->l10n, null, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax, $isAlbumArtist, $filter);
+
+		return [
+			'list' => \array_map(function($idAndName) {
+				return $idAndName + $this->prefixAndBaseName($idAndName['name']);
+			}, $entities)
+		];
 	}
 
 	/**
@@ -1593,23 +1613,6 @@ class AmpacheController extends Controller {
 	}
 
 	/**
-	 * Common logic for the API methods `get_indexes` (deprecated in API6) and `list` (new in API6)
-	 */
-	private function listEntities(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset) : array {
-		if ($type === 'album_artist') {
-			if (!empty($add) || !empty($update)) {
-				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
-			}
-			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
-				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
-		} else {
-			$businessLayer = $this->getBusinessLayer($type);
-			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
-		}
-		return $entities;
-	}
-
-	/**
 	 * @param PodcastChannel[] &$channels
 	 */
 	private function injectEpisodesToChannels(array &$channels) : void {
@@ -1996,21 +1999,6 @@ class AmpacheController extends Controller {
 	private function renderLiveStreamsIndex(array $stations) : array {
 		// The API spec gives no examples of this, but testing with Ampache demo server revealed that the format is indentical to the "full" format
 		return $this->renderLiveStreams($stations);
-	}
-
-	/**
-	 * @param Entity[] $entities
-	 */
-	private function renderEntitiesList($entities) : array {
-		return [
-			'list' => \array_map(function ($entity) {
-				$name = $entity->getNameString($this->l10n);
-				return [
-					'id' => (string)$entity->getId(),
-					'name' => $name
-				] + $this->prefixAndBaseName($name);
-			}, $entities)
-		];
 	}
 
 	/**

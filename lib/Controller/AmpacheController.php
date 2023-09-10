@@ -329,11 +329,9 @@ class AmpacheController extends Controller {
 	protected function get_indexes(string $type, ?string $filter, ?string $add, ?string $update, ?bool $include, int $limit, int $offset=0) : array {
 		if ($type === 'album_artist') {
 			$type = 'artist';
-			if (!empty($add) || !empty($update)) {
-				throw new AmpacheException("Arguments 'add' and 'update' are not supported for the type 'album_artist'", 400);
-			}
+			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			$entities = $this->artistBusinessLayer->findAllHavingAlbums(
-				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring);
+				$this->session->getUserId(), SortBy::Name, $limit, $offset, $filter, MatchMode::Substring, $addMin, $addMax, $updateMin, $updateMax);
 		} else {
 			$businessLayer = $this->getBusinessLayer($type);
 			$entities = $this->findEntities($businessLayer, $filter, false, $limit, $offset, $add, $update);
@@ -498,11 +496,10 @@ class AmpacheController extends Controller {
 		$userId = $this->session->getUserId();
 
 		if ($album_artist) {
-			if (!empty($add) || !empty($update)) {
-				throw new AmpacheException("Arguments 'add' and 'update' are not supported when 'album_artist' = true", 400);
-			}
+			$matchMode =  $exact ? MatchMode::Exact : MatchMode::Substring;
+			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			$artists = $this->artistBusinessLayer->findAllHavingAlbums(
-				$userId, SortBy::Name, $limit, $offset, $filter, $exact ? MatchMode::Exact : MatchMode::Substring);
+				$userId, SortBy::Name, $limit, $offset, $filter, $matchMode, $addMin, $addMax, $updateMin, $updateMax);
 		} else {
 			$artists = $this->findEntities($this->artistBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 		}

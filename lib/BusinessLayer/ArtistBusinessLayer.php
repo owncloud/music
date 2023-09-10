@@ -51,11 +51,17 @@ class ArtistBusinessLayer extends BusinessLayer {
 	 * Finds all artists who have at least one album
 	 * @param ?string $name Optionally filter by artist name
 	 * @param ?int $matchMode Name match mode, disregarded if @a $name is null
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Artist[] artists
 	 */
 	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
-			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact) : array {
-		return $this->mapper->findAllHavingAlbums($userId, $sortBy, $limit, $offset, $name, $matchMode);
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		return $this->mapper->findAllHavingAlbums(
+			$userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
 	/**

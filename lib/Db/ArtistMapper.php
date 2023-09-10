@@ -32,7 +32,8 @@ class ArtistMapper extends BaseMapper {
 	 * @return Artist[]
 	 */
 	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
-			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact) : array {
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 		$params = [$userId];
 		$condition = $this->formatExcludeChildlessCondition();
 
@@ -40,6 +41,12 @@ class ArtistMapper extends BaseMapper {
 			[$nameCond, $nameParams] = $this->formatNameConditions($name, $matchMode);
 			$condition .= " AND $nameCond";
 			$params = \array_merge($params, $nameParams);
+		}
+
+		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+		if (!empty($timestampConds)) {
+			$condition .= " AND $timestampConds";
+			$params = \array_merge($params, $timestampParams);
 		}
 
 		$sql = $this->selectUserEntities($condition, $this->formatSortingClause($sortBy));

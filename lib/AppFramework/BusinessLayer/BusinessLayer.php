@@ -23,6 +23,7 @@ use OCA\Music\Utility\Util;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\IL10N;
 
 /**
  * @phpstan-template EntityType of Entity
@@ -234,6 +235,28 @@ abstract class BusinessLayer {
 		} else {
 			return [];
 		}
+	}
+
+	/**
+	 * Find all IDs and names of user's entities of this kind.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) and/or update/insert times.
+	 * @return arrray of arrays like ['id' => string, 'name' => string]
+	 */
+	public function findAllIdsAndNames(string $userId, IL10N $l10n, ?int $parentId=null, ?int $limit=null, ?int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		try {
+			$idsAndNames = $this->mapper->findAllIdsAndNames(
+				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax);
+		} catch (\DomainException $ex) {
+			throw new BusinessLayerException($ex->getMessage());
+		}
+		foreach ($idsAndNames as &$idAndName) {
+			if (empty($idAndName['name'])) {
+				$emptyEntity = $this->mapper->createEntity();
+				$idAndName['name'] = $emptyEntity->getNameString($l10n);
+			}
+		}
+		return $idsAndNames;
 	}
 
 	/**

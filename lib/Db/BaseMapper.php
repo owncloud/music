@@ -30,15 +30,17 @@ abstract class BaseMapper extends CompatibleMapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
+	protected $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass
 	 */
-	public function __construct(IDBConnection $db, string $tableName, string $entityClass, string $nameColumn) {
+	public function __construct(IDBConnection $db, string $tableName, string $entityClass, string $nameColumn, ?string $parentIdColumn=null) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
+		$this->parentIdColumn = $parentIdColumn;
 		// eclipse the base class property to help phpstan
 		$this->entityClass = $entityClass;
 	}
@@ -211,6 +213,46 @@ abstract class BaseMapper extends CompatibleMapper {
 		$result = $this->execute($sql, $params);
 
 		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
+	 * Find all IDs and names of user's entities of this kind.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) and/or update/insert times.
+	 * @return arrray of arrays like ['id' => string, 'name' => ?string]
+	 */
+	public function findAllIdsAndNames(string $userId, ?int $parentId, ?int $limit=null, ?int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		$sql = "SELECT `id`, `{$this->nameColumn}` AS `name` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$params = [$userId];
+		if ($parentId !== null) {
+			if ($this->parentIdColumn === null) {
+				throw new \DomainException("The parentId filtering is not applicable for the table {$this->getTableName()}");
+			} else {
+				$sql .= " AND {$this->parentIdColumn} = ?";
+				$params[] = $parentId;
+			}
+		}
+
+		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+		if (!empty($timestampConds)) {
+			$sql .= " AND $timestampConds";
+			$params = \array_merge($params, $timestampParams);
+		}
+
+		$sql .= ' ' . $this->formatSortingClause(SortBy::Name);
+
+		if ($limit !== null) {
+			$sql .= ' LIMIT ?';
+			$params[] = $limit;
+		}
+		if ($offset !== null) {
+			$sql .= ' OFFSET ?';
+			$params[] = $offset;
+		}
+
+		$result = $this->execute($sql, $params);
+
+		return $result->fetchAll();
 	}
 
 	/**

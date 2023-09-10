@@ -354,6 +354,65 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
+	protected function browse(string $type, ?string $filter, ?string $add, ?string $update, int $limit, int $offset=0) : array {
+		// note: the argument 'catalog' is disregarded in our implementation
+		if ($type == 'root') {
+			$catalogId = null;
+			$childType = 'catalog';
+		} elseif ($type == 'catalog') {
+			$catalogId = null;
+			if ($filter == 'music') {
+				$childType = 'artist';
+			} elseif ($filter == 'podcasts') {
+				$childType = 'podcast';
+			} else {
+				throw new AmpacheException("Filter '$filter' is not a valid catalog", 400);
+			}
+		} else {
+			$catalogId = Util::startsWith($type, 'podcast') ? 'podcasts' : 'music';
+			$parentId = empty($filter) ? null : (int)$filter;
+
+			switch ($type) {
+				case 'podcast':
+					$childType = 'podcast_episode';
+					break;
+				case 'artist':
+					$childType = 'album';
+					break;
+				case 'album':
+					$childType = 'song';
+					break;
+				default:
+					throw new AmpacheException("Type '$type' is not supported", 400);
+			}
+		}
+
+		if ($childType == 'catalog') {
+			$children = [
+				['id' => 'music', 'name' => 'music'],
+				['id' => 'podcasts', 'name' => 'podcasts']
+			];
+		} else {
+			$businessLayer = $this->getBusinessLayer($childType);
+			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
+			$children = $businessLayer->findAllIdsAndNames(
+				$this->session->getUserId(), $this->l10n, $parentId, $limit, $offset, $addMin, $addMax, $updateMin, $updateMax);
+		}
+
+		return [
+			'catalog_id' => $catalogId,
+			'parent_id' => $filter,
+			'parent_type' => $type,
+			'child_type' => $childType,
+			'browse' => \array_map(function($idAndName) {
+				return $idAndName + $this->prefixAndBaseName($idAndName['name']);
+			}, $children)
+		];
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
 	protected function stats(string $type, ?string $filter, int $limit, int $offset=0) : array {
 		$userId = $this->session->getUserId();
 
@@ -1505,11 +1564,7 @@ class AmpacheController extends Controller {
 		return new ErrorResponse(Http::STATUS_NOT_FOUND, 'entity has no cover');
 	}
 
-	private function findEntities(
-			BusinessLayer $businessLayer, ?string $filter, bool $exact, ?int $limit=null, ?int $offset=null, ?string $add=null, ?string $update=null) : array {
-
-		$userId = $this->session->getUserId();
-
+	private static function parseTimeParameters(?string $add=null, ?string $update=null) : array {
 		// It's not documented, but Ampache supports also specifying date range on `add` and `update` parameters
 		// by using '/' as separator. If there is no such separator, then the value is used as a lower limit.
 		$add = Util::explode('/', $add);
@@ -1518,6 +1573,16 @@ class AmpacheController extends Controller {
 		$addMax = $add[1] ?? null;
 		$updateMin = $update[0] ?? null;
 		$updateMax = $update[1] ?? null;
+
+		return [$addMin, $addMax, $updateMin, $updateMax];
+	}
+
+	private function findEntities(
+			BusinessLayer $businessLayer, ?string $filter, bool $exact, ?int $limit=null, ?int $offset=null, ?string $add=null, ?string $update=null) : array {
+
+		$userId = $this->session->getUserId();
+
+		list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 
 		if ($filter) {
 			$matchMode = $exact ? MatchMode::Exact : MatchMode::Substring;

@@ -21,7 +21,7 @@ use OCP\IDBConnection;
  */
 class TrackMapper extends BaseMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_tracks', Track::class, 'title');
+		parent::__construct($db, 'music_tracks', Track::class, 'title', 'album_id');
 	}
 
 	/**

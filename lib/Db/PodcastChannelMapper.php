@@ -12,6 +12,7 @@
 
 namespace OCA\Music\Db;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
@@ -20,8 +21,8 @@ use OCP\IDBConnection;
  * @phpstan-extends BaseMapper<PodcastChannel>
  */
 class PodcastChannelMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_podcast_channels', PodcastChannel::class, 'title');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_podcast_channels', PodcastChannel::class, 'title');
 	}
 
 	/**

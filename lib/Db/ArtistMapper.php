@@ -16,14 +16,15 @@ namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
  * @phpstan-extends BaseMapper<Artist>
  */
 class ArtistMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_artists', Artist::class, 'name');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_artists', Artist::class, 'name');
 	}
 
 	/**

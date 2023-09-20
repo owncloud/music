@@ -371,73 +371,82 @@ class Music extends App {
 
 		$container->registerService('AlbumMapper', function (IAppContainer $c) {
 			return new AlbumMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('AmpacheSessionMapper', function (IAppContainer $c) {
 			return new AmpacheSessionMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('AmpacheUserMapper', function (IAppContainer $c) {
 			return new AmpacheUserMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('ArtistMapper', function (IAppContainer $c) {
 			return new ArtistMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('DbCache', function (IAppContainer $c) {
 			return new Cache(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('GenreMapper', function (IAppContainer $c) {
 			return new GenreMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PlaylistMapper', function (IAppContainer $c) {
 			return new PlaylistMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PodcastChannelMapper', function (IAppContainer $c) {
 			return new PodcastChannelMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PodcastEpisodeMapper', function (IAppContainer $c) {
 			return new PodcastEpisodeMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('TrackMapper', function (IAppContainer $c) {
 			return new TrackMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('BookmarkMapper', function (IAppContainer $c) {
 			return new BookmarkMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('RadioStationMapper', function (IAppContainer $c) {
 			return new RadioStationMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 

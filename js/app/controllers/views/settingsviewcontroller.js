@@ -35,30 +35,8 @@ angular.module('Music').controller('SettingsViewController', [
 			_.each(unsubFuncs, function(func) { func(); });
 		});
 
-		function folderPicker(title, callback, path = '') {
-			// The filepicker interface wants to get the initial path without a trailing slash
-			if (path.endsWith('/')) {
-				path = path.slice(0, -1);
-			}
-
-			OC.dialogs.filepicker(
-				title,
-				function (selectedPath) {
-					if (!selectedPath.endsWith('/')) {
-						selectedPath = selectedPath + '/';
-					}
-					callback(selectedPath);
-				},
-				false, // multiselect
-				'httpd/unix-directory',
-				true, // modal
-				undefined, // type (only on NC, use default)
-				path // initial folder, only on NC16+
-			);
-		}
-
 		$scope.selectPath = function() {
-			folderPicker(
+			OCA.Music.Dialogs.folderPicker(
 				gettextCatalog.getString('Path to your music collection'),
 				function (path) {
 					if ($scope.settings.path !== path) {
@@ -93,7 +71,7 @@ angular.module('Music').controller('SettingsViewController', [
 		};
 
 		$scope.selectExcludedPath = function(index) {
-			folderPicker(
+			OCA.Music.Dialogs.folderPicker(
 				gettextCatalog.getString('Path to exclude from your music collection'),
 				function (path) {
 					$scope.settings.excludedPaths[index] = path;

@@ -22,6 +22,8 @@
   [#1071](https://github.com/owncloud/music/issues/1071)
 - Scanning breaking if any out-of-bounds numeric value gets scanned from any audio file
   [#1073](https://github.com/owncloud/music/issues/1073)
+- File and folder selection dialogs not working on NC 27.1.0 and 27.1.1 (workaround for a NC bug which should get fixed in NC 27.1.2)
+  [#1091](https://github.com/owncloud/music/issues/1091)
 
 ## 1.8.4 - 2023-06-06
 ### Added

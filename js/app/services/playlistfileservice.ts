@@ -64,22 +64,14 @@ function($rootScope : MusicRootScope, $q : ng.IQService, libraryService : Librar
 	}
 
 	function showFolderPicker(caption : string, onSelectedCallback : CallableFunction) : void {
-		OC.dialogs.filepicker(
-				caption,
-				(datapath : string, _returnType : any) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
-				false, // <! multiselect
-				'httpd/unix-directory',
-				true // <! modal
-		);
+		OCA.Music.Dialogs.folderPicker(caption, onSelectedCallback);
 	}
 
 	function showPlaylistFilePicker(caption : string, onSelectedCallback : CallableFunction) : void {
-		OC.dialogs.filepicker(
+		OCA.Music.Dialogs.filePicker(
 				caption,
-				(datapath : string, _returnType : any) => onSelectedCallback(datapath), // arg _returnType is passed by NC but not by OC
-				false, // <! multiselect
-				['audio/mpegurl', 'audio/x-scpls'],
-				true // <! modal
+				onSelectedCallback,
+				['audio/mpegurl', 'audio/x-scpls']
 		);
 	}
 

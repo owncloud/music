@@ -405,10 +405,12 @@ angular.module('Music').controller('NavigationController', [
 			$timeout(() => {
 				const navPaneContent = $('#app-navigation ul');
 				const navItem = navPaneContent.find('.music-navigation-item.active');
-				const navItemTop = navItem.offset().top - $('#header').height();
-				const navItemBottom = navItemTop + navItem.height();
-				if (navItemTop < 0 || navItemBottom > navPaneContent.innerHeight()) {
-					navPaneContent.scrollToElement(navItem, 0, 300);
+				if (navItem.length) { // navItem is empty when Settings view activated
+					const navItemTop = navItem.offset().top - $('#header').height();
+					const navItemBottom = navItemTop + navItem.height();
+					if (navItemTop < 0 || navItemBottom > navPaneContent.innerHeight()) {
+						navPaneContent.scrollToElement(navItem, 0, 300);
+					}
 				}
 			});
 		});

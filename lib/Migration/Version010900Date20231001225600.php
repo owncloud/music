@@ -12,7 +12,7 @@ use OCP\Migration\IOutput;
 /**
  * Migrate the DB schema to Music v1.9.0 level from the v1.4.0 level
  */
-class Version010900Date20230815223500 extends SimpleMigrationStep {
+class Version010900Date20231001225600 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -70,10 +70,21 @@ class Version010900Date20230815223500 extends SimpleMigrationStep {
 	 * Add the new fields to the `music_ampache_sessions` table
 	 */
 	private function ampacheSessionChanges(ISchemaWrapper $schema) {
-		$table = $schema->getTable('music_ampache_sessions');
+		// On SQLite, it's not possible to add notnull columns to an existing table without a default value, see
+		// https://stackoverflow.com/questions/3170634/cannot-add-a-not-null-column-with-default-value-null-in-sqlite3.
+		// To work around this, we need to recreate the entire music_ampache_sessions table from scratch.
+		$schema->dropTable('music_ampache_sessions');
+		$table = $schema->createTable('music_ampache_sessions');
 
-		$this->setColumn($table, 'api_version', 'string', ['notnull' => false, 'length' => 16]);
-		$this->setColumn($table, 'ampache_user_id', 'integer', ['notnull' => true, 'unsigned' => true]);
+		$table->addColumn('id',					'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true]);
+		$table->addColumn('user_id',			'string',	['notnull' => true, 'length' => 64]);
+		$table->addColumn('token',				'string',	['notnull' => true, 'length' => 64]);
+		$table->addColumn('expiry',				'integer',	['notnull' => true, 'unsigned' => true]);
+		$table->addColumn('api_version',		'string',	['notnull' => false, 'length' => 16]);
+		$table->addColumn('ampache_user_id',	'integer',	['notnull' => true, 'unsigned' => true]);
+
+		$table->setPrimaryKey(['id']);
+		$table->addUniqueIndex(['token'], 'music_ampache_sessions_index');
 	}
 
 	/**

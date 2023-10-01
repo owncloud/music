@@ -681,7 +681,11 @@ class Scanner extends PublicEmitter {
 		return $this->l10nFactory->get('music', $languageCode);
 	}
 
-	private static function normalizeOrdinal(/*mixed*/ $ordinal) : ?int {
+	/**
+	 * @param int|float|string|null $ordinal
+	 * @return int|float|null
+	 */
+	private static function normalizeOrdinal(/*mixed*/ $ordinal) {
 		if (\is_string($ordinal)) {
 			// convert format '1/10' to '1'
 			$ordinal = \explode('/', $ordinal)[0];
@@ -710,7 +714,11 @@ class Scanner extends PublicEmitter {
 		}
 	}
 
-	private static function normalizeYear(/*mixed*/ $date) : ?int {
+	/**
+	 * @param int|float|string|null $date
+	 * @return int|float|null
+	 */
+	private static function normalizeYear(/*mixed*/ $date) {
 		$year = null;
 		$matches = null;
 
@@ -725,7 +733,11 @@ class Scanner extends PublicEmitter {
 		return Util::limit($year, Util::SINT32_MIN, Util::SINT32_MAX);
 	}
 
-	private static function normalizeUnsigned(/*mixed*/ $value) : ?int {
+	/**
+	 * @param int|float|string|null $value
+	 * @return int|float|null
+	 */
+	private static function normalizeUnsigned(/*mixed*/ $value) {
 		if (\is_numeric($value)) {
 			$value = (int)\round((float)$value);
 		} else {

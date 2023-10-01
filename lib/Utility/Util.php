@@ -379,8 +379,12 @@ class Util {
 	/**
 	 * Limit an integer value between the specified minimum and maximum.
 	 * A null value is a valid input and will produce a null output.
+	 * @param int|float|null $input
+	 * @param int|float $min
+	 * @param int|float $max
+	 * @return int|float|null
 	 */
-	public static function limit(?int $input, int $min, int $max) : ?int {
+	public static function limit($input, $min, $max) {
 		if ($input === null) {
 			return null;
 		} else {

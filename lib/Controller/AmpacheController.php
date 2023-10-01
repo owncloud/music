@@ -491,8 +491,8 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function artists(
-			?string $filter, ?string $add, ?string $update, ?string $include,
-			int $limit, int $offset=0, bool $exact=false, bool $album_artist=false) : array {
+			?string $filter, ?string $add, ?string $update, int $limit, int $offset=0,
+			bool $exact=false, bool $album_artist=false, ?string $include=null) : array {
 		$userId = $this->session->getUserId();
 
 		if ($album_artist) {
@@ -599,8 +599,8 @@ class AmpacheController extends Controller {
 	 * @AmpacheAPI
 	 */
 	protected function albums(
-			?string $filter, ?string $add, ?string $update, ?string $include,
-			int $limit, int $offset=0, bool $exact=false) : array {
+			?string $filter, ?string $add, ?string $update, int $limit, int $offset=0,
+			bool $exact=false, ?string $include=null) : array {
 
 		$albums = $this->findEntities($this->albumBusinessLayer, $filter, $exact, $limit, $offset, $add, $update);
 

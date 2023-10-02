@@ -572,7 +572,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * and derived classes may override this if applicable.
 	 */
 	protected function formatExcludeChildlessCondition() : string {
-		return 'true';
+		return '1=1';
 	}
 
 	protected static function prepareSubstringSearchPattern(string $input) : string {

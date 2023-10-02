@@ -44,7 +44,7 @@ class Genre extends Entity {
 	/**
 	 * @return ?int[]
 	 */
-	public function getTrackIds() : array {
+	public function getTrackIds() : ?array {
 		return $this->trackIds;
 	}
 

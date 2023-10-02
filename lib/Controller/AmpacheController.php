@@ -377,40 +377,44 @@ class AmpacheController extends Controller {
 		if ($type == 'root') {
 			$catalogId = null;
 			$childType = 'catalog';
-		} elseif ($type == 'catalog') {
-			$catalogId = null;
-			if ($filter == 'music') {
-				$childType = 'artist';
-			} elseif ($filter == 'podcasts') {
-				$childType = 'podcast';
-			} else {
-				throw new AmpacheException("Filter '$filter' is not a valid catalog", 400);
-			}
-		} else {
-			$catalogId = Util::startsWith($type, 'podcast') ? 'podcasts' : 'music';
-			$parentId = empty($filter) ? null : (int)$filter;
-
-			switch ($type) {
-				case 'podcast':
-					$childType = 'podcast_episode';
-					break;
-				case 'artist':
-					$childType = 'album';
-					break;
-				case 'album':
-					$childType = 'song';
-					break;
-				default:
-					throw new AmpacheException("Type '$type' is not supported", 400);
-			}
-		}
-
-		if ($childType == 'catalog') {
 			$children = [
 				['id' => 'music', 'name' => 'music'],
 				['id' => 'podcasts', 'name' => 'podcasts']
 			];
 		} else {
+			if ($type == 'catalog') {
+				$catalogId = null;
+				$parentId = null;
+
+				switch ($filter) {
+					case 'music':
+						$childType = 'artist';
+						break;
+					case 'podcasts':
+						$childType = 'podcast';
+						break;
+					default:
+						throw new AmpacheException("Filter '$filter' is not a valid catalog", 400);
+				}
+			} else {
+				$catalogId = Util::startsWith($type, 'podcast') ? 'podcasts' : 'music';
+				$parentId = empty($filter) ? null : (int)$filter;
+
+				switch ($type) {
+					case 'podcast':
+						$childType = 'podcast_episode';
+						break;
+					case 'artist':
+						$childType = 'album';
+						break;
+					case 'album':
+						$childType = 'song';
+						break;
+					default:
+						throw new AmpacheException("Type '$type' is not supported", 400);
+				}
+			}
+
 			$businessLayer = $this->getBusinessLayer($childType);
 			list($addMin, $addMax, $updateMin, $updateMax) = self::parseTimeParameters($add, $update);
 			$children = $businessLayer->findAllIdsAndNames(
@@ -1238,8 +1242,8 @@ class AmpacheController extends Controller {
 		$businessLayer = $this->getBusinessLayer($type);
 		$entity = $businessLayer->find($id, $userId);
 		if (\property_exists($entity, 'rating')) {
-			// Scrutinizer doesn't understand the connection between the property 'rating' and method 'setRating'
-			$entity->/** @scrutinizer ignore-call */setRating($rating);
+			// Scrutinizer and PHPStan don't understand the connection between the property 'rating' and the method 'setRating'
+			$entity->/** @scrutinizer ignore-call */setRating($rating); // @phpstan-ignore-line
 			$businessLayer->update($entity);
 		} else {
 			throw new AmpacheException("Unsupported type $type", 400);

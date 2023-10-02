@@ -50,7 +50,7 @@ class ArtistBusinessLayer extends BusinessLayer {
 	/**
 	 * Finds all artists who have at least one album
 	 * @param ?string $name Optionally filter by artist name
-	 * @param ?int $matchMode Name match mode, disregarded if @a $name is null
+	 * @param int $matchMode Name match mode, disregarded if @a $name is null
 	 * @param string|null $createdMin Optional minimum `created` timestamp.
 	 * @param string|null $createdMax Optional maximum `created` timestamp.
 	 * @param string|null $updatedMin Optional minimum `updated` timestamp.

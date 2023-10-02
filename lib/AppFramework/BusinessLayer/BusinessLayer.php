@@ -245,10 +245,10 @@ abstract class BusinessLayer {
 	 */
 	public function findAllIdsAndNames(string $userId, IL10N $l10n, ?int $parentId=null, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
-			bool $excludeChidless=false, ?string $name=null) : array {
+			bool $excludeChildless=false, ?string $name=null) : array {
 		try {
 			$idsAndNames = $this->mapper->findAllIdsAndNames(
-				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax, $excludeChidless, $name);
+				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax, $excludeChildless, $name);
 		} catch (\DomainException $ex) {
 			throw new BusinessLayerException($ex->getMessage());
 		}

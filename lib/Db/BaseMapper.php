@@ -226,7 +226,7 @@ abstract class BaseMapper extends CompatibleMapper {
 	 */
 	public function findAllIdsAndNames(string $userId, ?int $parentId, ?int $limit=null, ?int $offset=null,
 			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
-			bool $excludeChidless=false, ?string $name) : array {
+			bool $excludeChildless=false, ?string $name=null) : array {
 		$sql = "SELECT `id`, `{$this->nameColumn}` AS `name` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
 		$params = [$userId];
 		if ($parentId !== null) {
@@ -244,7 +244,7 @@ abstract class BaseMapper extends CompatibleMapper {
 			$params = \array_merge($params, $timestampParams);
 		}
 
-		if ($excludeChidless) {
+		if ($excludeChildless) {
 			$sql .= ' AND ' . $this->formatExcludeChildlessCondition();
 		}
 

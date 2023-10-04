@@ -73,6 +73,7 @@
 	line-height: 190px;
 	font-size: 105px;
 	cursor: pointer;
+	border-radius: 18px
 }
 
 .album-area > .overlay {

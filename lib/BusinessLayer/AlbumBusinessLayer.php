@@ -179,11 +179,21 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * {@inheritdoc}
-	 * @see BusinessLayer::findAllByName()
+	 * @see BusinessLayer::findAllStarred()
 	 * @return Album[]
 	 */
 	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		$albums = parent::findAllStarred($userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllRated()
+	 * @return Album[]
+	 */
+	public function findAllRated(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = $this->mapper->findAllRated($userId, $limit, $offset);
 		return $this->injectExtraFields($albums, $userId);
 	}
 

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020 - 2022
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -118,7 +118,7 @@ class LastfmService {
 	 * Get artists from the user's library similar to the given artist
 	 * @param integer $artistId
 	 * @param string $userId
-	 * @parma bool $includeNotPresent When true, the result may include also artists which
+	 * @param bool $includeNotPresent When true, the result may include also artists which
 	 *                                are not found from the user's music library. Such
 	 *                                artists have many fields including `id` set as null.
 	 * @return Artist[]
@@ -157,20 +157,53 @@ class LastfmService {
 	}
 
 	/**
+	 * Get tracks from the user's library similar to the given track
+	 * @return Track[]
+	 * @throws BusinessLayerException if track with the given ID is not found
+	 */
+	public function getSimilarTracks(int $trackId, string $userId) : array {
+		$track = $this->trackBusinessLayer->find($trackId, $userId);
+
+		$similarOnLastfm = $this->getInfoFromLastFm([
+			'method' => 'track.getSimilar',
+			'track' => $track->getTitle(),
+			'artist' => $track->getArtistName()
+		]);
+
+		$result = [];
+		$similarArr = $similarOnLastfm['similartracks']['track'] ?? null;
+		if ($similarArr !== null) {
+			foreach ($similarArr as $lastfmTrack) {
+				$matchingLibTracks = $this->trackBusinessLayer->findAllByNameAndArtistName($lastfmTrack['name'], $lastfmTrack['artist']['name'], $userId);
+				$result = \array_merge($result, $matchingLibTracks);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Get artist tracks from the user's library, sorted by their popularity on Last.fm
+	 * @param int|string $artistIdOrName Either the ID of the artist or the artist's name written exectly
+	 * 									like in the DB. Any integer-typed value is treated as an ID and 
+	 * 									string-typed value as a name.
 	 * @param int $maxCount Number of tracks to request from Last.fm. Note that the function may return much
 	 *						less tracks if the top tracks from Last.fm are not present in the user's library.
 	 * @return Track[]
 	 */
-	public function getTopTracks(string $artistName, string $userId, int $maxCount) : array {
+	public function getTopTracks(/*mixed*/ $artistIdOrName, string $userId, int $maxCount) : array {
 		$foundTracks = [];
 
-		$artist = $this->artistBusinessLayer->findAllByName($artistName, $userId, MatchMode::Exact, /*$limit=*/1)[0] ?? null;
+		if (\is_integer($artistIdOrName)) {
+			$artist = $this->artistBusinessLayer->find($artistIdOrName, $userId);
+		} else {
+			$artist = $this->artistBusinessLayer->findAllByName($artistIdOrName, $userId, MatchMode::Exact, /*$limit=*/1)[0] ?? null;
+		}
 
 		if ($artist !== null) {
 			$lastfmResult = $this->getInfoFromLastFm([
 				'method' => 'artist.getTopTracks',
-				'artist' => $artistName,
+				'artist' => $artist->getName(),
 				'limit' => (string)$maxCount
 			]);
 			$topTracksOnLastfm = $lastfmResult['toptracks']['track'] ?? null;

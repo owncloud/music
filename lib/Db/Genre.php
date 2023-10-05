@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -19,14 +19,10 @@ use OCP\IL10N;
  * @method void setName(string $name)
  * @method string getLowerName()
  * @method void setLowerName(string $lowerName)
+ *
  * @method int getTrackCount()
- * @method void setTrackCount(int $count)
  * @method int getAlbumCount()
- * @method void setAlbumCount(int $count)
  * @method int getArtistCount()
- * @method void setArtistCount(int $count)
- * @method array getTrackIds()
- * @method void setTrackIds(array $trackIds)
  */
 class Genre extends Entity {
 	public $name;
@@ -45,11 +41,25 @@ class Genre extends Entity {
 		$this->addType('artistCount', 'int');
 	}
 
-	public function getNameString(IL10N $l10n) {
+	/**
+	 * @return ?int[]
+	 */
+	public function getTrackIds() : ?array {
+		return $this->trackIds;
+	}
+
+	/**
+	 * @param int[] $trackIds
+	 */
+	public function setTrackIds(array $trackIds) : void {
+		$this->trackIds = $trackIds;
+	}
+
+	public function getNameString(IL10N $l10n) : string {
 		return $this->getName() ?: self::unknownNameString($l10n);
 	}
 
-	public function toApi() {
+	public function toApi() : array {
 		return  [
 			'id' => $this->getId(),
 			'name' => $this->getName(),
@@ -57,7 +67,7 @@ class Genre extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n) {
+	public function toAmpacheApi(IL10N $l10n) : array {
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getNameString($l10n),
@@ -66,11 +76,11 @@ class Genre extends Entity {
 			'songs' => $this->getTrackCount(),
 			'videos' => 0,
 			'playlists' => 0,
-			'stream' => 0
+			'live_streams' => 0
 		];
 	}
 
-	public static function unknownNameString(IL10N $l10n) {
+	public static function unknownNameString(IL10N $l10n) : string {
 		return (string) $l10n->t('(Unknown genre)');
 	}
 }

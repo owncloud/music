@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019 - 2022
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 namespace OCA\Music\Controller;
@@ -434,11 +434,9 @@ class SubsonicController extends Controller {
 				} else {
 					$seed = $name;
 				}
+				$size = (int)$size;
 				$size = $size > 0 ? $size : $this->coverHelper->getDefaultSize();
-				$coverData = [
-					'content' => PlaceholderImage::generate($name, $seed, $size),
-					'mimetype' => 'image/png'
-				];
+				$coverData = PlaceholderImage::generateForResponse($name, $seed, $size);
 			}
 
 			return new FileResponse($coverData);
@@ -1246,7 +1244,7 @@ class SubsonicController extends Controller {
 			'directory' => [
 				'id' => $id,
 				'name' => $channel->getTitle(),
-				'child' => Util::arrayMapMethod($channel->getEpisodes(), 'toSubsonicApi')
+				'child' => Util::arrayMapMethod($channel->getEpisodes() ?? [], 'toSubsonicApi')
 			]
 		]);
 	}

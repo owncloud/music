@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2020
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Middleware;
@@ -21,26 +21,32 @@ use OCP\AppFramework\Middleware;
 use OCA\Music\AppFramework\BusinessLayer\BusinessLayerException;
 use OCA\Music\AppFramework\Core\Logger;
 use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Db\AmpacheSession;
 use OCA\Music\Db\AmpacheSessionMapper;
-use OCA\Music\Utility\AmpacheUser;
+use OCA\Music\Db\AmpacheUserMapper;
+use OCA\Music\Utility\Random;
+use OCA\Music\Utility\Util;
 
 /**
+ * Handles the session management on Ampache login/logout.
  * Checks the authentication on each Ampache API call before the
  * request is allowed to be passed to AmpacheController.
  * Map identified exceptions from the controller to proper Ampache error results.
  */
 class AmpacheMiddleware extends Middleware {
+
+	const SESSION_EXPIRY_TIME = 6000;
+
 	private $request;
 	private $ampacheSessionMapper;
-	private $ampacheUser;
+	private $ampacheUserMapper;
 	private $logger;
 
 	public function __construct(
-			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper,
-			AmpacheUser $ampacheUser, Logger $logger) {
+			IRequest $request, AmpacheSessionMapper $ampacheSessionMapper, AmpacheUserMapper $ampacheUserMapper, Logger $logger) {
 		$this->request = $request;
 		$this->ampacheSessionMapper = $ampacheSessionMapper;
-		$this->ampacheUser = $ampacheUser; // used to share user info with controller
+		$this->ampacheUserMapper = $ampacheUserMapper;
 		$this->logger = $logger;
 	}
 
@@ -62,27 +68,106 @@ class AmpacheMiddleware extends Middleware {
 				$controller->setJsonMode(true);
 			}
 
-			// don't try to authenticate for the handshake request
-			if ($this->request['action'] !== 'handshake') {
-				$this->checkAuthentication();
+			// authenticate on 'handshake' and check the session token on any other action
+			$action = $this->request->getParam('action');
+			if ($action === 'handshake') {
+				$this->handleHandshake($controller);
+			} else {
+				$this->handleNonHandshakeAction($controller, $action);
 			}
 		}
 	}
+	
+	private function handleHandshake(AmpacheController $controller) : void {
+		$user = $this->request->getParam('user');
+		$timestamp = (int)$this->request->getParam('timestamp');
+		$auth = $this->request->getParam('auth');
+		$version = $this->request->getParam('version');
 
-	private function checkAuthentication() {
-		$token = $this->request['auth'] ?: $this->request['ssid'] ?: null;
+		$currentTime = \time();
+		$expiryDate = $currentTime + self::SESSION_EXPIRY_TIME;
 
-		if (empty($token)) {
-			// ping is allowed without a session (but if session token is passed, then it has to be valid)
-			if ($this->request['action'] !== 'ping') {
-				throw new AmpacheException('Invalid Login - session token missing', 401);
+		$this->checkHandshakeTimestamp($timestamp, $currentTime);
+		$apiKeyId = $this->checkHandshakeAuthentication($user, $timestamp, $auth);
+		$session = $this->startNewSession($user, $expiryDate, $version, $apiKeyId);
+		$controller->setSession($session);
+	}
+
+	private function checkHandshakeTimestamp(int $timestamp, int $currentTime) : void {
+		if ($timestamp === 0) {
+			throw new AmpacheException('Invalid Login - cannot parse time', 401);
+		}
+		if ($timestamp < ($currentTime - self::SESSION_EXPIRY_TIME)) {
+			throw new AmpacheException('Invalid Login - session is outdated', 401);
+		}
+		// Allow the timestamp to be at maximum 10 minutes in the future. The client may use its
+		// own system clock to generate the timestamp and that may differ from the server's time.
+		if ($timestamp > $currentTime + 600) {
+			throw new AmpacheException('Invalid Login - timestamp is in future', 401);
+		}
+	}
+
+	private function checkHandshakeAuthentication(?string $user, int $timestamp, ?string $auth) : int {
+		if ($user === null || $auth === null) {
+			throw new AmpacheException('Invalid Login - required credentials missing', 401);
+		}
+
+		$hashes = $this->ampacheUserMapper->getPasswordHashes($user);
+
+		foreach ($hashes as $keyId => $hash) {
+			$expectedHash = \hash('sha256', $timestamp . $hash);
+
+			if ($expectedHash === $auth) {
+				return (int)$keyId;
 			}
+		}
+
+		throw new AmpacheException('Invalid Login - passphrase does not match', 401);
+	}
+
+	private function startNewSession(string $user, int $expiryDate, ?string $apiVersion, int $apiKeyId) : AmpacheSession {
+		// create new session
+		$session = new AmpacheSession();
+		$session->setUserId($user);
+		$session->setToken(Random::secure(16));
+		$session->setExpiry($expiryDate);
+		$session->setApiVersion(Util::truncate($apiVersion, 16));
+		$session->setAmpacheUserId($apiKeyId);
+
+		// save session to the database
+		$this->ampacheSessionMapper->insert($session);
+
+		return $session;
+	}
+
+	private function handleNonHandshakeAction(AmpacheController $controller, ?string $action) : void {
+		$token = $this->request->getParam('auth') ?: $this->request->getParam('ssid');
+
+		// 'ping' is allowed without a session (but if session token is passed, then it has to be valid)
+		if ($action === 'ping' && empty($token)) {
+			return;
+		}
+
+		$session = $this->getExistingSession($token);
+		$controller->setSession($session);
+
+		if ($action === 'goodbye') {
+			$this->ampacheSessionMapper->delete($session);
+		}
+
+		if ($action === null) {
+			throw new AmpacheException("Required argument 'action' missing", 400);
+		}
+	}
+
+	private function getExistingSession(?string $token) : AmpacheSession {
+		if (empty($token)) {
+			throw new AmpacheException('Invalid Login - session token missing', 401);
 		} else {
 			try {
-				$session = $this->ampacheSessionMapper->findByToken($token);
-				$this->ampacheUser->setUserId($session->getUserId());
-				// also extend the session deadline on any authorized API call
-				$this->ampacheSessionMapper->extend($token, \time() + AmpacheController::SESSION_EXPIRY_TIME);
+				// extend the session deadline on any authorized API call
+				$this->ampacheSessionMapper->extend($token, \time() + self::SESSION_EXPIRY_TIME);
+				return $this->ampacheSessionMapper->findByToken($token);
 			} catch (\OCP\AppFramework\Db\DoesNotExistException $e) {
 				throw new AmpacheException('Invalid Login - invalid session token', 401);
 			}
@@ -106,22 +191,12 @@ class AmpacheMiddleware extends Middleware {
 	public function afterException($controller, $methodName, \Exception $exception) {
 		if ($controller instanceof AmpacheController) {
 			if ($exception instanceof AmpacheException) {
-				return $this->errorResponse($controller, $exception->getCode(), $exception->getMessage());
+				return $controller->ampacheErrorResponse($exception->getCode(), $exception->getMessage());
 			} elseif ($exception instanceof BusinessLayerException) {
-				return $this->errorResponse($controller, 404, 'Entity not found');
+				return $controller->ampacheErrorResponse(404, 'Entity not found');
 			}
 		}
 		throw $exception;
 	}
 
-	private function errorResponse(AmpacheController $controller, int $code, string $message) {
-		$this->logger->log($message, 'debug');
-
-		return $controller->ampacheResponse([
-			'error' => [
-				'code' => $code,
-				'value' => $message
-			]
-		]);
-	}
 }

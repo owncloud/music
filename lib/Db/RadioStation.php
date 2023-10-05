@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -33,6 +33,15 @@ class RadioStation extends Entity {
 			'home_url' => $this->getHomeUrl(),
 			'created' => $this->getCreated(),
 			'updated' => $this->getUpdated()
+		];
+	}
+
+	public function toAmpacheApi() : array {
+		return [
+			'id' => $this->getId(),
+			'name' => $this->getName(),
+			'url' => $this->getStreamUrl(),
+			'site_url' => $this->getHomeUrl()
 		];
 	}
 }

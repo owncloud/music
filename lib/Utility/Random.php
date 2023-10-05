@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Utility;
@@ -29,6 +29,18 @@ class Random {
 	 */
 	public static function secure(int $length) : string {
 		return \bin2hex(\random_bytes($length));
+	}
+
+	/**
+	 * Get one random item from the given array. Return null if the array is empty.
+	 */
+	public static function pickItem(array $itemArray) {
+		if (empty($itemArray)) {
+			return null;
+		} else {
+			$rndIdx = \array_rand($itemArray, 1);
+			return $itemArray[$rndIdx];
+		}
 	}
 
 	/**

@@ -22,4 +22,5 @@ abstract class SortBy {
 	const Newest = 3;
 	const PlayCount = 4;
 	const LastPlayed = 5;
+	const Rating = 6;
 }

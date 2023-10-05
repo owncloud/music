@@ -14,6 +14,7 @@ namespace OCA\Music\Db;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 use OCA\Music\AppFramework\Db\CompatibleMapper;
@@ -30,17 +31,21 @@ abstract class BaseMapper extends CompatibleMapper {
 	const SQL_DATE_FORMAT = 'Y-m-d H:i:s.v';
 
 	protected $nameColumn;
+	protected $parentIdColumn;
 	/** @phpstan-var class-string<EntityType> $entityClass */
 	protected $entityClass;
+	protected $dbIsPgsql; // the database type is PostgreSQL
 
 	/**
 	 * @phpstan-param class-string<EntityType> $entityClass
 	 */
-	public function __construct(IDBConnection $db, string $tableName, string $entityClass, string $nameColumn) {
+	public function __construct(IDBConnection $db, IConfig $config, string $tableName, string $entityClass, string $nameColumn, ?string $parentIdColumn=null) {
 		parent::__construct($db, $tableName, $entityClass);
 		$this->nameColumn = $nameColumn;
+		$this->parentIdColumn = $parentIdColumn;
 		// eclipse the base class property to help phpstan
 		$this->entityClass = $entityClass;
+		$this->dbIsPgsql = ($config->getSystemValue('dbtype') == 'pgsql');
 	}
 
 	/**
@@ -115,21 +120,9 @@ abstract class BaseMapper extends CompatibleMapper {
 		?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
 
 		$params = [$userId];
-		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
-		if ($name === null) {
-			$condition = "$nameCol IS NULL";
-		} else {
-			if ($matchMode === MatchMode::Exact) {
-				$condition = "LOWER($nameCol) = LOWER(?)";
-			} else {
-				$condition = "LOWER($nameCol) LIKE LOWER(?)";
-			}
-			if ($matchMode === MatchMode::Substring) {
-				$params[] = self::prepareSubstringSearchPattern($name);
-			} else {
-				$params[] = $name;
-			}
-		}
+
+		[$condition, $nameParams] = $this->formatNameConditions($name, $matchMode);
+		$params = \array_merge($params, $nameParams);
 
 		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
 		if (!empty($timestampConds)) {
@@ -137,25 +130,77 @@ abstract class BaseMapper extends CompatibleMapper {
 			$params = \array_merge($params, $timestampParams);
 		}
 
-		$sql = $this->selectUserEntities($condition, "ORDER BY LOWER($nameCol)");
+		$sql = $this->selectUserEntities($condition, $this->formatSortingClause(SortBy::Name));
 
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
-	 * Find all user's starred entities
+	 * Find all user's starred entities. It is safe to call this also on entity types
+	 * not supporting starring in which case an empty array will be returned.
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllStarred(string $userId, int $limit=null, int $offset=null) : array {
-		$sql = $this->selectUserEntities(
+		if (\property_exists($this->entityClass, 'starred')) {
+			$sql = $this->selectUserEntities(
 				"`{$this->getTableName()}`.`starred` IS NOT NULL",
-				"ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`)");
-		return $this->findEntities($sql, [$userId], $limit, $offset);
+				$this->formatSortingClause(SortBy::Name));
+			return $this->findEntities($sql, [$userId], $limit, $offset);
+		} else {
+			return [];
+		}
 	}
 
 	/**
-	 * Find IDs of all user's entities of this kind.
+	 * Find all entities with user-given rating 1-5
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllRated(string $userId, int $limit=null, int $offset=null) : array {
+		if (\property_exists($this->entityClass, 'rating')) {
+			$sql = $this->selectUserEntities(
+				"`{$this->getTableName()}`.`rating` > 0",
+				$this->formatSortingClause(SortBy::Rating));
+			return $this->findEntities($sql, [$userId], $limit, $offset);
+		} else {
+			return [];
+		}
+	}
+
+	/**
+	 * Find all entities matching multiple criteria, as needed for the Ampache API method `advanced_search`
+	 * @param string $conjunction Operator to use between the rules, either 'and' or 'or'
+	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
+	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question
+	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
+	 * 				'operator' is one of 
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$sqlConditions = [];
+		$sqlParams = [$userId];
+
+		foreach ($rules as $rule) {
+			list('op' => $sqlOp, 'param' => $param) = $this->advFormatSqlOperator($rule['operator'], $rule['input'], $userId);
+			$cond = $this->advFormatSqlCondition($rule['rule'], $sqlOp);
+			$sqlConditions[] = $cond;
+			// On some conditions, the parameter may need to be repeated several times
+			$paramCount = \substr_count($cond, '?');
+			for ($i = 0; $i < $paramCount; ++$i) {
+				$sqlParams[] = $param;
+			}
+		}
+		$sqlConditions = \implode(" $conjunction ", $sqlConditions);
+
+		$sql = $this->selectUserEntities($sqlConditions, $this->formatSortingClause(SortBy::Name));
+		return $this->findEntities($sql, $sqlParams, $limit, $offset);
+	}
+
+	/**
 	 * Optionally, limit to given IDs which may be used to check the validity of those IDs.
 	 * @return int[]
 	 */
@@ -171,6 +216,58 @@ abstract class BaseMapper extends CompatibleMapper {
 		$result = $this->execute($sql, $params);
 
 		return \array_map('intval', $result->fetchAll(\PDO::FETCH_COLUMN));
+	}
+
+	/**
+	 * Find all IDs and names of user's entities of this kind.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) or update/insert times or name
+	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)
+	 * @return array of arrays like ['id' => string, 'name' => ?string]
+	 */
+	public function findAllIdsAndNames(string $userId, ?int $parentId, ?int $limit=null, ?int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
+			bool $excludeChildless=false, ?string $name=null) : array {
+		$sql = "SELECT `id`, `{$this->nameColumn}` AS `name` FROM `{$this->getTableName()}` WHERE `user_id` = ?";
+		$params = [$userId];
+		if ($parentId !== null) {
+			if ($this->parentIdColumn === null) {
+				throw new \DomainException("The parentId filtering is not applicable for the table {$this->getTableName()}");
+			} else {
+				$sql .= " AND {$this->parentIdColumn} = ?";
+				$params[] = $parentId;
+			}
+		}
+
+		[$timestampConds, $timestampParams] = $this->formatTimestampConditions($createdMin, $createdMax, $updatedMin, $updatedMax);
+		if (!empty($timestampConds)) {
+			$sql .= " AND $timestampConds";
+			$params = \array_merge($params, $timestampParams);
+		}
+
+		if ($excludeChildless) {
+			$sql .= ' AND ' . $this->formatExcludeChildlessCondition();
+		}
+
+		if (!empty($name)) {
+			[$nameCond, $nameParams] = $this->formatNameConditions($name, MatchMode::Substring);
+			$sql .= " AND $nameCond";
+			$params = \array_merge($params, $nameParams);
+		}
+
+		$sql .= ' ' . $this->formatSortingClause(SortBy::Name);
+
+		if ($limit !== null) {
+			$sql .= ' LIMIT ?';
+			$params[] = $limit;
+		}
+		if ($offset !== null) {
+			$sql .= ' OFFSET ?';
+			$params[] = $offset;
+		}
+
+		$result = $this->execute($sql, $params);
+
+		return $result->fetchAll();
 	}
 
 	/**
@@ -376,7 +473,7 @@ abstract class BaseMapper extends CompatibleMapper {
 		$allConditions = "`{$this->getTableName()}`.`user_id` = ?";
 
 		if (!empty($condition)) {
-			$allConditions .= " AND $condition";
+			$allConditions .= " AND ($condition)";
 		}
 
 		return $this->selectEntities($allConditions, $extension);
@@ -391,6 +488,29 @@ abstract class BaseMapper extends CompatibleMapper {
 	 */
 	protected function selectEntities(string $condition, string $extension=null) : string {
 		return "SELECT * FROM `{$this->getTableName()}` WHERE $condition $extension ";
+	}
+
+	/**
+	 * @return array with two values: The SQL condition as string and the SQL parameters as string[]
+	 */
+	protected function formatNameConditions(?string $name, int $matchMode) : array {
+		$params = [];
+		$nameCol = "`{$this->getTableName()}`.`{$this->nameColumn}`";
+		if ($name === null) {
+			$condition = "$nameCol IS NULL";
+		} else {
+			if ($matchMode === MatchMode::Exact) {
+				$condition = "LOWER($nameCol) = LOWER(?)";
+			} else {
+				$condition = "LOWER($nameCol) LIKE LOWER(?)";
+			}
+			if ($matchMode === MatchMode::Substring) {
+				$params[] = self::prepareSubstringSearchPattern($name);
+			} else {
+				$params[] = $name;
+			}
+		}
+		return [$condition, $params];
 	}
 
 	/**
@@ -428,15 +548,31 @@ abstract class BaseMapper extends CompatibleMapper {
 	 * @param int $sortBy One of the constants defined in the class SortBy
 	 */
 	protected function formatSortingClause(int $sortBy, bool $invertSort = false) : ?string {
+		$table = $this->getTableName();
 		if ($sortBy == SortBy::Name) {
 			$dir = $invertSort ? 'DESC' : 'ASC';
-			return "ORDER BY LOWER(`{$this->getTableName()}`.`{$this->nameColumn}`) $dir";
+			return "ORDER BY LOWER(`$table`.`{$this->nameColumn}`) $dir";
 		} elseif ($sortBy == SortBy::Newest) {
 			$dir = $invertSort ? 'ASC' : 'DESC';
-			return "ORDER BY `{$this->getTableName()}`.`id` $dir"; // abuse the fact that IDs are ever-incrementing values
+			return "ORDER BY `$table`.`id` $dir"; // abuse the fact that IDs are ever-incrementing values
+		} elseif ($sortBy == SortBy::Rating) {
+			if (\property_exists($this->entityClass, 'rating')) {
+				$dir = $invertSort ? 'ASC' : 'DESC';
+				return "ORDER BY `$table`.`rating` $dir";
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Return an SQL condition to exclude entities having no children. The default implementation is empty
+	 * and derived classes may override this if applicable.
+	 */
+	protected function formatExcludeChildlessCondition() : string {
+		return '1=1';
 	}
 
 	protected static function prepareSubstringSearchPattern(string $input) : string {
@@ -453,6 +589,55 @@ abstract class BaseMapper extends CompatibleMapper {
 			$pattern = \implode('%', $parts);
 		}
 		return "%$pattern%";
+	}
+
+	/**
+	 * Format SQL operator and parameter matching the given advanced search operator.
+	 * @return array like ['op' => string, 'param' => string]
+	 */
+	protected function advFormatSqlOperator(string $ruleOperator, string $ruleInput, string $userId) {
+		$pqsql = $this->dbIsPgsql;
+		switch ($ruleOperator) {
+			case 'contain':		return ['op' => 'LIKE',							'param' => "%$ruleInput%"];
+			case 'notcontain':	return ['op' => 'NOT LIKE',						'param' => "%$ruleInput%"];
+			case 'start':		return ['op' => 'LIKE',							'param' => "$ruleInput%"];
+			case 'end':			return ['op' => 'LIKE',							'param' => "%$ruleInput"];
+			case 'is':			return ['op' => '=',							'param' => "$ruleInput"];
+			case 'isnot':		return ['op' => '!=',							'param' => "$ruleInput"];
+			case 'sounds':		return ['op' => 'SOUNDS LIKE',					'param' => $ruleInput]; // MySQL-specific syntax
+			case 'notsounds':	return ['op' => 'NOT SOUNDS LIKE',				'param' => $ruleInput]; // MySQL-specific syntax
+			case 'regexp':		return ['op' => $pqsql ? '~' : 'REGEXP',		'param' => $ruleInput];
+			case 'notregexp':	return ['op' => $pqsql ? '!~' : 'NOT REGEXP',	'param' => $ruleInput];
+			case 'true':		return ['op' => 'IS NOT NULL',					'param' => null];
+			case 'false':		return ['op' => 'IS NULL',						'param' => null];
+			case 'equal':		return ['op' => '',								'param' => $ruleInput];
+			case 'ne':			return ['op' => 'NOT',							'param' => $ruleInput];
+			case 'limit':		return ['op' => (string)(int)$ruleInput,		'param' => $userId];	// this is a bit hacky, userId needs to be passed as an SQL param while simple sanitation suffices for the limit
+			default:			return ['op' => $ruleOperator,					'param' => $ruleInput]; // all numerical operators fall here
+		}
+	}
+
+	/**
+	 * Format SQL condition matching the given advanced search rule and SQL operator.
+	 * Derived classes should override this to provide support for table-specific rules.
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		$table = $this->getTableName();
+		$nameCol = $this->nameColumn;
+
+		switch ($rule) {
+			case 'title':			return "LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?)";
+			case 'my_flagged':		return "`$table`.`starred` $sqlOp";
+			case 'favorite':		return "(LOWER(`$table`.`$nameCol`) $sqlOp LOWER(?) AND `$table`.`starred` IS NOT NULL)"; // title search among flagged
+			case 'myrating':		// fall throuhg, we provide no access to other people's data
+			case 'rating':			return "`$table`.`rating` $sqlOp ?";
+			case 'added':			return "`$table`.`created` $sqlOp ?";
+			case 'updated':			return "`$table`.`updated` $sqlOp ?";
+			case 'mbid':			return "`$table`.`mbid` $sqlOp ?";
+			case 'recent_added':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `created` DESC LIMIT $sqlOp) mysqlhack)";
+			case 'recent_updated':	return "`$table`.`id` IN (SELECT * FROM (SELECT `id` FROM `$table` WHERE `user_id` = ? ORDER BY `updated` DESC LIMIT $sqlOp) mysqlhack)";
+			default:				throw new \DomainException("Rule '$rule' not supported on this entity type");
+		}
 	}
 
 	/**

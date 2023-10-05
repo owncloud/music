@@ -9,11 +9,12 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
@@ -22,8 +23,8 @@ use OCP\IDBConnection;
  * @phpstan-extends BaseMapper<Bookmark>
  */
 class BookmarkMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_bookmarks', Bookmark::class, 'comment');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_bookmarks', Bookmark::class, 'comment');
 	}
 
 	public function findByEntry(int $type, int $entryId, string $userId) : Bookmark {

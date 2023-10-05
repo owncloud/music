@@ -7,11 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021, 2022
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\Db;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
@@ -20,8 +21,8 @@ use OCP\IDBConnection;
  * @phpstan-extends BaseMapper<PodcastEpisode>
  */
 class PodcastEpisodeMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_podcast_episodes', PodcastEpisode::class, 'title');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_podcast_episodes', PodcastEpisode::class, 'title', 'channel_id');
 	}
 
 	/**
@@ -53,6 +54,21 @@ class PodcastEpisodeMapper extends BaseMapper {
 				'`channel_id` = ? AND `user_id` = ? AND `id` NOT IN ' . $this->questionMarks($excludeCount),
 				\array_merge([$channelId, $userId], $excludedIds)
 			);
+		}
+	}
+
+	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		switch ($rule) {
+			case 'podcast':	return "`channel_id` IN (SELECT `id` FROM `*PREFIX*music_podcast_channels` `c` WHERE LOWER(`c`.`title`) $sqlOp LOWER(?))";
+			case 'time':	return "`duration` $sqlOp ?";
+			case 'pubdate':	return "`published` $sqlOp ?";
+			default:		return parent::advFormatSqlCondition($rule, $sqlOp);
 		}
 	}
 

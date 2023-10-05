@@ -9,12 +9,14 @@
  * @author Gavin E <no.emai@address.for.me>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Gavin E 2020
- * @copyright Pauli Järvinen 2020, 2021
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
 
 use OCA\Music\Utility\Util;
+
+use OCP\IL10N;
 
 /**
  * @method int getType()
@@ -41,13 +43,30 @@ class Bookmark extends Entity {
 		$this->addType('position', 'int');
 	}
 
+	public function getNameString(IL10N $l10n) : string {
+		return $this->getComment() ?: (string)$l10n->t('(no comment)');
+	}
+
 	public function toSubsonicApi() : array {
 		return [
 			'position' => $this->getPosition(),
-			'username' => $this->userId,
+			'username' => $this->getUserId(),
 			'comment' => $this->getComment() ?: '',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
 			'changed' => Util::formatZuluDateTime($this->getUpdated())
+		];
+	}
+
+	public function toAmpacheApi() : array {
+		return [
+			'id' => (string)$this->getId(),
+			'owner' => $this->getUserId(),
+			'object_type' => ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode',
+			'object_id' => (string)$this->getEntryId(),
+			'position' => (int)($this->getPosition() / 1000), // millisecods to seconds
+			'client' => $this->getComment(),
+			'creation_date' => Util::formatDateTimeUtcOffset($this->getCreated()),
+			'update_date' => Util::formatDateTimeUtcOffset($this->getUpdated())
 		];
 	}
 }

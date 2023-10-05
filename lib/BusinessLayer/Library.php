@@ -13,6 +13,8 @@
 namespace OCA\Music\BusinessLayer;
 
 use OCA\Music\AppFramework\Core\Logger;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\Artist;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\Util;
 
@@ -132,5 +134,74 @@ class Library {
 			$this->albumBusinessLayer->latestUpdateTime($userId),
 			$this->trackBusinessLayer->latestUpdateTime($userId)
 		);
+	}
+
+	/**
+	 * Inject tracks to the given albums. Sets also the album refence of each injected track.
+	 * @param Album[] $albums input/output
+	 */
+	public function injectTracksToAlbums(array &$albums, string $userId) : void {
+		$alBussLayer = $this->albumBusinessLayer;
+		$trBussLayer = $this->trackBusinessLayer;
+
+		if (\count($albums) < $alBussLayer::MAX_SQL_ARGS && \count($albums) < $alBussLayer->count($userId)) {
+			$tracks = $trBussLayer->findAllByAlbum(Util::extractIds($albums), $userId);
+		} else {
+			$tracks = $trBussLayer->findAll($userId);
+		}
+
+		$tracksPerAlbum = Util::arrayGroupBy($tracks, 'getAlbumId');
+
+		foreach ($albums as &$album) {
+			$albumTracks = $tracksPerAlbum[$album->getId()] ?? [];
+			$album->setTracks($albumTracks);
+			foreach ($albumTracks as &$track) {
+				$track->setAlbum($album);
+			}
+		}
+	}
+
+	/**
+	 * Inject tracks to the given artists
+	 * @param Artist[] $artists input/output
+	 */
+	public function injectTracksToArtists(array &$artists, string $userId) : void {
+		$arBussLayer = $this->artistBusinessLayer;
+		$trBussLayer = $this->trackBusinessLayer;
+
+		if (\count($artists) < $arBussLayer::MAX_SQL_ARGS && \count($artists) < $arBussLayer->count($userId)) {
+			$tracks = $trBussLayer->findAllByArtist(Util::extractIds($artists), $userId);
+		} else {
+			$tracks = $trBussLayer->findAll($userId);
+		}
+
+		$tracksPerArtist = Util::arrayGroupBy($tracks, 'getArtistId');
+
+		foreach ($artists as &$artist) {
+			$artistTracks = $tracksPerArtist[$artist->getId()] ?? [];
+			$artist->setTracks($artistTracks);
+		}
+	}
+
+	/**
+	 * Inject albums to the given artists
+	 * @param Artist[] $artists input/output
+	 */
+	public function injectAlbumsToArtists(array &$artists, string $userId) : void {
+		$arBussLayer = $this->artistBusinessLayer;
+		$alBussLayer = $this->albumBusinessLayer;
+
+		if (\count($artists) < $arBussLayer::MAX_SQL_ARGS && \count($artists) < $arBussLayer->count($userId)) {
+			$albums = $alBussLayer->findAllByAlbumArtist(Util::extractIds($artists), $userId);
+		} else {
+			$albums = $alBussLayer->findAll($userId);
+		}
+
+		$albumsPerArtist = Util::arrayGroupBy($albums, 'getAlbumArtistId');
+
+		foreach ($artists as &$artist) {
+			$artistAlbums = $albumsPerArtist[$artist->getId()] ?? [];
+			$artist->setAlbums($artistAlbums);
+		}
 	}
 }

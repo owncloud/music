@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2019, 2020
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 namespace OCA\Music\Http;
@@ -23,20 +23,32 @@ use OCP\AppFramework\Http\Response;
  * an array with string keys.
  *
  * Note that this response type has been created to fulfill the needs of the
- * SubsonicController and may not be suitable for all other purposes.
+ * SubsonicController and AmpacheController and may not be suitable for all other
+ * purposes.
  */
 class XmlResponse extends Response {
 	private $content;
 	private $doc;
 	private $attributeKeys;
+	private $boolAsInt;
+	private $nullAsEmpty;
+	private $textNodeKey;
 
 	/**
 	 * @param array $content
 	 * @param bool|string[] $attributes If true, then key-value pair is made into attribute if possible.
 	 *                                  If false, then key-value pairs are never made into attributes.
 	 *                                  If an array, then keys found from the array are made into attributes if possible.
+	 * @param bool $boolAsInt If true, any boolean values are yielded as int 0/1.
+	 *                        If false, any boolean values are yielded as string "false"/"true".
+	 * @param bool $nullAsEmpty If true, any null values are converted to empty strings, and the result has an empty element or attribute.
+	 *                          If false, any null-valued keys are are left out from the result.
+	 * @param ?string $textNodeKey When a key within @a $content mathes this, the corresponding value is converted to a text node,
+	 *                             instead of creating an element or attribute named by the key.
 	 */
-	public function __construct(array $content, $attributes=true) {
+	public function __construct(array $content, /*mixed*/ $attributes=true,
+								bool $boolAsInt=false, bool $nullAsEmpty=false,
+								?string $textNodeKey='value') {
 		$this->addHeader('Content-Type', 'application/xml');
 
 		// The content must have exactly one root element, add one if necessary
@@ -47,6 +59,9 @@ class XmlResponse extends Response {
 		$this->doc = new \DOMDocument('1.0', 'UTF-8');
 		$this->doc->formatOutput = true;
 		$this->attributeKeys = $attributes;
+		$this->boolAsInt = $boolAsInt;
+		$this->nullAsEmpty = $nullAsEmpty;
+		$this->textNodeKey = $textNodeKey;
 	}
 
 	public function render() {
@@ -57,14 +72,19 @@ class XmlResponse extends Response {
 
 	private function addChildElement($parentNode, $key, $value, $allowAttribute=true) {
 		if (\is_bool($value)) {
-			$value = $value ? 'true' : 'false';
+			if ($this->boolAsInt) {
+				$value = $value ? '1' : '0';
+			} else {
+				$value = $value ? 'true' : 'false';
+			}
 		} elseif (\is_numeric($value)) {
 			$value = (string)$value;
+		} elseif ($value === null && $this->nullAsEmpty) {
+			$value = '';
 		}
 
 		if (\is_string($value)) {
-			// key 'value' has a special meaning
-			if ($key == 'value') {
+			if ($key == $this->textNodeKey) {
 				$parentNode->appendChild($this->doc->createTextNode($value));
 			} elseif ($allowAttribute && $this->keyMayDefineAttribute($key)) {
 				$parentNode->setAttribute($key, $value);

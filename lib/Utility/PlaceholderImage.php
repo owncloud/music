@@ -44,7 +44,10 @@ use OCA\Music\Utility\PlaceholderImage\Color;
  */
 class PlaceholderImage {
 
-	public static function generate(string $name, string $seed, int $size): string {
+	/**
+	 * Generate PNG image data
+	 */
+	public static function generate(string $name, string $seed, int $size) : string {
 		$text = self::getText($name);
 		$backgroundColor = self::getBackgroundColor($seed);
 
@@ -71,6 +74,16 @@ class PlaceholderImage {
 		\ob_end_clean();
 
 		return $data;
+	}
+
+	/**
+	 * Generate placeholder data in format compatible with OCA\Music\Http\FileResponse
+	 */
+	public static function generateForResponse(string $name, string $seed, int $size) : array {
+		return [
+			'content' => self::generate($name, $seed, $size),
+			'mimetype' => 'image/png'
+		];
 	}
 
 	private static function findFontPath() : string {
@@ -105,7 +118,7 @@ class PlaceholderImage {
 	 * @param int $angle
 	 * @return int[]
 	 */
-	private static function imageTtfCenter($image, string $text, string $font, int $size, int $angle = 0): array {
+	private static function imageTtfCenter($image, string $text, string $font, int $size, int $angle = 0) : array {
 		// Image width & height
 		$xi = \imagesx($image);
 		$yi = \imagesy($image);
@@ -131,7 +144,7 @@ class PlaceholderImage {
 	 * @param int $maximum the maximum range
 	 * @return int between 0 and $maximum
 	 */
-	private static function hashToInt(string $hash, int $maximum): int {
+	private static function hashToInt(string $hash, int $maximum) : int {
 		$final = 0;
 		$result = [];
 
@@ -151,7 +164,7 @@ class PlaceholderImage {
 	/**
 	 * @return Color Object containing r g b int in the range [0, 255]
 	 */
-	private static function getBackgroundColor(string $hash): Color {
+	private static function getBackgroundColor(string $hash) : Color {
 		// Normalize hash
 		$hash = \strtolower($hash);
 
@@ -198,15 +211,15 @@ class Color {
 		$this->b = $b;
 	}
 
-	public function red(): int {
+	public function red() : int {
 		return $this->r;
 	}
 
-	public function green(): int {
+	public function green() : int {
 		return $this->g;
 	}
 
-	public function blue(): int {
+	public function blue() : int {
 		return $this->b;
 	}
 
@@ -218,7 +231,7 @@ class Color {
 	 * @param Color $color2 the second color
 	 * @return Color[]
 	 */
-	public static function mixPalette(int $steps, Color $color1, Color $color2): array {
+	public static function mixPalette(int $steps, Color $color1, Color $color2) : array {
 		$palette = [$color1];
 		$step = self::stepCalc($steps, [$color1, $color2]);
 		for ($i = 1; $i < $steps; $i++) {
@@ -236,7 +249,7 @@ class Color {
 	 * @param Color[] $ends end color
 	 * @return array{0: int, 1: int, 2: int} [r,g,b] steps for each color to go from $steps to $ends
 	 */
-	private static function stepCalc(int $steps, array $ends): array {
+	private static function stepCalc(int $steps, array $ends) : array {
 		return [
 			($ends[1]->red() - $ends[0]->red()) / $steps,
 			($ends[1]->green() - $ends[0]->green()) / $steps,

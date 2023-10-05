@@ -7,11 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 namespace OCA\Music\Db;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
@@ -19,8 +20,8 @@ use OCP\IDBConnection;
  * @phpstan-extends BaseMapper<RadioStation>
  */
 class RadioStationMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_radio_stations', RadioStation::class, 'name');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_radio_stations', RadioStation::class, 'name');
 	}
 
 	/**

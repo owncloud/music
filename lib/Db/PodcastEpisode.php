@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -49,6 +49,8 @@ use OCA\Music\Utility\Util;
  * @method void setDescription(?string $description)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  */
 class PodcastEpisode extends Entity {
 	public $channelId;
@@ -68,12 +70,14 @@ class PodcastEpisode extends Entity {
 	public $author;
 	public $description;
 	public $starred;
+	public $rating;
 
 	public function __construct() {
 		$this->addType('channelId', 'int');
 		$this->addType('size', 'int');
 		$this->addType('duration', 'int');
 		$this->addType('episode', 'int');
+		$this->addType('rating', 'int');
 	}
 
 	public function toApi() : array {
@@ -121,9 +125,15 @@ class PodcastEpisode extends Entity {
 			'state' => 'Completed',
 			'filelength' => Util::formatTime($this->getDuration()),
 			'filesize' => Util::formatFileSize($this->getSize(), 2) . 'B',
+			'bitrate' => $this->getBitrate(),
+			'stream_bitrate' => $this->getBitrate(),
+			'time' => $this->getDuration(),
+			'size' => $this->getSize(),
 			'mime' => $this->getMimetype(),
 			'url' => $this->getStreamUrl(),
-			'flag' => empty($this->getStarred()) ? 0 : 1,
+			'flag' => !empty($this->getStarred()),
+			'rating' => $this->getRating() ?? 0,
+			'preciserating' => $this->getRating() ?? 0,
 		];
 	}
 

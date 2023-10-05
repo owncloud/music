@@ -14,14 +14,15 @@
 
 namespace OCA\Music\Db;
 
+use OCP\IConfig;
 use OCP\IDBConnection;
 
 /**
  * @phpstan-extends BaseMapper<Track>
  */
 class TrackMapper extends BaseMapper {
-	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'music_tracks', Track::class, 'title');
+	public function __construct(IDBConnection $db, IConfig $config) {
+		parent::__construct($db, $config, 'music_tracks', Track::class, 'title', 'album_id');
 	}
 
 	/**
@@ -68,22 +69,25 @@ class TrackMapper extends BaseMapper {
 
 	/**
 	 * Returns all tracks of the given artist (both album and track artists are considered)
+	 * @param int[] $artistIds
 	 * @return Track[]
 	 */
-	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+	public function findAllByArtist(array $artistIds, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$questionMarks = $this->questionMarks(\count($artistIds));
 		$sql = $this->selectUserEntities(
-				'`artist_id` = ? OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` = ?) ',
+				"`artist_id` IN $questionMarks OR `album_id` IN (SELECT `id` from `*PREFIX*music_albums` WHERE `album_artist_id` IN $questionMarks)",
 				'ORDER BY LOWER(`title`)');
-		$params = [$userId, $artistId, $artistId];
+		$params = \array_merge([$userId], $artistIds, $artistIds);
 		return $this->findEntities($sql, $params, $limit, $offset);
 	}
 
 	/**
+	 * @param int[] $albumIds
 	 * @return Track[]
 	 */
-	public function findAllByAlbum(int $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
-		$condition = '`album_id` = ?';
-		$params = [$userId, $albumId];
+	public function findAllByAlbum(array $albumIds, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
+		$condition = '`album_id` IN ' . $this->questionMarks(\count($albumIds));
+		$params = \array_merge([$userId], $albumIds);
 
 		if ($artistId !== null) {
 			$condition .= ' AND `artist_id` = ? ';
@@ -181,6 +185,16 @@ class TrackMapper extends BaseMapper {
 	public function totalDurationOfAlbum(int $albumId) : int {
 		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `album_id` = ?';
 		$result = $this->execute($sql, [$albumId]);
+		$row = $result->fetch();
+		return (int)$row['duration'];
+	}
+
+	/**
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationByArtist(int $artistId) : int {
+		$sql = 'SELECT SUM(`length`) AS `duration` FROM `*PREFIX*music_tracks` WHERE `artist_id` = ?';
+		$result = $this->execute($sql, [$artistId]);
 		$row = $result->fetch();
 		return (int)$row['duration'];
 	}
@@ -432,6 +446,67 @@ class TrackMapper extends BaseMapper {
 	}
 
 	/**
+	 * Overridden from the base implementation to provide support for table-specific rules
+	 *
+	 * {@inheritdoc}
+	 * @see BaseMapper::advFormatSqlCondition()
+	 */
+	protected function advFormatSqlCondition(string $rule, string $sqlOp) : string {
+		// The extra subquery "mysqlhack" seen around some nested queries is needed in order for these to not be insanely slow on MySQL.
+		switch ($rule) {
+			case 'anywhere':		return self::formatAdvSearchAnywhereCond($sqlOp); 
+			case 'album':			return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?))";
+			case 'artist':			return "LOWER(`artist`.`name`) $sqlOp LOWER(?)";
+			case 'album_artist':	return "`album_id` IN (SELECT `al`.`id` from `*PREFIX*music_albums` `al` JOIN `*PREFIX*music_artists` `ar` ON `al`.`album_artist_id` = `ar`.`id` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?))";
+			case 'track':			return "`number` $sqlOp ?";
+			case 'year':			return "`year` $sqlOp ?";
+			case 'albumrating':		return "`album`.`rating` $sqlOp ?";
+			case 'artistrating':	return "`artist`.`rating` $sqlOp ?";
+			case 'favorite_album':	return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE LOWER(`al`.`name`) $sqlOp LOWER(?) AND `al`.`starred` IS NOT NULL)";
+			case 'favorite_artist':	return "`artist_id` IN (SELECT `id` from `*PREFIX*music_artists` `ar` WHERE LOWER(`ar`.`name`) $sqlOp LOWER(?) AND `ar`.`starred` IS NOT NULL)";
+			case 'played_times':	return "`play_count` $sqlOp ?";
+			case 'last_play':		return "`last_played` $sqlOp ?";
+			case 'played':			// fall through, we give no access to other people's data
+			case 'myplayed':		return "`last_played` $sqlOp"; // operator "IS NULL" or "IS NOT NULL"
+			case 'myplayedalbum':	return "`album_id` IN (SELECT * FROM (SELECT `album_id` from `*PREFIX*music_tracks` GROUP BY `album_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
+			case 'myplayedartist':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` from `*PREFIX*music_tracks` GROUP BY `artist_id` HAVING MAX(`last_played`) $sqlOp) mysqlhack)"; // operator "IS NULL" or "IS NOT NULL"
+			case 'time':			return "`length` $sqlOp ?";
+			case 'genre':			// fall through
+			case 'song_genre':		return "LOWER(`genre`.`name`) $sqlOp LOWER(?)";
+			case 'album_genre':		return "`album_id` IN (SELECT * FROM (SELECT `album_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `album_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
+			case 'artist_genre':	return "`artist_id` IN (SELECT * FROM (SELECT `artist_id` FROM `*PREFIX*music_tracks` `t` JOIN `*PREFIX*music_genres` `g` ON `t`.`genre_id` = `g`.`id` GROUP BY `artist_id` HAVING LOWER(GROUP_CONCAT(`g`.`name`)) $sqlOp LOWER(?)) mysqlhack)"; // GROUP_CONCAT not available on PostgreSQL
+			case 'no_genre':		return ($sqlOp == 'IS NOT NULL') ? '`genre`.`name` = ""' : '`genre`.`name` != ""';
+			case 'playlist':		return "$sqlOp EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`id` = ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
+			case 'playlist_name':	return "EXISTS (SELECT 1 from `*PREFIX*music_playlists` `p` WHERE `p`.`name` $sqlOp ? AND `p`.`track_ids` LIKE CONCAT('%|',`*PREFIX*music_tracks`.`id`, '|%'))";
+			case 'recent_played':	return "`*PREFIX*music_tracks`.`id` IN (SELECT * FROM (SELECT `id` FROM `*PREFIX*music_tracks` WHERE `user_id` = ? ORDER BY `last_played` DESC LIMIT $sqlOp) mysqlhack)";
+			case 'file':			return "LOWER(`file`.`name`) $sqlOp LOWER(?)";
+			case 'mbid_song':		return parent::advFormatSqlCondition('mbid', $sqlOp); // alias
+			case 'mbid_album':		return "`album_id` IN (SELECT `id` from `*PREFIX*music_albums` `al` WHERE `al`.`mbid` $sqlOp ?)";
+			case 'mbid_artist':		return "`artist`.`mbid` $sqlOp ?";
+			default:				return parent::advFormatSqlCondition($rule, $sqlOp);
+		}
+	}
+
+	private static function formatAdvSearchAnywhereCond(string $sqlOp) : string {
+		$fields = [
+			"`*PREFIX*music_tracks`.`title`",
+			"`file`.`name`",
+			"`artist`.`name`",
+			"`album`.`name`",
+			"`genre`.`name`"
+		];
+		$parts = \array_map(function(string $field) use ($sqlOp) {
+			return "LOWER($field) $sqlOp LOWER(?)";
+		}, $fields);
+
+		$negativeOp = \in_array($sqlOp, ['NOT LIKE', '!=', 'NOT SOUNDS LIKE', 'NOT REGEXP']);
+		$cond = \implode($negativeOp ? ' AND ' : ' OR ', $parts);
+
+		return "($cond)";
+	}
+
+	/**
+	 * {@inheritdoc}
 	 * @see \OCA\Music\Db\BaseMapper::findUniqueEntity()
 	 * @param Track $track
 	 * @return Track

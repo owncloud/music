@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -49,20 +49,23 @@ class ArtistBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Finds all artists who have at least one album
-	 * @param string $userId the name of the user
-	 * @param integer $sortBy sort order of the result set
+	 * @param ?string $name Optionally filter by artist name
+	 * @param int $matchMode Name match mode, disregarded if @a $name is null
+	 * @param string|null $createdMin Optional minimum `created` timestamp.
+	 * @param string|null $createdMax Optional maximum `created` timestamp.
+	 * @param string|null $updatedMin Optional minimum `updated` timestamp.
+	 * @param string|null $updatedMax Optional maximum `updated` timestamp.
 	 * @return Artist[] artists
 	 */
-	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None) : array {
-		return $this->mapper->findAllHavingAlbums($userId, $sortBy);
+	public function findAllHavingAlbums(string $userId, int $sortBy=SortBy::None,
+			?int $limit=null, ?int $offset=null, ?string $name=null, int $matchMode=MatchMode::Exact,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null) : array {
+		return $this->mapper->findAllHavingAlbums(
+			$userId, $sortBy, $limit, $offset, $name, $matchMode, $createdMin, $createdMax, $updatedMin, $updatedMax);
 	}
 
 	/**
 	 * Returns all artists filtered by genre
-	 * @param int $genreId the genre to include
-	 * @param string $userId the name of the user
-	 * @param int|null $limit
-	 * @param int|null $offset
 	 * @return Artist[] artists
 	 */
 	public function findAllByGenre(int $genreId, string $userId, ?int $limit=null, ?int $offset=null) : array {

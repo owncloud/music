@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2014
- * @copyright Pauli Järvinen 2017 - 2021
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -23,28 +23,41 @@ use OCA\Music\Utility\Util;
  * @method setTrackIds(string $trackIds)
  * @method string getComment()
  * @method setComment(string $comment)
- * @method ?int getDuration()
- * @method setDuration(?int $duration)
+ * @method ?string getStarred()
+ * @method void setStarred(?string $timestamp)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  */
 class Playlist extends Entity {
 	public $name;
 	public $trackIds;
 	public $comment;
+	public $starred;
+	public $rating;
 
 	// injected separately when needed
-	public $duration;
+	private $duration;
 
-	/**
-	 * @return integer
-	 */
-	public function getTrackCount() {
+	public function __construct() {
+		$this->addType('rating', 'int');
+	}
+
+	public function getDuration() : ?int {
+		return $this->duration;
+	}
+
+	public function setDuration(?int $duration) : void {
+		$this->duration = $duration;
+	}
+
+	public function getTrackCount() : int {
 		return \count($this->getTrackIdsAsArray());
 	}
 
 	/**
 	 * @return int[]
 	 */
-	public function getTrackIdsAsArray() {
+	public function getTrackIdsAsArray() : array {
 		if (!$this->trackIds || \strlen($this->trackIds) < 3) {
 			// the list is empty if there is nothing between the leading and trailing '|'
 			return [];
@@ -57,12 +70,12 @@ class Playlist extends Entity {
 	/**
 	 * @param int[] $trackIds
 	 */
-	public function setTrackIdsFromArray($trackIds) {
+	public function setTrackIdsFromArray(array $trackIds) : void {
 		// encode to format like "|123|45|667|"
 		$this->setTrackIds('|' . \implode('|', $trackIds) . '|');
 	}
 
-	public function toAPI() {
+	public function toAPI() : array {
 		return [
 			'name' => $this->getName(),
 			'trackIds' => $this->getTrackIdsAsArray(),
@@ -73,18 +86,20 @@ class Playlist extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(callable $createImageUrl) {
+	public function toAmpacheApi(callable $createImageUrl) : array {
 		return [
 			'id' => (string)$this->getId(),
 			'name' => $this->getName(),
 			'owner' => $this->getUserId(),
 			'items' => $this->getTrackCount(),
 			'art' => $createImageUrl($this),
+			'flag' => !empty($this->getStarred()),
+			'rating' => $this->getRating() ?? 0,
 			'type' => 'Private'
 		];
 	}
 
-	public function toSubsonicApi() {
+	public function toSubsonicApi() : array {
 		return [
 			'id' => $this->getId(),
 			'name' => $this->getName(),

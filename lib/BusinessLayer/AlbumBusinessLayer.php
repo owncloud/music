@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -34,8 +34,6 @@ use OCA\Music\Utility\Util;
 class AlbumBusinessLayer extends BusinessLayer {
 	protected $mapper; // eclipse the definition from the base class, to help IDE and Scrutinizer to know the actual type
 	private $logger;
-
-	private const MAX_SQL_ALBUM_ARGS = 998; // Some SQLite installations can't handle more than 999 query args. 1 slot reserved for `user_id`.
 
 	public function __construct(AlbumMapper $albumMapper, Logger $logger) {
 		parent::__construct($albumMapper);
@@ -101,13 +99,21 @@ class AlbumBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all albums filtered by album artist
+	 * @param int|int[] $artistId
 	 * @return Album[] albums
 	 */
-	public function findAllByAlbumArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId, $limit, $offset);
-		$albums = $this->injectExtraFields($albums, $userId);
-		\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
-		return $albums;
+	public function findAllByAlbumArtist(/*mixed*/ $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if (empty($artistId)) {
+			return [];
+		} else {
+			if (!\is_array($artistId)) {
+				$artistId = [$artistId];
+			}
+			$albums = $this->mapper->findAllByAlbumArtist($artistId, $userId, $limit, $offset);
+			$albums = $this->injectExtraFields($albums, $userId);
+			\usort($albums, ['\OCA\Music\Db\Album', 'compareYearAndName']);
+			return $albums;
+		}
 	}
 
 	/**
@@ -172,6 +178,36 @@ class AlbumBusinessLayer extends BusinessLayer {
 	}
 
 	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllStarred()
+	 * @return Album[]
+	 */
+	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllStarred($userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllRated()
+	 * @return Album[]
+	 */
+	public function findAllRated(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = $this->mapper->findAllRated($userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see BusinessLayer::findAllByName()
+	 * @return Album[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		$albums = parent::findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+		return $this->injectExtraFields($albums, $userId);
+	}
+
+	/**
 	 * Find most frequently played albums, judged by the total play count of the contained tracks
 	 * @return Album[]
 	 */
@@ -217,7 +253,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			// could cause problems with SQLite (see #239) and probably it would be bad for
 			// performance also on other DBMSs. For the proper operation of this function,
 			// it doesn't matter if we fetch data for some extra albums.
-			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ALBUM_ARGS)
+			$albumIds = ($allAlbums || \count($albums) >= self::MAX_SQL_ARGS)
 					? null : Util::extractIds($albums);
 
 			$artists = $this->mapper->getPerformingArtistsByAlbumId($albumIds, $userId);
@@ -353,7 +389,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 			return [];
 		} else {
 			$result = [];
-			$idChunks = \array_chunk($trackIds, self::MAX_SQL_ALBUM_ARGS);
+			$idChunks = \array_chunk($trackIds, self::MAX_SQL_ARGS - 1);
 			foreach ($idChunks as $idChunk) {
 				$resultChunk = $this->mapper->findAlbumsWithCoversForTracks($idChunk, $userId, $limit);
 				$result = \array_merge($result, $resultChunk);
@@ -380,7 +416,7 @@ class AlbumBusinessLayer extends BusinessLayer {
 		$albumIds = \array_keys($albumIds);
 
 		// get the corresponding entities from the business layer
-		if (\count($albumIds) < $this->count($userId)) {
+		if (\count($albumIds) < self::MAX_SQL_ARGS && \count($albumIds) < $this->count($userId)) {
 			$albums = $this->findById($albumIds, $userId);
 		} else {
 			$albums = $this->findAll($userId);

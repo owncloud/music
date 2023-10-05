@@ -31,6 +31,7 @@ use OCA\Music\BusinessLayer\RadioStationBusinessLayer;
 use OCA\Music\BusinessLayer\TrackBusinessLayer;
 
 use OCA\Music\Controller\AmpacheController;
+use OCA\Music\Controller\AmpacheImageController;
 use OCA\Music\Controller\ApiController;
 use OCA\Music\Controller\LogController;
 use OCA\Music\Controller\PageController;
@@ -63,7 +64,7 @@ use OCA\Music\Hooks\UserHooks;
 use OCA\Music\Middleware\AmpacheMiddleware;
 use OCA\Music\Middleware\SubsonicMiddleware;
 
-use OCA\Music\Utility\AmpacheUser;
+use OCA\Music\Utility\AmpacheImageService;
 use OCA\Music\Utility\CollectionHelper;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
@@ -99,23 +100,39 @@ class Music extends App {
 			return new AmpacheController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('Config'),
 				$c->query('L10N'),
 				$c->query('URLGenerator'),
-				$c->query('AmpacheUserMapper'),
-				$c->query('AmpacheSessionMapper'),
 				$c->query('AlbumBusinessLayer'),
 				$c->query('ArtistBusinessLayer'),
+				$c->query('BookmarkBusinessLayer'),
 				$c->query('GenreBusinessLayer'),
 				$c->query('PlaylistBusinessLayer'),
 				$c->query('PodcastChannelBusinessLayer'),
 				$c->query('PodcastEpisodeBusinessLayer'),
+				$c->query('RadioStationBusinessLayer'),
 				$c->query('TrackBusinessLayer'),
 				$c->query('Library'),
 				$c->query('PodcastService'),
-				$c->query('AmpacheUser'),
-				$c->query('RootFolder'),
+				$c->query('AmpacheImageService'),
 				$c->query('CoverHelper'),
+				$c->query('LastfmService'),
+				$c->query('LibrarySettings'),
 				$c->query('Random'),
+				$c->query('Logger')
+			);
+		});
+
+		$container->registerService('AmpacheImageController', function (IAppContainer $c) {
+			return new AmpacheImageController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('AmpacheImageService'),
+				$c->query('CoverHelper'),
+				$c->query('LibrarySettings'),
+				$c->query('AlbumBusinessLayer'),
+				$c->query('ArtistBusinessLayer'),
+				$c->query('PlaylistBusinessLayer'),
 				$c->query('Logger')
 			);
 		});
@@ -205,6 +222,7 @@ class Music extends App {
 			return new SettingController(
 				$c->query('AppName'),
 				$c->query('Request'),
+				$c->query('AmpacheSessionMapper'),
 				$c->query('AmpacheUserMapper'),
 				$c->query('Scanner'),
 				$c->query('UserId'),
@@ -353,73 +371,82 @@ class Music extends App {
 
 		$container->registerService('AlbumMapper', function (IAppContainer $c) {
 			return new AlbumMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('AmpacheSessionMapper', function (IAppContainer $c) {
 			return new AmpacheSessionMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('AmpacheUserMapper', function (IAppContainer $c) {
 			return new AmpacheUserMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('ArtistMapper', function (IAppContainer $c) {
 			return new ArtistMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('DbCache', function (IAppContainer $c) {
 			return new Cache(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db')
 			);
 		});
 
 		$container->registerService('GenreMapper', function (IAppContainer $c) {
 			return new GenreMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PlaylistMapper', function (IAppContainer $c) {
 			return new PlaylistMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PodcastChannelMapper', function (IAppContainer $c) {
 			return new PodcastChannelMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('PodcastEpisodeMapper', function (IAppContainer $c) {
 			return new PodcastEpisodeMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('TrackMapper', function (IAppContainer $c) {
 			return new TrackMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('BookmarkMapper', function (IAppContainer $c) {
 			return new BookmarkMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
 		$container->registerService('RadioStationMapper', function (IAppContainer $c) {
 			return new RadioStationMapper(
-				$c->getServer()->getDatabaseConnection()
+				$c->query('Db'),
+				$c->query('Config')
 			);
 		});
 
@@ -495,8 +522,11 @@ class Music extends App {
 		 * Utility
 		 */
 
-		$container->registerService('AmpacheUser', function () {
-			return new AmpacheUser();
+		$container->registerService('AmpacheImageService', function (IAppContainer $c) {
+			return new AmpacheImageService(
+				$c->query('AmpacheUserMapper'),
+				$c->query('Logger')
+			);
 		});
 
 		$container->registerService('CollectionHelper', function (IAppContainer $c) {
@@ -616,7 +646,7 @@ class Music extends App {
 			return new AmpacheMiddleware(
 				$c->query('Request'),
 				$c->query('AmpacheSessionMapper'),
-				$c->query('AmpacheUser'),
+				$c->query('AmpacheUserMapper'),
 				$c->query('Logger')
 			);
 		});

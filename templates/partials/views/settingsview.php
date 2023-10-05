@@ -197,6 +197,13 @@
 				<em translate>Note: the update rate is limited also by the execution rate of your cloud background task.</em>
 			</p>
 		</div>
+		<div>
+			<p>music.ampache_api_default_ver</p>
+			<p><em translate
+					translate-params-default-ver="6">
+				The Ampache API major version to use in case the client doesn't specify any version. The default is {{defaultVer}}.
+			</em></p>
+		</div>
 		<div class="dimmed">
 			<p>music.allowed_radio_hls_src</p>
 			<p><em translate>OBSOLETE. This key is no longer needed or used by the Music application.</em></p>

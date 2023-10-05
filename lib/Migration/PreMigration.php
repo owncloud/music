@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017
+ * @copyright Pauli Järvinen 2017 - 2023
  */
 
 namespace OCA\Music\Migration;
@@ -51,10 +51,6 @@ class PreMigration implements IRepairStep {
 		// fulfill the new schema.
 		$tablesToErase = [];
 
-		if (\version_compare($installedVersion, '0.3.12', '<')) {
-			$tablesToErase[] = 'music_ampache_sessions';
-		}
-
 		if (\version_compare($installedVersion, '0.3.16.1', '<')) {
 			$tablesToErase[] = 'music_artists';
 			$tablesToErase[] = 'music_albums';
@@ -64,6 +60,10 @@ class PreMigration implements IRepairStep {
 
 		if (\version_compare($installedVersion, '1.3.0-alpha2', '<')) {
 			$tablesToErase[] = 'music_bookmarks';
+		}
+
+		if (\version_compare($installedVersion, '1.9.0', '<')) {
+			$tablesToErase[] = 'music_ampache_sessions';
 		}
 
 		// Invalidate the cache on each update (if there is one).

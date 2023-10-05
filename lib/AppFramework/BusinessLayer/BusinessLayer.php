@@ -23,12 +23,16 @@ use OCA\Music\Utility\Util;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
+use OCP\IL10N;
 
 /**
  * @phpstan-template EntityType of Entity
  */
 abstract class BusinessLayer {
 	protected $mapper;
+
+	// Some SQLite installations can't handle more than 999 query args. Remember that `user_id` takes one slot in most queries.
+	public const MAX_SQL_ARGS = 999;
 
 	/**
 	 * @phpstan-param BaseMapper<EntityType> $mapper
@@ -180,14 +184,44 @@ abstract class BusinessLayer {
 
 	/**
 	 * Find all starred entities
-	 * @param string $userId
-	 * @param integer|null $limit
-	 * @param integer|null $offset
 	 * @return Entity[]
 	 * @phpstan-return EntityType[]
 	 */
 	public function findAllStarred(string $userId, ?int $limit=null, ?int $offset=null) : array {
 		return $this->mapper->findAllStarred($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find all entities with user-given rating 1-5
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllRated(string $userId, ?int $limit=null, ?int $offset=null) : array {
+		return $this->mapper->findAllRated($userId, $limit, $offset);
+	}
+
+	/**
+	 * Find all entities matching multiple criteria, as needed for the Ampache API method `advanced_search`
+	 * @param string $conjunction Operator to use between the rules, either 'and' or 'or'
+	 * @param array $rules Array of arrays: [['rule' => string, 'operator' => string, 'input' => string], ...]
+	 * 				Here, 'rule' has dozens of possible values depending on the business layer in question,
+	 * 				(see https://ampache.org/api/api-advanced-search#available-search-rules, alias names not supported here),
+	 * 				'operator' is one of 
+	 * 				['contain', 'notcontain', 'start', 'end', 'is', 'isnot', '>=', '<=', '=', '!=', '>', '<', 'true', 'false', 'equal', 'ne', 'limit'],
+	 * 				'input' is the right side value of the 'operator' (disregarded for the operators 'true' and 'false')
+	 * @return Entity[]
+	 * @phpstan-return EntityType[]
+	 */
+	public function findAllAdvanced(string $conjunction, array $rules, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if ($conjunction !== 'and' && $conjunction !== 'or') {
+			throw new BusinessLayerException("Bad conjunction '$conjunction'");
+		}
+		try {
+			return $this->mapper->findAllAdvanced($conjunction, $rules, $userId, $limit, $offset);
+		} catch (\Exception $e) {
+			// catch everything as many kinds of DB exceptions are possible on various cloud versions
+			throw new BusinessLayerException($e->getMessage());
+		}
 	}
 
 	/**
@@ -201,6 +235,30 @@ abstract class BusinessLayer {
 		} else {
 			return [];
 		}
+	}
+
+	/**
+	 * Find all IDs and names of user's entities of this kind.
+	 * Optionally, limit results based on a parent entity (not applicable for all entity types) or update/insert times or name
+	 * @param bool $excludeChildless Exclude entities having no child-entities if applicable for this business layer (eg. artists without albums)
+	 * @return array of arrays like ['id' => string, 'name' => string]
+	 */
+	public function findAllIdsAndNames(string $userId, IL10N $l10n, ?int $parentId=null, ?int $limit=null, ?int $offset=null,
+			?string $createdMin=null, ?string $createdMax=null, ?string $updatedMin=null, ?string $updatedMax=null,
+			bool $excludeChildless=false, ?string $name=null) : array {
+		try {
+			$idsAndNames = $this->mapper->findAllIdsAndNames(
+				$userId, $parentId, $limit, $offset, $createdMin, $createdMax, $updatedMin, $updatedMax, $excludeChildless, $name);
+		} catch (\DomainException $ex) {
+			throw new BusinessLayerException($ex->getMessage());
+		}
+		foreach ($idsAndNames as &$idAndName) {
+			if (empty($idAndName['name'])) {
+				$emptyEntity = $this->mapper->createEntity();
+				$idAndName['name'] = $emptyEntity->getNameString($l10n);
+			}
+		}
+		return $idsAndNames;
 	}
 
 	/**

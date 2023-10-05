@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -45,18 +45,34 @@ class TrackBusinessLayer extends BusinessLayer {
 
 	/**
 	 * Returns all tracks filtered by artist (both album and track artists are considered)
+	 * @param int|int[] $artistId
 	 * @return Track[]
 	 */
-	public function findAllByArtist(int $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
-		return $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
+	public function findAllByArtist(/*mixed*/ $artistId, string $userId, ?int $limit=null, ?int $offset=null) : array {
+		if (empty($artistId)) {
+			return [];
+		} else {
+			if (!\is_array($artistId)) {
+				$artistId = [$artistId];
+			}
+			return $this->mapper->findAllByArtist($artistId, $userId, $limit, $offset);
+		}
 	}
 
 	/**
 	 * Returns all tracks filtered by album. Optionally, filter also by the performing artist.
+	 * @param int|int[] $albumId
 	 * @return Track[]
 	 */
-	public function findAllByAlbum(int $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
-		return $this->mapper->findAllByAlbum($albumId, $userId, $artistId, $limit, $offset);
+	public function findAllByAlbum(/*mixed*/ $albumId, string $userId, ?int $artistId=null, ?int $limit=null, ?int $offset=null) : array {
+		if (empty($albumId)) {
+			return [];
+		} else {
+			if (!\is_array($albumId)) {
+				$albumId = [$albumId];
+			}
+			return $this->mapper->findAllByAlbum($albumId, $userId, $artistId, $limit, $offset);
+		}
 	}
 
 	/**
@@ -293,6 +309,13 @@ class TrackBusinessLayer extends BusinessLayer {
 	 */
 	public function totalDurationOfAlbum(int $albumId) : int {
 		return $this->mapper->totalDurationOfAlbum($albumId);
+	}
+
+	/**
+	 * @return integer Duration in seconds
+	 */
+	public function totalDurationByArtist(int $artistId) : int {
+		return $this->mapper->totalDurationByArtist($artistId);
 	}
 
 	/**

@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\Db;
@@ -29,14 +29,8 @@ use OCP\IURLGenerator;
  * @method void setYear(?int $year)
  * @method int getArtistId()
  * @method void setArtistId(int $artistId)
- * @method ?string getArtistName()
- * @method void setArtistName(?string $artistName)
  * @method int getAlbumId()
  * @method void setAlbumId(int $albumId)
- * @method ?string getAlbumName()
- * @method void setAlbumName(?string $albumName)
- * @method ?Album getAlbum()
- * @method void setAlbum(?Album $album)
  * @method ?int getLength()
  * @method void setLength(?int $length)
  * @method int getFileId()
@@ -49,22 +43,21 @@ use OCP\IURLGenerator;
  * @method void setMbid(?string $mbid)
  * @method ?string getStarred()
  * @method void setStarred(?string $timestamp)
+ * @method ?int getRating()
+ * @method setRating(?int $rating)
  * @method ?int getGenreId()
  * @method void setGenreId(?int $genreId)
- * @method ?string getGenreName()
- * @method void setGenreName(?string $genreName)
- * @method string getFilename()
- * @method void setFilename(string $filename)
- * @method int getSize()
- * @method void setSize(int $size)
- * @method int getFileModTime()
- * @method void setFileModTime(int $secsFromEpoch)
- * @method ?int getNumberOnPlaylist()
- * @method void setNumberOnPlaylist(?int $number)
  * @method int getPlayCount()
  * @method void setPlayCount(int $count)
  * @method ?string getLastPlayed()
  * @method void setLastPlayed(?string $timestamp)
+ *
+ * @method string getFilename()
+ * @method int getSize()
+ * @method int getFileModTime()
+ * @method ?string getAlbumName()
+ * @method ?string getArtistName()
+ * @method ?string getGenreName()
  */
 class Track extends Entity {
 	public $title;
@@ -80,6 +73,7 @@ class Track extends Entity {
 	public $mimetype;
 	public $mbid;
 	public $starred;
+	public $rating;
 	public $genreId;
 	public $playCount;
 	public $lastPlayed;
@@ -93,8 +87,8 @@ class Track extends Entity {
 	public $genreName;
 
 	// the rest of the variables are injected separately when needed
-	public $album;
-	public $numberOnPlaylist;
+	private $album;
+	private $numberOnPlaylist;
 
 	public function __construct() {
 		$this->addType('number', 'int');
@@ -106,9 +100,26 @@ class Track extends Entity {
 		$this->addType('bitrate', 'int');
 		$this->addType('fileId', 'int');
 		$this->addType('genreId', 'int');
+		$this->addType('playCount', 'int');
+		$this->addType('rating', 'int');
 		$this->addType('size', 'int');
 		$this->addType('fileModTime', 'int');
-		$this->addType('playCount', 'int');
+	}
+
+	public function getAlbum() : ?Album {
+		return $this->album;
+	}
+
+	public function setAlbum(?Album $album) : void {
+		$this->album = $album;
+	}
+
+	public function getNumberOnPlaylist() : ?int {
+		return $this->numberOnPlaylist;
+	}
+
+	public function setNumberOnPlaylist(int $number) {
+		$this->numberOnPlaylist = $number;
 	}
 
 	public function getUri(IURLGenerator $urlGenerator) : string {
@@ -180,49 +191,68 @@ class Track extends Entity {
 		];
 	}
 
-	public function toAmpacheApi(IL10N $l10n, callable $createPlayUrl, callable $createImageUrl) : array {
+	public function toAmpacheApi(
+			IL10N $l10n,
+			callable $createPlayUrl,
+			callable $createImageUrl,
+			callable $renderAlbumOrArtistRef,
+			string $genreKey,
+			bool $includeArtists) : array {
 		$album = $this->getAlbum();
 
 		$result = [
 			'id' => (string)$this->getId(),
 			'title' => $this->getTitle() ?: '',
 			'name' => $this->getTitle() ?: '',
-			'artist' => [
-				'id' => (string)$this->getArtistId() ?: '0',
-				'value' => $this->getArtistNameString($l10n)
-			],
-			'albumartist' => [
-				'id' => (string)$album->getAlbumArtistId() ?: '0',
-				'value' => $album->getAlbumArtistNameString($l10n)
-			],
-			'album' => [
-				'id' => (string)$album->getId() ?: '0',
-				'value' => $album->getNameString($l10n)
-			],
+			'artist' => $renderAlbumOrArtistRef($this->getArtistId() ?: 0, $this->getArtistNameString($l10n)),
+			'albumartist' => $renderAlbumOrArtistRef($album->getAlbumArtistId() ?: 0, $album->getAlbumArtistNameString($l10n)),
+			'album' => $renderAlbumOrArtistRef($album->getId() ?: 0, $album->getNameString($l10n)),
 			'url' => $createPlayUrl($this),
 			'time' => $this->getLength(),
 			'year' => $this->getYear(),
-			'track' => $this->getAdjustedTrackNumber(),
+			'track' => $this->getAdjustedTrackNumber(), // TODO: maybe there should be a user setting to select plain or adjusted number
+			'playlisttrack' => $this->getAdjustedTrackNumber(),
+			'disk' => $this->getDisk(),
 			'filename' => $this->getFilename(),
+			'format' => $this->getFileExtension(),
+			'stream_format' => $this->getFileExtension(),
 			'bitrate' => $this->getBitrate(),
+			'stream_bitrate' => $this->getBitrate(),
 			'mime' => $this->getMimetype(),
+			'stream_mime' => $this->getMimetype(),
 			'size' => $this->getSize(),
 			'art' => $createImageUrl($this),
-			'rating' => 0,
-			'preciserating' => 0,
+			'rating' => $this->getRating() ?? 0,
+			'preciserating' => $this->getRating() ?? 0,
 			'playcount' => $this->getPlayCount(),
-			'flag' => empty($this->getStarred()) ? 0 : 1,
+			'flag' => !empty($this->getStarred()),
+			'language' => null,
+			'lyrics' => null,
+			'mode' => null, // cbr/vbr
+			'rate' => null, // sample rate [Hz]
+			'replaygain_album_gain' => null,
+			'replaygain_album_peak' => null,
+			'replaygain_track_gain' => null,
+			'replaygain_track_peak' => null,
+			'r128_album_gain' => null,
+			'r128_track_gain' => null,
 		];
 
 		$genreId = $this->getGenreId();
 		if ($genreId !== null) {
-			$result['tag'] = [[
+			$result[$genreKey] = [[
 				'id' => (string)$genreId,
-				'value' => $this->getGenreNameString($l10n),
+				'text' => $this->getGenreNameString($l10n),
 				'count' => 1
 			]];
 		}
 
+		if ($includeArtists) {
+			// Add another property `artists`. Apparently, it exists to support mulitple artists per song
+			// but we don't have such possibility and this is always just a 1-item array.
+			$result['artists'] = [$result['artist']];
+		}
+	
 		return $result;
 	}
 
@@ -239,7 +269,7 @@ class Track extends Entity {
 		return [
 			'id' => 'track-' . $this->getId(),
 			'parent' => 'album-' . $albumId,
-			//'discNumber' => $this->getDisk(), // not supported on any of the tested clients => adjust track number instead
+			'discNumber' => $this->getDisk(),
 			'title' => $this->getTitle(),
 			'artist' => $this->getArtistNameString($l10n),
 			'isDir' => false,

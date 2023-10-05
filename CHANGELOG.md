@@ -9,6 +9,7 @@
 - Subsonic API: Empty implementation for the method `getNowPlaying`
   [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 - Ampache API:
+  [#1078](https://github.com/owncloud/music/pull/1078)
   * New methods:
     + `rate`
     + `get_similar`
@@ -39,6 +40,8 @@
 
 ### Changed
 - Ampache API:
+  [#1078](https://github.com/owncloud/music/pull/1078)
+  [#909](https://github.com/owncloud/music/issues/909)
   * Follow the APIv5 conventions if version 5.x.x requested by the client on `handshake`
   * Follow the APIv6 conventions if version 6.0.0 or higher requested by the client on `handshake`
   * Follow the APIv6 conventions if the client doesn't specify any version

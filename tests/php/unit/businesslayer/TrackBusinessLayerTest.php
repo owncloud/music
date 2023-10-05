@@ -9,7 +9,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2021
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 namespace OCA\Music\BusinessLayer;
@@ -23,6 +23,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $userId;
 	private $artistId;
 	private $albumId;
+	private $fileId;
 
 	protected function setUp() : void {
 		$this->mapper = $this->getMockBuilder('\OCA\Music\Db\TrackMapper')
@@ -42,7 +43,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByArtist')
-			->with($this->equalTo($this->artistId),
+			->with($this->equalTo([$this->artistId]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue($response));
 
@@ -56,7 +57,7 @@ class TrackBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 		$response = [new Track(), new Track()];
 		$this->mapper->expects($this->once())
 			->method('findAllByAlbum')
-			->with($this->equalTo($this->albumId),
+			->with($this->equalTo([$this->albumId]),
 					$this->equalTo($this->userId))
 			->will($this->returnValue($response));
 

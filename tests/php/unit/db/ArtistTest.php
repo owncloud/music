@@ -9,19 +9,28 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2018 - 2021
+ * @copyright Pauli Järvinen 2018 - 2023
  */
 
 namespace OCA\Music\Db;
 
 class ArtistTest extends \PHPUnit\Framework\TestCase {
 	private $urlGenerator;
+	private $l10n;
 
 	protected function setUp() : void {
 		$this->urlGenerator = $this->getMockBuilder('\OCP\IURLGenerator')
 			->disableOriginalConstructor()
 			->getMock();
-	}
+		$this->urlGenerator->expects($this->any())
+			->method('linkToRoute')
+			->will($this->returnValue('https://some.url'));
+
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
+		$this->l10n->expects($this->any())
+			->method('t')
+			->will($this->returnValue('Unknown artist'));
+		}
 
 	public function testToAPI() {
 		$artist = new Artist();
@@ -29,28 +38,21 @@ class ArtistTest extends \PHPUnit\Framework\TestCase {
 		$artist->setName('The name');
 		$artist->setCoverFileId(100);
 
-		$l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
-
 		$this->assertEquals([
 			'id' => 3,
 			'name' => 'The name',
-			'image' => null,
+			'image' => 'https://some.url',
 			'slug' => 'the-name',
-			'uri' => null
-			], $artist->toAPI($this->urlGenerator, $l10n));
+			'uri' => 'https://some.url'
+		], $artist->toAPI($this->urlGenerator, $this->l10n));
 	}
 
 	public function testNullNameLocalisation() {
 		$artist = new Artist();
 		$artist->setName(null);
 
-		$l10n = $this->getMockBuilder('\OCP\IL10N')->getMock();
-		$l10n->expects($this->any())
-			->method('t')
-			->will($this->returnValue('Unknown artist'));
-
-		$this->assertEquals('Unknown artist', $artist->getNameString($l10n));
+		$this->assertEquals('Unknown artist', $artist->getNameString($this->l10n));
 		$artist->setName('Artist name');
-		$this->assertEquals('Artist name', $artist->getNameString($l10n));
+		$this->assertEquals('Artist name', $artist->getNameString($this->l10n));
 	}
 }

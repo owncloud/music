@@ -63,14 +63,10 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              outputPath: 'img/'
-            }
-          }
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[hash][ext]'
+        }
       },
       {
         include: path.resolve('node_modules', 'lodash'),

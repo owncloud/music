@@ -104,7 +104,7 @@ class HtmlUtil {
 	private static $manifest = null;
 	private static function getManifest() {
 		if (self::$manifest === null) {
-			$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), '..', 'dist', 'manifest.json']);
+			$manifestPath = \join(DIRECTORY_SEPARATOR, [\dirname(__DIR__), '..', 'dist', 'assets-manifest.json']);
 			$manifestText = \file_get_contents($manifestPath);
 			self::$manifest = \json_decode($manifestText, true);
 		}

@@ -160,7 +160,9 @@ class PodcastEpisode extends Entity {
 			'bitRate' => empty($this->getBitrate()) ? 0 : (int)\round($this->getBitrate()/1000), // convert bps to kbps
 			'type' => 'podcast',
 			'created' => Util::formatZuluDateTime($this->getCreated()),
-			'starred' => Util::formatZuluDateTime($this->getStarred())
+			'starred' => Util::formatZuluDateTime($this->getStarred()),
+			'userRating' => $this->getRating() ?: null,
+			'averageRating' => $this->getRating() ?: null,
 		];
 	}
 

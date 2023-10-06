@@ -710,7 +710,7 @@ class SubsonicController extends Controller {
 				'uploadRole' => false,
 				'playlistRole' => true,
 				'coverArtRole' => false,
-				'commentRole' => false,
+				'commentRole' => true,
 				'podcastRole' => true,
 				'streamRole' => true,
 				'jukeboxRole' => false,
@@ -795,6 +795,39 @@ class SubsonicController extends Controller {
 		$this->artistBusinessLayer->unsetStarred($targetIds['artists'], $this->userId);
 		$this->podcastChannelBusinessLayer->unsetStarred($targetIds['podcast_channels'], $this->userId);
 		$this->podcastEpisodeBusinessLayer->unsetStarred($targetIds['podcast_episodes'], $this->userId);
+
+		return $this->subsonicResponse([]);
+	}
+
+	/**
+	 * @SubsonicAPI
+	 */
+	protected function setRating(string $id, int $rating) {
+		$rating = (int)Util::limit($rating, 0, 5);
+		list($type, $entityId) = self::parseEntityId($id);
+
+		switch ($type) {
+			case 'track':
+				$bLayer = $this->trackBusinessLayer;
+				break;
+			case 'album':
+				$bLayer = $this->albumBusinessLayer;
+				break;
+			case 'artist':
+				$bLayer = $this->artistBusinessLayer;
+				break;
+			case 'podcast_episode':
+				$bLayer = $this->podcastEpisodeBusinessLayer;
+				break;
+			case 'folder':
+				throw new SubsonicException('Rating folders is not supported', 0);
+			default:
+				throw new SubsonicException("Unexpected ID format: $id", 0);
+		}
+
+		$entity = $bLayer->find($entityId, $this->userId);
+		$entity->setRating($rating);
+		$bLayer->update($entity);
 
 		return $this->subsonicResponse([]);
 	}
@@ -1271,7 +1304,9 @@ class SubsonicController extends Controller {
 			'name' => $artist->getNameString($this->l10n),
 			'id' => $id ? ('artist-' . $id) : '-1', // getArtistInfo may show artists without ID
 			'albumCount' => $id ? $this->albumBusinessLayer->countByArtist($id) : 0,
-			'starred' => Util::formatZuluDateTime($artist->getStarred())
+			'starred' => Util::formatZuluDateTime($artist->getStarred()),
+			'userRating' => $artist->getRating() ?: null,
+			'averageRating' => $artist->getRating() ?: null,
 		];
 
 		if (!empty($artist->getCoverFileId())) {
@@ -1320,6 +1355,8 @@ class SubsonicController extends Controller {
 			'created' => Util::formatZuluDateTime($album->getCreated()),
 			'coverArt' => empty($album->getCoverFileId()) ? null : 'album-' . $album->getId(),
 			'starred' => Util::formatZuluDateTime($album->getStarred()),
+			'userRating' => $album->getRating() ?: null,
+			'averageRating' => $album->getRating() ?: null,
 			'year' => $album->yearToAPI(),
 			'genre' => $genreString ?: null
 		];
@@ -1378,7 +1415,8 @@ class SubsonicController extends Controller {
 				$albums = $this->albumBusinessLayer->findRecentPlay($this->userId, $size, $offset);
 				break;
 			case 'highest':
-				// TODO
+				$albums = $this->albumBusinessLayer->findAllRated($this->userId, $size, $offset);
+				break;
 			default:
 				$this->logger->log("Album list type '$type' is not supported", 'debug');
 				break;

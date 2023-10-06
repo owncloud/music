@@ -288,6 +288,8 @@ class Track extends Entity {
 			'created' => Util::formatZuluDateTime($this->getCreated()),
 			'track' => $this->getAdjustedTrackNumber(false), // DSub would get confused of playlist numbering, https://github.com/owncloud/music/issues/994
 			'starred' => Util::formatZuluDateTime($this->getStarred()),
+			'userRating' => $this->getRating() ?: null,
+			'averageRating' => $this->getRating() ?: null,
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
 			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
 		];

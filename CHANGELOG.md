@@ -6,8 +6,10 @@
   [#1061](https://github.com/owncloud/music/pull/1061) @rstefko
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Files playlist tab: Tooltip showing the file path or stream URL
-- Subsonic API: Empty implementation for the method `getNowPlaying`
-  [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
+- Subsonic API:
+  * Rating support: method `setRating`, rating properties in all applicable result entities, type `highest` to method `getAlbumList`
+  * Empty implementation for the method `getNowPlaying`
+    [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 - Ampache API:
   [#1078](https://github.com/owncloud/music/pull/1078)
   * New methods:

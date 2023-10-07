@@ -7,13 +7,13 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 /**
  * This style file contains definitions which are common to many views or parts of the Music app.
  */
- 
+
 #notification a {
 	text-decoration: underline;
 }
@@ -104,6 +104,7 @@ h2 span:hover .play {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	border-radius: var(--music-albumart-small-border-radius);
 }
 
 .play-pause {

@@ -135,8 +135,7 @@
 	background-size: cover;
 	background-position: center;
 	display: inline-block;
-	border: solid 1px;
-	border-color: var(--color-border, #ededed);
+	border-radius: var(--music-albumart-small-border-radius);
 }
 
 .ie #music-controls #albumart {

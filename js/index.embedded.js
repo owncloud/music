@@ -35,4 +35,5 @@ if (typeof MutationObserver !== 'undefined') {
 /* Embedded player files */
 requireAll(require.context('./shared', /*use subdirectories:*/ false));
 requireAll(require.context('./embedded', /*use subdirectories:*/ false));
+requireAll(require.context('../css/shared', /*use subdirectories:*/ false));
 requireAll(require.context('../css/embedded', /*use subdirectories:*/ false));

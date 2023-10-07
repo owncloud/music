@@ -7,7 +7,7 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2016 - 2022
+ * @copyright Pauli Järvinen 2016 - 2023
  */
 
 /**
@@ -73,6 +73,7 @@
 	line-height: 190px;
 	font-size: 105px;
 	cursor: pointer;
+	border-radius: var(--music-albumart-large-border-radius);
 }
 
 .album-area > .overlay {
@@ -123,6 +124,7 @@
 	height: 40px;
 	line-height: 40px;
 	font-size: 24px;
+	border-radius: var(--music-albumart-small-border-radius);
 }
 
 .view-container.compact .album-area > .overlay {

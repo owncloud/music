@@ -14,7 +14,7 @@
 
 namespace OCA\Music\App;
 
-use \OCP\AppFramework\IAppContainer;
+use OCP\AppFramework\IAppContainer;
 
 $app = \OC::$server->query(Music::class);
 

@@ -14,12 +14,12 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\Tests\Utility\ControllerTestUtility;
-use \OCP\AppFramework\Http\JSONResponse;
+use OCA\Music\Tests\Utility\ControllerTestUtility;
+use OCP\AppFramework\Http\JSONResponse;
 
-use OCA\Music\DB\Artist;
-use OCA\Music\DB\Album;
-use OCA\Music\DB\Track;
+use OCA\Music\Db\Artist;
+use OCA\Music\Db\Album;
+use OCA\Music\Db\Track;
 
 class ShivaApiControllerTest extends ControllerTestUtility {
 	private $trackBusinessLayer;

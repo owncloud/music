@@ -3,7 +3,7 @@
 
 	<div id="app-sidebar-scroll-container">
 		<?php
-		use \OCA\Music\Utility\HtmlUtil;
+		use OCA\Music\Utility\HtmlUtil;
 		HtmlUtil::printPartial('sidebar/trackdetails');
 		HtmlUtil::printPartial('sidebar/albumdetails');
 		HtmlUtil::printPartial('sidebar/artistdetails');

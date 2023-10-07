@@ -14,7 +14,7 @@
 
 namespace OCA\Music\BusinessLayer;
 
-use \OCA\Music\Db\Album;
+use OCA\Music\Db\Album;
 
 class AlbumBusinessLayerTest extends \PHPUnit\Framework\TestCase {
 	private $mapper;

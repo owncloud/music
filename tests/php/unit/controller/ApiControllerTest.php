@@ -14,8 +14,8 @@
 
 namespace OCA\Music\Controller;
 
-use \OCA\Music\Tests\Utility\ControllerTestUtility;
-use \OCP\AppFramework\Http\JSONResponse;
+use OCA\Music\Tests\Utility\ControllerTestUtility;
+use OCP\AppFramework\Http\JSONResponse;
 
 use OCA\Music\DB\Track;
 

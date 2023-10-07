@@ -1,4 +1,4 @@
-<?php use \OCA\Music\Utility\HtmlUtil ?>
+<?php use OCA\Music\Utility\HtmlUtil; ?>
 
 <div id="controls" ng-controller="PlayerController" ng-class="{started: started}">
 	<div id="play-controls">

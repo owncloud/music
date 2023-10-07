@@ -14,7 +14,7 @@
 
 namespace OCA\Music;
 
-use \OCA\Music\App\Music;
+use OCA\Music\App\Music;
 
 $app = \OC::$server->query(Music::class);
 

@@ -7,12 +7,12 @@
  * later. See the COPYING file.
  *
  * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
+ * @copyright Pauli Järvinen 2023
  */
 
 namespace OCA\Music\Db;
-
-use OCP\AppFramework\Db\Entity;
 
 /**
  * @method string getUserId()
@@ -26,7 +26,7 @@ use OCP\AppFramework\Db\Entity;
  * @method int getAmpacheUserId()
  * @method setAmpacheUserId(int $id)
  */
-class AmpacheSession extends Entity {
+class AmpacheSession extends \OCP\AppFramework\Db\Entity {
 	public $userId;
 	public $token;
 	public $expiry;

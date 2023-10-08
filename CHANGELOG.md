@@ -1,7 +1,15 @@
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## 1.9.1 - 2023-10-08
 
 Version 1.9.0 had an app update problem on some versions of Nextcloud with SQLite. 
-This version works around that issue but is othwerise identical with v1.9.0.
+This version works around that issue but is otherwise identical with v1.9.0.
 
 ### Added
 - Smart playlist feature, allowing list creation by user-supplied criteria

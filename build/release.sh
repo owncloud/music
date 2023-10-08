@@ -3,7 +3,7 @@
 # ownCloud Music
 #
 # @author Pauli Järvinen
-# @copyright 2021, 2022 Pauli Järvinen <pauli.jarvinen@gmail.com>
+# @copyright 2021 - 2023 Pauli Järvinen <pauli.jarvinen@gmail.com>
 #
 
 # Create the base package from the files stored in git
@@ -35,7 +35,7 @@ zip -d music/music.zip "music/stubs/*"
 zip -d music/music.zip "music/tests/*"
 zip -d music/music.zip "music/composer.*"
 zip -d music/music.zip "music/package*.json"
-zip -d music/music.zip "music/phpstan*.neon"
+zip -d music/music.zip "music/phpstan*.*"
 zip -d music/music.zip "music/webpack.config.js"
 
 # Fork the package to own versions for Nextcloud and ownCloud.

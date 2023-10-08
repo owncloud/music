@@ -10,9 +10,9 @@ use OCP\Migration\SimpleMigrationStep;
 use OCP\Migration\IOutput;
 
 /**
- * Migrate the DB schema to Music v1.9.0 level from the v1.4.0 level
+ * Migrate the DB schema to Music v1.9.1 level from the v1.4.0 level
  */
-class Version010900Date20231001225600 extends SimpleMigrationStep {
+class Version010901Date20231008222500 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -72,19 +72,18 @@ class Version010900Date20231001225600 extends SimpleMigrationStep {
 	private function ampacheSessionChanges(ISchemaWrapper $schema) {
 		// On SQLite, it's not possible to add notnull columns to an existing table without a default value, see
 		// https://stackoverflow.com/questions/3170634/cannot-add-a-not-null-column-with-default-value-null-in-sqlite3.
-		// To work around this, we need to recreate the entire music_ampache_sessions table from scratch.
-		$schema->dropTable('music_ampache_sessions');
-		$table = $schema->createTable('music_ampache_sessions');
 
-		$table->addColumn('id',					'integer',	['autoincrement' => true, 'notnull' => true, 'unsigned' => true]);
-		$table->addColumn('user_id',			'string',	['notnull' => true, 'length' => 64]);
-		$table->addColumn('token',				'string',	['notnull' => true, 'length' => 64]);
-		$table->addColumn('expiry',				'integer',	['notnull' => true, 'unsigned' => true]);
-		$table->addColumn('api_version',		'string',	['notnull' => false, 'length' => 16]);
-		$table->addColumn('ampache_user_id',	'integer',	['notnull' => true, 'unsigned' => true]);
+		// The problem mentioned above was tried to be worked around in the commit f9a95569 by dropping and recreating
+		// the table and it did help in some environments but not everywhere. Next, it was attempted to do the dropping
+		// and recreating in separate migration steps; this worked in some more environments but the problem still
+		// remained in others. It was not figured out, what was the important difference between the working and not
+		// working environments but the problem was seen for example on NC 21.0.2 + SQLite 3.8.7.1.
 
-		$table->setPrimaryKey(['id']);
-		$table->addUniqueIndex(['token'], 'music_ampache_sessions_index');
+		// In the end, the only systematically working solution seemed to be to make the `ampache_user_id` column
+		// nullable (sigh).
+		$table = $schema->getTable('music_ampache_sessions');
+		$this->setColumn($table, 'api_version', 'string', ['notnull' => false, 'length' => 16]);
+		$this->setColumn($table, 'ampache_user_id', 'integer', ['notnull' => false, 'unsigned' => true]);
 	}
 
 	/**

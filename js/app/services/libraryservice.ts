@@ -195,12 +195,25 @@ export class LibraryService {
 		array.splice(to, 0, array.splice(from, 1)[0]);
 	}
 
+	#errorTrack(trackId : number) : Track {
+		return {
+			id : trackId,
+			type : 'error',
+			title : 'ERROR: invalid track',
+			album : null,
+			artistId : null,
+			artist : null,
+			folder : null,
+			genre : null
+		};
+	}
+
 	#playlistEntry<T extends BaseTrack>(track : T) : PlaylistEntry<T> {
 		return (track !== null) ? { track: track } : null;
 	}
 
 	#playlistEntryFromId(trackId : number) : PlaylistEntry<Track> {
-		return this.#playlistEntry(this.#tracksIndex[trackId] ?? null);
+		return this.#playlistEntry(this.#tracksIndex[trackId] ?? this.#errorTrack(trackId));
 	}
 
 	#wrapRadioStation(station : any) : PlaylistEntry<RadioStation> {
@@ -210,7 +223,7 @@ export class LibraryService {
 
 	#wrapPlaylist(playlist : any) : Playlist {
 		let wrapped = $.extend({}, playlist); // clone the playlist
-		wrapped.tracks = _(playlist.trackIds).map((id) => this.#playlistEntryFromId(id)).reject(_.isNull).value(); // null-values are possible during scanning
+		wrapped.tracks = _(playlist.trackIds).map((id) => this.#playlistEntryFromId(id)).value();
 		delete wrapped.trackIds;
 		return wrapped;
 	}

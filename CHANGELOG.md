@@ -57,6 +57,8 @@
 - Small optimization on the size of the `collection.json` loaded by the web front-end
 - Order the playlists by name in the navigation pane, navigate automatically to the created or renamed playlist
   [#1083](https://github.com/owncloud/music/issues/1083)
+- Any invalid playlist entries are now visible on the web UI to enable easy removal
+  [#1087](https://github.com/owncloud/music/issues/1087)
 
 ### Fixed
 - Subsonic API:

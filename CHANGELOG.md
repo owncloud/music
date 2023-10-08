@@ -59,8 +59,11 @@
   [#1083](https://github.com/owncloud/music/issues/1083)
 
 ### Fixed
-- Subsonic API: Unhandled exception when attempting to delete a non-existent bookmark
-  [#1071](https://github.com/owncloud/music/issues/1071)
+- Subsonic API:
+  * Unhandled exception when attempting to delete a non-existent bookmark
+    [#1071](https://github.com/owncloud/music/issues/1071)
+  * Method `getPlaylist` failing if the playlist contains any invalid track references (since v1.8.0)
+    [#1087](https://github.com/owncloud/music/issues/1087)
 - Scanning breaking if any out-of-bounds numeric value gets scanned from any audio file
   [#1073](https://github.com/owncloud/music/issues/1073)
 - File and folder selection dialogs not working on NC 27.1.0 and 27.1.1 (workaround for a NC bug which should get fixed in NC 27.1.2)

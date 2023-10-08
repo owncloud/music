@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.9.0 - 2023-10-08
 
 ### Added
 - Smart playlist feature, allowing list creation by user-supplied criteria
@@ -7,7 +7,7 @@
 - Dragging tracks/albums/etc on the "+ New Playlist" item creates a new playlist containing those items
 - Files playlist tab: Tooltip showing the file path or stream URL
 - Subsonic API:
-  * Rating support: method `setRating`, rating properties in all applicable result entities, type `highest` to method `getAlbumList`
+  * Rating support: method `setRating`, rating properties in all applicable result entities, type `highest` to the method `getAlbumList`
   * Empty implementation for the method `getNowPlaying`
     [#1079](https://github.com/owncloud/music/pull/1079) @NattyNarwhal
 - Ampache API:
@@ -25,10 +25,10 @@
   * Support for the type `album_artist` in the method `get_indexes`
   * Support for the parameter `album_artist` in the method `artists`
   * Support for the type `playlist` in the method `stats`
-  * Support for the type `playlist` in the methods `downlaod` and `stream`
+  * Support for the type `playlist` in the methods `download` and `stream`
   * Support for the type `playlist` in the method `flag`
   * Support for the parameter `top50` in the method `artist_songs`
-  * Supoort for the filter `highest` in the method `stats`
+  * Support for the filter `highest` in the method `stats`
   * Support for the parameter `include` in the methods `album`, `albums`, `artist`, and `artists`
   * Fields `time`, `albumcount`, `songcount`, `prefix`, and `basename` to the `artist` type results
   * Fields `time`, `diskcount`, `songcount`, `prefix`, and `basename` to the `album` type results
@@ -50,7 +50,7 @@
     - this may be overridden using the config.php key `music.ampache_api_default_ver`
   * The URLs returned in the `art` tag of the entities are now cache-friendly, i.e. don't depend on the session
   * Terminate all related sessions immediately when API key deleted; previously, this happened upon session timeout
-  * Fields `rating` and `preciserating` now show the user-given rating instead of constant 0 on all applicabale result objects
+  * Fields `rating` and `preciserating` now show the user-given rating instead of constant 0 on all applicable result objects
 - Own UI settings storage for each OC/NC instance running on the same server (same HTTP origin). Previously, all instances of the origin shared the settings.
   * As a side-effect, any UI settings (like volume, view modes) from the previous version get discarded upon the SW update
   * Also, volume settings in the Share and Files embedded players are now distinct from the volume in the main app
@@ -73,7 +73,7 @@
 
 ## 1.8.4 - 2023-06-06
 ### Added
-- Support for Nextcloud 27 (tested on RC3)
+- Support for Nextcloud 27
 
 ### Changed
 - Allow UTF-8 encoding also on playlists with the extension .m3u (in addition to .m3u8)

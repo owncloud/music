@@ -1170,7 +1170,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function advanced_search(string $type, string $operator, int $limit, int $offset=0, bool $random=false) : array {
+	protected function advanced_search(int $limit, int $offset=0, string $type='song', string $operator='and', bool $random=false) : array {
 		// get all the rule parameters as passed on the HTTP call
 		$rules = self::advSearchGetRuleParams($this->request->getParams());
 

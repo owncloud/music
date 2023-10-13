@@ -3,6 +3,7 @@
 ### Added
 
 ### Changed
+- Ampache API: Make `advanced_search` arguments `operator` and `type` optional
 
 ### Fixed
 

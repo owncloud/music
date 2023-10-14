@@ -53,6 +53,7 @@ use OCA\Music\Http\XmlResponse;
 
 use OCA\Music\Middleware\SubsonicException;
 
+use OCA\Music\Utility\AppInfo;
 use OCA\Music\Utility\CoverHelper;
 use OCA\Music\Utility\DetailsHelper;
 use OCA\Music\Utility\LastfmService;
@@ -1696,6 +1697,8 @@ class SubsonicController extends Controller {
 	private function subsonicResponse($content, $useAttributes=true, $status = 'ok') {
 		$content['status'] = $status;
 		$content['version'] = self::API_VERSION;
+		$content['type'] = AppInfo::getFullName();
+		$content['serverVersion'] = AppInfo::getVersion();
 		$responseData = ['subsonic-response' => Util::arrayRejectRecursive($content, 'is_null')];
 
 		if ($this->format == 'json') {

@@ -7,7 +7,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2022
+ * @copyright Pauli Järvinen 2022, 2023
  */
 
 namespace OCA\Music\Utility;
@@ -25,5 +25,15 @@ class AppInfo {
 		} else {
 			return \OCP\App::getAppVersion(self::APP_ID); // OC or NC13
 		}
+	}
+
+	public static function getVendor() {
+		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
+		include \OC::$SERVERROOT . '/version.php';
+		return $vendor;
+	}
+
+	public static function getFullName() {
+		return self::getVendor() . ' ' . self::APP_ID;
 	}
 }

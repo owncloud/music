@@ -310,7 +310,7 @@ class AmpacheController extends Controller {
 	 */
 	protected function ping() : array {
 		$response = [
-			'server' => $this->getAppNameAndVersion(),
+			'server' => AppInfo::getFullName() . ' ' . AppInfo::getVersion(),
 			'version' => self::API6_VERSION,
 			'compatible' => self::API_MIN_COMPATIBLE_VERSION
 		];
@@ -1557,15 +1557,6 @@ class AmpacheController extends Controller {
 			default:
 				return $input;
 		}
-	}
-
-	private function getAppNameAndVersion() : string {
-		$vendor = 'owncloud/nextcloud'; // this should get overridden by the next 'include'
-		include \OC::$SERVERROOT . '/version.php';
-
-		$appVersion = AppInfo::getVersion();
-
-		return "$vendor {$this->appName} $appVersion";
 	}
 
 	private function getCover(int $entityId, BusinessLayer $businessLayer) : Response {

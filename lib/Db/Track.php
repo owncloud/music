@@ -291,7 +291,8 @@ class Track extends Entity {
 			'userRating' => $this->getRating() ?: null,
 			'averageRating' => $this->getRating() ?: null,
 			'genre' => empty($this->getGenreId()) ? null : $this->getGenreNameString($l10n),
-			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId
+			'coverArt' => !$hasCoverArt ? null : 'album-' . $albumId,
+			'playCount' => $this->getPlayCount(),
 		];
 	}
 

@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 ### Added
+- Subsonic API: Property `playCount` on to song responses
 
 ### Changed
 - Ampache API: Make `advanced_search` arguments `operator` and `type` optional

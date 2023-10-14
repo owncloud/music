@@ -38,7 +38,7 @@ class RequestParameterExtractor {
 
 	/**
 	 * @throws RequestParameterExtractorException
-	 * @return string|int|bool|null
+	 * @return string|string[]|int|bool|null
 	 */
 	private function getParameterValueFromRequest(\ReflectionParameter $parameter) {
 		$paramName = $parameter->getName();

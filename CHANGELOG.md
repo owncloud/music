@@ -3,7 +3,9 @@
 ### Added
 - Subsonic API:
   * Property `playCount` on to song responses
-  * Properties `type` and `serverVersion` to all responses ([OpenSubsonic API extension](https://support.symfonium.app/t/explicit-server-name-and-version/1182))
+  * [OpenSubsonic API extensions](https://support.symfonium.app/c/subsonic-api-extensions/11):
+    + Properties `type` and `serverVersion` to all responses
+    + Allow getting the whole library with an empty `query` argument in `search3` method
 
 ### Changed
 - Ampache API: Make `advanced_search` arguments `operator` and `type` optional

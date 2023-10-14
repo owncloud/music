@@ -1584,6 +1584,9 @@ class SubsonicController extends Controller {
 	private function doSearch(string $query, int $artistCount, int $artistOffset,
 			int $albumCount, int $albumOffset, int $songCount, int $songOffset) : array {
 
+		// The searches support '*' as a wildcard. Convert those to the SQL wildcard '%' as that's what the business layer searches support.
+		$query = \str_replace('*', '%', $query);
+
 		return [
 			'artists' => $this->artistBusinessLayer->findAllByName($query, $this->userId, MatchMode::Substring, $artistCount, $artistOffset),
 			'albums' => $this->albumBusinessLayer->findAllByNameRecursive($query, $this->userId, $albumCount, $albumOffset),

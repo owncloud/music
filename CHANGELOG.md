@@ -9,6 +9,7 @@
 
 ### Changed
 - Ampache API: Make `advanced_search` arguments `operator` and `type` optional
+- Subsonic API: Methods `search2` and `search3` support '*' as a wildcard
 
 ### Fixed
 

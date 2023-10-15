@@ -1,8 +1,9 @@
 ## [Unreleased]
 
 ### Added
+- Ampache API: Support for argument `random` in the method `playlist_songs`
 - Subsonic API:
-  * Property `playCount` on to song responses
+  * Property `playCount` to song responses
   * [OpenSubsonic API extensions](https://support.symfonium.app/c/subsonic-api-extensions/11):
     + Properties `type` and `serverVersion` to all responses
     + Allow getting the whole library with an empty `query` argument in `search3` method

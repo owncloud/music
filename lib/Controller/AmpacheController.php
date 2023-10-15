@@ -681,7 +681,17 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function playlist_songs(int $filter, int $limit, int $offset=0) : array {
+	protected function playlist_songs(int $filter, int $limit, int $offset=0, bool $random=false) : array {
+		// In random mode, the pagination is handled manually after fetching the songs. Declare $rndLimit and $rndOffset
+		// regardless of the random mode because PHPStan and Scrutinizer are not smart enough to otherwise know that they
+		// are guaranteed to be defined in the second random block in the end of this function.
+		$rndLimit = $limit;
+		$rndOffset = $offset;
+		if ($random) {
+			$limit = null;
+			$offset = null;
+		}
+
 		$userId = $this->session->getUserId();
 		if ($filter == self::ALL_TRACKS_PLAYLIST_ID) {
 			$tracks = $this->trackBusinessLayer->findAll($userId, SortBy::Parent, $limit, $offset);
@@ -691,6 +701,12 @@ class AmpacheController extends Controller {
 		} else {
 			$tracks = $this->playlistBusinessLayer->getPlaylistTracks($filter, $userId, $limit, $offset);
 		}
+
+		if ($random) {
+			$indices = $this->random->getIndices(\count($tracks), $rndOffset, $rndLimit, $userId, 'ampache_playlist_songs');
+			$tracks = Util::arrayMultiGet($tracks, $indices);
+		}
+
 		return $this->renderSongs($tracks);
 	}
 

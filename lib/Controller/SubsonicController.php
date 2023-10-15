@@ -18,6 +18,7 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\Files\File;
 use OCP\Files\Folder;
+use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IURLGenerator;
@@ -91,7 +92,7 @@ class SubsonicController extends Controller {
 
 	public function __construct(string $appname,
 								IRequest $request,
-								$l10n,
+								IL10N $l10n,
 								IURLGenerator $urlGenerator,
 								IUserManager $userManager,
 								AlbumBusinessLayer $albumBusinessLayer,

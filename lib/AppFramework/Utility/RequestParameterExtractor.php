@@ -6,7 +6,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2021
+ * @copyright Pauli Järvinen 2021 - 2023
  */
 
 namespace OCA\Music\AppFramework\Utility;
@@ -29,7 +29,7 @@ class RequestParameterExtractor {
 	 * @param object|string $object an object or classname
 	 * @param string $method the method for which we want to extract parameters from the HTTP request
 	 * @throws RequestParameterExtractorException if a required parameter is not found from the request
-	 * @return array of mixed types (string, int, bool, null)
+	 * @return array of mixed types (string, string[], int, bool, null)
 	 */
 	public function getParametersForMethod($object, string $method) : array {
 		$refMethod = new \ReflectionMethod($object, $method);

@@ -9,21 +9,22 @@
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
  * @copyright Morris Jobke 2013, 2014
- * @copyright Pauli Järvinen 2019
+ * @copyright Pauli Järvinen 2019 - 2023
  */
 
 namespace OCA\Music\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\IL10N;
 use OCP\IRequest;
 
 class PageController extends Controller {
 	private $l10n;
 
-	public function __construct($appname,
+	public function __construct(string $appname,
 								IRequest $request,
-								$l10n) {
+								IL10N $l10n) {
 		parent::__construct($appname, $request);
 		$this->l10n = $l10n;
 	}

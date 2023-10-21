@@ -698,7 +698,7 @@ class Scanner extends PublicEmitter {
 			$ordinal = null;
 		}
 
-		return Util::limit($ordinal, 0, Util::UINT32_MAX);
+		return Util::limit($ordinal, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
 	}
 
 	private static function parseFileName(string $fileName) : array {
@@ -743,7 +743,7 @@ class Scanner extends PublicEmitter {
 		} else {
 			$value = null;
 		}
-		return Util::limit($value, 0, Util::UINT32_MAX);
+		return Util::limit($value, 0, Util::SINT32_MAX); // can't use UINT32_MAX since PostgreSQL has no unsigned types
 	}
 
 	/**

@@ -13,6 +13,8 @@
 - Subsonic API: Methods `search2` and `search3` support '*' as a wildcard
 
 ### Fixed
+- Songs with scanned integer property value (like track number) larger than 2147483647 causing error on PostgreSQL
+  [#1106](https://github.com/owncloud/music/issues/1106)
 
 ## 1.9.1 - 2023-10-08
 

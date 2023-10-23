@@ -24,6 +24,7 @@ angular.module('Music').controller('TrackDetailsController', [
 			$scope.lastfmArtist = null;
 			$scope.lastfmAlbum = null;
 			$scope.lastfmTags = null;
+			$scope.lastfmMbid = null;
 		}
 
 		function getFileId() {
@@ -100,6 +101,11 @@ angular.module('Music').controller('TrackDetailsController', [
 
 				if ('toptags' in data.track) {
 					$scope.lastfmTags = $scope.formatLastfmTags(data.track.toptags.tag);
+				}
+
+				if ('mbid' in data.track) {
+					const mbid = data.track.mbid;
+					$scope.lastfmMbid = `<a target="_blank" href="https://musicbrainz.org/recording/${mbid}">${mbid}</a>`;
 				}
 			}
 		}

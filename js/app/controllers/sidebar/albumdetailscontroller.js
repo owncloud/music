@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 
@@ -19,6 +19,7 @@ angular.module('Music').controller('AlbumDetailsController', [
 			$scope.lastfmInfo = null;
 			$scope.albumInfo = null;
 			$scope.albumTags = null;
+			$scope.mbid = null;
 		}
 		resetContents();
 
@@ -61,11 +62,16 @@ angular.module('Music').controller('AlbumDetailsController', [
 								}
 								else {
 									let linkText = gettextCatalog.getString('See the album on Last.fm');
-									$scope.albumInfo = '<a target="_blank" href="' + result.album.url + '">' + linkText +'</a>';
+									$scope.albumInfo = `<a target="_blank" href="${result.album.url}">${linkText}</a>`;
 								}
 
 								if ('tags' in result.album) {
 									$scope.albumTags = $scope.formatLastfmTags(result.album.tags.tag);
+								}
+
+								if ('mbid' in result.album) {
+									const mbid = result.album.mbid;
+									$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/release/${mbid}">${mbid}</a>`;
 								}
 
 								if (!$scope.album.cover && 'image' in result.album) {

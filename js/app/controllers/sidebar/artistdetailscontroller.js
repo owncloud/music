@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2020
+ * @copyright Pauli Järvinen 2020 - 2023
  */
 
 
@@ -22,6 +22,7 @@ angular.module('Music').controller('ArtistDetailsController', [
 			$scope.lastfmInfo = null;
 			$scope.artistBio = null;
 			$scope.artistTags = null;
+			$scope.mbid = null;
 			$scope.similarArtistsInLib = null;
 			$scope.similarArtistsNotInLib = null;
 			$scope.allSimilarShown = false;
@@ -78,6 +79,11 @@ angular.module('Music').controller('ArtistDetailsController', [
 								$scope.artistTags = $scope.formatLastfmTags(result.artist.tags.tag);
 
 								setSimilarArtists(result.artist.similar.artist);
+
+								if ('mbid' in result.artist) {
+									const mbid = result.artist.mbid;
+									$scope.mbid = `<a target="_blank" href="https://musicbrainz.org/artist/${mbid}">${mbid}</a>`;
+								}
 							}
 
 							$scope.$parent.adjustFixedPositions();

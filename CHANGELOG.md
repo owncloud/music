@@ -7,6 +7,7 @@
   * [OpenSubsonic API extensions](https://support.symfonium.app/c/subsonic-api-extensions/11):
     + Properties `type` and `serverVersion` to all responses
     + Allow getting the whole library with an empty `query` argument in `search3` method
+- MusicBrainz link from Last.fm to the artist/album/track details pane, when available
 
 ### Changed
 - Ampache API: Make `advanced_search` arguments `operator` and `type` optional

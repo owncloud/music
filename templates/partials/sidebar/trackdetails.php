@@ -55,6 +55,9 @@
 
 				<dt ng-if="lastfmTags" translate>Tags</dt>
 				<dd ng-if="lastfmTags" ng-bind-html="lastfmTags"></dd>
+
+				<dt ng-if="lastfmMbid" translate>MusicBrainz</dt>
+				<dd ng-if="lastfmMbid" ng-bind-html="lastfmMbid"></dd>
 			</dl>
 		</div>
 	</div>

@@ -24,6 +24,9 @@
 		<dl>
 			<dt ng-if="albumTags" translate>Tags</dt>
 			<dd ng-if="albumTags" ng-bind-html="albumTags"></dd>
+
+			<dt ng-if="mbid" translate>MusicBrainz</dt>
+			<dd ng-if="mbid" ng-bind-html="mbid"></dd>
 		</dl>
 	</div>
 

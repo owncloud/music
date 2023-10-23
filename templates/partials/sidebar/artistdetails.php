@@ -29,6 +29,7 @@
 		<dl>
 			<dt ng-if="artistTags" translate>Tags</dt>
 			<dd ng-if="artistTags" ng-bind-html="artistTags"></dd>
+
 			<dt ng-if="similarArtistsInLib.length || similarArtistsNotInLib" translate>Similar to</dt>
 			<dd ng-if="similarArtistsInLib.length || similarArtistsNotInLib" class="similar-artists">
 				<span class="in-lib-artist clickable" ng-repeat="similarArtist in similarArtistsInLib"
@@ -39,6 +40,9 @@
 				<span class="show-all" ng-if="!allSimilarShown && !allSimilarLoading" ng-click="onShowAllSimilar()" translate>Show all…</span>
 				<div class="icon-loading inline" ng-if="allSimilarLoading"></div>
 			</dd>
+
+			<dt ng-if="mbid" translate>MusicBrainz</dt>
+			<dd ng-if="mbid" ng-bind-html="mbid"></dd>
 		</dl>
 	</div>
 

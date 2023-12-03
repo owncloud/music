@@ -57,16 +57,23 @@ class Bookmark extends Entity {
 		];
 	}
 
-	public function toAmpacheApi() : array {
-		return [
+	public function toAmpacheApi(?callable $renderEntry = null) : array {
+		$objectType = ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode';
+		$result = [
 			'id' => (string)$this->getId(),
 			'owner' => $this->getUserId(),
-			'object_type' => ($this->getType() == self::TYPE_TRACK) ? 'song' : 'podcast_episode',
+			'object_type' => $objectType,
 			'object_id' => (string)$this->getEntryId(),
 			'position' => (int)($this->getPosition() / 1000), // millisecods to seconds
 			'client' => $this->getComment(),
 			'creation_date' => Util::formatDateTimeUtcOffset($this->getCreated()),
 			'update_date' => Util::formatDateTimeUtcOffset($this->getUpdated())
 		];
+
+		if ($renderEntry !== null) {
+			$result[$objectType] = $renderEntry($this->getType(), $this->getEntryId());
+		}
+
+		return $result;
 	}
 }

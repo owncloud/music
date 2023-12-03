@@ -1133,43 +1133,43 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function bookmarks() : array {
+	protected function bookmarks(int $include=0) : array {
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->session->getUserId());
-		return $this->renderBookmarks($bookmarks);
+		return $this->renderBookmarks($bookmarks, $include);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function bookmark(int $filter) : array {
+	protected function bookmark(int $filter, int $include=0) : array {
 		$bookmark = $this->bookmarkBusinessLayer->find($filter, $this->session->getUserId());
-		return $this->renderBookmarks([$bookmark]);
+		return $this->renderBookmarks([$bookmark], $include);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function get_bookmark(int $filter, string $type) : array {
+	protected function get_bookmark(int $filter, string $type, int $include=0) : array {
 		$entryType = self::mapBookmarkType($type);
 		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->session->getUserId());
-		return $this->renderBookmarks([$bookmark]);
+		return $this->renderBookmarks([$bookmark], $include);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function bookmark_create(int $filter, string $type, int $position, string $client='AmpacheAPI') : array {
+	protected function bookmark_create(int $filter, string $type, int $position, string $client='AmpacheAPI', int $include=0) : array {
 		// Note: the optional argument 'date' is not supported and is disregarded
 		$entryType = self::mapBookmarkType($type);
 		$position *= 1000; // seconds to milliseconds
 		$bookmark = $this->bookmarkBusinessLayer->addOrUpdate($this->session->getUserId(), $entryType, $filter, $position, $client);
-		return $this->renderBookmarks([$bookmark]);
+		return $this->renderBookmarks([$bookmark], $include);
 	}
 
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function bookmark_edit(int $filter, string $type, int $position, ?string $client) : array {
+	protected function bookmark_edit(int $filter, string $type, int $position, ?string $client, int $include=0) : array {
 		// Note: the optional argument 'date' is not supported and is disregarded
 		$entryType = self::mapBookmarkType($type);
 		$bookmark = $this->bookmarkBusinessLayer->findByEntry($entryType, $filter, $this->session->getUserId());
@@ -1178,7 +1178,7 @@ class AmpacheController extends Controller {
 			$bookmark->setComment($client);
 		}
 		$bookmark = $this->bookmarkBusinessLayer->update($bookmark);
-		return $this->renderBookmarks([$bookmark]);
+		return $this->renderBookmarks([$bookmark], $include);
 	}
 
 	/**
@@ -1911,9 +1911,26 @@ class AmpacheController extends Controller {
 	/**
 	 * @param Bookmark[] $bookmarks
 	 */
-	private function renderBookmarks(array $bookmarks) : array {
+	private function renderBookmarks(array $bookmarks, int $include=0) : array {
+		$renderEntry = null;
+
+		if ($include) {
+			$renderEntry = function(int $type, int $id) {
+				$userId = $this->session->getUserId();
+				if ($type == Bookmark::TYPE_TRACK) {
+					$track = $this->trackBusinessLayer->find($id, $userId);
+					return $this->renderSongs([$track])['song'][0];
+				} elseif ($type == Bookmark::TYPE_PODCAST_EPISODE) {
+					$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
+					return $this->renderPodcastEpisodes([$episode])['podcast_episode'][0];
+				} else {
+					throw new AmpacheException('Internal error');
+				}
+			};
+		}
+
 		return [
-			'bookmark' => Util::arrayMapMethod($bookmarks, 'toAmpacheApi')
+			'bookmark' => Util::arrayMapMethod($bookmarks, 'toAmpacheApi', [$renderEntry])
 		];
 	}
 

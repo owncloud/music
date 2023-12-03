@@ -4,6 +4,7 @@
 - Ampache API: 
   * Support for argument `random` in the method `playlist_songs`
   * Method `bookmark`
+  * Support for argument `include` in all methods returning bookmarks
 - Subsonic API:
   * Property `playCount` to song responses
   * [OpenSubsonic API extensions](https://support.symfonium.app/c/subsonic-api-extensions/11):

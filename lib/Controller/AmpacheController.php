@@ -1158,7 +1158,7 @@ class AmpacheController extends Controller {
 	/**
 	 * @AmpacheAPI
 	 */
-	protected function bookmark_create(int $filter, string $type, int $position, string $client='AmpacheAPI', int $include=0) : array {
+	protected function bookmark_create(int $filter, string $type, int $position, ?string $client, int $include=0) : array {
 		// Note: the optional argument 'date' is not supported and is disregarded
 		$entryType = self::mapBookmarkType($type);
 		$position *= 1000; // seconds to milliseconds

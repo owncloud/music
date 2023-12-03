@@ -13,7 +13,9 @@
 - MusicBrainz link from Last.fm to the artist/album/track details pane, when available
 
 ### Changed
-- Ampache API: Make `advanced_search` arguments `operator` and `type` optional
+- Ampache API:
+  * Make `advanced_search` arguments `operator` and `type` optional
+  * On method `bookmark_create`, the argument `client` defaults to null instead of "AmpacheAPI"
 - Subsonic API: Methods `search2` and `search3` support '*' as a wildcard
 
 ### Fixed

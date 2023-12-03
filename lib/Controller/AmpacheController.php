@@ -103,7 +103,7 @@ class AmpacheController extends Controller {
 	const ALL_TRACKS_PLAYLIST_ID = -1;
 	const API4_VERSION = '440000';
 	const API5_VERSION = '560000';
-	const API6_VERSION = '600001';
+	const API6_VERSION = '610000';
 	const API_MIN_COMPATIBLE_VERSION = '350001';
 
 	public function __construct(string $appname,
@@ -1136,6 +1136,14 @@ class AmpacheController extends Controller {
 	protected function bookmarks() : array {
 		$bookmarks = $this->bookmarkBusinessLayer->findAll($this->session->getUserId());
 		return $this->renderBookmarks($bookmarks);
+	}
+
+	/**
+	 * @AmpacheAPI
+	 */
+	protected function bookmark(int $filter) : array {
+		$bookmark = $this->bookmarkBusinessLayer->find($filter, $this->session->getUserId());
+		return $this->renderBookmarks([$bookmark]);
 	}
 
 	/**

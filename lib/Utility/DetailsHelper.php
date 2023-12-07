@@ -73,7 +73,9 @@ class DetailsHelper {
 					$result['tags']['LYRICS'],
 					$result['tags']['lyrics'],
 					$result['tags']['unsynchronised_lyric'],
-					$result['tags']['unsynced lyrics']
+					$result['tags']['unsynced lyrics'],
+					$result['tags']['unsynced_lyrics'],
+					$result['tags']['unsyncedlyrics']
 				);
 			}
 
@@ -98,7 +100,7 @@ class DetailsHelper {
 		$fileNodes = $userFolder->getById($fileId);
 		if (\count($fileNodes) > 0) {
 			$data = $this->extractor->extract($fileNodes[0]);
-			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics']);
+			$lyrics = ExtractorGetID3::getFirstOfTags($data, ['unsynchronised_lyric', 'unsynced lyrics', 'unsynced_lyrics', 'unsyncedlyrics']);
 			self::sanitizeString($lyrics);
 
 			if ($lyrics === null) {
@@ -132,6 +134,8 @@ class DetailsHelper {
 		$syncedLyrics = LyricsParser::parseSyncedLyrics($lyrics);
 		$unsyncedLyrics = $tags['unsynchronised_lyric']
 						?? $tags['unsynced lyrics']
+						?? $tags['unsynced_lyrics']
+						?? $tags['unsyncedlyrics']
 						?? LyricsParser::syncedToUnsynced($syncedLyrics)
 						?? $lyrics;
 

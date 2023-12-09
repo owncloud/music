@@ -10,10 +10,18 @@
  * @copyright Pauli Järvinen 2016 - 2023
  */
 
-#app-navigation {
+.app-music #app-navigation {
 	padding-bottom: calc(44px + var(--body-container-margin, 0px)) !important;
 	z-index: 999;
-	display: block;
+	overflow: unset;
+}
+
+#app-navigation > ul {
+	height: 100%;
+	padding: calc(var(--default-grid-baseline)*2);
+	padding-bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 #app-navigation .app-navigation-separator {
@@ -28,6 +36,7 @@
 }
 
 #app-navigation .music-navigation-item {
+	position: relative;
 	height: 44px;
 }
 
@@ -90,9 +99,13 @@
 	background-image: url(../img/pause-big.svg)
 }
 
+#app-navigation #new-playlist {
+	height: 44px;
+}
+
 #app-navigation #new-playlist > * {
 	display: inline-block;
-	height: 100%;
+	height: 44px;
 }
 
 #app-navigation #new-playlist .icon-add {
@@ -203,6 +216,7 @@
 	margin-right: 5px;
 	height: 32px;
 	cursor: text;
+	box-shadow: unset;
 }
 
 #app-navigation .icon-checkmark {
@@ -217,6 +231,7 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+	height: 44px;
 	max-width: 300px;
 	margin: var(--body-container-margin);
 	z-index: 140;
@@ -224,6 +239,13 @@
 
 .legacy-layout #app-navigation #music-nav-settings {
 	max-width: 250px;
+}
+
+#app-navigation #music-nav-settings > a {
+	display: block;
+	padding-left: 14px;
+	padding-right: 12px;
+	line-height: 44px;
 }
 
 #app-navigation #music-nav-settings > a:first-child img {

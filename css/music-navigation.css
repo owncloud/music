@@ -24,6 +24,19 @@
 	overflow-y: auto;
 }
 
+#app-navigation > ul > li {
+	border-radius: var(--border-radius-pill);
+}
+
+#app-navigation > ul > li:hover,
+#app-navigation > ul > li:focus {
+	background-color: var(--color-background-hover);
+}
+
+#app-navigation > ul > li.active {
+	background-color: var(--color-primary-element-light);
+}
+
 #app-navigation .app-navigation-separator {
 	border-bottom: 1px solid;
 	border-color: var(--color-main-text, #222);

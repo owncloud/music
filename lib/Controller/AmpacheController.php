@@ -1915,17 +1915,10 @@ class AmpacheController extends Controller {
 		$renderEntry = null;
 
 		if ($include) {
-			$renderEntry = function(int $type, int $id) {
-				$userId = $this->session->getUserId();
-				if ($type == Bookmark::TYPE_TRACK) {
-					$track = $this->trackBusinessLayer->find($id, $userId);
-					return $this->renderSongs([$track])['song'][0];
-				} elseif ($type == Bookmark::TYPE_PODCAST_EPISODE) {
-					$episode = $this->podcastEpisodeBusinessLayer->find($id, $userId);
-					return $this->renderPodcastEpisodes([$episode])['podcast_episode'][0];
-				} else {
-					throw new AmpacheException('Internal error');
-				}
+			$renderEntry = function(string $type, int $id) {
+				$businessLayer = $this->getBusinessLayer($type);
+				$entity = $businessLayer->find($id, $this->session->getUserId());
+				return $this->renderEntities([$entity], $type)[$type][0];
 			};
 		}
 

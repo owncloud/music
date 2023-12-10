@@ -71,7 +71,7 @@ class Bookmark extends Entity {
 		];
 
 		if ($renderEntry !== null) {
-			$result[$objectType] = $renderEntry($this->getType(), $this->getEntryId());
+			$result[$objectType] = $renderEntry($objectType, $this->getEntryId());
 		}
 
 		return $result;

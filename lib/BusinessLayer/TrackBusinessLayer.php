@@ -244,11 +244,13 @@ class TrackBusinessLayer extends BusinessLayer {
 	}
 
 	private static function getFolderEntry(array $folderNamesAndParents, int $folderId, array $trackIds, Folder $musicFolder) : ?array {
+		$libRootId = $musicFolder->getId();
+
 		if (isset($folderNamesAndParents[$folderId])) {
 			// normal folder within the user home storage
 			$entry = $folderNamesAndParents[$folderId];
 			// special handling for the root folder
-			if ($folderId === $musicFolder->getId()) {
+			if ($folderId === $libRootId) {
 				$entry = null;
 			}
 		} else {
@@ -258,9 +260,14 @@ class TrackBusinessLayer extends BusinessLayer {
 				// other user's folder with files shared with this user (mapped under root)
 				$entry = null;
 			} else {
+				$parentId = $folderNode->getParent()->getId();
+				// On NC28, the externally mounted folders have parentId=-1. Map such folders manually under the root folder.
+				if ($parentId == -1) {
+					$parentId = $libRootId;
+				}
 				$entry = [
 					'name' => $folderNode->getName(),
-					'parent' => $folderNode->getParent()->getId()
+					'parent' => $parentId
 				];
 			}
 		}
@@ -269,7 +276,7 @@ class TrackBusinessLayer extends BusinessLayer {
 			$entry['trackIds'] = $trackIds;
 			$entry['id'] = $folderId;
 
-			if ($entry['id'] == $musicFolder->getId()) {
+			if ($entry['id'] == $libRootId) {
 				// the library root should be reported without a parent folder as that parent does not belong to the library
 				$entry['parent'] = null;
 			}

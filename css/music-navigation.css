@@ -51,6 +51,7 @@
 #app-navigation .music-navigation-item {
 	position: relative;
 	height: 44px;
+	margin-bottom: 4px;
 }
 
 #app-navigation .music-navigation-item-content {

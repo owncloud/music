@@ -17,6 +17,8 @@
   * Make `advanced_search` arguments `operator` and `type` optional
   * On method `bookmark_create`, the argument `client` defaults to null instead of "AmpacheAPI"
 - Subsonic API: Methods `search2` and `search3` support '*' as a wildcard
+- Consider also the tag names `unsynced_lyrics` and `unsyncedlyrics` when parsing lyrics
+  [#1111](https://github.com/owncloud/music/pull/1111) @RobertZenz
 
 ### Fixed
 - Songs with scanned integer property value (like track number) larger than 2147483647 causing error on PostgreSQL

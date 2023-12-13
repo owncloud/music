@@ -52,6 +52,7 @@
 * [Ralf Pietsch](https://github.com/AlZiBa)
 * [RealRancor](https://github.com/RealRancor)
 * [Rello](https://github.com/rello)
+* [Robert 'Bobby' Zenz](https://github.com/RobertZenz)
 * [Robin Appelman](https://github.com/icewind1991)
 * [Roland Hager](https://github.com/roha4000)
 * [Roman Štefko](https://github.com/rstefko)

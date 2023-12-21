@@ -511,6 +511,10 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 
 		let parentContainer = $('div#app-content');
 		if (parentContainer.length === 0) {
+			// On NC28, the name and type of the app content container has changed
+			parentContainer = $('main#app-content-vue');
+		}
+		if (parentContainer.length === 0) {
 			// On share page before NC25, there's no #app-content. Use #preview element as parent, instead.
 			parentContainer = $('div#preview');
 			musicControls.css('left', '0');

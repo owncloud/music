@@ -8,9 +8,10 @@
  * @copyright Pauli Järvinen 2017 - 2023
  */
 
-import playIconPath from '../../img/play-big.svg';
+//import playIconPath from '../../img/play-big.svg';
 import playOverlayPath from '../../img/play-overlay.svg';
 
+import { FileAction, registerFileAction } from '@nextcloud/files';
 
 window.addEventListener('DOMContentLoaded', function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
@@ -52,7 +53,7 @@ function initEmbeddedPlayer() {
 	register();
 
 	function urlForFile(file) {
-		let url = mFileList.getDownloadUrl(file.name, file.path);
+		let url = ('source' in file) ? file.source : mFileList.getDownloadUrl(file.name, file.path);
 
 		// append request token unless this is a public share
 		if (!mShareToken) {
@@ -192,8 +193,8 @@ function initEmbeddedPlayer() {
 		if (typeof OCA.Files !== 'undefined') {
 			OCA.Music.initPlaylistTabView(mPlaylistMimes);
 			connectPlaylistTabViewEvents();
-			registerFolderPlayer(mAudioMimes, openAudioFile);
-			registerFolderPlayer(mPlaylistMimes, openPlaylistFile);
+			registerFolderPlayer(mAudioMimes, openAudioFile, 'music_play_audio_file');
+			registerFolderPlayer(mPlaylistMimes, openPlaylistFile, 'music_play_playlist_file');
 		}
 
 		// Add player on single-file-share page if the MIME is a supported audio type
@@ -231,7 +232,36 @@ function initEmbeddedPlayer() {
 	/**
 	 * "Folder player" is used in the Files app and on shared folders to play audio files and playlist files
 	 */
-	function registerFolderPlayer(mimes, openFileCallback) {
+	function registerFolderPlayer(mimes, openFileCallback, actionId) {
+		registerFileAction(new FileAction({
+			id: actionId,
+			displayName: () => t('music', 'Play'),
+			iconSvgInline: () => '', // playIconPath,
+
+			enabled: (nodes, _view) => {
+				if (nodes.length !== 1) {
+					return false;
+				}
+		
+				return mimes.includes(nodes[0].mime);
+			},
+		
+			/**
+			 * Function executed on single file action
+			 * @return true if the action was executed successfully,
+			 * false otherwise and null if the action is silent/undefined.
+			 * @throws Error if the action failed
+			 */
+			exec: (file, _view, _dir) => {
+				mCurrentFile = {id: file.fileid, name: file.basename, mimetype: file.mime, source: file.source};
+				mFileList = null;
+				openFileCallback();
+			},
+
+			default: 'default',
+		}));
+
+		/*
 		// Handle 'play' action on file row
 		let onPlay = function(fileName, context) {
 			mFileList = context.fileList;
@@ -264,13 +294,15 @@ function initEmbeddedPlayer() {
 			OCA.Files.fileActions.setDefault(mime, 'music-play');
 		};
 		_.forEach(mimes, registerPlayerForMime);
+		*/
 	}
 
 	function openAudioFile() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
-		mPlaylist = new OCA.Music.Playlist(mFileList.files, mAudioMimes, mCurrentFile.id);
+		//mPlaylist = new OCA.Music.Playlist(mFileList.files, mAudioMimes, mCurrentFile.id);
+		mPlaylist = new OCA.Music.Playlist([mCurrentFile], mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}

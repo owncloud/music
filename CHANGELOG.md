@@ -19,6 +19,7 @@
 - Subsonic API: Methods `search2` and `search3` support '*' as a wildcard
 - Consider also the tag names `unsynced_lyrics` and `unsyncedlyrics` when parsing lyrics
   [#1111](https://github.com/owncloud/music/pull/1111) @RobertZenz
+- Updated the getID3 library to the release version 1.9.23-202310190849
 
 ### Fixed
 - Songs with scanned integer property value (like track number) larger than 2147483647 causing error on PostgreSQL

@@ -774,5 +774,9 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 	this.isVisible = function() {
 		return musicControls !== null && musicControls.is(':visible');
 	};
+
+	this.canPlayMime = function(mime) {
+		return player.canPlayMime(mime);
+	};
 };
 

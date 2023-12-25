@@ -42,7 +42,7 @@ function initEmbeddedPlayer() {
 		'audio/wav',
 		'audio/x-aiff',
 		'audio/x-caf',
-	], mPlayer.canPlayMime, mPlayer);
+	], (mime) => mPlayer.canPlayMime(mime));
 
 	const mPlaylistMimes = [
 		'audio/mpegurl',

@@ -355,6 +355,7 @@ class PlaylistApiController extends Controller {
 				if (isset($fileInfo['url'])) {
 					$fileInfo['id'] = $bogusUrlId--;
 					$fileInfo['mimetype'] = null;
+					$fileInfo['external'] = true;
 					return $fileInfo;
 				} else {
 					$file = $fileInfo['file'];
@@ -362,9 +363,11 @@ class PlaylistApiController extends Controller {
 						'id' => $file->getId(),
 						'name' => $file->getName(),
 						'path' => $this->userFolder->getRelativePath($file->getParent()->getPath()),
+						'url' => $this->urlGenerator->linkToRoute('music.api.download', ['fileId' => $file->getId()]),
 						'mimetype' => $file->getMimeType(),
 						'caption' => $fileInfo['caption'],
-						'in_library' => isset($libFileIds[$file->getId()])
+						'in_library' => isset($libFileIds[$file->getId()]),
+						'external' => false
 					];
 				}
 			}, $result['files']);

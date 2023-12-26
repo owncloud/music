@@ -52,17 +52,6 @@ function initEmbeddedPlayer() {
 
 	register();
 
-	function urlForFile(file) {
-		let url = ('source' in file) ? file.source : mFileList.getDownloadUrl(file.name, file.path);
-
-		// append request token unless this is a public share
-		if (!mShareToken) {
-			let delimiter = _.includes(url, '?') ? '&' : '?';
-			url += delimiter + 'requesttoken=' + encodeURIComponent(OC.requestToken);
-		}
-		return url;
-	}
-
 	function onClose() {
 		mCurrentFile = null;
 		mPlayingListFile = false;
@@ -148,15 +137,14 @@ function initEmbeddedPlayer() {
 	function doImportFromFile(serviceImportFunc) {
 		// The busy animation is shown on the file item if we are still viewing the folder
 		// where the file resides. The importing itself is possible regardless.
-		let $file = null;
-		if (viewingCurrentFileFolder()) {
-			$file = mFileList.findFileEl(mCurrentFile.name);
-			mFileList.showFileBusyState($file, true);
+		let animationShown = viewingCurrentFileFolder();
+		if (animationShown) {
+			showCurrentFileAsBusy(true);
 		}
 
-		serviceImportFunc(mCurrentFile, function(_result) {
-			if ($file) {
-				mFileList.showFileBusyState($file, false);
+		serviceImportFunc(mCurrentFile, (_result) => {
+			if (animationShown) {
+				showCurrentFileAsBusy(false);
 			}
 		});
 	}
@@ -168,11 +156,11 @@ function initEmbeddedPlayer() {
 			if (!mPlayingListFile) {
 				mCurrentFile = file;
 			}
-			if ('url' in file) {
+			if (file.external) {
 				mPlayer.playExtUrl(file.url, file.caption, mShareToken);
 			} else {
 				mPlayer.playFile(
-					urlForFile(file),
+					file.url,
 					file.mimetype,
 					file.id,
 					file.name,
@@ -253,9 +241,10 @@ function initEmbeddedPlayer() {
 			 * @throws Error if the action failed
 			 */
 			exec: (file, _view, _dir) => {
-				mCurrentFile = {id: file.fileid, name: file.basename, mimetype: file.mime, source: file.source};
+				mCurrentFile = {id: file.fileid, name: file.basename, mimetype: file.mime, url: file.source};
 				mFileList = null;
 				openFileCallback();
+				return true;
 			},
 
 			default: 'default',
@@ -309,9 +298,8 @@ function initEmbeddedPlayer() {
 
 	function openPlaylistFile(onReadyCallback = null) {
 		mPlayingListFile = true;
-		let $file = mFileList.findFileEl(mCurrentFile.name);
 
-		mFileList.showFileBusyState($file, true);
+		showCurrentFileAsBusy(true);
 		let onPlaylistLoaded = function(data) {
 			if (data.files.length > 0) {
 				mPlayer.show(mCurrentFile.name);
@@ -334,7 +322,7 @@ function initEmbeddedPlayer() {
 				OC.Notification.showTemporary(note);
 			}
 
-			mFileList.showFileBusyState($file, false);
+			showCurrentFileAsBusy(false);
 
 			if (onReadyCallback) {
 				onReadyCallback();
@@ -343,9 +331,20 @@ function initEmbeddedPlayer() {
 		let onError = function() {
 			mCurrentFile = null;
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
-			mFileList.showFileBusyState($file, false);
+			showCurrentFileAsBusy(false);
 		};
 		OCA.Music.PlaylistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
+	}
+
+	function showCurrentFileAsBusy(isBusy) {
+		if (mFileList) {
+			let $file = mFileList.findFileEl(mCurrentFile.name);
+			if ($file) {
+				mFileList.showFileBusyState($file, isBusy);
+			}
+		} else {
+			// TODO: How to do this on NC28?
+		}
 	}
 
 	/**

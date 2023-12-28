@@ -46,7 +46,7 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 						};
 
 						let tooltipForFile = function(file) {
-							return file.url || `${file.path}/${file.name}`;
+							return file.path ? `${file.path}/${file.name}` : file.url;
 						};
 
 						for (let i = 0; i < data.files.length; ++i) {

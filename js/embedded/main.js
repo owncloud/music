@@ -8,7 +8,7 @@
  * @copyright Pauli Järvinen 2017 - 2023
  */
 
-//import playIconPath from '../../img/play-big.svg';
+import playIconPath from '../../img/play-big.svg';
 import playOverlayPath from '../../img/play-overlay.svg';
 
 import { FileAction, registerFileAction } from '@nextcloud/files';
@@ -160,7 +160,7 @@ function initEmbeddedPlayer() {
 				mPlayer.playExtUrl(file.url, file.caption, mShareToken);
 			} else {
 				mPlayer.playFile(
-					file.url,
+					file.url ?? mFileList.getDownloadUrl(file.name, file.path),
 					file.mimetype,
 					file.id,
 					file.name,
@@ -221,6 +221,25 @@ function initEmbeddedPlayer() {
 	 * "Folder player" is used in the Files app and on shared folders to play audio files and playlist files
 	 */
 	function registerFolderPlayer(mimes, openFileCallback, actionId) {
+		const wrappedCallback = function(file) {
+			// Check if playing file changes
+			if (mCurrentFile === null || mCurrentFile.id != file.id) {
+				mCurrentFile = file;
+				openFileCallback();
+			}
+			else {
+				mPlayer.togglePlayback();
+			}
+		};
+
+		if (OCA.Files?.fileActions) {
+			registerFolderPlayerBeforeNC28(mimes, wrappedCallback, actionId);
+		} else {
+			registerFolderPlayerAfterNC28(mimes, wrappedCallback, actionId);
+		}
+	}
+
+	function registerFolderPlayerAfterNC28(mimes, onActionCallback, actionId) {
 		registerFileAction(new FileAction({
 			id: actionId,
 			displayName: () => t('music', 'Play'),
@@ -241,16 +260,17 @@ function initEmbeddedPlayer() {
 			 * @throws Error if the action failed
 			 */
 			exec: (file, _view, _dir) => {
-				mCurrentFile = {id: file.fileid, name: file.basename, mimetype: file.mime, url: file.source};
 				mFileList = null;
-				openFileCallback();
+				const adaptedFile = {id: file.fileid, name: file.basename, mimetype: file.mime, url: file.source};
+				onActionCallback(adaptedFile);
 				return true;
 			},
 
 			default: 'default',
 		}));
+	}
 
-		/*
+	function registerFolderPlayerBeforeNC28(mimes, onActionCallback, actionId) {
 		// Handle 'play' action on file row
 		let onPlay = function(fileName, context) {
 			mFileList = context.fileList;
@@ -260,38 +280,29 @@ function initEmbeddedPlayer() {
 			// the user navigates to an audio file with a direct link. In that case, the callback happens before
 			// the context.filList is populated and we can't operate normally. Just ignore these cases.
 			if (file !== null) {
-				// Check if playing file changes
-				if (mCurrentFile === null || mCurrentFile.id != file.id) {
-					mCurrentFile = file;
-					openFileCallback();
-				}
-				else {
-					mPlayer.togglePlayback();
-				}
+				onActionCallback(file);
 			}
 		};
 
 		let registerPlayerForMime = function(mime) {
 			OCA.Files.fileActions.register(
 					mime,
-					'music-play',
+					actionId,
 					OC.PERMISSION_READ,
 					playIconPath,
 					onPlay,
 					t('music', 'Play')
 			);
-			OCA.Files.fileActions.setDefault(mime, 'music-play');
+			OCA.Files.fileActions.setDefault(mime, actionId);
 		};
 		_.forEach(mimes, registerPlayerForMime);
-		*/
 	}
 
 	function openAudioFile() {
 		mPlayingListFile = false;
 
 		mPlayer.show();
-		//mPlaylist = new OCA.Music.Playlist(mFileList.files, mAudioMimes, mCurrentFile.id);
-		mPlaylist = new OCA.Music.Playlist([mCurrentFile], mAudioMimes, mCurrentFile.id);
+		mPlaylist = new OCA.Music.Playlist(mFileList?.files ?? [mCurrentFile], mAudioMimes, mCurrentFile.id);
 		mPlayer.setNextAndPrevEnabled(mPlaylist.length() > 1);
 		jumpToPlaylistFile(mPlaylist.currentFile());
 	}
@@ -301,6 +312,7 @@ function initEmbeddedPlayer() {
 
 		showCurrentFileAsBusy(true);
 		let onPlaylistLoaded = function(data) {
+			showCurrentFileAsBusy(false);
 			if (data.files.length > 0) {
 				mPlayer.show(mCurrentFile.name);
 				mPlaylist = new OCA.Music.Playlist(data.files, mAudioMimes, data.files[0].id);
@@ -329,9 +341,9 @@ function initEmbeddedPlayer() {
 			}
 		};
 		let onError = function() {
+			showCurrentFileAsBusy(false);
 			mCurrentFile = null;
 			OC.Notification.showTemporary(t('music', 'Error reading playlist file'));
-			showCurrentFileAsBusy(false);
 		};
 		OCA.Music.PlaylistFileService.readFile(mCurrentFile.id, onPlaylistLoaded, onError, mShareToken);
 	}

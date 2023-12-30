@@ -87,9 +87,11 @@ OCA.Music.initPlaylistTabView = function(playlistMimes) {
 		}
 
 		setCurrentTrack(playlistId, trackIndex) {
-			this.$el.find('ol li.current').removeClass('current');
-			if (this.fileInfo && this.fileInfo.id == playlistId) {
-				this.$el.find('ol li#music-playlist-item-' + trackIndex).addClass('current');
+			if (this.$el) {
+				this.$el.find('ol li.current').removeClass('current');
+				if (this.fileInfo && this.fileInfo.id == playlistId) {
+					this.$el.find('ol li#music-playlist-item-' + trackIndex).addClass('current');
+				}
 			}
 		}
 	}

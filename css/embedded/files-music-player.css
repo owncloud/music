@@ -74,6 +74,7 @@
 	border: none;
 	background-color: transparent;
 	vertical-align: top;
+	min-height: 18px;
 	margin-top: 8px;
 	opacity: .4;
 }

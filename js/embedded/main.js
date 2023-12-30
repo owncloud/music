@@ -12,7 +12,7 @@ import playIconPath from '../../img/play-big.svg';
 import playIconSvgData from '../../img/play-big.svg?raw';
 import playOverlayPath from '../../img/play-overlay.svg';
 
-import { FileAction, registerFileAction } from '@nextcloud/files';
+import { FileAction, registerFileAction, DefaultType } from '@nextcloud/files';
 
 window.addEventListener('DOMContentLoaded', function() {
 	// Nextcloud 13+ have a built-in Music player in its "individual shared music file" page.
@@ -245,12 +245,13 @@ function initEmbeddedPlayer() {
 			id: actionId,
 			displayName: () => t('music', 'Play'),
 			iconSvgInline: () => playIconSvgData,
+			default: DefaultType.DEFAULT,
+			order: -1, // prioritize over the built-in Viewer app
 
 			enabled: (nodes, _view) => {
 				if (nodes.length !== 1) {
 					return false;
-				}
-		
+				}	
 				return mimes.includes(nodes[0].mime);
 			},
 		
@@ -266,8 +267,6 @@ function initEmbeddedPlayer() {
 				onActionCallback(adaptedFile);
 				return true;
 			},
-
-			default: 'default',
 		}));
 	}
 

@@ -72,6 +72,10 @@ module.exports = {
         }
       },
       {
+        resourceQuery: /raw/,
+        type: 'asset/source',
+      },
+      {
         include: path.resolve('node_modules', 'lodash'),
         parser: { amd: false }
       },

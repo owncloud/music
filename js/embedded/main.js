@@ -9,6 +9,7 @@
  */
 
 import playIconPath from '../../img/play-big.svg';
+import playIconSvgData from '../../img/play-big.svg?raw';
 import playOverlayPath from '../../img/play-overlay.svg';
 
 import { FileAction, registerFileAction } from '@nextcloud/files';
@@ -243,7 +244,7 @@ function initEmbeddedPlayer() {
 		registerFileAction(new FileAction({
 			id: actionId,
 			displayName: () => t('music', 'Play'),
-			iconSvgInline: () => '', // playIconPath,
+			iconSvgInline: () => playIconSvgData,
 
 			enabled: (nodes, _view) => {
 				if (nodes.length !== 1) {

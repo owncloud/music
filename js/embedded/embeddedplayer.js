@@ -120,7 +120,7 @@ OCA.Music.EmbeddedPlayer = function(onClose, onNext, onPrev, onMenuOpen, onShowL
 		playlistNumberText = $(document.createElement('span'));
 		area.append(playlistNumberText);
 
-		if (typeof OCA.Music.PlaylistTabView != 'undefined') {
+		if (typeof OCA.Music.playlistTabView != 'undefined') {
 			let menuContainer = $(document.createElement('div')).attr('id', 'menu-container');
 			// "more" button which toggles the popup menu open/closed
 			menuContainer.append($(document.createElement('button'))

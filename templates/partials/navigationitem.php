@@ -15,7 +15,7 @@
 		</div>
 		<span ng-hide="playlist && $parent.showEditForm == playlist.id">{{ text }}</span>
 		<div ng-show="playlist && $parent.showEditForm == playlist.id">
-			<div class="input-container">
+			<div class="input-container with-buttons">
 				<input type="text" class="edit-list" maxlength="256"
 					on-enter="$parent.commitEdit(playlist)" ng-model="playlist.name"/>
 			</div>

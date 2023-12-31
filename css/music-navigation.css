@@ -11,7 +11,7 @@
  */
 
 .app-music #app-navigation {
-	padding-bottom: calc(44px + var(--body-container-margin, 0px)) !important;
+	padding-bottom: calc(88px + var(--body-container-margin, 0px) + 2 * var(--default-grid-baseline, 0px)) !important;
 	z-index: 999;
 	overflow: unset;
 }
@@ -61,6 +61,7 @@
 
 #app-navigation .music-navigation-item-content {
 	padding-left: 0 !important;
+	height: 44px;
 	line-height: 44px;
 	width: 100%;
 	overflow: hidden;
@@ -73,8 +74,32 @@
 	cursor: pointer;
 }
 
+#app-navigation .music-navigation-item-content > * {
+	display: inline-block;
+	height: 44px;
+}
+
 #app-navigation .music-navigation-item:not(:hover):not(.active):not(.menu-open) .music-navigation-item-content {
 	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content [class^="icon-"] {
+	width: 40px;
+	height: 44px;
+	cursor: pointer;
+}
+
+#app-navigation .music-navigation-item-content:not(:hover) [class^="icon-"] {
+	opacity: 0.7;
+}
+
+#app-navigation .music-navigation-item-content .label {
+	padding-left: 4px;
+	box-shadow: unset;
+	position: absolute;
+	width: auto;
+	right: 0;
+	left: 40px;
 }
 
 #app-navigation-toggle {
@@ -118,25 +143,6 @@
 	background-image: url(../img/pause-big.svg)
 }
 
-#app-navigation #new-playlist {
-	height: 44px;
-}
-
-#app-navigation #new-playlist > * {
-	display: inline-block;
-	height: 44px;
-}
-
-#app-navigation #new-playlist .icon-add {
-	width: 40px;
-	height: 44px;
-	cursor: pointer;
-}
-
-#app-navigation #new-playlist:not(:hover) .icon-add {
-	opacity: 0.7;
-}
-
 #app-navigation #new-playlist .track-count-badge {
 	background-color: var(--color-primary, #1d2d44);
 	color: var(--color-primary-text, #fff);
@@ -148,15 +154,6 @@
 	text-align: center;
 	vertical-align: middle;
 	font-size: smaller;
-}
-
-#app-navigation #new-playlist #create {
-	padding-left: 4px;
-	box-shadow: unset;
-	position: absolute;
-	width: auto;
-	right: 0;
-	left: 40px;
 }
 
 #app-navigation li.drag-hover {
@@ -221,14 +218,12 @@
 #app-navigation .input-container {
 	position: absolute;
 	left: 35px;
-	right: 65px;
+	right: 12px;
 	width: auto;
 }
 
 #app-navigation .input-container input {
 	width: 100%;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
 	margin-left: 0;
 	margin-bottom: 6px;
 	margin-top: 6px;
@@ -238,22 +233,52 @@
 	box-shadow: unset;
 }
 
+#app-navigation .input-container.with-buttons {
+	right: 65px;
+}
+
+#app-navigation .input-container.with-buttons input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+#app-navigation .input-container #search-input {
+	padding-right: 32px;
+}
+
+#app-navigation .input-container #clear-search {
+	position: relative;
+	left: -44px;
+	top: -6px;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background-color: transparent;
+}
+
 #app-navigation .icon-checkmark {
 	position: absolute;
 	right: 30px;
 	float: none;
 }
 
-#app-navigation #music-nav-settings {
+#app-navigation > ul > li.docked-navigation-item {
 	position: fixed;
 	width: unset;
-	bottom: 0;
 	left: 0;
 	right: 0;
 	height: 44px;
 	max-width: 300px;
 	margin: var(--body-container-margin);
 	z-index: 140;
+}
+
+#app-navigation #music-nav-search {
+	bottom: calc(44px + var(--default-grid-baseline, 0px))
+}
+
+#app-navigation #music-nav-settings {
+	bottom: 0;
 }
 
 .legacy-layout #app-navigation #music-nav-settings {

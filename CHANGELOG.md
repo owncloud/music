@@ -22,6 +22,7 @@
 - Updated the getID3 library to the development version 1.9.23-202312292105
   * Fixes the issue of garbage bytes being extracted from some RIFF tags
     [#1115](https://github.com/owncloud/music/issues/1115)
+- Search within the Music app now works with an own input field in the navigation pane instead of the unified search input
 
 ### Fixed
 - Songs with scanned integer property value (like track number) larger than 2147483647 causing error on PostgreSQL

@@ -25,10 +25,10 @@ HtmlUtil::printNgTemplate('navigationitem');
 			<div id="new-playlist" class="music-navigation-item-content">
 				<div class="icon-add" ng-click="startCreate()" ng-if="!newPlaylistTrackIds.length"></div>
 				<div class="track-count-badge" ng-if="newPlaylistTrackIds.length">{{ newPlaylistTrackIds.length }}</div>
-				<div id="create" class="app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
-				<div class="input-container" ng-show="showCreateForm">
-					<input type="text" class="new-list" maxlength="256"
-						placeholder="{{ 'New Playlist' | translate }}" on-enter="commitCreate()" ng-model="newPlaylistName" />
+				<div class="label app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
+				<div class="input-container with-buttons" ng-show="showCreateForm">
+					<input id="new-list-input" type="text" maxlength="256"
+						placeholder="{{ 'New Playlist' | translate }}" on-enter="commitCreate()" on-esc="closeCreate()" ng-model="newPlaylistName" />
 				</div>
 				<div class="actions" ng-show="showCreateForm">
 					<button class="action icon-checkmark app-navigation-noclose"
@@ -44,8 +44,19 @@ HtmlUtil::printNgTemplate('navigationitem');
 			drop-validate="allowDrop(playlist, $data)"
 			drag-hover-class="drag-hover"
 			title="{{ trackCountText(playlist) }}"
-			icon="'playlist'"></li>
-		<li id="music-nav-settings" ng-class="{active: currentView=='#/settings'}">
+			icon="'playlist'">
+		</li>
+		<li id="music-nav-search" class="docked-navigation-item">
+			<div class="music-navigation-item-content">
+				<div class="icon-search" ng-click="startSearch()"></div>
+				<div class="label app-navigation-noclose" ng-click="startSearch()" ng-hide="showSearch" translate>Search</div>
+				<div class="input-container" ng-show="showSearch">
+					<input id="search-input" type="text" placeholder="{{ 'Search' | translate }}" on-esc="clearSearch()" ng-model="searchInput" />
+					<button id="clear-search" class="icon-close" ng-click="clearSearch()"></button>
+				</div>
+			</div>
+		</li>
+		<li id="music-nav-settings" class="docked-navigation-item" ng-class="{active: currentView=='#/settings'}">
 			<a class="" ng-click="navigateTo('#/settings')">
 				<img class="svg" src="<?php HtmlUtil::printSvgPath('settings') ?>">
 				{{ 'Settings' | translate }}

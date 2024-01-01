@@ -11,7 +11,7 @@
  */
 
 .app-music #app-navigation {
-	padding-bottom: calc(88px + var(--body-container-margin, 0px) + 2 * var(--default-grid-baseline, 0px)) !important;
+	padding-bottom: calc(88px + 4 * var(--default-grid-baseline, 0px)) !important;
 	z-index: 999;
 	overflow: unset;
 }
@@ -269,7 +269,7 @@
 	right: 0;
 	height: 44px;
 	max-width: 300px;
-	margin: var(--body-container-margin);
+	margin: calc(var(--default-grid-baseline, 0px)*2);
 	z-index: 140;
 }
 

@@ -28,7 +28,8 @@ HtmlUtil::printNgTemplate('navigationitem');
 				<div class="label app-navigation-noclose" ng-click="startCreate()" ng-hide="showCreateForm" translate>New Playlist</div>
 				<div class="input-container with-buttons" ng-show="showCreateForm">
 					<input id="new-list-input" type="text" maxlength="256"
-						placeholder="{{ 'New Playlist' | translate }}" on-enter="commitCreate()" on-esc="closeCreate()" ng-model="newPlaylistName" />
+						placeholder="{{ 'New Playlist' | translate }}" ng-model="newPlaylistName"
+						on-enter="commitCreate()" on-esc="closeCreate()" />
 				</div>
 				<div class="actions" ng-show="showCreateForm">
 					<button class="action icon-checkmark app-navigation-noclose"
@@ -51,7 +52,9 @@ HtmlUtil::printNgTemplate('navigationitem');
 				<div class="icon-search" ng-click="startSearch()"></div>
 				<div class="label app-navigation-noclose" ng-click="startSearch()" ng-hide="showSearch" translate>Search</div>
 				<div class="input-container" ng-show="showSearch">
-					<input id="search-input" type="text" placeholder="{{ 'Search' | translate }}" on-esc="clearSearch()" ng-model="searchInput" />
+					<input id="search-input" type="text" placeholder="{{ 'Search' | translate }}"
+						ng-model="searchInput" on-enter="collapseNavigationPaneOnMobile()"
+						on-esc="clearSearch(); collapseNavigationPaneOnMobile()" />
 					<button id="clear-search" class="icon-close" ng-click="clearSearch()"></button>
 				</div>
 			</div>

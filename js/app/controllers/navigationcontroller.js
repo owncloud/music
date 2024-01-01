@@ -66,6 +66,7 @@ angular.module('Music').controller('NavigationController', [
 			// because the field is not visible yet, it is shown by ng-show binding
 			// later during this digest loop.
 			$timeout(() => $('#search-input').trigger('focus'));
+			expandCollapsedNavigationPane();
 		};
 
 		$scope.clearSearch = function() {
@@ -352,7 +353,7 @@ angular.module('Music').controller('NavigationController', [
 		navToggle.addEventListener('dragenter', function() {
 			if (!navOpenedByDrag) {
 				navOpenedByDrag = true;
-				$timeout(() => $(navToggle).click());
+				expandCollapsedNavigationPane();
 			}
 		});
 		document.addEventListener('dragend', function() {
@@ -361,6 +362,12 @@ angular.module('Music').controller('NavigationController', [
 				$scope.collapseNavigationPaneOnMobile();
 			}
 		});
+
+		function expandCollapsedNavigationPane() {
+			if (!$('body').hasClass('snapjs-left') && $(navToggle).is(':visible')) {
+				$timeout(() => $(navToggle).trigger('click'));
+			}
+		}
 
 		function createPlaylist(name, trackIds) {
 			const args = {

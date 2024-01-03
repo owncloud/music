@@ -273,16 +273,16 @@
 	z-index: 140;
 }
 
+.legacy-layout #app-navigation > ul > li.docked-navigation-item {
+	max-width: 250px;
+}
+
 #app-navigation #music-nav-search {
 	bottom: calc(44px + var(--default-grid-baseline, 0px))
 }
 
 #app-navigation #music-nav-settings {
 	bottom: 0;
-}
-
-.legacy-layout #app-navigation #music-nav-settings {
-	max-width: 250px;
 }
 
 #app-navigation #music-nav-settings > a {

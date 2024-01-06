@@ -5,7 +5,7 @@
  * later. See the COPYING file.
  *
  * @author Pauli Järvinen <pauli.jarvinen@gmail.com>
- * @copyright Pauli Järvinen 2017 - 2023
+ * @copyright Pauli Järvinen 2017 - 2024
  */
 
 import playIconPath from '../../img/play-big.svg';
@@ -71,13 +71,15 @@ function initEmbeddedPlayer() {
 	}
 
 	function viewingCurrentFileFolder() {
+		// Note: this is always false on NC28+
 		return mCurrentFile && mFileList && mCurrentFile.path == mFileList.breadcrumb.dir;
 	}
 
 	function onMenuOpen($menu) {
 		// disable/enable the "Show list" item
 		let $showItem = $menu.find('#playlist-menu-show');
-		if (viewingCurrentFileFolder()) {
+		// the new sidebar API introduced in NC18 enabled viewing details also for files outside the current folder
+		if (OCA.Files.Sidebar || viewingCurrentFileFolder()) {
 			$showItem.removeClass('disabled');
 			$showItem.removeAttr('title');
 		} else {
@@ -123,8 +125,16 @@ function initEmbeddedPlayer() {
 	}
 
 	function onShowList() {
-		mFileList.scrollTo(mCurrentFile.name);
-		mFileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+		if (OCA.Files.Sidebar) {
+			// This API is available starting from NC18 and after NC28, it's the only one available.
+			// This is better than the older API because this can be used also for files which are not
+			// present in the currently viewed folder.
+			OCA.Files.Sidebar.open(mCurrentFile.path + '/' + mCurrentFile.name);
+			OCA.Files.Sidebar.setActiveTab(OCA.Music.playlistTabView.id);
+		} else {
+			mFileList.scrollTo(mCurrentFile.name);
+			mFileList.showDetailsView(mCurrentFile.name, OCA.Music.playlistTabView.id);
+		}
 	}
 
 	function onImportList() {
@@ -194,7 +204,7 @@ function initEmbeddedPlayer() {
 
 	function connectPlaylistTabViewEvents() {
 		if (OCA.Music.playlistTabView) {
-			OCA.Music.playlistTabView.on('playlistItemClick', function(playlistId, playlistName, itemIdx) {
+			OCA.Music.playlistTabView.on('playlistItemClick', (playlistId, playlistName, itemIdx) => {
 				if (mCurrentFile !== null && playlistId == mCurrentFile.id) {
 					if (itemIdx == mPlaylist.currentIndex()) {
 						mPlayer.togglePlayback();
@@ -203,14 +213,18 @@ function initEmbeddedPlayer() {
 					}
 				}
 				else {
-					mFileList = OCA.Files.App.fileList;
-					mCurrentFile = mFileList.findFile(playlistName);
-					openPlaylistFile(function() {
-						jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx));
-					});
+					if (OCA.Files.App) {
+						// Before NC28
+						mFileList = OCA.Files.App.fileList;
+						mCurrentFile = mFileList.findFile(playlistName);
+						openPlaylistFile(() => jumpToPlaylistFile(mPlaylist.jumpToIndex(itemIdx)));
+					} else {
+						// NC28 or later
+						// TODO
+					}
 				}
 			});
-			OCA.Music.playlistTabView.on('rendered', function() {
+			OCA.Music.playlistTabView.on('rendered', () => {
 				if (mCurrentFile !== null) {
 					OCA.Music.playlistTabView.setCurrentTrack(mCurrentFile.id, mPlaylist.currentIndex());
 				}
@@ -262,7 +276,9 @@ function initEmbeddedPlayer() {
 			 * @throws Error if the action failed
 			 */
 			exec: (file, view, dir) => {
-				const adaptFile = (vueFile) => { return {id: vueFile.fileid, name: vueFile.basename, mimetype: vueFile.mime, url: vueFile.source} };
+				const adaptFile = (f) => {
+					return {id: f.fileid, name: f.basename, mimetype: f.mime, url: f.source, path: dir}
+				};
 				onActionCallback(adaptFile(file));
 
 				if (!mPlayingListFile) {
